@@ -1,0 +1,3521 @@
+{
+ "build_as_of": "2026-10-15T00:18:17Z",
+ "builder": "prediction_market_bot.c1_signal_ingestion.nfl_event_store",
+ "current_season": 2026,
+ "failures": [],
+ "files": [
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46136,
+   "season": 1999,
+   "source": "pbp",
+   "source_bytes": 13364401,
+   "source_etag": "\"0x8DD87B0D09469AB\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:32:43 GMT",
+   "source_sha256": "dcf640fd18e4cdea03dba14c733bbcbd89796f100c509249b6ba5e3cff9e904c",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_1999.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_1999.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 45491,
+   "season": 2000,
+   "source": "pbp",
+   "source_bytes": 13404971,
+   "source_etag": "\"0x8DDC4751D6D4DAF\"",
+   "source_last_modified": "Wed, 16 Jul 2025 14:29:04 GMT",
+   "source_sha256": "595c3b0eefeb91afd6f08c629669823b31e63c34304c98faed09adf4fbd54706",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2000.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2000.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 44969,
+   "season": 2001,
+   "source": "pbp",
+   "source_bytes": 14007738,
+   "source_etag": "\"0x8DEF937D0C8CADD\"",
+   "source_last_modified": "Thu, 13 Aug 2026 12:38:45 GMT",
+   "source_sha256": "43f0eea9f76de070a09382a5f3438b0ddb509c9ca48ac98dee77639e35724bca",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2001.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2001.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47355,
+   "season": 2002,
+   "source": "pbp",
+   "source_bytes": 14742308,
+   "source_etag": "\"0x8DEF937E93DD902\"",
+   "source_last_modified": "Thu, 13 Aug 2026 12:39:26 GMT",
+   "source_sha256": "4930befb7ce6597fa149d53e56565eb1377bad778a04fec1e6c21b0537c4aa17",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2002.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2002.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46811,
+   "season": 2003,
+   "source": "pbp",
+   "source_bytes": 14620361,
+   "source_etag": "\"0x8DD87B1408FD30C\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:35:51 GMT",
+   "source_sha256": "a5bc20c69eee0c18364bea7fa1d3c2817941c8d9026058c694ab1ee73a2d279d",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2003.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2003.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46705,
+   "season": 2004,
+   "source": "pbp",
+   "source_bytes": 14568240,
+   "source_etag": "\"0x8DD87B189741400\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:37:54 GMT",
+   "source_sha256": "94658bc15788eda63a8cdba0d8f1c8aa9253fb5baa9c0d07b9c2e35e75ae6a03",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2004.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2004.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46823,
+   "season": 2005,
+   "source": "pbp",
+   "source_bytes": 14612857,
+   "source_etag": "\"0x8DD87B192BED9C1\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:38:09 GMT",
+   "source_sha256": "1b93d868e286fc556192e642ec09ff76b29880b441674dcb0f3b51fb0064df92",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2005.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2005.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46299,
+   "season": 2006,
+   "source": "pbp",
+   "source_bytes": 18555685,
+   "source_etag": "\"0x8DD87B0E40FD020\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:33:16 GMT",
+   "source_sha256": "f3d45c8cf41fa860ec22519490781eb19a00cf04cbf039b28af671bfcb11c2b4",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2006.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2006.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46266,
+   "season": 2007,
+   "source": "pbp",
+   "source_bytes": 18716524,
+   "source_etag": "\"0x8DD87B1FCF7E03E\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:41:07 GMT",
+   "source_sha256": "bcfded2ff41b221617e38e48cbc56fd797f336363436ed5b5da17659caede9a9",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2007.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2007.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 45917,
+   "season": 2008,
+   "source": "pbp",
+   "source_bytes": 18565820,
+   "source_etag": "\"0x8DD87B1071B7B7E\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:34:15 GMT",
+   "source_sha256": "f625e836a0117698feaad1a6e84f4ab341ff03197c1904313836ef7313af0f07",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2008.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2008.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46519,
+   "season": 2009,
+   "source": "pbp",
+   "source_bytes": 18905386,
+   "source_etag": "\"0x8DD87B14AE92AE9\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:36:09 GMT",
+   "source_sha256": "17ba96f594a7b84c86060a99a3082158ebab206672d6c16036a069829d77dee7",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2009.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2009.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46892,
+   "season": 2010,
+   "source": "pbp",
+   "source_bytes": 19059048,
+   "source_etag": "\"0x8DD87B116D6E586\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:34:41 GMT",
+   "source_sha256": "d2ef9c407319719910ad8de8c4c1b88f0ea945ffb3f78f48ef32fa3ed3a7573b",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2010.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2010.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47448,
+   "season": 2011,
+   "source": "pbp",
+   "source_bytes": 19117830,
+   "source_etag": "\"0x8DD87B1A94415C3\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:38:47 GMT",
+   "source_sha256": "c54753b8137b88dab260489b1462cbf1309c3d11741eb8d10e5f1b0a9b8795b1",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2011.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2011.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47834,
+   "season": 2012,
+   "source": "pbp",
+   "source_bytes": 19322039,
+   "source_etag": "\"0x8DD87B0E8D28515\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:33:24 GMT",
+   "source_sha256": "447b90789104aac70427ec9d3b51df7247234029d0ecabd269279369b1cc6278",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2012.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2012.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48158,
+   "season": 2013,
+   "source": "pbp",
+   "source_bytes": 19521610,
+   "source_etag": "\"0x8DCC501AAF2EDE3\"",
+   "source_last_modified": "Sun, 25 Aug 2024 12:30:13 GMT",
+   "source_sha256": "f454605a1983b3946baf0ffadf3a0b9f5e04735c4b84732e0483f2049a780d00",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2013.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2013.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47629,
+   "season": 2014,
+   "source": "pbp",
+   "source_bytes": 19360792,
+   "source_etag": "\"0x8DCC501AC8708B7\"",
+   "source_last_modified": "Sun, 25 Aug 2024 12:30:15 GMT",
+   "source_sha256": "54c01408d8f0ff9e013a4ea51428b91d610101f72545d082e932f5710e2fb4f7",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2014.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2014.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48122,
+   "season": 2015,
+   "source": "pbp",
+   "source_bytes": 19545842,
+   "source_etag": "\"0x8DD87B0EA89DFCF\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:33:27 GMT",
+   "source_sha256": "01b5ae7d06633a2e66b418404461a3d4ff055ad2f3a87d453cebcc8d3fda7ed9",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2015.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2015.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47651,
+   "season": 2016,
+   "source": "pbp",
+   "source_bytes": 19344382,
+   "source_etag": "\"0x8DD87B10F253F15\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:34:28 GMT",
+   "source_sha256": "95eba04e2145e3c1c8ca502f2a3a76cfb0a5990680c3fb480f02a74a45f54a3b",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2016.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47245,
+   "season": 2017,
+   "source": "pbp",
+   "source_bytes": 19050401,
+   "source_etag": "\"0x8DD87B2078B19D7\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:41:25 GMT",
+   "source_sha256": "84eacd963c1fdd45965f6222c62e9329a7f3412f029d92c1ac5e34a1bb4d3710",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2017.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47109,
+   "season": 2018,
+   "source": "pbp",
+   "source_bytes": 19072097,
+   "source_etag": "\"0x8DD87B1BD0510CA\"",
+   "source_last_modified": "Wed, 30 Apr 2025 06:39:20 GMT",
+   "source_sha256": "2e6f2dce7c7ebd46e985cabe0c17eb72b39a77f98cb4478409294f50b5820150",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47260,
+   "season": 2019,
+   "source": "pbp",
+   "source_bytes": 19119729,
+   "source_etag": "\"0x8DDD05E7C69836C\"",
+   "source_last_modified": "Thu, 31 Jul 2025 18:17:18 GMT",
+   "source_sha256": "60c3067017db2d28a78f66a79b657268be8578d9a5288e6a827efdcd7fe42540",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47705,
+   "season": 2020,
+   "source": "pbp",
+   "source_bytes": 19286459,
+   "source_etag": "\"0x8DF034447C8FB65\"",
+   "source_last_modified": "Wed, 26 Aug 2026 07:33:10 GMT",
+   "source_sha256": "8889f5d8782b5c5dce3c3644acdc0322b228a7e9cb13fa36cbac250e260e9f60",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 49922,
+   "season": 2021,
+   "source": "pbp",
+   "source_bytes": 20249925,
+   "source_etag": "\"0x8DE4EB7ADE84D25\"",
+   "source_last_modified": "Thu, 08 Jan 2026 13:13:13 GMT",
+   "source_sha256": "333ad34378e5339d5172717cc83378e908daf02c8699416ab3e17c2ec10f78d8",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 49434,
+   "season": 2022,
+   "source": "pbp",
+   "source_bytes": 20426548,
+   "source_etag": "\"0x8DE6A2108A8E56F\"",
+   "source_last_modified": "Thu, 12 Feb 2026 10:25:24 GMT",
+   "source_sha256": "931121d8897779d7944e2a293e92ed8799c8e5cceef84096ac42339003fedc09",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 49665,
+   "season": 2023,
+   "source": "pbp",
+   "source_bytes": 20534088,
+   "source_etag": "\"0x8DE6A20F5B300DA\"",
+   "source_last_modified": "Thu, 12 Feb 2026 10:24:52 GMT",
+   "source_sha256": "bd3484731408def6b0ec93225bba2bd7b2c65769ca707a2b9444d891abdc6776",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 49492,
+   "season": 2024,
+   "source": "pbp",
+   "source_bytes": 20597560,
+   "source_etag": "\"0x8DEF9361906E8D3\"",
+   "source_last_modified": "Thu, 13 Aug 2026 12:26:27 GMT",
+   "source_sha256": "3fd2896bc0b911b615142d2f1fabae54a4bbba5ab7b73b28187b118ef8af6a3b",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48771,
+   "season": 2025,
+   "source": "pbp",
+   "source_bytes": 20337029,
+   "source_etag": "\"0x8DEF9360E0B88D5\"",
+   "source_last_modified": "Thu, 13 Aug 2026 12:26:09 GMT",
+   "source_sha256": "c6ecedd6d678cc37ed316b23ef84ee1ec6abb69c514bb11868a7ebd5a367df29",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 372,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 13842,
+   "season": 2026,
+   "source": "pbp",
+   "source_bytes": 5961006,
+   "source_etag": "\"0x8DF29FFDB21EA11\"",
+   "source_last_modified": "Wed, 14 Oct 2026 14:31:37 GMT",
+   "source_sha256": "89c58e8a9d29331f19ab44caa0e5cafcdfcc574a9d4bf8cacbe448c263e21009",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48434,
+   "season": 2016,
+   "source": "participation",
+   "source_bytes": 3076917,
+   "source_etag": "\"0x8DC00565A97C6F6\"",
+   "source_last_modified": "Tue, 19 Dec 2023 05:50:06 GMT",
+   "source_sha256": "e876e5c3127497825baa18c5b49ed953cc685f701819a0d555f9e318b9295087",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2016.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47998,
+   "season": 2017,
+   "source": "participation",
+   "source_bytes": 2943355,
+   "source_etag": "\"0x8DC00576447A12B\"",
+   "source_last_modified": "Tue, 19 Dec 2023 05:57:32 GMT",
+   "source_sha256": "e4b2ce19b0da7a7aa6b9e764b00de831003e622e2719c371665ed32bf2f4f3f8",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2017.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47875,
+   "season": 2018,
+   "source": "participation",
+   "source_bytes": 2978916,
+   "source_etag": "\"0x8DC00586B899210\"",
+   "source_last_modified": "Tue, 19 Dec 2023 06:04:54 GMT",
+   "source_sha256": "334f03887775e98f818ab7f5b22c7973f050cae7c3594e5d4b6f5c9c9890969d",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48034,
+   "season": 2019,
+   "source": "participation",
+   "source_bytes": 2992048,
+   "source_etag": "\"0x8DC00596CDCE1D3\"",
+   "source_last_modified": "Tue, 19 Dec 2023 06:12:05 GMT",
+   "source_sha256": "5dd6c4ff1610cd4f100ec6b29dfbea521099eda06fd199902477edf61f334bc0",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48513,
+   "season": 2020,
+   "source": "participation",
+   "source_bytes": 2849568,
+   "source_etag": "\"0x8DC005A76667C5A\"",
+   "source_last_modified": "Tue, 19 Dec 2023 06:19:31 GMT",
+   "source_sha256": "dbabfbef30c7e1657d566cad44dd1a9db434ae6aab1321b38b6a87f0fd963dba",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 50714,
+   "season": 2021,
+   "source": "participation",
+   "source_bytes": 2949474,
+   "source_etag": "\"0x8DC005B8B00A22A\"",
+   "source_last_modified": "Tue, 19 Dec 2023 06:27:15 GMT",
+   "source_sha256": "bc16b14c7043e780f995f914331e2f7ebd6661d024e61a2c892d560af04d9af1",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 20,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 50150,
+   "season": 2022,
+   "source": "participation",
+   "source_bytes": 2941018,
+   "source_etag": "\"0x8DC005C9E7E11CC\"",
+   "source_last_modified": "Tue, 19 Dec 2023 06:34:57 GMT",
+   "source_sha256": "5f8d349316bf68de487ee0eb926706e65f5a8e37078c1faa37cb07cda2bf9e5e",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 26,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 46168,
+   "season": 2023,
+   "source": "participation",
+   "source_bytes": 4700238,
+   "source_etag": "\"0x8DDEB9D5EE0C466\"",
+   "source_last_modified": "Thu, 04 Sep 2025 10:25:29 GMT",
+   "source_sha256": "b157736972248e6f71e0c5ad6c1010b71375a500a63944dc4956c65de263e5a6",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 26,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 45919,
+   "season": 2024,
+   "source": "participation",
+   "source_bytes": 4644767,
+   "source_etag": "\"0x8DDEB9D4691539C\"",
+   "source_last_modified": "Thu, 04 Sep 2025 10:24:48 GMT",
+   "source_sha256": "5e8cf1f6a11bb2be573c3db1533c28a5658907302d1ad45ca769a4ca35890d7c",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 26,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 45184,
+   "season": 2025,
+   "source": "participation",
+   "source_bytes": 4741443,
+   "source_etag": "\"0x8DE68D5C4D9BF21\"",
+   "source_last_modified": "Tue, 10 Feb 2026 18:54:07 GMT",
+   "source_sha256": "3b26b9487267f011fdbafbce133800ce964c963fdb8b27725abf65663cc46e0f",
+   "status": "ok",
+   "store_file": "raw/participation/participation_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2025.parquet"
+  },
+  {
+   "season": 2026,
+   "source": "participation",
+   "status": "not_published",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp_participation/pbp_participation_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 41643,
+   "season": 2022,
+   "source": "ftn",
+   "source_bytes": 501910,
+   "source_etag": "\"0x8DCE8C8C999D768\"",
+   "source_last_modified": "Thu, 10 Oct 2024 01:13:45 GMT",
+   "source_sha256": "2846ef9bcc5f7298a5c783fb9a5edc85b3820c0b4943bf60a1217398e412985b",
+   "status": "ok",
+   "store_file": "raw/ftn/ftn_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48225,
+   "season": 2023,
+   "source": "ftn",
+   "source_bytes": 567781,
+   "source_etag": "\"0x8DCCECEABAB9026\"",
+   "source_last_modified": "Fri, 06 Sep 2024 23:50:21 GMT",
+   "source_sha256": "162f0f48a8fca23f86a334c78e27f8daa7443e6b383beada0416b65c593b2c0e",
+   "status": "ok",
+   "store_file": "raw/ftn/ftn_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 48031,
+   "season": 2024,
+   "source": "ftn",
+   "source_bytes": 563180,
+   "source_etag": "\"0x8DDE8F70365E8AF\"",
+   "source_last_modified": "Mon, 01 Sep 2025 01:29:36 GMT",
+   "source_sha256": "9396c95effac1a81cc30efcf9c4c87ab89855548ae605404318ae949d4356119",
+   "status": "ok",
+   "store_file": "raw/ftn/ftn_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 47316,
+   "season": 2025,
+   "source": "ftn",
+   "source_bytes": 556492,
+   "source_etag": "\"0x8DF1920C8B6BB6D\"",
+   "source_last_modified": "Wed, 23 Sep 2026 03:14:30 GMT",
+   "source_sha256": "2ee4b11962f4c91d426e0edeca5bbded078616ce0efab0710aa2b40b4cfad898",
+   "status": "ok",
+   "store_file": "raw/ftn/ftn_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "play_id": 0
+   },
+   "rows": 13438,
+   "season": 2026,
+   "source": "ftn",
+   "source_bytes": 175862,
+   "source_etag": "\"0x8DF2A106873E97C\"",
+   "source_last_modified": "Wed, 14 Oct 2026 16:30:07 GMT",
+   "source_sha256": "6b799c2014b239f44604638cd9be436351fcc5ee0493e26b7ffe93952ab9e3ff",
+   "status": "ok",
+   "store_file": "raw/ftn/ftn_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/ftn_charting/ftn_charting_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 0,
+   "season": 2012,
+   "source": "snaps",
+   "source_bytes": 4561,
+   "source_etag": "\"0x8DE04A4AA1DC5BE\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:50:40 GMT",
+   "source_sha256": "1068d1f45aaf8744d9b0036c7a1f5ba1190014907b81da488080663477871fcf",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2012.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2012.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23799,
+   "season": 2013,
+   "source": "snaps",
+   "source_bytes": 209550,
+   "source_etag": "\"0x8DE04A4AC25A3F2\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:50:44 GMT",
+   "source_sha256": "b4c90d00cecfa6f874ea0b5054328c6637997eddea039a4f6fa8c1198fa1c028",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2013.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2013.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23864,
+   "season": 2014,
+   "source": "snaps",
+   "source_bytes": 211616,
+   "source_etag": "\"0x8DE04A4AE158156\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:50:47 GMT",
+   "source_sha256": "cf7c12f3813a701b43ef9f5dc9d175a6fc1b0113584901b0ccbf71fbccc9ba03",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2014.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2014.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23842,
+   "season": 2015,
+   "source": "snaps",
+   "source_bytes": 211957,
+   "source_etag": "\"0x8DE04A4B006E39C\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:50:50 GMT",
+   "source_sha256": "65fcdc9cf79f641e0851988635395421895523288cccdd00361bec06875272cb",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2015.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2015.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23890,
+   "season": 2016,
+   "source": "snaps",
+   "source_bytes": 212500,
+   "source_etag": "\"0x8DE04A4B1D9BCB8\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:50:53 GMT",
+   "source_sha256": "02fbeb10dd1369d858ac460ef67b0a2e9a4da689e24149d81dec57863f975198",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2016.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23862,
+   "season": 2017,
+   "source": "snaps",
+   "source_bytes": 212468,
+   "source_etag": "\"0x8DE04A4B3E6C53F\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:50:57 GMT",
+   "source_sha256": "46805183af6d987bac7292a84d787343bd10d5323fba96e9ce624cfe9c085dc5",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2017.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23877,
+   "season": 2018,
+   "source": "snaps",
+   "source_bytes": 211973,
+   "source_etag": "\"0x8DE04A4B5B363FC\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:51:00 GMT",
+   "source_sha256": "db5ab19bb95e290ce38cd73c40795b15ecf9b01cbc90b6f339f8010c51c1d506",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 23862,
+   "season": 2019,
+   "source": "snaps",
+   "source_bytes": 213089,
+   "source_etag": "\"0x8DE04A4B7B35BB1\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:51:03 GMT",
+   "source_sha256": "ef9068cc9eebaf01fa78c783a29cc1658a32b35fd7226e98146aa178e13aedc2",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 24999,
+   "season": 2020,
+   "source": "snaps",
+   "source_bytes": 233598,
+   "source_etag": "\"0x8DF1A3A679B9AE1\"",
+   "source_last_modified": "Thu, 24 Sep 2026 12:50:25 GMT",
+   "source_sha256": "0dee77ab7595cbef05ce6239f04e7a97c56955e5a9b376dcccf58324f4dd8abc",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 26468,
+   "season": 2021,
+   "source": "snaps",
+   "source_bytes": 240680,
+   "source_etag": "\"0x8DE04A4BBD5A0DA\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:51:10 GMT",
+   "source_sha256": "1f6ab4c26a7d394c857652234dd39acd4088ffd92cfcf3f91ce03f4dc9fcaa2a",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 26381,
+   "season": 2022,
+   "source": "snaps",
+   "source_bytes": 237678,
+   "source_etag": "\"0x8DE04A4BDCB4418\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:51:13 GMT",
+   "source_sha256": "3cfde83eb6d859e3477aba4238fa2fb8e0592a5fc5ab8b26128fce085d4b7fea",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 26540,
+   "season": 2023,
+   "source": "snaps",
+   "source_bytes": 237882,
+   "source_etag": "\"0x8DE04A4BFE49AD9\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:51:17 GMT",
+   "source_sha256": "97873cab365dfb39286bc1de3ac772fa4b51f09cce52ae5f8317e006cc007f62",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 26615,
+   "season": 2024,
+   "source": "snaps",
+   "source_bytes": 240862,
+   "source_etag": "\"0x8DE04A4C1E4B994\"",
+   "source_last_modified": "Mon, 06 Oct 2025 06:51:20 GMT",
+   "source_sha256": "9ec66a0c755939b329d4eba3f90e716bb874b5a6544f325ba220f003991ff99f",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 26613,
+   "season": 2025,
+   "source": "snaps",
+   "source_bytes": 242046,
+   "source_etag": "\"0x8DF1A3A6B0A6132\"",
+   "source_last_modified": "Thu, 24 Sep 2026 12:50:31 GMT",
+   "source_sha256": "47220218fecda7af7ee5b0272a8ecce7c1bfb1f4e1f0a2c8c90047571728ce20",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7370,
+   "season": 2026,
+   "source": "snaps",
+   "source_bytes": 94521,
+   "source_etag": "\"0x8DF291957128791\"",
+   "source_last_modified": "Tue, 13 Oct 2026 11:01:32 GMT",
+   "source_sha256": "e61c4343f9224e5ba4fc993cbfdea315bba2ea9f80d530387ee2c8a56024e12f",
+   "status": "ok",
+   "store_file": "raw/snaps/snaps_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 4821,
+   "season": 2009,
+   "source": "injuries",
+   "source_bytes": 83939,
+   "source_etag": "\"0x8DA6EC6CDC95C0C\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:16 GMT",
+   "source_sha256": "c2d9f98b35aac9f0f5db1271b7e91235ef30f99c0b67b65125513097f26a1bf1",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2009.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2009.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 4491,
+   "season": 2010,
+   "source": "injuries",
+   "source_bytes": 107893,
+   "source_etag": "\"0x8DA6EC6D1DC28E0\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:22 GMT",
+   "source_sha256": "9b88157ae5cd3bc7a399bfdaa30eac578e6330b3e17804bd4a95183f6e100b4e",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2010.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2010.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 4971,
+   "season": 2011,
+   "source": "injuries",
+   "source_bytes": 115104,
+   "source_etag": "\"0x8DA6EC6D5E5812D\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:29 GMT",
+   "source_sha256": "ed2f42803da27cd4657787bfc0b1cf8a0b305a7886625dce9a3f881a6d78d74b",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2011.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2011.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5533,
+   "season": 2012,
+   "source": "injuries",
+   "source_bytes": 120441,
+   "source_etag": "\"0x8DA6EC6DA352704\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:36 GMT",
+   "source_sha256": "6b00cba84db83453d35911a23c509919e1775568be582e6183627171b03a44d7",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2012.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2012.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5070,
+   "season": 2013,
+   "source": "injuries",
+   "source_bytes": 114312,
+   "source_etag": "\"0x8DA6EC6DEF8173E\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:44 GMT",
+   "source_sha256": "b1409e73309efe269f5ac2d6afdcece9a136a4966301d7b01a6c7a2a37b4a1de",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2013.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2013.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5078,
+   "season": 2014,
+   "source": "injuries",
+   "source_bytes": 115033,
+   "source_etag": "\"0x8DA6EC6E2B2E5E0\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:51 GMT",
+   "source_sha256": "720a8d4b371e1d0266dd0597dfda9a755038a233998d4f84ec286110664566ef",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2014.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2014.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5232,
+   "season": 2015,
+   "source": "injuries",
+   "source_bytes": 117594,
+   "source_etag": "\"0x8DA6EC6E6A055D3\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:22:57 GMT",
+   "source_sha256": "d958742ff453f057b078813cbf6e01c69f9729365937b8b53b8fc262b9e973ba",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2015.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2015.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5115,
+   "season": 2016,
+   "source": "injuries",
+   "source_bytes": 112500,
+   "source_etag": "\"0x8DA6EC6EA53846D\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:23:04 GMT",
+   "source_sha256": "0f771af175147ec1f782aafdc0561e2601f7d843494c533a43d2951115b8495c",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2016.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5104,
+   "season": 2017,
+   "source": "injuries",
+   "source_bytes": 114559,
+   "source_etag": "\"0x8DA6EC6EE9B1525\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:23:11 GMT",
+   "source_sha256": "1838af2b2ff29eb5a0cf8da54a672ebc5835a0f430a0067528d675ea5f5c0a40",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2017.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5133,
+   "season": 2018,
+   "source": "injuries",
+   "source_bytes": 113740,
+   "source_etag": "\"0x8DA6EC6F238EA21\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:23:17 GMT",
+   "source_sha256": "2ab4c15d0ce8e3afc57fb147d978076cfef848eec0a02f8da14c39b4a4a6db9b",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5392,
+   "season": 2019,
+   "source": "injuries",
+   "source_bytes": 119388,
+   "source_etag": "\"0x8DA6EC6F60012FF\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:23:23 GMT",
+   "source_sha256": "b03af1ed05bd6327bb01ce9f12d91ce7eb01ddf605c5755f0643fcfe8702efb4",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5661,
+   "season": 2020,
+   "source": "injuries",
+   "source_bytes": 125134,
+   "source_etag": "\"0x8DA6EC6F9B89807\"",
+   "source_last_modified": "Tue, 26 Jul 2022 05:23:29 GMT",
+   "source_sha256": "fc8d9c2af770a1af11182a8a3203e8ead780bfb1c08874694f2a7a07b2a1f454",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5587,
+   "season": 2021,
+   "source": "injuries",
+   "source_bytes": 126242,
+   "source_etag": "\"0x8DA8B23AA15BC42\"",
+   "source_last_modified": "Wed, 31 Aug 2022 07:37:32 GMT",
+   "source_sha256": "14729f0b5debda57df4fce30465a1dd7a34509472669ea01900dbe611b5f9cd7",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5682,
+   "season": 2022,
+   "source": "injuries",
+   "source_bytes": 129611,
+   "source_etag": "\"0x8DBA9F1EBB99497\"",
+   "source_last_modified": "Thu, 31 Aug 2023 07:14:31 GMT",
+   "source_sha256": "e25a1bd89d5a0c8ac384beef9a08b18de73e4b2e9457e43b4cad7c696ae469a7",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 5599,
+   "season": 2023,
+   "source": "injuries",
+   "source_bytes": 126566,
+   "source_etag": "\"0x8DCCCB162FE7A17\"",
+   "source_last_modified": "Wed, 04 Sep 2024 07:15:42 GMT",
+   "source_sha256": "5d8d881aabd613c3172231b33ac0b4397b3f383498f5e4509c31f3c77c3402a3",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 6215,
+   "season": 2024,
+   "source": "injuries",
+   "source_bytes": 139253,
+   "source_etag": "\"0x8DD4BFE59E15A8A\"",
+   "source_last_modified": "Thu, 13 Feb 2025 07:16:35 GMT",
+   "source_sha256": "7ebabbba930a70bc7e4d257c7c41ca8708f147a4cdd4100956abcfbaf70f7fc1",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 6068,
+   "season": 2025,
+   "source": "injuries",
+   "source_bytes": 97472,
+   "source_etag": "\"0x8DF0CDADA3BAC2C\"",
+   "source_last_modified": "Mon, 07 Sep 2026 12:23:41 GMT",
+   "source_sha256": "c7637c2f6347194426a8582a984aac82a6bf8ab06af72cdd96666a2e0733ab24",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "gsis_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 1428,
+   "season": 2026,
+   "source": "injuries",
+   "source_bytes": 40878,
+   "source_etag": "\"0x8DF29F1B66FAE8A\"",
+   "source_last_modified": "Wed, 14 Oct 2026 12:50:23 GMT",
+   "source_sha256": "d38152c405a88af9549860039faf914917053b7d91f34406f8ec114d031d2a9f",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 36736,
+   "season": 2001,
+   "source": "depth_charts",
+   "source_bytes": 205635,
+   "source_etag": "\"0x8DCB4D6B7689C4D\"",
+   "source_last_modified": "Sun, 04 Aug 2024 22:42:27 GMT",
+   "source_sha256": "5fe5800d70062046231dcb95ca9c20893c72a21aa7b97361bc1fe72f1f51e106",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2001.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2001.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 34594,
+   "season": 2002,
+   "source": "depth_charts",
+   "source_bytes": 346809,
+   "source_etag": "\"0x8DCB4CB67D1403B\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:21:29 GMT",
+   "source_sha256": "4ecddb4edd69cd923a80d60cd7307b24ee2f45d064ecce00c9fb20ce234f9c0a",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2002.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2002.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 34298,
+   "season": 2003,
+   "source": "depth_charts",
+   "source_bytes": 339053,
+   "source_etag": "\"0x8DCB4CB93F6F3F5\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:22:43 GMT",
+   "source_sha256": "477566581e16d4c01ec1e8d7ebeeb84f172b724aba0080427c07567eca5a7d0b",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2003.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2003.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 28898,
+   "season": 2004,
+   "source": "depth_charts",
+   "source_bytes": 265408,
+   "source_etag": "\"0x8DCB4CBBB793AF5\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:23:49 GMT",
+   "source_sha256": "375ca394f065d76fb25e32804ac8b5f1db6d9036ecefc3c46cb4942453f5264d",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2004.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2004.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 32803,
+   "season": 2005,
+   "source": "depth_charts",
+   "source_bytes": 438200,
+   "source_etag": "\"0x8DCB4CBE5B2FE0B\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:25:00 GMT",
+   "source_sha256": "b6d1f303963671e88e256119a661977b5225d639cbbd5883bd4fa35315798dfb",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2005.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2005.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 33721,
+   "season": 2006,
+   "source": "depth_charts",
+   "source_bytes": 394170,
+   "source_etag": "\"0x8DCB4CC114C987D\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:26:13 GMT",
+   "source_sha256": "9e10247276c45d350d83934c663b9d2df5f15d00804d193af5c9c0b00c20ad6b",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2006.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2006.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 38547,
+   "season": 2007,
+   "source": "depth_charts",
+   "source_bytes": 497988,
+   "source_etag": "\"0x8DCB4CC444F6042\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:27:39 GMT",
+   "source_sha256": "58d02cde41c42efe29194e3a03f9cf51e39104933b4e14186de9b08e0fd48f25",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2007.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2007.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 38651,
+   "season": 2008,
+   "source": "depth_charts",
+   "source_bytes": 495601,
+   "source_etag": "\"0x8DCB4CC72BAE51E\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:28:57 GMT",
+   "source_sha256": "118c2485738a7e18a05fb24216c5e05913ac79c1d86aa0fdc7ac0e630bc37f6c",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2008.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2008.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 38423,
+   "season": 2009,
+   "source": "depth_charts",
+   "source_bytes": 490839,
+   "source_etag": "\"0x8DCB4CCA0F42002\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:30:14 GMT",
+   "source_sha256": "e7adcaf390274408048e2b3d8924c59d4d78be94b8ec367fcd5843afca5f2a61",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2009.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2009.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 38421,
+   "season": 2010,
+   "source": "depth_charts",
+   "source_bytes": 492543,
+   "source_etag": "\"0x8DCB4CCCF37B11A\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:31:32 GMT",
+   "source_sha256": "4ea0dfeeab41d62bf5a870d0eb7e37d51032e608079d5c8843ab7a4436e15635",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2010.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2010.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37941,
+   "season": 2011,
+   "source": "depth_charts",
+   "source_bytes": 491211,
+   "source_etag": "\"0x8DCB4CCFE5C5AE7\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:32:51 GMT",
+   "source_sha256": "22251d8a4b8e8fc26ac9d9bfbd2bccf69cc32a00106c0343763a53c37e4ef94e",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2011.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2011.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37312,
+   "season": 2012,
+   "source": "depth_charts",
+   "source_bytes": 484727,
+   "source_etag": "\"0x8DCB4CD2BEB9E3F\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:34:07 GMT",
+   "source_sha256": "b706f2459a6614e3f5b3307178aa44840f5f5774a00fce1d13d83da921c13b3e",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2012.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2012.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37066,
+   "season": 2013,
+   "source": "depth_charts",
+   "source_bytes": 481235,
+   "source_etag": "\"0x8DCB4CD59407E51\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:35:23 GMT",
+   "source_sha256": "9a203bcaeadf640e9f0a51b4c4143b2f119a763f6e2f438a2514c225943d3d66",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2013.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2013.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 32542,
+   "season": 2014,
+   "source": "depth_charts",
+   "source_bytes": 435044,
+   "source_etag": "\"0x8DCB4CD82B68039\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:36:33 GMT",
+   "source_sha256": "f4ed3b95c6a5c2e82243bcaffdb2fdb1c64313989aa55044bd4f33490a6abe96",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2014.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2014.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37058,
+   "season": 2015,
+   "source": "depth_charts",
+   "source_bytes": 484443,
+   "source_etag": "\"0x8DCB4CDB0521C27\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:37:49 GMT",
+   "source_sha256": "0b53e90e707f00d85be1e9afdfe508f9beb51fbe9290629fc501e163be3a585f",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2015.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2015.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 36612,
+   "season": 2016,
+   "source": "depth_charts",
+   "source_bytes": 472374,
+   "source_etag": "\"0x8DCB4CDE088EF75\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:39:10 GMT",
+   "source_sha256": "1f217ac21d2abe7a5c354c4dbd0172a938e281771f10f28ba486e3546008c98f",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2016.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 36620,
+   "season": 2017,
+   "source": "depth_charts",
+   "source_bytes": 495128,
+   "source_etag": "\"0x8DCB4CE0D772A93\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:40:26 GMT",
+   "source_sha256": "98eec3feb6d25a70fb0aecdfac04d99b27c91cbdc2b51e835f4fe7ce7a1eb315",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2017.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 36560,
+   "season": 2018,
+   "source": "depth_charts",
+   "source_bytes": 494788,
+   "source_etag": "\"0x8DCB4CE3A62A6CE\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:41:41 GMT",
+   "source_sha256": "90654261a7c0c1724b7e7a5219229c47cfadd1c15f2d28814daf5fc8a8c534ee",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 36308,
+   "season": 2019,
+   "source": "depth_charts",
+   "source_bytes": 479015,
+   "source_etag": "\"0x8DCB4CE66D166E4\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:42:56 GMT",
+   "source_sha256": "797c57613c428d175777a55887f4099a73fc23bb3f46bb01d2d5d46c93bc8d99",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 36168,
+   "season": 2020,
+   "source": "depth_charts",
+   "source_bytes": 462550,
+   "source_etag": "\"0x8DCB4CE94174407\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:44:12 GMT",
+   "source_sha256": "06c2f2ea95d742aef297188873e3e75043ff4bf67780660251ff09a93980b2c9",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37487,
+   "season": 2021,
+   "source": "depth_charts",
+   "source_bytes": 485823,
+   "source_etag": "\"0x8DCB4CEC315B1B9\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:45:30 GMT",
+   "source_sha256": "5afd087b8f3f765d5c88128edcb83d38f7d5137edde58ac5a1ec28c78b79e0df",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37780,
+   "season": 2022,
+   "source": "depth_charts",
+   "source_bytes": 493072,
+   "source_etag": "\"0x8DCB4CEF2B02429\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:46:50 GMT",
+   "source_sha256": "772683d8e2b42ae152008e7bc81acc4cd26a8ed57d1225ebfee4db54cce7b27e",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37327,
+   "season": 2023,
+   "source": "depth_charts",
+   "source_bytes": 485941,
+   "source_etag": "\"0x8DCB4CF20D22083\"",
+   "source_last_modified": "Sun, 04 Aug 2024 21:48:08 GMT",
+   "source_sha256": "44dbf02554d4a8a783f52d53b3c66ede8cc9886097518c56c7e1069f5e2d18ff",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 0,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 37312,
+   "season": 2024,
+   "source": "depth_charts",
+   "source_bytes": 482923,
+   "source_etag": "\"0x8DD4C00A275EF03\"",
+   "source_last_modified": "Thu, 13 Feb 2025 07:32:56 GMT",
+   "source_sha256": "2b5e72fa37f6a498238da30d619cd5d2fe883ffbfdbaaf637301893ad6c22097",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 12,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 5577,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 554215,
+   "season": 2025,
+   "source": "depth_charts",
+   "source_bytes": 2584724,
+   "source_etag": "\"0x8DE819BD8521A1B\"",
+   "source_last_modified": "Sat, 14 Mar 2026 07:32:28 GMT",
+   "source_sha256": "14f74185b3c2c48df234ced284ba3596bda3333d0b2a8df40841f68cd34539fa",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 12,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "depth_slot": 0,
+    "player_id": 25094,
+    "season": 0,
+    "snapshot": 0,
+    "team": 0
+   },
+   "rows": 650071,
+   "season": 2026,
+   "source": "depth_charts",
+   "source_bytes": 2840837,
+   "source_etag": "\"0x8DF29F1E452CE6B\"",
+   "source_last_modified": "Wed, 14 Oct 2026 12:51:40 GMT",
+   "source_sha256": "fb28df8e6c5d2c7174765a9686b691f0a092b1ccb3041fb15fca9134b5ba985f",
+   "status": "ok",
+   "store_file": "raw/depth_charts/depth_charts_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/depth_charts/depth_charts_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31086,
+   "season": 2002,
+   "source": "rosters",
+   "source_bytes": 344387,
+   "source_etag": "\"0x8DBAEFBEE9B2D8E\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:08:46 GMT",
+   "source_sha256": "a2d5dc5940810def44d4ef0f09ea8cd1be957f668eb0b886d39106f2f5d3c6be",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2002.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2002.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 30938,
+   "season": 2003,
+   "source": "rosters",
+   "source_bytes": 347848,
+   "source_etag": "\"0x8DBAEFC70FC176D\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:12:25 GMT",
+   "source_sha256": "cd067170b4d0f2d6a0e2f7186acba811c30572abac6bf12d5460977fc716d53f",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2003.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2003.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31009,
+   "season": 2004,
+   "source": "rosters",
+   "source_bytes": 355485,
+   "source_etag": "\"0x8DBAEFCEDF4FB8E\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:15:55 GMT",
+   "source_sha256": "9be1b1030da8aff6297286d6d75fd17fe6cc4765aca159ab70814e675c1eee72",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2004.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2004.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 30751,
+   "season": 2005,
+   "source": "rosters",
+   "source_bytes": 359701,
+   "source_etag": "\"0x8DBAEFD717B964F\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:19:35 GMT",
+   "source_sha256": "c893ca0cdec925c2275212ebd26de810c3cfa97270ed80a503d6d68e10010c99",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2005.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2005.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31323,
+   "season": 2006,
+   "source": "rosters",
+   "source_bytes": 363219,
+   "source_etag": "\"0x8DBAEFDF449306C\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:23:15 GMT",
+   "source_sha256": "b57ba8675abd7d7b19081955376fb4518b60e998f1121fe739766939d3634810",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2006.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2006.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31337,
+   "season": 2007,
+   "source": "rosters",
+   "source_bytes": 370981,
+   "source_etag": "\"0x8DBAEFE7342EE51\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:26:48 GMT",
+   "source_sha256": "1aa703d394ddee75047a10b33cf23afc7cf681e1d1a60b6463939e53be5e4242",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2007.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2007.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31361,
+   "season": 2008,
+   "source": "rosters",
+   "source_bytes": 382299,
+   "source_etag": "\"0x8DBAEFEEF28E2E2\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:30:16 GMT",
+   "source_sha256": "bd48ad0b26d27c58d6b09c971cad8f1f86fa5f511a6b12767a8b5cf515a9518b",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2008.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2008.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31632,
+   "season": 2009,
+   "source": "rosters",
+   "source_bytes": 393823,
+   "source_etag": "\"0x8DBAEFF6C5CB0BF\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:33:46 GMT",
+   "source_sha256": "6142235c4b51796e7a164ff6de6daf08e37ac54764765991960fd030af3e9543",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2009.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2009.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 2,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31926,
+   "season": 2010,
+   "source": "rosters",
+   "source_bytes": 413377,
+   "source_etag": "\"0x8DBAEFFE8A7D3EF\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:37:14 GMT",
+   "source_sha256": "b41f681e977b3d4128e8c897f1f1b50dbe55616a51a619588e3c122b025769e6",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2010.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2010.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 1,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31338,
+   "season": 2011,
+   "source": "rosters",
+   "source_bytes": 423532,
+   "source_etag": "\"0x8DBAF0064D31BCF\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:40:42 GMT",
+   "source_sha256": "1764068c995dbb842baa936bff4abcc399f4738f0b4bb321fc437ed8eadbc426",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2011.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2011.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 1,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31431,
+   "season": 2012,
+   "source": "rosters",
+   "source_bytes": 443790,
+   "source_etag": "\"0x8DBAF00E3E448C7\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:44:16 GMT",
+   "source_sha256": "32a218e187e553abdeacd107ae9c76c321e258809d18578f1b1267882f1c0b29",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2012.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2012.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 1,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31901,
+   "season": 2013,
+   "source": "rosters",
+   "source_bytes": 461709,
+   "source_etag": "\"0x8DBAF015E0472FD\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:47:41 GMT",
+   "source_sha256": "bb68c0e5dba854c4d0b7dda4331456df701c06a66160b96decdfdc1b71147663",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2013.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2013.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 1,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 31964,
+   "season": 2014,
+   "source": "rosters",
+   "source_bytes": 489433,
+   "source_etag": "\"0x8DBAF01D8C10190\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:51:06 GMT",
+   "source_sha256": "51ae5047bb95297e039ba3d6560cee1ed16407f2e91897f6c9c79aafecdef397",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2014.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2014.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 1,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 32098,
+   "season": 2015,
+   "source": "rosters",
+   "source_bytes": 511974,
+   "source_etag": "\"0x8DBAF02574511B8\"",
+   "source_last_modified": "Wed, 06 Sep 2023 17:54:39 GMT",
+   "source_sha256": "61a57f4484a556d4cad1cf50030a8a8822a345eace783e013f8ba8ae2f721243",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2015.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2015.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 35020,
+   "season": 2016,
+   "source": "rosters",
+   "source_bytes": 754038,
+   "source_etag": "\"0x8DBB3F26C6165C6\"",
+   "source_last_modified": "Wed, 13 Sep 2023 00:43:18 GMT",
+   "source_sha256": "70d0ceab697860e946a2acdafcae48809015dcdaf06bd21d26777473cff7db8f",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2016.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 0,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 51321,
+   "season": 2017,
+   "source": "rosters",
+   "source_bytes": 734927,
+   "source_etag": "\"0x8DBB3F32DAFB773\"",
+   "source_last_modified": "Wed, 13 Sep 2023 00:48:42 GMT",
+   "source_sha256": "2f633cf331f561ea5346238a1808e8a68811eb280084e75f0dd09880535c5012",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2017.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 38,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 52238,
+   "season": 2018,
+   "source": "rosters",
+   "source_bytes": 762634,
+   "source_etag": "\"0x8DBB3F3E8EA3A6C\"",
+   "source_last_modified": "Wed, 13 Sep 2023 00:53:56 GMT",
+   "source_sha256": "0fcd3c3f098dbb5350be2095959acf38202602c6b3c71475e883fabda23077a8",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 2,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 51632,
+   "season": 2019,
+   "source": "rosters",
+   "source_bytes": 778811,
+   "source_etag": "\"0x8DBB3F4A8CF47BD\"",
+   "source_last_modified": "Wed, 13 Sep 2023 00:59:18 GMT",
+   "source_sha256": "08ef64996cecdff2f4631ca26b21ed9a39bf5fba0b3379d902e531facf81e5c4",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 6,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 44130,
+   "season": 2020,
+   "source": "rosters",
+   "source_bytes": 843938,
+   "source_etag": "\"0x8DBB3F56478B105\"",
+   "source_last_modified": "Wed, 13 Sep 2023 01:04:33 GMT",
+   "source_sha256": "8d601bf5c5d669465481421ad5cd1a1470d51792054e84bdc04f3620785f7530",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 26,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 46696,
+   "season": 2021,
+   "source": "rosters",
+   "source_bytes": 817361,
+   "source_etag": "\"0x8DBB3F62E3555AE\"",
+   "source_last_modified": "Wed, 13 Sep 2023 01:10:12 GMT",
+   "source_sha256": "3e9f67569e940b54b3778ef2c9150850920b5bf93143bad3bd158e649825cf6b",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 27,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 46163,
+   "season": 2022,
+   "source": "rosters",
+   "source_bytes": 803573,
+   "source_etag": "\"0x8DBB3F6F5D4B0AE\"",
+   "source_last_modified": "Wed, 13 Sep 2023 01:15:47 GMT",
+   "source_sha256": "063c0da93f612811e1c4a4c12727a56fd2716197864795f15aa2f10a591b00c0",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 5,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 45655,
+   "season": 2023,
+   "source": "rosters",
+   "source_bytes": 794392,
+   "source_etag": "\"0x8DC43F6DC3A6065\"",
+   "source_last_modified": "Thu, 14 Mar 2024 07:17:51 GMT",
+   "source_sha256": "0fa5abf9b462a087ecb17f3268ed7233ce9935e95d77be94ad6bac66adf8e281",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 7,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 46579,
+   "season": 2024,
+   "source": "rosters",
+   "source_bytes": 829272,
+   "source_etag": "\"0x8DD62C816A4A019\"",
+   "source_last_modified": "Fri, 14 Mar 2025 07:16:06 GMT",
+   "source_sha256": "4b144e8eda5a159f36037b02e8b7d5a7861acb65b0816b0a063244992038dcf8",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 18,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 46849,
+   "season": 2025,
+   "source": "rosters",
+   "source_bytes": 850871,
+   "source_etag": "\"0x8DE819BEEC326EE\"",
+   "source_last_modified": "Sat, 14 Mar 2026 07:33:05 GMT",
+   "source_sha256": "a8764c947bfe6a9d8f122a194e3f026973c8efcc8a3456c67cbfac4371c20342",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 36,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "player_id": 7,
+    "season": 0,
+    "team": 0,
+    "week": 0
+   },
+   "rows": 15314,
+   "season": 2026,
+   "source": "rosters",
+   "source_bytes": 804288,
+   "source_etag": "\"0x8DF29F1F77880D1\"",
+   "source_last_modified": "Wed, 14 Oct 2026 12:52:12 GMT",
+   "source_sha256": "b2155ed51d2576a754bebb421d55ce8e1afdc3fdab585ae4b8d98d319bba9530",
+   "status": "ok",
+   "store_file": "raw/rosters/rosters_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/weekly_rosters/roster_weekly_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 646,
+   "season": 2018,
+   "source": "pfr_pass",
+   "source_bytes": 29871,
+   "source_etag": "\"0x8DA0130453FA2B2\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:05 GMT",
+   "source_sha256": "09668b31791c851b06023f5b4b44428855c0852c95277954bcb658cd60f61527",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 640,
+   "season": 2019,
+   "source": "pfr_pass",
+   "source_bytes": 29651,
+   "source_etag": "\"0x8DA01304FE56F56\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:23 GMT",
+   "source_sha256": "60e8a4c7f3663471a122b9199c3cd79e3155046c3602ba418084087cd09730a7",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 666,
+   "season": 2020,
+   "source": "pfr_pass",
+   "source_bytes": 30168,
+   "source_etag": "\"0x8DA013059E4B418\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:40 GMT",
+   "source_sha256": "3d598478e62d6b69bcfec6bd3c4271e191393b1bf0cbd8c2aeb59525b0d9c07c",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 706,
+   "season": 2021,
+   "source": "pfr_pass",
+   "source_bytes": 31021,
+   "source_etag": "\"0x8DA013034DC5689\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:19:38 GMT",
+   "source_sha256": "79c6714d836d09042883358d8534c9c795a247256e888f34857f8aaf2241056a",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 685,
+   "season": 2022,
+   "source": "pfr_pass",
+   "source_bytes": 30328,
+   "source_etag": "\"0x8DBA7A0C8B30224\"",
+   "source_last_modified": "Mon, 28 Aug 2023 08:28:40 GMT",
+   "source_sha256": "700afeb84c301dd49b206d0cfc35dfbf8c7f3dc5a70a473b73df6ecde1027dfa",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 700,
+   "season": 2023,
+   "source": "pfr_pass",
+   "source_bytes": 30594,
+   "source_etag": "\"0x8DC2DF58FEF4EE1\"",
+   "source_last_modified": "Thu, 15 Feb 2024 07:13:08 GMT",
+   "source_sha256": "20eef8dbe8982befacdc1f7db0301f323580209bfb891850444a8d749895ab41",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 697,
+   "season": 2024,
+   "source": "pfr_pass",
+   "source_bytes": 27663,
+   "source_etag": "\"0x8DD4BFE797216DC\"",
+   "source_last_modified": "Thu, 13 Feb 2025 07:17:28 GMT",
+   "source_sha256": "39c6ee888479630fd147188f5302fedc7d03ad682d2ee45016f4e04a259e8395",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 684,
+   "season": 2025,
+   "source": "pfr_pass",
+   "source_bytes": 28520,
+   "source_etag": "\"0x8DE6970D6D151AE\"",
+   "source_last_modified": "Wed, 11 Feb 2026 13:24:09 GMT",
+   "source_sha256": "9752d5201209e80a8c5b1388f9030fa370a990b84328e46555241ec40913c8a3",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 24,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 182,
+   "season": 2026,
+   "source": "pfr_pass",
+   "source_bytes": 17505,
+   "source_etag": "\"0x8DF29E2AC7700BA\"",
+   "source_last_modified": "Wed, 14 Oct 2026 11:02:44 GMT",
+   "source_sha256": "0466457f67c50a92ec772c09846bc89a5698ee791fcb10b0486b40fb556630c8",
+   "status": "ok",
+   "store_file": "raw/pfr_pass/pfr_pass_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_pass_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2189,
+   "season": 2018,
+   "source": "pfr_rush",
+   "source_bytes": 43218,
+   "source_etag": "\"0x8DA013047411B17\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:09 GMT",
+   "source_sha256": "29004bf8022aed47b5f6552cc02b04e462c2994eb502b5938c285829eb504af6",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2148,
+   "season": 2019,
+   "source": "pfr_rush",
+   "source_bytes": 42791,
+   "source_etag": "\"0x8DA013051980FE7\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:26 GMT",
+   "source_sha256": "9c06163dd050cbff359f447fc433016046a50992ef389aa7361ecb5091debd89",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2266,
+   "season": 2020,
+   "source": "pfr_rush",
+   "source_bytes": 44537,
+   "source_etag": "\"0x8DA01305C23EFC2\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:44 GMT",
+   "source_sha256": "bfab430f321132453c6c7480408fa85430540a24b568a4b481c3a711847b0c2c",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2375,
+   "season": 2021,
+   "source": "pfr_rush",
+   "source_bytes": 45640,
+   "source_etag": "\"0x8DA013036F5993C\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:19:41 GMT",
+   "source_sha256": "ed0871893b9a50ae2d26d9ec5a31c96a030e5aa940fb0304f9861c31f96fe78e",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2389,
+   "season": 2022,
+   "source": "pfr_rush",
+   "source_bytes": 45757,
+   "source_etag": "\"0x8DBA7A0D71627B5\"",
+   "source_last_modified": "Mon, 28 Aug 2023 08:29:04 GMT",
+   "source_sha256": "9b07ab539b512cce7dbdd89755cca8e433538fa4dcc7e3d59f3be072b7419b56",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2380,
+   "season": 2023,
+   "source": "pfr_rush",
+   "source_bytes": 45384,
+   "source_etag": "\"0x8DC2DF59BE0FDC7\"",
+   "source_last_modified": "Thu, 15 Feb 2024 07:13:28 GMT",
+   "source_sha256": "c2832394c58d1c63318d6451b4442d1b4f43d8124f09852635a266ac4b04e161",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2359,
+   "season": 2024,
+   "source": "pfr_rush",
+   "source_bytes": 42939,
+   "source_etag": "\"0x8DD4BFE7ABAD916\"",
+   "source_last_modified": "Thu, 13 Feb 2025 07:17:30 GMT",
+   "source_sha256": "1ebd2420054b61d6fc73843571fed8770adbb77069ab7f75462715900dd67718",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2355,
+   "season": 2025,
+   "source": "pfr_rush",
+   "source_bytes": 43492,
+   "source_etag": "\"0x8DE6970D87B9C12\"",
+   "source_last_modified": "Wed, 11 Feb 2026 13:24:12 GMT",
+   "source_sha256": "898b688a2ff17e09157d9fcd9c0f84bed3987ccba0da49579fe406f5f5cfc364",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 16,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 624,
+   "season": 2026,
+   "source": "pfr_rush",
+   "source_bytes": 20956,
+   "source_etag": "\"0x8DF29E2AE2DEFF8\"",
+   "source_last_modified": "Wed, 14 Oct 2026 11:02:47 GMT",
+   "source_sha256": "87542641c9bb8417161d6c6578e5a2ea2ba031182922807c9a9e2949fbadfbae",
+   "status": "ok",
+   "store_file": "raw/pfr_rush/pfr_rush_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4292,
+   "season": 2018,
+   "source": "pfr_rec",
+   "source_bytes": 52583,
+   "source_etag": "\"0x8DA013046252639\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:07 GMT",
+   "source_sha256": "dd5c6e98b9f4b9f8cbe8236badb95f99153984b4fd3d72e529d9c20025f97b76",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4269,
+   "season": 2019,
+   "source": "pfr_rec",
+   "source_bytes": 51540,
+   "source_etag": "\"0x8DA01305088C36E\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:24 GMT",
+   "source_sha256": "4d95dafdf2967643074bfe7257bd6697a447a9a42d15fa45486411fed9eaa29e",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4428,
+   "season": 2020,
+   "source": "pfr_rec",
+   "source_bytes": 53420,
+   "source_etag": "\"0x8DA01305AF6BF5E\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:42 GMT",
+   "source_sha256": "1845f3b4d2b8d15ecc2e2ba83d5d2de65028fb2d1c5d03eff7347e90b274264b",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4608,
+   "season": 2021,
+   "source": "pfr_rec",
+   "source_bytes": 55378,
+   "source_etag": "\"0x8DA013035E05A20\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:19:40 GMT",
+   "source_sha256": "caf5b5c7e5275e60003c666625486a09cbf8a41322de44f764f109f42d8f0216",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4547,
+   "season": 2022,
+   "source": "pfr_rec",
+   "source_bytes": 53560,
+   "source_etag": "\"0x8DBA7A0E3FB11E0\"",
+   "source_last_modified": "Mon, 28 Aug 2023 08:29:26 GMT",
+   "source_sha256": "c102a07568cef7badb8c73b30b27ced1783998a6c9889382383b500b617059c3",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4594,
+   "season": 2023,
+   "source": "pfr_rec",
+   "source_bytes": 53510,
+   "source_etag": "\"0x8DC2DF5A8678DE0\"",
+   "source_last_modified": "Thu, 15 Feb 2024 07:13:49 GMT",
+   "source_sha256": "7ed7a0d9e1b8e77810c9679836a01bee0e8965b472e3cec594393b211e46c21d",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4453,
+   "season": 2024,
+   "source": "pfr_rec",
+   "source_bytes": 50503,
+   "source_etag": "\"0x8DD4BFE7C03C237\"",
+   "source_last_modified": "Thu, 13 Feb 2025 07:17:33 GMT",
+   "source_sha256": "6dfac12d7c8b7a75361931a34a55a4f022718f89150689bcfcffd6f5d2d7f671",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 4533,
+   "season": 2025,
+   "source": "pfr_rec",
+   "source_bytes": 51764,
+   "source_etag": "\"0x8DE6970DA5C22D9\"",
+   "source_last_modified": "Wed, 11 Feb 2026 13:24:15 GMT",
+   "source_sha256": "b4fcae8322c17b021283cba924a35f6452b831a2959c4adb2c357866b8975b97",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 17,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 1262,
+   "season": 2026,
+   "source": "pfr_rec",
+   "source_bytes": 26101,
+   "source_etag": "\"0x8DF29E2B087223C\"",
+   "source_last_modified": "Wed, 14 Oct 2026 11:02:51 GMT",
+   "source_sha256": "a4ce92f84f478bf39362dafd9865482d05e262c06a861128cfd880c68df65193",
+   "status": "ok",
+   "store_file": "raw/pfr_rec/pfr_rec_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rec_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7277,
+   "season": 2018,
+   "source": "pfr_def",
+   "source_bytes": 149299,
+   "source_etag": "\"0x8DA013043E24199\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:03 GMT",
+   "source_sha256": "8606f428d500d8de32a830527d9e7e6e9087a55dcf7dc3e4cd3bf626abecccd7",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2018.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7285,
+   "season": 2019,
+   "source": "pfr_def",
+   "source_bytes": 149600,
+   "source_etag": "\"0x8DA01304E6E486D\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:21 GMT",
+   "source_sha256": "9b57adba9df82884e44772ffb882f8ad9fdc3a61a96a44929bbe8b47987f7451",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2019.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7643,
+   "season": 2020,
+   "source": "pfr_def",
+   "source_bytes": 154292,
+   "source_etag": "\"0x8DA013058BDEB5F\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:20:38 GMT",
+   "source_sha256": "2be8ca609422f1f59faa88b2ba6e4b32cb6f25b02ec876e2e9c69cc2fa57a995",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2020.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 8442,
+   "season": 2021,
+   "source": "pfr_def",
+   "source_bytes": 166280,
+   "source_etag": "\"0x8DA013033C62D33\"",
+   "source_last_modified": "Tue, 08 Mar 2022 18:19:36 GMT",
+   "source_sha256": "1031b28e5fc27464c30f18800488c3e47c87e0ecde83b2c183e562e36857734e",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2021.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7878,
+   "season": 2022,
+   "source": "pfr_def",
+   "source_bytes": 157000,
+   "source_etag": "\"0x8DBA7A0F33D624A\"",
+   "source_last_modified": "Mon, 28 Aug 2023 08:29:52 GMT",
+   "source_sha256": "31f37c1d5064a8dc390b36403ad7c2bb2e99172130288dff56978bb3d72c67f6",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2022.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7902,
+   "season": 2023,
+   "source": "pfr_def",
+   "source_bytes": 157972,
+   "source_etag": "\"0x8DC2DF5B50E5290\"",
+   "source_last_modified": "Thu, 15 Feb 2024 07:14:10 GMT",
+   "source_sha256": "857941121910635489c6bcb10fa023f7c04c6afd75974d975e14f8afc07be352",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2023.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7992,
+   "season": 2024,
+   "source": "pfr_def",
+   "source_bytes": 156075,
+   "source_etag": "\"0x8DD4BFE7DA14A12\"",
+   "source_last_modified": "Thu, 13 Feb 2025 07:17:35 GMT",
+   "source_sha256": "13261d480979aee8f63f09c2dfbd383e0bb8970b2f7bd83dde6b1e217ae0d3e9",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2024.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 7926,
+   "season": 2025,
+   "source": "pfr_def",
+   "source_bytes": 155798,
+   "source_etag": "\"0x8DE6970DC903821\"",
+   "source_last_modified": "Wed, 11 Feb 2026 13:24:19 GMT",
+   "source_sha256": "a1224b47bd23840a9c0e072d6ed91dd0298777fd53570290b273080975bdb7ea",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2025.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "pfr_player_id": 0,
+    "team": 0
+   },
+   "rows": 2218,
+   "season": 2026,
+   "source": "pfr_def",
+   "source_bytes": 65932,
+   "source_etag": "\"0x8DF29E2B1F9B2C1\"",
+   "source_last_modified": "Wed, 14 Oct 2026 11:02:53 GMT",
+   "source_sha256": "4c266ab460ef3bc093525a5156037b8b430bf2c34dfeeaf30be125bbdce76321",
+   "status": "ok",
+   "store_file": "raw/pfr_def/pfr_def_2026.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_def_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 9,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 22012,
+   "season": null,
+   "source": "officials",
+   "source_bytes": 150096,
+   "source_etag": "\"0x8DF08E81B6F3C35\"",
+   "source_last_modified": "Wed, 02 Sep 2026 11:48:29 GMT",
+   "source_sha256": "fec0532a78c81027c2e2e73a077bc332147f473b8377ae39e8302e2bfe42e7c9",
+   "status": "ok",
+   "store_file": "raw/officials/officials_20261015T001817Z.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/officials/officials.parquet"
+  },
+  {
+   "as_of": "2026-10-15T00:18:17Z",
+   "columns": 46,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 7548,
+   "season": null,
+   "source": "schedules",
+   "source_bytes": 522164,
+   "source_etag": "\"0x8DF2A518D2A8B44\"",
+   "source_last_modified": "Thu, 15 Oct 2026 00:16:25 GMT",
+   "source_sha256": "3b927627297483a0ce5b9b74888cfc1f3f71c46f8a5fbfe74341247045911fa7",
+   "status": "ok",
+   "store_file": "raw/schedules/schedules_20261015T001817Z.parquet",
+   "url": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.parquet"
+  }
+ ],
+ "pandas": "2.2.2",
+ "python": "3.9.6",
+ "sources": {
+  "depth_charts": {
+   "first_season": 2001,
+   "key": [
+    "season",
+    "snapshot",
+    "team",
+    "player_id",
+    "depth_slot"
+   ],
+   "kind": "dated",
+   "last_season": null,
+   "note": "2001-2024 weekly schema (club_code, week); 2025+ timestamped schema (dt)",
+   "tag": "depth_charts"
+  },
+  "ftn": {
+   "first_season": 2022,
+   "key": [
+    "game_id",
+    "play_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "ftn_charting"
+  },
+  "injuries": {
+   "first_season": 2009,
+   "key": [
+    "season",
+    "week",
+    "team",
+    "gsis_id"
+   ],
+   "kind": "weekly",
+   "last_season": null,
+   "note": "no publication timestamp in 2025+ files (GG-732); older files carry date_modified",
+   "tag": "injuries"
+  },
+  "officials": {
+   "first_season": null,
+   "key": [
+    "game_id",
+    "official_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "rolling single file; snapshotted per build",
+   "tag": "officials"
+  },
+  "participation": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "play_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "no 2026 file published yet (GG-730); the in-progress season may be absent, picked up automatically once published",
+   "tag": "pbp_participation"
+  },
+  "pbp": {
+   "first_season": 1999,
+   "key": [
+    "game_id",
+    "play_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "pbp"
+  },
+  "pfr_def": {
+   "first_season": 2018,
+   "key": [
+    "game_id",
+    "team",
+    "pfr_player_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "pfr_advstats"
+  },
+  "pfr_pass": {
+   "first_season": 2018,
+   "key": [
+    "game_id",
+    "team",
+    "pfr_player_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "pfr_advstats"
+  },
+  "pfr_rec": {
+   "first_season": 2018,
+   "key": [
+    "game_id",
+    "team",
+    "pfr_player_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "pfr_advstats"
+  },
+  "pfr_rush": {
+   "first_season": 2018,
+   "key": [
+    "game_id",
+    "team",
+    "pfr_player_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "pfr_advstats"
+  },
+  "rosters": {
+   "first_season": 2002,
+   "key": [
+    "season",
+    "week",
+    "team",
+    "player_id"
+   ],
+   "kind": "weekly",
+   "last_season": null,
+   "note": "",
+   "tag": "weekly_rosters"
+  },
+  "schedules": {
+   "first_season": null,
+   "key": [
+    "game_id"
+   ],
+   "kind": "schedule",
+   "last_season": null,
+   "note": "rolling single file; lines are closing values (GG-733); snapshotted per build",
+   "tag": "schedules"
+  },
+  "snaps": {
+   "first_season": 2012,
+   "key": [
+    "game_id",
+    "team",
+    "pfr_player_id"
+   ],
+   "kind": "post_game",
+   "last_season": null,
+   "note": "",
+   "tag": "snap_counts"
+  }
+ }
+}
