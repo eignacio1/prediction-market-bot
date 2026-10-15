@@ -28,6 +28,7 @@ from unittest import mock
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
+from prediction_market_bot.atomic_io import atomic_write_json  # noqa: E402  (W76.3, GG-748)
 from prediction_market_bot.c5_execution import paper_trader as pt_module  # noqa: E402
 from prediction_market_bot.c5_execution.market_type_registry import MarketType  # noqa: E402
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
@@ -207,7 +208,7 @@ def branch_for(pos: dict) -> str:
 
 def build_trader(name: str, tmpdir: Path) -> "pt_module.PaperTrader":
     portfolio_path = tmpdir / f"replay_{name}.json"
-    portfolio_path.write_text(json.dumps({
+    atomic_write_json(portfolio_path, {
         "bankroll_usd": 1_000_000_000.0,
         "initial_bankroll_usd": 1_000_000_000.0,
         "total_realized_pnl": 0.0,
@@ -218,7 +219,7 @@ def build_trader(name: str, tmpdir: Path) -> "pt_module.PaperTrader":
         "rejected_positions": [],
         "created_at": "1970-01-01T00:00:00.000Z",
         "last_updated": "1970-01-01T00:00:00.000Z",
-    }))
+    }, indent=None)
     logger = AuditLogger(log_path=tmpdir / f"audit_{name}.jsonl", min_severity="ERROR")
     return pt_module.PaperTrader(portfolio_path=portfolio_path, logger=logger, kalshi_client=None)
 

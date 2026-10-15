@@ -45,6 +45,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from prediction_market_bot.atomic_io import atomic_write_json, file_lock  # noqa: E402  (W76.3, GG-748)
+
 _TICKER_DATE_RE = re.compile(r"^KXMLBHIT-(\d{2})([A-Z]{3})(\d{2})(\d{4})")
 _TICKER_DATE_MONTHS = {
     "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
@@ -74,6 +77,15 @@ def main() -> int:
     args = parser.parse_args()
 
     ledger_path = Path(args.ledger)
+    if not args.apply:
+        return _run(args, ledger_path)
+    # --apply: hold the same flock PaperTrader uses across read -> modify -> write so a concurrent
+    # runner's append cannot be lost (GG-748); the write itself is atomic (tmp + fsync + replace).
+    with file_lock(ledger_path):
+        return _run(args, ledger_path)
+
+
+def _run(args: argparse.Namespace, ledger_path: Path) -> int:
     with ledger_path.open() as f:
         data = json.load(f)
 
@@ -130,8 +142,7 @@ def main() -> int:
     shutil.copy2(ledger_path, backup_path)
     print(f"\nBacked up ledger to {backup_path}")
 
-    with ledger_path.open("w") as f:
-        json.dump(data, f, indent=2)
+    atomic_write_json(ledger_path, data)
     print(f"Wrote corrected ledger to {ledger_path}")
     return 0
 

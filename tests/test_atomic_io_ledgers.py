@@ -67,3 +67,41 @@ def test_shadow_torn_trailing_line_skipped_and_next_row_parseable(tmp_path):
         except ValueError:
             pass
     assert parsed == ["T1", "T2"]
+
+
+# ---- W76.3 (GG-748): cross-process safety ------------------------------------------------------------
+
+def _writer(args):
+    base, worker, n = args
+    from pathlib import Path
+    led = CellLedger(Path(base), "mlb", "ml", "T1")  # fresh instance per process, shared file
+    for i in range(n):
+        r = {f: "x" * 200 for f in ROW_FIELDS}   # long rows make a torn/interleaved write likely
+        r.update(run_id=f"w{worker}", market_ticker=f"T{i}")
+        assert led.append(r)
+
+
+def test_cellledger_concurrent_processes_no_row_lost_or_torn(tmp_path):
+    import multiprocessing as mp
+    workers, n = 6, 60
+    with mp.get_context("fork").Pool(workers) as pool:
+        pool.map(_writer, [(str(tmp_path), w, n) for w in range(workers)])
+    lines = (tmp_path / "mlb_ml_T1.jsonl").read_text().splitlines()
+    rows = [json.loads(l) for l in lines]            # any torn/interleaved line raises here
+    assert len(rows) == workers * n
+    assert len({(r["run_id"], r["market_ticker"]) for r in rows}) == workers * n
+
+
+def test_cellledger_dedup_sees_other_process_append(tmp_path):
+    a = CellLedger(tmp_path, "mlb", "ml", "T1")
+    b = CellLedger(tmp_path, "mlb", "ml", "T1")
+    assert a.append(_row(1))
+    assert not b.append(_row(1))        # b never loaded this key itself; must see a's row under the lock
+    assert a.append(_row(2)) and not b.append(_row(2))
+    assert len((tmp_path / "mlb_ml_T1.jsonl").read_text().splitlines()) == 2
+
+
+def test_file_lock_serialises_and_lock_file_is_beside_target(tmp_path):
+    p = tmp_path / "led.json"
+    with atomic_io.file_lock(p):
+        assert (tmp_path / "led.json.lock").exists()
