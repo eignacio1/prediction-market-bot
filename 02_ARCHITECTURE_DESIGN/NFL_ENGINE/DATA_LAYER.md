@@ -14,7 +14,7 @@ One reproducible build of the free nflverse-data releases, keyed and timestamped
 | Builder | `src/prediction_market_bot/c1_signal_ingestion/nfl_event_store.py` (`python -m ...nfl_event_store`) |
 | PIT contract | `.../nfl_point_in_time.py` (`PointInTime.view`, `.assert_no_leak`, `.pregame_context`) |
 | Row/null/key/cross-source checks | `.../nfl_store_checks.py` (`python -m ...nfl_store_checks --report`) |
-| Tests | `tests/test_nfl_point_in_time.py` (12 synthetic + 1 real-store), `tests/test_nfl_store_checks.py` (10) |
+| Tests | `tests/test_nfl_point_in_time.py` (12 synthetic), `tests/test_nfl_store_checks.py` (9 synthetic, fault-injection), `tests/nfl_real_store/` (2 tests on the built store; not collected, so never counted as skips under GG-179, when the store is absent) |
 | Scheduled rebuild | `.github/workflows/nfl_event_store.yml` — Tuesdays 09:43 UTC and `workflow_dispatch`; public repo, free minutes |
 | Raw data | `exp_output/NFL_EVENTS/raw/<source>/…parquet`, **git-ignored** (about 550 MB) |
 | Committed artefact | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/event_store_manifest.json` |

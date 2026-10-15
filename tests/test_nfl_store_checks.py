@@ -78,13 +78,3 @@ def test_seasons_for_respects_declared_last_season():
     assert seasons_for(replace(SOURCES["pbp"], last_season=2020), 2026)[-1] == 2020
     assert seasons_for(SOURCES["participation"], 2026)[-1] == 2026   # in range; absence tolerated only for the current season
     assert seasons_for(SOURCES["pbp"], 2026)[-1] == 2026
-
-
-STORE = Path(os.environ.get("NFL_STORE_DIR", "exp_output/NFL_EVENTS"))
-
-
-@pytest.mark.skipif(not (STORE / "raw" / "schedules").exists(), reason="NFL event store not built")
-def test_real_store_passes_all_checks():
-    rep = chk.run_checks(STORE)
-    assert rep.failures == []
-    assert len(rep.rows) > 100 and len(rep.coverage) > 30

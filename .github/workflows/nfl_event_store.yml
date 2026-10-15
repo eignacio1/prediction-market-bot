@@ -47,7 +47,7 @@ jobs:
           NFL_STORE_DIR: exp_output/NFL_EVENTS
         run: |
           python -m prediction_market_bot.c1_signal_ingestion.nfl_store_checks
-          python -m pytest tests/test_nfl_point_in_time.py tests/test_nfl_store_checks.py -q -p no:cacheprovider
+          python -m pytest tests/test_nfl_point_in_time.py tests/test_nfl_store_checks.py tests/nfl_real_store -q -p no:cacheprovider
 
       - name: Keep this build's schedule snapshot (GG-733)
         env:
