@@ -903,3 +903,4 @@
 | 2026-10-15T05:05:54Z | T-980..T-982, GG-775..GG-779 | W75.1 MEDIUM - PAM core: sport-agnostic schema+store+PIT read, NBA v4 port, NFL taxonomy v0 + first mass classifier. PURPOSE: DEPTH D5(a) cluster designs (NFL 0->1, NBA 0->1) |
 | 2026-10-15T05:06:29Z | T-985..T-987, GG-780..GG-784 | W75.3 MEDIUM - seat interface + structural tensions + D4/D5 generator. PURPOSE: DEPTH D5(a) NFL/NBA 0->scaffolded +2 components each; D4/D5 computed (pillar DEPTH) |
 | 2026-10-15T05:06:30Z | T-990..T-992, GG-800..GG-804 | W75.2 MEDIUM - NFL engine stage 2: coverage x personnel x motion, aggregation->interpretation->application. PURPOSE: DEPTH D5(b) NFL factor class applied +1, D4 NFL factor classes PIT 0->1 |
+| 2026-10-15T05:12:21Z | T-995..T-997, GG-810..GG-814 | W75.5 MEDIUM - NFL book closes (GG-746/751/763a). PURPOSE: EXECUTION E2 / PROOF - NFL positions open past game end+24h 4->0, settlement typed |
