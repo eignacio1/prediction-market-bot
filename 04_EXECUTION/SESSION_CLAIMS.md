@@ -895,3 +895,4 @@
 | 2026-10-15T00:07:27Z | T-950 | CLOSED — merge confirmed, HEAD (66ded44) is ancestor of origin/main — W73.3 NFL engine scaffold: non-inferior to frozen Gaussians, not better |
 | 2026-10-15T00:17:59Z | T-940 | CLOSED — W73.1 forward test re-armed after stale cancel-fail turn-off (GG-710); NBA already staked; first NHL E rows (commit `fdf0cb1`) |
 | 2026-10-15T00:18:10Z | T-940 | CLOSED — merge confirmed, HEAD (fdf0cb1) is ancestor of origin/main — W73.1 forward test re-armed; NBA already staked; first NHL E rows |
+| 2026-10-15T00:36:43Z | T-975..T-979, GG-745..GG-774 | B74-A S1 MEDIUM+ - full hygiene audit (Parts A+B), audit only, no code. PURPOSE: PLUMBING (structural soundness re-audit vs 10-13 baseline; names pillar per finding) |
