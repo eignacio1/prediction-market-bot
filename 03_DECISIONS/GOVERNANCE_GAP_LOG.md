@@ -2093,9 +2093,11 @@ B74-A L1, 2026-10-14. t4-mlb watches only `logs/t4_mlb_kill_switch.flag` (`run_t
 
 ### GG-746 — Four NFL moneyline positions still OPEN 4-7 days after the game
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
 B74-A L2, 2026-10-14 (box copy). POS-BC7EBF8BB9 and POS-5606773C7E (CIN-MIA, 10-11), POS-0EED4809E1 and POS-515DEC8556 (TB-DAL, 10-08) are open; the NFL portfolio file mtime is 2026-10-07. Either the NFL resolver cron/settlement path (`nfl_settlement.py`, `nfl_espn_results.py:78` return-None) is not closing positions, or the rows are mislabelled. Pillar: EXECUTION (E1/E2 on a book that never closes), PROOF. Proposed fix: read the NFL resolve cron log and the settlement path, close or explain each, add an alarm for any position open > 24h past game end. Not fixed here (Hard Rule 11).
+
+**Resolved W75.5 (PR #262, merged 7ab0c75; read back on the box 2026-10-15).** Root cause: nothing recurring booked the NFL game-market paper portfolio; the only booking was a one-time hand run on 10-07. Fix: `position_sweep.sweep_open_positions` now rides the existing 09:30 `run_pregame_shadow_settle.py --refresh` cron (no new cron). The four positions were booked through the normal ADR-0071 path (BC7EBF8BB9 LOSS -1.0, 5606773C7E LOSS -1.0, 0EED4809E1 WIN +1.6316, 515DEC8556 WIN +1.5). Box read-back: sweep reports open_after=0; new `open_past_game_end` invariant clean across 6 books. Detail: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_5_nfl_book_closes.md`.
 
 ### GG-747 — T4 portfolio has 4,309 closed rows vs 4,275 in the resolved ledger (gap of 34)
 
@@ -2123,9 +2125,11 @@ B74-A L3. `run_t4_mlb_live.py:2037-2220` logs and loops forever; ESPN discovery 
 
 ### GG-751 — Settlement `return None` branches look the same as "unresolved"
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 B74-A L3. `nfl_settlement.py:41`, `nba_settlement.py:44`, `mlb_settlement.py:32-53`, `nfl_espn_results.py:78` return None for both "not final yet" and "could not parse/failed", so a broken settler is indistinguishable from a slow game (see GG-746). Pillar: PROOF. Proposed fix: a typed result (PENDING / FAILED(reason)) and an alarm on FAILED or on age past game end.
+
+**Resolved W75.5 (PR #262, merged 7ab0c75; read back on the box 2026-10-15).** Typed `SettleResult` (FINAL / NOT_FINAL / LOOKUP_FAILED) in `pregame_shadow/settle_result.py`; NFL, NBA and MLB settlement modules and `nfl_espn_results.fetch_nfl_final_result` use it. Settle callers treat LOOKUP_FAILED as an alarm (exit 3), not a wait. Not changed: `nhl_shadow_settle.py` (out of the block's named modules).
 
 ### GG-752 — vps_deploy.sh has no rollback; deploy_status.json alarm and heal_dirty_tree coverage unverified
 
@@ -2198,6 +2202,8 @@ B74-A L2. `mlb_game_pregame_features.py:88` uses `as_of.date().isoformat()` and 
 **Status:** OPEN · **Severity:** LOW
 
 B74-A L2 (106,012 rows across 81 files, 0 integrity violations). (a) NFL moneyline settled files carry y=0.5 (2 rows per file): confirm scoring and calibration treat 0.5 as a tie. (b) T4M-PROJ epoch-12 cross-path outcome check covers 187 of 2,080 rows, so "0 disagreement" is thin. (c) 317 legacy `paper_portfolio_t4` closed rows have outcome None. (d) GG-690/691 baseline unchanged: 3,495 null market_type in the MLB portfolio (plus 158 + 485 + 2,895 legacy) and 16 CANCELLED rows. Pillar: PROOF. Proposed fix: assert each in the ledger-invariants script with a stated expected count.
+
+**W75.5 part (a) done:** the pre-registration is explicit (moneyline tie = y=0.5) and the shadow settlement code matches; now covered by a test through `typed_join`. The paper path's tie refusal (GG-257) is a separate, intentional mechanism. Parts (b)-(d) remain OPEN.
 
 ### GG-764 — Read-side holes: assert_ledger_invariants crashes on a corrupt file; validators reset state on decode error
 
