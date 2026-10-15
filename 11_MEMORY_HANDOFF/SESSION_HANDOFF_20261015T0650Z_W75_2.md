@@ -3,6 +3,8 @@
 <!-- session-meta
 task_id: W75.2
 tier: STANDARD
+commit: 3c4535e
+timestamp: 2026-10-15T06:50:00Z
 one_line_summary: NFL factor chain end to end (F5/F6 coverage x personnel): builder, sport-neutral rate layer, frozen plan, one fit through ML/spread/total/team total; result inert
 vision_pillar: DEPTH
 gap_measure: D5(b) NFL applied; D4 NFL point-in-time

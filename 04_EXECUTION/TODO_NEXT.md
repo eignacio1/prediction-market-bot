@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-15T06:00:00Z (T-1010 — One kill switch inside submit_order for every order path (Part A merged, PR #264); Part B deploy read-back and live demo drill pending) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015_0600_W75_4.md` for full session detail.
+**Last reviewed:** 2026-10-15T06:50:00Z (W75.2 — NFL factor chain end to end (F5/F6 coverage x personnel): builder, sport-neutral rate layer, frozen plan, one fit through ML/spread/total/team total; result inert) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015T0650Z_W75_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
