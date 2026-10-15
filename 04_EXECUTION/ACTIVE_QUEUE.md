@@ -230,7 +230,7 @@ other's files. **None touches B74-A Session 2's files** (the runtime registry, g
 |---|---|---|---|---|
 | 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | 🟡 Parts A+B pushed (PR #259), merge pending CI | Core + lossless NBA v4 port + NFL 9-group taxonomy + WR mass classifier (247 recs, primary retained 54-60% YoY vs ~31% chance) + DEEP_TIER proposal; D5(a) NFL 0→1, NBA 0→1 |
 | 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (running on the ORIGINAL prompt; ADD-IN 22:15 PT rescopes it — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | |
-| 75.3 | Seat interface + structural tensions opened; D4/D5 generated | DEPTH D5(a) NFL and NBA +2 each (seat interface, structural tensions) · D4/D5 generated | ⬜ | |
+| 75.3 | Seat interface + structural tensions opened; D4/D5 generated | DEPTH D5(a) NFL and NBA +2 each (seat interface, structural tensions) · D4/D5 generated | ✅ (PRs #260, #261; D5a NFL 3/8 NBA 2/8; D5b NFL 4 applied, NBA 4) | |
 | 75.4 | One kill switch for every order path (GG-745 HIGH) | EXECUTION: order paths honouring one switch, of all (drill on the box) | ⬜ | |
 | 75.5 | The NFL book closes (GG-746 HIGH, GG-751, GG-763a) | EXECUTION E2 / PROOF: NFL positions open past game end + 24 h, 4 → 0 | ⬜ | |
 
@@ -926,7 +926,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 75.1 | PAM core: one Player Attribute Matrix for every engine | ⬜ | |
 | 75.2 | NFL engine stage 2: the operator's question, end to end | ⬜ | |
-| 75.3 | Seat interface + structural tensions opened; D4/D5 generated | ⬜ | |
+| 75.3 | Seat interface + structural tensions opened; D4/D5 generated | ✅ (PRs #260, #261; D5a NFL 3/8 NBA 2/8; D5b NFL 4 applied, NBA 4) | |
 | 75.4 | One kill switch for every order path (GG-745) | ⬜ | |
 | 75.5 | The NFL book closes (GG-746/751/763a) | ⬜ | |
 | B74-A | Hygiene re-audit + runtime map live and visible | ⚠️ | Session 1 on main (7950e43): SOUND WITH ISSUES, GG-745..766. **Session 2 (registry live + dashboards) not started** — its terminal closed with Session 1 (operator 22:16 PT); **Wave 76's 4th terminal (operator 22:17 PT)**, after 75.4 changes the order-placing runners |
