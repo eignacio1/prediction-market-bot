@@ -15,6 +15,7 @@ open decisions and what the last window got wrong. Treat every number in it as a
 
 PROTOCOLS - DO NOT GET THESE WRONG
 - Every time ACTIVE_QUEUE.md changes, load it into this chat as a file card. Never send me hunting through folders.
+- Wave blocks and add-ins live in ACTIVE_QUEUE.md only - do not paste them into the chat (operator 2026-10-14 22:12 PT).
 - The queue always carries the next wave's prompt blocks inside it, and a RUNNING SITREP at the top - keep it current
   at every wave close.
 - Never ask for delete permission and never sync my folder.

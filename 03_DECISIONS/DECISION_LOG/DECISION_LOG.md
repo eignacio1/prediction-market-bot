@@ -2292,3 +2292,10 @@ Operator, verbatim: "a few things - give me two more terminal wave blocks to add
 
 - Wave 75 = five blocks for this wave, by operator call (overrides the standing three-blocks-per-wave ceiling for Wave 75 only). Added 75.4 (one kill switch for every order path, GG-745 HIGH) and 75.5 (the NFL book closes, GG-746 HIGH with GG-751/GG-763a), both from the B74-A Session 1 audit (HYGIENE_AUDIT_20261015.md).
 - 75.2 rescoped: the deliverable is the aggregation > interpretation > application chain on one factor class at play-level granularity, built as a reusable factor builder; the Cover 6 question is an illustration only. Window error W17 (new pattern LITERAL).
+
+## 2026-10-14 22:12 PT — Wave blocks live in the queue only; 75.2 add-in
+
+Operator, verbatim: "you don't need to put these paste in blocks in the chat - you just need to make sure they're in the active queue doc, which you've been doing. ... the old terminal is running, give me the addendum"
+
+- Standing: wave blocks and add-ins go in ACTIVE_QUEUE.md only (file card on change), never pasted into the chat. Written into NEW_WINDOW_PASTE_IN.md.
+- 75.2 is running on the original prompt; ADD-IN issued in the queue (22:15 PT): keep the coverage class, drop the literal pieces, reusable factor builder, Part B as the factor's term.

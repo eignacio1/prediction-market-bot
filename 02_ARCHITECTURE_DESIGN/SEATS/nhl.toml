@@ -1,0 +1,175 @@
+[meta]
+sport = "nhl"
+version = "v0"
+banner = "STUB. Cells listed, factors empty. NHL's seat is filled when its engine is scaffolded (ADR-0073)."
+taxonomy = "none (NBA taxonomy to be written; NBA-n ids are local to this file)"
+engine_interface = "none"
+stage_rule = "aggregated = in a store; interpreted = turned into a feature or tested; applied = conditioned on by a model that logs forecasts. Set only from the cited file on main."
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T4NHL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_moneyline"
+band = "T4NHL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T4NHL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_puck_line"
+band = "T4NHL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T4NHL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nhl_game_total"
+band = "T4NHL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"

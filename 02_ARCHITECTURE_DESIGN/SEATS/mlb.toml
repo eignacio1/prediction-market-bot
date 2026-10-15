@@ -1,0 +1,343 @@
+[meta]
+sport = "mlb"
+version = "v0"
+banner = "STUB. Cells listed, factors empty. MLB's seat is filled when its engine is scaffolded (ADR-0073)."
+taxonomy = "none (NBA taxonomy to be written; NBA-n ids are local to this file)"
+engine_interface = "none"
+stage_rule = "aggregated = in a store; interpreted = turned into a feature or tested; applied = conditioned on by a model that logs forecasts. Set only from the cited file on main."
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T4M-PROJ"
+status = "active"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T4M-ARITH"
+status = "blocked"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T4M-FLOW"
+status = "blocked"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_player_prop_hits"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T1"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T2"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T3"
+status = "shadow"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T1"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T2"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T3"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T4M-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_moneyline"
+band = "T4M-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T4M-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_run_line"
+band = "T4M-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T4M-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_game_total"
+band = "T4M-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T4M-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_team_total"
+band = "T4M-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T4M-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "mlb_partial_game"
+band = "T4M-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
