@@ -210,3 +210,14 @@ def test_writes_are_atomic_no_tmp_left(tmp_path, monkeypatch):
     assert calls == ["demo_fill.override.env"]
     assert "SHADOW_FLAT_STAKE=off" in (tmp_path / "demo_fill.override.env").read_text()
     assert not [p for p in tmp_path.iterdir() if p.name.endswith(".tmp")]
+
+
+def test_since_window_and_non_fill_counterfactual():
+    events = [shadow_order(600, "old"), shadow_order(60, "o1"), shadow_order(50, "o2")]
+    fills = {"o1": {"fills": 1.0, "settled": True, "won": True, "price": 0.40},
+             "o2": {"fills": 0.0, "settled": True, "nf_won": False}}
+    rep = rpt.build_report(events, NOW, lambda oid, tk: fills[oid], since=NOW - timedelta(minutes=120))
+    (c,) = rep["cells"]
+    assert (c["orders"], c["fills"], c["non_fills_resolved"]) == (2, 1, 1)
+    assert c["win_rate_on_fills"] == 1.0 and c["win_rate_on_non_fills"] == 0.0
+    assert rep["since"] is not None

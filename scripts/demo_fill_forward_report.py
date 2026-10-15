@@ -126,7 +126,16 @@ def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
         if res in ("yes", "no") and side in ("yes", "no"):
             rec.update(settled=True, won=(res == side))
     elif str(order.get("status")) in ("canceled", "cancelled", "expired"):
-        rec["settled"] = True  # terminal and unfilled: nothing further can change
+        # Terminal and unfilled: the order itself cannot change. E3 (W76.1) also needs the counterfactual
+        # outcome of the side it WOULD have bought; the order is re-read until its market has resolved.
+        mok, mdata = client._get(f"/markets/{ticker}")
+        m = (mdata.get("market", mdata) if mok and isinstance(mdata, dict) else {}) or {}
+        res = str(m.get("result") or "").lower()
+        if res in ("yes", "no") and side in ("yes", "no"):
+            rec.update(settled=True, nf_won=(res == side))
+        else:
+            rec["nf_pending"] = True
+            rec["settled"] = str(m.get("status")) in ("finalized", "settled") and not res  # voided: nothing to learn
     cache[order_id] = rec
     return rec
 
@@ -163,7 +172,9 @@ def _historical_404_terminal(r: dict, fills_for: Optional[Callable[[str, str], d
 
 
 def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable[[str, str], dict]],
-                 window_note: str = "") -> dict:
+                 window_note: str = "", since: Optional[datetime] = None) -> dict:
+    if since is not None:
+        events = [r for r in events if _ts(r) >= since]
     cells: dict[tuple[str, str], dict[str, Any]] = defaultdict(lambda: {
         "orders": 0, "rejected": 0, "skips": Counter(), "control_skips": 0,
         "cancel_scheduled": 0, "cancel_ok": 0, "cancel_failed": 0, "cancel_already_terminal": 0, "no_outcome": 0,
@@ -223,6 +234,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         if c["first_ts"] is None:
             continue
         rows = [fills_for(oid, tk) for oid, tk in c["fill_orders"]] if fills_for else []
+        nonfill = [x for x in rows if x.get("fills", 0) <= 0 and "nf_won" in x]
+        nf_wins = sum(1 for x in nonfill if x["nf_won"])
         filled = [x for x in rows if x.get("fills", 0) > 0]
         settled = [x for x in filled if x.get("settled") and x.get("price") is not None]
         wins = sum(1 for x in settled if x.get("won"))
@@ -241,6 +254,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             "fills_settled": len(settled) if fills_for else None,
             "win_rate_on_fills": (wins / len(settled)) if settled else None,
             "settle_minus_price_on_fills": (sum((1.0 if x["won"] else 0.0) - x["price"] for x in settled) / len(settled)) if settled else None,
+            "non_fills_resolved": len(nonfill),
+            "win_rate_on_non_fills": (nf_wins / len(nonfill)) if nonfill else None,
             "fills_per_week": per_week,
             "projected_fills_8wk": None if per_week is None else per_week * WEEKS,
             "on_pace_for_550_in_8wk": None if per_week is None else per_week * WEEKS >= JUDGED_N,
@@ -273,7 +288,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         if ch.get("tripped"):
             trips.append({"condition": name, **ch})
     return {"generated_utc": now.isoformat(), "judged_n_per_arm": JUDGED_N, "weeks": WEEKS,
-            "cells": cell_out, "turn_off_checks": checks, "tripped": trips, "note": window_note}
+            "since": since.isoformat() if since else None, "cells": cell_out, "turn_off_checks": checks, "tripped": trips, "note": window_note}
 
 
 def _override_for(env_path: Path) -> Path:
@@ -331,6 +346,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--out", default=str(OUT))
     ap.add_argument("--env-file", default=str(ENV_FILE))
     ap.add_argument("--no-fills", action="store_true", help="skip demo API reads (log-only counts)")
+    ap.add_argument("--since", default=None, help="ISO ts; read-back window (e.g. the cancel-path re-arm epoch)")
     ap.add_argument("--no-act", action="store_true", help="report only; never edit the switch config")
     a = ap.parse_args(argv)
     os.environ["BOT_ENV"] = "paper"  # demo only; .env must not flip the host
@@ -362,7 +378,10 @@ def main(argv: Optional[list[str]] = None) -> int:
                 fills_for = lambda oid, tk: lookup_fill(client, oid, tk, cache)  # noqa: E731
         except Exception as e:  # noqa: BLE001 - report must still be written from the log
             note = f"fills skipped: {type(e).__name__}"
-    rep = build_report(events, now, fills_for, note)
+    since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else None
+    rep = build_report(events, now, fills_for, note, since)
+    if since is not None:
+        a.no_act = True  # a windowed read-back never edits the switch config
     if not a.no_act and turn_off(rep["tripped"], now, Path(a.env_file), pol.append_log):
         rep["switches_turned_off"] = True
     rep["switches_active"] = switches_active(Path(a.env_file))
