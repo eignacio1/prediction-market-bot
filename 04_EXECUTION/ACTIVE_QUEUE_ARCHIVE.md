@@ -10,6 +10,270 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 73 prompts — archived 2026-10-15 ~05:00 UTC. 73.1 DONE (#253/#256: skip-rate turn-off counts policy skips only; GG-710 fixed, re-armed; first settled: NHL control 29 fills vs treatment 1). 73.2 DONE (#258: FACTOR_TAXONOMY, nflverse event store 1999-2026 with point-in-time contract). 73.3 DONE (#255: possession Monte Carlo prices the NFL board from one draw set; parity, not better). Verbatim:
+
+## ⬛ NOW — Wave 73 · issued 2026-10-14 ~23:45 UTC (16:45 PT) · three MEDIUM blocks · paste all three in parallel
+
+Wave 72 verified (Sequencing track). The foundation is in: crash-safe ledgers, deploys that prove themselves, order-path
+guards in the running process, the forward test live with both arms. **This wave starts the NFL engine (ADR-0073)** —
+the template for every sport — and keeps Execution moving. Surfaces: 73.1 = forward-test report/turn-off, NBA staked runner;
+73.2 = new NFL event data layer (C1/C2 + a GitHub Actions build); 73.3 = 12_EXPLORATORY/nfl_engine only. Only 73.1 may change
+order behaviour. 73.2 and 73.3 meet at one interface (team/unit ratings in, game distribution out) - agree it from the
+`INTERFACE.md` 73.3 writes first; neither waits on the other's data.
+
+| # | Block | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| 73.1 | Turn-off addendum, NBA staked runner, first settled E2/E3 | EXECUTION E1/E2/E3 | ✅ | Parts A+B pushed. Test was OFF 11:25Z-00:14Z (GG-710), fixed #256, re-armed. NBA already staked since W68.2: no 2nd runner. First settled: NHL control 29 fills +0.123; no verdict |
+| 73.2 | NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer | DEPTH D4 (NFL: none → data layer), D1 | ✅ DONE | DONE: Part A taxonomy (20 classes, 15 buildable free, GG-730..734) + Part B event store (165 files, 0 failures, 6 sources + PFR, PIT contract w/ positive controls, weekly Actions rebuild verified end to end, manifest committed). D4 NFL: none -> event-level data layer built. DATA_LAYER.md. No operator decisions. |
+| 73.3 | NFL engine stage 1: one game simulation prices ML, spread and total | DEPTH D4 (NFL: → board priced from one engine, scaffold) | ✅ DONE (PR #255, efec061) | Possession-MC engine prices ML/spread/total/team totals from one draw set; non-inferior (not better) to frozen Gaussians, all 8 ΔBrier CIs hi < +0.0010; key-number shape claim NOT supported. `12_EXPLORATORY/nfl_engine/results.md`. D4 NFL 0→1 (scaffold). |
+
+### 73.1 — Turn-off addendum, NBA staked runner, first settled E2/E3
+
+```
+COMMON RULES - WAVE 73 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 73.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (73.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W73_<n>.md (docs-only push).
+
+WAVE 73.1 - TURN-OFF ADDENDUM; NBA STAKED RUNNER; FIRST SETTLED E2/E3. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1/E2/E3 - keep the forward test on, add NBA from opening night, read the first settled numbers.
+PERMISSIONS: VPS read (ssh), NEW cron line for the NBA staked runner, PR/merge, demo orders under ADR-0072, read-only Kalshi
+DEMO GETs. Authority: AUTHORIZATION - ADR-0072 ON; DEMO CONFIG; operator decisions 2026-10-14 16:4x PT (below).
+
+OPERATOR DECISIONS (2026-10-14, in this window): (1) "Yes, amend": the skip-rate turn-off counts only the placement rule's own
+skips (book one-sided, mid gap); not_listed_on_demo skips are reported separately and never count (GG-564). (2) "Yes, separate
+runner": NBA gets its own demo-only staked runner, like run_nhl_shadow_staked.py; the EXP-038 / EXP-039 / EXP-040 forecasting
+cron lines stay credential-free and unchanged (GG-570).
+
+WHY
+72.1's read-back: cancels work (12 cancel_ok on KXMLB*, 0 failed), the control arm places, nothing post-re-arm has settled.
+Daily skip rates 0.2% / 56.3% / 98.6% (10-11/12/13), almost all paper/MLB not_listed_on_demo (2.8% of attempts reach demo):
+if 10-14 and 10-15 also exceed 90%, the turn-off trips and the test goes dark again ~10-16. NBA opens 10-20 with no stakes.
+
+PART A - Before the next 11:25 UTC report run (~40 min)
+  1. Dated addendum to ADR-0072 (append, quoting the operator's choice): skip-rate turn-off scope = policy skips only.
+     Implement in demo_fill_forward_report.py; tests (listing skips never trip; policy skips still do). PR, merge, read back
+     with --no-act on the box that the condition no longer trips on 10-13/10-14 data.
+  2. GG-665/666/667: t4-mlb restarted 02:53:06Z after 8b1fb3b reached the box - confirm the running process's code SHA
+     carries the guards (72.3's SHA check), then RESOLVE them.
+PART B - NBA stakes + numbers (~45 min)
+  3. scripts/run_nba_shadow_staked.py (mirror run_nhl_shadow_staked.py): reads the NBA shadow ledger rows already written,
+     places demo stakes per ADR-0072 assignment, never touches EXP-038/039/040 lines; NEW cron line; dry run on the box now,
+     first live read-back 10-20/21. Update test_nba_shadow_safety to pin the separation. Close GG-570 on the 10-21 read-back.
+  4. Re-run the report: every post-re-arm order that has settled -> per book/sport/arm fills, win rate on fills,
+     settle-minus-price, E3 fills vs non-fills, control vs treatment. Write the E rows of the DISTANCE table (source + time).
+Results doc: W65_2_forward_test_on_results.md, "Read-back W73.1".
+
+END OF BLOCK 73.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 73.2 — NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer
+
+```
+COMMON RULES - WAVE 73 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 73.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (73.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W73_<n>.md (docs-only push).
+
+WAVE 73.2 - NFL ENGINE, DATA LAYER (ADR-0073 stage 1). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D4 (NFL engine stage: none -> event-level data layer built) and D1 (factor classes now buildable). Pillar:
+DEPTH. PERMISSIONS: PR/merge; a NEW GitHub Actions workflow (public repo - free) or VPS cron line for the build; no order, no
+stake, no change to any running arm. Read ADR-0073 and CLAUDE.md § "The scale" first.
+
+WHY
+ADR-0073: one deep engine per sport, NFL first as the template; the data layer is the work; free sources first, no paid
+service. The bar is Syndicate32 (opponent-adjusted unit profiles; QB vs man/zone/specific coverages per dropback; matchup
+comparisons across passing, rushing, protection, pressure, coverage, special teams, injuries, play callers, penalties, rest,
+home field; fair values vs market). Our NFL models condition on team + QB only.
+
+RULES FOR THE TEARDOWN: public pages only - no login, no membership, no paywalled content, no scraping behind it. Its factor
+list is a target to rebuild from free data, never its numbers.
+
+PART A - Taxonomy + source map (~35 min)
+  1. Write 02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md: every factor class Syndicate32 shows publicly (and any the
+     granularity bar in CLAUDE.md names that it lacks: weather, officials, coaching), each mapped to a FREE source and field
+     (nflverse play-by-play/EPA, participation, FTN charting - coverage man/zone, pressure - snap counts, injuries, schedules/
+     rest, officials, weather), first season available, point-in-time availability (when the field exists relative to
+     kickoff), and GAP where no free source has it (registered as a GG, never bought).
+PART B - Event-level store (~50 min)
+  2. One reproducible build of the NFL event store: plays + participation + charting + snaps + injuries + schedule, seasons
+     from the earliest each source covers through 2025 plus the current season to date, keyed (game_id, play_id) and
+     (season, week, team, player), with an as_of timestamp per row. Built where minutes are free (Actions on the public repo,
+     like MLB features) - raw data git-ignored, a manifest (row counts, hashes, source versions) committed.
+  3. Point-in-time contract + tests: a query "as of kickoff of game G" can never return a row from G or later (positive
+     control included). Row-count and null checks per source per season.
+  Results doc: 02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md (what is built, coverage by season, gaps). D4 line for NFL.
+
+END OF BLOCK 73.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 73.3 — NFL engine stage 1: one game simulation prices ML, spread and total
+
+```
+COMMON RULES - WAVE 73 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 73.1, inside AUTHORIZATION - ADR-0072 ON and
+  AUTHORIZATION - DEMO CONFIG. Demo only. No live-ledger row rewritten. No edit of an existing cron line (73.1's demo-config edits
+  are the one named exception). Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W73_<n>.md (docs-only push).
+
+WAVE 73.3 - NFL ENGINE, THE SIMULATION SCAFFOLD (ADR-0073 stage 1). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D4 (NFL: whole board priced from one engine - scaffold stage). Pillar: DEPTH. PERMISSIONS: 12_EXPLORATORY only
+(12_EXPLORATORY/nfl_engine/) + a doc in 02_ARCHITECTURE_DESIGN/NFL_ENGINE/. No registry, runner, ledger or cron change.
+Read ADR-0073 and CLAUDE.md § "The scale" first.
+
+WHY
+ADR-0073 point 3: one engine outputs the joint distribution of a game, so moneyline, spread, total (and later team totals,
+props, parlays) come from one model and stay consistent. Today each NFL family has its own frozen model. Build the engine's
+skeleton now with the inputs we already have (team + QB, the frozen and QB-shrunk models' inputs); 73.2's data layer feeds it
+richer factors from Wave 74.
+
+PART A - Interface + design (~30 min)
+  1. Write 02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md FIRST and push it (73.2 reads it): inputs = per-team, per-unit
+     ratings as of kickoff (offense/defense pass/rush, special teams, QB) + game context (home, rest, weather slot); output =
+     a sampled joint distribution of (home score, away score) and drive-level events; every market price derived from it.
+  2. Plan frozen before any fit (12_EXPLORATORY/nfl_engine/PLAN.md): model class (drive-level or possession Monte Carlo, or a
+     bivariate score model - choose and justify), training seasons, rolling-origin test seasons, metrics.
+PART B - Build + backtest once (~55 min)
+  3. Fit once on the current inputs; price ML, spread and total for every test-season game from the same simulation.
+  4. Report per family: Brier vs the frozen per-family models (ΔBrier with CI), calibration, and the consistency check the
+     per-family models cannot pass (implied P(win) vs P(cover 0) vs score distribution agree). Market comparison where Kalshi
+     or archived mids exist - reported, never judged. A NO is a result: the scaffold's job is to beat or match the per-family
+     models on equal inputs, so richer inputs then go into one place.
+Results: 12_EXPLORATORY/nfl_engine/results.md; D4 line for NFL.
+
+END OF BLOCK 73.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 72 prompts — archived 2026-10-14 ~23:45 UTC. 72.1 DONE (#246/#252: read-back — cancels work, control arm placing, 0 settled; GG-646 fixed; guards GG-665/666/667 live after t4-mlb restart 02:53Z). 72.2 DONE (#248/#250/#251: crash-safe ledgers, /vps retired, box .env 600 + demo key verified). 72.3 DONE (#247/#249: deploy truth machine-checked; ledger + point-in-time audit clean bar GG-690/691). Verbatim:
 
 ## ⬛ NOW — Wave 72 · issued 2026-10-14 ~00:50 UTC (10-13 ~17:50 PT) · three MEDIUM blocks · paste all three in parallel

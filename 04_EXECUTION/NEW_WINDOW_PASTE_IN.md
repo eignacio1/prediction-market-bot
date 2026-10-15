@@ -43,6 +43,8 @@ PROTOCOLS - DO NOT GET THESE WRONG
   Surface (running components added/retired and any red health signal - no new component while one is red), and
   Dependencies (no block's merge or input depends on another block in the same wave).
 - The scale (ADR-0073): one deep engine per sport at Syndicate32-level granularity; /vision reads it back to me.
+- Edge (ADR-0075, accepted 2026-10-14): the betting architecture at play-level granularity - aggregation > interpretation
+  > application, across eight components; measured by D5. Quote my words into canonical docs, never compress them (W16).
 
 FIRST TASK
 1. git fetch and diff origin/main against section 4 of the carry-forward. Report drift.
