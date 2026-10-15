@@ -902,3 +902,4 @@
 | 2026-10-15T04:34:18Z | T-975 | CLOSED — merge confirmed, HEAD (7950e43) is ancestor of origin/main — B74-A S1 audit-only landed on main at 7950e43; GG-745..766; Session 2 (Parts C+D) next |
 | 2026-10-15T05:05:54Z | T-980..T-982, GG-775..GG-779 | W75.1 MEDIUM - PAM core: sport-agnostic schema+store+PIT read, NBA v4 port, NFL taxonomy v0 + first mass classifier. PURPOSE: DEPTH D5(a) cluster designs (NFL 0->1, NBA 0->1) |
 | 2026-10-15T05:06:29Z | T-985..T-987, GG-780..GG-784 | W75.3 MEDIUM - seat interface + structural tensions + D4/D5 generator. PURPOSE: DEPTH D5(a) NFL/NBA 0->scaffolded +2 components each; D4/D5 computed (pillar DEPTH) |
+| 2026-10-15T05:06:30Z | T-990..T-992, GG-800..GG-804 | W75.2 MEDIUM - NFL engine stage 2: coverage x personnel x motion, aggregation->interpretation->application. PURPOSE: DEPTH D5(b) NFL factor class applied +1, D4 NFL factor classes PIT 0->1 |
