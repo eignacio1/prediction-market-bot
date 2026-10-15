@@ -24,14 +24,15 @@
     <a class="nv" href="#evidence"><span class="ic">▤</span>Execution ledger</a>
 
     <div class="lbl">Structure</div>
-    <a class="nv" href="#matrix"><span class="ic">▦</span>Cell matrix<span class="ct">104</span></a>
+    <a class="nv" href="#matrix"><span class="ic">▦</span>Cell matrix<span class="ct cellN"></span></a>
     <a class="nv" href="#arms"><span class="ic">⏱</span>Arms &amp; clocks<span class="ct" id="nvArms"></span></a>
     <a class="nv" href="#doctrine"><span class="ic">⟊</span>Band doctrine · C5</a>
     <a class="nv" href="#pipeline"><span class="ic">⇥</span>Pipeline C1–C8</a>
 
     <div class="lbl">Motion</div>
     <a class="nv" href="#waves"><span class="ic">≣</span>Wave history<span class="ct" id="nvWaves"></span></a>
-    <a class="nv" href="#governance"><span class="ic">⚖</span>Governance<span class="ct">130</span></a>
+    <a class="nv" href="#governance"><span class="ic">⚖</span>Governance<span class="ct govOpen"></span></a>
+    <a class="nv" href="#integrity"><span class="ic">⛨</span>Process integrity<span class="ct" id="nvInteg"></span></a>
     <a class="nv" href="#assets"><span class="ic">⛁</span>Data assets</a>
 
     <div class="lbl">Action</div>
@@ -44,7 +45,7 @@
 <div class="main">
   <div class="topbar">
     <span class="crumb">Prediction Markets <b>/</b> Visual Dashboard</span>
-    <span class="chip info"><i></i>Wave 67 closed · 68 in flight</span>
+    <span class="chip info"><i></i>__WAVECHIP__</span>
     <span class="spacer"></span>
     <button class="btn" id="themeBtn">◐ Theme</button>
   </div>
@@ -54,22 +55,22 @@
 <!-- ============================================================ STATE -->
 <section id="state">
   <div class="hero">
-    <div class="eyebrow">State of the system · 2026-10-10</div>
-    <h2>The board is up. The fill fix is live. The first verdict is three weeks out.</h2>
-    <p>Since Wave 42 the project stopped polishing one cell and built the board: <strong>40 of 107 cells</strong>
-    now log pre-registered shadow forecasts across MLB, NFL and NHL, and NBA joins on opening night (10-20).
-    Execution was measured for the first time and it is the weakest link: on both demo books,
-    <strong>orders that fill lose</strong> — they rest at the model's price and fill when the market moves against
-    them. The fix (cancel after 60 s, price off the live book) was accepted 10-10 and its forward test went live 10-11, after
-    Wave 66 found the "outage" was the bot ordering tickers the demo venue does not list. Depth got its first live challenger — an NFL model that knows who the quarterback is, logging since 10-11 — but it is a better
-    model, not an edge: on 2025's priced games the market still beat it. <strong>No cell has a verdict yet.</strong>
-    The first is NFL, ~2 Nov, and its own pre-registration expects "keep accruing".</p>
+    <div class="eyebrow">State of the system · 2026-10-14</div>
+    <h2>The foundation is fixed, the NFL engine has started, and the first verdict is still about 2 Nov.</h2>
+    <p><strong>40 of 107 cells</strong> log pre-registered shadow forecasts across MLB, NFL, NHL and NBA (NBA from 10-20).
+    Wave 72 made the base trustworthy: ledgers survive a crash, deploys prove the running code is current, and the order path
+    itself refuses real money. The fill-fix forward test is live with both arms and <strong>0 cancel failures</strong>; nothing
+    since the re-arm has settled enough to judge. Depth now has a doctrine — <strong>one deep engine per sport</strong>
+    (ADR-0073): the NFL engine's first simulation prices moneyline, spread, total and team totals from one draw set, as good as
+    the old per-family models but not better yet, while its play-level data layer is being built. Wave 70–71 drift led to
+    ADR-0074: every running piece is now owned, and every window mistake is on the record (Process integrity, below).
+    <strong>No cell has a verdict yet.</strong></p>
     <div class="meta">
       <span class="chip good"><i></i>40 / 107 cells logging</span>
-      <span class="chip crit"><i></i>Fills win 24% vs 49% for non-fills</span>
-      <span class="chip info"><i></i>Fill-fix forward test ON 10-11</span>
+      <span class="chip info"><i></i>Forward test live · both arms</span>
       <span class="chip warn"><i></i>0 cells at a scored look</span>
-      <span class="chip good"><i></i>Props: MLB hits + NBA points</span>
+      <span class="chip info"><i></i>NFL engine · stage 1</span>
+      <span class="chip crit"><i></i>21 running pieces with no alarm</span>
       <span class="chip mute"><i></i>$0 real capital · kelly 0.0</span>
     </div>
   </div>
@@ -245,9 +246,9 @@
 
 <!-- ============================================================ MATRIX -->
 <section id="matrix">
-  <div class="sechead"><h2>Cell matrix</h2><span class="num">18 market types × 12 bands · 104 cells</span></div>
-  <p class="lede">Read directly from <span class="mono">MARKET_TYPE_REGISTRY</span>. <strong>37 cells log</strong>
-  (1 ACTIVE, 36 SHADOW), 2 are BLOCKED, 1 is DARK and 64 are defined but not built — mostly in-play sub-bands
+  <div class="sechead"><h2>Cell matrix</h2><span class="num">18 market types × 12 bands · <span class="cellN"></span> cells</span></div>
+  <p class="lede">Read directly from <span class="mono">MARKET_TYPE_REGISTRY</span> at build time. <strong><span id="mxLogging"></span> cells log</strong>
+  (<span id="mxBreak"></span>); <span id="mxOther"></span> — mostly in-play sub-bands
   the horizon doctrine says must earn their speed first. Blank squares are not registered at all.</p>
 
   <div class="card">
@@ -364,14 +365,14 @@
 
 <!-- ============================================================ GOVERNANCE -->
 <section id="governance">
-  <div class="sechead"><h2>Governance</h2><span class="num">155 live gaps · 130 OPEN</span></div>
+  <div class="sechead"><h2>Governance</h2><span class="num"><span class="govLive"></span> live gaps · <span class="govOpen"></span> OPEN</span></div>
   <p class="lede">The gap log is the project's memory of everything it noticed and did not fix. Wave 59 re-verified
   it (176 → 131 OPEN) and retired resolved entries to an archive that only grows.</p>
 
   <div class="grid g2">
     <div class="card">
       <h3>OPEN gaps by severity</h3>
-      <div class="cap">130 OPEN of 155 live entries. Severity is self-assigned at registration; 21 carry none.</div>
+      <div class="cap"><span class="govOpen"></span> OPEN of <span class="govLive"></span> live entries, counted from the gap log at build time. Severity is self-assigned at registration.</div>
       <div class="bars" id="sevBars"></div>
     </div>
     <div class="card">
@@ -407,9 +408,72 @@
       <h3>Registered vs retired</h3>
       <div class="cap">Every gap ever registered, and where it is now.</div>
       <div class="bars" id="asymBars"></div>
-      <div class="note warn" style="margin-top:15px"><b>Retirement is real now.</b> 223 entries live in the archive,
-      moved verbatim. The 130 still OPEN are mostly MEDIUM/LOW history; only a handful gate current work.</div>
+      <div class="note warn" style="margin-top:15px"><b>Retirement is real.</b> <span class="govRetired"></span> entries live in the archive,
+      moved verbatim. The <span class="govOpen"></span> still OPEN are mostly MEDIUM/LOW history; only a handful gate current work.</div>
     </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ PROCESS INTEGRITY (ADR-0074) -->
+<section id="integrity">
+  <div class="sechead"><h2>Process integrity</h2><span class="num">ADR-0074 · Hard Rules 13–15</span></div>
+  <p class="lede">Two failures kept the environment loose: <strong>every session saw a slice</strong> — nobody owned what
+  actually runs, and fixes landed in one place while the same bug lived on in another — and <strong>the strategy windows
+  never pushed back</strong> when breadth added running pieces faster than they were made reliable. This section is the
+  standing answer: every running piece owned and alarmed, every window mistake on the record.</p>
+
+  <div class="grid g4">
+    <div class="tile" style="--accent:var(--s1)"><div class="k">Surface · live components</div><div class="v" id="surfLive"></div>
+      <div class="n">Every cron job, service and workflow, from the runtime registry. CI fails on an unregistered one.</div></div>
+    <div class="tile" style="--accent:var(--crit)"><div class="k">No alarm if it stops</div><div class="v" id="surfNoAlarm"></div>
+      <div class="n">Running pieces that could die silently (GG-743). The first debt to burn down.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">Not yet reviewed</div><div class="v" id="surfUnrev"></div>
+      <div class="n">Auto-classified 10-14; a terminal checks each against the live box (block B74-A).</div></div>
+    <div class="tile" style="--accent:var(--ink-3)"><div class="k">Surface budget</div><div class="v" style="font-size:20px">not live yet</div>
+      <div class="n">GREEN/RED from healthcheck, silent arms and running-code checks once B74-A wires it into the scan.</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Runtime map — what actually runs</h3>
+    <div class="cap">Generated from <span class="mono">RUNTIME_REGISTRY.toml</span> at build time. Red alarm text = nothing tells us if it stops.</div>
+    <div class="toolbar">
+      <button class="btn sm rtf on" data-f="all">All</button>
+      <button class="btn sm rtf" data-f="noalarm">No alarm</button>
+      <button class="btn sm rtf" data-f="EXECUTION">Execution</button>
+      <button class="btn sm rtf" data-f="BREADTH">Breadth</button>
+      <button class="btn sm rtf" data-f="PROOF">Proof</button>
+      <button class="btn sm rtf" data-f="PLUMBING">Plumbing</button>
+    </div>
+    <div class="tscroll" style="max-height:420px;overflow:auto"><table>
+      <thead><tr><th>Kind</th><th>When (UTC)</th><th>What</th><th>Pillar</th><th>Alarm if it stops</th><th>Reviewed</th></tr></thead>
+      <tbody id="rtBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Strategy-window mistakes, by pattern</h3>
+      <div class="cap"><span id="winCount"></span> logged in <span class="mono">WINDOW_ERROR_LOG.md</span>. Every new window reads this first and names the pattern it is most at risk of.</div>
+      <div class="bars" id="winTally"></div>
+    </div>
+    <div class="card">
+      <h3>The rules now in force</h3>
+      <div class="tscroll"><table class="gg"><tbody>
+        <tr><td class="k">HR 13</td><td>Fix everywhere: every fix searches for the same bug elsewhere; handoffs carry <span class="mono">pattern_sweep</span>.</td><td><span class="chip good"><i></i>enforced from 10-15</span></td></tr>
+        <tr><td class="k">HR 14</td><td>Every running piece registered; no new piece while a health signal is red.</td><td><span class="chip warn"><i></i>registry enforced · budget pending B74-A</span></td></tr>
+        <tr><td class="k">HR 15</td><td>Window logs its mistakes, checks notes before asking, writes Pushback / Surface / Dependencies into every wave.</td><td><span class="chip good"><i></i>in force from Wave 74</span></td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Window error log</h3>
+    <div class="cap">Newest first. Append-only.</div>
+    <div class="tscroll" style="max-height:380px;overflow:auto"><table>
+      <thead><tr><th>#</th><th>Date</th><th>What the window did</th><th>Pattern</th><th>Rule now in force</th></tr></thead>
+      <tbody id="winBody"></tbody>
+    </table></div>
   </div>
 </section>
 

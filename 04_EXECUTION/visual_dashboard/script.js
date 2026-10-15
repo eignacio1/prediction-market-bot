@@ -151,9 +151,14 @@ const DESK = [
    d:"EXP-034's ≥2.5-hour sampler: run it as a detached read-only VPS job, or park it."},
 ];
 
-const SEV = [["CRITICAL",2,"var(--crit)"],["HIGH",17,"var(--serious)"],["MEDIUM",45,"var(--warn)"],
-             ["LOW",45,"var(--s1)"],["UNSPECIFIED",21,"var(--ink-3)"]];
-const ASYM = [["Registered, ever",378,"var(--s2)"],["Retired to archive",223,"var(--s3)"],["Live",155,"var(--s1)"],["Live and OPEN",130,"var(--warn)"]];
+const GOV = __GOV__;
+const SEV = [["CRITICAL","var(--crit)"],["HIGH","var(--serious)"],["MEDIUM","var(--warn)"],["LOW","var(--s1)"],
+             ["UNSPECIFIED","var(--ink-3)"]].map(([k,c])=>[k,GOV.sev[k]||0,c]);
+const ASYM = [["Registered, ever",GOV.ever,"var(--s2)"],["Retired to archive",GOV.retired,"var(--s3)"],
+              ["Live",GOV.live,"var(--s1)"],["Live and OPEN",GOV.open,"var(--warn)"]];
+/* ADR-0074 — process integrity: runtime registry + window error log, injected at build time */
+const RUNTIME = __RUNTIME__;
+const WINERR = __WINERR__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
@@ -304,8 +309,43 @@ function desk(){
     `<div class="dd">${d.d}</div><div class="dc">${d.c}</div></div>`).join('');
 }
 
+
+function integrity(){
+  const live=RUNTIME.filter(c=>c.status==="live"), unrev=live.filter(c=>!c.reviewed),
+        noal=live.filter(c=>String(c.alarm||"").startsWith("none")||String(c.alarm||"").startsWith("UNSET"));
+  $('#surfLive').textContent=live.length; $('#surfUnrev').textContent=unrev.length; $('#surfNoAlarm').textContent=noal.length;
+  $('#nvInteg').textContent=live.length;
+  const pill={"BREADTH":"good","DEPTH":"info","EXECUTION":"warn","PROOF":"serious","PLUMBING":"mute"};
+  const rowsOf=(f)=>RUNTIME.filter(c=>f==="all"||(f==="noalarm"?(c.status==="live"&&(String(c.alarm).startsWith("none")||String(c.alarm).startsWith("UNSET"))):c.pillar===f));
+  const draw=(f)=>{
+    $('#rtBody').innerHTML=rowsOf(f).map(c=>{
+      const al=String(c.alarm||""); const bad=al.startsWith("none")||al.startsWith("UNSET");
+      return `<tr><td class="k">${esc(c.kind)}</td><td class="mono" style="font-size:11px;white-space:nowrap">${esc(c.schedule||"—")}</td>`+
+        `<td>${esc(String(c.purpose).replace(" (auto - review)",""))}${c.status!=="live"?` <span class="chip mute"><i></i>${esc(c.status)}</span>`:""}</td>`+
+        `<td><span class="chip ${pill[c.pillar]||"mute"}"><i></i>${esc(c.pillar)}</span></td>`+
+        `<td style="color:${bad?"var(--crit)":"var(--ink-2)"}">${esc(al.replace(" (auto)",""))}</td>`+
+        `<td>${c.reviewed?'<span class="chip good"><i></i>yes</span>':'<span class="chip warn"><i></i>no</span>'}</td></tr>`;}).join('');
+  };
+  draw("all");
+  $$('.rtf').forEach(b=>b.addEventListener('click',()=>{$$('.rtf').forEach(o=>o.classList.remove('on')); b.classList.add('on'); draw(b.dataset.f);}));
+  bars('#winTally',WINERR.tally.map(x=>[x.pattern,x.count,x.pattern==="UNVERIFIED"?"var(--crit)":"var(--warn)"]));
+  $('#winCount').textContent=WINERR.rows.length;
+  $('#winBody').innerHTML=WINERR.rows.slice().reverse().map(r=>
+    `<tr><td class="k">${esc(r.id)}</td><td style="white-space:nowrap">${esc(r.date)}</td><td>${esc(r.what)}</td>`+
+    `<td><span class="chip warn"><i></i>${esc(r.pattern)}</span></td><td style="color:var(--ink-2)">${esc(r.rule)}</td></tr>`).join('');
+}
+function govCounts(){
+  $$('.govOpen').forEach(e=>e.textContent=GOV.open); $$('.govLive').forEach(e=>e.textContent=GOV.live);
+  $$('.govRetired').forEach(e=>e.textContent=GOV.retired);
+  const st={}; Object.values(CELLS).forEach(c=>st[c.s]=(st[c.s]||0)+1);
+  const n=Object.keys(CELLS).length, logging=(st.shadow||0)+(st.active||0);
+  $$('.cellN').forEach(e=>e.textContent=n); $('#mxLogging').textContent=logging;
+  $('#mxBreak').textContent=`${st.active||0} ACTIVE, ${st.shadow||0} SHADOW`;
+  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK and ${st.not_implemented||0} defined but not built`;
+}
+
 /* ---- WIRE ---- */
-distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk();
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts();
 bars('#sevBars',SEV); bars('#asymBars',ASYM);
 $('#tblBtn').addEventListener('click',()=>{
   const t=$('#forestTable'); t.classList.toggle('hidden');

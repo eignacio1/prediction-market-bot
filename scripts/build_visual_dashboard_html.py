@@ -34,13 +34,76 @@ def cells() -> dict:
     return out
 
 
+def runtime() -> list:
+    """ADR-0074: the runtime registry, for the Process integrity section."""
+    import tomllib
+    reg = ROOT / "02_ARCHITECTURE_DESIGN" / "RUNTIME_REGISTRY.toml"
+    if not reg.exists():
+        return []
+    keep = ("kind", "schedule", "purpose", "pillar", "alarm", "reviewed", "status", "writes", "source")
+    return [{k: c.get(k) for k in keep} for c in tomllib.loads(reg.read_text()).get("component", [])]
+
+
+def window_errors() -> dict:
+    """ADR-0074: rows and pattern tally of 04_EXECUTION/WINDOW_ERROR_LOG.md."""
+    import re
+    f = ROOT / "04_EXECUTION" / "WINDOW_ERROR_LOG.md"
+    rows, tally = [], []
+    if f.exists():
+        section = "rows"
+        for line in f.read_text().splitlines():
+            if line.startswith("## Pattern tally"):
+                section = "tally"
+            if not line.startswith("| ") or line.startswith("|---") or line.startswith("| #") or line.startswith("| Pattern"):
+                continue
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if section == "rows" and len(cells) >= 8:
+                rows.append(dict(zip(("id", "date", "wave", "what", "cost", "caught", "pattern", "rule"), cells[:8])))
+            elif section == "tally" and len(cells) >= 3:
+                tally.append({"pattern": cells[0], "count": int(re.sub(r"\D", "", cells[1]) or 0), "last": cells[2]})
+    return {"rows": rows, "tally": tally}
+
+
+def governance() -> dict:
+    """Live gap-log counts, so the Governance section never goes stale (ADR-0074 lesson)."""
+    import re
+    live = (ROOT / "03_DECISIONS" / "GOVERNANCE_GAP_LOG.md").read_text()
+    arch = (ROOT / "03_DECISIONS" / "GOVERNANCE_GAP_LOG_ARCHIVE.md").read_text()
+    sev, n_open, n_live = {}, 0, 0
+    for line in live.splitlines():
+        if not line.startswith("**Status:**"):
+            continue
+        n_live += 1
+        st = re.match(r"\*\*Status:\*\* ([A-Z][A-Z \-]*?)(?: —| ·|$)", line)
+        sv = re.search(r"\*\*Severity:\*\* ([A-Z]+)", line)
+        if st and st.group(1).strip() == "OPEN":
+            n_open += 1
+            s = sv.group(1) if sv else "UNSPECIFIED"
+            sev[s] = sev.get(s, 0) + 1
+    retired = len(re.findall(r"^### GG-[0-9]", arch, re.M))
+    return {"open": n_open, "live": n_live, "retired": retired, "ever": n_live + retired, "sev": sev}
+
+
+def wave_chip() -> str:
+    import re
+    q = (ROOT / "04_EXECUTION" / "ACTIVE_QUEUE.md").read_text()
+    now = re.search(r"^## ⬛ NOW — Wave (\d+)", q, re.M)
+    closed = re.search(r"^### ✅ WAVE (\d+) — CLOSED", q, re.M)
+    return (f"Wave {closed.group(1)} closed · " if closed else "") + (f"{now.group(1)} in flight" if now else "")
+
+
 def build(out: pathlib.Path) -> None:
     sha = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short=7", "HEAD"],
                          capture_output=True, text=True).stdout.strip() or "unknown"
     date = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
-    body = (SRC / "body.html").read_text().replace("__SHA__", sha).replace("__DATE__", date)
-    script = (SRC / "script.js").read_text().replace(
-        "__CELLS__", json.dumps(cells(), ensure_ascii=False).replace("</", "<\\/"))
+    body = (SRC / "body.html").read_text().replace("__SHA__", sha).replace("__DATE__", date).replace(
+        "__WAVECHIP__", wave_chip())
+
+    def js(obj) -> str:
+        return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
+
+    script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime()))
+              .replace("__WINERR__", js(window_errors())).replace("__GOV__", js(governance())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     out.write_text(html)
     print(f"wrote {out} ({len(html):,} bytes) at {sha}")
