@@ -27,6 +27,7 @@ from typing import Any, Callable, Optional
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
+from prediction_market_bot.atomic_io import atomic_write_text  # noqa: E402  GG-754
 
 JUDGED_N = 550
 WEEKS = 8
@@ -208,7 +209,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
                 day_skip[day]["orders"] += 1
                 c["fill_orders"].append((r["order_id"], ticker_of(r)))
             oid = r.get("order_id")
-            if oid not in outcome and (now - ts).total_seconds() > NO_OUTCOME_S:
+            # GG-754: epoch-gated like the cancel-failure check - a pre-fix orphan must not re-trip the turn-off forever
+            if oid not in outcome and ts >= CANCEL_PATH_FIX_EPOCH and (now - ts).total_seconds() > NO_OUTCOME_S:
                 c["no_outcome"] += 1
         elif ev in ("cancel_ok", "cancel_failed", "cancel_already_terminal"):
             if ev == "cancel_failed" and _historical_404_terminal(r, fills_for):
@@ -303,7 +305,8 @@ def turn_off(trips: list[dict], now: datetime, env_path: Path = ENV_FILE, log: O
     if not trips or not switches_active(env_path):
         return False
     why = ",".join(t["condition"] for t in trips)
-    _override_for(env_path).write_text(
+    atomic_write_text(
+        _override_for(env_path),
         f"# TURNED OFF {now.isoformat()} by demo_fill_forward_report ({why}). Delete this file to re-enable.\n"
         + "".join(f"{k}=off\n" for k in SWITCH_KEYS))
     if log:
@@ -364,9 +367,9 @@ def main(argv: Optional[list[str]] = None) -> int:
         rep["switches_turned_off"] = True
     rep["switches_active"] = switches_active(Path(a.env_file))
     outp.parent.mkdir(parents=True, exist_ok=True)
-    outp.write_text(json.dumps(rep, indent=2, default=str) + "\n")
+    atomic_write_text(outp, json.dumps(rep, indent=2, default=str) + "\n")
     try:
-        cache_p.write_text(json.dumps(cache))
+        atomic_write_text(cache_p, json.dumps(cache))
     except OSError:
         pass
     print(summary_line(rep))

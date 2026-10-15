@@ -18,7 +18,8 @@ def shadow_order(m, oid, tk="KXNHLGAME-26OCT12-X"):
     return ev(m, event="shadow_order", row_id=f"run|{tk}", ok=True, order_id=oid, ticker=tk)
 
 
-def test_counts_skips_cancels_and_fills():
+def test_counts_skips_cancels_and_fills(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(days=2))  # GG-754: no_outcome is epoch-gated
     events = [
         shadow_order(300, "o1"), shadow_order(290, "o2"),
         ev(300, event="cancel_scheduled", order_id="o1", position_id="run|KXNHLGAME-26OCT12-X", ticker="KXNHLGAME-26OCT12-X"),
@@ -176,3 +177,36 @@ def test_post_fix_cancel_failures_still_trip(monkeypatch):
     monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
     rep = rpt.build_report(_cancel_events(3, 7, 10), NOW, None)
     assert [t["condition"] for t in rep["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
+
+
+def _orphan(minutes_ago):
+    tk = "KXMLBHIT-X"
+    return [shadow_order(minutes_ago, "orph", tk),
+            ev(minutes_ago, event="cancel_scheduled", order_id="orph", position_id="run|" + tk, ticker=tk)]
+
+
+def test_pre_fix_no_outcome_orphan_does_not_trip_turn_off(monkeypatch):
+    """GG-754: one orphan from before the cancel-path fix must not re-trip the turn-off forever."""
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
+    rep = rpt.build_report(_orphan(600), NOW, None)
+    assert rep["turn_off_checks"]["scheduled_cancel_no_outcome_15m"] == {"count": 0, "tripped": False}
+    assert rep["tripped"] == []
+
+
+def test_post_fix_no_outcome_orphan_still_trips(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=2))
+    rep = rpt.build_report(_orphan(60), NOW, None)
+    assert [t["condition"] for t in rep["tripped"]] == ["scheduled_cancel_no_outcome_15m"]
+
+
+def test_writes_are_atomic_no_tmp_left(tmp_path, monkeypatch):
+    """GG-754: override file, report and cache go through atomic_write_text (temp + os.replace)."""
+    env = tmp_path / "demo_fill.env"
+    env.write_text("SHADOW_FLAT_STAKE=on\n")
+    calls = []
+    real = rpt.atomic_write_text
+    monkeypatch.setattr(rpt, "atomic_write_text", lambda p, t: (calls.append(Path(p).name), real(p, t))[1])
+    assert rpt.turn_off([{"condition": "x"}], NOW, env)
+    assert calls == ["demo_fill.override.env"]
+    assert "SHADOW_FLAT_STAKE=off" in (tmp_path / "demo_fill.override.env").read_text()
+    assert not [p for p in tmp_path.iterdir() if p.name.endswith(".tmp")]
