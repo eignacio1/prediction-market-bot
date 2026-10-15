@@ -914,3 +914,4 @@
 | 2026-10-15T23:49:25Z | T-TBD GG-TBD none (exploratory only) | W76.2 NFL engine: 2nd orthogonal factor class to APPLIED; PURPOSE DEPTH D5(b) NFL 6->7 applied/16 |
 | 2026-10-15T23:49:36Z | T-1020..T-1022, GG-840..GG-842 | W76.1 MEDIUM - kill switch drill on running processes (GG-745) + fill-fix read-back/projection (GG-754). PURPOSE: EXECUTION E1/E2/E3 (+ judged-n projection) |
 | 2026-10-15T23:49:42Z | GG-TBD-none (register-only) | STANDARD — runtime map live + visible on both dashboards (B74-A S2) — FOR PLUMBING (ADR-0074) surface review 0/76->76/76, no-alarm 21->0, SURFACE BUDGET live — W76.4 |
+| 2026-10-15T23:50:16Z | T-1030..T-1032, GG-850..GG-854 | W76.3 MEDIUM - every ledger writer atomic+locked; 34-row T4 gap reconciled (GG-748/747/764). PURPOSE: PROOF integrity - live-ledger writers bypassing atomic_io 4->0; CellLedger.append cross-process safe; T4 closed-vs-resolved gap 34->0 or explained |
