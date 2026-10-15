@@ -236,7 +236,7 @@ waits on another's.
 | 76.1 | Kill switch proven on the box; why the fill fix barely fills | EXECUTION: order paths halting on one switch, running (6/6 in code → 6/6 running); E1 per arm + projected date each arm reaches judged n | ⬜ | |
 | 76.2 | NFL engine: a second factor class the ratings can't already hold | DEPTH D5(b) NFL applied +1 (6 → 7 of 16 seat factors) | ⬜ | |
 | 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | PROOF integrity (GG-747/748/764): ledger writers bypassing atomic_io 4 → 0 | ⬜ | |
-| 76.4 | Runtime map live and visible (B74-A Session 2) | PLUMBING (ADR-0074): registry entries reviewed 0/76 → 76/76; no-alarm 21 → 0; SURFACE BUDGET on both dashboards | ⬜ | |
+| 76.4 | Runtime map live and visible (B74-A Session 2) | PLUMBING (ADR-0074): registry entries reviewed 0/76 → 76/76; no-alarm 21 → 0; SURFACE BUDGET on both dashboards | 🟨 Part C pushed (8e766c8, branch) | Registry 76/76 reviewed vs box, 0 no-alarm w/o reason, RUNTIME block in scan; GG-742/743/753 closed; Part D (dashboards) next. |
 
 ### 76.1 — Kill switch proven on the box; why the fill fix barely fills
 
