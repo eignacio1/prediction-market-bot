@@ -2270,3 +2270,9 @@ Operator, verbatim: "let's not make it so general though - what i mean by 'edge'
 
 - CLAUDE.md corrected in place (the 21:30 entry had compressed it to "expected edge is the reason to build"). Window error W16, new pattern REDUCED.
 - Not yet written: the implementing doctrine. Terms the window could not find defined in the repo or project docs: "structural tensions", "seat interface" (momentum looping = STRATEGY_OVERVIEW.md Strategy J). Asked the operator before writing.
+
+## 2026-10-14 21:47 PT — Operator definitions; deep PAM tier ownership; ADR-0075 drafted (PROPOSED)
+
+Operator, verbatim: "structural tensions: where the architecture strains, seat interface: deep mapping of sports-eyes to cells. a lot of your window is actually bringing my strategic vision to life, documented and placed into the file cabinet efficiently. i'm actually doing my job. i assumed that was already piped into the project - if it hasn't then we need to open up the scaffolding to get those built lol - anyways, the deep PAM tier will be a multi layer effort between me and you (Claude). right now - we just need to get the ball rolling on at least building it out foundationally."
+
+- Window drafted `03_DECISIONS/ADR-0075_betting-architecture-doctrine.md` (PROPOSED): his words verbatim; the chain aggregation > interpretation > application; the eight components with his two definitions and the window's working descriptions marked "confirm"; an inventory of what exists vs the gap and the first scaffold per component (structural tensions and seat interface had no scaffold anywhere); PAM segmentation (core / sport taxonomy / mass tier / deep tier = operator + Claude); MLB look-back; NBA speed lane; proposed measure D5. Not accepted until he says so; no wave written.
