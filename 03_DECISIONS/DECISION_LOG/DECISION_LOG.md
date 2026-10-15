@@ -2328,3 +2328,9 @@ Operator, verbatim: "No - deep PAM tier needs to be substantially deeper than th
 
 - 75.1's proposed start (NFL starting QBs + top-2 WRs, ~100 players, batches of 10) rejected. Deep tier scope, even foundationally: QBs, WRs, RBs, TEs, OL and core defenders. Not scheduled soon; core + mass tier first. Recorded in 02_ARCHITECTURE_DESIGN/PAM/DEEP_TIER.md.
 - Wave 76 (written 06:10 UTC) pushed and issued now; the push had been blocked ~17 h by shell safety-check timeouts (window error W19).
+
+## 2026-10-15 16:49 PT — Standing gap burn-down terminal beside every wave
+
+Operator, verbatim: "alright we're gonna add a terminal block on top of the regular waves that systematically burns down the open gaps that it can - I want to start tearing through it" / "within reason of corse"
+
+- New standing block GB in ACTIVE_QUEUE.md: one terminal per wave, continuing from 03_DECISIONS/GG_BURNDOWN.md. Closes only on evidence (already fixed / duplicate), fixes only small safe items outside the wave's files, collects operator calls without deciding them, sizes large items for waves. Never touches orders, stakes, kelly, ledger rows, pre-registrations, frozen artifacts/books or real capital. Baseline 2026-10-15: 187 OPEN (2 CRITICAL, 21 HIGH) plus 22 RESOLVED entries still in the live log.
