@@ -35,6 +35,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W10 | 2026-10-13 | 71 | Asked the operator what Syndicate32 was — it was in project memory since 09-25. | Operator: "Very typical". | Operator | NOTES | Search memory, project docs and repo before asking anything |
 | W11 | 2026-10-13 | 71.H1 | Scoped the hygiene audit without the deployment lane or a skill map; he had to add four add-ins. Then claimed `/vps` "replaces" the crontab (it appends). | Operator did scoping work; one inaccurate claim. | Operator; the audit itself | SCOPE | Audit blocks cover deploy + runtime; claims about code are read from the code |
 | W12 | 2026-10-12/13 | 70–71 | Two consecutive waves moved no measure; the windows planned plumbing and breadth without saying surface was outrunning reliability. | Drift; four waves of fixing fixes. | Drift rule (flagged at 71 close) | NO-PUSHBACK | Pushback line + surface budget in every wave (ADR-0074, Hard Rule 14) |
+| W13 | 2026-10-14 | 73 | Landed the CI registry check (ADR-0074) while 73.1 (new NBA cron) and 73.2 (possible new workflow) were in flight — their PRs fail CI until they register. Known at push time; mitigated with an add-in. | One extra step for two running blocks. | Window, before push | COLLISION | Process changes that add CI gates land between waves, or ship with the add-in for blocks in flight |
 
 ## Pattern tally (update at every handoff)
 
@@ -45,6 +46,6 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | NO-PUSHBACK | 2 | W12 (10-13) |
 | SLICE | 2 | H2 (history) |
 | ESCALATED | 1 | W9 |
-| COLLISION | 1 | W8 |
+| COLLISION | 2 | W13 (10-14) |
 | SCOPE | 1 | W11 |
 | PROCESS | 1 | W5 |

@@ -2057,6 +2057,30 @@ W73.2 Part A (2026-10-14). `games.temp`/`wind` (fill 0.74 in 2018, 0.38 in 2022,
 
 W73.1 2026-10-15. The 11:25Z report of 2026-10-14 tripped `cancel_fail_rate_gt_10pct_in_a_day` on 10-13 cancel failures that predate the cancel-path fix (2026-10-13T23:58Z) and wrote `deploy/demo_fill.override.env`; placement and shadow stakes were OFF from 11:25Z to 2026-10-15T00:14Z (~12.8h dark). Fix: PR #256 (4616807) counts only attempts at or after `CANCEL_PATH_FIX_EPOCH`; ADR-0072 addendum 2026-10-14. Read back on the box with `--no-act`: no turn-off tripped; override archived to `logs/`, `is_enabled()` True, policy log flowing at 00:14Z.
 
+### GG-740 — Slice failure: no single owned map of the running system; fixes landed in one place while the same defect survived elsewhere
+
+**Status:** OPEN · **Severity:** HIGH
+
+Registered 2026-10-14 by the strategic window (ADR-0074). Hundreds of short sessions each saw a slice of the system; nobody owned what runs end to end, and fixes were not swept for the same defect elsewhere. Evidence: GG-122 -> GG-144 (same broken grep fixed in the hook, left in CLAUDE.md Step 3 for 13 days); GG-532 and GG-163 (silent arm / silent T4 found by hand); GG-661 (stale code running after skipped restarts); GG-203 (only evidence cell dark 38 days). **Done 2026-10-14 (window):** `02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml` + `scripts/runtime_registry.py` + `tests/test_runtime_registry.py` (CI fails on an unregistered cron line, service or workflow; 76 components registered, 75 live); `RUNTIME_MAP.md` generated; Hard Rule 13 + `pattern_sweep:` handoff key (required after 2026-10-15T12:00Z, `generate_session_artifacts.py`, tests). **Open until:** a terminal (a) wires registry check, surface counts and live columns (running code SHA, last write, alarm state) into the governance scan, and (b) reviews all 75 auto-classified entries against the live crontab (`reviewed = true`). Pillar: PLUMBING (protects every pillar).
+
+### GG-741 — Strategic windows were unaccountable: no pushback against surface outrunning reliability, plumbing escalated, notes not read, colliding blocks
+
+**Status:** OPEN · **Severity:** HIGH
+
+Registered 2026-10-14 (ADR-0074). Twelve window errors seeded in `04_EXECUTION/WINDOW_ERROR_LOG.md` (W1-W12, plus two historical slice failures). **Done 2026-10-14 (window):** the log with a pattern tally; Hard Rules 14-15 in CLAUDE.md (surface budget; error log read first; notes-first; Pushback / Surface / Dependencies lines in every wave; operator routing limited to pre-registration, frozen artifact/book, real capital, strategy); `/strategic-handoff` step 0 + Surface row + wave format; window paste-in updated. **Open until:** two consecutive waves are issued in the new format and the next window handoff reads and extends the log. Pillar: PLUMBING.
+
+### GG-742 — Five cron jobs are mirrored only in arm fragments, not in deploy/cron.conf (the file treated as the live mirror)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+Found 2026-10-14 by `scripts/runtime_registry.py` discovery — five (schedule, script, flags) signatures appear in a fragment file but not in `deploy/cron.conf`: `18 11 * * 0 scripts/nba_player_box_backfill.py --seasons 2026`; `* * * * * scripts/demo_cancel_sweeper.py`; `7 */6 * * * scripts/run_mlb_pregame_shadow.py --bands T1 --refresh`; `14 */6 * * * scripts/run_nfl_qb_challenger_shadow.py --bands T1`; `44 9 * * * scripts/run_pregame_shadow_settle.py --ledger-dir exp_output/PREGAME_SHADOW_NFLQB --prefix NFLQB`. Not checked whether cron.conf carries the same jobs with a different schedule or flags. Either cron.conf is incomplete as a mirror (GG-676 class) or the fragments differ in schedule/flags from the live lines. Needs: compare against `crontab -l` on the box; make one file the complete mirror (or document that the mirror is the union). Related: GG-676. Pillar: PLUMBING.
+
+### GG-743 — 21 live components have no alarm if they stop (surface debt)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+`python3 scripts/runtime_registry.py surface` on 2026-10-14: 75 live components, 21 whose alarm is "none" (settlement joins, price archive, calibration/band monitors, schedule validator, depth/settlement capture, one-shot NBA flips, paused Post-Game Resolve). Under Hard Rule 14 each needs an alarm or an explicit reason it needs none. The silent-arm pattern (W62.1) and the deploy status file (W72.3) are the templates. Pillar: PLUMBING (PROOF data most exposed: settlement joins).
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

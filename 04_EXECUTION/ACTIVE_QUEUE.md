@@ -9,6 +9,7 @@
 |---|---|
 | Highest GG / T / ADR / EXP | Registered to **GG-677** · **T-902** · **ADR-0072** · **EXP-040** |
 | Registry (104 cells) | ACTIVE 1 (T4M-PROJ) · SHADOW 24 (3 MLB player-hits, 12 NFL, 9 NHL) · BLOCKED 2 · DARK 1 · NOT_IMPLEMENTED 76 (incl. 12 NBA, flip ~10-21). MLB postseason game cells log + settle but are not registered SHADOW. Counted from `MARKET_TYPE_REGISTRY` at `edb3138`. |
+| Surface (ADR-0074) | **75 live components** (registry 2026-10-14: 76 incl. 1 paused) · 75 unreviewed · **21 with no alarm** (GG-743) · budget not yet computed live (B74-A). Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
 | Capital | **$0 real.** `kelly_fraction = 0.0` on every operating band; **T4M-PROJ places flat paper measurement stakes of min($1, max_contracts x price)** (ADR-0050). Demo venue only. SHADOW = evaluate and log. |
 | Shadow arms | **NFL** 12 cells logging, first look projected **2026-11-02**. **MLB postseason** armed and logging (judged n starts 2027). **NHL** 9 cells logging; judged n unreachable this season (GG-514); no NHL T3 score may be read (GG-401). **NBA** preseason rows to a separate labelled ledger; regular season 10-20, cells flip ~10-21. |
 | Open PRs | Only stale ones from Waves 30-34 (#133, #144, #146, #149). Nothing from Waves 52-59 is waiting. |
@@ -44,6 +45,10 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
+
+**Process integrity (ADR-0074, operator 2026-10-14):** every running piece is in `RUNTIME_REGISTRY.toml` (CI-enforced); every fix is
+swept for the same defect elsewhere (`pattern_sweep:`); no new running component while a health signal is red; the window logs its
+own mistakes in `WINDOW_ERROR_LOG.md` and every wave carries Pushback / Surface / Dependencies lines (Hard Rules 13-15).
 
 **The scale (ADR-0073, operator 2026-10-13):** one deep engine per sport at Syndicate32-level granularity or deeper, pricing
 the whole board from one simulation; the data layer is the work, free sources first; a DEPTH lane in every wave until each live
@@ -441,6 +446,91 @@ PART B - Build + backtest once (~55 min)
 Results: 12_EXPLORATORY/nfl_engine/results.md; D4 line for NFL.
 
 END OF BLOCK 73.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
+
+### B74-A — ADR-0074 terminal remainder: the runtime map goes live; every running piece reviewed
+
+```
+COMMON RULES - BACKLOG BLOCK (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_B74A.md (docs-only push).
+
+BLOCK B74-A - ADR-0074 REMAINDER: RUNTIME MAP LIVE, REGISTRY REVIEWED. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - one owned, live map of the running system (GG-740), surface budget enforced in the scan (Hard Rule 14).
+Pillar: none (protects every pillar). PERMISSIONS: VPS read (ssh: crontab -l, systemctl show, stat/tail of log files,
+git -C /opt/prediction-market-bot rev-parse), edits to .claude/hooks/governance_scan_full.sh, PR/merge. No VPS writes, no cron
+edit, no order. Read ADR-0074 and CLAUDE.md Hard Rules 13-15 first.
+
+WHY
+The strategic window built the static half on 2026-10-14 (ADR-0074): RUNTIME_REGISTRY.toml (76 components, 75 live, all
+auto-classified, reviewed = false), scripts/runtime_registry.py (check / add / render / surface), a CI test that fails on any
+unregistered cron line, service or workflow, RUNTIME_MAP.md, the pattern_sweep / surface_delta handoff keys, the window error
+log and Hard Rules 13-15. It could not reach the VPS or edit the hook. Registry discovery also found five jobs mirrored only in
+arm fragments (GG-742) and 21 live components with no alarm (GG-743).
+
+PART A - Live map + surface budget in the scan (~45 min)
+  1. governance_scan_full.sh prints a RUNTIME block: `runtime_registry.py check` result, `surface` counts, and a SURFACE BUDGET
+     line = GREEN or RED with the reasons (healthcheck faults, any silent arm whose sport had games, running-code SHA older
+     than box HEAD > 6 h, registry check failing). Uses existing signals; one ssh round trip, cached like the other VPS reads.
+  2. Live columns: for every live component, last write age of its `writes` paths and, for services, running code SHA vs box
+     HEAD; rendered into a "Live" section of RUNTIME_MAP.md by the scan (map stays generated - extend `render` with an optional
+     live JSON input, tested).
+  3. /project panel: the Surface row (live / unreviewed / no alarm / budget GREEN|RED). Tests. PR, merge, read back.
+PART B - Review against the box (~45 min)
+  4. `crontab -l`, systemd units, workflows vs the registry: every live entry gets an accurate purpose, pillar, writes and alarm,
+     and `reviewed = true`; anything installed on the box but not in any mirror is a finding (register a GG); anything in a
+     mirror but not installed is marked paused/retired with the reason. Resolve GG-742 (one complete mirror, or the union
+     documented and checked).
+  5. GG-743: for each of the 21 no-alarm components write the alarm it should have (or why none is needed) into the registry;
+     build the cheap ones (a staleness check on its `writes` path in the RUNTIME block), register the rest. Re-render the map.
+  pattern_sweep and surface_delta keys in your handoff (Hard Rules 13-14).
+
+END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
 ## Sequencing track
