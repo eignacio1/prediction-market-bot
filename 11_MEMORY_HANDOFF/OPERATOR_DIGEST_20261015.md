@@ -12,3 +12,6 @@ I checked the whole codebase and the live system and wrote it up in HYGIENE_AUDI
 - T-985 (auto): Seat interface (4 sports) + NFL/NBA tension registers + ARCHITECTURE_COMPONENTS; D4/D5 now generated
 
 **W75.1 (PAM core):** Built the one shared "player profile" system the NFL and NBA will both use, moved the NBA profiles into it without losing anything, and sorted NFL receivers 2023-2025 into four play styles. Nothing trades on it yet and no money is at risk. One question for you: start the deeper hand-reviewed tier with NFL starting QBs and top-2 WRs per team (~100 players, 10 per sitting)?
+
+## W75.5 — The NFL book closes
+Four football bets that had been sitting open for a week are now settled (two wins, two losses, about +$1.13 net on the practice book). The cause: nothing was regularly closing that book; it had only been done once by hand. It now closes itself every morning on a job that already existed. Settlement checks across football, basketball and baseball now say "game not over yet" separately from "the lookup broke", and a broken lookup raises an alarm instead of waiting silently. A new check flags any position left open a day after its game. No real money involved; the 11-02 football look is unaffected. Still to confirm: one unrelated test run hit a network timeout and was re-queued.

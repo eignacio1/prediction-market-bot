@@ -907,3 +907,4 @@
 | 2026-10-15T05:13:29Z | T-1010..T-1012, GG-830..GG-834 | W75.4 MEDIUM - one kill switch for every order path (GG-745). PURPOSE: EXECUTION - order paths honouring the one switch / all order paths (NFR-03); safety plumbing |
 | 2026-10-15T05:35:59Z | T-985 | CLOSED — merge confirmed, HEAD (51d2aad) is ancestor of origin/main — W75.3 seat interface + tension registers + D4/D5 generated |
 | 2026-10-15T05:37:13Z | W75.1 | CLOSED — W75.1 PAM core merged (PR #259): sport-agnostic schema/store, lossless NBA port, NFL WR mass classifier; D5(a) NFL 0->1, NBA 0->1. (commit `cdb9795`) |
+| 2026-10-15T05:42:26Z | T-995 | CLOSED — NFL paper book closes recurringly (4 positions booked), typed settlement result in 4 modules, open-past-game-end invariant; GG-746/751 resolved (commit `7ab0c75`) |
