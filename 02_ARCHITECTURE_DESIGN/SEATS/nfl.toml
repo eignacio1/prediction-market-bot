@@ -1,0 +1,375 @@
+[meta]
+sport = "nfl"
+version = "v0"
+banner = "v0 DRAFT written by a model from files on main. A football eye has not reviewed it; expect the factor classes, stages and slot assignments to be corrected. Do not cite it as a verdict on anything."
+taxonomy = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
+engine_interface = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md"
+stage_rule = "aggregated = in a store; interpreted = turned into a feature or tested; applied = conditioned on by a model that logs forecasts. Set only from the cited file on main."
+
+[[factor]]
+id = "N1"
+factor_class = "F1"
+name = "Opponent-adjusted team profile (off/def EPA per play)"
+source = "nflverse pbp: epa, posteam, defteam"
+engine_slot = "off/def rating (v0 single rating)"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nfl_pregame_features.py"
+
+[[factor]]
+id = "N2"
+factor_class = "F1"
+name = "Points for/against, strictly before as_of"
+source = "nflverse schedule/games: home_score, away_score"
+engine_slot = "off/def rating"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nfl_pregame_features.py"
+
+[[factor]]
+id = "N3"
+factor_class = "F11"
+name = "Rest differential, short-week flags"
+source = "nflverse games: home_rest, away_rest"
+engine_slot = "ctx.rest_h / ctx.rest_a"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nfl_pregame_features.py"
+
+[[factor]]
+id = "N4"
+factor_class = "G4"
+name = "Starting-QB shrunk EPA"
+source = "nflverse pbp: qb_epa; games: home_qb_id, away_qb_id (0.34 fill in 2026 for unplayed games)"
+engine_slot = "qb"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nfl_qb_features.py"
+
+[[factor]]
+id = "N5"
+factor_class = "F2"
+name = "Passing / rushing split (F2, F3)"
+source = "nflverse pbp: qb_dropback, rush_attempt, epa"
+engine_slot = "off_pass, off_rush, def_pass, def_rush"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N6"
+factor_class = "F4"
+name = "Protection / pressure"
+source = "FTN charting n_pass_rushers; pfr_advstats; participation was_pressure (GAP-1: no 2026 participation file)"
+engine_slot = "def_pass (pressure)"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N7"
+factor_class = "F5"
+name = "Coverage man/zone and QB efficiency against each"
+source = "participation defense_man_zone_type (GAP-1: no 2026 file)"
+engine_slot = "def_pass (coverage)"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N8"
+factor_class = "F6"
+name = "Personnel and formation"
+source = "participation offense_personnel, defense_personnel (GAP-1); ftn"
+engine_slot = "off_pass / off_rush"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N9"
+factor_class = "F7"
+name = "Special teams"
+source = "nflverse pbp: kick/punt/FG fields"
+engine_slot = "st"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N10"
+factor_class = "F8"
+name = "Injuries / availability"
+source = "nflverse injuries: report_status; depth_charts; snap_counts (weekly rule, GG-732)"
+engine_slot = "qb availability; rating adjustments"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N11"
+factor_class = "F9"
+name = "Play callers / coaching"
+source = "GAP-2: head coach only; no coordinator table"
+engine_slot = "coach"
+stage = "none"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
+
+[[factor]]
+id = "N12"
+factor_class = "F10"
+name = "Penalties / officials crew"
+source = "nflverse pbp penalty fields; officials"
+engine_slot = "ctx.officials"
+stage = "aggregated"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+
+[[factor]]
+id = "N13"
+factor_class = "F12"
+name = "Home field / venue (roof, surface, division)"
+source = "nflverse games: location, roof, surface, div_game"
+engine_slot = "ctx.home, ctx.roof"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/20261011_nfl_totals_venue_weather"
+
+[[factor]]
+id = "N14"
+factor_class = "G1"
+name = "Weather (temp, wind)"
+source = "nflverse games: temp, wind (at-game values; GAP-5 no forecast archive)"
+engine_slot = "ctx.wind / ctx.temp"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/W68_3_nfl_totals_weather_results.md"
+
+[[factor]]
+id = "N15"
+factor_class = "G3"
+name = "Travel / time zone / short week"
+source = "derived from games.gametime, location"
+engine_slot = "ctx"
+stage = "none"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
+
+[[factor]]
+id = "N16"
+factor_class = "G5"
+name = "Qualitative (form, role-fit, motivation, rumours)"
+source = "none free and structured"
+engine_slot = "none"
+stage = "none"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
+factors = ["N1", "N2", "N3"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T4"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T5"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T4NFL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_moneyline"
+band = "T4NFL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T4NFL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_spread"
+band = "T4NFL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T4NFL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_game_total"
+band = "T4NFL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T4NFL-ARITH"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_team_total"
+band = "T4NFL-FLOW"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
