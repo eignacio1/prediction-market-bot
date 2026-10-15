@@ -36,12 +36,13 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W11 | 2026-10-13 | 71.H1 | Scoped the hygiene audit without the deployment lane or a skill map; he had to add four add-ins. Then claimed `/vps` "replaces" the crontab (it appends). | Operator did scoping work; one inaccurate claim. | Operator; the audit itself | SCOPE | Audit blocks cover deploy + runtime; claims about code are read from the code |
 | W12 | 2026-10-12/13 | 70–71 | Two consecutive waves moved no measure; the windows planned plumbing and breadth without saying surface was outrunning reliability. | Drift; four waves of fixing fixes. | Drift rule (flagged at 71 close) | NO-PUSHBACK | Pushback line + surface budget in every wave (ADR-0074, Hard Rule 14) |
 | W13 | 2026-10-14 | 73 | Landed the CI registry check (ADR-0074) while 73.1 (new NBA cron) and 73.2 (possible new workflow) were in flight — their PRs fail CI until they register. Known at push time; mitigated with an add-in. | One extra step for two running blocks. | Window, before push | COLLISION | Process changes that add CI gates land between waves, or ship with the add-in for blocks in flight |
+| W14 | 2026-10-14 | 73 | Put the GG-570 "give NBA a separate staked runner?" question to the operator from the gap entry's text; NBA's T1-T3 lines were already demo-staked since W68.2. | An operator decision spent on a stale premise; 73.1 had to say so. | 73.1 | UNVERIFIED | Before routing any decision to the operator, verify its premise against the code/crontab mirrors, not the gap text |
 
 ## Pattern tally (update at every handoff)
 
 | Pattern | Count | Last |
 |---|---|---|
-| UNVERIFIED | 4 | W7 (10-12) |
+| UNVERIFIED | 5 | W14 (10-14) |
 | NOTES | 2 | W10 (10-13) |
 | NO-PUSHBACK | 2 | W12 (10-13) |
 | SLICE | 2 | H2 (history) |
