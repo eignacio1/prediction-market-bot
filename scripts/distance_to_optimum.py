@@ -199,6 +199,87 @@ def d3(repo: Path) -> dict:
     return m_ok("D3", val, src, _iso(newest) if newest else _iso(), files=sorted(x for v in found.values() for x in v))
 
 
+
+# --------------------------------------------------------------------------- DEPTH D4 / D5 (ADR-0073, ADR-0075)
+COMPONENTS_REL = "02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml"
+SEATS_REL = "02_ARCHITECTURE_DESIGN/SEATS"
+SPORTS = ("nfl", "nba", "nhl", "mlb")
+STAGES = ("aggregated", "interpreted", "applied")
+
+
+def _toml(path: Path) -> dict:
+    try:
+        import tomllib
+    except ModuleNotFoundError:  # python < 3.11: tomli if present, else the caller reports UNAVAILABLE
+        import tomli as tomllib  # type: ignore
+    return tomllib.loads(path.read_text())
+
+
+def _exists(repo: Path, rel: str) -> bool:
+    """A path counts only if it names a file that exists on this checkout. 'none'/empty never counts; nothing is guessed."""
+    return bool(rel) and rel != "none" and (repo / rel).is_file()
+
+
+def d4(repo: Path) -> list[dict]:
+    """Engine stage per sport, from artifacts on disk: data layer, simulation scaffold, scaffold test."""
+    src = COMPONENTS_REL + " [[engine]]"
+    p = repo / COMPONENTS_REL
+    if not p.is_file():
+        return [m_na("D4", f"{COMPONENTS_REL} missing", src)]
+    try:
+        eng = {e["sport"]: e for e in _toml(p).get("engine", [])}
+    except Exception as e:
+        return [m_na("D4", f"cannot parse components file ({type(e).__name__})", src)]
+    parts = []
+    for s in SPORTS:
+        e = eng.get(s, {})
+        have = [k for k, lab in (("data_layer", "data layer"), ("engine", "engine scaffold"), ("engine_test", "scaffold test"))
+                if _exists(repo, e.get(k, "none"))]
+        parts.append(f"{s.upper()}: " + (" + ".join(lab for k, lab in (("data_layer", "data layer"), ("engine", "engine scaffold"),
+                     ("engine_test", "scaffold test")) if k in have) or "none"))
+    return [m_ok("D4", " · ".join(parts), src, _mtime(p))]
+
+
+def d5(repo: Path) -> list[dict]:
+    """(a) components per sport whose scaffold AND test exist on this checkout, of 8; (b) seat factors by stage per sport."""
+    out: list[dict] = []
+    p = repo / COMPONENTS_REL
+    src_a = COMPONENTS_REL + " [[component]]"
+    if not p.is_file():
+        out.append(m_na("D5a", f"{COMPONENTS_REL} missing", src_a))
+    else:
+        try:
+            comps = _toml(p).get("component", [])
+            parts = []
+            for s in SPORTS:
+                rows = [c for c in comps if c["sport"] == s]
+                ok = [c["component"] for c in rows if _exists(repo, c["scaffold"]) and _exists(repo, c["test"])]
+                parts.append(f"{s.upper()} {len(ok)}/8" + (f" ({', '.join(ok)})" if ok else ""))
+            out.append(m_ok("D5a", " · ".join(parts), src_a, _mtime(p)))
+        except Exception as e:
+            out.append(m_na("D5a", f"cannot read components ({type(e).__name__})", src_a))
+    src_b = SEATS_REL + "/<sport>.toml [[factor]]"
+    try:
+        parts, newest = [], ""
+        for s in SPORTS:
+            sp = repo / SEATS_REL / f"{s}.toml"
+            if not sp.is_file():
+                parts.append(f"{s.upper()} no seat file")
+                continue
+            facs = _toml(sp).get("factor", [])
+            if not facs:
+                parts.append(f"{s.upper()} stub (no factors)")
+                continue
+            ok = [f for f in facs if f["stage"] == "none" or _exists(repo, f["evidence"]) or (repo / f["evidence"]).exists()]
+            cnt = {st: sum(1 for f in ok if f["stage"] == st) for st in STAGES}
+            parts.append(f"{s.upper()} " + "/".join(f"{cnt[st]} {st}" for st in STAGES) + f" of {len(facs)}")
+            newest = max(newest, _mtime(sp))
+        out.append(m_ok("D5b", " · ".join(parts), src_b, newest or _iso()))
+    except Exception as e:
+        out.append(m_na("D5b", f"cannot read seat files ({type(e).__name__})", src_b))
+    return out
+
+
 # --------------------------------------------------------------------------- EXECUTION
 def _load_book(repo: Path, key: str):
     pf, sc = BOOKS[key]
@@ -294,7 +375,7 @@ def proof(repo: Path) -> list[dict]:
 def compute(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     ms: list[dict] = []
-    for fn in (breadth, depth, execution, proof):
+    for fn in (breadth, depth, d4, d5, execution, proof):
         try:
             ms.extend(fn(repo))
         except Exception as e:  # one broken source never blanks the table

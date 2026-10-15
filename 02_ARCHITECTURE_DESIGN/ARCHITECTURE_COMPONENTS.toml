@@ -1,0 +1,253 @@
+# Eight ADR-0075 components x sport. A component counts toward D5(a) only when BOTH scaffold and test exist on main
+# (scripts/distance_to_optimum.py checks the files; an entry here is a claim, not a count). "none" = nothing scaffolded.
+# Paths are for work already merged; in-flight blocks (75.1, 75.2) are never listed until they land.
+
+[[component]]
+sport = "nfl"
+component = "decision_trees"
+scaffold = "12_EXPLORATORY/nfl_engine/engine.py"
+test = "12_EXPLORATORY/nfl_engine/test_engine.py"
+note = "W73.3 possession engine; test is outside CI testpaths (GG-757)"
+
+[[component]]
+sport = "nfl"
+component = "filtering_mechanisms"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nfl"
+component = "cluster_designs"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nfl"
+component = "cross_reference_compatibility"
+scaffold = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md"
+test = "none"
+note = "interface doc, no test of cross-sport fit"
+
+[[component]]
+sport = "nfl"
+component = "momentum_looping"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nfl"
+component = "temporal_evolution"
+scaffold = "none"
+test = "none"
+note = "not counted: nfl_point_in_time.py + tests/test_nfl_point_in_time.py is the as-of contract, not the ADR-0075 first scaffold (rolling as-of tendency features with stability tests)"
+
+[[component]]
+sport = "nfl"
+component = "structural_tensions"
+scaffold = "02_ARCHITECTURE_DESIGN/TENSIONS/nfl.toml"
+test = "tests/test_tensions.py"
+note = "W75.3"
+
+[[component]]
+sport = "nfl"
+component = "seat_interface"
+scaffold = "02_ARCHITECTURE_DESIGN/SEATS/nfl.toml"
+test = "tests/test_seat_interface.py"
+note = "W75.3"
+
+[[component]]
+sport = "nba"
+component = "decision_trees"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nba"
+component = "filtering_mechanisms"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nba"
+component = "cluster_designs"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nba"
+component = "cross_reference_compatibility"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nba"
+component = "momentum_looping"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nba"
+component = "temporal_evolution"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nba"
+component = "structural_tensions"
+scaffold = "02_ARCHITECTURE_DESIGN/TENSIONS/nba.toml"
+test = "tests/test_tensions.py"
+note = "W75.3"
+
+[[component]]
+sport = "nba"
+component = "seat_interface"
+scaffold = "02_ARCHITECTURE_DESIGN/SEATS/nba.toml"
+test = "tests/test_seat_interface.py"
+note = "W75.3"
+
+[[component]]
+sport = "mlb"
+component = "decision_trees"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "filtering_mechanisms"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "cluster_designs"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "cross_reference_compatibility"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "momentum_looping"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "temporal_evolution"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "structural_tensions"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "mlb"
+component = "seat_interface"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "decision_trees"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "filtering_mechanisms"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "cluster_designs"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "cross_reference_compatibility"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "momentum_looping"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "temporal_evolution"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "structural_tensions"
+scaffold = "none"
+test = "none"
+note = ""
+
+[[component]]
+sport = "nhl"
+component = "seat_interface"
+scaffold = "none"
+test = "none"
+note = ""
+
+# D4 engine artifacts (ADR-0073): a sport's engine stage is read from these files existing on main.
+# data_layer = event-level store manifest; engine = simulation scaffold; engine_test = its invariants test.
+[[engine]]
+sport = "nfl"
+data_layer = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/event_store_manifest.json"
+engine = "12_EXPLORATORY/nfl_engine/engine.py"
+engine_test = "12_EXPLORATORY/nfl_engine/test_engine.py"
+
+[[engine]]
+sport = "nba"
+data_layer = "none"
+engine = "none"
+engine_test = "none"
+
+[[engine]]
+sport = "nhl"
+data_layer = "none"
+engine = "none"
+engine_test = "none"
+
+[[engine]]
+sport = "mlb"
+data_layer = "none"
+engine = "none"
+engine_test = "none"

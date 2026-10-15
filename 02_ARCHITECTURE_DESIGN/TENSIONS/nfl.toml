@@ -1,0 +1,77 @@
+[meta]
+sport = "nfl"
+updated = "2026-10-15"
+banner = "v0 DRAFT opened by a model from files on main (W75.3). Each tension names a file or gap that exists. Status OPEN means unrelieved, not unexamined."
+
+[[tension]]
+id = "NFL-T1"
+title = "No 2026 participation file: coverage, pressure and personnel cannot reach the current season"
+status = "OPEN"
+where = "data layer, factors N6/N7/N8 (F4/F5/F6)"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md (GAP-1 / GG-730)"
+pillar = "DEPTH (D1 personnel, D5b stops at aggregated)"
+relief = "FTN 2026 charting as a partial substitute; nflverse publishing a 2026 participation file; or a decision to drop the factor class for the season"
+
+[[tension]]
+id = "NFL-T2"
+title = "Engine is at parity with the per-family models; its rating layer is still the frozen ridge"
+status = "OPEN"
+where = "12_EXPLORATORY/nfl_engine/engine.py rates() -> shadow model nfl_model.py"
+evidence = "12_EXPLORATORY/nfl_engine/results.md; GG-756"
+pillar = "DEPTH (D4: an engine that prices the same as the thin models adds no depth)"
+relief = "Stage 2 factor classes entering through one feature interface so the engine's rates stop being the ridge output"
+
+[[tension]]
+id = "NFL-T3"
+title = "Cells no engine serves: the engine lives in 12_EXPLORATORY and prices no registered cell"
+status = "OPEN"
+where = "registry T4/T5 and T4NFL-* cells (16 of 28) plus every T1-T3 cell, which are served by the per-family model, not the engine"
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py; 02_ARCHITECTURE_DESIGN/SEATS/nfl.toml (serving_model)"
+pillar = "BREADTH / DEPTH"
+relief = "Engine promoted from exploratory into src with a serving_model entry per cell; decision on whether in-play NFL cells are ever built"
+
+[[tension]]
+id = "NFL-T4"
+title = "Factors stop at interpretation: venue and weather were tested, not applied"
+status = "OPEN"
+where = "seat factors N13, N14"
+evidence = "12_EXPLORATORY/W68_3_nfl_totals_weather_results.md; 12_EXPLORATORY/20261011_nfl_totals_venue_weather"
+pillar = "DEPTH (D5b: interpreted without applied)"
+relief = "A forecast-grade weather source (GAP-5) and a pre-registered re-test; or recording a rigorous NO as terminal (see NFL-T7)"
+
+[[tension]]
+id = "NFL-T5"
+title = "NFL positions do not close: moneyline positions open 4-7 days after the game"
+status = "OPEN"
+where = "settlement path nfl_settlement.py / nfl_espn_results.py"
+evidence = "GG-746 (OPEN, HIGH) in 03_DECISIONS/GOVERNANCE_GAP_LOG.md"
+pillar = "EXECUTION (E1 closed positions; PROOF scoring has nothing to settle)"
+relief = "W75.5 NFL book closes: resolver cron or return-None path fixed and the open positions settled"
+
+[[tension]]
+id = "NFL-T6"
+title = "Forward test: treatment arm barely fills while control fills; fills lose while non-fills win"
+status = "OPEN"
+where = "forward test (ADR-0072) treatment vs control; E3 adverse selection"
+evidence = "11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015T0025Z_W73_1.md (NHL control 29 fills vs treatment 1); 04_EXECUTION/ACTIVE_QUEUE.md E3 row (T4 24.1% vs 48.7%, T1 28.9% vs 52.1%)"
+pillar = "EXECUTION (E1, E3)"
+relief = "Enough fills per arm to read E2/E3 (about 550 per arm); a pricing change that the treatment arm's fill rate then confirms or refutes. Not NFL-specific; recorded here because NFL shares the arm design"
+
+[[tension]]
+id = "NFL-T7"
+title = "ADR-0075 section 2 definition strained: the stage ladder (aggregated, interpreted, applied) cannot express a tested-and-rejected factor"
+status = "OPEN"
+where = "seat file stage field; ADR-0075 section 2, Seat interface row"
+evidence = "03_DECISIONS/ADR-0075_betting-architecture-doctrine.md; 12_EXPLORATORY/W68_3_nfl_totals_weather_results.md (weather returned NO)"
+pillar = "PROOF (a rigorous NO scores as 'interpreted', the same as 'not yet tried')"
+relief = "Operator decision: add a terminal 'tested-no' stage, or keep the ladder and carry the verdict in a note. Brought to the operator per ADR-0075 section 2; not decided in-session"
+
+[[tension]]
+id = "NFL-T8"
+title = "Seat engine slots are named but the engine has no slot for most of them"
+status = "OPEN"
+where = "INTERFACE.md GameInputs fields off_pass/off_rush/def_pass/def_rush/st/pace/ctx.officials"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md section 2 (v0 column: single rating, None)"
+pillar = "DEPTH (D5b aggregated factors have nowhere to land)"
+relief = "Stage 2 fills the richer-source column; until then seat engine_slot values are targets, not wiring"
+
