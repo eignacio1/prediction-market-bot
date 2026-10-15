@@ -4473,3 +4473,15 @@ LEFT OPEN (not converted, by design or risk):
 - Risky one-off live-ledger rewrites, not touched: `scripts/t477_dryrun_epoch12_repair.py:189`, `scripts/t437_task3_rederive_outcomes.py:224`, `scripts/correct_t4_game_dates.py:133`.
 - Not state: `tag_locked_pairs_t4_mlb.py:117` (writes a `.tagged.json` copy), `replay_harness_t427.py:210` (tmpdir), `c5_execution/paper_trader.py:319` (lock file), `run_t4_mlb_live.py:394` (log handle), `analytics/clean_dataset.py:241` (CSV output), report writers in `run_exp0xx.py`, `run_t2_*`, `run_t3_*`, `run_*_paper_trade.py`, `run_sensitivity_tests.py`.
 Pillar: PLUMBING. Closes when the read-side policy for validators/raw stores is decided.
+
+### GG-800 — No free field holds pre-snap motion DIRECTION or boundary side (F6 granularity gap)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W75.2 Part A. Checked every free nflverse field for the 2022-2025 plays: FTN carries `is_motion` (boolean) and `starting_hash` (L/R/M/0 -- the ball's hash, not the motion man's direction), `n_offense_backfield`, `qb_location`; participation carries `offense_positions`, `route`, `offense_formation` with no alignment coordinates or motion path; pbp carries nothing pre-snap. None says which way the motion went or whether it ended at the boundary. The operator's "motioned to the boundary" cannot be answered; the factor is built on motion yes/no and a direction is never inferred. Likely paid-only (charting vendors / tracking data). Pillar: DEPTH. Closes when a free source with motion direction is found, or the paid-only status is confirmed and the cell is recorded as not buildable.
+
+### GG-801 — Coverage shell is known on only 55-61% of scrimmage plays, and motion on none before 2022
+
+**Status:** OPEN · **Severity:** LOW
+
+W75.2 Part A. `defense_coverage_type` is populated for 53-61% of run+pass plays in every season 2018-2025 (the rest are runs and non-dropbacks); FTN `is_motion` exists 2022+ only (99.7-100% fill there). Any shell x motion cell therefore has at most four seasons of history, and 2026 has no participation file (GAP-1/GG-730). Cell-level EPA (unit x shell x personnel x motion) is at single-season n a noise measurement (Part A YoY r about 0.0-0.1), so the buildable signal is the shell MIX, not team-specific cell success. Pillar: DEPTH. Closes when a longer motion history or in-season 2026 participation exists.

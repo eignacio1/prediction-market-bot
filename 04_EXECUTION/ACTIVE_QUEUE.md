@@ -228,12 +228,8 @@ other's files. **None touches B74-A Session 2's files** (the runtime registry, g
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-<<<<<<< HEAD
 | 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | ✅ DONE (PR #259 merged cdb9795; CI pass; no Deploy job, no running component) | Core + lossless NBA v4 port + NFL 9-group taxonomy + WR mass classifier (247 recs, primary retained 54-60% YoY vs ~31% chance) + DEEP_TIER proposal; D5(a) NFL 0→1, NBA 0→1 |
-=======
-| 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | 🟡 Part A pushed (PR #259) | Core schema + append-only store + pam_as_of + lossless NBA v4 port (16 tests); Part B (NFL taxonomy, WR/CB mass classifier, DEEP_TIER, README) next |
->>>>>>> 4e329ea (W75.1: queue row, Part A pushed)
-| 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (running on the ORIGINAL prompt; ADD-IN 22:15 PT rescopes it — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | |
+| 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (running on the ORIGINAL prompt; ADD-IN 22:15 PT rescopes it — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | 🟡 Part B pushed (PR open) | ADD-IN applied; F5/F6 aggregated+interpreted+APPLIED via ML/spread/total/team total; result INERT (MATCHES, no gain; beta unstable) 
 | 75.3 | Seat interface + structural tensions opened; D4/D5 generated | DEPTH D5(a) NFL and NBA +2 each (seat interface, structural tensions) · D4/D5 generated | ✅ (PRs #260, #261; D5a NFL 3/8 NBA 2/8; D5b NFL 4 applied, NBA 4) | |
 | 75.4 | One kill switch for every order path (GG-745 HIGH) | EXECUTION: order paths honouring one switch, of all (drill on the box) | 🟡 Part A merged | PR #264 @ ce32e14; 1/6 → 6/6 in code; Part B (deploy read-back + drill) pending; GG-745 OPEN |
 | 75.5 | The NFL book closes (GG-746 HIGH, GG-751, GG-763a) | EXECUTION E2 / PROOF: NFL positions open past game end + 24 h, 4 → 0 | ✅ DONE | PR #262 @ 7ab0c75; 4 → 0 (box, 2026-10-15); GG-746/751 resolved |
@@ -929,7 +925,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 75.1 | PAM core: one Player Attribute Matrix for every engine | ⬜ | |
-| 75.2 | NFL engine stage 2: the operator's question, end to end | ⬜ | |
+| 75.2 | NFL engine stage 2: the operator's question, end to end | 🟡 Part B pushed | ADD-IN applied; F5/F6 applied, inert (MATCHES, no gain) |
 | 75.3 | Seat interface + structural tensions opened; D4/D5 generated | ✅ (PRs #260, #261; D5a NFL 3/8 NBA 2/8; D5b NFL 4 applied, NBA 4) | |
 | 75.4 | One kill switch for every order path (GG-745) | ⬜ | |
 | 75.5 | The NFL book closes (GG-746/751/763a) | ⬜ | |

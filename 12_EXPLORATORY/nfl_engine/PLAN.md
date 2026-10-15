@@ -33,3 +33,21 @@ The scaffold "matches or beats" a comparator on a family iff the upper 95% limit
 
 ## 6. Non-goals
 No registry, runner, ledger, cron, order, sizing or model-artifact change. No drive/play data. No weather/officials/coverage (73.2 / Wave 74). Nothing here graduates to evidence except via a new accepted pre-registration (Charter rule 7).
+
+## Addendum 2026-10-15 (W75.2, T-990) — Stage 2: first factor class taken to APPLIED. Frozen BEFORE any stage-2 fit.
+
+**Scope.** One factor class (F5/F6: coverage shell × offensive personnel; motion is carried by the builder but is not in the term — 2022+ only and direction is unavailable, GG-800). The deliverable is the chain aggregation → interpretation → application run once and reusable; the next class (e.g. pressure vs protection) plugs into `factors.FactorSpec` + `rate_layer.Factor`.
+
+**Factor term (points for an offense O vs defense D, as of t).** `term = 62 · Σ_pers w_O(pers) · Σ_shell [ c_D(shell|pers) − l(shell|pers) ] · L(shell,pers)`, where `w_O(pers)` = O's shrunk personnel usage, `c_D(shell|pers)` = D's shrunk shell share given personnel (normalised), `l` = league shell share given personnel, `L` = league mean opponent-adjusted EPA/play in the cell. Rationale (Part A): shell share is a stable trait (split-half r 0.59–0.80), team-specific cell EPA is noise (YoY r ≈ 0.0–0.1), so the stable tendency is priced at stable league-wide cell payoffs. 62 = league plays per team-game (fixed a priori).
+
+**Rate layer.** `mu_home += β·(term_H − term_A)`-equivalent: each team's mean points gets `β·term` (home: `β·term(H vs A)`, away: `β·term(A vs H)`); the engine, shape parameters (r, s_n, δ) and arm-B base means are otherwise identical to engine v0 arm B. β is ONE scalar, pooled OLS through the origin of team-points residual (actual − arm-B ridge prediction, split from margin/total predictions) on the term, over seasons 2019..T−1 (seasons ≤T−2 are in-sample for the ridge — stated; no test-season row enters). Never fitted on season T.
+
+**Rolling origin.** Test seasons T ∈ 2020..2025 (term needs a prior participation season; 2018 is the first). Ridge/calibration/shape exactly as W73.3. 
+
+**Arms.** C (PRIMARY, application-ready): tendencies from seasons ≤T−1 only (no in-season rows) — exactly the information state of 2026 under GAP-1. D (secondary, descriptive): seasons ≤T−1 plus current-season games with kickoff+4h ≤ as_of=gameday 00:00 UTC, recomputed weekly. Baseline for both: engine arm B.
+
+**Metric and decision.** ΔBrier (C − B) pooled over each family's ladder strikes (ML, spread, total, team total; strikes centred on arm-B means, ±{0,3,7}, identical to W73.3), game-cluster bootstrap B=2000, seed 20261014, 95% CI. Decision per family: BEATS if upper < 0; MATCHES if upper < +0.0010; else NO. 4 families, descriptive, no superiority claim. Calibration (10-bin reliability, logit slope/intercept) reported for B and C. Market comparison: 2025 KXNFLGAME ML mids at kickoff−30min, reported, never judged.
+
+**GAP-1 stated.** No 2026 participation file exists, so 2026 in-season tendencies cannot be computed. This alone does NOT block application this season: arm C uses prior-season tendencies only, which is what 2026 offers. It blocks only arm D's in-season refresh, and any 2026-season application of the term would also need the 2025 participation file to remain the store of record. Whether a 2026 file appears is outside this wave.
+
+**Modal expectation (pre-fit).** The term moves means by a few tenths of a point; ΔBrier near 0; modal decision MATCHES on ML/spread, NO-or-MATCHES elsewhere. A NO is a result.
