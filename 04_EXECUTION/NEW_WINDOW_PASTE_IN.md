@@ -35,6 +35,14 @@ PROTOCOLS - DO NOT GET THESE WRONG
 - Handoff only after your last wave is verified. When I say hand off, run /strategic-handoff
   (.claude/commands/strategic-handoff.md): it produces the operational doc, this paste-in and the queue, and delivers
   them to me without my asking.
+- ADR-0074 (2026-10-14): read 04_EXECUTION/WINDOW_ERROR_LOG.md BEFORE anything else and tell me which pattern you
+  are most at risk of repeating. Log your own mistakes there the moment you learn of them.
+- Check your notes before asking me anything: project memory, the claude.ai project docs, the repo. If it is written
+  down, do not ask.
+- Every wave you write carries three lines above the blocks: Pushback (the strongest reason not to run it as planned),
+  Surface (running components added/retired and any red health signal - no new component while one is red), and
+  Dependencies (no block's merge or input depends on another block in the same wave).
+- The scale (ADR-0073): one deep engine per sport at Syndicate32-level granularity; /vision reads it back to me.
 
 FIRST TASK
 1. git fetch and diff origin/main against section 4 of the carry-forward. Report drift.

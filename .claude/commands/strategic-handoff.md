@@ -10,6 +10,12 @@ A window hands off only after its last wave is **verified**, never when the wave
 
 ## Steps (in order)
 
+0. **Read `04_EXECUTION/WINDOW_ERROR_LOG.md` first** (ADR-0074, Hard Rule 15) — the incoming window does this before
+   writing anything, and names in its first message to the operator the pattern it is most at risk of repeating. The
+   outgoing window confirms every mistake it made is a row there (the log, not the carry-forward's §7, is authoritative)
+   and updates the pattern tally.
+
+
 1. **Verify the last wave** against GitHub: every block's results doc, PRs merged + CI green, deploy decisions,
    gap-log parity + uniqueness. Close it in `04_EXECUTION/ACTIVE_QUEUE.md` (results table, sequencing track,
    prompts archived verbatim to `ACTIVE_QUEUE_ARCHIVE.md`). Update the **RUNNING SITREP** at the top of the queue.
@@ -18,6 +24,12 @@ A window hands off only after its last wave is **verified**, never when the wave
    of the sitrep (every measure, with source and date, and the "Moved" column), then tally which pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)" each block
    moved (from each handoff's `vision_pillar:` and the results docs), update the sitrep's pillar scoreboard, and tell
    the operator unprompted if two consecutive waves moved no pillar.
+   **Surface row:** run `python3 scripts/runtime_registry.py surface` and put live / unreviewed / no-alarm counts in the
+   sitrep with the current red signals (healthcheck, silent arms, running-SHA). Hard Rule 14: no wave adds a live component
+   while one is red unless its first block fixes it.
+   **Wave format (Hard Rule 15):** every wave the window issues carries three lines above the blocks — **Pushback:** the
+   strongest reason not to run this wave as planned; **Surface:** components added/retired and the red signals now;
+   **Dependencies:** confirmation that no block's merge or input depends on another block of the same wave.
    **Purpose lines:** every block the window writes carries, under its title, `PURPOSE: <measure> — <expected change>`
    (or `PURPOSE: PLUMBING — <why it is needed>`), and its report back states the measured change (Hard Rule 12).
 2. **Archive** the current `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md` and `04_EXECUTION/NEW_WINDOW_PASTE_IN.md`
