@@ -42,12 +42,13 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W15 | 2026-10-14 | 74→75 | Did not know what "PAM" was when the operator named it twice (10-13, 10-14); it is DS-01, the Player Attribute Matrix, documented in the repo. He had to spell it out. | Operator had to explain his own system. | Operator | NOTES | Grep the repo and project docs for any term the operator uses that the window cannot define, before replying |
 | W16 | 2026-10-14 | 74→75 | Reduced "we're going with edge" to "generality is no longer a reason to build; expected edge is" and wrote that into CLAUDE.md. He meant a comprehensive betting architecture at play-level granularity (aggregation > interpretation > application). | His core directive diluted in the canonical file for ~10 minutes. | Operator | REDUCED | Quote the operator's own words into canonical docs; restate, never compress, until he confirms the restatement |
 | W17 | 2026-10-14 | 75 | Wrote 75.2 around the operator's Cover 6 question as the literal deliverable (answer it for 2025, register a GAP for boundary motion). He gave it as an illustration of granularity: "i hope you didn't take my cover 6 example as a processing requirement - it was just an example". | 75.2 rescoped before it ran; one operator correction. | Operator | LITERAL | An operator example shows the bar, not the spec: blocks build the general capability and use his example only as an illustration, unless he says it is the requirement |
+| W18 | 2026-10-14 | 75 | Wrote "B74-A Session 2 is running" into Wave 75's surface, dependencies and sequencing rows from the operator's earlier "still firing" remark, without checking SESSION_CLAIMS.md (no Session 2 claim existed). | Wave 75's dependency lines were written around a terminal that did not exist; operator corrected it. | Operator | UNVERIFIED | Before describing a terminal as running, check SESSION_CLAIMS.md for its claim |
 
 ## Pattern tally (update at every handoff)
 
 | Pattern | Count | Last |
 |---|---|---|
-| UNVERIFIED | 5 | W14 (10-14) |
+| UNVERIFIED | 6 | W18 (10-14) |
 | NOTES | 3 | W15 (10-14) |
 | NO-PUSHBACK | 2 | W12 (10-13) |
 | SLICE | 2 | H2 (history) |

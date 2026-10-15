@@ -20,7 +20,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 75 issued, 2026-10-14 ~22:00 PT (ADR-0075 accepted, D5 added); B74-A Session 1 on main (SOUND WITH ISSUES), Session 2 running.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 75 issued, 2026-10-14 ~22:00 PT (ADR-0075 accepted, D5 added); B74-A Session 1 on main (SOUND WITH ISSUES); Session 2 NOT started (its terminal closed when Session 1 ended) - leads Wave 76.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -211,7 +211,7 @@ the operator's call (22:06 PT): the audit's two HIGHs, one kill switch (75.4) an
 **Pushback.** The strongest reason not to run this as planned: **75.4 changes how every order path halts, while the forward
 test and t4-mlb are live.** A kill switch done wrong either halts everything or fails open. It is guarded by aliases (old flag
 names keep working until every reader moves), restarts only in an idle window, and is DONE only on a passed live drill on the
-box. Second: six terminals at once (these five plus B74-A Session 2) means rebase churn on the shared docs; each block edits
+box. Second: five terminals at once means rebase churn on the shared docs; each block edits
 only its own row. Third: there is no 2026 participation file (GAP-1), so 75.2 may find current-season data cannot reach a
 price. If so, it says so, and that is the first structural tension. The audit's two HIGHs (GG-745, GG-746) were in the first
 draft's pushback; the operator added 75.4/75.5 for them at 22:06 PT.
@@ -788,7 +788,7 @@ END OF BLOCK 75.5. If you cannot see this line, the prompt reached you truncated
 
 ### B74-A — Full hygiene check + the runtime map made live and visible (ADR-0074) · brand-new terminal
 
-**Status (2026-10-14): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Next undone: Session 2 (Parts C+D, fresh claim).**
+**Status (2026-10-14 22:16 PT): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Session 2 (Parts C+D) NOT started - the terminal closed when Session 1 ended. Fire it in a fresh terminal at Wave 76 (after 75.4 lands, so the registry review sees the unified kill switch). Wave 75's "do not touch B74-A Session 2's files" rule stays in force anyway - it keeps those files clear for it.**
 
 ```
 COMMON RULES - BACKLOG BLOCK B74-A (read first; they bind this block; B74-A OVERRIDES below take precedence)
@@ -929,7 +929,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 75.3 | Seat interface + structural tensions opened; D4/D5 generated | ⬜ | |
 | 75.4 | One kill switch for every order path (GG-745) | ⬜ | |
 | 75.5 | The NFL book closes (GG-746/751/763a) | ⬜ | |
-| B74-A | Hygiene re-audit + runtime map live and visible | ⏳ | Session 1 on main (7950e43): SOUND WITH ISSUES, GG-745..766. Session 2 (registry live + dashboards) running |
+| B74-A | Hygiene re-audit + runtime map live and visible | ⚠️ | Session 1 on main (7950e43): SOUND WITH ISSUES, GG-745..766. **Session 2 (registry live + dashboards) not started** — its terminal closed with Session 1 (operator 22:16 PT); leads Wave 76, after 75.4 changes the order-placing runners |
 
 
 ### ✅ WAVE 73 — CLOSED 2026-10-15 ~01:00 UTC (verified on GitHub at `39569c5`, main CI green) · moved: **D4 NFL none → data layer + simulation scaffold**, D1 NFL 20 factor classes mapped (15 buildable free), E1 first post-re-arm settled fills (NHL)
@@ -1269,7 +1269,7 @@ in every wave; Pushback / Surface / Dependencies lines on every wave.
 | Wave | The question it answers | Pillar |
 |---|---|---|
 | **75** | *Does the architecture have its foundations, and do the switches and books hold?* PAM core; one factor class to a price; seat interface + structural tensions; D4/D5 generated; one kill switch; the NFL book closes. | DEPTH · EXECUTION · PROOF |
-| **76** | *Does the fill fix work?* (GG-745/746 pulled into 75.) The treatment arm's under-fill read (1 vs 29) and, if the pre-registration needs changing, put to the operator; audit MEDIUMs on the order/ledger path (GG-748 atomic writers, GG-749/750 swallowed failures). DEPTH lane: second NFL factor class through the same builder. | EXECUTION · PROOF · DEPTH |
+| **76** | *Does the fill fix work, and can you see what runs?* B74-A Session 2 first (registry reads the box, alarms, both dashboards). (GG-745/746 pulled into 75.) The treatment arm's under-fill read (1 vs 29) and, if the pre-registration needs changing, put to the operator; audit MEDIUMs on the order/ledger path (GG-748 atomic writers, GG-749/750 swallowed failures). DEPTH lane: second NFL factor class through the same builder. | EXECUTION · PROOF · DEPTH |
 | **77** | *Does NBA get its engine?* NBA opening night read back (10-20/21, GG-570); NBA engine stage 1: possession-level data layer + PAM NBA mass tier; NFL engine keeps its lane. | DEPTH · BREADTH |
 | **78** | *Is the NFL first look ready to be read?* Release-path dry run for 11-02; filtering layer fed by the engine's confidence (ADR-0075 filtering); temporal evolution: as-of tendency features with stability tests. | PROOF · DEPTH |
 | **79** | *What did MLB teach us?* After the World Series: MLB idle for live betting; retrospective of the architecture, execution post-mortem, first PAM port tested on known outcomes. | DEPTH · EXECUTION |
