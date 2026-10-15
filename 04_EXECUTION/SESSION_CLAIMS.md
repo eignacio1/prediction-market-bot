@@ -900,3 +900,4 @@
 | 2026-10-15T00:50:35Z | T-960 | CLOSED — W73.2 DONE: NFL taxonomy (Part A) and event-level data layer with point-in-time contract (Part B) merged; weekly Actions rebuild verified end to end. (commit `31dd1de`) |
 | 2026-10-15T04:31:32Z | T-975 | MERGED: NO — branch `session/20261015T003528Z-b74a-s1-hygiene-audit` awaiting merge — B74-A S1 DONE (audit only): hygiene report 2026-10-15, verdict SOUND WITH ISSUES; GG-745..766 registered; no code changed. (commit `53655f2`) |
 | 2026-10-15T04:34:18Z | T-975 | CLOSED — merge confirmed, HEAD (7950e43) is ancestor of origin/main — B74-A S1 audit-only landed on main at 7950e43; GG-745..766; Session 2 (Parts C+D) next |
+| 2026-10-15T05:05:54Z | T-980..T-982, GG-775..GG-779 | W75.1 MEDIUM - PAM core: sport-agnostic schema+store+PIT read, NBA v4 port, NFL taxonomy v0 + first mass classifier. PURPOSE: DEPTH D5(a) cluster designs (NFL 0->1, NBA 0->1) |
