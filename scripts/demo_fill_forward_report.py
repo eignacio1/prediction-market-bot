@@ -36,6 +36,10 @@ SWITCH_KEYS = ("DEMO_FILL_PLACEMENT_RULE", "SHADOW_FLAT_STAKE")
 CANCEL_FAIL_MAX = 0.10
 SKIP_RATE_MAX = 0.90
 # ADR-0072 addendum 2026-10-14 (operator): listing skips are demo-catalog gaps (GG-564), not placement-rule skips.
+# W73.1: the cancel path was fixed (GG-645/623) and the test re-armed at this instant (W72.1 read-back, 2026-10-14T00:44Z
+# slice start). Cancel failures before it come from the superseded code; counting them re-tripped the turn-off at
+# 2026-10-14T11:25Z on 10-13's 8/8 pre-fix failures. The ">10% in a day" rule is unchanged, evaluated on post-fix attempts.
+CANCEL_PATH_FIX_EPOCH = datetime(2026, 10, 13, 23, 58, tzinfo=timezone.utc)
 LISTING_SKIP_REASONS = frozenset({"not_listed_on_demo"})
 NO_OUTCOME_S = 15 * 60
 
@@ -210,7 +214,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             if ev == "cancel_failed" and _historical_404_terminal(r, fills_for):
                 ev = "cancel_already_terminal"  # GG-596: pre-fix rows; the order was already terminal
             c[ev] += 1
-            day_cancel[day][ev] += 1
+            if ts >= CANCEL_PATH_FIX_EPOCH:
+                day_cancel[day][ev] += 1
     cell_out = []
     for (book, sport, arm), c in sorted(cells.items()):
         if c["first_ts"] is None:
@@ -247,7 +252,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
     last_days = sorted(day_cancel)[-2:]
     worst = max(((d, day_cancel[d]["cancel_failed"] / max(1, day_cancel[d]["cancel_ok"] + day_cancel[d]["cancel_failed"]))
                  for d in last_days), key=lambda x: x[1], default=(None, 0.0))
-    checks["cancel_fail_rate_gt_10pct_in_a_day"] = {"worst_day": worst[0], "rate": worst[1], "tripped": worst[1] > CANCEL_FAIL_MAX}
+    checks["cancel_fail_rate_gt_10pct_in_a_day"] = {"worst_day": worst[0], "rate": worst[1], "epoch": CANCEL_PATH_FIX_EPOCH.isoformat(),
+                                                  "tripped": worst[1] > CANCEL_FAIL_MAX}
     sk_days = [d for d in sorted(day_skip) if d != now.date().isoformat()][-3:]
     rates = [day_skip[d]["skips"] / (day_skip[d]["skips"] + day_skip[d]["orders"]) for d in sk_days
              if day_skip[d]["skips"] + day_skip[d]["orders"] > 0]
