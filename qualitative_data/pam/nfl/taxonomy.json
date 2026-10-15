@@ -1,0 +1,30 @@
+{
+ "archetypes": {
+  "WR-MID": {
+   "name": "Intermediate Chain-Mover",
+   "score": "clip(1-|aDOT-10|/5)",
+   "sources": "pbp air_yards"
+  },
+  "WR-VERT": {
+   "name": "Vertical Stretcher",
+   "score": "mean(clip((aDOT-9)/6), clip((deep_rate-.10)/.20), clip((route_deep-.20)/.25))",
+   "sources": "pbp air_yards; participation route (GO/POST/CORNER/WHEEL)"
+  },
+  "WR-VOL": {
+   "name": "Volume Target Earner",
+   "score": "clip((target_share-.14)/.12)",
+   "sources": "pbp targets by team"
+  },
+  "WR-YAC": {
+   "name": "YAC / Short-Game Weapon",
+   "score": "mean(clip((YAC_per_rec-3.5)/3), clip((short_rate-.25)/.30))",
+   "sources": "pbp yards_after_catch, air_yards<=3"
+  }
+ },
+ "min_targets": 50,
+ "note": "Weights = scores normalised; weights < prune dropped and renormalised. Thresholds fixed a priori, not fitted.",
+ "position_group": "WR",
+ "prune_weight": 0.2,
+ "sport": "nfl",
+ "version": "nfl_wr_mass_v1"
+}

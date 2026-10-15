@@ -1,0 +1,55 @@
+== counts (primary archetype) ==
+2023 80 {'WR-MID': 36, 'WR-VOL': 21, 'WR-VERT': 15, 'WR-YAC': 8}
+   hybrids (>=2 archetypes): 66
+2024 89 {'WR-MID': 43, 'WR-VOL': 18, 'WR-VERT': 18, 'WR-YAC': 10}
+   hybrids (>=2 archetypes): 76
+2025 78 {'WR-MID': 35, 'WR-VERT': 19, 'WR-VOL': 16, 'WR-YAC': 8}
+   hybrids (>=2 archetypes): 63
+== split-half reliability (Spearman-Brown, odd/even weeks), n ==
+2023 ({'adot': 0.82, 'deep_rate': 0.63, 'yac_per_rec': 0.66, 'tgt_share': 0.92, 'short_rate': 0.85}, 75)
+2024 ({'adot': 0.86, 'deep_rate': 0.79, 'yac_per_rec': 0.7, 'tgt_share': 0.89, 'short_rate': 0.81}, 80)
+2025 ({'adot': 0.86, 'deep_rate': 0.73, 'yac_per_rec': 0.58, 'tgt_share': 0.93, 'short_rate': 0.89}, 68)
+== year-over-year ==
+2023->2024: n=57 primary retained 0.54 vs chance 0.33; feature YoY r={'adot': 0.75, 'deep_rate': 0.65, 'yac_per_rec': 0.5, 'tgt_share': 0.45, 'short_rate': 0.63}
+2024->2025: n=60 primary retained 0.60 vs chance 0.30; feature YoY r={'adot': 0.77, 'deep_rate': 0.64, 'yac_per_rec': 0.51, 'tgt_share': 0.6, 'short_rate': 0.79}
+== examples (2025) ==
+J.Chase        CIN  tgt=185 aDOT=  8.5 YAC/rec= 5.1 share=0.30 -> WR-VOL 0.59 / WR-MID 0.41
+A.St. Brown    DET  tgt=172 aDOT=  8.1 YAC/rec= 4.9 share=0.31 -> WR-VOL 0.62 / WR-MID 0.38
+P.Nacua        LA   tgt=166 aDOT=  9.4 YAC/rec= 5.2 share=0.29 -> WR-VOL 0.53 / WR-MID 0.47
+J.Smith-Njigba SEA  tgt=163 aDOT= 11.2 YAC/rec= 4.4 share=0.36 -> WR-VOL 0.57 / WR-MID 0.43
+C.Olave        NO   tgt=156 aDOT= 11.8 YAC/rec= 2.9 share=0.28 -> WR-VERT 0.20 / WR-VOL 0.49 / WR-MID 0.31
+J.Jefferson    MIN  tgt=141 aDOT= 10.2 YAC/rec= 5.4 share=0.30 -> WR-VOL 0.51 / WR-MID 0.49
+W.Robinson     NYG  tgt=140 aDOT=  8.5 YAC/rec= 4.2 share=0.28 -> WR-VOL 0.59 / WR-MID 0.41
+G.Pickens      DAL  tgt=137 aDOT= 11.3 YAC/rec= 5.2 share=0.23 -> WR-VOL 0.49 / WR-MID 0.51
+E.Egbuka       TB   tgt=127 aDOT= 12.4 YAC/rec= 5.3 share=0.23 -> WR-VERT 0.28 / WR-VOL 0.43 / WR-MID 0.29
+M.Wilson       ARI  tgt=126 aDOT= 11.9 YAC/rec= 3.5 share=0.20 -> WR-VERT 0.23 / WR-VOL 0.36 / WR-MID 0.41
+C.Sutton       DEN  tgt=124 aDOT= 12.4 YAC/rec= 3.0 share=0.21 -> WR-VERT 0.31 / WR-VOL 0.37 / WR-MID 0.32
+K.Allen        LAC  tgt=122 aDOT=  8.4 YAC/rec= 2.9 share=0.22 -> WR-VOL 0.51 / WR-MID 0.49
+T.McMillan     CAR  tgt=122 aDOT= 11.6 YAC/rec= 3.8 share=0.25 -> WR-VOL 0.58 / WR-MID 0.42
+A.Brown        PHI  tgt=121 aDOT= 11.8 YAC/rec= 3.4 share=0.26 -> WR-VOL 0.61 / WR-MID 0.39
+N.Collins      HOU  tgt=120 aDOT= 12.7 YAC/rec= 4.6 share=0.22 -> WR-VERT 0.31 / WR-VOL 0.40 / WR-MID 0.28
+Z.Flowers      BAL  tgt=118 aDOT= 10.2 YAC/rec= 5.3 share=0.29 -> WR-VOL 0.51 / WR-MID 0.49
+C.Lamb         DAL  tgt=117 aDOT= 12.0 YAC/rec= 4.3 share=0.19 -> WR-VERT 0.26 / WR-VOL 0.31 / WR-MID 0.43
+D.Adams        LA   tgt=114 aDOT= 12.7 YAC/rec= 1.9 share=0.20 -> WR-VERT 0.39 / WR-VOL 0.31 / WR-MID 0.31
+D.Smith        PHI  tgt=113 aDOT= 12.0 YAC/rec= 3.8 share=0.24 -> WR-VOL 0.59 / WR-MID 0.41
+D.London       ATL  tgt=112 aDOT= 10.9 YAC/rec= 3.4 share=0.22 -> WR-VOL 0.44 / WR-MID 0.56
+M.Pittman      IND  tgt=111 aDOT=  8.2 YAC/rec= 3.4 share=0.21 -> WR-VOL 0.48 / WR-MID 0.52
+J.Meyers       JAX  tgt=110 aDOT=  9.2 YAC/rec= 3.8 share=0.20 -> WR-VOL 0.38 / WR-MID 0.62
+L.McConkey     LAC  tgt=106 aDOT=  9.9 YAC/rec= 4.7 share=0.19 -> WR-VOL 0.32 / WR-MID 0.68
+J.Jeudy        CLE  tgt=106 aDOT= 12.2 YAC/rec= 3.3 share=0.20 -> WR-VERT 0.25 / WR-VOL 0.36 / WR-MID 0.39
+T.Franklin     DEN  tgt=104 aDOT= 12.7 YAC/rec= 4.3 share=0.18 -> WR-VERT 0.39 / WR-VOL 0.25 / WR-MID 0.36
+J.Williams     DET  tgt=102 aDOT= 12.6 YAC/rec= 6.7 share=0.19 -> WR-VERT 0.23 / WR-YAC 0.28 / WR-VOL 0.21 / WR-MID 0.27
+S.Diggs        NE   tgt=102 aDOT=  8.5 YAC/rec= 4.2 share=0.21 -> WR-VOL 0.46 / WR-MID 0.54
+J.Waddle       MIA  tgt=100 aDOT= 13.1 YAC/rec= 3.6 share=0.22 -> WR-VERT 0.32 / WR-VOL 0.42 / WR-MID 0.26
+D.Metcalf      PIT  tgt= 99 aDOT= 10.5 YAC/rec= 7.0 share=0.19 -> WR-YAC 0.38 / WR-MID 0.62
+D.Samuel       WAS  tgt= 99 aDOT=  5.3 YAC/rec= 6.5 share=0.23 -> WR-YAC 0.52 / WR-VOL 0.48
+T.Higgins      CIN  tgt= 98 aDOT= 13.4 YAC/rec= 2.8 share=0.16 -> WR-VERT 0.70 / WR-MID 0.30
+K.Shakir       BUF  tgt= 95 aDOT=  3.7 YAC/rec= 7.1 share=0.20 -> WR-YAC 0.67 / WR-VOL 0.33
+P.Washington   JAX  tgt= 95 aDOT= 12.5 YAC/rec= 4.6 share=0.17 -> WR-VERT 0.48 / WR-MID 0.52
+T.Tucker       LV   tgt= 92 aDOT= 10.2 YAC/rec= 5.1 share=0.19 -> WR-VOL 0.28 / WR-MID 0.72
+R.Shaheed      NO   tgt= 92 aDOT= 11.4 YAC/rec= 3.0 share=0.16 -> WR-VERT 0.31 / WR-MID 0.69
+B.Thomas       JAX  tgt= 91 aDOT= 14.5 YAC/rec= 3.3 share=0.17 -> WR-VERT 1.00
+R.Odunze       CHI  tgt= 90 aDOT= 13.9 YAC/rec= 4.9 share=0.17 -> WR-VERT 1.00
+J.Jennings     SF   tgt= 90 aDOT= 10.1 YAC/rec= 3.3 share=0.16 -> WR-MID 1.00
+E.Ayomanor     TEN  tgt= 89 aDOT= 12.7 YAC/rec= 2.8 share=0.17 -> WR-VERT 0.53 / WR-MID 0.47
+J.Downs        IND  tgt= 88 aDOT=  7.5 YAC/rec= 2.4 share=0.17 -> WR-VOL 0.30 / WR-MID 0.70

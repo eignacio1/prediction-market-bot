@@ -1,0 +1,259 @@
+{
+ "archetypes": {
+  "PRF-1": {
+   "name": "Heliocentric On-Ball Engine",
+   "notes": "MVP-tier scorers; primary engines",
+   "signals": "USG%, TS%, AST%, potential assists, TOV%, On/Off Net",
+   "threshold": "USG ≥ 30%; ≥40% of team possessions through this player"
+  },
+  "PRF-10": {
+   "name": "POA Stopper",
+   "notes": "Elite perimeter defenders",
+   "signals": "Screen-nav rate, blow-by allowed, matchup difficulty",
+   "threshold": "≥35% defensive possessions vs primary creators; containment rated"
+  },
+  "PRF-11": {
+   "name": "Wing Stopper / Switch Defender",
+   "notes": "Two-way wings; switchable forwards",
+   "signals": "Switch success, iso eff. allowed, deflections",
+   "threshold": "Switches 1-4 reliably; iso defense rated"
+  },
+  "PRF-12": {
+   "name": "Rebounding / Possession Specialist",
+   "notes": "Glass-cleaners; possession extenders",
+   "signals": "Contested REB, box-out rate, OREB/DREB%",
+   "threshold": "OREB% ≥10% or DREB% ≥25% with elite contested rate"
+  },
+  "PRF-13": {
+   "name": "Transition Weapon",
+   "notes": "Pace pushers; outlet creators",
+   "signals": "Trans freq, pts/trans, recovery speed",
+   "threshold": "Transition freq ≥20% of possessions; pts per trans ≥1.2"
+  },
+  "PRF-14": {
+   "name": "Bench Microwave Scorer",
+   "notes": "Instant-offense bench scorers (6MOY archetype)",
+   "signals": "USG (bench), pull-up rate, late-clock usage",
+   "threshold": "Bench USG ≥22%; shot volatility above team mean"
+  },
+  "PRF-15": {
+   "name": "Utility Depth / Low-Usage Stabilizer",
+   "notes": "High-IQ low-usage role players",
+   "signals": "C&S 3P%, TOV%, foul rate",
+   "threshold": "USG ≤15%; turnover avoidance + role discipline"
+  },
+  "PRF-2": {
+   "name": "Primary On-Ball Creator (non-helio)",
+   "notes": "All-NBA caliber initiators",
+   "signals": "USG, drives, AST%, rim freq, FTr",
+   "threshold": "USG 25-30%; secondary engine; can lead lineups"
+  },
+  "PRF-3": {
+   "name": "Secondary Creator / Connector",
+   "notes": "High-level role players + complementary scorers",
+   "signals": "AST/TO, C&S 3P%, advantage continuation",
+   "threshold": "USG 18-25%; advantage-extender; not primary"
+  },
+  "PRF-4": {
+   "name": "Off-Ball Shooter / Movement Spacer",
+   "notes": "Specialist shooters; 3-and-D wings",
+   "signals": "C&S 3PA, movement 3P, gravity proxy",
+   "threshold": "3PA rate ≥0.45; ≥35% catch-and-shoot 3P"
+  },
+  "PRF-5": {
+   "name": "Slasher / Rim Pressure Wing",
+   "notes": "Athletic wing scorers",
+   "signals": "Drives, pts per drive, rim eFG, FTr",
+   "threshold": "Rim freq ≥30%; FTr ≥0.30"
+  },
+  "PRF-6": {
+   "name": "Post / Elbow Hub",
+   "notes": "Traditional bigs with passing IQ",
+   "signals": "Post pts/poss, AST%, pass-out rate",
+   "threshold": "≥4 post-up possessions/game; hub passer"
+  },
+  "PRF-7": {
+   "name": "Roll-Man / Screen-Setter Big",
+   "notes": "Vertical-spacing rim runners",
+   "signals": "Screen assists, pts per roll, rim FG%",
+   "threshold": "Roll freq ≥0.5/game; rim FG% ≥65%"
+  },
+  "PRF-8": {
+   "name": "Pop Big / Stretch Big",
+   "notes": "Modern stretch-5s",
+   "signals": "C&S 3P%, P&P freq, TS%",
+   "threshold": "3PA rate ≥0.3 for a 5; pick-and-pop primary"
+  },
+  "PRF-9": {
+   "name": "Rim Protector Anchor",
+   "notes": "DPOY-tier rim protectors",
+   "signals": "Opp rim FG% on contest, deterrence model, rim freq when on",
+   "threshold": "Block% ≥4%; rim deterrence visible in opponent shot location"
+  }
+ },
+ "modifiers": {
+  "M-1": {
+   "name": "Elite Gravity",
+   "notes": "Star-level skill draws coverage and warps spacing",
+   "threshold": "Face-guard rate >25% in tracking; coverage distortion measurable"
+  },
+  "M-10": {
+   "name": "Elite Rim Deterrence",
+   "notes": "Distinct from M-3; affects opponent shot selection",
+   "threshold": "Opp rim freq when on -8pp vs team baseline"
+  },
+  "M-11": {
+   "name": "Elite Switchability (1-4 or 1-5)",
+   "notes": "Defensive scheme versatility",
+   "threshold": "Documented 1-5 switch capability without breakdown"
+  },
+  "M-12": {
+   "name": "Elite Zone/Hybrid IQ",
+   "notes": "Coverage flexibility",
+   "threshold": "Scheme-versatile rotational anchor"
+  },
+  "M-13": {
+   "name": "Elite Offensive Rebounder",
+   "notes": "Possession extension",
+   "threshold": "OREB% ≥10%; contested OREB rate top-decile"
+  },
+  "M-14": {
+   "name": "Elite Defensive Rebounder",
+   "notes": "Possession completion",
+   "threshold": "DREB% ≥25% with contested rate ≥40%"
+  },
+  "M-15": {
+   "name": "Elite Transition Decision-Maker",
+   "notes": "Pace + transition efficiency",
+   "threshold": "Trans assist rate top-decile; low trans TOV"
+  },
+  "M-16": {
+   "name": "Elite Clutch Process",
+   "notes": "Process-anchored, not outcome-anchored",
+   "threshold": "Late-clock eFG above expected; decision quality (NOT raw splits)"
+  },
+  "M-17": {
+   "name": "High Variance / Streak Profile",
+   "notes": "Volatility amplifier; both ways",
+   "threshold": "σ(per-game pts) above team mean by 1+ stddev"
+  },
+  "M-18": {
+   "name": "Low Variance / Error-Minimizer",
+   "notes": "Tightens lineup variance",
+   "threshold": "TOV%<10%; consistent role output"
+  },
+  "M-19": {
+   "name": "Injury-Managed / Load-Sensitive",
+   "notes": "Game-day reauth required",
+   "threshold": "Documented health flag; minutes-managed entering series"
+  },
+  "M-2": {
+   "name": "Elite Foul Drawer",
+   "notes": "Pace-neutral but inflates totals; clutch impact",
+   "threshold": "FTr ≥0.40 (top 5% NBA)"
+  },
+  "M-20": {
+   "name": "Developmental Upside (learning rate)",
+   "notes": "Trajectory premium",
+   "threshold": "Rookie/sophomore showing rapid trajectory"
+  },
+  "M-21": {
+   "name": "Veteran Floor General",
+   "notes": "Locker-room + clutch",
+   "threshold": "10+ years; organizational/communication role"
+  },
+  "M-22": {
+   "name": "Specialist: End-of-Clock Bailout",
+   "notes": "Late-clock weapon",
+   "threshold": "Shot creation under duress; track record"
+  },
+  "M-23": {
+   "name": "Specialist: Two-for-One IQ",
+   "notes": "Marginal but real edge",
+   "threshold": "Quarter-end action discipline"
+  },
+  "M-24": {
+   "name": "Specialist: Foul Management (No-Foul Defender)",
+   "notes": "Sustainability of POA role",
+   "threshold": "Foul rate ≤2.5/36 while guarding top creators"
+  },
+  "M-25": {
+   "name": "Specialist: Screen Assist Savant",
+   "notes": "Hidden offensive value",
+   "threshold": "Screen assists/g top-10"
+  },
+  "M-26": {
+   "name": "Specialist: Charge Taker / Sacrifice",
+   "notes": "Hustle + positional sacrifice",
+   "threshold": "Charges drawn/g top-decile"
+  },
+  "M-27": {
+   "name": "Specialist: Small-Ball 5",
+   "notes": "Lineup versatility",
+   "threshold": "Plays minutes at 5 despite <6'11\""
+  },
+  "M-28": {
+   "name": "Specialist: Jumbo Creator (oversized initiator)",
+   "notes": "Matchup distortion",
+   "threshold": "Initiates offense at ≥6'8\" with PG-level USG"
+  },
+  "M-29": {
+   "name": "Specialist: Non-Shooter (spacing constraint)",
+   "notes": "Negative spacing impact",
+   "threshold": "3P% ≤30% on ≥1 attempt/g — defenders sag"
+  },
+  "M-3": {
+   "name": "Elite Rim Finisher",
+   "notes": "Suppresses opponent rim defense",
+   "threshold": "Rim eFG ≥70% on ≥4 attempts/g"
+  },
+  "M-30": {
+   "name": "Specialist: One-Side Player (offense-only / defense-only)",
+   "notes": "Lineup-specific deployment",
+   "threshold": "Documented impact on one end vastly exceeds the other"
+  },
+  "M-31": {
+   "name": "Specialist: Late-Career Athletic Decline (compensation IQ)",
+   "notes": "Aging-curve adjustment",
+   "threshold": "32+ age; relies on IQ over athleticism"
+  },
+  "M-32": {
+   "name": "Specialist: Rookie Processing Volatility",
+   "notes": "Rookie uncertainty premium",
+   "threshold": "First-year; high variance in decision quality"
+  },
+  "M-4": {
+   "name": "Elite Midrange Shotmaker",
+   "notes": "Matchup-proof scoring; late-clock weapon",
+   "threshold": "Mid eFG ≥50% on ≥3 attempts/g; self-created"
+  },
+  "M-5": {
+   "name": "Elite Pull-Up 3 Threat",
+   "notes": "Demands extended defensive coverage",
+   "threshold": "Pull-up 3P% ≥38% on ≥3 attempts/g"
+  },
+  "M-6": {
+   "name": "Elite Passing Vision",
+   "notes": "Hub-type playmaking; pressure release",
+   "threshold": "AST% ≥25% with low live-ball TOV; advanced reads"
+  },
+  "M-7": {
+   "name": "Elite Handle / Pressure Release",
+   "notes": "Defeats trapping defenses",
+   "threshold": "Iso success rate vs blitz top-decile"
+  },
+  "M-8": {
+   "name": "Elite Screen Navigator (chaser)",
+   "notes": "Critical for stopping movement shooters",
+   "threshold": "Top-10% screen-nav success on top-of-key actions"
+  },
+  "M-9": {
+   "name": "Elite Help Rotator / Low-Man",
+   "notes": "Backline defensive value",
+   "threshold": "Tag-and-recover success ≥75%; rotational discipline"
+  }
+ },
+ "source": "qualitative_data/pam_v4/Player_Attribute_Matrix_v4.docx",
+ "sport": "nba",
+ "version": "pam_v4"
+}

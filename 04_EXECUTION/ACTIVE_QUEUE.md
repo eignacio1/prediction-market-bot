@@ -228,7 +228,7 @@ other's files. **None touches B74-A Session 2's files** (the runtime registry, g
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | ⬜ | |
+| 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | 🟡 Parts A+B pushed (PR #259), merge pending CI | Core + lossless NBA v4 port + NFL 9-group taxonomy + WR mass classifier (247 recs, primary retained 54-60% YoY vs ~31% chance) + DEEP_TIER proposal; D5(a) NFL 0→1, NBA 0→1 |
 | 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (running on the ORIGINAL prompt; ADD-IN 22:15 PT rescopes it — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | |
 | 75.3 | Seat interface + structural tensions opened; D4/D5 generated | DEPTH D5(a) NFL and NBA +2 each (seat interface, structural tensions) · D4/D5 generated | ⬜ | |
 | 75.4 | One kill switch for every order path (GG-745 HIGH) | EXECUTION: order paths honouring one switch, of all (drill on the box) | ⬜ | |

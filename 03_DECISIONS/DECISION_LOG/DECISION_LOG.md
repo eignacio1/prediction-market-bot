@@ -2299,3 +2299,13 @@ Operator, verbatim: "you don't need to put these paste in blocks in the chat - y
 
 - Standing: wave blocks and add-ins go in ACTIVE_QUEUE.md only (file card on change), never pasted into the chat. Written into NEW_WINDOW_PASTE_IN.md.
 - 75.2 is running on the original prompt; ADD-IN issued in the queue (22:15 PT): keep the coverage class, drop the literal pieces, reusable factor builder, Part B as the factor's term.
+
+## 2026-10-14 — W75.1 PAM core: one record, one store, one read path; WR first for the NFL mass tier
+
+Operator, verbatim: "we're gonna start piping in the PAM into the NFL, NBA, MLB and NHL (starting with NFL and NBA) - this is going to be a portion of our Syndicate32 bridging - it needs to stay dynamic enough that we can port it easily and do mass application but we'll keep it substantive for when it matters most." and "the deep PAM tier will be a multi layer effort between me and you (Claude). right now - we just need to get the ball rolling on at least building it out foundationally."
+
+- PAM core lives at `src/prediction_market_bot/pam/`: append-only JSONL store per sport, `pam_as_of(sport, player_id, as_of, known_at=None)` is the only read path. Supersession is by link and virtual (history before the superseder reads the old record).
+- NBA v4 ported losslessly (both QS CSVs, round-trip tested); experiment scripts still read the CSVs.
+- NFL mass tier built for ONE group, WR, chosen over CB because the free data attributes outcomes to the receiver on every target and defines four archetypes now; CB's defining archetypes need coverage assignment (GG-777). A classification from season S data takes effect 1 March S+1 (no look-ahead), marked backdated with rationale.
+- GG-775..779 registered (non-free sources). Deep-tier method PROPOSED only (`DEEP_TIER.md`).
+- `.gitignore` negation added so `qualitative_data/pam/**/records.jsonl` is tracked.

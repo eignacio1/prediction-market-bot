@@ -2217,6 +2217,36 @@ B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073,
 
 B74-A Part A, 2026-10-14: `tests/test_generate_mlb_features.py:540` (`TestPostseasonOptIn.test_default_output_unchanged`) failed its byte-level `_GOLDEN_DEFAULT_SHA` assertion (got 2103375a..., expected 7ea0e376...) in the audit venv, which resolved pandas 3.0.6 / numpy 2.4.6 against `pyproject.toml` pins `pandas>=2.2.0,<2.3`, `numpy<2.0`. Likely cause (UNVERIFIED): CSV float/quoting serialization differs off-pin. Not re-run on the pinned set, so it is not shown to be a product defect. Pillar risk: PLUMBING (a golden-hash test that depends on library serialization will false-alarm or, worse, be re-goldened blindly). Fix: re-run under the pinned pandas; if it passes, make the audit venv install honor the pins and note it in the audit runbook; if it fails, re-derive the golden from the pre-change script. Also caveat: every Part A number in HYGIENE_AUDIT_20261015 came from an off-pin env.
 
+### GG-775 — No free receiver/defender alignment or routes-run denominator (slot vs wide, TE/RB role)
+
+**Status:** OPEN · **Severity:** LOW
+
+W75.1 Part B (2026-10-14). WR-SLOT, TE-IN, RB-REC, CB-SLOT archetypes need pre-snap alignment and routes run per player. nflverse participation gives `route` only on the targeted play and no alignment. Source would be NGS/PFF tracking (not free).
+
+### GG-776 — No free OL block-level win rates or blocker attribution
+
+**Status:** OPEN · **Severity:** LOW
+
+W75.1 Part B (2026-10-14). OL-PASS and OL-RUN archetypes need per-blocker pass-block/run-block outcomes. pbp attributes sacks/pressure to the team and defender only. Source would be PFF-type grading (not free). OL stays team-level proxy only.
+
+### GG-777 — No free defender coverage assignment (who covered whom, man vs zone per defender)
+
+**Status:** OPEN · **Severity:** LOW
+
+W75.1 Part B (2026-10-14). CB-SHD, CB-ZN, S-DEEP, LB-COV need per-defender assignment. participation has play-level `defense_man_zone_type` only; PFR def counts targets allowed to the covering defender but not alignment or scheme. Mass CB classification therefore deferred; WR chosen instead.
+
+### GG-778 — No free DL/EDGE pass-rush snap counts or alignment
+
+**Status:** OPEN · **Severity:** LOW
+
+W75.1 Part B (2026-10-14). DL-RUSH rates need a pass-rush-snap denominator and alignment (wide-9 / 3-tech). snaps give total defensive snaps, not rush snaps; alignment not free.
+
+### GG-779 — No free tracking-derived separation / speed / route quality
+
+**Status:** OPEN · **Severity:** LOW
+
+W75.1 Part B (2026-10-14). Separation, yards per route run and top speed need NGS/Sportradar tracking. Cross-cutting for WR/TE/CB. Registered as a GAP, not bought (ADR-0073 point 4).
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
