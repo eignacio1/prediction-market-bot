@@ -2039,11 +2039,15 @@ W73.2 Part A (2026-10-14). Syndicate32 shows play callers as a matchup factor. n
 
 W73.2 Part A (2026-10-14). `injuries_*` is keyed by (season, week, team, gsis_id) with no report time; `officials` has no assignment time. Point-in-time use is by a conservative week rule (FACTOR_TAXONOMY GAP-3), enforced and tested in the W73.2 store. A true as-of timestamp needs our own dated snapshots going forward.
 
+W73.2 Part B (2026-10-15). Measured: `injuries` 2015-2024 DO carry `date_modified` (fill 100%; 2009 0.4%); 2025-26 files do not; `officials` never. The column is stored but not used - its meaning (last edit of the week's report vs. each line) is unverified, so the contract stays on the conservative week rule. Verifying it would let 2015-2024 week-of injuries be used for Thursday games.
+
 ### GG-733 — nflverse games.parquet lines are closing values in a rolling, overwritten file, not as-of-kickoff snapshots
 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W73.2 Part A (2026-10-14). `games.parquet` (schedules tag) updates in place (2026-10-14T23:36Z). `spread_line`, `total_line`, moneylines are final values: usable as a market comparison, never as a model input. W73.2 snapshots the file per build so 2026 lines become point-in-time from now on.
+
+W73.2 Part B (2026-10-15). Mitigation is live: each weekly `nfl_event_store` build uploads its `games.parquet` snapshot to the rolling release `nfl-games-snapshots`. Lines before 2026-10-15 cannot be recovered as-of; only snapshots from the first Actions run forward are point-in-time.
 
 ### GG-734 — No free historical weather FORECAST archive confirmed; stored temp/wind are at-game values
 

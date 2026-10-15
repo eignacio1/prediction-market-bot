@@ -1,0 +1,73 @@
+name: NFL Event Store
+
+# W73.2 / ADR-0073 stage 1. Rebuilds the NFL event store from the free nflverse-data releases (plays, participation,
+# charting, snaps, injuries, depth charts, rosters, PFR advanced stats, officials, schedule), runs the row-count /
+# null / key checks and the point-in-time contract tests against the freshly built store, then commits the manifest
+# (row counts, sha256 of the downloaded bytes, source Last-Modified/ETag) if it changed.
+# The raw store is git-ignored and rebuilt, not stored. The schedule file (games.parquet) is rolling and overwritten
+# upstream (GG-733), so each build's snapshot is kept as an asset on the rolling release `nfl-games-snapshots`.
+# Fail-closed: a failed download, check or test leaves the committed manifest untouched.
+# Public repo => free Actions minutes; no paid service, no secret, touches no cron line, no VPS, no ledger.
+# Tuesday 09:43 UTC: after Monday night football, outside the :00/:30 pile-up (GG-477).
+
+on:
+  schedule:
+    - cron: '43 9 * * 2'
+  workflow_dispatch:
+
+concurrency:
+  group: nfl-event-store
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r 06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt
+          pip install -e .
+
+      - name: Build the event store
+        run: python -m prediction_market_bot.c1_signal_ingestion.nfl_event_store
+
+      - name: Store checks and point-in-time contract tests (real data)
+        env:
+          NFL_STORE_DIR: exp_output/NFL_EVENTS
+        run: |
+          python -m prediction_market_bot.c1_signal_ingestion.nfl_store_checks
+          python -m pytest tests/test_nfl_point_in_time.py tests/test_nfl_store_checks.py -q -p no:cacheprovider
+
+      - name: Keep this build's schedule snapshot (GG-733)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          SNAP=$(ls exp_output/NFL_EVENTS/raw/schedules/schedules_*.parquet | sort | tail -1)
+          gh release view nfl-games-snapshots >/dev/null 2>&1 || \
+            gh release create nfl-games-snapshots --title "NFL schedule snapshots" \
+              --notes "One games.parquet snapshot per event-store build (nflverse overwrites the live file; GG-733)."
+          gh release upload nfl-games-snapshots "$SNAP" --clobber
+
+      - name: Commit manifest if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain -- 02_ARCHITECTURE_DESIGN/NFL_ENGINE/event_store_manifest.json)" ]; then
+            echo "manifest unchanged"
+          else
+            git add 02_ARCHITECTURE_DESIGN/NFL_ENGINE/event_store_manifest.json
+            git commit -m "NFL event store: manifest refresh $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
