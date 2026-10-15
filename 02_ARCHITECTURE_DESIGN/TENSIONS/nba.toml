@@ -1,0 +1,59 @@
+[meta]
+sport = "nba"
+updated = "2026-10-15"
+banner = "v0 DRAFT opened by a model from files on main (W75.3). Each tension names a file or gap that exists. Status OPEN means unrelieved, not unexamined."
+
+[[tension]]
+id = "NBA-T1"
+title = "Registry says the NBA game-market cells are not_implemented while the pre-game model code dispatches those markets"
+status = "OPEN"
+where = "registry nba_moneyline/spread/game_total/team_total T1-T3 vs pregame_shadow/nba_model.py p_yes_for"
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py; src/prediction_market_bot/pregame_shadow/nba_model.py"
+pillar = "BREADTH (B1 counts registry status, not code)"
+relief = "Reconcile registry and code: promote the cells to shadow with a measured first row, or state in the model file why they are not logging"
+
+[[tension]]
+id = "NBA-T2"
+title = "No engine for NBA: every game cell is a thin LR; there is no possession-level simulator"
+status = "OPEN"
+where = "NBA has no counterpart to the NFL engine scaffold"
+evidence = "02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml (nba decision_trees); models/nba_pregame_v1.json (14 features)"
+pillar = "DEPTH (D4 NBA none)"
+relief = "An NBA engine stage 1 behind the same SportEngine interface (GG-756 shows the NFL interface is not yet sport-agnostic)"
+
+[[tension]]
+id = "NBA-T3"
+title = "Availability tested on points and on games but not applied to any game-market forecast"
+status = "OPEN"
+where = "seat factors B5, B6"
+evidence = "12_EXPLORATORY/W69_3_nba_points_minutes_results.md; 12_EXPLORATORY/20261013_nba_games_availability/results.md"
+pillar = "DEPTH (D5b interpreted, not applied)"
+relief = "A pre-registered promotion decision on the verdicts those studies issued; a NO stays a NO and is recorded under NFL-T7's decision"
+
+[[tension]]
+id = "NBA-T4"
+title = "Player points: one thin model and a minutes challenger, no lineup, play-type or matchup factor"
+status = "OPEN"
+where = "seat factor B7; player points cells T1-T3"
+evidence = "src/prediction_market_bot/pregame_shadow/nba_player_points_model.py; 02_ARCHITECTURE_DESIGN/SEATS/nba.toml"
+pillar = "DEPTH (granularity bar: matchup, personnel)"
+relief = "PAM (DS-01) into the player-points engine; on/off and play-type sources identified as free or marked GAP"
+
+[[tension]]
+id = "NBA-T5"
+title = "NBA T4 cell is dark and the NBA book is frozen: no execution evidence exists"
+status = "OPEN"
+where = "registry nba_player_points T4 (dark); frozen NBA paper book"
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py; CLAUDE.md dual-ledger section"
+pillar = "EXECUTION (E1, E2 for NBA)"
+relief = "NBA opening night 2026-10-20 produces the first forward rows; nothing to do before then"
+
+[[tension]]
+id = "NBA-T6"
+title = "NBA has no factor taxonomy: seat factor classes are local ids, so cross-sport cross-reference fails"
+status = "OPEN"
+where = "seat nba.toml factor_class NBA-n"
+evidence = "02_ARCHITECTURE_DESIGN/SEATS/README.md; ADR-0075 section 2 Cross-reference compatibility row"
+pillar = "DEPTH (D5b cannot compare across sports)"
+relief = "One shared factor schema used by every engine (ADR-0075 first scaffold for that component); NBA taxonomy written by a basketball eye"
+

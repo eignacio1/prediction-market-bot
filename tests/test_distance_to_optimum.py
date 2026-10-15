@@ -140,3 +140,86 @@ def test_every_value_has_source_and_asof_key():
 
 def test_exit_zero_unless_strict(tmp_path, capsys):
     assert d.main(["--repo", str(REPO)]) == 0
+
+
+# --------------------------------------------------------------------------- D4 / D5 (W75.3)
+def _arch_repo(tmp_path, comp_toml, seats=None, files=()):
+    (tmp_path / "02_ARCHITECTURE_DESIGN/SEATS").mkdir(parents=True)
+    (tmp_path / d.COMPONENTS_REL).write_text(comp_toml)
+    for sport, text in (seats or {}).items():
+        (tmp_path / f"02_ARCHITECTURE_DESIGN/SEATS/{sport}.toml").write_text(text)
+    for f in files:
+        (tmp_path / f).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / f).write_text("x")
+    return tmp_path
+
+
+COMP = '''
+[[component]]
+sport = "nfl"
+component = "decision_trees"
+scaffold = "eng.py"
+test = "test_eng.py"
+[[component]]
+sport = "nfl"
+component = "seat_interface"
+scaffold = "seat.toml"
+test = "pending_test.py"
+[[engine]]
+sport = "nfl"
+data_layer = "manifest.json"
+engine = "eng.py"
+engine_test = "none"
+'''
+
+
+def test_d5a_counts_only_when_scaffold_and_test_both_exist(tmp_path):
+    repo = _arch_repo(tmp_path, COMP, files=["eng.py", "test_eng.py", "seat.toml"])  # pending_test.py absent
+    m = by_id(d.d5(repo))["D5a"]
+    assert m["status"] == "OK" and "NFL 1/8 (decision_trees)" in m["value"] and "seat_interface" not in m["value"]
+
+
+def test_d5a_does_not_count_a_pending_entry_or_none(tmp_path):
+    repo = _arch_repo(tmp_path, COMP, files=[])
+    assert "NFL 0/8" in by_id(d.d5(repo))["D5a"]["value"]
+
+
+def test_d4_reads_artifacts_on_disk_only(tmp_path):
+    repo = _arch_repo(tmp_path, COMP, files=["manifest.json", "eng.py"])
+    v = by_id(d.d4(repo))["D4"]["value"]
+    assert "NFL: data layer + engine scaffold" in v and "scaffold test" not in v and "NBA: none" in v
+
+
+def test_d5b_counts_stages_and_ignores_stub_and_missing_evidence(tmp_path):
+    seat = '''
+[[factor]]
+id = "a"
+stage = "applied"
+evidence = "e1.py"
+[[factor]]
+id = "b"
+stage = "aggregated"
+evidence = "e1.py"
+[[factor]]
+id = "c"
+stage = "applied"
+evidence = "missing.py"
+[[factor]]
+id = "d"
+stage = "none"
+evidence = "n/a"
+'''
+    repo = _arch_repo(tmp_path, COMP, seats={"nfl": seat, "mlb": "[meta]\nsport='mlb'\n"}, files=["e1.py"])
+    v = by_id(d.d5(repo))["D5b"]["value"]
+    assert "NFL 1 aggregated/0 interpreted/1 applied of 4" in v   # 'c' cites a file that does not exist -> not counted
+    assert "MLB stub (no factors)" in v and "NBA no seat file" in v
+
+
+def test_d4_d5_unavailable_not_guessed_when_components_missing(tmp_path):
+    assert d.d4(tmp_path)[0]["status"] == "UNAVAILABLE"
+    assert d.d5(tmp_path)[0]["status"] == "UNAVAILABLE"
+
+
+def test_compute_includes_d4_d5_on_this_repo():
+    ids = {m["id"] for m in d.compute(d.REPO)["measures"]}
+    assert {"D4", "D5a", "D5b"} <= ids

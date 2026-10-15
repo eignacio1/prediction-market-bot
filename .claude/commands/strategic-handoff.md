@@ -46,6 +46,7 @@ A window hands off only after its last wave is **verified**, never when the wave
 5. **Stale-rule sweep:** grep the carry-forward, the paste-in, the queue's standing sections and CLAUDE.md for any rule
    a newer operator directive superseded (2026-10-09 found "calibration mode: not more cells" still in the paste-in
    after the expansion directive). Fix each in place; note it in the DECISION_LOG entry.
+5b. **Tension-register review** (ADR-0075): read `02_ARCHITECTURE_DESIGN/TENSIONS/{nfl,nba}.toml` (rules in `TENSIONS/README.md`). Add tensions this wave exposed, mark relieved ones with evidence, flag any relief deferred across two waves. A tension that needs an ADR-0075 definition changed goes to the operator.
 6. **DECISION_LOG** entry for the handoff; docs-only commit; push to main.
 7. **Deliver, in the chat, without being asked:** `SendUserFile` with the carry-forward, the paste-in and
    `ACTIVE_QUEUE.md` (three file cards), then the paste-in text inside a code fence in the reply so he can copy it
