@@ -17,7 +17,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from prediction_market_bot.c1_signal_ingestion import nba_ingest as N  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion.nba_pregame_features import et_date, _dt  # noqa: E402
 from prediction_market_bot.pregame_shadow.nba_forecaster import parse_market_ticker  # noqa: E402
-from prediction_market_bot.pregame_shadow.nba_settlement import join_row  # noqa: E402
+from prediction_market_bot.pregame_shadow.nba_settlement import join_row, typed_join  # noqa: E402
+from prediction_market_bot.pregame_shadow.settle_result import FINAL, LOOKUP_FAILED  # noqa: E402
 from prediction_market_bot.pregame_shadow.scoring import first_row_per_market  # noqa: E402
 
 SEASONS = (2026, 2027)
@@ -32,7 +33,7 @@ def finals_index(raw: Path) -> dict:
     return out
 
 
-def settle(ledger_dir: Path, finals: dict, clim: dict) -> dict:
+def settle(ledger_dir: Path, finals: dict, clim: dict, alarms: "list | None" = None, now=None) -> dict:
     out_dir = ledger_dir / "settled"
     counts: dict[str, int] = {}
     for path in sorted(ledger_dir.glob("NBA_*_T[123].jsonl")):
@@ -47,12 +48,16 @@ def settle(ledger_dir: Path, finals: dict, clim: dict) -> dict:
             if (r["market_ticker"], r["band"]) in have:
                 continue
             p = parse_market_ticker(r["market_ticker"])
-            fin = finals.get((p["game_date"], frozenset((p["home"], p["away"])))) if p else None
-            if fin is None:
+            if p is None:                      # GG-751: unparseable is an alarm, not a silent skip
+                if alarms is not None:
+                    alarms.append({"cell": path.stem, "market_ticker": r["market_ticker"], "reason": "unparseable_ticker"})
                 continue
-            j = join_row(r, *fin, clim)
-            if j is not None:
-                new.append(j)
+            fin = finals.get((p["game_date"], frozenset((p["home"], p["away"]))))
+            res = typed_join(r, p["game_date"], fin, clim, now)
+            if res.status == FINAL:
+                new.append(res.outcome)
+            elif res.status == LOOKUP_FAILED and alarms is not None:
+                alarms.append({"cell": path.stem, "market_ticker": r["market_ticker"], "reason": res.reason})
         if new:
             out_dir.mkdir(parents=True, exist_ok=True)
             with out_path.open("a") as fh:
@@ -69,8 +74,11 @@ def main(argv=None) -> int:
     ap.add_argument("--model", default=str(ROOT / "models" / "nba_pregame_v1.json"))
     a = ap.parse_args(argv)
     clim = json.loads(Path(a.model).read_text())["climatology"]
-    print("settled_new:", settle(Path(a.ledger_dir), finals_index(Path(a.raw)), clim))
-    return 0
+    alarms: list = []
+    print("settled_new:", settle(Path(a.ledger_dir), finals_index(Path(a.raw)), clim, alarms))
+    for al in alarms:
+        print("ALARM LOOKUP_FAILED:", json.dumps(al), file=sys.stderr)
+    return 3 if alarms else 0
 
 
 if __name__ == "__main__":

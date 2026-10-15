@@ -20,20 +20,11 @@ import argparse
 import json
 import os
 import sys
-import time
-from collections import Counter
 from pathlib import Path
 
 os.environ.setdefault("BOT_ENV", "paper")
 
-from prediction_market_bot.c5_execution.paper_trader import PaperTrader
-from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
-from prediction_market_bot.run_resolve_mlb import (
-    VENUE_CANCELLED,
-    VENUE_SETTLED,
-    _settlement_value,
-    _venue_market_state,
-)
+from prediction_market_bot.position_sweep import sweep_open_positions
 
 
 def main() -> int:
@@ -45,62 +36,13 @@ def main() -> int:
     args = ap.parse_args()
 
     audit = args.audit or args.portfolio.with_suffix(".booking_audit.jsonl")
-    trader = PaperTrader(args.portfolio, AuditLogger(audit, min_severity="INFO"))
-    before = trader.get_state()
-    open_pos = [p for p in before["open_positions"] if p.get("status") == "OPEN"]
-    print(f"mode={'APPLY' if args.apply else 'PLAN'} portfolio={args.portfolio} open={len(open_pos)}")
-
-    cache: dict[str, tuple[str, dict]] = {}
-    plan, skipped = [], []
-    for p in open_pos:
-        t = p.get("kalshi_ticker") or ""
-        if t not in cache:
-            cache[t] = _venue_market_state(t)
-            time.sleep(0.15)
-        state, raw = cache[t]
-        if state == VENUE_SETTLED:
-            plan.append((p, str(raw["result"]).lower(), None))
-        elif state == VENUE_CANCELLED:
-            v = _settlement_value(raw)
-            if v is None:
-                skipped.append((p, "cancelled_no_value"))
-            else:
-                plan.append((p, "scalar", v))
-        else:
-            skipped.append((p, state))
-
-    print(f"tickers queried={len(cache)} bookable={len(plan)} left_open={len(skipped)}")
-    print("left_open reasons:", dict(Counter(r for _, r in skipped)))
-    results = Counter(r for _, r, _ in plan)
-    print("venue results:", dict(results))
-
-    booked = 0
-    if args.apply:
-        for p, res, val in plan:
-            ok, _ = trader.settle_position_from_venue(p["position_id"], res, val)
-            booked += 1 if ok else 0
-        print(f"booked={booked}")
-
-    after = trader.get_state()
-    report = {
-        "applied": args.apply,
-        "open_before": len(open_pos),
-        "bookable": len(plan),
-        "booked": booked,
-        "left_open": [
-            {"position_id": p["position_id"], "ticker": p.get("kalshi_ticker"),
-             "game_date": p.get("game_date"), "reason": r} for p, r in skipped],
-        "venue_results": dict(results),
-        "cancelled": sum(1 for _, r, _ in plan if r == "scalar"),
-        "bankroll_before": before["bankroll_usd"],
-        "bankroll_after": after["bankroll_usd"],
-        "realized_before": before["total_realized_pnl"],
-        "realized_after": after["total_realized_pnl"],
-        "closed_before": len(before["closed_positions"]),
-        "closed_after": len(after["closed_positions"]),
-        "open_after": len(after["open_positions"]),
-    }
-    print(json.dumps({k: v for k, v in report.items() if k != "left_open"}, indent=2))
+    report = sweep_open_positions(args.portfolio, audit, apply=args.apply)
+    print(f"mode={'APPLY' if args.apply else 'PLAN'} portfolio={args.portfolio} "
+          f"open={report['open_before']} bookable={report['bookable']} booked={report['booked']} "
+          f"not_final={len(report['not_final'])} alarms={len(report['alarms'])}")
+    print(json.dumps({k: v for k, v in report.items() if k not in ("alarms", "not_final")}, indent=2))
+    for a in report["alarms"]:
+        print("ALARM LOOKUP_FAILED:", json.dumps(a), file=sys.stderr)
     if args.report:
         args.report.write_text(json.dumps(report, indent=2))
     return 0
