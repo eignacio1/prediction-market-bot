@@ -175,3 +175,6 @@ deploy/demo_fill.override.env
 
 # NFL event store (W73.2): raw store is rebuilt from nflverse releases; only the manifest is committed
 exp_output/NFL_EVENTS/
+
+# PAM store is a versioned, committed artifact (W75.1)
+!qualitative_data/pam/**/records.jsonl
