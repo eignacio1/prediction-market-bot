@@ -898,3 +898,4 @@
 | 2026-10-15T00:36:43Z | T-975..T-979, GG-745..GG-774 | B74-A S1 MEDIUM+ - full hygiene audit (Parts A+B), audit only, no code. PURPOSE: PLUMBING (structural soundness re-audit vs 10-13 baseline; names pillar per finding) |
 | 2026-10-15T00:48:43Z | T-960..T-962 | CLOSED — merge confirmed, HEAD (a812dbd) is ancestor of origin/main — W73.2 DONE: NFL taxonomy + event-level data layer with PIT contract, PR #258 merged, weekly Actions rebuild verified. D4 NFL none -> data layer built |
 | 2026-10-15T00:50:35Z | T-960 | CLOSED — W73.2 DONE: NFL taxonomy (Part A) and event-level data layer with point-in-time contract (Part B) merged; weekly Actions rebuild verified end to end. (commit `31dd1de`) |
+| 2026-10-15T04:31:32Z | T-975 | MERGED: NO — branch `session/20261015T003528Z-b74a-s1-hygiene-audit` awaiting merge — B74-A S1 DONE (audit only): hygiene report 2026-10-15, verdict SOUND WITH ISSUES; GG-745..766 registered; no code changed. (commit `53655f2`) |

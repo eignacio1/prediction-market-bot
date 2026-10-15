@@ -2261,3 +2261,5 @@ Decisions made in `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` (PR #25
 - **NBA as the engine's speed lane** (window recommendation, operator: "Yes - agree with assessment"): NBA engine work starts by Wave 77 alongside NFL.
 - Operator: "Don't write the next wave yet." No wave issued.
 - Window error W15 (NOTES): asked what PAM was implicitly by not finding it; it was in the repo (qualitative_store.py, QUALITATIVE_REGISTRY.md DS-01, PREGAME_FEATURE_ARCHITECTURE.md).
+
+| 2026-10-15 | T-975 | B74-A S1 audit-only: verdict SOUND WITH ISSUES; GG-745..766 registered, no code changed; GG-766 test failure unverified (audit venv off pandas pin); Session 2 (Parts C+D) needs a fresh claim. |
