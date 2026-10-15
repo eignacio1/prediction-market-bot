@@ -457,6 +457,8 @@ END OF BLOCK 73.3. If you cannot see this line, the prompt reached you truncated
 
 ### B74-A — Full hygiene check + the runtime map made live and visible (ADR-0074) · brand-new terminal
 
+**Status (2026-10-14): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Next undone: Session 2 (Parts C+D, fresh claim).**
+
 ```
 COMMON RULES - BACKLOG BLOCK B74-A (read first; they bind this block; B74-A OVERRIDES below take precedence)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the

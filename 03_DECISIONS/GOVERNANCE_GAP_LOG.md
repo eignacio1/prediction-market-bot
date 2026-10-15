@@ -2085,6 +2085,138 @@ Found 2026-10-14 by `scripts/runtime_registry.py` discovery — five (schedule, 
 
 `python3 scripts/runtime_registry.py surface` on 2026-10-14: 75 live components, 21 whose alarm is "none" (settlement joins, price archive, calibration/band monitors, schedule validator, depth/settlement capture, one-shot NBA flips, paused Post-Game Resolve). Under Hard Rule 14 each needs an alarm or an explicit reason it needs none. The silent-arm pattern (W62.1) and the deploy status file (W72.3) are the templates. Pillar: PLUMBING (PROOF data most exposed: settlement joins).
 
+### GG-745 — The kill switch is not one switch: three flag files, C7 never writes one, paper_trader has no halt check (NFR-03)
+
+**Status:** OPEN · **Severity:** HIGH
+
+B74-A L1, 2026-10-14. t4-mlb watches only `logs/t4_mlb_kill_switch.flag` (`run_t4_mlb_live.py:290`); `run_t4_live` watches `t4_kill_switch.flag`; `shadow_flat_stake.maybe_place:55` calls `kill_switch_state.halt_reason()` (glob `*kill_switch*.flag`, fails closed). So `touch logs/t4_kill_switch.flag` halts shadow stake placement but not t4-mlb, the main order placer. C7 `is_kill_switch_active` is in-memory and no code writes a flag file when C7 trips, so cron-launched processes never see it (only `t4_live_runner:509` checks it). `paper_trader.py:685` (T1, NFL game markets) calls `submit_order` with no `halt_reason()` call. No flag exists on the box, so the path was never exercised. Pillar: EXECUTION, PROOF. Proposed fix: one shared `halt_reason()` honoured by every order placer (put it in `paper_trader`/`submit_order`), C7 writes the flag on L4, and a monthly canary that touches the flag on demo and reads back a halt. Related: GG-667 (fixed for shadow stake only).
+
+### GG-746 — Four NFL moneyline positions still OPEN 4-7 days after the game
+
+**Status:** OPEN · **Severity:** HIGH
+
+B74-A L2, 2026-10-14 (box copy). POS-BC7EBF8BB9 and POS-5606773C7E (CIN-MIA, 10-11), POS-0EED4809E1 and POS-515DEC8556 (TB-DAL, 10-08) are open; the NFL portfolio file mtime is 2026-10-07. Either the NFL resolver cron/settlement path (`nfl_settlement.py`, `nfl_espn_results.py:78` return-None) is not closing positions, or the rows are mislabelled. Pillar: EXECUTION (E1/E2 on a book that never closes), PROOF. Proposed fix: read the NFL resolve cron log and the settlement path, close or explain each, add an alarm for any position open > 24h past game end. Not fixed here (Hard Rule 11).
+
+### GG-747 — T4 portfolio has 4,309 closed rows vs 4,275 in the resolved ledger (gap of 34)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L2, 2026-10-14. Last T4 entry 2026-10-14T02:29Z. Unexplained difference of 34 between the portfolio's closed rows and the resolved T4 ledger. Pillar: PROOF (P&L per filled bet is read from one of these). Proposed fix: diff the two by position id, classify the 34 (legacy, cancelled, duplicate), and add the reconciliation as a Q7 assertion.
+
+### GG-748 — Live-ledger writers outside atomic_io: four scripts and CellLedger.append
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L2. `scripts/correct_t4_game_dates.py:133`, `gg271_bound_t4_rejected_positions.py:149`, `replay_harness_t427.py:210`, `tag_locked_pairs_t4_mlb.py:116` rewrite the live T4 ledger with `open("w")` + `json.dump` (backup copy only, no lock, no atomic replace). `pregame_shadow/ledger.py` `CellLedger.append` has no cross-process lock and its dedup key set is cached per process, so two overlapping runners can double-write (0 duplicates found today, latent). Regenerable reports/caches also non-atomic (`nfl_ingestion.py:543/550`, `generate_mlb_features.py`, `run_add_players.py:136`). Pillar: PROOF. Proposed fix: route through `atomic_io` + `_file_lock`, refuse to run while t4-mlb is active, flock around `append`. Extends GG-680.
+
+### GG-749 — Measurement-path failures are swallowed or counted but never alarmed
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L3. (a) `run_t4_mlb_live.py:413-419` `_append_dryrun_record` swallows a write failure with a warning, so cycle-log rows go missing non-randomly. (b) `pregame_shadow/runner.py:68-72` a forecaster `None` (about 13 branches in `nfl_forecaster.py:38-122`) is counted, never alarmed: selection bias in what gets scored. (c) `calibration_engine.py:311-317, 379-404` swallow errors and undercount P3. (d) `runner.py:88-91` swallows an `on_row` observer failure (E1 if it is the demo-fill hook). (e) `run_t4_mlb_live.py:~590-596` T2 batting slot silently defaults to 3.7 with no flag in the cycle log. (f) `:1735-1737` `stage_order` failure is log-and-continue with no counter. Pillar: PROOF, DEPTH, EXECUTION. Proposed fix: an `alarm()` plus a per-cycle counter on each; flag defaulted inputs in the row.
+
+### GG-750 — t4-mlb main loop never escalates repeated failure; Kalshi client init failure silently makes orders local_only
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L3. `run_t4_mlb_live.py:2037-2220` logs and loops forever; ESPN discovery failure returns `[]` (the GG-163 pattern, blind to `systemctl is-active`). `:1930-1934` a Kalshi client init failure makes orders `local_only` with no alarm, which GG-527 says is not execution evidence. Pillar: EXECUTION (E1). Proposed fix: consecutive-failure counter with alarm and a non-zero exit after N, and an alarm when the client falls back to local_only.
+
+### GG-751 — Settlement `return None` branches look the same as "unresolved"
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L3. `nfl_settlement.py:41`, `nba_settlement.py:44`, `mlb_settlement.py:32-53`, `nfl_espn_results.py:78` return None for both "not final yet" and "could not parse/failed", so a broken settler is indistinguishable from a slow game (see GG-746). Pillar: PROOF. Proposed fix: a typed result (PENDING / FAILED(reason)) and an alarm on FAILED or on age past game end.
+
+### GG-752 — vps_deploy.sh has no rollback; deploy_status.json alarm and heal_dirty_tree coverage unverified
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L4. GG-661 and GG-668 are otherwise fixed and read back as running (t4-mlb started 02:53Z, after the last src commit; pending-restart retry fired). Still open: no rollback after `gate_red`/`verify_failed` (tree stays at the pulled SHA); `dirty_tree_abort` still exits 1 (3 historical, last 10-13 00:28Z) and tracked `deploy/demo_fill.env` is tool-rewritten (heal_dirty_tree L100-130 not read); nothing confirmed to alarm on `deploy_status.json`. Pillar: EXECUTION. Proposed fix: record previous SHA and revert on verify_failed; confirm heal covers demo_fill.env (or untrack it); wire `deploy_truth.py check` into the governance scan.
+
+### GG-753 — runtime_registry check is blind to the box (cron/systemd as installed)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L6. `scripts/runtime_registry.py:66-101` discovers components from repo mirrors only. `check` and `surface` pass while the box differs: live `45 22 * * * run_mlb_pregame.py` has no entry (mirror says 18:45; PIPE-08 retimes it daily so a schedule-keyed entry never matches), and the registry's live `run_mlb_pregame_shadow.py --bands T1 --refresh` entry is not installed. Also the script crashes under the default python3.9 (no `tomllib`). Pillar: PLUMBING (affects MLB pregame measurement). Proposed fix: `check --box` reading `ssh crontab -l` + `systemctl list-unit-files`, key cron entries on script+args. Related: GG-676, GG-742.
+
+### GG-754 — demo_fill_forward_report: no_outcome check not epoch-gated; two plain write_text writers
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L6. `scripts/demo_fill_forward_report.py:~207-211` counts `no_outcome` cancels over all history and `checks["scheduled_cancel_no_outcome_15m"]` trips on `count > 0`: one pre-fix orphan re-trips the turn-off forever (same class as the #256 stale-history fix, not swept). Per-cell `cancels`/`cancel_success_rate` also include pre-fix rows. `:306` writes `deploy/demo_fill.override.env` (the kill-switch file the policy reads last) and `:369` the cache with plain `write_text`. Pillar: EXECUTION. Proposed fix: gate on `ts >= CANCEL_PATH_FIX_EPOCH` with a test; move both writers to `atomic_io`.
+
+### GG-755 — Fee formula inlined at 9 src sites plus a second fee model (GG-673 grew from 7)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L5. `0.07*p*(1-p)` at `run_mlb_paper_trade.py:915`, `run_paper_trade.py:589`, `run_t4_mlb_live.py:1459`, `run_pregame.py:370`, `run_mlb_pregame.py:434`, `run_t2_mlb_sameday.py:450`, `run_t4_live.py:666`, `c5_execution/paper_trader.py:521,813`; `pregame_shadow/fees.py` is a separate source (`fee_kmult` uses an INFERRED 0.035 coefficient) imported only by the shadow runner and scoring. About 17 more copies in scripts. No devig helper exists in src. Pillar: EXECUTION (E2). Proposed fix: one `c5_execution/fees.py`, import everywhere, a test that fails on a new inline copy (Hard Rule 13 sweep).
+
+### GG-756 — NFL engine interface is not sport-agnostic and the code does not match INTERFACE.md
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L5 (HEAD before W73.2 Part B merged). ADR-0073 point 6 calls NFL the template for all four sports, yet `GameSample` in INTERFACE.md §4 carries `td_h/td_a/fg_h/fg_a` and `12_EXPLORATORY/nfl_engine/engine.py:14-38` hard-codes TD/FG scoring; no `SportEngine` Protocol. `GameInputs`/`build_inputs` exist only in the doc; `engine.py:77` has a different `simulate` signature. The rating layer is the frozen ridge, so D4 is scaffold only. Pillar: DEPTH (D4). Proposed fix: split a sport-neutral `GameSample` core and add a Protocol before the NBA engine copies the shape; say "scaffold" in D4.
+
+### GG-757 — NFL engine invariants are not run by CI
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+B74-A L5. `12_EXPLORATORY/nfl_engine/test_engine.py` is outside `pyproject.toml:77` `testpaths=["tests"]`; no `__init__.py`; `study.py:24-30` uses sys.path/importlib hacks. The invariants INTERFACE §5 calls asserted (ML identity, monotone ladders, total = home + away) never run on push. Pillar: PROOF. Proposed fix: move into `tests/` or extend `testpaths`.
+
+### GG-758 — Silent-arm coverage is coarse (MLB postseason folded into mlb_shadow; T2/T3 have no arm)
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A L5. `pregame_shadow/silent_arms.py` SPECS has 10 arms; postseason is folded into `mlb_shadow` (`_mlb_starts` includes R/F/D/L/W, globs `MLB_*.jsonl`), so a dead postseason runner is masked by regular-season rows. MLB player-hits T2/T3 (registry SHADOW) have no arm; `t1_mlb` reads only `audit_mlb.jsonl` with a 30h window. Runs only in `governance_scan_full.sh:769`. Pillar: PROOF/BREADTH. Proposed fix: per-band file filters, a postseason spec keyed on game_type, run in the light scan.
+
+### GG-759 — Stale comments that now state the wrong thing
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A L1. `c5_execution/market_type_registry.py:~945` says SHADOW = no orders, but shadow cells place demo orders when `SHADOW_FLAT_STAKE=on` (ADR-0072). `t4_fill_status.py:362` says BOT_ENV is blank in the VPS `.env`; it is `paper` (`.env:8`). `gg271_bound_t4_rejected_positions.py` near L83 is stale. Pillar: PLUMBING. Proposed fix: correct the three comments.
+
+### GG-760 — Type debt: mypy 162 errors on c4/c5/pregame_shadow, including unsound unions in kalshi_client and paper_trader
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A Part A, 2026-10-14 (`mypy --ignore-missing-imports`, 3.11). 162 lines: 90 type-arg, 17 arg-type, 15 no-any-return, 14 no-untyped-def, 13 no-untyped-call, 6 assignment, 3 operator, 2 return-value. Worth a look: `kalshi_client.py:954,1024,1045` (`PlayerMarket | GameMarket` appended/returned as one type), `paper_trader.py:129` (`str | None` key), `:672/:676` (`str | int | float | Any | None` passed where `str` is required, on the order path), `demo_fill_policy.py:215`. None triaged as a live bug. Pillar: PLUMBING. Proposed fix: fix the 5 order-path ones first, then add mypy on c4/c5 to CI at the current count as a ratchet.
+
+### GG-761 — Layering inversions and sport literals outside C4/C6 (GG-674 unchanged)
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A L5. `c3_forecasting -> pregame_shadow` (`nhl_pregame.py:43`, lazy), `pregame_shadow -> c5_execution` (analytics). `venue_router.py:132`, `venue_adapter.py:105,173,375,510` default `sport="NBA"`; `venue_adapter.py:350` hard-codes `"tag":"nba"` (KI-019); C7 baselines NBA/MLB only; C8 42 sport mentions. C4 and C6 hold zero. No import cycle among c1..c8. Pillar: PLUMBING. Proposed fix: make `sport` a required argument; move shared contract out of pregame_shadow.
+
+### GG-762 — MLB game feature builder is timezone-fragile on as_of
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A L2. `mlb_game_pregame_features.py:88` uses `as_of.date().isoformat()` and `as_of.year` with no UTC normalization (strict `bisect_left`, so no look-ahead for UTC input). NFL normalizes with `astimezone(UTC)`. A naive or non-UTC as_of would shift the cutoff day. Pillar: PROOF. Proposed fix: require tz-aware and normalize.
+
+### GG-763 — Data observations for PROOF: NFL ties scored y=0.5, thin T4M-PROJ cross-path coverage, legacy null outcomes
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A L2 (106,012 rows across 81 files, 0 integrity violations). (a) NFL moneyline settled files carry y=0.5 (2 rows per file): confirm scoring and calibration treat 0.5 as a tie. (b) T4M-PROJ epoch-12 cross-path outcome check covers 187 of 2,080 rows, so "0 disagreement" is thin. (c) 317 legacy `paper_portfolio_t4` closed rows have outcome None. (d) GG-690/691 baseline unchanged: 3,495 null market_type in the MLB portfolio (plus 158 + 485 + 2,895 legacy) and 16 CANCELLED rows. Pillar: PROOF. Proposed fix: assert each in the ledger-invariants script with a stated expected count.
+
+### GG-764 — Read-side holes: assert_ledger_invariants crashes on a corrupt file; validators reset state on decode error
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A L2. `scripts/assert_ledger_invariants.py:145` `load_json` has no try (one corrupt ledger crashes the scan, which is alarm-only). `validators.py:379` `_load_state` returns `{}` on JSONDecodeError, silently resetting the previous-row-count check. `run_t4_mlb_live.py:1175` fails open on a corrupt T1 portfolio. `demo_fill_policy.py` `append_log` swallows OSError (GG-675 still open; the 897-915 pagination was not re-read). Pillar: PROOF. Proposed fix: catch per file and report CORRUPT; alarm on state reset.
+
+### GG-765 — Register parity: ADR-0070..0074 absent from APPROVALS_REGISTER; APR-0007/0016 dangling
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073, 0074 are ACCEPTED in the doc but never mentioned in APPROVALS_REGISTER.md; APR-0007 and APR-0016 rows point at no real document. The script says to note it in GG-126. Pillar: PLUMBING. Proposed fix: add the five register rows; repoint or retire the two APR rows.
+
+### GG-766 — Golden-SHA test `test_default_output_unchanged` fails off the pinned pandas; suite is not env-proof
+
+**Status:** OPEN · **Severity:** LOW
+
+B74-A Part A, 2026-10-14: `tests/test_generate_mlb_features.py:540` (`TestPostseasonOptIn.test_default_output_unchanged`) failed its byte-level `_GOLDEN_DEFAULT_SHA` assertion (got 2103375a..., expected 7ea0e376...) in the audit venv, which resolved pandas 3.0.6 / numpy 2.4.6 against `pyproject.toml` pins `pandas>=2.2.0,<2.3`, `numpy<2.0`. Likely cause (UNVERIFIED): CSV float/quoting serialization differs off-pin. Not re-run on the pinned set, so it is not shown to be a product defect. Pillar risk: PLUMBING (a golden-hash test that depends on library serialization will false-alarm or, worse, be re-goldened blindly). Fix: re-run under the pinned pandas; if it passes, make the audit venv install honor the pins and note it in the audit runbook; if it fails, re-derive the golden from the pre-change script. Also caveat: every Part A number in HYGIENE_AUDIT_20261015 came from an off-pin env.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
