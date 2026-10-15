@@ -221,6 +221,8 @@ The script writes files but does not commit — review its diff (`git status` / 
 
 ## Step 6B — Operator Digest (mandatory, T-372)
 
+**Pattern sweep + surface (2026-10-14, Hard Rules 13-14, ADR-0074):** fill `pattern_sweep:` — for every defect this session fixed, the pattern you searched for, where, and what else you found (or `n/a (no defect fixed)`); the generator refuses a handoff after 2026-10-15T12:00Z without it. Fill `surface_delta:` — running components (cron lines, services, workflows) added or retired; every added one must already be in `02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml` (`python3 scripts/runtime_registry.py add`, then fill it in, then `... render`) or CI fails.
+
 **Vision pillar + measured change (2026-10-09, Hard Rule 12):** fill `vision_pillar:`, `gap_measure:` and `gap_delta:` (the measured change with its source, or "none") in the session-meta block (BREADTH / DEPTH / EXECUTION / PROOF / PLUMBING, per CLAUDE.md § "What winning looks like — the operator's north star (four pillars)"), and say it in the digest in plain words — which part of the operator's north star this session moved, or "plumbing".
 
 **[MICRO: already done — Step 6-gen appended a one-line entry to `11_MEMORY_HANDOFF/OPERATOR_DIGEST_YYYYMMDD.md` from the `session-meta` block's `one_line_summary`. Do not also hand-author a prose digest on top of it; the one-liner is the MICRO-tier digest.]**

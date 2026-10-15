@@ -93,6 +93,12 @@ NAV_TARGETS = [
 GAP_KEYS_REQUIRED_AFTER = "2026-10-09T07:24:13Z"
 GAP_KEYS = ("gap_measure", "gap_delta")
 
+# ADR-0074 / Hard Rule 13 (2026-10-14): every fix states where else the same defect was looked for. A handoff after this
+# instant must carry `pattern_sweep:` - "n/a (no defect fixed)" or the pattern searched, where, and what was found.
+# Cutoff set after Wave 73's sessions close so no session in flight is broken mid-close.
+PATTERN_SWEEP_REQUIRED_AFTER = "2026-10-15T12:00:00Z"
+PATTERN_SWEEP_KEY = "pattern_sweep"
+
 
 def _parse_ts(ts: str):
     from datetime import datetime, timezone
@@ -141,7 +147,19 @@ def parse_session_meta(handoff_path: Path) -> dict:
                 "Hard Rule 12): name the distance-to-optimum measure moved and the measured change "
                 "(e.g. gap_measure: E3, gap_delta: 28.9% -> 41.0% (source)), or gap_measure: PLUMBING / gap_delta: none."
             )
+    if _after(fields["timestamp"], PATTERN_SWEEP_REQUIRED_AFTER) and not fields.get(PATTERN_SWEEP_KEY):
+        raise SystemExit(
+            f"ERROR: session-meta block missing {PATTERN_SWEEP_KEY!r} (required for handoffs after "
+            f"{PATTERN_SWEEP_REQUIRED_AFTER}, Hard Rule 13 / ADR-0074): for every defect this session fixed, the pattern "
+            "you searched for and where, and what else you found (e.g. pattern_sweep: grep 'write_text(' in src/ scripts/ -> "
+            "3 more writers, fixed in #251), or pattern_sweep: n/a (no defect fixed)."
+        )
     return fields
+
+
+def _after(timestamp: str, cutoff: str) -> bool:
+    t, c = _parse_ts(timestamp), _parse_ts(cutoff)
+    return bool(t and c and t > c)
 
 
 def build_current_line(meta: dict, handoff_relpath: str) -> str:
