@@ -2218,3 +2218,9 @@ Read-only ledger audit and point-in-time feature tests (PR #249, box at 10e34368
 - OPERATOR DECISION (pre-registration amendment, ADR-0072): "Yes, amend" — the skip-rate turn-off ("skip rate > 90% for three days") counts only the placement rule's own skips; `not_listed_on_demo` skips (GG-564) are reported separately and never count. Reason given to him: the condition exists to catch an inert policy, and ~97% of paper MLB-HIT attempts are skipped because the demo venue does not list the market. 73.1 appends the dated addendum to ADR-0072.
 - OPERATOR DECISION (GG-570): "Yes, separate runner" — NBA shadow cells get a separate demo-only staked runner (mirroring run_nhl_shadow_staked.py); the EXP-038/039/040 forecasting cron lines stay credential-free and unchanged.
 - Wave 73: 73.1 EXECUTION (addendum, NBA staked runner, first settled E2/E3), 73.2 + 73.3 DEPTH D4 — the NFL engine per ADR-0073 (taxonomy → free sources → event-level data layer; simulation scaffold pricing ML/spread/total from one distribution). Syndicate32 teardown limited to public pages; no login, membership or paywalled content.
+
+## 2026-10-15 — W73.1 (T-940..T-942)
+- Skip-rate turn-off counts only the placement rule's own skips; `not_listed_on_demo` reported separately (operator 2026-10-14; ADR-0072 addendum; #253).
+- Cancel-fail turn-off counts only attempts at/after the 2026-10-13T23:58Z fix epoch (#256, ADR-0072 addendum; GG-710). Demo-only monitor fix; the forward test had been OFF ~12.8h; re-armed 2026-10-15T00:14Z by archiving the override file.
+- Separate NBA staked runner NOT built: NBA game and player-points T1-T3 lines already stake demo-only since W68.2 (#228); a second runner would double-place the same rows and require editing existing cron lines. GG-570 stays open to the 10-21 read-back.
+- GG-665/666/667 RESOLVED: running t4-mlb (02:53:06Z) postdates the tree with #252 (01:43:27Z).

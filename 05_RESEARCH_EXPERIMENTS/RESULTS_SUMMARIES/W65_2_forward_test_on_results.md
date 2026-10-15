@@ -118,3 +118,23 @@ Switches: `book_anchor_cancel` + `SHADOW_FLAT_STAKE=on`, no override file, no tu
 - **Skip-rate turn-off watch:** daily skip rates 0.2% / 56.3% / 98.6% (10-11/12/13). The condition needs three consecutive days > 90%; today alone is over. If 10-14 and 10-15 stay above 90% it trips. That is the paper/MLB `not_listed_on_demo` share (GG-564), not a fault.
 - **Not done:** governance-scan line and /project panel were not compared with these numbers in this read-back.
 - **GG-646 fixed** in `scripts/demo_fill_forward_report.py`: a 404 counts as `already_terminal` only if the order's `last_update_time` is at or before the cancel attempt plus 30s; missing or unparseable timestamp stays a failure.
+
+## Read-back W73.1 (2026-10-15T00:15Z, UTC; source: `scripts/demo_fill_forward_report.py --no-act` on the VPS, log sliced at ts >= 2026-10-13T23:58, 1,219 events)
+
+**Status change.** The forward test was OFF from 2026-10-14T11:25Z to 00:14Z (GG-710: the cancel-fail turn-off counted 10-13 failures from before the fix). PR #256 scopes it to post-fix attempts; override archived; re-armed and read back (`is_enabled()` True, policy log flowing). No turn-off tripped.
+
+| since 10-13T23:58 | orders | cancel ok / already_terminal / failed | fills (settled) | win rate on fills | settle-minus-price |
+|---|---|---|---|---|---|
+| paper/MLB treatment | 8 (641 `not_listed_on_demo`) | 8 / 0 / 0 | 0 (0) | n/a | n/a |
+| shadow/MLB treatment | 20 (6 listing) | 11 / 9 / 0 | 2 (0) | n/a | n/a |
+| shadow/MLB control | 29 | none by design | 5 (0) | n/a | n/a |
+| shadow/NFL treatment | 28 | 25 / 3 / 0 | 3 (0) | n/a | n/a |
+| shadow/NFL control | 28 | none | 11 (0) | n/a | n/a |
+| shadow/NHL treatment | 48 (131 listing) | 47 / 1 / 0 | 1 (1) | 0.0 (n=1) | -0.47 |
+| shadow/NHL control | 54 | none | 29 (29) | 0.483 (n=29) | +0.123 |
+
+- **E1:** 51 post-re-arm demo fills (2 MLB-T + 5 MLB-C + 3 NFL-T + 11 NFL-C + 1 NHL-T + 29 NHL-C), 30 settled (all NHL). 0 cancel failures in 168 treatment cancels.
+- **E2/E3:** only NHL has settled. Control 29 settled fills, 48.3% win, +0.123 per contract; treatment 1 settled fill (a loss). **n is far below judged n (550 per arm); no verdict, no comparison drawn.** MLB and NFL fills have not settled.
+- **Fill-rate contrast (descriptive):** treatment fills 1 of 48 NHL orders (2%) against control 29 of 54 (54%); MLB 2/20 vs 5/29; NFL 3/28 vs 11/28. Anchored orders fill much less often than model-mid orders in every sport. This is the quantity the pre-registration is built to measure; read it at judged n only.
+- **Treatment-minus-control:** formable for NHL only, at n=1 vs 29: not interpretable.
+- **NBA:** no NBA order exists yet (regular season opens 10-20). The T1-T3 NBA lines are already staked and demo-only (GG-570 note); first read-back 10-21.

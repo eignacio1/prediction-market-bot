@@ -2051,6 +2051,12 @@ W73.2 Part A (2026-10-14). `games.parquet` (schedules tag) updates in place (202
 
 W73.2 Part A (2026-10-14). `games.temp`/`wind` (fill 0.74 in 2018, 0.38 in 2022, 0.67 in 2025; roofed games null) and `pbp.weather` are recorded at game time, not forecasts available before kickoff. Treated as a labelled leakage-risk feature until a forecast source is verified. Candidate sources are unverified.
 
+### GG-710 — Cancel-fail turn-off counted pre-fix failures and switched the forward test off on stale data
+
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+W73.1 2026-10-15. The 11:25Z report of 2026-10-14 tripped `cancel_fail_rate_gt_10pct_in_a_day` on 10-13 cancel failures that predate the cancel-path fix (2026-10-13T23:58Z) and wrote `deploy/demo_fill.override.env`; placement and shadow stakes were OFF from 11:25Z to 2026-10-15T00:14Z (~12.8h dark). Fix: PR #256 (4616807) counts only attempts at or after `CANCEL_PATH_FIX_EPOCH`; ADR-0072 addendum 2026-10-14. Read back on the box with `--no-act`: no turn-off tripped; override archived to `logs/`, `is_enabled()` True, policy log flowing at 00:14Z.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
@@ -3968,6 +3974,8 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 **Status:** OPEN · **Severity:** LOW
 
+**W73.1 2026-10-15T00:20Z:** premise stale. Since W68.2 (#228) the NBA game and player-points T1-T3 cron lines already load `deploy/demo_fill.env` with `BOT_ENV=paper` and stake demo-only through `make_on_row` (box crontab read over ssh); the guard test was changed to a demo-only guard. A second runner would double-place the same rows, so none was built (see DECISION_LOG W73.1). Stays OPEN until the 10-21 read-back shows NBA shadow_order rows.
+
 **Current state (2026-10-11, W67.2):** W67.2 wired `deploy/demo_fill.env` into the NFL and MLB shadow pregame cron lines only. The NBA lines (`run_nba_pregame_shadow.py --bands T1/T2/T3`) were left unchanged because `tests/test_nba_shadow_safety.py::test_cron_block_markers_and_scripts_only_nba` asserts they carry no `.env` and no kelly (the EXP-038 NBA shadow is deliberately credential-free). Loading demo_fill.env there would give those jobs order-placing credentials. NBA is also DARK/FROZEN per the standing directive, regular season starts ~2026-10-21. Operator decision needed: keep NBA shadow credential-free (no flat stakes on NBA shadow cells) or amend that guard by ADR/test change.
 
 <details>
@@ -4148,7 +4156,9 @@ W71.H1 L1. paper_trader.py:360,975,1064,1152,1206 call `self._save()` without ch
 
 ### GG-665 — kelly_fraction is read from the forecast dict (default 0.25) and never cross-checked against BAND_CONFIGS (ADR-0048 zero not enforced in risk.py)
 
-**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**W73.1 RESOLVED 2026-10-15T00:20Z:** running t4-mlb (process started 2026-10-14T02:53:06Z) postdates box tree 8b1fb3b (01:43:27Z) that holds PR #252, so it carries the guards (read over ssh). Cron runners load the code per run.
 
 **W72.1 read-back 2026-10-14T01:52Z:** band-sourced kelly in risk.py (`_band_kelly_fraction`). PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
 
@@ -4156,7 +4166,9 @@ W71.H1 L1. `c4_risk_engine/risk.py:166` `kelly_frac = float(fc.get('kelly_fracti
 
 ### GG-666 — No host/env assertion on order writes: BOT_ENV=live plus credentials reaches prod through the same submit_order
 
-**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**W73.1 RESOLVED 2026-10-15T00:20Z:** running t4-mlb (process started 2026-10-14T02:53:06Z) postdates box tree 8b1fb3b (01:43:27Z) that holds PR #252, so it carries the guards (read over ssh). Cron runners load the code per run.
 
 **W72.1 read-back 2026-10-14T01:52Z:** `_order_write_host_refusal` on `_post`/`_delete`. PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
 
@@ -4164,7 +4176,9 @@ W71.H1 L1 / A2. `kalshi_client.py:106-130` maps live->prod; `_post` (553-575) an
 
 ### GG-667 — NFR-03 kill switch not wired to shadow runners or shadow_flat_stake.maybe_place; t4-mlb poll is 45s
 
-**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**W73.1 RESOLVED 2026-10-15T00:20Z:** running t4-mlb (process started 2026-10-14T02:53:06Z) postdates box tree 8b1fb3b (01:43:27Z) that holds PR #252, so it carries the guards (read over ssh). Cron runners load the code per run.
 
 **W72.1 read-back 2026-10-14T01:52Z:** `kill_switch_state.halt_reason` checked in `shadow_flat_stake.maybe_place`. PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
 
