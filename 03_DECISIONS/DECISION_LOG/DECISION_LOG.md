@@ -2236,3 +2236,9 @@ Read-only ledger audit and point-in-time feature tests (PR #249, box at 10e34368
 
 - W73.1 found NBA T1-T3 shadow lines already demo-staked since W68.2 and built no second runner. The operator's "Yes, separate runner" answer is therefore moot; nothing changes in the running system. GG-570 closes on the 10-21 read-back of NBA shadow orders. Logged as window error W14 (UNVERIFIED): the window routed a decision from gap-entry text without checking the cron mirrors.
 - ADR-0074 merged as #257 (c2a4cb4), CI green on the PR.
+
+## 2026-10-14 17:28 PT — B74-A rewritten as a standalone full hygiene check + live runtime map on both dashboards; Visual Dashboard gains Process integrity
+
+- Operator: "I'm sending it to a brand new terminal, so make sure it's doing a full hygiene check too not just an add on. Also - I want this wired into the visual dashboard AND live terminal. I don't just want this in the background - I want to see it."
+- B74-A now: SESSION 1 = full re-audit against the 10-13 baseline (mechanical sweep, review skills actually invoked, six lanes incl. deployment and ADR-0074 process), register-only; SESSION 2 = registry reviewed against the box, alarms for the 21 unalarmed components, RUNTIME block + SURFACE BUDGET in the scan, a Process integrity panel on /project and a strip on the Live Terminal. Two sessions in one terminal (Hard Rule 11).
+- Window built the standalone Visual Dashboard's Process integrity section (surface tiles, runtime map with filters, window-error tally and log, rules in force) and made its governance, cell and wave counts build-time live (they had gone stale: 130 vs 159 OPEN, Wave 67 chip).
