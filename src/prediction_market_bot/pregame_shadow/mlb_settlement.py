@@ -55,3 +55,19 @@ def join_row(row: dict, home_score: float, away_score: float) -> Optional[dict]:
     out.update(y=y, game_key=f"{parsed['start_utc'].date().isoformat()}:{parsed['away']}@{parsed['home']}",
                final_home=home_score, final_away=away_score)
     return out
+
+
+def typed_join(row: dict, finals: pd.DataFrame, now=None):
+    """GG-751: FINAL(joined row) / NOT_FINAL / LOOKUP_FAILED(reason). An unparseable ticker or a (impossible)
+    MLB moneyline tie is LOOKUP_FAILED, not a silent skip."""
+    from prediction_market_bot.pregame_shadow import settle_result as sr
+    parsed = parse_market_ticker(row["market_ticker"])
+    if parsed is None:
+        return sr.lookup_failed(f"unparseable_ticker {row.get('market_ticker')}")
+    fin = find_final(finals, parsed)
+    if fin is None:
+        return sr.missing_final(parsed["start_utc"], now)
+    j = join_row(row, *fin)
+    if j is None:
+        return sr.lookup_failed(f"unjoinable_row ticker={row.get('market_ticker')} score={fin}")
+    return sr.final(j)

@@ -29,7 +29,7 @@ from typing import Optional
 
 import requests
 
-__all__ = ["NFLGameResult", "fetch_nfl_final_score"]
+__all__ = ["NFLGameResult", "fetch_nfl_final_score", "fetch_nfl_final_result"]
 
 _ESPN_NFL_SCOREBOARD = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
 _ESPN_HEADERS: dict[str, str] = {}
@@ -51,11 +51,11 @@ class NFLGameResult:
     status: str
 
 
-def _espn_scoreboard_events(
+def _espn_scoreboard_events_checked(
     game_date: str,
     *,
     delays: tuple[int, ...] = _RETRY_DELAYS_S,
-) -> list[dict]:
+) -> tuple[list[dict], Optional[str]]:
     """Fetch raw ESPN scoreboard events for game_date (YYYY-MM-DD).
 
     Retries per _RETRY_DELAYS_S (T-207), then gives up and returns [] --
@@ -65,6 +65,7 @@ def _espn_scoreboard_events(
     """
     date_str = datetime.strptime(game_date, "%Y-%m-%d").strftime("%Y%m%d")
     params: dict[str, str | int] = {"dates": date_str, "limit": 30}
+    last_exc: Optional[Exception] = None
     for attempt, delay in enumerate((*delays, None), start=1):
         try:
             resp = requests.get(
@@ -74,8 +75,9 @@ def _espn_scoreboard_events(
                 timeout=_REQUEST_TIMEOUT_S,
             )
             resp.raise_for_status()
-            return resp.json().get("events", [])
+            return resp.json().get("events", []), None
         except Exception as exc:
+            last_exc = exc
             if delay is None:
                 print(
                     f"  [ESPN-NFL] game_date={game_date} "
@@ -91,7 +93,16 @@ def _espn_scoreboard_events(
                     file=sys.stderr,
                 )
                 time.sleep(delay)
-    return []
+    return [], f"espn_request_failed: {type(last_exc).__name__}: {last_exc}"
+
+
+def _espn_scoreboard_events(
+    game_date: str,
+    *,
+    delays: tuple[int, ...] = _RETRY_DELAYS_S,
+) -> list[dict]:
+    """Events only; [] on failure. Use _espn_scoreboard_events_checked to tell failure from empty."""
+    return _espn_scoreboard_events_checked(game_date, delays=delays)[0]
 
 
 def fetch_nfl_final_score(
@@ -149,3 +160,42 @@ def fetch_nfl_final_score(
         )
 
     return None
+
+
+def fetch_nfl_final_result(
+    game_date: str,
+    home_team_code: str,
+    away_team_code: str,
+):
+    """GG-751: typed lookup. FINAL(NFLGameResult) / NOT_FINAL / LOOKUP_FAILED(reason).
+
+    A request failure, a game missing from a scoreboard that loaded, an unparseable score and a postponement
+    are all distinguished from "the game is not over yet". A postponed game is LOOKUP_FAILED: it will not
+    become final on its own and a caller must not wait on it.
+    """
+    from prediction_market_bot.pregame_shadow import settle_result as sr
+    events, err = _espn_scoreboard_events_checked(game_date)
+    if err:
+        return sr.lookup_failed(err)
+    home_up, away_up = home_team_code.upper(), away_team_code.upper()
+    for event in events:
+        competitions = event.get("competitions", [])
+        if not competitions:
+            continue
+        comp = competitions[0]
+        competitors = comp.get("competitors", [])
+        codes = {c.get("homeAway"): c.get("team", {}).get("abbreviation", "").upper() for c in competitors}
+        if codes.get("home") != home_up or codes.get("away") != away_up:
+            continue
+        status_name = comp.get("status", {}).get("type", {}).get("name", "")
+        if status_name == _ESPN_STATUS_POSTPONED:
+            return sr.lookup_failed("espn_status_postponed")
+        if status_name != _ESPN_STATUS_FINAL:
+            return sr.not_final(f"espn_status={status_name or 'unknown'}")
+        scores = {c.get("homeAway"): c.get("score") for c in competitors}
+        try:
+            hs, as_ = float(scores["home"]), float(scores["away"])
+        except (KeyError, TypeError, ValueError):
+            return sr.lookup_failed("espn_final_score_unparseable")
+        return sr.final(NFLGameResult(home_up, away_up, hs, as_, status_name))
+    return sr.missing_final(game_date, what="espn_game")

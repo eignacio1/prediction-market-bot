@@ -23,11 +23,34 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from prediction_market_bot.pregame_shadow.nfl_forecaster import (  # noqa: E402
     NFLScheduleIndex, parse_market_ticker)
-from prediction_market_bot.pregame_shadow.nfl_settlement import join_row  # noqa: E402
+from prediction_market_bot.pregame_shadow.nfl_settlement import join_row, typed_join  # noqa: E402
+from prediction_market_bot.pregame_shadow.settle_result import FINAL, LOOKUP_FAILED  # noqa: E402
 from prediction_market_bot.pregame_shadow.scoring import first_row_per_market  # noqa: E402
 
 
-def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict, prefix: str = "NFL") -> dict:
+def _alarm(alarms, cell: str, row: dict, reason: str) -> None:
+    """GG-751: a LOOKUP_FAILED is surfaced, never waited on."""
+    if alarms is not None:
+        alarms.append({"cell": cell, "market_ticker": row.get("market_ticker"), "reason": reason})
+
+
+def sweep_nfl_positions() -> int:
+    """GG-746: close NFL game-market paper positions whose Kalshi market has settled (ADR-0071).
+    No cron resolved this book; it rides the existing daily settle cron. Missing portfolio -> skipped."""
+    pf = ROOT / "logs" / "paper_portfolio_t1_nfl_game_market.json"
+    if not pf.exists():
+        print("position_sweep: portfolio not found, skipped")
+        return 0
+    from prediction_market_bot.position_sweep import sweep_open_positions
+    rep = sweep_open_positions(pf, ROOT / "logs" / "audit_t1_nfl_game_market.jsonl", apply=True)
+    print("position_sweep:", json.dumps({k: rep[k] for k in ("open_before", "booked", "open_after")}))
+    for a in rep["alarms"]:
+        print("ALARM LOOKUP_FAILED position:", json.dumps(a), file=sys.stderr)
+    return len(rep["alarms"])
+
+
+def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict, prefix: str = "NFL",
+           alarms: "list | None" = None, now=None) -> dict:
     finals = {}
     for r in sched[sched.home_score.notna() & sched.away_score.notna()].itertuples():
         finals[(str(r.gameday), frozenset((r.home_team, r.away_team)))] = (
@@ -46,14 +69,15 @@ def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict, prefix: str = "NFL
             if (r["market_ticker"], r["band"]) in have:
                 continue
             p = parse_market_ticker(r["market_ticker"])
-            if p is None:
+            if p is None:                      # GG-751: unparseable is an alarm, not a silent skip
+                _alarm(alarms, path.stem, r, "unparseable_ticker")
                 continue
             fin = finals.get((p["game_date"], frozenset((p["home"], p["away"]))))
-            if fin is None:
-                continue
-            j = join_row(r, *fin, clim)
-            if j is not None:
-                new.append(j)
+            res = typed_join(r, p["game_date"], fin, clim, now)
+            if res.status == FINAL:
+                new.append(res.outcome)
+            elif res.status == LOOKUP_FAILED:
+                _alarm(alarms, path.stem, r, res.reason)
         if new:
             out_dir.mkdir(parents=True, exist_ok=True)
             with out_path.open("a") as fh:
@@ -63,7 +87,7 @@ def settle(ledger_dir: Path, sched: pd.DataFrame, clim: dict, prefix: str = "NFL
     return counts
 
 
-def settle_mlb(ledger_dir: Path, games: pd.DataFrame) -> dict:
+def settle_mlb(ledger_dir: Path, games: pd.DataFrame, alarms: "list | None" = None, now=None) -> dict:
     """GG-472: MLB outcome join from the games cache. Same idempotent first-row-per-(market, band) contract."""
     from prediction_market_bot.pregame_shadow import mlb_settlement as ms
     from prediction_market_bot.pregame_shadow.mlb_forecaster import parse_market_ticker as mlb_parse
@@ -81,13 +105,11 @@ def settle_mlb(ledger_dir: Path, games: pd.DataFrame) -> dict:
         for r in first_row_per_market(rows):
             if (r["market_ticker"], r["band"]) in have:
                 continue
-            p = mlb_parse(r["market_ticker"])
-            fin = ms.find_final(finals, p) if p else None
-            if fin is None:
-                continue
-            j = ms.join_row(r, *fin)
-            if j is not None:
-                new.append(j)
+            res = ms.typed_join(r, finals, now)
+            if res.status == FINAL:
+                new.append(res.outcome)
+            elif res.status == LOOKUP_FAILED:
+                _alarm(alarms, path.stem, r, res.reason)
         if new:
             out_dir.mkdir(parents=True, exist_ok=True)
             with out_path.open("a") as fh:
@@ -107,6 +129,12 @@ def load_mlb_games() -> pd.DataFrame:
     return games
 
 
+def _report_alarms(alarms: list, extra: int = 0) -> int:
+    for al in alarms:
+        print("ALARM LOOKUP_FAILED:", json.dumps(al), file=sys.stderr)
+    return 3 if (alarms or extra) else 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sport", choices=("nfl", "mlb"), default="nfl")
@@ -115,17 +143,19 @@ def main(argv=None) -> int:
     ap.add_argument("--prefix", default="NFL", help="ledger file prefix (NFLQB for the W65.3 challenger)")
     ap.add_argument("--model", default=str(ROOT / "models" / "nfl_pregame_v1.json"))
     a = ap.parse_args(argv)
+    alarms: list = []
     if a.sport == "mlb":     # cache is kept fresh off-box (GitHub Actions sync); no network here
-        print("settled_new:", settle_mlb(Path(a.ledger_dir), load_mlb_games()))
-        return 0
+        print("settled_new:", settle_mlb(Path(a.ledger_dir), load_mlb_games(), alarms))
+        return _report_alarms(alarms)
     import run_pregame_shadow as rps
     from datetime import datetime, timezone
     if a.refresh:
         rps.refresh_cache(datetime.now(timezone.utc))
     sched = pd.read_parquet(rps.CACHE / "schedule_extended.parquet")
     clim = json.loads(Path(a.model).read_text())["climatology"]
-    print("settled_new:", settle(Path(a.ledger_dir), sched, clim, a.prefix))
-    return 0
+    print("settled_new:", settle(Path(a.ledger_dir), sched, clim, a.prefix, alarms))
+    n_pos_alarms = sweep_nfl_positions() if a.prefix == "NFL" else 0
+    return _report_alarms(alarms, n_pos_alarms)
 
 
 if __name__ == "__main__":

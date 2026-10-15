@@ -46,3 +46,14 @@ def join_row(row: dict, home: str, away: str, home_score: float, away_score: flo
     out.update(y=outcome(parsed, home, home_score, away_score), p_clim=climatology_p(clim, parsed, home),
                game_key=f"{parsed['game_date']}:{parsed['away']}@{parsed['home']}")
     return out
+
+
+def typed_join(row: dict, game_date: str, fin: Optional[tuple], clim: dict, now=None):
+    """GG-751: FINAL(joined row) / NOT_FINAL / LOOKUP_FAILED(reason). `fin` is (home, away, hs, as) or None."""
+    from prediction_market_bot.pregame_shadow import settle_result as sr
+    if fin is None:
+        return sr.missing_final(game_date, now)
+    j = join_row(row, *fin, clim)
+    if j is None:
+        return sr.lookup_failed(f"unjoinable_row ticker={row.get('market_ticker')}")
+    return sr.final(j)

@@ -785,6 +785,54 @@ def cross_path_agreement(recs: list[dict], band: str, store: dict[str, dict]) ->
 
 # ── run ──────────────────────────────────────────────────────────────────
 
+# ── W75.5 / GG-746: positions open past their game's scheduled end ─────────
+# NFL's retired book kept 4 positions OPEN past game end because nothing resolved it. Alarm-only, all books.
+# Scheduled end = game_date 00:00Z + 30h; alarm after a further 24h (settle_result.overdue).
+OPEN_PAST_END_GRACE_H = 24
+
+
+def assert_open_past_game_end(portfolios: dict[str, dict], now: "datetime | None" = None) -> dict:
+    """portfolios: {book_label: portfolio_dict}. Returns a report line (type open_past_game_end)."""
+    from prediction_market_bot.pregame_shadow.settle_result import overdue
+    violations = []
+    n_open = 0
+    for label, pf in sorted(portfolios.items()):
+        for p in pf.get("open_positions", []):
+            if p.get("status", "OPEN") != "OPEN":
+                continue
+            n_open += 1
+            gd = p.get("game_date")
+            if not gd:
+                continue
+            try:
+                late = overdue(gd, now)
+            except ValueError:
+                continue
+            if late:
+                violations.append({"book": label, "position_id": p.get("position_id"),
+                                   "ticker": p.get("kalshi_ticker"), "game_date": str(gd)[:10]})
+    return {"type": "open_past_game_end", "assertion_id": "OPE", "n_open": n_open,
+            "n_violations": len(violations), "violations": violations}
+
+
+_NON_LIVE_BOOK_MARKERS = (".pre_", ".bak", "backup", "INVALIDATED", "history", "booking")
+
+
+def discover_books(logs_dir: Path) -> dict[str, dict]:
+    """Every live paper_portfolio*.json beside the ledgers; backups, invalidated and history copies are excluded."""
+    out: dict[str, dict] = {}
+    for path in sorted(logs_dir.glob("paper_portfolio*.json")):
+        if any(m in path.name for m in _NON_LIVE_BOOK_MARKERS):
+            continue
+        try:
+            pf = load_json(path)
+        except (OSError, ValueError):
+            continue
+        if isinstance(pf, dict):
+            out[path.stem] = pf
+    return out
+
+
 def run(
     t1_portfolio_path: Path,
     t4_portfolio_path: Path,
@@ -1030,6 +1078,17 @@ def run(
                 for (raw_mt, b), n in sorted(_UNKNOWN_MARKET_TYPE_COUNTS.items(), key=lambda kv: -kv[1])
             ],
         })
+
+    # W75.5 / GG-746: open past game end, every book beside the T1 portfolio.
+    books = discover_books(t1_portfolio_path.parent)
+    ope = assert_open_past_game_end(books)
+    total_assertions_run += 1
+    total_violations += ope["n_violations"]
+    print(f"\n[OPE] open_past_game_end: books={len(books)} open={ope['n_open']} "
+          f"violations={ope['n_violations']} ({'ALARM' if ope['n_violations'] else 'clean'})", file=sys.stderr)
+    for v in ope["violations"]:
+        print(f"  [OPE] {v['book']} {v['position_id']} {v['ticker']} game_date={v['game_date']}", file=sys.stderr)
+    lines.append(ope)
 
     summary = {
         "type": "run_summary",
