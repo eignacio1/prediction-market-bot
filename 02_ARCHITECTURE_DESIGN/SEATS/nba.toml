@@ -1,0 +1,207 @@
+[meta]
+sport = "nba"
+version = "v0"
+banner = "v0 DRAFT written by a model from files on main. A basketball eye has not reviewed it; expect the factor classes, stages and slot assignments to be corrected. Do not cite it as a verdict on anything."
+taxonomy = "none (NBA taxonomy to be written; NBA-n ids are local to this file)"
+engine_interface = "none"
+stage_rule = "aggregated = in a store; interpreted = turned into a feature or tested; applied = conditioned on by a model that logs forecasts. Set only from the cited file on main."
+
+[[factor]]
+id = "B1"
+factor_class = "NBA-1"
+name = "Team scoring for/against, 10 and 30 game windows"
+source = "NBA game logs: pts for/against"
+engine_slot = "team rating"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nba_pregame_features.py"
+
+[[factor]]
+id = "B2"
+factor_class = "NBA-2"
+name = "Rest, back-to-back, 3-in-4"
+source = "game dates"
+engine_slot = "schedule context"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nba_pregame_features.py"
+
+[[factor]]
+id = "B3"
+factor_class = "NBA-3"
+name = "Player scoring/minutes/FGA form (10, 30, season)"
+source = "NBA player game logs"
+engine_slot = "player rating"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py"
+
+[[factor]]
+id = "B4"
+factor_class = "NBA-4"
+name = "Opponent defence, 10 games"
+source = "NBA game logs"
+engine_slot = "opponent rating"
+stage = "applied"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py"
+
+[[factor]]
+id = "B5"
+factor_class = "NBA-5"
+name = "Own injury status and teammates out (minutes / FGA vacated)"
+source = "NBA official injury reports"
+engine_slot = "availability"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/W69_3_nba_points_minutes_results.md"
+
+[[factor]]
+id = "B6"
+factor_class = "NBA-6"
+name = "Game-level availability (who is out for either side)"
+source = "NBA official injury reports (coverage.json)"
+engine_slot = "availability"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/20261013_nba_games_availability/results.md"
+
+[[factor]]
+id = "B7"
+factor_class = "NBA-7"
+name = "Lineup / on-off, play-type, matchup"
+source = "none built"
+engine_slot = "none"
+stage = "none"
+evidence = "02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md"
+
+[[factor]]
+id = "B8"
+factor_class = "NBA-8"
+name = "Qualitative (form, role-fit, motivation)"
+source = "none free and structured"
+engine_slot = "none"
+stage = "none"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py"
+
+[[cell]]
+market = "nba_player_points"
+band = "T4"
+status = "dark"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_moneyline"
+band = "T1"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_moneyline"
+band = "T2"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_moneyline"
+band = "T3"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_spread"
+band = "T1"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_spread"
+band = "T2"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_spread"
+band = "T3"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_game_total"
+band = "T1"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_game_total"
+band = "T2"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_game_total"
+band = "T3"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_team_total"
+band = "T1"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_team_total"
+band = "T2"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_team_total"
+band = "T3"
+status = "not_implemented"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+factors = ["B1", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_player_points"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_player_points_model.py"
+factors = ["B3", "B4", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_player_points"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_player_points_model.py"
+factors = ["B3", "B4", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_player_points"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_player_points_model.py"
+factors = ["B3", "B4", "B2"]
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
