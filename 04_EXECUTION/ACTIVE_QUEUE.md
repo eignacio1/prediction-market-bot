@@ -229,7 +229,7 @@ other's files. **None touches B74-A Session 2's files** (the runtime registry, g
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 75.1 | PAM core: one Player Attribute Matrix for every engine | DEPTH D5(a) cluster designs: NFL 0→1, NBA 0→1 | ⬜ | |
-| 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (rescoped 22:10 PT — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | |
+| 75.2 | NFL engine stage 2: one factor class at play-level granularity, end to end (running on the ORIGINAL prompt; ADD-IN 22:15 PT rescopes it — the Cover 6 question is an illustration, not the spec) | DEPTH D5(b) NFL factor classes applied +1 · D4 NFL factor classes point-in-time 0→1 | ⬜ | |
 | 75.3 | Seat interface + structural tensions opened; D4/D5 generated | DEPTH D5(a) NFL and NBA +2 each (seat interface, structural tensions) · D4/D5 generated | ⬜ | |
 | 75.4 | One kill switch for every order path (GG-745 HIGH) | EXECUTION: order paths honouring one switch, of all (drill on the box) | ⬜ | |
 | 75.5 | The NFL book closes (GG-746 HIGH, GG-751, GG-763a) | EXECUTION E2 / PROOF: NFL positions open past game end + 24 h, 4 → 0 | ⬜ | |
@@ -340,6 +340,29 @@ END OF BLOCK 75.1. If you cannot see this line, the prompt reached you truncated
 ```
 
 ### 75.2 — NFL engine stage 2: one factor class at play-level granularity, end to end (rescoped 22:10 PT)
+
+**ADD-IN for the 75.2 terminal already running the ORIGINAL prompt (issued 22:15 PT) — paste into that terminal:**
+
+```
+ADD-IN 75.2 (operator, 2026-10-14 22:06 PT) - read before your next step; it overrides the original prompt where they differ.
+The operator: "i hope you didn't take my cover 6 example as a processing requirement - it was just an example". The Cover 6
+question shows the GRANULARITY the project expects; it is NOT the deliverable. The deliverable is the chain - aggregation,
+interpretation, application - run once on one factor class at that granularity, built so every later class plugs in the
+same way.
+1. Keep what you have built. Coverage shell / man-zone vs offensive personnel and motion (F5/F6) is a valid first factor
+   class - stay on it unless you have found it cannot reach a price; then say why and switch to pressure vs protection.
+2. Stop spending time on the literal pieces: "motioned to the boundary" gets one line (GAP registered if no free field holds
+   motion direction) and nothing more. The 2025 "top defenses" table stays only as one illustration in the results.
+3. Build the aggregation as a REUSABLE factor builder: event store + as_of -> per-team / per-unit values, point-in-time, with
+   volume and success, shrunk, opponent-adjusted. The next factor class must plug into the same builder.
+4. Part B as written, with "the matchup term" read as "the factor's term in the rate layer". GG-756 / GG-757 unchanged.
+5. Results doc states: the class chosen and why, what it says (trait or noise), what it means, the price path and its test,
+   the stage reached.
+6. Update your row in ACTIVE_QUEUE.md (75.2) with "ADD-IN applied" in your next docs push.
+```
+
+The rescoped block below is for a fresh terminal only.
+
 
 ```
 COMMON RULES - WAVE 75 (read first; they bind this block)
