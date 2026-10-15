@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-15T00:30:00Z (T-950 — W73.3 done and merged (PR #255): NFL possession-level simulation engine prices ML/spread/total/team totals from one draw set; non-inferior to frozen Gaussians, not better; key-number shape claim not supported.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015T0030Z_W73_3.md` for full session detail.
+**Last reviewed:** 2026-10-15T00:25:00Z (T-940 — W73.1 forward test re-armed after stale cancel-fail turn-off (GG-710); NBA already staked; first NHL E rows) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015T0025Z_W73_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

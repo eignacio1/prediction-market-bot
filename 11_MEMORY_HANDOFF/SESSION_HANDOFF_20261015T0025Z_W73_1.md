@@ -1,4 +1,19 @@
-# SESSION HANDOFF — W73.1 (2026-10-15)
+# Session Handoff — 2026-10-15T00:25Z
+
+<!-- session-meta
+task_id: T-940
+tier: STANDARD
+timestamp: 2026-10-15T00:25:00Z
+commit: fdf0cb1
+one_line_summary: W73.1 forward test re-armed after stale cancel-fail turn-off (GG-710); NBA already staked; first NHL E rows
+gg_touched: GG-665, GG-666, GG-667, GG-710, GG-570
+adr_touched: ADR-0072
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E1, E2, E3
+gap_delta: E1 +51 post-re-arm demo fills, 30 settled (all NHL); E2/E3 NHL control 29 fills +0.123 vs treatment 1 fill, no verdict (report --no-act 2026-10-15T00:15Z)
+-->
+
 
 Status: DONE | main @ 4616807 (+ this docs push) | PRs #253, #256 merged, CI green | Forward test re-armed and read back; NBA already staked since W68.2 (no second runner); first settled E rows are NHL only, no verdict.
 
