@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W75.1
+tier: STANDARD
+timestamp: 2026-10-15T05:40:00Z
+commit: cdb9795
+one_line_summary: W75.1 PAM core merged (PR #259): sport-agnostic schema/store, lossless NBA port, NFL WR mass classifier; D5(a) NFL 0->1, NBA 0->1.
+gg_touched: GG-775, GG-776, GG-777, GG-778, GG-779
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(a) cluster designs (NFL, NBA)
+gap_delta: NFL 0 -> 1, NBA 0 -> 1 (source: 02_ARCHITECTURE_DESIGN/PAM/README.md D5 line, 2026-10-14)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — W75.1 PAM core
 
 ```
@@ -24,3 +40,6 @@ Known weakness: WR-MID is the catch-all (45% of primaries); the rules were fixed
 **MEASURE MOVED:** D5(a) NFL 0 -> 1, NBA 0 -> 1 (README D5 line).
 
 **Operator decision (one line):** Should the deep tier start with the NFL starting QBs and top-2 WRs per team (about 100 players), reviewed by you in batches of 10 per sitting?
+
+**One thing pending:** operator answer on the deep-tier start (NFL starting QBs + top-2 WRs per team, ~100 players, batches of 10).
+**Resume:** read `02_ARCHITECTURE_DESIGN/PAM/README.md` and `DEEP_TIER.md`. Stray branches: none of mine; 137 landed local branches await `sweep_stray_branches.sh --execute` (operator routing).

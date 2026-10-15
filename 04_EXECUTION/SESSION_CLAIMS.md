@@ -906,3 +906,4 @@
 | 2026-10-15T05:12:21Z | T-995..T-997, GG-810..GG-814 | W75.5 MEDIUM - NFL book closes (GG-746/751/763a). PURPOSE: EXECUTION E2 / PROOF - NFL positions open past game end+24h 4->0, settlement typed |
 | 2026-10-15T05:13:29Z | T-1010..T-1012, GG-830..GG-834 | W75.4 MEDIUM - one kill switch for every order path (GG-745). PURPOSE: EXECUTION - order paths honouring the one switch / all order paths (NFR-03); safety plumbing |
 | 2026-10-15T05:35:59Z | T-985 | CLOSED — merge confirmed, HEAD (51d2aad) is ancestor of origin/main — W75.3 seat interface + tension registers + D4/D5 generated |
+| 2026-10-15T05:37:13Z | W75.1 | CLOSED — W75.1 PAM core merged (PR #259): sport-agnostic schema/store, lossless NBA port, NFL WR mass classifier; D5(a) NFL 0->1, NBA 0->1. (commit `cdb9795`) |
