@@ -3,7 +3,7 @@
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = b6af6c3` (2026-10-14 ~16:40 PT, Wave 72 close; main CI green). VPS facts are the Wave 72 terminals' on-box reads.
+**Verified against:** `origin/main = 39569c5` (2026-10-14 ~18:00 PT, Wave 73 close; main CI green). VPS facts are the Wave 73 terminals' on-box reads.
 
 | Fact | Value |
 |---|---|
@@ -20,7 +20,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 72 closed, Wave 73 issued, 2026-10-14 ~16:45 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 73 closed, 2026-10-14 ~18:00 PT; B74-A (hygiene + runtime map) running; next wave set being planned with the operator.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -36,7 +36,7 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | **DEPTH** | D1 factor classes per pre-game model | MLB player hits: personnel, team, venue · MLB games: personnel, team · **NFL: team + personnel** (QB challenger, live in shadow 10-11) · NHL: personnel, team, venue · NBA: team. **No live model uses matchup, weather or qualitative.** | every class at every pre-game arm | 0 |
 | | D2 largest pre-game feature set | **18** (MLB player hits, 0 qualitative) | coverage of classes, not a count | 0 |
 | | D3 pre-registered challengers ready | **2** (NFL QB-shrunk, live; NBA points EXP-040, accepted + frozen 10-13, logging from 70.2) | ≥ 1 per arm before its first look | **+1** (W69.3) |
-| | **D4 engine stage per live sport** (ADR-0073, added 10-13) | **none** — no sport has an event-level data layer feeding one engine; every cell runs its own thin model | each live sport: event-level data → factor classes point-in-time → whole board priced from one engine | new measure; Wave 73 starts NFL as the template |
+| | **D4 engine stage per live sport** (ADR-0073, added 10-13) | **NFL: event-level data layer + simulation scaffold (parity, not better)** · NBA, NHL, MLB: none | each live sport: event-level data → factor classes point-in-time → whole board priced from one engine | **NFL none → stage 1** (W73.2/73.3) |
 | **EXECUTION** | E1 demo orders filled / closed positions | **T4 MLB 166 / 4,237 = 3.9% · T1 MLB 85 / 485 = 17.5%** | fills ≈ intended orders | first **shadow-cell** demo orders accepted (36 in an hour, 67.2); fills not yet counted |
 | | E2 P&L per filled bet | **T4 −$0.26** (CI −0.45..−0.07) · **T1 −$1.50** (CI −3.67..+0.63) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
@@ -62,6 +62,11 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 73 (10-14), in one line:** the NFL engine exists — Syndicate32's factor list mapped to free data, a 27-season
+play-level store with a no-look-ahead contract, and a simulation that prices the whole NFL board from one draw (as good as
+the old per-market models, not yet better). The forward test is back on; the first settled fills are NHL, and the treatment
+arm barely fills (1 vs 29). ADR-0074's registry check caught 73.2's new workflow and made it register — the system working.
 
 **Wave 72 (10-13 → 10-14), in one line:** the foundation is fixed — ledgers survive a crash, deploys prove the running code is
 current, the order path itself refuses real money, and `/vps` is retired. The forward test is live with both arms and cancels
@@ -582,13 +587,13 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 73 — ISSUED 2026-10-14 ~23:45 UTC · three MEDIUM blocks · the NFL engine starts (ADR-0073)
+### ✅ WAVE 73 — CLOSED 2026-10-15 ~01:00 UTC (verified on GitHub at `39569c5`, main CI green) · moved: **D4 NFL none → data layer + simulation scaffold**, D1 NFL 20 factor classes mapped (15 buildable free), E1 first post-re-arm settled fills (NHL)
 
-| # | Block | PURPOSE | Status | Outcome |
-|---|---|---|---|---|
-| 73.1 | Turn-off addendum; NBA staked runner; first settled E2/E3 | E1–E3 | ✅ | see row above |
-| 73.2 | NFL engine: taxonomy → free sources → event data layer | D4, D1 | ✅ DONE | DONE: Part A taxonomy (20 classes, 15 buildable free, GG-730..734) + Part B event store (165 files, 0 failures, 6 sources + PFR, PIT contract w/ positive controls, weekly Actions rebuild verified end to end, manifest committed). D4 NFL: none -> event-level data layer built. DATA_LAYER.md. No operator decisions. |
-| 73.3 | NFL engine: one simulation prices ML/spread/total | D4 | ⬜ | — |
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 73.1 | Turn-off addendum; NBA stakes; first settled E2/E3 | ✅ | #253/#256: skip-rate turn-off counts policy skips only (operator amendment); stale cancel-fail trip (GG-710) fixed and re-armed; guards GG-665/666/667 resolved. NBA already staked since W68.2 (window error W14). +51 post-re-arm fills, 30 settled, all NHL: **control 29 fills (win 48.3%, +0.123) vs treatment 1 fill** — no verdict |
+| 73.2 | NFL engine data layer | ✅ | #258: FACTOR_TAXONOMY (20 classes from Syndicate32's public factor list, 15 buildable from free data; GG-730..734 gaps); free nflverse event store 1999–2026 (plays, participation, FTN charting, snaps, injuries, depth charts, PFR, officials, schedule) with point-in-time contract; weekly Actions rebuild green. First block to pass the new registry CI check (workflow registered) |
+| 73.3 | NFL engine simulation scaffold | ✅ | #255: possession-level Monte Carlo prices ML/spread/total/team totals from one draw set; **parity with the frozen per-family models, not better**; key-number shape claim not supported. INTERFACE.md is the contract |
 
 ### ✅ WAVE 72 — CLOSED 2026-10-14 ~23:40 UTC (verified on GitHub at `b6af6c3`, main CI green) · moved: **E1 per-arm counts first recorded** (0 settled yet); foundation fixed
 
