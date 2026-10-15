@@ -4,3 +4,6 @@ We built one football simulator that prices the winner, the spread, the total an
 
 ## W73.1 — practice-money order test (EXECUTION)
 The practice-order test had switched itself off for about 13 hours: its safety check counted old failures from before a fix. I corrected the check and turned the test back on; it is placing orders again. No real money was ever involved. The basketball practice orders were already running, so I did not build a second system for them. The first finished results are hockey only, and far too few to judge anything. A pattern worth watching: orders priced to the market's current book fill much less often than the simple ones.
+
+## W73.2 — NFL data layer (plain English)
+We now have a full, automatically refreshed library of NFL play-by-play, player, injury and schedule data, back to 1999, all from free public sources. A built-in guard makes sure any future model can only see information that was public before kickoff, so it can't accidentally "peek" at the result. It rebuilds itself every Tuesday and was tested end to end today. No bets, no money, no settings touched. This moves the NFL "depth" measure from nothing to a working data foundation. Nothing needed from you.
