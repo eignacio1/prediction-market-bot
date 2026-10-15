@@ -123,7 +123,7 @@ def flag_path(tmp_path: Path) -> Path:
 def test_kill_switch_armed_is_real_function_behavior(flag_path: Path, tmp_path: Path) -> None:
     """Sanity: we are driving the real `kill_switch_armed`, not a reimplementation."""
     assert kill_switch_armed(flag_path) is True
-    assert kill_switch_armed(tmp_path / "does_not_exist.flag") is False
+    assert kill_switch_armed(tmp_path / "empty_dir" / "does_not_exist.flag") is False  # W75.4: flags are dir-scoped now
 
 
 def test_band_level_detection_latency_distribution(flag_path: Path) -> None:

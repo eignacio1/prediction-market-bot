@@ -83,6 +83,7 @@ if str(_SRC_ROOT) not in sys.path:
 
 from prediction_market_bot.c4_risk_engine.risk import RiskEngine
 from prediction_market_bot.c4_risk_engine.staged_order_store import StagedOrderStore
+from prediction_market_bot.c5_execution import kill_switch_state as _ksw  # GG-745
 from prediction_market_bot.c5_execution.kalshi_client import (
     KalshiMarketClient,
     PlayerMarket,
@@ -360,7 +361,9 @@ class MLBLiveBatterState:
 
 
 def kill_switch_armed(path: Path) -> bool:
-    return path.exists()
+    """GG-745: halt on the legacy per-band flag OR the global flag (kill_switch.flag) OR any
+    unrecognised kill-switch flag, via the one shared check also enforced in submit_order."""
+    return path.exists() or _ksw.halt_reason(band_name="t4_mlb", logs_dir=path.parent) is not None
 
 
 # ---------------------------------------------------------------------------
@@ -1936,6 +1939,7 @@ def main() -> None:
         portfolio_path=_PORTFOLIO_PATH,
         logger=audit,
         kalshi_client=kalshi if _signing_ready else None,
+        kill_band="t4_mlb",
     )
 
     # ---- T4 band budget ----

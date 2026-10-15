@@ -37,6 +37,9 @@ def demo_host_ok() -> bool:
         return False
 
 
+SHADOW_KILL_BAND = "shadow"  # GG-745: kill_switch_shadow.flag halts only the shadow staker
+
+
 def maybe_place(
     row: dict[str, Any],
     client: Any,
@@ -52,7 +55,7 @@ def maybe_place(
         pol.append_log({"event": "shadow_skip", "reason": "production_host_refused",
                         "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
         return None
-    halted = ksw.halt_reason()  # GG-667: same NFR-03 flag state the C4/T4 paths honour
+    halted = ksw.halt_reason(band_name=SHADOW_KILL_BAND)  # GG-667: same NFR-03 flag state the C4/T4 paths honour
     if halted:
         pol.append_log({"event": "shadow_skip", "reason": "kill_switch_halted", "meta": halted,
                         "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
@@ -87,7 +90,8 @@ def maybe_place(
         stake_fn = lambda e: measurement_stake_and_stratum(e)[0]  # noqa: E731
     stake = float(stake_fn(entry))
     order = client.submit_order(ticker=ticker, side=direction, size_usd=stake,
-                                mid_price=price_yes, client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
+                                mid_price=price_yes, band=SHADOW_KILL_BAND,
+                                client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
     pol.append_log({"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
                     "stake_usd": stake, "price_yes": price_yes, "side": direction,
                     "ticker": ticker, "error": order.error, "arm": "treatment" if treatment else "control"})
