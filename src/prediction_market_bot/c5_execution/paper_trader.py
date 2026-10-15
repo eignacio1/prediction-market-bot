@@ -186,7 +186,9 @@ class PaperTrader:
         portfolio_path: Path,
         logger: AuditLogger,
         kalshi_client: Optional["KalshiMarketClient"] = None,
+        kill_band: Optional[str] = None,
     ) -> None:
+        self._kill_band = kill_band  # GG-745: kill-switch band label; None = any flag halts
         self._path = portfolio_path
         self._logger = logger
         self._kalshi = kalshi_client  # None → local-only mode
@@ -688,6 +690,7 @@ class PaperTrader:
                     size_usd=size,
                     mid_price=submit_mid,
                     client_order_id=pos["position_id"],
+                    band=self._kill_band,
                 )
                 if policy_on and order.ok and order.order_id:
                     _fill_policy.schedule_cancel(self._kalshi, order.order_id,

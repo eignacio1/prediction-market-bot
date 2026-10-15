@@ -219,7 +219,7 @@ def main() -> None:
         logger.warning("PIPE-03", "kalshi_client_init_failed",
                        payload={"error": str(e)}, session_id=SESSION_ID)
 
-    trader = PaperTrader(PORTFOLIO_PATH, logger, kalshi_client=kalshi_client)
+    trader = PaperTrader(PORTFOLIO_PATH, logger, kalshi_client=kalshi_client, kill_band="t1_nba")
 
     print(f"\n[PIPE-03] Paper trading — {GAME_DATE}")
     print(f"Session:  {SESSION_ID}")

@@ -1074,9 +1074,14 @@ class KalshiMarketClient:
         size_usd: float,
         mid_price: float,
         client_order_id: str | None = None,
+        band: str | None = None,
     ) -> KalshiOrder:
         """
         Submit a limit order to Kalshi (ADR-0008).
+
+        GG-745/NFR-03: every order path funnels through here, so the kill switch is checked
+        HERE (kill_switch_state.halt_reason): the global flag halts all, a band flag only its
+        ``band``; an unlabeled caller is halted by any flag. A halted call places nothing.
 
         Parameters
         ----------
@@ -1088,6 +1093,17 @@ class KalshiMarketClient:
 
         Returns KalshiOrder with ok=True on success, ok=False on any failure.
         """
+        from prediction_market_bot.c5_execution import kill_switch_state as _ksw
+        _halt = _ksw.halt_reason(band_name=band)
+        if _halt:
+            logger.warning("submit_order REFUSED (kill switch): %s ticker=%s band=%s", _halt, ticker, band)
+            return KalshiOrder(
+                ok=False, order_id="", client_order_id=client_order_id or "",
+                ticker=ticker, side=side, contracts=0,
+                yes_price_cents=0, actual_cost_usd=0.0,
+                status="halted", error=f"kill_switch_halted:{_halt}",
+            )
+
         if not self._private_key:
             return KalshiOrder(
                 ok=False, order_id="", client_order_id=client_order_id or "",

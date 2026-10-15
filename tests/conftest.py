@@ -46,3 +46,13 @@ def pytest_collection_modifyitems(config, items):  # noqa: ARG001 — pytest hoo
     for item in items:
         if "network" in item.keywords:
             item.add_marker(skip)
+
+
+# GG-745/W75.4: C7 trip_kill_switch now writes the global flag file. Keep every test's flag
+# directory private so a test trip can never halt other tests (or a real logs/ dir).
+import pytest as _pytest_w754  # noqa: E402
+
+
+@_pytest_w754.fixture(autouse=True)
+def _isolated_kill_switch_dir(tmp_path_factory, monkeypatch):
+    monkeypatch.setenv("PMBOT_KILL_SWITCH_DIR", str(tmp_path_factory.mktemp("kill_switch")))

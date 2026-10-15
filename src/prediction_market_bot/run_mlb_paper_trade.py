@@ -480,6 +480,7 @@ def main() -> None:
         PORTFOLIO_PATH,
         logger,
         kalshi_client=kalshi_client,
+        kill_band="t1_mlb",
     )
     # Ensure the portfolio file exists so dashboard and monitoring tools see it
     # even when no bets are placed (e.g., contamination guard fires before bets).

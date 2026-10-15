@@ -315,6 +315,29 @@ class SystemMonitor:
     def semantic_monitor(self) -> SemanticContractMonitor:
         return self._semantic
 
+    def _write_global_flag(self, reason: str) -> None:
+        """GG-745: cron/systemd order paths are separate processes and cannot see _kill_event;
+        the global flag file is how a C7 trip reaches them (read inside submit_order)."""
+        try:
+            from prediction_market_bot.c5_execution import kill_switch_state as ksw
+            p = ksw.global_flag_path()
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(f"{_utc_now_iso()} {reason}\n")
+            self._wrote_global_flag = True
+        except OSError as e:  # never mask the in-memory halt, but say so loudly
+            self._logger.log(component=COMPONENT, event_type="kill_switch_flag_write_failed",
+                             payload={"error": repr(e)}, severity="CRITICAL",
+                             session_id=self._session_id, snapshot_id=self._snapshot_id)
+
+    def _clear_global_flag(self) -> None:
+        if getattr(self, "_wrote_global_flag", False):
+            try:
+                from prediction_market_bot.c5_execution import kill_switch_state as ksw
+                ksw.global_flag_path().unlink(missing_ok=True)
+                self._wrote_global_flag = False
+            except OSError:
+                pass
+
     @property
     def is_kill_switch_active(self) -> bool:
         return self._kill_event.is_set()
@@ -857,6 +880,8 @@ class SystemMonitor:
 
         # Set the event — this is the actual "halt" signal
         self._kill_event.set()
+        if not _is_drill:
+            self._write_global_flag(reason)
         self._kill_reason = reason
         self._kill_operator = operator
         self._kill_id = ks_id
@@ -907,6 +932,7 @@ class SystemMonitor:
         """
         sid = session_id or self._session_id
         self._kill_event.clear()
+        self._clear_global_flag()
 
         self._logger.log(
             component=COMPONENT,
