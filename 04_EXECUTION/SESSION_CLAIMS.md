@@ -892,3 +892,4 @@
 | 2026-10-14T23:44:56Z | T-940..T-942, GG-710..GG-714 | W73.1 MEDIUM - turn-off scope amend (ADR-0072), NBA demo staked runner, first settled E2/E3. PURPOSE: EXECUTION E1/E2/E3 |
 | 2026-10-14T23:45:23Z | T-960..T-962, GG-730..GG-739 | W73.2 MEDIUM - NFL engine data layer (ADR-0073 stage 1): factor taxonomy + event store. PURPOSE: DEPTH D4 (NFL none -> data layer), D1 |
 | 2026-10-15T00:02:27Z | T-970..T-974, GG-740..GG-744, ADR-0074 | STRATEGIC WINDOW - process integrity (ADR-0074): runtime registry, pattern sweep, surface budget, window error log. PURPOSE: PLUMBING (protects every pillar from slice failures and unchecked breadth) |
+| 2026-10-15T00:07:27Z | T-950 | CLOSED — merge confirmed, HEAD (66ded44) is ancestor of origin/main — W73.3 NFL engine scaffold: non-inferior to frozen Gaussians, not better |
