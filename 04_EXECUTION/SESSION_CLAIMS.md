@@ -911,3 +911,4 @@
 | 2026-10-15T05:45:22Z | T-1010 | CLOSED — One kill switch inside submit_order for every order path (Part A merged, PR #264); Part B deploy read-back and live demo drill pending (commit `ce32e14`) |
 | 2026-10-15T05:45:39Z | T-1010 | CLOSED — merge confirmed, HEAD (ce56522) is ancestor of origin/main — W75.4 Part A merged; Part B pending |
 | 2026-10-15T05:49:19Z | W75.2 | CLOSED — NFL factor chain end to end (F5/F6 coverage x personnel): builder, sport-neutral rate layer, frozen plan, one fit through ML/spread/total/team total; result inert (commit `3c4535e`) |
+| 2026-10-15T23:49:25Z | T-TBD GG-TBD none (exploratory only) | W76.2 NFL engine: 2nd orthogonal factor class to APPLIED; PURPOSE DEPTH D5(b) NFL 6->7 applied/16 |
