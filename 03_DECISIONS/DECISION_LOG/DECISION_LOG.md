@@ -2285,3 +2285,10 @@ Operator, verbatim: "I accept ADR75. yes - add D5. definitions are good - ground
 - Measure D5 added to CLAUDE.md's distance table (dated edit, this entry): per live sport, (a) architecture components with a built, tested scaffold, of eight; (b) factor classes by stage - aggregated / interpreted / applied. Applied = a tested path from the fact to a price, compared with the market.
 - Mapped to: CLAUDE.md (distance table, edge bullet, efficiency-gradient paragraph, § The scale), ADR-0075, `/vision`, the window paste-in, ACTIVE_QUEUE (sitrep D5 row, Wave 75), project doc NORTH_STAR_AND_DISTANCE_TO_OPTIMUM.md, project memory scale-doctrine.
 - Wave 75 written (three MEDIUM DEPTH blocks drawn from ADR-0075's scaffold column).
+
+## 2026-10-14 22:06 PT — Wave 75 widened to five blocks; the Cover 6 question is an example, not a spec
+
+Operator, verbatim: "a few things - give me two more terminal wave blocks to address the two hygiene check issues. I'm fine running 5 terms at one time right now. also - i hope you didn't take my cover 6 example as a processing requirement - it was just an example lol"
+
+- Wave 75 = five blocks for this wave, by operator call (overrides the standing three-blocks-per-wave ceiling for Wave 75 only). Added 75.4 (one kill switch for every order path, GG-745 HIGH) and 75.5 (the NFL book closes, GG-746 HIGH with GG-751/GG-763a), both from the B74-A Session 1 audit (HYGIENE_AUDIT_20261015.md).
+- 75.2 rescoped: the deliverable is the aggregation > interpretation > application chain on one factor class at play-level granularity, built as a reusable factor builder; the Cover 6 question is an illustration only. Window error W17 (new pattern LITERAL).

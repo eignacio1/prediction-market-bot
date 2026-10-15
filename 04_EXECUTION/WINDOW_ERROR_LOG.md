@@ -19,6 +19,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 - `SLICE` — reasoned from one part of the running system without checking the rest.
 - `PROCESS` — tool or protocol misuse (forgot a deliverable, wrong mechanism).
 - `REDUCED` — flattened an operator directive into a slogan or a rule simpler than what he said.
+- `LITERAL` — took an operator's illustration as the specification (the opposite failure to REDUCED).
 
 | # | Date | Wave | What the window did | Cost | Caught by | Pattern | Rule now in force |
 |---|---|---|---|---|---|---|---|
@@ -40,6 +41,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W14 | 2026-10-14 | 73 | Put the GG-570 "give NBA a separate staked runner?" question to the operator from the gap entry's text; NBA's T1-T3 lines were already demo-staked since W68.2. | An operator decision spent on a stale premise; 73.1 had to say so. | 73.1 | UNVERIFIED | Before routing any decision to the operator, verify its premise against the code/crontab mirrors, not the gap text |
 | W15 | 2026-10-14 | 74→75 | Did not know what "PAM" was when the operator named it twice (10-13, 10-14); it is DS-01, the Player Attribute Matrix, documented in the repo. He had to spell it out. | Operator had to explain his own system. | Operator | NOTES | Grep the repo and project docs for any term the operator uses that the window cannot define, before replying |
 | W16 | 2026-10-14 | 74→75 | Reduced "we're going with edge" to "generality is no longer a reason to build; expected edge is" and wrote that into CLAUDE.md. He meant a comprehensive betting architecture at play-level granularity (aggregation > interpretation > application). | His core directive diluted in the canonical file for ~10 minutes. | Operator | REDUCED | Quote the operator's own words into canonical docs; restate, never compress, until he confirms the restatement |
+| W17 | 2026-10-14 | 75 | Wrote 75.2 around the operator's Cover 6 question as the literal deliverable (answer it for 2025, register a GAP for boundary motion). He gave it as an illustration of granularity: "i hope you didn't take my cover 6 example as a processing requirement - it was just an example". | 75.2 rescoped before it ran; one operator correction. | Operator | LITERAL | An operator example shows the bar, not the spec: blocks build the general capability and use his example only as an illustration, unless he says it is the requirement |
 
 ## Pattern tally (update at every handoff)
 
@@ -54,3 +56,4 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | SCOPE | 1 | W11 |
 | REDUCED | 1 | W16 (10-14) |
 | PROCESS | 1 | W5 |
+| LITERAL | 1 | W17 (10-14) |
