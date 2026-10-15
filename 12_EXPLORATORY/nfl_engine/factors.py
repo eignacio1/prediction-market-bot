@@ -148,7 +148,7 @@ def factor_values(plays: pd.DataFrame, as_of: pd.Timestamp, spec: FactorSpec, *,
     league = P.groupby(cells).agg(l_epa=("adj", "mean"), l_n=("adj", "size"))
     league["l_share"] = league.l_n / league.l_n.sum()
     g = g.join(league, on=cells)
-    k = k_cell if k_cell is not None else eb_k(P.assign(cellkey=P[cells].astype(str).agg("|".join, axis=1)).assign(
+    k = k_cell if k_cell is not None else eb_k(P.assign(cellkey=["|".join(t) for t in P[cells].astype(str).itertuples(index=False)]).assign(
         u=lambda x: x[unit] + "|" + x.cellkey), "u", "adj")
     g["epa_shrunk"] = (g.n * g.adj + k * g.l_epa) / (g.n + k)
     ks = 100.0
