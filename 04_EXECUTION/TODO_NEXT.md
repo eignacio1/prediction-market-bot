@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-14T01:55:00Z (W72.2 — W72.2 crash-safe ledgers (#248) + /vps retired + box .env 600 shipped; t4-mlb restarted 02:53Z, GG-663/664/672 closed) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261014T0130Z_W72_2.md` for full session detail.
+**Last reviewed:** 2026-10-15T00:30:00Z (T-950 — W73.3 done and merged (PR #255): NFL possession-level simulation engine prices ML/spread/total/team totals from one draw set; non-inferior to frozen Gaussians, not better; key-number shape claim not supported.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015T0030Z_W73_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
