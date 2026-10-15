@@ -66,8 +66,9 @@ factor_class = "F5"
 name = "Coverage man/zone and QB efficiency against each"
 source = "participation defense_man_zone_type (GAP-1: no 2026 file)"
 engine_slot = "def_pass (coverage)"
-stage = "aggregated"
-evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_engine/results_stage2.md"
+result = "applied and tested W75.2: no gain vs engine v0 (MATCHES, beta unstable); motion direction GAP GG-800"
 
 [[factor]]
 id = "N8"
@@ -75,8 +76,9 @@ factor_class = "F6"
 name = "Personnel and formation"
 source = "participation offense_personnel, defense_personnel (GAP-1); ftn"
 engine_slot = "off_pass / off_rush"
-stage = "aggregated"
-evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_engine/results_stage2.md"
+result = "applied and tested W75.2: no gain vs engine v0 (MATCHES, beta unstable); motion direction GAP GG-800"
 
 [[factor]]
 id = "N9"

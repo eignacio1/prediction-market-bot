@@ -6,8 +6,8 @@
 sport = "nfl"
 component = "decision_trees"
 scaffold = "12_EXPLORATORY/nfl_engine/engine.py"
-test = "12_EXPLORATORY/nfl_engine/test_engine.py"
-note = "W73.3 possession engine; test is outside CI testpaths (GG-757)"
+test = "tests/test_nfl_engine_v0.py"
+note = "W73.3 possession engine; test moved into CI by W75.2 (GG-757)"
 
 [[component]]
 sport = "nfl"
@@ -19,16 +19,16 @@ note = ""
 [[component]]
 sport = "nfl"
 component = "cluster_designs"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/pam/nfl_wr_mass.py"
+test = "tests/test_pam_nfl_wr.py"
+note = "W75.1 PAM core + NFL taxonomy v0 + WR mass tier (window, wave close)"
 
 [[component]]
 sport = "nfl"
 component = "cross_reference_compatibility"
-scaffold = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md"
-test = "none"
-note = "interface doc, no test of cross-sport fit"
+scaffold = "12_EXPLORATORY/nfl_engine/rate_layer.py"
+test = "tests/test_nfl_factors_pit.py"
+note = "W75.2 one Factor protocol every factor class plugs into, point-in-time tested (window, wave close)"
 
 [[component]]
 sport = "nfl"
@@ -75,9 +75,9 @@ note = ""
 [[component]]
 sport = "nba"
 component = "cluster_designs"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/pam/nba_port.py"
+test = "tests/test_pam_core.py"
+note = "W75.1 PAM core + lossless NBA v4 port (window, wave close)"
 
 [[component]]
 sport = "nba"

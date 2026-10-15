@@ -14,8 +14,8 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N4 | G4 | Starting-QB shrunk EPA | nflverse pbp: qb_epa; games: home_qb_id, away_qb_id (0.34 fill in 2026 for unplayed games) | qb | applied | `src/prediction_market_bot/c1_signal_ingestion/nfl_qb_features.py` |
 | N5 | F2 | Passing / rushing split (F2, F3) | nflverse pbp: qb_dropback, rush_attempt, epa | off_pass, off_rush, def_pass, def_rush | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N6 | F4 | Protection / pressure | FTN charting n_pass_rushers; pfr_advstats; participation was_pressure (GAP-1: no 2026 participation file) | def_pass (pressure) | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
-| N7 | F5 | Coverage man/zone and QB efficiency against each | participation defense_man_zone_type (GAP-1: no 2026 file) | def_pass (coverage) | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
-| N8 | F6 | Personnel and formation | participation offense_personnel, defense_personnel (GAP-1); ftn | off_pass / off_rush | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
+| N7 | F5 | Coverage man/zone and QB efficiency against each | participation defense_man_zone_type (GAP-1: no 2026 file) | def_pass (coverage) | applied | `12_EXPLORATORY/nfl_engine/results_stage2.md` |
+| N8 | F6 | Personnel and formation | participation offense_personnel, defense_personnel (GAP-1); ftn | off_pass / off_rush | applied | `12_EXPLORATORY/nfl_engine/results_stage2.md` |
 | N9 | F7 | Special teams | nflverse pbp: kick/punt/FG fields | st | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N10 | F8 | Injuries / availability | nflverse injuries: report_status; depth_charts; snap_counts (weekly rule, GG-732) | qb availability; rating adjustments | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N11 | F9 | Play callers / coaching | GAP-2: head coach only; no coordinator table | coach | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
