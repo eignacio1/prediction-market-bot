@@ -67,10 +67,10 @@ def build_play_table(root: str | Path, seasons: list[int]) -> pd.DataFrame:
         out.append(b)
     d = pd.concat(out, ignore_index=True)
     d["kickoff"] = d.game_id.map(ko)
-    d = d[d.kickoff.notna()].copy()
+    d = d[d.kickoff.notna()].reset_index(drop=True)
     d["pers"] = d.offense_personnel.map(personnel_group)
     d["shell"] = d.defense_coverage_type
-    d["manzone"] = d.defense_man_zone_type.replace({"": None})
+    d["manzone"] = d.defense_man_zone_type.where(d.defense_man_zone_type != "", None)
     d["motion"] = d.is_motion.map({True: "M", False: "S", 1.0: "M", 0.0: "S"})
     d["epa"] = d.epa.astype(float)
     d["success"] = d.success.astype(float)
@@ -142,7 +142,7 @@ def factor_values(plays: pd.DataFrame, as_of: pd.Timestamp, spec: FactorSpec, *,
     cells = list(spec.cell)
     P = P.dropna(subset=cells)
     g = P.groupby([unit] + cells).agg(n=("epa", "size"), epa=("epa", "mean"), succ=("success", "mean"), adj=("adj", "mean"))
-    tot = P.groupby(unit).size().rename("unit_n")
+    tot = P.groupby(unit).size().to_frame("unit_n")
     g = g.join(tot, on=unit)
     g["share"] = g.n / g.unit_n
     league = P.groupby(cells).agg(l_epa=("adj", "mean"), l_n=("adj", "size"))
