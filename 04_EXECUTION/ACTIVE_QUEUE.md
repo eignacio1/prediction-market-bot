@@ -196,7 +196,7 @@ order behaviour. 73.2 and 73.3 meet at one interface (team/unit ratings in, game
 |---|---|---|---|---|
 | 73.1 | Turn-off addendum, NBA staked runner, first settled E2/E3 | EXECUTION E1/E2/E3 | ⬜ | — |
 | 73.2 | NFL engine stage 1: Syndicate32 taxonomy → free sources → event-level data layer | DEPTH D4 (NFL: none → data layer), D1 | 🟨 Part A done | FACTOR_TAXONOMY.md pushed: 20 classes mapped to free nflverse fields; 5 gaps GG-730..734 (participation has no 2026 file). Part B (event store) next. |
-| 73.3 | NFL engine stage 1: one game simulation prices ML, spread and total | DEPTH D4 (NFL: → board priced from one engine, scaffold) | ⬜ | — |
+| 73.3 | NFL engine stage 1: one game simulation prices ML, spread and total | DEPTH D4 (NFL: → board priced from one engine, scaffold) | ✅ DONE (PR #255, efec061) | Possession-MC engine prices ML/spread/total/team totals from one draw set; non-inferior (not better) to frozen Gaussians, all 8 ΔBrier CIs hi < +0.0010; key-number shape claim NOT supported. `12_EXPLORATORY/nfl_engine/results.md`. D4 NFL 0→1 (scaffold). |
 
 ### 73.1 — Turn-off addendum, NBA staked runner, first settled E2/E3
 
