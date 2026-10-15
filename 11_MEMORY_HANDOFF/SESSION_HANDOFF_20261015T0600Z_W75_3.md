@@ -1,8 +1,13 @@
 # Session Handoff — W75.3 (2026-10-15)
 
 <!-- session-meta
-task_id: W75.3
-tier: STANDARD
+task_id: T-985
+tier: MICRO
+timestamp: 2026-10-15T05:40:00Z
+commit: e3be848
+plan_deliverable_moved: no
+gg_touched: none
+adr_touched: ADR-0075
 one_line_summary: Seat interface (4 sports) + NFL/NBA tension registers + ARCHITECTURE_COMPONENTS; D4/D5 now generated
 vision_pillar: DEPTH
 gap_measure: D5
@@ -28,3 +33,12 @@ Window hand count said NFL ~1 component and ~2 applied factors. Evidence gives N
 
 ## Notes
 Seat files are v0 drafts for a football/basketball eye to correct. Forward-test "1 vs 29" is NHL treatment vs control (W73.1), not MLB. strategic-handoff.md gained a tension-review step (step 5b).
+
+## Strategic Decisions This Session
+None — implementation-only; ADR-0075 stage-ladder strain brought to operator, not decided.
+
+Bet count/G6: not re-checked this close-out (see live governance scan).
+
+**One thing pending:** operator rulings on the two decisions above.
+
+**Resume:** `/session-start`, then read this file and `02_ARCHITECTURE_DESIGN/TENSIONS/README.md`.
