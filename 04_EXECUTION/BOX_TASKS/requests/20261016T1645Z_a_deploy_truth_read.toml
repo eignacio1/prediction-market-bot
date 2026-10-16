@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "window: reinstall at :51 after #287 reached the box (first install raced the deploy)"
