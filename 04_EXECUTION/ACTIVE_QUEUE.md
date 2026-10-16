@@ -245,7 +245,7 @@ may not reach the VPS or Kalshi; every box-only step is then recorded PENDING fo
 
 | Task | What | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| W80P.1 | Surface-budget false red fixed; depth capture running | PLUMBING: budget RED → GREEN; capture no → yes | 🟡 | PR #281 (CI running): import-aware behind-HEAD, one shared fn (GG-915); capture job built, registry `paused` — box unreachable from this cloud session, so GREEN read + install PENDING |
+| W80P.1 | Surface-budget false red fixed; depth capture running | PLUMBING: budget RED → GREEN; capture no → yes | 🟡 | PARTIAL: #281 merged `9544c98` CI green — import-aware behind-HEAD (GG-915); capture built, registry `paused`. GREEN read + install + first read-back PENDING (no box from cloud; commands in handoff W80P_1). t4-mlb: not_needed |
 | W80P.2 | Thin-market ranking + first thin-market prereg | BREADTH/DEPTH: gradient table 0 → 1; prereg 0 → 1 | ⛔ | BLOCKED: no ssh client in the cloud container + Kalshi API `CONNECT 403` (network policy); stop rule applied, nothing measured. Handoff W80P_2 |
 | W80P.3 | NBA pace/efficiency vs Kalshi NBA totals | DEPTH D5(b) NBA applied 0 → 1 (or a verdict) | ⛔ | BLOCKED: same root (needs KXNBATOTAL prices from VPS store or Kalshi API); factor stays interpreted. Handoff W80P_3 |
 | W80P.4 | MLB 2026 season look-back | PROOF P1/P2/P3 MLB | ⬜ | |
