@@ -1094,16 +1094,16 @@ mirrors = []
 command = "nfl_event_store.yml"
 
 [[component]]
-key = "cron|21,51 * * * *|scripts/thin_market_depth_capture.py"
+key = "cron|51 * * * *|scripts/thin_market_depth_capture.py"
 kind = "cron"
 source = "deploy/cron.thin_capture"
 status = "paused"
 reviewed = true
-purpose = "W80P.1: every 30 min snapshots the live Kalshi order book of open NFL/NBA thin-family markets closing within 48h (6h-out every run, 6-48h every 3h) and fetches their candles after settlement; depth cannot be backfilled. Public GETs, bounded (500 books/run, 80 MB/day, 4 GB total), resumable."
+purpose = "W80P.1: hourly at :51 (window 10-16: :21 collides with EXP-039) snapshots the live Kalshi order book of open NFL/NBA thin-family markets closing within 48h (6h-out every run, 6-48h every 3h) and fetches their candles after settlement; depth cannot be backfilled. Public GETs, bounded (500 books/run, 80 MB/day, 4 GB total), resumable."
 pillar = "BREADTH"
 writes = ["logs/thin_capture_cron.log"]
 alarm = "none: paused - mirrored in deploy/cron.thin_capture but NOT installed; install only when SURFACE BUDGET reads GREEN (Hard Rule 14), then set status live with max_age_h = 2 on logs/thin_capture_cron.log"
-schedule = "21,51 * * * *"
+schedule = "51 * * * *"
 mirrors = ["deploy/cron.thin_capture"]
 command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/thin_market_depth_capture.py >> logs/thin_capture_cron.log 2>&1"
 

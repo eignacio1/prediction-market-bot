@@ -2,7 +2,7 @@
 # Forward order-book capture for the thinner NFL/NBA Kalshi families (Kalshi keeps no historical book; W78.2 manifest).
 # Public unauthenticated GETs only; no order/ledger/model path. Writes ONLY exp_output/KALSHI_HISTORY/thin_capture/.
 # Bounded in-script: 500 books/run, 60 candle markets/run, 80 MB/day, 4 GB total; flock; resumable state.json.
-# Minutes :21 and :51 are unused by every other job (GG-477 stagger). Install ONLY when SURFACE BUDGET reads GREEN
+# Minute :51 only: :21 collides with EXP-039 (21 4,10,16,22, GG-477 stagger); :51 is used by no other job. Install ONLY when SURFACE BUDGET reads GREEN
 # (Hard Rule 14), then set its RUNTIME_REGISTRY.toml entry to status = "live".
-21,51 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/thin_market_depth_capture.py >> logs/thin_capture_cron.log 2>&1
+51 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/thin_market_depth_capture.py >> logs/thin_capture_cron.log 2>&1
 # END W80P.1 THIN MARKET DEPTH CAPTURE
