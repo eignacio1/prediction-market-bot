@@ -286,6 +286,9 @@ def main(argv=None) -> int:
     if a.max_games:
         picks = hash_sample(picks, a.max_games)
     for i, p in enumerate(picks):
+        # the shared Client doubles its pause on every 429 and never relaxes; cap it per market so one burst of 429s
+        # cannot slow the whole run to minutes per call (observed 10-16: 227 of 300 then stalled)
+        client.pause = min(client.pause, 4 * a.pause)
         tip = datetime.fromisoformat(p["tip"].replace("Z", "+00:00"))
         tip = tip if tip.tzinfo else tip.replace(tzinfo=timezone.utc)
         p["p"] = quote_mid(fetch_candles(client, a.cache, p), int((tip - PRICE_LEAD).timestamp()))
