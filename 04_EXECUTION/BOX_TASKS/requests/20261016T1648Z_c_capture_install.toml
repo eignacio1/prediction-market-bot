@@ -1,0 +1,2 @@
+task = "capture_install"
+note = "window: reinstall at :51 once the box has pulled #287"
