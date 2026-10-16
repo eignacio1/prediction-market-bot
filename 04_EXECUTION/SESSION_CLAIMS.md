@@ -929,3 +929,4 @@
 | 2026-10-16T05:02:26Z | W77.3 | CLOSED — W77.3 DONE: 3 silent ledger read-side sites now loud (PR #270, deployed); GG-747 gap is 41, every row explained. (commit `4ddeb21`) |
 | 2026-10-16T05:02:49Z | W77.3 | CLOSED — merge confirmed, HEAD (e4e6a95) is ancestor of origin/main — ledger read side DONE; GG-885 claim outstanding |
 | 2026-10-16T05:01:27Z | W77.1 | CLOSED — W77.1 fill-fix test kept alive: exchange 5xx excluded, cancel 5xx retry, arm-blind demo cash pre-check; GG-840/841 resolved (commit `e63c2b7`) |
+| 2026-10-16T05:03:14Z | W77.1 | CLOSED — merge confirmed, HEAD (649ce0e) is ancestor of origin/main — Parts A+B merged (#269, #271), GG-840/841 resolved, handoff on main |
