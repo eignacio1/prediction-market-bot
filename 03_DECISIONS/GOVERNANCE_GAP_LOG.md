@@ -4241,13 +4241,13 @@ W76.3 Part A (2026-10-16) swept src/ and scripts/ for `open(...,"w")` / `write_t
 
 ### GG-840 — Demo account is cash-starved: 1,535 of 1,606 rejections since the re-arm are `insufficient_balance`
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (W77.1 PR #271; running on t4-mlb restart 04:57Z + shadow cron; cash is the binding constraint, pre-check only skips venue-rejected orders earlier) · **Severity:** HIGH
 
 W76.1, 2026-10-16. Demo cash $0.1674 against portfolio value $108.14 (read-only GET). Since 2026-10-13T23:58Z: 962 orders accepted, 1,606 rejected (insufficient_balance 1,535; market_closed 68; transient 3). Fills for both ADR-0072 arms depend on cash recycling, not on the placement rule, so fill rates are selection-dependent and the judged-n projection is unreliable. Pillar: EXECUTION (E1). Proposed fix: size shadow flat stakes to available cash or add a balance pre-check that logs and skips; a demo top-up is not available through the API.
 
 ### GG-841 — `cancel_now` has no 5xx retry; an exchange 503 outage trips the ADR-0072 turn-off
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (W77.1 PR #269; sweeper cron + t4-mlb restart 04:57Z carry the fix) · **Severity:** HIGH
 
 W76.1, 2026-10-16. On 2026-10-15 the cancel-fail rate was 19.6%, all HTTP 503 (74 rows, 17:00-19:xxZ). A `cancel_failed` row counts as done in `sweep_overdue`, so nothing retries. A sample of 30 of those orders ended `canceled`, so they rested longer than designed. The 11:25Z cron on 2026-10-16 will see `cancel_fail_rate_gt_10pct_in_a_day` and turn the rule off. Root-cause fix: retry `cancel_now` on 5xx inside `c5_execution/demo_fill_policy.py` (live order path, outside the 76.1 ownership). Pillar: EXECUTION.
 
