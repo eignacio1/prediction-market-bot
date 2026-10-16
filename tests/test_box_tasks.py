@@ -152,7 +152,7 @@ def test_install_appends_once_and_keeps_every_line():
     assert ci.install(live_fn=green, read=lambda: state["cron"], write=lambda t: state.update(cron=t)) == 0
     after = state["cron"]
     assert after.startswith("5 * * * * cd /x && run a\n# comment\n0 1 * * * b\n")
-    assert after.count(ci.BEGIN) == 1 and "21,51 * * * *" in after
+    assert after.count(ci.BEGIN) == 1 and "51 * * * * cd" in after
     ci.install(live_fn=green, read=lambda: state["cron"], write=lambda t: state.update(cron=t))
     assert state["cron"] == after                    # idempotent
 
@@ -160,7 +160,7 @@ def test_install_appends_once_and_keeps_every_line():
 def test_fragment_block_is_the_registered_line():
     blk = ci.fragment_block(FRAG)
     assert blk[0] == ci.BEGIN and blk[-1] == ci.END
-    assert any("scripts/thin_market_depth_capture.py" in l and l.startswith("21,51 * * * *") for l in blk)
+    assert any("scripts/thin_market_depth_capture.py" in l and l.startswith("51 * * * *") for l in blk)
 
 
 def test_uninstall_removes_only_the_block_and_is_idempotent():
