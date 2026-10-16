@@ -2604,3 +2604,15 @@ class TestCandidateModelV1WalkoffShrink:
         assert "p_hits_gte_threshold_candidate_v1" not in run_cycle_src
         assert "_compute_ab_remaining_candidate_v1" not in run_cycle_src
         assert "_walkoff_leverage_shrink" not in run_cycle_src
+
+
+def test_t1_cross_book_check_corrupt_portfolio_warns_and_counts(tmp_path, monkeypatch, caplog):
+    import prediction_market_bot.run_t4_mlb_live as m
+    bad = tmp_path / "pf.json"
+    bad.write_text("{torn")
+    monkeypatch.setattr(m, "_T1_PORTFOLIO_PATH", bad)
+    before = m._T1_PORTFOLIO_READ_FAILURES[0]
+    with caplog.at_level("WARNING"):
+        assert m._t1_open_position_opposite_direction("TK", "YES") is None
+    assert m._T1_PORTFOLIO_READ_FAILURES[0] == before + 1
+    assert "BLIND" in caplog.text

@@ -138,22 +138,53 @@ _UNKNOWN_MARKET_TYPE_COUNTS: "Counter[tuple[Any, str]]" = Counter()
 
 # ── loading ──────────────────────────────────────────────────────────────
 
+# W77.3 / GG-764: a corrupt or torn ledger read is COUNTED and REPORTED (stderr +
+# the invariants JSONL), never crashed on and never silently absorbed into a
+# smaller sample. Each entry: {"type": "corrupt_read", "source", "kind"
+# ("file"|"line"), "line_no" (line kind only), "error"}.
+_CORRUPT_READS: list[dict] = []
+
+
+def _record_corrupt(path: Path, kind: str, error: Exception, line_no: int | None = None) -> None:
+    entry: dict = {"type": "corrupt_read", "source": str(path), "kind": kind, "error": f"{type(error).__name__}: {error}"}
+    where = str(path)
+    if line_no is not None:
+        entry["line_no"] = line_no
+        where = f"{path}:{line_no}"
+    _CORRUPT_READS.append(entry)
+    print(f"[CORRUPT_READ] {where}: {entry['error']}", file=sys.stderr)
+
+
 def load_json(path: Path) -> dict | None:
+    """None when absent OR corrupt; corrupt is recorded in _CORRUPT_READS."""
     if not path.exists():
         return None
-    with open(path) as f:
-        return json.load(f)
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except (ValueError, OSError) as e:
+        _record_corrupt(path, "file", e)
+        return None
 
 
 def load_jsonl(path: Path) -> list[dict] | None:
+    """Torn lines are recorded (with line number) and skipped; good lines are kept."""
     if not path.exists():
         return None
     out = []
-    with open(path) as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                out.append(json.loads(line))
+    try:
+        with open(path) as f:
+            for line_no, line in enumerate(f, 1):
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    out.append(json.loads(line))
+                except ValueError as e:
+                    _record_corrupt(path, "line", e, line_no)
+    except OSError as e:
+        _record_corrupt(path, "file", e)
+        return None
     return out
 
 
@@ -841,6 +872,7 @@ def run(
     strict: bool,
 ) -> int:
     lines: list[dict] = []
+    _CORRUPT_READS.clear()
     total_violations = 0
     total_assertions_run = 0
     total_no_formula = 0
@@ -856,13 +888,15 @@ def run(
     print("Exit code is always 0 unless --strict was passed explicitly.", file=sys.stderr)
     print("=" * 78, file=sys.stderr)
 
+    lines.extend(_CORRUPT_READS)  # W77.3/GG-764: torn/corrupt reads, loaded above
+
     for label, path, pf in (("T1/T2/T3 book", t1_portfolio_path, t1_pf), ("T4 book", t4_portfolio_path, t4_pf)):
         if pf is None:
-            print(f"[SOURCE_UNAVAILABLE] {label}: {path} not found — skipping its bands.", file=sys.stderr)
+            print(f"[SOURCE_UNAVAILABLE] {label}: {path} not found or corrupt (see CORRUPT_READ) — skipping its bands.", file=sys.stderr)
             lines.append({"type": "source_unavailable", "source": str(path), "label": label})
 
     if store is None:
-        print(f"[SOURCE_UNAVAILABLE] outcome store: {outcome_store_path} not found — Task 2 cross-path check skipped.", file=sys.stderr)
+        print(f"[SOURCE_UNAVAILABLE] outcome store: {outcome_store_path} not found or corrupt — Task 2 cross-path check skipped.", file=sys.stderr)
         lines.append({"type": "source_unavailable", "source": str(outcome_store_path), "label": "outcome_store"})
 
     by_band: dict[str, list[dict]] = {}
@@ -1102,6 +1136,7 @@ def run(
         "bands_with_incomplete_formula_coverage": bands_with_incomplete_formula_coverage,
         "cells_with_incomplete_formula_coverage": cells_with_incomplete_formula_coverage,
         "total_unknown_market_type_records": sum(_UNKNOWN_MARKET_TYPE_COUNTS.values()),
+        "total_corrupt_reads": len(_CORRUPT_READS),
     }
     lines.append(summary)
 
@@ -1118,6 +1153,12 @@ def run(
             f"bands: {', '.join(bands_with_incomplete_formula_coverage) or 'none'}. Incomplete "
             f"cells: {', '.join(cells_with_incomplete_formula_coverage) or 'none'}. See "
             f"per-band/per-cell COVERAGE lines above. (T-466/T-509)",
+            file=sys.stderr,
+        )
+    if _CORRUPT_READS:
+        print(
+            f"CORRUPT_READS: {len(_CORRUPT_READS)} torn/corrupt ledger read(s) — the sample above "
+            f"is SMALLER than the file. See [CORRUPT_READ] lines. (W77.3/GG-764)",
             file=sys.stderr,
         )
     print("=" * 78, file=sys.stderr)

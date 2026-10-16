@@ -297,6 +297,7 @@ SINGLETON_LOCK_PATH = _LOGS_DIR / "t4_mlb_live.lock"
 # mechanism — this is a best-effort file read, never a live handle into T1's
 # process, and must tolerate the file being absent or stale.
 _T1_PORTFOLIO_PATH = _LOGS_DIR / "paper_portfolio_mlb.json"
+_T1_PORTFOLIO_READ_FAILURES = [0]  # W77.3/GG-764 counter
 
 # GG-067 (SESSION 110): raw per-cycle context, independent of T4_MLB_DRY_RUN.
 # Written for every cycle that reaches the p_t4/gross_edge computation (fired
@@ -1185,7 +1186,13 @@ def _t1_open_position_opposite_direction(
             ):
                 return p
     except Exception as exc:
-        logger.debug("T1 cross-book check skipped for %s: %s", ticker, exc)
+        # W77.3/GG-764: a corrupt T1 portfolio makes this alarm-only check blind;
+        # report at WARNING (not debug) and count it. Still never raises.
+        _T1_PORTFOLIO_READ_FAILURES[0] += 1
+        logger.warning(
+            "T1 cross-book check BLIND for %s (failure #%d): %s: %s",
+            ticker, _T1_PORTFOLIO_READ_FAILURES[0], type(exc).__name__, exc,
+        )
     return None
 
 
