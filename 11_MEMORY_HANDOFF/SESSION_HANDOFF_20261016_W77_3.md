@@ -5,3 +5,8 @@ pattern_sweep: NOT DONE (Hard Rule 13 sweep of other src/scripts ledger readers 
 Premise correction: the 3 sites are not all "skip a torn row": assert_ledger_invariants load_json crashed on corrupt file; validators._load_state reset state to {}; run_t4_mlb_live fails open (debug-logged). Fixed as: counted + stderr + invariants JSONL (corrupt_read lines, total_corrupt_reads in summary); ERROR log on state reset; WARNING + counter on T1 cross-book blind.
 Next: (1) pattern sweep; (2) open PR, CI green, merge; run_t4_mlb_live.py is imported by t4-mlb - read Deploy summary, restart only idle window, read back running SHA; (3) Part B: read-only copies of T4 portfolio + resolution ledgers, recompute 4,316 closed vs resolved, account each row, write "Part B (W77.3)" in W76_3_ledger_integrity.md; (4) read back first CellLedger rows after next pregame shadow cron.
 Not touched: ACTIVE_QUEUE.md row (not updated - do it next session).
+
+## Update (continued session)
+Part A DONE: PR #270 merged at dc84fa6 (CI green on 8d7f071). Sweep: fixed nba_cell_autoflip; remainder registered GG-885 (claim_session refused from the worktree - "claim from a clean main checkout" - so GG-885 is NOT in SESSION_CLAIMS; claim it before reuse). pattern_sweep: heuristic, 19 hits triaged.
+Deploy: merge-commit Test Suite run was SKIPPED; no workflow named Deploy found via `gh run list --workflow Deploy` - t4-mlb restart decision NOT recorded. Next session: read Deploy job summary / run /deploy-audit, confirm running SHA on box (restart only idle window, GG-432).
+Still open: Part B (GG-747), CellLedger lock read-back after next pregame shadow cron, "Part B (W77.3)" section in W76_3_ledger_integrity.md.
