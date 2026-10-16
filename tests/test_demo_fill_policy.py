@@ -496,3 +496,28 @@ def test_exhausted_5xx_stays_pending_for_next_sweep_until_cap(tmp_path, monkeypa
                                       ({"error": "host_refused"}, False), ({"error": "ValueError"}, False), (None, False)])
 def test_is_venue_transient(data, exp):
     assert pol.is_venue_transient(data) is exp
+
+
+def _cash_client(bal):
+    c = MagicMock()
+    c.get_balance.return_value = (True, {"balance_usd": bal})
+    return c
+
+
+def test_cash_skip_when_balance_below_stake_and_cached(monkeypatch):
+    pol._CASH_CACHE[:] = [None, 0.0]
+    c = _cash_client(0.17)
+    assert pol.cash_skip_reason(c, 1.0) == "insufficient_demo_cash"
+    assert pol.cash_skip_reason(c, 0.10) is None            # same cached read, smaller stake
+    assert c.get_balance.call_count == 1
+    pol._CASH_CACHE[:] = [None, 0.0]
+    assert pol.cash_skip_reason(_cash_client(33.1), 1.0) is None
+
+
+def test_cash_check_fails_open_on_unreadable_balance():
+    pol._CASH_CACHE[:] = [None, 0.0]
+    c = MagicMock(); c.get_balance.return_value = (False, "HTTP 503")
+    assert pol.cash_skip_reason(c, 1.0) is None
+    c.get_balance.side_effect = RuntimeError("x")
+    assert pol.cash_skip_reason(c, 1.0) is None
+    assert pol.cash_skip_reason(MagicMock(), 1.0) is None   # malformed (mock) read
