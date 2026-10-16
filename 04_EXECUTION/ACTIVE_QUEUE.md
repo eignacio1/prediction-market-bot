@@ -672,6 +672,42 @@ Results: 02_ARCHITECTURE_DESIGN/NBA_ENGINE/DATA_LAYER.md (what is built, coverag
 END OF BLOCK 78.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+## 🔌 ONE-OFF — ARCHIVE PIPE: the private repo Muse pushes to (operator 2026-10-15 22:44 PT) · its own terminal, outside the wave
+
+Operator: "Let's do it - send the terminal block now, I'll have it finish its work then come back to you for confirmation, and
+then after that you'll give me the paste-in prompt to run into Muse." After this block reports, the window gives the Muse prompt.
+
+```
+ONE-OFF BLOCK AP - ARCHIVE PIPE (MICRO). Do this exactly; nothing else.
+PURPOSE: PLUMBING - give the operator's Muse-built Sports Intelligence Archive a private GitHub home that Muse pushes to and the
+bot reads, so the operator is no longer the connector (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/INTAKE_CONTRACT.md in the bot repo).
+SCOPE: GitHub only. Do NOT touch the bot repo (eignacio1/prediction-market-bot): no claim, no worktree, no commit, no queue edit -
+the strategic window records the result. No running component, no cron, no server change. Free only (a private repo with no
+Actions costs nothing).
+SECRETS (NFR-05): the private key below is a secret. Never commit it, never write it into any repo, handoff or log, never paste it
+into any file other than the one named here. Print it once, at the very end, for the operator to copy to Muse.
+
+STEPS
+  1. `gh auth status` - must be logged in as eignacio1. If not, stop and say so.
+  2. Create the repo, private and empty (no README, so Muse's existing history pushes cleanly):
+     gh repo create eignacio1/sports-intel-archive --private --description "Sports Intelligence Archive (operator + Muse). Read-only for the prediction-market bot."
+     If it already exists, do not recreate or change it - report its visibility and whether it is empty.
+  3. Make a key that can write to THIS repo only (a deploy key), stored outside every project folder:
+     mkdir -p ~/.config/sports-intel-archive && chmod 700 ~/.config/sports-intel-archive
+     ssh-keygen -t ed25519 -N "" -C "muse-archive-push" -f ~/.config/sports-intel-archive/muse_deploy_key
+     chmod 600 ~/.config/sports-intel-archive/muse_deploy_key
+     gh repo deploy-key add ~/.config/sports-intel-archive/muse_deploy_key.pub --repo eignacio1/sports-intel-archive --allow-write --title "Muse archive push (write, this repo only)"
+  4. Verify: `gh repo view eignacio1/sports-intel-archive --json name,visibility,isEmpty,sshUrl` and
+     `gh repo deploy-key list --repo eignacio1/sports-intel-archive` (one key, read-write).
+  5. Report, in plain words: the repo's SSH URL, visibility (must be PRIVATE), empty yes/no, the deploy key's title, id and
+     fingerprint, read-write yes/no, and where the private key file is. Then, as the LAST thing in your reply and nowhere else,
+     print the private key (contents of ~/.config/sports-intel-archive/muse_deploy_key) inside a code fence labelled
+     "FOR MUSE ONLY - scoped to eignacio1/sports-intel-archive, revocable with gh repo deploy-key delete".
+  If any step is refused by a permission control: record the exact command and refusal, stop, report. Never work around it.
+
+END OF ONE-OFF BLOCK AP. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
 ## 🔥 STANDING — GA: the governance gap agent (always on, beside every wave; operator 2026-10-15 16:49 / 17:02 PT)
 
 Operator: "can we keep this as a loose bird watcher that continually buckets, scrapes, fills, extracts, burns burns burns -

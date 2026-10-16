@@ -2411,3 +2411,10 @@ Operator, verbatim: "done - demo funds added, now at $19k" (screenshot: demo.kal
 
 - Option (a) of the window's 22:3x question: demo funds added through the Kalshi demo site. Fake money; no pre-registered rule changed.
 - The forward test's data from the 10-13 23:58Z re-arm to 10-16 05:40Z is cash-starved (GG-840; 16 of 21 order-hours saw insufficient_balance). The next read-back reports the two periods separately and re-projects judged n per arm from the post-top-up fill rates. GG-840's cash pre-check stays as the guard.
+
+## 2026-10-15 22:44 PT — Archive pipe: one-off terminal block, then a Muse prompt
+
+Operator, verbatim: "Let's do it - send the terminal block now, I'll have it finish its work then come back to you for confirmation, and then after that you'll give me the paste-in prompt to run into Muse"
+
+- One-off block AP in ACTIVE_QUEUE.md: a terminal creates the private, empty repo eignacio1/sports-intel-archive and a write deploy key scoped to that repo only (private key at ~/.config/sports-intel-archive/, never committed), and prints the key once for the operator to give Muse. Touches nothing in the bot repo; no running component; $0.
+- After the operator confirms, the window writes the Muse prompt (add the remote, push the full history, push after every commit). The adapter that reads claims waits for Muse's backfill of the 96 files.
