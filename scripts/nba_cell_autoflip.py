@@ -10,14 +10,13 @@ Usage: python3 scripts/nba_cell_autoflip.py [--ledger-dir DIR] [--out FILE] [--t
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from w59_3_nba_flip_check import BAND, MT, ROOT, valid  # noqa: E402
+from w59_3_nba_flip_check import BAND, MT, ROOT, frozen_model_sha, valid  # noqa: E402
 
 NOT_BEFORE = date(2026, 10, 20)
 BAND_ENUM = {"T1": "T1_MULTI_DAY", "T2": "T2_SAME_DAY", "T3": "T3_PRE_TIP"}
@@ -35,7 +34,7 @@ def main(argv=None) -> int:
         return 0
     led = Path(a.ledger_dir)
     out = Path(a.out) if a.out else led / "nba_promotions.jsonl"
-    sha = hashlib.sha256((ROOT / "models" / "nba_pregame_v1.json").read_bytes()).hexdigest()
+    sha = frozen_model_sha()
     done = set()
     if out.exists():
         for l in out.read_text().splitlines():

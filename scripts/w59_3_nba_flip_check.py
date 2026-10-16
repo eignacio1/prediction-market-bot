@@ -10,7 +10,6 @@ Usage: python3 scripts/w59_3_nba_flip_check.py [--ledger-dir DIR]
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -18,6 +17,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MT = {"MONEYLINE": "NBA_MONEYLINE", "SPREAD": "NBA_SPREAD", "GAME_TOTAL": "NBA_GAME_TOTAL", "TEAM_TOTAL": "NBA_TEAM_TOTAL"}
 BAND = {"T1": "T1_MULTI_DAY", "T2": "T2_SAME_DAY", "T3": "T3_PRE_TIP"}
+
+
+def frozen_model_sha() -> str:
+    """The identity rows carry: the artifact's own canonical sha256 field (what NBAPregameModel.sha256 returns and the
+    runner writes as model_sha256) -- NOT the sha256 of the file bytes. W78.3/GG-890: hashing the file made every row
+    invalid, so no cell could ever flip."""
+    return json.loads((ROOT / "models" / "nba_pregame_v1.json").read_text())["sha256"]
 
 
 def valid(r: dict, sha: str) -> bool:
@@ -29,7 +35,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ledger-dir", default=str(ROOT / "exp_output" / "PREGAME_SHADOW"))
     a = ap.parse_args(argv)
-    sha = hashlib.sha256((ROOT / "models" / "nba_pregame_v1.json").read_bytes()).hexdigest()
+    sha = frozen_model_sha()
     ok = 0
     for m, mt in MT.items():
         for b, bd in BAND.items():
