@@ -181,3 +181,6 @@ exp_output/NFL_EVENTS/
 
 # NBA event store (W78.4): raw store is rebuilt from sportsdataverse releases; only the manifest is committed
 exp_output/NBA_EVENTS/
+
+# W80P.1 thin-market depth capture store (box only; state.json + per-day JSONL)
+exp_output/KALSHI_HISTORY/thin_capture/

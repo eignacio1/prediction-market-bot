@@ -2287,6 +2287,12 @@ W79.3 GAP-4. Only venue city and state are loaded; no coordinates or time zones.
 
 W79.3 GAP-5 / N13. PAM (DS-01, NBA v4 port) exists but no NBA engine reads it; structured qualitative has no free historical feed. Operator directive 2026-10-14 pipes PAM into NFL and NBA engines first. Pillar: DEPTH (D2 qualitative count 0). Proposed fix: a PAM-to-engine adapter as a separate block; unaffected by this wave.
 
+### GG-915 — SURFACE BUDGET counted import-blind "behind HEAD" hours (false RED on unrelated merges)
+
+**Status:** IN PROGRESS · **Severity:** MEDIUM
+
+W79.1 / W80P.1. `scripts/runtime_registry.py` `probe_local` counted every `src/`/`scripts/` commit since a service's running SHA, so any unrelated merge turned the SURFACE BUDGET RED after 6 h ("t4-mlb running 03ad6df9, 8.33h behind box HEAD", 2026-10-16), while the deploy restart policy (GG-432) correctly declines to restart t4-mlb for files it does not import. Two definitions of "behind" disagreed; Hard Rule 14 then blocked new components on a false red. Fix (W80P.1 PR): one shared definition `scripts/ops/deploy_truth.py::unapplied_changes` (restart policy's import closure for t4-mlb, src/ + web_dashboard for the dashboard), called by both the deploy-truth check and the budget probe; CLAUDE.md Hard Rule 14 text aligned; 6 regression tests. Stays IN PROGRESS until a session with box access reads `scripts/runtime_registry.py live` GREEN (or RED only on a real import change) after the merge deploys — this cloud session had no ssh.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
