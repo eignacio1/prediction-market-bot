@@ -20,6 +20,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 - `PROCESS` — tool or protocol misuse (forgot a deliverable, wrong mechanism).
 - `REDUCED` — flattened an operator directive into a slogan or a rule simpler than what he said.
 - `LITERAL` — took an operator's illustration as the specification (the opposite failure to REDUCED).
+- `PRESET` — wrote future waves' content before the results that should set it.
 
 | # | Date | Wave | What the window did | Cost | Caught by | Pattern | Rule now in force |
 |---|---|---|---|---|---|---|---|
@@ -45,6 +46,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W18 | 2026-10-14 | 75 | Wrote "B74-A Session 2 is running" into Wave 75's surface, dependencies and sequencing rows from the operator's earlier "still firing" remark, without checking SESSION_CLAIMS.md (no Session 2 claim existed). | Wave 75's dependency lines were written around a terminal that did not exist; operator corrected it. | Operator | UNVERIFIED | Before describing a terminal as running, check SESSION_CLAIMS.md for its claim |
 | W19 | 2026-10-15 | 76 | When the shell's safety check timed out, left Wave 76 unpushed, told the operator to hold pasting until the push landed, and relied on a scheduled retry that only reached the session 17 h later. | Wave 76 sat unissued ~17 h; no terminal ran. | Window, on the retry | PROCESS | A failed push is retried in the same turn until it lands or the turn ends; the operator is never told to wait on a retry the window cannot confirm will fire |
 | W20 | 2026-10-15 | 76 | Gave the operator `/loop /gap-agent` without checking how his terminals resolve commands: they start in his local project folder, which is not synced to main, so a command pushed to GitHub minutes earlier does not exist there. The terminal refused it. | One failed launch. | Operator (screenshot) | UNVERIFIED | Anything a terminal must run at launch is read from origin/main inside the prompt (`git show origin/main:<path>`), never assumed present in the local folder; same for /vision and any new command |
+| W21 | 2026-10-15 | 77→78 | Wrote Waves 78-80 block by block into the queue's arc (and the 78 Archive-adapter add-on) before 77's results existed. The operator: "don't pre-determine what the next waves are going to be - we are committed to sequential processing as necessary". | A preset plan in the queue that 77's results (thinner markets) already overtook. | Operator | PRESET | The arc holds only fixed dates and standing direction; each wave is written from the last wave's results when it closes |
 
 ## Pattern tally (update at every handoff)
 
@@ -60,3 +62,4 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | REDUCED | 1 | W16 (10-14) |
 | PROCESS | 2 | W19 (10-15) |
 | LITERAL | 1 | W17 (10-14) |
+| PRESET | 1 | W21 (10-15) |

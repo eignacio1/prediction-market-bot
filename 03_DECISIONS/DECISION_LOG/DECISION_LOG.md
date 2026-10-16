@@ -2396,3 +2396,11 @@ Operator, verbatim: "Do you have the ability to wire directly into it? So I don'
 Operator, verbatim: "What a mess - I'll just keep it public for now lol"
 
 - The "back to private via a self-hosted runner" block is dropped from Wave 78. The bot repo stays public. The archive still gets its own private repo (Wave 78 adapter block).
+
+## 2026-10-15 22:30 PT — Waves are sequential, never preset; Muse-to-window link on hold; Wave 78 issued
+
+Operator, verbatim: "No I'd like to get muse & you connected - since you'd be the one connecting to it as the watchdog, it's actually the better relationship. But I'll hold on that for now. 77 is finished - confirm receipt then set up the next wave. Remember - don't pre-determine what the next waves are going to be - we are committed to sequential processing as necessary. Proceed"
+
+- Standing: no wave content is drafted ahead. The queue's arc now holds only fixed dates (NBA 10-20, NFL first look ~11-02, World Series end) and standing direction. Window error W21 (new pattern PRESET).
+- The Muse archive's link: the operator wants the strategic window (the watchdog) connected to Muse directly, not via him. On hold by his call. The intake contract stands.
+- Wave 77 verified: 77.1/77.2(+b)/77.3 done; 77.4 never started → 78.1. Wave 78 set from 77's results: land the dashboards (78.1), thinner markets' price history, efficiency/fillability gradient and first pre-registration (78.2, per the operator's 10-16 call), NBA opening-night readiness (78.3), NBA event-level data layer (78.4). No new running component this wave (78.1 rewrites the registry).
