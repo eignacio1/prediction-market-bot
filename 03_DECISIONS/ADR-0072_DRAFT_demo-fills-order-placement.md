@@ -53,3 +53,13 @@ Operator, 2026-10-14, asked whether the skip-rate turn-off should count only the
 ### Addendum 2026-10-14 (W73.1, second) - cancel-failure condition evaluated on post-fix attempts
 
 The 11:25Z report on 2026-10-14 turned the forward test off again on `cancel_fail_rate_gt_10pct_in_a_day` (worst day 2026-10-13, rate 1.0 = 8 of 8). Those 8 failures were logged 00:00-01:59Z on 10-13, before the cancel-path fix (GG-645/623) and before the 10-13 23:58Z re-arm; since the re-arm there are 91+ `cancel_ok` and 0 `cancel_failed`. The rule (>10% of cancel attempts in a day) is unchanged; attempts made by the superseded cancel code are excluded via `CANCEL_PATH_FIX_EPOCH = 2026-10-13T23:58Z`. Root-cause fix to a demo-only monitor, not a change to any registered parameter. Consequence: the test was dark from 11:25Z until the override file was removed (see W65_2 "Read-back W73.1").
+
+## Addendum 2026-10-15 (W77.1) — exchange 5xx excluded from the cancel-fail turn-off
+
+Operator, 2026-10-15 17:4x PT, answering the question W76.1 raised: **"Exclude exchange 503s (Recommended)"**.
+Same shape as the 2026-10-14 "policy skips only" call. The `cancel_fail_rate_gt_10pct_in_a_day` condition (>10%, unchanged)
+counts only cancels that failed for our own reasons. A `cancel_failed` whose response is HTTP 5xx, a timeout or a
+connection error (`demo_fill_policy.is_venue_transient`) is reported in its own line (`failed_venue_transient`,
+`venue_transient_failures_by_day`) and is in neither numerator nor denominator. 4xx, auth, host refusal and code-side
+exceptions still count. `cancel_now` now retries 5xx with backoff, and a still-failing one stays pending for the next
+sweep (cap 6). The test stays on. Placement rule, arms and all other pre-registered quantities are untouched. (GG-841.)

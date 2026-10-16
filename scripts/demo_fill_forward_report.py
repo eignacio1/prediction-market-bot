@@ -28,6 +28,7 @@ from typing import Any, Callable, Optional
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 from prediction_market_bot.atomic_io import atomic_write_text  # noqa: E402  GG-754
+from prediction_market_bot.c5_execution.demo_fill_policy import is_venue_transient  # noqa: E402  GG-841
 
 JUDGED_N = 550
 WEEKS = 8
@@ -177,7 +178,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         events = [r for r in events if _ts(r) >= since]
     cells: dict[tuple[str, str], dict[str, Any]] = defaultdict(lambda: {
         "orders": 0, "rejected": 0, "skips": Counter(), "control_skips": 0,
-        "cancel_scheduled": 0, "cancel_ok": 0, "cancel_failed": 0, "cancel_already_terminal": 0, "no_outcome": 0,
+        "cancel_scheduled": 0, "cancel_ok": 0, "cancel_failed": 0, "cancel_failed_venue": 0,
+        "cancel_already_terminal": 0, "no_outcome": 0,
         "fill_orders": [], "first_ts": None})
     outcome: dict[str, str] = {}
     sched: dict[str, tuple[datetime, str, str]] = {}
@@ -226,6 +228,8 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         elif ev in ("cancel_ok", "cancel_failed", "cancel_already_terminal"):
             if ev == "cancel_failed" and _historical_404_terminal(r, fills_for):
                 ev = "cancel_already_terminal"  # GG-596: pre-fix rows; the order was already terminal
+            if ev == "cancel_failed" and (r.get("venue_transient") or is_venue_transient(r.get("response"))):
+                ev = "cancel_failed_venue"  # ADR-0072 addendum 2026-10-15: exchange 5xx / network, reported apart
             c[ev] += 1
             if ts >= CANCEL_PATH_FIX_EPOCH:
                 day_cancel[day][ev] += 1
@@ -247,6 +251,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             "orders": c["orders"], "rejected": c["rejected"],
             "skips_by_reason": dict(c["skips"]), "control_arm_skips": c["control_skips"],
             "cancels": {"scheduled": c["cancel_scheduled"], "ok": c["cancel_ok"], "failed": c["cancel_failed"],
+                        "failed_venue_transient": c["cancel_failed_venue"],
                         "already_terminal": c["cancel_already_terminal"],
                         "no_outcome_over_15m": c["no_outcome"]},
             "cancel_success_rate": (c["cancel_ok"] / attempts) if attempts else None,
@@ -269,7 +274,9 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
     last_days = sorted(day_cancel)[-2:]
     worst = max(((d, day_cancel[d]["cancel_failed"] / max(1, day_cancel[d]["cancel_ok"] + day_cancel[d]["cancel_failed"]))
                  for d in last_days), key=lambda x: x[1], default=(None, 0.0))
-    checks["cancel_fail_rate_gt_10pct_in_a_day"] = {"worst_day": worst[0], "rate": worst[1], "epoch": CANCEL_PATH_FIX_EPOCH.isoformat(),
+    checks["cancel_fail_rate_gt_10pct_in_a_day"] = {"worst_day": worst[0], "rate": worst[1],
+                                                  "venue_transient_failures_by_day": {d: day_cancel[d]["cancel_failed_venue"] for d in last_days},
+                                                  "scope": "our-side failures only; exchange 5xx / network errors reported in their own line", "epoch": CANCEL_PATH_FIX_EPOCH.isoformat(),
                                                   "tripped": worst[1] > CANCEL_FAIL_MAX}
     sk_days = [d for d in sorted(day_skip) if d != now.date().isoformat()][-3:]
     rates = [day_skip[d]["skips"] / (day_skip[d]["skips"] + day_skip[d]["orders"]) for d in sk_days

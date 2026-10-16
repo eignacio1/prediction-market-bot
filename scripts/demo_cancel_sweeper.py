@@ -30,24 +30,9 @@ INTERVAL_S = 10.0
 
 
 def overdue_pending(now_ts: float | None = None) -> bool:
-    """Cheap check so an idle minute never builds a client or touches the network."""
-    import json
-    from datetime import datetime, timezone
-    p = pol.log_path()
-    if not p.exists():
-        return False
-    now_ts = now_ts if now_ts is not None else datetime.now(timezone.utc).timestamp()
-    sched, done = {}, set()
-    for line in p.read_text().splitlines():
-        try:
-            r = json.loads(line)
-        except ValueError:
-            continue
-        if r.get("event") == "cancel_scheduled":
-            sched[r["order_id"]] = r.get("due_ts", 0)
-        elif r.get("event") in ("cancel_ok", "cancel_failed", "cancel_already_terminal"):
-            done.add(r.get("order_id"))
-    return any(o not in done for o in sched)
+    """Cheap check so an idle minute never builds a client or touches the network.
+    GG-841: a venue-transient cancel_failed keeps the order pending (see pol.pending_cancels)."""
+    return bool(pol.pending_cancels())
 
 
 def main() -> int:
