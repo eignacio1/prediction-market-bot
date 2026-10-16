@@ -2437,3 +2437,9 @@ Operator, verbatim: "Send me another copy + paste to drop into Muse serving as a
 
 - 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md (v1): roles (Muse builds the archive; Claude reads, tests and watches; Earl reviews strategy); two channels with no human relay (Muse → archive STATUS.md; Claude → TO_MUSE.md in the public bot repo, read by Muse over HTTPS); the application → aggregation feedback loop (REAL-NOT-PRICED / REAL-AND-PRICED / INVISIBLE / NOT REAL verdicts per claim class); the per-wave watchdog checks; what goes to Earl; standing rules.
 - TO_MUSE.md opened with R-001 (start STATUS.md), R-002 (make availability claims joinable: exact player name, team, game/week, publish time; grounded in W76.2/W77.2) and R-003 (watchdog baseline: 30 commits, 1,891 claims, clean).
+
+## 2026-10-15 23:10 PT — W78.3 NBA opening night readiness (BREADTH B1)
+
+- Root cause of "NBA game cells would never flip": flip scripts compared against file-bytes sha, rows carry the artifact sha256 (GG-890). Fixed (#274), deployed, dry run on box: 9/12 cells FLIP-OK, 3 team-total cells NO-ROWS because Kalshi never listed KXNBATEAMTOTAL (GG-891). B1 ceiling for NBA game cells is 9.
+- NBA-T1 premise ("registry NOT_IMPLEMENTED while code dispatches") is by design: evidence-gated flip, not a defect.
+- Silent-arm glob masking fixed (#275, GG-892). Runbook: 02_ARCHITECTURE_DESIGN/NBA_OPENING_NIGHT_RUNBOOK.md. W68.2 staked runner: `make_on_row` is skipped for preseason/dry-run and refuses production hosts (`demo_host_ok`). No stake/kelly/registry-cell/pre-registration change. Operator decisions: none.

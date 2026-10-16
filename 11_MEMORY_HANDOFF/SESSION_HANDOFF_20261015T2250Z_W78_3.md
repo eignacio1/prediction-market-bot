@@ -1,4 +1,4 @@
-# SESSION_HANDOFF W78.3 — NBA opening night (10-20) ready — PARTIAL, cut short by operator for time
+# SESSION_HANDOFF W78.3 — NBA opening night (10-20) ready — READY pending 10-20/21 read-back (PRs #274, #275 merged)
 
 vision_pillar: BREADTH
 gap_measure: B1 (NBA cells logging: 12 registered game cells + points cells) 
@@ -13,7 +13,12 @@ stage per factor: n/a (plumbing for B1; no factor classes touched)
 - NBA-T1 premise corrected: "registry NOT_IMPLEMENTED while code dispatches" is by design (evidence-gated flip via `nba_promotions.jsonl`, applied by `_apply_nba_game_promotions()`); the real defect was the sha. Points cells (EXP-039) are already SHADOW. The judged `PREGAME_SHADOW` dir has no NBA files, so nothing can flip early; autoflip refuses before 2026-10-20 (`NOT_BEFORE`).
 - The "no NBA silent-arm coverage" premise is stale: 4 NBA specs exist in `silent_arms.py` SPECS.
 
-## TODO for the next terminal (in order)
+## Update 23:10 PT — completed after the cut
+#274 and #275 merged; #274 deployed on the box (frozen_model_sha present). Box dry run: 9/12 FLIP-OK, 3 team-total NO-ROWS. Kalshi GETs: KXNBAGAME 56, SPREAD 200, TOTAL 200 open (ticker grammar `KXNBAGAME-26OCT22DENOKC` matches); TEAMTOTAL 0, KXNBAPTS 0 (GG-891). Runner safe: preseason/dry-run never stake; `demo_host_ok` refuses production. Runbook, GG-890..892, DECISION_LOG written. Silent-arm glob fixed.
+Remaining: confirm #275 deployed to the box; on 10-20/21 follow the runbook and close GG-570/890/892; verify KXNBAPTS lists before tip.
+gap_delta: B1 NBA game cells flip-ready 0 -> 9 of 12 (box dry run, 2026-10-15); actual B1 moves only on the 10-21 flip.
+
+## Original TODO list (steps 1-3, 4-7 now done except as updated above)
 1. Merge #274 once CI is green (own PR only). Read the Deploy job summary; record the t4-mlb decision. Read back on the box (`ssh prediction-market-vps`, /opt/prediction-market-bot): `python3 scripts/w59_3_nba_flip_check.py --ledger-dir exp_output/PREGAME_SHADOW_PRESEASON` should now show valid rows (preseason rows carry `excluded_from_judged_n`, so for a true dry run copy the ledgers to a mktemp dir with the preseason flags stripped and pass `--ledger-dir/--out/--today`; remove the dir after). Expect 9 cells flip, 3 team-total cells NO-ROWS.
 2. Read-only Kalshi DEMO GETs: confirm KXNBAGAME / KXNBASPREAD / KXNBATOTAL / KXNBAPTS list opening-night (10-20) markets and tickers match `_NBA_GRAMMAR` (`<YY><MON><DD><AWAY3><HOME3>`). KXNBATEAMTOTAL: confirm still unlisted.
 3. Verify W68.2 NBA staked runner: `scripts/run_nba_pregame_shadow.py` `on_row=None if (a.preseason or a.dry_run) else make_on_row(ad)`; check DEMO-only creds (`deploy/demo_fill.env`), `SHADOW_FLAT_STAKE`, that no order precedes the first valid rows. Not checked this session. Do not change stakes/kelly.

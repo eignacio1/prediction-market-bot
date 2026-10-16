@@ -2239,6 +2239,24 @@ W75.1 Part B (2026-10-14). DL-RUSH rates need a pass-rush-snap denominator and a
 
 W75.1 Part B (2026-10-14). Separation, yards per route run and top speed need NGS/Sportradar tracking. Cross-cutting for WR/TE/CB. Registered as a GAP, not bought (ADR-0073 point 4).
 
+### GG-890 — NBA flip scripts hashed model file bytes, not the artifact sha256: no row could ever be valid
+
+**Status:** OPEN · **Severity:** HIGH
+
+Found W78.3 (2026-10-15). `nba_cell_autoflip.py` and `w59_3_nba_flip_check.py` compared rows' `model_sha256` to sha256 of the file bytes (`b05130b0…`); the runner writes the artifact's internal `sha256` (`c351680a…`). Every row invalid, so no NBA game cell could flip on 10-21. Fixed in PR #274 (`frozen_model_sha()` + regression test); deployed to the box. Dry run on box: 9 of 12 cells FLIP-OK. Pattern sweep: no other instance in scripts/src/tests/12_EXPLORATORY. Close on the 10-21 real flip read-back (see NBA_OPENING_NIGHT_RUNBOOK.md).
+
+### GG-891 — KXNBATEAMTOTAL never listed: the 3 NBA_TEAM_TOTAL cells cannot get rows
+
+**Status:** OPEN · **Severity:** LOW
+
+W78.3 read-only GET 2026-10-15: KXNBAGAME 56, KXNBASPREAD 200, KXNBATOTAL 200 open markets; KXNBATEAMTOTAL 0. B1 ceiling for NBA game cells is 9 of 12 until Kalshi lists it. Also KXNBAPTS returned 0 open markets on 2026-10-15 (the points series may list closer to tip or under another series ticker) — verify on 10-20 before treating the points arm as healthy.
+
+### GG-892 — nba_shadow silent arm masked by player-points rows (NBA_*.jsonl glob)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W78.3: `silent_arms.load_inputs` globbed `NBA_*.jsonl` for the game arm, which also matches `NBA_NBA_PLAYER_POINTS_*`; live points rows would hide a dead game arm. Fixed in PR #275 with a test; pending deploy at write time. Sweep of the other arms' globs (MLB_/NFL_/NHL_) found no sibling families sharing a prefix. Close after deploy read-back.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
