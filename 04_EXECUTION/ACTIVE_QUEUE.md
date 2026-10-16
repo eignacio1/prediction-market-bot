@@ -20,7 +20,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 78 closed and Wave 79 issued, 2026-10-16 ~06:50 PT. Waves are set one at a time by the last one's results.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 79 closed, 2026-10-16 ~07:45 PT (operator at his weekly limit; Wave 80 not yet issued). Waves are set one at a time by the last one's results.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -71,6 +71,12 @@ row that move nothing is drift, and the strategic window says so unprompted.
 thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
 the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
 evidence at best.
+
+**Wave 79 (10-16), in one line:** the NBA engine is real: a play-level store on the box with a no-look-ahead contract, 13 factor
+classes mapped to free sources, and the first two read - pace/efficiency is a team trait that moves game totals (and margin a
+little); rest is schedule, not a trait. The NFL QB arm was never silent (a false alarm, fixed in every sport). Branches 167 → 34
+with nothing lost. Still open: the thin-market ranking and pre-registration (data fetched, not measured), and one false-red on
+the surface budget (t4-mlb "behind" on merges it doesn't import) that blocks Wave 80's new components until the rule is fixed.
 
 **Wave 78 (10-16), in one line:** cut short at the operator's session limits, half of it landed: the runtime map and the gap
 agent's progress are on the dashboards, NBA's opening-night cells are ready to flip (9 of 12 - one family is never listed), and
@@ -250,7 +256,7 @@ so it cannot touch 79.1-79.3 or #277/#278. 79.2 and 79.3 each land their own ope
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 79.1 | Red to green: the NFL QB challenger silent arm, the silent-arm glob sweep, 78.1's three loose ends | BREADTH B1 + PLUMBING: SURFACE BUDGET RED → GREEN (NFL QB challenger silent arm); glob sweep NBA → every sport; #276 read back; standalone dashboard | PARTLY: Part A done (#279), dashboard rebuilt, budget RED on t4-mlb behind HEAD (window decides) | 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1408Z_W79_1.md |
-| 79.2 | Thinner markets, finished: land the fetcher, the NBA sample, the gradient, the first pre-registration | BREADTH/DEPTH: families with price history (NFL 9 sampled, NBA 0 → all listed); gradient table 0 → 1; frozen thin-market prereg 0 → 1 | ⬜ | |
+| 79.2 | Thinner markets, finished: land the fetcher, the NBA sample, the gradient, the first pre-registration | BREADTH/DEPTH: families with price history (NFL 9 sampled, NBA 0 → all listed); gradient table 0 → 1; frozen thin-market prereg 0 → 1 | ✂️ PARTIAL (window, from handoff) | #277 merged; NFL 9 → 11 and NBA 0 → 5 families sampled; raw store on laptop + VPS, sha256-verified. Part B (gradient, F8 share, prereg) NOT done → Wave 80 |
 | 79.3 | NBA engine, finished: land the store, the factor taxonomy, the free-source gaps, the first two factors interpreted | DEPTH: D4 NBA store on main + box; D1 NBA classes mapped 0 → 13; D5(b) NBA two factors aggregated → interpreted | ✅ DONE (#280 merged) | #278 merged 26f963a; store hash-verified on VPS; GG-910..914 registered; pace/efficiency and rest reach interpreted. Detail: NBA_ENGINE/FACTORS_FIRST_READ.md |
 | 79.4 | Branch cleanup: 148 remote branches down to the open-PR and young ones (MICRO) | PLUMBING: remote branches 148 → ~6; auto-delete on merge off → on; 4 stale PRs settled; local sweep | ✅ DONE (operator 06:51 PT) | Window verified on GitHub 10-16 ~06:55 PT: auto-delete on merge **true**; **33 `archive/*` tags**; remote branches **148 → 36** (2 open-PR heads #277/#278, 4 stale-PR heads #133/#144/#146/#149 still open, ~30 landed branches under 3 days old kept by rule R2 - they age out and go in a later sweep; auto-delete stops new ones). **Terminal result (10-16):** remote 167 → 34; 36 archive tags (33 + 3 closed PRs); #133/#144/#146 closed as superseded (archive-tagged), **#149 kept open** for the window (its `assert_service_activation.py`, test and T574 note are not on main); local branches 237 → 117, worktrees 168 → 67 (101 removed, none forced); 6 landed local branches left (`-d` refused, no `-D`). Detail: BRANCH_CLEANUP_PLAN_20261016.md § Result |
 | GA | The governance gap agent (STANDING) | PLUMBING: OPEN gaps 185 → y | relaunch | `/loop /gap` (GA-3) |
@@ -891,13 +897,13 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ WAVE 79 — ISSUED 2026-10-16 ~13:50 UTC · four blocks + the gap agent · finishes 78.2/78.4, clears the red, branch cleanup
+### ✅ WAVE 79 — ISSUED 2026-10-16 ~13:50 UTC · CLOSED ~14:45 UTC (verified on GitHub) · four blocks + the gap agent · finishes 78.2/78.4, clears the red, branch cleanup
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | PARTLY: Part A done (#279), dashboard rebuilt, budget RED on t4-mlb behind HEAD (window decides) | 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1408Z_W79_1.md |
-| 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ✂️ PARTIAL | Part A done: #277 merged, 7 more families sampled (NFL 9, NBA 5 with candles), store on laptop + VPS sha256-verified. Part B (gradient table, F8 pricing share, prereg) NOT done, closed early on usage limit → next wave |
-| 79.3 | NBA engine finished: store landed, taxonomy, gaps, two factors interpreted | ⬜ | |
+| 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | ✅ | #279: QB arm was a false alarm (T1-only rule fixed); exact-cell globs in every sport; dashboard rebuilt. Budget still RED: t4-mlb 8.3 h behind HEAD, a rule defect (counts unrelated merges) → Wave 80 |
+| 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ✂️ PARTIAL | #277 merged; NFL 11 + NBA 5 families sampled; store on laptop + VPS. Gradient and prereg not done → Wave 80 |
+| 79.3 | NBA engine finished: store landed, taxonomy, gaps, two factors interpreted | ✅ | #278 + #280: D4 NBA data layer on main + box; D1 0 → 13; pace/efficiency (a trait; moves totals, margin a little) and rest (schedule, not a trait) interpreted |
 | 79.4 | Branch cleanup (MICRO) | ✅ | auto-delete on; 33 archive tags; remote branches 148 → 36 (open PRs + landed branches < 3 days old kept by rule) |
 
 ### ✂️ WAVE 78 — ISSUED 2026-10-16 ~05:45 UTC · CLOSED ~06:30 UTC (operator ended it early at his session limits) · verified on GitHub
