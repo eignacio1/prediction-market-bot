@@ -6,7 +6,7 @@
 **What it is.** The operator is building, with Muse, a "mass data scraper ... to compile as comprehensive of an archive as
 possible - it will continue to get deeper and more complex with the layers" (2026-10-15). It is the Sports Intelligence Archive:
 `MUSE_ARCHIVE_ARCHITECTURE_20261015.md` beside this file. NFL base is complete (L1 foundational, L2 schematic, team-news,
-cross-team: the "Puka board", the trajectory index, league trends). NBA, NHL and MLB are queued, and L3 is undecided.
+cross-team: the undervalued board, the trajectory index, league trends). NBA, NHL and MLB are queued, and L3 is undecided.
 
 **Why it matters here.** It is the first source for the factor class nothing in the project had: **G5 qualitative** ("None free
 and structured", FACTOR_TAXONOMY.md), the sixth D1 class, which no live model conditions on. It also feeds four ADR-0075
@@ -16,7 +16,7 @@ components directly:
 |---|---|---|
 | L1 team files (org, personnel, scheme, coaching, trajectory, insider-obvious) | G5 qualitative factors; seat interface | per-team claims → factors in the seat files, at the aggregated stage until a price path is tested |
 | L2 schematic (scheme mechanics, coordinator fingerprints, matchup levers) | factor classes F5/F6 (scheme) and matchup | a qualitative prior next to the play-level tendency the engine measures; the test is whether it adds to it |
-| Puka board (128 undervalued flags, with the mechanism) | PAM deep tier (cluster designs) | evidence lines for deep-tier records, never a label by itself (DEEP_TIER.md layer 2) |
+| Undervalued board (`undervalued-watch.md`: 128 flags, each with the mechanism) | PAM deep tier (cluster designs) | evidence lines for deep-tier records, never a label by itself (DEEP_TIER.md layer 2) |
 | Trajectory index | seat interface (cell routing); temporal evolution | a trajectory shift flags which `(market_type, band)` cells to re-examine |
 | League trends | structural priors; structural tensions | league-wide assumptions; a trend the engine cannot represent is a tension |
 | team-news sentiment trajectory | momentum looping / timing | sentiment as a when-signal, tested against price paths |
