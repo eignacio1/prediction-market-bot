@@ -956,3 +956,4 @@
 | 2026-10-16T14:26:20Z | W79.3 | CLOSED — merge confirmed, HEAD (8b70733) is ancestor of origin/main — NBA engine: store landed, taxonomy, GG-910..914, two factors interpreted |
 | 2026-10-16T14:32:39Z | W79.2 | CLOSED — W79.2 PARTIAL: #277 merged, 7 more families sampled (NFL 11, NBA 5), store on laptop+VPS sha256-verified; Part B (gradient, F8 share, prereg) NOT done. (commit `2f43377`) |
 | 2026-10-16T14:32:53Z | W79.2 | CLOSED — merge confirmed, HEAD (3443159) is ancestor of origin/main — PARTIAL: Part A done, Part B deferred |
+| 2026-10-16T14:50:59Z | W80P.1-W80P.4 GG-915..GG-919 | W80P.1-4 cloud session (STANDARD x4): T1 import-aware surface budget + thin-market depth capture; T2 thin-market ranking+prereg; T3 NBA pace/eff applied vs KXNBATOTAL; T4 MLB season look-back. PURPOSE: SURFACE BUDGET RED->GREEN, capture no->yes; gradient table 0->1, thin prereg 0->1; D5(b) NBA applied 0->1; P1/P2 MLB |
