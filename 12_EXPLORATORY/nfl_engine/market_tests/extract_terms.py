@@ -57,7 +57,7 @@ def main(sched_path, stats_path, out):
                              f8_h=np.nan if h8 is None else h8, f8_a=np.nan if a8 is None else a8))
         print("done", T, file=sys.stderr)
     out_df = pd.DataFrame(rows)
-    safe_out(out).write_text(out_df.to_json(orient="records"))
+    safe_out(out).write_text(json.dumps(out_df.astype(object).where(out_df.notna(), None).to_dict("records")))
     print(len(out_df))
 
 

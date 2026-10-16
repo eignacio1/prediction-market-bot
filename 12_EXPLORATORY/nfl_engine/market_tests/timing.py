@@ -61,7 +61,7 @@ def main(terms, sched_p, stats_p, candles, out):
         if pd.isna(f8h) or pd.isna(f8a):
             continue
         ko = ko_dt.timestamp(); cs = r["candles"]
-        noon = lambda days: (ko_dt.replace(hour=12, minute=0) - timedelta(days=days)).timestamp()
+        noon = lambda days: (datetime(ko_dt.year, ko_dt.month, ko_dt.day, 12, tzinfo=ET) - timedelta(days=days)).timestamp()
         pts = dict(fri=mid_at(cs, noon(2)), sat=mid_at(cs, noon(1)), i0=mid_at(cs, ko - 9000), i1=mid_at(cs, ko - 1800))
         rows.append(dict(d8=float(f8h - f8a), **pts))
     d = pd.DataFrame(rows)
