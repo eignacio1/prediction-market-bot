@@ -47,6 +47,9 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
 
+**Demo cash (operator, 10-15 22:41 PT):** demo account topped up to **$19,635** (from $0.17 cash; GG-840). Forward-test data before
+2026-10-16T05:40Z is cash-starved: the next read-back reports before/after separately and re-projects judged n from post-top-up fill rates.
+
 **Process integrity (ADR-0074, operator 2026-10-14):** every running piece is in `RUNTIME_REGISTRY.toml` (CI-enforced); every fix is
 swept for the same defect elsewhere (`pattern_sweep:`); no new running component while a health signal is red; the window logs its
 own mistakes in `WINDOW_ERROR_LOG.md` and every wave carries Pushback / Surface / Dependencies lines (Hard Rules 13-15).

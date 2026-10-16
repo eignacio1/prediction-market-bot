@@ -2404,3 +2404,10 @@ Operator, verbatim: "No I'd like to get muse & you connected - since you'd be th
 - Standing: no wave content is drafted ahead. The queue's arc now holds only fixed dates (NBA 10-20, NFL first look ~11-02, World Series end) and standing direction. Window error W21 (new pattern PRESET).
 - The Muse archive's link: the operator wants the strategic window (the watchdog) connected to Muse directly, not via him. On hold by his call. The intake contract stands.
 - Wave 77 verified: 77.1/77.2(+b)/77.3 done; 77.4 never started → 78.1. Wave 78 set from 77's results: land the dashboards (78.1), thinner markets' price history, efficiency/fillability gradient and first pre-registration (78.2, per the operator's 10-16 call), NBA opening-night readiness (78.3), NBA event-level data layer (78.4). No new running component this wave (78.1 rewrites the registry).
+
+## 2026-10-15 22:41 PT — Demo account topped up (operator); cash-starved epoch ends
+
+Operator, verbatim: "done - demo funds added, now at $19k" (screenshot: demo.kalshi.co, Cash $19,635.10 at 22:40 PT = 2026-10-16T05:40Z).
+
+- Option (a) of the window's 22:3x question: demo funds added through the Kalshi demo site. Fake money; no pre-registered rule changed.
+- The forward test's data from the 10-13 23:58Z re-arm to 10-16 05:40Z is cash-starved (GG-840; 16 of 21 order-hours saw insufficient_balance). The next read-back reports the two periods separately and re-projects judged n per arm from the post-top-up fill rates. GG-840's cash pre-check stays as the guard.
