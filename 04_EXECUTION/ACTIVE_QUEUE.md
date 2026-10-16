@@ -674,7 +674,8 @@ local project folder does not have the new command — `/loop /gap-agent` failed
 
 | Session | Status | OPEN before → after | Last tick | One line |
 |---|---|---|---|---|
-| GA-1 (beside Wave 76) | ⬜ | 187 → | | |
+| GA-1 (beside Wave 76) | ⏸ stopped by operator after tick 3 | 186 → 185 in the log (new gaps from Wave 76 put it back at 187) | 02:00Z | 1 closed (GG-429), 23 resolved entries retired, ~56 triaged, every HIGH bucketed, 20 severities filled; next: GG-156/158 ssh checks |
+| GA-2 (beside Wave 77) | ⬜ relaunch with `/loop /gap` | 187 → | | |
 
 ## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
 
