@@ -2486,7 +2486,7 @@ Operator relayed Muse's report; window verified on the archive at 1fb38c1 (34 co
   can go in a later sweep, and auto-delete stops new ones accumulating.
 
 ## 2026-10-16 07:15 PT — W79.4 branch cleanup executed (PLUMBING)
-- **Done and read back:** `delete_branch_on_merge` true. Remote branches 167 (run-time) -> 35; 36 `archive/*` tags created (33 unmerged-work branches + 3 closed stale PRs), every tag SHA verified with `git ls-remote` before its branch was deleted. Local branches 237 -> 117; worktrees 168 -> 67 (101 clean landed ones removed, none forced).
-- **Run-time diff vs the plan:** rule 2 (under 3 days) kept 12 branches the plan had listed as landed, plus all branches pushed since; `w761` already gone. Group B matched exactly.
+- **Done and read back:** `delete_branch_on_merge` true. Remote branches 167 (run-time) -> 34; 36 `archive/*` tags created (33 unmerged-work branches + 3 closed stale PRs), every tag SHA verified with `git ls-remote` before its branch was deleted. Local branches 237 -> 117; worktrees 168 -> 67 (101 clean landed ones removed, none forced).
+- **Run-time diff vs the plan:** rule 2 (under 3 days) kept 12 branches the plan had listed as landed (97 deleted vs 109 planned), plus all branches pushed since; `w761` already gone. Group B matched exactly.
 - **Stale PRs:** #133, #144, #146 closed as superseded or landed (GG-276/T-549, GG-291/T-564, T-566 byte-identical on main). #149 stays open: its `assert_service_activation.py`, test, T574 results note and CLAUDE.md edit are not on main. One line for the window: land it, port it, or close it.
-- **Refused:** nothing by GitHub. `git branch -d` declined 7 landed local branches with deleted upstreams; left for a later sweep, no `-D`.
+- **Refused:** nothing by GitHub. `git branch -d` declined 6 landed local branches with deleted upstreams; left for a later sweep, no `-D`.
