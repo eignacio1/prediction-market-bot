@@ -934,3 +934,4 @@
 | 2026-10-16T05:24:15Z | W77.2b | CLOSED — W77.2b: Friday-report window null (REPORT slope -0.0008 [-0.0034,+0.0014], n=145) from existing hourly candles; PR #273. (commit `09ec6ef`) |
 | 2026-10-16T05:24:27Z | W77.2b | CLOSED — merge confirmed, HEAD (e15dcfd) is ancestor of origin/main — Friday-report window null; PR #273 merged |
 | 2026-10-16T05:35:36Z | W78.1; GG: none pre-allocated | W78.1 PURPOSE=PLUMBING (ADR-0074): land #266 runtime map on both dashboards + gap-agent panel; measure SURFACE BUDGET visible |
+| 2026-10-16T05:37:00Z | GG-886..GG-889, T-998 | W78.2 STANDARD: thinner-market (NFL/NBA) price-history backfill + efficiency/fillability gradient + first thin-market prereg; PURPOSE BREADTH+DEPTH, measure: families with price history 1->all listed thinner; gradient table 0->1; frozen prereg 0->1 |
