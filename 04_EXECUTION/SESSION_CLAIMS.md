@@ -950,3 +950,4 @@
 | 2026-10-16T13:50:11Z | none (no GG/T expected) | W79.4 branch cleanup (MICRO) PURPOSE: PLUMBING - remote branches 148->~6, delete_branch_on_merge true |
 | 2026-10-16T13:50:14Z | GG-905..GG-909 | W79.2 thin markets finished: fetcher tests+merge #277, NBA/NFL sample, efficiency gradient, first prereg. PURPOSE: BREADTH/DEPTH families with price history; gradient table 0->1; prereg 0->1 |
 | 2026-10-16T14:01:38Z | W79.4 | CLOSED — merge confirmed, HEAD (8d446a1) is ancestor of origin/main — branch cleanup: remote 167->34, auto-delete on, #149 kept open |
+| 2026-10-16T14:15:14Z | W79.1 | CLOSED — W79.1: NFL QB silent-arm false alarm fixed (T1-only rule, PR #279), exact-cell ledger globs in every sport, dashboard rebuilt; SURFACE BUDGET still RED on t4-mlb behind HEAD (commit `7485bb9`) |
