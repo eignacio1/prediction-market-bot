@@ -2383,3 +2383,10 @@ Operator, verbatim: "both handled: 1. versioning — git repo initialized at the
 - INTAKE_CONTRACT.md updated with the three answers. Window caveat added: git history starts 10-15, so claims about earlier games carry curation selection bias (sources chosen knowing outcomes) even with valid source dates; the adapter tags first_committed and keeps pre-10-15 backtests exploratory. The Wave 78 adapter block waits on a pull location the operator names.
 
 | 2026-10-16 | W77.2b | Operator approved W77.2's two recommendations: test the Friday-report window (done, null, no fetch needed since hourly candles span market open) and require a "thinner edge expected" pre-registration before any new NFL game-market factor work, moving toward team totals/props (needs own Kalshi series fetch first). |
+
+## 2026-10-15 22:2x PT — Archive gets its own private repo; the bot repo goes back to private at $0
+
+Operator, verbatim: "Do you have the ability to wire directly into it? So I don't have to be the golden connector between you guys?" / "A separate repo away from ours?" / "well if you remember i only made our repo public bc of linkage issues and the entire github balance bullshit lol ideally id want it to be private"
+
+- Window can't reach the archive: it lives on Muse's machine (no ~/workspace on the operator's Mac), and this session's GitHub access is bound to the bot repo, so it cannot create a repo (POST /user/repos refused). Plan: a private `sports-intel-archive` repo that Muse pushes to and the bot reads, pinned to the archive commit used. Created by a Wave 78 terminal; then attached to the window with add_repo.
+- The bot repo was made public on 2026-10-11 only because the free private-repo Actions minutes ran out. Back to private at $0 means no GitHub-hosted minutes: every workflow and CI job moves to a self-hosted runner on the VPS (free on private repos), capped to one job at low priority because the VPS runs live services and has an OOM history. Switch only after a full day of zero hosted minutes. Wave 78 block.
