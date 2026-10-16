@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "window: after manual deploy dispatch restarted t4-mlb 16:30Z (no MLB game live)"
