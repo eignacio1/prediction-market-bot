@@ -325,6 +325,60 @@ def sec_distance(repo: Path) -> dict:
     return _sec("scripts/distance_to_optimum.py", res["generated"], measures=res["measures"])
 
 
+def sec_runtime(repo: Path) -> dict:
+    """W76.4 / ADR-0074: the live runtime map + SURFACE BUDGET (scripts/runtime_registry.py, cached 300s, refreshed off-thread)
+    and the window-error tally. Same data governance_scan_full.sh prints."""
+    sys.path.insert(0, str(Path(repo) / "scripts"))
+    import runtime_registry as rr
+    ev = rr.live_background()
+    try:
+        import build_visual_dashboard_html as bvd
+        werr = bvd.window_errors()
+    except Exception:
+        werr = {"rows": [], "tally": []}
+    sec = _sec("02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml + live probe (scripts/runtime_registry.py live)",
+               (ev.get("as_of") or _iso()), ev=ev, werr=werr)
+    if ev.get("pending"):
+        sec["awaiting"] = "the first box probe (starts on first load; refresh in about a minute)"
+    elif ev.get("error"):
+        sec["awaiting"] = f"box probe ({ev['error']})"
+    return sec
+
+
+def _runtime_html(sec: dict, head: Any) -> str:
+    werr = sec.get("werr", {})
+    tally = "".join(f"<tr><td>{_e(t['pattern'])}</td><td class='num'>{t['count']}</td><td>{_e(t['last'])}</td></tr>"
+                    for t in werr.get("tally", []))
+    wtab = (f"<h3 style='font-size:13px;margin:12px 0 4px'>Window errors ({len(werr.get('rows', []))} logged)</h3>"
+            f"<table><tr><th>Pattern</th><th>Count</th><th>Last</th></tr>{tally or '<tr><td colspan=3 class=nd>none</td></tr>'}</table>")
+    if sec.get("awaiting"):
+        return f"<section id='runtime'>{head('Process integrity', sec)}<div class='aw'>awaiting {_e(sec['awaiting'])}</div>{wtab}</section>"
+    ev = sec["ev"]
+    c, b = ev.get("counts", {}), ev.get("box", {})
+    cls = {"GREEN": "ok", "RED": "bad"}.get(ev.get("budget"), "warn")
+    reasons = "".join(f"<li class='bad'>{_e(r)}</li>" for r in ev.get("reasons", []))
+    head_line = (f"<p><b class='{cls}'>SURFACE BUDGET {_e(ev.get('budget'))}</b> · <span class='num'>{c.get('live')}</span> live components · "
+                 f"<span class='num'>{c.get('stale')}</span> stale/down/behind · no alarm: <span class='num'>{c.get('no_alarm_unexplained')}</span> "
+                 f"unexplained, <span class='num'>{c.get('no_alarm_reasoned')}</span> with a written reason · unreviewed "
+                 f"<span class='num'>{c.get('unreviewed')}</span><br>registry vs box: "
+                 f"<span class='num'>{len(b.get('unmirrored', []))}</span> installed-but-unmirrored, "
+                 f"<span class='num'>{len(b.get('not_installed', []))}</span> mirrored-but-not-installed · box HEAD "
+                 f"<code>{_e(ev.get('head'))}</code> · probe {_e(ev.get('as_of'))}</p>")
+    why = f"<ul>{reasons}</ul>" if reasons else ""
+    def row(r):
+        bad = r["state"] in ("DOWN", "BEHIND", "STALE", "NO ALARM")
+        age = "n/a" if r.get("age_h") is None else f"{r['age_h']}h"
+        extra = r.get("detail") or (f"run {r.get('run_sha')} · {r.get('behind_h')}h behind HEAD" if r.get("run_sha") else "")
+        return (f"<tr class='{'bad' if bad else ''}'><td>{_e(r['kind'])}</td><td>{_e(r['purpose'][:90])}</td><td>{_e(r['pillar'])}</td>"
+                f"<td class='num'>{_e(age)}</td><td class='num'>{_e(r.get('max_age_h') or '—')}</td>"
+                f"<td class='{'bad' if bad else ''}'>{_e(r['state'])}{' · ' + _e(extra) if extra else ''}</td></tr>")
+    rows = sorted(ev.get("rows", []), key=lambda r: (r["state"] in ("ok", "github", "no alarm (reason given)"), r["kind"], r["purpose"]))
+    table = ("<div class='scroll'><table><tr><th>Kind</th><th>What</th><th>Pillar</th><th>Last write</th><th>Stale after (h)</th><th>State</th></tr>"
+             + "".join(row(r) for r in rows) + "</table></div>")
+    return (f"<section id='runtime'>{head('Process integrity (ADR-0074)', sec)}{head_line}{why}"
+            f"<details><summary>Runtime map, {len(rows)} live components (problems first)</summary>{table}</details>{wtab}</section>")
+
+
 FWD_REPORT = "exp_output/FORWARD_TEST/demo_fill_forward_report.json"
 
 
@@ -362,7 +416,8 @@ def build_state(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     secs = {"calibration": sec_calibration, "git": sec_git, "registry": sec_registry, "governance": sec_governance,
             "decisions": sec_decisions, "experiments": sec_experiments, "queue": sec_queue, "data": sec_data,
-            "silent_arms": sec_silent_arms, "distance": sec_distance, "forward": sec_forward_test}
+            "silent_arms": sec_silent_arms, "distance": sec_distance, "forward": sec_forward_test,
+            "runtime": sec_runtime}
     out: dict[str, Any] = {"generated": _iso(), "repo": repo.name, "sections": {}}
     for k, fn in secs.items():
         try:
@@ -597,6 +652,13 @@ def _strip(S: dict, ops: dict) -> str:
         h = a.get("hours_silent")
         pills.append(f"<a class='pill bad' href='#operations' title='{_e(a['text'])}'>{_e(a['name'])} "
                      f"<span class='v'>silent{'' if h is None else ' ' + format(h, 'g') + 'h'}</span></a>")
+    rt = S.get("runtime", {})
+    if rt.get("ev") and not rt.get("awaiting"):
+        ev = rt["ev"]
+        pills.append(f"<a class='pill {'bad' if ev.get('budget') == 'RED' else 'ok'}' href='#runtime' title='{_e('; '.join(ev.get('reasons', [])))}'>"
+                     f"SURFACE BUDGET <span class='v'>{_e(ev.get('budget'))}</span></a>")
+    else:
+        pills.append("<a class='pill nodata' href='#runtime'>SURFACE BUDGET <span class='v'>no data</span></a>")
     gv, qu, ex = S.get("governance", {}), S.get("queue", {}), S.get("experiments", {})
     cb = S.get("calibration", {})
     neutral = [
@@ -635,6 +697,7 @@ def render_html(state: dict, *, live_nav: str | None = None, link_prefix: str | 
     parts.append(_distance_html(S.get("distance", _awaiting("distance", "scripts/distance_to_optimum.py")), head))
     parts.append(_calibration_html(S.get("calibration", _awaiting("calibration", "engine")), head))
     parts.append(_forward_html(S.get("forward", _awaiting("forward", FWD_REPORT)), head))
+    parts.append(_runtime_html(S.get("runtime", _awaiting("runtime", "scripts/runtime_registry.py")), head))
     # verdict board = experiments
     ex = S.get("experiments", {})
     body = aw(ex) or ("<table><tr><th>EXP</th><th>Question</th><th>Pre-reg</th><th>Verdict</th></tr>" + "".join(

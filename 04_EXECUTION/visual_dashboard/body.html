@@ -430,23 +430,24 @@
       <div class="n">Running pieces that could die silently (GG-743). The first debt to burn down.</div></div>
     <div class="tile" style="--accent:var(--warn)"><div class="k">Not yet reviewed</div><div class="v" id="surfUnrev"></div>
       <div class="n">Auto-classified 10-14; a terminal checks each against the live box (block B74-A).</div></div>
-    <div class="tile" style="--accent:var(--ink-3)"><div class="k">Surface budget</div><div class="v" style="font-size:20px">not live yet</div>
-      <div class="n">GREEN/RED from healthcheck, silent arms and running-code checks once B74-A wires it into the scan.</div></div>
+    <div class="tile" style="--accent:var(--ink-3)"><div class="k">Surface budget</div><div class="v" id="surfBudget" style="font-size:20px">no probe cached</div>
+      <div class="n" id="surfBudgetN">Run <span class="mono">python3 scripts/runtime_registry.py live</span> before building to show the live budget.</div></div>
   </div>
 
   <div class="card" style="margin-top:14px">
     <h3>Runtime map — what actually runs</h3>
-    <div class="cap">Generated from <span class="mono">RUNTIME_REGISTRY.toml</span> at build time. Red alarm text = nothing tells us if it stops.</div>
+    <div class="cap">Generated from <span class="mono">RUNTIME_REGISTRY.toml</span> plus the last cached box probe at build time. Red alarm text = nothing tells us if it stops; a red row is stale, down or behind the code.</div>
     <div class="toolbar">
       <button class="btn sm rtf on" data-f="all">All</button>
       <button class="btn sm rtf" data-f="noalarm">No alarm</button>
+      <button class="btn sm rtf" data-f="stale">Stale / down</button>
       <button class="btn sm rtf" data-f="EXECUTION">Execution</button>
       <button class="btn sm rtf" data-f="BREADTH">Breadth</button>
       <button class="btn sm rtf" data-f="PROOF">Proof</button>
       <button class="btn sm rtf" data-f="PLUMBING">Plumbing</button>
     </div>
     <div class="tscroll" style="max-height:420px;overflow:auto"><table>
-      <thead><tr><th>Kind</th><th>When (UTC)</th><th>What</th><th>Pillar</th><th>Alarm if it stops</th><th>Reviewed</th></tr></thead>
+      <thead><tr><th>Kind</th><th>When (UTC)</th><th>What</th><th>Pillar</th><th>Alarm if it stops</th><th>Reviewed</th><th>Live (box probe)</th></tr></thead>
       <tbody id="rtBody"></tbody>
     </table></div>
   </div>

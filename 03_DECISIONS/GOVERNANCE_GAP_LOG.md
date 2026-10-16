@@ -2069,15 +2069,19 @@ Registered 2026-10-14 (ADR-0074). Twelve window errors seeded in `04_EXECUTION/W
 
 ### GG-742 — Five cron jobs are mirrored only in arm fragments, not in deploy/cron.conf (the file treated as the live mirror)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 Found 2026-10-14 by `scripts/runtime_registry.py` discovery — five (schedule, script, flags) signatures appear in a fragment file but not in `deploy/cron.conf`: `18 11 * * 0 scripts/nba_player_box_backfill.py --seasons 2026`; `* * * * * scripts/demo_cancel_sweeper.py`; `7 */6 * * * scripts/run_mlb_pregame_shadow.py --bands T1 --refresh`; `14 */6 * * * scripts/run_nfl_qb_challenger_shadow.py --bands T1`; `44 9 * * * scripts/run_pregame_shadow_settle.py --ledger-dir exp_output/PREGAME_SHADOW_NFLQB --prefix NFLQB`. Not checked whether cron.conf carries the same jobs with a different schedule or flags. Either cron.conf is incomplete as a mirror (GG-676 class) or the fragments differ in schedule/flags from the live lines. Needs: compare against `crontab -l` on the box; make one file the complete mirror (or document that the mirror is the union). Related: GG-676. Pillar: PLUMBING.
 
+**Resolution (2026-10-15, W76.4 Part C):** every one of the 76 registry entries was reviewed against the box (`crontab -l`, `systemctl`, `.github/workflows`) and matched on script+flags, not schedule. The five fragment-only signatures are all installed on the box and registered with their fragment in `mirrors`; 0 installed-but-unmirrored. Two registry entries were not what the box runs and are now `paused` with a reason: the `--refresh` copy of the MLB T1 shadow job (the box runs the no-`--refresh` job) and `t4-mlb.timer` (enabled on the box, dead since 2026-07-04; `t4-mlb.service` runs persistently). `check --box` now keeps this from recurring.
+
 ### GG-743 — 21 live components have no alarm if they stop (surface debt)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 `python3 scripts/runtime_registry.py surface` on 2026-10-14: 75 live components, 21 whose alarm is "none" (settlement joins, price archive, calibration/band monitors, schedule validator, depth/settlement capture, one-shot NBA flips, paused Post-Game Resolve). Under Hard Rule 14 each needs an alarm or an explicit reason it needs none. The silent-arm pattern (W62.1) and the deploy status file (W72.3) are the templates. Pillar: PLUMBING (PROOF data most exposed: settlement joins).
+
+**Resolution (2026-10-15, W76.4 Part C):** 0 live components with no alarm and no written reason. 12 got a staleness alarm (`max_age_h` on their `writes` path: SURFACE BUDGET goes RED when stale), 9 carry a written reason in `alarm = "none: ..."`. Live columns in `governance_scan_full.sh` (RUNTIME block), `/project`, the Live Terminal and the Visual Dashboard.
 
 ### GG-745 — The kill switch is not one switch: three flag files, C7 never writes one, paper_trader has no halt check (NFR-03)
 
@@ -2119,9 +2123,11 @@ B74-A L4. GG-661 and GG-668 are otherwise fixed and read back as running (t4-mlb
 
 ### GG-753 — runtime_registry check is blind to the box (cron/systemd as installed)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 B74-A L6. `scripts/runtime_registry.py:66-101` discovers components from repo mirrors only. `check` and `surface` pass while the box differs: live `45 22 * * * run_mlb_pregame.py` has no entry (mirror says 18:45; PIPE-08 retimes it daily so a schedule-keyed entry never matches), and the registry's live `run_mlb_pregame_shadow.py --bands T1 --refresh` entry is not installed. Also the script crashes under the default python3.9 (no `tomllib`). Pillar: PLUMBING (affects MLB pregame measurement). Proposed fix: `check --box` reading `ssh crontab -l` + `systemctl list-unit-files`, key cron entries on script+args. Related: GG-676, GG-742.
+
+**Resolution (2026-10-15, W76.4 Part C):** `scripts/runtime_registry.py check --box` reads the box crontab and `systemctl` over one ssh round trip and keys cron entries on script+flags (PIPE-08 retimes). The script now runs on python3.9 (tomllib -> tomli -> built-in mini parser, tested equal to tomllib).
 
 ### GG-754 — demo_fill_forward_report: no_outcome check not epoch-gated; two plain write_text writers
 

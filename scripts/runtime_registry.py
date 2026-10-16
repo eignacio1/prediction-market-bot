@@ -20,15 +20,31 @@ Commands:
   render  write 02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md (human view) from the registry.
   surface print the surface count (live components) and debt, for the sitrep's Surface row.
 
-Live columns (code SHA running, last write, alarm state) need the VPS; the governance scan adds them (ADR-0074 block).
+  check --box   also compare against the installed crontab and units on the VPS (GG-753): installed-but-unmirrored and
+          mirrored-but-not-installed are failures. Matching is on script + flags, never the schedule (PIPE-08 retimes jobs).
+  live    one cached ssh round trip -> last-write age per component, running-code SHA per service, healthcheck, silent arms;
+          prints the RUNTIME block and SURFACE BUDGET GREEN/RED (W76.4). Writes exp_output/RUNTIME_LIVE/runtime_live.json
+          for the Visual Dashboard builder. On the box itself (dashboard) the same probe runs locally, no ssh.
 """
 from __future__ import annotations
 
+import datetime as _dt
 import hashlib
+import inspect
+import json
 import pathlib
 import re
+import subprocess
 import sys
-import tomllib
+import time
+
+try:  # python3.11+ (the VPS runs 3.12); local dev machines may be 3.9 (GG-753)
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - exercised on python<3.11
+    try:
+        import tomli as tomllib  # type: ignore
+    except ModuleNotFoundError:
+        tomllib = None  # type: ignore
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "02_ARCHITECTURE_DESIGN" / "RUNTIME_REGISTRY.toml"
@@ -102,10 +118,32 @@ def discover() -> dict[str, dict]:
     return found
 
 
+def _mini_toml(text: str) -> dict:
+    """Minimal reader for this registry's flat shape ([[component]] + `k = <json-compatible value>`), used only where
+    neither tomllib nor tomli exists. Tested for equality with tomllib (tests/test_runtime_registry.py)."""
+    comps: list[dict] = []
+    for n, raw in enumerate(text.splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line == "[[component]]":
+            comps.append({})
+            continue
+        m = re.match(r"^([A-Za-z_][\w\-]*)\s*=\s*(.+)$", line)
+        if not m or not comps:
+            raise ValueError(f"RUNTIME_REGISTRY.toml:{n}: unsupported line for the fallback reader: {raw!r}")
+        comps[-1][m.group(1)] = json.loads(m.group(2))
+    return {"component": comps}
+
+
+def _loads(text: str) -> dict:
+    return tomllib.loads(text) if tomllib is not None else _mini_toml(text)
+
+
 def load() -> list[dict]:
     if not REGISTRY.exists():
         return []
-    return tomllib.loads(REGISTRY.read_text()).get("component", [])
+    return _loads(REGISTRY.read_text()).get("component", [])
 
 
 def _toml_str(v) -> str:
@@ -199,6 +237,319 @@ def surface() -> int:
     return 0
 
 
+
+# --------------------------------------------------------------------------------------------------------------------
+# W76.4 (ADR-0074, GG-742/743/753): the registry measured against the box, and the live columns.
+# --------------------------------------------------------------------------------------------------------------------
+VPS_HOST = "prediction-market-vps"
+BOX_ROOT = "/opt/prediction-market-bot"
+BEHIND_RED_H = 6.0           # a service running code more than this far behind box HEAD is a budget reason
+LIVE_CACHE_S = 300           # one ssh round trip per 5 minutes, however many consumers ask
+# Vendor / platform units present on the droplet that are not the bot's (so "installed but unmirrored" stays meaningful).
+VENDOR_UNITS = ("droplet-agent", "iscsi", "syslog", "vmtoolsd", "vpc-peering", "dbus-org.")
+
+
+def _sig(key: str) -> str:
+    """Schedule-free signature of a cron key: script + sorted flags (PIPE-08 retimes jobs, so the schedule is not identity)."""
+    return re.sub(r"\|dup\d+$", "", key.split("|", 2)[2]) if key.count("|") >= 2 else key
+
+
+def crontab_sigs(text: str) -> set:
+    out = set()
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or re.match(r"^[A-Z_]+=", line) or len(line.split()) < 6:
+            continue
+        out.add(_sig(_cron_key(line)[0]))
+    return out
+
+
+def probe_local(payload: dict) -> dict:
+    """Runs ON the box (shipped over ssh as source, or called in-process by the box's own dashboard). Self-contained,
+    stdlib only, read-only. payload = {"root": str, "units": [str], "writes": [str]}."""
+    import glob
+    import json
+    import os
+    import subprocess
+    import time
+    from datetime import datetime, timezone
+
+    root = payload.get("root", "/opt/prediction-market-bot")
+
+    def run(cmd, timeout=20):
+        try:
+            r = subprocess.run(cmd, cwd=root, capture_output=True, text=True, timeout=timeout)
+            return r.stdout
+        except Exception:
+            return ""
+
+    now = time.time()
+    out = {"ts": datetime.fromtimestamp(now, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "epoch": now, "root": root}
+    out["head"] = run(["git", "rev-parse", "HEAD"]).strip()
+    out["head_ts"] = int(run(["git", "log", "-1", "--format=%ct"]).strip() or 0)
+    out["crontab"] = run(["crontab", "-l"])
+    uf = run(["find", "/etc/systemd/system", "-maxdepth", "1", "-type", "f", "(", "-name", "*.service", "-o", "-name", "*.timer", ")"])
+    out["unit_files"] = sorted(os.path.basename(x) for x in uf.split())
+    services = {}
+    for u in payload.get("units", []):
+        sh = run(["systemctl", "show", u, "-p", "LoadState,ActiveState,SubState,ActiveEnterTimestamp,NRestarts,Type"])
+        d = dict(l.split("=", 1) for l in sh.splitlines() if "=" in l)
+        since = d.get("ActiveEnterTimestamp", "")
+        run_sha, behind_h, unapplied = "", None, 0
+        if u.endswith(".service") and since and d.get("ActiveState") == "active":
+            try:
+                t = datetime.strptime(since, "%a %Y-%m-%d %H:%M:%S %Z").replace(tzinfo=timezone.utc)
+                run_sha = run(["git", "rev-list", "-1", f"--before={int(t.timestamp())}", "HEAD"]).strip()
+                if run_sha:
+                    # only src/ and scripts/ change what a running service loaded; docs-only pushes never restart it
+                    cts = [int(x) for x in run(["git", "log", "--format=%ct", f"{run_sha}..HEAD", "--", "src", "scripts"]).split()]
+                    unapplied = len(cts)
+                    behind_h = round((now - min(cts)) / 3600, 2) if cts else 0.0
+            except Exception:
+                pass
+        services[u] = {"load": d.get("LoadState"), "active": d.get("ActiveState"), "sub": d.get("SubState"), "since": since,
+                       "restarts": d.get("NRestarts"), "run_sha": run_sha, "behind_h": behind_h, "unapplied_commits": unapplied}
+    out["services"] = services
+    mt = {}
+    for w in payload.get("writes", []):
+        if not w or " " in w or "/" not in w:
+            continue
+        paths = glob.glob(w if os.path.isabs(w) else os.path.join(root, w)) or []
+        times = [os.path.getmtime(x) for x in paths if os.path.exists(x)]
+        mt[w] = max(times) if times else None
+    out["writes"] = mt
+    hl = run(["tail", "-n", "40", os.path.join(root, "logs", "health.log")])
+    m = [l for l in hl.splitlines() if l.startswith("===")]
+    out["health"] = {"line": m[-1] if m else "", "mtime": mt.get("logs/health.log") or None}
+    try:
+        out["deploy"] = json.load(open("/var/lib/pmbot-deploy/deploy_status.json"))
+    except Exception:
+        out["deploy"] = {}
+    env = dict(os.environ, PYTHONPATH=os.path.join(root, "src"))
+    try:
+        r = subprocess.run([os.path.join(root, "venv", "bin", "python"), "-m", "prediction_market_bot.pregame_shadow.silent_arms", "--json"],
+                           cwd=root, capture_output=True, text=True, timeout=45, env=env)
+        out["silent"] = json.loads(r.stdout)
+    except Exception as e:
+        out["silent"] = {"error": f"{type(e).__name__}"}
+    return out
+
+
+def _payload(reg: list) -> dict:
+    live = [c for c in reg if c.get("status") == "live"]
+    units = sorted({c["key"].split("|", 1)[1] for c in live if c.get("kind") == "systemd"})
+    writes = sorted({w for c in live for w in (c.get("writes") or [])} | {"logs/health.log"})
+    return {"root": BOX_ROOT, "units": units, "writes": writes}
+
+
+def _on_box() -> bool:
+    return str(ROOT).startswith(BOX_ROOT) and pathlib.Path(BOX_ROOT, "venv").exists()
+
+
+def fetch_probe(reg: list | None = None) -> dict:
+    """One probe of the box: in-process when this code is running on the box, otherwise one ssh round trip."""
+    reg = load() if reg is None else reg
+    payload = _payload(reg)
+    if _on_box():
+        return probe_local(payload)
+    src = "import json\n" + inspect.getsource(probe_local) + f"\nprint(json.dumps(probe_local({payload!r})))\n"
+    r = subprocess.run(["ssh", "-o", "ConnectTimeout=5", "-o", "BatchMode=yes", VPS_HOST, "python3", "-"],
+                       input=src, capture_output=True, text=True, timeout=90)
+    if r.returncode != 0:
+        raise RuntimeError(f"ssh probe failed rc={r.returncode}: {r.stderr.strip()[:200]}")
+    return json.loads(r.stdout)
+
+
+def check_box(probe: dict, reg: list | None = None) -> dict:
+    """Registry vs the installed crontab and units (GG-753). Keys: unmirrored (installed, no entry), not_installed
+    (live entry, nothing installed)."""
+    reg = load() if reg is None else reg
+    box = crontab_sigs(probe.get("crontab", ""))
+    rsig = {c["key"]: _sig(c["key"]) for c in reg if c.get("kind") == "cron"}
+    allsig = set(rsig.values())
+    unmirrored = sorted(box - allsig)
+    not_installed = sorted(k for k, sg in rsig.items() if sg not in box and next(c for c in reg if c["key"] == k).get("status") == "live")
+    unit_files = set(probe.get("unit_files", []))
+    reg_units = {c["key"].split("|", 1)[1]: c for c in reg if c.get("kind") == "systemd"}
+    units_unmirrored = sorted(u for u in unit_files if u not in reg_units and not u.startswith(VENDOR_UNITS))
+    units_not_installed = sorted(u for u, c in reg_units.items() if c.get("status") == "live" and u not in unit_files)
+    return {"unmirrored": unmirrored, "not_installed": not_installed,
+            "units_unmirrored": units_unmirrored, "units_not_installed": units_not_installed}
+
+
+def _no_alarm(c: dict) -> bool:
+    return str(c.get("alarm", "")).startswith(("UNSET", "none")) and not c.get("max_age_h")
+
+
+def _unexplained(c: dict) -> bool:
+    """A no-alarm component must say why (GG-743): `alarm = "none: <reason>"` with a real sentence, not an auto-stub."""
+    a = str(c.get("alarm", ""))
+    if a.startswith("UNSET"):
+        return True
+    if not a.startswith("none"):
+        return False
+    why = a.split(":", 1)[1].strip() if ":" in a else ""
+    return len(why) < 15 or "(auto" in a
+
+
+def evaluate(reg: list, probe: dict, now: float | None = None, registry_ok: bool = True) -> dict:
+    """Rows (one per live component) + SURFACE BUDGET from a probe. Pure: no I/O."""
+    now = probe.get("epoch", time.time()) if now is None else now
+    rows, reasons = [], []
+    for c in reg:
+        if c.get("status") != "live":
+            continue
+        name = c["key"].split("|", 1)[1] if c["kind"] == "systemd" else None
+        ages = [now - probe["writes"][w] for w in (c.get("writes") or []) if probe.get("writes", {}).get(w)]
+        age_h = round(min(ages) / 3600, 2) if ages else None
+        svc = probe.get("services", {}).get(name) if name else None
+        row = {"key": c["key"], "kind": c["kind"], "purpose": c["purpose"], "pillar": c["pillar"], "alarm": c["alarm"],
+               "schedule": c.get("schedule", ""), "reviewed": bool(c.get("reviewed")), "age_h": age_h,
+               "max_age_h": c.get("max_age_h"), "no_alarm": _no_alarm(c), "unexplained": _no_alarm(c) and _unexplained(c),
+               "state": "ok", "detail": ""}
+        if c["kind"] == "workflow":
+            row["state"] = "github"
+        if svc is not None:
+            row.update(active=f"{svc.get('active')}/{svc.get('sub')}", since=svc.get("since"), run_sha=(svc.get("run_sha") or "")[:8],
+                       behind_h=svc.get("behind_h"), restarts=svc.get("restarts"))
+            if svc.get("active") != "active":
+                row["state"], row["detail"] = "DOWN", f"{svc.get('active')}/{svc.get('sub')}"
+            elif (svc.get("behind_h") or 0) > BEHIND_RED_H:
+                row["state"], row["detail"] = "BEHIND", f"running {svc['run_sha'][:8]}, {svc['behind_h']}h behind box HEAD"
+        if row["state"] == "ok" and c.get("max_age_h"):
+            if age_h is None:
+                row["state"], row["detail"] = "STALE", "no write found"
+            elif age_h > float(c["max_age_h"]):
+                row["state"], row["detail"] = "STALE", f"last write {age_h}h ago (limit {c['max_age_h']}h)"
+        if row["state"] == "ok" and row["no_alarm"]:
+            row["state"] = "NO ALARM" if row["unexplained"] else "no alarm (reason given)"
+        if row["state"] in ("DOWN", "BEHIND", "STALE"):
+            reasons.append(f"{row['state']} {c['key']}: {row['detail']}")
+        rows.append(row)
+    h = probe.get("health", {}).get("line", "")
+    m = re.search(r"(\d+) faults?", h)
+    faults = int(m.group(1)) if m else None
+    if faults:
+        reasons.append(f"healthcheck: {h.strip('= ')}")
+    silent = probe.get("silent") or {}
+    for a in silent.get("arms", []):
+        if a.get("status") == "silent":
+            reasons.append(f"SILENT ARM {a.get('name')}: {a.get('text')}")
+    if not registry_ok:
+        reasons.append("registry check failing")
+    return {"rows": rows, "reasons": reasons, "budget": "RED" if reasons else "GREEN",
+            "counts": {"live": len(rows), "stale": sum(r["state"] in ("STALE", "DOWN", "BEHIND") for r in rows),
+                       "no_alarm_unexplained": sum(r["unexplained"] for r in rows),
+                       "no_alarm_reasoned": sum(r["no_alarm"] and not r["unexplained"] for r in rows),
+                       "unreviewed": sum(not r["reviewed"] for r in rows)},
+            "head": probe.get("head", "")[:8], "as_of": probe.get("ts"), "health": h.strip("= "),
+            "deploy": probe.get("deploy", {}), "silent_text": [a.get("text") for a in silent.get("arms", [])]}
+
+
+def live_cache_path() -> pathlib.Path:
+    base = pathlib.Path(__import__("os").environ.get("XDG_CACHE_HOME") or pathlib.Path.home() / ".cache")
+    return base / "pmbot" / "runtime_live.json"
+
+
+def live(refresh: bool = False, use_cache: bool = True) -> dict:
+    """Evaluation dict (see evaluate) from a cached-or-fresh probe; on failure {"error": ...}, never an exception."""
+    cache = live_cache_path()
+    try:
+        if use_cache and not refresh and cache.exists() and time.time() - cache.stat().st_mtime < LIVE_CACHE_S:
+            return json.loads(cache.read_text())
+    except Exception:
+        pass
+    try:
+        reg = load()
+        probe = fetch_probe(reg)
+        ev = evaluate(reg, probe, registry_ok=check(verbose=False) == 0)
+        ev["box"] = check_box(probe, reg)
+        try:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(json.dumps(ev))
+        except Exception:
+            pass
+        return ev
+    except Exception as e:
+        return {"error": f"{type(e).__name__}: {e}"}
+
+
+_BG = {"thread": None}
+
+
+def live_background() -> dict:
+    """For web requests: never blocks. Returns the cached evaluation (even a stale one) and, if it is older than
+    LIVE_CACHE_S, refreshes it on a daemon thread. {"pending": True} until the first probe lands."""
+    import threading
+    cache = live_cache_path()
+    ev, age = None, None
+    try:
+        if cache.exists():
+            ev, age = json.loads(cache.read_text()), time.time() - cache.stat().st_mtime
+    except Exception:
+        ev = None
+    if ev is None or age is None or age >= LIVE_CACHE_S:
+        t = _BG["thread"]
+        if t is None or not t.is_alive():
+            _BG["thread"] = threading.Thread(target=lambda: live(refresh=True), daemon=True)
+            _BG["thread"].start()
+    if ev is None:
+        return {"pending": True}
+    ev["cache_age_s"] = int(age or 0)
+    return ev
+
+
+def print_runtime_block(ev: dict) -> None:
+    if "error" in ev:
+        print(f"  UNKNOWN - box probe failed ({ev['error']}); SURFACE BUDGET cannot be computed from here")
+        return
+    c, b = ev["counts"], ev.get("box", {})
+    print(f"  as of {ev['as_of']} · box HEAD {ev['head']} · {c['live']} live components · {c['unreviewed']} unreviewed · "
+          f"{c['stale']} stale/down/behind · no alarm: {c['no_alarm_unexplained']} unexplained, {c['no_alarm_reasoned']} with a written reason")
+    print(f"  registry vs box: {len(b.get('unmirrored', []))} installed-but-unmirrored · {len(b.get('not_installed', []))} mirrored-but-not-installed"
+          f" · units {len(b.get('units_unmirrored', []))}/{len(b.get('units_not_installed', []))}")
+    for k in b.get("unmirrored", []) + b.get("units_unmirrored", []):
+        print(f"    UNMIRRORED (installed on box, no entry): {k}")
+    for k in b.get("not_installed", []) + b.get("units_not_installed", []):
+        print(f"    NOT INSTALLED (live entry, nothing on box): {k}")
+    print(f"  healthcheck: {ev.get('health') or 'no summary line'} · deploy: {ev.get('deploy', {}).get('outcome', '?')} @ {ev.get('deploy', {}).get('ts', '?')}")
+    for r in ev["rows"]:
+        if r["kind"] == "systemd":
+            print(f"  {r['key']:<38} {r.get('active', '?'):<16} run {r.get('run_sha') or '?'} · {r.get('behind_h')}h behind HEAD · restarts {r.get('restarts')}"
+                  f"{'  <<< ' + r['state'] if r['state'] in ('DOWN', 'BEHIND', 'STALE') else ''}")
+    for r in sorted(rows_bad := [r for r in ev["rows"] if r["state"] in ("STALE", "DOWN", "BEHIND", "NO ALARM") and r["kind"] != "systemd"],
+                    key=lambda r: r["key"]):
+        print(f"  {r['state']:<9} {r['key'][:90]}  {r['detail']}")
+    print(f"  SURFACE BUDGET {ev['budget']}" + ("" if ev["budget"] == "GREEN" else ": " + "; ".join(ev["reasons"][:6])))
+
+
+def cli_check_box() -> int:
+    rc = check()
+    try:
+        probe = fetch_probe()
+    except Exception as e:
+        print(f"  box unreachable ({e}); cannot compare against the box")
+        return 1
+    b = check_box(probe)
+    for label, items in (("INSTALLED ON BOX, NOT IN REGISTRY (register a GG)", b["unmirrored"] + b["units_unmirrored"]),
+                         ("LIVE IN REGISTRY, NOT INSTALLED ON BOX (mark paused/retired with a reason)", b["not_installed"] + b["units_not_installed"])):
+        print(f"  {label}: {len(items)}")
+        for k in items:
+            print(f"    - {k}")
+    return 1 if (rc or any(b.values())) else 0
+
+
+def cli_live() -> int:
+    ev = live(refresh="--refresh" in sys.argv)
+    if "--json" in sys.argv:
+        print(json.dumps(ev))
+    else:
+        print_runtime_block(ev)
+    return 0
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
-    sys.exit({"check": check, "add": add, "render": render, "surface": surface}[cmd]())
+    if cmd == "check" and "--box" in sys.argv:
+        sys.exit(cli_check_box())
+    sys.exit({"check": check, "add": add, "render": render, "surface": surface, "live": cli_live}[cmd]())
