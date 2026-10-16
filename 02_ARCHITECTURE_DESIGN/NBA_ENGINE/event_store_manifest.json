@@ -1,0 +1,2492 @@
+{
+ "build_as_of": "2026-10-16T06:01:34Z",
+ "builder": "prediction_market_bot.c1_signal_ingestion.nba_event_store",
+ "current_season": 2027,
+ "failures": [],
+ "files": [
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 697656,
+   "season": 2016,
+   "source": "pbp",
+   "source_bytes": 18419473,
+   "source_etag": "\"0x8DEF8E98119957A\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:18:11 GMT",
+   "source_sha256": "ff44a3393174a77f08cde0c22e83e5bc0e66ee98f3a47def461580aacb014b6b",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 688123,
+   "season": 2017,
+   "source": "pbp",
+   "source_bytes": 18334973,
+   "source_etag": "\"0x8DEF8E9B2135F5B\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:19:33 GMT",
+   "source_sha256": "46717a884b2cd9254e76b44b19833e1d0fb23c688947212e1585e208f0a79781",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 671661,
+   "season": 2018,
+   "source": "pbp",
+   "source_bytes": 18339412,
+   "source_etag": "\"0x8DEF8E9E5BDAE78\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:20:59 GMT",
+   "source_sha256": "f25a44f9992238488ce2a1b4f78c6511f6c6b5e939a46363c79489cb432715b1",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 697595,
+   "season": 2019,
+   "source": "pbp",
+   "source_bytes": 19162581,
+   "source_etag": "\"0x8DEF8EA14B21CBE\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:22:18 GMT",
+   "source_sha256": "ba7ca0973c96fc4a50b51534e6c85b6508d063995cff957a28e4a13295359f72",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 573047,
+   "season": 2020,
+   "source": "pbp",
+   "source_bytes": 15491346,
+   "source_etag": "\"0x8DEF8EA42A512F3\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:23:35 GMT",
+   "source_sha256": "f1a015751e0a03b27bf415c90cc9f931429a4c9866e438be89d12299cf65b35e",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 596148,
+   "season": 2021,
+   "source": "pbp",
+   "source_bytes": 16825062,
+   "source_etag": "\"0x8DEF8EA713075BE\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:24:53 GMT",
+   "source_sha256": "429eea1d4589eef07c9fb26436c628a0d335239580b087240215070f70fbc6e3",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 679676,
+   "season": 2022,
+   "source": "pbp",
+   "source_bytes": 18827968,
+   "source_etag": "\"0x8DEF8EAA277F51C\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:26:16 GMT",
+   "source_sha256": "0f4f96f534b82261384660fbe74ec6bbf18a953dac396db9456d0fecdd238c76",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 684226,
+   "season": 2023,
+   "source": "pbp",
+   "source_bytes": 19022823,
+   "source_etag": "\"0x8DEF8EAD3B44CC2\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:27:39 GMT",
+   "source_sha256": "4d7fb91e444f8b9630f2c3e94e7f32b09734efdc258a3b7e24437e02a38f0714",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 678771,
+   "season": 2024,
+   "source": "pbp",
+   "source_bytes": 19132464,
+   "source_etag": "\"0x8DEF8EB0588D496\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:29:02 GMT",
+   "source_sha256": "615b74d5dd35fd1e5b55f8f2fc726fa2e2cabdeed57baedc66f0f13a878505df",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 689823,
+   "season": 2025,
+   "source": "pbp",
+   "source_bytes": 19672208,
+   "source_etag": "\"0x8DEF8EB3C9DFAD9\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:30:35 GMT",
+   "source_sha256": "7b7e5650dd1249bbc1a7720afccf1df1f12d7b99b99bed9d798cc060325a89c1",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 49,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "order_index": 0
+   },
+   "rows": 707440,
+   "season": 2026,
+   "source": "pbp",
+   "source_bytes": 19999800,
+   "source_etag": "\"0x8DEF8EB79A04123\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:32:17 GMT",
+   "source_sha256": "78524677282ad105b2651d511abcc0a827c1cecdbe826acc487872d1f03836ac",
+   "status": "ok",
+   "store_file": "raw/pbp/pbp_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_pbp/nba_play_by_play_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 275853,
+   "season": 2016,
+   "source": "possessions",
+   "source_bytes": 3710965,
+   "source_etag": "\"0x8DEF8E9973E6EDA\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:18:48 GMT",
+   "source_sha256": "c10cdd5ef1720c0ae423ab51fdcf95e057d3790121662f28208498064e73ba90",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 274436,
+   "season": 2017,
+   "source": "possessions",
+   "source_bytes": 3696321,
+   "source_etag": "\"0x8DEF8E9CA3CF34A\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:20:13 GMT",
+   "source_sha256": "2a887aa50fba830b6da02b19f8a9e681f4686577a0e1e950c95ef99c1cab7d04",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 271221,
+   "season": 2018,
+   "source": "possessions",
+   "source_bytes": 3529908,
+   "source_etag": "\"0x8DEF8E9F978D4D1\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:21:32 GMT",
+   "source_sha256": "14a0d793d09e7051817409d0bc841de2e6becaf59da6dff56a7165b9d970b44c",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 279757,
+   "season": 2019,
+   "source": "possessions",
+   "source_bytes": 3674616,
+   "source_etag": "\"0x8DEF8EA2B58307B\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:22:56 GMT",
+   "source_sha256": "cad64e46341ea3a1e043357167450f70bfcb5f82b818fc3f1a52ee65f48a3d51",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 229998,
+   "season": 2020,
+   "source": "possessions",
+   "source_bytes": 3030266,
+   "source_etag": "\"0x8DEF8EA548C8957\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:24:05 GMT",
+   "source_sha256": "dd57632c37a056b7d5ad3e49daa8069e2423ad78702b85b2a676b3795d07aded",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 242394,
+   "season": 2021,
+   "source": "possessions",
+   "source_bytes": 3155109,
+   "source_etag": "\"0x8DEF8EA86605274\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:25:29 GMT",
+   "source_sha256": "b0d32979d05daff6e897a6425e43edb7c9e7b763093e62426d020bfbecdb51c3",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 273398,
+   "season": 2022,
+   "source": "possessions",
+   "source_bytes": 3575292,
+   "source_etag": "\"0x8DEF8EABA6AF771\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:26:56 GMT",
+   "source_sha256": "44b7654d833d8a7b31051ff8f896e384fa22d0a640bbdad3a8edb5df2ed48a11",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 276695,
+   "season": 2023,
+   "source": "possessions",
+   "source_bytes": 3611503,
+   "source_etag": "\"0x8DEF8EAEA674125\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:28:17 GMT",
+   "source_sha256": "d1c4d5f6c8b14ff3000102018638fdcc0a6e35ce348a94f00a9ecc281e892484",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 274735,
+   "season": 2024,
+   "source": "possessions",
+   "source_bytes": 3601332,
+   "source_etag": "\"0x8DEF8EB1F4BF14A\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:29:45 GMT",
+   "source_sha256": "ce82fda6a49d0c39959261bbbcb0f00773cd977c5f36ff46e9052e087cd460ea",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 276525,
+   "season": 2025,
+   "source": "possessions",
+   "source_bytes": 3681851,
+   "source_etag": "\"0x8DEF8EB5A289D32\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:31:24 GMT",
+   "source_sha256": "d976ecd983c8feb3df99e4dfc3db0cab0f8ac8a53bd816ff097af7e304eb387a",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 35,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "start_order_index": 0
+   },
+   "rows": 278341,
+   "season": 2026,
+   "source": "possessions",
+   "source_bytes": 3804011,
+   "source_etag": "\"0x8DEF8EB95C1C53A\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:33:04 GMT",
+   "source_sha256": "e79dd79bc892290f2f91cd146e83a4224cabba178fa44048aace8a06a47a3552",
+   "status": "ok",
+   "store_file": "raw/possessions/possessions_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_possessions/nba_possessions_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 697656,
+   "season": 2016,
+   "source": "lineups",
+   "source_bytes": 829994,
+   "source_etag": "\"0x8DEF8E9A091FE4F\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:19:03 GMT",
+   "source_sha256": "50cc604c21958bcfba6c75c3e72e79ae7e53991dbb4907c03bfa62e348965aaa",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 688123,
+   "season": 2017,
+   "source": "lineups",
+   "source_bytes": 838003,
+   "source_etag": "\"0x8DEF8E9D4C548C3\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:20:31 GMT",
+   "source_sha256": "e85dfc6f26a3039a7a8fd2e5ecba6a0be643ba7c092000ef6e19329fc2ec0928",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 671661,
+   "season": 2018,
+   "source": "lineups",
+   "source_bytes": 930644,
+   "source_etag": "\"0x8DEF8EA02C7F3B4\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:21:48 GMT",
+   "source_sha256": "4b56dcb8b1cddeb216396092d0a1cde174204612856cbb227ee079a4c122aa40",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 697595,
+   "season": 2019,
+   "source": "lineups",
+   "source_bytes": 965720,
+   "source_etag": "\"0x8DEF8EA344AC667\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:23:11 GMT",
+   "source_sha256": "49dae765ce69cbd81a1d53e6c4f0d102f7a9e49692548d12160d07e064ea4553",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 573047,
+   "season": 2020,
+   "source": "lineups",
+   "source_bytes": 799134,
+   "source_etag": "\"0x8DEF8EA5D5427E2\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:24:20 GMT",
+   "source_sha256": "8658e23dbc4bf1c641a2681fad88f2508159cf8a9057a80fcfc99858d43325fa",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 596148,
+   "season": 2021,
+   "source": "lineups",
+   "source_bytes": 844028,
+   "source_etag": "\"0x8DEF8EA8FFB9145\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:25:45 GMT",
+   "source_sha256": "d8f8300fe33f3d975404d210e2c6bcc0ff6c9996c9f143542cf920c0e94c45ca",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 679676,
+   "season": 2022,
+   "source": "lineups",
+   "source_bytes": 961898,
+   "source_etag": "\"0x8DEF8EAC42CBC61\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:27:13 GMT",
+   "source_sha256": "5c6f699f28468d76b8da3a70d34e6a82783c6b068aeb4a48d36d0b44d503da52",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 684226,
+   "season": 2023,
+   "source": "lineups",
+   "source_bytes": 969204,
+   "source_etag": "\"0x8DEF8EAF3C931DF\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:28:32 GMT",
+   "source_sha256": "3709347d4980e8e9a6a22b06e0c0add4e831649aaaa4ac6fbdf769940ddb5c1a",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 678771,
+   "season": 2024,
+   "source": "lineups",
+   "source_bytes": 970686,
+   "source_etag": "\"0x8DEF8EB294EC4CF\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:30:02 GMT",
+   "source_sha256": "07b7961f3f690e44bb652ce5da0742c9c2cfe100e5ff8ca87857addbae213c21",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 689823,
+   "season": 2025,
+   "source": "lineups",
+   "source_bytes": 1004465,
+   "source_etag": "\"0x8DEF8EB657044B4\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:31:43 GMT",
+   "source_sha256": "dd8e40a52d4a5662ce6028be766ad33032311c48856af0dc52671fc600955c43",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 14,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "action_number": 0,
+    "game_id": 0
+   },
+   "rows": 707440,
+   "season": 2026,
+   "source": "lineups",
+   "source_bytes": 1051800,
+   "source_etag": "\"0x8DEF8EB9FF0C67D\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:33:21 GMT",
+   "source_sha256": "87450c2edfae85320b317f0c80aa35e962344cef9db52676c9def109c5a8c399",
+   "status": "ok",
+   "store_file": "raw/lineups/lineups_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_lineups/nba_lineups_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 222344,
+   "season": 2016,
+   "source": "shots",
+   "source_bytes": 3803213,
+   "source_etag": "\"0x8DF25C636D79082\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:28:56 GMT",
+   "source_sha256": "88b764e9f7c8270d3039f61519ff60616f2c7a36e8a35cd51c406ff59584b183",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 223333,
+   "season": 2017,
+   "source": "shots",
+   "source_bytes": 3855625,
+   "source_etag": "\"0x8DF25C64B95124A\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:29:31 GMT",
+   "source_sha256": "e12fc7acd9fa3e0c8592e0dcbbc0ab6067223e335f9197514b267be7bc215e1c",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 225523,
+   "season": 2018,
+   "source": "shots",
+   "source_bytes": 3972892,
+   "source_etag": "\"0x8DF25C6627541A8\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:30:09 GMT",
+   "source_sha256": "cfb51215f5fdbdf8b91462e2248f7d0ed57a2eb4b3c8b1c604b3d547e44d7a3c",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 233717,
+   "season": 2019,
+   "source": "shots",
+   "source_bytes": 4130347,
+   "source_etag": "\"0x8DF25C679CDDE46\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:30:48 GMT",
+   "source_sha256": "1900a85ef6e9c6e9c0ba46c531a1b91188cb6cdccc70d47c8d730ee66764b22f",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 202399,
+   "season": 2020,
+   "source": "shots",
+   "source_bytes": 3624495,
+   "source_etag": "\"0x8DF25C68DF50E27\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:31:22 GMT",
+   "source_sha256": "b17b4451bb67bcfe62c36552a2f4b5c2bc8ff5c9eac76281ed55cf396e0984c4",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 206887,
+   "season": 2021,
+   "source": "shots",
+   "source_bytes": 3724718,
+   "source_etag": "\"0x8DF25C6A24252A1\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:31:56 GMT",
+   "source_sha256": "474d6c0a5a0639b4fdf2f7109ea39ba46d64d215b4f776bf7a897e0a25c1304a",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 232320,
+   "season": 2022,
+   "source": "shots",
+   "source_bytes": 4169334,
+   "source_etag": "\"0x8DF25C6B8959ECD\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:32:34 GMT",
+   "source_sha256": "60ef06f139bce6fac5e42bad5864f5096638ffe73654c0fe52f27652dc182eca",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 232916,
+   "season": 2023,
+   "source": "shots",
+   "source_bytes": 4226898,
+   "source_etag": "\"0x8DF25C6CDB91FE9\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:33:09 GMT",
+   "source_sha256": "bcf15af9804e3c357d8c680f9c008b2ea5f3ebf5f0cce6dee55b75954e3f1c3d",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 233789,
+   "season": 2024,
+   "source": "shots",
+   "source_bytes": 4271538,
+   "source_etag": "\"0x8DF25C6E637A7C0\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:33:50 GMT",
+   "source_sha256": "699a34c2ce52133b20a8dbc50b3d9e3cc411449c050ff9d1ef1987a22da78c19",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 235140,
+   "season": 2025,
+   "source": "shots",
+   "source_bytes": 4297616,
+   "source_etag": "\"0x8DF25C6FAD733CB\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:34:25 GMT",
+   "source_sha256": "231a6200ddea88ce997e967f99396830b1c41a6df0f0d7678b37852d6aa5759f",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 19,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "clock": 0,
+    "game_id": 0,
+    "period": 0,
+    "person_id": 0
+   },
+   "rows": 234876,
+   "season": 2026,
+   "source": "shots",
+   "source_bytes": 4261369,
+   "source_etag": "\"0x8DF25C70F7D26F6\"",
+   "source_last_modified": "Fri, 09 Oct 2026 05:34:59 GMT",
+   "source_sha256": "d27617bb872c2c94aa8e96ce1edcfc51e11bda5d48155fbeea2c50d2aa764064",
+   "status": "ok",
+   "store_file": "raw/shots/shots_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_shots/shots_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2632,
+   "season": 2016,
+   "source": "team_box",
+   "source_bytes": 71301,
+   "source_etag": "\"0x8DF1F49BDA8DFC1\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:22:48 GMT",
+   "source_sha256": "1f1e96115032e0994246c3d37ac101651c9593a04f4e406999a0dc2750349cf2",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2618,
+   "season": 2017,
+   "source": "team_box",
+   "source_bytes": 70643,
+   "source_etag": "\"0x8DF1F49F5C7E41A\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:24:22 GMT",
+   "source_sha256": "8f023b96daeceb9cabee3f90013bec23e0e845742cf855c258a2c9b161eadb3c",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2624,
+   "season": 2018,
+   "source": "team_box",
+   "source_bytes": 71156,
+   "source_etag": "\"0x8DF1F4A2C0519B9\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:25:53 GMT",
+   "source_sha256": "474b77b045f7de5a05a77cc759da17e2b844300dd8983ad29e09ea196ac888cc",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2624,
+   "season": 2019,
+   "source": "team_box",
+   "source_bytes": 71467,
+   "source_etag": "\"0x8DF1F4A63163950\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:27:26 GMT",
+   "source_sha256": "c94bf0d73a677bd7ddd56bfa18151bde3b65407ba64015ffe81e4bd05819d9ec",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2286,
+   "season": 2020,
+   "source": "team_box",
+   "source_bytes": 63742,
+   "source_etag": "\"0x8DF1F4A955A6BB6\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:28:50 GMT",
+   "source_sha256": "d8d61e52b2046aa05e048a224ecdcf580e589c8e0b86f2936601c12bd8896a82",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2342,
+   "season": 2021,
+   "source": "team_box",
+   "source_bytes": 65499,
+   "source_etag": "\"0x8DF1F4AC9AFE6D4\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:30:18 GMT",
+   "source_sha256": "3de8560e450727980221da4d7ca63566b2d672562758a1fbb62a53235bd4de4d",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2646,
+   "season": 2022,
+   "source": "team_box",
+   "source_bytes": 71835,
+   "source_etag": "\"0x8DF1F4B035B68D2\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:31:54 GMT",
+   "source_sha256": "7b618540e11533f7dd7e29ea040ba319437c1e1314271bcd2f5a9d8aab5738a8",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2640,
+   "season": 2023,
+   "source": "team_box",
+   "source_bytes": 71681,
+   "source_etag": "\"0x8DF1F4B39814B5D\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:33:25 GMT",
+   "source_sha256": "afe5e8dbe1a6cfaba48286524a26994676e2efd7d4ec2c20c9b19e7eecdd8572",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2638,
+   "season": 2024,
+   "source": "team_box",
+   "source_bytes": 71724,
+   "source_etag": "\"0x8DF1F4B7086B517\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:34:58 GMT",
+   "source_sha256": "1a601bceaa11956c325a50d3690f80dcc5a567abd5707b71431a3a9787651995",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2642,
+   "season": 2025,
+   "source": "team_box",
+   "source_bytes": 71845,
+   "source_etag": "\"0x8DF1F533B264DB5\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:30:44 GMT",
+   "source_sha256": "00146a2abf0350296ad8e4e81a28a6213a48b80deb1e48282dbe0daadf58af0b",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 29,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "team_id": 0
+   },
+   "rows": 2644,
+   "season": 2026,
+   "source": "team_box",
+   "source_bytes": 72303,
+   "source_etag": "\"0x8DF1F53736AEF67\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:32:18 GMT",
+   "source_sha256": "7822e7069ada35711f9da47939a4a047d8bbb1e7dfd8f458e41bff30e4f5881e",
+   "status": "ok",
+   "store_file": "raw/team_box/team_box_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_team_boxscores/team_boxscores_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 33659,
+   "season": 2016,
+   "source": "player_box",
+   "source_bytes": 612119,
+   "source_etag": "\"0x8DF1F49B211EC8E\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:22:29 GMT",
+   "source_sha256": "99e13b7635b9c7ab90ab595072a40e2cdaf7e31e2de821106d4ec32733f510a5",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 33610,
+   "season": 2017,
+   "source": "player_box",
+   "source_bytes": 611928,
+   "source_etag": "\"0x8DF1F49EAF3E8AD\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:24:04 GMT",
+   "source_sha256": "ba55fc78b74f4feeb611c1403d66f0a670890f2898686943fc48944a7adc3f25",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 33090,
+   "season": 2018,
+   "source": "player_box",
+   "source_bytes": 601048,
+   "source_etag": "\"0x8DF1F4A21E8A3C6\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:25:36 GMT",
+   "source_sha256": "bd773a04d95dc6f633617776e2cbe8ec33786a92704b70435eb9637cc4fb352b",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 32928,
+   "season": 2019,
+   "source": "player_box",
+   "source_bytes": 603277,
+   "source_etag": "\"0x8DF1F4A58C3EE71\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:27:08 GMT",
+   "source_sha256": "7640f574fdef67d7887163f1d9cae04bfcac2019cf1989116d67f144e5aee040",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 28707,
+   "season": 2020,
+   "source": "player_box",
+   "source_bytes": 535538,
+   "source_etag": "\"0x8DF1F4A8AEB1866\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:28:32 GMT",
+   "source_sha256": "a6055ffa2a832a4ad885672279cb13cba136c62d9e0fa4c8bc7af9822278eb2a",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 31546,
+   "season": 2021,
+   "source": "player_box",
+   "source_bytes": 575871,
+   "source_etag": "\"0x8DF1F4ABE67AA0F\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:29:59 GMT",
+   "source_sha256": "af73432fa9006628b44f1cd8bf542fdf7e444d68e7f9ea16affd615c0b1db97b",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 33848,
+   "season": 2022,
+   "source": "player_box",
+   "source_bytes": 628183,
+   "source_etag": "\"0x8DF1F4AF8F7997A\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:31:37 GMT",
+   "source_sha256": "bda38f2f66cb88b326cb4651e8a62e1926cbc297cd56c25eeab51617653da793",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 34024,
+   "season": 2023,
+   "source": "player_box",
+   "source_bytes": 623767,
+   "source_etag": "\"0x8DF1F4B2F47A5DE\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:33:08 GMT",
+   "source_sha256": "59f698fb5130b276037e805183501b3a54732dd14583bedfb2eec42d0705bb0f",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 34843,
+   "season": 2024,
+   "source": "player_box",
+   "source_bytes": 632350,
+   "source_etag": "\"0x8DF1F4B66788554\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:34:41 GMT",
+   "source_sha256": "fd77145e9a05b0564a7cc008f9fe9d3850be93cbc55ababf33c4bbd05a1a2338",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 35114,
+   "season": 2025,
+   "source": "player_box",
+   "source_bytes": 640989,
+   "source_etag": "\"0x8DF1F532F44511D\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:30:24 GMT",
+   "source_sha256": "414480718d58be6eb88db2c642d3d6469ee3be6320eb3bec3631667c7ded966d",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 37,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "person_id": 0
+   },
+   "rows": 34786,
+   "season": 2026,
+   "source": "player_box",
+   "source_bytes": 644419,
+   "source_etag": "\"0x8DF1F5368F6528C\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:32:01 GMT",
+   "source_sha256": "a0b280ebb0c955e501c0e6feab3f6d726bd9f1b7c2d13f5b5c0746049459132e",
+   "status": "ok",
+   "store_file": "raw/player_box/player_box_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_player_boxscores/player_boxscores_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 5465,
+   "season": 2016,
+   "source": "game_rosters",
+   "source_bytes": 48197,
+   "source_etag": "\"0x8DF1F49A81FF462\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:22:12 GMT",
+   "source_sha256": "735ae5128b8dfdcef9debae03e82bf94fc4c82fbb41454e0b3fcdaf2c6f6302f",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 5467,
+   "season": 2017,
+   "source": "game_rosters",
+   "source_bytes": 49920,
+   "source_etag": "\"0x8DF1F49E0F8572E\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:23:47 GMT",
+   "source_sha256": "0ede515fc3eb4167c6480ccde119906a468527dd3ced1ddfd332ff1a375277be",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 10055,
+   "season": 2018,
+   "source": "game_rosters",
+   "source_bytes": 76101,
+   "source_etag": "\"0x8DF1F4A1868FFFC\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:25:20 GMT",
+   "source_sha256": "5c7ae2734a90cfe4949df4913fa11d83db006bfc9eece2b411dbb47d87cda9c7",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 9922,
+   "season": 2019,
+   "source": "game_rosters",
+   "source_bytes": 75515,
+   "source_etag": "\"0x8DF1F4A4E9948EB\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:26:51 GMT",
+   "source_sha256": "7c4e9b8175cc2a080fa9ba2b17a3eb215cbddda7b03b61a34f84d7b99168e84f",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 9225,
+   "season": 2020,
+   "source": "game_rosters",
+   "source_bytes": 70450,
+   "source_etag": "\"0x8DF1F4A811FFC51\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:28:16 GMT",
+   "source_sha256": "4da6c1a8a7f9b7d563f276b763010c4dec63d6995b3799a78c1e5703989906ec",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 7188,
+   "season": 2021,
+   "source": "game_rosters",
+   "source_bytes": 60626,
+   "source_etag": "\"0x8DF1F4AB41CE93A\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:29:41 GMT",
+   "source_sha256": "c1babcb4fefe843b174c1e3719881f3510712176b562d93213dd96be6f45c9b5",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 10890,
+   "season": 2022,
+   "source": "game_rosters",
+   "source_bytes": 82848,
+   "source_etag": "\"0x8DF1F4AEEF9A2AF\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:31:20 GMT",
+   "source_sha256": "9d1ae5fce7d8f6c80f0329c84bd55e18b8090ca94f51fbb0f458e94ce814fb24",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 9626,
+   "season": 2023,
+   "source": "game_rosters",
+   "source_bytes": 76260,
+   "source_etag": "\"0x8DF1F4B254F460B\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:32:51 GMT",
+   "source_sha256": "30f2ed2c74d5d537a84cf924fb6bddeee7c2f6a78b7fec61caa1c71c4ecdfc9d",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 11239,
+   "season": 2024,
+   "source": "game_rosters",
+   "source_bytes": 84204,
+   "source_etag": "\"0x8DF1F4B5CAD9662\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:34:24 GMT",
+   "source_sha256": "70196a4283fc3b07a7c0bf2ba65ca1e6be0c2a8ac2c3dae43eb89872aefaf07f",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 11024,
+   "season": 2025,
+   "source": "game_rosters",
+   "source_bytes": 82395,
+   "source_etag": "\"0x8DF1F532523739E\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:30:07 GMT",
+   "source_sha256": "dda4a8fd6c781103ae1e43ff460aad64186737f0cf3f4019faa9805a312b5fef",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "player_id": 0
+   },
+   "rows": 11234,
+   "season": 2026,
+   "source": "game_rosters",
+   "source_bytes": 83293,
+   "source_etag": "\"0x8DF1F535F2F7878\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:31:44 GMT",
+   "source_sha256": "63170598aa151a035a1e260e77506e1e253b58aa4caed9aabeb5d9fca572fe2f",
+   "status": "ok",
+   "store_file": "raw/game_rosters/game_rosters_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_game_rosters/game_rosters_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3951,
+   "season": 2016,
+   "source": "officials",
+   "source_bytes": 22182,
+   "source_etag": "\"0x8DF1F49AD037D51\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:22:20 GMT",
+   "source_sha256": "ad3db3fe34fcc16092c3fa5fdb4bdf2b7d98065db4dc35fd25ac88729e3619ac",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3926,
+   "season": 2017,
+   "source": "officials",
+   "source_bytes": 22023,
+   "source_etag": "\"0x8DF1F49E5E5CC38\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:23:56 GMT",
+   "source_sha256": "ebea25cb096d01e3684f62c734203c3fcaee387f88f0f5214690a99285d10d25",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3997,
+   "season": 2018,
+   "source": "officials",
+   "source_bytes": 22981,
+   "source_etag": "\"0x8DF1F4A1CFA007F\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:25:28 GMT",
+   "source_sha256": "e8758a7510a6d0428f4bb114ca1fd3782530e28269684528219ce5f55e1f31f3",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3985,
+   "season": 2019,
+   "source": "officials",
+   "source_bytes": 22352,
+   "source_etag": "\"0x8DF1F4A53C2EEEF\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:27:00 GMT",
+   "source_sha256": "32c9288893ff3299b1b3589b5459a852edafd3bf3cb08878f8866c7daf41dcda",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3429,
+   "season": 2020,
+   "source": "officials",
+   "source_bytes": 20274,
+   "source_etag": "\"0x8DF1F4A85EE13F9\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:28:24 GMT",
+   "source_sha256": "ec40e79b6e6827bba15e67dbed73cc6af1500f360a384db8a806b8eaf4e73b37",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3545,
+   "season": 2021,
+   "source": "officials",
+   "source_bytes": 21364,
+   "source_etag": "\"0x8DF1F4AB91B766D\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:29:50 GMT",
+   "source_sha256": "cc5428af52d6a062c9285ac82471315bafa4b06694a47285937cef98070d5417",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3997,
+   "season": 2022,
+   "source": "officials",
+   "source_bytes": 23643,
+   "source_etag": "\"0x8DF1F4AF3F1349B\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:31:29 GMT",
+   "source_sha256": "bc6f7f2b77fc5a99ea1f77d33d18e9f3a359f893181ceb363c77cee78edc0a4b",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 3999,
+   "season": 2023,
+   "source": "officials",
+   "source_bytes": 23085,
+   "source_etag": "\"0x8DF1F4B2A870B30\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:33:00 GMT",
+   "source_sha256": "8f6edc4a056eba0b20005dc1e6aa0e56df9b46dc36caaeca41d7157d5090299c",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 4019,
+   "season": 2024,
+   "source": "officials",
+   "source_bytes": 23720,
+   "source_etag": "\"0x8DF1F4B6180F305\"",
+   "source_last_modified": "Wed, 30 Sep 2026 23:34:32 GMT",
+   "source_sha256": "cab4819e47544620a0daf99aeda9e424afc580e78fc11fc91b83a8270e4374df",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 4034,
+   "season": 2025,
+   "source": "officials",
+   "source_bytes": 23193,
+   "source_etag": "\"0x8DF1F5329ED4D52\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:30:15 GMT",
+   "source_sha256": "90bb30cd3272a1fd662fc1607212eac93f27d8fa6d735298c8a39d12afc7ad0c",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 7,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0,
+    "official_id": 0
+   },
+   "rows": 4034,
+   "season": 2026,
+   "source": "officials",
+   "source_bytes": 23813,
+   "source_etag": "\"0x8DF1F5363F237AA\"",
+   "source_last_modified": "Thu, 01 Oct 2026 00:31:52 GMT",
+   "source_sha256": "5930c12c9390ec11bb790010ecefc6bea522e9ac660ec853019f7b71abf4fcbb",
+   "status": "ok",
+   "store_file": "raw/officials/officials_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_officials/officials_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 170,
+   "season": 2016,
+   "source": "coaches",
+   "source_bytes": 8774,
+   "source_etag": "\"0x8DEF961B1B59683\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:32 GMT",
+   "source_sha256": "880cee00e951c6e980bebed862f804706a06e002cf180d9b71e2cd041680f059",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 186,
+   "season": 2017,
+   "source": "coaches",
+   "source_bytes": 9199,
+   "source_etag": "\"0x8DEF961B1EC6E54\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:32 GMT",
+   "source_sha256": "3a22629c2946ad9703491c0ae6859d964a6a395b90ef4e995dde31b3a748c82a",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 174,
+   "season": 2018,
+   "source": "coaches",
+   "source_bytes": 8764,
+   "source_etag": "\"0x8DEF961B23F1307\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:33 GMT",
+   "source_sha256": "85f85d25f7a27dba8b616309fa20ceb74388e3e19cca146c4e14765e76112e40",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 169,
+   "season": 2019,
+   "source": "coaches",
+   "source_bytes": 8821,
+   "source_etag": "\"0x8DEF961B245747A\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:33 GMT",
+   "source_sha256": "342ecd21531da66f46c31c616107c7b38d84813a7809b2dff358e87c5988323e",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 212,
+   "season": 2020,
+   "source": "coaches",
+   "source_bytes": 9749,
+   "source_etag": "\"0x8DEF961B2A96B29\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:33 GMT",
+   "source_sha256": "5c90f79663e2a53b49347d913aa0822a889ac94f1bd5ca65feb61b5290b41c2f",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 227,
+   "season": 2021,
+   "source": "coaches",
+   "source_bytes": 9715,
+   "source_etag": "\"0x8DEF961B2F3C7FB\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:34 GMT",
+   "source_sha256": "0b8cfa5b09c7f954ff5f85ddf37d783b1c114c97114e7dcf911464c10bf25981",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 252,
+   "season": 2022,
+   "source": "coaches",
+   "source_bytes": 10434,
+   "source_etag": "\"0x8DEF961B2F3EEDF\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:34 GMT",
+   "source_sha256": "780831dfeaf2462ae9283fb8e2931be2f5c49d1cce43bffe7e4364c3cd5bcc87",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 239,
+   "season": 2023,
+   "source": "coaches",
+   "source_bytes": 10197,
+   "source_etag": "\"0x8DEF961B3608E60\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:34 GMT",
+   "source_sha256": "3f2f6dc0bd6267a85c4703934b0ed2209bebbfe3f1d8c4cbfc6580f2effa19a1",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 232,
+   "season": 2024,
+   "source": "coaches",
+   "source_bytes": 10012,
+   "source_etag": "\"0x8DEF961B36019B2\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:34 GMT",
+   "source_sha256": "a81717f8907e29110e23686f399861c426e51ebfa81857b4b19cf2a5a207299c",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 248,
+   "season": 2025,
+   "source": "coaches",
+   "source_bytes": 10348,
+   "source_etag": "\"0x8DEF961B3B24A0A\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:35 GMT",
+   "source_sha256": "cbbfd033bc83ca3769533cfd1812c71a289fa7957098e3c4fc0f5a93fad35283",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 11,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "coach_id": 0,
+    "season": 0,
+    "team_id": 0
+   },
+   "rows": 267,
+   "season": 2026,
+   "source": "coaches",
+   "source_bytes": 10723,
+   "source_etag": "\"0x8DEF961B3D1DFD3\"",
+   "source_last_modified": "Thu, 13 Aug 2026 17:38:35 GMT",
+   "source_sha256": "31f27ed59065fc649ee79047f7fb77c536fcfe49ebf043501cab9170db8ee66e",
+   "status": "ok",
+   "store_file": "raw/coaches/coaches_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_coaches/coaches_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1428,
+   "season": 2016,
+   "source": "schedule",
+   "source_bytes": 23595,
+   "source_etag": "\"0x8DEF8E97737E4A6\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:17:54 GMT",
+   "source_sha256": "c49e9ec5830c00613a08c74114e748e7c2d76b45f211ae637db7d20b6d9a0168",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1414,
+   "season": 2017,
+   "source": "schedule",
+   "source_bytes": 23465,
+   "source_etag": "\"0x8DEF8E9A61E9E0D\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:19:13 GMT",
+   "source_sha256": "9d0e3e31133e8cbc7672234172d26950e44c6ac455c076732f09f185f2f51527",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1393,
+   "season": 2018,
+   "source": "schedule",
+   "source_bytes": 23284,
+   "source_etag": "\"0x8DEF8E9DA458162\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:20:40 GMT",
+   "source_sha256": "0b8bd8690aede3b58b71a32b067ea476bc64a1b0afe27aaed65b8593623ab673",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1394,
+   "season": 2019,
+   "source": "schedule",
+   "source_bytes": 23368,
+   "source_etag": "\"0x8DEF8EA084B6F97\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:21:57 GMT",
+   "source_sha256": "3990c1f0b284b6ef3ed009d3a9b42e4ed4e5a2e3fcf6f0951301bf701fcc0afa",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1146,
+   "season": 2020,
+   "source": "schedule",
+   "source_bytes": 20341,
+   "source_etag": "\"0x8DEF8EA39FDDB13\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:23:21 GMT",
+   "source_sha256": "6fb45790190b0ce2d3f97cd920c5c8a33ba5f8b1df041cc12ba00ca800fc3156",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1221,
+   "season": 2021,
+   "source": "schedule",
+   "source_bytes": 20860,
+   "source_etag": "\"0x8DEF8EA63C4306C\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:24:31 GMT",
+   "source_sha256": "a2f694a8ea19e4f1418350d45bd6684c3ac15b0ddb589ca693c84383ad09cc73",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1393,
+   "season": 2022,
+   "source": "schedule",
+   "source_bytes": 23371,
+   "source_etag": "\"0x8DEF8EA95B7DB25\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:25:55 GMT",
+   "source_sha256": "e7a968c6f56a9ef0cb2c89d8a315154b6982beb68b42a7fe3e0a4c1464b77bb7",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1394,
+   "season": 2023,
+   "source": "schedule",
+   "source_bytes": 23782,
+   "source_etag": "\"0x8DEF8EACA0ED8C0\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:27:22 GMT",
+   "source_sha256": "44e826e8b432b863ddec3976a1c72eb2e5ce345af32e8d0c8b84a6137f6d2164",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1396,
+   "season": 2024,
+   "source": "schedule",
+   "source_bytes": 23502,
+   "source_etag": "\"0x8DEF8EAFA19D1D3\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:28:43 GMT",
+   "source_sha256": "2d2cd6e93a462a61981e59db5e12132bf4b21bb946fc4f83b75f58bd650f9aa4",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1400,
+   "season": 2025,
+   "source": "schedule",
+   "source_bytes": 23421,
+   "source_etag": "\"0x8DEF8EB300C30DE\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:30:14 GMT",
+   "source_sha256": "959fdff85cf5892f83166d90cc84964075e13440ada5cff2a6bbe0bd9d4052fa",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 15,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "game_id": 0
+   },
+   "rows": 1400,
+   "season": 2026,
+   "source": "schedule",
+   "source_bytes": 23506,
+   "source_etag": "\"0x8DEF8EB6C1BB428\"",
+   "source_last_modified": "Thu, 13 Aug 2026 03:31:54 GMT",
+   "source_sha256": "1604c62a6d0a03dace9f1b8238c1374ecf87efeb6455175514a2d3d064fe520e",
+   "status": "ok",
+   "store_file": "raw/schedule/schedule_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/nba_stats_schedules/nba_schedule_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 69,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1317,
+   "season": 2016,
+   "source": "espn_schedule",
+   "source_bytes": 89281,
+   "source_etag": "\"0x8DEED390514B83B\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:17:08 GMT",
+   "source_sha256": "a6b85196e5b70c8234d4d9143cc35880c57e3fb09c67684fc1e100633941d010",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2016.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2016.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 69,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1310,
+   "season": 2017,
+   "source": "espn_schedule",
+   "source_bytes": 89142,
+   "source_etag": "\"0x8DEED395791F241\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:19:27 GMT",
+   "source_sha256": "521a83601d18b7ea34dabba62e62cb9307aa7c6aca66e4a0e15ff7db55cf18a0",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2017.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2017.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 69,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1314,
+   "season": 2018,
+   "source": "espn_schedule",
+   "source_bytes": 88920,
+   "source_etag": "\"0x8DEED39A4700BD5\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:21:36 GMT",
+   "source_sha256": "aa4be95197178146409679e75c5d4bd4fbccbc3497ac7c2de3b14acb32a32199",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2018.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2018.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 69,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1314,
+   "season": 2019,
+   "source": "espn_schedule",
+   "source_bytes": 89329,
+   "source_etag": "\"0x8DEED39F142E3F9\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:23:44 GMT",
+   "source_sha256": "f00e6ac49c47ac34168f0b932fad74b0b17f03230b39e67eaf02424e3109eae3",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2019.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2019.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1157,
+   "season": 2020,
+   "source": "espn_schedule",
+   "source_bytes": 137301,
+   "source_etag": "\"0x8DEED3A485B7718\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:26:11 GMT",
+   "source_sha256": "402485c4c3638838eade99aeba795bc0dda869c29089a5062baa28a34bd3b752",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2020.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2020.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1204,
+   "season": 2021,
+   "source": "espn_schedule",
+   "source_bytes": 130148,
+   "source_etag": "\"0x8DF0339CD8F9F45\"",
+   "source_last_modified": "Wed, 26 Aug 2026 06:18:10 GMT",
+   "source_sha256": "0c2eab5b22cc956646ac0351ddf6110d9527e46f4ee4d9200bf2945051688392",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2021.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2021.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1335,
+   "season": 2022,
+   "source": "espn_schedule",
+   "source_bytes": 140437,
+   "source_etag": "\"0x8DEED3AE7609D24\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:30:37 GMT",
+   "source_sha256": "e3a764147f108c6fb3883eaa5617234ab41aa95e668dd7eb9506616c8a953d2f",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2022.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2022.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1322,
+   "season": 2023,
+   "source": "espn_schedule",
+   "source_bytes": 138092,
+   "source_etag": "\"0x8DEF09B6A397C65\"",
+   "source_last_modified": "Sun, 02 Aug 2026 13:39:02 GMT",
+   "source_sha256": "9532db81a254b2ea9982111fbea970bb61ea34b6aa3fc4607b2cad17ba55c60b",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2023.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2023.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1322,
+   "season": 2024,
+   "source": "espn_schedule",
+   "source_bytes": 143706,
+   "source_etag": "\"0x8DEED3B7E90B621\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:34:51 GMT",
+   "source_sha256": "2069783562b531b91ee9ad6a85358761ad6a611ce3291a60ed124bb978969b63",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2024.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2024.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1329,
+   "season": 2025,
+   "source": "espn_schedule",
+   "source_bytes": 151821,
+   "source_etag": "\"0x8DEED3BB5F8654E\"",
+   "source_last_modified": "Wed, 29 Jul 2026 06:36:24 GMT",
+   "source_sha256": "239829fdcf99629ee682bca4d6d0a6709b3c095be39c39f425664754ae1a979e",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2025.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2025.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 77,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1330,
+   "season": 2026,
+   "source": "espn_schedule",
+   "source_bytes": 525802,
+   "source_etag": "\"0x8DF0E31BBFCE3F0\"",
+   "source_last_modified": "Wed, 09 Sep 2026 05:18:07 GMT",
+   "source_sha256": "b3884aa4aa276d1fcafc71b69394675904a968902068bff634932e5d7afacae4",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2026.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2026.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 79,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "id": 0
+   },
+   "rows": 1206,
+   "season": 2027,
+   "source": "espn_schedule",
+   "source_bytes": 91194,
+   "source_etag": "\"0x8DF29E66BCA2D64\"",
+   "source_last_modified": "Wed, 14 Oct 2026 11:29:33 GMT",
+   "source_sha256": "77485a63043dadae3636239d9d32f8e784dbadff88673106c00cf8cc7fb62c84",
+   "status": "ok",
+   "store_file": "raw/espn_schedule/espn_schedule_2027.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2027.parquet"
+  },
+  {
+   "as_of": "2026-10-16T06:01:34Z",
+   "columns": 27,
+   "key_missing_cols": [],
+   "key_nulls": {
+    "as_of_date": 0,
+    "injury_id": 0
+   },
+   "rows": 3112,
+   "season": null,
+   "source": "injuries",
+   "source_bytes": 111626,
+   "source_etag": "\"0x8DF2AE4BAD6D1CC\"",
+   "source_last_modified": "Thu, 15 Oct 2026 17:49:58 GMT",
+   "source_sha256": "9c31c924eac9eac2f96852bcc9b6c6b9db0f845e33d72de8c224d2bd9db01a94",
+   "status": "ok",
+   "store_file": "raw/injuries/injuries_20261016T060134Z.parquet",
+   "url": "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_injuries/injuries_2027.parquet"
+  }
+ ],
+ "pandas": "2.2.2",
+ "python": "3.9.6",
+ "sources": {
+  "coaches": {
+   "first_season": 2016,
+   "key": [
+    "season",
+    "team_id",
+    "coach_id"
+   ],
+   "kind": "season_static",
+   "last_season": 2026,
+   "note": "end-of-season staff table with no dates: not point-in-time safe (GAP)",
+   "tag": "nba_stats_coaches"
+  },
+  "espn_schedule": {
+   "first_season": 2016,
+   "key": [
+    "id"
+   ],
+   "kind": "schedule",
+   "last_season": null,
+   "note": "carries the tip-off instant (UTC); the only 2026-27 schedule source. status/score columns are post-game",
+   "tag": "espn_nba_schedules"
+  },
+  "game_rosters": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "player_id"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "who was on the game-day roster; published with the result, so treated as post-game",
+   "tag": "nba_stats_game_rosters"
+  },
+  "injuries": {
+   "first_season": null,
+   "key": [
+    "injury_id",
+    "as_of_date"
+   ],
+   "kind": "snapshot",
+   "last_season": null,
+   "note": "daily injury-list snapshots, one row per listed player per as_of_date, only from 2026-09-08 on; there is NO free injury history before that (GAP, GG-register)",
+   "tag": "espn_nba_injuries"
+  },
+  "lineups": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "action_number"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "on-court five per event; action_number repeats inside a game (measured), so it is a join key, not unique",
+   "tag": "nba_stats_game_lineups"
+  },
+  "officials": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "official_id"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "crew assignment time is not published; NBA posts crews ~9am game day, but the file is post-game so it is excluded until a timestamp exists (GAP)",
+   "tag": "nba_stats_officials"
+  },
+  "pbp": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "order_index"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "action_number is not unique within a game; order_index is",
+   "tag": "nba_stats_pbp"
+  },
+  "player_box": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "person_id"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "",
+   "tag": "nba_stats_player_boxscores"
+  },
+  "possessions": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "start_order_index"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "",
+   "tag": "nba_stats_possessions"
+  },
+  "schedule": {
+   "first_season": 2016,
+   "key": [
+    "game_id"
+   ],
+   "kind": "schedule",
+   "last_season": 2026,
+   "note": "results table: date + teams are pre-game facts, scores are not; no tip time (see espn_schedule)",
+   "tag": "nba_stats_schedules"
+  },
+  "shots": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "period",
+    "clock",
+    "person_id"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "no clean event key in the file; ties on (period, clock, shooter) are legitimate (tip-ins)",
+   "tag": "nba_stats_shots"
+  },
+  "team_box": {
+   "first_season": 2016,
+   "key": [
+    "game_id",
+    "team_id"
+   ],
+   "kind": "post_game",
+   "last_season": 2026,
+   "note": "",
+   "tag": "nba_stats_team_boxscores"
+  }
+ }
+}

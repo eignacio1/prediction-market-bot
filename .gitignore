@@ -178,3 +178,6 @@ exp_output/NFL_EVENTS/
 
 # PAM store is a versioned, committed artifact (W75.1)
 !qualitative_data/pam/**/records.jsonl
+
+# NBA event store (W78.4): raw store is rebuilt from sportsdataverse releases; only the manifest is committed
+exp_output/NBA_EVENTS/
