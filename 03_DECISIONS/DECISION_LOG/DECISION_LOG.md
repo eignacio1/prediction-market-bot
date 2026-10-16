@@ -2454,3 +2454,7 @@ Operator, verbatim: "Send me another copy + paste to drop into Muse serving as a
 ## 2026-10-15 23:03 PT — Charter live on Muse's side (verified)
 
 Operator relayed Muse's report; window verified on the archive at 1fb38c1 (34 commits, no rewrite since 90921e5): STATUS.md opened at charter v1; schema v1.1 (additive) adds source_time and applies_to, required for availability/role claims (R-002); R-001..003 closed by commit. Muse's queue notes it is "on ice for usage as of 2026-10-15 night per Earl - queue resumes on his direction". Window added R-004 (naming: "undervalued board") and R-005 (applies_to: carry nflverse game_id / season+week for exact joins).
+
+## 2026-10-15 23:30 PT — W78.4 PARTIAL: NBA event-level data layer built, taxonomy not written
+
+Part B done: free sportsdataverse NBA store 2016-2026 (123 files, 0 failures), PIT contract (tip bounds, 4h buffer, season_static refused, date-only snapshots count from end of day), fail-closed checks, manifest committed; PR #278. Decisions: imputed tips use Eastern-day bounds (conservative both sides); injuries keyed (injury_id, as_of_date); no free injury history before 2026-09-08 is a GAP, not bought. stats.nba.com unreachable - reported, not scraped. Part A (FACTOR_TAXONOMY.md) and GG-895..899 registration deferred (session limit). D4 NBA: none -> aggregated (data layer, no factor interpreted/applied). No order/stake/registry/kelly change.
