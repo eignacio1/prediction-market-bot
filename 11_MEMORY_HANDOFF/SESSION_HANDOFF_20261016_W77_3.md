@@ -10,3 +10,6 @@ Not touched: ACTIVE_QUEUE.md row (not updated - do it next session).
 Part A DONE: PR #270 merged at dc84fa6 (CI green on 8d7f071). Sweep: fixed nba_cell_autoflip; remainder registered GG-885 (claim_session refused from the worktree - "claim from a clean main checkout" - so GG-885 is NOT in SESSION_CLAIMS; claim it before reuse). pattern_sweep: heuristic, 19 hits triaged.
 Deploy: merge-commit Test Suite run was SKIPPED; no workflow named Deploy found via `gh run list --workflow Deploy` - t4-mlb restart decision NOT recorded. Next session: read Deploy job summary / run /deploy-audit, confirm running SHA on box (restart only idle window, GG-432).
 Still open: Part B (GG-747), CellLedger lock read-back after next pregame shadow cron, "Part B (W77.3)" section in W76_3_ledger_integrity.md.
+
+## Part B done
+GG-747 explained: gap is 41 (not 34), all epoch-12 rows closed after the Mon 2026-10-12 14:20Z ledger rebuild; staleness of a weekly derived snapshot, not a closing path. No correction rows. Written in W76_3_ledger_integrity.md 'Part B (W77.3)'. MEASURE: GG-764 sites 3->0 (PR #270); GG-747 34->41 rows each accounted (source: box copies 2026-10-16). Remaining: t4-mlb running-SHA read-back (Deploy decision unrecorded), CellLedger lock read-back after next pregame shadow cron. Operator decisions: none.
