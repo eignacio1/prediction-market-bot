@@ -4485,3 +4485,9 @@ W75.2 Part A. Checked every free nflverse field for the 2022-2025 plays: FTN car
 **Status:** OPEN · **Severity:** LOW
 
 W75.2 Part A. `defense_coverage_type` is populated for 53-61% of run+pass plays in every season 2018-2025 (the rest are runs and non-dropbacks); FTN `is_motion` exists 2022+ only (99.7-100% fill there). Any shell x motion cell therefore has at most four seasons of history, and 2026 has no participation file (GAP-1/GG-730). Cell-level EPA (unit x shell x personnel x motion) is at single-season n a noise measurement (Part A YoY r about 0.0-0.1), so the buildable signal is the shell MIX, not team-specific cell success. Pillar: DEPTH. Closes when a longer motion history or in-season 2026 participation exists.
+
+### GG-850 — W76.3 pattern-sweep remainder: unclassified write sites in src/ and scripts/ (follow-up to GG-748)
+
+**Status:** OPEN · **Severity:** LOW
+
+W76.3 Part A (2026-10-16) swept src/ and scripts/ for `open(...,"w")` / `write_text` (174 hits, raw list not committed). The five live-ledger or portfolio writers (the four GG-748 scripts + `t437_task3_rederive_outcomes.py`) are converted to `atomic_io` (PR #265, tests `tests/test_w76_3_script_writers.py`, which also pins them against regression). The remaining hits overlap the GG-680 inventory (frozen artifacts, caches, report writers, tmpdir files) and were NOT re-classified one by one in this block. Closes when a re-run of the sweep is diffed against GG-680 and each unlisted hit is converted or listed as not-state. Also noted: `t4_fill_status.py:310` is an append-mode log (O_APPEND, not a rewrite). `backfill_*` scripts use tmp+replace without fsync (crash-durability only, not tear risk). Pillar: PLUMBING.

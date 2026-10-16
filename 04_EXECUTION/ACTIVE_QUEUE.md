@@ -235,7 +235,7 @@ waits on another's.
 |---|---|---|---|---|
 | 76.1 | Kill switch proven on the box; why the fill fix barely fills | EXECUTION: order paths halting on one switch, running (6/6 in code → 6/6 running); E1 per arm + projected date each arm reaches judged n | ⬜ | |
 | 76.2 | NFL engine: a second factor class the ratings can't already hold | DEPTH D5(b) NFL applied +1 (6 → 7 of 16 seat factors) | 🟨 Part A pushed: F8 unit availability chosen, R² 1.3% on rating inputs, state not trait; Part B (frozen plan, one fit) next | |
-| 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | PROOF integrity (GG-747/748/764): ledger writers bypassing atomic_io 4 → 0 | ⬜ | |
+| 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | PROOF integrity (GG-747/748/764): ledger writers bypassing atomic_io 4 → 0 | 🟨 Part A merged (PR #265, fda73e4); Part B next | Writers bypassing atomic_io 4 → 0; CellLedger.append flocked + 6-proc test; box on fda73e4 (t4-mlb skip_live_game, not restarted). NOT done: GG-764 read-side holes, GG-747 34-row gap (box now shows 4316 closed/0 open; recompute from a read-only copy) |
 | 76.4 | Runtime map live and visible (B74-A Session 2) | PLUMBING (ADR-0074): registry entries reviewed 0/76 → 76/76; no-alarm 21 → 0; SURFACE BUDGET on both dashboards | 🟨 Part C pushed (8e766c8, branch) | Registry 76/76 reviewed vs box, 0 no-alarm w/o reason, RUNTIME block in scan; GG-742/743/753 closed; Part D (dashboards) next. |
 
 ### 76.1 — Kill switch proven on the box; why the fill fix barely fills
