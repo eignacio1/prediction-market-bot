@@ -184,3 +184,7 @@ exp_output/NBA_EVENTS/
 
 # W80P.1 thin-market depth capture store (box only; state.json + per-day JSONL)
 exp_output/KALSHI_HISTORY/thin_capture/
+
+# W80R thin-market fetch stores (raw candles; box/laptop/cloud scratch only)
+exp_output/KALSHI_HISTORY/thin/
+exp_output/KALSHI_HISTORY/thin_par/
