@@ -1,0 +1,196 @@
+#!/usr/bin/env python3
+"""W80R.1: the box bridge -- a narrow, allowlisted way for a cloud session to run NAMED jobs on the box and read the
+result. Driven by .github/workflows/box_tasks.yml (GitHub Actions runners reach the box over ssh with VPS_SSH_KEY).
+
+A request is a file 04_EXECUTION/BOX_TASKS/requests/<UTC>_<name>.toml pushed to main, holding exactly:
+    task = "<name in TASKS>"
+    note = "<why, <= 200 chars>"          (optional)
+Nothing else in the request is read: no arguments, no paths, no shell. The command run is TASKS[task], verbatim, from
+this file as it stands on main. The output (stdout+stderr, redacted, bounded) is written to
+04_EXECUTION/BOX_TASKS/results/<same stem>.md and to the job summary.
+
+Subcommands (the workflow uses these; tests import the functions):
+  collect --before SHA --after SHA        list request files ADDED in that push range
+  dispatch --task NAME [--note TEXT]      write a request file for a workflow_dispatch run, print its path
+  run REQUEST --out RESULT [--key PATH]   validate, ssh, redact, write the result
+"""
+from __future__ import annotations
+
+import argparse
+import re
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - py<3.11
+    import tomli as tomllib  # type: ignore
+
+ROOT = Path(__file__).resolve().parents[1]
+REQ_DIR = "04_EXECUTION/BOX_TASKS/requests"
+RES_DIR = "04_EXECUTION/BOX_TASKS/results"
+HOST = "root@157.230.91.33"
+BOX = "/opt/prediction-market-bot"
+TIMEOUT_S = 900
+MAX_OUT_BYTES = 60_000
+NOTE_MAX = 200
+NAME_RE = re.compile(r"^[a-z][a-z0-9_]{2,40}$")
+STEM_RE = re.compile(r"^[0-9]{8}T[0-9]{4,6}Z_[a-z0-9_]{3,60}$")
+
+PY = "PYTHONPATH=src:. venv/bin/python"
+# Fixed allowlist: task name -> exact command, run in /opt/prediction-market-bot. Read tasks change nothing.
+# capture_install refuses unless the SURFACE BUDGET reads GREEN (scripts/thin_capture_install.py, Hard Rule 14).
+TASKS: dict[str, str] = {
+    "budget_read": f"{PY} scripts/runtime_registry.py live --refresh; echo; tail -n 40 logs/health.log | grep '^===' | tail -1",
+    "silent_arms_read": f"{PY} -m prediction_market_bot.pregame_shadow.silent_arms",
+    "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
+    "capture_install": f"{PY} scripts/thin_capture_install.py install",
+    "capture_readback": f"{PY} scripts/thin_capture_install.py readback",
+    "nba_opening_preflight": (
+        "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
+        "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "
+        "exp_output/PREGAME_SHADOW_EXP040/*.jsonl 2>&1 | tail -n 60; "
+        f"echo '--- flip check (regular-season ledgers)'; {PY} scripts/w59_3_nba_flip_check.py --ledger-dir exp_output/PREGAME_SHADOW; "
+        f"echo '--- flip check (preseason ledgers)'; {PY} scripts/w59_3_nba_flip_check.py --ledger-dir exp_output/PREGAME_SHADOW_PRESEASON; "
+        "echo '--- nba cron lines'; crontab -l | grep -n -i nba; "
+        "echo '--- nba log tails'; for f in logs/nba_pregame_shadow_t1.log logs/nba_pregame_shadow_preseason.log "
+        "logs/nba_player_points_shadow_t1.log logs/nba_autoflip.log; do echo \"== $f\"; tail -n 4 \"$f\" 2>&1; done; "
+        "echo '--- CORRUPT_READ counts'; grep -c CORRUPT_READ logs/nba_*.log 2>/dev/null; "
+        f"echo '--- silent arms'; {PY} -m prediction_market_bot.pregame_shadow.silent_arms"
+    ),
+}
+
+_REDACT = [
+    (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----", re.S), "[REDACTED PRIVATE KEY]"),
+    (re.compile(r"(?im)^(\s*(?:export\s+)?[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASSWD|CREDENTIAL)[A-Z0-9_]*\s*[=:]\s*).+$"),
+     r"\1[REDACTED]"),
+    (re.compile(r"(?i)\b(bearer|authorization:?)\s+[A-Za-z0-9._\-+/=]{8,}"), r"\1 [REDACTED]"),
+    (re.compile(r"\b(?:ghp|gho|ghs|github_pat)_[A-Za-z0-9_]{20,}\b"), "[REDACTED TOKEN]"),
+    (re.compile(r"\bsk-[A-Za-z0-9_\-]{20,}\b"), "[REDACTED TOKEN]"),
+]
+
+
+class BadRequest(ValueError):
+    pass
+
+
+def redact(text: str) -> str:
+    for pat, rep in _REDACT:
+        text = pat.sub(rep, text)
+    return text
+
+
+def bound(text: str, limit: int = MAX_OUT_BYTES) -> str:
+    b = text.encode()
+    if len(b) <= limit:
+        return text
+    head, tail = b[: limit // 2].decode(errors="ignore"), b[-limit // 2:].decode(errors="ignore")
+    return f"{head}\n\n[... {len(b) - limit} bytes cut ...]\n\n{tail}"
+
+
+def parse_request(path: Path) -> tuple[str, str]:
+    """(task, note). Anything but the two allowed keys, an unknown task or a bad stem is refused."""
+    if not STEM_RE.match(path.stem) or path.suffix != ".toml":
+        raise BadRequest(f"request file name must be <UTC>_<name>.toml, got {path.name}")
+    try:
+        data = tomllib.loads(path.read_text())
+    except (tomllib.TOMLDecodeError, UnicodeDecodeError) as e:
+        raise BadRequest(f"not valid TOML: {e}") from e
+    extra = set(data) - {"task", "note"}
+    if extra:
+        raise BadRequest(f"only 'task' and 'note' are read; refusing extra keys {sorted(extra)}")
+    task, note = data.get("task"), data.get("note", "")
+    if not isinstance(task, str) or task not in TASKS:
+        raise BadRequest(f"task {task!r} is not in the allowlist {sorted(TASKS)}")
+    if not isinstance(note, str) or len(note) > NOTE_MAX or any(ord(c) < 32 for c in note):
+        raise BadRequest(f"note must be a single-line string <= {NOTE_MAX} chars")
+    return task, note
+
+
+def remote_command(task: str) -> str:
+    return f"cd {BOX} && timeout {TIMEOUT_S} bash -c {_sh_quote(TASKS[task])}"
+
+
+def _sh_quote(s: str) -> str:
+    return "'" + s.replace("'", "'\"'\"'") + "'"
+
+
+def ssh_run(task: str, key: str, runner=subprocess.run) -> tuple[int, str]:
+    cmd = ["ssh", "-i", key, "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=15", "-o", "BatchMode=yes",
+           HOST, remote_command(task)]
+    try:
+        r = runner(cmd, capture_output=True, text=True, timeout=TIMEOUT_S + 60)
+        return r.returncode, (r.stdout or "") + (("\n[stderr]\n" + r.stderr) if r.stderr else "")
+    except subprocess.TimeoutExpired:
+        return 124, f"[bridge] timed out after {TIMEOUT_S + 60}s"
+
+
+def render(request: Path, task: str, note: str, rc: int, output: str, now: datetime | None = None) -> str:
+    now = now or datetime.now(timezone.utc)
+    body = bound(redact(output)).replace("```", "``​`")
+    return (f"# Box task `{task}` — {request.stem}\n\n"
+            f"- request: `{request.as_posix()}`\n- note: {note or '(none)'}\n"
+            f"- ran: {now:%Y-%m-%dT%H:%M:%SZ} on {HOST}:{BOX}\n- exit code: {rc}\n"
+            f"- command (allowlisted, scripts/box_tasks.py): `{TASKS.get(task, '?')[:300]}`\n\n"
+            f"```\n{body}\n```\n")
+
+
+def run(request: Path, out: Path, key: str, runner=subprocess.run) -> int:
+    try:
+        task, note = parse_request(request)
+    except BadRequest as e:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(f"# Box task REFUSED — {request.name}\n\n{e}\n\nNothing was run on the box.\n")
+        print(f"REFUSED {request.name}: {e}")
+        return 0
+    rc, output = ssh_run(task, key, runner)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(render(request, task, note, rc, output))
+    print(f"ran {task} rc={rc} -> {out}")
+    return 0
+
+
+def collect(before: str, after: str, cwd: Path = ROOT) -> list[str]:
+    if not before or set(before) == {"0"}:
+        rng = [after]
+        args = ["git", "show", "--name-only", "--diff-filter=A", "--format=", after]
+    else:
+        rng = [f"{before}..{after}"]
+        args = ["git", "diff", "--name-only", "--diff-filter=A", *rng]
+    out = subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=True).stdout
+    return sorted(p for p in out.split() if p.startswith(REQ_DIR + "/") and p.endswith(".toml"))
+
+
+def dispatch(task: str, note: str, cwd: Path = ROOT, now: datetime | None = None) -> Path:
+    if not NAME_RE.match(task or ""):
+        raise BadRequest(f"bad task name {task!r}")
+    now = now or datetime.now(timezone.utc)
+    p = cwd / REQ_DIR / f"{now:%Y%m%dT%H%M%SZ}_{task}.toml"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    note = (note or "")[:NOTE_MAX].replace('"', "'").replace("\\", "/")
+    note = "".join(c for c in note if ord(c) >= 32)
+    p.write_text(f'task = "{task}"\nnote = "{note}"\n')
+    return p
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    c = sub.add_parser("collect"); c.add_argument("--before", default=""); c.add_argument("--after", required=True)
+    d = sub.add_parser("dispatch"); d.add_argument("--task", required=True); d.add_argument("--note", default="")
+    r = sub.add_parser("run"); r.add_argument("request"); r.add_argument("--out", required=True)
+    r.add_argument("--key", default=str(Path.home() / ".ssh" / "id_ed25519_droplet"))
+    a = ap.parse_args(argv)
+    if a.cmd == "collect":
+        print("\n".join(collect(a.before, a.after)))
+        return 0
+    if a.cmd == "dispatch":
+        print(dispatch(a.task, a.note).relative_to(ROOT).as_posix())
+        return 0
+    return run(Path(a.request), Path(a.out), a.key)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

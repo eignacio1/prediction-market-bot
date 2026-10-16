@@ -1,0 +1,87 @@
+name: Box Tasks
+
+# W80R.1: the box bridge. A cloud session cannot ssh to the box; this runner can (VPS_SSH_KEY, same as deploy.yml).
+# A push to main that ADDS 04_EXECUTION/BOX_TASKS/requests/<UTC>_<name>.toml runs the named task -- only a name in the
+# fixed allowlist in scripts/box_tasks.py (TASKS: name -> exact command). The request carries a task name and a note,
+# nothing else; no free-form shell. Output (redacted, bounded) is committed to 04_EXECUTION/BOX_TASKS/results/ and
+# written to the job summary. Registry: RUNTIME_REGISTRY.toml "workflow|box_tasks.yml".
+
+on:
+  push:
+    branches: [main]
+    paths: ['04_EXECUTION/BOX_TASKS/requests/**']
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'Task name from scripts/box_tasks.py TASKS'
+        required: true
+        type: string
+      note:
+        description: 'Why (<= 200 chars)'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: box-tasks
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Collect requests
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          EVENT: ${{ github.event_name }}
+          DISPATCH_TASK: ${{ inputs.task }}
+          DISPATCH_NOTE: ${{ inputs.note }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            python3 scripts/box_tasks.py dispatch --task "$DISPATCH_TASK" --note "$DISPATCH_NOTE" > requests.txt
+          else
+            python3 scripts/box_tasks.py collect --before "$BEFORE" --after "$AFTER" > requests.txt
+          fi
+          echo "requests:"; cat requests.txt
+
+      - name: Set up SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_ed25519_droplet
+          chmod 600 ~/.ssh/id_ed25519_droplet
+          ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Run requests on the box
+        run: |
+          while IFS= read -r req; do
+            [ -z "$req" ] && continue
+            stem="$(basename "$req" .toml)"
+            out="04_EXECUTION/BOX_TASKS/results/${stem}.md"
+            python3 scripts/box_tasks.py run "$req" --out "$out"
+            cat "$out" >> "$GITHUB_STEP_SUMMARY"
+          done < requests.txt
+          rm -f ~/.ssh/id_ed25519_droplet
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 04_EXECUTION/BOX_TASKS/results
+          if git diff --cached --quiet; then echo "no results"; exit 0; fi
+          git commit -q -m "Box tasks: results $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3 4; do
+            git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          echo "push failed after 4 attempts"; exit 1
