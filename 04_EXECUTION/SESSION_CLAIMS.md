@@ -917,3 +917,4 @@
 | 2026-10-15T23:50:16Z | T-1030..T-1032, GG-850..GG-854 | W76.3 MEDIUM - every ledger writer atomic+locked; 34-row T4 gap reconciled (GG-748/747/764). PURPOSE: PROOF integrity - live-ledger writers bypassing atomic_io 4->0; CellLedger.append cross-process safe; T4 closed-vs-resolved gap 34->0 or explained |
 | 2026-10-16T00:08:54Z | T-1030..T-1032 | CLOSED — merge confirmed, HEAD (0a44b8f) is ancestor of origin/main — W76.3 PARTIAL: Part A merged (PR #265), Part B (GG-764, GG-747) not done |
 | 2026-10-16T00:10:23Z | GG-860..GG-879 | STANDING — gap agent tick loop — FOR PLUMBING (OPEN gaps) — burn down the gap log |
+| 2026-10-16T00:19:32Z | W76.2 | CLOSED — NFL second factor class (F8 unit-level starter availability, non-QB): orthogonal to ratings (R2 1.3%), taken to APPLIED on a frozen plan; MATCHES ML/spread/team total, NO on total (commit `a608bf8`) |
