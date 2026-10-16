@@ -1,0 +1,4951 @@
+{
+ "KXNBA1H": {
+  "by_month": {
+   "2026-10": 162
+  },
+  "events": 54,
+  "first_close": "2026-10-04T03:42:21Z",
+  "last_close": "2026-10-16T01:55:21Z",
+  "open_now": 36,
+  "settled_since_floor": 162,
+  "strikes_per_event_median": 3
+ },
+ "KXNBA1HSPREAD": {
+  "by_month": {
+   "2026-02": 1128,
+   "2026-03": 2507,
+   "2026-04": 1569,
+   "2026-05": 543,
+   "2026-06": 76,
+   "2026-10": 635
+  },
+  "events": 577,
+  "first_close": "2026-02-11T03:55:41Z",
+  "last_close": "2026-10-16T01:55:23Z",
+  "open_now": 0,
+  "settled_since_floor": 6458,
+  "strikes_per_event_median": 11
+ },
+ "KXNBA1HTEAMTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA1HTOTAL": {
+  "by_month": {
+   "2026-02": 846,
+   "2026-03": 2115,
+   "2026-04": 1332,
+   "2026-05": 369,
+   "2026-06": 45,
+   "2026-10": 561
+  },
+  "events": 574,
+  "first_close": "2026-02-11T04:09:10Z",
+  "last_close": "2026-10-16T01:55:24Z",
+  "open_now": 0,
+  "settled_since_floor": 5268,
+  "strikes_per_event_median": 9
+ },
+ "KXNBA1HWINNER": {
+  "by_month": {
+   "2026-02": 282,
+   "2026-03": 705,
+   "2026-04": 444,
+   "2026-05": 123,
+   "2026-06": 15
+  },
+  "events": 523,
+  "first_close": "2026-02-11T03:55:36Z",
+  "last_close": "2026-06-14T01:45:19Z",
+  "open_now": 0,
+  "settled_since_floor": 1569,
+  "strikes_per_event_median": 3
+ },
+ "KXNBA1Q": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA1QSPREAD": {
+  "by_month": {
+   "2026-06": 40
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:47:21Z",
+  "last_close": "2026-06-14T01:25:16Z",
+  "open_now": 0,
+  "settled_since_floor": 40,
+  "strikes_per_event_median": 8
+ },
+ "KXNBA1QTEAMTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA1QTOTAL": {
+  "by_month": {
+   "2026-06": 77
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:50:40Z",
+  "last_close": "2026-06-14T04:00:13Z",
+  "open_now": 0,
+  "settled_since_floor": 77,
+  "strikes_per_event_median": 13
+ },
+ "KXNBA1QWINNER": {
+  "by_month": {
+   "2026-06": 15
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:37:47Z",
+  "last_close": "2026-06-14T01:21:17Z",
+  "open_now": 0,
+  "settled_since_floor": 15,
+  "strikes_per_event_median": 3
+ },
+ "KXNBA2D": {
+  "by_month": {
+   "2025-12": 510,
+   "2026-01": 823,
+   "2026-02": 758,
+   "2026-03": 1437,
+   "2026-04": 953,
+   "2026-05": 354,
+   "2026-06": 44
+  },
+  "events": 986,
+  "first_close": "2025-12-04T05:39:30.888331Z",
+  "last_close": "2026-06-14T04:00:13Z",
+  "open_now": 0,
+  "settled_since_floor": 4879,
+  "strikes_per_event_median": 5
+ },
+ "KXNBA2H": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA2HSPREAD": {
+  "by_month": {
+   "2026-04": 436,
+   "2026-05": 385,
+   "2026-06": 55
+  },
+  "events": 82,
+  "first_close": "2026-04-15T05:34:22Z",
+  "last_close": "2026-06-14T04:01:21Z",
+  "open_now": 0,
+  "settled_since_floor": 876,
+  "strikes_per_event_median": 11
+ },
+ "KXNBA2HTEAMTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA2HTOTAL": {
+  "by_month": {
+   "2026-04": 369,
+   "2026-05": 333,
+   "2026-06": 45
+  },
+  "events": 83,
+  "first_close": "2026-04-15T05:36:10Z",
+  "last_close": "2026-06-14T04:01:22Z",
+  "open_now": 0,
+  "settled_since_floor": 747,
+  "strikes_per_event_median": 9
+ },
+ "KXNBA2HWINNER": {
+  "by_month": {
+   "2026-02": 282,
+   "2026-03": 705,
+   "2026-04": 444,
+   "2026-05": 123,
+   "2026-06": 15
+  },
+  "events": 523,
+  "first_close": "2026-02-11T03:55:46Z",
+  "last_close": "2026-06-14T03:29:48Z",
+  "open_now": 0,
+  "settled_since_floor": 1569,
+  "strikes_per_event_median": 3
+ },
+ "KXNBA2Q": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA2QSPREAD": {
+  "by_month": {
+   "2026-06": 40
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:47:00Z",
+  "last_close": "2026-06-14T02:20:02Z",
+  "open_now": 0,
+  "settled_since_floor": 40,
+  "strikes_per_event_median": 8
+ },
+ "KXNBA2QTEAMTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA2QTOTAL": {
+  "by_month": {
+   "2026-06": 77
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:50:41Z",
+  "last_close": "2026-06-14T04:01:22Z",
+  "open_now": 0,
+  "settled_since_floor": 77,
+  "strikes_per_event_median": 13
+ },
+ "KXNBA2QWINNER": {
+  "by_month": {
+   "2026-06": 15
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:38:04Z",
+  "last_close": "2026-06-14T02:17:18Z",
+  "open_now": 0,
+  "settled_since_floor": 15,
+  "strikes_per_event_median": 3
+ },
+ "KXNBA30COMEBACK": {
+  "by_month": {
+   "2026-06": 1
+  },
+  "events": 1,
+  "first_close": "2026-06-09T03:41:36Z",
+  "last_close": "2026-06-09T03:41:36Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBA3D": {
+  "by_month": {
+   "2025-12": 157,
+   "2026-01": 217,
+   "2026-02": 193,
+   "2026-03": 313,
+   "2026-04": 198,
+   "2026-05": 83,
+   "2026-06": 10
+  },
+  "events": 740,
+  "first_close": "2025-12-04T05:39:36.473411Z",
+  "last_close": "2026-06-14T03:39:59Z",
+  "open_now": 0,
+  "settled_since_floor": 1171,
+  "strikes_per_event_median": 1
+ },
+ "KXNBA3PEAT": {
+  "by_month": {
+   "2026-05": 1
+  },
+  "events": 1,
+  "first_close": "2026-05-31T02:54:12Z",
+  "last_close": "2026-05-31T02:54:12Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBA3PT": {
+  "by_month": {
+   "2025-11": 870,
+   "2025-12": 2390,
+   "2026-01": 3254,
+   "2026-02": 2372,
+   "2026-03": 3578,
+   "2026-04": 2717,
+   "2026-05": 1138,
+   "2026-06": 300
+  },
+  "events": 1029,
+  "first_close": "2025-11-19T03:11:09.74885Z",
+  "last_close": "2026-06-14T03:54:41Z",
+  "open_now": 0,
+  "settled_since_floor": 16619,
+  "strikes_per_event_median": 15
+ },
+ "KXNBA3PTALLGAMES": {
+  "by_month": {
+   "2026-06": 26
+  },
+  "events": 2,
+  "first_close": "2026-06-04T03:28:23Z",
+  "last_close": "2026-06-14T04:35:03Z",
+  "open_now": 0,
+  "settled_since_floor": 26,
+  "strikes_per_event_median": 14
+ },
+ "KXNBA3Q": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA3QSPREAD": {
+  "by_month": {
+   "2026-06": 40
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:47:02Z",
+  "last_close": "2026-06-14T04:03:17Z",
+  "open_now": 0,
+  "settled_since_floor": 40,
+  "strikes_per_event_median": 8
+ },
+ "KXNBA3QTEAMTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA3QTOTAL": {
+  "by_month": {
+   "2026-06": 77
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:53:56Z",
+  "last_close": "2026-06-14T03:55:24Z",
+  "open_now": 0,
+  "settled_since_floor": 77,
+  "strikes_per_event_median": 13
+ },
+ "KXNBA3QWINNER": {
+  "by_month": {
+   "2026-06": 15
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:47:02Z",
+  "last_close": "2026-06-14T04:00:12Z",
+  "open_now": 0,
+  "settled_since_floor": 15,
+  "strikes_per_event_median": 3
+ },
+ "KXNBA4Q": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA4QSPREAD": {
+  "by_month": {
+   "2026-06": 40
+  },
+  "events": 5,
+  "first_close": "2026-06-04T03:43:17Z",
+  "last_close": "2026-06-14T04:03:17Z",
+  "open_now": 0,
+  "settled_since_floor": 40,
+  "strikes_per_event_median": 8
+ },
+ "KXNBA4QTEAMTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBA4QTOTAL": {
+  "by_month": {
+   "2026-06": 77
+  },
+  "events": 5,
+  "first_close": "2026-06-04T02:53:56Z",
+  "last_close": "2026-06-14T04:00:14Z",
+  "open_now": 0,
+  "settled_since_floor": 77,
+  "strikes_per_event_median": 13
+ },
+ "KXNBA4QWINNER": {
+  "by_month": {
+   "2026-06": 15
+  },
+  "events": 5,
+  "first_close": "2026-06-04T03:43:17Z",
+  "last_close": "2026-06-14T04:00:11Z",
+  "open_now": 0,
+  "settled_since_floor": 15,
+  "strikes_per_event_median": 3
+ },
+ "KXNBAALLSTARS": {
+  "by_month": {
+   "2026-01": 10,
+   "2026-02": 128
+  },
+  "events": 3,
+  "first_close": "2026-01-19T21:21:23.683155Z",
+  "last_close": "2026-02-16T00:15:03Z",
+  "open_now": 60,
+  "settled_since_floor": 138,
+  "strikes_per_event_median": 40
+ },
+ "KXNBAAPOLOGY": {
+  "by_month": {
+   "2026-05": 1
+  },
+  "events": 1,
+  "first_close": "2026-05-12T03:59:00Z",
+  "last_close": "2026-05-12T03:59:00Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAASSTARTERS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAAST": {
+  "by_month": {
+   "2025-11": 685,
+   "2025-12": 1740,
+   "2026-01": 2825,
+   "2026-02": 2745,
+   "2026-03": 5092,
+   "2026-04": 3303,
+   "2026-05": 1205,
+   "2026-06": 150
+  },
+  "events": 1056,
+  "first_close": "2025-11-19T03:11:03.486198Z",
+  "last_close": "2026-06-14T04:00:16Z",
+  "open_now": 0,
+  "settled_since_floor": 17745,
+  "strikes_per_event_median": 15
+ },
+ "KXNBAAWARDFIN": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 303,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBABENCHPTS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBABLK": {
+  "by_month": {
+   "2026-01": 677,
+   "2026-02": 795,
+   "2026-03": 1209,
+   "2026-04": 784,
+   "2026-05": 407,
+   "2026-06": 72
+  },
+  "events": 599,
+  "first_close": "2026-01-14T20:44:04.772488Z",
+  "last_close": "2026-06-14T04:00:15Z",
+  "open_now": 0,
+  "settled_since_floor": 3944,
+  "strikes_per_event_median": 6
+ },
+ "KXNBACELEBRITY3PT": {
+  "by_month": {
+   "2026-02": 7
+  },
+  "events": 1,
+  "first_close": "2026-02-14T04:29:24Z",
+  "last_close": "2026-02-14T04:29:24Z",
+  "open_now": 0,
+  "settled_since_floor": 7,
+  "strikes_per_event_median": 7
+ },
+ "KXNBACELEBRITYGAME": {
+  "by_month": {
+   "2026-02": 2
+  },
+  "events": 1,
+  "first_close": "2026-02-14T03:54:19Z",
+  "last_close": "2026-02-14T03:54:19Z",
+  "open_now": 0,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 2
+ },
+ "KXNBACITYEXPAND": {
+  "by_month": {
+   "2026-10": 1
+  },
+  "events": 1,
+  "first_close": "2026-10-15T03:59:00Z",
+  "last_close": "2026-10-15T03:59:00Z",
+  "open_now": 7,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBACOACHOUT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBACOMPETE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBACONF": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 2,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBACUP1STTEAM": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 85,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBACUPGROUP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 30,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBACUPGROUPWIN": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 6,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBACUPQUAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 60,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBADRAFTCAT": {
+  "by_month": {
+   "2026-06": 12
+  },
+  "events": 2,
+  "first_close": "2026-06-24T01:54:33Z",
+  "last_close": "2026-06-24T03:28:35Z",
+  "open_now": 0,
+  "settled_since_floor": 12,
+  "strikes_per_event_median": 7
+ },
+ "KXNBADRAFTCOMP": {
+  "by_month": {
+   "2026-06": 3
+  },
+  "events": 1,
+  "first_close": "2026-06-24T04:10:41Z",
+  "last_close": "2026-06-24T04:10:41Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNBADRAFTINT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBADRAFTMATCHUP": {
+  "by_month": {
+   "2026-06": 12
+  },
+  "events": 6,
+  "first_close": "2026-06-24T00:17:48Z",
+  "last_close": "2026-06-24T01:40:29Z",
+  "open_now": 0,
+  "settled_since_floor": 12,
+  "strikes_per_event_median": 2
+ },
+ "KXNBADRAFTOU": {
+  "by_month": {
+   "2026-06": 40
+  },
+  "events": 1,
+  "first_close": "2026-06-24T00:19:49Z",
+  "last_close": "2026-06-25T02:25:51Z",
+  "open_now": 0,
+  "settled_since_floor": 40,
+  "strikes_per_event_median": 40
+ },
+ "KXNBADRAFTTEAM": {
+  "by_month": {
+   "2026-06": 510
+  },
+  "events": 17,
+  "first_close": "2026-06-24T00:12:43Z",
+  "last_close": "2026-06-25T00:31:16Z",
+  "open_now": 0,
+  "settled_since_floor": 510,
+  "strikes_per_event_median": 30
+ },
+ "KXNBADRAFTTRADE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAEUROPEANNOUNCE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 5,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAEXEC": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 56,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAEXTENSION": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFINALSMVP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFINALSVIEWER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFINALSVIEWERGAME7": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFINBLOWOUT": {
+  "by_month": {
+   "2026-06": 6
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:21:00Z",
+  "last_close": "2026-06-14T04:21:00Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 6
+ },
+ "KXNBAFIRST50PTS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 50,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFIRSTBASKET": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFIRSTOPPONENT": {
+  "by_month": {
+   "2026-08": 145
+  },
+  "events": 5,
+  "first_close": "2026-08-11T14:10:46Z",
+  "last_close": "2026-08-11T14:11:48Z",
+  "open_now": 0,
+  "settled_since_floor": 145,
+  "strikes_per_event_median": 29
+ },
+ "KXNBAFRANCHISECOST": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 7,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFRANCHISEOWNER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 3,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAFTM": {
+  "by_month": {
+   "2026-05": 13,
+   "2026-06": 61
+  },
+  "events": 7,
+  "first_close": "2026-05-29T03:04:42Z",
+  "last_close": "2026-06-14T04:27:22Z",
+  "open_now": 0,
+  "settled_since_floor": 74,
+  "strikes_per_event_median": 11
+ },
+ "KXNBAGAME": {
+  "by_month": {
+   "2025-10": 230,
+   "2025-11": 440,
+   "2025-12": 398,
+   "2026-01": 468,
+   "2026-02": 340,
+   "2026-03": 470,
+   "2026-04": 296,
+   "2026-05": 74,
+   "2026-06": 10,
+   "2026-10": 110
+  },
+  "events": 1418,
+  "first_close": "2025-10-10T19:04:36.712661Z",
+  "last_close": "2026-10-16T02:41:29Z",
+  "open_now": 56,
+  "settled_since_floor": 2836,
+  "strikes_per_event_median": 2
+ },
+ "KXNBAGAME7": {
+  "by_month": {
+   "2026-05": 7,
+   "2026-06": 1
+  },
+  "events": 1,
+  "first_close": "2026-05-01T05:37:04Z",
+  "last_close": "2026-06-14T04:28:16Z",
+  "open_now": 0,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 8
+ },
+ "KXNBAGAMEHIGHSCORE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 9,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAGAMES": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAGAMESPECIALS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 27,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAH2H3PT": {
+  "by_month": {
+   "2026-05": 4,
+   "2026-06": 2
+  },
+  "events": 3,
+  "first_close": "2026-05-22T04:13:12Z",
+  "last_close": "2026-06-04T03:27:03Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 2
+ },
+ "KXNBAH2HBENCHPTS": {
+  "by_month": {
+   "2026-05": 8,
+   "2026-06": 10
+  },
+  "events": 9,
+  "first_close": "2026-05-26T02:42:34Z",
+  "last_close": "2026-06-14T04:24:17Z",
+  "open_now": 0,
+  "settled_since_floor": 18,
+  "strikes_per_event_median": 2
+ },
+ "KXNBAH2HPRA": {
+  "by_month": {
+   "2026-05": 4,
+   "2026-06": 4
+  },
+  "events": 4,
+  "first_close": "2026-05-22T04:12:50Z",
+  "last_close": "2026-06-04T03:28:09Z",
+  "open_now": 0,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 2
+ },
+ "KXNBAH2HPTS": {
+  "by_month": {
+   "2026-06": 6
+  },
+  "events": 3,
+  "first_close": "2026-06-04T03:27:34Z",
+  "last_close": "2026-06-14T04:25:25Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 2
+ },
+ "KXNBAH2HTEAM3PT": {
+  "by_month": {
+   "2026-06": 2
+  },
+  "events": 1,
+  "first_close": "2026-06-04T03:29:13Z",
+  "last_close": "2026-06-04T03:29:13Z",
+  "open_now": 0,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 2
+ },
+ "KXNBAH2HWINS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 30,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAHALLOFFAME": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 28,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAHOMECLINCH": {
+  "by_month": {
+   "2026-06": 1
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:32:37Z",
+  "last_close": "2026-06-14T04:32:37Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAHUSTLE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 75,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAJOINCONF": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBALASVEGAS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBALOTTERY": {
+  "by_month": {
+   "2026-05": 29
+  },
+  "events": 2,
+  "first_close": "2026-05-10T19:27:13Z",
+  "last_close": "2026-05-10T19:32:51Z",
+  "open_now": 0,
+  "settled_since_floor": 29,
+  "strikes_per_event_median": 15
+ },
+ "KXNBALOTTERYODDS": {
+  "by_month": {
+   "2026-05": 4
+  },
+  "events": 1,
+  "first_close": "2026-05-10T19:26:22Z",
+  "last_close": "2026-05-10T19:26:22Z",
+  "open_now": 0,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 4
+ },
+ "KXNBAMATCHUP": {
+  "by_month": {
+   "2026-04": 16
+  },
+  "events": 3,
+  "first_close": "2026-04-13T02:54:09Z",
+  "last_close": "2026-04-16T18:21:49Z",
+  "open_now": 435,
+  "settled_since_floor": 16,
+  "strikes_per_event_median": 6
+ },
+ "KXNBAMOSTWINS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 4,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAMVPDPOY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBANEWCHAMP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBANEWCHAMPION": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBANEXTCONTRACT": {
+  "by_month": {
+   "2026-07": 19
+  },
+  "events": 1,
+  "first_close": "2026-07-24T16:08:56Z",
+  "last_close": "2026-07-24T16:08:56Z",
+  "open_now": 0,
+  "settled_since_floor": 19,
+  "strikes_per_event_median": 19
+ },
+ "KXNBANEXTGOVERNOR": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 6,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBANEXTTEAM": {
+  "by_month": {
+   "2026-08": 94,
+   "2026-10": 31
+  },
+  "events": 4,
+  "first_close": "2026-08-12T20:44:41Z",
+  "last_close": "2026-10-12T19:27:14Z",
+  "open_now": 217,
+  "settled_since_floor": 125,
+  "strikes_per_event_median": 31
+ },
+ "KXNBANEXTTEAMCONF": {
+  "by_month": {
+   "2026-07": 3
+  },
+  "events": 1,
+  "first_close": "2026-07-26T21:26:58Z",
+  "last_close": "2026-07-26T21:26:58Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNBANEXTTEAMOUTLET": {
+  "by_month": {
+   "2026-07": 10
+  },
+  "events": 1,
+  "first_close": "2026-07-24T16:22:18Z",
+  "last_close": "2026-07-24T16:22:18Z",
+  "open_now": 0,
+  "settled_since_floor": 10,
+  "strikes_per_event_median": 10
+ },
+ "KXNBANHL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAONE3PT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAOT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAOVERTIME": {
+  "by_month": {
+   "2026-04": 41,
+   "2026-05": 41,
+   "2026-06": 5
+  },
+  "events": 87,
+  "first_close": "2026-04-18T03:44:48Z",
+  "last_close": "2026-06-14T04:00:11Z",
+  "open_now": 0,
+  "settled_since_floor": 87,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAPA": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPARTNERSHIP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPIADVANCE": {
+  "by_month": {
+   "2026-05": 2
+  },
+  "events": 2,
+  "first_close": "2026-05-03T15:28:35Z",
+  "last_close": "2026-05-10T22:27:00Z",
+  "open_now": 0,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAPICKTRADE": {
+  "by_month": {
+   "2026-06": 3
+  },
+  "events": 3,
+  "first_close": "2026-06-24T00:47:26Z",
+  "last_close": "2026-06-25T14:00:00Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAPLAYERDEAL": {
+  "by_month": {
+   "2026-08": 1
+  },
+  "events": 1,
+  "first_close": "2026-08-01T19:03:41Z",
+  "last_close": "2026-08-01T19:03:41Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAPLAYERHIGHSCORE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPLAYERSPECIALS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPLAYOFF3D": {
+  "by_month": {
+   "2026-04": 2,
+   "2026-05": 26,
+   "2026-06": 4
+  },
+  "events": 1,
+  "first_close": "2026-04-18T22:57:55Z",
+  "last_close": "2026-06-14T04:27:49Z",
+  "open_now": 0,
+  "settled_since_floor": 32,
+  "strikes_per_event_median": 32
+ },
+ "KXNBAPLAYOFFPTS": {
+  "by_month": {
+   "2026-04": 3,
+   "2026-05": 51,
+   "2026-06": 10
+  },
+  "events": 2,
+  "first_close": "2026-04-26T00:33:34Z",
+  "last_close": "2026-06-14T04:22:03Z",
+  "open_now": 0,
+  "settled_since_floor": 64,
+  "strikes_per_event_median": 40
+ },
+ "KXNBAPLAYOFFWINS": {
+  "by_month": {
+   "2026-04": 3,
+   "2026-05": 46,
+   "2026-06": 6
+  },
+  "events": 5,
+  "first_close": "2026-04-27T19:57:16Z",
+  "last_close": "2026-06-14T04:19:38Z",
+  "open_now": 0,
+  "settled_since_floor": 55,
+  "strikes_per_event_median": 11
+ },
+ "KXNBAPLAYTOGETHER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPOLOSE": {
+  "by_month": {
+   "2026-05": 6
+  },
+  "events": 1,
+  "first_close": "2026-05-25T02:54:41Z",
+  "last_close": "2026-05-31T03:13:52Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 6
+ },
+ "KXNBAPOSTASREC": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 30,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPR": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPRA": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAPREPACK2ML": {
+  "by_month": {
+   "2025-12": 36
+  },
+  "events": 3,
+  "first_close": "2025-12-25T22:26:02.032118Z",
+  "last_close": "2025-12-26T06:58:55.959348Z",
+  "open_now": 0,
+  "settled_since_floor": 36,
+  "strikes_per_event_median": 12
+ },
+ "KXNBAPREPACK3ML": {
+  "by_month": {
+   "2025-12": 24
+  },
+  "events": 3,
+  "first_close": "2025-12-25T22:31:40.21287Z",
+  "last_close": "2025-12-26T06:52:05.552697Z",
+  "open_now": 0,
+  "settled_since_floor": 24,
+  "strikes_per_event_median": 8
+ },
+ "KXNBAPTS": {
+  "by_month": {
+   "2025-11": 1055,
+   "2025-12": 2862,
+   "2026-01": 3642,
+   "2026-02": 3265,
+   "2026-03": 6541,
+   "2026-04": 4312,
+   "2026-05": 1600,
+   "2026-06": 285,
+   "2026-10": 24
+  },
+  "events": 1099,
+  "first_close": "2025-11-19T03:07:14.079091Z",
+  "last_close": "2026-10-09T02:59:59Z",
+  "open_now": 0,
+  "settled_since_floor": 23586,
+  "strikes_per_event_median": 20
+ },
+ "KXNBAPTSALLGAMES": {
+  "by_month": {
+   "2026-06": 17
+  },
+  "events": 3,
+  "first_close": "2026-06-04T03:30:39Z",
+  "last_close": "2026-06-14T04:34:59Z",
+  "open_now": 0,
+  "settled_since_floor": 17,
+  "strikes_per_event_median": 4
+ },
+ "KXNBAPTSLEADER": {
+  "by_month": {
+   "2026-04": 347,
+   "2026-05": 406,
+   "2026-06": 75
+  },
+  "events": 81,
+  "first_close": "2026-04-19T04:08:07Z",
+  "last_close": "2026-06-14T04:00:18Z",
+  "open_now": 0,
+  "settled_since_floor": 828,
+  "strikes_per_event_median": 10
+ },
+ "KXNBARA": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBARACE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAREB": {
+  "by_month": {
+   "2025-11": 915,
+   "2025-12": 2375,
+   "2026-01": 3766,
+   "2026-02": 3449,
+   "2026-03": 6267,
+   "2026-04": 4130,
+   "2026-05": 1534,
+   "2026-06": 220
+  },
+  "events": 1069,
+  "first_close": "2025-11-19T03:10:46.38752Z",
+  "last_close": "2026-06-14T03:54:40Z",
+  "open_now": 0,
+  "settled_since_floor": 22656,
+  "strikes_per_event_median": 20
+ },
+ "KXNBARECORD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 60,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBARELOCATION": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 11,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBARETIRE": {
+  "by_month": {
+   "2026-08": 4
+  },
+  "events": 1,
+  "first_close": "2026-08-12T20:43:27Z",
+  "last_close": "2026-08-12T20:43:27Z",
+  "open_now": 25,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 4
+ },
+ "KXNBARETURN": {
+  "by_month": {
+   "2026-04": 16,
+   "2026-05": 59,
+   "2026-06": 7
+  },
+  "events": 10,
+  "first_close": "2026-04-22T14:20:04Z",
+  "last_close": "2026-06-04T01:41:11Z",
+  "open_now": 0,
+  "settled_since_floor": 82,
+  "strikes_per_event_median": 8
+ },
+ "KXNBAROOKIE1STTEAM": {
+  "by_month": {
+   "2026-05": 17
+  },
+  "events": 1,
+  "first_close": "2026-05-21T02:43:43Z",
+  "last_close": "2026-05-21T02:45:42Z",
+  "open_now": 30,
+  "settled_since_floor": 17,
+  "strikes_per_event_median": 17
+ },
+ "KXNBAROOKIE2NDTEAM": {
+  "by_month": {
+   "2026-05": 17
+  },
+  "events": 1,
+  "first_close": "2026-05-21T02:46:03Z",
+  "last_close": "2026-05-21T02:47:44Z",
+  "open_now": 40,
+  "settled_since_floor": 17,
+  "strikes_per_event_median": 17
+ },
+ "KXNBARULE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASEATTLE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASEED": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 210,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASERIES": {
+  "by_month": {
+   "2026-04": 4,
+   "2026-05": 20
+  },
+  "events": 12,
+  "first_close": "2026-04-28T04:20:40Z",
+  "last_close": "2026-05-18T02:49:46Z",
+  "open_now": 0,
+  "settled_since_floor": 24,
+  "strikes_per_event_median": 2
+ },
+ "KXNBASERIES3PMLEADER": {
+  "by_month": {
+   "2026-06": 14
+  },
+  "events": 1,
+  "first_close": "2026-06-03T03:48:48Z",
+  "last_close": "2026-06-14T04:29:33Z",
+  "open_now": 0,
+  "settled_since_floor": 14,
+  "strikes_per_event_median": 14
+ },
+ "KXNBASERIESASTLEADER": {
+  "by_month": {
+   "2026-06": 11
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:32:00Z",
+  "last_close": "2026-06-14T04:32:05Z",
+  "open_now": 0,
+  "settled_since_floor": 11,
+  "strikes_per_event_median": 11
+ },
+ "KXNBASERIESCOMEBACK": {
+  "by_month": {
+   "2026-06": 1
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:26:15Z",
+  "last_close": "2026-06-14T04:26:15Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBASERIESGAMES": {
+  "by_month": {
+   "2026-04": 18,
+   "2026-05": 24,
+   "2026-06": 3
+  },
+  "events": 15,
+  "first_close": "2026-04-21T02:58:16Z",
+  "last_close": "2026-06-14T04:20:14Z",
+  "open_now": 0,
+  "settled_since_floor": 45,
+  "strikes_per_event_median": 3
+ },
+ "KXNBASERIESGCOMEBACK": {
+  "by_month": {
+   "2026-06": 4
+  },
+  "events": 1,
+  "first_close": "2026-06-11T03:40:00Z",
+  "last_close": "2026-06-14T04:32:07Z",
+  "open_now": 0,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 4
+ },
+ "KXNBASERIESOT": {
+  "by_month": {
+   "2026-06": 3
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:31:36Z",
+  "last_close": "2026-06-14T04:31:36Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNBASERIESPTS": {
+  "by_month": {
+   "2026-06": 16
+  },
+  "events": 1,
+  "first_close": "2026-06-09T05:16:57Z",
+  "last_close": "2026-06-14T14:21:27Z",
+  "open_now": 0,
+  "settled_since_floor": 16,
+  "strikes_per_event_median": 16
+ },
+ "KXNBASERIESPTSLEADER": {
+  "by_month": {
+   "2026-04": 22,
+   "2026-05": 69,
+   "2026-06": 11
+  },
+  "events": 9,
+  "first_close": "2026-04-28T04:34:06Z",
+  "last_close": "2026-06-14T04:30:21Z",
+  "open_now": 0,
+  "settled_since_floor": 102,
+  "strikes_per_event_median": 11
+ },
+ "KXNBASERIESPTSSPREAD": {
+  "by_month": {
+   "2026-06": 11
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:27:39Z",
+  "last_close": "2026-06-14T04:30:11Z",
+  "open_now": 0,
+  "settled_since_floor": 11,
+  "strikes_per_event_median": 11
+ },
+ "KXNBASERIESREBLEADER": {
+  "by_month": {
+   "2026-06": 13
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:31:28Z",
+  "last_close": "2026-06-14T04:31:33Z",
+  "open_now": 0,
+  "settled_since_floor": 13,
+  "strikes_per_event_median": 13
+ },
+ "KXNBASERIESROADWIN": {
+  "by_month": {
+   "2026-04": 46,
+   "2026-05": 51,
+   "2026-06": 8
+  },
+  "events": 14,
+  "first_close": "2026-04-21T01:43:09Z",
+  "last_close": "2026-06-04T03:17:15Z",
+  "open_now": 0,
+  "settled_since_floor": 105,
+  "strikes_per_event_median": 8
+ },
+ "KXNBASERIESROADWINS": {
+  "by_month": {
+   "2026-06": 7
+  },
+  "events": 1,
+  "first_close": "2026-06-09T03:40:46Z",
+  "last_close": "2026-06-14T04:31:15Z",
+  "open_now": 0,
+  "settled_since_floor": 7,
+  "strikes_per_event_median": 7
+ },
+ "KXNBASERIESSCORE": {
+  "by_month": {
+   "2026-04": 46,
+   "2026-05": 66,
+   "2026-06": 8
+  },
+  "events": 15,
+  "first_close": "2026-04-18T20:09:59Z",
+  "last_close": "2026-06-14T04:20:02Z",
+  "open_now": 0,
+  "settled_since_floor": 120,
+  "strikes_per_event_median": 8
+ },
+ "KXNBASERIESSPREAD": {
+  "by_month": {
+   "2026-04": 41,
+   "2026-05": 31,
+   "2026-06": 4
+  },
+  "events": 15,
+  "first_close": "2026-04-18T20:09:44Z",
+  "last_close": "2026-06-14T04:20:32Z",
+  "open_now": 0,
+  "settled_since_floor": 76,
+  "strikes_per_event_median": 6
+ },
+ "KXNBASERIESTOTALPTS": {
+  "by_month": {
+   "2026-06": 9
+  },
+  "events": 1,
+  "first_close": "2026-06-14T04:29:04Z",
+  "last_close": "2026-06-14T04:29:17Z",
+  "open_now": 0,
+  "settled_since_floor": 9,
+  "strikes_per_event_median": 9
+ },
+ "KXNBASHOOTINGSTARS": {
+  "by_month": {
+   "2026-02": 4
+  },
+  "events": 1,
+  "first_close": "2026-02-14T23:37:52Z",
+  "last_close": "2026-02-14T23:37:52Z",
+  "open_now": 0,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 4
+ },
+ "KXNBASJC": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 75,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASOUTHWEST": {
+  "by_month": {
+   "2026-04": 5
+  },
+  "events": 1,
+  "first_close": "2026-04-09T18:16:30Z",
+  "last_close": "2026-04-09T18:16:30Z",
+  "open_now": 5,
+  "settled_since_floor": 5,
+  "strikes_per_event_median": 5
+ },
+ "KXNBASPREAD": {
+  "by_month": {
+   "2025-10": 774,
+   "2025-11": 2344,
+   "2025-12": 2134,
+   "2026-01": 2493,
+   "2026-02": 2762,
+   "2026-03": 3030,
+   "2026-04": 1785,
+   "2026-05": 1357,
+   "2026-06": 258,
+   "2026-10": 1522
+  },
+  "events": 1379,
+  "first_close": "2025-10-22T03:49:40.627192Z",
+  "last_close": "2026-10-16T02:41:32Z",
+  "open_now": 300,
+  "settled_since_floor": 18459,
+  "strikes_per_event_median": 11
+ },
+ "KXNBASTADIUM": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASTAKESALE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASTARTERS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 133,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASTATAVG": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 188,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASTATLEADER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 467,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASTL": {
+  "by_month": {
+   "2026-01": 1032,
+   "2026-02": 1342,
+   "2026-03": 2241,
+   "2026-04": 1442,
+   "2026-05": 741,
+   "2026-06": 120
+  },
+  "events": 661,
+  "first_close": "2026-01-14T20:44:53.030669Z",
+  "last_close": "2026-06-14T03:54:40Z",
+  "open_now": 0,
+  "settled_since_floor": 6918,
+  "strikes_per_event_median": 9
+ },
+ "KXNBASTOCK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASTOCKS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBASUMMER": {
+  "by_month": {
+   "2026-07": 30
+  },
+  "events": 1,
+  "first_close": "2026-07-20T02:55:15Z",
+  "last_close": "2026-07-20T02:55:15Z",
+  "open_now": 0,
+  "settled_since_floor": 30,
+  "strikes_per_event_median": 30
+ },
+ "KXNBASUMMER1HSPREAD": {
+  "by_month": {
+   "2026-07": 273
+  },
+  "events": 36,
+  "first_close": "2026-07-13T23:57:24Z",
+  "last_close": "2026-07-20T02:17:27Z",
+  "open_now": 0,
+  "settled_since_floor": 273,
+  "strikes_per_event_median": 8
+ },
+ "KXNBASUMMER1HTOTAL": {
+  "by_month": {
+   "2026-07": 294
+  },
+  "events": 36,
+  "first_close": "2026-07-13T23:57:26Z",
+  "last_close": "2026-07-20T02:17:28Z",
+  "open_now": 0,
+  "settled_since_floor": 294,
+  "strikes_per_event_median": 9
+ },
+ "KXNBASUMMER1HWINNER": {
+  "by_month": {
+   "2026-07": 108
+  },
+  "events": 36,
+  "first_close": "2026-07-13T23:57:24Z",
+  "last_close": "2026-07-20T02:17:26Z",
+  "open_now": 0,
+  "settled_since_floor": 108,
+  "strikes_per_event_median": 3
+ },
+ "KXNBASUMMERGAME": {
+  "by_month": {
+   "2026-07": 188
+  },
+  "events": 94,
+  "first_close": "2026-07-04T02:00:02Z",
+  "last_close": "2026-07-20T02:54:39Z",
+  "open_now": 0,
+  "settled_since_floor": 188,
+  "strikes_per_event_median": 2
+ },
+ "KXNBASUMMERMVP": {
+  "by_month": {
+   "2026-07": 21
+  },
+  "events": 1,
+  "first_close": "2026-07-21T17:15:14Z",
+  "last_close": "2026-07-21T17:15:14Z",
+  "open_now": 0,
+  "settled_since_floor": 21,
+  "strikes_per_event_median": 21
+ },
+ "KXNBASUMMERPTS": {
+  "by_month": {
+   "2026-07": 8
+  },
+  "events": 1,
+  "first_close": "2026-07-10T03:43:14Z",
+  "last_close": "2026-07-10T03:43:41Z",
+  "open_now": 0,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 8
+ },
+ "KXNBASUMMERSPREAD": {
+  "by_month": {
+   "2026-07": 1022
+  },
+  "events": 92,
+  "first_close": "2026-07-04T21:39:45Z",
+  "last_close": "2026-07-20T02:54:39Z",
+  "open_now": 0,
+  "settled_since_floor": 1022,
+  "strikes_per_event_median": 10
+ },
+ "KXNBASUMMERTOTAL": {
+  "by_month": {
+   "2026-07": 1003
+  },
+  "events": 92,
+  "first_close": "2026-07-05T02:04:50Z",
+  "last_close": "2026-07-20T02:54:36Z",
+  "open_now": 0,
+  "settled_since_floor": 1003,
+  "strikes_per_event_median": 9
+ },
+ "KXNBASWEEP": {
+  "by_month": {
+   "2026-04": 5,
+   "2026-05": 3
+  },
+  "events": 2,
+  "first_close": "2026-04-26T14:36:32Z",
+  "last_close": "2026-05-12T22:05:51Z",
+  "open_now": 0,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 5
+ },
+ "KXNBATEAM": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBATEAMANNOUNCE": {
+  "by_month": {
+   "2026-07": 26
+  },
+  "events": 1,
+  "first_close": "2026-07-09T03:59:00Z",
+  "last_close": "2026-07-24T16:06:07Z",
+  "open_now": 0,
+  "settled_since_floor": 26,
+  "strikes_per_event_median": 26
+ },
+ "KXNBATEAMMATE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 74,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBATEAMSALE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBATEAMTOTAL": {
+  "by_month": {
+   "2026-02": 1773,
+   "2026-03": 4221,
+   "2026-04": 2664,
+   "2026-05": 738,
+   "2026-06": 90
+  },
+  "events": 529,
+  "first_close": "2026-02-10T06:16:33Z",
+  "last_close": "2026-06-14T03:39:57Z",
+  "open_now": 0,
+  "settled_since_floor": 9486,
+  "strikes_per_event_median": 18
+ },
+ "KXNBATEAMWINSTREAK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 30,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBATOJOINCBA": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 25,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBATOP5ROTY": {
+  "by_month": {
+   "2026-04": 1
+  },
+  "events": 1,
+  "first_close": "2026-04-30T15:57:45Z",
+  "last_close": "2026-04-30T15:57:45Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBATOTAL": {
+  "by_month": {
+   "2025-10": 792,
+   "2025-11": 2409,
+   "2025-12": 2200,
+   "2026-01": 2576,
+   "2026-02": 1870,
+   "2026-03": 2585,
+   "2026-04": 1656,
+   "2026-05": 606,
+   "2026-06": 93,
+   "2026-10": 1387
+  },
+  "events": 1379,
+  "first_close": "2025-10-22T03:49:40.596622Z",
+  "last_close": "2026-10-16T02:41:34Z",
+  "open_now": 252,
+  "settled_since_floor": 16174,
+  "strikes_per_event_median": 11
+ },
+ "KXNBATRADE": {
+  "by_month": {
+   "2026-01": 2,
+   "2026-02": 34,
+   "2026-06": 2,
+   "2026-07": 8,
+   "2026-10": 2
+  },
+  "events": 2,
+  "first_close": "2026-01-08T14:06:56.556991Z",
+  "last_close": "2026-10-14T02:20:19Z",
+  "open_now": 46,
+  "settled_since_floor": 48,
+  "strikes_per_event_median": 36
+ },
+ "KXNBAUNBEATEN": {
+  "by_month": {
+   "2026-05": 1
+  },
+  "events": 1,
+  "first_close": "2026-05-19T03:44:43Z",
+  "last_close": "2026-05-19T03:44:43Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAUPSET": {
+  "by_month": {
+   "2026-05": 8
+  },
+  "events": 2,
+  "first_close": "2026-05-01T14:08:27Z",
+  "last_close": "2026-05-18T03:13:02Z",
+  "open_now": 0,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 5
+ },
+ "KXNBAWHATTEND": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAWINMARGIN": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAWINRECORD": {
+  "by_month": {
+   "2026-01": 1
+  },
+  "events": 1,
+  "first_close": "2026-01-24T14:33:56.316636Z",
+  "last_close": "2026-01-24T14:33:56.316636Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNBAWINS": {
+  "by_month": {
+   "2026-03": 2,
+   "2026-04": 268
+  },
+  "events": 30,
+  "first_close": "2026-03-19T21:39:26Z",
+  "last_close": "2026-04-13T17:42:15Z",
+  "open_now": 312,
+  "settled_since_floor": 270,
+  "strikes_per_event_median": 9
+ },
+ "KXNBAWINSTREAK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 6,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNBAXMASOPPONENT": {
+  "by_month": {
+   "2026-08": 150
+  },
+  "events": 5,
+  "first_close": "2026-08-11T14:13:35Z",
+  "last_close": "2026-08-11T14:14:44Z",
+  "open_now": 0,
+  "settled_since_floor": 150,
+  "strikes_per_event_median": 30
+ },
+ "KXNFL1H": {
+  "by_month": {
+   "2026-08": 147,
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 129,
+  "first_close": "2026-08-07T01:37:42Z",
+  "last_close": "2026-10-16T01:55:37Z",
+  "open_now": 39,
+  "settled_since_floor": 387,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL1HFT": {
+  "by_month": {
+   "2026-09": 432,
+   "2026-10": 288
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:20:40Z",
+  "last_close": "2026-10-16T03:35:21Z",
+  "open_now": 117,
+  "settled_since_floor": 720,
+  "strikes_per_event_median": 9
+ },
+ "KXNFL1HSPREAD": {
+  "by_month": {
+   "2026-01": 55,
+   "2026-02": 13,
+   "2026-08": 747,
+   "2026-09": 827,
+   "2026-10": 544
+  },
+  "events": 136,
+  "first_close": "2026-01-18T01:33:23.739592Z",
+  "last_close": "2026-10-16T01:55:39Z",
+  "open_now": 204,
+  "settled_since_floor": 2186,
+  "strikes_per_event_median": 16
+ },
+ "KXNFL1HTD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFL1HTEAMTOTAL": {
+  "by_month": {
+   "2026-09": 1056,
+   "2026-10": 709
+  },
+  "events": 80,
+  "first_close": "2026-09-10T02:14:37Z",
+  "last_close": "2026-10-16T01:55:27Z",
+  "open_now": 301,
+  "settled_since_floor": 1765,
+  "strikes_per_event_median": 22
+ },
+ "KXNFL1HTOTAL": {
+  "by_month": {
+   "2026-01": 54,
+   "2026-02": 9,
+   "2026-08": 671,
+   "2026-09": 654,
+   "2026-10": 437
+  },
+  "events": 136,
+  "first_close": "2026-01-17T22:45:25.5432Z",
+  "last_close": "2026-10-16T01:55:41Z",
+  "open_now": 173,
+  "settled_since_floor": 1825,
+  "strikes_per_event_median": 14
+ },
+ "KXNFL1HWINNER": {
+  "by_month": {
+   "2026-01": 18,
+   "2026-02": 3
+  },
+  "events": 7,
+  "first_close": "2026-01-18T01:23:23.087631Z",
+  "last_close": "2026-02-09T01:11:37Z",
+  "open_now": 0,
+  "settled_since_floor": 21,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL1Q": {
+  "by_month": {
+   "2026-08": 147,
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 129,
+  "first_close": "2026-08-07T00:43:35Z",
+  "last_close": "2026-10-16T01:03:32Z",
+  "open_now": 39,
+  "settled_since_floor": 387,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL1QBTTS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 80,
+  "first_close": "2026-09-10T02:14:40Z",
+  "last_close": "2026-10-16T01:05:20Z",
+  "open_now": 12,
+  "settled_since_floor": 80,
+  "strikes_per_event_median": 1
+ },
+ "KXNFL1QSPREAD": {
+  "by_month": {
+   "2026-01": 16,
+   "2026-02": 8,
+   "2026-08": 490,
+   "2026-09": 546,
+   "2026-10": 352
+  },
+  "events": 132,
+  "first_close": "2026-01-25T20:53:05.833831Z",
+  "last_close": "2026-10-16T01:03:34Z",
+  "open_now": 133,
+  "settled_since_floor": 1412,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL1QTOTAL": {
+  "by_month": {
+   "2026-01": 12,
+   "2026-02": 6,
+   "2026-08": 490,
+   "2026-09": 480,
+   "2026-10": 320
+  },
+  "events": 132,
+  "first_close": "2026-01-25T21:42:25.519603Z",
+  "last_close": "2026-10-16T01:03:35Z",
+  "open_now": 130,
+  "settled_since_floor": 1308,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL1QWINNER": {
+  "by_month": {
+   "2026-01": 6,
+   "2026-02": 3
+  },
+  "events": 3,
+  "first_close": "2026-01-25T20:53:20.368606Z",
+  "last_close": "2026-02-09T00:18:32Z",
+  "open_now": 0,
+  "settled_since_floor": 9,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL1SEED": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFL1YDPASS": {
+  "by_month": {
+   "2026-02": 1
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:38:32Z",
+  "last_close": "2026-02-09T03:38:32Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFL2H": {
+  "by_month": {
+   "2026-08": 147,
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 129,
+  "first_close": "2026-08-07T03:14:43Z",
+  "last_close": "2026-10-16T03:35:27Z",
+  "open_now": 39,
+  "settled_since_floor": 387,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL2HSPREAD": {
+  "by_month": {
+   "2026-02": 12,
+   "2026-08": 747,
+   "2026-09": 804,
+   "2026-10": 534
+  },
+  "events": 130,
+  "first_close": "2026-02-09T03:31:25Z",
+  "last_close": "2026-10-16T03:35:29Z",
+  "open_now": 204,
+  "settled_since_floor": 2097,
+  "strikes_per_event_median": 16
+ },
+ "KXNFL2HTD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFL2HTOTAL": {
+  "by_month": {
+   "2026-02": 9,
+   "2026-08": 671,
+   "2026-09": 650,
+   "2026-10": 441
+  },
+  "events": 130,
+  "first_close": "2026-02-09T02:39:17Z",
+  "last_close": "2026-10-16T03:35:30Z",
+  "open_now": 173,
+  "settled_since_floor": 1771,
+  "strikes_per_event_median": 14
+ },
+ "KXNFL2HWINNER": {
+  "by_month": {
+   "2026-02": 3
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:34:47Z",
+  "last_close": "2026-02-09T03:34:47Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL2PTCONV": {
+  "by_month": {
+   "2026-02": 2
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:46:57Z",
+  "last_close": "2026-02-09T03:47:11Z",
+  "open_now": 0,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 2
+ },
+ "KXNFL2Q": {
+  "by_month": {
+   "2026-08": 147,
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 129,
+  "first_close": "2026-08-07T01:39:54Z",
+  "last_close": "2026-10-16T02:05:29Z",
+  "open_now": 39,
+  "settled_since_floor": 387,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL2QBTTS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 80,
+  "first_close": "2026-09-10T02:12:25Z",
+  "last_close": "2026-10-16T02:05:21Z",
+  "open_now": 12,
+  "settled_since_floor": 80,
+  "strikes_per_event_median": 1
+ },
+ "KXNFL2QSPREAD": {
+  "by_month": {
+   "2026-02": 8,
+   "2026-08": 490,
+   "2026-09": 561,
+   "2026-10": 365
+  },
+  "events": 130,
+  "first_close": "2026-02-09T01:12:18Z",
+  "last_close": "2026-10-16T02:05:31Z",
+  "open_now": 139,
+  "settled_since_floor": 1424,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL2QTOTAL": {
+  "by_month": {
+   "2026-02": 9,
+   "2026-08": 490,
+   "2026-09": 482,
+   "2026-10": 324
+  },
+  "events": 130,
+  "first_close": "2026-02-09T01:16:04Z",
+  "last_close": "2026-10-16T02:05:32Z",
+  "open_now": 130,
+  "settled_since_floor": 1305,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL2QWINNER": {
+  "by_month": {
+   "2026-02": 3
+  },
+  "events": 1,
+  "first_close": "2026-02-09T01:11:49Z",
+  "last_close": "2026-02-09T01:11:49Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL2TD": {
+  "by_month": {
+   "2025-09": 507,
+   "2025-10": 530,
+   "2025-11": 454,
+   "2025-12": 498,
+   "2026-01": 165,
+   "2026-02": 9
+  },
+  "events": 279,
+  "first_close": "2025-09-05T01:03:38.39615Z",
+  "last_close": "2026-02-09T03:35:26Z",
+  "open_now": 0,
+  "settled_since_floor": 2163,
+  "strikes_per_event_median": 7
+ },
+ "KXNFL3Q": {
+  "by_month": {
+   "2026-08": 147,
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 129,
+  "first_close": "2026-08-07T02:21:46Z",
+  "last_close": "2026-10-16T02:46:57Z",
+  "open_now": 39,
+  "settled_since_floor": 387,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL3QBTTS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 80,
+  "first_close": "2026-09-10T03:16:25Z",
+  "last_close": "2026-10-16T02:47:22Z",
+  "open_now": 12,
+  "settled_since_floor": 80,
+  "strikes_per_event_median": 1
+ },
+ "KXNFL3QSPREAD": {
+  "by_month": {
+   "2026-02": 8,
+   "2026-08": 490,
+   "2026-09": 567,
+   "2026-10": 359
+  },
+  "events": 130,
+  "first_close": "2026-02-09T02:23:55Z",
+  "last_close": "2026-10-16T02:46:58Z",
+  "open_now": 140,
+  "settled_since_floor": 1424,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL3QTOTAL": {
+  "by_month": {
+   "2026-02": 8,
+   "2026-08": 490,
+   "2026-09": 480,
+   "2026-10": 322
+  },
+  "events": 130,
+  "first_close": "2026-02-09T02:25:37Z",
+  "last_close": "2026-10-16T02:46:59Z",
+  "open_now": 130,
+  "settled_since_floor": 1300,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL3QWINNER": {
+  "by_month": {
+   "2026-02": 3
+  },
+  "events": 1,
+  "first_close": "2026-02-09T02:23:18Z",
+  "last_close": "2026-02-09T02:23:18Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL4DCONV": {
+  "by_month": {
+   "2026-02": 5
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:47:48Z",
+  "last_close": "2026-02-09T03:47:48Z",
+  "open_now": 0,
+  "settled_since_floor": 5,
+  "strikes_per_event_median": 5
+ },
+ "KXNFL4DOWNCONV": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFL4Q": {
+  "by_month": {
+   "2026-08": 147,
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 129,
+  "first_close": "2026-08-07T03:14:39Z",
+  "last_close": "2026-10-16T03:28:29Z",
+  "open_now": 39,
+  "settled_since_floor": 387,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL4QBTTS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 80,
+  "first_close": "2026-09-10T03:34:35Z",
+  "last_close": "2026-10-16T03:28:22Z",
+  "open_now": 12,
+  "settled_since_floor": 80,
+  "strikes_per_event_median": 1
+ },
+ "KXNFL4QSPREAD": {
+  "by_month": {
+   "2026-02": 8,
+   "2026-08": 490,
+   "2026-09": 571,
+   "2026-10": 384
+  },
+  "events": 130,
+  "first_close": "2026-02-09T03:28:27Z",
+  "last_close": "2026-10-16T03:28:30Z",
+  "open_now": 141,
+  "settled_since_floor": 1453,
+  "strikes_per_event_median": 11
+ },
+ "KXNFL4QTOTAL": {
+  "by_month": {
+   "2026-02": 9,
+   "2026-08": 490,
+   "2026-09": 482,
+   "2026-10": 324
+  },
+  "events": 130,
+  "first_close": "2026-02-09T02:38:09Z",
+  "last_close": "2026-10-16T03:28:31Z",
+  "open_now": 130,
+  "settled_since_floor": 1305,
+  "strikes_per_event_median": 10
+ },
+ "KXNFL4QWINNER": {
+  "by_month": {
+   "2026-02": 3
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:35:04Z",
+  "last_close": "2026-02-09T03:35:04Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNFL53MAN": {
+  "by_month": {
+   "2026-08": 2
+  },
+  "events": 2,
+  "first_close": "2026-08-31T01:55:29Z",
+  "last_close": "2026-08-31T01:55:44Z",
+  "open_now": 0,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 1
+ },
+ "KXNFL60YARDFGS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 6,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLALLPRO": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 239,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLANYTD": {
+  "by_month": {
+   "2025-09": 1295,
+   "2025-10": 1077,
+   "2025-11": 1292,
+   "2025-12": 1291,
+   "2026-01": 505,
+   "2026-02": 22
+  },
+  "events": 285,
+  "first_close": "2025-09-05T00:46:48.985434Z",
+  "last_close": "2026-02-09T03:49:53Z",
+  "open_now": 0,
+  "settled_since_floor": 5482,
+  "strikes_per_event_median": 19
+ },
+ "KXNFLAWARDFIN": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 206,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLBLOWOUT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 7,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLBOTH": {
+  "by_month": {
+   "2026-09": 192,
+   "2026-10": 128
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:19:53Z",
+  "last_close": "2026-10-16T03:35:22Z",
+  "open_now": 48,
+  "settled_since_floor": 320,
+  "strikes_per_event_median": 4
+ },
+ "KXNFLCAREERPASSTDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCAREERPASSYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 13,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCAREERRECYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 10,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCAREERRSHTDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCAREERRSHYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 6,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCELEBRITYGAME": {
+  "by_month": {
+   "2026-02": 8
+  },
+  "events": 1,
+  "first_close": "2026-02-08T20:03:19Z",
+  "last_close": "2026-02-08T20:03:19Z",
+  "open_now": 0,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLCOACHOUT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCOACHOUTFIRST": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLCOMBINE": {
+  "by_month": {
+   "2026-03": 28
+  },
+  "events": 4,
+  "first_close": "2026-03-01T23:45:52Z",
+  "last_close": "2026-03-01T23:51:51Z",
+  "open_now": 0,
+  "settled_since_floor": 28,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLCOMBINE40": {
+  "by_month": {
+   "2026-03": 28
+  },
+  "events": 2,
+  "first_close": "2026-03-01T23:45:25Z",
+  "last_close": "2026-03-01T23:46:42Z",
+  "open_now": 0,
+  "settled_since_floor": 28,
+  "strikes_per_event_median": 21
+ },
+ "KXNFLCOMBO": {
+  "by_month": {
+   "2025-09": 5,
+   "2026-02": 1
+  },
+  "events": 6,
+  "first_close": "2025-09-05T04:47:27.101441Z",
+  "last_close": "2026-02-11T17:38:21Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLCOMEBACK": {
+  "by_month": {
+   "2026-02": 5
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:27:38Z",
+  "last_close": "2026-02-09T03:27:38Z",
+  "open_now": 0,
+  "settled_since_floor": 5,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLCOMPETE": {
+  "by_month": {
+   "2026-08": 1,
+   "2026-09": 1
+  },
+  "events": 2,
+  "first_close": "2026-08-15T23:42:25Z",
+  "last_close": "2026-09-22T01:39:28Z",
+  "open_now": 1,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLCONTRACTSIZE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDEBUT": {
+  "by_month": {
+   "2026-09": 2,
+   "2026-10": 5
+  },
+  "events": 4,
+  "first_close": "2026-09-22T21:15:32Z",
+  "last_close": "2026-10-05T16:10:35Z",
+  "open_now": 22,
+  "settled_since_floor": 7,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLDELAY": {
+  "by_month": {
+   "2026-09": 2,
+   "2026-10": 20
+  },
+  "events": 22,
+  "first_close": "2026-09-27T22:43:11Z",
+  "last_close": "2026-10-12T00:00:07Z",
+  "open_now": 0,
+  "settled_since_floor": 22,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLDEPTHPOSITIONCLEQB2": {
+  "by_month": {
+   "2025-09": 3
+  },
+  "events": 1,
+  "first_close": "2025-09-09T03:59:00Z",
+  "last_close": "2025-09-09T03:59:00Z",
+  "open_now": 0,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNFLDIVISIONORDER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 192,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDIVISIONWINS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 64,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDIVLEASTWINS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 8,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDIVMOSTWINS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 8,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDIVUNDEFEATED": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 33,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDPOYSPECIALS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 2,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDRAFTCAT": {
+  "by_month": {
+   "2026-04": 78
+  },
+  "events": 14,
+  "first_close": "2026-04-24T01:27:47Z",
+  "last_close": "2026-04-26T00:40:54Z",
+  "open_now": 0,
+  "settled_since_floor": 78,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLDRAFTCOMPARE": {
+  "by_month": {
+   "2026-04": 12
+  },
+  "events": 2,
+  "first_close": "2026-04-24T03:18:43Z",
+  "last_close": "2026-04-25T16:16:27Z",
+  "open_now": 0,
+  "settled_since_floor": 12,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLDRAFTEAMPOS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDRAFTMATCHUP": {
+  "by_month": {
+   "2026-04": 16
+  },
+  "events": 8,
+  "first_close": "2026-04-24T00:21:35Z",
+  "last_close": "2026-04-25T16:42:38Z",
+  "open_now": 0,
+  "settled_since_floor": 16,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLDRAFTOU": {
+  "by_month": {
+   "2026-04": 52
+  },
+  "events": 1,
+  "first_close": "2026-04-24T00:22:09Z",
+  "last_close": "2026-04-25T22:54:10Z",
+  "open_now": 0,
+  "settled_since_floor": 52,
+  "strikes_per_event_median": 52
+ },
+ "KXNFLDRAFTSELECT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 992,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDRAFTTEAM": {
+  "by_month": {
+   "2026-04": 736
+  },
+  "events": 23,
+  "first_close": "2026-04-24T00:22:00Z",
+  "last_close": "2026-04-26T00:14:58Z",
+  "open_now": 0,
+  "settled_since_floor": 736,
+  "strikes_per_event_median": 32
+ },
+ "KXNFLDRAFTTEAMPOS": {
+  "by_month": {
+   "2026-04": 32
+  },
+  "events": 1,
+  "first_close": "2026-04-24T00:14:05Z",
+  "last_close": "2026-04-25T03:21:23Z",
+  "open_now": 0,
+  "settled_since_floor": 32,
+  "strikes_per_event_median": 32
+ },
+ "KXNFLDROY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLDSTTD": {
+  "by_month": {
+   "2026-02": 1,
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 81,
+  "first_close": "2026-02-09T03:01:43Z",
+  "last_close": "2026-10-16T03:35:23Z",
+  "open_now": 12,
+  "settled_since_floor": 81,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLENDSTREAK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 5,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLEQBTTS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:23:25Z",
+  "last_close": "2026-10-16T01:05:20Z",
+  "open_now": 12,
+  "settled_since_floor": 80,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLESCALATORREC": {
+  "by_month": {
+   "2026-09": 88,
+   "2026-10": 177
+  },
+  "events": 48,
+  "first_close": "2026-09-25T03:47:10Z",
+  "last_close": "2026-10-16T03:44:30Z",
+  "open_now": 59,
+  "settled_since_floor": 265,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLESCALATORRECYDS": {
+  "by_month": {
+   "2026-09": 88,
+   "2026-10": 177
+  },
+  "events": 48,
+  "first_close": "2026-09-25T03:56:24Z",
+  "last_close": "2026-10-16T03:49:43Z",
+  "open_now": 59,
+  "settled_since_floor": 265,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLESCALATORRSHYDS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 85
+  },
+  "events": 48,
+  "first_close": "2026-09-25T03:56:25Z",
+  "last_close": "2026-10-16T03:44:34Z",
+  "open_now": 30,
+  "settled_since_floor": 133,
+  "strikes_per_event_median": 3
+ },
+ "KXNFLEVERYWEEKCOMPETE": {
+  "by_month": {
+   "2026-09": 36
+  },
+  "events": 1,
+  "first_close": "2026-09-23T20:54:16Z",
+  "last_close": "2026-09-23T20:58:20Z",
+  "open_now": 0,
+  "settled_since_floor": 36,
+  "strikes_per_event_median": 36
+ },
+ "KXNFLEXECOTY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFANTASYMOST": {
+  "by_month": {
+   "2026-02": 13
+  },
+  "events": 1,
+  "first_close": "2026-02-09T04:00:57Z",
+  "last_close": "2026-02-09T04:00:57Z",
+  "open_now": 0,
+  "settled_since_floor": 13,
+  "strikes_per_event_median": 13
+ },
+ "KXNFLFF40PTS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFF50PTS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFH2H": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFHIGHSCORE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 26,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFLEADER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 382,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFLEADERTOP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 724,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFPLAYERHIGH": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 36,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFPLAYOFFLEADER": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 75,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFPTS": {
+  "by_month": {
+   "2026-09": 603,
+   "2026-10": 381
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:44:20Z",
+  "last_close": "2026-10-16T03:44:26Z",
+  "open_now": 142,
+  "settled_since_floor": 984,
+  "strikes_per_event_median": 12
+ },
+ "KXNFLFFPTSLADDER": {
+  "by_month": {
+   "2026-09": 114,
+   "2026-10": 206
+  },
+  "events": 50,
+  "first_close": "2026-09-21T04:42:57Z",
+  "last_close": "2026-10-16T03:36:19Z",
+  "open_now": 70,
+  "settled_since_floor": 320,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLFFPTSSEASON": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFSEASONTOTAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 36,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFTOP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLFFWEEKLEAD": {
+  "by_month": {
+   "2026-09": 763,
+   "2026-10": 479
+  },
+  "events": 25,
+  "first_close": "2026-09-15T03:59:00Z",
+  "last_close": "2026-10-13T03:59:00Z",
+  "open_now": 214,
+  "settled_since_floor": 1242,
+  "strikes_per_event_median": 32
+ },
+ "KXNFLFFWEEKTOP": {
+  "by_month": {
+   "2026-09": 478,
+   "2026-10": 344
+  },
+  "events": 20,
+  "first_close": "2026-09-15T03:59:00Z",
+  "last_close": "2026-10-13T03:59:00Z",
+  "open_now": 134,
+  "settled_since_floor": 822,
+  "strikes_per_event_median": 39
+ },
+ "KXNFLFG": {
+  "by_month": {
+   "2026-09": 384,
+   "2026-10": 256
+  },
+  "events": 80,
+  "first_close": "2026-09-10T02:13:34Z",
+  "last_close": "2026-10-16T04:01:14Z",
+  "open_now": 96,
+  "settled_since_floor": 640,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLFIRSTSTART": {
+  "by_month": {
+   "2026-10": 2
+  },
+  "events": 1,
+  "first_close": "2026-10-02T01:35:39Z",
+  "last_close": "2026-10-05T16:10:42Z",
+  "open_now": 5,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLFIRSTTD": {
+  "by_month": {
+   "2025-09": 1295,
+   "2025-10": 1076,
+   "2025-11": 1285,
+   "2025-12": 1298,
+   "2026-01": 511,
+   "2026-02": 22,
+   "2026-09": 1227,
+   "2026-10": 889
+  },
+  "events": 365,
+  "first_close": "2025-09-05T00:40:30.288052Z",
+  "last_close": "2026-10-16T04:07:21Z",
+  "open_now": 314,
+  "settled_since_floor": 7603,
+  "strikes_per_event_median": 20
+ },
+ "KXNFLFIRSTTDTEAM": {
+  "by_month": {
+   "2026-09": 144,
+   "2026-10": 96
+  },
+  "events": 80,
+  "first_close": "2026-09-10T02:11:22Z",
+  "last_close": "2026-10-16T00:57:38Z",
+  "open_now": 36,
+  "settled_since_floor": 240,
+  "strikes_per_event_median": 3
+ },
+ "KXNFLFIRSTTDTIME": {
+  "by_month": {
+   "2026-02": 14
+  },
+  "events": 1,
+  "first_close": "2026-02-09T00:04:05Z",
+  "last_close": "2026-02-09T02:30:50Z",
+  "open_now": 0,
+  "settled_since_floor": 14,
+  "strikes_per_event_median": 14
+ },
+ "KXNFLGAME": {
+  "by_month": {
+   "2025-08": 98,
+   "2025-09": 128,
+   "2025-10": 116,
+   "2025-11": 136,
+   "2025-12": 132,
+   "2026-01": 56,
+   "2026-08": 98,
+   "2026-09": 96,
+   "2026-10": 64
+  },
+  "events": 462,
+  "first_close": "2025-08-01T03:54:11.506822Z",
+  "last_close": "2026-10-16T03:34:14Z",
+  "open_now": 54,
+  "settled_since_floor": 924,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLGAMEFG": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLGAMELOCATION": {
+  "by_month": {
+   "2026-09": 1
+  },
+  "events": 1,
+  "first_close": "2026-09-27T22:46:36Z",
+  "last_close": "2026-09-27T22:46:36Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLGAMESACK": {
+  "by_month": {
+   "2026-02": 14
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:39:57Z",
+  "last_close": "2026-02-09T03:39:57Z",
+  "open_now": 0,
+  "settled_since_floor": 14,
+  "strikes_per_event_median": 14
+ },
+ "KXNFLGAMESPECIALS": {
+  "by_month": {
+   "2026-10": 3
+  },
+  "events": 1,
+  "first_close": "2026-10-12T14:40:56Z",
+  "last_close": "2026-10-14T22:08:45Z",
+  "open_now": 23,
+  "settled_since_floor": 3,
+  "strikes_per_event_median": 3
+ },
+ "KXNFLGAMETD": {
+  "by_month": {
+   "2026-02": 11
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:43:29Z",
+  "last_close": "2026-02-09T03:43:29Z",
+  "open_now": 0,
+  "settled_since_floor": 11,
+  "strikes_per_event_median": 11
+ },
+ "KXNFLGAMETO": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLGPICKENSCONTRACT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLH2HWINS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 22,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLHALLOFFAME": {
+  "by_month": {
+   "2026-02": 15
+  },
+  "events": 1,
+  "first_close": "2026-02-06T03:31:54Z",
+  "last_close": "2026-02-06T03:35:02Z",
+  "open_now": 28,
+  "settled_since_floor": 15,
+  "strikes_per_event_median": 15
+ },
+ "KXNFLHIGHSCORE": {
+  "by_month": {
+   "2026-09": 8
+  },
+  "events": 1,
+  "first_close": "2026-09-22T14:51:16Z",
+  "last_close": "2026-09-22T14:51:17Z",
+  "open_now": 4,
+  "settled_since_floor": 8,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLHIGHSCOREQ": {
+  "by_month": {
+   "2026-02": 4
+  },
+  "events": 1,
+  "first_close": "2026-02-09T01:58:44Z",
+  "last_close": "2026-02-09T02:37:04Z",
+  "open_now": 0,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 4
+ },
+ "KXNFLHIRECOACH": {
+  "by_month": {
+   "2026-01": 6
+  },
+  "events": 1,
+  "first_close": "2026-01-01T04:59:00Z",
+  "last_close": "2026-01-01T04:59:00Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLHKANE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLHOFINDUCTEES": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLINT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLADDERREC": {
+  "by_month": {
+   "2026-09": 91,
+   "2026-10": 177
+  },
+  "events": 49,
+  "first_close": "2026-09-22T03:24:25Z",
+  "last_close": "2026-10-16T03:44:22Z",
+  "open_now": 59,
+  "settled_since_floor": 268,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLLADDERRECYDS": {
+  "by_month": {
+   "2026-09": 88,
+   "2026-10": 177
+  },
+  "events": 48,
+  "first_close": "2026-09-25T04:39:43Z",
+  "last_close": "2026-10-16T03:49:58Z",
+  "open_now": 59,
+  "settled_since_floor": 265,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLLADDERRSHYDS": {
+  "by_month": {
+   "2026-09": 48,
+   "2026-10": 85
+  },
+  "events": 48,
+  "first_close": "2026-09-25T04:34:39Z",
+  "last_close": "2026-10-16T03:44:32Z",
+  "open_now": 30,
+  "settled_since_floor": 133,
+  "strikes_per_event_median": 3
+ },
+ "KXNFLLARGELEAD": {
+  "by_month": {
+   "2026-02": 6
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:28:38Z",
+  "last_close": "2026-02-09T03:28:38Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLLARGESTLEAD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLASTTOLOSE": {
+  "by_month": {
+   "2026-09": 27,
+   "2026-10": 2
+  },
+  "events": 1,
+  "first_close": "2026-09-10T16:15:40Z",
+  "last_close": "2026-10-05T01:00:24Z",
+  "open_now": 3,
+  "settled_since_floor": 29,
+  "strikes_per_event_median": 29
+ },
+ "KXNFLLASTTOWIN": {
+  "by_month": {
+   "2026-10": 4
+  },
+  "events": 1,
+  "first_close": "2026-10-01T14:43:00Z",
+  "last_close": "2026-10-13T16:41:01Z",
+  "open_now": 3,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 4
+ },
+ "KXNFLLEADCHANGE": {
+  "by_month": {
+   "2026-02": 9
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:30:02Z",
+  "last_close": "2026-02-09T03:30:02Z",
+  "open_now": 0,
+  "settled_since_floor": 9,
+  "strikes_per_event_median": 9
+ },
+ "KXNFLLEADERPINT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLEASTPENALIZED": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLONGESTFG": {
+  "by_month": {
+   "2026-10": 1
+  },
+  "events": 1,
+  "first_close": "2026-10-04T18:35:21Z",
+  "last_close": "2026-10-04T18:35:21Z",
+  "open_now": 4,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLLONGESTPLAY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 5,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLONGESTREC": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLONGESTTD": {
+  "by_month": {
+   "2026-02": 6
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:33:19Z",
+  "last_close": "2026-02-09T03:33:19Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLLONGFG": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLLONGREC": {
+  "by_month": {
+   "2026-09": 494,
+   "2026-10": 346
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:36:58Z",
+  "last_close": "2026-10-16T03:41:24Z",
+  "open_now": 80,
+  "settled_since_floor": 840,
+  "strikes_per_event_median": 10
+ },
+ "KXNFLLONGRSH": {
+  "by_month": {
+   "2026-09": 215,
+   "2026-10": 153
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:37:01Z",
+  "last_close": "2026-10-16T03:41:25Z",
+  "open_now": 34,
+  "settled_since_floor": 368,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLMATCHUP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 496,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLMOSTRECYDS": {
+  "by_month": {
+   "2026-02": 14,
+   "2026-09": 477,
+   "2026-10": 324
+  },
+  "events": 77,
+  "first_close": "2026-02-09T03:50:01Z",
+  "last_close": "2026-10-16T03:41:14Z",
+  "open_now": 22,
+  "settled_since_floor": 815,
+  "strikes_per_event_median": 10
+ },
+ "KXNFLMOSTRSHYDS": {
+  "by_month": {
+   "2026-02": 6,
+   "2026-09": 420,
+   "2026-10": 180
+  },
+  "events": 79,
+  "first_close": "2026-02-09T03:50:32Z",
+  "last_close": "2026-10-16T03:41:15Z",
+  "open_now": 9,
+  "settled_since_floor": 606,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLMVPSPECIALS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 14,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLNBA": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLNEXTCOACHOUT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLNEXTINT": {
+  "by_month": {
+   "2026-09": 2,
+   "2026-10": 7
+  },
+  "events": 1,
+  "first_close": "2026-09-14T22:05:39Z",
+  "last_close": "2026-10-04T18:21:34Z",
+  "open_now": 0,
+  "settled_since_floor": 9,
+  "strikes_per_event_median": 9
+ },
+ "KXNFLNEXTTD": {
+  "by_month": {
+   "2026-02": 154
+  },
+  "events": 7,
+  "first_close": "2026-02-09T02:37:12Z",
+  "last_close": "2026-02-09T03:39:43Z",
+  "open_now": 0,
+  "settled_since_floor": 154,
+  "strikes_per_event_median": 22
+ },
+ "KXNFLNEXTTEAM": {
+  "by_month": {
+   "2026-09": 66,
+   "2026-10": 99
+  },
+  "events": 5,
+  "first_close": "2026-09-23T19:51:42Z",
+  "last_close": "2026-10-12T23:19:08Z",
+  "open_now": 165,
+  "settled_since_floor": 165,
+  "strikes_per_event_median": 33
+ },
+ "KXNFLNONQBPASS": {
+  "by_month": {
+   "2026-02": 1
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:39:24Z",
+  "last_close": "2026-02-09T03:39:24Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLNOSCOREQ": {
+  "by_month": {
+   "2026-02": 1
+  },
+  "events": 1,
+  "first_close": "2026-02-09T02:38:57Z",
+  "last_close": "2026-02-09T02:38:57Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLOPOYSPECIALS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 2,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLOT": {
+  "by_month": {
+   "2026-02": 1,
+   "2026-09": 48,
+   "2026-10": 32
+  },
+  "events": 81,
+  "first_close": "2026-02-09T03:47:25Z",
+  "last_close": "2026-10-16T03:37:22Z",
+  "open_now": 13,
+  "settled_since_floor": 81,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLOTWIN": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLOWNERSTAKE": {
+  "by_month": {
+   "2026-08": 33
+  },
+  "events": 1,
+  "first_close": "2026-08-31T16:13:02Z",
+  "last_close": "2026-08-31T16:13:02Z",
+  "open_now": 0,
+  "settled_since_floor": 33,
+  "strikes_per_event_median": 33
+ },
+ "KXNFLPASSATT": {
+  "by_month": {
+   "2026-09": 555,
+   "2026-10": 192
+  },
+  "events": 80,
+  "first_close": "2026-09-10T03:36:38Z",
+  "last_close": "2026-10-16T03:37:23Z",
+  "open_now": 69,
+  "settled_since_floor": 747,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLPASSCOMP": {
+  "by_month": {
+   "2026-09": 555,
+   "2026-10": 192
+  },
+  "events": 80,
+  "first_close": "2026-09-10T03:36:39Z",
+  "last_close": "2026-10-16T03:37:23Z",
+  "open_now": 69,
+  "settled_since_floor": 747,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLPASSINT": {
+  "by_month": {
+   "2026-09": 291,
+   "2026-10": 192
+  },
+  "events": 80,
+  "first_close": "2026-09-10T02:48:43Z",
+  "last_close": "2026-10-16T03:37:24Z",
+  "open_now": 63,
+  "settled_since_floor": 483,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLPASSTDS": {
+  "by_month": {
+   "2025-11": 184,
+   "2025-12": 464,
+   "2026-01": 156,
+   "2026-02": 8,
+   "2026-08": 19,
+   "2026-09": 398,
+   "2026-10": 260
+  },
+  "events": 197,
+  "first_close": "2025-11-21T05:05:55.920772Z",
+  "last_close": "2026-10-16T03:43:18Z",
+  "open_now": 104,
+  "settled_since_floor": 1489,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLPASSTDSPROT": {
+  "by_month": {
+   "2026-10": 119
+  },
+  "events": 15,
+  "first_close": "2026-10-11T17:45:09Z",
+  "last_close": "2026-10-16T03:38:38Z",
+  "open_now": 104,
+  "settled_since_floor": 119,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLPASSYDS": {
+  "by_month": {
+   "2025-10": 641,
+   "2025-11": 1074,
+   "2025-12": 1147,
+   "2026-01": 403,
+   "2026-02": 18,
+   "2026-08": 266,
+   "2026-09": 890,
+   "2026-10": 623
+  },
+  "events": 309,
+  "first_close": "2025-10-07T04:41:48.235691Z",
+  "last_close": "2026-10-16T03:37:20Z",
+  "open_now": 223,
+  "settled_since_floor": 5062,
+  "strikes_per_event_median": 18
+ },
+ "KXNFLPASSYDSH2H": {
+  "by_month": {
+   "2026-10": 4
+  },
+  "events": 2,
+  "first_close": "2026-10-13T03:59:54Z",
+  "last_close": "2026-10-16T03:44:18Z",
+  "open_now": 0,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLPASSYDSPROT": {
+  "by_month": {
+   "2026-10": 271
+  },
+  "events": 15,
+  "first_close": "2026-10-11T17:36:43Z",
+  "last_close": "2026-10-16T03:39:39Z",
+  "open_now": 223,
+  "settled_since_floor": 271,
+  "strikes_per_event_median": 18
+ },
+ "KXNFLPLAYOFFC": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLPLAYOFFHOST": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLPOTM": {
+  "by_month": {
+   "2026-10": 201
+  },
+  "events": 4,
+  "first_close": "2026-10-01T16:49:58Z",
+  "last_close": "2026-10-01T16:53:35Z",
+  "open_now": 300,
+  "settled_since_floor": 201,
+  "strikes_per_event_median": 50
+ },
+ "KXNFLPREPACK": {
+  "by_month": {
+   "2025-11": 86,
+   "2025-12": 32
+  },
+  "events": 18,
+  "first_close": "2025-11-09T17:00:00Z",
+  "last_close": "2025-12-02T04:38:58.749385Z",
+  "open_now": 0,
+  "settled_since_floor": 118,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLPREPACK1HFT": {
+  "by_month": {
+   "2026-01": 12,
+   "2026-02": 6
+  },
+  "events": 3,
+  "first_close": "2026-01-25T23:06:29.448593Z",
+  "last_close": "2026-02-09T03:29:14Z",
+  "open_now": 0,
+  "settled_since_floor": 18,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLPREPACK1Q1H": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLPREPACK2ML": {
+  "by_month": {
+   "2025-12": 132,
+   "2026-01": 80
+  },
+  "events": 22,
+  "first_close": "2025-12-07T21:36:05.586983Z",
+  "last_close": "2026-01-26T02:57:55.317984Z",
+  "open_now": 0,
+  "settled_since_floor": 212,
+  "strikes_per_event_median": 12
+ },
+ "KXNFLPREPACK3ML": {
+  "by_month": {
+   "2025-12": 72,
+   "2026-01": 56
+  },
+  "events": 16,
+  "first_close": "2025-12-07T21:34:41.342979Z",
+  "last_close": "2026-01-19T03:11:53.869609Z",
+  "open_now": 0,
+  "settled_since_floor": 128,
+  "strikes_per_event_median": 8
+ },
+ "KXNFLPREPACKSGP": {
+  "by_month": {
+   "2025-12": 248,
+   "2026-01": 116,
+   "2026-02": 8
+  },
+  "events": 93,
+  "first_close": "2025-12-05T04:56:49.673163Z",
+  "last_close": "2026-02-09T03:28:55Z",
+  "open_now": 0,
+  "settled_since_floor": 372,
+  "strikes_per_event_median": 4
+ },
+ "KXNFLPREPACKSGPSPREAD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLPRIMETIME": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLPROBOWL": {
+  "by_month": {
+   "2026-02": 2
+  },
+  "events": 1,
+  "first_close": "2026-02-04T03:48:45Z",
+  "last_close": "2026-02-04T03:48:45Z",
+  "open_now": 0,
+  "settled_since_floor": 2,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLPROBOWLWIN": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLPROOTY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 40,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLRACE": {
+  "by_month": {
+   "2026-09": 765,
+   "2026-10": 480
+  },
+  "events": 415,
+  "first_close": "2026-09-10T01:38:22Z",
+  "last_close": "2026-10-16T03:37:21Z",
+  "open_now": 180,
+  "settled_since_floor": 1245,
+  "strikes_per_event_median": 3
+ },
+ "KXNFLREBOOT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLREC": {
+  "by_month": {
+   "2025-10": 64,
+   "2025-11": 3032,
+   "2025-12": 3283,
+   "2026-01": 950,
+   "2026-02": 70,
+   "2026-09": 3905,
+   "2026-10": 2807
+  },
+  "events": 241,
+  "first_close": "2025-10-28T05:11:56.630717Z",
+  "last_close": "2026-10-16T04:01:19Z",
+  "open_now": 666,
+  "settled_since_floor": 14111,
+  "strikes_per_event_median": 55
+ },
+ "KXNFLRECPROT": {
+  "by_month": {
+   "2026-10": 1187
+  },
+  "events": 15,
+  "first_close": "2026-10-11T17:45:03Z",
+  "last_close": "2026-10-16T04:02:15Z",
+  "open_now": 666,
+  "settled_since_floor": 1187,
+  "strikes_per_event_median": 78
+ },
+ "KXNFLRECYDS": {
+  "by_month": {
+   "2025-10": 2049,
+   "2025-11": 3433,
+   "2025-12": 3693,
+   "2026-01": 1009,
+   "2026-02": 70,
+   "2026-08": 28,
+   "2026-09": 4563,
+   "2026-10": 3452
+  },
+  "events": 290,
+  "first_close": "2025-10-07T04:50:42.852328Z",
+  "last_close": "2026-10-16T04:01:21Z",
+  "open_now": 864,
+  "settled_since_floor": 18297,
+  "strikes_per_event_median": 56
+ },
+ "KXNFLRECYDSH2H": {
+  "by_month": {
+   "2026-10": 6
+  },
+  "events": 3,
+  "first_close": "2026-10-09T12:09:03Z",
+  "last_close": "2026-10-16T03:49:38Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLRECYDSPROT": {
+  "by_month": {
+   "2026-10": 1373
+  },
+  "events": 15,
+  "first_close": "2026-10-11T17:38:52Z",
+  "last_close": "2026-10-16T04:03:43Z",
+  "open_now": 864,
+  "settled_since_floor": 1373,
+  "strikes_per_event_median": 91
+ },
+ "KXNFLRECYDSRECORD": {
+  "by_month": {
+   "2026-01": 1
+  },
+  "events": 1,
+  "first_close": "2026-01-04T04:19:39.521451Z",
+  "last_close": "2026-01-04T04:19:39.521451Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLREDZONEADS": {
+  "by_month": {
+   "2025-09": 1
+  },
+  "events": 1,
+  "first_close": "2025-09-09T17:34:09.398902Z",
+  "last_close": "2025-09-09T17:34:09.398902Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLREDZONEBRANDADS": {
+  "by_month": {
+   "2025-09": 5
+  },
+  "events": 1,
+  "first_close": "2025-09-08T14:00:00Z",
+  "last_close": "2025-09-08T14:00:00Z",
+  "open_now": 0,
+  "settled_since_floor": 5,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLRETIRE": {
+  "by_month": {
+   "2026-06": 3,
+   "2026-09": 7,
+   "2026-10": 3
+  },
+  "events": 8,
+  "first_close": "2026-06-04T01:41:37Z",
+  "last_close": "2026-10-06T20:05:11Z",
+  "open_now": 20,
+  "settled_since_floor": 13,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLRETURN": {
+  "by_month": {
+   "2026-09": 9
+  },
+  "events": 1,
+  "first_close": "2026-09-14T02:31:51Z",
+  "last_close": "2026-09-14T02:31:51Z",
+  "open_now": 0,
+  "settled_since_floor": 9,
+  "strikes_per_event_median": 9
+ },
+ "KXNFLROLE": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLROTM": {
+  "by_month": {
+   "2026-10": 60
+  },
+  "events": 2,
+  "first_close": "2026-10-01T17:04:37Z",
+  "last_close": "2026-10-01T17:06:33Z",
+  "open_now": 150,
+  "settled_since_floor": 60,
+  "strikes_per_event_median": 30
+ },
+ "KXNFLROUNDQUAL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 64,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLRRYDS": {
+  "by_month": {
+   "2026-09": 484,
+   "2026-10": 389
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:01:38Z",
+  "last_close": "2026-10-16T03:41:27Z",
+  "open_now": 54,
+  "settled_since_floor": 873,
+  "strikes_per_event_median": 11
+ },
+ "KXNFLRSHATT": {
+  "by_month": {
+   "2026-09": 802,
+   "2026-10": 360
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:07:26Z",
+  "last_close": "2026-10-16T03:41:27Z",
+  "open_now": 87,
+  "settled_since_floor": 1162,
+  "strikes_per_event_median": 12
+ },
+ "KXNFLRSHYDS": {
+  "by_month": {
+   "2025-10": 754,
+   "2025-11": 1580,
+   "2025-12": 1800,
+   "2026-01": 476,
+   "2026-02": 29,
+   "2026-08": 43,
+   "2026-09": 2539,
+   "2026-10": 1862
+  },
+  "events": 285,
+  "first_close": "2025-10-07T05:15:16.36468Z",
+  "last_close": "2026-10-16T03:41:18Z",
+  "open_now": 583,
+  "settled_since_floor": 9083,
+  "strikes_per_event_median": 27
+ },
+ "KXNFLRSHYDSH2H": {
+  "by_month": {
+   "2026-10": 4
+  },
+  "events": 2,
+  "first_close": "2026-10-13T04:04:31Z",
+  "last_close": "2026-10-16T03:49:39Z",
+  "open_now": 0,
+  "settled_since_floor": 4,
+  "strikes_per_event_median": 2
+ },
+ "KXNFLRSHYDSPROT": {
+  "by_month": {
+   "2026-10": 767
+  },
+  "events": 15,
+  "first_close": "2026-10-11T17:42:54Z",
+  "last_close": "2026-10-16T03:59:58Z",
+  "open_now": 583,
+  "settled_since_floor": 767,
+  "strikes_per_event_median": 52
+ },
+ "KXNFLSACK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSACKRECORD": {
+  "by_month": {
+   "2026-01": 1
+  },
+  "events": 1,
+  "first_close": "2026-01-04T20:28:36.801397Z",
+  "last_close": "2026-01-04T20:28:36.801397Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLSAFETY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSBMVPPOS": {
+  "by_month": {
+   "2026-02": 5
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:46:55Z",
+  "last_close": "2026-02-09T03:47:10Z",
+  "open_now": 0,
+  "settled_since_floor": 5,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLSBOUTCOME": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 512,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSDRAFTTOP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEASONPASSTDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 115,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEASONPASSYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 120,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEASONREC": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 169,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEASONRECTD": {
+  "by_month": {
+   "2026-09": 1
+  },
+  "events": 1,
+  "first_close": "2026-09-28T07:00:21Z",
+  "last_close": "2026-09-28T07:00:21Z",
+  "open_now": 180,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLSEASONRECYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 195,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEASONRSHTD": {
+  "by_month": {
+   "2026-09": 2,
+   "2026-10": 4
+  },
+  "events": 2,
+  "first_close": "2026-09-28T07:00:20Z",
+  "last_close": "2026-10-13T14:00:18Z",
+  "open_now": 227,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLSEASONRSHYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 116,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEASONRUSHYDS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSEED": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 192,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSELLOUT": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSFPRACFIELD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSFTY": {
+  "by_month": {
+   "2026-09": 47,
+   "2026-10": 32
+  },
+  "events": 79,
+  "first_close": "2026-09-11T15:39:29Z",
+  "last_close": "2026-10-16T03:54:21Z",
+  "open_now": 12,
+  "settled_since_floor": 79,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLSHORTESTTD": {
+  "by_month": {
+   "2026-02": 6
+  },
+  "events": 1,
+  "first_close": "2026-02-09T03:32:41Z",
+  "last_close": "2026-02-09T03:32:41Z",
+  "open_now": 0,
+  "settled_since_floor": 6,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLSPREAD": {
+  "by_month": {
+   "2025-08": 1568,
+   "2025-09": 2035,
+   "2025-10": 1182,
+   "2025-11": 1108,
+   "2025-12": 1060,
+   "2026-01": 445,
+   "2026-02": 22,
+   "2026-08": 1203,
+   "2026-09": 1321,
+   "2026-10": 861
+  },
+  "events": 430,
+  "first_close": "2025-08-21T10:47:08.973504Z",
+  "last_close": "2026-10-16T03:35:20Z",
+  "open_now": 359,
+  "settled_since_floor": 10805,
+  "strikes_per_event_median": 17
+ },
+ "KXNFLSTADIUM": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 2,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSTAGEOFELIM": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 192,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLSUPDRAFTPICK": {
+  "by_month": {
+   "2026-06": 1
+  },
+  "events": 1,
+  "first_close": "2026-06-17T17:47:49Z",
+  "last_close": "2026-06-17T17:47:49Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLSZNRECORD": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 6,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLT100": {
+  "by_month": {
+   "2026-09": 150
+  },
+  "events": 3,
+  "first_close": "2026-09-02T14:53:36Z",
+  "last_close": "2026-09-03T21:48:12Z",
+  "open_now": 0,
+  "settled_since_floor": 150,
+  "strikes_per_event_median": 50
+ },
+ "KXNFLT100TOP": {
+  "by_month": {
+   "2026-08": 23,
+   "2026-09": 127
+  },
+  "events": 3,
+  "first_close": "2026-08-23T17:22:44Z",
+  "last_close": "2026-09-03T21:49:07Z",
+  "open_now": 0,
+  "settled_since_floor": 150,
+  "strikes_per_event_median": 50
+ },
+ "KXNFLTD": {
+  "by_month": {
+   "2026-08": 38,
+   "2026-09": 2280,
+   "2026-10": 1628
+  },
+  "events": 86,
+  "first_close": "2026-08-07T00:53:19Z",
+  "last_close": "2026-10-16T04:01:19Z",
+  "open_now": 556,
+  "settled_since_floor": 3946,
+  "strikes_per_event_median": 49
+ },
+ "KXNFLTDPROT": {
+  "by_month": {
+   "2026-10": 781
+  },
+  "events": 16,
+  "first_close": "2026-10-09T00:04:43Z",
+  "last_close": "2026-10-16T04:03:42Z",
+  "open_now": 556,
+  "settled_since_floor": 781,
+  "strikes_per_event_median": 49
+ },
+ "KXNFLTEAM1POS": {
+  "by_month": {
+   "2026-04": 288
+  },
+  "events": 32,
+  "first_close": "2026-04-24T00:14:03Z",
+  "last_close": "2026-04-25T01:27:49Z",
+  "open_now": 0,
+  "settled_since_floor": 288,
+  "strikes_per_event_median": 9
+ },
+ "KXNFLTEAM1STDOWNS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLTEAMDPTS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 32,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLTEAMFG": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLTEAMFIRSTTD": {
+  "by_month": {
+   "2026-09": 1279,
+   "2026-10": 887
+  },
+  "events": 160,
+  "first_close": "2026-09-10T02:11:58Z",
+  "last_close": "2026-10-16T04:07:22Z",
+  "open_now": 283,
+  "settled_since_floor": 2166,
+  "strikes_per_event_median": 14
+ },
+ "KXNFLTEAMPTS": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 64,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLTEAMSACK": {
+  "by_month": {
+   "2026-09": 480,
+   "2026-10": 320
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:23:22Z",
+  "last_close": "2026-10-16T03:35:16Z",
+  "open_now": 120,
+  "settled_since_floor": 800,
+  "strikes_per_event_median": 10
+ },
+ "KXNFLTEAMTD": {
+  "by_month": {
+   "2026-09": 199
+  },
+  "events": 33,
+  "first_close": "2026-09-10T04:23:23Z",
+  "last_close": "2026-09-25T03:21:26Z",
+  "open_now": 0,
+  "settled_since_floor": 199,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLTEAMTO": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLTEAMTOTAL": {
+  "by_month": {
+   "2025-12": 557,
+   "2026-01": 234,
+   "2026-02": 18,
+   "2026-09": 1327,
+   "2026-10": 880
+  },
+  "events": 125,
+  "first_close": "2025-12-05T17:04:21.942251Z",
+  "last_close": "2026-10-16T03:35:20Z",
+  "open_now": 344,
+  "settled_since_floor": 3016,
+  "strikes_per_event_median": 27
+ },
+ "KXNFLTEAMYDS": {
+  "by_month": {
+   "2026-09": 558,
+   "2026-10": 320
+  },
+  "events": 80,
+  "first_close": "2026-09-10T04:27:20Z",
+  "last_close": "2026-10-16T03:37:20Z",
+  "open_now": 120,
+  "settled_since_floor": 878,
+  "strikes_per_event_median": 10
+ },
+ "KXNFLTIE": {
+  "by_month": {
+   "2026-10": 32
+  },
+  "events": 32,
+  "first_close": "2026-10-02T03:43:24Z",
+  "last_close": "2026-10-16T03:35:22Z",
+  "open_now": 13,
+  "settled_since_floor": 32,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLTIES": {
+  "by_month": {
+   "2026-10": 1
+  },
+  "events": 1,
+  "first_close": "2026-10-12T14:41:08Z",
+  "last_close": "2026-10-12T14:41:08Z",
+  "open_now": 3,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLTKL": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLTOTAL": {
+  "by_month": {
+   "2025-08": 1296,
+   "2025-09": 1794,
+   "2025-10": 983,
+   "2025-11": 964,
+   "2025-12": 604,
+   "2026-01": 259,
+   "2026-02": 18,
+   "2026-08": 939,
+   "2026-09": 973,
+   "2026-10": 642
+  },
+  "events": 430,
+  "first_close": "2025-08-21T11:10:41.279733Z",
+  "last_close": "2026-10-16T03:35:21Z",
+  "open_now": 266,
+  "settled_since_floor": 8472,
+  "strikes_per_event_median": 18
+ },
+ "KXNFLTOTALTD": {
+  "by_month": {
+   "2026-09": 214
+  },
+  "events": 33,
+  "first_close": "2026-09-10T04:03:26Z",
+  "last_close": "2026-09-25T03:21:29Z",
+  "open_now": 0,
+  "settled_since_floor": 214,
+  "strikes_per_event_median": 6
+ },
+ "KXNFLTRADE": {
+  "by_month": {
+   "2025-11": 33,
+   "2026-03": 5,
+   "2026-04": 2,
+   "2026-05": 19,
+   "2026-06": 2,
+   "2026-08": 1,
+   "2026-09": 1,
+   "2026-10": 2
+  },
+  "events": 3,
+  "first_close": "2025-11-03T18:03:02.153113Z",
+  "last_close": "2026-10-12T23:20:49Z",
+  "open_now": 53,
+  "settled_since_floor": 65,
+  "strikes_per_event_median": 19
+ },
+ "KXNFLTSPEC": {
+  "by_month": {
+   "2026-09": 8,
+   "2026-10": 9
+  },
+  "events": 12,
+  "first_close": "2026-09-14T14:10:05Z",
+  "last_close": "2026-10-14T16:48:49Z",
+  "open_now": 289,
+  "settled_since_floor": 17,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLVIEWERSHIP": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLWEEKCOMPETE": {
+  "by_month": {
+   "2026-09": 24
+  },
+  "events": 1,
+  "first_close": "2026-09-11T02:30:06Z",
+  "last_close": "2026-09-15T03:20:57Z",
+  "open_now": 0,
+  "settled_since_floor": 24,
+  "strikes_per_event_median": 24
+ },
+ "KXNFLWEEKHIGHSCORE": {
+  "by_month": {
+   "2026-09": 63,
+   "2026-10": 62
+  },
+  "events": 4,
+  "first_close": "2026-09-21T14:18:34Z",
+  "last_close": "2026-10-13T04:59:38Z",
+  "open_now": 386,
+  "settled_since_floor": 125,
+  "strikes_per_event_median": 32
+ },
+ "KXNFLWEEKMOSTPASSYDS": {
+  "by_month": {
+   "2026-09": 91,
+   "2026-10": 58
+  },
+  "events": 5,
+  "first_close": "2026-09-15T16:44:10Z",
+  "last_close": "2026-10-13T04:19:47Z",
+  "open_now": 24,
+  "settled_since_floor": 149,
+  "strikes_per_event_median": 30
+ },
+ "KXNFLWEEKMOSTRECYDS": {
+  "by_month": {
+   "2026-09": 174,
+   "2026-10": 108
+  },
+  "events": 5,
+  "first_close": "2026-09-15T16:43:44Z",
+  "last_close": "2026-10-13T04:19:47Z",
+  "open_now": 43,
+  "settled_since_floor": 282,
+  "strikes_per_event_median": 59
+ },
+ "KXNFLWEEKMOSTRSHYDS": {
+  "by_month": {
+   "2026-09": 94,
+   "2026-10": 61
+  },
+  "events": 5,
+  "first_close": "2026-09-15T16:43:37Z",
+  "last_close": "2026-10-13T04:19:47Z",
+  "open_now": 27,
+  "settled_since_floor": 155,
+  "strikes_per_event_median": 30
+ },
+ "KXNFLWEEKTIE": {
+  "by_month": {
+   "2026-09": 1
+  },
+  "events": 1,
+  "first_close": "2026-09-22T03:26:39Z",
+  "last_close": "2026-09-22T03:26:39Z",
+  "open_now": 0,
+  "settled_since_floor": 1,
+  "strikes_per_event_median": 1
+ },
+ "KXNFLWINMARGIN": {
+  "by_month": {
+   "2026-02": 7,
+   "2026-09": 336,
+   "2026-10": 224
+  },
+  "events": 81,
+  "first_close": "2026-02-09T03:40:51Z",
+  "last_close": "2026-10-16T03:35:23Z",
+  "open_now": 84,
+  "settled_since_floor": 567,
+  "strikes_per_event_median": 7
+ },
+ "KXNFLWINNINGSTREAK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 0,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLWINS": {
+  "by_month": {
+   "2026-09": 96,
+   "2026-10": 64
+  },
+  "events": 32,
+  "first_close": "2026-09-10T05:00:20Z",
+  "last_close": "2026-10-16T04:59:57Z",
+  "open_now": 384,
+  "settled_since_floor": 160,
+  "strikes_per_event_median": 5
+ },
+ "KXNFLWINS-ANY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 3,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLWINSTREAK": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 9,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLWINSWEEK": {
+  "by_month": {
+   "2026-09": 288,
+   "2026-10": 160
+  },
+  "events": 3,
+  "first_close": "2026-09-18T16:15:05Z",
+  "last_close": "2026-10-16T05:00:05Z",
+  "open_now": 280,
+  "settled_since_floor": 448,
+  "strikes_per_event_median": 160
+ },
+ "KXNFLWORSTTOFIRST": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 1,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ },
+ "KXNFLWPMOTY": {
+  "by_month": {},
+  "events": 0,
+  "first_close": null,
+  "last_close": null,
+  "open_now": 31,
+  "settled_since_floor": 0,
+  "strikes_per_event_median": 0
+ }
+}
