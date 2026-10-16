@@ -321,7 +321,10 @@ PURPOSE: BREADTH (B1 NBA cells logging: 0 -> up to 9 of 12) + PLUMBING (thin-mar
 WHY: the window (10-16) restarted t4-mlb in an idle window (manual deploy dispatch, run 38932291132, no MLB game live), read the
 surface budget GREEN through the box bridge at 16:37Z, moved the capture to :51 (#287; :21 collides with EXP-039) and installed
 it. The first install raced the #287 deploy and put the old 21,51 line in; a reinstall was requested at 16:45Z (results:
-04_EXECUTION/BOX_TASKS/results/20261016T1645Z_*). NBA opened 2026-10-20 (9 of 12 cells flip-ready; GG-891).
+04_EXECUTION/BOX_TASKS/results/20261016T1645Z_*). Window read-back 16:47Z: the reinstall ALSO wrote 21,51 - the box was still at
+3b01d2e4 (deploy status "noop" at 16:43Z) and had not pulled #287. So the capture IS running, at :21 and :51; the only cost is the
+GG-477 stagger clash with EXP-039 at 4 hours a day. Find why the box did not pull #287 (Hard Rule 13: is any other merge stuck?).
+NBA opened 2026-10-20 (9 of 12 cells flip-ready; GG-891).
 PART A - The capture (~30 min)
   1. Read 20261016T1645Z_*. The crontab block must read `51 * * * *`; if not, uninstall + install again. Set the registry entry to
      status "live" with its alarm (max_age_h = 2 on logs/thin_capture_cron.log) by PR; read back the RUNTIME_MAP and SURFACE BUDGET.
