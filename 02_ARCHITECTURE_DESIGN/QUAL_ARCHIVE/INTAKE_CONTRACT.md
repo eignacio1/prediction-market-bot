@@ -59,6 +59,13 @@ every source date checks out. The adapter tags every claim with `first_committed
 reported as exploratory and kept apart from results on claims committed before kickoff, which carry no such bias and start
 accruing now.
 
+## The pipe (2026-10-15 22:50 PT)
+
+`eignacio1/sports-intel-archive` - PRIVATE GitHub repo, created empty by one-off block AP. Muse pushes to it with a deploy key
+scoped to that repo only (id 166624777, write; the private key lives outside every project folder on the operator's Mac and is
+never committed). The bot reads it read-only, pinned to the archive commit each read used. Muse must never rewrite pushed history
+(no force-push): the commit history is the point-in-time record.
+
 ## Open questions (for the operator, when the adapter is built)
 
 - Where a terminal pulls the archive from (answer 3 above).

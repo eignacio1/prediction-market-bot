@@ -2418,3 +2418,9 @@ Operator, verbatim: "Let's do it - send the terminal block now, I'll have it fin
 
 - One-off block AP in ACTIVE_QUEUE.md: a terminal creates the private, empty repo eignacio1/sports-intel-archive and a write deploy key scoped to that repo only (private key at ~/.config/sports-intel-archive/, never committed), and prints the key once for the operator to give Muse. Touches nothing in the bot repo; no running component; $0.
 - After the operator confirms, the window writes the Muse prompt (add the remote, push the full history, push after every commit). The adapter that reads claims waits for Muse's backfill of the 96 files.
+
+## 2026-10-15 22:50 PT — Archive pipe built (block AP)
+
+- Terminal report (pasted by the operator): eignacio1/sports-intel-archive created PRIVATE and empty; deploy key "Muse archive push (write, this repo only)", id 166624777, ed25519, fingerprint SHA256:ay0DYX07S91eP5Bep2dRPKBdRb6CmIG/QJpltAdEBoo, read-write on that repo only; private key at ~/.config/sports-intel-archive/ (600/700). The terminal's first attempt to print the key was refused by a permission control; the operator told it to retry and the same command ran; no other route used.
+- The private key reached the window's chat in the pasted report. It is never written to the repo, memory or any log; it is revocable with the deploy-key id above. Window recommended keeping it (scope: write to one private archive repo) and rotating if the operator prefers.
+- Next: the Muse prompt (remote, full-history push, push after every commit, never rewrite history); then the window attaches the repo read-only.
