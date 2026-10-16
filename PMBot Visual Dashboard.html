@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visual Dashboard — Prediction Market Bot</title>
+<style>
+/* ============================================================
+   TOKENS — validated data-viz palette (3 categorical slots,
+   all-pairs PASS in both modes; status palette fixed)
+   ============================================================ */
+:root{
+  color-scheme: light;
+  --plane:#f9f9f7; --surface:#fcfcfb; --surface-2:#f2f1ed; --surface-3:#e9e8e2;
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --hair:rgba(11,11,11,.10); --hair-2:rgba(11,11,11,.06);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --up:#006300;
+  --seq-100:#cde2fb; --seq-250:#86b6ef; --seq-400:#3987e5; --seq-550:#1c5cab; --seq-700:#0d366b;
+  --shadow:0 1px 2px rgba(11,11,11,.05), 0 8px 24px -12px rgba(11,11,11,.12);
+  --r:10px; --r-sm:6px;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:where(:not([data-theme="light"])){
+  color-scheme: dark;
+  --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#222221; --surface-3:#2c2c2a;
+  --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+  --grid:#2c2c2a; --axis:#383835; --hair:rgba(255,255,255,.10); --hair-2:rgba(255,255,255,.06);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --up:#0ca30c;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -16px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#222221; --surface-3:#2c2c2a;
+  --ink:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+  --grid:#2c2c2a; --axis:#383835; --hair:rgba(255,255,255,.10); --hair-2:rgba(255,255,255,.06);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --up:#0ca30c;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:84px}
+body{
+  margin:0; background:var(--plane); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; font-weight:600; letter-spacing:-.011em; line-height:1.25}
+p{margin:0 0 .7em}
+a{color:inherit}
+.mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- SHELL ---------- */
+.shell{display:grid; grid-template-columns:236px minmax(0,1fr); min-height:100vh}
+
+.rail{
+  position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+  background:var(--surface); border-right:1px solid var(--hair);
+  padding:20px 0 40px; display:flex; flex-direction:column;
+}
+.brand{padding:4px 20px 18px; border-bottom:1px solid var(--hair-2); margin-bottom:14px}
+.brand .mark{
+  display:flex; align-items:center; gap:9px; margin-bottom:9px;
+}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--s1);
+  box-shadow:0 0 0 3px color-mix(in srgb, var(--s1) 22%, transparent)}
+.brand h1{font-size:14px; letter-spacing:-.01em}
+.brand .sub{font-size:11.5px; color:var(--ink-3); line-height:1.4}
+
+.navgroup{padding:0 12px; margin-bottom:12px}
+.navgroup .lbl{
+  font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-3); padding:0 8px; margin:14px 0 6px;
+}
+.rail a.nv{
+  display:flex; align-items:center; gap:9px; padding:6.5px 8px; border-radius:var(--r-sm);
+  font-size:13.2px; color:var(--ink-2); text-decoration:none; transition:background .12s, color .12s;
+}
+.rail a.nv:hover{background:var(--surface-2); color:var(--ink)}
+.rail a.nv.on{background:var(--surface-3); color:var(--ink); font-weight:550}
+.rail a.nv .ic{width:15px; flex:0 0 15px; opacity:.75; display:grid; place-items:center}
+.rail a.nv .ct{margin-left:auto; font-size:10.5px; color:var(--ink-3); font-family:var(--mono)}
+
+.main{min-width:0}
+.topbar{
+  position:sticky; top:0; z-index:20; background:color-mix(in srgb, var(--plane) 86%, transparent);
+  backdrop-filter:saturate(180%) blur(14px); -webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--hair); padding:11px 30px;
+  display:flex; align-items:center; gap:14px;
+}
+.topbar .crumb{font-size:12.5px; color:var(--ink-3)}
+.topbar .crumb b{color:var(--ink-2); font-weight:550}
+.spacer{flex:1}
+.btn{
+  appearance:none; border:1px solid var(--hair); background:var(--surface); color:var(--ink-2);
+  font:inherit; font-size:12.5px; padding:5px 11px; border-radius:var(--r-sm); cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px; transition:background .12s,border-color .12s;
+}
+.btn:hover{background:var(--surface-2); color:var(--ink)}
+.btn.sm{font-size:11.5px; padding:3.5px 9px}
+
+.wrap{padding:30px 30px 96px; max-width:1360px}
+section{margin-bottom:46px; scroll-margin-top:84px}
+.sechead{display:flex; align-items:baseline; gap:12px; margin-bottom:6px; flex-wrap:wrap}
+.sechead h2{font-size:19px}
+.sechead .num{
+  font-family:var(--mono); font-size:11px; color:var(--ink-3);
+  border:1px solid var(--hair); padding:1px 6px; border-radius:4px;
+}
+.lede{color:var(--ink-2); font-size:13.8px; max-width:78ch; margin-bottom:18px}
+.lede strong{color:var(--ink); font-weight:600}
+
+/* ---------- CARDS ---------- */
+.card{
+  min-width:0; max-width:100%;
+  background:var(--surface); border:1px solid var(--hair); border-radius:var(--r);
+  padding:18px 20px; box-shadow:var(--shadow);
+}
+.card h3{font-size:13.5px; margin-bottom:3px}
+.card .cap{font-size:11.5px; color:var(--ink-3); margin-bottom:14px; line-height:1.45}
+.grid{display:grid; gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1080px){ .g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media(max-width:720px){ .g2,.g3,.g4{grid-template-columns:1fr} }
+
+/* ---------- STAT TILES ---------- */
+.tile{
+  background:var(--surface); border:1px solid var(--hair); border-radius:var(--r);
+  padding:15px 17px; position:relative; overflow:hidden;
+}
+.tile::before{content:""; position:absolute; left:0; top:0; bottom:0; width:2.5px; background:var(--accent,var(--axis))}
+.tile .k{font-size:10.5px; font-weight:650; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3)}
+.tile .v{font-size:31px; font-weight:620; letter-spacing:-.025em; line-height:1.1; margin:5px 0 2px}
+.tile .v small{font-size:14px; font-weight:500; color:var(--ink-3); letter-spacing:0}
+.tile .n{font-size:11.8px; color:var(--ink-2); line-height:1.4}
+
+/* ---------- CHIPS ---------- */
+.chip{
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600;
+  padding:2px 7px 2px 6px; border-radius:20px; border:1px solid var(--hair);
+  background:var(--surface-2); color:var(--ink-2); white-space:nowrap; letter-spacing:.01em;
+}
+.chip i{width:6px;height:6px;border-radius:50%;background:currentColor; flex:0 0 6px}
+.chip.good{color:var(--good); border-color:color-mix(in srgb,var(--good) 32%,transparent); background:color-mix(in srgb,var(--good) 11%,transparent)}
+.chip.warn{color:var(--warn); border-color:color-mix(in srgb,var(--warn) 34%,transparent); background:color-mix(in srgb,var(--warn) 12%,transparent)}
+.chip.serious{color:var(--serious); border-color:color-mix(in srgb,var(--serious) 34%,transparent); background:color-mix(in srgb,var(--serious) 12%,transparent)}
+.chip.crit{color:var(--crit); border-color:color-mix(in srgb,var(--crit) 34%,transparent); background:color-mix(in srgb,var(--crit) 12%,transparent)}
+.chip.info{color:var(--s1); border-color:color-mix(in srgb,var(--s1) 34%,transparent); background:color-mix(in srgb,var(--s1) 11%,transparent)}
+.chip.mute{color:var(--ink-3)}
+
+/* ---------- HERO ---------- */
+.hero{
+  border:1px solid var(--hair); border-radius:14px; padding:26px 28px; margin-bottom:26px;
+  background:
+    radial-gradient(900px 300px at 8% -30%, color-mix(in srgb,var(--s1) 13%,transparent), transparent 70%),
+    radial-gradient(700px 280px at 92% -20%, color-mix(in srgb,var(--crit) 9%,transparent), transparent 70%),
+    var(--surface);
+  box-shadow:var(--shadow);
+}
+.hero .eyebrow{font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:9px}
+.hero h2{font-size:25px; letter-spacing:-.02em; margin-bottom:10px; max-width:30ch}
+.hero p{color:var(--ink-2); font-size:14px; max-width:82ch}
+.hero .meta{display:flex; gap:9px; flex-wrap:wrap; margin-top:16px; padding-top:15px; border-top:1px solid var(--hair-2)}
+
+/* ---------- TABLES ---------- */
+table{border-collapse:collapse; width:100%; font-size:12.8px}
+th{
+  text-align:left; font-size:10.3px; font-weight:700; letter-spacing:.075em; text-transform:uppercase;
+  color:var(--ink-3); padding:0 10px 7px; border-bottom:1px solid var(--hair); white-space:nowrap;
+}
+td{padding:8.5px 10px; border-bottom:1px solid var(--hair-2); vertical-align:top; color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface-2)}
+td.k{color:var(--ink); font-weight:550}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+.tscroll{overflow-x:auto; margin:0 -20px; padding:0 20px; max-width:calc(100% + 40px)}
+
+/* ---------- CELL MATRIX ---------- */
+.mx{overflow-x:auto; padding-bottom:4px; max-width:100%; min-width:0; contain:paint}
+.mx table{border-collapse:separate; border-spacing:2px; width:auto; min-width:100%}
+.mx th.b{
+  font-size:9.2px; letter-spacing:.03em; padding:0 0 8px; text-align:center;
+  writing-mode:vertical-rl; transform:rotate(180deg); height:92px; border:none; color:var(--ink-3);
+}
+.mx th.m{
+  text-align:right; padding:0 10px 0 0; font-size:10.8px; text-transform:none; letter-spacing:0;
+  font-weight:550; color:var(--ink-2); border:none; white-space:nowrap; position:sticky; left:0;
+  background:var(--surface); z-index:2;
+}
+.mx td{padding:0; border:none; background:transparent}
+.cellbox{
+  width:26px; height:26px; border-radius:5px; background:var(--surface-3);
+  border:1px solid transparent; cursor:default; position:relative;
+  display:grid; place-items:center; transition:transform .1s, box-shadow .1s;
+}
+.cellbox[data-s]:hover{transform:scale(1.22); z-index:5; box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.cellbox.none{background:transparent; border:1px dashed var(--hair-2)}
+.cellbox.act{background:var(--good); box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 20%,transparent)}
+.cellbox.blk{background:var(--crit)}
+.cellbox.dark{background:var(--surface-3); border:1px solid var(--axis)}
+.cellbox.ni{background:color-mix(in srgb,var(--s1) 17%,var(--surface-2))}
+.cellbox.mis{background:var(--warn)}
+.cellbox .g{font-size:9px; font-weight:800; color:#0b0b0b; opacity:.72}
+.mxleg{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:11.5px; color:var(--ink-2)}
+.mxleg span{display:inline-flex; align-items:center; gap:6px}
+.mxleg b{width:11px; height:11px; border-radius:3px; display:inline-block}
+
+/* ---------- FOREST PLOT ---------- */
+.forest{width:100%; display:block; overflow:visible}
+.fz{stroke:var(--axis); stroke-width:1.5; stroke-dasharray:3 3}
+.fgrid{stroke:var(--grid); stroke-width:1}
+.frow:hover .fbg{fill:var(--surface-2)}
+.flabel{font-size:11.6px; fill:var(--ink); font-weight:550}
+.fsub{font-size:10.2px; fill:var(--ink-3)}
+.ftick{font-size:10px; fill:var(--ink-3); font-family:var(--mono)}
+.fci{stroke-width:2; stroke-linecap:round}
+.fpt{stroke:var(--surface); stroke-width:2}
+
+/* ---------- TIMELINE ---------- */
+.tl{position:relative; padding-left:26px}
+.tl::before{content:""; position:absolute; left:6.5px; top:6px; bottom:6px; width:1.5px; background:var(--grid)}
+.tlitem{position:relative; padding:0 0 18px}
+.tlitem::before{
+  content:""; position:absolute; left:-24px; top:5px; width:9px; height:9px; border-radius:50%;
+  background:var(--surface); border:2px solid var(--axis);
+}
+.tlitem.hit::before{border-color:var(--good); background:var(--good)}
+.tlitem.neg::before{border-color:var(--crit); background:var(--crit)}
+.tlitem.now::before{border-color:var(--s1); background:var(--s1); box-shadow:0 0 0 4px color-mix(in srgb,var(--s1) 22%,transparent)}
+.tlitem .th{display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:3px}
+.tlitem .tw{font-size:13px; font-weight:620; color:var(--ink)}
+.tlitem .td{font-size:12.4px; color:var(--ink-2); max-width:88ch}
+
+/* ---------- BARS ---------- */
+.bars{display:flex; flex-direction:column; gap:9px}
+.bar{display:grid; grid-template-columns:96px minmax(0,1fr) 46px; align-items:center; gap:11px}
+.bar .bl{font-size:11.6px; color:var(--ink-2); text-align:right}
+.bar .bt{height:15px; background:var(--surface-2); border-radius:3px; overflow:hidden; position:relative}
+.bar .bf{height:100%; border-radius:3px; min-width:2px}
+.bar .bv{font-size:11.8px; font-family:var(--mono); color:var(--ink); text-align:right}
+
+/* ---------- PIPELINE ---------- */
+.pipe{display:flex; gap:0; overflow-x:auto; padding:4px 0 10px}
+.pnode{
+  flex:1 0 auto; min-width:120px; background:var(--surface-2); border:1px solid var(--hair);
+  padding:11px 13px; position:relative; margin-right:12px; border-radius:var(--r-sm);
+}
+.pnode:last-child{margin-right:0}
+.pnode::after{
+  content:""; position:absolute; right:-12px; top:50%; width:12px; height:1.5px; background:var(--axis);
+}
+.pnode:last-child::after{display:none}
+.pnode .pc{font-family:var(--mono); font-size:10px; color:var(--ink-3); letter-spacing:.05em}
+.pnode .pn{font-size:12.3px; font-weight:600; color:var(--ink); margin:2px 0 4px}
+.pnode .ps{font-size:10.8px; color:var(--ink-3); line-height:1.35}
+.pnode.hot{border-color:color-mix(in srgb,var(--warn) 45%,transparent); background:color-mix(in srgb,var(--warn) 8%,var(--surface-2))}
+
+/* ---------- DECISION DESK ---------- */
+.dk{display:flex; flex-direction:column; gap:10px}
+.dkrow{
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,2fr) auto; gap:16px; align-items:start;
+  background:var(--surface); border:1px solid var(--hair); border-left:3px solid var(--accent,var(--axis));
+  border-radius:var(--r-sm); padding:13px 16px;
+}
+.dkrow .dt{font-size:13px; font-weight:620; color:var(--ink); margin-bottom:3px}
+.dkrow .dd{font-size:12.2px; color:var(--ink-2)}
+.dkrow .dc{font-size:11.4px; color:var(--ink-3); text-align:right; white-space:nowrap}
+@media(max-width:860px){ .dkrow{grid-template-columns:1fr} .dkrow .dc{text-align:left} }
+
+/* ---------- MISC ---------- */
+.note{
+  border-left:2.5px solid var(--s1); background:color-mix(in srgb,var(--s1) 7%,transparent);
+  padding:11px 15px; border-radius:0 var(--r-sm) var(--r-sm) 0; font-size:12.6px; color:var(--ink-2);
+}
+.note.bad{border-color:var(--crit); background:color-mix(in srgb,var(--crit) 8%,transparent)}
+.note.warn{border-color:var(--warn); background:color-mix(in srgb,var(--warn) 9%,transparent)}
+.note b{color:var(--ink)}
+.kv{display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:12.4px}
+.kv dt{color:var(--ink-3)}
+.kv dd{margin:0; color:var(--ink); font-family:var(--mono); font-variant-numeric:tabular-nums}
+.tt{
+  position:fixed; pointer-events:none; opacity:0; z-index:100; max-width:290px;
+  background:var(--surface); border:1px solid var(--hair); border-radius:var(--r-sm);
+  padding:9px 12px; font-size:12px; color:var(--ink-2); box-shadow:0 8px 28px rgba(0,0,0,.35);
+  transition:opacity .1s;
+}
+.tt .h{font-weight:650; color:var(--ink); font-size:12.4px; margin-bottom:3px}
+.tt .r{display:flex; justify-content:space-between; gap:16px; font-family:var(--mono); font-size:11.4px}
+.hidden{display:none !important}
+.srch{
+  width:100%; max-width:280px; font:inherit; font-size:12.6px; padding:6px 11px;
+  border:1px solid var(--hair); border-radius:var(--r-sm); background:var(--surface-2); color:var(--ink);
+}
+.srch::placeholder{color:var(--ink-3)}
+.toolbar{display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin-bottom:14px}
+footer{border-top:1px solid var(--hair); padding:22px 30px 40px; color:var(--ink-3); font-size:11.8px; max-width:1360px}
+
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static; height:auto; border-right:none; border-bottom:1px solid var(--hair)}
+  .wrap,.topbar,footer{padding-left:16px; padding-right:16px}
+}
+@media print{ .rail,.topbar{display:none} body{background:#fff} }
+</style>
+<style>
+.cellbox.shd{background:var(--s1)}
+.dtab td.nowc{font-weight:600; color:var(--ink)}
+.gg td.k{white-space:nowrap}
+.pill-p{display:inline-block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; padding:1px 7px; border-radius:999px; border:1px solid var(--hair-2); color:var(--ink-2)}
+</style>
+</head>
+<body>
+<div class="tt" id="tt"></div>
+
+<div class="shell">
+<!-- ============ RAIL ============ -->
+<nav class="rail">
+  <div class="brand">
+    <div class="mark"><span class="dot"></span><h1>Prediction Market Bot</h1></div>
+    <div class="sub">Visual Dashboard · Kalshi · MLB / NFL / NHL / NBA<br><span class="mono" style="font-size:10.5px">origin/main f9da112 · 2026-10-16</span></div>
+  </div>
+
+  <div class="navgroup">
+    <div class="lbl">Position</div>
+    <a class="nv" href="#state"><span class="ic">◉</span>State of the system</a>
+    <a class="nv" href="#distance"><span class="ic">◎</span>Distance to optimum<span class="ct">13</span></a>
+    <a class="nv" href="#verdicts"><span class="ic">⊢</span>Verdict board<span class="ct" id="nvVerd"></span></a>
+    <a class="nv" href="#evidence"><span class="ic">▤</span>Execution ledger</a>
+
+    <div class="lbl">Structure</div>
+    <a class="nv" href="#matrix"><span class="ic">▦</span>Cell matrix<span class="ct cellN"></span></a>
+    <a class="nv" href="#arms"><span class="ic">⏱</span>Arms &amp; clocks<span class="ct" id="nvArms"></span></a>
+    <a class="nv" href="#doctrine"><span class="ic">⟊</span>Band doctrine · C5</a>
+    <a class="nv" href="#pipeline"><span class="ic">⇥</span>Pipeline C1–C8</a>
+
+    <div class="lbl">Motion</div>
+    <a class="nv" href="#waves"><span class="ic">≣</span>Wave history<span class="ct" id="nvWaves"></span></a>
+    <a class="nv" href="#governance"><span class="ic">⚖</span>Governance<span class="ct govOpen"></span></a>
+    <a class="nv" href="#integrity"><span class="ic">⛨</span>Process integrity<span class="ct" id="nvInteg"></span></a>
+    <a class="nv" href="#assets"><span class="ic">⛁</span>Data assets</a>
+
+    <div class="lbl">Action</div>
+    <a class="nv" href="#desk"><span class="ic">✦</span>Your desk<span class="ct" id="nvDesk"></span></a>
+    <a class="nv" href="#rules"><span class="ic">⛒</span>Standing rules</a>
+  </div>
+</nav>
+
+<!-- ============ MAIN ============ -->
+<div class="main">
+  <div class="topbar">
+    <span class="crumb">Prediction Markets <b>/</b> Visual Dashboard</span>
+    <span class="chip info"><i></i>Wave 75 closed · 79 in flight</span>
+    <span class="spacer"></span>
+    <button class="btn" id="themeBtn">◐ Theme</button>
+  </div>
+
+  <div class="wrap">
+
+<!-- ============================================================ STATE -->
+<section id="state">
+  <div class="hero">
+    <div class="eyebrow">State of the system · 2026-10-14</div>
+    <h2>The foundation is fixed, the NFL engine has started, and the first verdict is still about 2 Nov.</h2>
+    <p><strong>40 of 107 cells</strong> log pre-registered shadow forecasts across MLB, NFL, NHL and NBA (NBA from 10-20).
+    Wave 72 made the base trustworthy: ledgers survive a crash, deploys prove the running code is current, and the order path
+    itself refuses real money. The fill-fix forward test is live with both arms and <strong>0 cancel failures</strong>; nothing
+    since the re-arm has settled enough to judge. Depth now has a doctrine — <strong>one deep engine per sport</strong>
+    (ADR-0073): the NFL engine's first simulation prices moneyline, spread, total and team totals from one draw set, as good as
+    the old per-family models but not better yet, while its play-level data layer is being built. Wave 70–71 drift led to
+    ADR-0074: every running piece is now owned, and every window mistake is on the record (Process integrity, below).
+    <strong>No cell has a verdict yet.</strong></p>
+    <div class="meta">
+      <span class="chip good"><i></i>40 / 107 cells logging</span>
+      <span class="chip info"><i></i>Forward test live · both arms</span>
+      <span class="chip warn"><i></i>0 cells at a scored look</span>
+      <span class="chip info"><i></i>NFL engine · stage 1</span>
+      <span class="chip crit"><i></i>21 running pieces with no alarm</span>
+      <span class="chip mute"><i></i>$0 real capital · kelly 0.0</span>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="tile" style="--accent:var(--s1)">
+      <div class="k">Breadth · cells logging</div>
+      <div class="v">40<small> / 107</small></div>
+      <div class="n">13 of 18 market families, 4 of 5 bands (no T5). +3 in Wave 67 (NBA player points).</div>
+    </div>
+    <div class="tile" style="--accent:var(--warn)">
+      <div class="k">Depth · deepest pre-game model</div>
+      <div class="v">18<small> features</small></div>
+      <div class="n">MLB player hits, <b>0 qualitative</b>. No live model uses matchup, weather or qualitative inputs. 1 challenger ready (NFL QB).</div>
+    </div>
+    <div class="tile" style="--accent:var(--crit)">
+      <div class="k">Execution · orders filled</div>
+      <div class="v">251<small> / 4,722</small></div>
+      <div class="n">T4 3.9% · T1 17.5%. Fills lose −$0.26 (T4) and −$1.50 (T1) a bet. Adverse selection, measured (63.3).</div>
+    </div>
+    <div class="tile" style="--accent:var(--ink-3)">
+      <div class="k">Proof · cells at a scored look</div>
+      <div class="v">0<small> / 45</small></div>
+      <div class="n">Engine sealed below each cell's judged n. Next look: NFL 12 cells, ~2026-11-02, modal "keep accruing" (~91%).</div>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-top:14px">
+    <div class="card">
+      <h3>What is proven</h3>
+      <div class="cap">Claims that survived a pre-registered test or a direct measurement.</div>
+      <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
+        <li>The MLB pre-game tree beats <b>climatology</b> by ΔBrier +0.0052 over 1,414 games (EXP-028).</li>
+        <li>The NFL <b>QB-shrunk challenger beats the frozen model</b> in backtest: +0.0027, 1,852 games, 6 of 7 seasons (64.1).</li>
+        <li><b>Fills are adversely selected</b> on both demo books: settle − price −0.25 (T4) / −0.39 (T1) on fills vs +0.10 / +0.07 on non-fills.</li>
+        <li>Kalshi settlement books every resolved bet: <b>1,229 / 1,229</b> agree with the cross-check (59.2).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What is disproven</h3>
+      <div class="cap">Claims a pre-registered test or measurement killed.</div>
+      <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
+        <li><b>MLB pre-game model vs market</b> — HARMFUL, CI excludes zero (EXP-029).</li>
+        <li><b>T4 latency thesis</b> — NOT SUPPORTED at the current feature set (T-569).</li>
+        <li><b>T4M-PROJ paper P&amp;L as trading evidence</b> — 94.5% of rows never filled; real fills lose (GG-527).</li>
+        <li><b>NFL recalibration and early-season shrinkage</b> — no improvement over frozen (61.3, 64.1).</li>
+        <li><b>"Player hits dark since 9-27"</b> — a window premise; the logs said otherwise (63.1).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>What is unknown</h3>
+      <div class="cap">Not yet measured — not assumed either way.</div>
+      <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
+        <li>Whether <b>any shadow cell beats its market</b> — 0 of 45 engine cells at judged n.</li>
+        <li>Whether <b>cancel-after-60 s + book pricing</b> stops the picking-off — needs ~550 fills per arm in 8 weeks.</li>
+        <li>Whether <b>props are looser than game markets</b> — NBA player points logs from 10-20 (65.1).</li>
+        <li>Whether <b>injury-report QB data</b> moves the NFL model — needs point-in-time snapshots never captured.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DISTANCE -->
+<section id="distance">
+  <div class="sechead"><h2>Distance to optimum</h2><span class="num">four pillars · 13 measures</span></div>
+  <p class="lede">The gap between the project and <strong>the bot at optimum</strong> — every live sport covering its
+  whole board, every band, each cell's edge found or ruled out — kept as numbers so a wave cannot call itself
+  progress without moving one. <strong>Two waves in a row that move nothing is drift.</strong></p>
+  <div class="card">
+    <div class="tscroll"><table class="dtab">
+      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 72</th></tr></thead>
+      <tbody id="distBody"></tbody>
+    </table></div>
+  </div>
+  <div class="note warn" style="margin-top:14px"><b>Wave 72 fixed the foundation and ended the drift</b> (E1 per-arm counts recorded; nothing settled yet). Wave 73 starts the NFL engine — the template for every sport (ADR-0073, D4).</div>
+</section>
+
+<!-- ============================================================ VERDICTS -->
+<section id="verdicts">
+  <div class="sechead"><h2>Verdict board</h2><span class="num" id="verdCount"></span></div>
+  <p class="lede">Every measured model effect, on one axis, in one unit
+  (<strong>ΔBrier — positive means the candidate is better</strong>). A bar crossing the zero line
+  means the data cannot tell the two apart. Exploratory rows are labelled; they are not pre-registered verdicts.</p>
+
+  <div class="card">
+    <h3>Measured effects with intervals</h3>
+    <div class="cap">Game-clustered bootstrap intervals (95%, or 99.375% where a multiplicity correction applied). Hover any row for the full figures.</div>
+    <div id="forestWrap"></div>
+    <div class="toolbar" style="margin:16px 0 0">
+      <button class="btn sm" id="tblBtn">▤ Table view</button>
+      <span style="font-size:11.4px;color:var(--ink-3)">Interval crossing zero = no detectable difference</span>
+    </div>
+    <div id="forestTable" class="hidden" style="margin-top:14px"></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>EXP-029 — still the only scored market verdict</h3>
+      <div class="cap">Frozen EXP-028 model vs the Kalshi KXMLBHIT market. Pre-registered, scored once behind a lock file.</div>
+      <dl class="kv">
+        <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">HARMFUL</dd>
+        <dt>ΔBrier (market − model)</dt><dd>−0.00393 &nbsp;[−0.00629, −0.00152]</dd>
+        <dt>Brier — market / model</dt><dd>0.2238 / 0.2277</dd>
+        <dt>Test set</dt><dd>1,316 rows · 215 games</dd>
+      </dl>
+      <div class="note bad" style="margin-top:14px"><b>Why it lost.</b> The skill the model learned is time-symmetric
+      (backward placebo +0.00494 vs forward +0.00484): player role and playing time — exactly what a liquid market
+      has already priced. The model is not wrong about baseball; it is redundant to the venue.</div>
+    </div>
+
+    <div class="card">
+      <h3>NFL — where the next verdict comes from</h3>
+      <div class="cap">EXP-037: 12 shadow cells (moneyline, spread, total, team total × T1–T3), frozen team-rate model.</div>
+      <dl class="kv">
+        <dt>First scored look</dt><dd>~2026-11-02 &nbsp;(~11-09 if a game slips)</dd>
+        <dt>Games per cell then</dt><dd>60</dd>
+        <dt>Detectable at n=60</dt><dd>~0.038 Brier</dd>
+        <dt>Plausible edge</dt><dd>~0.008 Brier</dd>
+        <dt>Modal outcome</dt><dd style="color:var(--warn); font-weight:650">"keep accruing" (~91%)</dd>
+        <dt>2025, frozen vs mid</dt><dd>0.2182 vs <b>0.2115</b> (182 games)</dd>
+        <dt>2025, QB challenger vs mid</dt><dd>0.2221 vs <b>0.2115</b></dd>
+      </dl>
+      <div class="note warn" style="margin-top:14px"><b>Read it straight.</b> The first look is real but cannot see an
+      edge of the size we could plausibly have. The challenger improves the model mostly in weeks 1–4 and when the
+      starter changes; it does not beat the market. A verdict-sized change needs a bigger model upgrade — injury reports
+      are next — not more games.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ EVIDENCE -->
+<section id="evidence">
+  <div class="sechead"><h2>Execution ledger</h2><span class="num">fills only</span></div>
+  <p class="lede">A paper row and a filled order are different things. Since GG-527 (T4M-PROJ) and GG-536 (T1 MLB),
+  <strong>paper rows count as calibration evidence only; every execution, P&amp;L or G6 claim counts real demo fills.</strong>
+  On that count, both books lose — and we know why.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Orders vs fills — the two demo books</h3>
+      <div class="cap">Closed demo positions and how many actually filled on Kalshi's demo venue.</div>
+      <div id="funnel"></div>
+      <div class="note" style="margin-top:15px"><b>Every paper P&amp;L figure in the project's history is calibration
+      evidence at best.</b> T4M-PROJ's all-rows result was −$0.053 a bet with a CI spanning zero; restricted to real
+      fills it is −$0.26 with a CI that excludes zero.</div>
+    </div>
+
+    <div class="card">
+      <h3>Why fills lose (63.3)</h3>
+      <div class="cap">Read-only demo-venue order history; game-clustered 95% intervals.</div>
+      <dl class="kv">
+        <dt>Win rate, fills vs non-fills</dt><dd>T4 24.1% vs 48.7% · T1 28.9% vs 52.1%</dd>
+        <dt>Settle − price, fills</dt><dd>T4 −0.25 [−0.37, −0.11] · T1 −0.39 [−0.49, −0.28]</dd>
+        <dt>Settle − price, non-fills</dt><dd>T4 +0.10 · T1 +0.07</dd>
+        <dt>Median rest before fill</dt><dd>T4 2,276 s · T1 5,873 s</dd>
+        <dt>Fills within 60 s (T4)</dt><dd>win 35%, n=51 — the benign subset</dd>
+        <dt>P&amp;L per fill</dt><dd>T4 −$0.26 [−0.45, −0.07] · T1 −$1.50 [−3.67, +0.63]</dd>
+      </dl>
+      <div class="note warn" style="margin-top:15px"><b>The fix is live.</b> Forward test ON since 10-11 (demo only, half the eligible orders). Orders on tickers the demo venue does not list are being removed (GG-564, 67.2). R1 cancels unfilled
+      orders after 60 s; R2 prices off the live book and skips one-sided books. Half of eligible orders get it (seeded),
+      half don't. Judged at ~550 fills per arm; declared underpowered if that is not reached in 8 weeks. The cancel call
+      is verified on a 1-contract demo canary first (65.2).</div>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px">
+    <div class="tile" style="--accent:var(--warn)"><div class="k">T1 MLB drawdown</div><div class="v">12.4%<small> / 20%</small></div><div class="n">Permanent kill line at 20% realized drawdown. Live Terminal, 10-09 18:05 UTC.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">T4M-PROJ drawdown</div><div class="v">11.5%<small> / 20%</small></div><div class="n">Flat demo measurement stakes; no stake for any game after the 2026 World Series (GG-527 c).</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="k">Shadow cells with stakes</div><div class="v">0<small> → on</small></div><div class="n">Flat demo stakes on SHADOW cells (NFL, NHL, MLB, NBA) switch on with ADR-0072 — the forward test's volume source over winter.</div></div>
+    <div class="tile" style="--accent:var(--crit)"><div class="k">Old NFL paper book</div><div class="v">archived</div><div class="n">GG-490 retired it; the Live Terminal still showed 4 open STUB positions at p 0.0000 on 10-09 — 65.3 traces them.</div></div>
+  </div>
+</section>
+
+<!-- ============================================================ MATRIX -->
+<section id="matrix">
+  <div class="sechead"><h2>Cell matrix</h2><span class="num">18 market types × 12 bands · <span class="cellN"></span> cells</span></div>
+  <p class="lede">Read directly from <span class="mono">MARKET_TYPE_REGISTRY</span> at build time. <strong><span id="mxLogging"></span> cells log</strong>
+  (<span id="mxBreak"></span>); <span id="mxOther"></span> — mostly in-play sub-bands
+  the horizon doctrine says must earn their speed first. Blank squares are not registered at all.</p>
+
+  <div class="card">
+    <div class="toolbar">
+      <input class="srch" id="mxSearch" placeholder="Filter market type or band…">
+      <button class="btn sm mxf on" data-f="all">All</button>
+      <button class="btn sm mxf" data-f="act">Active</button>
+      <button class="btn sm mxf" data-f="log">Logging</button>
+      <button class="btn sm mxf" data-f="blk">Blocked</button>
+    </div>
+    <div class="mx" id="mxHost"></div>
+    <div class="mxleg">
+      <span><b style="background:var(--good)"></b>ACTIVE</span>
+      <span><b style="background:var(--s1)"></b>SHADOW — evaluates and logs, no stake</span>
+      <span><b style="background:color-mix(in srgb,var(--s1) 17%,var(--surface-2))"></b>Defined, not implemented</span>
+      <span><b style="background:var(--crit)"></b>BLOCKED</span>
+      <span><b style="background:var(--surface-3); border:1px solid var(--axis)"></b>DARK / frozen</span>
+      <span><b style="border:1px dashed var(--hair-2); background:transparent"></b>Not in registry</span>
+    </div>
+  </div>
+
+  <div class="note warn" style="margin-top:14px"><b>What changes next.</b> NBA's 12 game-market cells flip to SHADOW
+  ~10-21 once valid regular-season rows exist. NBA player points T1–T3 adds three more (65.1, registry 104 → 107).
+  After the World Series, MLB's in-play cell goes DARK by decision (GG-527 c) and the four MLB player-hits cells stop
+  producing rows — which is why props breadth falls to zero unless NBA points is live.</div>
+</section>
+
+<!-- ============================================================ ARMS -->
+<section id="arms">
+  <div class="sechead"><h2>Arms &amp; clocks</h2><span class="num">every evidence clock that is running</span></div>
+  <p class="lede">An arm is a sport's set of cells under one pre-registration, committed to main before its first
+  row. Nothing is scored below its judged sample; a rigorous NO is a result.</p>
+  <div class="card">
+    <div class="tscroll"><table>
+      <thead><tr><th>Arm</th><th class="num">Cells</th><th>Status</th><th>Pre-registration</th><th>Next look</th><th>Note</th></tr></thead>
+      <tbody id="armsBody"></tbody>
+    </table></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Calendar</h3>
+      <div class="cap">Dated events that change what this page says.</div>
+      <div class="tscroll"><table><tbody id="calBody"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>The efficiency gradient — still undecided</h3>
+      <div class="cap">CLAUDE.md § Market efficiency gradient; COVERAGE_TARGET_MATRIX.md.</div>
+      <div class="note" style="margin:0"><b>Breadth is moving toward the most-watched markets on the board</b> —
+      moneylines, spreads and totals — the opposite end of the gradient this strategy was designed to exploit.
+      Every game-market pre-registration writes "thinner edge expected" so the result is falsifiable. Whether to
+      accept thinner edge as the price of generality, or hold expansion to looser markets, is <b>your open call</b>.
+      Props (NBA points) is the first step back down the gradient.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DOCTRINE -->
+<section id="doctrine">
+  <div class="sechead"><h2>Band doctrine · criterion C5</h2><span class="num">ADR-0068 · PROPOSED</span></div>
+  <p class="lede"><strong>Decision-tree depth is governed by decision horizon, and a stripped tree must be paid for by a
+  measured execution advantage.</strong> A cell that is shallow without being fast is misfiled, not optimized.
+  Build sequencing (operator, 2026-09-30): <strong>pre-game first</strong>, then carry the granularity inward.</p>
+
+  <div class="grid g3">
+    <div class="tile" style="--accent:var(--good)"><div class="k">C5 pass</div><div class="v">2</div><div class="n">MLB player hits T1 and T2 — deep-enough trees at daily cadences, making no speed claim.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">C5 misfiled</div><div class="v">2</div><div class="n">T4M-PROJ (GG-320, HIGH) and MLB T3. Measured in Wave 42; not re-measured since.</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="k">New arms are pre-game</div><div class="v">36</div><div class="n">Every SHADOW cell added since Wave 42 is T1–T3 — the doctrine's own sequencing.</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>The cells that have been measured</h3>
+    <div class="cap">Cadence measured from cron and logs; tree depth counted as model inputs actually consumed by the run path. As of Wave 42.</div>
+    <div class="tscroll"><table>
+      <thead><tr><th>Cell</th><th>Horizon</th><th>Measured cadence</th><th>Tree depth</th><th>Verdict</th><th>Evidence</th></tr></thead>
+      <tbody>
+        <tr><td class="k">mlb_player_prop_hits : T1</td><td>12–48 h</td><td>daily cron 11:00 UTC</td><td class="num">18 + threshold</td><td><span class="chip good"><i></i>PASS</span></td><td>Deep tree, once daily, no speed claim. Docs said 78 features; the model log says 18.</td></tr>
+        <tr><td class="k">mlb_player_prop_hits : T2</td><td>same-day</td><td>daily cron 19:30 UTC</td><td class="num">4</td><td><span class="chip good"><i></i>PASS</span></td><td>Thin overlay at a same-day cadence; claims no latency advantage.</td></tr>
+        <tr><td class="k">mlb_player_prop_hits : T3</td><td>pre-tip, SLA 300 s</td><td>every 15 min</td><td class="num">1 scalar</td><td><span class="chip warn"><i></i>MISFILED</span></td><td><span class="mono">price_drift</span> vs a threshold; no order path.</td></tr>
+        <tr><td class="k">mlb_player_prop_hits : T4M-PROJ</td><td>in-play, SLA 45 s</td><td>median 70 s (p90 99 s)</td><td class="num">3 scalars</td><td><span class="chip crit"><i></i>MISFILED</span></td><td>GG-320 HIGH. Latency thesis NOT SUPPORTED (T-569); EXP-030 found a deeper tree indistinguishable.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============================================================ PIPELINE -->
+<section id="pipeline">
+  <div class="sechead"><h2>Pipeline</h2><span class="num">C1 → C8</span></div>
+  <p class="lede">Where a market observation becomes a decision, and where the chain breaks today.</p>
+  <div class="card">
+    <div class="pipe">
+      <div class="pnode"><div class="pc">C1</div><div class="pn">Ingest</div><div class="ps">Kalshi, nflverse, NHL, NBA; MLB built on GitHub Actions, off statsapi. Pre-2026 Kalshi history secured (GG-538).</div></div>
+      <div class="pnode hot"><div class="pc">C2 / C3</div><div class="pn">Features → Forecast</div><div class="ps">Shadow models for four sports. Deepest: 18 features, 0 qualitative. No matchup, weather or qualitative input anywhere.</div></div>
+      <div class="pnode"><div class="pc">C4</div><div class="pn">Risk</div><div class="ps"><span class="mono">kelly_fraction 0.0</span> on every band; flat demo stakes; stand-down after the World Series.</div></div>
+      <div class="pnode hot"><div class="pc">C5</div><div class="pn">Execution</div><div class="ps">Fills adversely selected; fix accepted 10-10 and live 10-11. 404s were unlisted demo tickers (GG-564).</div></div>
+      <div class="pnode"><div class="pc">C6</div><div class="pn">Audit</div><div class="ps">Kalshi settlement is the resolution source (ADR-0071). Fill sidecars classify every order.</div></div>
+      <div class="pnode"><div class="pc">C7</div><div class="pn">Monitoring</div><div class="ps">Calibration engine sealed below judged n; silent-arm alarm; distance table every session.</div></div>
+      <div class="pnode"><div class="pc">C8</div><div class="pn">Dashboards</div><div class="ps">Live Terminal (what it places now) and this page (where the project stands).</div></div>
+    </div>
+    <div class="note bad" style="margin-top:6px"><b>Two thin links now, not one.</b> C2/C3 is still shallow — the
+    granularity bar (matchup, personnel, venue, weather, qualitative) is met nowhere. And C5 is measured broken:
+    the orders that fill are the ones about to lose. Wave 67 reads the forward test's first day and puts stakes on shadow cells.</div>
+  </div>
+</section>
+
+<!-- ============================================================ WAVES -->
+<section id="waves">
+  <div class="sechead"><h2>Wave history</h2><span class="num" id="waveRange"></span></div>
+  <p class="lede">Three blocks per wave, fired concurrently against disjoint file surfaces. Each entry is what the wave
+  <strong>established</strong>, not what it attempted.</p>
+  <div class="card">
+    <div class="tl" id="tl"></div>
+  </div>
+</section>
+
+<!-- ============================================================ GOVERNANCE -->
+<section id="governance">
+  <div class="sechead"><h2>Governance</h2><span class="num"><span class="govLive"></span> live gaps · <span class="govOpen"></span> OPEN</span></div>
+  <p class="lede">The gap log is the project's memory of everything it noticed and did not fix. Wave 59 re-verified
+  it (176 → 131 OPEN) and retired resolved entries to an archive that only grows.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>OPEN gaps by severity</h3>
+      <div class="cap"><span class="govOpen"></span> OPEN of <span class="govLive"></span> live entries, counted from the gap log at build time. Severity is self-assigned at registration.</div>
+      <div class="bars" id="sevBars"></div>
+    </div>
+    <div class="card">
+      <h3>The ones that bite</h3>
+      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 71 does.</div>
+      <div class="tscroll"><table class="gg"><tbody>
+        <tr><td class="k">GG-166</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB resolver consumed a corrupted <span class="mono">game_date</span> (pre-Kalshi-settlement era).</td></tr>
+        <tr><td class="k">GG-170</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB Stats API date label unstable in near-real-time.</td></tr>
+        <tr><td class="k">GG-320</td><td><span class="chip serious"><i></i>HIGH</span></td><td>T4M-PROJ fails C5 — shallow without being fast.</td></tr>
+        <tr><td class="k">GG-441</td><td><span class="chip serious"><i></i>HIGH</span></td><td>Kill switch counts realized loss only; settled-but-unresolved stake is invisible.</td></tr>
+        <tr><td class="k">GG-046</td><td><span class="chip serious"><i></i>HIGH</span></td><td>T4 commercial validation never registered as its own hypothesis.</td></tr>
+        <tr><td class="k">GG-038</td><td><span class="chip serious"><i></i>HIGH</span></td><td>60 s kill-switch SLA is 12× too slow for continuous T4.</td></tr>
+      </tbody></table></div>
+      <div class="note" style="margin-top:12px">Both CRITICALs concern the old statsapi resolution path. Since ADR-0071,
+      resolution comes from Kalshi's own settlement; whether either can still touch new rows has not been re-checked.</div>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Decision records</h3>
+      <div class="cap">ADRs record a decision. Counted from each ADR file's status line.</div>
+      <div class="tscroll"><table>
+        <thead><tr><th>Record</th><th>Status</th><th class="num">Count</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td class="k">ADR</td><td><span class="chip good"><i></i>ACCEPTED</span></td><td class="num">55</td><td>Latest: ADR-0070 (shadow arms), ADR-0071 (Kalshi settlement).</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip warn"><i></i>PROPOSED</span></td><td class="num">9</td><td>Includes ADR-0067 (append-only log), ADR-0068 (band doctrine), ADR-0072 (fill fix — accepted 10-10, record updates in 65.2).</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip mute"><i></i>DRAFT / PLACEHOLDER</span></td><td class="num">2</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3>Registered vs retired</h3>
+      <div class="cap">Every gap ever registered, and where it is now.</div>
+      <div class="bars" id="asymBars"></div>
+      <div class="note warn" style="margin-top:15px"><b>Retirement is real.</b> <span class="govRetired"></span> entries live in the archive,
+      moved verbatim. The <span class="govOpen"></span> still OPEN are mostly MEDIUM/LOW history; only a handful gate current work.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================ PROCESS INTEGRITY (ADR-0074) -->
+<section id="integrity">
+  <div class="sechead"><h2>Process integrity</h2><span class="num">ADR-0074 · Hard Rules 13–15</span></div>
+  <p class="lede">Two failures kept the environment loose: <strong>every session saw a slice</strong> — nobody owned what
+  actually runs, and fixes landed in one place while the same bug lived on in another — and <strong>the strategy windows
+  never pushed back</strong> when breadth added running pieces faster than they were made reliable. This section is the
+  standing answer: every running piece owned and alarmed, every window mistake on the record.</p>
+
+  <div class="grid g4">
+    <div class="tile" style="--accent:var(--s1)"><div class="k">Surface · live components</div><div class="v" id="surfLive"></div>
+      <div class="n">Every cron job, service and workflow, from the runtime registry. CI fails on an unregistered one.</div></div>
+    <div class="tile" style="--accent:var(--crit)"><div class="k">No alarm if it stops</div><div class="v" id="surfNoAlarm"></div>
+      <div class="n">Running pieces that could die silently (GG-743). The first debt to burn down.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">Not yet reviewed</div><div class="v" id="surfUnrev"></div>
+      <div class="n">Auto-classified 10-14; a terminal checks each against the live box (block B74-A).</div></div>
+    <div class="tile" style="--accent:var(--ink-3)"><div class="k">Surface budget</div><div class="v" id="surfBudget" style="font-size:20px">no probe cached</div>
+      <div class="n" id="surfBudgetN">Run <span class="mono">python3 scripts/runtime_registry.py live</span> before building to show the live budget.</div></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="tile" style="--accent:var(--s1)"><div class="k">Gap agent · OPEN gaps now</div><div class="v" id="gaOpen"></div>
+      <div class="n" id="gaOpenN"></div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">Gap agent · is it ticking</div><div class="v" id="gaState" style="font-size:16px"></div>
+      <div class="n" id="gaStateN"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Runtime map — what actually runs</h3>
+    <div class="cap">Generated from <span class="mono">RUNTIME_REGISTRY.toml</span> plus the last cached box probe at build time. Red alarm text = nothing tells us if it stops; a red row is stale, down or behind the code.</div>
+    <div class="toolbar">
+      <button class="btn sm rtf on" data-f="all">All</button>
+      <button class="btn sm rtf" data-f="noalarm">No alarm</button>
+      <button class="btn sm rtf" data-f="stale">Stale / down</button>
+      <button class="btn sm rtf" data-f="EXECUTION">Execution</button>
+      <button class="btn sm rtf" data-f="BREADTH">Breadth</button>
+      <button class="btn sm rtf" data-f="PROOF">Proof</button>
+      <button class="btn sm rtf" data-f="PLUMBING">Plumbing</button>
+    </div>
+    <div class="tscroll" style="max-height:420px;overflow:auto"><table>
+      <thead><tr><th>Kind</th><th>When (UTC)</th><th>What</th><th>Pillar</th><th>Alarm if it stops</th><th>Reviewed</th><th>Live (box probe)</th></tr></thead>
+      <tbody id="rtBody"></tbody>
+    </table></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <h3>Strategy-window mistakes, by pattern</h3>
+      <div class="cap"><span id="winCount"></span> logged in <span class="mono">WINDOW_ERROR_LOG.md</span>. Every new window reads this first and names the pattern it is most at risk of.</div>
+      <div class="bars" id="winTally"></div>
+    </div>
+    <div class="card">
+      <h3>The rules now in force</h3>
+      <div class="tscroll"><table class="gg"><tbody>
+        <tr><td class="k">HR 13</td><td>Fix everywhere: every fix searches for the same bug elsewhere; handoffs carry <span class="mono">pattern_sweep</span>.</td><td><span class="chip good"><i></i>enforced from 10-15</span></td></tr>
+        <tr><td class="k">HR 14</td><td>Every running piece registered; no new piece while a health signal is red.</td><td><span class="chip warn"><i></i>registry enforced · budget pending B74-A</span></td></tr>
+        <tr><td class="k">HR 15</td><td>Window logs its mistakes, checks notes before asking, writes Pushback / Surface / Dependencies into every wave.</td><td><span class="chip good"><i></i>in force from Wave 74</span></td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h3>Window error log</h3>
+    <div class="cap">Newest first. Append-only.</div>
+    <div class="tscroll" style="max-height:380px;overflow:auto"><table>
+      <thead><tr><th>#</th><th>Date</th><th>What the window did</th><th>Pattern</th><th>Rule now in force</th></tr></thead>
+      <tbody id="winBody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============================================================ ASSETS -->
+<section id="assets">
+  <div class="sechead"><h2>Data assets</h2><span class="num">what is on disk</span></div>
+  <p class="lede">The substrate. Two of these are clocks: data that can only be captured as it happens.</p>
+  <div class="grid g3">
+    <div class="card">
+      <h3>Kalshi price history</h3>
+      <div class="cap">Depth snapshots plus the pre-2026 archive.</div>
+      <dl class="kv">
+        <dt>Live archive</dt><dd>1.1 GB · ~1.82 M rows (last measured 09-30)</dd>
+        <dt>Pre-2026 history</dt><dd style="color:var(--good)">on the VPS, sha-verified (GG-538)</dd>
+        <dt>Used by</dt><dd>EXP-029, NFL 2025 market comparisons, fill markouts</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>MLB features</h3>
+      <div class="cap">Built daily on GitHub Actions — no longer on the VPS or statsapi.</div>
+      <dl class="kv">
+        <dt>Builder</dt><dd>GitHub Actions (57.1)</dd>
+        <dt>Postseason</dt><dd style="color:var(--good)">included (63.1)</dd>
+        <dt>Players matched</dt><dd>every game day 09-29 → 10-08</dd>
+        <dt>Open issue</dt><dd style="color:var(--warn)">T1 contract violation 10-09 11:00Z (65.2 checks)</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>NFL pre-kickoff capture</h3>
+      <div class="cap">QB, injuries, weather and referee state — obtainable only before kickoff.</div>
+      <dl class="kv">
+        <dt>Capture cron</dt><dd style="color:var(--crit)">still a draft (T-601)</dd>
+        <dt>Needed for</dt><dd>the next NFL mechanism: injury reports, QB-only first</dd>
+        <dt>Scoped in</dt><dd>65.3 step 6</dd>
+      </dl>
+      <div class="note bad" style="margin-top:12px; font-size:11.8px"><b>A weekly clock.</b> Every NFL week without a
+      capture permanently loses that week's pre-kickoff state.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DESK -->
+<section id="desk">
+  <div class="sechead"><h2>Your desk</h2><span class="num" id="deskCount"></span></div>
+  <p class="lede">Decided 10-10: <span class="chip good"><i></i>ADR-0072 on</span> <span class="chip good"><i></i>NFL challenger ships</span>
+  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 71 waits on what is left — but two carry dates.</p>
+  <div class="dk" id="deskList"></div>
+</section>
+
+<!-- ============================================================ RULES -->
+<section id="rules">
+  <div class="sechead"><h2>Standing rules</h2><span class="num">non-negotiable</span></div>
+  <p class="lede">Carried into every block prompt. Most were written the expensive way.</p>
+  <div class="grid g3">
+    <div class="card">
+      <h3>Capital &amp; control</h3>
+      <ul style="margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2); line-height:1.8">
+        <li><b>No real capital until G6.</b> Demo venue only; <span class="mono">kelly_fraction</span> 0 on every band.</li>
+        <li><b>Never bypass a permission control.</b> Record the refusal and hand back.</li>
+        <li>No sizing change without an ADR.</li>
+        <li>An authorization exists only as a dated line in the queue — a table row is not one.</li>
+        <li>The operator never runs plumbing.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Evidence</h3>
+      <ul style="margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2); line-height:1.8">
+        <li><b>Pre-registration on main before a cell's first row.</b></li>
+        <li>No score read below judged n; never relabel a verdict after seeing results.</li>
+        <li><b>Execution counts real fills only</b> (GG-527, GG-536).</li>
+        <li>Never manufacture a row, price or score to have something to measure.</li>
+        <li>Never recommend against a sport, band or family on one finding.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Operating</h3>
+      <ul style="margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2); line-height:1.8">
+        <li><b>Purpose before work</b> (Hard Rule 12): name the measure a block moves, report what moved.</li>
+        <li>Three MEDIUM blocks a wave; 60-minute target, 90-minute ceiling.</li>
+        <li>Merge ≠ deploy ≠ activation — fixed means the running process has it.</li>
+        <li>Check every premise against logs and data before building on it.</li>
+        <li>t4-mlb restarts only when its code changed and no game is live.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+  </div>
+  <footer>
+    <b style="color:var(--ink-2)">Visual Dashboard</b> — built at <span class="mono">origin/main f9da112</span>, 2026-10-16,
+    by the strategic window. Registry, gap-log and ADR counts were derived by running code against the repository;
+    execution and verdict figures come from the cited wave results; drawdowns from the Live Terminal (10-09 18:05 UTC).
+    Anything not re-measured since an earlier wave says so. Static snapshot — rebuilt at each wave close.
+  </footer>
+</div>
+</div>
+
+<script>
+/* ============================================================ DATA (edited by the strategic window at each wave close) */
+const DIST = [
+  ["Breadth","B1","Cells logging / registered","40 / 107","the whole board","0 — 10-21 flip rehearsed, frozen NBA book locked (71.2)"],
+  ["Breadth","B2","Families with a logging cell","13 / 18","18 / 18, props + parlays registered","0"],
+  ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
+  ["Breadth","B4","Props · parlay families logging","2 · 0","the board's props and parlays","0"],
+  ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); NBA points minutes + injury accepted, not yet logging; nobody uses matchup, weather, qualitative","every class at every arm","0 — availability on NBA games: NO (71.3)"],
+  ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
+  ["Depth","D3","Pre-registered challengers ready","2 (NFL QB-shrunk, live · NBA points EXP-040, frozen)","≥ 1 per arm before its first look","0 — EXP-040 deployed, 0 rows until NBA points markets list"],
+  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","since re-arm: 0 cancel failures; fills 0/1/3/1/1 per arm, none settled yet"],
+  ["Execution","E2","P&L per filled bet","T4 −$0.26 · T1 −$1.50","positive, net of fees","NFL +0.398 audited: before kickoff, but ~4 correlated games — not evidence"],
+  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — first settled numbers in 73.1"],
+  ["Proof","P1","Cells at a scored look","0 / 45","every cell judged at its n","0"],
+  ["Proof","P2","Verdicts issued","0","a verdict per cell (a NO counts)","0"],
+  ["Proof","P3","Next look","NFL ~11-02 · ~91% \"keep accruing\"","—","—"],
+];
+
+const F = [
+  {g:"vs the market — the question that matters",
+   rows:[
+    {l:"EXP-029 · MLB pre-game model vs Kalshi KXMLBHIT", s:"215 games · 1,316 rows · frozen model, scored once",
+     m:-0.00393, lo:-0.00629, hi:-0.00152, v:"HARMFUL", c:"crit"},
+    {l:"W61.3 · NFL frozen model vs Kalshi mid, 2025", s:"182 games · exploratory, not a pre-registered verdict",
+     m:-0.0068, lo:-0.0227, hi:0.0094, v:"NO DETECTABLE DIFF", c:"warn"},
+   ]},
+  {g:"vs an incumbent model",
+   rows:[
+    {l:"W64.1 · NFL QB-shrunk challenger vs frozen, 2019–2025", s:"1,852 games · 6 of 7 seasons better · 99.375% CI",
+     m:0.0027, lo:0.0006, hi:0.0050, v:"IMPROVEMENT (backtest)", c:"good"},
+    {l:"W64.1 · same challenger, 2025 priced games only", s:"182 games · the one season it was worse",
+     m:-0.0039, lo:-0.0115, hi:0.0031, v:"NO DETECTABLE DIFF", c:"warn"},
+    {l:"W69.3 · NBA points ≥15, minutes + injury vs EXP-039 model", s:"backtest · strike 15 only (worse at 25) · injury coverage 34% Jan–Apr",
+     m:0.00047, lo:0.00015, hi:0.00079, v:"IMPROVEMENT (backtest)", c:"good"},
+    {l:"W61.3 · NFL recalibration challenger vs frozen", s:"rolling origin · sign marginally worse",
+     m:-0.00114, lo:-0.00254, hi:0.00022, v:"NO IMPROVEMENT", c:"warn"},
+    {l:"EXP-030 · T4 structural tree vs 3-scalar binomial", s:"40 of 40 test games differed · power floor met",
+     m:-0.0063, lo:-0.0203, hi:0.0091, v:"NO DETECTABLE DIFF", c:"warn"},
+    {l:"EXP-028 · MLB pre-game tree vs shrunk-BA one-liner", s:"1,414 games · 27,732 rows",
+     m:0.00364, lo:0.00293, hi:0.00435, v:"IMPROVEMENT", c:"good"},
+    {l:"ADR-0066 · NFL EPA splits vs base adapter", s:"every interval spans zero",
+     m:-0.0007, lo:-0.0042, hi:0.0028, v:"NO DETECTABLE DIFF", c:"warn"},
+   ]},
+  {g:"vs climatology — the low bar",
+   rows:[
+    {l:"EXP-028 · MLB pre-game tree vs climatology", s:"1,414 games · Δlog-loss +0.01065",
+     m:0.00520, lo:0.00438, hi:0.00601, v:"DEFENSIBLE", c:"good"},
+   ]},
+  {g:"controls — these should contain zero",
+   rows:[
+    {l:"EXP-029 · permutation null", s:"contains 0 under both literal and one-sided rules",
+     m:-0.000045, lo:-0.000133, hi:0.000044, v:"CONTROL OK", c:"good"},
+    {l:"EXP-029 · backward placebo vs forward", s:"backward +0.00494 against forward +0.00484 · ratio 1.02",
+     m:0.00494, lo:0.00400, hi:0.00588, v:"TIME-SYMMETRIC", c:"crit"},
+   ]},
+];
+
+const MARKETS = [
+  ["MLB_PLAYER_PROP_HITS","MLB player hits"],["MLB_MONEYLINE","MLB moneyline"],["MLB_RUN_LINE","MLB run line"],
+  ["MLB_GAME_TOTAL","MLB game total"],["MLB_TEAM_TOTAL","MLB team total"],["MLB_PARTIAL_GAME","MLB partial game"],
+  ["NFL_MONEYLINE","NFL moneyline"],["NFL_SPREAD","NFL spread"],["NFL_GAME_TOTAL","NFL game total"],["NFL_TEAM_TOTAL","NFL team total"],
+  ["NHL_MONEYLINE","NHL moneyline"],["NHL_PUCK_LINE","NHL puck line"],["NHL_GAME_TOTAL","NHL game total"],
+  ["NBA_MONEYLINE","NBA moneyline"],["NBA_SPREAD","NBA spread"],["NBA_GAME_TOTAL","NBA game total"],["NBA_TEAM_TOTAL","NBA team total"],
+  ["NBA_PLAYER_POINTS","NBA player points"],
+];
+const BANDS = ["T1","T2","T3","T4","T4M-PROJ","T4M-ARITH","T4M-FLOW","T4NFL-ARITH","T4NFL-FLOW","T4NHL-ARITH","T4NHL-FLOW","T5"];
+const CELLS = {"MLB_PLAYER_PROP_HITS|T1": {"s": "shadow", "n": "T-597 D3 records reality, not promotion. run_mlb_paper_trade.py cron 0 11 UTC; 18-feature LR+Platt evaluates daily; kelly 0.0 (ADR-0048) so 0 bets; paper_portfolio_mlb.json last written 2026-08-06."}, "MLB_PLAYER_PROP_HITS|T2": {"s": "shadow", "n": "T-597 D3 records reality, not promotion. run_t2_mlb_sameday.py cron 30 19 UTC; evaluates lineup/scratch overlay daily; kelly 0.0 (ADR-0048); bets_placed=0."}, "MLB_PLAYER_PROP_HITS|T3": {"s": "shadow", "n": "T-597 D3 records reality, not promotion. run_t3_mlb_pretip.py every 15 min 20-03 UTC; read-only drift scan, no order path; kelly 0.0 (ADR-0048). T-597 D2 verdict: MISFILED (shallow, not fast); reassignment is drafted onl"}, "MLB_PLAYER_PROP_HITS|T4M-PROJ": {"s": "active", "n": "ADR-0023; run_t4_mlb_live.py; the only cell placing live bets today."}, "MLB_PLAYER_PROP_HITS|T4M-ARITH": {"s": "blocked", "n": "ADR-0039; built+unit-tested (t4_mlb_execution_engine.py); gated on EXP-ARITH-MLB-01."}, "MLB_PLAYER_PROP_HITS|T4M-FLOW": {"s": "blocked", "n": "ADR-0039; gated on EXP-FLOW-MLB-01; score_diff live-wiring gap must also close."}, "MLB_PLAYER_PROP_HITS|T5": {"s": "not_implemented", "n": ""}, "NBA_PLAYER_POINTS|T4": {"s": "dark", "n": "run_t4_live.py; built+deployed; dark — NBA tabled per operator directive (2026-07-01) independent of season; not part of the MLB coverage target."}, "MLB_MONEYLINE|T1": {"s": "shadow", "n": ""}, "MLB_MONEYLINE|T2": {"s": "shadow", "n": ""}, "MLB_MONEYLINE|T3": {"s": "shadow", "n": ""}, "MLB_MONEYLINE|T4": {"s": "not_implemented", "n": ""}, "MLB_MONEYLINE|T5": {"s": "not_implemented", "n": ""}, "MLB_RUN_LINE|T1": {"s": "shadow", "n": ""}, "MLB_RUN_LINE|T2": {"s": "shadow", "n": ""}, "MLB_RUN_LINE|T3": {"s": "shadow", "n": ""}, "MLB_RUN_LINE|T4": {"s": "not_implemented", "n": ""}, "MLB_RUN_LINE|T5": {"s": "not_implemented", "n": ""}, "MLB_GAME_TOTAL|T1": {"s": "shadow", "n": ""}, "MLB_GAME_TOTAL|T2": {"s": "shadow", "n": ""}, "MLB_GAME_TOTAL|T3": {"s": "shadow", "n": ""}, "MLB_GAME_TOTAL|T4": {"s": "not_implemented", "n": ""}, "MLB_GAME_TOTAL|T5": {"s": "not_implemented", "n": ""}, "MLB_TEAM_TOTAL|T1": {"s": "shadow", "n": ""}, "MLB_TEAM_TOTAL|T2": {"s": "shadow", "n": ""}, "MLB_TEAM_TOTAL|T3": {"s": "shadow", "n": ""}, "MLB_TEAM_TOTAL|T4": {"s": "not_implemented", "n": ""}, "MLB_TEAM_TOTAL|T5": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T1": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T2": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T3": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T4": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T5": {"s": "not_implemented", "n": ""}, "MLB_MONEYLINE|T4M-ARITH": {"s": "not_implemented", "n": ""}, "MLB_MONEYLINE|T4M-FLOW": {"s": "not_implemented", "n": ""}, "MLB_RUN_LINE|T4M-ARITH": {"s": "not_implemented", "n": ""}, "MLB_RUN_LINE|T4M-FLOW": {"s": "not_implemented", "n": ""}, "MLB_GAME_TOTAL|T4M-ARITH": {"s": "not_implemented", "n": ""}, "MLB_GAME_TOTAL|T4M-FLOW": {"s": "not_implemented", "n": ""}, "MLB_TEAM_TOTAL|T4M-ARITH": {"s": "not_implemented", "n": ""}, "MLB_TEAM_TOTAL|T4M-FLOW": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T4M-ARITH": {"s": "not_implemented", "n": ""}, "MLB_PARTIAL_GAME|T4M-FLOW": {"s": "not_implemented", "n": ""}, "NFL_MONEYLINE|T1": {"s": "shadow", "n": ""}, "NFL_MONEYLINE|T2": {"s": "shadow", "n": ""}, "NFL_MONEYLINE|T3": {"s": "shadow", "n": ""}, "NFL_MONEYLINE|T4": {"s": "not_implemented", "n": ""}, "NFL_MONEYLINE|T5": {"s": "not_implemented", "n": ""}, "NFL_SPREAD|T1": {"s": "shadow", "n": ""}, "NFL_SPREAD|T2": {"s": "shadow", "n": ""}, "NFL_SPREAD|T3": {"s": "shadow", "n": ""}, "NFL_SPREAD|T4": {"s": "not_implemented", "n": ""}, "NFL_SPREAD|T5": {"s": "not_implemented", "n": ""}, "NFL_GAME_TOTAL|T1": {"s": "shadow", "n": ""}, "NFL_GAME_TOTAL|T2": {"s": "shadow", "n": ""}, "NFL_GAME_TOTAL|T3": {"s": "shadow", "n": ""}, "NFL_GAME_TOTAL|T4": {"s": "not_implemented", "n": ""}, "NFL_GAME_TOTAL|T5": {"s": "not_implemented", "n": ""}, "NFL_TEAM_TOTAL|T1": {"s": "shadow", "n": ""}, "NFL_TEAM_TOTAL|T2": {"s": "shadow", "n": ""}, "NFL_TEAM_TOTAL|T3": {"s": "shadow", "n": ""}, "NFL_TEAM_TOTAL|T4": {"s": "not_implemented", "n": ""}, "NFL_TEAM_TOTAL|T5": {"s": "not_implemented", "n": ""}, "NFL_MONEYLINE|T4NFL-ARITH": {"s": "not_implemented", "n": ""}, "NFL_MONEYLINE|T4NFL-FLOW": {"s": "not_implemented", "n": ""}, "NFL_SPREAD|T4NFL-ARITH": {"s": "not_implemented", "n": ""}, "NFL_SPREAD|T4NFL-FLOW": {"s": "not_implemented", "n": ""}, "NFL_GAME_TOTAL|T4NFL-ARITH": {"s": "not_implemented", "n": ""}, "NFL_GAME_TOTAL|T4NFL-FLOW": {"s": "not_implemented", "n": ""}, "NFL_TEAM_TOTAL|T4NFL-ARITH": {"s": "not_implemented", "n": ""}, "NFL_TEAM_TOTAL|T4NFL-FLOW": {"s": "not_implemented", "n": ""}, "NHL_MONEYLINE|T1": {"s": "shadow", "n": ""}, "NHL_MONEYLINE|T2": {"s": "shadow", "n": ""}, "NHL_MONEYLINE|T3": {"s": "shadow", "n": ""}, "NHL_MONEYLINE|T4": {"s": "not_implemented", "n": ""}, "NHL_MONEYLINE|T5": {"s": "not_implemented", "n": ""}, "NHL_PUCK_LINE|T1": {"s": "shadow", "n": ""}, "NHL_PUCK_LINE|T2": {"s": "shadow", "n": ""}, "NHL_PUCK_LINE|T3": {"s": "shadow", "n": ""}, "NHL_PUCK_LINE|T4": {"s": "not_implemented", "n": ""}, "NHL_PUCK_LINE|T5": {"s": "not_implemented", "n": ""}, "NHL_GAME_TOTAL|T1": {"s": "shadow", "n": ""}, "NHL_GAME_TOTAL|T2": {"s": "shadow", "n": ""}, "NHL_GAME_TOTAL|T3": {"s": "shadow", "n": ""}, "NHL_GAME_TOTAL|T4": {"s": "not_implemented", "n": ""}, "NHL_GAME_TOTAL|T5": {"s": "not_implemented", "n": ""}, "NHL_MONEYLINE|T4NHL-ARITH": {"s": "not_implemented", "n": ""}, "NHL_MONEYLINE|T4NHL-FLOW": {"s": "not_implemented", "n": ""}, "NHL_PUCK_LINE|T4NHL-ARITH": {"s": "not_implemented", "n": ""}, "NHL_PUCK_LINE|T4NHL-FLOW": {"s": "not_implemented", "n": ""}, "NHL_GAME_TOTAL|T4NHL-ARITH": {"s": "not_implemented", "n": ""}, "NHL_GAME_TOTAL|T4NHL-FLOW": {"s": "not_implemented", "n": ""}, "NBA_MONEYLINE|T1": {"s": "not_implemented", "n": ""}, "NBA_MONEYLINE|T2": {"s": "not_implemented", "n": ""}, "NBA_MONEYLINE|T3": {"s": "not_implemented", "n": ""}, "NBA_SPREAD|T1": {"s": "not_implemented", "n": ""}, "NBA_SPREAD|T2": {"s": "not_implemented", "n": ""}, "NBA_SPREAD|T3": {"s": "not_implemented", "n": ""}, "NBA_GAME_TOTAL|T1": {"s": "not_implemented", "n": ""}, "NBA_GAME_TOTAL|T2": {"s": "not_implemented", "n": ""}, "NBA_GAME_TOTAL|T3": {"s": "not_implemented", "n": ""}, "NBA_TEAM_TOTAL|T1": {"s": "not_implemented", "n": ""}, "NBA_TEAM_TOTAL|T2": {"s": "not_implemented", "n": ""}, "NBA_TEAM_TOTAL|T3": {"s": "not_implemented", "n": ""}, "NBA_PLAYER_POINTS|T1": {"s": "shadow", "n": ""}, "NBA_PLAYER_POINTS|T2": {"s": "shadow", "n": ""}, "NBA_PLAYER_POINTS|T3": {"s": "shadow", "n": ""}};
+const MXNOTE = {
+  "MLB_PLAYER_PROP_HITS|T4M-PROJ":"The only ACTIVE cell. Flat demo stakes; real fills −$0.26 a bet; stakes stop after the World Series (GG-527 c). Fails C5 (GG-320).",
+  "MLB_PLAYER_PROP_HITS|T1":"18-feature LR + Platt, daily 11:00 UTC. Paper rows are calibration only (GG-536).",
+  "NBA_PLAYER_POINTS|T4":"T4 is DARK (legacy NBA book, frozen). T1–T3 are SHADOW cells (EXP-039, frozen NB+Platt artifact), logging only.",
+};
+
+const ARMS = [
+  ["NFL game markets",12,"Logging","good","EXP-037","~2026-11-02","15 of 60 games per cell; first look most likely \"keep accruing\""],
+  ["NFL QB-shrunk challenger",2,"Logging","good","accepted 10-10","with EXP-037 vs the market","Moneyline; first live NFL model that knows who plays (since 10-11)"],
+  ["MLB postseason game markets",12,"Logging","good","EXP-037 MLB","2027 regular season","Postseason rows logged, not scored"],
+  ["MLB player hits T1–T3",3,"Logging","good","—","—","Stops with the World Series"],
+  ["MLB player hits T4M-PROJ",1,"Active · demo stakes","good","ADR-0050","—","Stakes stop for every game after the World Series"],
+  ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Judged sample not reachable this season (GG-514)"],
+  ["NBA game markets",12,"Preseason","warn","EXP-038","150 games per cell","Regular season from 10-20; cells flip ~10-21"],
+  ["NBA player points T1–T3",3,"Logging","good","EXP-039","after opening night","Live since 10-11 (67.1); regular-season rows from 10-20"],
+  ["NBA player points ≥15 + minutes/injury",1,"Logging","good","EXP-040","n=300 player-games","Wired 70.2: shadow, beside EXP-039; rows from first KXNBAPTS board; GG-610 caveat"],
+];
+const CAL = [
+  ["10-12 00:00Z","First fill-fix forward-test orders (MLB game); 67.2 reads day one"],
+  ["Mon 10-12","Weekly T4 ledger rebuild — first live test of the overwrite guard"],
+  ["Thu 10-15","First NFL slate the QB challenger logs; first NFL injury snapshot due (66.3)"],
+  ["Tue 10-20","NBA opening night — NBA game and player-points arms must be logging"],
+  ["~11-02","NFL first scored look, 12 cells — the project's first pre-registered market verdict"],
+  ["World Series end","T4M-PROJ stakes stop; MLB player hits stops producing rows; MLB winter posture is your call"],
+  ["before 2027-01-31","Define what EXP-038's date-triggered NBA second look scores (GG-529)"],
+];
+
+const WAVES = [
+  {w:"29–42", k:"neg", t:"Instruments built; both standing hypotheses negative.",
+   d:"Pre-registration, a game-clustered A/B harness and a fail-closed evidence predicate. Then the tests: <b>EXP-029 HARMFUL</b> — the MLB pre-game model loses to the market — and <b>EXP-030</b>: a deeper in-play tree is indistinguishable from the 3-scalar one."},
+  {w:"43–48", k:"hit", t:"From one cell to a board.",
+   d:"The NHL arm becomes the first new arm flying (47.3). NFL and MLB postseason game markets — 24 cells — built and pre-registered (47.2). Candle reconstruction passes Gate 2 7/7 on KXMLBTOTAL. Blocks ran ~2 h, so block-size rules were introduced."},
+  {w:"49–52", k:"", t:"Landing, and the kill-switch truth.",
+   d:"Shadow code landed and auto-deployed. The dashboard's 26.6% drawdown was 10.6% realized plus stake on settled-but-unbooked positions (GG-441/450). NHL team codes silently dropped — fixed."},
+  {w:"53–55", k:"hit", t:"Truthful books.",
+   d:"<b>Kalshi settlement becomes the resolution source</b> (ADR-0071). 26 stuck positions booked. 24 SHADOW cells live. Nightly out-of-memory crashes traced (GG-477) and staggered away."},
+  {w:"56–57", k:"", t:"Off statsapi; dashboards that tell the truth.",
+   d:"MLB schedule, cache and features move to GitHub Actions. Live Terminal shows what the bot places now; the Visual Dashboard gets ops health, books and evidence clocks."},
+  {w:"58–60", k:"neg", t:"One calibration engine — and the T4 cohort is mostly fiction.",
+   d:"Every cell under its own pre-registration, sealed below judged n. NBA arm built (EXP-038). 1,229 / 1,229 settlements agree. Gap log 176 → 130. <b>94.5% of T4M-PROJ's rows never filled; real fills lose $0.40 a bet</b> (GG-527)."},
+  {w:"61", k:"", t:"Fills-only counting.",
+   d:"T4M-PROJ counted on real fills (n=165, ≈ −$0.26 a bet); stand-down gate for after the World Series; first-look release path fixed; the MLB postseason arm found silent (GG-532)."},
+  {w:"62", k:"neg", t:"T1 has the same disease.",
+   d:"<b>T1 MLB: 85 of 485 orders filled, fills −$1.50 a bet</b>, win 28.9% vs 52.1% for non-fills (GG-536). NFL first look written down in advance: ~91% \"keep accruing\". Silent-arm alarm live."},
+  {w:"63", k:"hit", t:"The board +12, and why fills lose.",
+   d:"MLB game-market cells SHADOW: <b>B1 25 → 37, B2 8 → 12</b>. Distance-to-optimum generated from data. <b>Fills are adversely selected</b>: orders rest 40–100 min at the model's price and fill when the market moves against them."},
+  {w:"64", k:"hit", t:"The first depth challenger; the fix built.",
+   d:"NFL QB-shrunk challenger beats frozen in backtest (<b>D3 0 → 1</b>) — but not the market. Fill fix (cancel after 60 s, price off the book) built OFF and pre-registered. NBA player points pre-registered; wiring carried. You accepted all three 10-10."},
+  {w:"65", k:"neg", t:"NFL learns who plays; every demo order 404s.",
+   d:"The NFL QB challenger is live in shadow (<b>D1: NFL team → team + personnel</b>). The forward test found <b>every demo order write returning 404</b> — the bot cannot place a demo order (GG-560). NBA points built in PR #217 but never merged. Breadth and Execution: three waves without a move."},
+  {w:"66", k:"hit", t:"Demo orders were never down; the forward test is ON.",
+   d:"The 404s were tickers the demo venue doesn't list (18 of 55 for one game) — and the canary had picked production tickers. Fixed; canary placed and cancelled; <b>ADR-0072 ACCEPTED, forward test ON</b>. MLB build 22.5 → 17.5 min. NBA points still on a branch: Breadth unmoved four waves."},
+  {w:"67", k:"hit", t:"Breadth moves; shadow cells trade; GitHub cuts us off.",
+   d:"<b>NBA player points live: B1 37/104 → 40/107, B4 1 → 2</b>. First accepted shadow-cell demo orders (36 in an hour). NFL injury reports captured before kickoff. Then GitHub refused all jobs — free minutes gone; repo made public, MLB data re-dispatched."},
+  {w:"68", k:"neg", t:"MLB data back; nothing proven running.",
+   d:"MLB feeds green on the public repo; CI restored. NBA + NHL stakes and a daily forward-test report merged — but the ssh read of the VPS was refused, so nothing verified running. NFL weather: <b>no arm beats frozen</b>."},
+  {w:"69", k:"hit", t:"The forward test speaks; NBA opening night automated.",
+   d:"First on-box forward-test numbers: <b>NFL shadow 231 fills of 1,135, +0.39 a fill</b> (too good — audited in 70); MLB shadow −0.20. NBA cells flip themselves from 10-21. NBA points challenger EXP-040 accepted + frozen (<b>D3 1 → 2</b>). Then the test switched itself off on a miscounted cancel (GG-596)."},
+  {w:"70", k:"neg", t:"The good number didn't survive; the test stays off.",
+   d:"NFL +0.39 a fill: real, before kickoff — but ~4 games that settle together, so <b>not evidence</b>. 8 real MLB-HIT cancel failures keep the whole forward test off (GG-623). EXP-040 deployed, waiting for markets. Main green. <b>No measure moved.</b>"},
+  {w:"71", k:"neg", t:"Forward test back on; second wave without a measure.",
+   d:"Cancels were going to the wrong exchange shard — fixed, <b>forward test ON</b>. NBA 10-20 rehearsed; frozen book locked. Who-is-out on NBA games: <b>NO</b>. Hygiene audit: <b>SOUND WITH ISSUES</b> (18 gaps; /vps dangerous; paper ledger not crash-safe). <b>No measure moved — two waves running.</b>"},
+  {w:"72", k:"hit", t:"The foundation, fixed.",
+   d:"Crash-safe ledgers; deploys prove the running code; the order path itself refuses real money; /vps retired; box secrets locked. Forward test live with both arms, <b>0 cancel failures</b>. No look-ahead found. You amended the turn-off and staked NBA."},
+  {w:"73", k:"now", t:"The NFL engine starts.",
+   d:"Syndicate32's factor list rebuilt from free data into an event-level store; one game simulation pricing moneyline, spread and total (<b>D4</b>). First settled forward-test numbers; NBA staked from opening night (E)."},
+];
+
+const DESK = [
+  {a:"var(--serious)", t:"MLB winter posture", c:"After the World Series",
+   d:"T4M-PROJ's stakes already stop by your GG-527 decision. <b>T1 MLB: stand down or idle all winter?</b> Until decided, Step 4 raises daily false alarms once games end."},
+  {a:"var(--warn)", t:"NBA second look (GG-529)", c:"Before 2027-01-31",
+   d:"EXP-038 says \"n = 400 or 31 Jan, whichever first\" but never says what is scored on the date. Needs a definition before January."},
+  {a:"var(--warn)", t:"The efficiency-gradient call", c:"Open since 08-12",
+   d:"Expand into efficient game markets accepting thinner edge as the price of generality, or hold expansion to looser markets? Every pre-registration already writes \"thinner edge expected\"."},
+  {a:"var(--s1)", t:"ADR-0068 band doctrine · ADR-0067 append-only log", c:"PROPOSED",
+   d:"The doctrine is enforced by a criterion not yet accepted. ADR-0067 changes what the evidence pool <i>is</i>; it matters only once order volume rises."},
+  {a:"var(--s1)", t:"NBA model class (EXP-038 / EXP-039)", c:"Not blocking",
+   d:"Both NBA arms run frozen models with no ADR for their model class. They log as shadow either way."},
+  {a:"var(--ink-3)", t:"T1 MLB postseason flag", c:"Edits an existing cron line",
+   d:"Adds <span class='mono'>--include-postseason</span> to the T1 MLB line. The shadow authorization does not cover editing a line."},
+  {a:"var(--ink-3)", t:"GG-347 — the SSH poller", c:"Unexplained actor",
+   d:"Something at 73.231.159.158 polls the VPS over SSH. Yours?"},
+  {a:"var(--ink-3)", t:"EXP-034 · detached VPS jobs", c:"Park recommended",
+   d:"EXP-034's ≥2.5-hour sampler: run it as a detached read-only VPS job, or park it."},
+];
+
+const GOV = {"open": 187, "live": 219, "retired": 246, "ever": 465, "sev": {"HIGH": 26, "LOW": 81, "MEDIUM": 77, "CRITICAL": 2, "UNSPECIFIED": 1}};
+const SEV = [["CRITICAL","var(--crit)"],["HIGH","var(--serious)"],["MEDIUM","var(--warn)"],["LOW","var(--s1)"],
+             ["UNSPECIFIED","var(--ink-3)"]].map(([k,c])=>[k,GOV.sev[k]||0,c]);
+const ASYM = [["Registered, ever",GOV.ever,"var(--s2)"],["Retired to archive",GOV.retired,"var(--s3)"],
+              ["Live",GOV.live,"var(--s1)"],["Live and OPEN",GOV.open,"var(--warn)"]];
+/* ADR-0074 — process integrity: runtime registry + window error log, injected at build time */
+const RUNTIME = [{"key": "cron|* * * * *|scripts/demo_cancel_sweeper.py", "kind": "cron", "schedule": "* * * * *", "purpose": "Every minute cancels stale resting demo orders so unfilled orders do not sit at old prices (demo only).", "pillar": "EXECUTION", "alarm": "governance scan forward-test line + /project panel", "reviewed": true, "status": "live", "writes": ["logs/demo_cancel_sweeper.log"], "source": "deploy/cron_demo_fill.conf", "max_age_h": null}, {"key": "cron|*/20 0-5 * * *|scripts/archive_market_prices.py --depth-sample-per-family 2 --out exp_output/PRICE_ARCHIVE --series KXMLBGAME", "kind": "cron", "schedule": "*/20 0-5 * * *", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/price_archive_cron.log is older than 18h", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": "18"}, {"key": "cron|*/20 22-23 * * *|scripts/archive_market_prices.py --depth-sample-per-family 2 --out exp_output/PRICE_ARCHIVE --series KXMLBGAME", "kind": "cron", "schedule": "*/20 22-23 * * *", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/price_archive_cron.log is older than 18h", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": "18"}, {"key": "cron|0 11 * * *|src/prediction_market_bot/run_mlb_paper_trade.py", "kind": "cron", "schedule": "0 11 * * *", "purpose": "Legacy MLB T1 paper-trade run (PIPE-05, 11:00 UTC): forecast player-hit markets and place paper bets.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/paper_mlb_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 14 * * *|scripts/run_nhl_shadow_staked.py --band T1 --run-id T1-$(date", "kind": "cron", "schedule": "0 14 * * *", "purpose": "NHL staked-shadow arm: evaluates and logs forecasts for its band (no orders) (T1).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 14 * * 1|deploy/check_model_freshness.py", "kind": "cron", "schedule": "0 14 * * 1", "purpose": "Weekly check that the frozen models' files and metadata are intact and not stale.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["logs/model_freshness.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 17 * * *|deploy/healthcheck.sh", "kind": "cron", "schedule": "0 17 * * *", "purpose": "Daily system healthcheck; writes the fault-count summary line the governance scan and dashboards read.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["logs/health.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 18 * * *|src/prediction_market_bot/run_paper_trade.py", "kind": "cron", "schedule": "0 18 * * *", "purpose": "Legacy NBA T1 paper pipeline; a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/paper_early_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 23 * * *|src/prediction_market_bot/run_t4_live.py", "kind": "cron", "schedule": "0 23 * * *", "purpose": "Legacy NBA T4 live pass; a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/t4_live_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 6 * * *|src/prediction_market_bot/run_resolve.py", "kind": "cron", "schedule": "0 6 * * *", "purpose": "Resolves settled legacy NBA paper bets.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/resolve_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|0 9 * * *|scripts/nhl_backfill.py --refresh-schedule --seasons 2026", "kind": "cron", "schedule": "0 9 * * *", "purpose": "Refreshes NHL schedule and results data the NHL shadow arm reads.", "pillar": "PLUMBING", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|1,16,31,46 0-3 * * *|src/prediction_market_bot/run_t3_pretip.py", "kind": "cron", "schedule": "1,16,31,46 0-3 * * *", "purpose": "Legacy NBA T3 pre-tip pass (window cron); a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/t3_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|1,16,31,46 20-23 * * *|src/prediction_market_bot/run_t3_pretip.py", "kind": "cron", "schedule": "1,16,31,46 20-23 * * *", "purpose": "Legacy NBA T3 pre-tip pass (window cron); a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/t3_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|10 * * * *|scripts/run_pregame_shadow.py --bands T2", "kind": "cron", "schedule": "10 * * * *", "purpose": "Game-market pre-game shadow arm (EXP-037): evaluates and logs forecasts for its band, no orders (T2).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/pregame_shadow_t2.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|10 14 * * 1|scripts/run_mlb_calib_monitor.py", "kind": "cron", "schedule": "10 14 * * 1", "purpose": "Weekly MLB calibration monitor (T-187F): ECE per threshold and reliability buckets from closed positions in paper_portfolio_mlb.json.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/mlb_calib_monitor.log is older than 200h", "reviewed": true, "status": "live", "writes": ["logs/mlb_calib_monitor.log"], "source": "deploy/cron.conf", "max_age_h": "200"}, {"key": "cron|11 */6 * * *|scripts/run_nba_pregame_shadow.py --bands T1", "kind": "cron", "schedule": "11 */6 * * *", "purpose": "NBA pre-game shadow arm (EXP-038): evaluates and logs forecasts for its band, no orders (T1).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_pregame_shadow_t1.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|12 * * * *|scripts/run_mlb_pregame_shadow.py --bands T2", "kind": "cron", "schedule": "12 * * * *", "purpose": "MLB game-market pre-game shadow arm: evaluates and logs forecasts for its band, no orders (T2).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/mlb_pregame_shadow_t2.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|14 */6 * * *|scripts/run_nfl_qb_challenger_shadow.py --bands T1", "kind": "cron", "schedule": "14 */6 * * *", "purpose": "NFL QB-challenger pre-registered shadow arm: evaluates and logs forecasts, no orders.", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nfl_qb_challenger_t1.log"], "source": "deploy/cron_exp037_pregame_shadow.conf", "max_age_h": null}, {"key": "cron|14,24,44,54 * * * *|scripts/run_nba_player_points_shadow.py --bands T3", "kind": "cron", "schedule": "14,24,44,54 * * * *", "purpose": "NBA player-points shadow arm: evaluates and logs forecasts for its band, no orders (T3).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_player_points_shadow_t3.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|15 * * * *|scripts/nhl_shadow_settle.py", "kind": "cron", "schedule": "15 * * * *", "purpose": "Settles NHL shadow rows against final results so the arm can be scored.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/nhl_shadow_cron.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": "30"}, {"key": "cron|16 * * * *|scripts/run_nba_pregame_shadow.py --bands T2", "kind": "cron", "schedule": "16 * * * *", "purpose": "NBA pre-game shadow arm (EXP-038): evaluates and logs forecasts for its band, no orders (T2).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_pregame_shadow_t2.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|18 11 * * 0|scripts/nba_player_box_backfill.py --seasons 2026", "kind": "cron", "schedule": "18 11 * * 0", "purpose": "Weekly: re-creates the 2025-26 NBA player box-score file if absent; resumable, a no-op once complete (W71.2/GG-621).", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["logs/nba_players_2026_refresh.log"], "source": "deploy/cron.nba_players_2026_refresh", "max_age_h": null}, {"key": "cron|2,17,32,47 0-3 * * *|src/prediction_market_bot/run_t3_mlb_pretip.py", "kind": "cron", "schedule": "2,17,32,47 0-3 * * *", "purpose": "MLB T3 pre-tip pass (window cron): evaluates pre-first-pitch bets.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/t3_mlb_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|2,17,32,47 20-23 * * *|src/prediction_market_bot/run_t3_mlb_pretip.py", "kind": "cron", "schedule": "2,17,32,47 20-23 * * *", "purpose": "MLB T3 pre-tip pass (window cron): evaluates pre-first-pitch bets.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/t3_mlb_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|20 14 * * 1|scripts/run_band_monitor.py --portfolio logs/paper_portfolio_mlb_t4.json", "kind": "cron", "schedule": "20 14 * * 1", "purpose": "Weekly per-band anti-predictive and calibration monitor (T-255) over the T4 paper portfolio.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/band_monitor_cron.log is older than 200h", "reviewed": true, "status": "live", "writes": ["logs/band_monitor_cron.log", "logs/band_monitor_cron.log"], "source": "deploy/cron.conf", "max_age_h": "200"}, {"key": "cron|21 4,10,16,22 * * *|scripts/run_nba_player_points_shadow.py --bands T1", "kind": "cron", "schedule": "21 4,10,16,22 * * *", "purpose": "NBA player-points shadow arm: evaluates and logs forecasts for its band, no orders (T1).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_player_points_shadow_t1.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|22,52 * * * *|scripts/nfl_injury_snapshot.py", "kind": "cron", "schedule": "22,52 * * * *", "purpose": "Twice-hourly capture-only snapshot of ESPN's public NFL injury feed for games not yet started; point-in-time history for the NFL arm's availability factor.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/nfl_injury_snapshot_cron.log is older than 2h", "reviewed": true, "status": "live", "writes": ["logs/nfl_injury_snapshot_cron.log"], "source": "deploy/cron.conf", "max_age_h": "2"}, {"key": "cron|23 10 * * *|scripts/run_nba_pregame_shadow_settle.py", "kind": "cron", "schedule": "23 10 * * *", "purpose": "Settles NBA pre-game shadow rows against final results.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/nba_pregame_shadow_settle.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/nba_pregame_shadow_settle.log"], "source": "deploy/cron.conf", "max_age_h": "30"}, {"key": "cron|25 1 * * *|src/prediction_market_bot/run_pregame.py", "kind": "cron", "schedule": "25 1 * * *", "purpose": "Legacy NBA pre-game run (PIPE-03 family); a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 T1 MLB greps", "reviewed": true, "status": "live", "writes": ["logs/pregame_late_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|25 11 * * *|scripts/demo_fill_forward_report.py", "kind": "cron", "schedule": "25 11 * * *", "purpose": "Daily demo-fill forward-test report (fills, P&L per filled bet, adverse selection); feeds the governance scan line.", "pillar": "EXECUTION", "alarm": "governance scan forward-test line + /project panel", "reviewed": true, "status": "live", "writes": ["logs/demo_fill_forward_report.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|25 17 * * *|scripts/run_t140_check.py", "kind": "cron", "schedule": "25 17 * * *", "purpose": "Legacy NBA T-140 pre-flight: rebuilds the team-stats cache if today's file is missing or tiny, before the NBA pipeline reads it.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["logs/t140_cache_check.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|27 * * * *|scripts/run_nba_player_points_shadow.py --bands T2", "kind": "cron", "schedule": "27 * * * *", "purpose": "NBA player-points shadow arm: evaluates and logs forecasts for its band, no orders (T2).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_player_points_shadow_t2.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|3,13,23,33,43,53 * * * *|scripts/run_mlb_pregame_shadow.py --bands T3", "kind": "cron", "schedule": "3,13,23,33,43,53 * * * *", "purpose": "MLB game-market pre-game shadow arm: evaluates and logs forecasts for its band, no orders (T3).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/mlb_pregame_shadow_t3.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|3-58/5 * * * *|scripts/ops/vps_deploy.sh", "kind": "cron", "schedule": "3-58/5 * * * *", "purpose": "Pulls main onto the box every five minutes and restarts services only when their imports changed (the normal deploy path).", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["/opt/prediction-market-bot/logs/vps_deploy_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|30 1 * * *|src/prediction_market_bot/run_paper_trade.py", "kind": "cron", "schedule": "30 1 * * *", "purpose": "Legacy NBA T1 paper pipeline; a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/paper_late_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|30 19 * * *|src/prediction_market_bot/run_t2_mlb_sameday.py", "kind": "cron", "schedule": "30 19 * * *", "purpose": "MLB T2 same-day pass: evaluates same-day bets after lineups post.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/t2_mlb_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|30 6 * * *|src/prediction_market_bot/run_resolve_mlb.py", "kind": "cron", "schedule": "30 6 * * *", "purpose": "Resolves settled MLB paper bets against final results.", "pillar": "EXECUTION", "alarm": "Step 4 log greps for T1 MLB; none for legacy NBA", "reviewed": true, "status": "live", "writes": ["logs/resolve_mlb_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|30 8 * * *|src/prediction_market_bot/run_schedule_validator_mlb.py", "kind": "cron", "schedule": "30 8 * * *", "purpose": "MLB schedule validator and cron adjuster (PIPE-08): checks the day's schedule and retimes the MLB pre-game crons before they run.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["logs/schedule_validator_mlb.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|30 9 * * *|scripts/run_pregame_shadow_settle.py --refresh", "kind": "cron", "schedule": "30 9 * * *", "purpose": "Settles pre-game shadow rows against final results so each arm can be scored.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/pregame_shadow_settle.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/pregame_shadow_settle.log"], "source": "deploy/cron.conf", "max_age_h": "30"}, {"key": "cron|35 10 * * *|scripts/run_nba_player_points_shadow_settle.py", "kind": "cron", "schedule": "35 10 * * *", "purpose": "Settles NBA player-points shadow rows against final box scores.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/nba_player_points_shadow_settle.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/nba_player_points_shadow_settle.log"], "source": "deploy/cron.conf", "max_age_h": "30"}, {"key": "cron|37 * * * *|scripts/run_nba_player_points_shadow.py --preseason", "kind": "cron", "schedule": "37 * * * *", "purpose": "NBA player-points shadow arm: evaluates and logs forecasts for its band, no orders (preseason window).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_player_points_shadow_preseason.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|4 10 * * *|scripts/nba_player_box_backfill.py --seasons 2027", "kind": "cron", "schedule": "4 10 * * *", "purpose": "Backfills the 2026-27 NBA player box scores for the player-points arm.", "pillar": "PLUMBING", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_player_points_backfill.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|4,34 0-1 * * *|scripts/run_nhl_shadow_staked.py --band T2 --run-id T2-$(date", "kind": "cron", "schedule": "4,34 0-1 * * *", "purpose": "NHL staked-shadow arm: evaluates and logs forecasts for its band (no orders) (T2).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|4,34 15-23 * * *|scripts/run_nhl_shadow_staked.py --band T2 --run-id T2-$(date", "kind": "cron", "schedule": "4,34 15-23 * * *", "purpose": "NHL staked-shadow arm: evaluates and logs forecasts for its band (no orders) (T2).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|40 12 * * *|scripts/nba_cell_autoflip.py", "kind": "cron", "schedule": "40 12 * * *", "purpose": "Daily: flips an NBA game cell NOT_IMPLEMENTED -> SHADOW by itself once it has a valid regular-season row (W69.2, EXP-038).", "pillar": "BREADTH", "alarm": "none: one-shot job; the block that installed it reads its result back and the NBA season gate makes a miss visible on opening night", "reviewed": true, "status": "live", "writes": ["logs/nba_autoflip.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|41 11 * * *|scripts/run_pregame_shadow_settle.py --sport mlb", "kind": "cron", "schedule": "41 11 * * *", "purpose": "Settles pre-game shadow rows against final results so each arm can be scored.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/mlb_pregame_shadow_settle.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/mlb_pregame_shadow_settle.log"], "source": "deploy/cron.conf", "max_age_h": "30"}, {"key": "cron|44 9 * * *|scripts/run_pregame_shadow_settle.py --ledger-dir exp_output/PREGAME_SHADOW_NFLQB --prefix NFLQB", "kind": "cron", "schedule": "44 9 * * *", "purpose": "Settles pre-game shadow rows against final results so each arm can be scored.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/nfl_qb_challenger_settle.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/nfl_qb_challenger_settle.log"], "source": "deploy/cron_exp037_pregame_shadow.conf", "max_age_h": "30"}, {"key": "cron|45 18 * * *|src/prediction_market_bot/run_mlb_pregame.py", "kind": "cron", "schedule": "45 18 * * *", "purpose": "MLB pre-game run (PIPE-08): builds the day's MLB forecasts before the T1 run.", "pillar": "EXECUTION", "alarm": "Step 4 T1 MLB greps", "reviewed": true, "status": "live", "writes": ["logs/pregame_mlb_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|47 9 * * *|scripts/nba_backfill.py --seasons 2026", "kind": "cron", "schedule": "47 9 * * *", "purpose": "Backfills NBA game results (free data) that the NBA shadow arm reads.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": ["logs/nba_shadow_backfill.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|49 13 * * *|scripts/calibration_engine.py", "kind": "cron", "schedule": "49 13 * * *", "purpose": "Daily read-only calibration engine (W58.3): counts, status and projected first-look date per cell; writes only exp_output/CALIBRATION/.", "pillar": "PROOF", "alarm": "staleness: SURFACE BUDGET goes RED if logs/calibration_engine_cron.log is older than 30h", "reviewed": true, "status": "live", "writes": ["logs/calibration_engine_cron.log", "exp_output/CALIBRATION/"], "source": "deploy/cron.conf", "max_age_h": "30"}, {"key": "cron|5 */6 * * *|scripts/run_pregame_shadow.py --bands T1 --refresh", "kind": "cron", "schedule": "5 */6 * * *", "purpose": "Game-market pre-game shadow arm (EXP-037): evaluates and logs forecasts for its band, no orders (T1).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/pregame_shadow_t1.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 0-3 * * 1|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 0-3 * * 1", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 0-3 * * 2|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 0-3 * * 2", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 0-3 * * 4|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 0-3 * * 4", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 0-3 * * 5|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 0-3 * * 5", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 17-23 * * 0|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 17-23 * * 0", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 17-23 * * 3|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 17-23 * * 3", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|5,25,45 17-23 * * 6|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME", "kind": "cron", "schedule": "5,25,45 17-23 * * 6", "purpose": "Archives Kalshi board prices and depth samples for the MLB series to exp_output/PRICE_ARCHIVE (free data; evidence base for price and fill analysis).", "pillar": "PROOF", "alarm": "none: weekday slice of the price archive; the daily entries share price_archive_cron.log and are watched at 18h, so a dead archive is caught there", "reviewed": true, "status": "live", "writes": ["logs/price_archive_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|50 13 * * *|scripts/remove_nba_preseason_cron.py --auto", "kind": "cron", "schedule": "50 13 * * *", "purpose": "One-shot: removes the NBA preseason cron lines once the regular season starts.", "pillar": "BREADTH", "alarm": "none: one-shot job; the block that installed it reads its result back and a leftover preseason cron is harmless", "reviewed": true, "status": "live", "writes": ["logs/nba_preseason_retire.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|55 17 * * *|src/prediction_market_bot/run_pregame.py", "kind": "cron", "schedule": "55 17 * * *", "purpose": "Legacy NBA pre-game run (PIPE-03 family); a no-op outside the NBA season.", "pillar": "EXECUTION", "alarm": "Step 4 T1 MLB greps", "reviewed": true, "status": "live", "writes": ["logs/pregame_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|57 * * * *|scripts/run_nba_pregame_shadow.py --preseason", "kind": "cron", "schedule": "57 * * * *", "purpose": "NBA pre-game shadow arm (EXP-038): evaluates and logs forecasts for its band, no orders (preseason window).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_pregame_shadow_preseason.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|6,16,26,36,46,56 0-2 * * *|scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date", "kind": "cron", "schedule": "6,16,26,36,46,56 0-2 * * *", "purpose": "NHL staked-shadow arm: evaluates and logs forecasts for its band (no orders) (T3).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|6,16,26,36,46,56 17-23 * * *|scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date", "kind": "cron", "schedule": "6,16,26,36,46,56 17-23 * * *", "purpose": "NHL staked-shadow arm: evaluates and logs forecasts for its band (no orders) (T3).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nhl_shadow_cron.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|7 */6 * * *|scripts/run_mlb_pregame_shadow.py --bands T1", "kind": "cron", "schedule": "7 */6 * * *", "purpose": "MLB game-market pre-game shadow arm: evaluates and logs forecasts for its band, no orders (T1).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/mlb_pregame_shadow_t1.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|7 */6 * * *|scripts/run_mlb_pregame_shadow.py --bands T1 --refresh", "kind": "cron", "schedule": "7 */6 * * *", "purpose": "MLB game-market pre-game shadow arm: evaluates and logs forecasts for its band, no orders (T1).", "pillar": "BREADTH", "alarm": "none: paused - the fragment copy (--refresh) diverges from the box, which runs the no---refresh job at index 63", "reviewed": true, "status": "paused", "writes": ["logs/mlb_pregame_shadow_t1.log"], "source": "deploy/cron_exp037_pregame_shadow.conf", "max_age_h": null}, {"key": "cron|8,18,28,38,48,58 * * * *|scripts/run_pregame_shadow.py --bands T3", "kind": "cron", "schedule": "8,18,28,38,48,58 * * * *", "purpose": "Game-market pre-game shadow arm (EXP-037): evaluates and logs forecasts for its band, no orders (T3).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/pregame_shadow_t3.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "cron|9,19,29,39,49,59 * * * *|scripts/run_nba_pregame_shadow.py --bands T3", "kind": "cron", "schedule": "9,19,29,39,49,59 * * * *", "purpose": "NBA pre-game shadow arm (EXP-038): evaluates and logs forecasts for its band, no orders (T3).", "pillar": "BREADTH", "alarm": "SILENT ARMS block in the governance scan", "reviewed": true, "status": "live", "writes": ["logs/nba_pregame_shadow_t3.log"], "source": "deploy/cron.conf", "max_age_h": null}, {"key": "systemd|pmbot-web-dashboard.service", "kind": "systemd", "schedule": "", "purpose": "Serves the Live Terminal (/) and the project page (/project) on the box.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": [], "source": "scripts/pmbot-web-dashboard.service", "max_age_h": null}, {"key": "systemd|t4-mlb.service", "kind": "systemd", "schedule": "", "purpose": "The MLB T4M-PROJ live loop: polls live game state and Kalshi prices and logs the cycle (the one ACTIVE cell).", "pillar": "EXECUTION", "alarm": "Step 4 cycle-log recency probe + running-SHA alarm, W72.3", "reviewed": true, "status": "live", "writes": [], "source": "deploy/t4-mlb.service", "max_age_h": null}, {"key": "systemd|t4-mlb.timer", "kind": "systemd", "schedule": "", "purpose": "Timer unit for t4-mlb; enabled but dead since 2026-07-04, the service runs persistently instead.", "pillar": "EXECUTION", "alarm": "none: paused - enabled on the box but dead since 2026-07-04; t4-mlb.service runs persistently and carries the alarm", "reviewed": true, "status": "paused", "writes": [], "source": "deploy/t4-mlb.timer", "max_age_h": null}, {"key": "workflow|deploy.yml", "kind": "workflow", "schedule": "", "purpose": "Manual-fallback deploy to the VPS (workflow_dispatch only); the normal path is vps_deploy.sh on the box.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": [], "source": ".github/workflows/deploy.yml", "max_age_h": null}, {"key": "workflow|mlb_features_sync.yml", "kind": "workflow", "schedule": "", "purpose": "Regenerates the MLB feature CSV on the GitHub runner (the VPS cannot reach statsapi, GG-470/GG-489), checks MLB_FEATURE_CSV_CONTRACT, then pushes it to the VPS atomically; fail-closed.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": [], "source": ".github/workflows/mlb_features_sync.yml", "max_age_h": null}, {"key": "workflow|mlb_games_cache_sync.yml", "kind": "workflow", "schedule": "", "purpose": "Refreshes the MLB games cache on the GitHub runner twice a day (VPS gets 406 from statsapi, GG-470/GG-482) and pushes it to the VPS atomically; fail-closed.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": [], "source": ".github/workflows/mlb_games_cache_sync.yml", "max_age_h": null}, {"key": "workflow|nhl_goalie_probe.yml", "kind": "workflow", "schedule": "", "purpose": "Read-only probe every 10 minutes in the NHL evening window timing when api-web.nhle.com first shows a confirmed starting goalie (EXP-036 T3); appends to the data/nhl-goalie-probe branch and stops itself after END_DATE.", "pillar": "PLUMBING", "alarm": "none: probe stopped itself after END_DATE 2026-10-14 (7-day window ended); the workflow still fires and exits immediately", "reviewed": true, "status": "paused", "writes": [], "source": ".github/workflows/nhl_goalie_probe.yml", "max_age_h": null}, {"key": "workflow|post_game_resolve.yml", "kind": "workflow", "schedule": "", "purpose": "Post-game resolve job; schedule paused since 2026-07-29 (T-399), manual dispatch only.", "pillar": "PLUMBING", "alarm": "none - paused on purpose since 2026-07-29 (T-399); GG-630", "reviewed": true, "status": "paused", "writes": [], "source": ".github/workflows/post_game_resolve.yml", "max_age_h": null}, {"key": "workflow|tests.yml", "kind": "workflow", "schedule": "", "purpose": "CI: full test suite plus registry check on every PR and push to main.", "pillar": "PLUMBING", "alarm": "healthcheck / deploy status file / Actions status line", "reviewed": true, "status": "live", "writes": [], "source": ".github/workflows/tests.yml", "max_age_h": null}, {"key": "workflow|nfl_event_store.yml", "kind": "workflow", "schedule": "43 9 * * 2", "purpose": "Weekly rebuild of the NFL event store from free nflverse releases, store checks + point-in-time tests, schedule snapshot to release nfl-games-snapshots, manifest commit (W73.2, ADR-0073 stage 1)", "pillar": "DEPTH", "alarm": "Actions run status (fail-closed: failed download/check/test leaves manifest untouched)", "reviewed": true, "status": "live", "writes": ["02_ARCHITECTURE_DESIGN/NFL_ENGINE/event_store_manifest.json", "release nfl-games-snapshots"], "source": ".github/workflows/nfl_event_store.yml", "max_age_h": null}];
+const LIVE = {"as_of": "2026-10-16T14:01:52Z", "head": "dcfbe621", "budget": "RED", "reasons": ["BEHIND systemd|t4-mlb.service: running 03ad6df9, 8.24h behind box HEAD"], "counts": {"live": 73, "stale": 1, "no_alarm_unexplained": 0, "no_alarm_reasoned": 9, "unreviewed": 0}, "rows": {"cron|* * * * *|scripts/demo_cancel_sweeper.py": {"state": "ok", "age_h": 14.2, "detail": ""}, "cron|*/20 0-5 * * *|scripts/archive_market_prices.py --depth-sample-per-family 2 --out exp_output/PRICE_ARCHIVE --series KXMLBGAME": {"state": "ok", "age_h": 8.36, "detail": ""}, "cron|*/20 22-23 * * *|scripts/archive_market_prices.py --depth-sample-per-family 2 --out exp_output/PRICE_ARCHIVE --series KXMLBGAME": {"state": "ok", "age_h": 8.36, "detail": ""}, "cron|0 11 * * *|src/prediction_market_bot/run_mlb_paper_trade.py": {"state": "ok", "age_h": 3.03, "detail": ""}, "cron|0 14 * * *|scripts/run_nhl_shadow_staked.py --band T1 --run-id T1-$(date": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|0 14 * * 1|deploy/check_model_freshness.py": {"state": "ok", "age_h": 96.03, "detail": ""}, "cron|0 17 * * *|deploy/healthcheck.sh": {"state": "ok", "age_h": 21.03, "detail": ""}, "cron|0 18 * * *|src/prediction_market_bot/run_paper_trade.py": {"state": "ok", "age_h": 20.03, "detail": ""}, "cron|0 23 * * *|src/prediction_market_bot/run_t4_live.py": {"state": "ok", "age_h": 9.04, "detail": ""}, "cron|0 6 * * *|src/prediction_market_bot/run_resolve.py": {"state": "ok", "age_h": 8.03, "detail": ""}, "cron|0 9 * * *|scripts/nhl_backfill.py --refresh-schedule --seasons 2026": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|1,16,31,46 0-3 * * *|src/prediction_market_bot/run_t3_pretip.py": {"state": "ok", "age_h": 10.26, "detail": ""}, "cron|1,16,31,46 20-23 * * *|src/prediction_market_bot/run_t3_pretip.py": {"state": "ok", "age_h": 10.26, "detail": ""}, "cron|10 * * * *|scripts/run_pregame_shadow.py --bands T2": {"state": "ok", "age_h": 0.86, "detail": ""}, "cron|10 14 * * 1|scripts/run_mlb_calib_monitor.py": {"state": "ok", "age_h": 95.86, "detail": ""}, "cron|11 */6 * * *|scripts/run_nba_pregame_shadow.py --bands T1": {"state": "ok", "age_h": 1.85, "detail": ""}, "cron|12 * * * *|scripts/run_mlb_pregame_shadow.py --bands T2": {"state": "ok", "age_h": 0.83, "detail": ""}, "cron|14 */6 * * *|scripts/run_nfl_qb_challenger_shadow.py --bands T1": {"state": "ok", "age_h": 1.8, "detail": ""}, "cron|14,24,44,54 * * * *|scripts/run_nba_player_points_shadow.py --bands T3": {"state": "ok", "age_h": 0.13, "detail": ""}, "cron|15 * * * *|scripts/nhl_shadow_settle.py": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|16 * * * *|scripts/run_nba_pregame_shadow.py --bands T2": {"state": "ok", "age_h": 0.76, "detail": ""}, "cron|18 11 * * 0|scripts/nba_player_box_backfill.py --seasons 2026": {"state": "ok", "age_h": null, "detail": ""}, "cron|2,17,32,47 0-3 * * *|src/prediction_market_bot/run_t3_mlb_pretip.py": {"state": "ok", "age_h": 10.25, "detail": ""}, "cron|2,17,32,47 20-23 * * *|src/prediction_market_bot/run_t3_mlb_pretip.py": {"state": "ok", "age_h": 10.25, "detail": ""}, "cron|20 14 * * 1|scripts/run_band_monitor.py --portfolio logs/paper_portfolio_mlb_t4.json": {"state": "ok", "age_h": 95.69, "detail": ""}, "cron|21 4,10,16,22 * * *|scripts/run_nba_player_points_shadow.py --bands T1": {"state": "ok", "age_h": 3.68, "detail": ""}, "cron|22,52 * * * *|scripts/nfl_injury_snapshot.py": {"state": "ok", "age_h": 0.16, "detail": ""}, "cron|23 10 * * *|scripts/run_nba_pregame_shadow_settle.py": {"state": "ok", "age_h": 3.65, "detail": ""}, "cron|25 1 * * *|src/prediction_market_bot/run_pregame.py": {"state": "ok", "age_h": 12.61, "detail": ""}, "cron|25 11 * * *|scripts/demo_fill_forward_report.py": {"state": "ok", "age_h": 2.59, "detail": ""}, "cron|25 17 * * *|scripts/run_t140_check.py": {"state": "ok", "age_h": 20.61, "detail": ""}, "cron|27 * * * *|scripts/run_nba_player_points_shadow.py --bands T2": {"state": "ok", "age_h": 0.58, "detail": ""}, "cron|3,13,23,33,43,53 * * * *|scripts/run_mlb_pregame_shadow.py --bands T3": {"state": "ok", "age_h": 0.15, "detail": ""}, "cron|3-58/5 * * * *|scripts/ops/vps_deploy.sh": {"state": "ok", "age_h": 117.73, "detail": ""}, "cron|30 1 * * *|src/prediction_market_bot/run_paper_trade.py": {"state": "ok", "age_h": 12.53, "detail": ""}, "cron|30 19 * * *|src/prediction_market_bot/run_t2_mlb_sameday.py": {"state": "ok", "age_h": 18.53, "detail": ""}, "cron|30 6 * * *|src/prediction_market_bot/run_resolve_mlb.py": {"state": "ok", "age_h": 7.53, "detail": ""}, "cron|30 8 * * *|src/prediction_market_bot/run_schedule_validator_mlb.py": {"state": "ok", "age_h": 5.53, "detail": ""}, "cron|30 9 * * *|scripts/run_pregame_shadow_settle.py --refresh": {"state": "ok", "age_h": 4.53, "detail": ""}, "cron|35 10 * * *|scripts/run_nba_player_points_shadow_settle.py": {"state": "ok", "age_h": 3.45, "detail": ""}, "cron|37 * * * *|scripts/run_nba_player_points_shadow.py --preseason": {"state": "ok", "age_h": 0.41, "detail": ""}, "cron|4 10 * * *|scripts/nba_player_box_backfill.py --seasons 2027": {"state": "ok", "age_h": 3.96, "detail": ""}, "cron|4,34 0-1 * * *|scripts/run_nhl_shadow_staked.py --band T2 --run-id T2-$(date": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|4,34 15-23 * * *|scripts/run_nhl_shadow_staked.py --band T2 --run-id T2-$(date": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|40 12 * * *|scripts/nba_cell_autoflip.py": {"state": "no alarm (reason given)", "age_h": 1.36, "detail": ""}, "cron|41 11 * * *|scripts/run_pregame_shadow_settle.py --sport mlb": {"state": "ok", "age_h": 2.35, "detail": ""}, "cron|44 9 * * *|scripts/run_pregame_shadow_settle.py --ledger-dir exp_output/PREGAME_SHADOW_NFLQB --prefix NFLQB": {"state": "ok", "age_h": 4.3, "detail": ""}, "cron|45 18 * * *|src/prediction_market_bot/run_mlb_pregame.py": {"state": "ok", "age_h": 22.28, "detail": ""}, "cron|47 9 * * *|scripts/nba_backfill.py --seasons 2026": {"state": "ok", "age_h": 4.24, "detail": ""}, "cron|49 13 * * *|scripts/calibration_engine.py": {"state": "ok", "age_h": 0.2, "detail": ""}, "cron|5 */6 * * *|scripts/run_pregame_shadow.py --bands T1 --refresh": {"state": "ok", "age_h": 1.94, "detail": ""}, "cron|5,25,45 0-3 * * 1|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|5,25,45 0-3 * * 2|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|5,25,45 0-3 * * 4|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|5,25,45 0-3 * * 5|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|5,25,45 17-23 * * 0|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|5,25,45 17-23 * * 3|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|5,25,45 17-23 * * 6|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNFLGAME": {"state": "no alarm (reason given)", "age_h": 8.36, "detail": ""}, "cron|50 13 * * *|scripts/remove_nba_preseason_cron.py --auto": {"state": "no alarm (reason given)", "age_h": 0.2, "detail": ""}, "cron|55 17 * * *|src/prediction_market_bot/run_pregame.py": {"state": "ok", "age_h": 20.11, "detail": ""}, "cron|57 * * * *|scripts/run_nba_pregame_shadow.py --preseason": {"state": "ok", "age_h": 0.08, "detail": ""}, "cron|6,16,26,36,46,56 0-2 * * *|scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|6,16,26,36,46,56 17-23 * * *|scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date": {"state": "ok", "age_h": 0.02, "detail": ""}, "cron|7 */6 * * *|scripts/run_mlb_pregame_shadow.py --bands T1": {"state": "ok", "age_h": 1.91, "detail": ""}, "cron|8,18,28,38,48,58 * * * *|scripts/run_pregame_shadow.py --bands T3": {"state": "ok", "age_h": 0.06, "detail": ""}, "cron|9,19,29,39,49,59 * * * *|scripts/run_nba_pregame_shadow.py --bands T3": {"state": "ok", "age_h": 0.05, "detail": ""}, "systemd|pmbot-web-dashboard.service": {"state": "ok", "age_h": null, "detail": ""}, "systemd|t4-mlb.service": {"state": "BEHIND", "age_h": null, "detail": "running 03ad6df9, 8.24h behind box HEAD"}, "workflow|deploy.yml": {"state": "github", "age_h": null, "detail": ""}, "workflow|mlb_features_sync.yml": {"state": "github", "age_h": null, "detail": ""}, "workflow|mlb_games_cache_sync.yml": {"state": "github", "age_h": null, "detail": ""}, "workflow|tests.yml": {"state": "github", "age_h": null, "detail": ""}, "workflow|nfl_event_store.yml": {"state": "github", "age_h": 37.22, "detail": ""}}};
+const WINERR = {"rows": [{"id": "H1", "date": "2026-08-13 → 09-22", "wave": "—", "what": "Calibration data sat on disk 39 days before anyone computed model vs market.", "cost": "The project's central question went unasked for 5+ weeks.", "caught": "Operator directive 09-22", "pattern": "SLICE", "rule": "Hard Rule 12; DISTANCE table every wave"}, {"id": "H2", "date": "2026-08-15 → 09-22", "wave": "—", "what": "The only evidence-producing cell was dark 38 days (GG-203) while attention was on NFL.", "cost": "38 days of lost evidence.", "caught": "A session doing other work", "pattern": "SLICE", "rule": "Silent-arm alarm (W62.1); runtime registry (ADR-0074)"}, {"id": "W1", "date": "2026-10-09", "wave": "63", "what": "Told the operator MLB player hits had been dark since 9-27, from a stale note. False.", "cost": "Wrong state reported to the operator.", "caught": "Block 63.1 checked the logs", "pattern": "UNVERIFIED", "rule": "Hard Rule 12: check claims against logs/data first"}, {"id": "W2", "date": "2026-10-10", "wave": "64", "what": "Repeated \"judged n ≈ 984 games (~3.6 seasons)\" for the NFL challenger without explaining what it measured.", "cost": "Operator: \"makes absolutely no sense\"; trust cost.", "caught": "Operator", "pattern": "UNVERIFIED", "rule": "Explain every derived number in plain words before using it"}, {"id": "W3", "date": "2026-10-11", "wave": "66–67", "what": "Rebuilt the Visual Dashboard as a platform artifact (unsupported in his Safari) in a \"textbook\" style, dropping his hand-built design.", "cost": "Two rebuilds; operator frustration.", "caught": "Operator", "pattern": "NOTES", "rule": "Dashboard design bar in project memory; keep his design"}, {"id": "W4", "date": "2026-10-11", "wave": "67", "what": "Burned the last free GitHub Actions minutes on proof dispatches, then recommended a $25 spending cap against his $0 rule.", "cost": "MLB feeds and CI blocked; repo made public under pressure.", "caught": "Operator", "pattern": "NO-PUSHBACK", "rule": "$0 rule; repo public; no paid service, ever"}, {"id": "W5", "date": "2026-10-11", "wave": "68", "what": "Changed ACTIVE_QUEUE.md without sending it as a file card.", "cost": "Operator had to ask, angrily.", "caught": "Operator", "pattern": "PROCESS", "rule": "Every queue change is sent as a file card"}, {"id": "W6", "date": "2026-10-12", "wave": "69", "what": "Built the \"permissions pre-flight\" on an authorization line pasted into each block; the terminals' classifier refused it (Claude may not grant itself permissions).", "cost": "69.1 and 69.2 partly blocked.", "caught": "69.1/69.2 handoffs", "pattern": "UNVERIFIED", "rule": "Operator-run `scripts/operator_grant_permissions.py`; blocks never edit settings"}, {"id": "W7", "date": "2026-10-12", "wave": "69", "what": "Wrote three malformed allow rules (`:*` mid-pattern) and told him to type a `!` command in a plain shell before the script was in his folder.", "cost": "Two failed attempts on his side.", "caught": "Operator screenshots", "pattern": "UNVERIFIED", "rule": "Test a script against the target before handing it over"}, {"id": "W8", "date": "2026-10-12", "wave": "70", "what": "Issued 70.1 and 70.3 in parallel when 70.1's merge needed 70.3 to make main green; 70.1 then asked him to admin-merge.", "cost": "A plumbing merge handed to the operator.", "caught": "Operator", "pattern": "COLLISION", "rule": "No merge dependency between blocks of one wave (wave format, ADR-0074)"}, {"id": "W9", "date": "2026-10-12/13", "wave": "69–71", "what": "Passed blocks' plumbing \"operator decisions\" through (re-arm switches, server deploy, old NBA crons, retiring /vps).", "cost": "Operator time; \"the operator is the bottleneck\" narrative.", "caught": "Window, late", "pattern": "ESCALATED", "rule": "Common rule: only pre-registration, frozen artifact/book or real capital go to him"}, {"id": "W10", "date": "2026-10-13", "wave": "71", "what": "Asked the operator what Syndicate32 was — it was in project memory since 09-25.", "cost": "Operator: \"Very typical\".", "caught": "Operator", "pattern": "NOTES", "rule": "Search memory, project docs and repo before asking anything"}, {"id": "W11", "date": "2026-10-13", "wave": "71.H1", "what": "Scoped the hygiene audit without the deployment lane or a skill map; he had to add four add-ins. Then claimed `/vps` \"replaces\" the crontab (it appends).", "cost": "Operator did scoping work; one inaccurate claim.", "caught": "Operator; the audit itself", "pattern": "SCOPE", "rule": "Audit blocks cover deploy + runtime; claims about code are read from the code"}, {"id": "W12", "date": "2026-10-12/13", "wave": "70–71", "what": "Two consecutive waves moved no measure; the windows planned plumbing and breadth without saying surface was outrunning reliability.", "cost": "Drift; four waves of fixing fixes.", "caught": "Drift rule (flagged at 71 close)", "pattern": "NO-PUSHBACK", "rule": "Pushback line + surface budget in every wave (ADR-0074, Hard Rule 14)"}, {"id": "W13", "date": "2026-10-14", "wave": "73", "what": "Landed the CI registry check (ADR-0074) while 73.1 (new NBA cron) and 73.2 (possible new workflow) were in flight — their PRs fail CI until they register. Known at push time; mitigated with an add-in.", "cost": "One extra step for two running blocks.", "caught": "Window, before push", "pattern": "COLLISION", "rule": "Process changes that add CI gates land between waves, or ship with the add-in for blocks in flight"}, {"id": "W14", "date": "2026-10-14", "wave": "73", "what": "Put the GG-570 \"give NBA a separate staked runner?\" question to the operator from the gap entry's text; NBA's T1-T3 lines were already demo-staked since W68.2.", "cost": "An operator decision spent on a stale premise; 73.1 had to say so.", "caught": "73.1", "pattern": "UNVERIFIED", "rule": "Before routing any decision to the operator, verify its premise against the code/crontab mirrors, not the gap text"}, {"id": "W15", "date": "2026-10-14", "wave": "74→75", "what": "Did not know what \"PAM\" was when the operator named it twice (10-13, 10-14); it is DS-01, the Player Attribute Matrix, documented in the repo. He had to spell it out.", "cost": "Operator had to explain his own system.", "caught": "Operator", "pattern": "NOTES", "rule": "Grep the repo and project docs for any term the operator uses that the window cannot define, before replying"}, {"id": "W16", "date": "2026-10-14", "wave": "74→75", "what": "Reduced \"we're going with edge\" to \"generality is no longer a reason to build; expected edge is\" and wrote that into CLAUDE.md. He meant a comprehensive betting architecture at play-level granularity (aggregation > interpretation > application).", "cost": "His core directive diluted in the canonical file for ~10 minutes.", "caught": "Operator", "pattern": "REDUCED", "rule": "Quote the operator's own words into canonical docs; restate, never compress, until he confirms the restatement"}, {"id": "W17", "date": "2026-10-14", "wave": "75", "what": "Wrote 75.2 around the operator's Cover 6 question as the literal deliverable (answer it for 2025, register a GAP for boundary motion). He gave it as an illustration of granularity: \"i hope you didn't take my cover 6 example as a processing requirement - it was just an example\".", "cost": "75.2 rescoped before it ran; one operator correction.", "caught": "Operator", "pattern": "LITERAL", "rule": "An operator example shows the bar, not the spec: blocks build the general capability and use his example only as an illustration, unless he says it is the requirement"}, {"id": "W18", "date": "2026-10-14", "wave": "75", "what": "Wrote \"B74-A Session 2 is running\" into Wave 75's surface, dependencies and sequencing rows from the operator's earlier \"still firing\" remark, without checking SESSION_CLAIMS.md (no Session 2 claim existed).", "cost": "Wave 75's dependency lines were written around a terminal that did not exist; operator corrected it.", "caught": "Operator", "pattern": "UNVERIFIED", "rule": "Before describing a terminal as running, check SESSION_CLAIMS.md for its claim"}, {"id": "W19", "date": "2026-10-15", "wave": "76", "what": "When the shell's safety check timed out, left Wave 76 unpushed, told the operator to hold pasting until the push landed, and relied on a scheduled retry that only reached the session 17 h later.", "cost": "Wave 76 sat unissued ~17 h; no terminal ran.", "caught": "Window, on the retry", "pattern": "PROCESS", "rule": "A failed push is retried in the same turn until it lands or the turn ends; the operator is never told to wait on a retry the window cannot confirm will fire"}, {"id": "W20", "date": "2026-10-15", "wave": "76", "what": "Gave the operator `/loop /gap-agent` without checking how his terminals resolve commands: they start in his local project folder, which is not synced to main, so a command pushed to GitHub minutes earlier does not exist there. The terminal refused it.", "cost": "One failed launch.", "caught": "Operator (screenshot)", "pattern": "UNVERIFIED", "rule": "Anything a terminal must run at launch is read from origin/main inside the prompt (`git show origin/main:<path>`), never assumed present in the local folder; same for /vision and any new command"}, {"id": "W21", "date": "2026-10-15", "wave": "77→78", "what": "Wrote Waves 78-80 block by block into the queue's arc (and the 78 Archive-adapter add-on) before 77's results existed. The operator: \"don't pre-determine what the next waves are going to be - we are committed to sequential processing as necessary\".", "cost": "A preset plan in the queue that 77's results (thinner markets) already overtook.", "caught": "Operator", "pattern": "PRESET", "rule": "The arc holds only fixed dates and standing direction; each wave is written from the last wave's results when it closes"}], "tally": [{"pattern": "UNVERIFIED", "count": 7, "last": "W20 (10-15)"}, {"pattern": "NOTES", "count": 3, "last": "W15 (10-14)"}, {"pattern": "NO-PUSHBACK", "count": 2, "last": "W12 (10-13)"}, {"pattern": "SLICE", "count": 2, "last": "H2 (history)"}, {"pattern": "ESCALATED", "count": 1, "last": "W9"}, {"pattern": "COLLISION", "count": 2, "last": "W13 (10-14)"}, {"pattern": "SCOPE", "count": 1, "last": "W11"}, {"pattern": "REDUCED", "count": 1, "last": "W16 (10-14)"}, {"pattern": "PROCESS", "count": 2, "last": "W19 (10-15)"}, {"pattern": "LITERAL", "count": 1, "last": "W17 (10-14)"}, {"pattern": "PRESET", "count": 1, "last": "W21 (10-15)"}]};
+const GAGENT = {"ok": true, "error": null, "ticks": 3, "open_first": 186, "open_now": 185, "delta": -1, "closed": {"A": 1, "B": 0, "C": 0}, "closed_total": 1, "triaged": 56, "last_tick": "2026-10-16T02:00Z", "age_h": 12.1, "queue_status": "relaunch", "running": false, "stale": false, "state_line": "not ticking (queue: relaunch), last tick 12.1h ago"};
+const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
+                ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
+
+/* ============================================================ RENDER */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const tt=$('#tt');
+function showTip(e,html){tt.innerHTML=html; tt.style.opacity='1';
+  const r=tt.getBoundingClientRect(); let x=e.clientX+14,y=e.clientY+14;
+  if(x+r.width>innerWidth-12)x=e.clientX-r.width-14;
+  if(y+r.height>innerHeight-12)y=e.clientY-r.height-14;
+  tt.style.left=x+'px'; tt.style.top=y+'px';}
+function hideTip(){tt.style.opacity='0'}
+
+function distance(){
+  const PC={Breadth:'info',Depth:'warn',Execution:'crit',Proof:'mute'};
+  $('#distBody').innerHTML=DIST.map(([p,c,m,now,opt,mv])=>{
+    const moved=/^\+/.test(mv)?'good':(/accepted|ON in|live in/.test(mv)?'info':'mute');
+    return `<tr><td><span class="chip ${PC[p]}"><i></i>${p}</span></td><td><span class="mono" style="color:var(--ink-3)">${c}</span> ${esc(m)}</td>`+
+      `<td class="nowc">${esc(now)}</td><td style="color:var(--ink-3)">${esc(opt)}</td><td><span class="chip ${moved}"><i></i>${esc(mv)}</span></td></tr>`;
+  }).join('');
+}
+
+function forest(){
+  const all=F.flatMap(g=>g.rows);
+  $('#verdCount').textContent=all.length+' measured effects'; $('#nvVerd').textContent=all.length;
+  const lo=Math.min(...all.map(r=>r.lo)), hi=Math.max(...all.map(r=>r.hi));
+  const pad=(hi-lo)*0.14, dmin=Math.min(lo-pad,-0.001), dmax=Math.max(hi+pad,0.001);
+  const L=392, R=96, W=1000, rowH=42, headH=30;
+  let n=0; F.forEach(g=>n+=g.rows.length+1);
+  const H=n*rowH+headH+18;
+  const x=v=>L+(v-dmin)/(dmax-dmin)*(W-L-R);
+  const SC={crit:'var(--crit)',warn:'var(--warn)',good:'var(--good)',serious:'var(--serious)'};
+  let s=`<svg class="forest" viewBox="0 0 ${W} ${H}" role="img" aria-label="Measured effects with intervals">`;
+  const raw=(dmax-dmin)/6, mag=Math.pow(10,Math.floor(Math.log10(raw)));
+  const step=[1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=raw) || 10*mag;
+  const ticks=[];
+  for(let v=Math.ceil(dmin/step)*step; v<=dmax+1e-12; v+=step){ if(Math.abs(v)>step/4) ticks.push(v); }
+  ticks.forEach(v=>{ s+=`<line class="fgrid" x1="${x(v).toFixed(1)}" y1="${headH-8}" x2="${x(v).toFixed(1)}" y2="${H-18}"/>`;
+    s+=`<text class="ftick" x="${x(v).toFixed(1)}" y="${headH-14}" text-anchor="middle">${v>0?'+':''}${v.toFixed(3)}</text>`;});
+  s+=`<text class="ftick" x="${x(0).toFixed(1)}" y="${headH-14}" text-anchor="middle" style="fill:var(--ink-2);font-weight:700">0</text>`;
+  s+=`<line class="fz" x1="${x(0).toFixed(1)}" y1="${headH-8}" x2="${x(0).toFixed(1)}" y2="${H-18}"/>`;
+  s+=`<text class="fsub" x="${x(0).toFixed(1)}" y="${H-5}" text-anchor="middle">no difference</text>`;
+  s+=`<text class="fsub" x="${L}" y="${H-5}">← market / incumbent better</text>`;
+  s+=`<text class="fsub" x="${W-R}" y="${H-5}" text-anchor="end">candidate better →</text>`;
+  let y=headH+16;
+  F.forEach(g=>{
+    s+=`<text class="fsub" x="8" y="${y+4}" style="font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:9.4px">${esc(g.g)}</text>`;
+    y+=rowH*0.62;
+    g.rows.forEach(r=>{
+      const col=SC[r.c]||'var(--s1)';
+      s+=`<g class="frow" data-tip="${encodeURIComponent(
+          `<div class="h">${r.l}</div><div style="font-size:11.4px;color:var(--ink-3);margin-bottom:6px">${r.s}</div>`+
+          `<div class="r"><span>ΔBrier</span><b>${r.m>0?'+':''}${r.m.toFixed(5)}</b></div>`+
+          `<div class="r"><span>interval</span><b>[${r.lo.toFixed(5)}, ${r.hi.toFixed(5)}]</b></div>`+
+          `<div class="r"><span>verdict</span><b>${r.v}</b></div>`)}">`;
+      s+=`<rect class="fbg" x="0" y="${y-15}" width="${W}" height="${rowH-8}" fill="transparent" rx="5"/>`;
+      s+=`<text class="flabel" x="8" y="${y-1}">${esc(r.l)}</text>`;
+      s+=`<text class="fsub" x="8" y="${y+12}">${esc(r.s)}</text>`;
+      s+=`<line class="fci" x1="${x(r.lo).toFixed(1)}" y1="${y+1}" x2="${x(r.hi).toFixed(1)}" y2="${y+1}" stroke="${col}"/>`;
+      s+=`<circle class="fpt" cx="${x(r.m).toFixed(1)}" cy="${y+1}" r="4.6" fill="${col}"/>`;
+      const right=x(r.hi)+9+r.v.length*6.2 < W-4;
+      const lx=right? x(r.hi)+9 : x(r.lo)-9, anc=right?'start':'end';
+      s+=`<text class="fsub" x="${lx.toFixed(1)}" y="${y+5}" text-anchor="${anc}" style="font-family:var(--mono);font-size:9.6px;fill:${col};font-weight:700">${r.v}</text>`;
+      s+=`</g>`;
+      y+=rowH;
+    });
+    y+=6;
+  });
+  s+=`</svg>`;
+  $('#forestWrap').innerHTML=s;
+  $$('#forestWrap .frow').forEach(g=>{
+    g.addEventListener('mousemove',e=>showTip(e,decodeURIComponent(g.dataset.tip)));
+    g.addEventListener('mouseleave',hideTip);
+  });
+  let t=`<div class="tscroll"><table><thead><tr><th>Test</th><th>Measured against</th><th class="num">ΔBrier</th><th class="num">Interval</th><th>Verdict</th></tr></thead><tbody>`;
+  F.forEach(g=>g.rows.forEach(r=>{
+    t+=`<tr><td class="k">${esc(r.l)}<div style="font-size:11px;color:var(--ink-3);font-weight:400">${esc(r.s)}</div></td>`+
+       `<td>${esc(g.g)}</td><td class="num">${r.m>0?'+':''}${r.m.toFixed(5)}</td>`+
+       `<td class="num">[${r.lo.toFixed(5)}, ${r.hi.toFixed(5)}]</td>`+
+       `<td><span class="chip ${r.c}"><i></i>${esc(r.v)}</span></td></tr>`;
+  }));
+  $('#forestTable').innerHTML=t+`</tbody></table></div>`;
+}
+
+function bars(host,data){
+  const max=Math.max(...data.map(d=>d[1]));
+  $(host).innerHTML=data.map(([l,v,c])=>
+    `<div class="bar"><div class="bl">${l}</div><div class="bt">`+
+    `<div class="bf" style="width:${Math.max(v/max*100,v?1.2:0).toFixed(1)}%;background:${c}"></div></div>`+
+    `<div class="bv">${v.toLocaleString()}</div></div>`).join('');
+}
+
+const SLABEL={active:"ACTIVE",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen"};
+const SCLASS={active:"act",shadow:"shd",not_implemented:"ni",blocked:"blk",dark:"dark"};
+function matrix(filter="all",q=""){
+  let h=`<table><thead><tr><th class="m"></th>`;
+  BANDS.forEach(b=>h+=`<th class="b">${b}</th>`);
+  h+=`</tr></thead><tbody>`;
+  MARKETS.forEach(([mk,label])=>{
+    if(q && !(label.toLowerCase().includes(q)||mk.toLowerCase().includes(q))) return;
+    h+=`<tr><th class="m">${label}</th>`;
+    BANDS.forEach(b=>{
+      const key=mk+"|"+b, cell=CELLS[key], st=cell&&cell.s;
+      let cls="cellbox none", dim="";
+      if(st){ cls="cellbox "+SCLASS[st];
+        const keep = filter==="all" || (filter==="act"&&st==="active") ||
+                     (filter==="log"&&(st==="shadow"||st==="active")) || (filter==="blk"&&st==="blocked");
+        if(!keep) dim="opacity:.14";
+      }
+      const note = MXNOTE[key] || (cell && cell.n) || "";
+      const tip = st ? encodeURIComponent(`<div class="h">${label} · ${b}</div>`+
+        `<div class="r"><span>registry</span><b>${SLABEL[st]}</b></div>`+
+        (note?`<div style="margin-top:6px;font-size:11.3px;color:var(--ink-2);max-width:300px;white-space:normal">${esc(note)}</div>`:"")) : "";
+      h+=`<td><div class="${cls}" ${st?`data-s="${st}" data-tip="${tip}"`:""} style="${dim}">`+
+         `${key==="MLB_PLAYER_PROP_HITS|T4M-PROJ"?'<span class="g">!</span>':''}</div></td>`;
+    });
+    h+=`</tr>`;
+  });
+  $('#mxHost').innerHTML=h+`</tbody></table>`;
+  $$('#mxHost .cellbox[data-tip]').forEach(c=>{
+    c.addEventListener('mousemove',e=>showTip(e,decodeURIComponent(c.dataset.tip)));
+    c.addEventListener('mouseleave',hideTip);
+  });
+}
+
+function arms(){
+  $('#nvArms').textContent=ARMS.length;
+  $('#armsBody').innerHTML=ARMS.map(([a,n,st,c,p,look,note])=>
+    `<tr><td class="k">${esc(a)}</td><td class="num">${n}</td><td><span class="chip ${c}"><i></i>${esc(st)}</span></td>`+
+    `<td class="mono" style="font-size:11.5px">${esc(p)}</td><td>${esc(look)}</td><td style="color:var(--ink-2)">${esc(note)}</td></tr>`).join('');
+  $('#calBody').innerHTML=CAL.map(([d,e])=>`<tr><td class="k" style="white-space:nowrap">${esc(d)}</td><td>${esc(e)}</td></tr>`).join('');
+}
+
+function timeline(){
+  $('#waveRange').textContent='29 → '+WAVES[WAVES.length-1].w; $('#nvWaves').textContent=WAVES.length;
+  $('#tl').innerHTML=WAVES.slice().reverse().map(w=>
+    `<div class="tlitem ${w.k}"><div class="th"><span class="tw">Wave ${w.w}</span>`+
+    `<span class="chip ${w.k==='hit'?'good':w.k==='neg'?'crit':w.k==='now'?'info':'mute'}"><i></i>${
+      w.k==='hit'?'moved':w.k==='neg'?'hard negative':w.k==='now'?'in flight':'closed'}</span>`+
+    `<span style="font-size:12.6px;color:var(--ink);font-weight:550">${w.t}</span></div>`+
+    `<div class="td">${w.d}</div></div>`).join('');
+}
+function desk(){
+  $('#deskCount').textContent=DESK.length+' open'; $('#nvDesk').textContent=DESK.length;
+  $('#deskList').innerHTML=DESK.map(d=>
+    `<div class="dkrow" style="--accent:${d.a}"><div><div class="dt">${d.t}</div></div>`+
+    `<div class="dd">${d.d}</div><div class="dc">${d.c}</div></div>`).join('');
+}
+
+
+function integrity(){
+  const live=RUNTIME.filter(c=>c.status==="live"), unrev=live.filter(c=>!c.reviewed),
+        noal=live.filter(c=>String(c.alarm||"").startsWith("none")||String(c.alarm||"").startsWith("UNSET"));
+  $('#surfLive').textContent=live.length; $('#surfUnrev').textContent=unrev.length; $('#surfNoAlarm').textContent=noal.length;
+  $('#nvInteg').textContent=live.length;
+  const LR=LIVE.rows||{}, hasLive=!!LIVE.rows, isBad=(st)=>["DOWN","BEHIND","STALE","NO ALARM"].includes(st);
+  if(hasLive){
+    const red=LIVE.budget==="RED";
+    $('#surfBudget').innerHTML=`<span style="color:var(--${red?"crit":"good"})">${esc(LIVE.budget)}</span>`;
+    $('#surfBudgetN').innerHTML=(red?LIVE.reasons.map(esc).join("<br>"):"No stale, down or behind component; healthcheck and silent arms clean.")+
+      `<br><span class="mono" style="font-size:11px">box probe ${esc(LIVE.as_of)} · HEAD ${esc(LIVE.head)}</span>`;
+  }
+  const g=GAGENT||{};
+  if(g.ok){
+    const bad=g.stale, good=g.running;
+    $('#gaOpen').textContent=g.open_now;
+    $('#gaOpenN').innerHTML=`At the agent's first tick: <b>${esc(g.open_first)}</b> (${g.delta==null?"n/a":(g.delta>0?"+":"")+g.delta}). Closed A/B/C: ${esc(g.closed.A)}/${esc(g.closed.B)}/${esc(g.closed.C)} · triaged ${esc(g.triaged)} · ${esc(g.ticks)} ticks.`;
+    $('#gaState').innerHTML=`<span style="color:var(--${bad?"crit":good?"good":"warn"})">${esc(g.state_line)}</span>`;
+    $('#gaStateN').textContent=`Last tick ${g.last_tick||"n/a"} (from GG_BURNDOWN.md at build time).`;
+  } else { $('#gaOpen').textContent="—"; $('#gaOpenN').textContent="No gap-agent data: "+(g.error||"not read"); $('#gaState').textContent="no data"; }
+  const pill={"BREADTH":"good","DEPTH":"info","EXECUTION":"warn","PROOF":"serious","PLUMBING":"mute"};
+  const rowsOf=(f)=>RUNTIME.filter(c=>f==="all"||(f==="noalarm"?(c.status==="live"&&(String(c.alarm).startsWith("none")||String(c.alarm).startsWith("UNSET"))):f==="stale"?(LR[c.key]&&isBad(LR[c.key].state)):c.pillar===f));
+  const draw=(f)=>{
+    $('#rtBody').innerHTML=rowsOf(f).map(c=>{
+      const al=String(c.alarm||""); const bad=al.startsWith("none")||al.startsWith("UNSET");
+      const lv=LR[c.key]; const lbad=lv&&isBad(lv.state);
+      const lcell=!hasLive?`<td style="color:var(--ink-3)">—</td>`:lv?`<td style="color:var(--${lbad?"crit":"ink-2"});white-space:nowrap">${esc(lv.state)}${lv.age_h==null?"":" · "+esc(lv.age_h)+"h"}${lv.detail?"<br>"+esc(lv.detail):""}</td>`:`<td style="color:var(--ink-3)">—</td>`;
+      return `<tr${lbad?' style="background:rgba(255,80,80,.08)"':''}><td class="k">${esc(c.kind)}</td><td class="mono" style="font-size:11px;white-space:nowrap">${esc(c.schedule||"—")}</td>`+
+        `<td>${esc(String(c.purpose).replace(" (auto - review)",""))}${c.status!=="live"?` <span class="chip mute"><i></i>${esc(c.status)}</span>`:""}</td>`+
+        `<td><span class="chip ${pill[c.pillar]||"mute"}"><i></i>${esc(c.pillar)}</span></td>`+
+        `<td style="color:${bad?"var(--crit)":"var(--ink-2)"}">${esc(al.replace(" (auto)",""))}</td>`+
+        `<td>${c.reviewed?'<span class="chip good"><i></i>yes</span>':'<span class="chip warn"><i></i>no</span>'}</td>`+lcell+`</tr>`;}).join('');
+  };
+  draw("all");
+  $$('.rtf').forEach(b=>b.addEventListener('click',()=>{$$('.rtf').forEach(o=>o.classList.remove('on')); b.classList.add('on'); draw(b.dataset.f);}));
+  bars('#winTally',WINERR.tally.map(x=>[x.pattern,x.count,x.pattern==="UNVERIFIED"?"var(--crit)":"var(--warn)"]));
+  $('#winCount').textContent=WINERR.rows.length;
+  $('#winBody').innerHTML=WINERR.rows.slice().reverse().map(r=>
+    `<tr><td class="k">${esc(r.id)}</td><td style="white-space:nowrap">${esc(r.date)}</td><td>${esc(r.what)}</td>`+
+    `<td><span class="chip warn"><i></i>${esc(r.pattern)}</span></td><td style="color:var(--ink-2)">${esc(r.rule)}</td></tr>`).join('');
+}
+function govCounts(){
+  $$('.govOpen').forEach(e=>e.textContent=GOV.open); $$('.govLive').forEach(e=>e.textContent=GOV.live);
+  $$('.govRetired').forEach(e=>e.textContent=GOV.retired);
+  const st={}; Object.values(CELLS).forEach(c=>st[c.s]=(st[c.s]||0)+1);
+  const n=Object.keys(CELLS).length, logging=(st.shadow||0)+(st.active||0);
+  $$('.cellN').forEach(e=>e.textContent=n); $('#mxLogging').textContent=logging;
+  $('#mxBreak').textContent=`${st.active||0} ACTIVE, ${st.shadow||0} SHADOW`;
+  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK and ${st.not_implemented||0} defined but not built`;
+}
+
+/* ---- WIRE ---- */
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts();
+bars('#sevBars',SEV); bars('#asymBars',ASYM);
+$('#tblBtn').addEventListener('click',()=>{
+  const t=$('#forestTable'); t.classList.toggle('hidden');
+  $('#tblBtn').textContent = t.classList.contains('hidden') ? '▤ Table view' : '▤ Hide table';
+});
+let mxF="all", mxQ="";
+$$('.mxf').forEach(b=>b.addEventListener('click',()=>{
+  $$('.mxf').forEach(o=>o.classList.remove('on')); b.classList.add('on');
+  mxF=b.dataset.f; matrix(mxF,mxQ);
+}));
+$('#mxSearch').addEventListener('input',e=>{mxQ=e.target.value.trim().toLowerCase(); matrix(mxF,mxQ);});
+$('#themeBtn').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme')||'dark';
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  try{localStorage.setItem('pmb-theme',next)}catch(e){}
+});
+try{const s=localStorage.getItem('pmb-theme'); if(s)document.documentElement.setAttribute('data-theme',s);}catch(e){}
+const secs=$$('section[id]'), navs=$$('.rail a.nv');
+const io=new IntersectionObserver(es=>{
+  es.forEach(en=>{ if(en.isIntersecting){
+    navs.forEach(a=>a.classList.toggle('on', a.getAttribute('href')==='#'+en.target.id));
+  }});
+},{rootMargin:'-80px 0px -70% 0px', threshold:0});
+secs.forEach(s=>io.observe(s));
+
+</script>
+</body>
+</html>
