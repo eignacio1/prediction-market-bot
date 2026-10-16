@@ -34,4 +34,22 @@ Existing `test_kill_switch_shadow_stake`, `test_gg038_*halt_latency` pass (one a
 
 ## Part B — drill on the running processes
 
-PENDING (merge, deploy read-back, live DEMO drill in an idle window).
+Superseded by "Drill" below (W76.1). Kept: the merge/deploy was read back first.
+
+## Drill (W76.1, 2026-10-15T23:50Z to 2026-10-16T00:14Z, DEMO, run on the VPS) — PASS
+
+**Running code.** `t4-mlb` (systemd) restarted 2026-10-15 05:48:27Z, after the W75.4 files landed at 05:48:24Z, so it runs the one-switch code; no restart was needed. Every other order path is a cron that imports `submit_order` fresh on each launch (the check is inside `KalshiMarketClient.submit_order`). Idle window: demo only, no real capital, no existing cron line, setting or ledger row touched. The flags were written by `/tmp/w76_1_drill.sh` (a shell script that touches then removes flags under `trap` cleanup; log `logs/w76_1_drill_*.log`). Baseline: no `*kill_switch*.flag` in `logs/`.
+
+| Phase | Flag | Window (UTC) | What was asserted | Observed |
+|---|---|---|---|---|
+| P1 | global `kill_switch.flag` | 23:50:57.154 to 00:01:57.169 | every order path halts; nothing placed | `t4-mlb`: first `T4-MLB kill switch armed — sleeping 10s` at **23:51:26.6 (29.5 s after touch)**, repeating every 10 s. Shadow stake cron (T2 slot 23:5x/00:0x): **72 `shadow_skip reason=kill_switch_halted` (first 23:58:05.9, last 23:58:12.7), 0 `shadow_order` in the window.** Direct `submit_order` probe at 23:58:14.7 on a deliberately non-existent ticker (`KXZZZ-W76PROBE-NOSUCH`), five caller labels: unlabeled, `t1_mlb`, `t1_nba`, `shadow`, `t4_mlb` all returned `status=halted, error=kill_switch_halted:kill_switch_flag:kill_switch.flag` in **19 to 37 ms**, no HTTP request made. |
+| P2 | band `kill_switch_t4_mlb.flag` | 00:01:57.174 to 00:12:57.191 | halts only `t4_mlb` | `t4-mlb` armed throughout (last 00:12:50). Probe at 00:08:32: unlabeled and `t4_mlb` **halted** (18 and 21 ms); `t1_mlb`, `t1_nba`, `shadow` **not halted** (they reached the exchange and got HTTP 404 on the fake ticker, 113 to 116 ms, nothing placed). Shadow cron in the window: 42 `shadow_order` attempts, 0 `kill_switch_halted` skips (all 42 rejected `insufficient_balance`, GG-840, not a halt). |
+| P3 | none | 00:12:57 to 00:14:27 (+ read at 00:17) | removal resumes | `t4-mlb` first ESPN poll **00:13:04.5 (7.3 s after removal)**, first full evaluation cycle `C0143` 00:13:35; shadow cron placed its next order attempt 00:16:24.6 (the next cron slot; rejected `insufficient_balance`). `ls logs/*.flag`: none left. |
+
+**Result.** NFR-03 halt within 60 s: worst observed 29.5 s (`t4-mlb`, bounded by its 10 s loop plus the in-flight cycle); cron paths check at call time (milliseconds). Global flag halts every running order path; a band flag halts only its band; removal resumes. Order paths proven on the running processes: `t4-mlb` (systemd, loop check), shadow-stake crons (in-process `maybe_place`), and the `submit_order` funnel for all five caller labels (T1 NBA and T1 MLB crons are the `t1_nba`/`t1_mlb` labels of the same funnel; no T1 cron fired inside the window, so they are proven at the funnel, not by a cron launch).
+
+**Not exercised, stated plainly.** (1) Cancels are intentionally not gated and no cancel was pending during the window, so "cancels continue under a flag" is by design and by code, not observed. (2) The C7 in-memory trip writing the global flag is covered by the 14 unit tests, not by the drill. (3) The armed message still prints the legacy path `t4_mlb_kill_switch.flag` although any flag halts it (cosmetic, GG-842).
+
+**C7 record.** `kill_switch_drill_result` appended to `logs/audit.jsonl` on the box at 00:18:54Z (event `EVT-3B72CDCB0720`, `passed_sla: true`, `sla_threshold_ms: 60000`, session `W76.1-DRILL`).
+
+**GG-745: RESOLVED** on this pass (all six order paths honour the one switch in code, and the running processes were drilled).
