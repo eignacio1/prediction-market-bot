@@ -933,3 +933,4 @@
 | 2026-10-16T05:11:08Z | TBD | W77.2b DEPTH D5(b): Friday-report window via hourly KXNFLGAME candles (no new fetch); STANDARD |
 | 2026-10-16T05:24:15Z | W77.2b | CLOSED — W77.2b: Friday-report window null (REPORT slope -0.0008 [-0.0034,+0.0014], n=145) from existing hourly candles; PR #273. (commit `09ec6ef`) |
 | 2026-10-16T05:24:27Z | W77.2b | CLOSED — merge confirmed, HEAD (e15dcfd) is ancestor of origin/main — Friday-report window null; PR #273 merged |
+| 2026-10-16T05:35:36Z | W78.1; GG: none pre-allocated | W78.1 PURPOSE=PLUMBING (ADR-0074): land #266 runtime map on both dashboards + gap-agent panel; measure SURFACE BUDGET visible |
