@@ -2367,3 +2367,11 @@ Operator answer, verbatim (AskUserQuestion): "Exclude exchange 503s (Recommended
 - 76.1 done late (PR #267): kill switch drilled on running processes, 6/6. Window merged main into its branch to clear the 76.2 isolation failure. GG-840 (demo account cash-starved, 1,535 insufficient_balance rejections) also goes to 77.1.
 
 | 2026-10-16 | W77.1 | Demo cash starvation (GG-840) handled by an arm-blind pre-order `cash_skip_reason` (fails open) in both order paths; policy-neutral, so no operator stop. Exchange 5xx excluded from ADR-0072 turn-off (GG-841). "Treatment not this season" survives per cell; cash is the binding constraint, not the plumbing. |
+
+## 2026-10-15 22:09 PT — The operator's qualitative archive (built with Muse) gets an intake contract
+
+Operator, verbatim: "Btw - I'm working on this w Muse. Essentially having it be a mass data scraper for me to compile as comprehensive of an archive as possible - it will continue to get deeper with and more complex with the layers. Sending it to you now because I want to ensure once it gets its foundational pieces going - that we have the architecture ready to go to pipe it in. Just an FYI."
+
+- His synopsis filed verbatim at 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/MUSE_ARCHIVE_ARCHITECTURE_20261015.md (NFL base complete: L1, L2, team-news, cross-team; NBA/NHL/MLB queued).
+- Window drafted 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/INTAKE_CONTRACT.md: the archive is the first source for factor class G5 qualitative (no free structured source until now) and feeds PAM deep-tier evidence, seat interface, temporal evolution, structural priors/tensions and timing. Requirements: point-in-time (team files are revised in place, so every revision must be kept or the archive cannot back a backtest), claims extracted into sourced dated records, read-only one-way intake, application tested like every factor.
+- Adapter added to Wave 78 as a block. Open for the operator when it is built: where the archive lives for a terminal to read, and whether the Muse side keeps every revision.
