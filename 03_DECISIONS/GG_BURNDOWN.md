@@ -7,6 +7,7 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 |---|---|---|---|---|---|
 | 1 | 2026-10-16T00:25Z | log 186 → 185 exact-OPEN (GG-429 resolved); governance-scan count was 164, re-read next tick | 1 / 0 / 0 | 7 | branch session/20261016T000911Z-gap-agent; also retired 23 resolved-class entries to archive (211 retained; parity 212=212, uniqueness OK) |
 | 2 | 2026-10-16T01:00Z | log 185 → 185 exact-OPEN (no A/B found among the 25 triaged); scan count not re-read this tick | 0 / 0 / 0 | 25 (15 HIGH bucketed + 10 UNSPECIFIED severities filled) | branch session/20261016T000911Z-gap-agent |
+| 3 | 2026-10-16T02:00Z | log 185 → 185 exact-OPEN (no A/B yet; GG-156/158 queued as A-candidates pending read-only ssh) | 0 / 0 / 0 | 24 (10 severities filled + 14 bucketed) | branch session/20261016T000911Z-gap-agent |
 
 ## Ledger
 | GG | Sev | Class | Evidence / reason | Next owner | Tick |
@@ -42,11 +43,24 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 | GG-078 | LOW (was UNSPECIFIED) | L | Moot while kelly_fraction is 0.0 (ADR-0048); reopens on reactivation | At reactivation | 2 |
 | GG-094 | HIGH (was UNSPECIFIED) | L | MLB has no qualitative layer: the DEPTH pillar gap | Window block | 2 |
 | GG-105 | HIGH (was UNSPECIFIED) | L | Significant anti-predictive tercile in the only ACTIVE band; retest on clean_n=1898 | Window block | 2 |
+| GG-133 | LOW (was UNSPECIFIED) | C-later | CHANGELOG stale ~6wk; doc-only, window-owned nav | Window | 3 |
+| GG-134 | MEDIUM (was UNSPECIFIED) | L | MC report limitations section | Window block | 3 |
+| GG-137 | LOW (was UNSPECIFIED) | L | Depends on GG-105 retest | GG-105 | 3 |
+| GG-140 | MEDIUM (was UNSPECIFIED) | L | Depends on GG-105 retest | GG-105 | 3 |
+| GG-150 | LOW (was UNSPECIFIED) | O | Blocking control for cross-book conflicts is an operator decision | Operator | 3 |
+| GG-151 | LOW (was UNSPECIFIED) | C-later | Post-merge duplicate-row check; touches hooks/claims, needs care | Later tick | 3 |
+| GG-156 | HIGH (was UNSPECIFIED) | A-candidate | Needs read-only ssh check of PRICE_ARCHIVE continuity before close | Next tick | 3 |
+| GG-157 | HIGH (was UNSPECIFIED) | L | paper_trader fill/depth validation; EXECUTION pillar | Window block | 3 |
+| GG-158 | MEDIUM (was UNSPECIFIED) | A-candidate | Needs read-only check of off-VPS archive copy recency | Next tick | 3 |
+| GG-160 | MEDIUM (was UNSPECIFIED) | L | Citation resolver build | Window block | 3 |
+| GG-098/154/161/164/192/196/224 | - | L | Same-file or multi-session work (161 shares run_resolve_mlb.py with GG-170; 224 has no service-side ADR-0061 enforcement) | Waves | 3 |
+| GG-153/168/174/202/206/216 | - | O | Need operator/window call (206: sibling outcome store is laptop-only and git-ignored) | Operator | 3 |
+| GG-209 | - | W | Wave-owned | Wave | 3 |
 
 ## Operator lines
 - GG-417: approve adding a stale `.git/index.lock` check (age>10min, no live git) to `.claude/hooks/session_guard.sh` — hook edits are outside this agent's remit.
 - GG-741: recommend the strategic window verify the format condition and resolve.
-- GG-046, GG-172, GG-204, GG-295, GG-320, GG-333, GG-066: each needs an operator/window call (see ledger rows).
+- GG-046, GG-172, GG-204, GG-295, GG-320, GG-333, GG-066, GG-150, GG-153, GG-168, GG-174, GG-202, GG-206, GG-216: each needs an operator/window call (see ledger rows).
 - Intake note: handoffs mention tensions registered without GG ids (W76 NFL/NBA tension registers); the window may assign ids if wanted.
 
 ## Large (for waves)
