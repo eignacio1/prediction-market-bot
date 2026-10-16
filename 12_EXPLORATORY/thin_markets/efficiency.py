@@ -30,6 +30,10 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from _fence import safe_out  # noqa: E402  (12_EXPLORATORY CHARTER rule 3: the only write path)
 
 CUSTODY_FROM = datetime(2026, 8, 1, tzinfo=timezone.utc)
 KICKOFF_LAG = {"NFL": timedelta(hours=3, minutes=15), "NBA": timedelta(hours=2, minutes=30)}
@@ -42,7 +46,7 @@ GAME_FAMILY = {"NFL": "KXNFLGAME", "NBA": "KXNBAGAME"}
 
 
 def iso(s: str) -> datetime:
-    return datetime.fromisoformat(s.replace("Z", "+00:00"))
+    return datetime.fromisoformat(s[:-1] + "+00:00" if s.endswith("Z") else s)
 
 
 def sport_of(series: str) -> str:
@@ -250,10 +254,10 @@ def main(argv=None) -> int:
     markets, candles = load(paths)
     summ = summarize(markets, candles)
     order = rank(summ)
-    Path(a.out_json).write_text(json.dumps({"rank": order, "families": summ, "files": [Path(p).name for p in paths],
+    safe_out(a.out_json).write_text(json.dumps({"rank": order, "families": summ, "files": [Path(p).name for p in paths],
                                             "rules": {"stake_usd": STAKE_USD, "x_share": X_SHARE, "B": B, "seed": SEED}},
                                            indent=1, sort_keys=True))
-    Path(a.out_md).write_text(render(summ, order))
+    safe_out(a.out_md).write_text(render(summ, order))
     print(render(summ, order))
     return 0
 
