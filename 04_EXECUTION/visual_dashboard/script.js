@@ -158,6 +158,7 @@ const ASYM = [["Registered, ever",GOV.ever,"var(--s2)"],["Retired to archive",GO
               ["Live",GOV.live,"var(--s1)"],["Live and OPEN",GOV.open,"var(--warn)"]];
 /* ADR-0074 — process integrity: runtime registry + window error log, injected at build time */
 const RUNTIME = __RUNTIME__;
+const LIVE = __LIVE__;
 const WINERR = __WINERR__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
@@ -315,16 +316,25 @@ function integrity(){
         noal=live.filter(c=>String(c.alarm||"").startsWith("none")||String(c.alarm||"").startsWith("UNSET"));
   $('#surfLive').textContent=live.length; $('#surfUnrev').textContent=unrev.length; $('#surfNoAlarm').textContent=noal.length;
   $('#nvInteg').textContent=live.length;
+  const LR=LIVE.rows||{}, hasLive=!!LIVE.rows, isBad=(st)=>["DOWN","BEHIND","STALE","NO ALARM"].includes(st);
+  if(hasLive){
+    const red=LIVE.budget==="RED";
+    $('#surfBudget').innerHTML=`<span style="color:var(--${red?"crit":"good"})">${esc(LIVE.budget)}</span>`;
+    $('#surfBudgetN').innerHTML=(red?LIVE.reasons.map(esc).join("<br>"):"No stale, down or behind component; healthcheck and silent arms clean.")+
+      `<br><span class="mono" style="font-size:11px">box probe ${esc(LIVE.as_of)} · HEAD ${esc(LIVE.head)}</span>`;
+  }
   const pill={"BREADTH":"good","DEPTH":"info","EXECUTION":"warn","PROOF":"serious","PLUMBING":"mute"};
-  const rowsOf=(f)=>RUNTIME.filter(c=>f==="all"||(f==="noalarm"?(c.status==="live"&&(String(c.alarm).startsWith("none")||String(c.alarm).startsWith("UNSET"))):c.pillar===f));
+  const rowsOf=(f)=>RUNTIME.filter(c=>f==="all"||(f==="noalarm"?(c.status==="live"&&(String(c.alarm).startsWith("none")||String(c.alarm).startsWith("UNSET"))):f==="stale"?(LR[c.key]&&isBad(LR[c.key].state)):c.pillar===f));
   const draw=(f)=>{
     $('#rtBody').innerHTML=rowsOf(f).map(c=>{
       const al=String(c.alarm||""); const bad=al.startsWith("none")||al.startsWith("UNSET");
-      return `<tr><td class="k">${esc(c.kind)}</td><td class="mono" style="font-size:11px;white-space:nowrap">${esc(c.schedule||"—")}</td>`+
+      const lv=LR[c.key]; const lbad=lv&&isBad(lv.state);
+      const lcell=!hasLive?`<td style="color:var(--ink-3)">—</td>`:lv?`<td style="color:var(--${lbad?"crit":"ink-2"});white-space:nowrap">${esc(lv.state)}${lv.age_h==null?"":" · "+esc(lv.age_h)+"h"}${lv.detail?"<br>"+esc(lv.detail):""}</td>`:`<td style="color:var(--ink-3)">—</td>`;
+      return `<tr${lbad?' style="background:rgba(255,80,80,.08)"':''}><td class="k">${esc(c.kind)}</td><td class="mono" style="font-size:11px;white-space:nowrap">${esc(c.schedule||"—")}</td>`+
         `<td>${esc(String(c.purpose).replace(" (auto - review)",""))}${c.status!=="live"?` <span class="chip mute"><i></i>${esc(c.status)}</span>`:""}</td>`+
         `<td><span class="chip ${pill[c.pillar]||"mute"}"><i></i>${esc(c.pillar)}</span></td>`+
         `<td style="color:${bad?"var(--crit)":"var(--ink-2)"}">${esc(al.replace(" (auto)",""))}</td>`+
-        `<td>${c.reviewed?'<span class="chip good"><i></i>yes</span>':'<span class="chip warn"><i></i>no</span>'}</td></tr>`;}).join('');
+        `<td>${c.reviewed?'<span class="chip good"><i></i>yes</span>':'<span class="chip warn"><i></i>no</span>'}</td>`+lcell+`</tr>`;}).join('');
   };
   draw("all");
   $$('.rtf').forEach(b=>b.addEventListener('click',()=>{$$('.rtf').forEach(o=>o.classList.remove('on')); b.classList.add('on'); draw(b.dataset.f);}));

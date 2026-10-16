@@ -474,6 +474,31 @@ def live(refresh: bool = False, use_cache: bool = True) -> dict:
         return {"error": f"{type(e).__name__}: {e}"}
 
 
+_BG = {"thread": None}
+
+
+def live_background() -> dict:
+    """For web requests: never blocks. Returns the cached evaluation (even a stale one) and, if it is older than
+    LIVE_CACHE_S, refreshes it on a daemon thread. {"pending": True} until the first probe lands."""
+    import threading
+    cache = live_cache_path()
+    ev, age = None, None
+    try:
+        if cache.exists():
+            ev, age = json.loads(cache.read_text()), time.time() - cache.stat().st_mtime
+    except Exception:
+        ev = None
+    if ev is None or age is None or age >= LIVE_CACHE_S:
+        t = _BG["thread"]
+        if t is None or not t.is_alive():
+            _BG["thread"] = threading.Thread(target=lambda: live(refresh=True), daemon=True)
+            _BG["thread"].start()
+    if ev is None:
+        return {"pending": True}
+    ev["cache_age_s"] = int(age or 0)
+    return ev
+
+
 def print_runtime_block(ev: dict) -> None:
     if "error" in ev:
         print(f"  UNKNOWN - box probe failed ({ev['error']}); SURFACE BUDGET cannot be computed from here")

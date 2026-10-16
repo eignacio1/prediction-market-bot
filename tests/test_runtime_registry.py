@@ -3,6 +3,7 @@
 A new cron line, service or workflow without a registry entry fails CI - that is the point. Add it with
 `python3 scripts/runtime_registry.py add`, fill purpose / pillar / writes / alarm, then `... render`.
 """
+import json
 import sys
 from pathlib import Path
 
@@ -113,3 +114,61 @@ def test_evaluate_registry_failure_and_silent_arm_are_reasons():
     probe = {"epoch": 1.0, "head": "a", "writes": {}, "services": {}, "silent": {"arms": [{"name": "nhl", "status": "silent", "text": "no rows"}]}}
     ev = rr.evaluate(reg, probe, now=1.0, registry_ok=False)
     assert ev["budget"] == "RED" and any("SILENT ARM" in r for r in ev["reasons"])
+
+
+# ── W76.4 Part D: the live surfaces ────────────────────────────────────────────
+
+def _fake_ev(budget="RED"):
+    rows = [{"key": "k1", "kind": "cron", "purpose": "Settles the ledger", "pillar": "EXECUTION", "state": "STALE",
+             "detail": "last write 40h ago", "age_h": 40, "max_age_h": 30, "no_alarm": False, "unexplained": False},
+            {"key": "k2", "kind": "systemd", "purpose": "Serves things", "pillar": "PLUMBING", "state": "ok",
+             "detail": "", "age_h": 0.1, "max_age_h": None, "no_alarm": False, "unexplained": False}]
+    return {"rows": rows, "reasons": ["STALE: Settles the ledger"] if budget == "RED" else [], "budget": budget,
+            "counts": {"live": 2, "stale": 1 if budget == "RED" else 0, "no_alarm_unexplained": 0,
+                       "no_alarm_reasoned": 0, "unreviewed": 0},
+            "head": "abc12345", "as_of": "2026-10-15T00:00:00Z"}
+
+
+def test_project_panel_shows_red_stale_row_and_budget(monkeypatch):
+    import generate_project_state as g
+    sec = {"source": "s", "as_of": "t", "ev": _fake_ev("RED"), "werr": {"rows": [], "tally": []}}
+    html = g._runtime_html(sec, lambda t, s: f"<h2>{t}</h2>")
+    assert "SURFACE BUDGET RED" in html and "STALE: Settles the ledger" in html
+    assert "<tr class='bad'>" in html and "Settles the ledger" in html
+
+
+def test_project_panel_pending_is_awaiting_not_green():
+    import generate_project_state as g
+    html = g._runtime_html({"awaiting": "the first box probe", "werr": {"rows": [], "tally": []}}, lambda t, s: "<h2>x</h2>")
+    assert "awaiting" in html and "GREEN" not in html
+
+
+def test_terminal_strip_lists_red_components_by_name(monkeypatch):
+    import web_dashboard as w
+    monkeypatch.setattr(rr, "live_background", lambda: _fake_ev("RED"))
+    strip = w._runtime_strip()
+    assert strip["budget"] == "RED" and strip["bad"][0]["name"] == "Settles the ledger"
+    monkeypatch.setattr(rr, "live_background", lambda: {"pending": True})
+    assert "awaiting" in w._runtime_strip()
+
+
+def test_live_background_never_blocks_and_returns_pending(monkeypatch, tmp_path):
+    monkeypatch.setattr(rr, "live_cache_path", lambda: tmp_path / "none.json")
+    started = []
+    monkeypatch.setattr(rr, "live", lambda refresh=False, use_cache=True: started.append(1) or {})
+    out = rr.live_background()
+    assert out == {"pending": True}
+    rr._BG["thread"].join(5)
+    assert started
+
+
+def test_visual_dashboard_reads_cached_probe(monkeypatch, tmp_path):
+    import build_visual_dashboard_html as bvd
+    cache = tmp_path / "c.json"
+    cache.write_text(json.dumps(_fake_ev("RED")))
+    monkeypatch.setattr(rr, "live_cache_path", lambda: cache)
+    lv = bvd.runtime_live()
+    assert lv["budget"] == "RED" and lv["rows"]["k1"]["state"] == "STALE"
+    monkeypatch.setattr(rr, "live_cache_path", lambda: tmp_path / "missing.json")
+    assert bvd.runtime_live() == {}
+    assert all("key" in c for c in bvd.runtime())
