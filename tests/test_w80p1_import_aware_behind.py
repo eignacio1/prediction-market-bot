@@ -130,3 +130,19 @@ def test_probe_imported_change_goes_red(box, tmp_path, monkeypatch):
     svc, ev = _budget(p, tmp_path, monkeypatch, now - timedelta(hours=20))
     assert svc["unapplied_files"] == 1 and svc["behind_h"] > rr.BEHIND_RED_H
     assert ev["budget"] == "RED" and any("BEHIND systemd|t4-mlb.service" in r for r in ev["reasons"])
+
+
+def test_probe_uses_the_deploy_log_sha_not_commit_dates(box, tmp_path, monkeypatch):
+    """GG-920 (W80R.1, 10-16): an imported-file commit dated BEFORE the process start but deployed AFTER it. The old
+    `rev-list --before=<start>` called that commit "running" (0.0h behind, false GREEN); the deploy log says otherwise."""
+    import json as _json
+    p, now = box
+    deployed = _git(p, "rev-parse", "HEAD")                        # what the deploy actually put on the box
+    _commit(p, IMPORTED, "X = 9\n", now - timedelta(hours=20))      # dated before start, pulled later
+    start = now - timedelta(hours=12)
+    (p / "logs").mkdir()
+    (p / "logs" / "vps_deploy_decisions.jsonl").write_text(_json.dumps(
+        {"ts": (start + timedelta(seconds=5)).strftime("%Y-%m-%dT%H:%M:%SZ"), "after": deployed, "outcome": "deployed"}) + "\n")
+    svc, ev = _budget(p, tmp_path, monkeypatch, start)
+    assert svc["run_sha"] == deployed and svc["unapplied_files"] == 1 and svc["behind_h"] > rr.BEHIND_RED_H
+    assert ev["budget"] == "RED"

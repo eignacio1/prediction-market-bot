@@ -2293,6 +2293,12 @@ W79.3 GAP-5 / N13. PAM (DS-01, NBA v4 port) exists but no NBA engine reads it; s
 
 W79.1 / W80P.1. `scripts/runtime_registry.py` `probe_local` counted every `src/`/`scripts/` commit since a service's running SHA, so any unrelated merge turned the SURFACE BUDGET RED after 6 h ("t4-mlb running 03ad6df9, 8.33h behind box HEAD", 2026-10-16), while the deploy restart policy (GG-432) correctly declines to restart t4-mlb for files it does not import. Two definitions of "behind" disagreed; Hard Rule 14 then blocked new components on a false red. Fix (W80P.1 PR): one shared definition `scripts/ops/deploy_truth.py::unapplied_changes` (restart policy's import closure for t4-mlb, src/ + web_dashboard for the dashboard), called by both the deploy-truth check and the budget probe; CLAUDE.md Hard Rule 14 text aligned; 6 regression tests. Stays IN PROGRESS until a session with box access reads `scripts/runtime_registry.py live` GREEN (or RED only on a real import change) after the merge deploys — this cloud session had no ssh.
 
+### GG-920 — SURFACE BUDGET read a stale t4-mlb as current (running SHA estimated from commit dates) → false GREEN
+
+**Status:** IN PROGRESS · **Severity:** HIGH
+
+W80R.1, 2026-10-16. The budget probe (`runtime_registry.probe_local`) picked the running SHA with `git rev-list -1 --before=<ActiveEnterTimestamp> HEAD`, which selects commits *dated* before the start even when they were pulled after it. On the box at 15:56Z `deploy_truth` (exact SHA from `logs/vps_deploy_decisions.jsonl`) read **ALARM t4-mlb runs dc84fa6c; 2 imported files changed (demo_fill_policy.py, paper_trader.py), 11.0h old**, while the budget read t4-mlb 0.0h behind and GREEN. The W80P.1 capture was installed through the bridge on that false GREEN (Hard Rule 14 breach, unintended). Same defect class as GG-915 (two definitions of one fact); W80P.1's sweep unified "which files" but not "which SHA". Fix (W80R.1 PR): the probe uses `deploy_truth.sha_at` + `unapplied_changes`; `capture_uninstall` bridge task removes the capture until the red clears; regression test. Open item: the real red — t4-mlb running code 11h behind on two files it imports — needs an idle-window restart (standing authorization 2026-10-08) by the window; why GG-432's restart did not fire for those files is not yet diagnosed.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

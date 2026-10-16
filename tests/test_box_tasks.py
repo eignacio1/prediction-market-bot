@@ -36,9 +36,9 @@ def test_allowlist_v1_names():
 
 
 def test_only_capture_install_can_change_the_box():
-    writers = {n for n, c in bt.TASKS.items() if any(w in c for w in ("crontab - ", "crontab -e", " install", "rm ", "systemctl restart",
+    writers = {n for n, c in bt.TASKS.items() if any(w in c for w in ("crontab - ", "crontab -e", " install", " uninstall", "rm ", "systemctl restart",
                                                                      "git pull", "git checkout"))}
-    assert writers == {"capture_install"}
+    assert writers == {"capture_install", "capture_uninstall"}
     import re
     for name, c in bt.TASKS.items():      # the only redirections allowed are stderr ones; nothing writes a file
         assert not re.search(r">", re.sub(r"2>&1|2>/dev/null", "", c)), name
@@ -161,3 +161,15 @@ def test_fragment_block_is_the_registered_line():
     blk = ci.fragment_block(FRAG)
     assert blk[0] == ci.BEGIN and blk[-1] == ci.END
     assert any("scripts/thin_market_depth_capture.py" in l and l.startswith("21,51 * * * *") for l in blk)
+
+
+def test_uninstall_removes_only_the_block_and_is_idempotent():
+    base = "5 * * * * a\n# c\n"
+    state = {"cron": base}
+    ci.install(live_fn=lambda: {"budget": "GREEN"}, read=lambda: state["cron"], write=lambda t: state.update(cron=t))
+    assert ci.BEGIN in state["cron"]
+    ci.uninstall(read=lambda: state["cron"], write=lambda t: state.update(cron=t))
+    assert state["cron"] == base
+    writes = []
+    ci.uninstall(read=lambda: state["cron"], write=writes.append)
+    assert writes == []
