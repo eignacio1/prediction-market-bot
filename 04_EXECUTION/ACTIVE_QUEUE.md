@@ -896,7 +896,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | PARTLY: Part A done (#279), dashboard rebuilt, budget RED on t4-mlb behind HEAD (window decides) | 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1408Z_W79_1.md |
-| 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ⬜ | |
+| 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ✂️ PARTIAL | Part A done: #277 merged, 7 more families sampled (NFL 9, NBA 5 with candles), store on laptop + VPS sha256-verified. Part B (gradient table, F8 pricing share, prereg) NOT done, closed early on usage limit → next wave |
 | 79.3 | NBA engine finished: store landed, taxonomy, gaps, two factors interpreted | ⬜ | |
 | 79.4 | Branch cleanup (MICRO) | ✅ | auto-delete on; 33 archive tags; remote branches 148 → 36 (open PRs + landed branches < 3 days old kept by rule) |
 

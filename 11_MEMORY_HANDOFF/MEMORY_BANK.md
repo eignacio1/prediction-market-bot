@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-16T13:59:00Z (W79.4 — W79.4 branch cleanup: remote branches 167->34, auto-delete on, 36 archive tags, PRs #133/#144/#146 closed, #149 kept) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1359Z_W79_4.md` for full session detail.
+**Last reviewed:** 2026-10-16T14:08:00Z (W79.1 — W79.1: NFL QB silent-arm false alarm fixed (T1-only rule, PR #279), exact-cell ledger globs in every sport, dashboard rebuilt; SURFACE BUDGET still RED on t4-mlb behind HEAD) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1408Z_W79_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

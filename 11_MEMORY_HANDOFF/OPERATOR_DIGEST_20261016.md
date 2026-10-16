@@ -21,3 +21,9 @@ A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry
 
 - W78.1 (plumbing): the map of everything that runs is now live on the dashboards (73 components, none stale). Its overall budget light is RED because the NFL QB shadow arm has logged nothing for ~18h; that is not from this block. The gap agent's progress (open gaps 185, down 1 since its first tick) now shows on the scan, /project and the Visual Dashboard. Zero money at risk.
 - W79.4 (auto): W79.4 branch cleanup: remote branches 167->34, auto-delete on, 36 archive tags, PRs #133/#144/#146 closed, #149 kept
+
+## W79.1 — Red to green
+- The NFL quarterback alarm was a false alarm: the model had done its job early, and the monitor wrongly expected a later row. Fixed and live on the server.
+- Every sport's monitor now checks only its own files, so one working model can't hide a broken one.
+- The overall health light is still red for one reason: the live MLB service is running slightly older (unchanged-in-substance) code. Your call: restart it, or relax that rule.
+- Plain-English pillar: plumbing plus breadth (one fewer false red). No money at risk.

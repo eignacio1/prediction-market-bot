@@ -1,6 +1,6 @@
 # Thin-market price history — manifest (W78.2 Part A, PARTIAL)
 
-Raw store (git-ignored): `exp_output/KALSHI_HISTORY/thin/raw_2026-10-16.jsonl`, 943,537,456 bytes, sha256 `92e7bddbc33481d9ec163f5d60baa651bbd7497ef0427d4f2aa6bf367a5ade85`. Operator machine only (not yet on VPS). Tool: `scripts/kalshi_thin_history_fetch.py` (resumable; stored kind+key skipped). Public GETs only. Kalshi keeps no historical order book: candles give bid/ask OHLC, volume, open interest; depth is not recoverable historically.
+Raw store (git-ignored): `exp_output/KALSHI_HISTORY/thin/raw_2026-10-16.jsonl`, 1,101,157,227 bytes, sha256 `b18fea086e4d4d794d92941aae2c7343e86a6eb2d707aed3726d11287e515f93` (W79.2, after adding KXNFLRSHYDS, KXNFLPASSYDS and NBA GAME/SPREAD/TOTAL/PTS/REB). Two copies, sha256 identical: operator laptop, and VPS `/opt/prediction-market-bot/exp_output/KALSHI_HISTORY/thin/` (verified 2026-10-16). W79.2 added 100 sampled markets each for those 7 families (settled: RSHYDS 9,083; PASSYDS 5,062; NBAGAME 2,836; NBASPREAD 18,459; NBATOTAL 16,174; NBAPTS 23,586; NBAREB 22,656). CI adequacy per family NOT yet assessed. Tool: `scripts/kalshi_thin_history_fetch.py` (resumable; stored kind+key skipped). Public GETs only. Kalshi keeps no historical order book: candles give bid/ask OHLC, volume, open interest; depth is not recoverable historically.
 
 **Inventory** (`inventory.json`): 450 NFL/NBA non-annual series, 275 with settled markets since 2025-08-01, 310,858 settled markets, 0 series errors. Per-series strikes/event, first/last close, by-month counts.
 
