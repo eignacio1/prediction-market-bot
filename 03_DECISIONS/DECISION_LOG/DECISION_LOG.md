@@ -2500,3 +2500,7 @@ Part B done: free sportsdataverse NBA store 2016-2026 (123 files, 0 failures), P
 - `FACTOR_TAXONOMY.md`: 13 classes. Gaps registered as GG-910..914 (GG-895..899 taken by a collision).
 - Pace/efficiency: trait (split-half r 0.71-0.80), moves total and margin. Rest: not a trait, b2b differential moves margin by -2.3 pts (CI -3.0 to -1.6), not total. Both **interpreted**, none applied (no market comparison).
 - NBA-T1 relief and GG-759 status recorded (GG-759 stays OPEN/LOW). No registry, stake, kelly, ledger or pre-registration change. surface_delta 0.
+
+### 2026-10-16 07:50 PT — Pseudo-wave 80P issued (strategic window)
+
+- Operator, 07:46 PT: "Give me a pseudo-wave, 4 block tasks mashed together as one that I'll send to our Claude Code side (inside the app)" (cloud credit, weekend, until the weekly reset). One session, four tasks in order: (1) surface-budget rule made import-aware (W79.1 false red), then the thin-market order-book capture (+1 component, only if GREEN); (2) 79.2 Part B: thin-market ranking + frozen prereg (to operator for acceptance); (3) NBA pace/efficiency vs KXNBATOTAL price (first NBA factor to "applied"); (4) MLB 2026 season look-back before the World Series ends. Window decision: the budget false red is fixed at the rule (root cause), not by restarting t4-mlb.
