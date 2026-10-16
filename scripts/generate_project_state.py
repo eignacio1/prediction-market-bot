@@ -336,8 +336,13 @@ def sec_runtime(repo: Path) -> dict:
         werr = bvd.window_errors()
     except Exception:
         werr = {"rows": [], "tally": []}
-    sec = _sec("02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml + live probe (scripts/runtime_registry.py live)",
-               (ev.get("as_of") or _iso()), ev=ev, werr=werr)
+    try:
+        import gg_burndown
+        ga = gg_burndown.summary(Path(repo))
+    except Exception as e:  # the panel must render without the agent's ledger
+        ga = {"ok": False, "error": f"{e.__class__.__name__}"}
+    sec = _sec("02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml + live probe (scripts/runtime_registry.py live), 03_DECISIONS/GG_BURNDOWN.md",
+               (ev.get("as_of") or _iso()), ev=ev, werr=werr, ga=ga)
     if ev.get("pending"):
         sec["awaiting"] = "the first box probe (starts on first load; refresh in about a minute)"
     elif ev.get("error"):
@@ -345,14 +350,29 @@ def sec_runtime(repo: Path) -> dict:
     return sec
 
 
+def _gg_agent_html(ga: dict) -> str:
+    """W78.1: the standing gap agent's burn-down (03_DECISIONS/GG_BURNDOWN.md via scripts/gg_burndown.py)."""
+    if not ga or not ga.get("ok"):
+        return f"<p class='nd'>Gap agent: no data ({_e((ga or {}).get('error') or 'not read')})</p>"
+    d = ga.get("delta")
+    cls = "bad" if ga.get("stale") else ("ok" if ga.get("running") else "warn")
+    cl = ga["closed"]
+    return (f"<p><b>Gap agent</b> · OPEN now <span class='num'>{ga['open_now']}</span> · at first tick "
+            f"<span class='num'>{ga['open_first']}</span> ({'n/a' if d is None else f'{d:+d}'}) · closed A/B/C "
+            f"<span class='num'>{cl['A']}/{cl['B']}/{cl['C']}</span> · triaged <span class='num'>{ga['triaged']}</span> · "
+            f"{ga['ticks']} ticks · last tick <span class='num'>{_e(ga.get('last_tick') or 'n/a')}</span> · "
+            f"<b class='{cls}'>{_e(ga['state_line'])}</b></p>")
+
+
 def _runtime_html(sec: dict, head: Any) -> str:
     werr = sec.get("werr", {})
+    gagent = _gg_agent_html(sec.get("ga", {}))
     tally = "".join(f"<tr><td>{_e(t['pattern'])}</td><td class='num'>{t['count']}</td><td>{_e(t['last'])}</td></tr>"
                     for t in werr.get("tally", []))
     wtab = (f"<h3 style='font-size:13px;margin:12px 0 4px'>Window errors ({len(werr.get('rows', []))} logged)</h3>"
             f"<table><tr><th>Pattern</th><th>Count</th><th>Last</th></tr>{tally or '<tr><td colspan=3 class=nd>none</td></tr>'}</table>")
     if sec.get("awaiting"):
-        return f"<section id='runtime'>{head('Process integrity', sec)}<div class='aw'>awaiting {_e(sec['awaiting'])}</div>{wtab}</section>"
+        return f"<section id='runtime'>{head('Process integrity', sec)}<div class='aw'>awaiting {_e(sec['awaiting'])}</div>{gagent}{wtab}</section>"
     ev = sec["ev"]
     c, b = ev.get("counts", {}), ev.get("box", {})
     cls = {"GREEN": "ok", "RED": "bad"}.get(ev.get("budget"), "warn")
@@ -375,7 +395,7 @@ def _runtime_html(sec: dict, head: Any) -> str:
     rows = sorted(ev.get("rows", []), key=lambda r: (r["state"] in ("ok", "github", "no alarm (reason given)"), r["kind"], r["purpose"]))
     table = ("<div class='scroll'><table><tr><th>Kind</th><th>What</th><th>Pillar</th><th>Last write</th><th>Stale after (h)</th><th>State</th></tr>"
              + "".join(row(r) for r in rows) + "</table></div>")
-    return (f"<section id='runtime'>{head('Process integrity (ADR-0074)', sec)}{head_line}{why}"
+    return (f"<section id='runtime'>{head('Process integrity (ADR-0074)', sec)}{head_line}{why}{gagent}"
             f"<details><summary>Runtime map, {len(rows)} live components (problems first)</summary>{table}</details>{wtab}</section>")
 
 

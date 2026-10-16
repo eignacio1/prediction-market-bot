@@ -768,6 +768,9 @@ echo ""
 echo "RUNTIME (W76.4 -- registry vs box, live columns, SURFACE BUDGET; alarm-only):"
 python3 "$PROJECT/scripts/runtime_registry.py" check 2>&1 | tail -8 || true
 python3 "$PROJECT/scripts/runtime_registry.py" live 2>&1 | tail -30 || true
+# W78.1: the standing gap agent's burn-down, read-only from 03_DECISIONS/GG_BURNDOWN.md (alarm-only; STALE = queue says
+# running and the last tick is > 2h old).
+python3 "$PROJECT/scripts/gg_burndown.py" "$PROJECT" 2>&1 | tail -3 || true
 
 # --- Silent-arm alarm (W62.1 Part B / GG-532 follow-on) ---
 # For each shadow/paper arm: was a game scheduled to start in the arm's window (N hours, per its own schedule
