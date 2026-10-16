@@ -13,3 +13,6 @@ Still open: Part B (GG-747), CellLedger lock read-back after next pregame shadow
 
 ## Part B done
 GG-747 explained: gap is 41 (not 34), all epoch-12 rows closed after the Mon 2026-10-12 14:20Z ledger rebuild; staleness of a weekly derived snapshot, not a closing path. No correction rows. Written in W76_3_ledger_integrity.md 'Part B (W77.3)'. MEASURE: GG-764 sites 3->0 (PR #270); GG-747 34->41 rows each accounted (source: box copies 2026-10-16). Remaining: t4-mlb running-SHA read-back (Deploy decision unrecorded), CellLedger lock read-back after next pregame shadow cron. Operator decisions: none.
+
+## Deploy read-back
+Box HEAD dc84fa6c (PR #270 merge, committed 2026-10-15T21:52 PT). run_t4_mlb_live.py landed 2026-10-16 04:53:24Z; t4-mlb (PID 3510675) restarted 04:53:27Z by the deploy, so it runs the new code. Idle window (post-games, ~21:53 PT). Still open: CellLedger lock read-back after next pregame shadow cron.
