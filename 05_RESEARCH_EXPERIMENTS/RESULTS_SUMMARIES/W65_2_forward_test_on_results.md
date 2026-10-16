@@ -180,3 +180,15 @@ NBA from 2026-10-20 is upside and is not counted.
 4. **Declare underpowered** at the 8-week mark and report descriptively (already in ADR-0072); costs nothing in validity.
 
 **ONE LINE FOR THE OPERATOR:** Recommend leaving the rule as it is and fixing demo cash starvation (GG-840) and the cancel 5xx retry (GG-841) first, since both are demo-only fixes for the next block (GG-841 sits in `demo_fill_policy.py`, outside 76.1's ownership); the open question is whether the 2026-10-15 exchange-503 day is excluded from the turn-off check, a change to a pre-registered rule.
+
+## Read-back W77.1 (2026-10-16 ~05:00Z)
+
+**Shipped:** PR #269 (cancel 5xx retry, exchange 5xx excluded from turn-off — sweeper live via cron; t4-mlb restarted 04:57Z to carry it) and PR #271 (GG-840: arm-blind `cash_skip_reason` before `assigned()` in `paper_trader.py` and `shadow_flat_stake.py`; 2s cached balance read; fails OPEN on unreadable balance). Policy-neutral: it only moves a venue `insufficient_balance` rejection earlier; accepted orders per arm are unchanged, so no operator stop.
+
+**GG-840 root cause:** not stale orders (1 resting). ~960 accepted orders at flat measurement stakes tie up cash until settle/cancel; rejections are episodic in game windows (hundreds/hour), cash recovers after (balance $33.14 at diagnosis). A demo top-up is not available via API.
+
+**Cash-starved hours (since re-arm 2026-10-13T23:58Z):** 16 of 21 hours with orders saw ≥1 insufficient_balance; 5 clean hours held 163 accepted orders. Starved hours still accepted orders (799), so accepted-order data is valid; rejections are symmetric across arms (control 843 vs treatment 826), so no arm bias from starvation.
+
+**Report since re-arm (turn-off: none tripped):** treatment fills MLB 2, NFL 6, NHL 16 over ~2.2 days; control 8/44/54. Projected 8-wk treatment fills per cell: 51 / 172 / 407 (judged n 550/arm).
+
+**Judged-n on clean hours:** clean hours are too few (5) to project from. Because starvation drops rejected, not accepted, orders, the fix does not add fills; cash is the binding constraint. "Treatment not this season" **survives per cell** (max 407 < 550); pooled across cells ~630 would clear 550 only if pooling were pre-registered (it is not). Caveat: n=2.2 days.
