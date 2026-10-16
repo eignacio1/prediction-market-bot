@@ -936,3 +936,4 @@
 | 2026-10-16T05:35:36Z | W78.1; GG: none pre-allocated | W78.1 PURPOSE=PLUMBING (ADR-0074): land #266 runtime map on both dashboards + gap-agent panel; measure SURFACE BUDGET visible |
 | 2026-10-16T05:37:00Z | GG-886..GG-889, T-998 | W78.2 STANDARD: thinner-market (NFL/NBA) price-history backfill + efficiency/fillability gradient + first thin-market prereg; PURPOSE BREADTH+DEPTH, measure: families with price history 1->all listed thinner; gradient table 0->1; frozen prereg 0->1 |
 | 2026-10-16T05:37:12Z | GG-890..GG-894 | W78.3 STANDARD BREADTH B1: NBA opening-night readiness - NBA-T1 registry/dispatch fix, flip dry run, silent-arm coverage, runbook |
+| 2026-10-16T05:46:51Z | TBD-none (no GG/T expected) | W78.4 NBA engine stage 1 event-level data layer; PURPOSE DEPTH D4 NBA none->data layer, D1 NBA factor classes mapped |
