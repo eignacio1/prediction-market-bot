@@ -944,3 +944,5 @@
 | 2026-10-16T06:03:43Z | W78.3 | CLOSED — merge confirmed, HEAD (ee45bcc) is ancestor of origin/main — NBA opening-night readiness; PRs 274/275 merged |
 | 2026-10-16T06:03:37Z | GG-895..GG-899 | W78.4 NBA engine stage 1: GG range for free-source GAPs (injury history, official/coach timing, travel geometry, PAM, qualitative) |
 | 2026-10-16T06:06:48Z | W78.2 | CLOSED — W78.2 PARTIAL: thin-market inventory done (275 series, 310,858 markets); candles for 8 NFL families sampled; Part B not started. (commit `0637392`) |
+| 2026-10-16T06:08:53Z | W78.1 | CLOSED — W78.1 PLUMBING: runtime map/SURFACE BUDGET (#266) merged+deployed and read back; gap-agent progress visible on governance scan, /project and Visual Dashboard (#276 merged); #276 box read-back and standalone dashboard rebuild pending. (commit `c14d7cd`) |
+| 2026-10-16T13:49:40Z | GG-900..GG-904 | W79.1 PURPOSE: BREADTH B1 + PLUMBING — NFL QB challenger silent arm RED->GREEN, silent-arm glob sweep (surface budget) |

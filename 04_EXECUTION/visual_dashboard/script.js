@@ -160,6 +160,7 @@ const ASYM = [["Registered, ever",GOV.ever,"var(--s2)"],["Retired to archive",GO
 const RUNTIME = __RUNTIME__;
 const LIVE = __LIVE__;
 const WINERR = __WINERR__;
+const GAGENT = __GAGENT__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
@@ -323,6 +324,14 @@ function integrity(){
     $('#surfBudgetN').innerHTML=(red?LIVE.reasons.map(esc).join("<br>"):"No stale, down or behind component; healthcheck and silent arms clean.")+
       `<br><span class="mono" style="font-size:11px">box probe ${esc(LIVE.as_of)} · HEAD ${esc(LIVE.head)}</span>`;
   }
+  const g=GAGENT||{};
+  if(g.ok){
+    const bad=g.stale, good=g.running;
+    $('#gaOpen').textContent=g.open_now;
+    $('#gaOpenN').innerHTML=`At the agent's first tick: <b>${esc(g.open_first)}</b> (${g.delta==null?"n/a":(g.delta>0?"+":"")+g.delta}). Closed A/B/C: ${esc(g.closed.A)}/${esc(g.closed.B)}/${esc(g.closed.C)} · triaged ${esc(g.triaged)} · ${esc(g.ticks)} ticks.`;
+    $('#gaState').innerHTML=`<span style="color:var(--${bad?"crit":good?"good":"warn"})">${esc(g.state_line)}</span>`;
+    $('#gaStateN').textContent=`Last tick ${g.last_tick||"n/a"} (from GG_BURNDOWN.md at build time).`;
+  } else { $('#gaOpen').textContent="—"; $('#gaOpenN').textContent="No gap-agent data: "+(g.error||"not read"); $('#gaState').textContent="no data"; }
   const pill={"BREADTH":"good","DEPTH":"info","EXECUTION":"warn","PROOF":"serious","PLUMBING":"mute"};
   const rowsOf=(f)=>RUNTIME.filter(c=>f==="all"||(f==="noalarm"?(c.status==="live"&&(String(c.alarm).startsWith("none")||String(c.alarm).startsWith("UNSET"))):f==="stale"?(LR[c.key]&&isBad(LR[c.key].state)):c.pillar===f));
   const draw=(f)=>{

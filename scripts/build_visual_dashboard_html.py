@@ -62,6 +62,16 @@ def runtime_live() -> dict:
                      for r in ev["rows"] if r.get("key")}}
 
 
+def gg_agent() -> dict:
+    """W78.1: the standing gap agent's burn-down (03_DECISIONS/GG_BURNDOWN.md), same parser as the scan and /project."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        import gg_burndown
+        return gg_burndown.summary(ROOT)
+    except Exception as e:
+        return {"ok": False, "error": e.__class__.__name__}
+
+
 def window_errors() -> dict:
     """ADR-0074: rows and pattern tally of 04_EXECUTION/WINDOW_ERROR_LOG.md."""
     import re
@@ -121,7 +131,7 @@ def build(out: pathlib.Path) -> None:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GOV__", js(governance())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     out.write_text(html)
     print(f"wrote {out} ({len(html):,} bytes) at {sha}")
