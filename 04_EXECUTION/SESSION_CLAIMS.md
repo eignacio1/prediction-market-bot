@@ -940,3 +940,4 @@
 | 2026-10-16T06:00:02Z | TBD | Block AP: document archive-pipe repo + deploy key (MICRO, PLUMBING) |
 | 2026-10-16T06:00:36Z | BLOCK-AP | CLOSED — Block AP: private repo eignacio1/sports-intel-archive + write-scoped deploy key created for Muse; documented. (commit `8efce52`) |
 | 2026-10-16T06:00:55Z | BLOCK-AP | CLOSED — merge confirmed, HEAD (6d18b72) is ancestor of origin/main — Block AP documented; merged to main |
+| 2026-10-16T06:03:12Z | W78.3 | CLOSED — W78.3 NBA opening-night readiness: flip-check sha bug fixed (9/12 cells flip-ready), silent-arm glob fixed, runbook written; READY pending 10-20/21 read-back. (commit `c65c1ad`) |

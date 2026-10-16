@@ -1,32 +1,32 @@
-# SESSION_HANDOFF W78.3 — NBA opening night (10-20) ready — READY pending 10-20/21 read-back (PRs #274, #275 merged)
+# SESSION_HANDOFF W78.3 — NBA opening night (10-20) ready (PRs #274, #275 merged)
 
+<!-- session-meta
+task_id: W78.3
+tier: STANDARD
+timestamp: 2026-10-16T06:10:00Z
+commit: c65c1ad
+one_line_summary: W78.3 NBA opening-night readiness: flip-check sha bug fixed (9/12 cells flip-ready), silent-arm glob fixed, runbook written; READY pending 10-20/21 read-back.
+gg_touched: GG-890, GG-891, GG-892
+adr_touched: none
+plan_deliverable_moved: no
 vision_pillar: BREADTH
-gap_measure: B1 (NBA cells logging: 12 registered game cells + points cells) 
-gap_delta: no measured change yet. Before: 0 of 12 NBA game cells can flip (sha bug). After PR #274 merges: 9 of 12 can flip on 10-21 (3 team-total cells blocked: Kalshi has never listed KXNBATEAMTOTAL). Source: dry run on preseason ledger, VPS, 2026-10-15 (NO-ROWS / 0 valid for all 12 before the fix).
-pattern_sweep: file-bytes model-hash pattern searched in scripts/ src/ tests/ 12_EXPLORATORY/ — no other instance. Glob-masking pattern (NBA_*.jsonl) NOT yet swept for other sports' silent-arm loaders (see TODO 5).
+gap_measure: B1
+gap_delta: B1 NBA game cells flip-ready 0 -> 9 of 12 (box dry run, VPS, 2026-10-15); actual B1 move happens only on the 10-21 flip.
+pattern_sweep: file-bytes model-hash pattern searched in scripts/ src/ tests/ 12_EXPLORATORY/ -> no other instance. Glob-masking (NBA_*.jsonl) fixed for nba_shadow; NOT yet swept in other sports' silent-arm loaders.
 surface_delta: 0
-stage per factor: n/a (plumbing for B1; no factor classes touched)
+-->
 
-## Done
-- Found + fixed the blocker: `scripts/nba_cell_autoflip.py:38` and `scripts/w59_3_nba_flip_check.py:32` hashed the model FILE BYTES (`b05130b0…`); rows carry the artifact's internal `sha256` (`c351680aff9b6d6a83b2fb9c802c295730f9e27f5feaff91ecb17a6dc816e18e`). Every row was invalid -> no game cell could ever flip. Fix: `frozen_model_sha()` in `w59_3_nba_flip_check.py`; 3 tests corrected; regression test added (`tests/test_w69_2_nba_opening_night.py`). 17 tests pass locally.
-- PR: https://github.com/eignacio1/prediction-market-bot/pull/274 (branch `session/20261016T053532Z-w78-3-nba-opening-night`). CI was pending at handoff. NOT MERGED.
-- NBA-T1 premise corrected: "registry NOT_IMPLEMENTED while code dispatches" is by design (evidence-gated flip via `nba_promotions.jsonl`, applied by `_apply_nba_game_promotions()`); the real defect was the sha. Points cells (EXP-039) are already SHADOW. The judged `PREGAME_SHADOW` dir has no NBA files, so nothing can flip early; autoflip refuses before 2026-10-20 (`NOT_BEFORE`).
-- The "no NBA silent-arm coverage" premise is stale: 4 NBA specs exist in `silent_arms.py` SPECS.
+## Strategic Decisions This Session
+None — implementation-only session. No order/stake/kelly/pre-registration change.
 
-## Update 23:10 PT — completed after the cut
-#274 and #275 merged; #274 deployed on the box (frozen_model_sha present). Box dry run: 9/12 FLIP-OK, 3 team-total NO-ROWS. Kalshi GETs: KXNBAGAME 56, SPREAD 200, TOTAL 200 open (ticker grammar `KXNBAGAME-26OCT22DENOKC` matches); TEAMTOTAL 0, KXNBAPTS 0 (GG-891). Runner safe: preseason/dry-run never stake; `demo_host_ok` refuses production. Runbook, GG-890..892, DECISION_LOG written. Silent-arm glob fixed.
-Remaining: confirm #275 deployed to the box; on 10-20/21 follow the runbook and close GG-570/890/892; verify KXNBAPTS lists before tip.
-gap_delta: B1 NBA game cells flip-ready 0 -> 9 of 12 (box dry run, 2026-10-15); actual B1 moves only on the 10-21 flip.
+## What changed
+- #274: `frozen_model_sha()` (artifact `sha256` c351680a…) replaces file-bytes hash in `nba_cell_autoflip.py` / `w59_3_nba_flip_check.py`; tests fixed + regression test. Box dry run: 9/12 FLIP-OK.
+- #275: silent-arm `nba_shadow` glob excludes PLAYER_POINTS files (GG-892); test added; `NBA_OPENING_NIGHT_RUNBOOK.md` written.
+- GG-890 (sha, fixed), GG-891 (KXNBATEAMTOTAL never listed → B1 ceiling 9; KXNBAPTS 0 open), GG-892 registered. DECISION_LOG appended.
 
-## Original TODO list (steps 1-3, 4-7 now done except as updated above)
-1. Merge #274 once CI is green (own PR only). Read the Deploy job summary; record the t4-mlb decision. Read back on the box (`ssh prediction-market-vps`, /opt/prediction-market-bot): `python3 scripts/w59_3_nba_flip_check.py --ledger-dir exp_output/PREGAME_SHADOW_PRESEASON` should now show valid rows (preseason rows carry `excluded_from_judged_n`, so for a true dry run copy the ledgers to a mktemp dir with the preseason flags stripped and pass `--ledger-dir/--out/--today`; remove the dir after). Expect 9 cells flip, 3 team-total cells NO-ROWS.
-2. Read-only Kalshi DEMO GETs: confirm KXNBAGAME / KXNBASPREAD / KXNBATOTAL / KXNBAPTS list opening-night (10-20) markets and tickers match `_NBA_GRAMMAR` (`<YY><MON><DD><AWAY3><HOME3>`). KXNBATEAMTOTAL: confirm still unlisted.
-3. Verify W68.2 NBA staked runner: `scripts/run_nba_pregame_shadow.py` `on_row=None if (a.preseason or a.dry_run) else make_on_row(ad)`; check DEMO-only creds (`deploy/demo_fill.env`), `SHADOW_FLAT_STAKE`, that no order precedes the first valid rows. Not checked this session. Do not change stakes/kelly.
-4. Part B code (PR + CI, no new running component): in `silent_arms.py` `load_inputs`, the `nba_shadow` arm uses `led.glob("NBA_*.jsonl")`, which also matches `NBA_NBA_PLAYER_POINTS_*` and masks a silent game arm. Restrict to the game families (MONEYLINE/SPREAD/GAME_TOTAL/TEAM_TOTAL), add a points arm if absent, add tests (silent / ok / idle / unknown). Confirm silent_arms is in the light governance scan or note GG-758.
-5. Sweep the same glob-masking pattern in other sports' arms in `load_inputs`.
-6. Write `02_ARCHITECTURE_DESIGN/NBA_OPENING_NIGHT_RUNBOOK.md`: 10-20 evening and 10-21 morning read-back (files: `exp_output/PREGAME_SHADOW/NBA_*.jsonl`, `nba_promotions.jsonl`; counts of valid rows per cell; "healthy" = rows with sha `c351680a…`, 0<p<1, mid set; what to do if a cell did not flip: run flip_check, inspect invalid reasons, `[CORRUPT_READ]`, the SILENT ARMS block). Cron cadence: T1 every 6h, T2 hourly, T3 every 10 min. GG-570 closes on that read-back.
-7. Register GGs (use GG-890..894; verify unused first, GG-885 is the last seen): (a) sha identity bug (fixed in #274); (b) KXNBATEAMTOTAL never listed -> 3 team-total cells cannot flip, B1 ceiling is 9; (c) silent-arm glob masking. Also: GG-759 says the registry comment near L945 wrongly claims SHADOW means no orders. Update NBA-T1 status in `02_ARCHITECTURE_DESIGN/TENSIONS/nba.toml` (check ownership). Append to DECISION_LOG (append-only).
-8. Flip `04_EXECUTION/ACTIVE_QUEUE.md` row 78.3 to DONE only after steps 1–7 and read-back.
+## One thing pending
+10-20/21 read-back per the runbook: run autoflip, verify `nba_promotions.jsonl` + registry SHADOW; confirm #275 deployed on box; recheck KXNBAPTS lists before tip; close GG-570/890/892.
+Also: sweep glob-masking in other sports' arms; `TENSIONS/nba.toml` NBA-T1 status; GG-759 registry comment.
 
-## Operator decisions
-None. (Pre-registrations untouched.)
+## Resume
+`git fetch && read 02_ARCHITECTURE_DESIGN/NBA_OPENING_NIGHT_RUNBOOK.md`
