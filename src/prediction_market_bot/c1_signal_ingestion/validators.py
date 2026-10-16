@@ -69,6 +69,7 @@ Integration points
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -372,13 +373,27 @@ def validate(
 # ---------------------------------------------------------------------------
 
 
+logger = logging.getLogger(__name__)
+
+_STATE_RESET_COUNT: dict[str, int] = {}
+
+
 def _load_state(state_path: Path) -> dict[str, Any]:
     if not state_path.exists():
         return {}
     try:
         loaded: dict[str, Any] = json.loads(state_path.read_text())
         return loaded
-    except (json.JSONDecodeError, OSError):
+    except (json.JSONDecodeError, OSError) as exc:
+        # W77.3/GG-764: a reset here silently disables the previous-row-count
+        # cardinality check for every source (previous_row_count -> None) and
+        # the next _save_row_count overwrites the damaged file. Never silent.
+        _STATE_RESET_COUNT[str(state_path)] = _STATE_RESET_COUNT.get(str(state_path), 0) + 1
+        logger.error(
+            "CARDINALITY STATE RESET: %s unreadable (%s: %s) — previous-row-count "
+            "check disabled for this run (GG-764)",
+            state_path, type(exc).__name__, exc,
+        )
         return {}
 
 

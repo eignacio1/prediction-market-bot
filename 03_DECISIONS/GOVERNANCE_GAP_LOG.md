@@ -4256,3 +4256,9 @@ W76.1, 2026-10-16. On 2026-10-15 the cancel-fail rate was 19.6%, all HTTP 503 (7
 **Status:** OPEN · **Severity:** LOW
 
 W76.1, 2026-10-16. `T4-MLB kill switch armed` prints `t4_mlb_kill_switch.flag` although any flag in the one-switch set halts it. Cosmetic; found in the drill.
+
+### GG-885 — W77.3 pattern-sweep remainder: archive/diagnostic readers that silently skip unparseable lines (GG-764 follow-up)
+
+**Status:** OPEN · **Severity:** LOW
+
+W77.3 sweep (2026-10-16, heuristic grep of json.load(s) inside try/except that continues/passes, 19 hits). Fixed in W77.3: `scripts/nba_cell_autoflip.py` (reads cell ledgers; torn row shrank the n deciding a flip). Already safe: `build_t4_resolved_ledger.py` (returns reason), `t4_fill_status.py` (logs warning). Remaining silent skips, none read a live ledger: `capture_settlements.py:108`, `kalshi_settlement_crosscheck.py:17`, `gg157_fill_haircut_analysis.py:54`, `t507_gg157_haircut_rerun.py:40` (price/depth archives; torn line = quietly smaller sample in a one-off analysis), `run_t4_budget_sim.py:92,197,279` (falls back to DEFAULT_BANKROLL on any error), plus dashboard/aggregator readers (`cron_log_aggregator.py`, `live_terminal.py`, `run_mlb_dashboard.py`, `project_ops.py`) not classified. Heuristic, not exhaustive. Pillar: PROOF. Fix: shared `read_jsonl_reporting()` helper that counts and prints torn lines; adopt per site.

@@ -414,3 +414,34 @@ def test_run_reports_cell_formula_coverage_and_unknown_market_type_summary(tmp_p
     unknown_summary = next(l for l in lines if l["type"] == "unknown_market_type_summary")
     assert unknown_summary["total_records"] == 1
     assert unknown_summary["groups"][0]["band"] == "T1"
+
+
+# ── W77.3 / GG-764: torn and corrupt reads are reported, never silent ──────
+
+def test_load_jsonl_torn_line_recorded_and_good_lines_kept(tmp_path, capsys):
+    import assert_ledger_invariants as m
+    m._CORRUPT_READS.clear()
+    f = tmp_path / "store.jsonl"
+    f.write_text('{"ticker": "A"}\n{"ticker": "B"\n{"ticker": "C"}\n')
+    out = m.load_jsonl(f)
+    assert [r["ticker"] for r in out] == ["A", "C"]
+    assert len(m._CORRUPT_READS) == 1 and m._CORRUPT_READS[0]["line_no"] == 2
+    assert "[CORRUPT_READ]" in capsys.readouterr().err
+
+
+def test_load_json_corrupt_file_recorded_not_raised(tmp_path):
+    import assert_ledger_invariants as m
+    m._CORRUPT_READS.clear()
+    f = tmp_path / "pf.json"
+    f.write_text('{"open_positions": [')
+    assert m.load_json(f) is None
+    assert m._CORRUPT_READS[0]["kind"] == "file"
+
+
+def test_validators_state_reset_is_logged(tmp_path, caplog):
+    from prediction_market_bot.c1_signal_ingestion import validators as v
+    bad = tmp_path / "state.json"
+    bad.write_text("{torn")
+    with caplog.at_level("ERROR"):
+        assert v._load_state(bad) == {}
+    assert "CARDINALITY STATE RESET" in caplog.text
