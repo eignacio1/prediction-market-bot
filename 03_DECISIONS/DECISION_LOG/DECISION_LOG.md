@@ -2334,3 +2334,9 @@ Operator, verbatim: "No - deep PAM tier needs to be substantially deeper than th
 Operator, verbatim: "alright we're gonna add a terminal block on top of the regular waves that systematically burns down the open gaps that it can - I want to start tearing through it" / "within reason of corse"
 
 - New standing block GB in ACTIVE_QUEUE.md: one terminal per wave, continuing from 03_DECISIONS/GG_BURNDOWN.md. Closes only on evidence (already fixed / duplicate), fixes only small safe items outside the wave's files, collects operator calls without deciding them, sizes large items for waves. Never touches orders, stakes, kelly, ledger rows, pre-registrations, frozen artifacts/books or real capital. Baseline 2026-10-15: 187 OPEN (2 CRITICAL, 21 HIGH) plus 22 RESOLVED entries still in the live log.
+
+## 2026-10-15 17:02 PT — The gap burn-down becomes a standing governance gap agent
+
+Operator, verbatim: "can we keep this as a loose bird watcher that continually buckets, scrapes, fills, extracts, burns burns burns - basically a governance gap agent? didn't fire it in the terminal yet I kinda want this to be more than just a one shot push"
+
+- The one-shot GB block (16:49 PT entry) is replaced before it ran by `.claude/commands/gap-agent.md`: one tick = sync, scrape (findings with no GG id; GGs cited fixed but still OPEN), fill (severity, pillar, Status format, parity, uniqueness), bucket (A fixed / B duplicate / C small fix / O operator / W wave-owned / L large), burn, retire to archive, report, self-pace. Launched in its own terminal with `/loop /gap-agent`; state in 03_DECISIONS/GG_BURNDOWN.md and GG_AGENT_STATE.md; stops and asks for relaunch at ~60% context. Same never-list and "within reason" bounds. Its single deliverable (Hard Rule 11) is the burn-down itself.

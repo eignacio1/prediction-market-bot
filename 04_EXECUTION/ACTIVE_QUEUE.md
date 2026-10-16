@@ -639,132 +639,29 @@ PART D - Visible on both dashboards (~40 min)
 END OF BLOCK 76.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-## 🔥 STANDING — GB: gap burn-down (runs beside every wave; operator 2026-10-15 16:49 PT) · paste into its own terminal each wave
+## 🔥 STANDING — GA: the governance gap agent (always on, beside every wave; operator 2026-10-15 16:49 / 17:02 PT)
 
-Operator: "we're gonna add a terminal block on top of the regular waves that systematically burns down the open gaps that it can
-- I want to start tearing through it" — "within reason of corse". One terminal, every wave, continuing from
-`03_DECISIONS/GG_BURNDOWN.md`. It closes only on evidence, fixes only what is small and safe outside the wave's files, and leaves
-operator calls and big work triaged with an owner. **Surface:** 0 running components. **Dependencies:** skips any gap whose fix
-sits in a current wave block's files (class W).
+Operator: "can we keep this as a loose bird watcher that continually buckets, scrapes, fills, extracts, burns burns burns -
+basically a governance gap agent? ... I kinda want this to be more than just a one shot push" ("within reason of corse").
 
-| Session | Status | OPEN before → after | One line |
-|---|---|---|---|
-| GB-1 (beside Wave 76) | ⬜ | 187 → | |
+**It is not a one-shot block.** The procedure lives in the repo as `.claude/commands/gap-agent.md`; one terminal runs it on a
+self-paced loop. Each tick it syncs to main, **scrapes** new handoffs, reports, tension registers and decisions for findings with
+no gap id, **fills** missing severities and pillars, **buckets** gaps (already fixed · duplicate · small fix · yours · wave-owned
+· large), **burns** what evidence supports, retires closed entries to the archive, reports `OPEN x → y`, and schedules its next
+tick (5–10 min while there is work, 30 min while it is only watching). State lives in `03_DECISIONS/GG_BURNDOWN.md` and
+`GG_AGENT_STATE.md`, so any terminal picks up where the last stopped. At ~60% context it hands off and asks to be relaunched
+(this row will say so). **Surface:** 0 running components. **Dependencies:** it reads the NOW wave's file ownership every tick and
+skips any gap whose fix sits in a wave block's files.
+
+**To start it, paste exactly this line into its own terminal:**
 
 ```
-COMMON RULES - STANDING BLOCK GB (gap burn-down) (read first; they bind this block)
-- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
-  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
-  re-verify things this prompt states as verified unless your work depends on them.
-  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
-  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
-  Never leave work unpushed.
-- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
-  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
-  summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
-  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
-  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
-  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
-  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
-  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
-  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
-- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
-  collides, re-claim; never reuse.
-- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
-- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
-  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- GB runs beside the current wave. The wave's blocks own their files - you never edit them. Wave 76 ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
-  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
-  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
-  dashboards and the Visual Dashboard builder. A gap whose fix lives in one of those files is SKIPPED (class W below).
-- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
-  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
-  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
-  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
-- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
-  only real capital is his.
-- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, re-run the suite, push, merge.
-- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
-  only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
-  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
-  are allowed.
-- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
-- Never bypass a permission control: record the exact command and refusal, hand back.
-- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
-  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
-  operator - as one line, with your recommendation, after the rest of the block is done.
-- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
-  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
-  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
-  measure, say so and stop rather than doing adjacent work.
-- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
-  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
-  market). Quote the operator's words, never compress them (window error W16).
-- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
-  fixed) and surface_delta: (0 this wave).
-- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
-- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
-  its factor list is a target, never its numbers.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
-  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GB_<n>.md (docs-only push).
-
-GB OVERRIDES (this block only):
-- SIZE: LARGE, repeatable. Target 90 minutes, ceiling 120 per session. Stop at a pushed boundary and hand off; the next GB
-  session continues from the ledger. Commit and push every few gaps (small commits; the gap log is shared with the wave).
-- "Within reason" (operator, 2026-10-15 16:50 PT). You CLOSE what evidence supports; you never close on "probably". You FIX
-  only what is small and safe. Everything else is triaged and left with a clear next owner.
-
-STANDING BLOCK GB - GAP BURN-DOWN (runs beside every wave). Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING, scored - OPEN gaps in 03_DECISIONS/GOVERNANCE_GAP_LOG.md, before -> after (2026-10-15: 187 OPEN - 2 CRITICAL,
-21 HIGH, 73 MEDIUM, 70 LOW, 21 UNSPECIFIED; plus 22 RESOLVED entries still sitting in the live log). Every gap names the pillar
-it corrupts; say which pillar each closure protects.
-PERMISSIONS: the gap log and its archive; code/tests/docs for class C fixes only, in files no wave block owns; ssh read-only for
-verification (plus the standing restarts if a class C fix changes something that runs). No order, stake, kelly, ledger-row
-rewrite, pre-registration, frozen artifact, frozen book or real capital - ever.
-Read first: CLAUDE.md Step 3 + Hard Rules 11, 13, 14; scripts/retire_resolved_gaps.py; 03_DECISIONS/GG_BURNDOWN.md if it exists
-(you are continuing); the NOW wave's ownership line above.
-
-WHY
-Operator, 2026-10-15: "we're gonna add a terminal block on top of the regular waves that systematically burns down the open
-gaps that it can - I want to start tearing through it" ... "within reason of corse". The log has grown faster than it closes;
-many entries are old and may already be fixed, superseded or duplicated. A gap that is fixed but still OPEN hides the ones
-that are not.
-
-METHOD - every gap gets exactly one class, with evidence:
-  A  ALREADY FIXED / STALE - the defect no longer exists. Prove it (file:line at HEAD, a command's output, or a box read for
-     anything that runs) and set RESOLVED with that evidence. Merge != deploy != activation: running code needs the box read.
-  B  DUPLICATE / SUPERSEDED / ARTIFACT - name the surviving gap or the superseding ADR; CLOSED-AS-ARTIFACT or RESOLVED-by-reference.
-  C  SMALL SAFE FIX - <= 20 minutes, in a file no wave block owns, no running component added, nothing in the never-list above.
-     Fix, test, pattern-sweep (Hard Rule 13), read back where it runs, then RESOLVE.
-  O  OPERATOR - a pre-registration, frozen artifact/book, real capital or open strategic question. Do not decide. One line each,
-     with your recommendation, collected at the end.
-  W  WAVE-OWNED - the fix lives in a file a current wave block owns. Skip; note which block.
-  L  LARGE - real work bigger than class C. Leave OPEN; write the size and a one-line block scope into the ledger so the window
-     can put it in a wave.
-Order: triage CRITICAL and HIGH first (GG-038, GG-046, GG-170, GG-172, GG-189, GG-190, GG-204, GG-295, GG-296, GG-301, GG-302,
-GG-312, GG-316, GG-320, GG-333, GG-417, GG-429, GG-441, GG-611 among them; GG-740/741/745 are W or window-owned), then sweep
-oldest-first for class A and B - they are the cheapest closures. Status lines keep the exact `**Status:** TOKEN · **Severity:**
-LEVEL` format.
-
-PART A - Retire and triage (~45 min)
-  1. Retire what is already resolved: run scripts/retire_resolved_gaps.py (report first, then --apply with explicit
-     --out-src/--out-archive to the real files). Verify: header/status parity and gg_id_uniqueness_check after.
-  2. Create (or continue) 03_DECISIONS/GG_BURNDOWN.md: one row per gap triaged - GG id, severity, class, evidence or reason, next
-     owner, session. Session header: OPEN before -> after.
-  3. Triage CRITICAL + HIGH, then as many oldest-first as time allows. Close A and B as you go.
-PART B - Fix and hand off (~45 min)
-  4. Work class C items, highest severity first. One commit per fix (or small group), each with its sweep.
-  5. Ledger totals: OPEN before -> after, closed by class, C fixes with PRs, the O lines, the L list sized for waves.
-  6. Update the GB row in ACTIVE_QUEUE.md (status + "OPEN x -> y").
-Results: 03_DECISIONS/GG_BURNDOWN.md. Handoff: gap_measure "OPEN gaps", gap_delta before -> after, pattern_sweep for each fix.
-
-END OF STANDING BLOCK GB. If you cannot see this line, the prompt reached you truncated: stop and report it.
+/loop /gap-agent
 ```
+
+| Session | Status | OPEN before → after | Last tick | One line |
+|---|---|---|---|---|
+| GA-1 (beside Wave 76) | ⬜ | 187 → | | |
 
 ## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
 
