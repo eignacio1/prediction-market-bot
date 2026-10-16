@@ -22,6 +22,10 @@ from __future__ import annotations
 import json
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from prediction_market_bot.atomic_io import atomic_write_json  # noqa: E402  (W76.3, GG-748)
 
 
 def _parse_ts(s: str) -> datetime:
@@ -113,8 +117,7 @@ def main() -> int:
 
     if write:
         out_path = path + ".tagged.json"
-        with open(out_path, "w") as f:
-            json.dump(portfolio, f, indent=2)
+        atomic_write_json(out_path, portfolio)
         print(f"Written: {out_path}")
     else:
         print("Dry run — pass --write to produce a tagged copy.")

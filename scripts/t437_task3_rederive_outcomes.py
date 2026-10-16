@@ -55,6 +55,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterator
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+from prediction_market_bot.atomic_io import atomic_write_json  # noqa: E402
+
 try:
     import fcntl
     _HAS_FCNTL = True
@@ -221,8 +224,7 @@ def _process_and_maybe_apply(closed, store, args, ledger_path, data) -> None:
     shutil.copy2(ledger_path, backup_path)
     print(f"Backed up ledger to {backup_path}")
 
-    with ledger_path.open("w") as f:
-        json.dump(data, f, indent=2)
+    atomic_write_json(ledger_path, data)  # W76.3 / GG-748: tmp + fsync + replace, still under this script's flock
     print(f"Wrote corrected ledger to {ledger_path}")
     return 0
 

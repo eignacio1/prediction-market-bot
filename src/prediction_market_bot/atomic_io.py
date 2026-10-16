@@ -10,8 +10,15 @@ import json
 import logging
 import os
 import sys
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
+
+try:
+    import fcntl
+    _HAS_FCNTL = True
+except ImportError:  # pragma: no cover - non-POSIX
+    _HAS_FCNTL = False
 
 _log = logging.getLogger(__name__)
 
@@ -58,6 +65,28 @@ def atomic_write_text(path: Path | str, text: str) -> None:
             pass
         raise
     _fsync_dir(path.parent)
+
+
+@contextmanager
+def file_lock(path: Path | str) -> Iterator[None]:
+    """Exclusive cross-process flock on <path>.lock (W76.3, GG-748).
+
+    Same lock file PaperTrader._file_lock uses for a portfolio JSON, so a script rewriting a live
+    ledger and the runner appending to it serialise against each other. Blocks until acquired.
+    """
+    if not _HAS_FCNTL:  # pragma: no cover - non-POSIX fallback
+        yield
+        return
+    path = Path(path)
+    lock_path = path.with_suffix(path.suffix + ".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    fd = open(lock_path, "w")
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        yield
+    finally:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        fd.close()
 
 
 def atomic_write_json(path: Path | str, obj: Any, *, indent: int | None = 2) -> None:

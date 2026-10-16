@@ -45,6 +45,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
+from prediction_market_bot.atomic_io import atomic_write_text  # noqa: E402  (W76.3, GG-748)
 from prediction_market_bot.c5_execution.paper_trader import (  # noqa: E402
     MAX_REJECTED_POSITIONS,
     PaperTrader,
@@ -146,7 +147,7 @@ def main() -> int:
         # ---- Step 3: durably preserve the FULL pre-migration
         # rejected_positions list before anything is truncated. Never
         # overwritten (timestamped). ----
-        sidecar_path.write_text(json.dumps(
+        atomic_write_text(sidecar_path, json.dumps(
             {
                 "source_file": str(portfolio_path),
                 "migrated_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
