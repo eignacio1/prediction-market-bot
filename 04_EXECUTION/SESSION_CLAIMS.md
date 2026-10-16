@@ -938,3 +938,4 @@
 | 2026-10-16T05:37:12Z | GG-890..GG-894 | W78.3 STANDARD BREADTH B1: NBA opening-night readiness - NBA-T1 registry/dispatch fix, flip dry run, silent-arm coverage, runbook |
 | 2026-10-16T05:46:51Z | TBD-none (no GG/T expected) | W78.4 NBA engine stage 1 event-level data layer; PURPOSE DEPTH D4 NBA none->data layer, D1 NBA factor classes mapped |
 | 2026-10-16T06:00:02Z | TBD | Block AP: document archive-pipe repo + deploy key (MICRO, PLUMBING) |
+| 2026-10-16T06:00:36Z | BLOCK-AP | CLOSED — Block AP: private repo eignacio1/sports-intel-archive + write-scoped deploy key created for Muse; documented. (commit `8efce52`) |

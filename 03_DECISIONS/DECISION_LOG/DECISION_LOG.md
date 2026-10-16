@@ -2443,3 +2443,10 @@ Operator, verbatim: "Send me another copy + paste to drop into Muse serving as a
 - Root cause of "NBA game cells would never flip": flip scripts compared against file-bytes sha, rows carry the artifact sha256 (GG-890). Fixed (#274), deployed, dry run on box: 9/12 cells FLIP-OK, 3 team-total cells NO-ROWS because Kalshi never listed KXNBATEAMTOTAL (GG-891). B1 ceiling for NBA game cells is 9.
 - NBA-T1 premise ("registry NOT_IMPLEMENTED while code dispatches") is by design: evidence-gated flip, not a defect.
 - Silent-arm glob masking fixed (#275, GG-892). Runbook: 02_ARCHITECTURE_DESIGN/NBA_OPENING_NIGHT_RUNBOOK.md. W68.2 staked runner: `make_on_row` is skipped for preseason/dry-run and refuses production hosts (`demo_host_ok`). No stake/kelly/registry-cell/pre-registration change. Operator decisions: none.
+
+## 2026-10-15 22:47 PT — Block AP executed: archive repo + scoped deploy key (PLUMBING)
+
+- `gh auth` = eignacio1. Created `eignacio1/sports-intel-archive`: PRIVATE, empty at creation, SSH `git@github.com:eignacio1/sports-intel-archive.git`. Free (no Actions).
+- Deploy key id 166624777, "Muse archive push (write, this repo only)", read-write, ed25519, fingerprint `SHA256:ay0DYX07S91eP5Bep2dRPKBdRb6CmIG/QJpltAdEBoo`. Private key at `~/.config/sports-intel-archive/muse_deploy_key` (600, dir 700), outside every project folder; never committed. Revoke: `gh repo deploy-key delete 166624777 --repo eignacio1/sports-intel-archive`.
+- Deviation: first `cat` of the key was refused (classifier, "Credential Materialization"); stopped and reported, retried once on operator instruction "Keep trying", succeeded. The key text was shown in the operator's terminal and is in that session transcript only.
+- Bot repo untouched by the block itself. Downstream: INTAKE_CONTRACT "The pipe"; entry 22:54 PT (Muse pushing, verified).
