@@ -249,7 +249,7 @@ so it cannot touch 79.1-79.3 or #277/#278. 79.2 and 79.3 each land their own ope
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 79.1 | Red to green: the NFL QB challenger silent arm, the silent-arm glob sweep, 78.1's three loose ends | BREADTH B1 + PLUMBING: SURFACE BUDGET RED → GREEN (NFL QB challenger silent arm); glob sweep NBA → every sport; #276 read back; standalone dashboard | ⬜ | |
+| 79.1 | Red to green: the NFL QB challenger silent arm, the silent-arm glob sweep, 78.1's three loose ends | BREADTH B1 + PLUMBING: SURFACE BUDGET RED → GREEN (NFL QB challenger silent arm); glob sweep NBA → every sport; #276 read back; standalone dashboard | PARTLY: Part A done (#279), dashboard rebuilt, budget RED on t4-mlb behind HEAD (window decides) | 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1408Z_W79_1.md |
 | 79.2 | Thinner markets, finished: land the fetcher, the NBA sample, the gradient, the first pre-registration | BREADTH/DEPTH: families with price history (NFL 9 sampled, NBA 0 → all listed); gradient table 0 → 1; frozen thin-market prereg 0 → 1 | ⬜ | |
 | 79.3 | NBA engine, finished: land the store, the factor taxonomy, the free-source gaps, the first two factors interpreted | DEPTH: D4 NBA store on main + box; D1 NBA classes mapped 0 → 13; D5(b) NBA two factors aggregated → interpreted | ⬜ | |
 | 79.4 | Branch cleanup: 148 remote branches down to the open-PR and young ones (MICRO) | PLUMBING: remote branches 148 → ~6; auto-delete on merge off → on; 4 stale PRs settled; local sweep | ✅ DONE (operator 06:51 PT) | Window verified on GitHub 10-16 ~06:55 PT: auto-delete on merge **true**; **33 `archive/*` tags**; remote branches **148 → 36** (2 open-PR heads #277/#278, 4 stale-PR heads #133/#144/#146/#149 still open, ~30 landed branches under 3 days old kept by rule R2 - they age out and go in a later sweep; auto-delete stops new ones). **Terminal result (10-16):** remote 167 → 34; 36 archive tags (33 + 3 closed PRs); #133/#144/#146 closed as superseded (archive-tagged), **#149 kept open** for the window (its `assert_service_activation.py`, test and T574 note are not on main); local branches 237 → 117, worktrees 168 → 67 (101 removed, none forced); 6 landed local branches left (`-d` refused, no `-D`). Detail: BRANCH_CLEANUP_PLAN_20261016.md § Result |
@@ -895,7 +895,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | ⬜ | |
+| 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | PARTLY: Part A done (#279), dashboard rebuilt, budget RED on t4-mlb behind HEAD (window decides) | 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1408Z_W79_1.md |
 | 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ⬜ | |
 | 79.3 | NBA engine finished: store landed, taxonomy, gaps, two factors interpreted | ⬜ | |
 | 79.4 | Branch cleanup (MICRO) | ✅ | auto-delete on; 33 archive tags; remote branches 148 → 36 (open PRs + landed branches < 3 days old kept by rule) |
