@@ -238,7 +238,7 @@ runs alongside and skips all of these.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 77.1 | Keep the fill-fix test alive: exchange 503s, cancel retry, cash-starved demo account — **deadline 11:25Z 10-16 (04:25 PT)** | EXECUTION E1: forward test still on after 11:25Z; insufficient_balance rejections 1,535 → ~0 | ⬜ | |
+| 77.1 [PARKED: Part A merged #269 + deployed, report clean; Part B GG-840 not started; see SESSION_HANDOFF_20261016T010500Z_W77_1] | Keep the fill-fix test alive: exchange 503s, cancel retry, cash-starved demo account — **deadline 11:25Z 10-16 (04:25 PT)** | EXECUTION E1: forward test still on after 11:25Z; insufficient_balance rejections 1,535 → ~0 | ⬜ | |
 | 77.2 | Change the yardstick: is each factor real, priced, or invisible? | DEPTH D5(b): NFL applied factors with a market-side verdict (0 → 4: team/QB base, F5/F6, F8) + power per family | 🟡 PARTIAL | Plan addendum frozen & pushed (market_tests/PLAN.md); no computation yet. Next undone: Part A (power sim + closing-line regression). Data is in sibling worktrees (see PLAN). |
 | 77.3 | Ledger read side and the 34-row gap (76.3 Part B) | PROOF integrity: GG-764 sites silently skipping torn rows 3 → 0; GG-747 rows explained 0 → 34 (or recomputed) | ⬜ | |
 | 77.4 | Land the runtime map on both dashboards (76.4 finish) + the gap agent made visible | PLUMBING (ADR-0074): SURFACE BUDGET + runtime map live on /project, Live Terminal and the Visual Dashboard (built → deployed); gap burn-down OPEN count visible | ⬜ | |
