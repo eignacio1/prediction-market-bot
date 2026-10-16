@@ -95,8 +95,9 @@ factor_class = "F8"
 name = "Injuries / availability"
 source = "nflverse injuries: report_status; depth_charts; snap_counts (weekly rule, GG-732)"
 engine_slot = "qb availability; rating adjustments"
-stage = "aggregated"
-evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_engine/results_stage3.md"
+result = "applied and tested W76.2 (non-QB unit availability): 99% orthogonal to ratings, moves means ~4.5x F5/F6; MATCHES ML/spread/team total, NO on total; no gain"
 
 [[factor]]
 id = "N11"

@@ -17,7 +17,7 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N7 | F5 | Coverage man/zone and QB efficiency against each | participation defense_man_zone_type (GAP-1: no 2026 file) | def_pass (coverage) | applied | `12_EXPLORATORY/nfl_engine/results_stage2.md` |
 | N8 | F6 | Personnel and formation | participation offense_personnel, defense_personnel (GAP-1); ftn | off_pass / off_rush | applied | `12_EXPLORATORY/nfl_engine/results_stage2.md` |
 | N9 | F7 | Special teams | nflverse pbp: kick/punt/FG fields | st | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
-| N10 | F8 | Injuries / availability | nflverse injuries: report_status; depth_charts; snap_counts (weekly rule, GG-732) | qb availability; rating adjustments | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
+| N10 | F8 | Injuries / availability | nflverse injuries: report_status; depth_charts; snap_counts (weekly rule, GG-732) | qb availability; rating adjustments | applied | `12_EXPLORATORY/nfl_engine/results_stage3.md` |
 | N11 | F9 | Play callers / coaching | GAP-2: head coach only; no coordinator table | coach | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
 | N12 | F10 | Penalties / officials crew | nflverse pbp penalty fields; officials | ctx.officials | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N13 | F12 | Home field / venue (roof, surface, division) | nflverse games: location, roof, surface, div_game | ctx.home, ctx.roof | interpreted | `12_EXPLORATORY/20261011_nfl_totals_venue_weather` |
