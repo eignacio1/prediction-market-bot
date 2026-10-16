@@ -16,3 +16,11 @@ GG-747 explained: gap is 41 (not 34), all epoch-12 rows closed after the Mon 202
 
 ## Deploy read-back
 Box HEAD dc84fa6c (PR #270 merge, committed 2026-10-15T21:52 PT). run_t4_mlb_live.py landed 2026-10-16 04:53:24Z; t4-mlb (PID 3510675) restarted 04:53:27Z by the deploy, so it runs the new code. Idle window (post-games, ~21:53 PT). Still open: CellLedger lock read-back after next pregame shadow cron.
+
+## Part B step 3 DONE
+CellLedger lock read-back on box (dc84fa6c): 3 NBA preseason ledgers, 0 torn rows, 576 rows written by deployed SHA, .lock files live. See W76_3_ledger_integrity.md. Block status: DONE except GG-885 SESSION_CLAIMS claim (claim_session.sh refuses worktrees).
+vision_pillar: PROOF
+gap_measure: read-side silent sites 3->0 (PR #270); GG-747 gap 34->41 each row accounted
+gap_delta: -3 silent sites; 41/41 explained
+pattern_sweep: heuristic scan of src/ and scripts/, 19 hits triaged; fixed nba_cell_autoflip; rest registered GG-885
+surface_delta: 0

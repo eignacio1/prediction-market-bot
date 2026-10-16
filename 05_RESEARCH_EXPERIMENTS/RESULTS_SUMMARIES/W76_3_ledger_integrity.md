@@ -25,3 +25,15 @@ Source: read-only scp of `logs/paper_portfolio_mlb_t4.json` (mtime 2026-10-16T02
 - No labelled correction row needed; no live ledger row changed.
 - Judged counts: the portfolio count (4,316) is unchanged. Any verdict that reads the *resolved ledger* between Monday rebuilds is up to a week stale (41 rows, -10.78 P&L right now); the next rebuild (2026-10-19 14:20Z) will close the gap to 0. No judged count changes by this finding, but a read of the ledger mid-week is not a read of the portfolio. Registered as a note on GG-747; whether to rebuild more often is a plumbing choice for the gap agent, not a pre-registration change.
 - Not done: read-back of first CellLedger rows through the W76.3 lock after the next pregame shadow cron (not yet run).
+
+### Part B step 3 — CellLedger lock read-back on the box (2026-10-16 04:58Z)
+
+Box HEAD `dc84fa6c`. The pregame shadow crons run every 10 min, so rows written through the W76.3 `file_lock` (`pregame_shadow/ledger.py:61`) appeared within minutes of the 04:53Z deploy. Read back `exp_output/PREGAME_SHADOW_PRESEASON/` (the arm currently writing; preseason rows are `excluded_from_judged_n=true`):
+
+| ledger | rows | torn | rows with `code_sha` dc84fa6 | `.lock` sibling mtime |
+|---|---|---|---|---|
+| NBA_NBA_MONEYLINE_T1 | 3,056 | 0 | 24 | 04:57:04Z |
+| NBA_NBA_SPREAD_T1 | 11,100 | 0 | 300 | 04:57:06Z |
+| NBA_NBA_GAME_TOTAL_T1 | 9,324 | 0 | 252 | 04:57:09Z |
+
+Every line parses; lock files are created and touched by live writers. Limit: this shows locked writes land clean and parse, not that two runners collided (no collision observed or provoked). Verified, not assumed: the W76.3 lock is live in production.
