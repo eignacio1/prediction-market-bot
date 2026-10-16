@@ -2365,3 +2365,5 @@ Question (window, from W76.1): Kalshi returned 503s for ~2 h on 10-15; cancel_no
 Operator answer, verbatim (AskUserQuestion): "Exclude exchange 503s (Recommended)".
 - 77.1 writes the dated ADR-0072 addendum quoting it (same shape as the 10-14 "policy skips only" addendum): the cancel-fail turn-off counts only cancels that failed for our own reasons; exchange 5xx are retried (GG-841) and reported on their own line. Deadline: merged and read back before 11:25Z 10-16.
 - 76.1 done late (PR #267): kill switch drilled on running processes, 6/6. Window merged main into its branch to clear the 76.2 isolation failure. GG-840 (demo account cash-starved, 1,535 insufficient_balance rejections) also goes to 77.1.
+
+| 2026-10-16 | W77.1 | Demo cash starvation (GG-840) handled by an arm-blind pre-order `cash_skip_reason` (fails open) in both order paths; policy-neutral, so no operator stop. Exchange 5xx excluded from ADR-0072 turn-off (GG-841). "Treatment not this season" survives per cell; cash is the binding constraint, not the plumbing. |
