@@ -77,12 +77,13 @@ def test_run_uses_exactly_the_allowlisted_command(tmp_path):
     seen = {}
 
     def runner(cmd, **kw):
-        seen["cmd"] = cmd
+        seen["cmd"], seen["stdin"] = cmd, kw.get("stdin")
         return subprocess.CompletedProcess(cmd, 0, "SURFACE BUDGET GREEN\nAPI_KEY=abc123\n", "")
     out = tmp_path / "r.md"
     bt.run(_req(tmp_path, 'task = "budget_read"\n'), out, "/k", runner=runner)
     remote = seen["cmd"][-1]
-    assert seen["cmd"][:3] == ["ssh", "-i", "/k"] and bt.HOST in seen["cmd"]
+    assert seen["cmd"][:4] == ["ssh", "-n", "-i", "/k"] and bt.HOST in seen["cmd"]
+    assert seen["stdin"] is subprocess.DEVNULL          # run 2 regression: ssh swallowed the request list
     assert remote.startswith(f"cd {bt.BOX} && timeout {bt.TIMEOUT_S} bash -c ")
     assert "runtime_registry.py live" in remote
     txt = out.read_text()
