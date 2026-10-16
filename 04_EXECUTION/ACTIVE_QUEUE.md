@@ -653,10 +653,11 @@ tick (5–10 min while there is work, 30 min while it is only watching). State l
 (this row will say so). **Surface:** 0 running components. **Dependencies:** it reads the NOW wave's file ownership every tick and
 skips any gap whose fix sits in a wave block's files.
 
-**To start it, paste exactly this line into its own terminal:**
+**To start it, paste exactly this into its own terminal** (it reads the procedure from GitHub, so it works even though the
+local project folder does not have the new command — `/loop /gap-agent` failed there at 17:05 PT, window error W20):
 
 ```
-/loop /gap-agent
+/loop Run one governance gap agent tick. First run `git fetch origin`, then read the procedure with `git show origin/main:.claude/commands/gap-agent.md` and follow it exactly for this tick (first tick: its session-start steps). Self-pace the next tick as it says.
 ```
 
 | Session | Status | OPEN before → after | Last tick | One line |
