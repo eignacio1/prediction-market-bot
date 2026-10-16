@@ -925,3 +925,4 @@
 | 2026-10-16T00:39:08Z | GG-860..GG-879 (standing gap agent) | CLOSED — merge confirmed, HEAD (3d21eea) is ancestor of origin/main — Gap agent ticks 1-3 closed; manual stop |
 | 2026-10-16T00:47:11Z | GG-880..GG-884 | W77.2 STANDARD: NFL market-side verdict per factor (power + closing-line + timing) — PURPOSE DEPTH D5(b) 0->4 factors with market verdict; files only under 12_EXPLORATORY/nfl_engine/market_tests/ |
 | 2026-10-16T00:47:12Z | none-new | W77.1 EXECUTION E1: fill-fix test 503 exclusion, cancel retry, demo cash; works W76.1-registered gaps, no new IDs |
+| 2026-10-16T00:47:40Z | T-TBD-none GG-764,GG-747 | W77.3 STANDARD: ledger read side torn-row reporting (GG-764) + GG-747 34-row gap; PURPOSE PROOF integrity, measure: silent-skip read sites 3->0, GG-747 34->accounted |
