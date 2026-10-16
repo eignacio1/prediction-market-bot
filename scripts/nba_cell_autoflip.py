@@ -54,8 +54,10 @@ def main(argv=None) -> int:
                 for l in p.read_text().splitlines():
                     try:
                         rows.append(json.loads(l))
-                    except ValueError:
-                        pass
+                    except ValueError as exc:
+                        # W77.3/GG-764 sweep: a torn cell-ledger row shrinks n
+                        # that decides the flip; report, never silent.
+                        print(f"[CORRUPT_READ] {p.name}: torn row skipped ({exc})", file=sys.stderr)
             n = sum(valid(r, sha) for r in rows)
             if n and key not in done:
                 new.append({"ts_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "market_type": key[0],
