@@ -87,7 +87,9 @@ def scan_source(src: str, name: str = "<src>") -> list[str]:
                     # path.write_text(..) -> receiver must be safe; os.remove(path)/shutil.x(src,dst) -> every arg must be safe
                     recv_ok = safe_target(f.value)
                     arg_ok = bool(n.args) and all(safe_target(a) for a in n.args)
-                    if f.attr in ("dump", "savefig", "save"):
+                    if f.attr == "copy" and not n.args and all(k.arg == "deep" for k in n.keywords):
+                        ok = True  # DataFrame/dict .copy() / .copy(deep=..): in-memory, no destination (shutil.copy needs src, dst)
+                    elif f.attr in ("dump", "savefig", "save"):
                         ok = True  # target is a file object / path opened elsewhere; the open() itself is policed above
                     elif f.attr in ("to_csv", "to_json", "to_parquet", "to_pickle"):
                         ok = bool(n.args) and safe_target(n.args[0])

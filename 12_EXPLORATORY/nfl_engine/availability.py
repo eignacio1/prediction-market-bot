@@ -28,7 +28,7 @@ _SUFFIX = re.compile(r"\b(jr|sr|ii|iii|iv|v)\b")
 
 
 def name_key(s) -> str:
-    return re.sub(r"[^a-z0-9]", "", _SUFFIX.sub("", str(s).lower().replace(".", "")))
+    return re.sub(r"[^a-z0-9]", "", _SUFFIX.sub("", re.sub(r"\.", "", str(s).lower())))
 
 
 def _read(root: Path, kind: str, seasons) -> pd.DataFrame:
