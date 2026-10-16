@@ -916,3 +916,4 @@
 | 2026-10-15T23:49:42Z | GG-TBD-none (register-only) | STANDARD — runtime map live + visible on both dashboards (B74-A S2) — FOR PLUMBING (ADR-0074) surface review 0/76->76/76, no-alarm 21->0, SURFACE BUDGET live — W76.4 |
 | 2026-10-15T23:50:16Z | T-1030..T-1032, GG-850..GG-854 | W76.3 MEDIUM - every ledger writer atomic+locked; 34-row T4 gap reconciled (GG-748/747/764). PURPOSE: PROOF integrity - live-ledger writers bypassing atomic_io 4->0; CellLedger.append cross-process safe; T4 closed-vs-resolved gap 34->0 or explained |
 | 2026-10-16T00:08:54Z | T-1030..T-1032 | CLOSED — merge confirmed, HEAD (0a44b8f) is ancestor of origin/main — W76.3 PARTIAL: Part A merged (PR #265), Part B (GG-764, GG-747) not done |
+| 2026-10-16T00:10:23Z | GG-860..GG-879 | STANDING — gap agent tick loop — FOR PLUMBING (OPEN gaps) — burn down the gap log |
