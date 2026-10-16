@@ -2474,6 +2474,17 @@ Operator relayed Muse's report; window verified on the archive at 1fb38c1 (34 co
   API path is not permitted through this proxy."; (3) `git push origin <sha>:refs/tags/archive/...` and `git push origin --delete
   <branch>` -> "the remote end hung up unexpectedly". Not worked around; a terminal on the operator's machine runs it (79.4).
 
+### 2026-10-16 06:55 PT — Three blocks per wave is the default again; 79.4 branch cleanup recorded done (strategic window)
+
+- **Operator, 06:51 PT:** "go back to making the default wave structure just 3 blocks. only if i request it otherwise should there
+  be more. 3 block structure is easily the most efficient and can get a lot done if the blocks are prompted correctly." Supersedes
+  2026-10-14 ("operator sets the terminal count"). From Wave 80: three MEDIUM blocks; more only on his request; the standing gap
+  agent is not counted. Recorded in ACTIVE_QUEUE.md (operator directives + standing rules).
+- **79.4 branch cleanup:** operator reports it done (06:51 PT). Window verified on GitHub: `delete_branch_on_merge` true; 33
+  `archive/*` tags (every branch with unmerged work preserved); remote branches 148 -> 36. The 36 are 2 open-PR heads (#277, #278),
+  4 stale-PR heads (#133/#144/#146/#149, still open) and ~30 landed branches younger than 3 days, kept by the plan's rule R2; they
+  can go in a later sweep, and auto-delete stops new ones accumulating.
+
 ## 2026-10-15 23:30 PT — W78.4 PARTIAL: NBA event-level data layer built, taxonomy not written
 
 Part B done: free sportsdataverse NBA store 2016-2026 (123 files, 0 failures), PIT contract (tip bounds, 4h buffer, season_static refused, date-only snapshots count from end of day), fail-closed checks, manifest committed; PR #278. Decisions: imputed tips use Eastern-day bounds (conservative both sides); injuries keyed (injury_id, as_of_date); no free injury history before 2026-09-08 is a GAP, not bought. stats.nba.com unreachable - reported, not scraped. Part A (FACTOR_TAXONOMY.md) and GG-895..899 registration deferred (session limit). D4 NBA: none -> aggregated (data layer, no factor interpreted/applied). No order/stake/registry/kelly change.
