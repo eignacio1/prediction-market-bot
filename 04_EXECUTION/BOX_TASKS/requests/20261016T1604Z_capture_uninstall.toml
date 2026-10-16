@@ -1,0 +1,2 @@
+task = "capture_uninstall"
+note = "GG-920: capture went in on a false GREEN; remove until the real t4-mlb red clears (Hard Rule 14)"

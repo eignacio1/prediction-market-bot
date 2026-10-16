@@ -1,0 +1,2 @@
+task = "budget_read"
+note = "GG-920: budget after the deploy-log SHA fix; expect RED on t4-mlb"
