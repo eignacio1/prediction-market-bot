@@ -945,3 +945,4 @@
 | 2026-10-16T06:03:37Z | GG-895..GG-899 | W78.4 NBA engine stage 1: GG range for free-source GAPs (injury history, official/coach timing, travel geometry, PAM, qualitative) |
 | 2026-10-16T06:08:53Z | W78.1 | CLOSED — W78.1 PLUMBING: runtime map/SURFACE BUDGET (#266) merged+deployed and read back; gap-agent progress visible on governance scan, /project and Visual Dashboard (#276 merged); #276 box read-back and standalone dashboard rebuild pending. (commit `c14d7cd`) |
 | 2026-10-16T13:49:40Z | GG-900..GG-904 | W79.1 PURPOSE: BREADTH B1 + PLUMBING — NFL QB challenger silent arm RED->GREEN, silent-arm glob sweep (surface budget) |
+| 2026-10-16T13:49:52Z | GG-910..GG-914 | W79.3 STANDARD: NBA engine store landed + factor taxonomy + 2 factors interpreted — PURPOSE DEPTH D4 NBA none->data layer on main+box; D1 NBA 0->13; D5(b) NBA 2 factors aggregated->interpreted (continues W78.4's unregistered GG-895..899 reservation; re-claimed) |
