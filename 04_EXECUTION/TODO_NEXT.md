@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-16T15:25Z (W80P.1-W80P.4 — 80P cloud session: W80P.1 PARTIAL (#281 import-aware behind-HEAD, GG-915; depth capture built, paused pending box GREEN read), W80P.2/.3 BLOCKED (no ssh, Kalshi refused by network policy), W80P.4 DONE (#282 MLB look-back, P1 0/16, P2 0)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1524Z_W80P.md` for full session detail.
+**Last reviewed:** 2026-10-16T16:15Z (W80R.1-W80R.3 — 80R: W80R.1 bridge live (#283/#284/#285), box readable from cloud; budget read honestly RED (t4-mlb 11.2h behind, GG-920 false-GREEN fixed); capture installed on false GREEN then uninstalled; W80R.2/.3 tools built+tested (PR #286), data partly fetched, NO results — next window) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1612Z_W80R.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

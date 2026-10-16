@@ -37,3 +37,10 @@ A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry
 - The thin-market ranking and the NBA totals test could not run: this session can't reach the box or Kalshi. Nothing was guessed.
 - MLB season look-back written: no MLB cell reached a scored look this season (by design for game markets — their first look is 2027). A one-line final read is ready for after the World Series.
 - Pillars: plumbing + proof. Still zero real money at risk. Stray branch: `claude/pseudo-wave-80p-rules-lsiwi3` and `...-w80p4` (mine, both squash-merged).
+
+## Pseudo-wave 80R (cloud session) — 2026-10-16 ~09:15 PT
+- Cloud sessions can now read the box: a narrow, pre-approved list of jobs runs through GitHub (no free-form commands).
+- First honest reading: the safety check is RED for a real reason — the MLB in-game service has been running code 11 hours out of date. An earlier GREEN was a measurement mistake, now fixed.
+- The order-book recorder went in on that mistaken GREEN; I took it back out. It goes back in once the MLB service is restarted and the check reads green.
+- The thin-market ranking and the NBA totals test have their tools built and tested; data collection is slow (Kalshi rate limits), so the results come next window.
+- Pillar: plumbing. Still zero real money at risk.
