@@ -43,7 +43,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-004 — EV Validation Benchmark Was Never the Commercial Question
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
 
 **Current state (2026-10-08, W59.1):** Sample-adequacy gate still the G6 blocker; governed per band by APR-0024 n*. Not re-derived this session. **Next:** Re-run run_power_calc.py at next governance scan.
 
@@ -148,7 +148,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-027 — PAM Integration Incomplete Across Bands: T2/T3/T5 Have No Archetype Wiring; Environment Classifier Not Built
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. **Next:** Revisit at NBA preseason.
 
@@ -174,7 +174,7 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-037 — Calibration Collapse + Inverted Edge Realization: the Model's Edge Signal Is Anti-Predictive
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
 
 **Current state (2026-10-08, W59.1):** Alpha half still unexplained per entry; MLB-side analogue is GG-105. **Next:** Fold NBA retest into NBA preseason work.
 
@@ -237,7 +237,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-039 — T4 Price Cache / Staleness Check Architecture
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. **Next:** Revisit at NBA preseason.
 
@@ -265,7 +265,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-040 — T4 Real-Time Data Sources: Required Feeds Not in Current C1 Architecture
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. MLB analogue is GG-066. **Next:** Revisit at NBA preseason.
 
@@ -293,7 +293,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-041 — KXNBAPTS Orderbook Depth Data: Finals Window Missed; ADR-0005 Limit Empirical Basis Absent
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. Finals window is past; data cannot be recovered retroactively. **Next:** Capture depth in next NBA season via archiver depth sampling.
 
@@ -467,7 +467,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-066 — MLB C1 Has No Real-Time/Sub-Poll-Interval Event Feed (Blocks Event-Driven T4 Sub-Bands)
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** MLB still polls ESPN at POLL_INTERVAL_S=45 (run_t4_mlb_live.py:151); no sub-poll event feed exists. **Next:** Needs a C1 feed decision; blocks event-driven T4 sub-bands.
 
@@ -495,7 +495,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-078 — T4 MLB's Real ~341-Bet/Day Cadence Means Kill-Switch Fate Is Decided Within ~15 Days Regardless of True Edge Sign; Long-Horizon Projections for T4 Are Not Meaningful at Any Stake Cap
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** T4M-PROJ kelly_fraction is 0.0 (ADR-0048), so the kill-switch-fate concern is moot while sizing is zero; reopens on reactivation. **Next:** Re-run mc_empirical_bootstrap.py before any reactivation.
 
@@ -554,7 +554,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-094 — MLB Has No Qualitative/PRF-Analogue Feature Layer Despite Being the Sole ACTIVE Pool
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
 
 **Current state (2026-10-08, W59.1):** mlb_features.py still has 0 references to qualitative/PRF (grep this session). **Next:** Design MLB qualitative layer; tied to pre-game deep-tree directive (ADR-0068).
 
@@ -610,7 +610,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-105 — T4M-PROJ (ACTIVE, highest-volume band) shows a statistically significant, tercile-monotonic ANTI-PREDICTIVE relationship between its own computed edge and realized win rate, on clean data (Workstream B / T-322/T-323/T-324 discovery)
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
 
 **Current state (2026-10-08, W59.1):** Remediation in progress per entry (ADR-0047 shrinkage live since epoch 8); T4M-PROJ now clean_n=1898 so anti-predictive tercile can be retested. **Next:** Re-run tercile test on clean cohort.
 

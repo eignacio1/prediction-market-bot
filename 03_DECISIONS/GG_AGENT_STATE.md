@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Last tick | 2026-10-16T00:25Z (tick 1) |
-| Intake cursor (last main SHA scanned) | `1c1cd46` — **intake scrape of the 99 commits `1c1cd46..d675c8a` is still pending (tick 2 first job)** |
-| Gaps triaged / untriaged | 7 triaged (GG-170, 417, 429, 611, 740, 741 + see ledger) / ~179 untriaged |
+| Last tick | 2026-10-16T01:00Z (tick 2) |
+| Intake cursor (last main SHA scanned) | `5be6bd8` (tick 2 scraped everything since 1c1cd46: nothing unregistered; all cited-fixed GGs already RESOLVED/archived; unknown refs were claim-range endpoints) |
+| Gaps triaged / untriaged | 32 triaged / ~154 untriaged (MEDIUM 73 and LOW 70 minus fills; HIGH all done) |
 | Session | `session/20261016T000911Z-gap-agent`, claim GG-860..GG-879 |
-| Context note | fresh; tick 1 |
+| Context note | fresh; tick 2, no stop needed |
