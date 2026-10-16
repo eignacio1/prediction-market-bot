@@ -920,3 +920,4 @@
 | 2026-10-16T00:19:32Z | W76.2 | CLOSED — NFL second factor class (F8 unit-level starter availability, non-QB): orthogonal to ratings (R2 1.3%), taken to APPLIED on a frozen plan; MATCHES ML/spread/team total, NO on total (commit `a608bf8`) |
 | 2026-10-16T00:19:51Z | W76.2 | CLOSED — merge confirmed, HEAD (a1c18c9) is ancestor of origin/main — F8 unit availability APPLIED: MATCHES ML/spread/team total, NO on total |
 | 2026-10-16T00:29:26Z | W76.4 | CLOSED — merge confirmed, HEAD (27872ac) is ancestor of origin/main — Built, PR #266 not merged (main CI red from 76.2 exploratory isolation) |
+| 2026-10-16T00:30:04Z | W76.1 | MERGED: NO — branch `session/20261015T234908Z-w76-1-killswitch-drill` awaiting merge — One kill switch drilled on the running processes (PASS, GG-745 resolved); forward-test read-back shows the treatment arm cannot reach judged n and the demo account is cash-starved (commit `see PR #267`) |
