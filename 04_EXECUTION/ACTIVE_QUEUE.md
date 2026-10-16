@@ -252,7 +252,7 @@ so it cannot touch 79.1-79.3 or #277/#278. 79.2 and 79.3 each land their own ope
 | 79.1 | Red to green: the NFL QB challenger silent arm, the silent-arm glob sweep, 78.1's three loose ends | BREADTH B1 + PLUMBING: SURFACE BUDGET RED → GREEN (NFL QB challenger silent arm); glob sweep NBA → every sport; #276 read back; standalone dashboard | ⬜ | |
 | 79.2 | Thinner markets, finished: land the fetcher, the NBA sample, the gradient, the first pre-registration | BREADTH/DEPTH: families with price history (NFL 9 sampled, NBA 0 → all listed); gradient table 0 → 1; frozen thin-market prereg 0 → 1 | ⬜ | |
 | 79.3 | NBA engine, finished: land the store, the factor taxonomy, the free-source gaps, the first two factors interpreted | DEPTH: D4 NBA store on main + box; D1 NBA classes mapped 0 → 13; D5(b) NBA two factors aggregated → interpreted | ⬜ | |
-| 79.4 | Branch cleanup: 148 remote branches down to the open-PR and young ones (MICRO) | PLUMBING: remote branches 148 → ~6; auto-delete on merge off → on; 4 stale PRs settled; local sweep | ⬜ | |
+| 79.4 | Branch cleanup: 148 remote branches down to the open-PR and young ones (MICRO) | PLUMBING: remote branches 148 → ~6; auto-delete on merge off → on; 4 stale PRs settled; local sweep | ✅ DONE (operator 06:51 PT) | Window verified on GitHub 10-16 ~06:55 PT: auto-delete on merge **true**; **33 `archive/*` tags**; remote branches **148 → 36** (2 open-PR heads #277/#278, 4 stale-PR heads #133/#144/#146/#149 still open, ~30 landed branches under 3 days old kept by rule R2 - they age out and go in a later sweep; auto-delete stops new ones). Stale-PR disposition and local sweep: per the terminal's report |
 | GA | The governance gap agent (STANDING) | PLUMBING: OPEN gaps 185 → y | relaunch | `/loop /gap` (GA-3) |
 
 ### 79.1 — Red to green: the NFL QB challenger silent arm, the silent-arm glob sweep, 78.1's three loose ends
@@ -898,7 +898,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | ⬜ | |
 | 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ⬜ | |
 | 79.3 | NBA engine finished: store landed, taxonomy, gaps, two factors interpreted | ⬜ | |
-| 79.4 | Branch cleanup (MICRO) | ⬜ | |
+| 79.4 | Branch cleanup (MICRO) | ✅ | auto-delete on; 33 archive tags; remote branches 148 → 36 (open PRs + landed branches < 3 days old kept by rule) |
 
 ### ✂️ WAVE 78 — ISSUED 2026-10-16 ~05:45 UTC · CLOSED ~06:30 UTC (operator ended it early at his session limits) · verified on GitHub
 
@@ -1188,6 +1188,13 @@ waves take on and how fast decisions clear, not in block length.
 **Guardrails that do NOT loosen** (they are what makes a win real): a pre-registration committed before a cell's first
 row; no score read below judged n; no relabel after results; no real capital; kelly_fraction 0; demo venue only.
 
+## ⬛ OPERATOR DIRECTIVE, 2026-10-16 06:51 PT — THREE BLOCKS PER WAVE AGAIN (supersedes "operator sets the count", 2026-10-14)
+
+"go back to making the default wave structure just 3 blocks. only if i request it otherwise should there be more. 3 block
+structure is easily the most efficient and can get a lot done if the blocks are prompted correctly." From Wave 80: three blocks,
+each substantive and MEDIUM-sized (below). More only when the operator asks. The standing gap agent (GA) is not a block and
+does not count. Wave 79 (four blocks) was issued before this.
+
 ## ⬛ OPERATOR DIRECTIVE, 2026-10-07 18:58 PT — MEDIUM BLOCKS (amends the LARGE-block directive below)
 
 "You're making some of these tasks far too long. The terminals are coming back stating ETAs upwards of 3 hours which is
@@ -1249,7 +1256,8 @@ unattended on the VPS under their own authorization, and a later block reads wha
   distance-to-optimum measure it moves (B1..P3, or PLUMBING) and the change it expects; its report and handoff state the
   measured change (`gap_measure:` / `gap_delta:` in the session-meta block). A terminal that cannot say what its task is
   for stops and asks before working.
-- **Three blocks per wave. Not four.** Operator directive 2026-09-15.
+- **Three blocks per wave. Not four.** Operator directive 2026-09-15; relaxed 2026-10-14 (operator set the count); **restored as
+  the default 2026-10-16 06:51 PT** - more only when the operator asks. The gap agent runs beside the wave and is not counted.
 - **Blocks are LARGE and multi-part (operator 2026-10-06)** — each part pushed and recorded before the next. Waiting is still not work.
 - **Deliverable 0 in every block: confirm your base** (`git fetch`; work from current `origin/main`).
 - **Claim IDs at run time and re-verify after ANY release or retry** (GG-322). Never "TBD".
