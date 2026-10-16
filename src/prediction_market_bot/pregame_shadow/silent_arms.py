@@ -58,9 +58,8 @@ SPECS = {
     "nba_shadow": ArmSpec("nba_shadow", "NBA regular-season shadow", 12, 1,
                           "T1 6h / T2 hourly / T3 10-min crons, same shape as MLB/NFL"),
     "nba_player_points_shadow": ArmSpec("nba_player_points_shadow", "NBA player points shadow", 12, 1,
-                                        "W67.1: EXP-039 points arm (T1 6h / T2 hourly / T3 10-min crons). Its rows share "
-                                        "the NBA_*.jsonl glob with the game-market arm, so only its own "
-                                        "NBA_NBA_PLAYER_POINTS_*.jsonl files can show it is dead on its own"),
+                                        "W67.1: EXP-039 points arm (T1 6h / T2 hourly / T3 10-min crons). The game-market "
+                                        "arm excludes PLAYER_POINTS files (W78.3/GG-892) so neither arm masks the other"),
     "nba_player_points_minutes_shadow": ArmSpec(
         "nba_player_points_minutes_shadow", "NBA player points minutes+injury challenger (EXP-040)", 12, 1,
         "W70.2: EXP-040 rides the EXP-039 runner (same T1/T2/T3 crons), strike 15 only, own NBAMIN_*.jsonl ledgers; "
@@ -266,7 +265,7 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
         arm("nhl_shadow", lambda: _nhl_starts(repo, now),
             lambda: last_ts_in_files(sorted(p for p in (repo / "data" / "shadow" / "nhl").glob("NHL_*.jsonl")), until=now)),
         arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(sorted(pre.glob("NBA_*.jsonl")), until=now)),
-        arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(sorted(led.glob("NBA_*.jsonl")), until=now)),
+        arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(sorted(p for p in led.glob("NBA_*.jsonl") if "PLAYER_POINTS" not in p.name), until=now)),
         arm("nba_player_points_shadow", lambda: _nba_starts(repo, 2),
             lambda: last_ts_in_files(sorted(led.glob("NBA_NBA_PLAYER_POINTS_*.jsonl")), until=now)),
         arm("nba_player_points_minutes_shadow", lambda: _nba_starts(repo, 2),

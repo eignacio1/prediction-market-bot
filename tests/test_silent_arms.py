@@ -109,3 +109,18 @@ class TestDataPrereqs:
         self._write(tmp_path, 1)
         (tmp_path / "data/raw/nba/players_2026.json").write_text("{not json")
         assert data_prereqs(tmp_path)[0]["status"] == "unreadable"
+
+
+def test_w78_3_points_rows_do_not_mask_a_silent_nba_game_arm(tmp_path):
+    """GG-892: nba_shadow globbed NBA_*.jsonl, which also matches NBA_NBA_PLAYER_POINTS_*; live points rows hid a dead game arm."""
+    from datetime import datetime, timedelta, timezone
+    from prediction_market_bot.pregame_shadow import silent_arms as sa
+    led = tmp_path / "exp_output" / "PREGAME_SHADOW"
+    led.mkdir(parents=True)
+    ts = (datetime.now(timezone.utc) - timedelta(minutes=30)).isoformat()
+    (led / "NBA_NBA_PLAYER_POINTS_T1_MULTI_DAY.jsonl").write_text(json.dumps({"ts_utc": ts}) + "\n")
+    by = {i.spec.key: i for i in sa.load_inputs(tmp_path)}
+    assert by["nba_shadow"].last_row_ts is None
+    assert by["nba_player_points_shadow"].last_row_ts is not None
+    (led / "NBA_NBA_MONEYLINE_T1_MULTI_DAY.jsonl").write_text(json.dumps({"ts_utc": ts}) + "\n")
+    assert {i.spec.key: i for i in sa.load_inputs(tmp_path)}["nba_shadow"].last_row_ts is not None
