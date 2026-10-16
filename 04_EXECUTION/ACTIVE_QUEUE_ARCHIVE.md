@@ -10,6 +10,444 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 76 prompts — archived 2026-10-16 ~00:55 UTC. 76.1 no output on GitHub (claim only; tab still in ssh at 17:37 PT) → 77.1. 76.2 DONE (F8 applied, MATCHES 3/4, NO on total; pushed code to main without CI → main red, fixed by #268). 76.3 Part A (#265 writers atomic + lock) → Part B 77.3. 76.4 built (#266, not merged: main red) → 77.4. Verbatim:
+
+## ⬛ NOW — Wave 76 · written 2026-10-15 ~06:10 UTC, pushed and issued 2026-10-15 ~23:50 UTC (16:50 PT) · four MEDIUM/LARGE blocks · paste all four in parallel
+
+Wave 75 verified on GitHub (Sequencing track). **This wave:** finish the kill switch on the box and read why the fill fix
+barely fills (76.1), take a second NFL factor class through the chain, chosen so it can add something the ratings don't
+already hold (76.2), make every ledger writer crash- and race-safe (76.3), and put the runtime map on both dashboards with live
+alarms (76.4 — B74-A Session 2, the 4th terminal you asked for at 22:17 PT).
+
+**Pushback.** The strongest reason not to run this as planned is the DEPTH lane. Three factor tests in a row have come back
+with no gain: NFL venue/weather (W68.3), NBA availability (W71.3) and NFL coverage (W75.2). 75.2 found why. A defense's coverage
+habit is a stable trait, but how well offenses do against it is noise, and whatever is real already sits inside the team
+ratings and the market price. So 76.2 must pick a factor the season-long ratings cannot already contain, and it must say up
+front why. If that also comes back with no gain on game markets, the next DEPTH move should aim at thinner markets (team
+totals, props), not a fifth game-market factor. That is a strategic call, and I will bring it to you then. Second: 76.1's drill
+halts every demo order path for about a minute, so it runs only in an idle window.
+
+**Surface.** **0 running components added.** 76.4 reviews the existing 76 entries and adds staleness alarms inside the scan,
+not as new jobs. The window cannot ssh, so the live red signals are unknown until 76.4 computes the surface budget for the
+first time. Hygiene reds still open: GG-747/748 (ledger, 76.3), GG-749/750 (swallowed failures, queued), GG-752 (deploy has
+no rollback, queued).
+
+**Dependencies.** None between blocks. **76.1** owns the kill-switch read-back and drill, and
+`scripts/demo_fill_forward_report.py`. **76.2** writes only `12_EXPLORATORY/nfl_engine/` and tests. **76.3** owns the ledger
+writers (`atomic_io`, `CellLedger`, the four scripts in GG-748) and never edits the forward-test report. **76.4** alone edits
+the runtime registry/map, `governance_scan*.sh`, both dashboards and the Visual Dashboard builder. No block's merge or input
+waits on another's.
+
+| # | Block | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| 76.1 | Kill switch proven on the box; why the fill fix barely fills | EXECUTION: order paths halting on one switch, running (6/6 in code → 6/6 running); E1 per arm + projected date each arm reaches judged n | ⬜ | |
+| 76.2 | NFL engine: a second factor class the ratings can't already hold | DEPTH D5(b) NFL applied +1 (6 → 7 of 16 seat factors) | ✅ F8 unit availability APPLIED: MATCHES ML/spread/team total, NO on total (no BEATS); R² vs ratings 1.3% | results_stage3.md |
+| 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | PROOF integrity (GG-747/748/764): ledger writers bypassing atomic_io 4 → 0 | 🟨 Part A merged (PR #265, fda73e4); Part B next | Writers bypassing atomic_io 4 → 0; CellLedger.append flocked + 6-proc test; box on fda73e4 (t4-mlb skip_live_game, not restarted). NOT done: GG-764 read-side holes, GG-747 34-row gap (box now shows 4316 closed/0 open; recompute from a read-only copy) |
+| 76.4 | Runtime map live and visible (B74-A Session 2) | PLUMBING (ADR-0074): registry entries reviewed 0/76 → 76/76; no-alarm 21 → 0; SURFACE BUDGET on both dashboards | 🟨 Built, PR #266 (a30625f) NOT MERGED: CI red on main's own `tests/test_exploratory_isolation.py` (12_EXPLORATORY availability.py, part_a_avail.py — 76.2) | Part C + Part D code done, 4227 tests pass locally; merge, restart pmbot-web-dashboard and read-back wait on 76.2's fix. |
+
+### 76.1 — Kill switch proven on the box; why the fill fix barely fills
+
+```
+COMMON RULES - WAVE 76 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (0 this wave).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
+
+WAVE 76.1 - KILL SWITCH PROVEN ON THE BOX; WHY THE FILL FIX BARELY FILLS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION - (a) order paths that halt on the one switch IN THE RUNNING PROCESSES (6/6 in code after W75.4 -> 6/6
+running, proven by a drill); (b) E1 per book/sport/arm since the re-arm, and the projected date each forward-test arm reaches
+its judged n. Pillar: EXECUTION.
+PERMISSIONS: ssh, idle-window restarts (standing), touching and removing the kill-switch flag on the box (demo plumbing),
+scripts/demo_fill_forward_report.py + tests, read-only Kalshi DEMO GETs. Do NOT change ADR-0072's placement rule, an arm
+assignment or any pre-registered quantity - that goes to the operator. Do not edit ledger writers (76.3) or B74-A files (76.4).
+Read first: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_4_kill_switch.md, SESSION_HANDOFF_20261015_0600_W75_4.md, ADR-0072
+(and its addenda), W65_2_forward_test_on_results.md ("Read-back W73.1"), HYGIENE_AUDIT_20261015.md GG-754.
+
+WHY
+W75.4 put one halt check inside submit_order (1/6 -> 6/6 order paths in code, PR #264) but stopped before Part B: the running
+processes and the live drill are unproven, so GG-745 is still OPEN. The handoff waited for an operator "go" - a demo drill is
+plumbing, not his. Separately, W73.1's read-back: anchored (treatment) orders fill 1 of 48 NHL orders (2%) against control's 29
+of 54 (54%); MLB 2/20 vs 5/29; NFL 3/28 vs 11/28. ADR-0072 needs ~550 fills per arm. If the treatment arm cannot get there, the
+test cannot answer its own question.
+
+PART A - Kill switch on the running processes (~40 min)
+  1. Read the Deploy job summaries for ce32e14 onward and every order-placing process's running-code SHA (72.3's check). If
+     t4-mlb skipped its restart (game live), restart it at the next idle window (standing authorization) and read back.
+  2. Drill on DEMO, in an idle window: touch the global flag; confirm every running order path logs a halt and places nothing
+     within 60 s; confirm a band flag halts only its band; remove the flags; confirm they resume. Paste the log lines with
+     timings. Record C7 kill_switch_drill_result. Resolve GG-745 only on a pass.
+PART B - The fill fix's numbers, and whether it can finish (~45 min)
+  3. GG-754 first (it can re-trip the turn-off): epoch-gate no_outcome, atomic writes at :306 and :369. Tests.
+  4. Re-run the report on everything settled since the 10-13 re-arm: per book / sport / arm - orders, fills, fill rate,
+     settled fills, win rate on fills, settle-minus-price, E3 fills vs non-fills. Write the E rows of the DISTANCE table
+     (source + time).
+  5. Projection: at each arm's observed fill rate and the remaining schedule (NHL, NFL, NBA from 10-20; MLB ends with the World
+     Series), the date each arm reaches its judged n - or "not this season". If the treatment arm cannot reach it, write the
+     options (e.g. a different anchor offset, a longer resting window, a pooled-sport judged n) with what each costs the test's
+     validity, and put ONE line to the operator with your recommendation. Do not change the rule yourself.
+Results: W65_2_forward_test_on_results.md, "Read-back W76.1"; W75_4_kill_switch.md, "Drill".
+
+END OF BLOCK 76.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 76.2 — NFL engine: a second factor class the ratings can't already hold
+
+```
+COMMON RULES - WAVE 76 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (0 this wave).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
+
+WAVE 76.2 - NFL ENGINE: A SECOND FACTOR CLASS THE RATINGS CAN'T ALREADY HOLD (ADR-0075). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D5(b) - a second NFL factor class taken to APPLIED (seat file NFL: 6 -> 7 applied of 16; the window records it).
+Pillar: DEPTH.
+PERMISSIONS: 12_EXPLORATORY/nfl_engine/ + tests/. No registry, runner, ledger, cron or live-model change.
+Read first: 12_EXPLORATORY/nfl_engine/results_stage2.md (the template and why it came out inert), factors.py (FactorSpec,
+play table) and rate_layer.py (Factor protocol), PLAN.md, 02_ARCHITECTURE_DESIGN/SEATS/NFL_SEAT.md, TENSIONS/nfl.toml,
+FACTOR_TAXONOMY.md, ADR-0075.
+
+WHY
+Operator, 2026-10-14: "data aggregation > data interpretation > data application ... data application is the basic question:
+cool info, so what? it's a never ending race". W75.2 ran the chain on coverage x personnel x motion and found the reason it
+priced to no gain: how often a defense shows a shell is a stable trait, but how offenses do against it is noise, and the real
+part already lives in season-long team EPA - which the engine's rating layer already uses. Three game-market factor tests in a
+row have now returned no gain (W68.3, W71.3, W75.2). A factor can only add to the price if it carries information the
+season-to-date ratings cannot contain.
+
+PART A - Choose for orthogonality, then aggregate + interpret (~40 min)
+  1. Choose ONE class and argue it in five lines, on one test: what does it know about THIS game that season-to-date team EPA
+     cannot? Candidates: week-to-week personnel availability beyond the QB (OL / edge / CB starters out, from the point-in-time
+     injury reports 66.3 captures and snap shares - a change the rolling ratings lag), or pressure vs protection measured as
+     this week's matchup of one unit against the other. Measure the orthogonality before fitting: correlation of the factor
+     with the rating layer's inputs on past seasons. If it is mostly the same information, pick the other candidate.
+  2. Build it as a new FactorSpec / Factor on the existing builder (no second builder). Point-in-time, shrunk, opponent-adjusted.
+  3. Interpretation: trait or noise, and what it means for the price - plain words, numbers.
+PART B - Application (~45 min)
+  4. Plan addendum FROZEN before any fit (PLAN.md): the term, rolling-origin seasons, metric = ΔBrier per family vs engine v0
+     AND vs v0 + F5/F6, with CIs; report team totals separately (the family where a unit-level factor should bite first).
+  5. Fit once; price every family from the same simulation; market comparison where archived mids exist (reported, never
+     judged). A NO is a result. State the stage reached and the result.
+Results: 12_EXPLORATORY/nfl_engine/results_stage3.md. Do not edit the seat files; the window records the stage at wave close.
+
+END OF BLOCK 76.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 76.3 — Every ledger writer atomic and locked; the 34-row gap reconciled
+
+```
+COMMON RULES - WAVE 76 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (0 this wave).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
+
+WAVE 76.3 - EVERY LEDGER WRITER ATOMIC AND LOCKED; THE 34-ROW GAP RECONCILED (GG-748, GG-747, GG-764). Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF integrity - every verdict reads these ledgers. Measures: writers of live ledgers that bypass atomic_io (4 -> 0);
+CellLedger.append safe across processes (no -> yes, tested with concurrent writers); T4 closed vs resolved gap (34 -> 0 or each
+row explained). Pillar: PROOF.
+PERMISSIONS: src/prediction_market_bot/ledger (atomic_io) and pregame_shadow CellLedger, the four scripts named in GG-748,
+the read-side validators named in GG-764, tests/. A correction to a live ledger is a new labelled row with its reason - never a
+hand edit of an existing row. Do not edit scripts/demo_fill_forward_report.py (76.1), the kill-switch code, or B74-A files (76.4).
+Read first: HYGIENE_AUDIT_20261015.md (GG-747, GG-748, GG-764 and the L2 lane), the W72.2 crash-safety work (GG-663/680).
+
+WHY
+B74-A Session 1 (10-15): four scripts rewrite the live T4 ledger non-atomically (correct_t4_game_dates.py:133,
+gg271_bound_t4_rejected_positions.py:149, replay_harness_t427.py:210, tag_locked_pairs_t4_mlb.py:116); CellLedger.append has
+no cross-process lock, and more runners now append to shared ledgers each wave; the T4 portfolio shows 4,309 closed vs 4,275
+resolved (34 unexplained). A verdict read from a ledger that two writers can corrupt is not a verdict.
+
+PART A - Writers (~45 min)
+  1. Route the four scripts through atomic_io (or retire any that is one-off history - say which, with evidence it no longer
+     runs). Pattern sweep (Hard Rule 13): grep src/ scripts/ for every other open(...,"w")/write_text on a path under logs/ or
+     a ledger, and fix or register each.
+  2. CellLedger.append: a cross-process lock (flock) and a test that runs concurrent writers and checks no row is lost or torn.
+     Note: runners importing CellLedger pick this up on their next cron run; read back one run on the box.
+PART B - Read side and the gap (~40 min)
+  3. GG-764: the read-side holes (assert_ledger_invariants.py:145, validators.py:379, run_t4_mlb_live.py:1175) - a torn or
+     partial row is reported, never silently skipped. Tests.
+  4. GG-747: reconcile the 34 rows on read-only copies from the box - each explained (which path closed it without resolving)
+     and, where a row is wrong, a labelled correction row through the normal path. Say whether any judged count changes.
+Results: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W76_3_ledger_integrity.md.
+
+END OF BLOCK 76.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 76.4 — The runtime map goes live and visible (B74-A Session 2)
+
+```
+COMMON RULES - WAVE 76 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 22:17 PT - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
+- Four blocks run in parallel. File ownership: 76.1 = kill-switch read-back/drill + scripts/demo_fill_forward_report.py;
+  76.2 = 12_EXPLORATORY/nfl_engine/; 76.3 = ledger writers (atomic_io, CellLedger, GG-748 scripts, GG-764 read side);
+  76.4 = RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py, .claude/hooks/governance_scan*.sh, both
+  dashboards and the Visual Dashboard builder. Edit only your own block's files.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (0 this wave).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W76_<n>.md (docs-only push).
+
+B76.4 OVERRIDE of the common rules (this block only): SIZE LARGE by operator request - target 90 minutes, ceiling 120, two
+parts. This is B74-A SESSION 2. Session 1 (the audit) is DONE and on main (7950e43, HYGIENE_AUDIT_20261015.md) - do not
+redo it. ssh is read-only except: restarting pmbot-web-dashboard (standing authorization) and deploying through the normal
+merge path. Never run /_archive:vps_DO_NOT_RUN or deploy by hand.
+
+WAVE 76.4 - THE RUNTIME MAP GOES LIVE AND VISIBLE (B74-A Session 2; ADR-0074; GG-742, GG-743, GG-753). Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (ADR-0074) - the operator SEES what runs, whether it is alive and who owns it. Measures: registry entries
+reviewed against the box 0/76 -> 76/76; live components with no alarm 21 -> 0 (or a written reason each); SURFACE BUDGET
+GREEN/RED computed live and shown on both dashboards. Pillar: PLUMBING.
+PERMISSIONS: 02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml / RUNTIME_MAP.md, scripts/runtime_registry.py,
+.claude/hooks/governance_scan*.sh, the web dashboard (/ and /project), scripts/build_visual_dashboard_html.py and
+04_EXECUTION/visual_dashboard/, tests/. Do not touch the kill-switch code or the forward-test report (76.1), ledger writers
+(76.3) or 12_EXPLORATORY (76.2).
+Read first: ADR-0074, CLAUDE.md Hard Rules 13-15, HYGIENE_AUDIT_20261015.md (GG-742, GG-743, GG-753 and the L4/L6 lanes),
+02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md, 04_EXECUTION/WINDOW_ERROR_LOG.md.
+
+WHY
+Operator, 2026-10-14: "I want this wired into the visual dashboard AND live terminal. I don't just want this in the background
+- I want to see it." The registry exists (ADR-0074) but reads only the repo, never the box (GG-753): a live cron line
+(45 22 * * * run_mlb_pregame.py) is unregistered, one registered entry is not installed, the script crashes on python3.9, 75/75
+entries are unreviewed and 21 have no alarm (GG-743). Wave 75 changed running code (one kill switch, the NFL book's recurring
+sweep) - review against the box as it is now.
+
+PART C - The runtime map goes live (~50 min)
+  7. Review every registry entry against the box (crontab -l, systemd, workflows): accurate purpose, pillar, writes, alarm;
+     reviewed = true. Installed but unmirrored -> GG. Mirrored but not installed -> paused/retired with reason. Close GG-742.
+  8. GG-743: give each no-alarm component an alarm or a written reason it needs none; build the cheap ones as staleness checks
+     on its `writes` paths.
+  9. governance_scan_full.sh prints a RUNTIME block: registry check, surface counts, live columns (last-write age per
+     component, running-code SHA vs box HEAD per service), and SURFACE BUDGET: GREEN or RED with reasons (healthcheck faults,
+     silent arm whose sport had games, running SHA > 6h behind HEAD, registry check failing). One cached ssh round trip.
+PART D - Visible on both dashboards (~40 min)
+ 10. Web dashboard /project: a "Process integrity" panel - surface (live / no alarm / unreviewed), SURFACE BUDGET GREEN/RED
+     with reasons, the runtime map with live columns (stale rows red), window-error tally. Same data the scan computes.
+ 11. Live Terminal (/): a compact strip - SURFACE BUDGET chip, count of components stale or with no alarm, and any red
+     component by name (like the SILENT ARM rows). Phone width checked (390px, no horizontal scroll).
+ 12. The operator's standalone Visual Dashboard already has the static section (scripts/build_visual_dashboard_html.py,
+     04_EXECUTION/visual_dashboard/): add the live columns there too if the scan writes them to a file the builder can read.
+ Tests; PR; merge; deploy; restart pmbot-web-dashboard (standing authorization); read both pages back over ssh/curl and paste
+ what they show. Handoff with pattern_sweep and surface_delta.
+END OF BLOCK 76.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 75 prompts (incl. the 75.2 add-in) — archived 2026-10-15 ~06:10 UTC. 75.1 DONE (#259 PAM core, NBA v4 port, NFL WR mass tier). 75.2 DONE (#263 F5/F6 applied, no gain). 75.3 DONE (#260/#261 seats, tensions, D4/D5 generator). 75.4 PART A (#264 one switch in code 6/6; drill pending → 76.1). 75.5 DONE (#262 NFL book 4 → 0 open). Verbatim:
 
 ## ⬛ NOW — Wave 75 · issued 2026-10-15 ~05:00 UTC (10-14 ~22:00 PT) · FIVE MEDIUM blocks (operator 22:06 PT: "I'm fine running 5 terms at one time right now") · paste all five in parallel

@@ -682,7 +682,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-133 — CHANGELOG.md has not been updated since 2026-05-30 despite ~2 months of major changes, violating its own staleness trigger
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** 00_ADMIN/CHANGELOG.md latest entry now 2026-08-23 (was 2026-05-30), but ~6 weeks stale again. **Next:** Add entries for Waves since 2026-08-23.
 
@@ -710,7 +710,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-134 — `mc_empirical_bootstrap.py`'s forward-risk projection has four unmodeled scope gaps not disclosed as limitations at commit time
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** Four MC scope gaps not re-checked. **Next:** Add limitations section to the MC report.
 
@@ -765,7 +765,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-137 — A1's holdout-Brier-optimal K=400 shrinkage candidate gives only ~7% weight to actual player data; may trade calibration for discrimination
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** Depends on GG-105 outcome; not re-checked. **Next:** Revisit after GG-105 retest.
 
@@ -793,7 +793,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-140 — GG-105 remediation exhausted the entire class of monotonic-transform recalibration candidates without a structural check ruling that class out first (temperature scaling, LR+Platt refit, isotonic — all tested serially, all failed the same way)
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** Depends on GG-105 outcome; not re-checked. **Next:** Revisit after GG-105 retest.
 
@@ -821,7 +821,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-150 — Cross-book (T1 vs T4) opposite-direction conflicts are alarmed, not blocked; a blocking control is an unstaffed gap
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** Alarm-only by design; no blocking control built. **Next:** Operator decision on a blocking control.
 
@@ -849,7 +849,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-151 — `merge=union` does not guarantee dedup: identical content reaching both merge sides via different commit paths can be duplicated, not deduplicated
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
 
 **Current state (2026-10-08, W59.1):** merge=union still applies to SESSION_CLAIMS.md (.gitattributes); dedup guarantee not added. **Next:** Add a post-merge duplicate-row check.
 
@@ -932,7 +932,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-156 — No forward price archive existed for any MLB market family before 2026-08-01; Phase 2's market-comparison gate had no input source and the same absence limits GG-142 counterfactual analysis
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
 
 **Current state (2026-10-08, W59.1):** Triage lead cited only 'verified in prior pass' with no checkable evidence; not closed on say-so. **Next:** Confirm exp_output/PRICE_ARCHIVE has continuous forward files per MLB family, then close.
 
@@ -959,7 +959,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-157 — `paper_trader.py` has zero orderbook/depth/fill validation; every paper fill (including the live epoch-12 flat-$1 cohort) is assumed at mid, and GG-155/T-411 shows that assumption sits against a quantity that swings 10-100x intraday
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** HIGH
 
 **Current state (2026-10-08, W59.1):** paper_trader.py still has no depth/fill validation (1 incidental keyword hit, no orderbook check). **Next:** Add depth-aware fill check or document mid-fill as an assumption in results.
 
@@ -989,7 +989,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-158 — Price archive had zero off-VPS copies for 3+ sessions despite repeated "verified"/"deployed" reports; same failure class as GG-144's unanchored grep
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** Triage lead cited only 'verified in prior pass'; off-VPS copy not independently confirmed this session. **Next:** Verify an off-VPS archive copy job exists and is recent, then close.
 
@@ -1016,7 +1016,7 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-160 — Four `file:line` citations across three Phase 0/1 docs had drifted from source with nothing catching it; no mechanism exists that resolves a doc's code citations against current source
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** No file:line citation checker exists (scripts has none). **Next:** Build a citation resolver or accept as doc risk.
 

@@ -7,3 +7,4 @@ The list of everything running on the server is now fully checked (76 of 76) and
 
 ## W76.1 — emergency stop proven; fill test is starved of cash
 We pulled the emergency stop on the live demo bots and every one of them stopped within 30 seconds, and restarted within 10 seconds of releasing it. No real money was involved. The fill-rate experiment is mostly limited by the demo account running out of cash, not by the rule being tested, and its slower arm will not reach the planned sample size this season. One decision for you: whether to exclude a day when the exchange itself was down from the rule's automatic shut-off check. Pillar moved: EXECUTION.
+- GG-860..GG-879 (standing gap agent) (auto): Gap agent ticks 1-3: 1 gap resolved, 23 retired to archive, 20 severities filled, 39 gaps bucketed; loop stopped manually.

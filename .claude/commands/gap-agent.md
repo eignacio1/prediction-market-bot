@@ -63,7 +63,7 @@ Read `CLAUDE.md` Step 3 and Hard Rules 11, 13, 14, `04_EXECUTION/WINDOW_ERROR_LO
 6. **Retire.** `scripts/retire_resolved_gaps.py` (report, then `--apply` with explicit `--out-src` / `--out-archive` to the real
    files) — RESOLVED and CLOSED-AS-ARTIFACT entries move verbatim to the archive. Re-run parity + uniqueness.
 7. **Report.** Ledger tick row (OPEN before → after, by class, PRs); update the cursor; update the GB row in `ACTIVE_QUEUE.md`
-   (`OPEN x → y`, last tick time). Commit path-scoped, fetch + rebase, push. Small commits — the gap log is shared with the wave.
+   (`OPEN x → y`, last tick time) — the row is in the **STANDING — GA** table: edit the latest `GA-n` row, or add `GA-n+1` for a new session. Commit path-scoped, fetch + rebase, push. Small commits — the gap log is shared with the wave.
 8. **Pace (next tick).** Schedule the next tick with ScheduleWakeup, passing the same `/loop` prompt back:
    - burnable work left (untriaged gaps, A/B candidates, C fixes) → **300–600 s**;
    - only intake to watch (everything triaged; waiting on new commits) → **1800 s**;
