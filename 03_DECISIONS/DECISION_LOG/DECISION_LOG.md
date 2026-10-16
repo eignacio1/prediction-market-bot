@@ -2430,3 +2430,10 @@ Operator, verbatim: "Let's do it - send the terminal block now, I'll have it fin
 - Muse's report (via the operator): remote git@github.com:eignacio1/sports-intel-archive.git; 29 commits pushed; latest a6dc64ca (2026-10-16 05:52:30Z); SSH routed through Muse's proxy; its claims worker now pushes after every commit.
 - Window verified independently (read-only, attached to this session): 30 commits at 05:59Z (one more landed after the report, so auto-push works), a6dc64ca in history, history starts 2026-10-15 22:16 PT; README carries the mirror location and the no-rewrite rule; no private key anywhere in the tree; 97 claim JSONL files, 1,891 records, all parse, none missing source fields.
 - The operator is no longer the connector: Muse pushes, the window and terminals read. Adapter still waits for the 96-file backfill.
+
+## 2026-10-15 22:56 PT — Muse ↔ Claude partnership charter (automation both ends; operator as strategic reviewer)
+
+Operator, verbatim: "Send me another copy + paste to drop into Muse serving as a directive on how this partnership will work - essentially automation on both ends with me being the strategic reviewer for everything"
+
+- 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md (v1): roles (Muse builds the archive; Claude reads, tests and watches; Earl reviews strategy); two channels with no human relay (Muse → archive STATUS.md; Claude → TO_MUSE.md in the public bot repo, read by Muse over HTTPS); the application → aggregation feedback loop (REAL-NOT-PRICED / REAL-AND-PRICED / INVISIBLE / NOT REAL verdicts per claim class); the per-wave watchdog checks; what goes to Earl; standing rules.
+- TO_MUSE.md opened with R-001 (start STATUS.md), R-002 (make availability claims joinable: exact player name, team, game/week, publish time; grounded in W76.2/W77.2) and R-003 (watchdog baseline: 30 commits, 1,891 claims, clean).
