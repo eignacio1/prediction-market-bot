@@ -2,6 +2,12 @@
 
 ## Last Reviewed Chain Archive
 
+
+<!-- archived from TODO_NEXT.md, 2 entries -->
+**Last reviewed:** 2026-10-16T00:40:00Z (W76.1 — One kill switch drilled on the running processes (PASS, GG-745 resolved); forward-test read-back shows the treatment arm cannot reach judged n and the demo account is cash-starved) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T002805Z_W76_1.md` for full session detail.
+**Last reviewed:** 2026-10-16T00:45:00Z (GG-860..GG-879 (standing gap agent) — Gap agent ticks 1-3: 1 gap resolved, 23 retired to archive, 20 severities filled, 39 gaps bucketed; loop stopped manually.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T0045Z_GA.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
+
 <!-- archived from TODO_NEXT.md, 1 entry (manually preserved, T-551/T-549 concurrent-merge conflict -- generator wrote only one authoritative line per file and this session's merge against origin/main would have silently dropped the other side's line, see DECISION_LOG.md 2026-09-16 T-551) -->
 **Last reviewed:** 2026-09-16T04:49:03Z (T-549 — T-549/GG-280: landed Wave 25 branches, 7d/2-sport capture audit (no 3rd gap), closed GG-276, generalized detector) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20260916_0449.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
