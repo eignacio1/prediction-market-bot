@@ -20,7 +20,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 52–60, 2026-10-03 → 10-08)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: Wave 79 closed and pseudo-wave 80P issued, 2026-10-16 ~07:55 PT (operator at his weekly limit; no terminals). Waves are set one at a time by the last one's results.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: pseudo-wave 80P closed and 80R issued, 2026-10-16 ~08:35 PT (operator at his weekly limit; no terminals). Waves are set one at a time by the last one's results.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -230,7 +230,150 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Pseudo-wave 80P · issued 2026-10-16 ~14:50 UTC (07:50 PT) · four tasks in ONE Claude Code cloud session · weekend, until the reset
+## ⬛ NOW — Pseudo-wave 80R · issued 2026-10-16 ~15:35 UTC (08:35 PT) · three tasks in ONE Claude Code cloud session
+
+80P closed and verified on GitHub (Sequencing track): Task 1 🟡 (#281: the false red fixed at the rule; capture built, not installed),
+Task 4 ✅ (#282, MLB look-back: 0 of 16 cells at a look by design, P3 = 2027), Tasks 2-3 ⛔ (the cloud session reaches neither the box nor
+Kalshi). 80R opens the way round that the repo already has: GitHub Actions reach both (deploy.yml sshes to the box; two data
+workflows fetch the open internet). **Pushback:** a workflow that runs jobs on the box from a commit is powerful; it is safe only
+as a fixed allowlist of named jobs with no free-form shell, and the window will read its first results before anything else
+rides on it. Also, the operator can make Task 1 smaller: allowing `api.elections.kalshi.com` in the cloud environment's network
+settings would let Tasks 2-3 run in-session (his call; the bridge is still needed for the box). **Surface:** +2 at most (the
+bridge workflow; the capture, only if the budget reads GREEN). **Dependencies:** sequential inside one session by design.
+
+| Task | What | PURPOSE (measure) | Status | One line |
+|---|---|---|---|---|
+| W80R.1 | The box bridge (allowlisted jobs via Actions) + budget read + capture install + NBA pre-flight | PLUMBING: box readable from cloud no → yes; budget read; capture no → yes (if GREEN) | ⬜ | |
+| W80R.2 | Thin-market ranking + first thin-market prereg (80P.2) | BREADTH/DEPTH: gradient 0 → 1; prereg 0 → 1 | ⬜ | |
+| W80R.3 | NBA pace/efficiency vs Kalshi NBA totals (80P.3) | DEPTH D5(b) NBA applied 0 → 1 (or a verdict) | ⬜ | |
+
+```
+COMMON RULES - PSEUDO-WAVE 80R (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- SESSION LIMITS: the operator is at his weekly limit until the reset; this session runs on cloud credit. Push at every part boundary; a block that has pushed
+  Part A and written its handoff is a good outcome, not a failure.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-16 08:30 PT (incl. the granularity index and "retail flow first") (incl. the 10-16 thinner-markets call, the branch-cleanup plan,
+  the ADR-0072 5xx addendum, the PAM deep-tier scope, the standing gap agent, the qualitative-archive intake contract and "the bot
+  repo stays public") - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - registry entry first for the box_tasks workflow and the capture.
+- One session, three tasks, in order. Only Task 1 adds running components: the box_tasks workflow, and the capture only if GREEN.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only. (W76.2 pushed exploratory code straight to main and turned main red for every other block for ~1.5 h.)
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand. No terminal work for now
+  (operator 10-16 07:46 PT): a box step you cannot reach is recorded PENDING for the window.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (+2 at most, Task 1).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W80R_<n>.md (docs-only push).
+
+PSEUDO-WAVE 80R - THE BOX BRIDGE, THEN THE TWO BLOCKED MEASUREMENTS (one Claude Code cloud session, three tasks in order). Repo: eignacio1/prediction-market-bot.
+80P result (verified by the window on GitHub, 10-16): Task 1 PARTIAL (#281 merged: the budget counts a service "behind" only when a
+file it imports changed; the depth capture is built and tested but NOT installed), Task 4 DONE (#282, MLB look-back), Tasks 2 and 3
+BLOCKED because "this cloud session can't reach your server or Kalshi ... no ssh here, and Kalshi is refused by this
+environment's network settings." The way round it is already in the repo: GitHub Actions runners reach both. deploy.yml sshes to
+the box with the VPS_SSH_KEY secret; nfl_event_store.yml and nhl_goalie_probe.yml fetch the open internet. This session can push;
+Actions can do the rest.
+Each task: its own PR (or docs-only push), its own handoff SESSION_HANDOFF_<UTC>_W80R_<n>.md, its own row in the 80R section of
+04_EXECUTION/ACTIVE_QUEUE.md. Push one task before starting the next; stop at ~60% context with everything pushed.
+FIRST: test reachability again (ssh, api.elections.kalshi.com, GitHub REST reads of Actions runs/logs). If Kalshi is now reachable
+directly, do Tasks 2 and 3 in this session and use the bridge only for box work. Record what you found.
+
+TASK 1 - The box bridge: a narrow, allowlisted way for a cloud session to run named jobs on the box and read the result (PLUMBING -> unblocks)
+PURPOSE: PLUMBING (ADR-0074). Measures: cloud sessions can read the box (no -> yes); SURFACE BUDGET read after #281 (unread -> read);
+thin-market order-book capture installed and its first capture read back (no -> yes, only if GREEN).
+  1. A workflow (.github/workflows/box_tasks.yml) triggered by a push to main that adds a request file under
+     04_EXECUTION/BOX_TASKS/requests/<UTC>_<name>.toml, plus workflow_dispatch. It runs ONLY a task named in a fixed allowlist in
+     the repo (scripts/box_tasks.py: a dict of name -> exact command; no arguments from the request file beyond the task name and
+     a short note), over ssh with the existing VPS_SSH_KEY, then commits the output to 04_EXECUTION/BOX_TASKS/results/<same
+     name>.md (bounded size, secrets redacted) and writes it to the job summary. Allowlist v1: budget_read (scripts/runtime_registry.py
+     live / the healthcheck), silent_arms_read, deploy_truth_read, capture_install (the 80P Task 1 install, which itself refuses
+     unless the budget reads GREEN), capture_readback, nba_opening_preflight (the read-only part of
+     NBA_OPENING_NIGHT_RUNBOOK.md), thin_market_analysis and nba_totals_applied (Tasks 2 and 3 below, run on the box where the
+     raw stores live). No free-form shell, ever. Tests for the allowlist and the redaction. RUNTIME_REGISTRY entry first (purpose,
+     pillar PLUMBING, writes, alarm). PR, CI green, merge.
+     Hard Rule 14: the first request is budget_read. If the budget is RED for a real reason, only the *_read tasks may run until
+     it is fixed; say which item is red.
+  2. Run budget_read, then (if GREEN) capture_install and capture_readback. Paste the results.
+  3. Run nba_opening_preflight (read-only; NBA opens 2026-10-20). Paste it; any cell not flip-ready, name it.
+
+TASK 2 - The thin-market ranking and the first thin-market pre-registration (80P Task 2, unchanged in substance)
+PURPOSE: BREADTH + DEPTH: efficiency + fillability table per family (0 -> 1); frozen thin-market pre-registration (0 -> 1).
+  Operator 10-16 via 77.2b: "no new NFL game-market factor without a 'thinner edge expected' pre-registration; move toward
+  thinner markets"; and 08:18 PT today: "beating buddy off his phone placing parlays, that's the first step." Run through the
+  bridge on the box (the raw store is exp_output/KALSHI_HISTORY/thin/, sha256 in 12_EXPLORATORY/thin_markets/MANIFEST.md) or
+  directly if Kalshi is reachable. The analysis code lands by PR with tests; the box only runs it.
+  4. Per family, game ML vs each thinner family, with CIs: median bid-ask spread; volume and open interest per hour before close;
+     the share of hours where the flat demo stake is under X% of that hour's volume (state X); how far and how fast price moves
+     after the Friday injury report and the inactives (1-minute candles, last 48 h). Rank. 2025-and-earlier only.
+  5. F8 (non-QB starters out) pricing share per family where computable (77.2's method, against each family's own pre-game price).
+  6. FREEZE 12_EXPLORATORY/THIN_MARKET_PREREGISTRATION_<date>.md (family and cells, factor, expected edge stated before looking,
+     judged n, fillability floor, what the capture must record). One line to the operator for acceptance; nothing logs against it
+     until he accepts.
+
+TASK 3 - NBA's first factor to "applied": pace/efficiency against the Kalshi NBA totals price (80P Task 3; NBA opens 10-20)
+PURPOSE: DEPTH D5(b) NBA applied 0 -> 1, or a rigorous verdict (a NO is a result).
+  7. Join the point-in-time pace/efficiency total (NBA store, as of tip-off) to KXNBATOTAL 2025-26 pre-game prices (the W79.2 NBA
+     sample on the box). Pricing share (77.2's method) and residual edge after the price, with CIs. Verdict: REAL-NOT-PRICED /
+     REAL-AND-PRICED / INVISIBLE / NOT REAL. Results: 02_ARCHITECTURE_DESIGN/NBA_ENGINE/APPLIED_FIRST_FACTOR.md.
+  8. If REAL-NOT-PRICED: draft (do not freeze) an NBA totals shadow-cell pre-registration for the operator's one-line acceptance;
+     nothing logs against it. Update SEATS/nba.toml (your row) and the D5 line.
+  Build every factor with the intent in 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md (operator 10-16): the split, the rank against
+  history, the matchup cross, the market map, the application.
+
+Report back per task: Status | PR + CI | one-line result | MEASURE MOVED (before -> after, source) | stage per factor | operator
+decisions (one line each, with your recommendation).
+
+END OF PSEUDO-WAVE 80R. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+## ✅ CLOSED — Pseudo-wave 80P · issued 2026-10-16 ~14:50 UTC (07:50 PT) · four tasks in ONE Claude Code cloud session · weekend, until the reset
 
 Wave 79 closed and verified on GitHub (Sequencing track): 79.1 ✅ (#279; budget still RED on a rule defect → 80P Task 1), 79.2 ✂️
 PARTIAL (#277; ranking + prereg → 80P Task 2), 79.3 ✅ (#278 + #280), 79.4 ✅ (branches 167 → 34, #149 kept open). The operator is at
@@ -732,14 +875,22 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⏳ PSEUDO-WAVE 80P — ISSUED 2026-10-16 ~14:50 UTC · one Claude Code cloud session, four tasks in order
+### ⏳ PSEUDO-WAVE 80R — ISSUED 2026-10-16 ~15:35 UTC · one cloud session, three tasks in order
 
 | # | Task | Status | Outcome |
 |---|---|---|---|
-| W80P.1 | Surface-budget false red fixed; depth capture running | ⬜ | |
-| W80P.2 | Thin-market ranking + first thin-market prereg | ⬜ | |
-| W80P.3 | NBA pace/efficiency vs Kalshi NBA totals (first factor applied) | ⬜ | |
-| W80P.4 | MLB 2026 season look-back | ⬜ | |
+| W80R.1 | The box bridge + budget read + capture install + NBA pre-flight | ⬜ | |
+| W80R.2 | Thin-market ranking + first thin-market prereg | ⬜ | |
+| W80R.3 | NBA pace/efficiency vs Kalshi NBA totals | ⬜ | |
+
+### ✅ PSEUDO-WAVE 80P — ISSUED 2026-10-16 ~14:50 UTC · CLOSED ~15:25 UTC · one Claude Code cloud session · verified on GitHub
+
+| # | Task | Status | Outcome |
+|---|---|---|---|
+| W80P.1 | Surface-budget false red fixed; depth capture running | 🟡 | #281: budget counts "behind" only on an imported file; capture built + tested, not installed (no box access) → 80R.1 |
+| W80P.2 | Thin-market ranking + first thin-market prereg | ⛔ | Cloud session reaches neither the box nor Kalshi; nothing measured → 80R.2 |
+| W80P.3 | NBA pace/efficiency vs Kalshi NBA totals | ⛔ | Same cause; factor stays interpreted → 80R.3 |
+| W80P.4 | MLB 2026 season look-back | ✅ | #282: P1 0/16 at a look (the game cells' prereg bars scoring 2026 games), P2 0, P3 = 2027 at 150 games/cell; final read after the World Series |
 
 ### ✅ WAVE 79 — ISSUED 2026-10-16 ~13:50 UTC · CLOSED ~14:45 UTC (verified on GitHub) · four blocks + the gap agent · finishes 78.2/78.4, clears the red, branch cleanup
 
