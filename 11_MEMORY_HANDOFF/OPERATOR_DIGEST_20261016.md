@@ -20,3 +20,4 @@ A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry
 - W78.2 (auto): W78.2 PARTIAL: thin-market inventory done (275 series, 310,858 markets); candles for 8 NFL families sampled; Part B not started.
 
 - W78.1 (plumbing): the map of everything that runs is now live on the dashboards (73 components, none stale). Its overall budget light is RED because the NFL QB shadow arm has logged nothing for ~18h; that is not from this block. The gap agent's progress (open gaps 185, down 1 since its first tick) now shows on the scan, /project and the Visual Dashboard. Zero money at risk.
+- W79.4 (auto): W79.4 branch cleanup: remote branches 167->34, auto-delete on, 36 archive tags, PRs #133/#144/#146 closed, #149 kept
