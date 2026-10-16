@@ -952,3 +952,4 @@
 | 2026-10-16T14:01:38Z | W79.4 | CLOSED — merge confirmed, HEAD (8d446a1) is ancestor of origin/main — branch cleanup: remote 167->34, auto-delete on, #149 kept open |
 | 2026-10-16T14:15:14Z | W79.1 | CLOSED — W79.1: NFL QB silent-arm false alarm fixed (T1-only rule, PR #279), exact-cell ledger globs in every sport, dashboard rebuilt; SURFACE BUDGET still RED on t4-mlb behind HEAD (commit `7485bb9`) |
 | 2026-10-16T14:15:30Z | W79.1 | CLOSED — merge confirmed, HEAD (f8100c2) is ancestor of origin/main — NFL QB silent arm fixed (#279), glob sweep, dashboard rebuilt; budget RED on t4-mlb |
+| 2026-10-16T14:26:08Z | W79.3 | MERGED: NO — branch `session/20261016T134906Z-w79-3-nba-engine` awaiting merge — W79.3 NBA engine: store landed (#278,#280), taxonomy 13 classes, GG-910..914, pace/efficiency and rest interpreted (commit `c811baf`) |

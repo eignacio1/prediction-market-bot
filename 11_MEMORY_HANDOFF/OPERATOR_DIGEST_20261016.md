@@ -27,3 +27,5 @@ A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry
 - Every sport's monitor now checks only its own files, so one working model can't hide a broken one.
 - The overall health light is still red for one reason: the live MLB service is running slightly older (unchanged-in-substance) code. Your call: restart it, or relax that rule.
 - Plain-English pillar: plumbing plus breadth (one fewer false red). No money at risk.
+
+**W79.3 — NBA engine (DEPTH).** The NBA data store is now on main and copied to the server, with checks that it arrived intact. Two team factors were studied: pace and scoring efficiency are real, stable team traits that help predict game totals; rest is not a team trait but back-to-backs cost a team about 2.3 points. Neither has been tested against betting prices yet, so there is no edge claim. Five data gaps are logged; nothing was bought and no money or live settings changed.
