@@ -2424,3 +2424,9 @@ Operator, verbatim: "Let's do it - send the terminal block now, I'll have it fin
 - Terminal report (pasted by the operator): eignacio1/sports-intel-archive created PRIVATE and empty; deploy key "Muse archive push (write, this repo only)", id 166624777, ed25519, fingerprint SHA256:ay0DYX07S91eP5Bep2dRPKBdRb6CmIG/QJpltAdEBoo, read-write on that repo only; private key at ~/.config/sports-intel-archive/ (600/700). The terminal's first attempt to print the key was refused by a permission control; the operator told it to retry and the same command ran; no other route used.
 - The private key reached the window's chat in the pasted report. It is never written to the repo, memory or any log; it is revocable with the deploy-key id above. Window recommended keeping it (scope: write to one private archive repo) and rotating if the operator prefers.
 - Next: the Muse prompt (remote, full-history push, push after every commit, never rewrite history); then the window attaches the repo read-only.
+
+## 2026-10-15 22:54 PT — Muse pushing to the archive repo; window reads it directly (verified)
+
+- Muse's report (via the operator): remote git@github.com:eignacio1/sports-intel-archive.git; 29 commits pushed; latest a6dc64ca (2026-10-16 05:52:30Z); SSH routed through Muse's proxy; its claims worker now pushes after every commit.
+- Window verified independently (read-only, attached to this session): 30 commits at 05:59Z (one more landed after the report, so auto-push works), a6dc64ca in history, history starts 2026-10-15 22:16 PT; README carries the mirror location and the no-rewrite rule; no private key anywhere in the tree; 97 claim JSONL files, 1,891 records, all parse, none missing source fields.
+- The operator is no longer the connector: Muse pushes, the window and terminals read. Adapter still waits for the 96-file backfill.
