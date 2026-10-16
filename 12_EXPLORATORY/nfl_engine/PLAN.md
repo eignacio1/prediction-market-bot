@@ -51,3 +51,23 @@ No registry, runner, ledger, cron, order, sizing or model-artifact change. No dr
 **GAP-1 stated.** No 2026 participation file exists, so 2026 in-season tendencies cannot be computed. This alone does NOT block application this season: arm C uses prior-season tendencies only, which is what 2026 offers. It blocks only arm D's in-season refresh, and any 2026-season application of the term would also need the 2025 participation file to remain the store of record. Whether a 2026 file appears is outside this wave.
 
 **Modal expectation (pre-fit).** The term moves means by a few tenths of a point; ΔBrier near 0; modal decision MATCHES on ML/spread, NO-or-MATCHES elsewhere. A NO is a result.
+
+## Addendum 2026-10-15 (W76.2) — Stage 3: second factor class (F8 unit availability) to APPLIED. Frozen BEFORE any stage-3 fit.
+
+**Factor and why it was chosen (Part A, `results_stage3.md`).** F8 = expected snap-weighted usual non-QB starters lost, by unit (OL, skill, DL, CB, back seven), from the final weekly injury report; Sunday/Monday games only (Thu/Fri/Sat → None = league average). Orthogonality measured pre-fit: R² of the term on all rating-layer inputs 1.3%, max |r| 0.10. QB is excluded (already in arm B).
+
+**Term.** `points(offense O vs defense D) = Σ_u coef_u · (lost_u − center_u)` over O's own OL, SK and D's DL, CB, BK. `lost_u = Σ_players share · P(absent | status)`; `share` = mean snap pct of the player's last ≤6 appearances (≥3, ≤400 days, ≥0.40, kickoff+4h rule); `P(absent|status)` from seasons ≤ T−1 flagged starters with snap data. Coefficients and centers: centered ridge (λ=50, five unit columns) of team-points residual (actual − uncalibrated arm-B ridge team mean) on the unit-loss columns, over sides in seasons 2019..T−1 with a usable report (seasons ≤T−2 are in-sample for the ridge — stated; no season-T row enters). Because the coefficients are in points, β = 1 (no second scalar).
+
+**Rate layer.** Each team's mean points gets `+ term` (None → 0); engine, shape (r, s_n, δ), Platt means identical to v0 arm B.
+
+**Rolling origin.** T ∈ 2020..2025 (1,612 games), ridge ≤T−2, Platt/shape on T−1, score T. Identical to W75.2.
+
+**Arms.** B = engine v0 arm B. C = B + F5/F6 (stage-2 primary, prior-season tendencies, β refit exactly as stage 2). E = B + F8. F = C + F8 (same F8 term as E).
+
+**Metric and decision.** ΔBrier per family (ML, spread, total, team total; ladders centred on arm-B means, ±{0,3,7}) for **E − B** and **F − C** (i.e. vs v0 and vs v0 + F5/F6), game-cluster bootstrap B=2000, seed 20261014, 95% CI; BEATS if upper < 0, MATCHES if upper < +0.0010, else NO. Team totals are one of the four families and are reported on their own line and never pooled into another family. All one simulation per game per arm (all families priced from the same draws). Per-season Δ and calibration (logit slope/intercept) reported. 8 comparisons, descriptive, no superiority claim. Stage reported per ADR-0075: aggregated / interpreted / applied (applied = the term was run through the rate layer and measured here; "applied" is not "adds value").
+
+**Market comparison (reported, never judged).** 2025 KXNFLGAME ML mids at kickoff−30min where archived, arms B/C/E/F vs mid.
+
+**Modal expectation (pre-fit).** Term SD ≈ 0.56 points; defense-unit coefficients unstable by season; ΔBrier ≈ 0; modal MATCHES on ML/spread/total, possible NO on team totals if the coefficient noise inflates. A NO is a result.
+
+**Non-goals.** No registry, runner, ledger, cron, order, sizing or model-artifact change; no running component.
