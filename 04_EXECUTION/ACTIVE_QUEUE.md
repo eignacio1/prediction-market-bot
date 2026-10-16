@@ -213,9 +213,9 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ## ⬛ NOW — Wave 77 · issued 2026-10-16 ~00:55 UTC (10-15 ~17:55 PT) · four blocks + the gap agent · paste all four in parallel
 
-Wave 76 verified on GitHub (Sequencing track): 76.2 done, 76.3 and 76.4 half done, **76.1 has nothing on GitHub but its claim — and its tab
-still shows a live ssh session at 17:37 PT, so it may still be working. Let it finish; paste 77.1 only after that tab ends. 77.1 first
-recovers whatever 76.1 left and does only what is still undone.**
+Wave 76 verified on GitHub (Sequencing track): 76.2 done, 76.3 and 76.4 half done, **76.1 finished late (PR #267, merged by the window):
+the kill switch is drilled on the box, and it found the demo account cash-starved and a cancel path with no retry. 77.1 now fixes
+those before the test turns itself off at 11:25Z 10-16 (04:25 PT).**
 Main was red ~1.5 h because 76.2 pushed code straight to main without CI; the window fixed it (#268) before issuing this wave.
 **This wave finishes 76 and changes the DEPTH yardstick.** Four NFL factors in a row have priced to no gain against outcomes,
 including one (F8, starters out) that is 99% information the ratings do not hold and moves the mean 4.5x more than coverage did.
@@ -238,13 +238,13 @@ runs alongside and skips all of these.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 77.1 | Kill switch proven on the box; can the fill fix finish? (76.1 redo) | EXECUTION: order paths halting on one switch while running (6/6 in code → proven by drill); E1 per arm; projected judged-n date per arm | ⬜ | |
+| 77.1 | Keep the fill-fix test alive: exchange 503s, cancel retry, cash-starved demo account — **deadline 11:25Z 10-16 (04:25 PT)** | EXECUTION E1: forward test still on after 11:25Z; insufficient_balance rejections 1,535 → ~0 | ⬜ | |
 | 77.2 | Change the yardstick: is each factor real, priced, or invisible? | DEPTH D5(b): NFL applied factors with a market-side verdict (0 → 4: team/QB base, F5/F6, F8) + power per family | ⬜ | |
 | 77.3 | Ledger read side and the 34-row gap (76.3 Part B) | PROOF integrity: GG-764 sites silently skipping torn rows 3 → 0; GG-747 rows explained 0 → 34 (or recomputed) | ⬜ | |
 | 77.4 | Land the runtime map on both dashboards (76.4 finish) + the gap agent made visible | PLUMBING (ADR-0074): SURFACE BUDGET + runtime map live on /project, Live Terminal and the Visual Dashboard (built → deployed); gap burn-down OPEN count visible | ⬜ | |
 | GA | The governance gap agent (STANDING section) | PLUMBING: OPEN gaps x → y | keep it running | `/loop /gap` |
 
-### 77.1 — Kill switch proven on the box; can the fill fix finish? (76.1 redo — paste only after 76.1's tab ends)
+### 77.1 — Keep the fill-fix test alive: exchange 503s, cancel retry, the cash-starved demo account (GG-841, GG-840) · DEADLINE 11:25Z 10-16
 
 ```
 COMMON RULES - WAVE 77 (read first; they bind this block)
@@ -270,7 +270,7 @@ COMMON RULES - WAVE 77 (read first; they bind this block)
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (no cron, service or workflow).
-- Four blocks + the standing gap agent run in parallel. File ownership: 77.1 = kill-switch drill + scripts/demo_fill_forward_report.py;
+- Four blocks + the standing gap agent run in parallel. File ownership: 77.1 = demo_fill_policy.py, scripts/demo_fill_forward_report.py and ADR-0072's addendum;
   77.2 = NEW files under 12_EXPLORATORY/nfl_engine/market_tests/; 77.3 = ledger read side (GG-764 sites) + GG-747; 77.4 = PR #266's
   files (runtime registry/map, governance_scan*.sh, both dashboards, Visual Dashboard builder). The gap agent owns
   03_DECISIONS/GG_BURNDOWN.md and GG_AGENT_STATE.md. Edit only your own block's files.
@@ -286,7 +286,7 @@ COMMON RULES - WAVE 77 (read first; they bind this block)
   branch locally, re-run the suite, push, merge.
 - Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
   only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+- No order, position, fill, stake size or kelly_fraction change - EXCEPT block 77.1, inside its PERMISSIONS (demo only). No live-ledger row rewritten. No edit of an existing cron
   line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
   are allowed.
 - The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
@@ -310,41 +310,47 @@ COMMON RULES - WAVE 77 (read first; they bind this block)
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
   Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W77_<n>.md (docs-only push).
 
-WAVE 77.1 - KILL SWITCH PROVEN ON THE BOX; CAN THE FILL FIX FINISH? (76.1 redo). Repo: eignacio1/prediction-market-bot.
-PURPOSE: EXECUTION - (a) the one switch proven in the RUNNING processes by a drill (6/6 in code since W75.4, never drilled);
-(b) E1 per book/sport/arm since the 10-13 re-arm, and the date each forward-test arm reaches its judged n. Pillar: EXECUTION.
-PERMISSIONS: ssh, idle-window restarts (standing), touching and removing the kill-switch flags on the box (demo plumbing),
-scripts/demo_fill_forward_report.py + tests, read-only Kalshi DEMO GETs. Do NOT change ADR-0072's placement rule, an arm
-assignment or any pre-registered quantity - that goes to the operator.
-Read first: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_4_kill_switch.md, ADR-0072 and its addenda,
-W65_2_forward_test_on_results.md ("Read-back W73.1"), HYGIENE_AUDIT_20261015.md GG-754.
+B77.1 DEADLINE: the ADR-0072 report cron runs at 11:25 UTC on 2026-10-16 (04:25 PT). Part A must be merged AND read back on the
+box before then, or the forward test switches itself off.
 
-FIRST - recover 76.1's work. W76.1 claimed T-1020..T-1022 / GG-840..842 at 2026-10-15 23:49Z and nothing else reached GitHub.
-On this machine, look for its worktree or branch (git worktree list; branches matching w76-1). If it holds commits or edits,
-push them and continue from there; report what it had. If not, start clean.
+WAVE 77.1 - KEEP THE FILL-FIX TEST ALIVE: EXCHANGE 503s, CANCEL RETRY, AND THE CASH-STARVED DEMO ACCOUNT (GG-841, GG-840). Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION E1 - the forward test keeps running past 11:25Z 10-16, and fills stop depending on cash recycling
+(1,535 of 1,606 rejections since the re-arm are insufficient_balance). Pillar: EXECUTION.
+PERMISSIONS: src/ demo_fill_policy.py (cancel path), scripts/demo_fill_forward_report.py, a dated addendum to ADR-0072, tests/,
+ssh, the standing idle-window restarts, read-only Kalshi DEMO GETs, and DEMO-ONLY order hygiene (cancel stale resting demo
+orders; flatten nothing that is a settled-position record). Do NOT change the placement rule, arm assignment or any other
+pre-registered quantity - those go to the operator.
+Read first: SESSION_HANDOFF_20261016T002805Z_W76_1.md; W65_2_forward_test_on_results.md "Read-back W76.1"; GG-840, GG-841;
+ADR-0072 and its addenda (the 10-14 skip-rate addendum is the template); PR #267 (merged by the window).
+
+OPERATOR DECISION (2026-10-15 17:4x PT, in the window, answering the question 76.1 raised): "Exclude exchange 503s
+(Recommended)" - a dated ADR-0072 addendum, same shape as the 10-14 "policy skips only" call: the cancel-fail turn-off counts
+only cancels that failed for our own reasons; exchange 5xx errors are retried and reported separately; the test stays on.
 
 WHY
-W75.4 put one halt check inside submit_order (1/6 -> 6/6 order paths in code, PR #264). The running processes have never been
-drilled, so GG-745 is still OPEN - a kill switch that has never fired is unproven. Separately, W73.1's read: anchored
-(treatment) orders filled 1 of 48 NHL orders (2%) against control's 29 of 54 (54%); MLB 2/20 vs 5/29; NFL 3/28 vs 11/28.
-ADR-0072 needs ~550 fills per arm. If the treatment arm cannot get there, the test cannot answer its own question.
+76.1 proved the one kill switch on the running processes (6/6) and found two things that make the fill-fix test unanswerable.
+(1) On 10-15 the exchange returned 503s for ~2 h; cancel_now has no 5xx retry and sweep_overdue counts a cancel_failed row as
+done, so 19.6% of cancels failed and orders rested longer than designed. The 11:25Z cron will read that and turn the test off.
+(2) The demo account holds $0.17 cash against $108 portfolio value: since the 10-13 re-arm 962 orders were accepted and 1,606
+rejected, 1,535 of them for insufficient balance. Fill rates in both arms then depend on when cash frees up, not on the
+placement rule, so 76.1's projection (treatment arms "not this season") is unreliable.
 
-PART A - Kill switch on the running processes (~40 min)
-  1. Read the Deploy job summaries from ce32e14 onward and every order-placing process's running-code SHA (72.3's check).
-     If t4-mlb skipped its restart, restart it at the next idle window (standing authorization) and read back.
-  2. Drill on DEMO, in an idle window: touch the global flag; confirm every running order path logs a halt and places nothing
-     within 60 s; confirm a band flag halts only its band; remove the flags; confirm they resume. Paste the log lines with
-     timings. Record C7 kill_switch_drill_result. Resolve GG-745 only on a pass.
-PART B - The fill fix's numbers, and whether it can finish (~45 min)
-  3. GG-754 first (it can re-trip the turn-off): epoch-gate no_outcome; atomic writes at :306 and :369. Tests. PR + CI.
-  4. Re-run the report on everything settled since the 10-13 re-arm: per book / sport / arm - orders, fills, fill rate,
-     settled fills, win rate on fills, settle-minus-price, E3 fills vs non-fills. Write the E rows of the DISTANCE table
-     (source + time).
-  5. Projection: at each arm's observed fill rate and the remaining schedule (NHL; NFL; NBA from 10-20; MLB ends with the
-     World Series), the date each arm reaches its judged n - or "not this season". If the treatment arm cannot reach it, write
-     the options (a different anchor offset, a longer resting window, a pooled-sport judged n) with what each costs the test's
-     validity, and put ONE line to the operator with your recommendation. Do not change the rule yourself.
-Results: W65_2_forward_test_on_results.md "Read-back W77.1"; W75_4_kill_switch.md "Drill".
+PART A - Before 11:25Z (~40 min)
+  1. The addendum, quoting the operator: the turn-off's cancel-fail rate excludes exchange 5xx (and other venue-side transient
+     errors you can name from the logs); they are reported in their own line. Implement it in the report; tests (a 5xx-only day
+     never trips; a code-side failure still does). PR, CI, merge, deploy; read back with --no-act on the box that the
+     condition no longer trips on 10-15 data.
+  2. GG-841 root cause: cancel_now retries 5xx with backoff; a cancel that still fails stays open for the next sweep instead of
+     counting as done. Tests. Same PR is fine. Pattern sweep (Hard Rule 13): every other Kalshi write call without a 5xx retry.
+PART B - The cash (~45 min)
+  3. GG-840: why is cash gone - resting orders holding collateral, unsettled positions, or stakes sized without a cash check?
+     Read-only GETs: open orders, positions, settlements. Fix what is demo plumbing at the root (a pre-order cash check so the
+     runner skips - and logs a policy-neutral skip - instead of firing rejected orders; cancel stale resting demo orders that
+     outlived their window). If the fix would change how many orders each arm places relative to the other, stop and put it to
+     the operator as one line.
+  4. Re-run the report since the re-arm with the cash-starved hours marked; redo the judged-n projection on the clean hours
+     only, and say whether "treatment not this season" survives.
+Results: W65_2_forward_test_on_results.md "Read-back W77.1". Resolve GG-841 and GG-840 only when the running process carries the fix.
 
 END OF BLOCK 77.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
@@ -817,7 +823,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 77.1 | Kill switch proven; can the fill fix finish? (76.1 redo) | ⬜ (after 76.1's tab ends) | |
+| 77.1 | Fill-fix test alive: 503s, cancel retry, demo cash | ⬜ (deadline 11:25Z) | |
 | 77.2 | Change the yardstick: real, priced, or invisible? | ⬜ | |
 | 77.3 | Ledger read side + the 34-row gap | ⬜ | |
 | 77.4 | Runtime map on both dashboards + gap agent visible | ⬜ | |
@@ -826,7 +832,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 76.1 | Kill switch proven; fill-fix numbers | ❓ | Claim only on GitHub (T-1020..1022, 23:49Z); tab still in ssh at 17:37 PT → 77.1 recovers and finishes |
+| 76.1 | Kill switch proven; fill-fix numbers | ✅ | #267 (window merged main into it after #268): **kill switch drilled on the running processes, 6/6 order paths halt within 60 s → GG-745**. Report GG-754 fixed. Found GG-840 (demo cash $0.17: 1,535 of 1,606 rejections insufficient_balance) and GG-841 (no 5xx cancel retry; 10-15 503s → turn-off would trip 11:25Z) → 77.1. Treatment arms "not this season" on a cash-starved sample |
 | 76.2 | Second NFL factor the ratings can't hold | ✅ | F8 non-QB starters out: 99% orthogonal to ratings, moves means 4.5x F5/F6, **applied: MATCHES ML/spread/team total, NO on total**. Kalshi mid beats every engine arm by ~0.009 Brier on 182 2025 games; F8 closes ~0.0016. **Pushed code to main without CI → main red ~1.5 h (window fixed, #268)** |
 | 76.3 | Ledger writers atomic + locked | 🟨 Part A | #265: 4 → 0 writers bypassing atomic_io; CellLedger.append flocked, 6-process test. Part B (read side, 34-row gap) → 77.3 |
 | 76.4 | Runtime map live and visible | 🟨 built | #266: 76/76 reviewed against the box, 0 unexplained no-alarm (9 with written reasons), SURFACE BUDGET GREEN live. Not merged (main red) → 77.4 |

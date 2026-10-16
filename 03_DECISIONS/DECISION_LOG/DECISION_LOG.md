@@ -2350,3 +2350,10 @@ Operator, verbatim: "76 is finished - confirm receipt then set up next wave. Btw
 - Window recorded F8 (N10) as applied with its result in the NFL seat file; D5(b) NFL 7 applied of 16.
 - Wave 77 changes the DEPTH yardstick before any pivot: four game-market factors priced to no gain against outcomes; 77.2 measures power, the closing line's pricing of each factor, and timing, to tell "real but priced" from "invisible to the test". The operator's thinner-markets question waits for that answer.
 - Arc 77-80 written: 78 NBA speed lane before 10-20 (readiness, event data layer, PAM NBA mass tier, NFL PAM mass tier for all position groups per the operator's deep-tier scope); 79 where application pays (MLB execution post-mortem, NBA engine scaffold, filtering/temporal scaffolds, timing or thinner markets); 80 first-look readiness, momentum looping, PAM into both engines, MLB winter options, window handoff.
+
+## 2026-10-15 17:4x PT — ADR-0072: exchange 503s excluded from the cancel-fail turn-off (operator)
+
+Question (window, from W76.1): Kalshi returned 503s for ~2 h on 10-15; cancel_now has no 5xx retry, so 19.6% of cancels failed and the 11:25Z 10-16 report would turn the forward test off. Exclude exchange errors from the pre-registered turn-off check?
+Operator answer, verbatim (AskUserQuestion): "Exclude exchange 503s (Recommended)".
+- 77.1 writes the dated ADR-0072 addendum quoting it (same shape as the 10-14 "policy skips only" addendum): the cancel-fail turn-off counts only cancels that failed for our own reasons; exchange 5xx are retried (GG-841) and reported on their own line. Deadline: merged and read back before 11:25Z 10-16.
+- 76.1 done late (PR #267): kill switch drilled on running processes, 6/6. Window merged main into its branch to clear the 76.2 isolation failure. GG-840 (demo account cash-starved, 1,535 insufficient_balance rejections) also goes to 77.1.
