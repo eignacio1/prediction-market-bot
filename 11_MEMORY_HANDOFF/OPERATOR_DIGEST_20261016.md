@@ -30,3 +30,10 @@ A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry
 
 **W79.3 — NBA engine (DEPTH).** The NBA data store is now on main and copied to the server, with checks that it arrived intact. Two team factors were studied: pace and scoring efficiency are real, stable team traits that help predict game totals; rest is not a team trait but back-to-backs cost a team about 2.3 points. Neither has been tested against betting prices yet, so there is no edge claim. Five data gaps are logged; nothing was bought and no money or live settings changed.
 - W79.2 (auto): W79.2 PARTIAL: #277 merged, 7 more families sampled (NFL 11, NBA 5), store on laptop+VPS sha256-verified; Part B (gradient, F8 share, prereg) NOT done.
+
+## Pseudo-wave 80P (cloud session) — 2026-10-16 ~08:25 PT
+- The safety check that wrongly showed red (it counted any code change as "the trading service is running old code") now only counts changes the service actually uses. Merged and tested; the box hasn't confirmed it yet because this session can't reach the box.
+- The order-book recorder for thinner NFL/NBA markets is built and tested but switched off. It gets turned on only once someone with box access sees the safety check read green.
+- The thin-market ranking and the NBA totals test could not run: this session can't reach the box or Kalshi. Nothing was guessed.
+- MLB season look-back written: no MLB cell reached a scored look this season (by design for game markets — their first look is 2027). A one-line final read is ready for after the World Series.
+- Pillars: plumbing + proof. Still zero real money at risk. Stray branch: `claude/pseudo-wave-80p-rules-lsiwi3` and `...-w80p4` (mine, both squash-merged).
