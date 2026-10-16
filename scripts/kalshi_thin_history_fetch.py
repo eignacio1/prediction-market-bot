@@ -32,6 +32,7 @@ CUTOFF = "2026-08-17T00:00:00Z"            # /historical/cutoff market_settled_t
 MINUTE_LOOKBACK_S = 48 * 3600
 PREFIXES = ("KXNFL", "KXNBA")
 SKIP_FREQ = {"annual"}                     # futures / awards / drafts: not game-level, no pre-game efficiency question
+CUSTODY_FROM = "2026-08-01T00:00:00Z"      # 2026-season markets: stored for custody, no analysis may read them (manifest rule)
 SAMPLE_CAP = 250                           # markets per series fetched with candles (deterministic hash order)
 
 
@@ -86,15 +87,23 @@ def _key(t):
     return hashlib.sha256(t.encode()).hexdigest()
 
 
+def custody_only(m) -> bool:
+    return bs.iso_ts(m.get("close_time") or m["expiration_time"]) >= bs.iso_ts(CUSTODY_FROM)
+
+
+def sample(markets, cap=SAMPLE_CAP):
+    """Deterministic hash-order sample: same markets in -> same picks out, whatever order they arrive in."""
+    return sorted(markets, key=lambda m: _key(m["ticker"]))[:cap]
+
+
 def fetch(client, store, wanted, cap=SAMPLE_CAP):
     cutoff, floor = bs.iso_ts(CUTOFF), bs.iso_ts(FROM_ISO)
     have = set(store.index)
     for series in wanted:
         mk = [m for m in markets_of(client, store, series, (("/historical/markets", {}), ("/markets", {"status": "settled"})))
               if m.get("result") and bs.iso_ts(m.get("close_time") or m["expiration_time"]) >= floor]
-        mk.sort(key=lambda m: _key(m["ticker"]))
-        pick = mk[:cap]
-        print(f"{series}: settled {len(mk)} -> fetching {len(pick)}", flush=True)
+        pick = sample(mk, cap)
+        print(f"{series}: settled {len(mk)} -> fetching {len(pick)} ({sum(map(custody_only, pick))} custody-only)", flush=True)
         for i, m in enumerate(pick):
             close, opn = bs.iso_ts(m["close_time"]), bs.iso_ts(m["open_time"])
             for period, start in ((60, opn), (1, max(opn, close - MINUTE_LOOKBACK_S))):
