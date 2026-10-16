@@ -703,7 +703,7 @@ END OF BLOCK 79.4. If you cannot see this line, the prompt reached you truncated
 Operator: "Give me a pseudo-wave, 4 block tasks mashed together as one that I'll send to our Claude Code side (inside the app) - I want to
 take advantage of the remaining $41 in Claude Cloud credit". One paste, one session, four tasks in order: unblock + start depth capture,
 the thin-market ranking + pre-registration, NBA's first factor against the market, MLB's season look-back. **Pushback:** a cloud session
-may not reach the VPS or Kalshi; every box-only step is then recorded PENDING FOR A TERMINAL, which is why Task 1 comes first.
+may not reach the VPS or Kalshi; every box-only step is then recorded PENDING for the window (no terminals for now, operator 07:46 PT); Task 1 comes first because it is time-sensitive.
 **Surface:** +1 at most (Task 1's capture, only if the budget reads GREEN). **Dependencies:** sequential inside one session by design.
 
 | Task | What | PURPOSE (measure) | Status | One line |
@@ -791,7 +791,7 @@ write it in the handoff - GitHub (git push, PR create/merge via REST `gh api` if
 (prediction-market-vps / 157.230.91.33), the Kalshi public API (api.elections.kalshi.com), the dashboard over HTTPS. Anything
 refused: record the exact command and refusal, never work around it, and do the rest. Merging to main deploys through the
 normal Deploy workflow; read its job summary. A step that needs the box and the box is unreachable is recorded as PENDING
-FOR A TERMINAL with the exact command, not skipped silently.
+(box unreachable) with the exact command for the window, not skipped silently. No terminal work for now (operator 07:46 PT): everything runs in this session.
 
 TASK 1 - Fix the surface-budget false red, then start recording market depth (PLUMBING -> unblocks; time-sensitive)
 PURPOSE: PLUMBING (ADR-0074). Measures: SURFACE BUDGET RED -> GREEN; thin-market order-book capture running (no -> yes).
