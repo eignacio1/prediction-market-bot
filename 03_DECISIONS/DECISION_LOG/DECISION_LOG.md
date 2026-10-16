@@ -2493,3 +2493,10 @@ Part B done: free sportsdataverse NBA store 2016-2026 (123 files, 0 failures), P
 - **Run-time diff vs the plan:** rule 2 (under 3 days) kept 12 branches the plan had listed as landed (97 deleted vs 109 planned), plus all branches pushed since; `w761` already gone. Group B matched exactly.
 - **Stale PRs:** #133, #144, #146 closed as superseded or landed (GG-276/T-549, GG-291/T-564, T-566 byte-identical on main). #149 stays open: its `assert_service_activation.py`, test, T574 results note and CLAUDE.md edit are not on main. One line for the window: land it, port it, or close it.
 - **Refused:** nothing by GitHub. `git branch -d` declined 6 landed local branches with deleted upstreams; left for a later sweep, no `-D`.
+
+## 2026-10-16 — W79.3 NBA engine finished (DEPTH)
+- PR #278 merged (26f963a). Raw store lives on the local machine and the VPS; sha256 sidecar `store_file_hashes.json` verifies both.
+- Lineup key repeats: not corruption (key includes occurrence). Imputed games (811 = preseason + all-star): excluded by `eligible_games`.
+- `FACTOR_TAXONOMY.md`: 13 classes. Gaps registered as GG-910..914 (GG-895..899 taken by a collision).
+- Pace/efficiency: trait (split-half r 0.71-0.80), moves total and margin. Rest: not a trait, b2b differential moves margin by -2.3 pts (CI -3.0 to -1.6), not total. Both **interpreted**, none applied (no market comparison).
+- NBA-T1 relief and GG-759 status recorded (GG-759 stays OPEN/LOW). No registry, stake, kelly, ledger or pre-registration change. surface_delta 0.

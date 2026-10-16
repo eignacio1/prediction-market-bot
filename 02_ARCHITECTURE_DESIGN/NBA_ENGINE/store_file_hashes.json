@@ -1,0 +1,497 @@
+{
+ "files": {
+  "raw/coaches/coaches_2016.parquet": {
+   "bytes": 15277,
+   "sha256": "863ad1330715c5f84cd75e6d72252663b1a84c0e3c78e17124d6a14355a169f3"
+  },
+  "raw/coaches/coaches_2017.parquet": {
+   "bytes": 15932,
+   "sha256": "258ac21757566149c1aa60052e25cec4a5df5d6d08e8dc3a450096c5243caf0c"
+  },
+  "raw/coaches/coaches_2018.parquet": {
+   "bytes": 15231,
+   "sha256": "62f1085c2b9992f766d38799855c813ab714453882fab8ea3569f12bf1176b4c"
+  },
+  "raw/coaches/coaches_2019.parquet": {
+   "bytes": 15255,
+   "sha256": "c79def83b984c4352e50b748b6c7acb562b2aac9a437f158ee24a5f8bb5f0920"
+  },
+  "raw/coaches/coaches_2020.parquet": {
+   "bytes": 16672,
+   "sha256": "eb28d2a5d477138c0490be77e9a904aaec6289676ef27175d1fe45a251e10cff"
+  },
+  "raw/coaches/coaches_2021.parquet": {
+   "bytes": 16586,
+   "sha256": "f09837c8bbed289bf13697f18714220b359746c7e34e06bb6227ad6df236610a"
+  },
+  "raw/coaches/coaches_2022.parquet": {
+   "bytes": 17587,
+   "sha256": "68745217f8f719b407d05dc7dc01b9ed82e9c198efd33795d7c8f89008a3024d"
+  },
+  "raw/coaches/coaches_2023.parquet": {
+   "bytes": 17190,
+   "sha256": "9d3fcc7d7c7a3d1a8e635f30e8100d4f7273ee39f41677d125457e7cdc8c0de3"
+  },
+  "raw/coaches/coaches_2024.parquet": {
+   "bytes": 16921,
+   "sha256": "0e84e7a84adbde474dd93f70c440fce5196f96873b7f88ed4ca933504e68df49"
+  },
+  "raw/coaches/coaches_2025.parquet": {
+   "bytes": 17450,
+   "sha256": "4f8a6bbdb2dc959a23a26237027639b734754477ed5eb1dd22857ab7f01627c5"
+  },
+  "raw/coaches/coaches_2026.parquet": {
+   "bytes": 18105,
+   "sha256": "b9f371d246b3c6483b84bb1e7aaa56a30c408818aaf9e21270713c5c8b2e801f"
+  },
+  "raw/espn_schedule/espn_schedule_2016.parquet": {
+   "bytes": 144317,
+   "sha256": "49d1402c010bfb873ab08b1ec3031fc4d09082eb54fcb158f522521171f2724d"
+  },
+  "raw/espn_schedule/espn_schedule_2017.parquet": {
+   "bytes": 142240,
+   "sha256": "f0eedca931f9026faa66b12cdb6d538ca90a028d538c4de76df2e8642b97f4be"
+  },
+  "raw/espn_schedule/espn_schedule_2018.parquet": {
+   "bytes": 143818,
+   "sha256": "1f5124496c4093c467caf6ca6e5b5669b3ab3d391a9ca3fd531baf94854d3e1b"
+  },
+  "raw/espn_schedule/espn_schedule_2019.parquet": {
+   "bytes": 144204,
+   "sha256": "9463bfe4d8623f2f314c58204b05f644fa81e59299c0ffc1b5202bfc3fa782a3"
+  },
+  "raw/espn_schedule/espn_schedule_2020.parquet": {
+   "bytes": 244734,
+   "sha256": "12b04740da9a7f1bc4af74a187c1a1e31f9134f90520aca03c517c304700a4c1"
+  },
+  "raw/espn_schedule/espn_schedule_2021.parquet": {
+   "bytes": 229454,
+   "sha256": "356adc2768207ab9b9e9d7dfca3cf4530ed02617b7624090990793ad86bacd4d"
+  },
+  "raw/espn_schedule/espn_schedule_2022.parquet": {
+   "bytes": 253912,
+   "sha256": "96219d142891d90f3831d262b431928c3a175607635d3e65e8e3b39cad09991e"
+  },
+  "raw/espn_schedule/espn_schedule_2023.parquet": {
+   "bytes": 251820,
+   "sha256": "307b6ff08ac656a142a44c41731322ababf90b26d5687cdcd55a8be123865a4b"
+  },
+  "raw/espn_schedule/espn_schedule_2024.parquet": {
+   "bytes": 257453,
+   "sha256": "941488c0ef64a2592468f638b106e22ef979bae86ee4f2f149821d742aac869d"
+  },
+  "raw/espn_schedule/espn_schedule_2025.parquet": {
+   "bytes": 289237,
+   "sha256": "768de04dd9577f6c5b6032d4210769f775f5da4e1f7913b030f55ed7481e91d7"
+  },
+  "raw/espn_schedule/espn_schedule_2026.parquet": {
+   "bytes": 1335156,
+   "sha256": "3739fc491c8d3345552f04ce526d2c688d6fca2caf8380913fca6759c16cf7e9"
+  },
+  "raw/espn_schedule/espn_schedule_2027.parquet": {
+   "bytes": 138788,
+   "sha256": "1d2131c931e68dab456bc0982817774ae50a8c5b87b97a27d09d09fcf452fe45"
+  },
+  "raw/game_rosters/game_rosters_2016.parquet": {
+   "bytes": 62596,
+   "sha256": "640ed077f273c0d0ffc948f5c75c662262e845a814e924e7e943a323f4278c4e"
+  },
+  "raw/game_rosters/game_rosters_2017.parquet": {
+   "bytes": 63839,
+   "sha256": "2c372276bb8224eaab02e0a7d6ac9eb99ce59ab12c7bbaa17141a4fcd8416226"
+  },
+  "raw/game_rosters/game_rosters_2018.parquet": {
+   "bytes": 97112,
+   "sha256": "6cbd7026d13fc6b4429541d85d547d54e09a166e33ce2aca4f37f2e83785e495"
+  },
+  "raw/game_rosters/game_rosters_2019.parquet": {
+   "bytes": 96732,
+   "sha256": "3b37342c5f86ec3701d480587a646f861e7ad082683d3380adb2e44a4c478252"
+  },
+  "raw/game_rosters/game_rosters_2020.parquet": {
+   "bytes": 89313,
+   "sha256": "960da0285bacddd6960945332153bfbea9e2afe4469ac3c101cd03d8bfffa08c"
+  },
+  "raw/game_rosters/game_rosters_2021.parquet": {
+   "bytes": 76868,
+   "sha256": "1f9b44c739b094ea08f1c7ae505799ce70406dd22b0d12d114c5dabcb5b19730"
+  },
+  "raw/game_rosters/game_rosters_2022.parquet": {
+   "bytes": 105346,
+   "sha256": "c42037e33f95326a4d09bd47ccaad4aa6621371b7bb7232061a0aaa5ae918253"
+  },
+  "raw/game_rosters/game_rosters_2023.parquet": {
+   "bytes": 95006,
+   "sha256": "e4d96d825f26635fb2cae2d537d9b3dd548256b3f82e796f9fe9d7797d8514c0"
+  },
+  "raw/game_rosters/game_rosters_2024.parquet": {
+   "bytes": 104659,
+   "sha256": "534dec98c42ff0f4260309f269f8b0c1bdde85dc0ef63759fd513248f72bcbee"
+  },
+  "raw/game_rosters/game_rosters_2025.parquet": {
+   "bytes": 105122,
+   "sha256": "5096a49fb464b8ba270425ac57f786e4e8c92492482370519d1c0d502bdd074e"
+  },
+  "raw/game_rosters/game_rosters_2026.parquet": {
+   "bytes": 105104,
+   "sha256": "f527336e438a880635565cd7fe5b1f038a55f0d4c8e4004a400a1cb92318edf2"
+  },
+  "raw/injuries/injuries_20261016T060134Z.parquet": {
+   "bytes": 166404,
+   "sha256": "f8b1e0225099df86d57b95cb29e18c3cae0baeff03cfd2359a7c889539e62723"
+  },
+  "raw/lineups/lineups_2016.parquet": {
+   "bytes": 1273149,
+   "sha256": "901bdd4fcda511d046ddb6605f6369976c424b6c452cc854ad9a9dc393a92931"
+  },
+  "raw/lineups/lineups_2017.parquet": {
+   "bytes": 1262161,
+   "sha256": "d9990c84ff942c0c303eeb0066839565e185dd683266157465d80cb4765d79c1"
+  },
+  "raw/lineups/lineups_2018.parquet": {
+   "bytes": 1408435,
+   "sha256": "d85404c5c8d05842fab7a037921004bc9f9b3f997896c5a46bb374f538878f2b"
+  },
+  "raw/lineups/lineups_2019.parquet": {
+   "bytes": 1476082,
+   "sha256": "319d0634877ccca6b44742137675070b564629f5436bdfe4fdd9266f7ae4f4ac"
+  },
+  "raw/lineups/lineups_2020.parquet": {
+   "bytes": 1246812,
+   "sha256": "d10d5e9ea78ce63dbc04146d24de31decf8740efa395c4c59394907dc2aaea4c"
+  },
+  "raw/lineups/lineups_2021.parquet": {
+   "bytes": 1279915,
+   "sha256": "0bef965520ab1660230e7fcd8fa1347ebc3444e100b2c554825c5947569a66a7"
+  },
+  "raw/lineups/lineups_2022.parquet": {
+   "bytes": 1454688,
+   "sha256": "db781c7028f2d3bcc724edbf051b437e02cef0275e8ee970d792cc2ce902e3dc"
+  },
+  "raw/lineups/lineups_2023.parquet": {
+   "bytes": 1473860,
+   "sha256": "d52add301be20567ca095265d452298397ebb3d0629fc092b9b807e52bb61bdc"
+  },
+  "raw/lineups/lineups_2024.parquet": {
+   "bytes": 1472296,
+   "sha256": "47b69417daca979161d89195ac0966f531396717974763dcb199d60e246980b9"
+  },
+  "raw/lineups/lineups_2025.parquet": {
+   "bytes": 1503687,
+   "sha256": "c34ee80de4b130b5be28bdb5b1fa2dfd2d828958fc1f41eb82d30f9dbda4a04b"
+  },
+  "raw/lineups/lineups_2026.parquet": {
+   "bytes": 1556502,
+   "sha256": "18d06692f01d1025c796b6564387ce2d8acde0452e72c254dd7b5256c22af246"
+  },
+  "raw/officials/officials_2016.parquet": {
+   "bytes": 31530,
+   "sha256": "e9765d621643b7864c0fc5907c92774a1315721933a7d79c770f66684d997940"
+  },
+  "raw/officials/officials_2017.parquet": {
+   "bytes": 31438,
+   "sha256": "c0eb217ead4c953caf81f8303af59986b799298e2585daa1f86e76f0d702f617"
+  },
+  "raw/officials/officials_2018.parquet": {
+   "bytes": 32346,
+   "sha256": "02abc7070a0d4deca06080437ba3983ed26ad5ea856000cf0e16f5342fdbfe28"
+  },
+  "raw/officials/officials_2019.parquet": {
+   "bytes": 31733,
+   "sha256": "e4b8d2f8a41e674175b6f496051c7cc07f0a29c1426f0a267b803ec5a556a989"
+  },
+  "raw/officials/officials_2020.parquet": {
+   "bytes": 28934,
+   "sha256": "ee102872bdf0afc674d3a30b25acfd904f1ab969a56ec880f4f6ef0a3e0ec072"
+  },
+  "raw/officials/officials_2021.parquet": {
+   "bytes": 30185,
+   "sha256": "2704a464735a7aa1fd1f7eae1f96eafbe813040da3a42c833928b610bb175747"
+  },
+  "raw/officials/officials_2022.parquet": {
+   "bytes": 33165,
+   "sha256": "5ab4592365d06aba7f77b6c6f3ec9e2087abf2cd6406d1abb282c9d22cd21b14"
+  },
+  "raw/officials/officials_2023.parquet": {
+   "bytes": 32594,
+   "sha256": "5a7947842e275aec0071acf35ae25a459e610a6fd340a757714f682c4495eb59"
+  },
+  "raw/officials/officials_2024.parquet": {
+   "bytes": 33222,
+   "sha256": "ccdf1dc1e29e4a4fcef05c7379591bf6d09873b3ca9f930c4cec4a27acaee145"
+  },
+  "raw/officials/officials_2025.parquet": {
+   "bytes": 32723,
+   "sha256": "fab317f089ea3c9265a827e6d5f32f20f76f16e0982b11c90bf8f3b0c22bf602"
+  },
+  "raw/officials/officials_2026.parquet": {
+   "bytes": 33335,
+   "sha256": "b92dbfb44f97f98cc6e3c6d58e2b0b8d60c5ba19e2768d226d596ca913a46e4d"
+  },
+  "raw/pbp/pbp_2016.parquet": {
+   "bytes": 25924968,
+   "sha256": "7e2d07df8a6dc05aace72a6f2971d1a751badfc80c1bb20254e45561bd91fdbf"
+  },
+  "raw/pbp/pbp_2017.parquet": {
+   "bytes": 25705085,
+   "sha256": "3aed10ba8e0813059c3a11ec82f1cfe368ed164a659ee740608991293306bd53"
+  },
+  "raw/pbp/pbp_2018.parquet": {
+   "bytes": 25293787,
+   "sha256": "15aff389e1da824493eb6f4eb0843e41700d048d6e424a3480fd3a892213d0c0"
+  },
+  "raw/pbp/pbp_2019.parquet": {
+   "bytes": 26485667,
+   "sha256": "6454be3ff2cfd952b1a50d0878654d650d2f3fa45527b6be249c5a2849ed0367"
+  },
+  "raw/pbp/pbp_2020.parquet": {
+   "bytes": 21728469,
+   "sha256": "48f7d37280c33d70225388b57a8b9f08c3ef6a7021df269d5645ca1ee9b13b7a"
+  },
+  "raw/pbp/pbp_2021.parquet": {
+   "bytes": 22528159,
+   "sha256": "46a47db8cafbcecb4fc79341a4a92cdc94e8ce542f20fc3b370f3496e85842f3"
+  },
+  "raw/pbp/pbp_2022.parquet": {
+   "bytes": 25642728,
+   "sha256": "877f01bed7cff30e661a158849f65f2dd2f7ed21b7a009c24ade07ce23629769"
+  },
+  "raw/pbp/pbp_2023.parquet": {
+   "bytes": 26128477,
+   "sha256": "634ca54d83666eb4911ccd9cb8ee0ebf408416be588a82965305eb25eed80f6a"
+  },
+  "raw/pbp/pbp_2024.parquet": {
+   "bytes": 25945611,
+   "sha256": "0a30f3067ec1295bbfa2f76a51584c7060ec043552a2462b8045ee41a7831a74"
+  },
+  "raw/pbp/pbp_2025.parquet": {
+   "bytes": 26185040,
+   "sha256": "39754ddea1fc1db9ab00ec4a931d6c7203892b3daeb935d54db47396c84ec9ee"
+  },
+  "raw/pbp/pbp_2026.parquet": {
+   "bytes": 26706107,
+   "sha256": "286a5bea81d70e5568d9ed51035d95b4f6ae54238e49161bf69e6ccf6dc5ca40"
+  },
+  "raw/player_box/player_box_2016.parquet": {
+   "bytes": 730421,
+   "sha256": "e413d031376ec7f87722d5f8cde33404c46f9ad6676cdf23e50bb03e40a7f522"
+  },
+  "raw/player_box/player_box_2017.parquet": {
+   "bytes": 728048,
+   "sha256": "756be4702ae42cc17f4fef53ec926546c91b33256db7a95c34048f2e7d952aa5"
+  },
+  "raw/player_box/player_box_2018.parquet": {
+   "bytes": 726912,
+   "sha256": "4f3a11785f2d5216d4ea32766259e61a3e4c2d8b0eabc2097a15ee15e10c0ad3"
+  },
+  "raw/player_box/player_box_2019.parquet": {
+   "bytes": 710411,
+   "sha256": "c747742ceda65812cd1b0de98955feaa3331c5f641543d9df87ca9400428ad84"
+  },
+  "raw/player_box/player_box_2020.parquet": {
+   "bytes": 630132,
+   "sha256": "58f36ab8e7cfc5cdebd2a2a251c79320da3780e93e044b9837b23e8de0d06e95"
+  },
+  "raw/player_box/player_box_2021.parquet": {
+   "bytes": 680800,
+   "sha256": "2147a12c3ea834857b74bd2669d41934c190bd8a671d1ed6731fdb15f2ade432"
+  },
+  "raw/player_box/player_box_2022.parquet": {
+   "bytes": 752150,
+   "sha256": "848bcff381b6b71215f55f5e70a8b35a879b673c6f2a0701ac428570bd59b84a"
+  },
+  "raw/player_box/player_box_2023.parquet": {
+   "bytes": 744837,
+   "sha256": "0ed807f98df3dc16a3eb890d4c392bd95c23cc779373e74aa45039c1961c7159"
+  },
+  "raw/player_box/player_box_2024.parquet": {
+   "bytes": 758905,
+   "sha256": "ae0848a39937eb88f84f1b36284f6e29764b987d4c85f7b8235102c59f550343"
+  },
+  "raw/player_box/player_box_2025.parquet": {
+   "bytes": 755009,
+   "sha256": "d3e4855182dc004821425cd92ab1ce328a96771f195715b557011ba43d2a4719"
+  },
+  "raw/player_box/player_box_2026.parquet": {
+   "bytes": 765539,
+   "sha256": "9f7b6d5d4424ab7f2410002e860efebbfb3ad93bb33d4338033290af4fd10659"
+  },
+  "raw/possessions/possessions_2016.parquet": {
+   "bytes": 4484889,
+   "sha256": "aa4bc6107982da5edc18921e85f0584c584d550303cb35891d6f81f9abff0fcd"
+  },
+  "raw/possessions/possessions_2017.parquet": {
+   "bytes": 4458507,
+   "sha256": "31866c9631f1c74eb67170c3b1f4c6706c2648a488dc11eebeec43e008a20f9b"
+  },
+  "raw/possessions/possessions_2018.parquet": {
+   "bytes": 4264176,
+   "sha256": "ab68edf604a81babfa858a7433ccca29d662c15e84d68e47d6b34d8f0add3ab1"
+  },
+  "raw/possessions/possessions_2019.parquet": {
+   "bytes": 4325075,
+   "sha256": "7c998d2f4ddccbc2422299f98b1cbc84205ad2bd9dcedc9d2b8129aa1931d191"
+  },
+  "raw/possessions/possessions_2020.parquet": {
+   "bytes": 3618516,
+   "sha256": "28d8861e52caa3f5dd98aa5055102a1d229b2d41ccb8ac282e2b7d55a993f150"
+  },
+  "raw/possessions/possessions_2021.parquet": {
+   "bytes": 3770952,
+   "sha256": "a3190d508c13adef630be2fd4ef5876eeae70cdc1b694f4da7680a09fed32664"
+  },
+  "raw/possessions/possessions_2022.parquet": {
+   "bytes": 4271420,
+   "sha256": "df90c333d6744ab14ef16ec4ced28bab57c5dcba287ed588da0bec5811616120"
+  },
+  "raw/possessions/possessions_2023.parquet": {
+   "bytes": 4328999,
+   "sha256": "abe63b1d8768edef112a0df4b8a3f1c524cf5fffc33cad00da11f026954f95e3"
+  },
+  "raw/possessions/possessions_2024.parquet": {
+   "bytes": 4278746,
+   "sha256": "9646dd18fef0588e0db676e259d23c7f179c3e356aa1d0abd30e176e28acbd94"
+  },
+  "raw/possessions/possessions_2025.parquet": {
+   "bytes": 4346731,
+   "sha256": "e7376a45c3e8285b6a4375ba4b39d6ab49e5b6d2b3b5b3d43b00f841dded026c"
+  },
+  "raw/possessions/possessions_2026.parquet": {
+   "bytes": 4479039,
+   "sha256": "b37312e3e4c274b0b5a97afbc397123c7722428a355ed51ffdf6032afd0e886d"
+  },
+  "raw/schedule/schedule_2016.parquet": {
+   "bytes": 38731,
+   "sha256": "6ffbb0795a6bea561ac735cd3ae642df48462191d2bf704527e160ab66e5fae0"
+  },
+  "raw/schedule/schedule_2017.parquet": {
+   "bytes": 38519,
+   "sha256": "d619cce8ecfdb62056d2bb2e2e9148bb7ac95c52ed67c721799c4dddee201fae"
+  },
+  "raw/schedule/schedule_2018.parquet": {
+   "bytes": 38191,
+   "sha256": "4a2efd613b3c0a054fc4f2b313d865d1b78e461b4dd455e547473ce08632416b"
+  },
+  "raw/schedule/schedule_2019.parquet": {
+   "bytes": 38358,
+   "sha256": "d2e721d3f2a01efd362fbd0fe1fc74078b1b465eeff06ea62fb822dd9b83a1af"
+  },
+  "raw/schedule/schedule_2020.parquet": {
+   "bytes": 33820,
+   "sha256": "970fd53f43156dac3fb0fa54bbb8fc09d6a69aadbdf2a0890d0dce8b3d2124d1"
+  },
+  "raw/schedule/schedule_2021.parquet": {
+   "bytes": 34454,
+   "sha256": "26b5c63c136817302bf25b38c7de1dc7f8e380924bc2aab993659c7219e7d156"
+  },
+  "raw/schedule/schedule_2022.parquet": {
+   "bytes": 38122,
+   "sha256": "8d5909372f53cb00863d93e10b9377202e2b2f9247d98534b2c2798d2378df67"
+  },
+  "raw/schedule/schedule_2023.parquet": {
+   "bytes": 38139,
+   "sha256": "50bebae020052a526acd20c368f13bd5b49209cbe72f8ddd24096613cb12ecb3"
+  },
+  "raw/schedule/schedule_2024.parquet": {
+   "bytes": 38346,
+   "sha256": "6d1814e92b5d4a45461e21457e194196f82a6290962bd64cb2710343c745a8ec"
+  },
+  "raw/schedule/schedule_2025.parquet": {
+   "bytes": 38295,
+   "sha256": "457132e2f438e31cbe0b86bb4e74805cf47af06a7145577e96b5467470386542"
+  },
+  "raw/schedule/schedule_2026.parquet": {
+   "bytes": 38418,
+   "sha256": "99903ae90f6e0f9eb5c77062d257e62c77d212ec211dfe0dfbc7828590fb2908"
+  },
+  "raw/shots/shots_2016.parquet": {
+   "bytes": 4830958,
+   "sha256": "97eccc584028c84e3f625fec1990c5f17843fbd442af574cfd842711776e62d4"
+  },
+  "raw/shots/shots_2017.parquet": {
+   "bytes": 4918125,
+   "sha256": "8dc3bb9b40040812276813c289ed354bb35f2901a5fbaeca0e7acf5e8cdd493b"
+  },
+  "raw/shots/shots_2018.parquet": {
+   "bytes": 5063405,
+   "sha256": "ad6569f00486ff67a26be5788e4270ab85bdbfe5a6bcb3d86d9bb42c3597a8e0"
+  },
+  "raw/shots/shots_2019.parquet": {
+   "bytes": 5285171,
+   "sha256": "6edcd9209d3bddec09fad85b9f4b6f17ead83b4ab9de0c0f46b28a5016503ece"
+  },
+  "raw/shots/shots_2020.parquet": {
+   "bytes": 4602999,
+   "sha256": "9521d84f88c1335f01c7992242b4fcb132c2d4de440fd3e24df4417bb491ee91"
+  },
+  "raw/shots/shots_2021.parquet": {
+   "bytes": 4712000,
+   "sha256": "5b3261a3a9a47a20c5f5d6e042837664616b4fbc9f56a74d31a0317114b97368"
+  },
+  "raw/shots/shots_2022.parquet": {
+   "bytes": 5303641,
+   "sha256": "fa0d50a3ff661ef223f6a8aaf9d1a127ec796073aebf63f1b8668fce08982ad7"
+  },
+  "raw/shots/shots_2023.parquet": {
+   "bytes": 5372251,
+   "sha256": "f20448f5c5e45d2a9b5dd515105153654314cf8f51f87ab6c0388c9212b0789b"
+  },
+  "raw/shots/shots_2024.parquet": {
+   "bytes": 5425147,
+   "sha256": "e4abf6ec77a2ed0c7e46ffe9577c640526af6d0f0dee77605090fb31bdd12a45"
+  },
+  "raw/shots/shots_2025.parquet": {
+   "bytes": 5457974,
+   "sha256": "3fe2a45f988abaf8b41f7473b24fabb77ad958c4408ab1d171567e9c15aab091"
+  },
+  "raw/shots/shots_2026.parquet": {
+   "bytes": 5392377,
+   "sha256": "63612701b30d4982f68b99ec98863432124c4df8543c073021824a0956d910e4"
+  },
+  "raw/team_box/team_box_2016.parquet": {
+   "bytes": 84149,
+   "sha256": "29e36f656334099e3d6752879753170b5d7d8009d83492f7e42cdb93e413d924"
+  },
+  "raw/team_box/team_box_2017.parquet": {
+   "bytes": 83339,
+   "sha256": "23dbfd98b883aff7d3261cfcc80628ea84aa19512fc89de2899adc3fb52bb9a6"
+  },
+  "raw/team_box/team_box_2018.parquet": {
+   "bytes": 84005,
+   "sha256": "b9631f859a9a6868f389c9ec9f439d58d05b5ff331c401b2a6dd4717b7356ad7"
+  },
+  "raw/team_box/team_box_2019.parquet": {
+   "bytes": 84547,
+   "sha256": "b54cabd692e1aa4642f19790cefb5d8cb8325342143f0c7226e1a234e77c129a"
+  },
+  "raw/team_box/team_box_2020.parquet": {
+   "bytes": 76120,
+   "sha256": "c9fed1387b6bb47712478b3089327ebb13e1e508015c89cc3f1bac9a2c18487d"
+  },
+  "raw/team_box/team_box_2021.parquet": {
+   "bytes": 77855,
+   "sha256": "1f5dfdbe17706d0a3bf95b7f5f22a97f30c87fdc5c601e55f5bf769cee2c39e1"
+  },
+  "raw/team_box/team_box_2022.parquet": {
+   "bytes": 84816,
+   "sha256": "2fbc1f1853d4c6e3646ae4d885bf594b7eabb123cbc7284c12bd159135cd9ff7"
+  },
+  "raw/team_box/team_box_2023.parquet": {
+   "bytes": 84916,
+   "sha256": "32eb8c8dc913bf2dd0260cee8db2b4a4f55130a65802c1ae959327ed252ae133"
+  },
+  "raw/team_box/team_box_2024.parquet": {
+   "bytes": 84849,
+   "sha256": "23024e84ede61b13eac05ff461e3547c20b87fdbc52cfcbeb67f1011dd967973"
+  },
+  "raw/team_box/team_box_2025.parquet": {
+   "bytes": 84950,
+   "sha256": "94efe0afc4b81505d70ba6cc668ba46ba0937973fe64540c7193a675785a3d49"
+  },
+  "raw/team_box/team_box_2026.parquet": {
+   "bytes": 85533,
+   "sha256": "a713e7df1e9eeea9cc0b4e5768449fa506a68bd4683a75d997f216a930be574f"
+  }
+ },
+ "manifest_build_as_of": "2026-10-16T06:01:34Z"
+}

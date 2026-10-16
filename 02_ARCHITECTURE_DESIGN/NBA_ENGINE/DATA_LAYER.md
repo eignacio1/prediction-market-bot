@@ -1,7 +1,7 @@
 # NBA engine — event-level data layer (W78.4 Part B)
 
 **Date:** 2026-10-16 · **Doctrine:** ADR-0073 stage 1 · **Pillar/measure:** DEPTH D4 (NBA) · **Decisions logged:** false (DECISION_LOG row deferred to session-end)
-**Status:** Part B built and verified. **Part A (`FACTOR_TAXONOMY.md`) NOT written** - session limit; carried forward.
+**Status:** Built, verified, merged (PR #278, 26f963a). `FACTOR_TAXONOMY.md` written in W79.3.
 
 ## Build
 `python3 -m prediction_market_bot.c1_signal_ingestion.nba_event_store` (free sportsdataverse GitHub releases; no login).
@@ -16,8 +16,14 @@ A game G' is usable for G iff `tip_latest(G') + 4h <= tip_earliest(G)`. Real tip
 Rows, key nulls (0 in all files), duplicate-key ceilings, season column, per-source minimum rows, cross-source coverage. Real store: 123 files, 44 coverage checks, 0 failures.
 Findings: lineups `action_number` repeats (~5.2%); shots ties 0.08% max; preseason/all-star games (~5.5%) have no box/officials and imputed tips; game_rosters thinner 2016-17; officials 2026 coverage 99.77%; injuries are daily snapshots only from 2026-09-08 (no free history).
 
-## GAPs (to register in the claimed GG-895..899; none bought)
+## W79.3 updates (2026-10-16)
+- **Raw store location:** local machine (78.4 worktree `exp_output/NBA_EVENTS/`) and the VPS `/opt/prediction-market-bot/exp_output/NBA_EVENTS` (124 files incl. manifest). Git-ignored. Integrity sidecar `store_file_hashes.json` (123 files, sha256 of stored parquet; the manifest's `source_sha256` hashes downloaded bytes, so cannot verify stored files). Verified OK on both machines via `nba_store_verify.py verify`.
+- **Lineup `action_number` repeats (5.2%): resolved as not corruption.** The true key is (game_id, action_number, occurrence); repeats are simultaneous events. Rule: join pbp by `order_index` (`attach_order_index`, validated one_to_one). No data change.
+- **Imputed games (5.4%): resolved by rule.** 811 of 14,979 games (preseason 770 + all-star 41) have no box/officials and imputed tips. `eligible_games` keeps regular season and playoffs only; `game_quality` flags the rest. Never silently used. Tip-imputed share inside the analysis universe: 0.03%.
+- Code: `nba_data_rules.py`, `nba_store_verify.py`, `nba_factors.py`; tests in `tests/test_nba_*`.
+
+## GAPs (registered W79.3 as GG-910..914; GG-895..899 were taken by a collision; none bought)
 Historical injury reports; official-crew assignment timestamps; coach tenure dates; travel/venue geometry; PAM-derived factors; structured qualitative.
 
 ## D4 line - NBA
-Before: none. After: event-level data layer with a point-in-time contract, 2015-16..2025-26 + 2026-27 schedule, checked. Stage: **aggregated** (no factor yet interpreted/applied by an engine). Weekly rebuild: propose next wave (no running component added; surface_delta 0).
+Before: none. After: event-level data layer with a point-in-time contract, 2015-16..2025-26 + 2026-27 schedule, checked. Stage at W78.4: aggregated. W79.3: two factor classes (pace/efficiency, rest) reach **interpreted** (see `FACTORS_FIRST_READ.md`); none applied. Weekly rebuild: propose next wave (no running component added; surface_delta 0).
