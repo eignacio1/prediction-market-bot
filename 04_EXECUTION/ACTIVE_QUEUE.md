@@ -250,7 +250,7 @@ module. The gap agent skips all of these.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 78.1 | Land the runtime map on both dashboards + the gap agent made visible (77.4, never started) | PLUMBING (ADR-0074): SURFACE BUDGET + runtime map on /project, Live Terminal, Visual Dashboard (built → deployed); gap burn-down visible | ⬜ | |
+| 78.1 | Land the runtime map on both dashboards + the gap agent made visible (77.4, never started) | PLUMBING (ADR-0074): SURFACE BUDGET + runtime map on /project, Live Terminal, Visual Dashboard (built → deployed); gap burn-down visible | 🟡 IN PROGRESS | Part A DONE: #266 merged (16b06d6), box deployed 05:58Z, t4-mlb restart not_needed, runtime map 73 live / 0 stale; budget RED on the NFL QB silent arm (not 78.1's). Part B: #276 open |
 | 78.2 | Thinner markets: fetch their price history, measure the efficiency gradient, pre-register the first test | BREADTH/DEPTH: Kalshi NFL+NBA families with price history (1: game ML → all listed thin families); efficiency + fillability table per family (0 → 1); first thin-market pre-registration (0 → 1) | ⬜ | |
 | 78.3 | NBA opening night (10-20) ready: cells flip, no silent arm, a read-back runbook | BREADTH B1: NBA cells ready to log on 10-20 (proven by dry run); NBA-T1 registry/code mismatch resolved; NBA covered by the silent-arm alarm | 🟡 READY | #274 + #275 merged; sha bug (GG-890) and silent-arm glob (GG-892) fixed, runbook written; box dry run 9/12 cells flip-ready. Closes on the 10-21 read-back (NBA_OPENING_NIGHT_RUNBOOK.md) |
 | 78.4 | NBA engine stage 1: the event-level data layer (ADR-0073 speed lane) | DEPTH D4 NBA: none → event-level data layer with a point-in-time contract | ⬜ | |
