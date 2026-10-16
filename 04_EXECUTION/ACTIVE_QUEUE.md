@@ -43,6 +43,7 @@ Values below: VPS run 2026-10-09T16:18Z, plus 64.1's D3 and 65.3's D1 lines (`di
 | | E3 win rate, fills vs non-fills | **T4 24.1% vs 48.7% · T1 28.9% vs 52.1%** — adverse selection + stale pricing (63.3) | fills at least as good as non-fills | 0 |
 | | Forward test (ADR-0072), day one, treatment arm | **paper/MLB 5/17 fills, +0.07 · shadow/MLB 75/363, −0.20 · shadow/NFL 231/1,135, +0.398** (NFL: 0 post-kickoff fills, all taker crosses, ~4 correlated games — not E2 evidence, GG-624) | ~550 fills/arm in 8 weeks | **ON again since 10-13 23:58Z** — cancel fixed (shard routing, GG-645); both-arm read-back after tonight's games |
 | | Forward test (ADR-0072), W72.1 read-back 2026-10-14T00:44Z (since re-arm 10-13 23:58Z) | **cancels work: 12 real `cancel_ok` on KXMLB*, 0 failed · control arm placing: 13 MLB + 23 NHL orders, 4 control fills · 0 post-re-arm orders settled, so E2/E3 not yet readable** (source: `W65_2_forward_test_on_results.md` "Read-back W72.1") | settled fills on both arms | first post-fix cancels and control fills; E2/E3 unchanged |
+| | Forward test (ADR-0072), W76.1 read-back 2026-10-16T00:20Z (since re-arm, 2.0 days; `demo_fill_forward_report.py --since`) | **shadow: 962 accepted, 129 fills (13.4%), 40 settled · control NHL 29 settled 48.3% win +0.123 · non-fills would-win 23-34% (E3)** · treatment/control fill-rate ratio 0.22 pooled (needs 0.25) · **1,535 of 1,606 rejections are `insufficient_balance` (demo cash $0.17, GG-840)** · 10-15 cancel-fail 19.6% = exchange 503 (GG-841) | ~550 fills/arm; NHL treatment reaches it ~12-23 (misses 8-week window), NFL/MLB treatment not this season | E rows unchanged for T4/T1 books (not re-measured) |
 | **PROOF** | P1 cells at a scored look / engine cells | **0 / 45** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal "keep accruing" ~91% (W62.2; the VPS has the expectations file — 64.1) | — | — |
@@ -233,7 +234,7 @@ waits on another's.
 
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| 76.1 | Kill switch proven on the box; why the fill fix barely fills | EXECUTION: order paths halting on one switch, running (6/6 in code → 6/6 running); E1 per arm + projected date each arm reaches judged n | ⬜ | |
+| 76.1 | Kill switch proven on the box; why the fill fix barely fills | EXECUTION: order paths halting on one switch, running (6/6 in code → 6/6 running); E1 per arm + projected date each arm reaches judged n | 🟨 DONE, PR #267 blocked on main CI (76.2 exploratory-isolation tests, not this PR). Drill PASS: 6/6 order paths halt on the one switch, running (t4-mlb 29.5 s, funnel 19-37 ms); GG-745 RESOLVED. Read-back W76.1 in W65_2. | #267 |
 | 76.2 | NFL engine: a second factor class the ratings can't already hold | DEPTH D5(b) NFL applied +1 (6 → 7 of 16 seat factors) | ✅ F8 unit availability APPLIED: MATCHES ML/spread/team total, NO on total (no BEATS); R² vs ratings 1.3% | results_stage3.md |
 | 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | PROOF integrity (GG-747/748/764): ledger writers bypassing atomic_io 4 → 0 | 🟨 Part A merged (PR #265, fda73e4); Part B next | Writers bypassing atomic_io 4 → 0; CellLedger.append flocked + 6-proc test; box on fda73e4 (t4-mlb skip_live_game, not restarted). NOT done: GG-764 read-side holes, GG-747 34-row gap (box now shows 4316 closed/0 open; recompute from a read-only copy) |
 | 76.4 | Runtime map live and visible (B74-A Session 2) | PLUMBING (ADR-0074): registry entries reviewed 0/76 → 76/76; no-alarm 21 → 0; SURFACE BUDGET on both dashboards | 🟨 Built, PR #266 (a30625f) NOT MERGED: CI red on main's own `tests/test_exploratory_isolation.py` (12_EXPLORATORY availability.py, part_a_avail.py — 76.2) | Part C + Part D code done, 4227 tests pass locally; merge, restart pmbot-web-dashboard and read-back wait on 76.2's fix. |
@@ -804,7 +805,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 76.1 | Kill switch proven on the box; why the fill fix barely fills | ⬜ | |
+| 76.1 | Kill switch proven on the box; why the fill fix barely fills | 🟨 | #267 |
 | 76.2 | NFL engine: a second factor class the ratings can't already hold | ⬜ | |
 | 76.3 | Every ledger writer atomic and locked; the 34-row gap reconciled | ⬜ | |
 | 76.4 | The runtime map goes live and visible (B74-A Session 2) | ⬜ | |
