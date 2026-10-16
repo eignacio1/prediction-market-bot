@@ -954,3 +954,4 @@
 | 2026-10-16T14:15:30Z | W79.1 | CLOSED — merge confirmed, HEAD (f8100c2) is ancestor of origin/main — NFL QB silent arm fixed (#279), glob sweep, dashboard rebuilt; budget RED on t4-mlb |
 | 2026-10-16T14:26:08Z | W79.3 | MERGED: NO — branch `session/20261016T134906Z-w79-3-nba-engine` awaiting merge — W79.3 NBA engine: store landed (#278,#280), taxonomy 13 classes, GG-910..914, pace/efficiency and rest interpreted (commit `c811baf`) |
 | 2026-10-16T14:26:20Z | W79.3 | CLOSED — merge confirmed, HEAD (8b70733) is ancestor of origin/main — NBA engine: store landed, taxonomy, GG-910..914, two factors interpreted |
+| 2026-10-16T14:32:39Z | W79.2 | CLOSED — W79.2 PARTIAL: #277 merged, 7 more families sampled (NFL 11, NBA 5), store on laptop+VPS sha256-verified; Part B (gradient, F8 share, prereg) NOT done. (commit `2f43377`) |

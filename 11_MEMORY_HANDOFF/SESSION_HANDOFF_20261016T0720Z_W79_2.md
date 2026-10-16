@@ -1,10 +1,23 @@
-# Session handoff — W79.2 (PARTIAL, closed early on weekly usage limit)
+# Session handoff — W79.2 (PARTIAL)
 
+<!-- session-meta
+task_id: W79.2
+tier: MICRO
+timestamp: 2026-10-16T14:35:00Z
+commit: 2f43377
+one_line_summary: W79.2 PARTIAL: #277 merged, 7 more families sampled (NFL 11, NBA 5), store on laptop+VPS sha256-verified; Part B (gradient, F8 share, prereg) NOT done.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
 vision_pillar: BREADTH
 gap_measure: B-adjacent: families with price history in the archive
 gap_delta: NFL families with candles 9 (sampled, W78.2) -> 11 (adds KXNFLRSHYDS, KXNFLPASSYDS); NBA 0 -> 5 (GAME, SPREAD, TOTAL, PTS, REB; TEAMTOTAL never listed, GG-891). Source: exp_output/KALSHI_HISTORY/thin/fetch3.log. Efficiency/fillability table 0 -> 0; thin-market prereg 0 -> 0 (not started).
 pattern_sweep: n/a (no defect fixed)
 surface_delta: 0
+-->
+
+## Strategic Decisions This Session
+None — implementation-only session. No operator decisions.
 
 ## Done
 - PR #277 merged (squash 0ef3ec1), CI green; 4 new tests (resume skips stored keys, deterministic hash-order sample, custody-only flag).
@@ -20,6 +33,5 @@ surface_delta: 0
 - Stage per factor: none advanced (F8 remains where 77.2 left it).
 
 ## Resume
-Analysis reads 2025-and-earlier only (custody_only flags 2026 closes). Inputs: raw store + scratch terms.json (regenerate via 12_EXPLORATORY/nfl_engine/market_tests/extract_terms.py). Kickoff time is not in nflverse/schedule parquet; approximate inactives window. Use per-market implied mu = K + sigma*Phi^-1(mid), the sample has no full ladders.
+Analysis reads 2025-and-earlier only (custody_only flags 2026 closes). Inputs: raw store + scratch terms.json (regenerate via 12_EXPLORATORY/nfl_engine/market_tests/extract_terms.py). Use per-market implied mu = K + sigma*Phi^-1(mid), the sample has no full ladders.
 
-Operator decisions: none.

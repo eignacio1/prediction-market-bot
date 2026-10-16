@@ -29,3 +29,4 @@ A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry
 - Plain-English pillar: plumbing plus breadth (one fewer false red). No money at risk.
 
 **W79.3 — NBA engine (DEPTH).** The NBA data store is now on main and copied to the server, with checks that it arrived intact. Two team factors were studied: pace and scoring efficiency are real, stable team traits that help predict game totals; rest is not a team trait but back-to-backs cost a team about 2.3 points. Neither has been tested against betting prices yet, so there is no edge claim. Five data gaps are logged; nothing was bought and no money or live settings changed.
+- W79.2 (auto): W79.2 PARTIAL: #277 merged, 7 more families sampled (NFL 11, NBA 5), store on laptop+VPS sha256-verified; Part B (gradient, F8 share, prereg) NOT done.
