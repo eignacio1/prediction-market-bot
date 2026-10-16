@@ -299,22 +299,25 @@ def probe_local(payload: dict) -> dict:
         if u.endswith(".service") and since and d.get("ActiveState") == "active":
             try:
                 t = datetime.strptime(since, "%a %Y-%m-%d %H:%M:%S %Z").replace(tzinfo=timezone.utc)
-                run_sha = run(["git", "rev-list", "-1", f"--before={int(t.timestamp())}", "HEAD"]).strip()
-                if run_sha:
-                    # W80P.1: "behind" = a file THIS service imports changed since run_sha -- the same import set
-                    # the deploy restart policy uses (deploy_truth.unapplied_changes, one shared definition).
-                    # An unrelated merge never makes a service behind (W79.1's false RED).
-                    import sys
-                    from pathlib import Path
-                    sys.path.insert(0, os.path.join(root, "scripts", "ops"))
-                    try:
-                        import deploy_truth
+                # W80R.1 / GG-920: the running SHA and the "behind" files both come from deploy_truth -- sha_at (exact
+                # box HEAD from the deploy log at process start; commit-date estimate only as fallback) and
+                # unapplied_changes (the restart policy's import set). The old `rev-list --before=<start>` picked commits
+                # dated before the start but pulled after it, so a stale t4-mlb read 0.0h behind (false GREEN, 10-16).
+                import sys
+                from pathlib import Path
+                sys.path.insert(0, os.path.join(root, "scripts", "ops"))
+                try:
+                    import deploy_truth
+                    decisions = deploy_truth.load_decisions(Path(root) / "logs" / "vps_deploy_decisions.jsonl")
+                    run_sha, _how = deploy_truth.sha_at(Path(root), t, decisions)
+                    run_sha = run_sha or ""
+                    if run_sha:
                         hits, first = deploy_truth.unapplied_changes(Path(root), u[: -len(".service")], run_sha,
                                                                      out["head"])
                         unapplied = len(hits)
                         behind_h = round((now - first) / 3600, 2) if first else 0.0
-                    finally:
-                        sys.path.pop(0)
+                finally:
+                    sys.path.pop(0)
             except Exception:
                 pass
         services[u] = {"load": d.get("LoadState"), "active": d.get("ActiveState"), "sub": d.get("SubState"), "since": since,

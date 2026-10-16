@@ -5,6 +5,8 @@ GREEN (Hard Rule 14) -- and read back what it has written. Runs ON the box (via 
   install    fresh budget probe; RED -> prints REFUSED + every red reason and changes nothing. GREEN -> appends the
              `# BEGIN/END W80P.1 THIN MARKET DEPTH CAPTURE` block from deploy/cron.thin_capture to the crontab
              (idempotent: an existing block is left exactly as it is; no other crontab line is touched).
+  uninstall  removes exactly the W80P.1 BEGIN..END block (W80R.1: installed on a false GREEN, GG-920); every other
+             crontab line is kept byte-for-byte. Idempotent.
   readback   the crontab block, the log tail, the store files and tracked-ticker count. Read-only.
 
 Exit code is 0 in every outcome except a crontab write that did not verify (the bridge reports stdout either way).
@@ -81,6 +83,31 @@ def install(live_fn=None, read=_crontab_read, write=_crontab_write) -> int:
     return 0 if ok else 1
 
 
+def without_block(current: str) -> tuple[str, bool]:
+    lines = current.splitlines()
+    if BEGIN not in (l.strip() for l in lines):
+        return current, False
+    i = next(k for k, l in enumerate(lines) if l.strip() == BEGIN)
+    j = next((k for k, l in enumerate(lines) if l.strip() == END and k > i), None)
+    if j is None:
+        raise SystemExit("crontab has the BEGIN marker without END; refusing to edit")
+    kept = lines[:i] + lines[j + 1:]
+    return ("\n".join(kept) + "\n") if kept else "", True
+
+
+def uninstall(read=_crontab_read, write=_crontab_write) -> int:
+    cur = read()
+    new, changed = without_block(cur)
+    if not changed:
+        print("NOT INSTALLED: no W80P.1 block in the crontab; nothing changed")
+        return 0
+    write(new)
+    after = read()
+    ok = BEGIN not in after and all(l in after.splitlines() for l in new.splitlines())
+    print("UNINSTALLED: W80P.1 block removed; every other crontab line preserved" if ok else "ERROR: crontab write did not verify")
+    return 0 if ok else 1
+
+
 def readback() -> int:
     cron = _crontab_read()
     lines = cron.splitlines()
@@ -107,7 +134,7 @@ def readback() -> int:
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
-    if cmd not in ("install", "readback"):
+    if cmd not in ("install", "uninstall", "readback"):
         print(__doc__)
         sys.exit(2)
-    sys.exit(install() if cmd == "install" else readback())
+    sys.exit({"install": install, "uninstall": uninstall, "readback": readback}[cmd]())
