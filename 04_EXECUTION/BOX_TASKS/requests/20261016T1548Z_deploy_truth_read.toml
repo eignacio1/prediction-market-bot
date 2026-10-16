@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W80R.1: box HEAD and per-service staleness"

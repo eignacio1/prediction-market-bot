@@ -1,0 +1,2 @@
+task = "budget_read"
+note = "W80R.1: first bridge request; SURFACE BUDGET after #281 import-aware rule"
