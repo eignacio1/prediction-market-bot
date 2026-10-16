@@ -2455,6 +2455,25 @@ Operator, verbatim: "Send me another copy + paste to drop into Muse serving as a
 
 Operator relayed Muse's report; window verified on the archive at 1fb38c1 (34 commits, no rewrite since 90921e5): STATUS.md opened at charter v1; schema v1.1 (additive) adds source_time and applies_to, required for availability/role claims (R-002); R-001..003 closed by commit. Muse's queue notes it is "on ice for usage as of 2026-10-15 night per Earl - queue resumes on his direction". Window added R-004 (naming: "undervalued board") and R-005 (applies_to: carry nflverse game_id / season+week for exact joins).
 
+### 2026-10-15 23:30 PT — Wave 78 closed early (operator session limits); Wave 79 issued; branch-cleanup plan (strategic window)
+
+- **Operator, 23:11 PT:** "I had to end 78s work early because we were coming up on session limits quick ... set up next wave
+  (it's completely okay if it's just picking up what they didn't finish)". Wave 78 verified on GitHub: 78.1 DONE (#266, #276);
+  78.2 PARTIAL (#277 open, CI green; NBA and Part B undone); 78.3 DONE (#274, #275; closes on the 10-21 read-back); 78.4 PARTIAL
+  (#278 open; FACTOR_TAXONOMY.md and GG-895..899 undone).
+- **Wave 79** (set by 78's results, sequential): 79.1 clears the one red surface signal (NFL QB challenger silent arm) plus 78.1's
+  loose ends; 79.2 finishes 78.2; 79.3 finishes 78.4 and takes two NBA factors to "interpreted"; 79.4 branch cleanup (MICRO).
+  0 running components (Hard Rule 14: surface RED). Wave 80's candidates if 79.1 clears it: thin-market order-book capture, NBA
+  weekly store rebuild.
+- **Branch cleanup.** Operator, 23:08 PT: "good lord we need a branch cleanup soon. What the fuck is going on there". Cause:
+  `delete_branch_on_merge` is false, so every session branch stays after its PR merges. The window classified all 148 remote
+  branches (109 landed, 33 with work not on main, 6 kept) into 04_EXECUTION/BRANCH_CLEANUP_PLAN_20261016.md. Unmerged work is
+  preserved as `archive/<branch>` tags before any delete. The window could not run it: this cloud session's GitHub proxy refused
+  (1) `gh api -X PATCH repos/eignacio1/prediction-market-bot -F delete_branch_on_merge=true` -> HTTP 403 "Repository settings writes
+  are not permitted through this proxy."; (2) `gh api -X POST .../git/refs` (archive tag) -> HTTP 403 "Write access to this GitHub
+  API path is not permitted through this proxy."; (3) `git push origin <sha>:refs/tags/archive/...` and `git push origin --delete
+  <branch>` -> "the remote end hung up unexpectedly". Not worked around; a terminal on the operator's machine runs it (79.4).
+
 ## 2026-10-15 23:30 PT — W78.4 PARTIAL: NBA event-level data layer built, taxonomy not written
 
 Part B done: free sportsdataverse NBA store 2016-2026 (123 files, 0 failures), PIT contract (tip bounds, 4h buffer, season_static refused, date-only snapshots count from end of day), fail-closed checks, manifest committed; PR #278. Decisions: imputed tips use Eastern-day bounds (conservative both sides); injuries keyed (injury_id, as_of_date); no free injury history before 2026-09-08 is a GAP, not bought. stats.nba.com unreachable - reported, not scraped. Part A (FACTOR_TAXONOMY.md) and GG-895..899 registration deferred (session limit). D4 NBA: none -> aggregated (data layer, no factor interpreted/applied). No order/stake/registry/kelly change.
