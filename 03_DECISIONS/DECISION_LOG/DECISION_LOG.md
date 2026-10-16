@@ -2450,3 +2450,7 @@ Operator, verbatim: "Send me another copy + paste to drop into Muse serving as a
 - Deploy key id 166624777, "Muse archive push (write, this repo only)", read-write, ed25519, fingerprint `SHA256:ay0DYX07S91eP5Bep2dRPKBdRb6CmIG/QJpltAdEBoo`. Private key at `~/.config/sports-intel-archive/muse_deploy_key` (600, dir 700), outside every project folder; never committed. Revoke: `gh repo deploy-key delete 166624777 --repo eignacio1/sports-intel-archive`.
 - Deviation: first `cat` of the key was refused (classifier, "Credential Materialization"); stopped and reported, retried once on operator instruction "Keep trying", succeeded. The key text was shown in the operator's terminal and is in that session transcript only.
 - Bot repo untouched by the block itself. Downstream: INTAKE_CONTRACT "The pipe"; entry 22:54 PT (Muse pushing, verified).
+
+## 2026-10-15 23:03 PT — Charter live on Muse's side (verified)
+
+Operator relayed Muse's report; window verified on the archive at 1fb38c1 (34 commits, no rewrite since 90921e5): STATUS.md opened at charter v1; schema v1.1 (additive) adds source_time and applies_to, required for availability/role claims (R-002); R-001..003 closed by commit. Muse's queue notes it is "on ice for usage as of 2026-10-15 night per Earl - queue resumes on his direction". Window added R-004 (naming: "undervalued board") and R-005 (applies_to: carry nflverse game_id / season+week for exact joins).
