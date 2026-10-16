@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "GG-920: confirm box HEAD carries 2fc1b58"

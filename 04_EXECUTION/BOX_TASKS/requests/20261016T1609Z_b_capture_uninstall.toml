@@ -1,0 +1,2 @@
+task = "capture_uninstall"
+note = "GG-920 retry 2 (after the 16:08 deploy tick)"
