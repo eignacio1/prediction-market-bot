@@ -394,7 +394,14 @@ MOVED (before -> after, source) | stage reached per factor | operator decisions 
 END OF PSEUDO-WAVE 80P. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-## ☁️ NEXT — PSEUDO-WAVE 80Q: the tail scanner ("701st out of 701") · paste into the Claude Code session AFTER 80P finishes
+## 📦 BACKLOG DRAFT — 80Q, the tail scanner ("701st out of 701") · NOT QUEUED: do not paste (operator 08:04 PT)
+
+**Operator, 08:04 PT:** "Don't be so focus on now building something QB specific right now (we'll build all of that as we proceed) - I'm
+simply talking about the granularity index and how these are the type of subtle things that we can use to our advantage." So this is
+not a build order. The standing point it records: **the granularity bar includes the tails** - every engine must be able to say
+where a player or unit sits against history at the same point in a season ("701st out of 701"), map that to the markets it should
+move, and test whether the price already knows. It is built per sport as each engine reaches that stage (filtering mechanisms +
+cross-reference compatibility, ADR-0075). The draft below is kept for when it comes due.
 
 Operator, 2026-10-16 08:03 PT: "There are 701 qualified QB seasons through 6 games in the past 20 years. 2026 Bo Nix ranks 701st
 out of 701 in average pass length (4.9 air yards per attempt). His avg pass was thrown behind the line of scrimmage in the 2nd half
@@ -724,8 +731,6 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
-
-### ⬜ PSEUDO-WAVE 80Q — QUEUED (after 80P) · the tail scanner: extremes → markets → test → shadow log
 
 ### ⏳ PSEUDO-WAVE 80P — ISSUED 2026-10-16 ~14:50 UTC · one Claude Code cloud session, four tasks in order
 
