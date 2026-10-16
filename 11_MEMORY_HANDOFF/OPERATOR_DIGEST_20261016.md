@@ -4,3 +4,4 @@ We tested a new idea for the football model: how many regular starters are missi
 
 ## W76.4 — runtime map made visible (plumbing)
 The list of everything running on the server is now fully checked (76 of 76) and every item has an alarm or a written reason. A green/red "surface budget" light is built into the daily scan, the project page, the Live Terminal and the Visual Dashboard. It is built but not yet live: the change is waiting on a failing check that comes from another block's NFL files (not this work). No money, orders or sizing changed. Nothing is needed from you; it ships once that check is fixed.
+- GG-860..GG-879 (standing gap agent) (auto): Gap agent ticks 1-3: 1 gap resolved, 23 retired to archive, 20 severities filled, 39 gaps bucketed; loop stopped manually.
