@@ -528,6 +528,30 @@ def _silent_arms(d: Path, now: datetime) -> dict:
     return val
 
 
+def _runtime_strip() -> dict:
+    """W76.4 / ADR-0074: compact SURFACE BUDGET strip for the Live Terminal. Reads the cached runtime probe
+    (scripts/runtime_registry.py), refreshing it off-thread -- never blocks a request. Failure -> awaiting."""
+    try:
+        sys_path = str(_REPO_ROOT / "scripts")
+        import sys
+        if sys_path not in sys.path:
+            sys.path.insert(0, sys_path)
+        import runtime_registry as rr
+        ev = rr.live_background()
+    except Exception as e:
+        return {"awaiting": f"runtime map: {type(e).__name__}"}
+    if ev.get("pending"):
+        return {"awaiting": "first box probe running"}
+    if ev.get("error"):
+        return {"awaiting": f"box probe: {ev['error']}"}
+    c = ev.get("counts", {})
+    bad = [{"name": r["purpose"][:60], "state": r["state"], "detail": r.get("detail") or ""}
+           for r in ev.get("rows", []) if r["state"] in ("DOWN", "BEHIND", "STALE", "NO ALARM")]
+    return {"budget": ev.get("budget"), "reasons": ev.get("reasons", []), "live": c.get("live"),
+            "stale": c.get("stale"), "no_alarm": c.get("no_alarm_unexplained"),
+            "no_alarm_reasoned": c.get("no_alarm_reasoned"), "bad": bad[:12], "as_of": ev.get("as_of")}
+
+
 def _nba_shadow_freshness(now_ts: float, s: dict) -> dict:
     """Age of the newest EXP-038 NBA judged-ledger write (exp_output/PREGAME_SHADOW/NBA_*.jsonl only --
     the PREGAME_SHADOW_PRESEASON smoke-test ledger is excluded from judged n and is not read here)."""
@@ -1171,6 +1195,7 @@ def _load_all_data() -> dict:
         "season":          safe(lambda: _season_state(datetime.now(tz=timezone.utc)), {}),
         "freshness":       safe(lambda: _freshness(d, datetime.now(tz=timezone.utc)), {}),
         "silent_arms":     safe(lambda: _silent_arms(d, datetime.now(tz=timezone.utc)), {}),
+        "runtime":         safe(_runtime_strip, {"awaiting": "runtime map"}),
         "origin":          safe(_origin_status, {}),
         "coverage":        safe(lambda: _coverage(datetime.now(tz=timezone.utc)),
                                 {"awaiting": "market_type_registry"}),
@@ -1469,7 +1494,7 @@ svg{display:block; width:100%; overflow:visible}
 .sublane{padding:0 12px 7px 66px; color:var(--dim); font-size:10px; border-bottom:1px solid var(--hair-2)}
 .hw{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center;
   padding:5px 12px; border-bottom:1px solid var(--hair-2); font-size:11px}
-.hw .lbl{color:var(--dim)}
+.hw .lbl{color:var(--dim); overflow-wrap:anywhere; min-width:0}
 .age.ok{color:var(--green)} .age.warn{color:var(--amber)} .age.bad{color:var(--red)}
 .hw .dot{width:6px;height:6px;border-radius:50%;background:var(--faint)}
 .hw .dot.ok{background:var(--green)} .hw .dot.warn{background:var(--amber)} .hw .dot.bad{background:var(--red)}
@@ -2415,6 +2440,12 @@ function health(d,D){
   (sa.silent||[]).forEach(a=>HEALTH.push({lbl:'SILENT ARM  '+a.name, silent:a.text}));
   if(sa.arms&&sa.arms.length&&!(sa.silent||[]).length)
     HEALTH.push({lbl:'SILENT-ARM CHECK', none:'0 of '+sa.arms.length+' arms silent'+((sa.unknown||[]).length?' ('+sa.unknown.length+' cannot be checked)':'')});
+  const rt=d.runtime||{};
+  if(rt.budget){
+    HEALTH.unshift({lbl:'SURFACE BUDGET', chip:rt.budget, txt:rt.live+' live · '+rt.stale+' stale · '+rt.no_alarm+' no alarm ('+rt.no_alarm_reasoned+' reasoned)'});
+    (rt.bad||[]).forEach(b=>HEALTH.splice(1,0,{lbl:'RED  '+b.name, silent:b.state+(b.detail?' · '+b.detail:'')}));
+    (rt.reasons||[]).forEach(x=>HEALTH.splice(1,0,{lbl:'BUDGET', silent:x}));
+  } else HEALTH.unshift({lbl:'SURFACE BUDGET', none:rt.awaiting||'no data'});
   const sn=d.season||{};
   HEALTH.forEach(h=>{ const sp=/NFL/.test(h.lbl)?'NFL':/NBA/.test(h.lbl)?'NBA':/MLB/.test(h.lbl)?'MLB':null;
     if(sp&&sn[sp]&&sn[sp].state==='off') h.off=true; });
@@ -2425,6 +2456,8 @@ function paintHealth(){
   const host=$('#health'); if(!host) return;
   const now=Date.now();
   host.innerHTML=HEALTH.map(h=>{
+    if(h.chip) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
+      `<span class="age ${h.chip==='GREEN'?'ok':'bad'}" style="white-space:normal;text-align:right"><b>${esc(h.chip)}</b> · ${esc(h.txt)}</span><span class="dot ${h.chip==='GREEN'?'ok':'bad'}"></span></div>`;
     if(h.silent) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+
       `<span class="age bad" style="white-space:normal;text-align:right">${esc(h.silent)}</span><span class="dot bad"></span></div>`;
     if(h.none) return `<div class="hw"><span class="lbl">${esc(h.lbl)}</span>`+

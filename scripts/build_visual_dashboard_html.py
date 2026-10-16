@@ -35,13 +35,31 @@ def cells() -> dict:
 
 
 def runtime() -> list:
-    """ADR-0074: the runtime registry, for the Process integrity section."""
-    import tomllib
-    reg = ROOT / "02_ARCHITECTURE_DESIGN" / "RUNTIME_REGISTRY.toml"
-    if not reg.exists():
+    """ADR-0074: the runtime registry, for the Process integrity section (same loader as the scan)."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import runtime_registry as rr
+    keep = ("key", "kind", "schedule", "purpose", "pillar", "alarm", "reviewed", "status", "writes", "source", "max_age_h")
+    try:
+        return [{k: c.get(k) for k in keep} for c in rr.load()]
+    except Exception:
         return []
-    keep = ("kind", "schedule", "purpose", "pillar", "alarm", "reviewed", "status", "writes", "source")
-    return [{k: c.get(k) for k in keep} for c in tomllib.loads(reg.read_text()).get("component", [])]
+
+
+def runtime_live() -> dict:
+    """W76.4: the last live box probe (scripts/runtime_registry.py live), if one is cached on this machine.
+    {} when absent -- the page then says the live columns are not available instead of showing blanks."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    try:
+        import runtime_registry as rr
+        ev = json.loads(rr.live_cache_path().read_text())
+    except Exception:
+        return {}
+    if not isinstance(ev, dict) or "rows" not in ev:
+        return {}
+    return {"as_of": ev.get("as_of"), "head": ev.get("head"), "budget": ev.get("budget"), "reasons": ev.get("reasons", []),
+            "counts": ev.get("counts", {}),
+            "rows": {r["key"]: {"state": r["state"], "age_h": r.get("age_h"), "detail": r.get("detail") or ""}
+                     for r in ev["rows"] if r.get("key")}}
 
 
 def window_errors() -> dict:
@@ -102,7 +120,7 @@ def build(out: pathlib.Path) -> None:
     def js(obj) -> str:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
-    script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime()))
+    script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
               .replace("__WINERR__", js(window_errors())).replace("__GOV__", js(governance())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     out.write_text(html)

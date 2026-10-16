@@ -760,6 +760,15 @@ echo ""
 echo "ORDER-WRITE PARITY (GG-203/T-547 D5 -- alarm-only, does not affect this hook's exit code):"
 python3 "$PROJECT/scripts/gg203_order_write_detector.py" 2>&1 | tail -20 || true
 
+# --- RUNTIME MAP, live (W76.4 / ADR-0074 / GG-743) ---
+# Registry check, surface counts, last-write age per component, running-code SHA vs box HEAD per service, and
+# SURFACE BUDGET GREEN/RED with reasons. One cached (300s) ssh round trip; the same data /project, the Live Terminal and
+# the Visual Dashboard show. ALARM-ONLY (exit code discarded). Unreachable box prints UNKNOWN, never RED.
+echo ""
+echo "RUNTIME (W76.4 -- registry vs box, live columns, SURFACE BUDGET; alarm-only):"
+python3 "$PROJECT/scripts/runtime_registry.py" check 2>&1 | tail -8 || true
+python3 "$PROJECT/scripts/runtime_registry.py" live 2>&1 | tail -30 || true
+
 # --- Silent-arm alarm (W62.1 Part B / GG-532 follow-on) ---
 # For each shadow/paper arm: was a game scheduled to start in the arm's window (N hours, per its own schedule
 # source) with zero rows written? Off-days and off-season are not alarms. READ-ONLY; alarm-only. Reads the
