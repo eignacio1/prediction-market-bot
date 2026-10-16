@@ -2257,6 +2257,36 @@ W78.3 read-only GET 2026-10-15: KXNBAGAME 56, KXNBASPREAD 200, KXNBATOTAL 200 op
 
 W78.3: `silent_arms.load_inputs` globbed `NBA_*.jsonl` for the game arm, which also matches `NBA_NBA_PLAYER_POINTS_*`; live points rows would hide a dead game arm. Fixed in PR #275 with a test; pending deploy at write time. Sweep of the other arms' globs (MLB_/NFL_/NHL_) found no sibling families sharing a prefix. Close after deploy read-back.
 
+### GG-910 — NBA engine: no point-in-time injury history before 2026-09-08
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W79.3 FACTOR_TAXONOMY N10/GAP-1. The ESPN injuries endpoint serves the current list only; the store has daily snapshots from 2026-09-08 (2 files). Games before that cannot be given an as-of injury state, so availability cannot be backtested on this store. Pillar: DEPTH (D5b NBA availability). Proposed fix: take the snapshot daily (not weekly) from now; no purchase. Legacy availability studies (NBA-T3) used other sources and are not rebuilt here.
+
+### GG-911 — NBA engine: officials crew has no assignment timestamp
+
+**Status:** OPEN · **Severity:** LOW
+
+W79.3 GAP-2. `officials` lists the crew for finished games; nothing says when the crew was public, so crew cannot be used pre-tip without an assumption. Pillar: DEPTH. Proposed fix: capture the NBA official assignment page (posted game day) as a dated snapshot going forward.
+
+### GG-912 — NBA engine: coaches are season-level with no tenure dates
+
+**Status:** OPEN · **Severity:** LOW
+
+W79.3 GAP-3. `coaches` has no start/end dates; mid-season firings and interims are invisible and the point-in-time contract refuses the table (`season_static`). Pillar: DEPTH. Proposed fix: derive head coach per game from game-level sources if a free one exists, else snapshot from now.
+
+### GG-913 — NBA engine: no travel / venue geometry (coordinates, time zones, miles)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W79.3 GAP-4. Only venue city and state are loaded; no coordinates or time zones. Rest (N3) is built and interpreted without distance. Pillar: DEPTH (travel is a named granularity-bar factor). Proposed fix: a hand-built 30-arena coordinate table (free, small), plus rest-in-time-zone-hours; then test incremental to rest.
+
+### GG-914 — NBA engine: PAM and structured qualitative factors not piped into the NBA engine
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W79.3 GAP-5 / N13. PAM (DS-01, NBA v4 port) exists but no NBA engine reads it; structured qualitative has no free historical feed. Operator directive 2026-10-14 pipes PAM into NFL and NBA engines first. Pillar: DEPTH (D2 qualitative count 0). Proposed fix: a PAM-to-engine adapter as a separate block; unaffected by this wave.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
