@@ -942,3 +942,4 @@
 | 2026-10-16T06:00:55Z | BLOCK-AP | CLOSED — merge confirmed, HEAD (6d18b72) is ancestor of origin/main — Block AP documented; merged to main |
 | 2026-10-16T06:03:12Z | W78.3 | CLOSED — W78.3 NBA opening-night readiness: flip-check sha bug fixed (9/12 cells flip-ready), silent-arm glob fixed, runbook written; READY pending 10-20/21 read-back. (commit `c65c1ad`) |
 | 2026-10-16T06:03:43Z | W78.3 | CLOSED — merge confirmed, HEAD (ee45bcc) is ancestor of origin/main — NBA opening-night readiness; PRs 274/275 merged |
+| 2026-10-16T06:03:37Z | GG-895..GG-899 | W78.4 NBA engine stage 1: GG range for free-source GAPs (injury history, official/coach timing, travel geometry, PAM, qualitative) |
