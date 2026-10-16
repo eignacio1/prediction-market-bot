@@ -74,3 +74,10 @@ def test_analyse_on_a_market_that_prices_the_term_fully():
         picks.append({"pred_base": pb, "term": term, "strike": strike, "p": p, "y": 1.0 if total > strike else 0.0})
     r = na.analyse(games, picks, sigma)
     assert r["priced"]["lo"] > 0.8 and r["verdict"] in ("REAL-AND-PRICED",)
+
+
+def test_hash_sample_is_order_free_and_deterministic():
+    picks = [{"ticker": f"T{i}"} for i in range(50)]
+    a = na.hash_sample(picks, 10)
+    b = na.hash_sample(list(reversed(picks)), 10)
+    assert a == b and len(a) == 10

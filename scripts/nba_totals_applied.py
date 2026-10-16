@@ -132,6 +132,12 @@ def pick_markets(markets: list[dict], games: dict) -> list[dict]:
     return out
 
 
+def hash_sample(picks: list[dict], n: int) -> list[dict]:
+    """Deterministic, season-unbiased subset: the first n picks in sha256(ticker) order."""
+    import hashlib
+    return sorted(picks, key=lambda p: hashlib.sha256(p["ticker"].encode()).hexdigest())[:n]
+
+
 def quote_mid(candles: list[dict], ts: int):
     last = None
     for c in sorted(candles, key=lambda c: c["end_period_ts"]):
@@ -262,6 +268,8 @@ def main(argv=None) -> int:
     ap.add_argument("--cache", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--pause", type=float, default=0.3)
+    ap.add_argument("--max-games", type=int, default=0,
+                    help="analyse only the first N picks in sha256(ticker) order (0 = all); fixed before results")
     a = ap.parse_args(argv)
     import board_survey_sports_store as bs
     a.cache.mkdir(parents=True, exist_ok=True)
@@ -275,6 +283,8 @@ def main(argv=None) -> int:
     markets = [x for x in markets if x.get("close_time") and
                datetime.fromisoformat(x["close_time"].replace("Z", "+00:00")) < CUSTODY_FROM]
     picks = pick_markets(markets, games)
+    if a.max_games:
+        picks = hash_sample(picks, a.max_games)
     for i, p in enumerate(picks):
         tip = datetime.fromisoformat(p["tip"].replace("Z", "+00:00"))
         tip = tip if tip.tzinfo else tip.replace(tzinfo=timezone.utc)
