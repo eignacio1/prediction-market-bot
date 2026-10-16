@@ -41,8 +41,24 @@ components directly:
    pre-registered test against the market, the 77.2 yardstick included: is it real, already priced, or invisible? Muse's stated
    use for sentiment ("when a window opens or closes") is a timing hypothesis, and gets tested as one.
 
+## Operator answers, 2026-10-15 22:18 PT (window recorded)
+
+1. **Versioning: done.** The archive root is a git repo; every edit is committed, so any past date can be checked out.
+2. **Claims: done.** `CLAIMS_SCHEMA.md` v1.0 is in the archive: one JSONL record per claim (team/player, layer, claim class, what it
+   affects, direction, claim, source + source date, confidence, as-of date, source prose section). No claim without a source and
+   a date. Backfill of all 96 files is queued, running one file at a time.
+3. **Location:** `~/workspace/goals/external-witness-prediction-market-bot/files/nfl-archive/` on the operator's archive machine.
+   It is portable by zip or git. **Not yet reachable by a terminal**; the operator will say when it should be pushed somewhere a
+   terminal can pull from. The adapter waits for that.
+
+## One caveat the adapter must carry (window)
+
+Git history starts 2026-10-15. A claim's **source date** can be months earlier, but the archive chose which sources to keep in
+October, already knowing how September went. So a backtest on games before the first commit carries **selection bias**, even if
+every source date checks out. The adapter tags every claim with `first_committed`. Results on games before 2026-10-15 are
+reported as exploratory and kept apart from results on claims committed before kickoff, which carry no such bias and start
+accruing now.
+
 ## Open questions (for the operator, when the adapter is built)
 
-- Where does the archive live, so a terminal can read it: a git repo the bot can clone, or a folder synced to the VPS?
-- Does the Muse side keep every revision (requirement 1)? If not, the history before versioning starts can only be used as
-  "current state", never to backtest.
+- Where a terminal pulls the archive from (answer 3 above).
