@@ -394,6 +394,138 @@ MOVED (before -> after, source) | stage reached per factor | operator decisions 
 END OF PSEUDO-WAVE 80P. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+## ☁️ NEXT — PSEUDO-WAVE 80Q: the tail scanner ("701st out of 701") · paste into the Claude Code session AFTER 80P finishes
+
+Operator, 2026-10-16 08:03 PT: "There are 701 qualified QB seasons through 6 games in the past 20 years. 2026 Bo Nix ranks 701st
+out of 701 in average pass length (4.9 air yards per attempt). His avg pass was thrown behind the line of scrimmage in the 2nd half
+on Thursday. Do we have mechanisms within the bot, spots within our decision tree, ranges within our architecture - to identify
+these opportunities AND FUCKING BLEED EM OUT? Just one of many examples."
+
+**Window's answer (checked against the repo, 2026-10-16):** no. The raw fact is in the store (nflverse `air_yards` per play since
+1999, NFL_ENGINE F2), but nothing ranks a player against history, nothing maps an extreme to the markets it should move, no NFL
+prop cell exists, and nothing reads the game live. Air yards are used today only inside the WR PAM classifier. **Pushback:** the
+extremes are exactly where six-game samples lie most; the scanner is only worth anything if each metric passes a trait test at
+that sample size, and the prop markets it points at (KXNFLPASSYDS, RECYDS) have Kalshi history only from 2025, so the first proof
+is forward, not backtested. **Surface:** +1 at most (a shadow arm, standing authorization 2026-10-08), only if 80P left the budget
+GREEN. **Dependencies:** run after 80P (it reads 80P's thin-market ranking and needs its GREEN budget).
+
+```
+COMMON RULES - PSEUDO-WAVE 80Q (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- SESSION LIMITS: the operator is at his weekly limit until the reset; this session runs on cloud credit. Push at every part boundary; a block that has pushed
+  Part A and written its handoff is a good outcome, not a failure.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-16 08:10 PT (incl. the 10-16 thinner-markets call, the branch-cleanup plan,
+  the ADR-0072 5xx addendum, the PAM deep-tier scope, the standing gap agent, the qualitative-archive intake contract and "the bot
+  repo stays public") - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - only Task 4's shadow arm may be added, registry entry first.
+- One session, four tasks, in order, after 80P. Only Task 4 may add a running component, and only behind its two gates.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only. (W76.2 pushed exploratory code straight to main and turned main red for every other block for ~1.5 h.)
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (+1 at most, Task 4).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W80Q_<n>.md (docs-only push).
+
+PSEUDO-WAVE 80Q - THE TAIL SCANNER: FIND THE EXTREMES, MAP THEM TO MARKETS, TEST, THEN LOG (one Claude Code cloud session, four tasks in order). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D5 (filtering mechanisms + cross-reference compatibility, two of ADR-0075's eight components: scaffold 0 -> built
+and tested for NFL); D5(b) factor stages (QB depth-of-throw and the other tail metrics: aggregated -> interpreted -> applied where
+the data allows); BREADTH B4 (first NFL prop cell logging, shadow). Pillar: DEPTH + BREADTH.
+Operator, 2026-10-16 08:03 PT (quote it, never compress it): "There are 701 qualified QB seasons through 6 games in the past 20
+years. 2026 Bo Nix ranks 701st out of 701 in average pass length (4.9 air yards per attempt). His avg pass was thrown behind the
+line of scrimmage in the 2nd half on Thursday. Do we have mechanisms within the bot, spots within our decision tree, ranges within
+our architecture - to identify these opportunities AND FUCKING BLEED EM OUT? Just one of many examples."
+Each task: its own PR or docs-only push, its own handoff (SESSION_HANDOFF_<UTC>_W80Q_<n>.md), its own row in the 80Q section of
+04_EXECUTION/ACTIVE_QUEUE.md. Same environment rules as 80P: test reachability first; anything refused is recorded with the exact
+command and left PENDING for the window; no terminal hand-offs.
+
+TASK 1 - The scanner (aggregation -> interpretation)
+  1. Positive control first: reproduce the operator's figure from nflverse pbp - qualified QB seasons through 6 team games,
+     2006-2026, average air yards per attempt, Bo Nix 2026's rank. If it does not reproduce, say exactly where it differs
+     (qualification rule, play filter, season range) before going on.
+  2. Build src/prediction_market_bot/nfl_engine/tails.py (or the engine's existing package): for every player and unit metric in
+     the store that a free source carries - QB: aDOT, air-yards distribution (share behind the line, share 20+), time to throw and
+     aggressiveness if nflverse NGS has them, sack rate, scramble rate, pressure-to-sack; receivers: aDOT, air-yards share, target
+     share, YAC over expected; rushers: yards before contact if free; team units: pace, pass rate over expected, explosive rate
+     allowed - compute, AS OF each week, the player-season's percentile among all player-seasons at the SAME games-played point
+     over 20 seasons (rank n of N, like the operator's example). Point-in-time contract tests: week N reads only weeks < N.
+  3. Trait test per metric at each games-played point (split-half or week-N vs rest-of-season, cluster bootstrap): which tails are
+     real at 6 games and which are noise. Publish the table; only trait metrics go forward. ADR-0075 stage per metric.
+TASK 2 - The map: which markets each tail should move (cross-reference compatibility)
+  4. 02_ARCHITECTURE_DESIGN/NFL_ENGINE/TAIL_MARKET_MAP.md + a machine-readable TOML: for each trait metric, the Kalshi markets it
+     should move and in which direction, with the mechanism in one line (e.g. bottom-1% QB aDOT -> his passing-yards line, his
+     longest completion, his WR1's receiving yards, the team total; and the opposing defense's props). Use inventory.json from
+     12_EXPLORATORY/thin_markets/ for what is actually listed. Wire the map into SEATS/nfl.toml rows (your rows only).
+TASK 3 - Does the market already price the tail? (application)
+  5. Where Kalshi history exists (2025 season, the 80P/79.2 samples of KXNFLPASSYDS, RECYDS, RSHYDS, ANYTD, TEAMTOTAL): for
+     player-weeks in a trait tail vs not, compare the pre-game price to the outcome - pricing share (77.2's method) and residual
+     edge, with CIs, honest about n. Also against the sportsbook-free baseline the engine already has. Verdict per tail family:
+     REAL-NOT-PRICED / REAL-AND-PRICED / INVISIBLE / NOT REAL. A NO is a result.
+  6. Write and FREEZE the forward pre-registration (12_EXPLORATORY/TAIL_SCANNER_PREREGISTRATION_<date>.md): which tails, which
+     markets, expected edge stated before looking ("thinner edge expected" honoured), judged n, the fillability floor from 80P's
+     ranking. One line to the operator for acceptance.
+TASK 4 - Log it forward (shadow) and name the in-game version
+  7. Only if 80P left the surface budget GREEN and the operator has accepted step 6's pre-registration: a pre-registered NFL
+     tail-props shadow arm (evaluate and log, no orders) under the standing 2026-10-08 authorization - RUNTIME_REGISTRY entry
+     first, silent-arm coverage, read back the first rows. Otherwise build it, test it, leave it unscheduled, and say which gate
+     is missing.
+  8. The operator's second half of the example ("behind the line of scrimmage in the 2nd half on Thursday") is an IN-GAME signal.
+     Write 02_ARCHITECTURE_DESIGN/NFL_ENGINE/IN_GAME_TAILS.md: what free live feed carries air yards per play during a game (ESPN /
+     nflverse live?), its latency against Kalshi's NFL in-play markets, and what the T4-NFL arm would need. Design only;
+     register the gap. Horizon doctrine applies: a stripped in-play tree is licensed only by measured speed.
+Report back per task: Status | PR + CI | one-line result | MEASURE MOVED (before -> after, source) | stage per metric | operator
+decisions (one line each, with your recommendation).
+
+END OF PSEUDO-WAVE 80Q. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
 ## 🔌 ONE-OFF — ARCHIVE PIPE: the private repo Muse pushes to (operator 2026-10-15 22:44 PT) · its own terminal, outside the wave
 
 Operator: "Let's do it - send the terminal block now, I'll have it finish its work then come back to you for confirmation, and
@@ -592,6 +724,8 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ⬜ PSEUDO-WAVE 80Q — QUEUED (after 80P) · the tail scanner: extremes → markets → test → shadow log
 
 ### ⏳ PSEUDO-WAVE 80P — ISSUED 2026-10-16 ~14:50 UTC · one Claude Code cloud session, four tasks in order
 
