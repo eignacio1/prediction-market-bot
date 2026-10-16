@@ -178,6 +178,22 @@ def _hits(changed: list[str], rel) -> list[str]:
     return [c for c in changed if c in rel]
 
 
+def unapplied_changes(proj: Path, service: str, sha: str, head: str) -> tuple[list[str], int | None]:
+    """W80P.1: THE one definition of "a running service is behind box HEAD" (deploy-truth check and the
+    runtime registry's SURFACE BUDGET both call this). Files `service` actually uses (relevant_files: the
+    restart policy's import closure for t4-mlb) that changed between `sha` (the code it runs) and `head`,
+    and the commit time (epoch s) of the first commit touching them. ([], None) = current: an unrelated merge
+    never makes a service "behind"."""
+    if not sha or not head or sha == head:
+        return [], None
+    changed = (_git(proj, "diff", "--name-only", sha, head) or "").splitlines()
+    hits = _hits(changed, relevant_files(proj, service))
+    if not hits:
+        return [], None
+    t0 = _git(proj, "log", "--reverse", "--format=%ct", f"{sha}..{head}", "--", *hits[:50])
+    return hits, (int(t0.splitlines()[0]) if t0 else None)
+
+
 def staleness(proj: Path, state_dir: Path, services=DEFAULT_SERVICES, systemctl: str = "systemctl",
               now: datetime | None = None, max_age_h: float = MAX_AGE_H) -> list[dict]:
     now = now or _now()
@@ -194,15 +210,12 @@ def staleness(proj: Path, state_dir: Path, services=DEFAULT_SERVICES, systemctl:
             rows.append({"service": svc, "state": "UNKNOWN", "alarm": False, "start": _iso(start),
                          "detail": "could not resolve the box HEAD at process start"})
             continue
-        changed = (_git(proj, "diff", "--name-only", sha, head) or "").splitlines() if sha != head else []
-        hits = _hits(changed, relevant_files(proj, svc))
+        hits, first = unapplied_changes(proj, svc, sha, head)
         row = {"service": svc, "start": _iso(start), "sha_running": sha[:8], "sha_head": head[:8],
                "sha_source": how, "stale_files": hits[:6], "n_stale_files": len(hits)}
         if not hits:
             row.update(state="CURRENT", alarm=False)
         else:
-            t0 = _git(proj, "log", "--reverse", "--format=%ct", f"{sha}..{head}", "--", *hits[:50])
-            first = int(t0.splitlines()[0]) if t0 else None
             age_h = (now.timestamp() - first) / 3600 if first else None
             row.update(state="STALE", age_h=round(age_h, 1) if age_h is not None else None,
                        alarm=bool(age_h is None or age_h > max_age_h))

@@ -301,14 +301,24 @@ def probe_local(payload: dict) -> dict:
                 t = datetime.strptime(since, "%a %Y-%m-%d %H:%M:%S %Z").replace(tzinfo=timezone.utc)
                 run_sha = run(["git", "rev-list", "-1", f"--before={int(t.timestamp())}", "HEAD"]).strip()
                 if run_sha:
-                    # only src/ and scripts/ change what a running service loaded; docs-only pushes never restart it
-                    cts = [int(x) for x in run(["git", "log", "--format=%ct", f"{run_sha}..HEAD", "--", "src", "scripts"]).split()]
-                    unapplied = len(cts)
-                    behind_h = round((now - min(cts)) / 3600, 2) if cts else 0.0
+                    # W80P.1: "behind" = a file THIS service imports changed since run_sha -- the same import set
+                    # the deploy restart policy uses (deploy_truth.unapplied_changes, one shared definition).
+                    # An unrelated merge never makes a service behind (W79.1's false RED).
+                    import sys
+                    from pathlib import Path
+                    sys.path.insert(0, os.path.join(root, "scripts", "ops"))
+                    try:
+                        import deploy_truth
+                        hits, first = deploy_truth.unapplied_changes(Path(root), u[: -len(".service")], run_sha,
+                                                                     out["head"])
+                        unapplied = len(hits)
+                        behind_h = round((now - first) / 3600, 2) if first else 0.0
+                    finally:
+                        sys.path.pop(0)
             except Exception:
                 pass
         services[u] = {"load": d.get("LoadState"), "active": d.get("ActiveState"), "sub": d.get("SubState"), "since": since,
-                       "restarts": d.get("NRestarts"), "run_sha": run_sha, "behind_h": behind_h, "unapplied_commits": unapplied}
+                       "restarts": d.get("NRestarts"), "run_sha": run_sha, "behind_h": behind_h, "unapplied_files": unapplied}
     out["services"] = services
     mt = {}
     for w in payload.get("writes", []):
