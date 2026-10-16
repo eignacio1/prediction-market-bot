@@ -118,10 +118,12 @@ def _sh_quote(s: str) -> str:
 
 
 def ssh_run(task: str, key: str, runner=subprocess.run) -> tuple[int, str]:
-    cmd = ["ssh", "-i", key, "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=15", "-o", "BatchMode=yes",
+    # -n + stdin=DEVNULL: ssh must never read the caller's stdin (in a `while read` loop it swallowed the remaining
+    # request list, so a 3-request push ran only the first -- W80R.1 run 2).
+    cmd = ["ssh", "-n", "-i", key, "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=15", "-o", "BatchMode=yes",
            HOST, remote_command(task)]
     try:
-        r = runner(cmd, capture_output=True, text=True, timeout=TIMEOUT_S + 60)
+        r = runner(cmd, capture_output=True, text=True, timeout=TIMEOUT_S + 60, stdin=subprocess.DEVNULL)
         return r.returncode, (r.stdout or "") + (("\n[stderr]\n" + r.stderr) if r.stderr else "")
     except subprocess.TimeoutExpired:
         return 124, f"[bridge] timed out after {TIMEOUT_S + 60}s"

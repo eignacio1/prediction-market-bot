@@ -64,13 +64,14 @@ jobs:
 
       - name: Run requests on the box
         run: |
-          while IFS= read -r req; do
+          mapfile -t REQS < requests.txt          # not `while read`: nothing in the loop may share its stdin
+          for req in "${REQS[@]}"; do
             [ -z "$req" ] && continue
             stem="$(basename "$req" .toml)"
             out="04_EXECUTION/BOX_TASKS/results/${stem}.md"
-            python3 scripts/box_tasks.py run "$req" --out "$out"
+            python3 scripts/box_tasks.py run "$req" --out "$out" < /dev/null
             cat "$out" >> "$GITHUB_STEP_SUMMARY"
-          done < requests.txt
+          done
           rm -f ~/.ssh/id_ed25519_droplet
 
       - name: Commit results
