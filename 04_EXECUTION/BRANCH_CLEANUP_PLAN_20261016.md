@@ -175,3 +175,15 @@ old, or one claimed in `SESSION_CLAIMS.md` in the last 24 h. (3) A branch with w
 | `session/20260923T005837Z-vig-grounding-from-archive` | open PR |
 | `session/20260924T045227Z-resolved-filter` | open PR |
 | `w761` | young 0.2d |
+
+## Result — executed by W79.4, 2026-10-16 (~13:50-14:15Z)
+
+**Counts.** Remote branches 167 -> 34-35 (167 is the run-time count: the plan's 148 plus branches W77-W79 added since; the remainder are `main`, kept young/open-PR branches and #149's head). Remote tags 1 -> 37 (33 Group-B `archive/*`, 3 closed-PR `archive/*`, 1 pre-existing). Local branches 237 -> 117. Worktrees 168 -> 67. `delete_branch_on_merge` false -> **true** (read back true).
+
+**Run-time diff against the plan.** Group B: identical (33, all tagged then deleted). Group A: plan 109, run-time 97 deleted. The difference of 12 is rule 2 (branches under 3 days old are kept even when landed) plus `w761`, which no longer exists. Run-time Group C is every branch pushed since the plan (W75-W79 session branches, open-PR heads, young landed branches); those stay, and auto-delete now stops new accumulation. A later sweep can remove the young landed ones once they pass 3 days.
+
+**Stale PRs.** #133 closed (GG-276 resolved by T-549; Saturday dow-6 NFL cron entry on main). #144 closed (GG-291 resolved by T-564; main stamps `kalshi_threshold` at open). #146 closed (APR-0036, T566 results, spread script and exp_output byte-identical on main). All three branches tagged `archive/<branch>` at the PR head SHA, tag SHAs verified by `git ls-remote`, then deleted. **#149 left open for the window:** T-574's `shared_tree_behind_origin` / `closed_wave_fences` landed via T-579, but `scripts/assert_service_activation.py`, its test, the T574 results note and the CLAUDE.md edit are not on main.
+
+**This machine.** 101 clean, landed, non-protected worktrees removed (no `--force`); kept: every unlanded, dirty or young worktree, W79/#277/#278 worktrees, detached ones, and the non-PM-worktrees paths. `sweep_stray_branches.sh --execute` deleted the landed local branches it could; it refused (`git branch -d`, never `-D`) on branches still checked out in kept worktrees and on 6 landed `session/*` branches whose remote refs are now gone (w71-2, w71-3, w72-1, w72-3, w73-3, w75-4): "not fully merged" against a deleted upstream. They are ancestors of `origin/main`; a `-D` would be safe, left for a later sweep.
+
+**Refused:** nothing by GitHub or the harness.

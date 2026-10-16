@@ -124,3 +124,89 @@ def test_w78_3_points_rows_do_not_mask_a_silent_nba_game_arm(tmp_path):
     assert by["nba_player_points_shadow"].last_row_ts is not None
     (led / "NBA_NBA_MONEYLINE_T1_MULTI_DAY.jsonl").write_text(json.dumps({"ts_utc": ts}) + "\n")
     assert {i.spec.key: i for i in sa.load_inputs(tmp_path)}["nba_shadow"].last_row_ts is not None
+
+
+# ── W79.1: T1-only arm (NFL QB challenger) + GG-892 glob sweep across every sport ─────────────────────────────
+
+def _qb(starts, rows):
+    return ArmInput(SPECS["nfl_qb_challenger"], list(starts), max(rows) if rows else None, "", list(rows))
+
+
+def test_w79_1_t1_only_arm_served_in_its_window_is_ok_after_kickoff():
+    """The live false alarm: SEA@DEN kicked off 10-16 00:15Z, QB rows ran 10-14 06:14Z..10-15 12:14Z (horizon 42.0->12.0),
+    and at 10-16 06:08Z the old recency rule said 'silent 17.8h'. A T1-only arm is done 12h before kickoff."""
+    start = datetime(2026, 10, 16, 0, 15, tzinfo=timezone.utc)
+    rows = [datetime(2026, 10, 14, 6, 14, tzinfo=timezone.utc) + timedelta(hours=6 * i) for i in range(5)]
+    now = datetime(2026, 10, 16, 6, 8, tzinfo=timezone.utc)
+    r = evaluate_arm(_qb([start], rows), now)
+    assert r["status"] == "ok" and r["games_in_window"] == 1
+
+
+def test_w79_1_t1_only_arm_with_no_row_in_the_game_window_is_still_silent():
+    start = datetime(2026, 10, 16, 0, 15, tzinfo=timezone.utc)
+    stale = [datetime(2026, 10, 11, 6, 14, tzinfo=timezone.utc)]         # an older game's rows only
+    r = evaluate_arm(_qb([start], stale), datetime(2026, 10, 16, 6, 8, tzinfo=timezone.utc))
+    assert r["status"] == "silent" and "T1 window" in r["text"]
+    assert evaluate_arm(_qb([start], []), datetime(2026, 10, 16, 6, 8, tzinfo=timezone.utc))["status"] == "silent"
+
+
+def test_w79_1_t1_only_arm_one_served_one_unserved_game_is_silent():
+    s1, s2 = datetime(2026, 10, 16, 0, 15, tzinfo=timezone.utc), datetime(2026, 10, 16, 3, 0, tzinfo=timezone.utc)
+    rows = [s1 - timedelta(hours=20)]    # inside game 1's 12-48h window and game 2's too -> both served
+    now = datetime(2026, 10, 16, 6, 0, tzinfo=timezone.utc)
+    assert evaluate_arm(_qb([s1, s2], rows), now)["status"] == "ok"
+    s3 = datetime(2026, 10, 16, 5, 0, tzinfo=timezone.utc)     # window opens 10-14 05:00 (04:00 with slack)
+    r = evaluate_arm(_qb([s1, s3], [s1 - timedelta(hours=46)]), now)   # row 10-14 02:15: inside game 1's window only
+    assert r["status"] == "silent" and r["text"].startswith("NFL QB challenger shadow is SILENT: 1 of 2")
+
+
+def test_w79_1_frozen_arms_keep_the_recency_rule():
+    assert SPECS["nfl_shadow"].t1_window_h is None and SPECS["mlb_shadow"].t1_window_h is None
+    assert evaluate_arm(_arm("nfl_shadow", starts=[H(5)], last=H(19)), NOW)["status"] == "silent"
+
+
+def test_w79_1_game_cells_mirror_the_runner_cells():
+    """GAME_CELLS must equal each runner's CELLS, or a new cell silently falls out of (or into) its arm's alarm."""
+    import ast
+    from pathlib import Path
+    from prediction_market_bot.pregame_shadow.silent_arms import GAME_CELLS
+    scripts = Path(__file__).resolve().parents[1] / "scripts"
+    for sport, fn in (("MLB", "run_mlb_pregame_shadow.py"), ("NFL", "run_pregame_shadow.py"),
+                      ("NBA", "run_nba_pregame_shadow.py")):
+        for node in ast.parse((scripts / fn).read_text()).body:
+            if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", "") == "CELLS":
+                assert sorted(n for n, _ in ast.literal_eval(node.value)) == sorted(GAME_CELLS[sport]), fn
+                break
+        else:
+            raise AssertionError(f"no CELLS in {fn}")
+    nhl = next(n for n in ast.parse((scripts / "nhl_shadow_eval.py").read_text()).body
+               if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "SERIES")
+    assert sorted(ast.literal_eval(nhl.value).values()) == sorted(GAME_CELLS["NHL"])
+
+
+def test_w79_1_other_arms_files_never_mask_a_silent_arm_in_any_sport(tmp_path):
+    """GG-892 sweep: a fresh row in a foreign-arm file that shares the sport prefix must not count for the game arm."""
+    from prediction_market_bot.pregame_shadow import silent_arms as sa
+    ts = json.dumps({"ts_utc": (datetime.now(timezone.utc) - timedelta(minutes=20)).isoformat()}) + "\n"
+    led = tmp_path / "exp_output" / "PREGAME_SHADOW"
+    nhl = tmp_path / "data" / "shadow" / "nhl"
+    qb = tmp_path / "exp_output" / "PREGAME_SHADOW_NFLQB"
+    pre = tmp_path / "exp_output" / "PREGAME_SHADOW_PRESEASON"
+    for d in (led, nhl, qb, pre):
+        d.mkdir(parents=True)
+    foreign = [led / "MLB_MLB_PLAYER_HITS_T1.jsonl", led / "NFL_NFL_PLAYER_PASS_YDS_T1.jsonl",
+               led / "NBA_NBA_PLAYER_POINTS_T1.jsonl", pre / "NBA_NBA_PLAYER_POINTS_T1.jsonl",
+               nhl / "NHL_PLAYER_SHOTS_T1.jsonl", nhl / "run_log.jsonl",
+               qb / "NFLQB_NFL_PLAYER_PASS_YDS_T1.jsonl"]
+    for p in foreign:
+        p.write_text(ts)
+    by = {i.spec.key: i for i in sa.load_inputs(tmp_path)}
+    for k in ("mlb_shadow", "nfl_shadow", "nfl_qb_challenger", "nhl_shadow", "nba_preseason_shadow", "nba_shadow"):
+        assert by[k].last_row_ts is None, k
+    for p, k, sport, pfx, d in ((led / "MLB_MLB_RUN_LINE_T2.jsonl", "mlb_shadow", "MLB", "MLB_", led),
+                                (led / "NFL_NFL_TEAM_TOTAL_T3.jsonl", "nfl_shadow", "NFL", "NFL_", led),
+                                (qb / "NFLQB_NFL_MONEYLINE_T1.jsonl", "nfl_qb_challenger", "NFL", "NFLQB_", qb),
+                                (nhl / "NHL_PUCK_LINE_T1.jsonl", "nhl_shadow", "NHL", "", nhl),
+                                (pre / "NBA_NBA_SPREAD_T1.jsonl", "nba_preseason_shadow", "NBA", "NBA_", pre)):
+        p.write_text(ts)
+        assert {i.spec.key: i for i in sa.load_inputs(tmp_path)}[k].last_row_ts is not None, k

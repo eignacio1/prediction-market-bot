@@ -943,8 +943,10 @@
 | 2026-10-16T06:03:12Z | W78.3 | CLOSED — W78.3 NBA opening-night readiness: flip-check sha bug fixed (9/12 cells flip-ready), silent-arm glob fixed, runbook written; READY pending 10-20/21 read-back. (commit `c65c1ad`) |
 | 2026-10-16T06:03:43Z | W78.3 | CLOSED — merge confirmed, HEAD (ee45bcc) is ancestor of origin/main — NBA opening-night readiness; PRs 274/275 merged |
 | 2026-10-16T06:03:37Z | GG-895..GG-899 | W78.4 NBA engine stage 1: GG range for free-source GAPs (injury history, official/coach timing, travel geometry, PAM, qualitative) |
+| 2026-10-16T06:06:48Z | W78.2 | CLOSED — W78.2 PARTIAL: thin-market inventory done (275 series, 310,858 markets); candles for 8 NFL families sampled; Part B not started. (commit `0637392`) |
 | 2026-10-16T06:08:53Z | W78.1 | CLOSED — W78.1 PLUMBING: runtime map/SURFACE BUDGET (#266) merged+deployed and read back; gap-agent progress visible on governance scan, /project and Visual Dashboard (#276 merged); #276 box read-back and standalone dashboard rebuild pending. (commit `c14d7cd`) |
 | 2026-10-16T13:49:40Z | GG-900..GG-904 | W79.1 PURPOSE: BREADTH B1 + PLUMBING — NFL QB challenger silent arm RED->GREEN, silent-arm glob sweep (surface budget) |
 | 2026-10-16T13:49:52Z | GG-910..GG-914 | W79.3 STANDARD: NBA engine store landed + factor taxonomy + 2 factors interpreted — PURPOSE DEPTH D4 NBA none->data layer on main+box; D1 NBA 0->13; D5(b) NBA 2 factors aggregated->interpreted (continues W78.4's unregistered GG-895..899 reservation; re-claimed) |
 | 2026-10-16T13:50:11Z | none (no GG/T expected) | W79.4 branch cleanup (MICRO) PURPOSE: PLUMBING - remote branches 148->~6, delete_branch_on_merge true |
 | 2026-10-16T13:50:14Z | GG-905..GG-909 | W79.2 thin markets finished: fetcher tests+merge #277, NBA/NFL sample, efficiency gradient, first prereg. PURPOSE: BREADTH/DEPTH families with price history; gradient table 0->1; prereg 0->1 |
+| 2026-10-16T14:01:38Z | W79.4 | CLOSED — merge confirmed, HEAD (8d446a1) is ancestor of origin/main — branch cleanup: remote 167->34, auto-delete on, #149 kept open |
