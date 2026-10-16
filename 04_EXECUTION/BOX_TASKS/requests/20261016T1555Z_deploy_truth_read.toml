@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W80R.1 rerun after #284 (run 2 ran only the first request)"

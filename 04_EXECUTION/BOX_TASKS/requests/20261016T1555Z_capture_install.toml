@@ -1,0 +1,2 @@
+task = "capture_install"
+note = "W80R.1 step 2: budget read GREEN 15:48Z; install refuses unless GREEN at run time"
