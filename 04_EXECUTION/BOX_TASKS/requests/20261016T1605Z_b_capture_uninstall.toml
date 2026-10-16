@@ -1,0 +1,2 @@
+task = "capture_uninstall"
+note = "GG-920 retry after the box pulls #285"
