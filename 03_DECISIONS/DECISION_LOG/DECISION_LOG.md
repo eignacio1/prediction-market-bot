@@ -2390,3 +2390,9 @@ Operator, verbatim: "Do you have the ability to wire directly into it? So I don'
 
 - Window can't reach the archive: it lives on Muse's machine (no ~/workspace on the operator's Mac), and this session's GitHub access is bound to the bot repo, so it cannot create a repo (POST /user/repos refused). Plan: a private `sports-intel-archive` repo that Muse pushes to and the bot reads, pinned to the archive commit used. Created by a Wave 78 terminal; then attached to the window with add_repo.
 - The bot repo was made public on 2026-10-11 only because the free private-repo Actions minutes ran out. Back to private at $0 means no GitHub-hosted minutes: every workflow and CI job moves to a self-hosted runner on the VPS (free on private repos), capped to one job at low priority because the VPS runs live services and has an OOM history. Switch only after a full day of zero hosted minutes. Wave 78 block.
+
+## 2026-10-15 22:28 PT — Bot repo stays public for now
+
+Operator, verbatim: "What a mess - I'll just keep it public for now lol"
+
+- The "back to private via a self-hosted runner" block is dropped from Wave 78. The bot repo stays public. The archive still gets its own private repo (Wave 78 adapter block).
