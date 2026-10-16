@@ -2055,12 +2055,6 @@ W73.2 Part B (2026-10-15). Mitigation is live: each weekly `nfl_event_store` bui
 
 W73.2 Part A (2026-10-14). `games.temp`/`wind` (fill 0.74 in 2018, 0.38 in 2022, 0.67 in 2025; roofed games null) and `pbp.weather` are recorded at game time, not forecasts available before kickoff. Treated as a labelled leakage-risk feature until a forecast source is verified. Candidate sources are unverified.
 
-### GG-710 — Cancel-fail turn-off counted pre-fix failures and switched the forward test off on stale data
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-W73.1 2026-10-15. The 11:25Z report of 2026-10-14 tripped `cancel_fail_rate_gt_10pct_in_a_day` on 10-13 cancel failures that predate the cancel-path fix (2026-10-13T23:58Z) and wrote `deploy/demo_fill.override.env`; placement and shadow stakes were OFF from 11:25Z to 2026-10-15T00:14Z (~12.8h dark). Fix: PR #256 (4616807) counts only attempts at or after `CANCEL_PATH_FIX_EPOCH`; ADR-0072 addendum 2026-10-14. Read back on the box with `--no-act`: no turn-off tripped; override archived to `logs/`, `is_enabled()` True, policy log flowing at 00:14Z.
-
 ### GG-740 — Slice failure: no single owned map of the running system; fixes landed in one place while the same defect survived elsewhere
 
 **Status:** OPEN · **Severity:** HIGH
@@ -2091,14 +2085,6 @@ Found 2026-10-14 by `scripts/runtime_registry.py` discovery — five (schedule, 
 
 B74-A L1, 2026-10-14. t4-mlb watches only `logs/t4_mlb_kill_switch.flag` (`run_t4_mlb_live.py:290`); `run_t4_live` watches `t4_kill_switch.flag`; `shadow_flat_stake.maybe_place:55` calls `kill_switch_state.halt_reason()` (glob `*kill_switch*.flag`, fails closed). So `touch logs/t4_kill_switch.flag` halts shadow stake placement but not t4-mlb, the main order placer. C7 `is_kill_switch_active` is in-memory and no code writes a flag file when C7 trips, so cron-launched processes never see it (only `t4_live_runner:509` checks it). `paper_trader.py:685` (T1, NFL game markets) calls `submit_order` with no `halt_reason()` call. No flag exists on the box, so the path was never exercised. Pillar: EXECUTION, PROOF. Proposed fix: one shared `halt_reason()` honoured by every order placer (put it in `paper_trader`/`submit_order`), C7 writes the flag on L4, and a monthly canary that touches the flag on demo and reads back a halt. Related: GG-667 (fixed for shadow stake only).
 
-### GG-746 — Four NFL moneyline positions still OPEN 4-7 days after the game
-
-**Status:** RESOLVED · **Severity:** HIGH
-
-B74-A L2, 2026-10-14 (box copy). POS-BC7EBF8BB9 and POS-5606773C7E (CIN-MIA, 10-11), POS-0EED4809E1 and POS-515DEC8556 (TB-DAL, 10-08) are open; the NFL portfolio file mtime is 2026-10-07. Either the NFL resolver cron/settlement path (`nfl_settlement.py`, `nfl_espn_results.py:78` return-None) is not closing positions, or the rows are mislabelled. Pillar: EXECUTION (E1/E2 on a book that never closes), PROOF. Proposed fix: read the NFL resolve cron log and the settlement path, close or explain each, add an alarm for any position open > 24h past game end. Not fixed here (Hard Rule 11).
-
-**Resolved W75.5 (PR #262, merged 7ab0c75; read back on the box 2026-10-15).** Root cause: nothing recurring booked the NFL game-market paper portfolio; the only booking was a one-time hand run on 10-07. Fix: `position_sweep.sweep_open_positions` now rides the existing 09:30 `run_pregame_shadow_settle.py --refresh` cron (no new cron). The four positions were booked through the normal ADR-0071 path (BC7EBF8BB9 LOSS -1.0, 5606773C7E LOSS -1.0, 0EED4809E1 WIN +1.6316, 515DEC8556 WIN +1.5). Box read-back: sweep reports open_after=0; new `open_past_game_end` invariant clean across 6 books. Detail: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_5_nfl_book_closes.md`.
-
 ### GG-747 — T4 portfolio has 4,309 closed rows vs 4,275 in the resolved ledger (gap of 34)
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -2122,14 +2108,6 @@ B74-A L3. (a) `run_t4_mlb_live.py:413-419` `_append_dryrun_record` swallows a wr
 **Status:** OPEN · **Severity:** MEDIUM
 
 B74-A L3. `run_t4_mlb_live.py:2037-2220` logs and loops forever; ESPN discovery failure returns `[]` (the GG-163 pattern, blind to `systemctl is-active`). `:1930-1934` a Kalshi client init failure makes orders `local_only` with no alarm, which GG-527 says is not execution evidence. Pillar: EXECUTION (E1). Proposed fix: consecutive-failure counter with alarm and a non-zero exit after N, and an alarm when the client falls back to local_only.
-
-### GG-751 — Settlement `return None` branches look the same as "unresolved"
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-B74-A L3. `nfl_settlement.py:41`, `nba_settlement.py:44`, `mlb_settlement.py:32-53`, `nfl_espn_results.py:78` return None for both "not final yet" and "could not parse/failed", so a broken settler is indistinguishable from a slow game (see GG-746). Pillar: PROOF. Proposed fix: a typed result (PENDING / FAILED(reason)) and an alarm on FAILED or on age past game end.
-
-**Resolved W75.5 (PR #262, merged 7ab0c75; read back on the box 2026-10-15).** Typed `SettleResult` (FINAL / NOT_FINAL / LOOKUP_FAILED) in `pregame_shadow/settle_result.py`; NFL, NBA and MLB settlement modules and `nfl_espn_results.fetch_nfl_final_result` use it. Settle callers treat LOOKUP_FAILED as an alarm (exit 3), not a wait. Not changed: `nhl_shadow_settle.py` (out of the block's named modules).
 
 ### GG-752 — vps_deploy.sh has no rollback; deploy_status.json alarm and heal_dirty_tree coverage unverified
 
@@ -3856,25 +3834,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-429 — Dashboard froze on last-good numbers after the data source disappeared
-
-**Status:** OPEN · **Severity:** HIGH
-
-**Current state (2026-10-08, W59.1):** Code fix landed in 49.2 per entry; deployment to the running dashboard not confirmed this session. **Next:** Confirm the running pmbot-web-dashboard carries the fix, then resolve.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-429 |
-| Category | Correctness |
-| What was found | Real-browser check (49.2): after the server died the header read NO DATA but bankroll, P&L and tab badges stayed. Fixed in 49.2 (panels and badges blank after 2 missed refreshes; tests added). Deployment of the fix to the running pmbot-web-dashboard is still owed. |
-| Source | 49.2 real-browser run; exp_output/dashboard_checks |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
 ### GG-430 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
 
 **Status:** OPEN · **Severity:** LOW
@@ -4013,30 +3972,6 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 </details>
 
-### GG-532 — MLB pregame shadow arm has written zero rows since 2026-10-08 01:43Z: every open postseason market skips as no_kickoff
-
-**Status:** RESOLVED (2026-10-09, W63.1) · **Severity:** MEDIUM
-
-**Current state (2026-10-09, W63.1 Part A):** RESOLVED. The scheduled T1 job (cron `7 */6`) ran at 2026-10-09T12:07Z on VPS cbbd2658+ and wrote 33 MLB rows (newest 12:07:02Z) across the four game families after the #195 deploy; the RUNNING process contains the fix. Next scheduled T2/T3 runs continue the ledger. Evidence: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W63_1_mlb_full_results.md`.
-
-**Current state (2026-10-09, W62.1 Part A):** FIX DEPLOYED, AWAITING FIRST SCHEDULED WRITE. PR #195 (cbbd2658) matches on teams + ET game date, uses the cache start as kickoff, adds reason `schedule_placeholder`; VPS at cbbd2658; deployed dry-run at 06:27Z would write 33 T1 rows (2 ML, 6 RL, 11 GT, 14 TT). t4-mlb restart: not_needed. Not RESOLVED until a scheduled (cron) run writes rows under the fix (next T1 12:07Z). Prior state follows.
-
-**Current state (2026-10-09, W61.2):** Last MLB ledger write 2026-10-08T01:43Z (T3), T1 06:07Z; every run since logs `written: {}` and an identical `skipped: no_kickoff` = 41 markets (10 ML + 6 RL + 11 total + 14 team total). **Next:** decide the kickoff-matching rule for postseason events (see record), then fix with a test; do not widen TOL blindly.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-532 |
-| Category | Data / liveness |
-| What was found | `MLBScheduleIndex.game` (src/prediction_market_bot/pregame_shadow/mlb_forecaster.py) matches a Kalshi event to the Stats API cache on teams AND start time within TOL=45 min, where the event start is the ET time embedded in the event ticker. Two distinct causes, both inferred from code + the VPS games cache (`games_current.meta.json` refreshed 2026-10-08T19:01Z, healthy), not reproduced by a run: (1) **time mismatch** - open event KXMLBGAME-26OCT081700CLECWS encodes 17:00 ET (21:00Z) but the cache has CWS-CLE 2026-10-09T00:00Z (20:00 ET): a 3h gap, so no match; (2) **unscheduled** - events 26OCT11/12/14/15 LAD-MIL have no real cache row (cache holds only placeholder game_type L rows at 07:33Z; the 10-11 row is home MIL/away LAD with that placeholder time). Whether Kalshi's ticker time is a placeholder for postseason games (and what the correct time source is) is UNVERIFIED. |
-| Why it matters | The MLB shadow arm (EXP-037 ordering key, GG-510) accrues no postseason rows while NFL/NHL accrue. Silent by construction: cron exits 0, `systemctl` n/a, nothing alarms. Regular-season rows are unaffected. Bounded harm if left: postseason sample only. |
-| Source | W61.2 Part A step 1 (shadow-arm recency check) |
-| Resolution | Not fixed in-session (register-and-stop, Hard Rule 11). Related, not the cause: GG-470 (Stats API 406 from VPS; cache is synced off-box, and was fresh). |
-
-</details>
-
 ### GG-529 — EXP-038 second-look date trigger ('or 2027-01-31, whichever first') is undefined
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -4075,33 +4010,6 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 | Cross-references | GG-527, GG-300, GG-004, GG-071 |
 
 </details>
-
-### GG-527 — 94.5% of the T4M-PROJ epoch-12 clean cohort (1,845 of 1,952) is paper P&L for orders the demo venue never filled; the 107 real fills lose -$0.40/bet
-
-**Status:** RESOLVED · **Severity:** HIGH
-
-**2026-10-09 (strategic window, Wave 61 verification):** status set back from RESOLVED. Part A (fills-only counting, sidecar, dashboards; #191) is live. Part B's stake_stood_down gate (#193) is on the VPS disk at c9e2315 but the running t4-mlb process (up since 2026-10-07 06:13Z) predates it - the deploy skipped the restart (live game). A fix is RESOLVED only when the running process contains it. Restart authorized 2026-10-08 (once, no live game): 62.3, fallback the post-World-Series block.
-
-**2026-10-09 (W62.3): RESOLVED - the running process now contains the gate.** t4-mlb restarted once at 06:14:46Z (no game live: 10-09 slate empty, cycle log idle 168 min, next first pitch ~41h). New MainPID 3104947 entered active 06:14:48Z, NRestarts=0; the source it imported (`run_t4_mlb_live.py`, defines/calls `stake_stood_down`, mtime 00:56:47Z, VPS HEAD c9e2315) predates the start. Not yet seen: a stood-down row in a live cycle (first live game ~10-11 00:00Z). Evidence: `W62_3_gate_t1_fills_nba_results.md`.
-
-**Resolution (2026-10-09, W61.1, operator decision (b)+(c) 2026-10-08):** (b) BUILT: `t4_fill_status` classifier + append-only sidecar `logs/t4_mlb_fill_status.jsonl` (kept current by the Monday `build_t4_resolved_ledger.py` cron, no cron edit); T4M-PROJ G6 clean_n / n* / P&L-per-bet count CONFIRMED_FILLED only in run_power_calc, run_band_monitor, governance_scan; all-rows prints as "calibration only - not execution evidence"; both dashboards show fills n/P&L as the execution figure (#191). VPS run: 4,220 closed T4 positions = 166 CONFIRMED_FILLED / 4,054 NOT_FILLED / 0 UNVERIFIABLE; re-run appended 0. (c) BUILT: `stake_stood_down()` gate, no T4M-PROJ paper stake for games dated >= 2027 unless `T4M_PROJ_POST_2026_REENABLE` (default False; re-enable needs a new operator decision); evaluations/cycle-log keep writing (#193). Both on VPS at c9e2315. **Caveat:** t4-mlb deploy decision was `skip_live_game`, so the running process (since 2026-10-07 06:13Z) still has the old code; the gate must be live before spring 2027 - see W61_1 results. **NOT done here:** registry flip of T4M-PROJ to DARK - happens after the 2026 World Series (later block).
-
-**Current state (2026-10-08, W60.1):** Consequence of GG-300's now-complete classification. Cohort mean P&L/bet is -0.053 (game-clustered 95% CI -0.148..+0.043, 176 games); CONFIRMED_FILLED only: -0.403 (CI -0.650..-0.156, 41 games, n=107). Cohort definition, G6 `clean_n` and band status are unchanged by this block (operator's call).
-
-<details>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-527 |
-| Category | Ledger integrity / G6 sample adequacy |
-| What was found | Paper positions are recorded `submitted` and settled by market outcome regardless of whether the venue ever filled the order. Only 107 of 1,952 cohort rows match a venue fill. |
-| Why it matters | The G6 calibration cohort measures paper settlement of intended orders, not executed trades. The part that executed loses money. Selection into "filled" is not random, so the two sets are not interchangeable. |
-| Source | W60.1 (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W60_1_cohort_fill_truth_results.md`) |
-| Resolution | Not resolved; operator decision on how the cohort is defined (all intended orders vs filled only) and on re-polling order status at entry. No code or ledger change made. |
-| Cross-references | GG-300, GG-301, GG-004, GG-228 |
-
-</details>
-
 
 ### GG-562 — Archived NFL game-market paper book holds 4 OPEN positions entered by StubNFLForecastModel (not a trained model); two are past their game date and unresolved
 
@@ -4189,37 +4097,6 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 </details>
 
-### GG-571 — NHL shadow evaluator (`scripts/nhl_shadow_eval.py`) is not wired to the shadow flat-stake hook, so NHL shadow cells never receive demo stakes
-
-**Status:** RESOLVED · **Severity:** LOW
-
-W72.1 read-back 2026-10-14T00:44Z: NHL shadow cells are staked via `scripts/run_nhl_shadow_staked.py` (cron installed; 44 NHL shadow_order events since re-arm). The unwired `nhl_shadow_eval.py` is no longer the stake path.
-
-**Current state (2026-10-11, W67.2):** The NFL, MLB and NBA shadow runners call `make_on_row(ad)` so `SHADOW_FLAT_STAKE=on` can place a flat ADR-0050 demo stake on a shadow cell with net-of-fee edge > 0. `scripts/nhl_shadow_eval.py` has no on_row/stake wiring, so NHL shadow cells cannot be staked even with the switch on. Found while implementing W67.2 Part B step 4; not fixed in-session (Rule 11).
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-571 |
-| Category | Coverage - shadow-cell stakes absent for NHL |
-| Evidence | grep for make_on_row in scripts/: NFL, MLB, NBA runners only. |
-| Disposition | Registered; not fixed. |
-| Source | W67.2 Part B step 4 |
-| Resolution | Not resolved. |
-| Cross-references | GG-570, ADR-0072 |
-
-</details>
-
-### GG-586 — ADR-0072 shadow cells have no control-arm order, so the treatment-minus-control verdict cannot be formed
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-W72.1 read-back 2026-10-14T00:44Z: control arm places model-mid orders on shadow cells (13 MLB, 23 NHL since re-arm; 4 control fills), report splits arms. Treatment-minus-control now formable once fills settle.
-
-W68.2 stakes only treatment-arm SHADOW rows; the control arm places no order, so the markout/fill comparison ADR-0072 names has no control fills on shadow cells. Needs an operator/ADR decision (control arm places a plain order, or the verdict is judged on treatment-only absolute measures). Found by T-821 (W68.2).
-
 ### GG-587 — Forward-report turn-off edits tracked deploy/demo_fill.env on the VPS and would trip vps_deploy.sh's dirty-tree guard
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -4250,12 +4127,6 @@ The EXP-040 artifact is frozen (sha256 `c47cbac7…8527`) and `NBAPlayerPointsMi
 
 W69.2 Part A (2026-10-12): the Kalshi series list shows KXNBAGAME/SPREAD/TOTAL, but KXNBATEAMTOTAL has never listed in any archive. This season's preseason KXNBAPTS markets existed only 10-05 to 10-09 and are closed; the price archive holds no last-season KXNBAPTS data, so it cannot say when they listed. Runners handle an empty board without error, and NBA_TEAM_TOTAL cells only flip on a valid row (nba_cell_autoflip), so nothing is claimed that the data does not support. Action: read the 10-20/10-21 ledgers; if TEAM_TOTAL is still empty after ~2 weeks, mark those cells with a measured-date ruling via ADR rather than leave them NOT_IMPLEMENTED indefinitely.
 
-### GG-589 — remove_nba_preseason_cron.py ignored the EXP-039 preseason cron block (it would have run forever)
-
-**Status:** RESOLVED · **Severity:** LOW
-
-W62.3's retire script stripped only the EXP-038 PRESEASON block. Fixed W69.2 (#232): `--auto` mode strips both preseason blocks and its own retire block, date-guarded (>= 2026-10-21 10:00 UTC), idempotent, crontab-only (the VPS git tree is not touched). Installed on the VPS crontab 2026-10-13 (`50 13 * * *`, no-op read back before the guard). Verify: after 10-21 the crontab holds no `W69.2 NBA PRESEASON RETIRE` or `PRESEASON` markers.
-
 ### GG-630 — Post-Game Resolve (NBA T1/T4 auto-resolve) is paused; nothing proves the VPS can resolve the old NBA book when NBA reopens 2026-10-20
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -4274,127 +4145,11 @@ W70.2 (T-850), 2026-10-13. The NBA injury-report PDFs were renamed on 2025-12-22
 
 W70.2 (T-850), 2026-10-13. `data/raw/nba/players_2026.json` was missing on the VPS; backfilled by hand (1231 box scores, `logs/nba_player_points_backfill_2026_w70.log`). The daily cron (`nba_player_box_backfill.py --seasons 2027`) never refreshes 2026, and the 2027 store is empty until games are played, so early-season rows depend on that static file. Not yet in deploy or any checklist; if the VPS is rebuilt the arm goes silent again.
 
-### GG-623 — Demo MLB cancels genuinely fail on resting KXMLBHIT orders (404 then 503); forward-test turn-off still tripped after the GG-596 fix
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-W72.1 read-back 2026-10-14T00:44Z: root cause was GG-645; since re-arm 12 real cancel_ok on KXMLB*, 0 cancel_failed.
-
-W70.1 (T-853), 2026-10-13. After PR #237 (404 + GET terminal = already_terminal) the cancel_fail_rate trip persists: 8 paper/MLB KXMLBHIT cancels logged 404 while the order GET shows `resting` on an `active` market; retried manually, all return HTTP 503. NFL cancels through the same `cancel_order` path succeed (906). `cancel_order`'s path is still flagged UNVERIFIED. Switches stay OFF; override file left in place. Open: is MLB-HIT cancel unsupported on demo, or demo flakiness; until resolved the treatment arm cannot guarantee its cancel.
-
-### GG-645 — Kalshi cancel defaulted to exchange shard 0; MLB orders live on shard 3, so every MLB cancel 404'd (root cause of GG-623)
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-W72.1 read-back 2026-10-14T00:44Z: running forward test shows 12 cancel_ok on KXMLB* (4 unfilled_after_N, 8 sweep_overdue), 0 failed; NHL 20 ok.
-
-W71.1 (T-880), 2026-10-13. Root cause of GG-623, not a demo outage. `DELETE /portfolio/events/orders/{id}` with neither `exchange_index` nor `market_ticker` defaults to shard 0 (docs: cancel-order-v2). All MLB-family demo orders (HIT/TOTAL/SPREAD/TEAMTOTAL) have `exchange_index` 3 on GET; NFL are 0/None. Repro on the VPS against demo: 1c bids on KXMLBTOTAL and KXMLBHIT, GET resting (xi=3), DELETE 404 persistently (not a lag race), v1 path 410; DELETE `?market_ticker=<ticker>` returned 200 `reduced_by 1.00` and GET read back `canceled` on 4 of 4. Fix: PR #243 (`cancel_order(..., market_ticker=)`, `cancel_now` passes the ticker; tests pin URL, params and signed path), deployed to VPS `b9812c8d`, t4-mlb restarted 2026-10-13T23:58Z (idle). Every MLB cancel before this left its order resting until the exchange canceled it at market close, so MLB paper rows were exposed to fills for hours, not 60s. Closes fully on the first MLB night with `cancel_ok` on KXMLB* in `demo_fill_policy.jsonl`.
-
-### GG-646 — Forward-test report excuses late exchange-cancels as already_terminal, so it passes on a broken cancel path
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**W72.1 read-back 2026-10-14T01:52Z:** PR #246 (8740c0b) is in the VPS checkout (dfc16388 contains it; `TERMINAL_SLACK_S` present in scripts/demo_fill_forward_report.py). The report is a cron script, so the running job uses it on its next spawn.
-
-W72.1 fix: `_historical_404_terminal` requires order `last_update_time` <= cancel attempt ts + 30s; missing timestamp stays a failure. Tests added. RESOLVED once the VPS checkout carries it (merge != deploy).
-
-W71.1 (T-881), 2026-10-13. `demo_fill_forward_report._historical_404_terminal` treats a logged 404 as `already_terminal` if the order is terminal when the report runs. The 8 MLB failures were exchange-canceled at market close, hours after the failed 60s cancel, so the report showed cancel_fail_rate 0.0 and "none tripped" while cancels were still broken. The check should require the terminal status to predate the cancel attempt (fill/cancel `last_update_time` <= attempt ts + small slack). Not changed here: turn-off scope is fixed by the block. Interim guard: read `cancel_ok` counts on MLB families directly (GG-645 closure criterion).
-
 ### GG-624 — NFL shadow fills' settle-minus-price (+0.39) rests on ~4 correlated games; must not be cited as E2
 
 **Status:** OPEN · **Severity:** LOW
 
 W70.1 (T-853) audit: 0 of 231 fills after kickoff, so no timing artifact. But all fills are YES-side taker crosses on ladder rungs of totals/spreads that resolve together; first-fill-per-position +0.394 on 58 settled positions across 4 settled games (BUFLAR pending). Report E2 for NFL only with game-clustered CIs.
-
-### GG-660 — `.claude/commands/vps.md` is the 2026-05 provisioning script; running it today would duplicate every cron job, overwrite the production model and pin stale deps
-
-**Status:** RESOLVED · **Severity:** CRITICAL
-
-*W72.2 (#248, e90ece4, 2026-10-14): `/vps` archived to `.claude/commands/_archive/vps_DO_NOT_RUN.md` with DO-NOT-RUN header; read-only `/deploy-audit` added. Read-back: file present on box at HEAD cb1bb104.*
-
-W71.H1 L6. File last committed 2026-05-31 (149 lines). Step 7: `crontab -l > /tmp/existing_cron; cat deploy/cron.conf >> /tmp/existing_cron; crontab /tmp/existing_cron` APPENDS the mirror to the live crontab, so all ~62 live jobs (incl. `vps_deploy.sh`) would run twice and every shadow arm would write each row twice (operator's description said 'replaces'; the file actually appends and duplicates; the harm is the same class). Step 4 `scp models/prod_model.joblib models/prod_model_meta.json` overwrites the box model with whatever is local. Step 3 pins `scikit-learn==1.8.0` and installs `requirements-base.txt` (unpinned `nba_api>=1.5.0`). Step 5/verify text ('3 jobs', BOT_C4_ACTIVE must be absent, Python 3.11) is false against the live box (70 cron lines, py3.12 venv, BOT_C4_ACTIVE=true). Not run; not edited. Pillar corrupted: BREADTH/PROOF (double rows), EXECUTION. Proposed fix: move to `.claude/commands/_archive/vps_provisioning_2026-05.md` with a 'DO NOT RUN' header; replace `/vps` with a read-only `/deploy-audit` command (box HEAD vs origin, cron mirror diff, process age vs HEAD, perms). See report L6. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-661 — Running t4-mlb (the only ACTIVE cell) is stale: restart policy skips on live games and never retries
-
-**Status:** RESOLVED · **Severity:** HIGH
-
-**W72.3 resolution:** RESOLVED (W72.3, PR #247 ab3d6fff): skipped t4-mlb restart writes a pending marker retried each tick; deploy_truth.py check alarms on service code SHA >6h behind box HEAD (governance scan + /project). Read back on box 2026-10-14T01:13Z.
-
-W71.H1 L6. Box t4-mlb pid 3223742 started 2026-10-11 16:35Z; three deploys on 2026-10-13 (00:33, 01:48, 23:53Z) returned `skip_live_game` for changed imports demo_fill_policy.py, market_type_registry.py, kalshi_client.py (GG-623 cancel fix). `deploy_restart_policy.py`/`vps_deploy.sh` keep no pending-restart marker; MLB is 'live' (Warmup/In Progress) ~12h/day so the window is rare. Merge != deploy != activation. Pillar: EXECUTION (E1-E3). Fix: persist `pending_t4_restart` in /var/lib/pmbot-deploy, restart at first no-live-game tick, alarm if marker age >12h; write HEAD sha at t4-mlb startup and compare. One-off manual restart is an operator decision (not done here). Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-662 — VPS `.env` (VENUE_API_KEY, key path) and `.env.bak.20260915T055650Z` are mode 644, owner a foreign uid
-
-**Status:** RESOLVED · **Severity:** HIGH
-
-*W72.2 (2026-10-14): box `.env` chmod 600 (read back `stat` = 600; `ls -la .env*` = `.env` + `.env.example` only), `.env.bak.20260915T055650Z` deleted, key authenticates on DEMO (GET /portfolio/balance HTTP 200, key not printed). Healthcheck mode-600 assertion is W72.3 GG-669 (`deploy/healthcheck.sh`). Note `.env` owner is still foreign uid 501 — not changed.*
-
-W71.H1 L4. `ls -l` on box: .env 644 uid 501; .env.bak.* 644. PEM itself is 600 root. Single-user box with one listener (sshd), so exposure is low but the invariant (vps.md says chmod 600) is violated and a stale copy exists. Also unknown whether the key is demo or prod (one variable name). Pillar: PLUMBING (security). Fix: chmod 600 + chown root, remove .env.bak.*, add perms assert to healthcheck, operator to confirm key is demo. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-663 — paper_trader ledger save is non-atomic and a corrupt/torn read silently re-initialises or overwrites the book
-
-**Status:** RESOLVED · **Severity:** HIGH
-
-**Resolved 2026-10-14 (W72.2):** fix merged in #248; t4-mlb restarted 02:53:06 UTC (read-back via systemctl ActiveEnterTimestamp, after deploy).
-
-*W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
-
-W71.H1 L1/L2. `c5_execution/paper_trader.py:346` `self._path.write_text(json.dumps(...))` (no tmp+os.replace, no fsync); `_load_or_init` 200-210 `except Exception: pass` -> fresh INITIAL_BANKROLL state; `_reload_locked` 318-327 swallows a parse failure then the next `_save` clobbers a concurrent writer's appends. Readers (dashboard.py:210) take no lock. Atomic pattern already exists in scripts/backfill_logic_epoch.py:127. Pillar: EXECUTION/PROOF (E1/E2 come from this file). Fix: tmp+fsync+os.replace; on parse failure quarantine file as .corrupt-<ts>, log CRITICAL, raise. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-664 — paper_trader `_save()` return value ignored at five call sites
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**Resolved 2026-10-14 (W72.2):** fix merged in #248; t4-mlb restarted 02:53:06 UTC (read-back via systemctl ActiveEnterTimestamp, after deploy).
-
-*W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
-
-W71.H1 L1. paper_trader.py:360,975,1064,1152,1206 call `self._save()` without checking the bool (717/723/823 do). `_save` catches OSError and returns False, so a failed write after an order is placed leaves exchange and ledger diverged. Pillar EXECUTION. Fix: check, raise, audit-log. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-665 — kelly_fraction is read from the forecast dict (default 0.25) and never cross-checked against BAND_CONFIGS (ADR-0048 zero not enforced in risk.py)
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**W73.1 RESOLVED 2026-10-15T00:20Z:** running t4-mlb (process started 2026-10-14T02:53:06Z) postdates box tree 8b1fb3b (01:43:27Z) that holds PR #252, so it carries the guards (read over ssh). Cron runners load the code per run.
-
-**W72.1 read-back 2026-10-14T01:52Z:** band-sourced kelly in risk.py (`_band_kelly_fraction`). PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
-
-W71.H1 L1. `c4_risk_engine/risk.py:166` `kelly_frac = float(fc.get('kelly_fraction', self._kelly_fraction))`; execution_bands.py holds 0.0 but band validators enforce 0.0 only for NFL/NHL T4. Any caller that omits or mis-sets the key sizes at 0.25. Pillar EXECUTION. Fix: clamp to min(forecast, BAND_CONFIGS[band].kelly_fraction) and test. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-666 — No host/env assertion on order writes: BOT_ENV=live plus credentials reaches prod through the same submit_order
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**W73.1 RESOLVED 2026-10-15T00:20Z:** running t4-mlb (process started 2026-10-14T02:53:06Z) postdates box tree 8b1fb3b (01:43:27Z) that holds PR #252, so it carries the guards (read over ssh). Cron runners load the code per run.
-
-**W72.1 read-back 2026-10-14T01:52Z:** `_order_write_host_refusal` on `_post`/`_delete`. PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
-
-W71.H1 L1 / A2. `kalshi_client.py:106-130` maps live->prod; `_post` (553-575) and `submit_order` (1048-1157) assert nothing. Protection is entry-point guards plus per-unit `BOT_ENV=paper`; cron lines rely on `export $(grep -v '^#' .env | xargs)` so a line without an inline prefix inherits .env (per-line coverage of deploy/cron.conf:110 and 496-567 NOT verified). No prod URL is reachable today from a configured entry point. Fix: refuse prod host in submit_order unless an ADR-gated env flag is set; test it; script a check that every cron line carries BOT_ENV. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-667 — NFR-03 kill switch not wired to shadow runners or shadow_flat_stake.maybe_place; t4-mlb poll is 45s
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**W73.1 RESOLVED 2026-10-15T00:20Z:** running t4-mlb (process started 2026-10-14T02:53:06Z) postdates box tree 8b1fb3b (01:43:27Z) that holds PR #252, so it carries the guards (read over ssh). Cron runners load the code per run.
-
-**W72.1 read-back 2026-10-14T01:52Z:** `kill_switch_state.halt_reason` checked in `shadow_flat_stake.maybe_place`. PR #252 (8b1fb3b) is in the VPS checkout (dfc16388 contains it). t4-mlb (started 2026-10-13T23:58:11Z) still runs the OLD code in memory: a CLE@TB game was live (cycle-log row 01:49:49Z), so no restart (idle-window only). Cron-spawned runners load the new code on their next run. Set RESOLVED once t4-mlb has restarted after the last live game.
-
-W71.H1 L1. t4-mlb honours KILL_SWITCH_PATH only at loop top (worst case ~45s + cycle). run_nba_pregame_shadow, run_nhl_shadow_staked, run_pregame_shadow, run_nba_player_points_shadow are cron one-shots with no kill-switch or BOT_ENV check; `shadow_flat_stake.maybe_place` calls `client.submit_order` directly, bypassing C4. Pillar EXECUTION. Fix: shared kill-switch helper checked before every order. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-668 — Deploy failures are log-only: fetch fail exits 0, gate-red and dirty-tree aborts raise no alarm, no rollback path
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**W72.3 resolution:** RESOLVED (W72.3, PR #247): every deploy outcome writes /var/lib/pmbot-deploy/deploy_status.json read by scan + /project; env-file half already fixed by GG-587. Rollback path not built (out of scope).
-
-W71.H1 L6. scripts/ops/vps_deploy.sh L137/160-182. 2026-10-13 00:18/00:23/00:28Z three ticks aborted `dirty_tree_abort` because tracked `deploy/demo_fill.env` was modified on the box by demo_fill_forward_report auto-off; nobody was alerted. Gate is 2 test files (13 tests). No documented rollback (ff-only refuses backwards). Fix: status file + age alarm in governance_scan; untrack or gitignore the tool-written env file; add `deploy_rollback.sh <sha>`. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-669 — Daily healthcheck.sh is permanently red and encodes Phase-0 invariants that are now false
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**W72.3 resolution:** RESOLVED (W72.3, PR #247): healthcheck.sh rewritten to current invariants, 14 tests; ran on box 2026-10-14T01:17Z: HEALTHY 0 faults 0 warnings.
-
-W71.H1 L4. logs/health.log: 133x 'BOT_C4_ACTIVE is set - must be unset', 23x 'Python 3.11 w/ OpenSSL 3.x not found', 23x Kalshi API empty. Real state: BOT_C4_ACTIVE=true by design. A permanently red check is ignored. Fix: rewrite for current invariants (C4 only in t4 units, kelly 0, key perms, disk, cron-vs-mirror, process age vs HEAD). Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
 ### GG-670 — No log rotation or disk alarm on the VPS (logs 1.9G, exp_output 2.6G, journal 1.1G; disk 51%)
 
@@ -4407,16 +4162,6 @@ W71.H1 L4. audit_mlb_t4.jsonl 700MB, edge_decisions 259MB, cycle_log 228MB, 8518
 **Status:** OPEN · **Severity:** MEDIUM
 
 W71.H1 L2. run_t4_mlb_live.py:1921,1969 (comment says UTC), 531, 570, 2051; paper_trader.py:150 `_today()`; run_resolve_mlb.py:592; run_t4_live.py:102/486/831; market_type_registry.py:1080 naive `datetime.utcnow()`. VPS `date` = UTC. Any Mac run or TZ change mis-keys game_date and the daily-loss reset. game_date meaning also differs by sport (UTC date MLB T4, ET NBA, gameday NFL); related GG-170. Fix: one `utc_today()` helper, tz-aware halted_at. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
-
-### GG-672 — Shadow ledger `_load` raises on one torn line (arm goes silent) and dedup is per-process with no lock
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-**Resolved 2026-10-14 (W72.2):** fix merged in #248; t4-mlb restarted 02:53:06 UTC (read-back via systemctl ActiveEnterTimestamp, after deploy).
-
-*W72.2 (#248, e90ece4): fix merged and on box disk (HEAD cb1bb104, `atomic_io.py` present). NOT closed: t4-mlb imports paper_trader and its restart was skipped (skip_live_game, CLE@TB in progress at 01:18Z), so the running t4-mlb process is still on old code. Close on read-back after t4-mlb restart; cron writers pick up new code on next spawn.*
-
-W71.H1 L2. pregame_shadow/ledger.py: append-only and idempotent on (run_id, market_ticker) (good) but `_load` json.loads every line with no try; no flock/fsync. Same pattern: pregame_shadow/runner.py:90 `except Exception: pass` around on_row observer. Fix: tolerate and quarantine an unparseable trailing line; flock around append; log observer failures. Evidence and context: `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md`.
 
 ### GG-673 — Kalshi fee formula hand-inlined at 7+ src sites and ~12 scripts copies
 
