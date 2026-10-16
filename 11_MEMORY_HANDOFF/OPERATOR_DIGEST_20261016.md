@@ -17,3 +17,5 @@ Three places that read our trade records used to quietly skip or reset when a re
 
 ## W78.3 — NBA opening night readiness (BREADTH / B1)
 A sha-identity bug meant no NBA game cell could ever flip; fixed (#274). Box dry run: 9 of 12 cells flip-ready; 3 team-total cells blocked because Kalshi never lists KXNBATEAMTOTAL (GG-891, B1 ceiling 9). Points rows no longer mask a silent game arm (#275, GG-892). Runbook written. Nothing for you to decide; the real B1 move lands on the 10-21 read-back.
+
+- W78.1 (plumbing): the map of everything that runs is now live on the dashboards (73 components, none stale). Its overall budget light is RED because the NFL QB shadow arm has logged nothing for ~18h; that is not from this block. The gap agent's progress (open gaps 185, down 1 since its first tick) now shows on the scan, /project and the Visual Dashboard. Zero money at risk.
