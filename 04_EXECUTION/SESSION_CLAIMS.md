@@ -931,3 +931,4 @@
 | 2026-10-16T05:01:27Z | W77.1 | CLOSED — W77.1 fill-fix test kept alive: exchange 5xx excluded, cancel 5xx retry, arm-blind demo cash pre-check; GG-840/841 resolved (commit `e63c2b7`) |
 | 2026-10-16T05:03:14Z | W77.1 | CLOSED — merge confirmed, HEAD (649ce0e) is ancestor of origin/main — Parts A+B merged (#269, #271), GG-840/841 resolved, handoff on main |
 | 2026-10-16T05:11:08Z | TBD | W77.2b DEPTH D5(b): Friday-report window via hourly KXNFLGAME candles (no new fetch); STANDARD |
+| 2026-10-16T05:24:15Z | W77.2b | CLOSED — W77.2b: Friday-report window null (REPORT slope -0.0008 [-0.0034,+0.0014], n=145) from existing hourly candles; PR #273. (commit `09ec6ef`) |

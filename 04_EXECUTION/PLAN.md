@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-16T05:05:00Z (W77.3 — W77.3 DONE: 3 silent ledger read-side sites now loud (PR #270, deployed); GG-747 gap is 41, every row explained.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016_W77_3.md` for full session detail.
+**Last reviewed:** 2026-10-16T05:30:00Z (W77.2b — W77.2b: Friday-report window null (REPORT slope -0.0008 [-0.0034,+0.0014], n=145) from existing hourly candles; PR #273.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T0530Z_W77_2b.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
