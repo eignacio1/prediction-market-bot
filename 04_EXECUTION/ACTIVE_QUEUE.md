@@ -243,7 +243,7 @@ bridge workflow; the capture, only if the budget reads GREEN). **Dependencies:**
 
 | Task | What | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
-| W80R.1 | The box bridge (allowlisted jobs via Actions) + budget read + capture install + NBA pre-flight | PLUMBING: box readable from cloud no → yes; budget read; capture no → yes (if GREEN) | ⬜ | |
+| W80R.1 | The box bridge (allowlisted jobs via Actions) + budget read + capture install + NBA pre-flight | PLUMBING: box readable from cloud no → yes; budget read; capture no → yes (if GREEN) | 🟡 | Bridge live (#283/#284/#285). Box readable: yes. Budget read: **RED (real)**, t4-mlb 11.2h behind on 2 imported files; the earlier GREEN was false (GG-920, fixed). Capture installed on the false GREEN, then uninstalled. NBA pre-flight clean. Handoff W80R_1 |
 | W80R.2 | Thin-market ranking + first thin-market prereg (80P.2) | BREADTH/DEPTH: gradient 0 → 1; prereg 0 → 1 | ⬜ | |
 | W80R.3 | NBA pace/efficiency vs Kalshi NBA totals (80P.3) | DEPTH D5(b) NBA applied 0 → 1 (or a verdict) | ⬜ | |
 
