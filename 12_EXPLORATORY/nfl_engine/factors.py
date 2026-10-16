@@ -35,7 +35,7 @@ def personnel_group(s) -> str | None:
 
 
 def kickoff_utc(gameday: str, gametime: str | None) -> pd.Timestamp:
-    h, m = (gametime or "13:00").split(":")[:2]
+    h, m = (gametime if isinstance(gametime, str) and gametime else "13:00").split(":")[:2]
     y, mo, d = map(int, gameday.split("-"))
     return pd.Timestamp(datetime(y, mo, d, int(h), int(m), tzinfo=ET).astimezone(timezone.utc))
 
