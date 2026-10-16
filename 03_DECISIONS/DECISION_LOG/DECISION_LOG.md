@@ -2341,6 +2341,14 @@ Operator, verbatim: "can we keep this as a loose bird watcher that continually b
 
 - The one-shot GB block (16:49 PT entry) is replaced before it ran by `.claude/commands/gap-agent.md`: one tick = sync, scrape (findings with no GG id; GGs cited fixed but still OPEN), fill (severity, pillar, Status format, parity, uniqueness), bucket (A fixed / B duplicate / C small fix / O operator / W wave-owned / L large), burn, retire to archive, report, self-pace. Launched in its own terminal with `/loop /gap-agent`; state in 03_DECISIONS/GG_BURNDOWN.md and GG_AGENT_STATE.md; stops and asks for relaunch at ~60% context. Same never-list and "within reason" bounds. Its single deliverable (Hard Rule 11) is the burn-down itself.
 
+## 2026-10-16 — W76.1: one kill switch drilled on the running processes; GG-745 resolved; forward test is cash-starved, rule unchanged
+
+Operator's block, verbatim: "Do not change the rule." and "A choice between two fixes for a demo/paper/shadow problem is not an operator decision. Take the root-cause fix."
+
+- DEMO drill 2026-10-15T23:50Z-00:14Z: global flag halted `t4-mlb` in 29.5 s, all five `submit_order` caller labels in 19-37 ms, 72 shadow cron skips, 0 orders; band flag halted only `t4_mlb`; removal resumed in 7 s. C7 `kill_switch_drill_result` EVT-3B72CDCB0720. GG-745 RESOLVED. Cancels not exercised (none pending).
+- `demo_fill_forward_report.py`: `no_outcome` epoch-gated, atomic writes (GG-754); `--since` and non-fill counterfactual added.
+- Read-back since re-arm: treatment fills 0.22x control (pooled), 1,535/1,606 rejections `insufficient_balance` (GG-840), 10-15 cancel-fail 19.6% all 503 with no retry (GG-841). Projection: no treatment arm reaches ~550 inside the 8-week window. Rule unchanged. Operator line: exclude the 10-15 exchange-503 day from the turn-off check, or not (a pre-registered rule).
+- PR #267 not merged: main CI is red from W76.2's exploratory-isolation tests (nfl_engine/availability.py); not bypassed.
 ## 2026-10-15 17:33 PT — Wave 76 closed (partly); Wave 77 issued; this window runs through Wave 80
 
 Operator, verbatim: "76 is finished - confirm receipt then set up next wave. Btw - I'm running your window until wave 80 is sent AND FINISHED. So let's make the most of the very valuable context that we have in your window while we can alright - let's make these next 4 waves incredibly substantive and aligned with what we have in your window"

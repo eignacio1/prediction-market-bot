@@ -16,6 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
+**Last reviewed:** 2026-10-16T00:40:00Z (W76.1 — One kill switch drilled on the running processes (PASS, GG-745 resolved); forward-test read-back shows the treatment arm cannot reach judged n and the demo account is cash-starved) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T002805Z_W76_1.md` for full session detail.
 **Last reviewed:** 2026-10-16T00:45:00Z (GG-860..GG-879 (standing gap agent) — Gap agent ticks 1-3: 1 gap resolved, 23 retired to archive, 20 severities filled, 39 gaps bucketed; loop stopped manually.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T0045Z_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.

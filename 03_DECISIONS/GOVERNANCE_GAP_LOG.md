@@ -2081,9 +2081,11 @@ Found 2026-10-14 by `scripts/runtime_registry.py` discovery — five (schedule, 
 
 ### GG-745 — The kill switch is not one switch: three flag files, C7 never writes one, paper_trader has no halt check (NFR-03)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
 B74-A L1, 2026-10-14. t4-mlb watches only `logs/t4_mlb_kill_switch.flag` (`run_t4_mlb_live.py:290`); `run_t4_live` watches `t4_kill_switch.flag`; `shadow_flat_stake.maybe_place:55` calls `kill_switch_state.halt_reason()` (glob `*kill_switch*.flag`, fails closed). So `touch logs/t4_kill_switch.flag` halts shadow stake placement but not t4-mlb, the main order placer. C7 `is_kill_switch_active` is in-memory and no code writes a flag file when C7 trips, so cron-launched processes never see it (only `t4_live_runner:509` checks it). `paper_trader.py:685` (T1, NFL game markets) calls `submit_order` with no `halt_reason()` call. No flag exists on the box, so the path was never exercised. Pillar: EXECUTION, PROOF. Proposed fix: one shared `halt_reason()` honoured by every order placer (put it in `paper_trader`/`submit_order`), C7 writes the flag on L4, and a monthly canary that touches the flag on demo and reads back a halt. Related: GG-667 (fixed for shadow stake only).
+
+**Resolution (W76.1, 2026-10-16):** code fix landed W75.4 (one switch in `KalshiMarketClient.submit_order`); drilled on the running processes 2026-10-15T23:50Z-00:14Z: global flag halted `t4-mlb` in 29.5 s and all five caller labels in 19-37 ms, 72 shadow cron skips, 0 orders; band flag halted only `t4_mlb`; removal resumed in 7 s. C7 `kill_switch_drill_result` EVT-3B72CDCB0720, passed_sla true. Not exercised: cancels (none pending). Detail: `W75_4_kill_switch.md` "Drill".
 
 ### GG-747 — T4 portfolio has 4,309 closed rows vs 4,275 in the resolved ledger (gap of 34)
 
@@ -4236,3 +4238,21 @@ W75.2 Part A. `defense_coverage_type` is populated for 53-61% of run+pass plays 
 **Status:** OPEN · **Severity:** LOW
 
 W76.3 Part A (2026-10-16) swept src/ and scripts/ for `open(...,"w")` / `write_text` (174 hits, raw list not committed). The five live-ledger or portfolio writers (the four GG-748 scripts + `t437_task3_rederive_outcomes.py`) are converted to `atomic_io` (PR #265, tests `tests/test_w76_3_script_writers.py`, which also pins them against regression). The remaining hits overlap the GG-680 inventory (frozen artifacts, caches, report writers, tmpdir files) and were NOT re-classified one by one in this block. Closes when a re-run of the sweep is diffed against GG-680 and each unlisted hit is converted or listed as not-state. Also noted: `t4_fill_status.py:310` is an append-mode log (O_APPEND, not a rewrite). `backfill_*` scripts use tmp+replace without fsync (crash-durability only, not tear risk). Pillar: PLUMBING.
+
+### GG-840 — Demo account is cash-starved: 1,535 of 1,606 rejections since the re-arm are `insufficient_balance`
+
+**Status:** OPEN · **Severity:** HIGH
+
+W76.1, 2026-10-16. Demo cash $0.1674 against portfolio value $108.14 (read-only GET). Since 2026-10-13T23:58Z: 962 orders accepted, 1,606 rejected (insufficient_balance 1,535; market_closed 68; transient 3). Fills for both ADR-0072 arms depend on cash recycling, not on the placement rule, so fill rates are selection-dependent and the judged-n projection is unreliable. Pillar: EXECUTION (E1). Proposed fix: size shadow flat stakes to available cash or add a balance pre-check that logs and skips; a demo top-up is not available through the API.
+
+### GG-841 — `cancel_now` has no 5xx retry; an exchange 503 outage trips the ADR-0072 turn-off
+
+**Status:** OPEN · **Severity:** HIGH
+
+W76.1, 2026-10-16. On 2026-10-15 the cancel-fail rate was 19.6%, all HTTP 503 (74 rows, 17:00-19:xxZ). A `cancel_failed` row counts as done in `sweep_overdue`, so nothing retries. A sample of 30 of those orders ended `canceled`, so they rested longer than designed. The 11:25Z cron on 2026-10-16 will see `cancel_fail_rate_gt_10pct_in_a_day` and turn the rule off. Root-cause fix: retry `cancel_now` on 5xx inside `c5_execution/demo_fill_policy.py` (live order path, outside the 76.1 ownership). Pillar: EXECUTION.
+
+### GG-842 — t4-mlb armed message names only the legacy flag path
+
+**Status:** OPEN · **Severity:** LOW
+
+W76.1, 2026-10-16. `T4-MLB kill switch armed` prints `t4_mlb_kill_switch.flag` although any flag in the one-switch set halts it. Cosmetic; found in the drill.

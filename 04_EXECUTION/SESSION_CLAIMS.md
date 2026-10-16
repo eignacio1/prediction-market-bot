@@ -920,6 +920,7 @@
 | 2026-10-16T00:19:32Z | W76.2 | CLOSED — NFL second factor class (F8 unit-level starter availability, non-QB): orthogonal to ratings (R2 1.3%), taken to APPLIED on a frozen plan; MATCHES ML/spread/team total, NO on total (commit `a608bf8`) |
 | 2026-10-16T00:19:51Z | W76.2 | CLOSED — merge confirmed, HEAD (a1c18c9) is ancestor of origin/main — F8 unit availability APPLIED: MATCHES ML/spread/team total, NO on total |
 | 2026-10-16T00:29:26Z | W76.4 | CLOSED — merge confirmed, HEAD (27872ac) is ancestor of origin/main — Built, PR #266 not merged (main CI red from 76.2 exploratory isolation) |
+| 2026-10-16T00:30:04Z | W76.1 | MERGED: NO — branch `session/20261015T234908Z-w76-1-killswitch-drill` awaiting merge — One kill switch drilled on the running processes (PASS, GG-745 resolved); forward-test read-back shows the treatment arm cannot reach judged n and the demo account is cash-starved (commit `see PR #267`) |
 | 2026-10-16T00:38:57Z | GG-860..GG-879 (standing gap agent) | CLOSED — Gap agent ticks 1-3: 1 gap resolved, 23 retired to archive, 20 severities filled, 39 gaps bucketed; loop stopped manually. (commit `2f07ceb`) |
 | 2026-10-16T00:39:08Z | GG-860..GG-879 (standing gap agent) | CLOSED — merge confirmed, HEAD (3d21eea) is ancestor of origin/main — Gap agent ticks 1-3 closed; manual stop |
 | 2026-10-16T00:47:11Z | GG-880..GG-884 | W77.2 STANDARD: NFL market-side verdict per factor (power + closing-line + timing) — PURPOSE DEPTH D5(b) 0->4 factors with market verdict; files only under 12_EXPLORATORY/nfl_engine/market_tests/ |
