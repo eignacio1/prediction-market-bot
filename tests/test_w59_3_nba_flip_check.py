@@ -2,7 +2,6 @@
 
 Writes only into pytest tmp_path; never touches exp_output/PREGAME_SHADOW.
 """
-import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -11,7 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 spec = importlib.util.spec_from_file_location("flip", ROOT / "scripts" / "w59_3_nba_flip_check.py")
 flip = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(flip)
-SHA = hashlib.sha256((ROOT / "models" / "nba_pregame_v1.json").read_bytes()).hexdigest()
+SHA = json.loads((ROOT / "models" / "nba_pregame_v1.json").read_text())["sha256"]
 
 
 def _row(**kw):

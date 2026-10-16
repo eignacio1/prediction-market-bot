@@ -76,8 +76,7 @@ def test_flip_check_is_read_only_and_counts_only_valid_rows(tmp_path):
     spec = importlib.util.spec_from_file_location("flipchk", ROOT / "scripts" / "w59_3_nba_flip_check.py")
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
-    import hashlib
-    sha = hashlib.sha256((ROOT / "models" / "nba_pregame_v1.json").read_bytes()).hexdigest()
+    sha = json.loads((ROOT / "models" / "nba_pregame_v1.json").read_text())["sha256"]
     good = {"model_sha256": sha, "p_yes": 0.6, "mid": 0.55, "start_time_source": "espn_scoreboard_start_time"}
     (tmp_path / "NBA_NBA_MONEYLINE_T1.jsonl").write_text(json.dumps(good) + "\n" + json.dumps({**good, "p_yes": 1.0}) + "\n")
     assert m.main(["--ledger-dir", str(tmp_path)]) == 0
