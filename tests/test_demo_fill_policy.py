@@ -433,7 +433,8 @@ def test_cancel_404_on_terminal_order_is_already_terminal_not_failure(tmp_path, 
     assert e["event"] == "cancel_already_terminal" and e["order_status"] == status
 
 
-def test_cancel_404_but_still_resting_or_get_failed_stays_failure(tmp_path):
+def test_cancel_404_but_still_resting_or_get_failed_stays_failure(tmp_path, monkeypatch):
+    monkeypatch.setenv("DEMO_CANCEL_5XX_RETRIES", "0")  # W77.1: the 5xx retry has its own tests below
     c = _client()
     c.cancel_order.return_value = (False, _REAL_404)
     c.get_order.return_value = (True, {"order": {"status": "resting"}})
@@ -443,3 +444,55 @@ def test_cancel_404_but_still_resting_or_get_failed_stays_failure(tmp_path):
     c.cancel_order.return_value = (False, {"error": "HTTP 500", "body": ""})
     assert pol.cancel_now(c, "O3", "P", "T", "x") is False
     assert [e["event"] for e in _events(tmp_path)] == ["cancel_failed"] * 3
+
+
+# ---- W77.1 / GG-841: cancel_now retries exchange 5xx; transient failures stay pending ----
+def _cancel_client(responses):
+    c = MagicMock()
+    c.cancel_order.side_effect = list(responses)
+    c.get_order.return_value = (False, {})
+    return c
+
+
+def test_cancel_now_retries_503_then_succeeds(tmp_path, monkeypatch):
+    monkeypatch.setenv("DEMO_FILL_POLICY_LOG", str(tmp_path / "l.jsonl"))
+    monkeypatch.setenv("DEMO_CANCEL_5XX_BACKOFF_S", "0")
+    c = _cancel_client([(False, {"error": "HTTP 503"}), (False, {"error": "HTTP 503"}), (True, {})])
+    assert pol.cancel_now(c, "o1", "p1", "KXMLBHIT-X", "unfilled_after_N") is True
+    evs = [json.loads(x)["event"] for x in (tmp_path / "l.jsonl").read_text().splitlines()]
+    assert evs == ["cancel_retry_5xx", "cancel_retry_5xx", "cancel_ok"]
+
+
+def test_cancel_now_does_not_retry_code_side_failure(tmp_path, monkeypatch):
+    monkeypatch.setenv("DEMO_FILL_POLICY_LOG", str(tmp_path / "l.jsonl"))
+    monkeypatch.setenv("DEMO_CANCEL_5XX_BACKOFF_S", "0")
+    c = _cancel_client([(False, {"error": "HTTP 400"})])
+    assert pol.cancel_now(c, "o1", "p1", "T", "r") is False
+    assert c.cancel_order.call_count == 1
+    last = json.loads((tmp_path / "l.jsonl").read_text().splitlines()[-1])
+    assert last["event"] == "cancel_failed" and "venue_transient" not in last
+
+
+def test_exhausted_5xx_stays_pending_for_next_sweep_until_cap(tmp_path, monkeypatch):
+    monkeypatch.setenv("DEMO_FILL_POLICY_LOG", str(tmp_path / "l.jsonl"))
+    monkeypatch.setenv("DEMO_CANCEL_5XX_BACKOFF_S", "0")
+    monkeypatch.setenv("DEMO_CANCEL_5XX_RETRIES", "1")
+    pol.append_log({"event": "cancel_scheduled", "order_id": "o1", "position_id": "p1", "ticker": "T", "due_ts": 0})
+    bad = _cancel_client([(False, {"error": "HTTP 503"})] * 100)
+    assert pol.sweep_overdue(bad, now_ts=10) == 1
+    assert "o1" in pol.pending_cancels()          # a 503 cancel_failed is NOT done
+    good = _cancel_client([(True, {})])
+    assert pol.sweep_overdue(good, now_ts=10) == 1
+    assert pol.pending_cancels() == {}
+    # cap: persistent 5xx stops being re-tried after SWEEP_MAX_TRANSIENT failures
+    pol.append_log({"event": "cancel_scheduled", "order_id": "o2", "position_id": "p2", "ticker": "T", "due_ts": 0})
+    for _ in range(pol.SWEEP_MAX_TRANSIENT):
+        pol.sweep_overdue(bad, now_ts=10)
+    assert "o2" not in pol.pending_cancels()
+
+
+@pytest.mark.parametrize("data,exp", [({"error": "HTTP 503"}, True), ({"error": "HTTP 500"}, True),
+                                      ({"error": "ReadTimeout"}, True), ({"error": "HTTP 404"}, False),
+                                      ({"error": "host_refused"}, False), ({"error": "ValueError"}, False), (None, False)])
+def test_is_venue_transient(data, exp):
+    assert pol.is_venue_transient(data) is exp

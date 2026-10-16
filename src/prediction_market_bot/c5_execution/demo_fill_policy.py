@@ -25,6 +25,7 @@ import json
 import os
 import threading
 import time
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -199,43 +200,91 @@ def _already_terminal_status(client: Any, order_id: str, data: Any) -> Optional[
     return status if status in TERMINAL_ORDER_STATUSES else None
 
 
+CANCEL_5XX_RETRIES_ENV = "DEMO_CANCEL_5XX_RETRIES"
+CANCEL_5XX_BACKOFF_ENV = "DEMO_CANCEL_5XX_BACKOFF_S"
+DEFAULT_CANCEL_5XX_RETRIES = 3
+DEFAULT_CANCEL_5XX_BACKOFF_S = 1.0
+SWEEP_MAX_TRANSIENT = 6  # venue-transient cancel failures per order after which the sweeper stops re-trying it
+_TRANSIENT_EXC_NAMES = frozenset({"Timeout", "ReadTimeout", "ConnectTimeout", "ConnectionError", "ChunkedEncodingError"})
+
+
+def is_venue_transient(data: Any) -> bool:
+    """GG-841 / ADR-0072 addendum 2026-10-15: a failure that is the exchange's or the network's, not ours:
+    HTTP 5xx, a request timeout/connection error, or the client's own 'transient error' exhaustion text.
+    A 4xx, an auth failure, a host refusal or any code-side exception is NOT transient."""
+    if not isinstance(data, dict):
+        return False
+    err = str(data.get("error") or "")
+    if err.startswith("HTTP 5") and err[5:].strip()[:3].isdigit():
+        return True
+    return err in _TRANSIENT_EXC_NAMES or err.startswith("transient error")
+
+
 def cancel_now(client: Any, order_id: str, position_id: str, ticker: str, reason: str) -> bool:
-    try:
-        ok, data = client.cancel_order(order_id, market_ticker=ticker or None)
-    except Exception as e:  # noqa: BLE001 - a cancel failure is logged, never raised into the order path
-        ok, data = False, {"error": type(e).__name__, "detail": str(e)}
+    """Cancel one order. GG-841: an exchange 5xx / network blip is retried with exponential backoff
+    (DEMO_CANCEL_5XX_RETRIES extra attempts); if it still fails, the cancel_failed row carries
+    ``venue_transient: true`` so sweep_overdue keeps the order open and the report counts it apart."""
+    retries = int(_float_env(CANCEL_5XX_RETRIES_ENV, DEFAULT_CANCEL_5XX_RETRIES))
+    backoff = _float_env(CANCEL_5XX_BACKOFF_ENV, DEFAULT_CANCEL_5XX_BACKOFF_S)
+    attempt = 0
+    while True:
+        try:
+            ok, data = client.cancel_order(order_id, market_ticker=ticker or None)
+        except Exception as e:  # noqa: BLE001 - a cancel failure is logged, never raised into the order path
+            ok, data = False, {"error": type(e).__name__, "detail": str(e)}
+        if ok or attempt >= retries or not is_venue_transient(data):
+            break
+        attempt += 1
+        append_log({"event": "cancel_retry_5xx", "order_id": order_id, "position_id": position_id,
+                    "ticker": ticker, "reason": reason, "attempt": attempt, "response": data})
+        time.sleep(backoff * (2 ** (attempt - 1)))
     if not ok:
         terminal = _already_terminal_status(client, order_id, data)
         if terminal:
             append_log({"event": "cancel_already_terminal", "order_id": order_id, "position_id": position_id,
                         "ticker": ticker, "reason": reason, "order_status": terminal, "response": data})
             return True
-    append_log({"event": "cancel_ok" if ok else "cancel_failed", "order_id": order_id,
-                "position_id": position_id, "ticker": ticker, "reason": reason, "response": data})
+    row = {"event": "cancel_ok" if ok else "cancel_failed", "order_id": order_id,
+           "position_id": position_id, "ticker": ticker, "reason": reason, "response": data}
+    if not ok and is_venue_transient(data):
+        row["venue_transient"] = True
+    append_log(row)
     return ok
 
 
-def sweep_overdue(client: Any, now_ts: Optional[float] = None) -> int:
-    """Cancel scheduled orders whose due time passed with no cancel_ok/cancel_failed record
-    (process restarted before the timer fired). Returns count attempted."""
-    p = log_path()
+def pending_cancels(p: Optional[Path] = None) -> dict[str, dict]:
+    """Scheduled cancels with no final outcome. A cancel_failed with ``venue_transient`` is NOT final until
+    SWEEP_MAX_TRANSIENT of them have accrued for the order (GG-841: it used to count as done and never retry)."""
+    p = p or log_path()
     if not p.exists():
-        return 0
-    now_ts = now_ts if now_ts is not None else datetime.now(timezone.utc).timestamp()
+        return {}
     sched: dict[str, dict] = {}
     done: set[str] = set()
+    transient: Counter = Counter()
     for line in p.read_text().splitlines():
         try:
             r = json.loads(line)
         except ValueError:
             continue
-        if r.get("event") == "cancel_scheduled":
+        ev = r.get("event")
+        if ev == "cancel_scheduled":
             sched[r["order_id"]] = r
-        elif r.get("event") in CANCEL_DONE_EVENTS:
+        elif ev == "cancel_failed" and r.get("venue_transient"):
+            transient[r.get("order_id")] += 1
+            if transient[r.get("order_id")] >= SWEEP_MAX_TRANSIENT:
+                done.add(r.get("order_id"))
+        elif ev in CANCEL_DONE_EVENTS:
             done.add(r.get("order_id"))
+    return {oid: r for oid, r in sched.items() if oid not in done}
+
+
+def sweep_overdue(client: Any, now_ts: Optional[float] = None) -> int:
+    """Cancel scheduled orders whose due time passed with no final outcome (process restarted before the
+    timer fired, or the last attempt hit an exchange 5xx -- GG-841). Returns count attempted."""
+    now_ts = now_ts if now_ts is not None else datetime.now(timezone.utc).timestamp()
     n = 0
-    for oid, r in sched.items():
-        if oid not in done and r.get("due_ts", 0) <= now_ts:
+    for oid, r in pending_cancels().items():
+        if r.get("due_ts", 0) <= now_ts:
             cancel_now(client, oid, r.get("position_id", ""), r.get("ticker", ""), "sweep_overdue")
             n += 1
     return n

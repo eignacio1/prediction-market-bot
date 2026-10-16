@@ -221,3 +221,29 @@ def test_since_window_and_non_fill_counterfactual():
     assert (c["orders"], c["fills"], c["non_fills_resolved"]) == (2, 1, 1)
     assert c["win_rate_on_fills"] == 1.0 and c["win_rate_on_non_fills"] == 0.0
     assert rep["since"] is not None
+
+
+def _503_events(n, ok, base_min):
+    evs = []
+    for i in range(n + ok):
+        bad = i < n
+        evs.append(ev(base_min + i, event="cancel_failed" if bad else "cancel_ok", order_id=f"v{base_min}{i}",
+                      position_id=f"v{base_min}{i}", ticker="KXMLBHIT-X",
+                      **({"response": {"error": "HTTP 503"}} if bad else {})))
+    return evs
+
+
+def test_exchange_5xx_only_day_never_trips_and_is_reported_apart(monkeypatch):
+    """ADR-0072 addendum 2026-10-15 (operator: 'Exclude exchange 503s')."""
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
+    rep = rpt.build_report(_503_events(8, 2, 10), NOW, None)
+    assert rep["tripped"] == []
+    chk = rep["turn_off_checks"]["cancel_fail_rate_gt_10pct_in_a_day"]
+    assert sum(chk["venue_transient_failures_by_day"].values()) == 8
+    assert sum(c["cancels"]["failed_venue_transient"] for c in rep["cells"]) == 8
+
+
+def test_code_side_failures_still_trip_alongside_5xx(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
+    evs = _503_events(8, 0, 100) + _cancel_events(3, 7, 10)
+    assert [t["condition"] for t in rpt.build_report(evs, NOW, None)["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
