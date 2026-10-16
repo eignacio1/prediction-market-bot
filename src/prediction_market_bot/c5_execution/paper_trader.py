@@ -671,6 +671,13 @@ class PaperTrader:
                                                  "position_id": pos["position_id"],
                                                  "ticker": kalshi_ticker})
                         return True, {}
+                    # W77.1/GG-840: arm-blind cash pre-check, also BEFORE assignment.
+                    why = _fill_policy.cash_skip_reason(self._kalshi, size)
+                    if why:
+                        _fill_policy.append_log({"event": "skip", "reason": why,
+                                                 "position_id": pos["position_id"],
+                                                 "ticker": kalshi_ticker})
+                        return True, {}
                 policy_on = _fill_policy.is_enabled() and _fill_policy.assigned(pos["position_id"])
                 if policy_on:
                     # W64.2/ADR-0072: book-anchored price (R2). A skip places NO order and

@@ -47,6 +47,9 @@ DEFAULT_LOG = Path("logs/demo_fill_policy.jsonl")
 
 LISTING_TTL_ENV = "DEMO_LISTING_TTL_S"
 DEFAULT_LISTING_TTL_S = 300.0
+CASH_TTL_ENV = "DEMO_CASH_TTL_S"
+DEFAULT_CASH_TTL_S = 2.0
+_CASH_CACHE: list[Any] = [None, 0.0]  # [balance_usd, monotonic ts]
 _LISTING_CACHE: dict[str, tuple[bool, float]] = {}  # ticker -> (listed, monotonic ts); unknown is never cached
 
 
@@ -138,6 +141,28 @@ def listing_skip_reason(client: Any, ticker: str) -> Optional[str]:
             return "demo_listing_unknown"
         _LISTING_CACHE[ticker] = (listed, now)
     return None if listed else "not_listed_on_demo"
+
+
+def cash_skip_reason(client: Any, stake_usd: float) -> Optional[str]:
+    """W77.1/GG-840. None = go on. ``insufficient_demo_cash`` only when a successful balance read
+    says cash < stake. Arm-blind like the listing check (call BEFORE ``assigned``): both arms lose
+    the same orders, and these are orders the venue would have rejected anyway (insufficient_balance),
+    so the placed count per arm is unchanged -- only the wasted venue call and the noisy rejection go.
+    A failed or malformed read fails OPEN (the venue still decides); the cash read is cached
+    DEMO_CASH_TTL_S so a burst of candidates is one GET."""
+    ttl = _float_env(CASH_TTL_ENV, DEFAULT_CASH_TTL_S)
+    now = time.monotonic()
+    bal = _CASH_CACHE[0] if _CASH_CACHE[0] is not None and now - _CASH_CACHE[1] < ttl else None
+    if bal is None:
+        try:
+            ok, data = client.get_balance()
+            bal = float(data["balance_usd"]) if ok else None
+        except Exception:  # noqa: BLE001 - an unreadable balance never blocks an order
+            bal = None
+        if bal is None:
+            return None
+        _CASH_CACHE[0], _CASH_CACHE[1] = bal, now
+    return "insufficient_demo_cash" if bal < float(stake_usd) else None
 
 
 @dataclass

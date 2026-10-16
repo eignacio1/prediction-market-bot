@@ -73,6 +73,14 @@ def maybe_place(
     if why:
         pol.append_log({"event": "shadow_skip", "reason": why, "row_id": rid})
         return None
+    if stake_fn is None:  # ADR-0050 flat measurement stake (lazy: heavy module)
+        from prediction_market_bot.run_t4_mlb_live import measurement_stake_and_stratum
+        stake_fn = lambda e: measurement_stake_and_stratum(e)[0]  # noqa: E731
+    mid_entry = float(mid) if direction == "yes" else 1.0 - float(mid)
+    why = pol.cash_skip_reason(client, float(stake_fn(mid_entry)))  # W77.1/GG-840: arm-blind, before assignment
+    if why:
+        pol.append_log({"event": "shadow_skip", "reason": why, "row_id": rid})
+        return None
     treatment = pol.assigned(rid)
     if treatment:
         dec = pol.decide(client, ticker, direction, float(mid), rid)
@@ -85,9 +93,6 @@ def maybe_place(
         # model-mid limit, no book read, no anchoring, no cancel. Same assignment hash and share.
         price_yes = float(mid)
     entry = price_yes if direction == "yes" else 1.0 - price_yes
-    if stake_fn is None:  # ADR-0050 flat measurement stake (lazy: heavy module)
-        from prediction_market_bot.run_t4_mlb_live import measurement_stake_and_stratum
-        stake_fn = lambda e: measurement_stake_and_stratum(e)[0]  # noqa: E731
     stake = float(stake_fn(entry))
     order = client.submit_order(ticker=ticker, side=direction, size_usd=stake,
                                 mid_price=price_yes, band=SHADOW_KILL_BAND,
