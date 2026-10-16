@@ -31,6 +31,10 @@ class ArmSpec:
     window_h: float      # N: games started in the last N hours must have been served by a row in that window
     lead_h: float        # rows written this long before the window opens still count (T3 writes <=1h pre-start)
     why: str             # reason N was chosen (shown in docs/tests, not the UI)
+    # (min_h, max_h) horizon window of a T1-ONLY arm. Such an arm legitimately writes nothing once a game is inside
+    # 12h of start, so "a row near the start" is the wrong question (W79.1): ask "was the game served at all inside
+    # its own T1 window?" instead. None = the arm runs T2/T3 as well and the recency rule above applies.
+    t1_window_h: Optional[tuple] = None
 
 
 @dataclass
@@ -39,6 +43,7 @@ class ArmInput:
     game_starts: Optional[list[datetime]]   # tz-aware UTC starts from the arm's own schedule; None = unreadable
     last_row_ts: Optional[datetime]         # newest row the arm wrote (tz-aware UTC); None = none found
     note: str = ""                          # why a source was unreadable
+    row_times: Optional[list] = None        # every recent row ts (tz-aware UTC); only T1-only arms need it
 
 
 SPECS = {
@@ -48,8 +53,11 @@ SPECS = {
     "nfl_shadow": ArmSpec("nfl_shadow", "NFL shadow", 12, 1,
                           "same T1 6h / T2 hourly / T3 10-min cron shape as the MLB shadow"),
     "nfl_qb_challenger": ArmSpec("nfl_qb_challenger", "NFL QB challenger shadow", 12, 1,
-                                 "W65.3: T1 6h cron (staggered minute) on the same hours as the frozen NFL T1; "
-                                 "same KXNFLGAME games, so it must write whenever the frozen NFL arm does"),
+                                 "W65.3: T1-ONLY 6h cron (--bands T1, no T2/T3 line). W79.1: it stops writing 12h before "
+                                 "kickoff by design, so a game that started in the last 12h is served iff the arm wrote a "
+                                 "row inside that game's own 12-48h T1 window (the W78.1 'silent 17.8h' alarm on the "
+                                 "10-15 SEA@DEN game was false: 12 rows at horizons 42.0 -> 12.0h)",
+                                 t1_window_h=(12.0, 48.0)),
     "nhl_shadow": ArmSpec("nhl_shadow", "NHL shadow", 12, 1,
                           "T1 daily 14:00Z, T2 every 30 min 15-01Z, T3 every 10 min 17-02Z: evening starts get "
                           "rows within the hour; 12h keeps a matinee start from false-alarming before T1 at 14Z"),
@@ -88,6 +96,8 @@ def evaluate_arm(inp: ArmInput, now: datetime) -> dict:
     win_start = now - timedelta(hours=s.window_h)
     games = [g for g in (_aware(x) for x in inp.game_starts) if win_start <= g <= now]
     last = _aware(inp.last_row_ts) if inp.last_row_ts else None
+    if s.t1_window_h is not None and games:
+        return _evaluate_t1_only(inp, games, last, now)
     wrote = last is not None and last >= win_start - timedelta(hours=s.lead_h)
     last_txt = last.strftime("%Y-%m-%d %H:%MZ") if last else "none found"
     if not games:
@@ -104,6 +114,28 @@ def evaluate_arm(inp: ArmInput, now: datetime) -> dict:
             "last_row": last.isoformat() if last else None,
             "text": f"{s.name} is SILENT: {len(games)} game(s) started in the last {s.window_h:g}h but {since} "
                     f"(last row {last_txt})"}
+
+
+def _evaluate_t1_only(inp: ArmInput, games: list, last: Optional[datetime], now: datetime) -> dict:
+    """T1-only arms: each game that started in the window must have >=1 row inside [start-max_h, start-min_h]
+    (plus a lead_h slack either side for the run-time vs. horizon rounding)."""
+    s = inp.spec
+    lo_h, hi_h = s.t1_window_h
+    slack = timedelta(hours=s.lead_h)
+    rows = [_aware(t) for t in (inp.row_times or [])]
+    unserved = [g for g in games
+                if not any(g - timedelta(hours=hi_h) - slack <= t <= g - timedelta(hours=lo_h) + slack for t in rows)]
+    base = {"key": s.key, "name": s.name, "window_h": s.window_h, "games_in_window": len(games),
+            "last_row": last.isoformat() if last else None}
+    if not unserved:
+        return {**base, "status": "ok", "hours_silent": None,
+                "text": f"{s.name}: {len(games)} game(s) started in the last {s.window_h:g}h, all served inside their "
+                        f"T1 window ({lo_h:g}-{hi_h:g}h pre-start)"}
+    hrs = round((now - last).total_seconds() / 3600, 1) if last else None
+    last_txt = last.strftime("%Y-%m-%d %H:%MZ") if last else "none found"
+    return {**base, "status": "silent", "hours_silent": hrs,
+            "text": f"{s.name} is SILENT: {len(unserved)} of {len(games)} game(s) started in the last {s.window_h:g}h "
+                    f"had no row inside their T1 window ({lo_h:g}-{hi_h:g}h pre-start) (last row {last_txt})"}
 
 
 def silent_arms(inputs: list[ArmInput], now: datetime) -> dict:
@@ -154,6 +186,41 @@ def last_ts_in_files(files: list[Path], keys=("ts_utc", "ts", "timestamp"), nbyt
                 best = t if best is None or t > best else best
                 break
     return best
+
+
+def row_times_in_files(files: list[Path], keys=("ts_utc", "ts", "timestamp"), nbytes: int = 1_048_576,
+                       until: Optional[datetime] = None) -> list[datetime]:
+    """Every row timestamp in each file's tail (T1-only arms judge a game by rows inside its own T1 window)."""
+    out = []
+    for p in files:
+        if not p.exists():
+            continue
+        for ln in _tail_lines(p, nbytes):
+            try:
+                r = json.loads(ln)
+            except ValueError:
+                continue
+            t = next((x for x in (_parse(r.get(k)) for k in keys) if x), None)
+            if t and (until is None or t <= until):
+                out.append(t)
+    return out
+
+
+# GG-892 / W79.1 (Hard Rule 13 sweep): an arm's ledger files are chosen by EXACT market-type name, never by a
+# sport-prefix glob. A prefix glob (MLB_*, NFL_*, NBA_*) also matches every other arm that shares the sport and
+# lets its fresh rows hide a dead arm. Each name list mirrors the arm's runner CELLS (pinned by a test).
+GAME_CELLS = {
+    "MLB": ("MLB_MONEYLINE", "MLB_RUN_LINE", "MLB_GAME_TOTAL", "MLB_TEAM_TOTAL"),
+    "NFL": ("NFL_MONEYLINE", "NFL_SPREAD", "NFL_GAME_TOTAL", "NFL_TEAM_TOTAL"),
+    "NBA": ("NBA_MONEYLINE", "NBA_SPREAD", "NBA_GAME_TOTAL", "NBA_TEAM_TOTAL"),
+    "NHL": ("NHL_MONEYLINE", "NHL_PUCK_LINE", "NHL_GAME_TOTAL"),
+}
+
+
+def cell_files(directory: Path, sport: str, prefix: str = "") -> list[Path]:
+    """Ledger files of this sport's game-market cells only: ``{prefix}{cell}_*.jsonl`` (T1/T2/T3 bands)."""
+    d = Path(directory)
+    return sorted(p for c in GAME_CELLS[sport] for p in d.glob(f"{prefix}{c}_*.jsonl"))
 
 
 def _mlb_starts(repo: Path) -> list[datetime]:
@@ -240,7 +307,11 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
     except Exception as e:
         mlb_err = f"MLB games cache: {type(e).__name__}"
 
-    def arm(key, starts_fn, last_fn):
+    def qb_files():
+        # the QB arm's ledgers are NFLQB_{market_type}_{band}.jsonl; exact cell names, same rule as the others
+        return cell_files(repo / "exp_output" / "PREGAME_SHADOW_NFLQB", "NFL", "NFLQB_")
+
+    def arm(key, starts_fn, last_fn, row_times_fn=None):
         spec = SPECS[key]
         try:
             starts, err = starts_fn(), ""
@@ -250,7 +321,11 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             last = last_fn()
         except Exception:
             last = None
-        return ArmInput(spec, starts, last, err)
+        try:
+            rows = row_times_fn() if row_times_fn else None
+        except Exception:
+            rows = None
+        return ArmInput(spec, starts, last, err, rows)
 
     def mlb_starts_fn():
         if mlb_err:
@@ -258,14 +333,14 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
         return mlb_starts
 
     return [
-        arm("mlb_shadow", mlb_starts_fn, lambda: last_ts_in_files(sorted(led.glob("MLB_*.jsonl")), until=now)),
-        arm("nfl_shadow", lambda: _nfl_starts(repo), lambda: last_ts_in_files(sorted(led.glob("NFL_*.jsonl")), until=now)),
+        arm("mlb_shadow", mlb_starts_fn, lambda: last_ts_in_files(cell_files(led, "MLB", "MLB_"), until=now)),
+        arm("nfl_shadow", lambda: _nfl_starts(repo), lambda: last_ts_in_files(cell_files(led, "NFL", "NFL_"), until=now)),
         arm("nfl_qb_challenger", lambda: _nfl_starts(repo),
-            lambda: last_ts_in_files(sorted((repo / "exp_output" / "PREGAME_SHADOW_NFLQB").glob("NFLQB_*.jsonl")), until=now)),
+            lambda: last_ts_in_files(qb_files(), until=now), row_times_fn=lambda: row_times_in_files(qb_files(), until=now)),
         arm("nhl_shadow", lambda: _nhl_starts(repo, now),
-            lambda: last_ts_in_files(sorted(p for p in (repo / "data" / "shadow" / "nhl").glob("NHL_*.jsonl")), until=now)),
-        arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(sorted(pre.glob("NBA_*.jsonl")), until=now)),
-        arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(sorted(p for p in led.glob("NBA_*.jsonl") if "PLAYER_POINTS" not in p.name), until=now)),
+            lambda: last_ts_in_files(cell_files(repo / "data" / "shadow" / "nhl", "NHL"), until=now)),
+        arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(cell_files(pre, "NBA", "NBA_"), until=now)),
+        arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(cell_files(led, "NBA", "NBA_"), until=now)),
         arm("nba_player_points_shadow", lambda: _nba_starts(repo, 2),
             lambda: last_ts_in_files(sorted(led.glob("NBA_NBA_PLAYER_POINTS_*.jsonl")), until=now)),
         arm("nba_player_points_minutes_shadow", lambda: _nba_starts(repo, 2),
