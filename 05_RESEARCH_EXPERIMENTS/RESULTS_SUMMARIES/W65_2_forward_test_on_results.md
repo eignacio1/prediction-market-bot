@@ -138,3 +138,45 @@ Switches: `book_anchor_cancel` + `SHADOW_FLAT_STAKE=on`, no override file, no tu
 - **Fill-rate contrast (descriptive):** treatment fills 1 of 48 NHL orders (2%) against control 29 of 54 (54%); MLB 2/20 vs 5/29; NFL 3/28 vs 11/28. Anchored orders fill much less often than model-mid orders in every sport. This is the quantity the pre-registration is built to measure; read it at judged n only.
 - **Treatment-minus-control:** formable for NHL only, at n=1 vs 29: not interpretable.
 - **NBA:** no NBA order exists yet (regular season opens 10-20). The T1-T3 NBA lines are already staked and demo-only (GG-570 note); first read-back 10-21.
+
+## Read-back W76.1 (2026-10-16T00:20Z, UTC; source: `scripts/demo_fill_forward_report.py --since 2026-10-13T23:58 --no-act` on the VPS, window 2026-10-13T23:58Z to 2026-10-15T23:55Z, about 2.0 days)
+
+Report fixes first (GG-754): `no_outcome` is now gated on `ts >= CANCEL_PATH_FIX_EPOCH` and the override-file, report and cache writes are atomic. New in the report: `--since`, and a settled-market lookup for unfilled terminal orders (E3 counterfactual: what a non-fill would have won). 16 tests pass.
+
+| cell | orders accepted | fills | settled fills | win rate on fills | settle-minus-price | non-fills resolved (would-win) | cancels ok / failed / already terminal |
+|---|---|---|---|---|---|---|---|
+| paper/MLB treatment | 10 | 0 | 0 | n/a | n/a | 10 (0.10) | 10 / 0 / 0 |
+| shadow/MLB control | 107 | 8 | 8 | 0.625 | +0.184 | 81 (0.235) | none by design |
+| shadow/MLB treatment | 89 | 2 | 2 | 1.0 | +0.45 | 73 (0.233) | 80 / 0 / 9 |
+| shadow/NFL control | 112 | 44 | 0 | n/a | n/a | 0 | none |
+| shadow/NFL treatment | 110 | 6 | 0 | n/a | n/a | 0 | 104 / 0 / 6 |
+| shadow/NHL control | 256 | 53 | 29 | 0.483 | +0.123 | 25 (0.24) | none |
+| shadow/NHL treatment | 288 | 16 | 1 | 0.0 | -0.47 | 47 (0.34) | 200 / 74 / 15 |
+
+- **E1:** 129 shadow fills of 962 accepted orders (13.4%), 40 settled; paper book 0 of 10. Shadow cells stay separate from the T4M-PROJ / T1 MLB demo book, which this block did not re-measure (its E rows are unchanged).
+- **E2/E3:** control NHL 29 settled, 48.3% win, +0.123; control MLB 8 settled, 62.5%, +0.184; treatment 3 settled in total. Non-fills would have won 23-34% where resolved, against 48.3% (NHL) and 62.5% (MLB) on control fills: the adverse-selection gap is visible again, but n is far below 550 per arm. No verdict, no treatment-minus-control comparison is interpretable.
+- **Fill rate, treatment against control, per accepted order:** MLB 2.2% vs 7.5% (0.30), NHL 5.6% vs 20.7% (0.27), NFL 5.5% vs 39% (0.14). Pooled shadow 24/487 = 4.9% vs 105/475 = 22.1% (0.22). Verdict condition (b) needs 0.25. Descriptive only, at 2 days.
+- **The binding limiter is the demo account, not the rule.** Cash $0.1674 against $108.14 portfolio value. Since the re-arm: 962 accepted, 1,606 rejected, 1,535 of them `insufficient_balance` (68 `market_closed`, 3 transient). Fills for both arms depend on cash recycling, so every rate above is selection-dependent (GG-840).
+- **Turn-off exposure.** The 2026-10-15 cancel-fail rate is 19.6%, all HTTP 503 (74 rows, 17:00-19:xxZ), and `cancel_now` does not retry (GG-841). The 11:25Z cron on 2026-10-16 will turn the rule off on that metric unless GG-841 lands first. A failed cancel means the treatment order rested past its 60 s design, so the metric is legitimate, not a false alarm.
+
+### Projection to ~550 fills per arm (ADR-0072; rates from a 2-day sample under cash starvation, so noisy)
+
+| arm | observed fills/week | date at 550 | verdict window (8 weeks from 10-14, about 12-08) |
+|---|---|---|---|
+| NHL treatment | ~56 | about 2026-12-23 | **misses** |
+| NFL treatment | ~24 | not this season | **misses** |
+| MLB treatment | ~7 | not this season (World Series ends in about 2 weeks) | **misses** |
+| NHL control | ~186 | about 2026-11-06 | reachable |
+| NFL control | ~177 | about 2026-11-07 (0 settled so far) | reachable |
+| MLB control | ~28 | not this season | misses |
+| shadow treatment, pooled across sports | ~87 | about 2026-12-02 | reachable only if pooling is accepted |
+
+NBA from 2026-10-20 is upside and is not counted.
+
+**Options if treatment cannot reach judged n (the rule is not changed here):**
+1. **Different anchor offset** (rest nearer the touch): raises treatment fills, but it is a different treatment, so it needs a new pre-registration and restarts the 8 weeks.
+2. **Longer resting window**: the same cost, and it moves the arm toward the control it is meant to contrast with (more adverse selection exposure).
+3. **Pooled-sport judged n**: reaches 550 by about 12-02, but ADR-0072 does not license pooling across sports and the sports differ 8x in fill rate, so a pooled bound would be dominated by NHL.
+4. **Declare underpowered** at the 8-week mark and report descriptively (already in ADR-0072); costs nothing in validity.
+
+**ONE LINE FOR THE OPERATOR:** Recommend leaving the rule as it is and fixing demo cash starvation (GG-840) and the cancel 5xx retry (GG-841) first, since both are demo-only fixes for the next block (GG-841 sits in `demo_fill_policy.py`, outside 76.1's ownership); the open question is whether the 2026-10-15 exchange-503 day is excluded from the turn-off check, a change to a pre-registered rule.
