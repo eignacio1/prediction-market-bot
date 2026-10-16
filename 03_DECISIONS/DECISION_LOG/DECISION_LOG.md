@@ -2485,6 +2485,9 @@ Operator relayed Muse's report; window verified on the archive at 1fb38c1 (34 co
   4 stale-PR heads (#133/#144/#146/#149, still open) and ~30 landed branches younger than 3 days, kept by the plan's rule R2; they
   can go in a later sweep, and auto-delete stops new ones accumulating.
 
+## 2026-10-15 23:30 PT — W78.4 PARTIAL: NBA event-level data layer built, taxonomy not written
+
+Part B done: free sportsdataverse NBA store 2016-2026 (123 files, 0 failures), PIT contract (tip bounds, 4h buffer, season_static refused, date-only snapshots count from end of day), fail-closed checks, manifest committed; PR #278. Decisions: imputed tips use Eastern-day bounds (conservative both sides); injuries keyed (injury_id, as_of_date); no free injury history before 2026-09-08 is a GAP, not bought. stats.nba.com unreachable - reported, not scraped. Part A (FACTOR_TAXONOMY.md) and GG-895..899 registration deferred (session limit). D4 NBA: none -> aggregated (data layer, no factor interpreted/applied). No order/stake/registry/kelly change.
 ## 2026-10-16 07:15 PT — W79.4 branch cleanup executed (PLUMBING)
 - **Done and read back:** `delete_branch_on_merge` true. Remote branches 167 (run-time) -> 34; 36 `archive/*` tags created (33 unmerged-work branches + 3 closed stale PRs), every tag SHA verified with `git ls-remote` before its branch was deleted. Local branches 237 -> 117; worktrees 168 -> 67 (101 clean landed ones removed, none forced).
 - **Run-time diff vs the plan:** rule 2 (under 3 days) kept 12 branches the plan had listed as landed (97 deleted vs 109 planned), plus all branches pushed since; `w761` already gone. Group B matched exactly.
