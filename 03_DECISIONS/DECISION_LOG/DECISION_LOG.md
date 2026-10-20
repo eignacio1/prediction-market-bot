@@ -2599,3 +2599,6 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 ## 2026-10-19 22:06 PT — Green means the cell WINS (operator)
 - Operator: "We should probably change the coloring - I want green to mean it wins. That cell WINS." This sharpens the 22:04 PT "green across the board": the target is every cell winning, not every cell staked.
 - Definition set by the window (operator may amend): WINS = the cell's own pre-registered verdict at its judged n is the positive verdict its pre-registration defines, AND, for a cell placing demo orders, P&L per filled bet has a game-clustered 95% CI above zero. ACTIVE (staked, no winning verdict) moves off green. RULED_OUT gets its own style. Built by add-in 81.1-A, Part C. Expected green cells at deploy: 0.
+
+## 2026-10-19 22:25 PT — Every wave = 3 terminal blocks + 1 Muse block (operator)
+- Operator: "with each wave, I'll need the standard 3 terminal blocks + 1 muse block moving forward." The window writes the Muse block from the open R-NNN tickets (one main ticket per cycle, charter v2 §4), gives it to the operator in chat, logs it in the queue's NOW section, and checks delivery at wave close (charter §8). Wave 81's Muse block is M81: R-008 (L3 split family: NFL starting-QB passing yards by game script, rank against history), feeding KXNFLPASSYDS (81.3), plus the R-004 close-out.

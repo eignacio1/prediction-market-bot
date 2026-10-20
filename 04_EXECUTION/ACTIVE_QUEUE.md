@@ -263,13 +263,14 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 81 · WRITTEN 2026-10-20 ~05:05 UTC (10-19 22:05 PT) · three MEDIUM blocks + GA-4 · paste each block into its own fresh terminal
+## ⬛ NOW — Wave 81 · WRITTEN 2026-10-20 ~05:05 UTC (10-19 22:05 PT) · three MEDIUM terminal blocks + the Muse block M81 + GA-4 · paste each terminal block into its own fresh terminal; M81 goes into Muse
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 81.1 | The forward test, read: label the arms, clean the count, score it as pre-registered (+ the scoreboard's three broken inputs) | EXECUTION E1–E3 per arm; ADR-0072 verdict 0 → 1 or "no verdict yet"; PLUMBING D1/D4/P3 3 broken → 0 | ⬜ | |
 | 81.2 | Depth lane: the NBA lineup cross on player points, all five parts | DEPTH D5(b) NBA: complete index entries 1 → 2 | ⬜ | |
 | 81.3 | The first thin-market cell goes live: KXNFLPASSYDS pre-kickoff snapshots, frozen strike model, shadow rows | BREADTH B1 40/107 → 41/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0 | ⬜ | |
+| M81 | Muse: R-008, the first L3 split family (NFL starting-QB passing yards by game script, rank against history) + the R-004 close-out | DEPTH D5(b) feed (granularity-index parts 1-2 for the KXNFLPASSYDS cell); charter §8 archive health | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
 
 **Pushback (the strongest reason not to run this as planned):** 81.1 may end without a verdict. NFL fills come from a few dozen
@@ -724,6 +725,52 @@ Results: 12_EXPLORATORY/thin_markets/passyds/results.md (calibration sanity, sna
 END OF BLOCK 81.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### M81 — Muse block: R-008, the first L3 split family (NFL starting-QB passing yards by game script) + R-004 close-out
+**DEPTH feed** · granularity-index parts 1-2 (the split, the rank against history) for the KXNFLPASSYDS cell 81.3 is building ·
+paste into Muse (given to the operator in chat 2026-10-19 22:30 PT). Checked at Wave 81 close by the window (charter v2 §8).
+
+```
+Work cycle - Wave 81 (from Earl, 2026-10-19). Charter v2 is in force; this cycle has one main ticket.
+
+1. Start of cycle, as always: read the protocol and the tickets.
+   https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md
+   https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md
+   Read everything after your last reply, including Claude's watchdog entry and the two dated notes of 2026-10-19 21:50-22:30 PT.
+
+2. Closed, nothing more to do: R-005, R-006, and R-007. On R-007: the two Bo Nix facts were Earl's examples of the
+   granularity he wants, not facts to chase. Leave them REPORTED as they are, with no source hunt, and drop the .283/.378
+   question.
+
+3. MAIN TICKET - R-008: L3 is the split-level layer (Earl, 2026-10-19: "Yes, as Muse proposed").
+   - Schema v1.5, additive: add your proposed split fields (metric, condition, value, rank_context), or map them onto the v1.4
+     index_fact fields and write the mapping in STATUS.md. Nothing renamed or removed. Define L3 in ARCHITECTURE.md.
+   - First split family: every NFL starting QB in 2026. Metric: passing yards per dropback (per attempt if that is all the
+     source gives - say which). Split: game script - trailing by 8+, within 7, leading by 8+ - plus the season-to-date row.
+     Season-to-date through the last completed week (Week 6 today). Rank against history: the QB's rank among QB seasons through
+     the same number of team games, with the population written so it can be recomputed (seasons covered, qualifier,
+     counting rule). Report the rank exactly as the source computed it; never compute one yourself and present it as the
+     source's. Where no free source carries a split, write "blocked" for it, with the reason.
+   - Sources: free only - Pro-Football-Reference public split pages, nflverse-derived public sites, team or league pages.
+   - One record per starting QB per split, claim_class index_fact, layer L3, verification REPORTED, as_of = the last game
+     included, season + week integers, source_url and source_time on every record. Path: your layer layout's choice (say
+     which in STATUS.md); suggested L3-split/nfl/qb-passing-game-script.claims.jsonl.
+   - Next week: add new records as of Week 7, and never edit the Week 6 ones.
+   Why it matters: the bot is building its first thin-market cell this wave - NFL player passing yards (KXNFLPASSYDS). Your
+   split and rank are the first two parts of the index entry; the bot does the matchup cross, the market map and the test
+   against the price. Retail flow first: "beating buddy off his phone placing parlays, that's the first step."
+
+4. Small close-out - R-004: web/index.html still says "Puka board" on line 40 and "Puka Board - Undervalued Watch" on line 48.
+   Rename both to "undervalued board" and note it in STATUS.md.
+
+5. Keep running: your daily availability sweep. Starting-QB status (injury designation, practice status, inactives) with
+   source_time and game_id is a direct input to the passing-yards cell. Record it as you already do.
+
+6. Report in STATUS.md, with commits naming R-008 and R-004: what you recorded (count of records, QBs, splits blocked and
+   why), the schema version, the path, and anything you could not do. Push every commit; never rewrite history; no paid
+   sources; nothing written to the bot repo; you never turn a fact into a bet, pick, odds or model.
+```
+
+
 
 ---
 
@@ -1073,6 +1120,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 81.1 | Forward test read: labels, clean count, pre-registered score (+ generator D1/D4/P3) | ⬜ | |
 | 81.2 | Depth lane: NBA lineup cross, all five parts | ⬜ | |
 | 81.3 | KXNFLPASSYDS live: pre-kickoff snapshots, frozen strike model, shadow rows | ⬜ | |
+| M81 | Muse: R-008 (L3: QB passing yards by game script) + R-004 close-out | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
 ### ✅ WAVE 80 — ISSUED 2026-10-20 ~00:10 UTC · CLOSED ~01:30 UTC · verified on GitHub at the handoff sweep · the last wave of the Waves 61–80 window
@@ -1467,6 +1515,7 @@ unattended on the VPS under their own authorization, and a later block reads wha
   distance-to-optimum measure it moves (B1..P3, or PLUMBING) and the change it expects; its report and handoff state the
   measured change (`gap_measure:` / `gap_delta:` in the session-meta block). A terminal that cannot say what its task is
   for stops and asks before working.
+- **Every wave = three terminal blocks + one Muse block (operator, 2026-10-19 22:25 PT).** The Muse block is written by the window, tied to an R-NNN ticket in `QUAL_ARCHIVE/TO_MUSE.md`, given to the operator in chat AND logged in the NOW section, and checked at wave close (charter v2 §8 watchdog).
 - **Three blocks per wave. Not four.** Operator directive 2026-09-15; relaxed 2026-10-14 (operator set the count); **restored as
   the default 2026-10-16 06:51 PT** - more only when the operator asks. The gap agent runs beside the wave and is not counted.
 - **Blocks are LARGE and multi-part (operator 2026-10-06)** — each part pushed and recorded before the next. Waiting is still not work.

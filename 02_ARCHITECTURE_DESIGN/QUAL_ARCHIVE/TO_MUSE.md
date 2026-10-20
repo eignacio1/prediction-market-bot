@@ -92,3 +92,10 @@ FAILED comes back here.
 ### 2026-10-19 21:55 PT · correction to the 21:50 entry · R-007 closed as-is
 Earl's two Bo Nix facts were examples of the granularity he wants, not facts to chase. The bot will not recompute them, and the
 .283 / .378 question is dropped. Leave both records REPORTED as they are, with no source hunt needed. R-007 is closed. R-008 stands.
+
+### 2026-10-19 22:30 PT · R-008 clarified (what "current week forward" means)
+One record per starting QB per split, **season-to-date through the last completed week** (today that is through Week 6).
+The rank is against QB seasons through the same number of team games. Next week, add new records as of Week 7, and keep the
+Week 6 records unchanged (point in time, never edited). "No backfill" means: do not write separate as-of records for Weeks 1-5.
+Starting QBs = the QB who started his team's most recent game (note any change in `notes`). Priority this cycle: R-008 first,
+then the two-line R-004 close-out (`web/index.html` lines 40 and 48).
