@@ -6,14 +6,18 @@ depth not captured while a market is open is lost for good (12_EXPLORATORY/thin_
 efficiency + fillability question (W79.2 / W80P.2) needs depth at decision time, so it has to be recorded forward.
 
 What one run does (cron, every 30 min; deploy/cron.thin_capture):
-  1. lists OPEN markets of each family in SERIES that close within WINDOW_S (48 h);
+  1. lists OPEN markets of each family in SERIES whose EVENT (Kalshi occurrence_datetime, ~kickoff + 3 h) falls within
+     WINDOW_S (48 h). NOT close_time: Kalshi sets close_time ~45 h AFTER the game, so a close_time window listed
+     nothing for every game inside 48 h (W80.1, listed=0 from 2026-10-19 16:51Z). If the filtered listing is empty,
+     one unfiltered listing is made and any in-window market it finds is used with an ALARM line;
   2. snapshots the live order book (GET /markets/{ticker}/orderbook) of every market due:
-       closing within NEAR_S (6 h)  -> every run (30 min);
-       6-48 h out                   -> once every FAR_EVERY_S (3 h);
+       event within NEAR_S (9 h = 6 h before kickoff + the game) -> every run;
+       9-48 h out                                                -> once every FAR_EVERY_S (3 h);
      least recently snapshotted first, then closest to close, at most MAX_BOOKS_PER_RUN per run. An unchanged book is written as a small
      "unchanged" row pointing at the last content hash (the time series stays complete, the bytes do not grow);
-  3. after a captured market has closed (+ SETTLE_GRACE_S), fetches its candles once: 60-min over the life and
-     1-min over the last 48 h before close, at most MAX_CANDLE_MARKETS_PER_RUN per run (the rest wait for the next run).
+  3. after a captured market's event has passed (+ SETTLE_GRACE_S), fetches its candles once: 60-min over the life and
+     1-min over the MINUTE_LOOKBACK_S before the event, at most MAX_CANDLE_MARKETS_PER_RUN per run and
+     MAX_CANDLE_DAILY_BYTES per UTC day, so a candle sweep cannot starve the order books of the daily cap.
 
 Bounds: Client pacing (PAUSE_S between calls, every 429 halves the rate for the rest of the run); MAX_DAILY_BYTES per
 UTC day and MAX_STORE_BYTES in total (writes stop and the run says CAP; nothing is deleted); one run at a time (flock).
@@ -47,15 +51,18 @@ SERIES = ("KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL", "KXNFLTEAMTOTAL", "KXNFL1HSP
           "KXNFLANYTD", "KXNFLFIRSTTD", "KXNFLRECYDS", "KXNFLRSHYDS", "KXNFLPASSYDS",
           "KXNBAGAME", "KXNBASPREAD", "KXNBATOTAL", "KXNBATEAMTOTAL", "KXNBAPTS", "KXNBAREB")
 WINDOW_S = 48 * 3600
-NEAR_S = 6 * 3600
+KICKOFF_LEAD_S = 3 * 3600             # occurrence_datetime ~ kickoff + 3 h (NFL SNF 00:20Z -> 03:20Z; NBA 00:00Z -> 03:00Z)
+NEAR_S = 6 * 3600 + KICKOFF_LEAD_S    # every run from 6 h before kickoff through the game
+CLOSE_LAG_S = 5 * 86400               # server-side close_time bound: close_time trails the event by ~45 h
 FAR_EVERY_S = 3 * 3600 - 300          # 5 min slack so a 30-min cron does not drift past the 3 h mark
 SETTLE_GRACE_S = 3 * 3600
-MINUTE_LOOKBACK_S = 48 * 3600
+MINUTE_LOOKBACK_S = 12 * 3600
 PAUSE_S = 0.5
 MAX_BOOKS_PER_RUN = 500
-MAX_CANDLE_MARKETS_PER_RUN = 60
+MAX_CANDLE_MARKETS_PER_RUN = 24
 MAX_CANDLE_TRIES = 3
 MAX_DAILY_BYTES = 80 * 1024 * 1024
+MAX_CANDLE_DAILY_BYTES = 20 * 1024 * 1024
 MAX_STORE_BYTES = 4 * 1024 ** 3
 
 
@@ -72,12 +79,17 @@ class Writer:
         self.capped = ""
         self.bytes_today = sum(p.stat().st_size for p in store.glob(f"*_{self.day}.jsonl"))
         self.bytes_total = sum(p.stat().st_size for p in store.glob("*.jsonl"))
+        self.candle_bytes_today = sum(p.stat().st_size for p in store.glob(f"candles_{self.day}.jsonl"))
+        self.candle_capped = False
         self.rows = 0
 
     def put(self, stream: str, row: dict) -> bool:
         row = {**row, "retrieved_utc": _iso(self.now), "runtime_commit_sha": self.sha, "writer": WRITER}
         line = json.dumps(row, separators=(",", ":")) + "\n"
         n = len(line.encode())
+        if stream == "candles" and self.candle_bytes_today + n > MAX_CANDLE_DAILY_BYTES:
+            self.candle_capped = True      # the rest wait for tomorrow; books keep the remaining daily budget
+            return False
         if self.bytes_today + n > MAX_DAILY_BYTES:
             self.capped = f"daily cap {MAX_DAILY_BYTES} bytes"
             return False
@@ -88,6 +100,8 @@ class Writer:
             fh.write(line)
         self.bytes_today += n
         self.bytes_total += n
+        if stream == "candles":
+            self.candle_bytes_today += n
         self.rows += 1
         return True
 
@@ -107,44 +121,78 @@ def save_state(store: Path, st: dict) -> None:
     os.replace(tmp, store / "state.json")
 
 
-def open_markets(client: bs.Client, series: str, now: float) -> list[dict]:
+def event_ts(m: dict) -> float:
+    """When the underlying game ends (+-): occurrence_datetime, else expected_expiration_time, else close_time."""
+    for k in ("occurrence_datetime", "expected_expiration_time", "close_time"):
+        if m.get(k):
+            return bs.iso_ts(m[k])
+    return 0.0
+
+
+def _list_open(client: bs.Client, series: str, **flt) -> list[dict]:
     out, cursor = [], None
     while True:
-        j, _ = client.get("/markets", series_ticker=series, status="open", limit=1000, cursor=cursor,
-                          min_close_ts=int(now), max_close_ts=int(now + WINDOW_S))
+        j, _ = client.get("/markets", series_ticker=series, status="open", limit=1000, cursor=cursor, **flt)
         out += j.get("markets") or []
         cursor = j.get("cursor") or None
         if not cursor or not j.get("markets"):
             break
-    # the server-side close filter is a convenience; the window is enforced here
-    return [m for m in out if m.get("close_time") and 0 < bs.iso_ts(m["close_time"]) - now <= WINDOW_S]
+    return out
+
+
+def in_window(m: dict, now: float) -> bool:
+    return 0 < event_ts(m) - now <= WINDOW_S
+
+
+def open_markets(client: bs.Client, series: str, now: float) -> list[dict]:
+    # the server-side close filter is only a coarse bound (close_time trails the event by ~45 h); the 48 h
+    # window on the event time is enforced here
+    out = _list_open(client, series, min_close_ts=int(now), max_close_ts=int(now + WINDOW_S + CLOSE_LAG_S))
+    return [m for m in out if in_window(m, now)]
+
+
+def unfiltered_in_window(client: bs.Client, series: str, now: float) -> list[dict]:
+    return [m for m in _list_open(client, series) if in_window(m, now)]
 
 
 def due(m: dict, rec: dict | None, now: float) -> bool:
     if rec is None or not rec.get("last_snap_ts"):
         return True
-    if bs.iso_ts(m["close_time"]) - now <= NEAR_S:
+    if event_ts(m) - now <= NEAR_S:
         return True
     return now - rec["last_snap_ts"] >= FAR_EVERY_S
 
 
 def snapshot_books(client, w: Writer, st: dict, now: float, series_list=SERIES) -> dict:
-    c = {"listed": 0, "due": 0, "books": 0, "unchanged": 0, "errors": 0, "series_errors": 0}
+    c = {"listed": 0, "due": 0, "books": 0, "unchanged": 0, "errors": 0, "series_errors": 0, "fallback": 0}
     cands = []
+    listed = {}
     for s in series_list:
         try:
-            ms = open_markets(client, s, now)
+            listed[s] = open_markets(client, s, now)
         except bs.FetchFailed as e:
             c["series_errors"] += 1
             print(f"WARN list {s}: {e}", flush=True)
-            continue
+    if series_list and not any(listed.values()) and not c["series_errors"]:
+        # "listed nothing" is either an off-day or a broken filter (the 2026-10-19 defect): check without the filter
+        for s in series_list:
+            try:
+                listed[s] = unfiltered_in_window(client, s, now)
+            except bs.FetchFailed as e:
+                c["series_errors"] += 1
+                print(f"WARN fallback list {s}: {e}", flush=True)
+        c["fallback"] = sum(len(v) for v in listed.values())
+        if c["fallback"]:
+            print(f"THIN_CAPTURE ALARM filtered listing empty but {c['fallback']} in-window markets exist: "
+                  "server-side filter is wrong; used the unfiltered listing", flush=True)
+    for s, ms in listed.items():
         c["listed"] += len(ms)
         cands += [(s, m) for m in ms if due(m, st["tickers"].get(m["ticker"]), now)]
     c["due"] = len(cands)
     # least recently snapshotted first (never-seen = 0), then closest to close: under the per-run cap every due
     # market is served within a few runs instead of the closest ones starving the rest
     cands.sort(key=lambda sm: ((st["tickers"].get(sm[1]["ticker"]) or {}).get("last_snap_ts", 0),
-                               bs.iso_ts(sm[1]["close_time"]), sm[1]["ticker"]))
+                               event_ts(sm[1]), sm[1]["ticker"]))
     for s, m in cands[:MAX_BOOKS_PER_RUN]:
         t = m["ticker"]
         try:
@@ -155,12 +203,15 @@ def snapshot_books(client, w: Writer, st: dict, now: float, series_list=SERIES) 
             continue
         h = bs.canon_hash(j)
         rec = st["tickers"].setdefault(t, {"series": s, "n_snaps": 0})
-        rec.update(close_time=m["close_time"], open_time=m.get("open_time"), event_ticker=m.get("event_ticker"))
+        rec.update(close_time=m["close_time"], open_time=m.get("open_time"), event_ticker=m.get("event_ticker"),
+                   event_time=_iso(event_ts(m)))
         top = {k: m.get(k) for k in ("yes_bid", "yes_ask", "no_bid", "no_ask", "last_price", "volume", "volume_24h",
                                      "open_interest", "liquidity", "yes_bid_dollars", "yes_ask_dollars")
                if m.get(k) is not None}
         row = {"kind": "orderbook", "ticker": t, "series": s, "event_ticker": m.get("event_ticker"),
                "close_time": m["close_time"], "secs_to_close": int(bs.iso_ts(m["close_time"]) - now),
+               "event_time": _iso(event_ts(m)), "secs_to_event": int(event_ts(m) - now),
+               "secs_to_kickoff_est": int(event_ts(m) - KICKOFF_LEAD_S - now),
                "listing_top": top, "source_url": url, "content_sha256": h}
         if rec.get("last_sha") == h:
             row["unchanged_of"] = h
@@ -177,12 +228,13 @@ def snapshot_books(client, w: Writer, st: dict, now: float, series_list=SERIES) 
 
 def fetch_candles(client, w: Writer, st: dict, now: float) -> dict:
     c = {"candle_markets": 0, "candle_errors": 0, "dropped": 0}
-    ready = sorted((t for t, r in st["tickers"].items() if r.get("close_time")
-                    and now - bs.iso_ts(r["close_time"]) >= SETTLE_GRACE_S),
-                   key=lambda t: (st["tickers"][t]["close_time"], t))
+    def when(r):                     # records written before W80.1 carry only close_time
+        return r.get("event_time") or r.get("close_time")
+    ready = sorted((t for t, r in st["tickers"].items() if when(r) and now - bs.iso_ts(when(r)) >= SETTLE_GRACE_S),
+                   key=lambda t: (when(st["tickers"][t]), t))
     for t in ready[:MAX_CANDLE_MARKETS_PER_RUN]:
         r = st["tickers"][t]
-        close = bs.iso_ts(r["close_time"])
+        close = bs.iso_ts(when(r))
         opn = bs.iso_ts(r["open_time"]) if r.get("open_time") else close - 14 * 86400
         ok = True
         for period, start, end in ((60, opn, close + 3600), (1, max(opn, close - MINUTE_LOOKBACK_S), close + 120)):
@@ -231,6 +283,7 @@ def run(client, store: Path, now: float | None = None, sha: str | None = None, s
         res.update(snapshot_books(client, w, st, now, series_list))
         if not w.capped:
             res.update(fetch_candles(client, w, st, now))
+            res["candle_capped"] = int(w.candle_capped)
     save_state(store, st)
     res.update(rows=w.rows, bytes_today=w.bytes_today, tracked=len(st["tickers"]), cap=w.capped or "none",
                **{f"http_{k}": v for k, v in client.stats().items() if k in ("calls", "n429", "errors")})
