@@ -153,6 +153,15 @@ engine_slot = "none"
 stage = "none"
 evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
 
+[[factor]]
+id = "N17"
+factor_class = "F3"
+name = "Run-box granularity entry (success/stuffed rate by box count, offense x defense cross)"
+source = "nflverse pbp + ftn n_defense_box (2022+); participation not needed"
+engine_slot = "granularity_index.cross"
+stage = "applied"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md"
+
 [[cell]]
 market = "nfl_moneyline"
 band = "T1"

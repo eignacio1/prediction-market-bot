@@ -12,9 +12,9 @@ note = "W73.3 possession engine; test moved into CI by W75.2 (GG-757)"
 [[component]]
 sport = "nfl"
 component = "filtering_mechanisms"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/nfl_engine/granularity_index.py"
+test = "tests/test_nfl_granularity_index.py"
+note = "W80.3 granularity index: stability-gated filter_entries (tail, min_n, trait, mismatch)"
 
 [[component]]
 sport = "nfl"
@@ -28,7 +28,7 @@ sport = "nfl"
 component = "cross_reference_compatibility"
 scaffold = "12_EXPLORATORY/nfl_engine/rate_layer.py"
 test = "tests/test_nfl_factors_pit.py"
-note = "W75.2 one Factor protocol every factor class plugs into, point-in-time tested (window, wave close)"
+note = "W75.2 one Factor protocol every factor class plugs into, point-in-time tested (window, wave close); W80.3 granularity_index.cross adds the offense x defense split cross"
 
 [[component]]
 sport = "nfl"
