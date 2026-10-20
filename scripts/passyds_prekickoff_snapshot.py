@@ -131,7 +131,7 @@ def qb_name(m: dict) -> str:
 def model_fields(m: dict, now: float) -> dict:
     """Part B plugs the frozen strike model in here. No market price may enter it."""
     try:
-        import passyds_model_hook as hook  # noqa: WPS433 - optional; absent until the model is frozen
+        from prediction_market_bot.pregame_shadow import passyds_model as hook  # noqa: WPS433
     except ImportError:
         return {"model_p": None, "model_id": None, "model_sha256": None, "factor_inputs": None, "factor_as_of": None}
     return hook.model_fields(m, datetime.fromtimestamp(now, timezone.utc))

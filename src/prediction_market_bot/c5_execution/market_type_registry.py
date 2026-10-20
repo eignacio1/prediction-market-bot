@@ -88,6 +88,8 @@ class MarketType(Enum):
     NFL_SPREAD = "nfl_spread"
     NFL_GAME_TOTAL = "nfl_game_total"
     NFL_TEAM_TOTAL = "nfl_team_total"
+    # W81.3: first thin-market cell (pre-registration 2026-10-20, FROZEN).
+    NFL_PLAYER_PASS_YDS = "nfl_player_pass_yds"
 
     # T-495 (NHL skeleton spike, ADR-0056 §2/D1, EXP-024): mirrors T-474's NFL
     # pattern exactly. Series tickers confirmed live against Kalshi's /series
@@ -134,6 +136,7 @@ _SERIES_TICKER_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NFL_SPREAD: "KXNFLSPREAD",
     MarketType.NFL_GAME_TOTAL: "KXNFLTOTAL",
     MarketType.NFL_TEAM_TOTAL: "KXNFLTEAMTOTAL",
+    MarketType.NFL_PLAYER_PASS_YDS: "KXNFLPASSYDS",
     # T-495: confirmed live 2026-08-25 via curl against
     # https://api.elections.kalshi.com/trade-api/v2/series?category=Sports and
     # per-series /events lookups -- each returned real 2026 Stanley Cup Finals
@@ -175,6 +178,7 @@ _SPORT_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NFL_SPREAD: "nfl",
     MarketType.NFL_GAME_TOTAL: "nfl",
     MarketType.NFL_TEAM_TOTAL: "nfl",
+    MarketType.NFL_PLAYER_PASS_YDS: "nfl",
     MarketType.NHL_MONEYLINE: "nhl",
     MarketType.NHL_PUCK_LINE: "nhl",
     MarketType.NHL_GAME_TOTAL: "nhl",
@@ -379,6 +383,7 @@ _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.NFL_SPREAD: _NFL_GRAMMAR,
     MarketType.NFL_GAME_TOTAL: _NFL_GRAMMAR,
     MarketType.NFL_TEAM_TOTAL: _NFL_GRAMMAR,
+    MarketType.NFL_PLAYER_PASS_YDS: _NFL_GRAMMAR,
     MarketType.NHL_MONEYLINE: _NHL_GRAMMAR,
     MarketType.NHL_PUCK_LINE: _NHL_GRAMMAR,
     MarketType.NHL_GAME_TOTAL: _NHL_GRAMMAR,
@@ -743,6 +748,10 @@ _NFL_FAMILIES: tuple[MarketType, ...] = (
 for _market_type in _NFL_FAMILIES:
     for _band in _MLB_COARSE_BANDS:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
+
+# --- W81.3: KXNFLPASSYDS, ONE cell (T1_MULTI_DAY), NOT_IMPLEMENTED until the frozen
+# model artifact (models/passyds_strike_v1.json) AND the first valid shadow row exist.
+_cells.append(MarketTypeCell(MarketType.NFL_PLAYER_PASS_YDS, ExecutionBand.T1_MULTI_DAY, CellStatus.NOT_IMPLEMENTED))
 
 # --- NFL T4 sub-band cells (ADR-0062, T-524/GG-251, registry+scaffolding only) ---
 # T4NFL-ARITH/T4NFL-FLOW now exist in execution_bands.py (conservative reading of
