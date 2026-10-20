@@ -973,3 +973,4 @@
 | 2026-10-20T01:23:16Z | W80.4 | CLOSED — W80.4 foundation docs: 83-entry doc registry, 3 wrong LIVING docs rewritten, staleness alarm live; GG-970/971 opened (commit `750b895`) |
 | 2026-10-20T01:23:19Z | W80.1 | CLOSED — W80.1 thin-market capture fixed (listed=0), efficiency table built, KXNFLPASSYDS T1 shadow pre-registration frozen and operator-accepted. (commit `f283551`) |
 | 2026-10-20T01:23:37Z | W80.1 | CLOSED — merge confirmed, HEAD (95e0436) is ancestor of origin/main — W80.1 closed; acceptance logged |
+| 2026-10-20T01:24:54Z | W80.1 | CLOSED — merge confirmed, HEAD (4d67ded) is ancestor of origin/main — W80.1 closed; operator acceptance logged |
