@@ -52,3 +52,39 @@ sent on 2026-10-16 are recorded as `index_fact` records with full `population` t
 yards per attempt through 6 games, rank 701 of 701 qualified QB seasons over 20 years, 4.9; (2) Bo Nix career record in games
 with 6.0 yards per attempt or less, 13-3 (.813), against all other active QBs' .283 in such starts. The bot recomputes both from
 free data before using either (charter v2 section 5).
+
+---
+
+### 2026-10-19 21:50 PT · watchdog (Wave 81 intake) · R-005, R-006 closed; R-004, R-007 partly done
+Read `2ba6671` (58 commits; `1fb38c1` still an ancestor, so no history was rewritten). All JSONL records parse (2,107). Classes:
+personnel 600 (220 game- or week-joinable), scheme 443, coaching 285, sentiment 284, organizational 186, undervalued 152,
+narrative 120, trajectory 24, index_fact 2, other 12. Grades: 48 REPORTED. The 2,059 records written before v1.3 have no
+`verification` field; read them as REPORTED. No secret in the tree.
+- **R-005 closed:** the v1.2 fields are live and the availability backfill is done (220 joinable).
+- **R-006 closed:** v2 is acknowledged, and your limits (capacity, sources, cadence) are noted. The charter in this folder is v2 on main.
+- **R-004 partly done:** prose is renamed, but `web/index.html` still says "Puka board" (line 40) and "Puka Board — Undervalued
+  Watch" (line 48). Rename those two and it closes.
+- **R-007 partly done:** both records exist with full `population` text, but neither has a `source_url`. Earl's answer on
+  ".283 vs .378": **the bot recomputes it.** Block W81.2 recomputes both facts from free nflverse data and posts VERIFIED or
+  FAILED here, with the difference. Keep recording the table's own values (.378) until then. Nothing more is needed from you on
+  R-007 unless you can find a public source page.
+
+### R-008 · 2026-10-19 · L3 is the split-level layer (Earl's call, 2026-10-19 21:40 PT: "Yes, as Muse proposed")
+**Measure it serves:** DEPTH D5(b) and the granularity index (`02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md`, parts 1-2: the split
+and the rank against history). The thin-market cell it feeds is KXNFLPASSYDS, NFL player passing yards (pre-registration accepted
+2026-10-19). Retail flow first: "beating buddy off his phone placing parlays, that's the first step."
+**What:** L3 = per team and player, the conditional facts the index needs, as `index_fact` records, with schema **v1.5** (additive).
+Add the split fields you proposed (`metric`, `condition`, `value`, `rank_context`), or map them onto the existing v1.4 index_fact
+fields and note the mapping in STATUS.md. No rename, no removal.
+**First split family (one ticket, one cycle):** every NFL starting QB in 2026, current week forward (no backfill of weeks 1-6 in
+this ticket). Metric: **passing yards per dropback** (or per attempt, if that is all the source gives; say which). Split:
+**game script**: trailing by 8+, within 7, leading by 8+, plus the season-to-date row. Rank against history: the QB's rank among
+QB seasons through the same number of team games, with the population written so it can be recomputed (seasons covered, qualifier,
+counting rule). Sources, free only: Pro-Football-Reference public split pages, nflverse-derived public sites, team or league
+pages. If no free source carries a split, write `blocked` for it with the reason. Do not compute a rank yourself and present it as
+the source's.
+**Deliverable:** `L3-split/nfl/qb-passing-game-script.claims.jsonl` (or the path your layer layout prefers; say which in STATUS.md),
+every record `verification: REPORTED`, `as_of` = the last game included, `applies_to` with `season` + `week`.
+**Done when:** the schema says v1.5, the file has one record per starting QB per split for the current week, each with population
+text and a source_url, and STATUS.md names this ticket. The bot then recomputes the class from nflverse (charter §5); VERIFIED or
+FAILED comes back here.
