@@ -433,6 +433,32 @@ END OF BLOCK 81.1. If you cannot see this line, the prompt reached you truncated
 ### 81.2 — Depth lane: the NBA lineup cross on player points, all five parts
 **DEPTH** · D5(b) NBA complete index entries 1 → 2 · terminal 2
 
+**ADD-IN 81.2-A (2026-10-19 21:55 PT): paste into the 81.2 terminal ONLY if you already gave it the earlier version (the one
+with "AND THE BOT'S FIRST VERIFICATION OF MUSE FACTS" in its title).** A fresh terminal gets the fence below, which already
+includes this change.
+
+```
+ADD-IN 81.2-A - SCOPE CHANGE FROM THE OPERATOR (2026-10-19 21:53 PT). It overrides your block where they differ.
+Operator (quote it): "Did we really need to spend time researching the two Nix facts - who fucking cares what his YPA on
+throws are lol it was an example".
+1. DROP the old Part B (verify Muse's two Bo Nix facts) entirely. Do not recompute index-2026-001/002, do not touch
+   12_EXPLORATORY/nfl_engine/index_verify/, do not append anything to QUAL_ARCHIVE/TO_MUSE.md, and do not read the Muse archive.
+   If you already started any of it: stop, delete nothing that is pushed, and record one line in your handoff saying what
+   exists and that it is abandoned.
+2. The NBA lineup cross is now the whole block, in two parts:
+   PART A (~40 min) - aggregate and interpret: steps 1-3 (the split, the rank against history with its stability, the
+   matchup cross with its frequency). Push and record the stage reached (interpreted, or noise) before Part B.
+   PART B (~40 min) - apply: steps 4-5 (the market map, then the 2025-and-earlier test against KXNBAPTS prices: pricing share,
+   CI, n, verdict word). The same point-in-time rule holds: if absence times cannot be joined to the price history, register
+   the gap and stop at interpreted.
+3. PURPOSE is now DEPTH only: D5(b) NBA complete index entries 1 -> 2. Remove the VERIFIED/FAILED measure from your claim
+   string and handoff. File ownership shrinks to: the lineup-cross folder under 12_EXPLORATORY/, new NBA_ENGINE files,
+   SEATS/nba.toml [[factor]] rows.
+4. Standing rule (window errors W17, W25): an operator example, wherever it is recorded (archive, ticket, index), is an
+   illustration. Never verify it, build it or schedule it unless he says it is the requirement.
+END OF ADD-IN 81.2-A. If you cannot see this line, the add-in reached you truncated: stop and report it.
+```
+
 ```
 COMMON RULES - WAVE 81 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
