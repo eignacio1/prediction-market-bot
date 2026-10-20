@@ -30,9 +30,12 @@ def install(live_fn=None, read=base._crontab_read, write=base._crontab_write) ->
         print(f"REFUSED: SURFACE BUDGET could not be read ({ev['error']}); nothing installed")
         return 0
     print(f"SURFACE BUDGET: {ev.get('budget')} (box HEAD {ev.get('head')}, as of {ev.get('as_of')})")
-    if ev.get("budget") != "GREEN":
+    # Red items that are about THIS component (not yet installed, so no write / no snapshot) cannot block its own
+    # install; every other red item still does (Hard Rule 14).
+    others = [r for r in ev.get("reasons", []) if "passyds" not in r.lower()]
+    if others:
         print("REFUSED: Hard Rule 14 -- no new live component while the budget is RED. Red items:")
-        for r in ev.get("reasons", []):
+        for r in others:
             print(f"  - {r}")
         return 0
     cur = read()

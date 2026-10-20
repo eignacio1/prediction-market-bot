@@ -167,3 +167,17 @@ def test_install_refused_when_red():
     live = lambda: {"budget": "RED", "reasons": ["r"]}  # noqa: E731
     pi.install(live, lambda: store["t"], lambda t: store.__setitem__("t", t))
     assert store["t"] == "x\n"
+
+
+def test_install_ignores_red_about_itself_only():
+    import sys
+    sys.path.insert(0, str(ROOT_FOR_INSTALL / "scripts"))
+    import passyds_install as pi
+    st = {"t": "x\n"}
+    rd, wr = (lambda: st["t"]), (lambda t: st.__setitem__("t", t))
+    own = lambda: {"budget": "RED", "reasons": ["STALE cron|2,22,42 * * * *|scripts/passyds_prekickoff_snapshot.py: no write found"]}  # noqa: E731
+    assert pi.install(own, rd, wr) == 0 and pi.BEGIN in st["t"]
+    st["t"] = "x\n"
+    mixed = lambda: {"budget": "RED", "reasons": ["STALE cron|passyds", "SILENT ARM NHL"]}  # noqa: E731
+    pi.install(mixed, rd, wr)
+    assert st["t"] == "x\n"
