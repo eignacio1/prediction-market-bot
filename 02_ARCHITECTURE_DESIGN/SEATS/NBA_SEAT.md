@@ -17,6 +17,7 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | B7 | NBA-7 | Lineup / on-off, play-type, matchup | none built | none | none | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` |
 | B8 | NBA-8 | Qualitative (form, role-fit, motivation) | none free and structured | none | none | `src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py` |
 | B9 | NBA-9 | Pace and efficiency (point-in-time, engine store; full-game total) | NBA team box scores (sportsdataverse free store, 2016-2026) | team rating | applied | `02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md` |
+| B10 | NBA-10 | Lineup cross (usage redistribution when a rotation player is out, by role) | NBA player box scores (sportsdataverse free store, 2016-2026); injury reports for timing | player rating | interpreted | `02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_LINEUP.md` |
 
 ## Cells
 
