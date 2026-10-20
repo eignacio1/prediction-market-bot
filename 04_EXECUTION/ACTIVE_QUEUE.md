@@ -1431,6 +1431,7 @@ unattended on the VPS under their own authorization, and a later block reads wha
 ## Read this first (standing)
 
 - **Protocol (operator, 2026-10-04):** every time this file changes, the strategic window loads it into the chat as a file card. He never has to dig through folders for it.
+- **Add-ins (operator, 2026-10-19 21:55 PT):** an add-in to a running block goes to him IN THE CHAT as a short paste-in fence, and is logged here under its block. "I'm not repasting that entire massive block." Full wave blocks stay in this file only.
 
 - **North star (2026-10-09):** CLAUDE.md § "What winning looks like" — four pillars, BREADTH / DEPTH / EXECUTION / PROOF.
   Every block's report and handoff names the pillar it moved (`vision_pillar:`; PLUMBING is a valid answer). The window

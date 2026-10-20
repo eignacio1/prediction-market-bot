@@ -2588,3 +2588,6 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 
 ## 2026-10-19 21:53 PT — Nix recompute withdrawn (operator correction; window error W25)
 - Operator: "Did we really need to spend time researching the two Nix facts - who fucking cares what his YPA on throws are lol it was an example". This supersedes the 21:40 PT "Let the bot recompute it" line above, which answered a question the window should not have asked. 81.2 is now the NBA lineup cross only, split into two parts. Muse's two Nix index_facts stay REPORTED and are not verified. R-007 is closed as-is. The class-verification method gets built on a real factor when one needs it, not on an example.
+
+## 2026-10-19 21:55 PT — Add-ins go in the chat AND the queue (operator)
+- Operator: "I'm not repasting that entire massive block what are you doing - give it to me in here and include it in the Active Queue for logging". Amends the 10-14 22:12 PT rule ("wave blocks and add-ins live in the queue only"). Add-ins to a running block are now given in the chat as a short paste-in fence and also logged in ACTIVE_QUEUE.md. Full wave blocks still live in the queue only.
