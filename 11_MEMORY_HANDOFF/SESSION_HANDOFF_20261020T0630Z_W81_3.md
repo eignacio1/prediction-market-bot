@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W81.3
+tier: STANDARD
+timestamp: 2026-10-20T05:40:00Z
+commit: 5b1d87d
+one_line_summary: W81.3 PARTIAL: passyds snapshot job merged (#298/#300/#301); frozen strike model + NOT_IMPLEMENTED cell parked on branch, no PR.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: BREADTH, EXECUTION
+gap_measure: B1, B4, pre-kickoff NFL depth n
+gap_delta: none (cell lands NOT_IMPLEMENTED; 108 registered, 40 logging; source MARKET_TYPE_REGISTRY @ 65bca71 on branch)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: +1 cron block passyds_prekickoff (registered, merged, not yet installed on box)
+-->
+
 # SESSION_HANDOFF W81.3 — PARTIAL (Part A merged; Part B parked on a branch)
 vision_pillar: BREADTH + EXECUTION
 gap_measure: B1 40/107 -> not yet moved (cell lands NOT_IMPLEMENTED on merge: 108 cells, 40 logging); B4 2 -> 2 until SHADOW flip

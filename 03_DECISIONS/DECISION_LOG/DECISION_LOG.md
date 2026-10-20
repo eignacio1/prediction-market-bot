@@ -2602,3 +2602,5 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 
 ## 2026-10-19 22:25 PT — Every wave = 3 terminal blocks + 1 Muse block (operator)
 - Operator: "with each wave, I'll need the standard 3 terminal blocks + 1 muse block moving forward." The window writes the Muse block from the open R-NNN tickets (one main ticket per cycle, charter v2 §4), gives it to the operator in chat, logs it in the queue's NOW section, and checks delivery at wave close (charter §8). Wave 81's Muse block is M81: R-008 (L3 split family: NFL starting-QB passing yards by game script, rank against history), feeding KXNFLPASSYDS (81.3), plus the R-004 close-out.
+
+| 2026-10-20 | W81.3 | Parked Part B on branch session/20261020T045139Z-w81-3-partb (no PR): frozen passyds_strike_v1 (sha256 1053c843...) and KXNFLPASSYDS T1 cell registered NOT_IMPLEMENTED; SHADOW flip only after first valid row. Gate not bypassed: install awaits #301 deploy. No pre-registration edited. |
