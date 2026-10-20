@@ -27,7 +27,7 @@ for t, c in cd.items():
     if not m or m.get("result") not in ("yes", "no"): continue
     ev = m["event_ticker"].split("-")[1]            # 25DEC28PITCLE
     ab = ev[7:]; ds = pd.to_datetime(ev[:7], format="%y%b%d").strftime("%Y-%m-%d")
-    g = sched[(sched.gameday == ds) & sched.key.map(lambda k: k == ab or k.replace("LA", "LAR") == ab or k.replace("JAX", "JAC") == ab)]
+    g = sched[(sched.gameday == ds) & sched.key.map(lambda k: k == ab or {"LA": "LAR", "JAX": "JAC"}.get(k, k) == ab)]
     if len(g) != 1: rows.append({"ticker": t, "skip": "no_game_match"}); continue
     g = g.iloc[0]; team = t.split("-")[2][:3]
     if t.startswith("KXNFLRSHYDS"):
@@ -48,7 +48,7 @@ def team_of(r):
     hits = [tm for tm in (r.home, r.away) if r.team_raw.startswith(alias.get(tm, tm))]
     return max(hits, key=len) if hits else None
 R["team"] = R.apply(team_of, axis=1)
-R = R.merge(cx[["game_id", "posteam", "d"]].rename(columns={"posteam": "team"}), on=["game_id", "team"], how="left")
+R = R.merge(cx.assign(team=cx.posteam)[["game_id", "team", "d"]], on=["game_id", "team"], how="left")
 print("team resolved:", int(R.team.notna().sum()), "of", len(R), "| cross joined:", int(R.d.notna().sum()))
 R = R.dropna(subset=["d"])
 R = R[(R.p > 0.02) & (R.p < 0.98)]
