@@ -1,0 +1,23 @@
+{
+ "n_markets": 57,
+ "n_games": 51,
+ "by_family": {
+  "KXNFLRSHYDS": 43,
+  "KXNFLTEAMTOTAL": 14
+ },
+ "price_on_d (logit p, family-demeaned)": {
+  "slope": 6.123233893751181,
+  "ci95": [
+   -44.89254207960008,
+   58.68768564889718
+  ]
+ },
+ "outcome_resid_on_d (y - p)": {
+  "slope": -12.700564247896413,
+  "ci95": [
+   -37.848263165454924,
+   15.08412090070539
+  ]
+ },
+ "sd_d": 0.0050433633748386275
+}
