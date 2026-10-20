@@ -1,0 +1,894 @@
+{
+ "families": {
+  "KXNBAGAME": {
+   "custody_excluded": 1,
+   "fill_share": {
+    "est": 0.9637864148733714,
+    "hi": 0.9826732673267327,
+    "lo": 0.9391637089618456,
+    "n_events": 95,
+    "n_mkts": 99
+   },
+   "late_move": {
+    "est": 0.010000000000000009,
+    "hi": 0.012499999999999983,
+    "lo": 0.010000000000000009,
+    "n_events": 95,
+    "n_mkts": 99
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 95,
+    "n_mkts": 99
+   },
+   "n_events": 95,
+   "n_markets": 99,
+   "oi_ko": {
+    "est": 426418.0,
+    "hi": 612923.0,
+    "lo": 337162.0,
+    "n_events": 95,
+    "n_mkts": 99
+   },
+   "report_move": null,
+   "report_placebo": null,
+   "sport": "NBA",
+   "spread_c": {
+    "est": 1.0000000000000009,
+    "hi": 1.0000000000000009,
+    "lo": 1.0000000000000009,
+    "n_events": 95,
+    "n_mkts": 99
+   },
+   "vol_hr": {
+    "est": 5286.0,
+    "hi": 7476.0,
+    "lo": 3706.5,
+    "n_events": 95,
+    "n_mkts": 99
+   }
+  },
+  "KXNBAPTS": {
+   "custody_excluded": 6,
+   "fill_share": {
+    "est": 0.2609734910267354,
+    "hi": 0.3197422113925128,
+    "lo": 0.205790373252251,
+    "n_events": 80,
+    "n_mkts": 86
+   },
+   "late_move": {
+    "est": 0.02999999999999997,
+    "hi": 0.04500000000000001,
+    "lo": 0.015000000000000013,
+    "n_events": 57,
+    "n_mkts": 58
+   },
+   "late_placebo": {
+    "est": 2.7755575615628914e-17,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 73,
+    "n_mkts": 77
+   },
+   "n_events": 81,
+   "n_markets": 87,
+   "oi_ko": {
+    "est": 1396.0,
+    "hi": 2220.0,
+    "lo": 375.0,
+    "n_events": 58,
+    "n_mkts": 59
+   },
+   "report_move": null,
+   "report_placebo": null,
+   "sport": "NBA",
+   "spread_c": {
+    "est": 5.000000000000002,
+    "hi": 6.999999999999995,
+    "lo": 4.0000000000000036,
+    "n_events": 81,
+    "n_mkts": 87
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 81,
+    "n_mkts": 87
+   }
+  },
+  "KXNBAREB": {
+   "custody_excluded": 4,
+   "fill_share": {
+    "est": 0.0781193817377929,
+    "hi": 0.10047138385210061,
+    "lo": 0.05727766892603536,
+    "n_events": 83,
+    "n_mkts": 85
+   },
+   "late_move": {
+    "est": 0.0050000000000000044,
+    "hi": 0.010000000000000009,
+    "lo": 0.004999999999999977,
+    "n_events": 57,
+    "n_mkts": 57
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 73,
+    "n_mkts": 74
+   },
+   "n_events": 84,
+   "n_markets": 86,
+   "oi_ko": {
+    "est": 87.0,
+    "hi": 288.22,
+    "lo": 25.0,
+    "n_events": 51,
+    "n_mkts": 51
+   },
+   "report_move": null,
+   "report_placebo": null,
+   "sport": "NBA",
+   "spread_c": {
+    "est": 5.999999999999997,
+    "hi": 7.000000000000001,
+    "lo": 4.0000000000000036,
+    "n_events": 84,
+    "n_mkts": 86
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 84,
+    "n_mkts": 86
+   }
+  },
+  "KXNBASPREAD": {
+   "custody_excluded": 8,
+   "fill_share": {
+    "est": 0.32591683508266045,
+    "hi": 0.38250176086747717,
+    "lo": 0.268673529634313,
+    "n_events": 83,
+    "n_mkts": 90
+   },
+   "late_move": {
+    "est": 0.015000000000000013,
+    "hi": 0.025000000000000022,
+    "lo": 0.010000000000000009,
+    "n_events": 83,
+    "n_mkts": 90
+   },
+   "late_placebo": {
+    "est": 0.0050000000000000044,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0049999999999999975,
+    "n_events": 83,
+    "n_mkts": 90
+   },
+   "n_events": 83,
+   "n_markets": 90,
+   "oi_ko": {
+    "est": 3145.0,
+    "hi": 6340.21,
+    "lo": 1431.0,
+    "n_events": 83,
+    "n_mkts": 90
+   },
+   "report_move": null,
+   "report_placebo": null,
+   "sport": "NBA",
+   "spread_c": {
+    "est": 3.0000000000000027,
+    "hi": 3.9999999999999982,
+    "lo": 2.9999999999999973,
+    "n_events": 83,
+    "n_mkts": 90
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 83,
+    "n_mkts": 90
+   }
+  },
+  "KXNBATOTAL": {
+   "custody_excluded": 11,
+   "fill_share": {
+    "est": 0.30007538521180305,
+    "hi": 0.34510101764205314,
+    "lo": 0.2528613362284519,
+    "n_events": 84,
+    "n_mkts": 87
+   },
+   "late_move": {
+    "est": 0.019999999999999907,
+    "hi": 0.025000000000000022,
+    "lo": 0.010000000000000009,
+    "n_events": 84,
+    "n_mkts": 87
+   },
+   "late_placebo": {
+    "est": 0.0050000000000000044,
+    "hi": 0.0050000000000000044,
+    "lo": 5.551115123125783e-17,
+    "n_events": 84,
+    "n_mkts": 87
+   },
+   "n_events": 84,
+   "n_markets": 87,
+   "oi_ko": {
+    "est": 2558.0,
+    "hi": 3968.0,
+    "lo": 1796.0,
+    "n_events": 84,
+    "n_mkts": 87
+   },
+   "report_move": null,
+   "report_placebo": null,
+   "sport": "NBA",
+   "spread_c": {
+    "est": 3.0000000000000027,
+    "hi": 4.0000000000000036,
+    "lo": 2.0000000000000018,
+    "n_events": 84,
+    "n_mkts": 87
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 84,
+    "n_mkts": 87
+   }
+  },
+  "KXNFL1HSPREAD": {
+   "custody_excluded": 95,
+   "fill_share": {
+    "est": 0.25914786967418546,
+    "hi": 0.3333333333333333,
+    "lo": 0.14786967418546365,
+    "n_events": 2,
+    "n_mkts": 5
+   },
+   "late_move": {
+    "est": 0.004999999999999977,
+    "hi": 0.009999999999999995,
+    "lo": 0.0,
+    "n_events": 2,
+    "n_mkts": 3
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 2,
+    "n_mkts": 3
+   },
+   "n_events": 2,
+   "n_markets": 5,
+   "oi_ko": {
+    "est": 562.0,
+    "hi": 68062.0,
+    "lo": 466.0,
+    "n_events": 2,
+    "n_mkts": 3
+   },
+   "report_move": {
+    "est": 0.0050000000000000044,
+    "hi": 0.010000000000000009,
+    "lo": 0.0025000000000000022,
+    "n_events": 2,
+    "n_mkts": 3
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 1,
+    "n_mkts": 1
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 25.0,
+    "hi": 25.0,
+    "lo": 18.5,
+    "n_events": 2,
+    "n_mkts": 5
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 2,
+    "n_mkts": 5
+   }
+  },
+  "KXNFL1HTOTAL": {
+   "custody_excluded": 98,
+   "fill_share": {
+    "est": 0.20238095238095238,
+    "hi": 0.20238095238095238,
+    "lo": 0.20238095238095238,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "n_events": 1,
+   "n_markets": 2,
+   "oi_ko": {
+    "est": 2541.0,
+    "hi": 2541.0,
+    "lo": 2541.0,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "report_placebo": null,
+   "sport": "NFL",
+   "spread_c": {
+    "est": 8.499999999999996,
+    "hi": 8.499999999999996,
+    "lo": 8.499999999999996,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 1,
+    "n_mkts": 2
+   }
+  },
+  "KXNFLANYTD": {
+   "custody_excluded": 2,
+   "fill_share": {
+    "est": 0.26937056807328713,
+    "hi": 0.32797724665068856,
+    "lo": 0.21643904782683596,
+    "n_events": 81,
+    "n_mkts": 85
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.0049999999999999975,
+    "lo": 0.0,
+    "n_events": 75,
+    "n_mkts": 79
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 76,
+    "n_mkts": 80
+   },
+   "n_events": 83,
+   "n_markets": 87,
+   "oi_ko": {
+    "est": 2566.0,
+    "hi": 3593.0,
+    "lo": 1404.0,
+    "n_events": 75,
+    "n_mkts": 79
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 32,
+    "n_mkts": 34
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 9,
+    "n_mkts": 9
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 4.000000000000001,
+    "hi": 4.999999999999999,
+    "lo": 3.9999999999999982,
+    "n_events": 83,
+    "n_mkts": 87
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 83,
+    "n_mkts": 87
+   }
+  },
+  "KXNFLFIRSTTD": {
+   "custody_excluded": 38,
+   "fill_share": {
+    "est": 0.16790097605988036,
+    "hi": 0.24979128927338645,
+    "lo": 0.09527235413963103,
+    "n_events": 30,
+    "n_mkts": 34
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.004999999999999977,
+    "lo": 0.0,
+    "n_events": 27,
+    "n_mkts": 30
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 28,
+    "n_mkts": 30
+   },
+   "n_events": 31,
+   "n_markets": 35,
+   "oi_ko": {
+    "est": 774.0,
+    "hi": 4286.0,
+    "lo": 420.0,
+    "n_events": 19,
+    "n_mkts": 19
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.010000000000000009,
+    "lo": 0.0,
+    "n_events": 4,
+    "n_mkts": 5
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 2,
+    "n_mkts": 3
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 5.0,
+    "hi": 6.0,
+    "lo": 3.5,
+    "n_events": 31,
+    "n_mkts": 35
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 31,
+    "n_mkts": 35
+   }
+  },
+  "KXNFLPASSYDS": {
+   "custody_excluded": 40,
+   "fill_share": {
+    "est": 0.14882155532561192,
+    "hi": 0.2169959501379083,
+    "lo": 0.09098547718022607,
+    "n_events": 46,
+    "n_mkts": 55
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 46,
+    "n_mkts": 54
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 46,
+    "n_mkts": 54
+   },
+   "n_events": 47,
+   "n_markets": 57,
+   "oi_ko": {
+    "est": 340.5,
+    "hi": 1022.0,
+    "lo": 133.5,
+    "n_events": 41,
+    "n_mkts": 48
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 19,
+    "n_mkts": 25
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 1,
+    "n_mkts": 2
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 5.000000000000004,
+    "hi": 6.000000000000002,
+    "lo": 4.999999999999993,
+    "n_events": 47,
+    "n_mkts": 57
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 47,
+    "n_mkts": 57
+   }
+  },
+  "KXNFLRECYDS": {
+   "custody_excluded": 52,
+   "fill_share": {
+    "est": 0.1058031260607851,
+    "hi": 0.14879706221722233,
+    "lo": 0.06355519480519481,
+    "n_events": 41,
+    "n_mkts": 47
+   },
+   "late_move": {
+    "est": 0.004999999999999921,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 40,
+    "n_mkts": 46
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 40,
+    "n_mkts": 46
+   },
+   "n_events": 41,
+   "n_markets": 47,
+   "oi_ko": {
+    "est": 165.0,
+    "hi": 480.0,
+    "lo": 17.0,
+    "n_events": 35,
+    "n_mkts": 39
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.010000000000000009,
+    "lo": 0.0,
+    "n_events": 13,
+    "n_mkts": 14
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 2,
+    "n_mkts": 2
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 6.5,
+    "hi": 7.000000000000001,
+    "lo": 5.999999999999995,
+    "n_events": 41,
+    "n_mkts": 47
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 41,
+    "n_mkts": 47
+   }
+  },
+  "KXNFLRSHYDS": {
+   "custody_excluded": 48,
+   "fill_share": {
+    "est": 0.19154666258246822,
+    "hi": 0.26026742581090406,
+    "lo": 0.12677056277056278,
+    "n_events": 49,
+    "n_mkts": 51
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 47,
+    "n_mkts": 49
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 47,
+    "n_mkts": 49
+   },
+   "n_events": 49,
+   "n_markets": 51,
+   "oi_ko": {
+    "est": 840.0,
+    "hi": 2263.0,
+    "lo": 379.0,
+    "n_events": 43,
+    "n_mkts": 44
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 17,
+    "n_mkts": 18
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.010000000000000009,
+    "lo": 0.0,
+    "n_events": 4,
+    "n_mkts": 4
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 6.000000000000001,
+    "hi": 7.9999999999999964,
+    "lo": 5.5,
+    "n_events": 49,
+    "n_mkts": 51
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 49,
+    "n_mkts": 51
+   }
+  },
+  "KXNFLSPREAD": {
+   "custody_excluded": 73,
+   "fill_share": {
+    "est": 0.3164040402563872,
+    "hi": 0.3754809208142972,
+    "lo": 0.25665383405867304,
+    "n_events": 96,
+    "n_mkts": 123
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 87,
+    "n_mkts": 112
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 87,
+    "n_mkts": 112
+   },
+   "n_events": 99,
+   "n_markets": 128,
+   "oi_ko": {
+    "est": 5538.0,
+    "hi": 11907.0,
+    "lo": 3208.0,
+    "n_events": 84,
+    "n_mkts": 107
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 79,
+    "n_mkts": 103
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 79,
+    "n_mkts": 105
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 2.0000000000000018,
+    "hi": 2.9999999999999973,
+    "lo": 2.0000000000000018,
+    "n_events": 99,
+    "n_mkts": 128
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 99,
+    "n_mkts": 128
+   }
+  },
+  "KXNFLTEAMTOTAL": {
+   "custody_excluded": 74,
+   "fill_share": {
+    "est": 0.24176935488372162,
+    "hi": 0.35980260681347637,
+    "lo": 0.13721979107848672,
+    "n_events": 18,
+    "n_mkts": 23
+   },
+   "late_move": {
+    "est": 0.004999999999999893,
+    "hi": 0.0050000000000000044,
+    "lo": 0.0,
+    "n_events": 15,
+    "n_mkts": 19
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.004999999999999893,
+    "lo": 0.0,
+    "n_events": 15,
+    "n_mkts": 19
+   },
+   "n_events": 19,
+   "n_markets": 24,
+   "oi_ko": {
+    "est": 2885.0,
+    "hi": 5328.0,
+    "lo": 483.5,
+    "n_events": 8,
+    "n_mkts": 10
+   },
+   "report_move": {
+    "est": 0.047500000000000014,
+    "hi": 0.14500000000000002,
+    "lo": 0.0,
+    "n_events": 6,
+    "n_mkts": 8
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.034999999999999976,
+    "lo": 0.0,
+    "n_events": 5,
+    "n_mkts": 6
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 9.5,
+    "hi": 12.0,
+    "lo": 6.500000000000001,
+    "n_events": 19,
+    "n_mkts": 24
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 19,
+    "n_mkts": 24
+   }
+  },
+  "KXNFLTOTAL": {
+   "custody_excluded": 81,
+   "fill_share": {
+    "est": 0.23873872941760052,
+    "hi": 0.284374340586048,
+    "lo": 0.19432350515306762,
+    "n_events": 103,
+    "n_mkts": 135
+   },
+   "late_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 92,
+    "n_mkts": 118
+   },
+   "late_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 93,
+    "n_mkts": 119
+   },
+   "n_events": 103,
+   "n_markets": 135,
+   "oi_ko": {
+    "est": 3462.5,
+    "hi": 6640.0,
+    "lo": 1868.0,
+    "n_events": 86,
+    "n_mkts": 112
+   },
+   "report_move": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 82,
+    "n_mkts": 105
+   },
+   "report_placebo": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 80,
+    "n_mkts": 104
+   },
+   "sport": "NFL",
+   "spread_c": {
+    "est": 2.9999999999999973,
+    "hi": 3.0000000000000027,
+    "lo": 2.0000000000000018,
+    "n_events": 103,
+    "n_mkts": 135
+   },
+   "vol_hr": {
+    "est": 0.0,
+    "hi": 0.0,
+    "lo": 0.0,
+    "n_events": 103,
+    "n_mkts": 135
+   }
+  }
+ },
+ "files": [
+  "raw_2026-10-16.jsonl"
+ ],
+ "rank": [
+  "KXNFL1HSPREAD",
+  "KXNFLTEAMTOTAL",
+  "KXNFL1HTOTAL",
+  "KXNFLRECYDS",
+  "KXNFLRSHYDS",
+  "KXNBAREB",
+  "KXNFLPASSYDS",
+  "KXNBAPTS",
+  "KXNFLFIRSTTD",
+  "KXNFLANYTD",
+  "KXNBASPREAD",
+  "KXNBATOTAL",
+  "KXNFLTOTAL",
+  "KXNFLSPREAD",
+  "KXNBAGAME"
+ ],
+ "rules": {
+  "B": 1000,
+  "seed": 20261016,
+  "stake_usd": 1.0,
+  "x_share": 0.1
+ }
+}
