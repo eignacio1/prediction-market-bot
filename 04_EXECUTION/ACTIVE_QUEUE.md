@@ -295,6 +295,9 @@ these files.
 **Not in this wave, by date:** the NBA opening-night read-back (80.2 Part A) needs the 10-20 games played. It is a Wave 82
 candidate once they exist.
 
+### 81.1 — The forward test, read: label the arms, clean the count, score it as pre-registered
+**EXECUTION** · E1–E3 per arm, the ADR-0072 verdict · plus PLUMBING: the scoreboard's three broken inputs (D1, D4 NBA, P3) · terminal 1
+
 ```
 COMMON RULES - WAVE 81 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
@@ -429,6 +432,9 @@ each pre-registered reading; what you did NOT check), the PR(s), and the one ope
 END OF BLOCK 81.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### 81.2 — Depth lane: the NBA lineup cross on player points (all five parts) + verifying Muse's two Nix facts
+**DEPTH** · D5(b) NBA complete index entries 1 → 2 · charter §5 VERIFIED/FAILED 0 → 2 · terminal 2
+
 ```
 COMMON RULES - WAVE 81 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
@@ -552,6 +558,9 @@ Results: the lineup-cross folder's results.md, the NBA_ENGINE entry, index_verif
 
 END OF BLOCK 81.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
+
+### 81.3 — The first thin-market cell goes live: KXNFLPASSYDS pre-kickoff snapshots, frozen strike model, shadow rows
+**BREADTH + EXECUTION** · B1 40/107 → 41/108, B4 props 2 → 3, pre-kickoff NFL depth n 0 → > 0 · terminal 3
 
 ```
 COMMON RULES - WAVE 81 (read first; they bind this block)
