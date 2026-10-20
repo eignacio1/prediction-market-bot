@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "window handoff: confirm box has #296"

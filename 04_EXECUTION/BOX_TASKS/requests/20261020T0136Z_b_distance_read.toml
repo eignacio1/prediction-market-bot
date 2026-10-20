@@ -1,0 +1,2 @@
+task = "distance_read"
+note = "window handoff: distance-to-optimum on the box (E/P are VPS-only)"
