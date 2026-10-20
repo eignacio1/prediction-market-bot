@@ -88,3 +88,7 @@ every record `verification: REPORTED`, `as_of` = the last game included, `applie
 **Done when:** the schema says v1.5, the file has one record per starting QB per split for the current week, each with population
 text and a source_url, and STATUS.md names this ticket. The bot then recomputes the class from nflverse (charter §5); VERIFIED or
 FAILED comes back here.
+
+### 2026-10-19 21:55 PT · correction to the 21:50 entry · R-007 closed as-is
+Earl's two Bo Nix facts were examples of the granularity he wants, not facts to chase. The bot will not recompute them, and the
+.283 / .378 question is dropped. Leave both records REPORTED as they are, with no source hunt needed. R-007 is closed. R-008 stands.

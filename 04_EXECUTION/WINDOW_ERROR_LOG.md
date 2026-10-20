@@ -50,6 +50,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W22 | 2026-10-16 | 79→80P | Kept restating in sitreps that the models do not beat the market (79 sitrep: "Execution is unchanged: our filled bets still lose"), against a standing operator preference (2026-10-12). The operator, 08:12 PT: "You keep beating over my head - yeah I fucking get it our models aren't beating shit. Well no fucking shit we don't have a single substantive band built out yet". | Noise in every sitrep; the headline he already knows crowds out what changed. | Operator | REPEAT | Sitreps report what moved and what is next; the standing "not beating the market" headline is not restated |
 | W23 | 2026-10-19 | 67→80 | Did not recompute the sitrep's DISTANCE TO OPTIMUM table at wave close for ~13 waves: at handoff it still showed Wave 67 values (E1 3.9%, D4 "NBA none", P1 0/45), the sitrep header still read "last window: Waves 52-60", and the standing gap agent had not ticked since 10-16 02:00Z without the window flagging it. Found in the handoff sweep. | The forest view the operator asked for (10-09) was stale while the queue looked current; a reader would have trusted wave-67 numbers. | Window (handoff sweep) | FOREST | Every wave close: run distance_to_optimum.py (box values via the bridge's `distance_read`), rewrite the table's Now/Moved columns, read GG_AGENT_STATE.md's last tick |
 | W24 | 2026-10-19 | 80R→80 | Told the operator "Sunday's NFL order books should be recorded" / "Sunday's NFL slate is in" after installing the capture. The capture windowed on close_time (~45 h after the game), so it recorded IN-GAME books only; pre-kickoff NFL depth n = 0 (W80.1). | The operator heard the pre-game fillability question was being answered; it was not. | W80.1 handoff | UNVERIFIED | Say what a capture records only after reading a row of it (time vs kickoff), not from the install log |
+| W25 | 2026-10-19 | 81 | Turned the operator's Bo Nix numbers (his 10-16 illustration of the granularity bar) into work: a Part B in 81.2 to recompute and grade them, and an operator question framed as ".283 or .378, which is right?". Operator, 21:53 PT: "Did we really need to spend time researching the two Nix facts - who fucking cares what his YPA on throws are lol it was an example". | Half a block of terminal time planned on an example; an operator question spent on it. Caught before the wave was pasted. | Operator | LITERAL | W17's rule covers Muse tickets and verification too: an operator example recorded anywhere (archive, ticket, index) is an illustration. Never verify it, schedule it or ask him about it unless he says it is the requirement |
 
 ## Pattern tally (update at every handoff)
 
@@ -64,7 +65,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | SCOPE | 1 | W11 |
 | REDUCED | 1 | W16 (10-14) |
 | PROCESS | 2 | W19 (10-15) |
-| LITERAL | 1 | W17 (10-14) |
+| LITERAL | 2 | W25 (10-19) |
 | PRESET | 1 | W21 (10-15) |
 | REPEAT | 1 | W22 (10-16) |
 | FOREST | 1 | W23 (10-19) |

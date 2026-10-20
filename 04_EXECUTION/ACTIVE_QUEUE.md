@@ -54,8 +54,8 @@ reason) · budget GREEN at 00:05Z. **Gap log:** 195 OPEN (headers 228 = status l
 2026-10-16 02:00Z - not running since (GA-2, GA-3 never launched).
 
 **Muse (charter v2 §8 watchdog, Wave 81 intake, archive `2ba6671`):** 58 commits (34 at the handoff), no history rewritten, 2,107
-records all parse. R-005 and R-006 are closed. R-004 is partly done (two old-name hits in `web/index.html`). R-007 is partly done:
-both Bo Nix `index_fact`s are REPORTED with no source link, and 81.2 recomputes them. Cadence installed (daily availability
+records all parse. R-005 and R-006 are closed. R-004 is partly done (two old-name hits in `web/index.html`). R-007 is closed as-is:
+the two Bo Nix `index_fact`s were the operator's examples. They stay REPORTED and are not verified (W25). Cadence installed (daily availability
 sweep, Monday full cycle). Week 6 delta in (46 claims). **R-008 issued (operator 10-19 21:40 PT: L3 = the split-level layer):**
 QB passing yards by game script, current week forward. It feeds KXNFLPASSYDS. Grades: VERIFIED 0 · REPORTED 48 (+2,059 pre-v1.3
 records, ungraded) · FAILED 0.
@@ -259,7 +259,7 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 ~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 · ~~ADR-0072~~ accepted 10-10 · ~~NFL QB challenger~~ accepted 10-10 · ~~T1 MLB counting (GG-536)~~ decided 10-10 · NBA model-class ADR standing (EXP-038/039; not blocking) · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
 gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
 unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
-(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · ~~PAM deep tier start~~ decided 10-15 16:46 PT: much deeper than 75.1's proposal — QBs, WRs, **RBs, TEs, OL and core defenders**, even foundationally; not soon (DEEP_TIER.md) · ~~KXNFLPASSYDS thin-market prereg~~ **accepted 10-19 21:40 PT** · ~~Muse L3~~ **decided 10-19 21:40 PT: the split-level layer (R-008)** · ~~Nix .283/.378~~ **the bot recomputes (81.2)**.
+(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · ~~PAM deep tier start~~ decided 10-15 16:46 PT: much deeper than 75.1's proposal — QBs, WRs, **RBs, TEs, OL and core defenders**, even foundationally; not soon (DEEP_TIER.md) · ~~KXNFLPASSYDS thin-market prereg~~ **accepted 10-19 21:40 PT** · ~~Muse L3~~ **decided 10-19 21:40 PT: the split-level layer (R-008)** · ~~Nix .283/.378~~ **dropped: it was an example (10-19 21:53 PT)**.
 
 ---
 
@@ -268,7 +268,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 81.1 | The forward test, read: label the arms, clean the count, score it as pre-registered (+ the scoreboard's three broken inputs) | EXECUTION E1–E3 per arm; ADR-0072 verdict 0 → 1 or "no verdict yet"; PLUMBING D1/D4/P3 3 broken → 0 | ⬜ | |
-| 81.2 | Depth lane: the NBA lineup cross on player points (all five parts) + the bot's first verification of Muse facts | DEPTH D5(b) NBA: complete index entries 1 → 2; charter §5 VERIFIED/FAILED 0 → 2 | ⬜ | |
+| 81.2 | Depth lane: the NBA lineup cross on player points, all five parts | DEPTH D5(b) NBA: complete index entries 1 → 2 | ⬜ | |
 | 81.3 | The first thin-market cell goes live: KXNFLPASSYDS pre-kickoff snapshots, frozen strike model, shadow rows | BREADTH B1 40/107 → 41/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0 | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
 
@@ -286,8 +286,7 @@ No red signal.
 dashboards' forward-test panel if it reads that report, `scripts/distance_to_optimum.py` + `scripts/distance_to_optimum_d1_manifest.json`
 + their tests, `02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml` `[[engine]]` entries only, `scripts/box_tasks.py` (one new
 read task). **81.2** = a new `12_EXPLORATORY/` folder for the NBA lineup cross, new files in `02_ARCHITECTURE_DESIGN/NBA_ENGINE/`,
-`SEATS/nba.toml` `[[factor]]` rows, new `12_EXPLORATORY/nfl_engine/index_verify/`, one appended verdict entry in
-`QUAL_ARCHIVE/TO_MUSE.md`. **81.3** = the snapshot job + its cron file + its RUNTIME_REGISTRY entry, `market_type_registry.py`
+`SEATS/nba.toml` `[[factor]]` rows. **81.3** = the snapshot job + its cron file + its RUNTIME_REGISTRY entry, `market_type_registry.py`
 (KXNFLPASSYDS only), the strike model under `12_EXPLORATORY/thin_markets/passyds/` (and `src/` if the runner needs it), the frozen
 artifact, `SEATS/nfl.toml` `[[factor]]` rows. The generator's B1/B4 values move when 81.3 merges; 81.1 regenerates whatever is on
 main when it reads, so neither waits on the other. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md and skips gaps in
@@ -311,8 +310,8 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-19 21:40 PT - incl. the operator's acceptance of the KXNFLPASSYDS
-  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), "let the bot recompute"
-  the Bo Nix facts, L3 = the split-level layer (R-008), the granularity index, "retail flow first", three blocks per wave,
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
   the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
   per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
   interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
@@ -331,8 +330,7 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   tests (+ the dashboards' forward-test panel if it reads that report), scripts/distance_to_optimum.py +
   scripts/distance_to_optimum_d1_manifest.json + tests, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml [[engine]] entries
   only, scripts/box_tasks.py; 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
-  02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows, new 12_EXPLORATORY/nfl_engine/index_verify/, one appended
-  entry in 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
+  02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
   RUNTIME_REGISTRY entry, market_type_registry.py (KXNFLPASSYDS only), 12_EXPLORATORY/thin_markets/passyds/ (+ src/ if the runner
   needs it), SEATS/nfl.toml [[factor]] rows. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the
   box bridge (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/).
@@ -432,8 +430,8 @@ each pre-registered reading; what you did NOT check), the PR(s), and the one ope
 END OF BLOCK 81.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### 81.2 — Depth lane: the NBA lineup cross on player points (all five parts) + verifying Muse's two Nix facts
-**DEPTH** · D5(b) NBA complete index entries 1 → 2 · charter §5 VERIFIED/FAILED 0 → 2 · terminal 2
+### 81.2 — Depth lane: the NBA lineup cross on player points, all five parts
+**DEPTH** · D5(b) NBA complete index entries 1 → 2 · terminal 2
 
 ```
 COMMON RULES - WAVE 81 (read first; they bind this block)
@@ -448,8 +446,8 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-19 21:40 PT - incl. the operator's acceptance of the KXNFLPASSYDS
-  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), "let the bot recompute"
-  the Bo Nix facts, L3 = the split-level layer (R-008), the granularity index, "retail flow first", three blocks per wave,
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
   the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
   per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
   interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
@@ -468,8 +466,7 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   tests (+ the dashboards' forward-test panel if it reads that report), scripts/distance_to_optimum.py +
   scripts/distance_to_optimum_d1_manifest.json + tests, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml [[engine]] entries
   only, scripts/box_tasks.py; 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
-  02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows, new 12_EXPLORATORY/nfl_engine/index_verify/, one appended
-  entry in 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
+  02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
   RUNTIME_REGISTRY entry, market_type_registry.py (KXNFLPASSYDS only), 12_EXPLORATORY/thin_markets/passyds/ (+ src/ if the runner
   needs it), SEATS/nfl.toml [[factor]] rows. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the
   box bridge (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/).
@@ -509,10 +506,9 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
   Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W81_<n>.md (docs-only push).
 
-WAVE 81.2 - DEPTH LANE: THE NBA LINEUP CROSS ON PLAYER POINTS (ALL FIVE PARTS), AND THE BOT'S FIRST VERIFICATION OF MUSE FACTS. Repo: eignacio1/prediction-market-bot.
+WAVE 81.2 - DEPTH LANE: THE NBA LINEUP CROSS ON PLAYER POINTS (ALL FIVE PARTS). Repo: eignacio1/prediction-market-bot.
 PURPOSE: DEPTH. Measures: D5(b) NBA - complete granularity-index entries (all five parts) 1 -> 2 (pace/efficiency, W80.2, is
-the first), and the lineup factor's stage moved to applied with a verdict against KXNBAPTS; charter v2 section 5 grades on Muse
-facts, VERIFIED/FAILED 0 -> 2.
+the first), and the lineup factor's stage moved to applied with a verdict against KXNBAPTS.
 Operator, 2026-10-16 (quote it): "Do we have mechanisms within the bot, spots within our decision tree, ranges within our
 architecture - to identify these opportunities AND FUCKING BLEED EM OUT? Just one of many examples." And 08:18 PT: "Beating
 Kalshi or institutions is a tall task - beating buddy off his phone placing parlays, that's the first step."
@@ -520,23 +516,23 @@ Why this entry (the window's choice, not the operator's example): 80.1's ranking
 window more than the placebo does - KXNBAPTS 0.030 [0.015, 0.045] vs ~0.000. The points book does react to lineup news.
 The question is whether it reacts by the right amount, and for the right players.
 PERMISSIONS: a new 12_EXPLORATORY/ folder for the NBA lineup cross (code by PR); new files in 02_ARCHITECTURE_DESIGN/NBA_ENGINE/;
-SEATS/nba.toml [[factor]] rows; new 12_EXPLORATORY/nfl_engine/index_verify/; one appended verdict entry in
-02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md. READ-ONLY: the NBA event store, the EXP-039/EXP-040 frozen models and their rows
-(never edited, never rescored), the 2025-and-earlier KXNBAPTS price history (12_EXPLORATORY/thin_markets/MANIFEST.md), the NFL
-play store, and the Muse archive (eignacio1/sports-intel-archive) pinned to commit 2ba6671. Never write the archive. No registry
+SEATS/nba.toml [[factor]] rows. READ-ONLY: the NBA event store, the EXP-039/EXP-040 frozen models and their rows (never edited,
+never rescored), the 2025-and-earlier KXNBAPTS price history (12_EXPLORATORY/thin_markets/MANIFEST.md). No registry
 cell, runner, live model or pre-registration. Do NOT edit ARCHITECTURE_COMPONENTS.toml or the D1 manifest (81.1 owns them).
 Read first: 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md; ADR-0075; 12_EXPLORATORY/thin_markets/results.md (the KXNBAPTS row and the
 "not computable" note); 12_EXPLORATORY/20261012_nba_points_minutes/ and 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/
 W69_3_nba_points_minutes_results.md (EXP-040's out_min / out_fga features); 02_ARCHITECTURE_DESIGN/NBA_ENGINE/ (incl.
-INDEX_ENTRY_PACE.md, the format to match); PARTNERSHIP_CHARTER.md sections 3 and 5; the archive's index-facts.claims.jsonl at 2ba6671.
+INDEX_ENTRY_PACE.md, the format to match).
 
-PART A - The lineup cross, five parts (~50 min)
+PART A - Aggregate and interpret: the split, the rank, the cross (~40 min)
   1. The split: a player's points, usage and minutes when specific teammates are out vs in, by the absent player's role
      (primary creator / other starter / rotation), from the event store, point-in-time, no look-ahead.
   2. The rank against history: that redistribution for every comparable player-team-season at the same point in a season, and
      how stable it is at that sample (split-half or year-to-year): trait or noise.
   3. The matchup cross: the absorbing player's redistribution x the opponent's defense against that role (points allowed to it,
      pace), and how often the absence situation occurs.
+     Push Part A (stage reached: interpreted, or noise) before Part B.
+PART B - Apply: the market map and the test against the price (~40 min)
   4. The market map: KXNBAPTS strikes for the absorbing player (team totals named, not tested here).
   5. The application, against the market, 2025-and-earlier only: on games with a late absence (lineup window), the model's
      change in P(strike) vs the market's price change from before to after the news - the pricing share (how much of the
@@ -544,17 +540,7 @@ PART A - The lineup cross, five parts (~50 min)
      no injury/inactives feed joined to the price history: if absence times cannot be joined point-in-time, register the gap,
      stop at interpreted, and do not approximate the time.
      Write it up as an NBA_ENGINE index entry in INDEX_ENTRY_PACE.md's format, plus the SEATS/nba.toml rows (stage reached).
-PART B - Verify Muse's two facts (~25 min; charter v2 section 5; operator 2026-10-19 21:40 PT: "Let the bot recompute it")
-  6. From the NFL play store (nflverse, point-in-time), recompute index-2026-001 (Bo Nix 2026, average intended air yards per
-     attempt through 6 team games = 4.9, rank 701 of 701 qualified QB seasons through 6 team games, 2006-2026) and
-     index-2026-002 (career regular-season games with <= 6.0 Y/A: 13-3, .813; the comparison group's combined record - the
-     operator's message said .283, the table's own values 101-166 give .378). The qualifiers were never stated: try the obvious
-     ones (attempt thresholds; 2006-2025 vs 2006-2026; who counts as "active"), report the result under each, and name the
-     qualifier under which it matches. Grade each VERIFIED (matches under a stated, reasonable qualifier) or FAILED (does not
-     match; give the difference). Positive control: one published figure computed the same way. Append the grades to
-     TO_MUSE.md as a dated verdict entry; write the method to 12_EXPLORATORY/nfl_engine/index_verify/README.md so the class can
-     be spot-checked each wave. Never write the archive.
-Results: the lineup-cross folder's results.md, the NBA_ENGINE entry, index_verify/results.md, the TO_MUSE.md entry.
+Results: the lineup-cross folder's results.md, the NBA_ENGINE entry, the SEATS/nba.toml rows.
 
 END OF BLOCK 81.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
@@ -575,8 +561,8 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-19 21:40 PT - incl. the operator's acceptance of the KXNFLPASSYDS
-  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), "let the bot recompute"
-  the Bo Nix facts, L3 = the split-level layer (R-008), the granularity index, "retail flow first", three blocks per wave,
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
   the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
   per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
   interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
@@ -595,8 +581,7 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
   tests (+ the dashboards' forward-test panel if it reads that report), scripts/distance_to_optimum.py +
   scripts/distance_to_optimum_d1_manifest.json + tests, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml [[engine]] entries
   only, scripts/box_tasks.py; 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
-  02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows, new 12_EXPLORATORY/nfl_engine/index_verify/, one appended
-  entry in 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
+  02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
   RUNTIME_REGISTRY entry, market_type_registry.py (KXNFLPASSYDS only), 12_EXPLORATORY/thin_markets/passyds/ (+ src/ if the runner
   needs it), SEATS/nfl.toml [[factor]] rows. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the
   box bridge (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/).
@@ -1033,7 +1018,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 81.1 | Forward test read: labels, clean count, pre-registered score (+ generator D1/D4/P3) | ⬜ | |
-| 81.2 | Depth lane: NBA lineup cross (five parts) + VERIFIED/FAILED on Muse's two Nix facts | ⬜ | |
+| 81.2 | Depth lane: NBA lineup cross, all five parts | ⬜ | |
 | 81.3 | KXNFLPASSYDS live: pre-kickoff snapshots, frozen strike model, shadow rows | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
@@ -1493,9 +1478,9 @@ What should reorder this, and what should stop it:
 > row exist. Not covered: any order, stake or kelly change; any change to the pre-registration's text or parameters (a new dated
 > file); follow-on families (KXNFLRECYDS, KXNFLRSHYDS each need their own). Used by 81.3.
 
-> **DECISION - MUSE L3 + THE NIX RECOMPUTE (operator, 2026-10-19 21:40 PT).** L3 is the split-level layer as Muse proposed
-> ("Yes, as Muse proposed"): ticket R-008. The ".283 vs .378" question: "Let the bot recompute it" - 81.2 grades both Nix facts
-> VERIFIED or FAILED from free data.
+> **DECISION - MUSE L3 (operator, 2026-10-19 21:40 PT).** L3 is the split-level layer as Muse proposed ("Yes, as Muse
+> proposed"): ticket R-008. *(The Nix ".283 vs .378" recompute was withdrawn 21:53 PT - the operator: "who fucking cares what his
+> YPA on throws are lol it was an example". Window error W25.)*
 
 > **OPERATOR DIRECTIVE (2026-10-09 00:14 PT):** "I want to have MLB wired to full cus of the limited games left - the
 > translatebility should be mechanisms that we spent fucking months on with the MLB and should absolutely have already been
