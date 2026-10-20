@@ -2607,3 +2607,5 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Result: usage redistribution is a stable role-level regularity (creator out +1.75 pts [1.46, 2.06], starter +1.00, rotation +0.34, 2016-2025) but player-level redistribution is mostly noise (split-half r 0.117 [-0.267, 0.482]). Seat factor B10 added at stage interpreted.
 - Part 5 not run: of 100 candle-bearing KXNBAPTS markets, 12 have a single rotation absence; only 2 are observed in injury reports and both precede market creation. No before/after-news price exists; time not approximated; no verdict word. GG-985 registered. Operator-sized question: none (plumbing: prospective timestamped capture in 2026-27).
 - Operator words quoted in `INDEX_ENTRY_LINEUP.md` (2026-10-16 "BLEED EM OUT"; 08:18 PT "buddy off his phone placing parlays").
+
+| 2026-10-20 | T-1033 | W81.1 PARTIAL: PR #297 merged (labelled forward-test report, D1/D4/P3 fixes). Hash assignment verified, 0 mismatches over 18,795 armed orders. No verdict: below judged n. Parked Part C (green=WINS) and the box labelled table; ambiguity (per-(book,sport) vs pooled) recommended per-(book,sport). |

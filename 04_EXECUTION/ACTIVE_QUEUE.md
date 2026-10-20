@@ -267,7 +267,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 81.1 | The forward test, read: label the arms, clean the count, score it as pre-registered (+ the scoreboard's three broken inputs) | EXECUTION E1–E3 per arm; ADR-0072 verdict 0 → 1 or "no verdict yet"; PLUMBING D1/D4/P3 3 broken → 0 | ⬜ | |
+| 81.1 | The forward test, read: label the arms, clean the count, score it as pre-registered (+ the scoreboard's three broken inputs) | EXECUTION E1–E3 per arm; ADR-0072 verdict 0 → 1 or "no verdict yet"; PLUMBING D1/D4/P3 3 broken → 0 | 🟡 PARTIAL | Part A code merged (#297); box table + Part B descriptive pending; PART C (green=WINS) NOT STARTED — next undone part. See W81_1_forward_test_read.md |
 | 81.2 | Depth lane: the NBA lineup cross on player points, all five parts | DEPTH D5(b) NBA: complete index entries 1 → 2 | 🟨 PARTIAL | Part A + B pushed; entry 2 stops at interpreted (GG-985: no absence time joinable to KXNBAPTS prices) |
 | 81.3 | The first thin-market cell goes live: KXNFLPASSYDS pre-kickoff snapshots, frozen strike model, shadow rows | BREADTH B1 40/107 → 41/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0 | ⬜ | |
 | M81 | Muse: R-008, the first L3 split family (NFL starting-QB passing yards by game script, rank against history) + the R-004 close-out | DEPTH D5(b) feed (granularity-index parts 1-2 for the KXNFLPASSYDS cell); charter §8 archive health | ⬜ | |
@@ -1117,7 +1117,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 81.1 | Forward test read: labels, clean count, pre-registered score (+ generator D1/D4/P3) | ⬜ | |
+| 81.1 | Forward test read: labels, clean count, pre-registered score (+ generator D1/D4/P3) | 🟡 PARTIAL | Part A code merged (#297); box table + Part B descriptive pending; PART C (green=WINS) NOT STARTED — next undone part. See W81_1_forward_test_read.md |
 | 81.2 | Depth lane: NBA lineup cross, all five parts | ⬜ | |
 | 81.3 | KXNFLPASSYDS live: pre-kickoff snapshots, frozen strike model, shadow rows | ⬜ | |
 | M81 | Muse: R-008 (L3: QB passing yards by game script) + R-004 close-out | ⬜ | |

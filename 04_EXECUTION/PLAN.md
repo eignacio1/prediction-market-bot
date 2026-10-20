@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-20T05:17:27Z (T-1037 — W81.2 NBA lineup cross: role-level uplift real (creator out +1.75 pts); pricing test blocked, entry 2 interpreted (GG-985).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261020T051727Z_W81_2.md` for full session detail.
+**Last reviewed:** 2026-10-20T05:45:00Z (T-1033 — W81.1 PARTIAL: arms labelled + D1/D4/P3 fixed (#297); box table, Part B and Part C (green=WINS) pending.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261020_0545_W81_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

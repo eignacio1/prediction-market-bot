@@ -979,3 +979,4 @@
 | 2026-10-20T04:53:08Z | GG-980..GG-984 | W81.3 STANDARD KXNFLPASSYDS pre-kickoff snapshots + frozen strike model + shadow rows. PURPOSE: BREADTH B1 40/107->41/108, B4 props 2->3; EXECUTION pre-kickoff NFL depth n 0->>0 |
 | 2026-10-20T04:55:54Z | GG-985..GG-989 T-1037..T-1039 | STANDARD — W81.2 NBA lineup cross on KXNBAPTS, two parts (interpret, then apply). PURPOSE: DEPTH D5(b) NBA complete index entries 1->2 (Nix verification dropped by operator, add-in 81.2-A) |
 | 2026-10-20T05:22:33Z | T-1037 | MERGED: NO — branch `session/20261020T045206Z-w81-2-nba-lineup-cross` awaiting merge — W81.2 NBA lineup cross: role-level uplift real (creator out +1.75 pts); pricing test blocked, entry 2 interpreted (GG-985). (commit `86edca2`) |
+| 2026-10-20T05:35:08Z | T-1033 | CLOSED — W81.1 PARTIAL: arms labelled + D1/D4/P3 fixed (#297); box table, Part B and Part C (green=WINS) pending. (commit `9d69a6b`) |
