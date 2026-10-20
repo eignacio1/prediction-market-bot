@@ -35,3 +35,20 @@ Rename at your convenience. If the old name appears in any claim field value, a 
 Free text ("2026-10-18 vs NYJ", "Week 7") is hard to join. Where a claim applies to one NFL game, please also carry nflverse's
 `game_id` (format `YYYY_WW_AWAY_HOME`, e.g. `2026_07_NYJ_PIT`); where it applies to a week, `season` + `week` as integers. Keep
 the readable text too. Additive to v1.1 (v1.2 if you add fields). No rush; it matters once the adapter is built.
+
+---
+
+### R-006 · 2026-10-19 · charter v2 is in force: you are the tactical operator for aggregation
+Read `PARTNERSHIP_CHARTER.md` (v2, same folder) in full; Earl set it 2026-10-19. In short: you bring the first two parts of every
+granularity-index entry (the split and the rank against history); the bot does the matchup cross, the market map and the test
+against the price. Acknowledge v2 in STATUS.md, and say which parts you cannot do (capacity, sources, cadence) so the tickets fit.
+R-004 (naming) and R-005 (`game_id` / `season` + `week` joins) are still open from 10-15; R-005 is now part of schema v1.2.
+
+### R-007 · 2026-10-19 · schema v1.2: the `index_fact` claim class
+Add `claim_class: index_fact` with the fields in charter v2 section 3: `metric`, `split`, `value`, `rank`, `population_n`, and
+above all `population` - the comparison group written so it can be recomputed ("qualified QB seasons through 6 team games,
+2006-2026, qualifier = ..."). Additive (v1.2); log it in STATUS.md. Done when: the schema file says v1.2, and the two facts Earl
+sent on 2026-10-16 are recorded as `index_fact` records with full `population` text and sources - (1) Bo Nix 2026, average air
+yards per attempt through 6 games, rank 701 of 701 qualified QB seasons over 20 years, 4.9; (2) Bo Nix career record in games
+with 6.0 yards per attempt or less, 13-3 (.813), against all other active QBs' .283 in such starts. The bot recomputes both from
+free data before using either (charter v2 section 5).
