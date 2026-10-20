@@ -20,6 +20,8 @@ import argparse
 import json
 import os
 import sys
+import hashlib
+import statistics
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -42,6 +44,8 @@ SKIP_RATE_MAX = 0.90
 # slice start). Cancel failures before it come from the superseded code; counting them re-tripped the turn-off at
 # 2026-10-14T11:25Z on 10-13's 8/8 pre-fix failures. The ">10% in a day" rule is unchanged, evaluated on post-fix attempts.
 CANCEL_PATH_FIX_EPOCH = datetime(2026, 10, 13, 23, 58, tzinfo=timezone.utc)
+TOPUP_TS = datetime(2026, 10, 16, 5, 40, tzinfo=timezone.utc)  # W81.1: demo cash top-up (GG-840); descriptive split only
+UNASSIGNED = "unassigned_pre_test"
 LISTING_SKIP_REASONS = frozenset({"not_listed_on_demo"})
 NO_OUTCOME_S = 15 * 60
 
@@ -51,6 +55,34 @@ SPORTS = (("KXMLB", "MLB"), ("KXNBA", "NBA"), ("KXNHL", "NHL"), ("KXNFL", "NFL")
 def sport_of(ticker: Any) -> str:
     t = str(ticker or "").upper()
     return next((s for p, s in SPORTS if t.startswith(p)), "OTHER" if t else "UNKNOWN")
+
+
+def game_of(ticker: Any) -> str:
+    """Game key = the event segment of the ticker (KXNHLGAME-26OCT12AAABBB-X -> sport|26OCT12AAABBB)."""
+    parts = str(ticker or "").upper().split("-")
+    return f"{sport_of(ticker)}|{parts[1] if len(parts) > 1 else parts[0]}"
+
+
+def hash_assigned(position_id: str, seed: str, share: float) -> bool:
+    """Same rule as demo_fill_policy.assigned(), with the seed/share given explicitly."""
+    h = int.from_bytes(hashlib.sha256(f"{seed}|{position_id}".encode()).digest()[:8], "big") / 2**64
+    return h < share
+
+
+def assignment_check(events: list[dict], seed: str, share: float) -> dict:
+    """Recompute the registered assignment for every armed shadow order; report any recorded-arm mismatch."""
+    checked, bad = 0, []
+    for r in events:
+        if r.get("event") != "shadow_order" or r.get("arm") not in ("control", "treatment") or not r.get("row_id"):
+            continue
+        checked += 1
+        want = "treatment" if hash_assigned(str(r["row_id"]), seed, share) else "control"
+        if want != r["arm"]:
+            bad.append({"row_id": r["row_id"], "recorded": r["arm"], "recomputed": want})
+    paper_ids = {r.get("position_id") for r in events if r.get("event") == "cancel_scheduled" and book_of(r) == "paper" and r.get("position_id")}
+    return {"seed": seed, "share": share, "checked": checked, "mismatches": len(bad), "examples": bad[:5],
+            "paper_cancelled_position_ids": len(paper_ids),
+            "paper_cancelled_not_hash_treatment": sum(1 for i in paper_ids if not hash_assigned(str(i), seed, share))}
 
 
 def _ts(r: dict) -> Optional[datetime]:
@@ -173,14 +205,15 @@ def _historical_404_terminal(r: dict, fills_for: Optional[Callable[[str, str], d
 
 
 def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable[[str, str], dict]],
-                 window_note: str = "", since: Optional[datetime] = None) -> dict:
+                 window_note: str = "", since: Optional[datetime] = None,
+                 assign: Optional[tuple[str, float]] = None) -> dict:
     if since is not None:
         events = [r for r in events if _ts(r) >= since]
-    cells: dict[tuple[str, str], dict[str, Any]] = defaultdict(lambda: {
+    cells: dict[tuple[str, str, str], dict[str, Any]] = defaultdict(lambda: {
         "orders": 0, "rejected": 0, "skips": Counter(), "control_skips": 0,
         "cancel_scheduled": 0, "cancel_ok": 0, "cancel_failed": 0, "cancel_failed_venue": 0,
         "cancel_already_terminal": 0, "no_outcome": 0,
-        "fill_orders": [], "first_ts": None})
+        "fill_orders": [], "first_ts": None, "games": set(), "orders_pre": 0, "orders_post": 0})
     outcome: dict[str, str] = {}
     sched: dict[str, tuple[datetime, str, str]] = {}
     for r in events:
@@ -189,9 +222,21 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             outcome[r.get("order_id")] = ev
     day_cancel: dict[str, Counter] = defaultdict(Counter)
     day_skip: dict[str, Counter] = defaultdict(Counter)
+    # W81.1: an arm label is only ever the recorded one, at/after the test start (ADR-0072 addendum 2026-10-14);
+    # anything without a recorded arm, or before the start, is its own row and never folds into "treatment".
+    armed_by_oid = {r.get("order_id"): r["arm"] for r in events
+                    if r.get("event") == "shadow_order" and r.get("arm") in ("control", "treatment")
+                    and r.get("order_id") and _ts(r) >= CANCEL_PATH_FIX_EPOCH}
     for r in events:
         ev, ts = r.get("event"), _ts(r)
-        arm = "control" if (ev == "shadow_order" and r.get("arm") == "control") else "treatment"
+        if ev == "shadow_order":
+            arm = r["arm"] if (r.get("arm") in ("control", "treatment") and ts >= CANCEL_PATH_FIX_EPOCH) else UNASSIGNED
+        elif ev == "shadow_skip" and r.get("reason") == "control_arm" and ts >= CANCEL_PATH_FIX_EPOCH:
+            arm = "control"
+        elif book_of(r) == "shadow":
+            arm = armed_by_oid.get(r.get("order_id"), UNASSIGNED)
+        else:
+            arm = UNASSIGNED  # paper rows record no arm
         key = (book_of(r), sport_of(ticker_of(r)), arm)
         c = cells[key]
         if c["first_ts"] is None or ts < c["first_ts"]:
@@ -200,8 +245,10 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         if ev == "shadow_order":
             if r.get("ok"):
                 c["orders"] += 1
+                c["orders_pre" if ts < TOPUP_TS else "orders_post"] += 1
+                c["games"].add(game_of(ticker_of(r)))
                 if r.get("order_id"):
-                    c["fill_orders"].append((r["order_id"], ticker_of(r)))
+                    c["fill_orders"].append((r["order_id"], ticker_of(r), ts))
             else:
                 c["rejected"] += 1
             day_skip[day]["orders"] += 1
@@ -219,8 +266,10 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             c["cancel_scheduled"] += 1
             if book_of(r) == "paper":
                 c["orders"] += 1
+                c["orders_pre" if ts < TOPUP_TS else "orders_post"] += 1
+                c["games"].add(game_of(ticker_of(r)))
                 day_skip[day]["orders"] += 1
-                c["fill_orders"].append((r["order_id"], ticker_of(r)))
+                c["fill_orders"].append((r["order_id"], ticker_of(r), ts))
             oid = r.get("order_id")
             # GG-754: epoch-gated like the cancel-failure check - a pre-fix orphan must not re-trip the turn-off forever
             if oid not in outcome and ts >= CANCEL_PATH_FIX_EPOCH and (now - ts).total_seconds() > NO_OUTCOME_S:
@@ -237,7 +286,10 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
     for (book, sport, arm), c in sorted(cells.items()):
         if c["first_ts"] is None:
             continue
-        rows = [fills_for(oid, tk) for oid, tk in c["fill_orders"]] if fills_for else []
+        rows = [fills_for(oid, tk) for oid, tk, _ in c["fill_orders"]] if fills_for else []
+        fill_meta = [m for m, x in zip(c["fill_orders"], rows) if x.get("fills", 0) > 0]
+        per_game = Counter(game_of(tk) for _, tk, _ in fill_meta)
+        pg = sorted(per_game.values())
         nonfill = [x for x in rows if x.get("fills", 0) <= 0 and "nf_won" in x]
         nf_wins = sum(1 for x in nonfill if x["nf_won"])
         filled = [x for x in rows if x.get("fills", 0) > 0]
@@ -249,6 +301,12 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         cell_out.append({
             "book": book, "sport": sport, "arm": arm,
             "orders": c["orders"], "rejected": c["rejected"],
+            "distinct_games": len(c["games"]),
+            "fills_per_game_max": max(pg) if pg else None,
+            "fills_per_game_median": statistics.median(pg) if pg else None,
+            "orders_pre_topup": c["orders_pre"], "orders_post_topup": c["orders_post"],
+            "fills_pre_topup": (sum(1 for _, _, t in fill_meta if t < TOPUP_TS) if fills_for else None),
+            "fills_post_topup": (sum(1 for _, _, t in fill_meta if t >= TOPUP_TS) if fills_for else None),
             "skips_by_reason": dict(c["skips"]), "control_arm_skips": c["control_skips"],
             "cancels": {"scheduled": c["cancel_scheduled"], "ok": c["cancel_ok"], "failed": c["cancel_failed"],
                         "failed_venue_transient": c["cancel_failed_venue"],
@@ -295,7 +353,9 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         if ch.get("tripped"):
             trips.append({"condition": name, **ch})
     return {"generated_utc": now.isoformat(), "judged_n_per_arm": JUDGED_N, "weeks": WEEKS,
-            "since": since.isoformat() if since else None, "cells": cell_out, "turn_off_checks": checks, "tripped": trips, "note": window_note}
+            "since": since.isoformat() if since else None, "cells": cell_out, "turn_off_checks": checks, "tripped": trips, "note": window_note,
+            "test_start_utc": CANCEL_PATH_FIX_EPOCH.isoformat(), "topup_utc": TOPUP_TS.isoformat(),
+            "assignment_check": assignment_check(events, *assign) if assign else None}
 
 
 def _override_for(env_path: Path) -> Path:
@@ -341,10 +401,22 @@ def summary_line(rep: dict) -> str:
     for c in rep["cells"]:
         f = "n/a" if c["fills"] is None else str(c["fills"])
         s = "n/a" if c["settle_minus_price_on_fills"] is None else f"{c['settle_minus_price_on_fills']:+.2f}"
-        parts.append(f"{c['book']}/{c['sport']}: orders={c['orders']} fills={f} s-p={s}")
+        parts.append(f"{c['book']}/{c['sport']}/{c.get('arm', '?')}: orders={c['orders']} fills={f} games={c.get('distinct_games', 'n/a')} s-p={s}")
     t = [x["condition"] for x in rep["tripped"]]
     return ("FORWARD-TEST (ADR-0072) " + rep["generated_utc"][:16] + "Z | " + ("; ".join(parts) or "no events yet")
             + " | turn-off: " + ("TRIPPED " + ",".join(t) if t else "none tripped"))
+
+
+def _assign_params(env_path: Path) -> Optional[tuple[str, float]]:
+    kv: dict[str, str] = {}
+    try:
+        for line in env_path.read_text().splitlines():
+            k, sep, v = line.partition("=")
+            if sep and not k.strip().startswith("#"):
+                kv[k.strip()] = v.strip().strip("\"'")
+        return kv["DEMO_FILL_SEED"], float(kv["DEMO_FILL_ASSIGN_SHARE"])
+    except (OSError, KeyError, ValueError):
+        return None
 
 
 def main(argv: Optional[list[str]] = None) -> int:
@@ -386,7 +458,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         except Exception as e:  # noqa: BLE001 - report must still be written from the log
             note = f"fills skipped: {type(e).__name__}"
     since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else None
-    rep = build_report(events, now, fills_for, note, since)
+    rep = build_report(events, now, fills_for, note, since, _assign_params(Path(a.env_file)))
     if since is not None:
         a.no_act = True  # a windowed read-back never edits the switch config
     if not a.no_act and turn_off(rep["tripped"], now, Path(a.env_file), pol.append_log):

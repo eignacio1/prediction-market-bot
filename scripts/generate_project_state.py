@@ -417,7 +417,8 @@ def _forward_html(sec: dict, head: Any) -> str:
     rep = sec["report"]
     f = lambda v, p="": "n/a" if v is None else (f"{v:{p}}" if p else str(v))  # noqa: E731
     rows = "".join(
-        f"<tr><td>{_e(c['book'])}/{_e(c['sport'])}</td><td class='num'>{c['orders']}</td>"
+        f"<tr><td>{_e(c['book'])}/{_e(c['sport'])}/{_e(c.get('arm', '?'))}</td><td class='num'>{c['orders']}</td>"
+        f"<td class='num'>{f(c.get('distinct_games'))}</td>"
         f"<td class='num'>{_e(sum(c['skips_by_reason'].values()))}</td>"
         f"<td class='num'>{c['cancels']['ok']}/{c['cancels']['ok'] + c['cancels']['failed']}</td>"
         f"<td class='num'>{f(c['fills'])}</td><td class='num'>{f(c['win_rate_on_fills'], '.2f')}</td>"
@@ -427,9 +428,9 @@ def _forward_html(sec: dict, head: Any) -> str:
     trips = rep.get("tripped", [])
     flag = (f"<p class='bad'>TURN-OFF TRIPPED: {_e(', '.join(t['condition'] for t in trips))}</p>" if trips
             else "<p class='ok'>no turn-off condition tripped</p>")
-    return (f"<section id='forward'>{head('ADR-0072 forward test', sec)}{flag}<div class='scroll'><table><tr><th>Book/sport</th><th>Orders</th>"
+    return (f"<section id='forward'>{head('ADR-0072 forward test', sec)}{flag}<div class='scroll'><table><tr><th>Book/sport/arm</th><th>Orders</th><th>Games</th>"
             f"<th>Skips</th><th>Cancel ok</th><th>Fills</th><th>Win</th><th>Settle−price</th><th>8-wk fills / n</th></tr>"
-            f"{rows or '<tr><td colspan=8 class=nd>no events yet</td></tr>'}</table></div></section>")
+            f"{rows or '<tr><td colspan=9 class=nd>no events yet</td></tr>'}</table></div></section>")
 
 
 def build_state(repo: Path | str = REPO) -> dict:

@@ -31,9 +31,10 @@ def test_counts_skips_cancels_and_fills(monkeypatch):
     fills = {"o1": {"fills": 1.0, "settled": True, "won": True, "price": 0.40},
              "o2": {"fills": 1.0, "settled": True, "won": False, "price": 0.50}}
     rep = rpt.build_report(events, NOW, lambda oid, tk: fills[oid])
-    (c,) = rep["cells"]
+    (c,) = [x for x in rep["cells"] if x["arm"] != "control"]
     assert (c["book"], c["sport"], c["orders"], c["fills"]) == ("shadow", "NHL", 2, 2)
-    assert c["skips_by_reason"] == {"not_listed_on_demo": 1} and c["control_arm_skips"] == 1
+    assert c["skips_by_reason"] == {"not_listed_on_demo": 1}
+    assert [x["control_arm_skips"] for x in rep["cells"] if x["arm"] == "control"] == [0 + 1]  # W81.1: the control skip is the control arm's row
     assert c["win_rate_on_fills"] == 0.5
     assert abs(c["settle_minus_price_on_fills"] - ((0.6) + (-0.5)) / 2) < 1e-9
     assert c["cancel_success_rate"] == 1.0 and c["cancels"]["no_outcome_over_15m"] == 1  # o2 never got one
@@ -247,3 +248,86 @@ def test_code_side_failures_still_trip_alongside_5xx(monkeypatch):
     monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(hours=1))
     evs = _503_events(8, 0, 100) + _cancel_events(3, 7, 10)
     assert [t["condition"] for t in rpt.build_report(evs, NOW, None)["tripped"]] == ["cancel_fail_rate_gt_10pct_in_a_day"]
+
+
+# --- W81.1: every row carries its recorded arm; nothing unknown folds into "treatment" ----------------------------
+START = NOW - timedelta(days=1)  # the test start for these cases
+
+
+def armed(m, oid, arm, tk="KXNHLGAME-26OCT12AAABBB-X"):
+    r = shadow_order(m, oid, tk)
+    if arm:
+        r["arm"] = arm
+    return r
+
+
+def _rows(rep):
+    return {(c["book"], c["sport"], c["arm"]): c for c in rep["cells"]}
+
+
+def test_arm_label_comes_from_the_record_and_unarmed_or_pre_start_is_unassigned(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", START)
+    events = [armed(60, "c1", "control"), armed(50, "t1", "treatment"), armed(40, "u1", None),
+              armed(60 * 30, "p1", "treatment")]  # p1: carries an arm but predates the test start
+    rep = rpt.build_report(events, NOW, None)
+    rows = _rows(rep)
+    assert rows[("shadow", "NHL", "control")]["orders"] == 1
+    assert rows[("shadow", "NHL", "treatment")]["orders"] == 1
+    assert rows[("shadow", "NHL", "unassigned_pre_test")]["orders"] == 2  # the no-arm order and the pre-start order
+    assert "treatment" not in {a for (_, _, a), c in rows.items() if c["orders"] and a == "unassigned_pre_test"}
+
+
+def test_paper_rows_have_no_recorded_arm_so_they_are_unassigned(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", START)
+    tk = "KXMLBHIT-26OCT12AAABBB-X"
+    events = [ev(30, event="cancel_scheduled", order_id="pp1", position_id="pos1", ticker=tk),
+              ev(29, event="cancel_ok", order_id="pp1", position_id="pos1", ticker=tk)]
+    rows = _rows(rpt.build_report(events, NOW, None))
+    assert set(rows) == {("paper", "MLB", "unassigned_pre_test")}
+    assert rows[("paper", "MLB", "unassigned_pre_test")]["orders"] == 1
+
+
+def test_cancel_events_inherit_the_arm_of_their_order(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", START)
+    events = [armed(60, "t1", "treatment"), armed(30, "u1", None),
+              ev(59, event="cancel_ok", order_id="t1", position_id="run|X", ticker="KXNHLGAME-26OCT12AAABBB-X"),
+              ev(29, event="cancel_ok", order_id="u1", position_id="run|X", ticker="KXNHLGAME-26OCT12AAABBB-X")]
+    rows = _rows(rpt.build_report(events, NOW, None))
+    assert rows[("shadow", "NHL", "treatment")]["cancels"]["ok"] == 1
+    assert rows[("shadow", "NHL", "unassigned_pre_test")]["cancels"]["ok"] == 1
+
+
+def test_distinct_games_and_fills_per_game_and_topup_split(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(days=10))
+    monkeypatch.setattr(rpt, "TOPUP_TS", NOW - timedelta(days=3))
+    g1, g2 = "KXNHLGAME-26OCT12AAABBB-X", "KXNHLGAME-26OCT09CCCDDD-Y"
+    events = [armed(60, "a", "treatment", g1), armed(50, "b", "treatment", g1), armed(40, "c", "treatment", g1),
+              armed(60 * 24 * 4, "d", "treatment", g2)]
+    fills = {k: {"fills": 1.0, "settled": True, "won": True, "price": 0.5} for k in "abcd"}
+    (c,) = rpt.build_report(events, NOW, lambda oid, tk: fills[oid])["cells"]
+    assert c["distinct_games"] == 2 and c["fills_per_game_max"] == 3 and c["fills_per_game_median"] == 2.0
+    assert (c["fills_pre_topup"], c["fills_post_topup"]) == (1, 3)
+    assert (c["orders_pre_topup"], c["orders_post_topup"]) == (1, 3)
+
+
+def test_assignment_check_recomputes_the_hash_and_reports_mismatches(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", START)
+    tk = "KXNHLGAME-26OCT12AAABBB-X"
+    ids = [f"run{i}|{tk}" for i in range(40)]
+    want = {i: ("treatment" if rpt.hash_assigned(i, "w64-2", 0.5) else "control") for i in ids}
+    events = [{**ev(60 - j, event="shadow_order", row_id=i, ok=True, order_id=f"o{j}", ticker=tk), "arm": want[i]}
+              for j, i in enumerate(ids)]
+    chk = rpt.assignment_check(events, "w64-2", 0.5)
+    assert chk["checked"] == 40 and chk["mismatches"] == 0
+    flip = [dict(e, arm="control" if e["arm"] == "treatment" else "treatment") if e["row_id"] == ids[0] else e for e in events]
+    bad = rpt.assignment_check(flip, "w64-2", 0.5)
+    assert bad["mismatches"] == 1 and bad["examples"][0]["row_id"] == ids[0]
+
+
+def test_summary_line_names_every_arm():
+    rep = {"generated_utc": "2026-10-12T12:00:00+00:00", "tripped": [],
+           "cells": [{"book": "shadow", "sport": "NHL", "arm": a, "orders": 3, "fills": 2, "distinct_games": 1,
+                      "settle_minus_price_on_fills": None} for a in ("control", "treatment", "unassigned_pre_test")]}
+    line = rpt.summary_line(rep)
+    assert "shadow/NHL/control" in line and "shadow/NHL/treatment" in line and "shadow/NHL/unassigned_pre_test" in line
+    assert "games=1" in line

@@ -101,6 +101,9 @@ def breadth(repo: Path, cells_fams: Optional[tuple] = None) -> list[dict]:
 
 # --------------------------------------------------------------------------- DEPTH
 def classify_feature(f: str, manifest: dict) -> Optional[str]:
+    for cls, names in manifest.get("exact_rules", {}).items():  # whole-name matches first (a bare "home" must not capture "home_*" team features)
+        if f in names:
+            return cls
     for cls in manifest["rule_order"]:
         if any(k in f for k in manifest["keyword_rules"][cls]):
             return cls
@@ -335,7 +338,7 @@ def execution(repo: Path) -> list[dict]:
 
 # --------------------------------------------------------------------------- PROOF
 EXPECT_REL = "12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md"
-MODAL_RE = re.compile(r"Vs market, every cell:\*\*\s*([A-Z][A-Z ]+?)\s*≈\s*(\d+)%")
+MODAL_RE = re.compile(r"Vs market, every cell:\**\s*([A-Z][A-Z ]+?)\s*≈\s*(\d+)%")
 
 
 def proof(repo: Path) -> list[dict]:

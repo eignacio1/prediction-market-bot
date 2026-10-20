@@ -223,3 +223,22 @@ def test_d4_d5_unavailable_not_guessed_when_components_missing(tmp_path):
 def test_compute_includes_d4_d5_on_this_repo():
     ids = {m["id"] for m in d.compute(d.REPO)["measures"]}
     assert {"D4", "D5a", "D5b"} <= ids
+
+
+# --- W81.1: the three inputs that read UNAVAILABLE/ERROR while the artifacts existed ------------------------------
+def test_d1_classifies_nba_player_points_features_by_exact_name():
+    ids = {r["id"]: r for r in d.depth_models(REPO) if r["id"].startswith("nba_player_points")}
+    assert ids and all(r["status"] == "OK" for r in ids.values()), ids
+    assert MANIFEST["models"]  # exact names must not capture prefixed team features
+    assert d.classify_feature("home", MANIFEST) == "venue" and d.classify_feature("home_rest", MANIFEST) == "team"
+
+
+def test_d4_reports_nba_data_layer_from_the_repo():
+    v = by_id(d.d4(REPO))["D4"]["value"]
+    assert "NBA: data layer" in v and "NBA: none" not in v
+
+
+def test_p3_modal_regex_parses_the_registered_expectations_file():
+    mm = d.MODAL_RE.search((REPO / d.EXPECT_REL).read_text())
+    assert mm and mm.group(1).strip() == "KEEP ACCRUING" and mm.group(2) == "91"
+    assert d.MODAL_RE.search("**Vs market, every cell:** RULED OUT ≈ 9%")  # the older bold-closing form still parses
