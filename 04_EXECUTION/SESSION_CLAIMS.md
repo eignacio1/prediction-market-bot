@@ -982,3 +982,4 @@
 | 2026-10-20T05:35:08Z | T-1033 | CLOSED — W81.1 PARTIAL: arms labelled + D1/D4/P3 fixed (#297); box table, Part B and Part C (green=WINS) pending. (commit `9d69a6b`) |
 | 2026-10-20T05:35:27Z | T-1033 | CLOSED — merge confirmed, HEAD (2bf5406) is ancestor of origin/main — W81.1 PARTIAL; Part C not started |
 | 2026-10-20T05:37:07Z | W81.3 | CLOSED — merge confirmed, HEAD (050da34) is ancestor of origin/main — PARTIAL: passyds snapshot job merged (#298/#300/#301); frozen strike model + NOT_IMPLEMENTED cell parked on branch session/20261020T045139Z-w81-3-partb, no PR |
+| 2026-10-20T05:41:11Z | T-1037 | CLOSED — merge confirmed, HEAD (f9da112) is ancestor of origin/main — W81.2 NBA lineup cross merged (PR #299, 0cec23a); docs/exploratory only, no src/deploy change so t4-mlb restart not needed; Deploy workflow did not run (tests only, green) |
