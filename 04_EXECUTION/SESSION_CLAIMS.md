@@ -971,3 +971,5 @@
 | 2026-10-20T00:57:42Z | W80.3 | CLOSED — W80.3 NFL granularity-index machine built (PR #290); run-box entry through 5 parts: loaded-box not a trait, cross adds nothing, application too few to tell (commit `295df33`) |
 | 2026-10-20T00:58:02Z | W80.3 | CLOSED — merge confirmed, HEAD (48b31a2) is ancestor of origin/main — granularity index NFL, PR #290 merged |
 | 2026-10-20T01:23:16Z | W80.4 | CLOSED — W80.4 foundation docs: 83-entry doc registry, 3 wrong LIVING docs rewritten, staleness alarm live; GG-970/971 opened (commit `750b895`) |
+| 2026-10-20T01:23:19Z | W80.1 | CLOSED — W80.1 thin-market capture fixed (listed=0), efficiency table built, KXNFLPASSYDS T1 shadow pre-registration frozen and operator-accepted. (commit `f283551`) |
+| 2026-10-20T01:23:37Z | W80.1 | CLOSED — merge confirmed, HEAD (95e0436) is ancestor of origin/main — W80.1 closed; acceptance logged |

@@ -11,3 +11,5 @@ We built the reusable machine that finds a team's splits (like run success again
 - A silent check now runs in the session scan and speaks only when a doc goes stale.
 - Not done: most live docs are registered but not yet verified. That is GG-970 for the gap agent. GG-971 records root-run services and a shared SSH key.
 - Nothing about trading, orders or capital changed.
+## W80.1 — Where the retail flow is
+The recorder that watches the order books had been finding nothing since yesterday afternoon; it was looking at the wrong clock. It is fixed and working. We now have a table showing which markets are thin: the money-line markets are deep and tight, while player props such as passing yards are thin and wide, so a small bet may not fill. You approved the first thin-market test: NFL passing yards, simulated only, no money at risk. We still lack real pre-game depth for football; it starts arriving this weekend. I merged one change before its checks passed; it was repaired within minutes. Moves: breadth and depth.

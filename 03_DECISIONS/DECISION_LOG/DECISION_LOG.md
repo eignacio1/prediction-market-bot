@@ -2566,3 +2566,5 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Ranking (2025 sample, PR #295): game ML spread 1¢/fillable 0.96; every thinner family spread ≥2¢, fillable 0.08–0.33; NFL yardage props thinnest with usable n. F8 share not computable (no inactives feed). Pre-kickoff depth: NFL n=0.
 - Frozen `12_EXPLORATORY/THIN_MARKET_PREREGISTRATION_2026-10-20.md` (KXNFLPASSYDS T1 shadow, thinner edge expected, judged n 400/60 games). Awaiting operator acceptance; nothing logs against it.
 - Process error: PR #291 was merged with CI red (chained watch&&merge); repaired by #292. Merges now gated on a read CI result.
+
+## 2026-10-20 — Operator accepted THIN_MARKET_PREREGISTRATION_2026-10-20 (KXNFLPASSYDS, T1, shadow); build the 30-minute pre-kickoff snapshot line. Logging against it may now begin (no orders, kelly 0).
