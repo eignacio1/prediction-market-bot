@@ -4,13 +4,14 @@ Usage: python3 12_EXPLORATORY/thin_markets/depth_stats.py [--store exp_output/KA
 Per series and time-to-kickoff bucket: spread (cents), contracts quoted within 1/2/5 cents of mid (both sides summed),
 share of snapshots where the cheapest side could fill 5/10/25 contracts within 2 cents, with n snapshots and n tickers.
 Rows that repeat a book (`unchanged_of`) carry the last seen book forward, so they count as observations.
+post-game = more than 3.5h after kickoff (book is of a finished/settling market).
 Rows written before W80.1 have no event_time: kickoff is estimated as close_time - 45h - 3h and flagged `est`.
 """
 import argparse, glob, json, os
 from collections import defaultdict
 from datetime import datetime, timezone
 
-BUCKETS = [("in-game", -10**9, 0), ("0-30m", 0, 1800), ("30m-2h", 1800, 7200), ("2-6h", 7200, 21600), (">6h", 21600, 10**9)]
+BUCKETS = [("post-game", -10**9, -12600), ("in-game", -12600, 0), ("0-30m", 0, 1800), ("30m-2h", 1800, 7200), ("2-6h", 7200, 21600), (">6h", 21600, 10**9)]
 LEAD_EST_S = (45 + 3) * 3600
 
 
