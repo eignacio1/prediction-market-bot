@@ -75,3 +75,23 @@ evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INTERFACE.md section 2 (v0 column:
 pillar = "DEPTH (D5b aggregated factors have nowhere to land)"
 relief = "Stage 2 fills the richer-source column; until then seat engine_slot values are targets, not wiring"
 
+
+[[tension]]
+id = "NFL-T9"
+title = "Where retail mispricing should live is where a stake fills least: the thinnest NFL props are the least fillable, and NFL prices show no lineup-window move"
+status = "OPEN"
+where = "thin-market cells (KXNFLRECYDS / PASSYDS / RSHYDS), execution"
+evidence = "12_EXPLORATORY/thin_markets/results.md (W80.1, 2025 sample): fillable-hour share RECYDS 0.11, PASSYDS 0.15, RSHYDS 0.19 vs NBA game ML 0.96; NFL late move vs placebo ~0 after the Friday report and inactives; pre-kickoff NFL depth n = 0 (capture recorded in-game books only until W80.1's fix)"
+pillar = "EXECUTION (E1) vs DEPTH; operator 10-16: 'beating buddy off his phone placing parlays, that's the first step'"
+relief = "pre-kickoff depth from the fixed capture (30-minute line for THIN_MARKET_PREREGISTRATION_2026-10-20) shows a fillable window, or the prereg's fillability floor rules the family out on evidence"
+added = "2026-10-20 (strategic window handoff sweep)"
+
+[[tension]]
+id = "NFL-T10"
+title = "First granularity-index cross adds nothing yet: loaded-box rush success is not a trait at in-season samples and the cross-to-price step is uncalibrated"
+status = "OPEN"
+where = "granularity-index machine (filtering mechanisms, cross-reference compatibility), entry N17 run-box"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md + 02_ARCHITECTURE_DESIGN/NFL_ENGINE/GRANULARITY_INDEX_MACHINE.md (W80.3, PR #290): loaded-box not a trait; cross adds nothing over the season rating; application 'too few to tell'; team rushing yards not tested"
+pillar = "DEPTH (D5b)"
+relief = "the light-box stuffed-rate trait tested on team rushing yards/attempts (W80.3 pending line); a calibrated cross-to-price step; more seasons of FTN box counts"
+added = "2026-10-20 (strategic window handoff sweep)"

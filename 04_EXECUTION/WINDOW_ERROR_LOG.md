@@ -48,12 +48,14 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | W20 | 2026-10-15 | 76 | Gave the operator `/loop /gap-agent` without checking how his terminals resolve commands: they start in his local project folder, which is not synced to main, so a command pushed to GitHub minutes earlier does not exist there. The terminal refused it. | One failed launch. | Operator (screenshot) | UNVERIFIED | Anything a terminal must run at launch is read from origin/main inside the prompt (`git show origin/main:<path>`), never assumed present in the local folder; same for /vision and any new command |
 | W21 | 2026-10-15 | 77→78 | Wrote Waves 78-80 block by block into the queue's arc (and the 78 Archive-adapter add-on) before 77's results existed. The operator: "don't pre-determine what the next waves are going to be - we are committed to sequential processing as necessary". | A preset plan in the queue that 77's results (thinner markets) already overtook. | Operator | PRESET | The arc holds only fixed dates and standing direction; each wave is written from the last wave's results when it closes |
 | W22 | 2026-10-16 | 79→80P | Kept restating in sitreps that the models do not beat the market (79 sitrep: "Execution is unchanged: our filled bets still lose"), against a standing operator preference (2026-10-12). The operator, 08:12 PT: "You keep beating over my head - yeah I fucking get it our models aren't beating shit. Well no fucking shit we don't have a single substantive band built out yet". | Noise in every sitrep; the headline he already knows crowds out what changed. | Operator | REPEAT | Sitreps report what moved and what is next; the standing "not beating the market" headline is not restated |
+| W23 | 2026-10-19 | 67→80 | Did not recompute the sitrep's DISTANCE TO OPTIMUM table at wave close for ~13 waves: at handoff it still showed Wave 67 values (E1 3.9%, D4 "NBA none", P1 0/45), the sitrep header still read "last window: Waves 52-60", and the standing gap agent had not ticked since 10-16 02:00Z without the window flagging it. Found in the handoff sweep. | The forest view the operator asked for (10-09) was stale while the queue looked current; a reader would have trusted wave-67 numbers. | Window (handoff sweep) | FOREST | Every wave close: run distance_to_optimum.py (box values via the bridge's `distance_read`), rewrite the table's Now/Moved columns, read GG_AGENT_STATE.md's last tick |
+| W24 | 2026-10-19 | 80R→80 | Told the operator "Sunday's NFL order books should be recorded" / "Sunday's NFL slate is in" after installing the capture. The capture windowed on close_time (~45 h after the game), so it recorded IN-GAME books only; pre-kickoff NFL depth n = 0 (W80.1). | The operator heard the pre-game fillability question was being answered; it was not. | W80.1 handoff | UNVERIFIED | Say what a capture records only after reading a row of it (time vs kickoff), not from the install log |
 
 ## Pattern tally (update at every handoff)
 
 | Pattern | Count | Last |
 |---|---|---|
-| UNVERIFIED | 7 | W20 (10-15) |
+| UNVERIFIED | 8 | W24 (10-19) |
 | NOTES | 3 | W15 (10-14) |
 | NO-PUSHBACK | 2 | W12 (10-13) |
 | SLICE | 2 | H2 (history) |
@@ -65,3 +67,4 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | LITERAL | 1 | W17 (10-14) |
 | PRESET | 1 | W21 (10-15) |
 | REPEAT | 1 | W22 (10-16) |
+| FOREST | 1 | W23 (10-19) |
