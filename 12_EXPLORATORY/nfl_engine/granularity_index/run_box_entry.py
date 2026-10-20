@@ -5,12 +5,13 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nfl_engine import granularity_index as gi
 
 ROOT = Path(__file__).resolve().parents[3]
 RAW = ROOT / "exp_output" / "NFL_EVENTS" / "raw"
 OUT = Path(__file__).parent / "results"
-OUT.mkdir(exist_ok=True)
 
 cols = ["game_id", "play_id", "season", "week", "season_type", "posteam", "defteam", "play_type", "qb_kneel",
         "qb_scramble", "two_point_attempt", "yards_gained", "success", "epa", "tackled_for_loss", "rush_attempt"]
@@ -35,10 +36,10 @@ specs = {
 }
 tabs = {k: gi.game_table(d, s) for k, s in specs.items()}
 # how often each defense shows a light box
-share = d.groupby(["season", "defteam"]).box.apply(lambda s: (s == "light").mean()).rename("light_share").reset_index()
-share_n = d.groupby(["season", "defteam"]).size().rename("n").reset_index()
+share = d.groupby(["season", "defteam"]).box.apply(lambda s: (s == "light").mean()).reset_index(name="light_share")
+share_n = d.groupby(["season", "defteam"]).size().reset_index(name="n")
 share = share.merge(share_n)
-share.to_csv(OUT / "defense_light_box_share.csv", index=False)
+share.to_csv(safe_out(OUT / "defense_light_box_share.csv"), index=False)
 
 res = {"coverage": {"rushes": n_all, "with_box": n_box}, "stability": {}, "ranks_2026": [], "league": {}}
 for k, s in specs.items():
@@ -67,7 +68,7 @@ for k, s in specs.items():
                 r["stability"] = res["stability"].get(f"{k}|{b}|g{min((4, 6, 8, 12), key=lambda x: abs(x-gms))}")
                 rows.append(r)
 res["ranks_2026"] = rows
-pd.DataFrame([{k: v for k, v in r.items() if k != "stability"} for r in rows]).to_csv(OUT / "ranks_2026.csv", index=False)
+pd.DataFrame([{k: v for k, v in r.items() if k != "stability"} for r in rows]).to_csv(safe_out(OUT / "ranks_2026.csv"), index=False)
 
 # 2026 matchup crosses: week 7 hypothetical = every ordered (off, def) pair is too many; use the actual 2026 games played
 sched = pd.concat([pd.read_parquet(p) for p in (RAW / "schedules").glob("schedules_*.parquet")])
@@ -92,8 +93,8 @@ for _, g in sched.iterrows():
         out = {}
         for tag, (osp, dsp) in {"success": (off_sp, dfn_sp), "stuffed": (off_st, dfn_st)}.items():
             ok, dk = ("off_" + tag, "def_" + tag)
-            off = {b: ns(osp.rename(columns={specs[ok].by: "box"}), o, b, "posteam") for b in ("loaded", "light")}
-            dfn = {b: ns(dsp.rename(columns={specs[dk].by: "box"}), df, b, "defteam") for b in ("loaded", "light")}
+            off = {b: ns(osp, o, b, "posteam") for b in ("loaded", "light")}
+            dfn = {b: ns(dsp, df, b, "defteam") for b in ("loaded", "light")}
             lgm = {b: league[(ok, b)] for b in ("loaded", "light")}
             kk = {b: K[(ok, b)] for b in ("loaded", "light")}
             ov = {"off": (sum(v[0] for v in off.values()), sum(v[1] for v in off.values())),
@@ -105,13 +106,13 @@ for _, g in sched.iterrows():
                            "succ_expected": out["success"].expected, "succ_delta": out["success"].delta,
                            "stuff_expected": out["stuffed"].expected, "stuff_delta": out["stuffed"].delta})
 cx = pd.DataFrame(cross_rows)
-cx.to_csv(OUT / "matchup_crosses_2026.csv", index=False)
+cx.to_csv(safe_out(OUT / "matchup_crosses_2026.csv"), index=False)
 res["extreme_crosses"] = {
     "success_delta_top": cx.nlargest(5, "succ_delta").to_dict("records"),
     "success_delta_bottom": cx.nsmallest(5, "succ_delta").to_dict("records"),
     "stuff_delta_top": cx.nlargest(5, "stuff_delta").to_dict("records"),
 }
-(OUT / "part_a_results.json").write_text(json.dumps(res, indent=1, default=str))
+safe_out(OUT / "part_a_results.json").write_text(json.dumps(res, indent=1, default=str))
 print("stability (trait? by bucket, g=8):")
 for key, v in res["stability"].items():
     if key.endswith("g8") or key.endswith("g12"):
