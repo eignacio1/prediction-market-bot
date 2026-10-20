@@ -1,4 +1,6 @@
 """W81.3: KXNFLPASSYDS pre-kickoff snapshot job (depth math, slots, caps, idempotence) + its silent-arm rule."""
+from pathlib import Path as _P
+ROOT_FOR_INSTALL = _P(__file__).resolve().parents[1]
 import importlib.util
 import json
 import sys
@@ -139,3 +141,29 @@ def test_silent_arm_ok_with_snapshot_in_window_and_silent_with_only_early_row():
 
 def test_silent_arm_idle_when_no_game_started():
     assert evaluate_arm(_arm([NOW + timedelta(hours=5)], []), NOW)["status"] == "idle"
+
+
+def test_install_merges_block_once_and_preserves_lines():
+    import sys
+    sys.path.insert(0, str(ROOT_FOR_INSTALL / "scripts"))
+    import passyds_install as pi
+    frag = (ROOT_FOR_INSTALL / "deploy" / "cron.passyds_prekickoff").read_text()
+    cur = "MAILTO=x\n51 * * * * foo\n"
+    store = {"t": cur}
+    live = lambda: {"budget": "GREEN", "head": "h", "as_of": "now"}  # noqa: E731
+    rd, wr = (lambda: store["t"]), (lambda t: store.__setitem__("t", t))
+    assert pi.install(live, rd, wr) == 0
+    assert pi.BEGIN in store["t"] and "51 * * * * foo" in store["t"]
+    once = store["t"]
+    assert pi.install(live, rd, wr) == 0 and store["t"] == once
+    assert frag.count("passyds_prekickoff_snapshot.py") >= 1
+
+
+def test_install_refused_when_red():
+    import sys
+    sys.path.insert(0, str(ROOT_FOR_INSTALL / "scripts"))
+    import passyds_install as pi
+    store = {"t": "x\n"}
+    live = lambda: {"budget": "RED", "reasons": ["r"]}  # noqa: E731
+    pi.install(live, lambda: store["t"], lambda t: store.__setitem__("t", t))
+    assert store["t"] == "x\n"
