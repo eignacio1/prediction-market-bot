@@ -748,7 +748,7 @@ bridge workflow; the capture, only if the budget reads GREEN). **Dependencies:**
 | Task | What | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | W80R.1 | The box bridge (allowlisted jobs via Actions) + budget read + capture install + NBA pre-flight | PLUMBING: box readable from cloud no → yes; budget read; capture no → yes (if GREEN) | 🟡 | Bridge live (#283/#284/#285). Box readable: yes. Budget read: **RED (real)**, t4-mlb 11.2h behind on 2 imported files; the earlier GREEN was false (GG-920, fixed). Capture installed on the false GREEN, then uninstalled. NBA pre-flight clean. Handoff W80R_1 |
-| W80R.2 | Thin-market ranking + first thin-market prereg (80P.2) | BREADTH/DEPTH: gradient 0 → 1; prereg 0 → 1 | 🟡 | W80.1 Part A DONE 2026-10-20 ~01:10Z: capture listed=0 root-caused (close_time lags the game ~45h) and fixed (#288), box read-back listed=743 books=500; registry live, max_age_h=2; depth tooling merged (#291-293). Weekend books are in/post-game, not pre-kickoff. Part B (ranking table, F8, prereg) next. |
+| W80R.2 | Thin-market ranking + first thin-market prereg (80P.2) | BREADTH/DEPTH: gradient 0 → 1; prereg 0 → 1 | 🟡 | W80.1 Part A DONE 2026-10-20 ~01:10Z: capture listed=0 root-caused (close_time lags the game ~45h) and fixed (#288), box read-back listed=743 books=500; registry live, max_age_h=2; depth tooling merged (#291-293). Weekend books are in/post-game, not pre-kickoff. Part B (ranking table, F8, prereg) next. W80.1 Part B DONE 2026-10-20: efficiency table (#295, 12_EXPLORATORY/thin_markets/results.md) + frozen THIN_MARKET_PREREGISTRATION_2026-10-20 (KXNFLPASSYDS, awaiting operator). Status PARTIAL: pre-kickoff depth is forward-capture only. |
 | W80R.3 | NBA pace/efficiency vs Kalshi NBA totals (80P.3) | DEPTH D5(b) NBA applied 0 → 1 (or a verdict) | ⬜ | |
 
 ```
@@ -1393,7 +1393,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Task | Status | Outcome |
 |---|---|---|---|
 | W80R.1 | The box bridge + budget read + capture install + NBA pre-flight | ⬜ | |
-| W80R.2 | Thin-market ranking + first thin-market prereg | 🟡 | W80.1 Part A DONE 2026-10-20 ~01:10Z: capture listed=0 root-caused (close_time lags the game ~45h) and fixed (#288), box read-back listed=743 books=500; registry live, max_age_h=2; depth tooling merged (#291-293). Weekend books are in/post-game, not pre-kickoff. Part B (ranking table, F8, prereg) next. |
+| W80R.2 | Thin-market ranking + first thin-market prereg | 🟡 | W80.1 Part A DONE 2026-10-20 ~01:10Z: capture listed=0 root-caused (close_time lags the game ~45h) and fixed (#288), box read-back listed=743 books=500; registry live, max_age_h=2; depth tooling merged (#291-293). Weekend books are in/post-game, not pre-kickoff. Part B (ranking table, F8, prereg) next. W80.1 Part B DONE 2026-10-20: efficiency table (#295, 12_EXPLORATORY/thin_markets/results.md) + frozen THIN_MARKET_PREREGISTRATION_2026-10-20 (KXNFLPASSYDS, awaiting operator). Status PARTIAL: pre-kickoff depth is forward-capture only. |
 | W80R.3 | NBA pace/efficiency vs Kalshi NBA totals | ⬜ | |
 
 ### ✅ PSEUDO-WAVE 80P — ISSUED 2026-10-16 ~14:50 UTC · CLOSED ~15:25 UTC · one Claude Code cloud session · verified on GitHub
