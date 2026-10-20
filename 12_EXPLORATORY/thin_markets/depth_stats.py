@@ -15,7 +15,7 @@ LEAD_EST_S = (45 + 3) * 3600
 
 
 def _ts(s):
-    return datetime.fromisoformat(s.replace("Z", "+00:00")).timestamp()
+    return datetime.fromisoformat(s[:-1] + "+00:00" if s.endswith("Z") else s).timestamp()
 
 
 def levels(side):
