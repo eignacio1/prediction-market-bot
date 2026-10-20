@@ -3,6 +3,7 @@
 <!-- session-meta
 task_id: W80.2
 tier: STANDARD
+timestamp: 2026-10-20T00:37Z
 commit: 17d4f14
 one_line_summary: W80.2 Part B done (nba_totals_applied REAL-AND-PRICED; first NBA index entry; seat B9 applied); Part A (opening-night readback) not run because the 10-20 games were unplayed at 2026-10-20T00:36Z
 gg_touched: GG-891 (stale premise annotated); GG-940..945 claimed, none registered
