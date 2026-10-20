@@ -26,8 +26,9 @@ def _iso(ts):
 class FakeKalshi:
     """Opener for bs.Client: serves /markets listings, order books and candles from dicts; counts calls per path."""
 
-    def __init__(self, markets, books=None, fail=()):
+    def __init__(self, markets, books=None, fail=(), broken_filter=False):
         self.markets, self.books, self.fail, self.calls = markets, books or {}, set(fail), []
+        self.broken_filter = broken_filter      # a server that returns nothing whenever a close-time bound is sent
 
     def __call__(self, url):
         u = urllib.parse.urlparse(url)
@@ -38,6 +39,9 @@ class FakeKalshi:
             raise urllib.error.HTTPError(url, 404, "nf", {}, None)
         if path == "/markets":
             ms = [m for m in self.markets if m["series"] == q["series_ticker"]]
+            if "max_close_ts" in q:             # Kalshi filters on close_time, like the real server
+                ms = [] if self.broken_filter else [
+                    m for m in ms if int(q["min_close_ts"]) <= bs.iso_ts(m["close_time"]) <= int(q["max_close_ts"])]
             return 200, json.dumps({"markets": ms, "cursor": ""}).encode()
         if path.endswith("/orderbook"):
             t = path.split("/")[2]
@@ -47,9 +51,11 @@ class FakeKalshi:
         raise urllib.error.HTTPError(url, 404, "nf", {}, None)
 
 
-def _m(ticker, series, close_in_h, open_ago_h=72):
+def _m(ticker, series, event_in_h, open_ago_h=72, close_lag_h=45):
+    """Event in `event_in_h` hours; close_time trails the event by close_lag_h, as Kalshi sets it (NFL: ~45 h)."""
     return {"ticker": ticker, "series": series, "event_ticker": ticker.rsplit("-", 1)[0],
-            "close_time": _iso(NOW + close_in_h * 3600), "open_time": _iso(NOW - open_ago_h * 3600),
+            "occurrence_datetime": _iso(NOW + event_in_h * 3600),
+            "close_time": _iso(NOW + (event_in_h + close_lag_h) * 3600), "open_time": _iso(NOW - open_ago_h * 3600),
             "yes_bid": 40, "yes_ask": 45, "volume": 100, "open_interest": 50}
 
 
@@ -74,7 +80,39 @@ def test_only_markets_within_48h_are_snapshotted_closest_first(tmp_path):
     r = rows[0]
     assert r["book"]["orderbook"]["yes"] == [[40, 10]] and r["runtime_commit_sha"] == "abc"
     assert r["source_url"].endswith("/markets/KXNFLTOTAL-B-1/orderbook") and r["content_sha256"]
-    assert r["listing_top"]["yes_bid"] == 40 and 0 < r["secs_to_close"] <= 2 * 3600
+    assert r["listing_top"]["yes_bid"] == 40 and 0 < r["secs_to_event"] <= 2 * 3600
+    assert r["secs_to_close"] == r["secs_to_event"] + 45 * 3600 and r["secs_to_kickoff_est"] == r["secs_to_event"] - 3 * 3600
+
+
+def test_markets_whose_close_time_trails_the_event_by_45h_are_listed(tmp_path):
+    # the 2026-10-19 defect: close_time = event + 45 h put every game inside 48 h outside a close_time window
+    fake = FakeKalshi([_m("KXNFLGAME-G-1", "KXNFLGAME", 20)])
+    res = tc.run(_client(fake), tmp_path, now=NOW, sha="s", series_list=("KXNFLGAME",))
+    assert res["listed"] == 1 and res["books"] == 1 and res["fallback"] == 0
+
+
+def test_filtered_listing_empty_falls_back_to_unfiltered_and_alarms(tmp_path, capsys):
+    fake = FakeKalshi([_m("KXNFLGAME-G-1", "KXNFLGAME", 20), _m("KXNFLGAME-G-2", "KXNFLGAME", 90)], broken_filter=True)
+    res = tc.run(_client(fake), tmp_path, now=NOW, sha="s", series_list=("KXNFLGAME",))
+    assert res["listed"] == 1 and res["books"] == 1 and res["fallback"] == 1
+    assert "THIN_CAPTURE ALARM" in capsys.readouterr().out
+
+
+def test_genuinely_empty_board_is_quiet_not_an_alarm(tmp_path, capsys):
+    fake = FakeKalshi([_m("KXNFLGAME-G-2", "KXNFLGAME", 90)])
+    res = tc.run(_client(fake), tmp_path, now=NOW, sha="s", series_list=("KXNFLGAME",))
+    assert res["listed"] == 0 and res["fallback"] == 0 and "ALARM" not in capsys.readouterr().out
+
+
+def test_candle_daily_cap_leaves_the_books_their_budget(tmp_path, monkeypatch):
+    monkeypatch.setattr(tc, "MAX_CANDLE_DAILY_BYTES", 600)
+    fake = FakeKalshi([_m(f"KXNBAPTS-P-{i}", "KXNBAPTS", 1) for i in range(6)])
+    tc.run(_client(fake), tmp_path, now=NOW, sha="s", series_list=("KXNBAPTS",))
+    fake.markets = []
+    res = tc.run(_client(fake), tmp_path, now=NOW + 3600 + tc.SETTLE_GRACE_S + 60, sha="s", series_list=("KXNBAPTS",))
+    assert res["candle_capped"] == 1 and res["candle_markets"] < 6
+    assert sum(f.stat().st_size for f in tmp_path.glob("candles_*.jsonl")) <= 600
+    assert res["cap"] == "none"                                # the book cap is untouched
 
 
 def test_near_markets_every_run_far_markets_every_3h_and_unchanged_rows_are_small(tmp_path):
