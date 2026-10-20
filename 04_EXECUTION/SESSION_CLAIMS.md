@@ -970,3 +970,4 @@
 | 2026-10-20T00:51:15Z | GG-970..GG-974 | W80.4 STANDARD foundation docs (06/07/09/10): classify+rewrite kill-switch runbook/ACCESS_CONTROL/VENDOR_RISK + DOC_REGISTRY + staleness alarm. PURPOSE: PLUMBING - foundation docs classified 0->all, LIVING docs contradicting system ->0, doc-registry alarm none->live |
 | 2026-10-20T00:57:42Z | W80.3 | CLOSED — W80.3 NFL granularity-index machine built (PR #290); run-box entry through 5 parts: loaded-box not a trait, cross adds nothing, application too few to tell (commit `295df33`) |
 | 2026-10-20T00:58:02Z | W80.3 | CLOSED — merge confirmed, HEAD (48b31a2) is ancestor of origin/main — granularity index NFL, PR #290 merged |
+| 2026-10-20T01:23:16Z | W80.4 | CLOSED — W80.4 foundation docs: 83-entry doc registry, 3 wrong LIVING docs rewritten, staleness alarm live; GG-970/971 opened (commit `750b895`) |

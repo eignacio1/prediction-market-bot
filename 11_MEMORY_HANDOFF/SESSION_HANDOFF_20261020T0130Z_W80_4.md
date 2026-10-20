@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W80.4
+tier: STANDARD
+timestamp: 2026-10-20T01:30:00Z
+commit: 750b895
+one_line_summary: W80.4 foundation docs: 83-entry doc registry, 3 wrong LIVING docs rewritten, staleness alarm live; GG-970/971 opened
+gg_touched: GG-970, GG-971
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING (foundation docs classified; known-wrong LIVING docs; staleness alarm)
+gap_delta: classified 0 -> 83 registry entries; known-wrong LIVING docs 3 -> 0; alarm none -> live (00_ADMIN/DOC_REGISTRY.toml @ 750b895)
+pattern_sweep: old kill-switch text (bot.kill_switch) searched in folders in scope; see body
+surface_delta: 0
+-->
+
 # Session handoff - W80.4 foundation docs
 
 **Status:** DONE (remainder named in GG-970) | **Branch @ SHA:** session/20261020T005049Z-w80-4-foundation-docs, squash-merged to main `750b895` + Part B | **PR + CI:** #294, `test` pass (5m36s)

@@ -3,3 +3,11 @@
 
 ## W80.3 — NFL granularity index (DEPTH)
 We built the reusable machine that finds a team's splits (like run success against loaded vs light boxes), ranks them against history, and crosses them with the opponent. Your example was the test. Honest result: the "loaded box" rank is mostly noise at today's sample sizes, the "stuffed on runs against light boxes" trait is real and stable, and the cross does not yet beat plain season-long ratings. Too few Kalshi markets exist to say whether prices miss it. Still zero money at risk; nothing placed, nothing running changed.
+
+## W80.4 — Foundation docs (PLUMBING)
+- Your point was right: several core docs in the infra, security and code-reproducibility folders were stale or wrong for months.
+- Every foundation doc is now listed in one registry (83 entries) and marked live, a record, or superseded.
+- Three live docs that contradicted the system were rewritten: kill-switch runbook, access matrix, vendor risk. Two obsolete ones were archived.
+- A silent check now runs in the session scan and speaks only when a doc goes stale.
+- Not done: most live docs are registered but not yet verified. That is GG-970 for the gap agent. GG-971 records root-run services and a shared SSH key.
+- Nothing about trading, orders or capital changed.

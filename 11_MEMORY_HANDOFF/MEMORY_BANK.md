@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-20T00:53Z (W80.3 — W80.3 NFL granularity-index machine built (PR #290); run-box entry through 5 parts: loaded-box not a trait, cross adds nothing, application too few to tell) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261020T0053Z_W80_3.md` for full session detail.
+**Last reviewed:** 2026-10-20T01:30:00Z (W80.4 — W80.4 foundation docs: 83-entry doc registry, 3 wrong LIVING docs rewritten, staleness alarm live; GG-970/971 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261020T0130Z_W80_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
