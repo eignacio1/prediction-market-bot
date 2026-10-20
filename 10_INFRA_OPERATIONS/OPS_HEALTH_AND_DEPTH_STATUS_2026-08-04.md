@@ -1,5 +1,8 @@
 # Ops Health + Depth Time-Series Status — 2026-08-04
 
+> **Record as of 2026-08-03** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Session:** T-414 (GG-154 remediation — this wave's only SSH-capable window)
 **Scope:** Read-only against VPS except crontab confirmation. No `src/` changes, no new cron.
 **Author window:** `session/20260804T045839Z-step4-depth-status`

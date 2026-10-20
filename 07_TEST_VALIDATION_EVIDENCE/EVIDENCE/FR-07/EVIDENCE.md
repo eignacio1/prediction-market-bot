@@ -1,5 +1,8 @@
 # FR-07 Evidence — Simulated Order Placement (Paper Trading)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Paper trading mode records hypothetical orders with all fields; (b) No real orders submitted (API call log shows zero submissions); (c) Simulated PnL calculated correctly on resolution.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

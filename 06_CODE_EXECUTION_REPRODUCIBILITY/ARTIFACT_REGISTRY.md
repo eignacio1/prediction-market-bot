@@ -1,5 +1,7 @@
 # Artifact Registry — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; registry not maintained since May 2026; see `RUNTIME_REGISTRY.toml` and `04_EXECUTION/` results. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Track all versioned model artifacts, feature set definitions, and configuration files that are promoted to paper or live environments. Every artifact used in production must be registered here.  
 **Owner (role):** Architecture Owner (AO)  
 **Last reviewed:** 2026-05-22  

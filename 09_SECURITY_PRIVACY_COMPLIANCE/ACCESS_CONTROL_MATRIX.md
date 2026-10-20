@@ -1,121 +1,65 @@
 # Access Control Matrix — Prediction Market Trading Bot
 
-**Purpose:** Define who has access to what resources, under what conditions, and with what permissions. Single source of truth for access rights across all environments.  
-**Owner (role):** Risk and Compliance Owner (RCO) + Director/Sponsor (DS)  
-**Last reviewed:** 2026-05-22  
-**Next review:** G5 (pre-live audit); update when new role, resource, or environment added  
-**Staleness triggers:** New environment activated; new API credential provisioned; role change; live capital deployment  
-**Upstream links:** ENVIRONMENTS.md, SECRETS_HANDLING.md, STAKEHOLDERS_RACI.md  
-**Downstream links:** CONTROL_MAPPING.md (C-001, C-005), AUDIT_EVIDENCE/  
-**Decision references:** ADR-0001  
-**Confidence:** 7/10 — Matrix is complete for current roles; environment-specific access governed at G5
+**Class:** LIVING (registered in `00_ADMIN/DOC_REGISTRY.toml`)
+**Last verified:** 2026-10-20 against `.github/workflows/*.yml`, `deploy/*.service`, `deploy/env.template`, `scripts/pmbot-web-dashboard.service`, `scripts/box_tasks.py`, `src/` (credential reads), `06_CODE_EXECUTION_REPRODUCIBILITY/SECRETS_HANDLING.md`, and DECISION_LOG 2026-10-11 / 2026-10-15.
+**Owner (role):** Risk and Compliance Owner (RCO) + Director/Sponsor (DS)
+**Must match:** the credential list the code and workflows actually read. A new secret name in `src/`, `deploy/`, or `.github/workflows/` makes this file stale.
+**Rule for this file:** names, scopes and holders only. **No secret value, key material, or token ever goes in this repo or this file.**
+**Replaces:** the 2026-05-22 version (roles R-01..R-06, "vault TBD at G5"). No vault exists; the real store is described below. Superseded text is in git history.
 
 ---
 
 ## Roles
 
-This is a single-operator system. All roles are held by the same individual (Earl Ignacio). The role separation is conceptual — it ensures accountability and prevents the "operator=owner=no-check" failure mode common in solo projects.
+Single-operator system. Every role is held by Earl Ignacio; the separation is conceptual accountability. Abbreviations: DS (Director/Sponsor), RL (Research Lead), MO (Model Owner), RCO (Risk and Compliance Owner), MV (Model Validator), IO (Infrastructure Operator). Full table: `00_ADMIN/STAKEHOLDERS_RACI.md`.
 
-| Role ID | Role Name | Abbreviation | Responsibilities |
-|---------|-----------|-------------|-----------------|
-| R-01 | Director/Sponsor | DS | Final authority on strategy, capital allocation, gate approvals |
-| R-02 | Research Lead | RL | Experiment design, feature engineering, model development |
-| R-03 | Model Owner | MO | Model promotion, monitoring, drift response |
-| R-04 | Risk and Compliance Owner | RCO | Risk limit enforcement, control audit, gate sign-off |
-| R-05 | Methodology Validator | MV | Structured methodology self-review: calibration check, test design challenge, documented self-challenge log (solo build — operator performs this role with explicit written justification per CHANGE_CONTROL.md Class A) |
-| R-06 | Infrastructure Operator | IO | Environment provisioning, secrets management, deployment |
+Non-human actors that now act on the system, and are the real access question:
 
-**Note:** In a solo project, wearing multiple hats is unavoidable. The governance mitigation is: for any Class A change (CHANGE_CONTROL.md), the operator must explicitly document the decision in the role of each relevant owner — not just act as "the operator."
+| Actor | What it can do |
+|---|---|
+| Claude Code sessions (local worktrees) | Read/write the repo. `ssh` to the box as root when the operator's ssh config is present. No venue key. |
+| Claude cloud sessions | Read/write the repo. **No ssh client**; reach the box only through the box bridge. Outbound network is restricted; Kalshi returned `CONNECT 403` from the cloud container. |
+| Box bridge (`box_tasks.yml`) | Runs only allowlisted tasks from `scripts/box_tasks.py` on the box, from a request file in `04_EXECUTION/BOX_TASKS/requests/`. Allowlist: `budget_read`, `silent_arms_read`, `deploy_truth_read`, `capture_install`, `capture_readback`, `capture_uninstall`, `thin_depth_stats`, `nba_opening_preflight`. **No kill-switch task, no order task.** |
+| GitHub Actions | Eight workflows (below). One secret. |
+| Muse (sports-intel archive writer) | Pushes to a separate private repo. The bot reads that archive only. |
 
----
+## Credential inventory (names only)
 
-## Resource Inventory
+| Credential | What it unlocks | Where it lives | Who / what can use it |
+|---|---|---|---|
+| `VPS_SSH_KEY` (GitHub Actions secret) | root ssh to the box (157.230.91.33) | GitHub repo secret | Workflows: `deploy`, `box_tasks`, `mlb_features_sync`, `mlb_games_cache_sync`, `post_game_resolve`. Anyone who can edit a workflow on a branch the secret reaches can run commands as root on the box. Public repo: PRs from forks do not receive secrets; own-branch pushes do. |
+| `VENUE_API_KEY` + `VENUE_PRIVATE_KEY_PATH` | Kalshi API (demo host `external-api.demo.kalshi.co`; production hosts exist in code, gated off) | Box `.env` (untracked) loaded by systemd `EnvironmentFile=`; key file on the box | The `t4-mlb` service, cron pipelines, and Kalshi client on the box (all run as root). `deploy/demo_fill.env` selects the demo-fill mode. Not present in GitHub or cloud sessions. |
+| `POLYMARKET_API_KEY`, `VENUE_ID` | Polymarket US (inactive; gated on operator KYC) | Box `.env` if ever set | Nothing active. |
+| `KALSHI_LIVE_CAPITAL_ADR` | A guard value, not a credential: live orders refuse unless it names an accepted ADR | Box environment | C5. No ADR accepts live capital (G6 not cleared). |
+| `BOT_ENV`, `BOT_AUDIT_LOG_PATH`, `LOG_DIR` | Configuration, not secrets | `.env` / unit files | The bot processes. |
+| Muse archive deploy key (id 166624777, "Muse archive push (write, this repo only)") | Write to `eignacio1/sports-intel-archive` only | Private half in the operator's `~/.config/sports-intel-archive/`; public half on that repo | The operator's machine / Muse. The bot has no write path to the archive. |
+| Operator ssh key for `prediction-market-vps` | Interactive root on the box | Operator's machine ssh config | Operator and Claude Code sessions on that machine. |
 
-| Resource ID | Resource | Classification | Phase Active |
-|-------------|----------|---------------|-------------|
-| RES-01 | DS-01 Player_Attribute_Matrix file | RESEARCH | Phase 3+ |
-| RES-02 | DS-02 Market Data Feed (read-only) | SENSITIVE | Phase 5+ |
-| RES-03 | DS-03 Outcome / Resolution Data | SENSITIVE | Phase 5+ |
-| RES-04 | Venue API (read-only market data) | SENSITIVE | Phase 5+ |
-| RES-05 | Venue API (order submission) | CRITICAL | Phase 8+ |
-| RES-06 | Model artifacts (ARTIFACT_REGISTRY.md) | INTERNAL | Phase 3+ |
-| RES-07 | Audit logs (C6 output) | SENSITIVE | Phase 3+ |
-| RES-08 | Live capital funds | CRITICAL | Phase 8+ |
-| RES-09 | Git repository / VCS | INTERNAL | All phases |
-| RES-10 | Secrets vault / env variables | CRITICAL | All phases |
-| RES-11 | Kill switch interface | CRITICAL | Phase 5+ |
-| RES-12 | Paper trading position state | INTERNAL | Phase 6+ |
+Templates: `deploy/env.template`, `deploy/demo_fill.env`. Storage policy: `06_CODE_EXECUTION_REPRODUCIBILITY/SECRETS_HANDLING.md` (ADR-0008). No formal vault (OQ-009 open).
 
----
+## Resources
 
-## Access Matrix
+| ID | Resource | Read | Write | Notes |
+|---|---|---|---|---|
+| RES-01 | Source repo `eignacio1/prediction-market-bot` | **Public since 2026-10-11** (to make Actions free). Anyone on the internet. | Operator, Claude sessions, CI (`contents: write` on `box_tasks`) | Stays public for now (DECISION_LOG 2026-10-15 22:28 PT). Returning to private moves every workflow to a self-hosted runner. Never commit a secret, an `.env`, or account-identifying data. |
+| RES-02 | Box `/opt/prediction-market-bot` | Operator, `VPS_SSH_KEY` workflows | same, as root | Single host, services run as root. |
+| RES-03 | Ledgers and audit logs (`logs/`) | Box; copies synced to the repo by workflows | Bot processes append | Append-only by convention (C6). |
+| RES-04 | Venue order API | Bot on the box | Bot on the box (demo only) | Orders pass C4 risk gate and the kill switch first. |
+| RES-05 | Kill switch flags (`logs/*kill_switch*.flag`) | Any order path | Operator by ssh; C7 | `RUNBOOKS/RUNBOOK_kill-switch.md`. Not reachable via the bridge. |
+| RES-06 | Web dashboard `pmbot-web-dashboard.service` | Binds `127.0.0.1:8050` only; reached over an ssh tunnel | read-only view | No public listener. |
+| RES-07 | Muse archive repo (private) | Bot (read-only), operator | Operator's deploy key | Intake contract: DECISION_LOG 2026-10-15 22:09 PT. |
+| RES-08 | Public data hosts (ESPN, MLB StatsAPI, NHL web API, NBA CDN, nflverse releases, Kalshi public market data) | Bot, workflows | none | No credential; outbound HTTPS only. |
 
-Permission codes: R = Read, W = Write, E = Execute, A = Admin, — = No access
+## Environments
 
-| Resource | R-01 DS | R-02 RL | R-03 MO | R-04 RCO | R-05 MV | R-06 IO |
-|----------|---------|---------|---------|---------|---------|---------|
-| RES-01 DS-01 file | R | R/W | R | R | R | — |
-| RES-02 Market Data Feed | R | R | R | R | R | R |
-| RES-03 Outcome Data | R | R | R | R | R | — |
-| RES-04 Venue API (read) | R | — | R | R | — | R |
-| RES-05 Venue API (orders) | **A** | — | E¹ | R (audit) | — | — |
-| RES-06 Model artifacts | R | R/W | R/W | R | R | — |
-| RES-07 Audit logs | R | — | R | R/W | R | — |
-| RES-08 Live capital funds | **A** | — | — | R (audit) | — | — |
-| RES-09 Git repo | R | R/W | R | R | R | R/W |
-| RES-10 Secrets vault | — | — | — | A | — | A |
-| RES-11 Kill switch | **A** | — | E | A | — | E |
-| RES-12 Paper trading state | R | R | R/W | R | R | R |
+| Environment | Market data | Order API | Live funds | Kill switch |
+|---|---|---|---|---|
+| Research (local / cloud sessions) | Snapshots, public APIs | not connected | not connected | n/a |
+| Paper / demo (the box) | Live read | **Kalshi demo** and simulated | **none** | Active |
+| Live capital | — | — | **Not authorized.** Hard Rule 2: no real capital until G6 and DS sign-off | Active |
 
-¹ RES-05 (Venue API order submission): Model Owner executes orders only within approved risk limits; any order outside limits is rejected by C4 Risk Engine before transmission.
+## Access review
 
----
+Review on: a new credential name appearing in code or workflows; a new workflow; a change to repo visibility; live-capital authorization; a suspected leak (log to `04_EXECUTION/RID_LOG.md`, rotate, trip the kill switch if an order key is involved). The doc registry alarms when this file passes its `max_age_days`.
 
-## Access Conditions
-
-### RES-05 (Venue API order submission) — Live Capital Only
-
-Access to live order submission is gated by **all** of the following:
-1. G6 Release Gate cleared (APPROVALS_REGISTER.md, DS sign-off)
-2. ADR-0005 (Live Capital Authorization) accepted
-3. Kill switch tested and confirmed ≤60s halt (TC-009, TC-010)
-4. Risk limits confirmed in RISK_APPETITE_CONSTRAINTS.md (ADR required for any change)
-5. No position open outside automated risk engine enforcement
-
-### RES-10 (Secrets vault / env variables)
-
-- Access limited to RCO and IO roles at time of provisioning
-- Secrets never logged, never in code, never in VCS (NFR-05)
-- Rotation schedule documented in SECRETS_HANDLING.md
-- Vault solution TBD at G5 (OQ-009)
-
-### RES-11 (Kill switch)
-
-- Manual trigger: any operator action during observed anomaly
-- Automatic trigger: C7 monitoring on limit breach
-- No bypass path — kill switch is the only emergency response
-- Post-trigger: state logged to C6; manual restart requires written decision in RID_LOG.md
-
----
-
-## Environment-Specific Access Rules
-
-| Environment | Market Data | Order API | Live Funds | Kill Switch |
-|-------------|-------------|-----------|------------|-------------|
-| ENV-01 Research | Snapshots only (read) | NOT CONNECTED | NOT CONNECTED | N/A |
-| ENV-02 Paper Trading | Live feed (read) | Simulated only | NOT CONNECTED | Active |
-| ENV-03 Live Capital | Live feed (read) | ACTIVE | ACTIVE | Active |
-
-**ENV-01 isolation rule:** No live credentials may exist in ENV-01. If a credential is needed for market data access in Phase 5+, it must be scoped read-only and managed via vault.
-
----
-
-## Access Review Schedule
-
-| Event | Review Required |
-|-------|----------------|
-| Phase gate cleared | Verify new resources activated match matrix |
-| New API credential provisioned | Update RES table; RCO sign-off |
-| Live capital deployment (Phase 8) | Full access audit; DS + RCO sign-off |
-| Suspected unauthorized access | Immediate audit; log to RID_LOG.md |
-| Annual (if project reaches that milestone) | Full matrix re-review |
+**Known gaps (not fixed here):** all box services run as root; no formal vault (OQ-009); `VPS_SSH_KEY` is a root key shared by five workflows. Register or cite a GG before changing any of them.

@@ -1,5 +1,7 @@
 # Environments — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; environment names (ENV-01/02/03) and setup text predate the VPS deployment; see `deploy/DEPLOYMENT_GUIDE.md`, `deploy/*.service`, `RUNTIME_MAP.md`. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Define all execution environments, their configurations, and what is permitted in each. A system that runs differently across environments is not reproducible.  
 **Owner (role):** Execution Lead (EL) + Architecture Owner (AO)  
 **Status:** **CANONICAL — G3 Execution Gate 2026-05-22** — Changes require version bump and CHANGELOG entry  

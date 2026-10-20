@@ -1,5 +1,7 @@
 # Data Snapshots Index — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; index not maintained since May 2026; current data lives under `exp_output/` and `logs/` per `RUNTIME_MAP.md`. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** The authoritative registry of all data snapshots used in experiments. Every dataset that enters the pipeline must be registered here before use. Immutability guarantee: once registered, a snapshot is never modified.  
 **Owner (role):** Research Lead (RL)  
 **Last reviewed:** 2026-06-14 (SNAP-2026-06-14-001 registered — T-174 canonical NBA Finals clean bet dataset)  

@@ -1,5 +1,8 @@
 # FR-04 Evidence — Decision Recording (append-only audit log)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Decision log entry created for every forecast; (b) Log is append-only (no modification after write); (c) All required fields present; (d) Log survives process restart.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

@@ -1,5 +1,8 @@
 # NFR-02 Evidence — Auditability
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** Log audit: sample 10 forecast events; confirm all required fields present in every entry.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

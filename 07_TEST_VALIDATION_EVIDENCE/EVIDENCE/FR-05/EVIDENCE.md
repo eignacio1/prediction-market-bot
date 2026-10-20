@@ -1,5 +1,8 @@
 # FR-05 Evidence — Kill Switch (≤60 seconds, all components)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Manual kill-switch trigger halts all processes within ≤60 seconds (timed); (b) Auto-trigger fires on daily loss limit breach (simulated); (c) Log entry created on every activation; (d) System does not resume without explicit operator restart.
 
 **Populated:** 2026-07-06 (GG-075 remediation) — this is the clearest case in the whole evidence-trail gap: a real, passing drill result existed in prose (MEMORY_BANK.md, DECISION_LOG.md) for weeks but was never copied into the folder this document's own design pointed at.

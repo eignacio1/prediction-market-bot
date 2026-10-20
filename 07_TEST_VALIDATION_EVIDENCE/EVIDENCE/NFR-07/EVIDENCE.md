@@ -1,5 +1,8 @@
 # NFR-07 Evidence — Portability (dev env, no live dependencies)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** Full research pipeline runs end-to-end with all external calls mocked; zero live API dependencies in dev mode.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

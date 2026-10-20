@@ -1,5 +1,8 @@
 # FR-06 Evidence — Backtesting Framework (pinned snapshots, look-ahead detection)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Backtest runs to completion on a pinned snapshot; (b) Reproducible on re-run; (c) Train/test windows non-overlapping; (d) No future data accessible in training window (look-ahead check).
 
 **Populated:** 2026-07-06 (GG-075 remediation).

@@ -1,5 +1,8 @@
 # FR-09 Evidence — Risk Limit Enforcement
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Order rejected when position would exceed max single-event limit; (b) Kill switch triggered automatically when daily loss limit breached (simulated); (c) Risk check runs before every order attempt; (d) Override path requires ADR evidence.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

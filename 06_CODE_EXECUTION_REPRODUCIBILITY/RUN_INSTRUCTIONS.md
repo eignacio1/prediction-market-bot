@@ -1,5 +1,7 @@
 # Run Instructions — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; commands (`run_exp001`, `run_backtest`, c8 dashboard) predate the current runtime; see `RUNTIME_MAP.md`, `deploy/DEPLOYMENT_GUIDE.md`, `scripts/`. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Step-by-step instructions to reproduce any experiment or pipeline run from a clean environment. If someone cannot reproduce a run from these instructions alone, the instructions are incomplete.  
 **Owner (role):** Execution Lead (EL)  
 **Status:** **CANONICAL — G3 Execution Gate 2026-05-22** — Changes require version bump and CHANGELOG entry  

@@ -1,5 +1,8 @@
 # G4 Validation Report — Prediction Market Trading Bot
 
+> **Record as of 2026-07-02** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Purpose:** Formal evidence report for the G4 Evidence Gate. Documents validation findings, evidence pointers, and sign-off status.  
 **Owner (role):** Evidence Owner (EO) + Methodology Validator (MV)  
 **Last reviewed:** 2026-05-28 (G4 Evidence Gate — TEST set evaluated; ADR-0004 accepted; gate CLOSED)  

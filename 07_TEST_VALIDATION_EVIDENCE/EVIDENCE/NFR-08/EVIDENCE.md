@@ -1,5 +1,8 @@
 # NFR-08 Evidence — Change Control (ADR for major changes)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** DIR check: zero major changes in last 4 weeks without ADR reference.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

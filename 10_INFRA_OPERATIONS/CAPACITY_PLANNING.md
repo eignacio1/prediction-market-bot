@@ -1,5 +1,7 @@
 # Capacity Planning — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; May-2026 estimates, not re-measured; box specs and loads are not recorded here. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Document system resource requirements, scaling constraints, and capacity limits for each phase of operation.  
 **Owner (role):** Infrastructure Operator (IO)  
 **Status:** STUB — Phase 5 minimum; expand before G6 live capital deployment  

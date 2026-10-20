@@ -1,4 +1,7 @@
 # Semantic Contracts Integration Patches
+
+> **Record as of 2026-06-30** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
 **ADR-0034 / GG-051 resolution**
 **Written:** 2026-06-29 SESSION 100
 **Module:** `src/prediction_market_bot/c7_monitoring/semantic_contracts.py`

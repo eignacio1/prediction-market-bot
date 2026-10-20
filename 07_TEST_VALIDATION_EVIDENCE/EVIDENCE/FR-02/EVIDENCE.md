@@ -1,5 +1,8 @@
 # FR-02 Evidence — Forecast Generation
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Forecast output includes: event_id, timestamp, p_estimate, confidence_interval, snapshot_id, model_version; (b) p_estimate ∈ [0,1]; (c) Every output traceable to a Snapshot ID.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

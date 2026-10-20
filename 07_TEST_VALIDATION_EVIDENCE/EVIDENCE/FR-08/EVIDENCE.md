@@ -1,5 +1,8 @@
 # FR-08 Evidence — Live Order Execution
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Real order placed and confirmed on venue (sandbox/test environment first); (b) All orders logged per FR-04; (c) Order fails and logs error if risk check (FR-09) fails.
 
 **Populated:** 2026-07-06 (GG-075 remediation) — this file exists for consistency of the evidence-trail structure; there is no evidence to point to yet because the requirement itself has not been reached.

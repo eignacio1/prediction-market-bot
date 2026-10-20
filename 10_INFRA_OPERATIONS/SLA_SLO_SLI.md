@@ -1,5 +1,7 @@
 # SLA / SLO / SLI — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; May-2026 design targets, not measured service levels. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Define service level agreements, objectives, and indicators for each pipeline component. Provides the performance baseline against which monitoring alerts and operational responses are calibrated.  
 **Owner (role):** Infrastructure Operator (IO) + Model Owner (MO)  
 **Last reviewed:** 2026-05-22  

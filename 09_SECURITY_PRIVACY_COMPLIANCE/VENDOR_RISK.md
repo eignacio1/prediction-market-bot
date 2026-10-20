@@ -1,156 +1,30 @@
 # Vendor Risk — Prediction Market Trading Bot
 
-**Purpose:** Assess the risk profile of each external dependency and vendor. Identifies concentration risk, availability risk, and key failure modes from third-party dependencies.  
-**Owner (role):** Risk and Compliance Owner (RCO)  
-**Last reviewed:** 2026-05-26 (ADR-0003 accepted; Kalshi confirmed primary; Polymarket US noted secondary)  
-**Next review:** G5 (pre-live final vendor audit); update when vendor changes  
-**Staleness triggers:** Venue API changes; new dependency added; vendor incident; Polymarket US promotion decision  
-**Upstream links:** DEPENDENCIES.md, POLICY_REQUIREMENTS.md (POL-001, POL-003), RESILIENCE_FAILURE_MODES.md  
-**Downstream links:** RID_LOG.md (RID-003), RUNBOOKS/  
-**Decision references:** ADR-0001, ADR-0003 (ACCEPTED 2026-05-23)  
-**Confidence:** 8/10 — Primary venue confirmed; multi-venue architecture pending Phase 6
+**Class:** LIVING (registered in `00_ADMIN/DOC_REGISTRY.toml`)
+**Last verified:** 2026-10-20 against `src/` (hosts called), `.github/workflows/`, `deploy/`, `requirements*`/`06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/`, and DECISION_LOG 2026-10-11, 2026-10-15.
+**Owner (role):** Risk and Compliance Owner (RCO)
+**Must match:** the external hosts and services the code and workflows actually touch. A new host in `src/` or a new workflow makes this file stale.
+**Replaces:** the 2026-05-26 version (VND-01..04 with "vault TBD" and "private repo only, remote host TBD"). Superseded text is in git history.
+**Related:** `ACCESS_CONTROL_MATRIX.md` (who holds which credential), `RESILIENCE_FAILURE_MODES.md`, `RUNBOOKS/`.
 
----
+Rating = how badly the project is hurt if the vendor disappears for a week. No dollar contracts exist with any vendor below; all data use is free tier or public.
 
-## Vendor Register
+| ID | Vendor / service | Used for | Criticality | Failure mode and what happens |
+|---|---|---|---|---|
+| VND-01 | **Kalshi** (`api.elections.kalshi.com`, `external-api.kalshi.com`, demo `external-api.demo.kalshi.co`) | Market data, demo orders, settlement | CRITICAL | API down or auth change: no prices, no fills. Orders refuse on connectivity failure (C5). Regulatory or ToS action ends the venue. Only the demo host is used for orders. |
+| VND-02 | Polymarket US (`clob.polymarket.com`) | Secondary venue, inactive | LOW | Gated on operator KYC; adapter built, not live. Any activation needs its own ADR. |
+| VND-03 | **GitHub** (public repo, Actions, PR/CI) | Source of truth, CI, scheduled data syncs, deploy, box bridge | HIGH | Outage stops deploys and syncs, not the box's own services. **The repo is public since 2026-10-11** because the free private minutes ran out; everything committed is world-readable. Free hosted minutes are the dependency: back to private means self-hosted runners (DECISION_LOG 2026-10-15). |
+| VND-04 | **The VPS** (157.230.91.33; provider not recorded in the repo) | The only runtime host: cron pipelines, `t4-mlb`, dashboard | CRITICAL | Single host, no failover, services as root. Loss stops all logging until rebuilt from the repo; ledgers on the box are the only copy of the unsynced portion. |
+| VND-05 | ESPN (`site.api.espn.com`) | Live game state, schedules (T4) | HIGH | Unofficial endpoint; it began returning 403 to discovery on 2026-08-04 (GG-163) and the outage ran 43 h unnoticed. Cycle-log recency probe now exists in the session-start protocol. |
+| VND-06 | MLB StatsAPI (`statsapi.mlb.com`) | Games, boxscores, outcomes | HIGH | Unofficial but stable. Outage delays features and resolution. |
+| VND-07 | NHL web API (`api-web.nhle.com`), NBA CDN (`ak-static.cms.nba.com`) | NHL and NBA shadow arms | MEDIUM | Outage silences those arms; the silent-arms alarm should catch it. |
+| VND-08 | nflverse data releases (`github.com/nflverse/nflverse-data/releases`) | NFL schedules, team stats, event store | MEDIUM | Community-maintained; format or schedule change breaks the NFL arm. Free. |
+| VND-09 | PyPI ecosystem | Python dependencies | HIGH | Supply-chain risk. Mitigation: pinned versions in `DEPENDENCY_LOCKS/`, bandit at pre-commit. |
+| VND-10 | **Muse archive** (private repo `eignacio1/sports-intel-archive`) | Qualitative sports-intel feed, read-only to the bot | LOW | Write is by a single-repo deploy key held by the operator. If it stalls, the qualitative factor class stops growing; nothing trades on it. Bot treats it as untrusted input. |
+| VND-11 | Claude / Anthropic (Claude Code, cloud sessions) | Engineering work on the repo | MEDIUM | Not in the runtime path. Cloud sessions cannot ssh and see restricted network egress. |
 
-### VND-01 — Kalshi (Primary); Polymarket US (Secondary — Phase 6+)
+**No paid data vendor is used or approved** (standing rule: free data only). A factor available only from a paid source is registered as a gap, not bought.
 
-| Field | Detail |
-|-------|--------|
-| Vendor ID | VND-01 |
-| Vendor name | **Kalshi** (primary — confirmed ADR-0003 2026-05-23) |
-| Regulatory status | CFTC-regulated Designated Contract Market (DCM); legal in all 50 US states |
-| Market availability | NBA player prop markets confirmed available |
-| Secondary vendor | Polymarket US (Phase 6+ secondary; CFTC-regulated event contracts, relaunched Dec 2025) |
-| Service type | Market data feed, order execution API, outcome resolution data |
-| Criticality | **CRITICAL** — single point of failure for live trading |
-| Dependency | DS-02, DS-03, RES-04, RES-05 |
-| Concentration risk | HIGH — Kalshi is sole primary venue; Polymarket US is Phase 6+ only |
-| Substitutability | LOW at Phase 5+ (model calibrated to Kalshi mid-price/spread); MEDIUM at Phase 3 (pre-training; nba_api proxy used) |
+**Concentration risks to know:** one venue (Kalshi), one host (the VPS), one CI provider (GitHub), two unofficial sports endpoints (ESPN, MLB). None is mitigated by a second source today.
 
-**Risk factors:**
-- Venue API downtime → paper/live trading halted (FM-04 in RESILIENCE_FAILURE_MODES.md)
-- Venue regulatory action (e.g., trading suspension) → total trading halt
-- API breaking change → execution pipeline broken until patched
-- TOS violation by operator → API access revoked
-- Venue bankruptcy/closure → complete strategy failure
-- Kalshi NBA market availability changes → strategy scope reduction
-
-**Mitigations:**
-- Kill switch halts all activity on API error (NFR-03)
-- Circuit breaker pattern in C5 (FR-06) rejects orders on connectivity failure
-- API client versioned and pinned; breaking changes detected at test time
-- VENUE_ID parameterized in all C5 calls — no hardcoding; venue change requires config only
-- Polymarket US designated as Phase 6+ fallback pending separate ADR
-- Venue compliance documentation reviewed at G3 (ADR-0003 accepted)
-
-**Open items:** Multi-venue CA-legal enumeration (full OQ-006 scope) deferred to Phase 6. Any additional venue requires new ADR (Class A change).
-
----
-
-### VND-02 — Python Package Ecosystem
-
-| Field | Detail |
-|-------|--------|
-| Vendor ID | VND-02 |
-| Vendor name | PyPI ecosystem (scikit-learn, pandas, numpy, XGBoost, scipy, etc.) |
-| Service type | Core computation, ML, data processing |
-| Criticality | HIGH — model cannot run without these dependencies |
-| Concentration risk | LOW — multiple independent maintainers; large ecosystems |
-| Substitutability | MEDIUM — scikit-learn substitutes for XGBoost in extremis |
-
-**Risk factors:**
-- Supply chain compromise (malicious package update) — low probability, HIGH impact
-- Breaking API change in minor version — controlled by pinning
-- Package abandonment — low risk for mature packages (pandas, scikit-learn)
-
-**Mitigations:**
-- All dependencies pinned to exact versions (DEPENDENCIES.md; C-009)
-- bandit scans all imports at pre-commit
-- requirements-lock.txt maintained; changes require explicit review
-- No auto-updates in production
-
----
-
-### VND-03 — Secrets Vault (TBD)
-
-| Field | Detail |
-|-------|--------|
-| Vendor ID | VND-03 |
-| Vendor name | TBD — pending G5 (OQ-009) |
-| Candidates | HashiCorp Vault, AWS Secrets Manager, macOS Keychain, python-dotenv (Phase 1-4 only) |
-| Service type | Credential storage and retrieval |
-| Criticality | HIGH at Phase 5+ — all live credentials depend on it |
-| Concentration risk | HIGH — single vault; if unavailable, cannot access credentials |
-| Substitutability | MEDIUM — env-var fallback with manual credential injection |
-
-**Risk factors:**
-- Vault unavailability → cannot start live pipeline
-- Vault compromise → credential exposure (TH-02)
-- Vault API change → pipeline startup broken
-
-**Mitigations:**
-- Vault selection at G5 with availability SLA evaluation
-- Credential rotation policy (SECRETS_HANDLING.md)
-- Emergency procedure: manual env-var injection with immediate post-incident vault repair
-
-**Phase 1-4 note:** python-dotenv with .env file (gitignored) is acceptable for research-only phases. Not acceptable at Phase 5+.
-
----
-
-### VND-04 — Version Control System
-
-| Field | Detail |
-|-------|--------|
-| Vendor ID | VND-04 |
-| Vendor name | Git (local) + remote host TBD (OQ-008) |
-| Service type | Code versioning, artifact history, audit trail |
-| Criticality | HIGH — code and governance artifact history |
-| Concentration risk | LOW — local git always available; remote is backup |
-| Substitutability | HIGH — git is standard; any remote host acceptable |
-
-**Risk factors:**
-- Remote host unavailability → no push/pull (local work continues)
-- Accidental force-push of secrets → TH-02 risk; irreversible if public
-
-**Mitigations:**
-- .gitignore covers all secret file patterns
-- Pre-commit hook prevents secrets from being committed
-- Private repository only (no public exposure of model or credentials)
-- Local git always has full history
-
----
-
-## Vendor Risk Summary
-
-| Vendor | Criticality | Concentration Risk | Phase First Active | Primary Risk |
-|--------|-------------|-------------------|-------------------|--------------|
-| VND-01 Kalshi (primary) | CRITICAL | HIGH | Phase 5 | Downtime, regulatory action, NBA market changes |
-| VND-02 Python packages | HIGH | LOW | Phase 1 | Supply chain, breaking change |
-| VND-03 Secrets Vault | HIGH | HIGH | Phase 5 | Unavailability, compromise |
-| VND-04 VCS | HIGH | LOW | Phase 0 | Force-push secrets |
-
----
-
-## Vendor Risk Acceptance
-
-Before G5 (paper trading), RCO must explicitly accept or mitigate:
-
-- [x] VND-01: Venue selected (Kalshi primary — ADR-0003 ACCEPTED 2026-05-23); TOS/regulatory confirmed (CFTC-DCM, all 50 states); API reliability SLA review pending G5
-- [ ] VND-02: Dependency lock confirmed; bandit scan passing
-- [ ] VND-03: Vault solution selected; availability tested; rotation policy active
-- [ ] VND-04: Private repository confirmed; pre-commit hook active
-
----
-
-## Contingency: If Venue (VND-01) Becomes Unavailable
-
-| Scenario | Response | Owner |
-|----------|----------|-------|
-| Planned maintenance | Pause pipeline; resume after maintenance window | IO |
-| Unplanned API outage | Kill switch auto-activates; monitor for recovery; log to RID_LOG.md | MO |
-| Extended outage (>7 days) | DS decision: suspend strategy, evaluate alternative venue | DS |
-| Venue closure / regulatory action | Full halt; capital recovered to operator; project re-scoped with ADR | DS + RCO |
-
-**No automated failover to alternative venue is planned.** Any venue change requires ADR (Class A change — new venue selection).
+**Review:** on any new host in `src/`, new workflow, vendor incident, or repo visibility change; the registry alarm fires past `max_age_days`.
