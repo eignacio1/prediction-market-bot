@@ -1,0 +1,2 @@
+task = "silent_arms_read"
+note = "window: state read before writing the last wave (10-19)"

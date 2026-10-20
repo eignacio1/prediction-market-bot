@@ -1,0 +1,2 @@
+task = "capture_readback"
+note = "window: state read before writing the last wave (10-19)"

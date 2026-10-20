@@ -1,0 +1,2 @@
+task = "nba_opening_preflight"
+note = "window: state read before writing the last wave (10-19)"
