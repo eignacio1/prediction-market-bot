@@ -1,0 +1,7 @@
+# BEGIN W81.3 PASSYDS PRE-KICKOFF SNAPSHOT
+# Pre-kickoff order-book snapshot for KXNFLPASSYDS (thin-market pre-registration section 6): every strike of every QB whose game
+# kicks off in the next 30 min (and a 2h second look). Public unauthenticated GETs only; no order/ledger/model-fit path.
+# Writes ONLY exp_output/PREGAME_SHADOW_PASSYDS/. Bounded in-script: 400 books/run, 20 MB/day, 1 GB total; flock; idempotent per slot.
+# Every 20 min at :02/:22/:42 guarantees >=1 run inside every 30-min pre-kickoff window; :42 is free, :02/:22 are shared only with light jobs (GG-477).
+2,22,42 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/passyds_prekickoff_snapshot.py >> logs/passyds_prekickoff_cron.log 2>&1
+# END W81.3 PASSYDS PRE-KICKOFF SNAPSHOT
