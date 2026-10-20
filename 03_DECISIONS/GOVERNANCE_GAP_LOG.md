@@ -2249,6 +2249,8 @@ Found W78.3 (2026-10-15). `nba_cell_autoflip.py` and `w59_3_nba_flip_check.py` c
 
 **Status:** OPEN · **Severity:** LOW
 
+**2026-10-20 (W80.2) - premise stale:** `KXNBATEAMTOTAL` IS listed (public GET: `KXNBATEAMTOTAL-26OCT21INDNOP-NOP137`, active) and `NBA_TEAM_TOTAL_T1.jsonl` holds 374 valid rows, flip check FLIP-OK 374/374 (box preflight 20261020T0005Z). The 9-of-12 ceiling is 12-of-12. Stays OPEN only until the 12:40Z autoflip records the TEAM_TOTAL T1 flip; close on that evidence.
+
 W78.3 read-only GET 2026-10-15: KXNBAGAME 56, KXNBASPREAD 200, KXNBATOTAL 200 open markets; KXNBATEAMTOTAL 0. B1 ceiling for NBA game cells is 9 of 12 until Kalshi lists it. Also KXNBAPTS returned 0 open markets on 2026-10-15 (the points series may list closer to tip or under another series ticker) — verify on 10-20 before treating the points arm as healthy.
 
 ### GG-892 — nba_shadow silent arm masked by player-points rows (NBA_*.jsonl glob)
