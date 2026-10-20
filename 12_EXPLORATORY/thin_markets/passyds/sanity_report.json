@@ -1,0 +1,19 @@
+{
+  "model_id": "passyds_strike_v1",
+  "train": "2019-2023 REG",
+  "heldout": "2024-2025 REG",
+  "coef": {
+    "intercept": -6.996556595964712,
+    "qb_shrunk": 1.0140798860520033,
+    "opp_dev": 0.5497231178845843,
+    "home": 4.72143101635188
+  },
+  "sigma_c": 0.30025776306370106,
+  "n_train": 2420,
+  "heldout_qb_games": 1047,
+  "heldout_strike_rows": 5235,
+  "brier_model": 0.20021477643436844,
+  "brier_baseline": 0.2188561585616386,
+  "brier_delta_model_minus_baseline": -0.01864138212727015,
+  "gate": "reported, not a verdict"
+}

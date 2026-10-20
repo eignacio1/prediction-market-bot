@@ -385,3 +385,11 @@ status = "not_implemented"
 serving_model = "none"
 factors = []
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_player_pass_yds"
+band = "T1"
+status = "not_implemented"
+serving_model = "passyds_strike_v1 (frozen, sha256 1053c843...; not yet serving)"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
