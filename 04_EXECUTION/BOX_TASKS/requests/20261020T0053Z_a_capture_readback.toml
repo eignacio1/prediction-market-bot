@@ -1,0 +1,2 @@
+task = "capture_readback"
+note = "W80.1: confirm listed>0 after event-time window fix (#288)"
