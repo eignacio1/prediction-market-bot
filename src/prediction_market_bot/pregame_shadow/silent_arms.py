@@ -72,6 +72,12 @@ SPECS = {
         "nba_player_points_minutes_shadow", "NBA player points minutes+injury challenger (EXP-040)", 12, 1,
         "W70.2: EXP-040 rides the EXP-039 runner (same T1/T2/T3 crons), strike 15 only, own NBAMIN_*.jsonl ledgers; "
         "silent while EXP-039 writes means the challenger arm itself is dead (runner exits rc 3 and prints EXP-040 ARM FAILED)"),
+    "nfl_passyds_snap": ArmSpec(
+        "nfl_passyds_snap", "NFL passing-yards pre-kickoff snapshot (W81.3)", 12, 0.1,
+        "W81.3: the snapshot cron runs every 20 min, so any listed game gets >=1 row inside the 30 min before its "
+        "kickoff (thin-market pre-registration section 6). Served iff a snap row sits inside [kickoff-30min, kickoff] "
+        "(+-6 min slack). A game Kalshi never listed KXNFLPASSYDS for reads as silent: check the listing first",
+        t1_window_h=(0.0, 0.5)),
     "t1_mlb": ArmSpec("t1_mlb", "T1 MLB paper pipeline", 30, 0,
                       "the T1 pipeline runs once a day (11:00Z PIPE-05, 18:45Z PIPE-06pre); 30h = one missed "
                       "daily run plus slack"),
@@ -311,6 +317,10 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
         # the QB arm's ledgers are NFLQB_{market_type}_{band}.jsonl; exact cell names, same rule as the others
         return cell_files(repo / "exp_output" / "PREGAME_SHADOW_NFLQB", "NFL", "NFLQB_")
 
+    def passyds_files():
+        # W81.3 snapshot store: snap_YYYY-MM-DD.jsonl, one file per UTC day; exact store, no shared glob (GG-892)
+        return sorted((repo / "exp_output" / "PREGAME_SHADOW_PASSYDS").glob("snap_????-??-??.jsonl"))
+
     def arm(key, starts_fn, last_fn, row_times_fn=None):
         spec = SPECS[key]
         try:
@@ -337,6 +347,9 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
         arm("nfl_shadow", lambda: _nfl_starts(repo), lambda: last_ts_in_files(cell_files(led, "NFL", "NFL_"), until=now)),
         arm("nfl_qb_challenger", lambda: _nfl_starts(repo),
             lambda: last_ts_in_files(qb_files(), until=now), row_times_fn=lambda: row_times_in_files(qb_files(), until=now)),
+        arm("nfl_passyds_snap", lambda: _nfl_starts(repo),
+            lambda: last_ts_in_files(passyds_files(), until=now),
+            row_times_fn=lambda: row_times_in_files(passyds_files(), until=now)),
         arm("nhl_shadow", lambda: _nhl_starts(repo, now),
             lambda: last_ts_in_files(cell_files(repo / "data" / "shadow" / "nhl", "NHL"), until=now)),
         arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(cell_files(pre, "NBA", "NBA_"), until=now)),

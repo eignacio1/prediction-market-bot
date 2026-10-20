@@ -1121,3 +1121,17 @@ alarm = "none: on-demand only (runs when a request is pushed); a request with no
 schedule = ""
 mirrors = []
 command = "box_tasks.yml"
+[[component]]
+key = "cron|2,22,42 * * * *|scripts/passyds_prekickoff_snapshot.py"
+kind = "cron"
+source = "deploy/cron.passyds_prekickoff"
+status = "live"
+reviewed = true
+purpose = "W81.3: every 20 min (:02/:22/:42, so >=1 run lands inside every 30-min pre-kickoff window, Thursday/Sunday/Monday/flex/international) snapshots the live Kalshi order book of every KXNFLPASSYDS strike whose game kicks off in 0-30 min (pre30) or 105-135 min (pre2h): best bid/ask, contracts within 1/2/5c of mid per side, spread, whether the pre-registration section 5 floor (cheaper side >=10 contracts within 2c AND spread <=6c) was met, model_p (null until the frozen strike model exists) with factor inputs and as-of times. Kickoff from the nflverse schedule, flagged fallback occurrence_datetime-3h. Public GETs only, no order/ledger/model-fit path, bounded (400 books/run, 20 MB/day, 1 GB total), flock, idempotent per slot."
+pillar = "BREADTH"
+writes = ["logs/passyds_prekickoff_cron.log", "exp_output/PREGAME_SHADOW_PASSYDS/snap_YYYY-MM-DD.jsonl"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/passyds_prekickoff_cron.log is older than 1h (the job logs one PASSYDS_SNAP line every run); the silent-arm alarm (pregame_shadow.silent_arms, key nfl_passyds_snap) fires when an NFL game kicked off and zero snapshot rows were written for it in its 30-min pre-kickoff window; PASSYDS_SNAP ALARM when listing fails, CAP when a byte cap stops writes"
+max_age_h = "1"
+schedule = "2,22,42 * * * *"
+mirrors = ["deploy/cron.passyds_prekickoff"]
+command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/passyds_prekickoff_snapshot.py >> logs/passyds_prekickoff_cron.log 2>&1"
