@@ -259,6 +259,7 @@ the thin raw store; 80.2 owns everything NBA.
 | 80.1 | Where the retail flow is: the thin-market ranking on real order-book depth, and the first thin-market pre-registration | BREADTH/DEPTH/EXECUTION: gradient table on measured depth 0 → 1; thin-market prereg 0 → 1; capture defect fixed | ⬜ | |
 | 80.2 | NBA opens: the cells go live, and the engine's first factor meets the market | BREADTH B1 NBA 0 → ≤9 SHADOW; DEPTH D5(b) NBA applied 0 → 1 (or verdict); first NBA index entry | 🟨 PARTIAL | Part B done 2026-10-20 (PR #289): `nba_totals_applied` **REAL-AND-PRICED** (real 0.96 CI 0.47-1.48; priced 1.05 CI 0.80-1.29; residual -0.05 CI -0.47-0.41; n=299); `INDEX_ENTRY_PACE.md`; seat B9 applied; D5(b) NBA applied 4 → 5 of 9. **Part A not run: the 10-20 games are unplayed (UTC 00:36); autoflip 12:40Z.** |
 | 80.3 | The granularity index, built: the NFL machine that finds the splits, ranks them against history, crosses the matchup and maps it to a market | DEPTH D5(a) NFL filtering + cross-reference built; D5(b) run-box entry through all five parts | ⬜ | |
+| 80.4 | The foundation docs: match reality or say what they are, and the rule (added 10-19) | PLUMBING: docs classified 0 → all; wrong LIVING docs → 0; doc staleness alarm none → live | ⬜ | |
 | GA | The governance gap agent (STANDING) | PLUMBING: OPEN gaps | relaunch | `/loop /gap` |
 
 ### 80.1 — Where the retail flow is: the thin-market ranking on real order-book depth, and the first thin-market pre-registration
@@ -604,6 +605,133 @@ PART B - Does the cross say anything the market doesn't? (~40 min)
      stage) and SEATS/nfl.toml.
 
 END OF BLOCK 80.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 80.4 — The foundation docs: match reality or say what they are, and a rule that keeps them that way (added 2026-10-19, operator)
+
+```
+COMMON RULES - WAVE 80 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- LAST WAVE OF THIS WINDOW: the operator washes it before a new window takes over. Push at every part boundary. The handoff is what the
+  next window reads first: make its gap_delta and its one pending line exact.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-19 (incl. the granularity index, "retail flow first", three blocks per wave, the box bridge) (incl. the 10-16 thinner-markets call, the branch-cleanup plan,
+  the ADR-0072 5xx addendum, the PAM deep-tier scope, the standing gap agent, the qualitative-archive intake contract and "the bot
+  repo stays public") - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - this wave adds NO running component (80.1 fixes and registers the existing capture).
+- Three blocks + the standing gap agent run in parallel (80.4 added 2026-10-19 by the operator after 80.2 closed). File ownership: 80.1 = 12_EXPLORATORY/thin_markets/, the thin-market
+  capture (scripts/thin_market_depth_capture.py, deploy/cron.thin_capture, its registry entry), box_tasks.py additions; 80.2 = the NBA
+  flip automation and NBA cells, 02_ARCHITECTURE_DESIGN/NBA_ENGINE/, scripts/nba_totals_applied.py, SEATS/nba.toml; 80.3 = the NFL
+  index machine (new modules), 02_ARCHITECTURE_DESIGN/NFL_ENGINE/ new files, SEATS/nfl.toml. The gap agent owns GG_BURNDOWN.md and
+  GG_AGENT_STATE.md. 80.4 = the docs in 06/07/09/10/ARCHIVE, 00_ADMIN/README.md, DOC_REGISTRY.toml (+ one line in governance_scan.sh). Box access: ssh, or the box bridge (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task in
+  scripts/box_tasks.py; results land in 04_EXECUTION/BOX_TASKS/results/). Surface budget GREEN at 2026-10-20 00:05Z (window).
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only. (W76.2 pushed exploratory code straight to main and turned main red for every other block for ~1.5 h.)
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (0 this wave).
+- GRANULARITY INDEX (operator 2026-10-16, 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md): every factor you build reports its five parts -
+  the split, the rank against history, the matchup cross, the market map, the application. Examples are illustrations, not build lists.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W80_<n>.md (docs-only push).
+
+WAVE 80.4 - THE FOUNDATION DOCS: EVERY FOLDER'S CORE FILES MATCH REALITY OR SAY WHAT THEY ARE, AND A RULE THAT KEEPS THEM THAT WAY. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (ADR-0074 process integrity; the "if somebody picked this up, would they know where we're at?" test, operator
+2026-10-08). Measures: foundation docs in 06/07/09/10 classified (0 -> all); LIVING docs that contradict the running system (count
+-> 0); a doc registry with an automatic staleness alarm (none -> live in the governance scan). Pillar: PLUMBING.
+Operator, 2026-10-19 17:44 PT (quote it): "I'm not expecting we scour every damn folder and file and update everything every
+second - we've designed strict protocol for our logging. But I find it very very very hard to believe that our core foundation
+files for each directory folder has been pure deadweight for 5 months. That's ludicrous and quite honestly a waste of space."
+PERMISSIONS: files under 06_CODE_EXECUTION_REPRODUCIBILITY/, 07_TEST_VALIDATION_EVIDENCE/, 09_INTEGRATION_PATCHES/,
+09_SECURITY_PRIVACY_COMPLIANCE/, 10_INFRA_OPERATIONS/, ARCHIVE/, the tracked file under logs/, 00_ADMIN/README.md (the nav hub),
+a new 00_ADMIN/DOC_REGISTRY.toml + its checker script + tests, and a SILENT (alarm-only) line in .claude/hooks/governance_scan.sh
+(78.1's file; touch only your one line). Read-only ssh or the box bridge to verify what runs. Move superseded docs to ARCHIVE/
+VERBATIM (git mv), never delete. No code path, cron, service, ledger or model changes.
+Read first: 00_ADMIN/README.md, CLAUDE.md, 02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml + RUNTIME_MAP.md, 03_DECISIONS/ADR-0074,
+GOVERNANCE_GAP_LOG GG-074 (the monthly staleness review that was designed and then stopped running after July).
+
+WHAT THE WINDOW FOUND (2026-10-20 00:45Z, checked against the files - verify):
+- Last change per folder: 09_SECURITY_PRIVACY_COMPLIANCE 2026-05-28; 09_INTEGRATION_PATCHES 2026-06-30; 06_CODE_EXECUTION_REPRODUCIBILITY
+  2026-07-21; 07_TEST_VALIDATION_EVIDENCE 2026-07-22; 10_INFRA_OPERATIONS 2026-08-03. Most headers read "Last reviewed: 2026-05-22".
+- Some are not just old but WRONG, and two of those are dangerous:
+  * RUNBOOK_kill-switch.md (2026-05-28) predates the one-kill-switch rewrite (W75.4, GG-745) and the box drill (W76.1). A runbook
+    for the kill switch that describes the old mechanism is worse than none.
+  * ACCESS_CONTROL_MATRIX.md (2026-05-28) knows nothing of: the repo going PUBLIC (2026-10-11), the box bridge (GitHub Actions
+    runs allowlisted jobs on the box with VPS_SSH_KEY, #283-#285), the Muse archive deploy key (id 166624777, write, archive repo
+    only), cloud sessions and their network allowlist. VENDOR_RISK.md has no GitHub Actions, nflverse/sportsdataverse or Muse.
+  * PIPELINES_JOBS.md (2026-05-22) is superseded by RUNTIME_REGISTRY.toml (74 live components); KNOWN_ISSUES.md by the GG log;
+    OBSERVABILITY / SLA_SLO_SLI / ONCALL predate the dashboards, the silent-arm alarm and the SURFACE BUDGET.
+- The root cause is not "nobody logged": the decision, gap and queue logs are current. It is that reference docs have no owner and
+  no alarm. GG-074's monthly staleness review existed and lapsed; nothing noticed it stop.
+
+PART A - Classify and fix the dangerous ones (~45 min)
+  1. Classify every file in those folders (and logs/t4_mlb_totals_outcome_store.jsonl): RECORD (a dated snapshot that is
+     correct as history - gate reports, evidence, assessments; keep, add a one-line "record as of <date>" header if missing) /
+     LIVING (must match the running system) / SUPERSEDED (another file now owns it: move to ARCHIVE/ verbatim, leave a 3-line
+     pointer stub) / DEAD (no reader, no purpose: ARCHIVE/ verbatim). Write the table to 00_ADMIN/DOC_REGISTRY.toml (path, class,
+     owner role, what it must match, max_age_days for LIVING).
+  2. Rewrite the LIVING docs that are wrong, against the code and the box, not against other docs: RUNBOOK_kill-switch.md first
+     (the current mechanism, how to trigger, verify within 60 s - NFR-03 - and recover; cite the W76.1 drill), then
+     ACCESS_CONTROL_MATRIX.md and VENDOR_RISK.md (every credential and who/what can use it, incl. the bridge, the Muse key and
+     the public repo; no secret values ever). Each rewritten doc gets "Last verified: <date> against <what>".
+PART B - The rest, and the rule (~40 min)
+  3. The other LIVING docs: rewrite briefly to match reality, or convert to a pointer to the file that now owns the truth
+     (RUNTIME_MAP.md, the dashboards, the GG log). Each folder gets a short README: what lives here, which file is canonical for
+     what, owner role, last verified. Bring 00_ADMIN/README.md's map up to date.
+  4. The rule: scripts/doc_registry.py check reads DOC_REGISTRY.toml and flags LIVING docs past max_age_days and any file in
+     these folders missing from the registry - ALARM-ONLY, wired as one line in governance_scan.sh (runs every session) and
+     readable by the gap agent, which becomes the standing owner of the cadence GG-074 lost. Tests. Close or update GG-074.
+     Pattern sweep (Hard Rule 13): any other folder whose core docs have the same shape (01_SPEC, 08_MODEL_RISK_GOVERNANCE) gets
+     registered, not rewritten, this block.
+Results: DOC_REGISTRY.toml, the rewritten docs, folder READMEs; handoff lists every file and what happened to it.
+
+END OF BLOCK 80.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
 ## ✅ CLOSED — Pseudo-wave 80R · issued 2026-10-16 ~15:35 UTC (08:35 PT) · three tasks in ONE Claude Code cloud session
@@ -1258,6 +1386,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 80.1 | Thin-market ranking on measured depth + first thin-market prereg (+ capture fix) | ⬜ | |
 | 80.2 | NBA opens: cells live + first factor meets the market | 🟨 PARTIAL | Part B done; Part A (opening-night readback) pending until the games are played |
 | 80.3 | The granularity index machine for NFL (run-box positive control) | ⬜ | |
+| 80.4 | Foundation docs freshness + DOC_REGISTRY rule (added 10-19, operator) | ⬜ | |
 
 ### ✅ PSEUDO-WAVE 80R — ISSUED 2026-10-16 ~15:35 UTC · one cloud session, three tasks in order · CLOSED ~16:15 UTC · verified on GitHub. W80R.1 🟡 bridge live, budget honestly read (then GREEN after the window's t4-mlb restart), capture installed by the window at :51 (#287). W80R.2/.3 🟡 tools merged (#286), no results → Wave 80.
 
