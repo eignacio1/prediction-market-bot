@@ -297,6 +297,33 @@ candidate once they exist.
 ### 81.1 — The forward test, read: label the arms, clean the count, score it as pre-registered
 **EXECUTION** · E1–E3 per arm, the ADR-0072 verdict · plus PLUMBING: the scoreboard's three broken inputs (D1, D4 NBA, P3) · terminal 1
 
+**ADD-IN 81.1-A (2026-10-19 22:10 PT): green means the cell WINS.** Given to the operator in chat; paste into terminal 1.
+
+```
+ADD-IN 81.1-A - GREEN MEANS THE CELL WINS (operator, 2026-10-19 22:06 PT). Adds a PART C to your block.
+Operator (quote it): "We should probably change the coloring - I want green to mean it wins. That cell WINS." And 22:04 PT:
+"Green across the board - that's what I want and that's what we'll get."
+PART C (~20 min, after Part B; if you hit the 90-minute ceiling first, stop at Part B and name Part C as the next undone part)
+  1. New cell state WINS, the ONLY state drawn green: the cell's own pre-registered verdict, at its judged n, is the positive
+     verdict its pre-registration defines (as released by the calibration engine, exp_output/CALIBRATION/engine_*.json), AND,
+     for a cell that places demo orders, its P&L per filled bet has a game-clustered 95% CI above zero. Join engine cells to
+     registry keys (market type | band) from code, not by hand; a cell the join cannot resolve is not green.
+  2. ACTIVE (staked, no winning verdict yet) gets its own colour: not green, not red, distinguishable from SHADOW blue at a
+     glance. MLB player hits T4M-PROJ moves off green today. Zero cells are expected to be green at deploy - that is correct.
+  3. Map the registry's RULED_OUT status (measured at judged n, no edge): the visual dashboard's SCLASS/SLABEL have no entry
+     for it today (a cell would render with class "undefined"). Give it its own style and legend line. Pattern sweep: any
+     other status the grid or the project-state cell matrix does not map.
+  4. Same meaning everywhere a cell status is drawn: the visual dashboard grid (04_EXECUTION/visual_dashboard/: head.html
+     .cellbox styles, body.html legend + filter buttons - add a "Wins" filter, script.js SCLASS/SLABEL), the project-state
+     cell matrix (scripts/generate_project_state.py), and the Live Terminal if it colours cells. Keep the operator's design
+     (window error W3): colours, legend and filters only, no layout change.
+  5. PR with tests (a WINS fixture, a RULED_OUT fixture, an unresolvable-join fixture -> not green); after merge and the
+     dashboard restart, read the grid back on the box and report how many cells are green (expected 0) and which cell is ACTIVE.
+File ownership added to this block: the dashboards' cell-status styling, legend and filters (the files above). 81.3 shows its
+new cell through the registry only and does not edit dashboard code.
+END OF ADD-IN 81.1-A. If you cannot see this line, the add-in reached you truncated: stop and report it.
+```
+
 ```
 COMMON RULES - WAVE 81 (read first; they bind this block)
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
@@ -329,7 +356,7 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
 - Three blocks + the standing gap agent run in parallel. File ownership: 81.1 = scripts/demo_fill_forward_report.py +
   tests (+ the dashboards' forward-test panel if it reads that report), scripts/distance_to_optimum.py +
   scripts/distance_to_optimum_d1_manifest.json + tests, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml [[engine]] entries
-  only, scripts/box_tasks.py; 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
+  only, scripts/box_tasks.py, the dashboards' cell-status colours/legend/filters (add-in 81.1-A); 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
   02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
   RUNTIME_REGISTRY entry, market_type_registry.py (KXNFLPASSYDS only), 12_EXPLORATORY/thin_markets/passyds/ (+ src/ if the runner
   needs it), SEATS/nfl.toml [[factor]] rows. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the
@@ -491,7 +518,7 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
 - Three blocks + the standing gap agent run in parallel. File ownership: 81.1 = scripts/demo_fill_forward_report.py +
   tests (+ the dashboards' forward-test panel if it reads that report), scripts/distance_to_optimum.py +
   scripts/distance_to_optimum_d1_manifest.json + tests, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml [[engine]] entries
-  only, scripts/box_tasks.py; 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
+  only, scripts/box_tasks.py, the dashboards' cell-status colours/legend/filters (add-in 81.1-A); 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
   02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
   RUNTIME_REGISTRY entry, market_type_registry.py (KXNFLPASSYDS only), 12_EXPLORATORY/thin_markets/passyds/ (+ src/ if the runner
   needs it), SEATS/nfl.toml [[factor]] rows. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the
@@ -606,7 +633,7 @@ COMMON RULES - WAVE 81 (read first; they bind this block)
 - Three blocks + the standing gap agent run in parallel. File ownership: 81.1 = scripts/demo_fill_forward_report.py +
   tests (+ the dashboards' forward-test panel if it reads that report), scripts/distance_to_optimum.py +
   scripts/distance_to_optimum_d1_manifest.json + tests, 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml [[engine]] entries
-  only, scripts/box_tasks.py; 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
+  only, scripts/box_tasks.py, the dashboards' cell-status colours/legend/filters (add-in 81.1-A); 81.2 = a new 12_EXPLORATORY/ folder for the NBA lineup cross, new files in
   02_ARCHITECTURE_DESIGN/NBA_ENGINE/, SEATS/nba.toml [[factor]] rows; 81.3 = the KXNFLPASSYDS snapshot job + its new cron file + its
   RUNTIME_REGISTRY entry, market_type_registry.py (KXNFLPASSYDS only), 12_EXPLORATORY/thin_markets/passyds/ (+ src/ if the runner
   needs it), SEATS/nfl.toml [[factor]] rows. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the
