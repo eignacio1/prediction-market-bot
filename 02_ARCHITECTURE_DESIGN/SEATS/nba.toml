@@ -78,6 +78,15 @@ engine_slot = "none"
 stage = "none"
 evidence = "src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py"
 
+[[factor]]
+id = "B9"
+factor_class = "NBA-9"
+name = "Pace and efficiency (point-in-time, engine store; full-game total)"
+source = "NBA team box scores (sportsdataverse free store, 2016-2026)"
+engine_slot = "team rating"
+stage = "applied"
+evidence = "02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md"
+
 [[cell]]
 market = "nba_player_points"
 band = "T4"

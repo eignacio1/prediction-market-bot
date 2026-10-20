@@ -16,6 +16,7 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | B6 | NBA-6 | Game-level availability (who is out for either side) | NBA official injury reports (coverage.json) | availability | interpreted | `12_EXPLORATORY/20261013_nba_games_availability/results.md` |
 | B7 | NBA-7 | Lineup / on-off, play-type, matchup | none built | none | none | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` |
 | B8 | NBA-8 | Qualitative (form, role-fit, motivation) | none free and structured | none | none | `src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py` |
+| B9 | NBA-9 | Pace and efficiency (point-in-time, engine store; full-game total) | NBA team box scores (sportsdataverse free store, 2016-2026) | team rating | applied | `02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md` |
 
 ## Cells
 

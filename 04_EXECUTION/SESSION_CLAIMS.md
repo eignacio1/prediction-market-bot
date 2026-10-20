@@ -965,3 +965,5 @@
 | 2026-10-20T00:10:02Z | GG-930..GG-934 | W80.1 STANDARD thin-market capture fix + depth ranking + first thin prereg. PURPOSE: BREADTH+DEPTH+EXECUTION - efficiency+fillability table 0->1 (measured depth), thin prereg 0->1, capture defect listed=0 -> fixed |
 | 2026-10-20T00:10:53Z | GG-960..GG-964 | W80.3 STANDARD NFL granularity index machine (splits/rank/cross/market map) + run-box positive control. PURPOSE: DEPTH D5(a) NFL filtering+cross-reference scaffolds not-at-bar->built+tested; D5(b) NFL run-box entry 0->1 through five parts |
 | 2026-10-20T00:11:06Z | GG-940..GG-945 | W80.2 NBA opens: cells go live + first factor meets market (STANDARD). PURPOSE: BREADTH B1 NBA 0->up to 9 SHADOW; DEPTH D5(b) NBA applied 0->1 or verdict; first NBA granularity-index entry |
+| 2026-10-20T00:38:49Z | W80.2 | CLOSED — W80.2 Part B done (nba_totals_applied REAL-AND-PRICED; first NBA index entry; seat B9 applied); Part A (opening-night readback) not run because the 10-20 games were unplayed at 2026-10-20T00:36Z (commit `17d4f14`) |
+| 2026-10-20T00:39:11Z | W80.2 | CLOSED — merge confirmed, HEAD (ccdef69) is ancestor of origin/main — Part B done, Part A pending games |

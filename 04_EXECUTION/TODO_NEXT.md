@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-16T16:15Z (W80R.1-W80R.3 — 80R: W80R.1 bridge live (#283/#284/#285), box readable from cloud; budget read honestly RED (t4-mlb 11.2h behind, GG-920 false-GREEN fixed); capture installed on false GREEN then uninstalled; W80R.2/.3 tools built+tested (PR #286), data partly fetched, NO results — next window) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261016T1612Z_W80R.md` for full session detail.
+**Last reviewed:** 2026-10-20T00:37Z (W80.2 — W80.2 Part B done (nba_totals_applied REAL-AND-PRICED; first NBA index entry; seat B9 applied); Part A (opening-night readback) not run because the 10-20 games were unplayed at 2026-10-20T00:36Z) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261020T0037Z_W80_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

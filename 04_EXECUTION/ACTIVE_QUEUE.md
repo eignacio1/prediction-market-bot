@@ -257,7 +257,7 @@ the thin raw store; 80.2 owns everything NBA.
 | # | Block | PURPOSE (measure) | Status | One line |
 |---|---|---|---|---|
 | 80.1 | Where the retail flow is: the thin-market ranking on real order-book depth, and the first thin-market pre-registration | BREADTH/DEPTH/EXECUTION: gradient table on measured depth 0 → 1; thin-market prereg 0 → 1; capture defect fixed | ⬜ | |
-| 80.2 | NBA opens: the cells go live, and the engine's first factor meets the market | BREADTH B1 NBA 0 → ≤9 SHADOW; DEPTH D5(b) NBA applied 0 → 1 (or verdict); first NBA index entry | ⬜ | |
+| 80.2 | NBA opens: the cells go live, and the engine's first factor meets the market | BREADTH B1 NBA 0 → ≤9 SHADOW; DEPTH D5(b) NBA applied 0 → 1 (or verdict); first NBA index entry | 🟨 PARTIAL | Part B done 2026-10-20 (PR #289): `nba_totals_applied` **REAL-AND-PRICED** (real 0.96 CI 0.47-1.48; priced 1.05 CI 0.80-1.29; residual -0.05 CI -0.47-0.41; n=299); `INDEX_ENTRY_PACE.md`; seat B9 applied; D5(b) NBA applied 4 → 5 of 9. **Part A not run: the 10-20 games are unplayed (UTC 00:36); autoflip 12:40Z.** |
 | 80.3 | The granularity index, built: the NFL machine that finds the splits, ranks them against history, crosses the matchup and maps it to a market | DEPTH D5(a) NFL filtering + cross-reference built; D5(b) run-box entry through all five parts | ⬜ | |
 | GA | The governance gap agent (STANDING) | PLUMBING: OPEN gaps | relaunch | `/loop /gap` |
 
@@ -1256,7 +1256,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 80.1 | Thin-market ranking on measured depth + first thin-market prereg (+ capture fix) | ⬜ | |
-| 80.2 | NBA opens: cells live + first factor meets the market | ⬜ | |
+| 80.2 | NBA opens: cells live + first factor meets the market | 🟨 PARTIAL | Part B done; Part A (opening-night readback) pending until the games are played |
 | 80.3 | The granularity index machine for NFL (run-box positive control) | ⬜ | |
 
 ### ✅ PSEUDO-WAVE 80R — ISSUED 2026-10-16 ~15:35 UTC · one cloud session, three tasks in order · CLOSED ~16:15 UTC · verified on GitHub. W80R.1 🟡 bridge live, budget honestly read (then GREEN after the window's t4-mlb restart), capture installed by the window at :51 (#287). W80R.2/.3 🟡 tools merged (#286), no results → Wave 80.

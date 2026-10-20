@@ -1,0 +1,2 @@
+
+**W80.2 — NBA opens (partial).** Pillar: DEPTH (NBA). The first NBA factor, pace, was tested against Kalshi's game-total prices: the market already prices it, so there is no edge there. That is a clear result, not a failure. The tester had a bug that made last week's run silently empty; it is fixed. The opening-night check of the new NBA cells could not run because the games had not been played yet; it is the one thing pending. Still zero real money at risk.
