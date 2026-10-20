@@ -1,5 +1,21 @@
 # SESSION HANDOFF — W80.3 granularity index, NFL (DONE)
 
+<!-- session-meta
+task_id: W80.3
+tier: STANDARD
+timestamp: 2026-10-20T00:53Z
+commit: 295df33
+one_line_summary: W80.3 NFL granularity-index machine built (PR #290); run-box entry through 5 parts: loaded-box not a trait, cross adds nothing, application too few to tell
+gg_touched: none (GG-960..964 claimed, none registered)
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(a)/(b) NFL
+gap_delta: D5(a) NFL 5/8 -> 6/8; D5(b) NFL applied 6 -> 7 of 17 (scripts/distance_to_optimum.py, 2026-10-20)
+pattern_sweep: exploratory writes not via safe_out(): swept 12_EXPLORATORY/nfl_engine/granularity_index/*.py for to_csv/rename/replace; isolation test passes; thin_markets/depth_stats fix was 80.1's (#292)
+surface_delta: 0
+-->
+
 vision_pillar: DEPTH
 gap_measure: D5(a) NFL components built; D5(b) NFL factors by stage (source: scripts/distance_to_optimum.py, 2026-10-20)
 gap_delta: D5(a) NFL 5/8 -> 6/8 (filtering_mechanisms now scaffolded+tested; cross_reference_compatibility extended). D5(b) NFL applied 6 -> 7 of 16 -> 17 (run-box entry N17, stage applied).

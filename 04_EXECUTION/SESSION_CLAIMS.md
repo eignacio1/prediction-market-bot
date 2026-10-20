@@ -968,3 +968,4 @@
 | 2026-10-20T00:38:49Z | W80.2 | CLOSED — W80.2 Part B done (nba_totals_applied REAL-AND-PRICED; first NBA index entry; seat B9 applied); Part A (opening-night readback) not run because the 10-20 games were unplayed at 2026-10-20T00:36Z (commit `17d4f14`) |
 | 2026-10-20T00:39:11Z | W80.2 | CLOSED — merge confirmed, HEAD (ccdef69) is ancestor of origin/main — Part B done, Part A pending games |
 | 2026-10-20T00:51:15Z | GG-970..GG-974 | W80.4 STANDARD foundation docs (06/07/09/10): classify+rewrite kill-switch runbook/ACCESS_CONTROL/VENDOR_RISK + DOC_REGISTRY + staleness alarm. PURPOSE: PLUMBING - foundation docs classified 0->all, LIVING docs contradicting system ->0, doc-registry alarm none->live |
+| 2026-10-20T00:57:42Z | W80.3 | CLOSED — W80.3 NFL granularity-index machine built (PR #290); run-box entry through 5 parts: loaded-box not a trait, cross adds nothing, application too few to tell (commit `295df33`) |

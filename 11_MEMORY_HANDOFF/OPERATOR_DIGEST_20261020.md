@@ -1,2 +1,5 @@
 
 **W80.2 — NBA opens (partial).** Pillar: DEPTH (NBA). The first NBA factor, pace, was tested against Kalshi's game-total prices: the market already prices it, so there is no edge there. That is a clear result, not a failure. The tester had a bug that made last week's run silently empty; it is fixed. The opening-night check of the new NBA cells could not run because the games had not been played yet; it is the one thing pending. Still zero real money at risk.
+
+## W80.3 — NFL granularity index (DEPTH)
+We built the reusable machine that finds a team's splits (like run success against loaded vs light boxes), ranks them against history, and crosses them with the opponent. Your example was the test. Honest result: the "loaded box" rank is mostly noise at today's sample sizes, the "stuffed on runs against light boxes" trait is real and stable, and the cross does not yet beat plain season-long ratings. Too few Kalshi markets exist to say whether prices miss it. Still zero money at risk; nothing placed, nothing running changed.
