@@ -87,6 +87,15 @@ engine_slot = "team rating"
 stage = "applied"
 evidence = "02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md"
 
+[[factor]]
+id = "B10"
+factor_class = "NBA-10"
+name = "Lineup cross (usage redistribution when a rotation player is out, by role)"
+source = "NBA player box scores (sportsdataverse free store, 2016-2026); injury reports for timing"
+engine_slot = "player rating"
+stage = "interpreted"
+evidence = "02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_LINEUP.md"
+
 [[cell]]
 market = "nba_player_points"
 band = "T4"

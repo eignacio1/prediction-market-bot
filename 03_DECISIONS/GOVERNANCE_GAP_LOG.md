@@ -4342,3 +4342,9 @@ W80.4, 2026-10-20. GG-074's monthly grounding-doc review ran once (2026-07-23) a
 **Status:** OPEN · **Severity:** MEDIUM
 
 W80.4, 2026-10-20. Services run as root on the box; a single shared root SSH key (`VPS_SSH_KEY`) serves deploy, the box bridge and sync workflows; no vault (OQ-009). Recorded in `09_SECURITY_PRIVACY_COMPLIANCE/ACCESS_CONTROL_MATRIX.md` § known gaps. Not fixed in W80.4 (docs-only block). No real capital is at risk (Hard Rule 2).
+
+### GG-985 — KXNBAPTS price history cannot be joined to absence announcement times (lineup cross part 5)
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W81.2, 2026-10-20. Of 100 candle-bearing KXNBAPTS markets (all 2025-26), 12 have a rule-defined single rotation-player absence; the 2-hourly injury-report snapshots observe the absent player in 2, and both reports precede market creation (markets open 1-20h before tip, mostly before the day's first 11:30 ET slot). No market has a before/after-news price, so the lineup-cross pricing share cannot be computed; the time was not approximated. Part 5 withheld, entry 2 stays interpreted. Fix: a prospective capture of KXNBAPTS prices around each report from the 2026-27 season (plumbing, not started). Evidence: `12_EXPLORATORY/20261020_nba_lineup_cross/results.md`, `price_join_markets.csv`.
