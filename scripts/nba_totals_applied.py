@@ -38,6 +38,7 @@ import statistics
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+import re
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
@@ -54,6 +55,14 @@ FULL = ["base_total", "pace_mean", "eff_mean", "pace_dev_mean"]
 
 
 # ---------------------------------------------------------------- pure helpers (tested)
+
+def parse_ts(s: str) -> datetime:
+    """ISO-8601 -> aware datetime; tolerant of 1-9 fractional digits (py3.9 fromisoformat needs 3 or 6)."""
+    s = s.replace("Z", "+00:00")
+    s = re.sub(r"\.(\d+)", lambda m: "." + (m.group(1) + "000000")[:6], s)
+    d = datetime.fromisoformat(s)
+    return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+
 def parse_event(ev: str):
     """KXNBATOTAL-25OCT21HOUOKC -> (date(2025,10,21), 'HOU', 'OKC'); None if it does not parse."""
     try:
@@ -228,7 +237,7 @@ def fetch_candles(client, cache: Path, pick: dict) -> list:
     if f.exists():
         return json.loads(f.read_text())
     import board_survey_sports_store as bs
-    tip = datetime.fromisoformat(pick["tip"].replace("Z", "+00:00"))
+    tip = parse_ts(pick["tip"])
     if tip.tzinfo is None:
         tip = tip.replace(tzinfo=timezone.utc)
     start, end = int((tip - WINDOW).timestamp()), int(tip.timestamp())
@@ -281,7 +290,7 @@ def main(argv=None) -> int:
     markets = json.loads(mk_file.read_text()) if mk_file.exists() else list_markets(client)
     mk_file.write_text(json.dumps(markets))
     markets = [x for x in markets if x.get("close_time") and
-               datetime.fromisoformat(x["close_time"].replace("Z", "+00:00")) < CUSTODY_FROM]
+               parse_ts(x["close_time"]) < CUSTODY_FROM]
     picks = pick_markets(markets, games)
     if a.max_games:
         picks = hash_sample(picks, a.max_games)
@@ -289,7 +298,7 @@ def main(argv=None) -> int:
         # the shared Client doubles its pause on every 429 and never relaxes; cap it per market so one burst of 429s
         # cannot slow the whole run to minutes per call (observed 10-16: 227 of 300 then stalled)
         client.pause = min(client.pause, 4 * a.pause)
-        tip = datetime.fromisoformat(p["tip"].replace("Z", "+00:00"))
+        tip = parse_ts(p["tip"])
         tip = tip if tip.tzinfo else tip.replace(tzinfo=timezone.utc)
         p["p"] = quote_mid(fetch_candles(client, a.cache, p), int((tip - PRICE_LEAD).timestamp()))
         if i % 100 == 0:

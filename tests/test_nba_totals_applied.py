@@ -81,3 +81,10 @@ def test_hash_sample_is_order_free_and_deterministic():
     a = na.hash_sample(picks, 10)
     b = na.hash_sample(list(reversed(picks)), 10)
     assert a == b and len(a) == 10
+
+
+def test_parse_ts_tolerates_odd_fraction_digits():
+    # Kalshi close_time carries 5 fractional digits; py3.9 fromisoformat rejects that (W80.2 found the run exiting silently)
+    assert na.parse_ts("2026-01-29T04:21:49.52779+00:00").microsecond == 527790
+    assert na.parse_ts("2026-01-29T04:21:49Z").tzinfo is not None
+    assert na.parse_ts("2026-01-29T04:21:49").tzinfo is not None
