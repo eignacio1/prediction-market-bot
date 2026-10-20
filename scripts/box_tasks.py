@@ -54,6 +54,14 @@ TASKS: dict[str, str] = {
         f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
         "tail -n 60 logs/demo_fill_forward_report.log 2>&1"
     ),
+    # W81.1: labelled forward-test read; writes to its own --out so the cron's report/cache are untouched
+    "forward_report_read": (
+        f"mkdir -p exp_output/FORWARD_TEST/w81_1 && {PY} scripts/demo_fill_forward_report.py "
+        "--out exp_output/FORWARD_TEST/w81_1/demo_fill_forward_report.json --no-act; echo; "
+        "python3 -c \"import json;r=json.load(open('exp_output/FORWARD_TEST/w81_1/demo_fill_forward_report.json'));"
+        "print(json.dumps({k:r.get(k) for k in ('test_start_utc','topup_utc','assignment_check','tripped')},indent=1));"
+        "[print(json.dumps(c)) for c in r['cells']]\""
+    ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
         "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "

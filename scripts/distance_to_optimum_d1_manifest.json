@@ -165,5 +165,23 @@
         "venue"
       ]
     }
-  ]
+  ],
+  "exact_rules": {
+    "personnel": [
+      "pts10",
+      "pts30",
+      "min10",
+      "min30",
+      "fga10",
+      "pts_season",
+      "gp_prior",
+      "min_rank",
+      "out_min",
+      "out_fga",
+      "inj_missing"
+    ],
+    "venue": [
+      "home"
+    ]
+  }
 }
