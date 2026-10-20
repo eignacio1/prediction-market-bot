@@ -975,3 +975,4 @@
 | 2026-10-20T01:23:37Z | W80.1 | CLOSED — merge confirmed, HEAD (95e0436) is ancestor of origin/main — W80.1 closed; acceptance logged |
 | 2026-10-20T01:24:54Z | W80.1 | CLOSED — merge confirmed, HEAD (4d67ded) is ancestor of origin/main — W80.1 closed; operator acceptance logged |
 | 2026-10-20T04:52:28Z | T-TBD GG-TBD | STANDARD — NBA lineup cross on KXNBAPTS (5 parts) + verify Muse facts index-2026-001/002 — FOR D5(b) NBA index entries 1->2 and charter v2 s5 VERIFIED/FAILED 0->2 — W81.2 |
+| 2026-10-20T04:52:34Z | GG-975..GG-979 T-1033..T-1036 | STANDARD — W81.1 forward-test read: label arms, clean count, score as pre-registered, fix 3 scoreboard inputs — FOR E1/E2/E3 per arm + ADR-0072 verdict (PLUMBING: D1/D4/P3 generator inputs 3->0) |
