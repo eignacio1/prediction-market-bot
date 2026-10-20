@@ -1,6 +1,6 @@
 # Thin-market pre-registration — NFL player passing yards (KXNFLPASSYDS), pre-game
 
-**Status: FROZEN 2026-10-20 (W80.1). NOT ACCEPTED. Nothing logs against this until the operator accepts.** Any change after freezing is a new dated file.
+**Status: FROZEN 2026-10-20 (W80.1). ACCEPTED by the operator 2026-10-19 21:40 PT (strategic window, AskUserQuestion: "Yes, accept it (Recommended)"); authorization is the blockquote in `04_EXECUTION/ACTIVE_QUEUE.md` "Needs your decision". Logging against it may begin (SHADOW, no orders, kelly 0).** Status line only changed; the text below is untouched. Any change after freezing is a new dated file.
 Pillars: BREADTH + EXECUTION. Operator thesis carried: "beating buddy off his phone placing parlays, that's the first step"; 77.2b: thinner-edge pre-registration before any new NFL game-market factor.
 
 ## 1. Family and cells
