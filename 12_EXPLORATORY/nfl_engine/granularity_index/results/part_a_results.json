@@ -1,0 +1,4074 @@
+{
+ "coverage": {
+  "rushes": 57274,
+  "with_box": 56577
+ },
+ "stability": {
+  "def_success|loaded|g4": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 4,
+   "n_unit_seasons": 8,
+   "r_half": -0.019187607272251685,
+   "r_spearman_brown": -0.03912594786631685,
+   "ci95": [
+    -6.463309392043477,
+    0.6726445404916493
+   ],
+   "trait": false
+  },
+  "def_success|light|g4": {
+   "ok": true,
+   "bucket": "light",
+   "games": 4,
+   "n_unit_seasons": 160,
+   "r_half": 0.03768170749853316,
+   "r_spearman_brown": 0.07262671631625814,
+   "ci95": [
+    -0.20735621313572433,
+    0.2903387795430588
+   ],
+   "trait": false
+  },
+  "def_success|loaded|g6": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 6,
+   "n_unit_seasons": 24,
+   "r_half": -0.029127645682651845,
+   "r_spearman_brown": -0.0600030386139328,
+   "ci95": [
+    -0.8822089448315744,
+    0.37968550863866235
+   ],
+   "trait": false
+  },
+  "def_success|light|g6": {
+   "ok": true,
+   "bucket": "light",
+   "games": 6,
+   "n_unit_seasons": 160,
+   "r_half": 0.05716096968621912,
+   "r_spearman_brown": 0.10814052225780778,
+   "ci95": [
+    -0.19088055839629037,
+    0.33147228877216484
+   ],
+   "trait": false
+  },
+  "def_success|loaded|g8": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 8,
+   "n_unit_seasons": 39,
+   "r_half": 0.16536420052401118,
+   "r_spearman_brown": 0.28379831892837354,
+   "ci95": [
+    -0.32952805326419465,
+    0.6139035726841893
+   ],
+   "trait": false
+  },
+  "def_success|light|g8": {
+   "ok": true,
+   "bucket": "light",
+   "games": 8,
+   "n_unit_seasons": 160,
+   "r_half": 0.04227374127586294,
+   "r_spearman_brown": 0.08111830817902986,
+   "ci95": [
+    -0.22461109043749722,
+    0.31941486576774314
+   ],
+   "trait": false
+  },
+  "def_success|loaded|g12": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 12,
+   "n_unit_seasons": 81,
+   "r_half": 0.1486840078245289,
+   "r_spearman_brown": 0.2588771268890889,
+   "ci95": [
+    -0.1023211208437135,
+    0.5085846337894829
+   ],
+   "trait": false
+  },
+  "def_success|light|g12": {
+   "ok": true,
+   "bucket": "light",
+   "games": 12,
+   "n_unit_seasons": 160,
+   "r_half": -0.0009124339428567123,
+   "r_spearman_brown": -0.001826534477768739,
+   "ci95": [
+    -0.3404161514967006,
+    0.26184885508956285
+   ],
+   "trait": false
+  },
+  "off_success|loaded|g4": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 4,
+   "n_unit_seasons": 10,
+   "r_half": -0.08852238106572062,
+   "r_spearman_brown": -0.1942392862464863,
+   "ci95": [
+    -14.189389885699857,
+    0.5924273232055807
+   ],
+   "trait": false
+  },
+  "off_success|light|g4": {
+   "ok": true,
+   "bucket": "light",
+   "games": 4,
+   "n_unit_seasons": 160,
+   "r_half": 0.015216441243837331,
+   "r_spearman_brown": 0.029976743137048165,
+   "ci95": [
+    -0.2830959159421214,
+    0.2668899916976228
+   ],
+   "trait": false
+  },
+  "off_success|loaded|g6": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 6,
+   "n_unit_seasons": 22,
+   "r_half": -0.2761626326476346,
+   "r_spearman_brown": -0.7630516055223163,
+   "ci95": [
+    -3.3786282534869194,
+    0.2524530681624425
+   ],
+   "trait": false
+  },
+  "off_success|light|g6": {
+   "ok": true,
+   "bucket": "light",
+   "games": 6,
+   "n_unit_seasons": 160,
+   "r_half": 0.07318270581678654,
+   "r_spearman_brown": 0.1363844300138774,
+   "ci95": [
+    -0.17709327595481145,
+    0.35914919729431
+   ],
+   "trait": false
+  },
+  "off_success|loaded|g8": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 8,
+   "n_unit_seasons": 44,
+   "r_half": -0.05961559610975093,
+   "r_spearman_brown": -0.12678984437242663,
+   "ci95": [
+    -1.0654709706260876,
+    0.3426276690596171
+   ],
+   "trait": false
+  },
+  "off_success|light|g8": {
+   "ok": true,
+   "bucket": "light",
+   "games": 8,
+   "n_unit_seasons": 160,
+   "r_half": 0.14016886728294556,
+   "r_spearman_brown": 0.24587387237992545,
+   "ci95": [
+    -0.009550379545965909,
+    0.43066767517052995
+   ],
+   "trait": false
+  },
+  "off_success|loaded|g12": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 12,
+   "n_unit_seasons": 77,
+   "r_half": -0.034501555467792634,
+   "r_spearman_brown": -0.07146889912289595,
+   "ci95": [
+    -0.7148096577080203,
+    0.35277765662251215
+   ],
+   "trait": false
+  },
+  "off_success|light|g12": {
+   "ok": true,
+   "bucket": "light",
+   "games": 12,
+   "n_unit_seasons": 160,
+   "r_half": 0.14710579040393162,
+   "r_spearman_brown": 0.2564816456067772,
+   "ci95": [
+    -0.0008535418387530264,
+    0.443141618483395
+   ],
+   "trait": false
+  },
+  "off_stuffed|loaded|g4": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 4,
+   "n_unit_seasons": 10,
+   "r_half": -0.022803804284250644,
+   "r_spearman_brown": -0.04667190556866209,
+   "ci95": [
+    -8.465877395360422,
+    0.8692532705889686
+   ],
+   "trait": false
+  },
+  "off_stuffed|light|g4": {
+   "ok": true,
+   "bucket": "light",
+   "games": 4,
+   "n_unit_seasons": 160,
+   "r_half": 0.15329426807710245,
+   "r_spearman_brown": 0.265837214872647,
+   "ci95": [
+    0.030284285986510236,
+    0.4498043665671239
+   ],
+   "trait": true
+  },
+  "off_stuffed|loaded|g6": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 6,
+   "n_unit_seasons": 22,
+   "r_half": -0.2754413495232004,
+   "r_spearman_brown": -0.7603010448966271,
+   "ci95": [
+    -4.162187587687255,
+    0.5001825503546722
+   ],
+   "trait": false
+  },
+  "off_stuffed|light|g6": {
+   "ok": true,
+   "bucket": "light",
+   "games": 6,
+   "n_unit_seasons": 160,
+   "r_half": 0.14698625541618973,
+   "r_spearman_brown": 0.2562999420823138,
+   "ci95": [
+    0.014500633200213503,
+    0.43377931810752046
+   ],
+   "trait": true
+  },
+  "off_stuffed|loaded|g8": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 8,
+   "n_unit_seasons": 44,
+   "r_half": -0.29167634362404576,
+   "r_spearman_brown": -0.8235679861840837,
+   "ci95": [
+    -1.9419057153100798,
+    -0.0871956450956261
+   ],
+   "trait": false
+  },
+  "off_stuffed|light|g8": {
+   "ok": true,
+   "bucket": "light",
+   "games": 8,
+   "n_unit_seasons": 160,
+   "r_half": 0.21324509603145844,
+   "r_spearman_brown": 0.35152846976919355,
+   "ci95": [
+    0.1403260606972446,
+    0.5141600801850308
+   ],
+   "trait": true
+  },
+  "off_stuffed|loaded|g12": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 12,
+   "n_unit_seasons": 77,
+   "r_half": -0.13829149226217052,
+   "r_spearman_brown": -0.3209704697594677,
+   "ci95": [
+    -0.9667136377927568,
+    0.11067041793367301
+   ],
+   "trait": false
+  },
+  "off_stuffed|light|g12": {
+   "ok": true,
+   "bucket": "light",
+   "games": 12,
+   "n_unit_seasons": 160,
+   "r_half": 0.19537369844331823,
+   "r_spearman_brown": 0.32688304702997006,
+   "ci95": [
+    0.07812005985639098,
+    0.5093130402661432
+   ],
+   "trait": true
+  },
+  "def_stuffed|loaded|g4": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 4,
+   "n_unit_seasons": 8,
+   "r_half": -0.11978741546253062,
+   "r_spearman_brown": -0.27217837501261366,
+   "ci95": [
+    NaN,
+    NaN
+   ],
+   "trait": false
+  },
+  "def_stuffed|light|g4": {
+   "ok": true,
+   "bucket": "light",
+   "games": 4,
+   "n_unit_seasons": 160,
+   "r_half": 0.05076200515676277,
+   "r_spearman_brown": 0.09661941506761963,
+   "ci95": [
+    -0.2656298328736038,
+    0.3535452774686479
+   ],
+   "trait": false
+  },
+  "def_stuffed|loaded|g6": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 6,
+   "n_unit_seasons": 24,
+   "r_half": -0.0919455814945117,
+   "r_spearman_brown": -0.20251117030153182,
+   "ci95": [
+    -2.108137597939478,
+    0.5029035527081881
+   ],
+   "trait": false
+  },
+  "def_stuffed|light|g6": {
+   "ok": true,
+   "bucket": "light",
+   "games": 6,
+   "n_unit_seasons": 160,
+   "r_half": 0.08605520662063551,
+   "r_spearman_brown": 0.15847298755356,
+   "ci95": [
+    -0.16795561850564616,
+    0.3861041757831537
+   ],
+   "trait": false
+  },
+  "def_stuffed|loaded|g8": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 8,
+   "n_unit_seasons": 39,
+   "r_half": -0.10916614941638059,
+   "r_spearman_brown": -0.2450875645214013,
+   "ci95": [
+    -1.3373530324487846,
+    0.32532156216450026
+   ],
+   "trait": false
+  },
+  "def_stuffed|light|g8": {
+   "ok": true,
+   "bucket": "light",
+   "games": 8,
+   "n_unit_seasons": 160,
+   "r_half": 0.12062967797835006,
+   "r_spearman_brown": 0.21528910102750387,
+   "ci95": [
+    -0.08157289709794867,
+    0.42961605283417265
+   ],
+   "trait": false
+  },
+  "def_stuffed|loaded|g12": {
+   "ok": true,
+   "bucket": "loaded",
+   "games": 12,
+   "n_unit_seasons": 81,
+   "r_half": 0.07317596838092548,
+   "r_spearman_brown": 0.13637273017084847,
+   "ci95": [
+    -0.28045894592779164,
+    0.4359876564898064
+   ],
+   "trait": false
+  },
+  "def_stuffed|light|g12": {
+   "ok": true,
+   "bucket": "light",
+   "games": 12,
+   "n_unit_seasons": 160,
+   "r_half": 0.19838655782118175,
+   "r_spearman_brown": 0.3310894244038811,
+   "ci95": [
+    0.07042477052764401,
+    0.5258863795995548
+   ],
+   "trait": true
+  }
+ },
+ "ranks_2026": [
+  {
+   "ok": true,
+   "unit": "ARI",
+   "bucket": "light",
+   "value": 0.41044776119402987,
+   "n_plays": 134,
+   "games": 5,
+   "rank_league": 21,
+   "of_league": 32,
+   "rank_history": 87,
+   "of_history": 160,
+   "percentile_history": 0.4591194968553459,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ATL",
+   "bucket": "light",
+   "value": 0.3548387096774194,
+   "n_plays": 93,
+   "games": 5,
+   "rank_league": 8,
+   "of_league": 32,
+   "rank_history": 34,
+   "of_history": 160,
+   "percentile_history": 0.7924528301886793,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BAL",
+   "bucket": "light",
+   "value": 0.35398230088495575,
+   "n_plays": 113,
+   "games": 5,
+   "rank_league": 7,
+   "of_league": 32,
+   "rank_history": 32,
+   "of_history": 160,
+   "percentile_history": 0.8050314465408805,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BUF",
+   "bucket": "light",
+   "value": 0.45544554455445546,
+   "n_plays": 101,
+   "games": 5,
+   "rank_league": 30,
+   "of_league": 32,
+   "rank_history": 132,
+   "of_history": 160,
+   "percentile_history": 0.17610062893081757,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CAR",
+   "bucket": "light",
+   "value": 0.3684210526315789,
+   "n_plays": 95,
+   "games": 4,
+   "rank_league": 10,
+   "of_league": 32,
+   "rank_history": 47,
+   "of_history": 160,
+   "percentile_history": 0.7106918238993711,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CHI",
+   "bucket": "light",
+   "value": 0.4444444444444444,
+   "n_plays": 81,
+   "games": 5,
+   "rank_league": 27,
+   "of_league": 32,
+   "rank_history": 124,
+   "of_history": 160,
+   "percentile_history": 0.2264150943396226,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CIN",
+   "bucket": "light",
+   "value": 0.37894736842105264,
+   "n_plays": 95,
+   "games": 5,
+   "rank_league": 12,
+   "of_league": 32,
+   "rank_history": 56,
+   "of_history": 160,
+   "percentile_history": 0.6540880503144655,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CLE",
+   "bucket": "light",
+   "value": 0.42016806722689076,
+   "n_plays": 119,
+   "games": 5,
+   "rank_league": 23,
+   "of_league": 32,
+   "rank_history": 100,
+   "of_history": 160,
+   "percentile_history": 0.37735849056603776,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DAL",
+   "bucket": "light",
+   "value": 0.4552238805970149,
+   "n_plays": 134,
+   "games": 5,
+   "rank_league": 29,
+   "of_league": 32,
+   "rank_history": 130,
+   "of_history": 160,
+   "percentile_history": 0.18867924528301883,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DEN",
+   "bucket": "light",
+   "value": 0.34965034965034963,
+   "n_plays": 143,
+   "games": 6,
+   "rank_league": 6,
+   "of_league": 32,
+   "rank_history": 23,
+   "of_history": 160,
+   "percentile_history": 0.8616352201257862,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.05716096968621912,
+    "r_spearman_brown": 0.10814052225780778,
+    "ci95": [
+     -0.19088055839629037,
+     0.33147228877216484
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DET",
+   "bucket": "light",
+   "value": 0.4020618556701031,
+   "n_plays": 97,
+   "games": 5,
+   "rank_league": 16,
+   "of_league": 32,
+   "rank_history": 77,
+   "of_history": 160,
+   "percentile_history": 0.5220125786163522,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "GB",
+   "bucket": "light",
+   "value": 0.4153846153846154,
+   "n_plays": 130,
+   "games": 5,
+   "rank_league": 22,
+   "of_league": 32,
+   "rank_history": 95,
+   "of_history": 160,
+   "percentile_history": 0.4088050314465409,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "HOU",
+   "bucket": "light",
+   "value": 0.3673469387755102,
+   "n_plays": 98,
+   "games": 5,
+   "rank_league": 10,
+   "of_league": 32,
+   "rank_history": 43,
+   "of_history": 160,
+   "percentile_history": 0.7358490566037736,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "IND",
+   "bucket": "light",
+   "value": 0.4563106796116505,
+   "n_plays": 103,
+   "games": 5,
+   "rank_league": 31,
+   "of_league": 32,
+   "rank_history": 133,
+   "of_history": 160,
+   "percentile_history": 0.16981132075471694,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "JAX",
+   "bucket": "light",
+   "value": 0.3132530120481928,
+   "n_plays": 83,
+   "games": 5,
+   "rank_league": 3,
+   "of_league": 32,
+   "rank_history": 7,
+   "of_history": 160,
+   "percentile_history": 0.9622641509433962,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "KC",
+   "bucket": "light",
+   "value": 0.3404255319148936,
+   "n_plays": 94,
+   "games": 4,
+   "rank_league": 5,
+   "of_league": 32,
+   "rank_history": 20,
+   "of_history": 160,
+   "percentile_history": 0.8805031446540881,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LA",
+   "bucket": "light",
+   "value": 0.4,
+   "n_plays": 115,
+   "games": 5,
+   "rank_league": 14,
+   "of_league": 32,
+   "rank_history": 72,
+   "of_history": 160,
+   "percentile_history": 0.5534591194968553,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LAC",
+   "bucket": "light",
+   "value": 0.3851851851851852,
+   "n_plays": 135,
+   "games": 5,
+   "rank_league": 13,
+   "of_league": 32,
+   "rank_history": 61,
+   "of_history": 160,
+   "percentile_history": 0.6226415094339622,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LV",
+   "bucket": "light",
+   "value": 0.4017857142857143,
+   "n_plays": 112,
+   "games": 5,
+   "rank_league": 15,
+   "of_league": 32,
+   "rank_history": 76,
+   "of_history": 160,
+   "percentile_history": 0.5283018867924528,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIA",
+   "bucket": "light",
+   "value": 0.40336134453781514,
+   "n_plays": 119,
+   "games": 5,
+   "rank_league": 18,
+   "of_league": 32,
+   "rank_history": 79,
+   "of_history": 160,
+   "percentile_history": 0.5094339622641509,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIN",
+   "bucket": "light",
+   "value": 0.30434782608695654,
+   "n_plays": 92,
+   "games": 5,
+   "rank_league": 1,
+   "of_league": 32,
+   "rank_history": 5,
+   "of_history": 160,
+   "percentile_history": 0.9748427672955975,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NE",
+   "bucket": "light",
+   "value": 0.40229885057471265,
+   "n_plays": 87,
+   "games": 5,
+   "rank_league": 17,
+   "of_league": 32,
+   "rank_history": 78,
+   "of_history": 160,
+   "percentile_history": 0.5157232704402516,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NO",
+   "bucket": "light",
+   "value": 0.488,
+   "n_plays": 125,
+   "games": 5,
+   "rank_league": 32,
+   "of_league": 32,
+   "rank_history": 151,
+   "of_history": 160,
+   "percentile_history": 0.05660377358490565,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYG",
+   "bucket": "light",
+   "value": 0.44680851063829785,
+   "n_plays": 94,
+   "games": 5,
+   "rank_league": 28,
+   "of_league": 32,
+   "rank_history": 126,
+   "of_history": 160,
+   "percentile_history": 0.21383647798742134,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYJ",
+   "bucket": "light",
+   "value": 0.43859649122807015,
+   "n_plays": 114,
+   "games": 5,
+   "rank_league": 26,
+   "of_league": 32,
+   "rank_history": 122,
+   "of_history": 160,
+   "percentile_history": 0.23899371069182385,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PHI",
+   "bucket": "light",
+   "value": 0.4365079365079365,
+   "n_plays": 126,
+   "games": 5,
+   "rank_league": 24,
+   "of_league": 32,
+   "rank_history": 117,
+   "of_history": 160,
+   "percentile_history": 0.2704402515723271,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PIT",
+   "bucket": "light",
+   "value": 0.4056603773584906,
+   "n_plays": 106,
+   "games": 5,
+   "rank_league": 19,
+   "of_league": 32,
+   "rank_history": 83,
+   "of_history": 160,
+   "percentile_history": 0.48427672955974843,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SEA",
+   "bucket": "light",
+   "value": 0.3381294964028777,
+   "n_plays": 139,
+   "games": 6,
+   "rank_league": 4,
+   "of_league": 32,
+   "rank_history": 15,
+   "of_history": 160,
+   "percentile_history": 0.9119496855345912,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.05716096968621912,
+    "r_spearman_brown": 0.10814052225780778,
+    "ci95": [
+     -0.19088055839629037,
+     0.33147228877216484
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SF",
+   "bucket": "light",
+   "value": 0.4380165289256198,
+   "n_plays": 121,
+   "games": 5,
+   "rank_league": 25,
+   "of_league": 32,
+   "rank_history": 120,
+   "of_history": 160,
+   "percentile_history": 0.2515723270440252,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TB",
+   "bucket": "light",
+   "value": 0.3116883116883117,
+   "n_plays": 77,
+   "games": 5,
+   "rank_league": 2,
+   "of_league": 32,
+   "rank_history": 6,
+   "of_history": 160,
+   "percentile_history": 0.9685534591194969,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TEN",
+   "bucket": "light",
+   "value": 0.3602941176470588,
+   "n_plays": 136,
+   "games": 5,
+   "rank_league": 9,
+   "of_league": 32,
+   "rank_history": 37,
+   "of_history": 160,
+   "percentile_history": 0.7735849056603774,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "WAS",
+   "bucket": "light",
+   "value": 0.40625,
+   "n_plays": 96,
+   "games": 5,
+   "rank_league": 20,
+   "of_league": 32,
+   "rank_history": 85,
+   "of_history": 160,
+   "percentile_history": 0.4716981132075472,
+   "entry": "def_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.03768170749853316,
+    "r_spearman_brown": 0.07262671631625814,
+    "ci95": [
+     -0.20735621313572433,
+     0.2903387795430588
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ARI",
+   "bucket": "light",
+   "value": 0.4336283185840708,
+   "n_plays": 113,
+   "games": 5,
+   "rank_league": 9,
+   "of_league": 32,
+   "rank_history": 49,
+   "of_history": 160,
+   "percentile_history": 0.6981132075471699,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ATL",
+   "bucket": "light",
+   "value": 0.47651006711409394,
+   "n_plays": 149,
+   "games": 5,
+   "rank_league": 2,
+   "of_league": 32,
+   "rank_history": 14,
+   "of_history": 160,
+   "percentile_history": 0.9182389937106918,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BAL",
+   "bucket": "light",
+   "value": 0.47058823529411764,
+   "n_plays": 136,
+   "games": 5,
+   "rank_league": 3,
+   "of_league": 32,
+   "rank_history": 17,
+   "of_history": 160,
+   "percentile_history": 0.89937106918239,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BUF",
+   "bucket": "light",
+   "value": 0.48148148148148145,
+   "n_plays": 108,
+   "games": 5,
+   "rank_league": 1,
+   "of_league": 32,
+   "rank_history": 13,
+   "of_history": 160,
+   "percentile_history": 0.9245283018867925,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CAR",
+   "bucket": "light",
+   "value": 0.39285714285714285,
+   "n_plays": 84,
+   "games": 4,
+   "rank_league": 15,
+   "of_league": 32,
+   "rank_history": 84,
+   "of_history": 160,
+   "percentile_history": 0.4779874213836478,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CHI",
+   "bucket": "light",
+   "value": 0.46153846153846156,
+   "n_plays": 143,
+   "games": 5,
+   "rank_league": 6,
+   "of_league": 32,
+   "rank_history": 24,
+   "of_history": 160,
+   "percentile_history": 0.8553459119496856,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CIN",
+   "bucket": "light",
+   "value": 0.42696629213483145,
+   "n_plays": 89,
+   "games": 5,
+   "rank_league": 11,
+   "of_league": 32,
+   "rank_history": 58,
+   "of_history": 160,
+   "percentile_history": 0.6415094339622642,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CLE",
+   "bucket": "light",
+   "value": 0.3157894736842105,
+   "n_plays": 95,
+   "games": 5,
+   "rank_league": 30,
+   "of_league": 32,
+   "rank_history": 153,
+   "of_history": 160,
+   "percentile_history": 0.04402515723270439,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DAL",
+   "bucket": "light",
+   "value": 0.40860215053763443,
+   "n_plays": 93,
+   "games": 5,
+   "rank_league": 15,
+   "of_league": 32,
+   "rank_history": 74,
+   "of_history": 160,
+   "percentile_history": 0.5408805031446541,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DEN",
+   "bucket": "light",
+   "value": 0.37209302325581395,
+   "n_plays": 129,
+   "games": 6,
+   "rank_league": 21,
+   "of_league": 32,
+   "rank_history": 115,
+   "of_history": 160,
+   "percentile_history": 0.28301886792452835,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.07318270581678654,
+    "r_spearman_brown": 0.1363844300138774,
+    "ci95": [
+     -0.17709327595481145,
+     0.35914919729431
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DET",
+   "bucket": "light",
+   "value": 0.4434782608695652,
+   "n_plays": 115,
+   "games": 5,
+   "rank_league": 7,
+   "of_league": 32,
+   "rank_history": 40,
+   "of_history": 160,
+   "percentile_history": 0.7547169811320755,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "GB",
+   "bucket": "light",
+   "value": 0.3488372093023256,
+   "n_plays": 86,
+   "games": 5,
+   "rank_league": 26,
+   "of_league": 32,
+   "rank_history": 136,
+   "of_history": 160,
+   "percentile_history": 0.15094339622641506,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "HOU",
+   "bucket": "light",
+   "value": 0.2777777777777778,
+   "n_plays": 90,
+   "games": 5,
+   "rank_league": 32,
+   "of_league": 32,
+   "rank_history": 159,
+   "of_history": 160,
+   "percentile_history": 0.0062893081761006275,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "IND",
+   "bucket": "light",
+   "value": 0.4180327868852459,
+   "n_plays": 122,
+   "games": 5,
+   "rank_league": 12,
+   "of_league": 32,
+   "rank_history": 66,
+   "of_history": 160,
+   "percentile_history": 0.5911949685534591,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "JAX",
+   "bucket": "light",
+   "value": 0.4339622641509434,
+   "n_plays": 106,
+   "games": 5,
+   "rank_league": 8,
+   "of_league": 32,
+   "rank_history": 46,
+   "of_history": 160,
+   "percentile_history": 0.7169811320754718,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "KC",
+   "bucket": "light",
+   "value": 0.46808510638297873,
+   "n_plays": 94,
+   "games": 4,
+   "rank_league": 5,
+   "of_league": 32,
+   "rank_history": 25,
+   "of_history": 160,
+   "percentile_history": 0.8490566037735849,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LA",
+   "bucket": "light",
+   "value": 0.43,
+   "n_plays": 100,
+   "games": 5,
+   "rank_league": 10,
+   "of_league": 32,
+   "rank_history": 53,
+   "of_history": 160,
+   "percentile_history": 0.6729559748427674,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LAC",
+   "bucket": "light",
+   "value": 0.3821138211382114,
+   "n_plays": 123,
+   "games": 5,
+   "rank_league": 18,
+   "of_league": 32,
+   "rank_history": 104,
+   "of_history": 160,
+   "percentile_history": 0.35220125786163525,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LV",
+   "bucket": "light",
+   "value": 0.3055555555555556,
+   "n_plays": 108,
+   "games": 5,
+   "rank_league": 31,
+   "of_league": 32,
+   "rank_history": 157,
+   "of_history": 160,
+   "percentile_history": 0.018867924528301883,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIA",
+   "bucket": "light",
+   "value": 0.34285714285714286,
+   "n_plays": 105,
+   "games": 5,
+   "rank_league": 27,
+   "of_league": 32,
+   "rank_history": 142,
+   "of_history": 160,
+   "percentile_history": 0.1132075471698113,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIN",
+   "bucket": "light",
+   "value": 0.32142857142857145,
+   "n_plays": 112,
+   "games": 5,
+   "rank_league": 29,
+   "of_league": 32,
+   "rank_history": 151,
+   "of_history": 160,
+   "percentile_history": 0.05660377358490565,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NE",
+   "bucket": "light",
+   "value": 0.36538461538461536,
+   "n_plays": 104,
+   "games": 5,
+   "rank_league": 23,
+   "of_league": 32,
+   "rank_history": 123,
+   "of_history": 160,
+   "percentile_history": 0.23270440251572322,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NO",
+   "bucket": "light",
+   "value": 0.38,
+   "n_plays": 100,
+   "games": 5,
+   "rank_league": 19,
+   "of_league": 32,
+   "rank_history": 106,
+   "of_history": 160,
+   "percentile_history": 0.339622641509434,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYG",
+   "bucket": "light",
+   "value": 0.3671875,
+   "n_plays": 128,
+   "games": 5,
+   "rank_league": 22,
+   "of_league": 32,
+   "rank_history": 119,
+   "of_history": 160,
+   "percentile_history": 0.25786163522012584,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYJ",
+   "bucket": "light",
+   "value": 0.36363636363636365,
+   "n_plays": 99,
+   "games": 5,
+   "rank_league": 24,
+   "of_league": 32,
+   "rank_history": 128,
+   "of_history": 160,
+   "percentile_history": 0.20125786163522008,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PHI",
+   "bucket": "light",
+   "value": 0.32673267326732675,
+   "n_plays": 101,
+   "games": 5,
+   "rank_league": 28,
+   "of_league": 32,
+   "rank_history": 148,
+   "of_history": 160,
+   "percentile_history": 0.07547169811320753,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PIT",
+   "bucket": "light",
+   "value": 0.4175824175824176,
+   "n_plays": 91,
+   "games": 5,
+   "rank_league": 13,
+   "of_league": 32,
+   "rank_history": 68,
+   "of_history": 160,
+   "percentile_history": 0.5786163522012578,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SEA",
+   "bucket": "light",
+   "value": 0.3624161073825503,
+   "n_plays": 149,
+   "games": 6,
+   "rank_league": 25,
+   "of_league": 32,
+   "rank_history": 127,
+   "of_history": 160,
+   "percentile_history": 0.2075471698113207,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.07318270581678654,
+    "r_spearman_brown": 0.1363844300138774,
+    "ci95": [
+     -0.17709327595481145,
+     0.35914919729431
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SF",
+   "bucket": "light",
+   "value": 0.4690265486725664,
+   "n_plays": 113,
+   "games": 5,
+   "rank_league": 4,
+   "of_league": 32,
+   "rank_history": 19,
+   "of_history": 160,
+   "percentile_history": 0.8867924528301887,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TB",
+   "bucket": "light",
+   "value": 0.4090909090909091,
+   "n_plays": 110,
+   "games": 5,
+   "rank_league": 14,
+   "of_league": 32,
+   "rank_history": 73,
+   "of_history": 160,
+   "percentile_history": 0.5471698113207547,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TEN",
+   "bucket": "light",
+   "value": 0.375,
+   "n_plays": 96,
+   "games": 5,
+   "rank_league": 21,
+   "of_league": 32,
+   "rank_history": 111,
+   "of_history": 160,
+   "percentile_history": 0.30817610062893086,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "WAS",
+   "bucket": "light",
+   "value": 0.3793103448275862,
+   "n_plays": 116,
+   "games": 5,
+   "rank_league": 20,
+   "of_league": 32,
+   "rank_history": 108,
+   "of_history": 160,
+   "percentile_history": 0.32704402515723274,
+   "entry": "off_success",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.015216441243837331,
+    "r_spearman_brown": 0.029976743137048165,
+    "ci95": [
+     -0.2830959159421214,
+     0.2668899916976228
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ARI",
+   "bucket": "light",
+   "value": 0.19469026548672566,
+   "n_plays": 113,
+   "games": 5,
+   "rank_league": 23,
+   "of_league": 32,
+   "rank_history": 103,
+   "of_history": 160,
+   "percentile_history": 0.3584905660377359,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ATL",
+   "bucket": "light",
+   "value": 0.1476510067114094,
+   "n_plays": 149,
+   "games": 5,
+   "rank_league": 11,
+   "of_league": 32,
+   "rank_history": 45,
+   "of_history": 160,
+   "percentile_history": 0.7232704402515724,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BAL",
+   "bucket": "light",
+   "value": 0.16176470588235295,
+   "n_plays": 136,
+   "games": 5,
+   "rank_league": 13,
+   "of_league": 32,
+   "rank_history": 63,
+   "of_history": 160,
+   "percentile_history": 0.610062893081761,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BUF",
+   "bucket": "light",
+   "value": 0.1388888888888889,
+   "n_plays": 108,
+   "games": 5,
+   "rank_league": 8,
+   "of_league": 32,
+   "rank_history": 35,
+   "of_history": 160,
+   "percentile_history": 0.7861635220125787,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CAR",
+   "bucket": "light",
+   "value": 0.14285714285714285,
+   "n_plays": 84,
+   "games": 4,
+   "rank_league": 9,
+   "of_league": 32,
+   "rank_history": 44,
+   "of_history": 160,
+   "percentile_history": 0.729559748427673,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CHI",
+   "bucket": "light",
+   "value": 0.1258741258741259,
+   "n_plays": 143,
+   "games": 5,
+   "rank_league": 5,
+   "of_league": 32,
+   "rank_history": 18,
+   "of_history": 160,
+   "percentile_history": 0.8930817610062893,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CIN",
+   "bucket": "light",
+   "value": 0.11235955056179775,
+   "n_plays": 89,
+   "games": 5,
+   "rank_league": 4,
+   "of_league": 32,
+   "rank_history": 9,
+   "of_history": 160,
+   "percentile_history": 0.949685534591195,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CLE",
+   "bucket": "light",
+   "value": 0.18947368421052632,
+   "n_plays": 95,
+   "games": 5,
+   "rank_league": 22,
+   "of_league": 32,
+   "rank_history": 96,
+   "of_history": 160,
+   "percentile_history": 0.4025157232704403,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DAL",
+   "bucket": "light",
+   "value": 0.22580645161290322,
+   "n_plays": 93,
+   "games": 5,
+   "rank_league": 28,
+   "of_league": 32,
+   "rank_history": 138,
+   "of_history": 160,
+   "percentile_history": 0.1383647798742138,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DEN",
+   "bucket": "light",
+   "value": 0.14728682170542637,
+   "n_plays": 129,
+   "games": 6,
+   "rank_league": 10,
+   "of_league": 32,
+   "rank_history": 39,
+   "of_history": 160,
+   "percentile_history": 0.7610062893081762,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.14698625541618973,
+    "r_spearman_brown": 0.2562999420823138,
+    "ci95": [
+     0.014500633200213503,
+     0.43377931810752046
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DET",
+   "bucket": "light",
+   "value": 0.20869565217391303,
+   "n_plays": 115,
+   "games": 5,
+   "rank_league": 24,
+   "of_league": 32,
+   "rank_history": 117,
+   "of_history": 160,
+   "percentile_history": 0.2704402515723271,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "GB",
+   "bucket": "light",
+   "value": 0.26744186046511625,
+   "n_plays": 86,
+   "games": 5,
+   "rank_league": 32,
+   "of_league": 32,
+   "rank_history": 158,
+   "of_history": 160,
+   "percentile_history": 0.012578616352201255,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "HOU",
+   "bucket": "light",
+   "value": 0.23333333333333334,
+   "n_plays": 90,
+   "games": 5,
+   "rank_league": 29,
+   "of_league": 32,
+   "rank_history": 143,
+   "of_history": 160,
+   "percentile_history": 0.10691823899371067,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "IND",
+   "bucket": "light",
+   "value": 0.1721311475409836,
+   "n_plays": 122,
+   "games": 5,
+   "rank_league": 16,
+   "of_league": 32,
+   "rank_history": 75,
+   "of_history": 160,
+   "percentile_history": 0.5345911949685535,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "JAX",
+   "bucket": "light",
+   "value": 0.18867924528301888,
+   "n_plays": 106,
+   "games": 5,
+   "rank_league": 21,
+   "of_league": 32,
+   "rank_history": 94,
+   "of_history": 160,
+   "percentile_history": 0.41509433962264153,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "KC",
+   "bucket": "light",
+   "value": 0.18085106382978725,
+   "n_plays": 94,
+   "games": 4,
+   "rank_league": 22,
+   "of_league": 32,
+   "rank_history": 86,
+   "of_history": 160,
+   "percentile_history": 0.46540880503144655,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LA",
+   "bucket": "light",
+   "value": 0.11,
+   "n_plays": 100,
+   "games": 5,
+   "rank_league": 3,
+   "of_league": 32,
+   "rank_history": 8,
+   "of_history": 160,
+   "percentile_history": 0.9559748427672956,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LAC",
+   "bucket": "light",
+   "value": 0.21138211382113822,
+   "n_plays": 123,
+   "games": 5,
+   "rank_league": 26,
+   "of_league": 32,
+   "rank_history": 120,
+   "of_history": 160,
+   "percentile_history": 0.2515723270440252,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LV",
+   "bucket": "light",
+   "value": 0.24074074074074073,
+   "n_plays": 108,
+   "games": 5,
+   "rank_league": 30,
+   "of_league": 32,
+   "rank_history": 146,
+   "of_history": 160,
+   "percentile_history": 0.08805031446540879,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIA",
+   "bucket": "light",
+   "value": 0.20952380952380953,
+   "n_plays": 105,
+   "games": 5,
+   "rank_league": 25,
+   "of_league": 32,
+   "rank_history": 119,
+   "of_history": 160,
+   "percentile_history": 0.25786163522012584,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIN",
+   "bucket": "light",
+   "value": 0.16964285714285715,
+   "n_plays": 112,
+   "games": 5,
+   "rank_league": 15,
+   "of_league": 32,
+   "rank_history": 70,
+   "of_history": 160,
+   "percentile_history": 0.5660377358490566,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NE",
+   "bucket": "light",
+   "value": 0.16346153846153846,
+   "n_plays": 104,
+   "games": 5,
+   "rank_league": 14,
+   "of_league": 32,
+   "rank_history": 65,
+   "of_history": 160,
+   "percentile_history": 0.5974842767295597,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NO",
+   "bucket": "light",
+   "value": 0.16,
+   "n_plays": 100,
+   "games": 5,
+   "rank_league": 12,
+   "of_league": 32,
+   "rank_history": 61,
+   "of_history": 160,
+   "percentile_history": 0.6226415094339622,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYG",
+   "bucket": "light",
+   "value": 0.109375,
+   "n_plays": 128,
+   "games": 5,
+   "rank_league": 2,
+   "of_league": 32,
+   "rank_history": 7,
+   "of_history": 160,
+   "percentile_history": 0.9622641509433962,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYJ",
+   "bucket": "light",
+   "value": 0.21212121212121213,
+   "n_plays": 99,
+   "games": 5,
+   "rank_league": 27,
+   "of_league": 32,
+   "rank_history": 121,
+   "of_history": 160,
+   "percentile_history": 0.24528301886792447,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PHI",
+   "bucket": "light",
+   "value": 0.25742574257425743,
+   "n_plays": 101,
+   "games": 5,
+   "rank_league": 31,
+   "of_league": 32,
+   "rank_history": 154,
+   "of_history": 160,
+   "percentile_history": 0.037735849056603765,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PIT",
+   "bucket": "light",
+   "value": 0.17582417582417584,
+   "n_plays": 91,
+   "games": 5,
+   "rank_league": 17,
+   "of_league": 32,
+   "rank_history": 78,
+   "of_history": 160,
+   "percentile_history": 0.5157232704402516,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SEA",
+   "bucket": "light",
+   "value": 0.174496644295302,
+   "n_plays": 149,
+   "games": 6,
+   "rank_league": 17,
+   "of_league": 32,
+   "rank_history": 81,
+   "of_history": 160,
+   "percentile_history": 0.4968553459119497,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.14698625541618973,
+    "r_spearman_brown": 0.2562999420823138,
+    "ci95": [
+     0.014500633200213503,
+     0.43377931810752046
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SF",
+   "bucket": "light",
+   "value": 0.13274336283185842,
+   "n_plays": 113,
+   "games": 5,
+   "rank_league": 6,
+   "of_league": 32,
+   "rank_history": 29,
+   "of_history": 160,
+   "percentile_history": 0.8238993710691824,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TB",
+   "bucket": "light",
+   "value": 0.14545454545454545,
+   "n_plays": 110,
+   "games": 5,
+   "rank_league": 10,
+   "of_league": 32,
+   "rank_history": 43,
+   "of_history": 160,
+   "percentile_history": 0.7358490566037736,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TEN",
+   "bucket": "light",
+   "value": 0.13541666666666666,
+   "n_plays": 96,
+   "games": 5,
+   "rank_league": 7,
+   "of_league": 32,
+   "rank_history": 31,
+   "of_history": 160,
+   "percentile_history": 0.8113207547169812,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "WAS",
+   "bucket": "light",
+   "value": 0.1810344827586207,
+   "n_plays": 116,
+   "games": 5,
+   "rank_league": 19,
+   "of_league": 32,
+   "rank_history": 86,
+   "of_history": 160,
+   "percentile_history": 0.46540880503144655,
+   "entry": "off_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.15329426807710245,
+    "r_spearman_brown": 0.265837214872647,
+    "ci95": [
+     0.030284285986510236,
+     0.4498043665671239
+    ],
+    "trait": true
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ARI",
+   "bucket": "light",
+   "value": 0.16417910447761194,
+   "n_plays": 134,
+   "games": 5,
+   "rank_league": 21,
+   "of_league": 32,
+   "rank_history": 97,
+   "of_history": 160,
+   "percentile_history": 0.39622641509433965,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "ATL",
+   "bucket": "light",
+   "value": 0.1935483870967742,
+   "n_plays": 93,
+   "games": 5,
+   "rank_league": 9,
+   "of_league": 32,
+   "rank_history": 54,
+   "of_history": 160,
+   "percentile_history": 0.6666666666666667,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BAL",
+   "bucket": "light",
+   "value": 0.21238938053097345,
+   "n_plays": 113,
+   "games": 5,
+   "rank_league": 5,
+   "of_league": 32,
+   "rank_history": 35,
+   "of_history": 160,
+   "percentile_history": 0.7861635220125787,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "BUF",
+   "bucket": "light",
+   "value": 0.2079207920792079,
+   "n_plays": 101,
+   "games": 5,
+   "rank_league": 6,
+   "of_league": 32,
+   "rank_history": 39,
+   "of_history": 160,
+   "percentile_history": 0.7610062893081762,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CAR",
+   "bucket": "light",
+   "value": 0.11578947368421053,
+   "n_plays": 95,
+   "games": 4,
+   "rank_league": 27,
+   "of_league": 32,
+   "rank_history": 144,
+   "of_history": 160,
+   "percentile_history": 0.10062893081761004,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CHI",
+   "bucket": "light",
+   "value": 0.1728395061728395,
+   "n_plays": 81,
+   "games": 5,
+   "rank_league": 17,
+   "of_league": 32,
+   "rank_history": 84,
+   "of_history": 160,
+   "percentile_history": 0.4779874213836478,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CIN",
+   "bucket": "light",
+   "value": 0.2631578947368421,
+   "n_plays": 95,
+   "games": 5,
+   "rank_league": 1,
+   "of_league": 32,
+   "rank_history": 7,
+   "of_history": 160,
+   "percentile_history": 0.9622641509433962,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "CLE",
+   "bucket": "light",
+   "value": 0.18487394957983194,
+   "n_plays": 119,
+   "games": 5,
+   "rank_league": 13,
+   "of_league": 32,
+   "rank_history": 62,
+   "of_history": 160,
+   "percentile_history": 0.6163522012578616,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DAL",
+   "bucket": "light",
+   "value": 0.11194029850746269,
+   "n_plays": 134,
+   "games": 5,
+   "rank_league": 32,
+   "of_league": 32,
+   "rank_history": 155,
+   "of_history": 160,
+   "percentile_history": 0.03144654088050314,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DEN",
+   "bucket": "light",
+   "value": 0.18181818181818182,
+   "n_plays": 143,
+   "games": 6,
+   "rank_league": 13,
+   "of_league": 32,
+   "rank_history": 73,
+   "of_history": 160,
+   "percentile_history": 0.5471698113207547,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.08605520662063551,
+    "r_spearman_brown": 0.15847298755356,
+    "ci95": [
+     -0.16795561850564616,
+     0.3861041757831537
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "DET",
+   "bucket": "light",
+   "value": 0.16494845360824742,
+   "n_plays": 97,
+   "games": 5,
+   "rank_league": 20,
+   "of_league": 32,
+   "rank_history": 95,
+   "of_history": 160,
+   "percentile_history": 0.4088050314465409,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "GB",
+   "bucket": "light",
+   "value": 0.2153846153846154,
+   "n_plays": 130,
+   "games": 5,
+   "rank_league": 4,
+   "of_league": 32,
+   "rank_history": 30,
+   "of_history": 160,
+   "percentile_history": 0.8176100628930818,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "HOU",
+   "bucket": "light",
+   "value": 0.1326530612244898,
+   "n_plays": 98,
+   "games": 5,
+   "rank_league": 28,
+   "of_league": 32,
+   "rank_history": 142,
+   "of_history": 160,
+   "percentile_history": 0.1132075471698113,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "IND",
+   "bucket": "light",
+   "value": 0.11650485436893204,
+   "n_plays": 103,
+   "games": 5,
+   "rank_league": 29,
+   "of_league": 32,
+   "rank_history": 150,
+   "of_history": 160,
+   "percentile_history": 0.06289308176100628,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "JAX",
+   "bucket": "light",
+   "value": 0.1927710843373494,
+   "n_plays": 83,
+   "games": 5,
+   "rank_league": 11,
+   "of_league": 32,
+   "rank_history": 56,
+   "of_history": 160,
+   "percentile_history": 0.6540880503144655,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "KC",
+   "bucket": "light",
+   "value": 0.23404255319148937,
+   "n_plays": 94,
+   "games": 4,
+   "rank_league": 2,
+   "of_league": 32,
+   "rank_history": 24,
+   "of_history": 160,
+   "percentile_history": 0.8553459119496856,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LA",
+   "bucket": "light",
+   "value": 0.1391304347826087,
+   "n_plays": 115,
+   "games": 5,
+   "rank_league": 26,
+   "of_league": 32,
+   "rank_history": 135,
+   "of_history": 160,
+   "percentile_history": 0.1572327044025157,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LAC",
+   "bucket": "light",
+   "value": 0.14814814814814814,
+   "n_plays": 135,
+   "games": 5,
+   "rank_league": 25,
+   "of_league": 32,
+   "rank_history": 122,
+   "of_history": 160,
+   "percentile_history": 0.23899371069182385,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "LV",
+   "bucket": "light",
+   "value": 0.17857142857142858,
+   "n_plays": 112,
+   "games": 5,
+   "rank_league": 14,
+   "of_league": 32,
+   "rank_history": 67,
+   "of_history": 160,
+   "percentile_history": 0.5849056603773585,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIA",
+   "bucket": "light",
+   "value": 0.17647058823529413,
+   "n_plays": 119,
+   "games": 5,
+   "rank_league": 15,
+   "of_league": 32,
+   "rank_history": 72,
+   "of_history": 160,
+   "percentile_history": 0.5534591194968553,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "MIN",
+   "bucket": "light",
+   "value": 0.17391304347826086,
+   "n_plays": 92,
+   "games": 5,
+   "rank_league": 16,
+   "of_league": 32,
+   "rank_history": 79,
+   "of_history": 160,
+   "percentile_history": 0.5094339622641509,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NE",
+   "bucket": "light",
+   "value": 0.11494252873563218,
+   "n_plays": 87,
+   "games": 5,
+   "rank_league": 31,
+   "of_league": 32,
+   "rank_history": 154,
+   "of_history": 160,
+   "percentile_history": 0.037735849056603765,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NO",
+   "bucket": "light",
+   "value": 0.136,
+   "n_plays": 125,
+   "games": 5,
+   "rank_league": 27,
+   "of_league": 32,
+   "rank_history": 139,
+   "of_history": 160,
+   "percentile_history": 0.13207547169811318,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYG",
+   "bucket": "light",
+   "value": 0.14893617021276595,
+   "n_plays": 94,
+   "games": 5,
+   "rank_league": 24,
+   "of_league": 32,
+   "rank_history": 120,
+   "of_history": 160,
+   "percentile_history": 0.2515723270440252,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "NYJ",
+   "bucket": "light",
+   "value": 0.14912280701754385,
+   "n_plays": 114,
+   "games": 5,
+   "rank_league": 23,
+   "of_league": 32,
+   "rank_history": 118,
+   "of_history": 160,
+   "percentile_history": 0.26415094339622647,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PHI",
+   "bucket": "light",
+   "value": 0.16666666666666666,
+   "n_plays": 126,
+   "games": 5,
+   "rank_league": 19,
+   "of_league": 32,
+   "rank_history": 90,
+   "of_history": 160,
+   "percentile_history": 0.44025157232704404,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "PIT",
+   "bucket": "light",
+   "value": 0.16981132075471697,
+   "n_plays": 106,
+   "games": 5,
+   "rank_league": 18,
+   "of_league": 32,
+   "rank_history": 87,
+   "of_history": 160,
+   "percentile_history": 0.4591194968553459,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SEA",
+   "bucket": "light",
+   "value": 0.2446043165467626,
+   "n_plays": 139,
+   "games": 6,
+   "rank_league": 2,
+   "of_league": 32,
+   "rank_history": 12,
+   "of_history": 160,
+   "percentile_history": 0.9308176100628931,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 6,
+    "n_unit_seasons": 160,
+    "r_half": 0.08605520662063551,
+    "r_spearman_brown": 0.15847298755356,
+    "ci95": [
+     -0.16795561850564616,
+     0.3861041757831537
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "SF",
+   "bucket": "light",
+   "value": 0.15702479338842976,
+   "n_plays": 121,
+   "games": 5,
+   "rank_league": 22,
+   "of_league": 32,
+   "rank_history": 106,
+   "of_history": 160,
+   "percentile_history": 0.339622641509434,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TB",
+   "bucket": "light",
+   "value": 0.2077922077922078,
+   "n_plays": 77,
+   "games": 5,
+   "rank_league": 7,
+   "of_league": 32,
+   "rank_history": 40,
+   "of_history": 160,
+   "percentile_history": 0.7547169811320755,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "TEN",
+   "bucket": "light",
+   "value": 0.20588235294117646,
+   "n_plays": 136,
+   "games": 5,
+   "rank_league": 8,
+   "of_league": 32,
+   "rank_history": 42,
+   "of_history": 160,
+   "percentile_history": 0.7421383647798743,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  },
+  {
+   "ok": true,
+   "unit": "WAS",
+   "bucket": "light",
+   "value": 0.1875,
+   "n_plays": 96,
+   "games": 5,
+   "rank_league": 12,
+   "of_league": 32,
+   "rank_history": 61,
+   "of_history": 160,
+   "percentile_history": 0.6226415094339622,
+   "entry": "def_stuffed",
+   "stability": {
+    "ok": true,
+    "bucket": "light",
+    "games": 4,
+    "n_unit_seasons": 160,
+    "r_half": 0.05076200515676277,
+    "r_spearman_brown": 0.09661941506761963,
+    "ci95": [
+     -0.2656298328736038,
+     0.3535452774686479
+    ],
+    "trait": false
+   }
+  }
+ ],
+ "league": {
+  "def_success|loaded": {
+   "mean": 0.41966173361522197,
+   "k": Infinity
+  },
+  "def_success|light": {
+   "mean": 0.4075577955069477,
+   "k": 813.5359518659459
+  },
+  "off_success|loaded": {
+   "mean": 0.41966173361522197,
+   "k": Infinity
+  },
+  "off_success|light": {
+   "mean": 0.4075577955069477,
+   "k": 314.7743775301773
+  },
+  "off_stuffed|loaded": {
+   "mean": 0.24458245243128965,
+   "k": Infinity
+  },
+  "off_stuffed|light": {
+   "mean": 0.1738456201922096,
+   "k": 367.3055408913171
+  },
+  "def_stuffed|loaded": {
+   "mean": 0.24458245243128965,
+   "k": Infinity
+  },
+  "def_stuffed|light": {
+   "mean": 0.1738456201922096,
+   "k": 328.67337012852823
+  }
+ },
+ "extreme_crosses": {
+  "success_delta_top": [
+   {
+    "week": 14,
+    "off": "NE",
+    "def": "MIN",
+    "light_freq": 0.8174583187214676,
+    "succ_expected": 0.3821237681959675,
+    "succ_delta": 0.017612121041421902,
+    "stuff_expected": 0.18489596499861238,
+    "stuff_delta": -0.007665634720211367
+   },
+   {
+    "week": 10,
+    "off": "NE",
+    "def": "DET",
+    "light_freq": 0.7657414210849117,
+    "succ_expected": 0.4013819238830859,
+    "succ_delta": 0.01670279213234782,
+    "stuff_expected": 0.1872384009419491,
+    "stuff_delta": -0.003953252928488249
+   },
+   {
+    "week": 3,
+    "off": "NE",
+    "def": "JAX",
+    "light_freq": 0.722007352358324,
+    "succ_expected": 0.3891532303121047,
+    "succ_delta": 0.01607878251589895,
+    "stuff_expected": 0.19437413812901777,
+    "stuff_delta": 0.00022940202118701403
+   },
+   {
+    "week": 7,
+    "off": "NE",
+    "def": "CHI",
+    "light_freq": 0.6634562537622026,
+    "succ_expected": 0.4096912558013801,
+    "succ_delta": 0.014334366299423862,
+    "stuff_expected": 0.196010815698606,
+    "stuff_delta": 0.004805559505295071
+   },
+   {
+    "week": 2,
+    "off": "CHI",
+    "def": "MIN",
+    "light_freq": 0.8713541581753266,
+    "succ_expected": 0.40346817101333654,
+    "succ_delta": 0.012771757399637707,
+    "stuff_expected": 0.17124396739520348,
+    "stuff_delta": -0.008155886030873027
+   }
+  ],
+  "success_delta_bottom": [
+   {
+    "week": 11,
+    "off": "BUF",
+    "def": "MIA",
+    "light_freq": 0.82536599940245,
+    "succ_expected": 0.42430774258569826,
+    "succ_delta": -0.01864959170222935,
+    "stuff_expected": 0.18017299903989312,
+    "stuff_delta": 0.005616760326154213
+   },
+   {
+    "week": 17,
+    "off": "BUF",
+    "def": "MIA",
+    "light_freq": 0.82536599940245,
+    "succ_expected": 0.42430774258569826,
+    "succ_delta": -0.01864959170222935,
+    "stuff_expected": 0.18017299903989312,
+    "stuff_delta": 0.005616760326154213
+   },
+   {
+    "week": 3,
+    "off": "BUF",
+    "def": "LAC",
+    "light_freq": 0.8929389138199469,
+    "succ_expected": 0.4197198792076248,
+    "succ_delta": -0.01771150317691572,
+    "stuff_expected": 0.16815915848251342,
+    "stuff_delta": 0.005384603657597187
+   },
+   {
+    "week": 16,
+    "off": "BUF",
+    "def": "DEN",
+    "light_freq": 0.8154080988139518,
+    "succ_expected": 0.41044035148880165,
+    "succ_delta": -0.016660608247761888,
+    "stuff_expected": 0.182248030333297,
+    "stuff_delta": 0.009872541912689714
+   },
+   {
+    "week": 14,
+    "off": "BUF",
+    "def": "GB",
+    "light_freq": 0.9233559892475468,
+    "succ_expected": 0.42803464598584307,
+    "succ_delta": -0.01661563452251763,
+    "stuff_expected": 0.1819594108040291,
+    "stuff_delta": 0.0005524845025915714
+   }
+  ],
+  "stuff_delta_top": [
+   {
+    "week": 3,
+    "off": "JAX",
+    "def": "NE",
+    "light_freq": 0.6642363525874667,
+    "succ_expected": 0.4152837609004189,
+    "succ_delta": 0.00011405414793164148,
+    "stuff_expected": 0.19231054120810032,
+    "stuff_delta": 0.025793270166591692
+   },
+   {
+    "week": 17,
+    "off": "LA",
+    "def": "TB",
+    "light_freq": 0.6431059047015988,
+    "succ_expected": 0.4032396467351025,
+    "succ_delta": 0.001492512331382645,
+    "stuff_expected": 0.19408819009909092,
+    "stuff_delta": 0.0243320479304166
+   },
+   {
+    "week": 4,
+    "off": "BUF",
+    "def": "NE",
+    "light_freq": 0.7288122486854315,
+    "succ_expected": 0.4237733264970201,
+    "succ_delta": -0.013333380884164359,
+    "stuff_expected": 0.17901865909399298,
+    "stuff_delta": 0.023195839260203716
+   },
+   {
+    "week": 13,
+    "off": "BUF",
+    "def": "NE",
+    "light_freq": 0.7288122486854315,
+    "succ_expected": 0.4237733264970201,
+    "succ_delta": -0.013333380884164359,
+    "stuff_expected": 0.17901865909399298,
+    "stuff_delta": 0.023195839260203716
+   },
+   {
+    "week": 2,
+    "off": "LA",
+    "def": "NYG",
+    "light_freq": 0.788257314021588,
+    "succ_expected": 0.42150049316907634,
+    "succ_delta": -0.0059855872152827505,
+    "stuff_expected": 0.1740530357867046,
+    "stuff_delta": 0.020095949009712427
+   }
+  ]
+ }
+}

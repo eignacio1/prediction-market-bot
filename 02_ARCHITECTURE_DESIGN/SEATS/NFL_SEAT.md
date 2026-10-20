@@ -24,6 +24,7 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N14 | G1 | Weather (temp, wind) | nflverse games: temp, wind (at-game values; GAP-5 no forecast archive) | ctx.wind / ctx.temp | interpreted | `12_EXPLORATORY/W68_3_nfl_totals_weather_results.md` |
 | N15 | G3 | Travel / time zone / short week | derived from games.gametime, location | ctx | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
 | N16 | G5 | Qualitative (form, role-fit, motivation, rumours) | none free and structured | none | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
+| N17 | F3 | Run-box granularity entry (success/stuffed rate by box count, offense x defense cross) | nflverse pbp + ftn n_defense_box (2022+); participation not needed | granularity_index.cross | applied | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md` |
 
 ## Cells
 
