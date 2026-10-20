@@ -88,3 +88,12 @@ def test_parse_ts_tolerates_odd_fraction_digits():
     assert na.parse_ts("2026-01-29T04:21:49.52779+00:00").microsecond == 527790
     assert na.parse_ts("2026-01-29T04:21:49Z").tzinfo is not None
     assert na.parse_ts("2026-01-29T04:21:49").tzinfo is not None
+
+
+def test_pace_index_parts_mean_ci():
+    spec2 = importlib.util.spec_from_file_location("nba_pace_index_parts", REPO / "scripts" / "nba_pace_index_parts.py")
+    ip = importlib.util.module_from_spec(spec2)
+    spec2.loader.exec_module(ip)
+    r = ip.mean_ci([1.0, 2.0, 3.0, 4.0] * 25, b=200)
+    assert abs(r["est"] - 2.5) < 1e-9 and r["lo"] < 2.5 < r["hi"] and r["n"] == 100
+    assert ip.mean_ci([1.0])["est"] is None
