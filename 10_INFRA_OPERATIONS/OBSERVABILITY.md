@@ -1,5 +1,7 @@
 # Observability — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; May-2026 design text; live monitoring is `deploy/healthcheck.sh`, the governance scan and the silent-arms block. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Define what is observable about the system, how observability is achieved, and what signals are used to detect anomalies. Covers logging, metrics, alerting, and tracing strategy.  
 **Owner (role):** Infrastructure Operator (IO) + Model Owner (MO)  
 **Last reviewed:** 2026-05-22  

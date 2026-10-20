@@ -4330,3 +4330,15 @@ W76.1, 2026-10-16. `T4-MLB kill switch armed` prints `t4_mlb_kill_switch.flag` a
 **Status:** OPEN · **Severity:** LOW
 
 W77.3 sweep (2026-10-16, heuristic grep of json.load(s) inside try/except that continues/passes, 19 hits). Fixed in W77.3: `scripts/nba_cell_autoflip.py` (reads cell ledgers; torn row shrank the n deciding a flip). Already safe: `build_t4_resolved_ledger.py` (returns reason), `t4_fill_status.py` (logs warning). Remaining silent skips, none read a live ledger: `capture_settlements.py:108`, `kalshi_settlement_crosscheck.py:17`, `gg157_fill_haircut_analysis.py:54`, `t507_gg157_haircut_rerun.py:40` (price/depth archives; torn line = quietly smaller sample in a one-off analysis), `run_t4_budget_sim.py:92,197,279` (falls back to DEFAULT_BANKROLL on any error), plus dashboard/aggregator readers (`cron_log_aggregator.py`, `live_terminal.py`, `run_mlb_dashboard.py`, `project_ops.py`) not classified. Heuristic, not exhaustive. Pillar: PROOF. Fix: shared `read_jsonl_reporting()` helper that counts and prints torn lines; adopt per site.
+
+### GG-970 — Foundation-doc staleness review (GG-074 monthly cadence) lapsed; doc registry + alarm now exist, most LIVING docs still unverified
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W80.4, 2026-10-20. GG-074's monthly grounding-doc review ran once (2026-07-23) and lapsed. Five months of drift followed: the kill-switch runbook described `python -m bot.kill_switch`, which does not exist. W80.4 classified 77 files in `00_ADMIN/DOC_REGISTRY.toml`, rewrote RUNBOOK_kill-switch, ACCESS_CONTROL_MATRIX and VENDOR_RISK against code and box, archived two superseded docs, and wired `scripts/doc_registry.py check` (alarm-only) into the governance scan. **Remaining:** LIVING docs with blank `last_verified` (01_SPEC, 08_MODEL_RISK_GOVERNANCE, the bannered 06/10 docs) are registered, not verified. The gap agent owns the cadence. Close when every LIVING doc has a `last_verified` or is converted to a pointer.
+
+### GG-971 — Security posture gaps recorded in ACCESS_CONTROL_MATRIX, unregistered until now
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W80.4, 2026-10-20. Services run as root on the box; a single shared root SSH key (`VPS_SSH_KEY`) serves deploy, the box bridge and sync workflows; no vault (OQ-009). Recorded in `09_SECURITY_PRIVACY_COMPLIANCE/ACCESS_CONTROL_MATRIX.md` § known gaps. Not fixed in W80.4 (docs-only block). No real capital is at risk (Hard Rule 2).

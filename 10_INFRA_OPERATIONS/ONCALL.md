@@ -1,5 +1,7 @@
 # On-Call Protocol — Prediction Market Trading Bot
 
+> **STATUS BANNER (2026-10-20, W80.4): NOT VERIFIED against the running system.** Written May 2026; May-2026 design text; unattended operation relies on the flag-file kill switch (`RUNBOOK_kill-switch.md`) and the governance scan. Where this file disagrees with those sources, they win. Registered LIVING in `00_ADMIN/DOC_REGISTRY.toml` with no verification date.
+
 **Purpose:** Define the on-call responsibility model for this single-operator system. Establishes when the operator must be available, response time expectations, and escalation procedures when the operator is unavailable.  
 **Owner (role):** Director/Sponsor (DS) + Infrastructure Operator (IO)  
 **Last reviewed:** 2026-05-22  

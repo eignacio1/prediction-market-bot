@@ -563,3 +563,51 @@ path = "logs/t4_mlb_totals_outcome_store.jsonl"
 class = "RECORD"
 owner = "Director/Sponsor (DS)"
 must_match = "n/a — frozen record"
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/README.md"
+class = "LIVING"
+owner = "Infrastructure Operator"
+must_match = "the folder contents and the canonical sources it names"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/README.md"
+class = "LIVING"
+owner = "Data Scientist (DS) + QA"
+must_match = "the folder contents and the canonical sources it names"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "09_INTEGRATION_PATCHES/README.md"
+class = "LIVING"
+owner = "Lead Engineer"
+must_match = "the folder contents and the canonical sources it names"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/README.md"
+class = "LIVING"
+owner = "Risk & Compliance Officer"
+must_match = "the folder contents and the canonical sources it names"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/README.md"
+class = "LIVING"
+owner = "Infrastructure Operator"
+must_match = "the folder contents and the canonical sources it names"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "ARCHIVE/README.md"
+class = "LIVING"
+owner = "gap agent"
+must_match = "the folder contents and the canonical sources it names"
+max_age_days = 90
+last_verified = "2026-10-20"
