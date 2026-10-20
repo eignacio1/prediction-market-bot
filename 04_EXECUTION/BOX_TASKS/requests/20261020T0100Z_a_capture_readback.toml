@@ -1,0 +1,2 @@
+task = "capture_readback"
+note = "W80.1: read back the 00:51Z run (event-time window)"
