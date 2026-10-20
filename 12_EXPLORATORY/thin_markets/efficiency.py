@@ -46,7 +46,12 @@ GAME_FAMILY = {"NFL": "KXNFLGAME", "NBA": "KXNBAGAME"}
 
 
 def iso(s: str) -> datetime:
-    return datetime.fromisoformat(s[:-1] + "+00:00" if s.endswith("Z") else s)
+    s = s[:-1] + "+00:00" if s.endswith("Z") else s
+    if "." in s:  # Python < 3.11 needs 3 or 6 fractional digits; Kalshi emits 5
+        head, rest = s.split(".", 1)
+        frac, tz = rest[:-6], rest[-6:]
+        s = head + "." + frac.ljust(6, "0")[:6] + tz
+    return datetime.fromisoformat(s)
 
 
 def sport_of(series: str) -> str:
