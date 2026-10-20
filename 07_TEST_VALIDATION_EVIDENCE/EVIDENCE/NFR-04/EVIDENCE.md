@@ -1,5 +1,8 @@
 # NFR-04 Evidence — Data Integrity (no leakage, chronological splits)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** Automated scan: zero date overlap between train/test snapshots; look-ahead audit passes.
 
 **Populated:** 2026-07-06 (GG-075 remediation).

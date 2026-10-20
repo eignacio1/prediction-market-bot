@@ -1,206 +1,96 @@
 # Runbook: Kill Switch — Prediction Market Trading Bot
 
-**Purpose:** Step-by-step procedure for activating, verifying, and recovering from a kill switch event. This runbook governs both automatic (C7-triggered) and manual kill switch activation.  
-**Owner (role):** Model Owner (MO) + Infrastructure Operator (IO)  
-**Last reviewed:** 2026-05-22  
-**Next review:** After first kill switch drill (G5); update after any real kill switch event  
-**Staleness triggers:** Kill switch implementation changed; component added; recovery procedure revised; real event reveals gap  
-**Upstream links:** EXECUTION_ARCHITECTURE.md (kill switch design), RESILIENCE_FAILURE_MODES.md (FM-04, FM-06), MONITORING_DRIFT_PLAN.md (L3/L4 response), SLA_SLO_SLI.md (C7 SLOs)  
-**Downstream links:** RID_LOG.md, KNOWN_ISSUES.md, APPROVALS_REGISTER.md  
-**Decision references:** ADR-0001, NFR-03  
-**Confidence:** 8/10 — Procedure is well-defined; exact commands TBD until Phase 5 implementation
+**Class:** LIVING (registered in `00_ADMIN/DOC_REGISTRY.toml`)
+**Last verified:** 2026-10-20 against `src/prediction_market_bot/c5_execution/kill_switch_state.py`, `c7_monitoring/monitor.py`, `c5_execution/kalshi_client.py`, `scripts/run_t4_mlb_live.py`, and the W76.1 drill record (`05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/W75_4_kill_switch.md`).
+**Owner (role):** Infrastructure Operator (IO) + Risk & Compliance Officer (RCO)
+**Must match:** the flag-file contract in `kill_switch_state.py` and the C7 trigger/reset API in `monitor.py`. If either changes, this file is stale.
+**Replaces:** the 2026-05-22 version, which described `python -m bot.kill_switch`, `bot.status` and a SIGTERM/`pkill` procedure. None of those exist. The superseded text is in git history.
+**Decision references:** ADR-0001, NFR-03, GG-667, GG-745 (RESOLVED).
 
 ---
 
-## Overview
+## What the kill switch is
 
-The kill switch is the primary emergency response for this system. There is no other emergency override path. When triggered, it must halt all pipeline components within **≤60 seconds** (NFR-03).
+One mechanism: **flag files in the box's `logs/` directory** (`/opt/prediction-market-bot/logs/`). Every order path asks `halt_reason()` before it acts. If a flag that applies to the caller exists, the order is refused. **Touch a file to halt; remove it to resume.**
 
-**Kill switch = total halt. It is not a partial pause or a rate limiter.**
+| Flag file | Effect |
+|---|---|
+| `logs/kill_switch.flag` | **GLOBAL.** Halts every order path. |
+| `logs/kill_switch_<band>.flag` | Halts only that band. Labels: `t1_nba`, `t1_mlb`, `t4_mlb`, `shadow`. |
+| `logs/t4_mlb_kill_switch.flag` | Legacy alias for band `t4_mlb`. |
+| `logs/t4_kill_switch.flag` | Legacy alias for band `t4`. |
+| any other `*kill_switch*.flag` | Not recognised, so it **fails closed as GLOBAL**. |
 
----
+Fail-closed rules: a caller with no band label is halted by any flag. An unreadable `logs/` directory halts everything. Cell-level halts (`CellKillSwitchStatus.HALTED` in `market_type_registry`) are a separate, finer switch.
 
-## Trigger Conditions
+What it does not cover: **order cancels are intentionally not gated**, so a halt never traps a resting order.
 
-### Automatic Triggers (C7)
+Where the check lives: `KalshiMarketClient.submit_order` calls `halt_reason()` itself, before the key check, and returns `KalshiOrder(ok=False, status="halted", error="kill_switch_halted:<reason>")` with no HTTP call. The long-running `t4-mlb` service (`run_t4_mlb_live.py`) also polls the flag on its loop (every 10 s) and logs `T4-MLB kill switch armed — sleeping 10s`. That message names a legacy path and is cosmetic (GG-842).
 
-C7 monitors the following and auto-triggers without operator action:
-
-| Trigger | Threshold | Source |
-|---------|-----------|--------|
-| Daily loss limit breach | Loss ≥ daily limit (RISK_APPETITE_CONSTRAINTS.md) | C4 → C7 |
-| Session loss limit breach | Loss ≥ session limit | C4 → C7 |
-| Maximum position size breach | Single position > limit | C4 → C7 |
-| Simultaneous open positions > max | Count > max | C4 → C7 |
-| Drift kill threshold | Rolling Brier > baseline + 0.10 | C7 drift calculator |
-| C4 Risk Engine unavailable with open position | Any connectivity failure | C7 health check |
-| C6 Audit Logger failure (write error) | Any write failure | C6 health check → C7 |
-
-### Manual Triggers
-
-Operator manually triggers kill switch when:
-- Anomalous market behavior observed
-- Suspicion of order duplication or execution error
-- Venue API errors ≥ 3 consecutive
-- Any situation where operator is uncertain system is behaving correctly
-- **When in doubt, trigger the kill switch. Recovery is cheap. Unexpected live losses are not.**
+`PMBOT_KILL_SWITCH_DIR` redirects the flag directory. It is for tests and drills only. Never set it on the production box.
 
 ---
 
-## Kill Switch Activation Procedure
+## Triggers
 
-### Step 1 — Trigger (≤5 seconds)
+**Automatic**
+- C4 risk engine returns `STATUS_KILL_SWITCH`: daily loss ≥ `MAX_DAILY_LOSS_PCT` (0.15), drawdown ≥ `max_drawdown_pct` (0.20), or a solvency-invariant breach. The caller then calls C7 `trigger_kill_switch`.
+- C6 audit-write failure (`c4 audit`, `c5 write`, `c6 audit`) or an engine exception in `t4_live_runner.py`: `fast_halt.halt` plus a C7 trigger.
+- Drift does not trip it alone. Brier L3 only pauses new positions; L4 is not fired by drift (GG-095). See `RUNBOOK_model-drift.md`.
 
-**If automatic:** C7 has already triggered. Proceed to Step 2 to verify halt.
+**Manual** — any observed anomaly (wrong fills, runaway order rate, a duplicated order, a credential suspected leaked). When unsure, trip it. Resuming costs one `rm`.
 
-**If manual:**
-```bash
-# Manual kill switch command (exact command TBD at Phase 5 implementation)
-python -m bot.kill_switch --trigger --reason "MANUAL: <reason>" --operator "Earl Ignacio"
-```
-
-The kill switch script must:
-1. Send SIGTERM to all pipeline processes
-2. Close all open network connections to venue API
-3. Cancel any pending orders (if venue API is reachable)
-4. Write kill switch event to C6 audit log
+C7 API (`monitor.py`): `trigger_kill_switch(reason, operator, session_id)` sets the in-memory event, writes the global flag, and logs CRITICAL `kill_switch_triggered` with `halt_time_ms` against `KILL_SWITCH_SLA_MS = 60000`. `reset_kill_switch(reason, operator)` clears the event and removes the flag only if C7 wrote it, and logs WARNING `kill_switch_reset`.
 
 ---
 
-### Step 2 — Verify Halt (≤60 seconds from trigger)
+## Procedure 1 — Trip it by hand
 
-Verify all components have stopped:
+The box bridge (`scripts/box_tasks.py` allowlist) has **no kill-switch task**, so this cannot be done through the bridge. Use ssh:
 
 ```bash
-# Check for any running pipeline processes
-ps aux | grep -E "bot\.(c1|c2|c3|c4|c5|c6|c7|pipeline|ingestion|forecast|execution)"
-
-# Confirm no open orders (check C6 last entry)
-tail -n 20 logs/audit.jsonl | python -m bot.audit.check_open_orders
-
-# Confirm C5 Execution Engine is down
-python -m bot.status --check c5
+ssh prediction-market-vps            # root@157.230.91.33
+cd /opt/prediction-market-bot
+touch logs/kill_switch.flag          # GLOBAL halt
+# or one band only:
+touch logs/kill_switch_t4_mlb.flag
 ```
 
-**Expected result:** Zero running pipeline processes. No open orders in flight.
-
-**If processes are still running after 60 seconds:** This is a P1 SLO breach (SLA_SLO_SLI.md ALT-006). Kill processes manually:
+## Procedure 2 — Verify within 60 s (NFR-03)
 
 ```bash
-# Force kill all pipeline processes (use only if SIGTERM failed)
-pkill -9 -f "bot\.(pipeline|execution|forecast)"
+# 1. the flag exists
+ls -l /opt/prediction-market-bot/logs/*kill_switch*.flag
+# 2. the t4-mlb loop saw it (expect "shadow_skip ... kill_switch_halted" rows, no shadow_order rows)
+journalctl -u t4-mlb --since '-2 min' | grep -E 'kill switch|kill_switch_halted' | tail
+# 3. cron-driven bands: the next run's audit line should show kill_switch_halted
+grep -c kill_switch_halted /opt/prediction-market-bot/logs/audit.jsonl
 ```
 
----
+Measured expectation (W76.1 drill, below): the polling service halts in ≤ 30 s worst case; a direct `submit_order` is refused in tens of milliseconds.
 
-### Step 3 — Log the Event (within 5 minutes)
+## Procedure 3 — Recover
 
-Log the kill switch event immediately:
-
-```
-RID_LOG.md entry:
-- Timestamp: <ISO-8601>
-- Trigger type: AUTO (C7) / MANUAL
-- Trigger reason: <specific reason>
-- Halt time: <measured ms from trigger to full halt>
-- Components confirmed halted: C1, C2, C3, C4, C5, C6, C7
-- Open orders at time of trigger: <count>
-- Open orders cancelled: <count>
-- Open orders NOT cancelled (venue unreachable): <count>
-- P&L at time of trigger: <paper> or <live>
-```
+1. Find the cause. Read `logs/audit.jsonl` for `kill_switch_triggered` and its `reason`.
+2. **Do not resume a real kill without a written decision in `04_EXECUTION/RID_LOG.md`.** `reset_kill_switch` says the same in its warning.
+3. `rm /opt/prediction-market-bot/logs/<the flag you touched>`. Do not remove flags you did not create without reading why they exist.
+4. Confirm resume: `journalctl -u t4-mlb --since '-1 min'` shows the loop evaluating again (W76.1: resumed 7.3 s after removal).
+5. If C7 wrote the flag, also call `reset_kill_switch` through the operator tooling so the in-memory event clears. A restart of the process clears it too.
+6. Log the event in `RID_LOG.md`. A real event that exposed a gap in this file: register a GG and fix this file the same day.
 
 ---
 
-### Step 4 — Assess Situation
+## Evidence — W76.1 drill (DEMO, on the box, 2026-10-15T23:50Z–2026-10-16T00:14Z) — PASS
 
-Before any restart, the operator must assess:
+| Check | Result |
+|---|---|
+| Global flag → `t4-mlb` stops | 29.5 s after touch (worst case; bounded by the 10 s loop plus an in-flight cycle). 72 `shadow_skip reason=kill_switch_halted`, 0 `shadow_order`. |
+| Direct `submit_order` probe (fake ticker `KXZZZ-W76PROBE-NOSUCH`), five labels | all halted in 19–37 ms, no HTTP |
+| Band flag `t4_mlb` | halted unlabeled and `t4_mlb`; `t1_mlb`, `t1_nba`, `shadow` not halted |
+| Flag removed → resume | `t4-mlb` resumed 7.3 s later |
+| C7 record | `kill_switch_drill_result` in `logs/audit.jsonl`, 2026-10-16T00:18:54Z, event EVT-3B72CDCB0720, session `W76.1-DRILL`, `passed_sla: true` |
 
-| Question | Assess How |
-|----------|-----------|
-| What triggered the kill switch? | C7 alert log; C6 audit log |
-| Were all orders successfully cancelled? | C6 last execution log; venue account check |
-| Is there any open position at the venue? | Log into venue account manually; reconcile |
-| Was the trigger a real risk event or false positive? | Review C7 drift metrics; review C6 P&L log |
-| Is the system safe to restart? | All questions below answered affirmatively |
+**Not exercised by the drill:** cancels under a flag; the C7 trip → flag write (unit-tested in `tests/test_w75_4_one_kill_switch.py`, 14 tests). Re-run the drill after any change to `kill_switch_state.py`, `kalshi_client.py`, or the loop in `run_t4_mlb_live.py`.
 
-**Do not restart until all open positions are confirmed cancelled or reconciled.**
-
----
-
-### Step 5 — Recovery Decision
-
-After assessment:
-
-| Trigger was... | Recovery path |
-|---------------|---------------|
-| Automatic limit breach (real) | Fix root cause (log to RID_LOG.md); ADR if risk limit change needed; manual restart after RCO sign-off |
-| Automatic drift threshold (real drift) | Log drift event; follow RUNBOOK_model-drift.md; new ADR required before restart |
-| C7/C6 component failure | Fix component; test in ENV-01; restart paper/live only after fix verified |
-| Manual trigger (verified anomaly) | Resolve anomaly; log root cause; manual restart after operator sign-off |
-| False positive (retrospective) | Log false positive; review thresholds with evidence; restart after 15-minute observation |
-
-**Written decision required** for any restart logged in RID_LOG.md. No silent restarts.
-
----
-
-### Step 6 — Restart (Only After Step 5 Complete)
-
-```bash
-# Restart pipeline in Paper or Live mode
-python -m bot.pipeline --env ENV-02  # paper
-# OR
-python -m bot.pipeline --env ENV-03  # live capital (only if G6 cleared)
-
-# Verify C7 is monitoring within 60 seconds of startup
-python -m bot.status --check c7
-```
-
-Observe for 5 minutes after restart before returning to unattended operation.
-
----
-
-## Kill Switch Drill Procedure (Pre-G5 Required)
-
-The kill switch must be drilled and timed before any live use (TC-009, TC-010).
-
-### Drill Setup
-1. Start pipeline in paper trading mode (ENV-02) with simulated orders
-2. Confirm C7 is active and logging
-3. Verify test positions are open
-
-### Drill Execution
-1. Manually trigger kill switch
-2. Start timer at trigger moment
-3. Confirm halt time ≤ 60 seconds
-4. Log result in TEST_STRATEGY.md (TC-009, TC-010)
-
-### Drill Pass Criteria
-- All processes halted: ✅ required
-- Simulated orders cancelled: ✅ required
-- Kill event in C6 log: ✅ required
-- Halt time ≤ 60 seconds: ✅ required (NFR-03)
-
-**If any criterion fails, drill is FAILED. Block G5 gate until drill passes.**
-
----
-
-## Known Failure Modes
-
-| Failure | Likelihood | Response |
-|---------|-----------|----------|
-| SIGTERM not received by subprocess | LOW | Add explicit subprocess kill in kill switch implementation |
-| Venue API unreachable at kill time | MEDIUM | Log uncancelled orders; reconcile manually; never assume they lapsed |
-| Kill switch script itself crashes | LOW | Add watchdog process; fallback: OS-level process kill |
-| Kill switch triggered while C6 unavailable | LOW | Kill switch proceeds without log; restore log from other sources post-event |
-
----
-
-## References
-
-- NFR-03: Kill switch ≤60s halt requirement
-- RISK_APPETITE_CONSTRAINTS.md: Hard limits that trigger automatic kill
-- MONITORING_DRIFT_PLAN.md: Drift kill threshold (L4)
-- RESILIENCE_FAILURE_MODES.md: FM-04 (API outage), FM-06 (kill switch failure)
-- RID_LOG.md: All kill switch events logged here
-- RUNBOOK_model-drift.md: Drift-triggered kill switch recovery
+## Related
+`RUNBOOK_model-drift.md`, `RUNBOOK_order-duplication.md`, `RUNBOOK_audit-log.md`, `04_EXECUTION/RID_LOG.md`, `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md`.

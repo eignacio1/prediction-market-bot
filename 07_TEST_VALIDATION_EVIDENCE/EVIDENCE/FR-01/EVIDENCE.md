@@ -1,5 +1,8 @@
 # FR-01 Evidence — Signal Ingestion
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** (a) Ingestion runs without error on a valid input snapshot; (b) Output schema matches DATA_REQUIREMENTS.md contract; (c) Snapshot ID assigned and written to DATA_SNAPSHOTS_INDEX.md; (d) Invalid input rejected with structured error log.
 
 **Populated:** 2026-07-06 (GG-075 remediation), by pointing to evidence that already existed, not by generating new proof.

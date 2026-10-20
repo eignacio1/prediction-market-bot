@@ -1,5 +1,8 @@
 # Sensitivity and Stress Tests — Prediction Market Trading Bot
 
+> **Record as of 2026-07-02** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Purpose:** Document sensitivity analyses and stress tests for model robustness. Required before paper trading deployment.  
 **Owner (role):** Methodology Validator (MV)  
 **Status:** ST-001–ST-004 ✅ ALL PASS (2026-05-28); ST-005 🔴 BLOCKED (DS-02/Kalshi API connectivity)  

@@ -1,0 +1,565 @@
+# DOC_REGISTRY.toml — foundation-doc classification (W80.4, 2026-10-20)
+# Read by scripts/doc_registry.py (alarm-only). Classes: RECORD (frozen, dated), LIVING (must match reality; max_age_days),
+# SUPERSEDED (stub or archived copy; points elsewhere), DEAD (archived verbatim, no pointer).
+# last_verified = date a human/agent checked the doc against what it must match; "" = never since registry creation (age falls back to last git change).
+# Covered dirs: 01_SPEC 06_ 07_ 08_ 09_INTEGRATION_PATCHES 09_SECURITY_PRIVACY_COMPLIANCE 10_ ARCHIVE + logs/t4_mlb_totals_outcome_store.jsonl
+
+covered = ["01_SPEC/","06_CODE_EXECUTION_REPRODUCIBILITY/","07_TEST_VALIDATION_EVIDENCE/","08_MODEL_RISK_GOVERNANCE/","09_INTEGRATION_PATCHES/","09_SECURITY_PRIVACY_COMPLIANCE/","10_INFRA_OPERATIONS/","ARCHIVE/","logs/t4_mlb_totals_outcome_store.jsonl"]
+
+[[doc]]
+path = "01_SPEC/ACCEPTANCE_CRITERIA.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/DATA_REQUIREMENTS.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/NON_FUNCTIONAL_REQUIREMENTS.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/PREGAME_FEATURE_ARCHITECTURE.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/REQUIREMENTS.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/RISK_APPETITE_CONSTRAINTS.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/ROADMAP_MILESTONES.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/SCOPE_IN_OUT.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "01_SPEC/VISION_OUTCOMES.md"
+class = "LIVING"
+owner = "Director/Sponsor (DS)"
+must_match = "the vision in CLAUDE.md and accepted ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/ARTIFACT_REGISTRY.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/DATA_SNAPSHOTS_INDEX.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/README.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-base.txt"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/DEPENDENCY_LOCKS/requirements-dev.txt"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/ENVIRONMENTS.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/NOTEBOOKS_POLICY.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/PIPELINES_JOBS.md"
+class = "SUPERSEDED"
+owner = "Infrastructure Operator (IO)"
+must_match = "n/a — points to its replacement"
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/RUN_INSTRUCTIONS.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "06_CODE_EXECUTION_REPRODUCIBILITY/SECRETS_HANDLING.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "the box and repo as run (venv, .env contract, cron/systemd units)"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/BENCHMARKS/SENSITIVITY_STRESS_TESTS.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-01/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-02/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-03/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-04/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-05/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-06/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-07/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-08/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/FR-09/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-01/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-02/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-03/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-04/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-05/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-06/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-07/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/EVIDENCE/NFR-08/EVIDENCE.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/TEST_STRATEGY.md"
+class = "LIVING"
+owner = "Model Validator (MV)"
+must_match = "tests/ and CI as they exist"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/VALIDATION_PLAN.md"
+class = "LIVING"
+owner = "Model Validator (MV)"
+must_match = "tests/ and CI as they exist"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "07_TEST_VALIDATION_EVIDENCE/VALIDATION_REPORTS/G4_VALIDATION_REPORT.md"
+class = "RECORD"
+owner = "Model Validator (MV)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/ASSUMPTIONS_LIMITATIONS.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/CHANGE_CONTROL.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/DATA_PROVENANCE.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/G6_GATE_CHECKLIST.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/METHODOLOGY.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/MODEL_CARD.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/MONITORING_DRIFT_PLAN.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/PERFORMANCE_METRICS.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/QUALITATIVE_SIGNALS.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/SENSITIVITY_STRESS_TESTS.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "08_MODEL_RISK_GOVERNANCE/VALIDATION_SIGNOFF.md"
+class = "LIVING"
+owner = "Model Owner (MO)"
+must_match = "the model and gates as built; ADRs"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "09_INTEGRATION_PATCHES/SEMANTIC_CONTRACTS_INTEGRATION.md"
+class = "RECORD"
+owner = "Infrastructure Operator (IO)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/ACCESS_CONTROL_MATRIX.md"
+class = "LIVING"
+owner = "Risk and Compliance Owner (RCO)"
+must_match = "workflows, deploy units, src credential reads"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/AUDIT_EVIDENCE/.gitkeep"
+class = "RECORD"
+owner = "Risk and Compliance Owner (RCO)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/CONTROL_MAPPING.md"
+class = "LIVING"
+owner = "Risk and Compliance Owner (RCO)"
+must_match = "credentials and hosts actually used"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/DATA_RETENTION_DELETION.md"
+class = "LIVING"
+owner = "Risk and Compliance Owner (RCO)"
+must_match = "credentials and hosts actually used"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/POLICY_REQUIREMENTS.md"
+class = "LIVING"
+owner = "Risk and Compliance Owner (RCO)"
+must_match = "credentials and hosts actually used"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "09_SECURITY_PRIVACY_COMPLIANCE/VENDOR_RISK.md"
+class = "LIVING"
+owner = "Risk and Compliance Owner (RCO)"
+must_match = "hosts called in src, workflows"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/CAPACITY_PLANNING.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/KNOWN_ISSUES.md"
+class = "SUPERSEDED"
+owner = "Infrastructure Operator (IO)"
+must_match = "n/a — points to its replacement"
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/OBSERVABILITY.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/ONCALL.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md"
+class = "RECORD"
+owner = "Infrastructure Operator (IO)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_audit-log.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_data-contamination.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_deploy-dirty-tree.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_ingestion-failure.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_kill-switch.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "kill_switch_state.py, monitor.py, kalshi_client.py, W76.1 drill"
+max_age_days = 90
+last_verified = "2026-10-20"
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_model-drift.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_order-duplication.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/RUNBOOKS/RUNBOOK_polymarket-activation.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "10_INFRA_OPERATIONS/SLA_SLO_SLI.md"
+class = "LIVING"
+owner = "Infrastructure Operator (IO)"
+must_match = "deploy/ units, RUNTIME_REGISTRY.toml, and the box"
+max_age_days = 180
+last_verified = ""
+
+[[doc]]
+path = "ARCHIVE/2026/assessments/12 Day Progress Assessment.rtf"
+class = "RECORD"
+owner = "Director/Sponsor (DS)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "ARCHIVE/2026/assessments/PDTP Fable Assessment 2026.06.10.rtf"
+class = "RECORD"
+owner = "Director/Sponsor (DS)"
+must_match = "n/a — frozen record"
+
+[[doc]]
+path = "ARCHIVE/2026/superseded/KNOWN_ISSUES_2026-05-22.md"
+class = "SUPERSEDED"
+owner = "Director/Sponsor (DS)"
+must_match = "n/a — points to its replacement"
+
+[[doc]]
+path = "ARCHIVE/2026/superseded/PIPELINES_JOBS_2026-05-29.md"
+class = "SUPERSEDED"
+owner = "Director/Sponsor (DS)"
+must_match = "n/a — points to its replacement"
+
+[[doc]]
+path = "logs/t4_mlb_totals_outcome_store.jsonl"
+class = "RECORD"
+owner = "Director/Sponsor (DS)"
+must_match = "n/a — frozen record"

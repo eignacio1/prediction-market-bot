@@ -1,5 +1,8 @@
 # NFR-05 Evidence — Secrets Management (zero hardcoded secrets)
 
+> **Record as of 2026-07-06** — a frozen, dated record, not a living document. It is not kept in step with the system; see `00_ADMIN/DOC_REGISTRY.toml`.
+
+
 **Requirement:** Secrets scan returns zero findings; no credentials in logs.
 
 **Populated:** 2026-07-06 (GG-075 remediation) — this closes a caveat both `ACCEPTANCE_CRITERIA.md` and `VALIDATION_PLAN.md` explicitly flagged as "not independently re-verified" during the 2026-07-02 pass. A fresh scan was run as part of this remediation, not merely asserted.
