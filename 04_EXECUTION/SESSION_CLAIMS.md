@@ -974,3 +974,4 @@
 | 2026-10-20T01:23:19Z | W80.1 | CLOSED — W80.1 thin-market capture fixed (listed=0), efficiency table built, KXNFLPASSYDS T1 shadow pre-registration frozen and operator-accepted. (commit `f283551`) |
 | 2026-10-20T01:23:37Z | W80.1 | CLOSED — merge confirmed, HEAD (95e0436) is ancestor of origin/main — W80.1 closed; acceptance logged |
 | 2026-10-20T01:24:54Z | W80.1 | CLOSED — merge confirmed, HEAD (4d67ded) is ancestor of origin/main — W80.1 closed; operator acceptance logged |
+| 2026-10-20T04:52:28Z | T-TBD GG-TBD | STANDARD — NBA lineup cross on KXNBAPTS (5 parts) + verify Muse facts index-2026-001/002 — FOR D5(b) NBA index entries 1->2 and charter v2 s5 VERIFIED/FAILED 0->2 — W81.2 |
