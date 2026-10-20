@@ -50,6 +50,10 @@ TASKS: dict[str, str] = {
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",
     "thin_depth_stats": f"{PY} 12_EXPLORATORY/thin_markets/depth_stats.py",
     "capture_uninstall": f"{PY} scripts/thin_capture_install.py uninstall",
+    "distance_read": (
+        f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
+        "tail -n 60 logs/demo_fill_forward_report.log 2>&1"
+    ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
         "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "
