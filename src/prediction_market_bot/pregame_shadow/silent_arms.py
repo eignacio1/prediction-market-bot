@@ -300,6 +300,11 @@ def _t1_last(logs: Path, until: datetime) -> Optional[datetime]:
     return best
 
 
+# W81.3: the snapshot job went live at this instant; a game that kicked off before it could not have been snapshotted,
+# so it is not a silent-arm miss (the first box install read RED on exactly that).
+PASSYDS_LIVE_SINCE = datetime(2026, 10, 20, 6, 0, tzinfo=timezone.utc)
+
+
 def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime] = None) -> list[ArmInput]:
     repo = Path(repo)
     logs = Path(logs) if logs else repo / "logs"
@@ -347,7 +352,7 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
         arm("nfl_shadow", lambda: _nfl_starts(repo), lambda: last_ts_in_files(cell_files(led, "NFL", "NFL_"), until=now)),
         arm("nfl_qb_challenger", lambda: _nfl_starts(repo),
             lambda: last_ts_in_files(qb_files(), until=now), row_times_fn=lambda: row_times_in_files(qb_files(), until=now)),
-        arm("nfl_passyds_snap", lambda: _nfl_starts(repo),
+        arm("nfl_passyds_snap", lambda: [t for t in _nfl_starts(repo) if t >= PASSYDS_LIVE_SINCE],
             lambda: last_ts_in_files(passyds_files(), until=now),
             row_times_fn=lambda: row_times_in_files(passyds_files(), until=now)),
         arm("nhl_shadow", lambda: _nhl_starts(repo, now),
