@@ -48,6 +48,7 @@ TASKS: dict[str, str] = {
     "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",
+    "thin_depth_stats": f"{PY} 12_EXPLORATORY/thin_markets/depth_stats.py",
     "capture_uninstall": f"{PY} scripts/thin_capture_install.py uninstall",
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
