@@ -4348,3 +4348,14 @@ W80.4, 2026-10-20. Services run as root on the box; a single shared root SSH key
 **Status:** OPEN · **Severity:** MEDIUM
 
 W81.2, 2026-10-20. Of 100 candle-bearing KXNBAPTS markets (all 2025-26), 12 have a rule-defined single rotation-player absence; the 2-hourly injury-report snapshots observe the absent player in 2, and both reports precede market creation (markets open 1-20h before tip, mostly before the day's first 11:30 ET slot). No market has a before/after-news price, so the lineup-cross pricing share cannot be computed; the time was not approximated. Part 5 withheld, entry 2 stays interpreted. Fix: a prospective capture of KXNBAPTS prices around each report from the 2026-27 season (plumbing, not started). Evidence: `12_EXPLORATORY/20261020_nba_lineup_cross/results.md`, `price_join_markets.csv`.
+
+### GG-990 — Installer gate treats any red reason that is not its own as a blocker, and the daily healthcheck line holds the budget RED for up to 24h after a transient fault
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+<details><summary>Full record</summary>
+
+W82.1, 2026-10-21. `scripts/passyds_install.py install` refused because the surface budget was RED with (a) its own job's `STALE ... no write found` (expected: a newly registered component is stale until installed) and (b) `healthcheck: UNHEALTHY: 1 fault(s)`. The installer exempts only reasons containing "passyds", so (b) blocked it. (b) was a transient `Kalshi DEMO API unreachable (2 tries)` in the 17:00Z daily run; `logs/health.log` summary stays UNHEALTHY until the next daily run (up to 24h), so one network blip blocks every installer and, by Hard Rule 14, every new component. Worked around by re-running `deploy/healthcheck.sh` by hand as cron does (not a code change).
+Pattern sweep to do (Hard Rule 13): `scripts/thin_capture_install.py` gates outright on `budget != GREEN`; check each other installer for the same shape. Fix options: healthcheck re-run on a retry/short cadence or a freshness rule on the summary line; installers filter only reasons that are the registered component's own "no write found". The "newly registered component turns the budget red before it can be installed" catch-22 is only half-handled by the passyds substring filter. Not fixed here (Hard Rule 11).
+
+</details>
