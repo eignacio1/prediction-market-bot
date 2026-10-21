@@ -39,8 +39,9 @@ layer is only started once the one before it exists.
 **Update, 2026-10-21 ~08:10 PT: layer 1 drafted for NFL, MLB and NHL** (operator, 07:54 PT: "are you able to create the taxonomy
 here? I'd like to have that layered in starting today so that Muse can work sequentially on everything, with NBA being the
 architectural template for the other 3"). Files, same structure as NBA v4 (archetypes + modifiers, each with signals and a draft
-threshold): `qualitative_data/pam/nfl/taxonomy_v4depth.json` (42 archetypes across QB, RB, WR, TE, OL, EDGE/DL, LB, CB, S; 32
-modifiers; the 4 built WR mass archetypes keep their ids), `qualitative_data/pam/mlb/taxonomy_v4depth.json` (24 archetypes:
+threshold): `qualitative_data/pam/nfl/taxonomy_v4depth.json` (draft2, 08:15 PT: 67 archetypes; OL, DL, LB and S broken out by position:
+LT, LG, C, RG, RT, EDGE, DT3, NT, DE5, MIKE, WILL, SAM, FS, SS; position archetypes carry `split_hooks` for the next layer;
+32 modifiers; the 4 built WR mass archetypes keep their ids), `qualitative_data/pam/mlb/taxonomy_v4depth.json` (24 archetypes:
 hitters, starters, relievers, defense; 29 modifiers), `qualitative_data/pam/nhl/taxonomy_v4depth.json` (18 archetypes:
 forwards, defense, goalies; 25 modifiers). **Status: DRAFT, awaiting Earl's approval.** Thresholds are a-priori and get
 calibrated at the mass tier, never fitted to outcomes. Muse's layer-2 signal maps start from these now (tickets R-027 NBA as

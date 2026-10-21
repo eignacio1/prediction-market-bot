@@ -434,3 +434,12 @@ speed, OAA, framing, arm strength), FanGraphs and Baseball-Reference to cover mo
 **What:** the same table, in `sources/nhl/pam-signal-map.md`, using R-020's NHL source cards (MoneyPuck, Natural Stat Trick, NHL
 EDGE, shift charts, Hockey-Reference). If R-020 isn't done when you reach this, do the cards first, under R-020.
 **Done when:** every row filled; STATUS counts.
+
+### 2026-10-21 08:15 PT · R-028 target updated: NFL taxonomy draft2 is broken out by position
+Earl, 08:01 PT: "OL needs to be broken up per position, DL needs to be broken up per position. The next version of the PAM was gonna
+introduce even higher layering (stuff rate example - Bo Nix example etc etc) so we can't maintain generalities at those levels."
+`taxonomy_v4depth.json` (NFL) is now draft2: 67 archetypes in 19 position groups (LT, LG, C, RG, RT; EDGE, DT3 3-technique, NT
+0/1-technique, DE5 3-4 end; MIKE, WILL, SAM; FS, SS; plus QB, RB, WR, TE, CB). Position archetypes carry `split_hooks`: the
+situational splits the next layer attaches at that spot (e.g. stuff rate on runs to his gap, by box count). For R-028, map
+signals per position, and add one column per row: **attributable to the single position?** (yes / side only / no). pbp's
+run_location x run_gap attributes runs to a gap for free; per-blocker pass-pro attribution is GG-776.

@@ -1,10 +1,10 @@
 {
  "sport": "nfl",
- "version": "nfl_pam_v4depth_draft1",
+ "version": "nfl_pam_v4depth_draft2",
  "status": "DRAFT 2026-10-21 (strategic window, at the operator's request; awaiting operator approval). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
  "template": "qualitative_data/pam/nba/taxonomy.json (NBA PAM v4: 15 archetypes, 32 modifiers)",
- "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet.",
- "groups": "QB, RB, WR, TE, OL, EDGE/DL, LB, CB, S (the operator's deep-tier scope: QB, WR, RB, TE, OL, core defenders)",
+ "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet. Position-level archetypes carry `split_hooks`: the situational splits the next PAM layer attaches to that position (e.g. stuff rate on runs to his gap, by box count), so a granularity-index fact lands on one player at one spot.",
+ "groups": "QB, RB, WR, TE, LT, LG, C, RG, RT, EDGE, DT3 (3-technique), NT (0/1-technique), DE5 (3-4 5/4i end), MIKE, WILL, SAM, CB, FS, SS. OL, DL, LB and S are broken out by position (operator, 2026-10-21 08:01 PT: 'OL needs to be broken up per position, DL needs to be broken up per position. The next version of the PAM was gonna introduce even higher layering (stuff rate example - Bo Nix example etc etc) so we can't maintain generalities at those levels.')",
  "archetypes": {
   "QB-1": {
    "group": "QB",
@@ -153,97 +153,6 @@
    "signals": "red-zone target and TD share",
    "threshold": "Red-zone target share >= 15% at low overall share"
   },
-  "OL-1": {
-   "group": "OL",
-   "name": "Pass-Pro Anchor",
-   "notes": "Wins pass sets, rarely allows pressure",
-   "signals": "pressures allowed per pass-block snap, pass-block win rate",
-   "threshold": "Pass-block win rate top third; pressures allowed <= 3% of pass snaps (GG-776)"
-  },
-  "OL-2": {
-   "group": "OL",
-   "name": "Run-Game Mauler",
-   "notes": "Drives defenders in gap/power runs",
-   "signals": "run-block win rate, yards before contact on runs to his gap",
-   "threshold": "Run-block win rate top third (GG-776)"
-  },
-  "OL-3": {
-   "group": "OL",
-   "name": "Zone-Scheme Mover",
-   "notes": "Reach and climb blocks; outside-zone fit",
-   "signals": "outside-zone share of team runs, run-block win rate on zone",
-   "threshold": "Team outside-zone share >= 40% with positive zone RBWR"
-  },
-  "OL-4": {
-   "group": "OL",
-   "name": "Liability / Target",
-   "notes": "Opponents attack him",
-   "signals": "pressures and penalties allowed, blown-block rate",
-   "threshold": "Bottom quartile on pressures allowed or >= 6 penalties per 600 snaps"
-  },
-  "DL-1": {
-   "group": "EDGE/DL",
-   "name": "Speed Edge Rusher",
-   "notes": "Wins around the corner",
-   "signals": "pass-rush win rate, pressure rate, time to pressure",
-   "threshold": "Pass-rush win rate top third; pressure rate >= 12% (GG-778)"
-  },
-  "DL-2": {
-   "group": "EDGE/DL",
-   "name": "Power Edge / Run-Setter",
-   "notes": "Sets the edge, collapses the pocket",
-   "signals": "run-stop win rate, pressures, TFL rate",
-   "threshold": "Run-stop win rate top third"
-  },
-  "DL-3": {
-   "group": "EDGE/DL",
-   "name": "Interior Penetrator",
-   "notes": "3-technique disruptor",
-   "signals": "interior pass-rush win rate, TFL, pressure rate",
-   "threshold": "Interior pressure rate >= 8%"
-  },
-  "DL-4": {
-   "group": "EDGE/DL",
-   "name": "Nose / Two-Gap Anchor",
-   "notes": "Eats blocks, holds the point",
-   "signals": "double-team rate, run-stop rate, snap share on early downs",
-   "threshold": "Double-team rate high; pass-rush snaps <= 50% of snaps"
-  },
-  "DL-5": {
-   "group": "EDGE/DL",
-   "name": "Rotational Pass-Rush Specialist",
-   "notes": "Situational rusher",
-   "signals": "pass-down snap share, pressure rate",
-   "threshold": "Snap share 25-50%, concentrated on passing downs"
-  },
-  "LB-1": {
-   "group": "LB",
-   "name": "Coverage LB",
-   "notes": "Carries backs and TEs, plays zone depth",
-   "signals": "targets allowed, yards per coverage snap, coverage snap share",
-   "threshold": "Coverage snap share >= 55% with yards allowed per cov snap below median"
-  },
-  "LB-2": {
-   "group": "LB",
-   "name": "Downhill Run Stopper",
-   "notes": "Fills and finishes against the run",
-   "signals": "run-stop rate, tackles for loss, missed-tackle rate",
-   "threshold": "Run stops top third; missed tackles <= 10%"
-  },
-  "LB-3": {
-   "group": "LB",
-   "name": "Blitzing / Pressure LB",
-   "notes": "Rushes the passer often",
-   "signals": "blitz rate, pressures per blitz",
-   "threshold": "Blitz rate >= 15% of pass snaps"
-  },
-  "LB-4": {
-   "group": "LB",
-   "name": "Green-Dot Signal Caller",
-   "notes": "Every-down, communication role",
-   "signals": "snap share, every-down usage",
-   "threshold": "Snap share >= 95%, wears the green dot"
-  },
   "CB-1": {
    "group": "CB",
    "name": "Man-Coverage Shadow",
@@ -279,26 +188,426 @@
    "signals": "targets per cov snap, yards per cov snap, completion % allowed",
    "threshold": "Top quartile on targets per cov snap and yards allowed"
   },
-  "S-1": {
-   "group": "S",
-   "name": "Deep Single-High Eraser",
-   "notes": "Middle-of-field free safety",
-   "signals": "deep alignment rate, explosive plays allowed, range",
-   "threshold": "Deep alignment >= 60% of snaps"
+  "LT-1": {
+   "group": "LT",
+   "name": "Blindside Pass-Pro Anchor",
+   "notes": "Holds up one-on-one against the opponent's best edge rusher",
+   "signals": "pass-block win rate, pressures/sacks allowed, true pass sets",
+   "threshold": "PBWR top third among LTs; pressures allowed <= 3% of pass snaps (GG-776)",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)",
+    "vs speed vs power rushers (opponent EDGE archetype cross)"
+   ]
   },
-  "S-2": {
-   "group": "S",
+  "LT-2": {
+   "group": "LT",
+   "name": "Athletic Zone Tackle",
+   "notes": "Reach and cut-off blocks in outside zone",
+   "signals": "outside-zone runs off left tackle/end, RBWR on zone",
+   "threshold": "Team outside-zone share >= 40% with positive EPA on runs to left end/tackle",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "LT-3": {
+   "group": "LT",
+   "name": "Power / Gap Tackle",
+   "notes": "Drive blocks on gap-scheme runs to his side",
+   "signals": "gap runs off left tackle, stuff rate to his gap",
+   "threshold": "Stuff rate on runs to left tackle bottom third",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "LT-4": {
+   "group": "LT",
+   "name": "Speed-Rush Liability",
+   "notes": "Loses outside to speed",
+   "signals": "sacks/pressures allowed to outside rush, false starts",
+   "threshold": "Pressures allowed top quartile among LTs",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)"
+   ]
+  },
+  "LG-1": {
+   "group": "LG",
+   "name": "Interior Pass-Pro Anchor (LG)",
+   "notes": "Handles stunts and interior bull rush",
+   "signals": "interior pressures allowed, stunt/twist handling",
+   "threshold": "Interior pressure rate allowed bottom third (GG-776)",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)",
+    "vs 3-tech DT archetypes (cross)"
+   ]
+  },
+  "LG-2": {
+   "group": "LG",
+   "name": "Puller / Gap-Scheme Guard (LG)",
+   "notes": "Pulls on power and counter",
+   "signals": "gap-scheme run share, runs behind his pull",
+   "threshold": "Team gap-scheme share >= 40% with positive EPA on runs to the right side when he pulls",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "LG-3": {
+   "group": "LG",
+   "name": "Zone Combo / Climber (LG)",
+   "notes": "Combo blocks to the second level",
+   "signals": "inside-zone runs to left guard, yards before contact",
+   "threshold": "EPA on runs to left guard top third",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "LG-4": {
+   "group": "LG",
+   "name": "Interior Liability (LG)",
+   "notes": "Opponents run and rush through him",
+   "signals": "stuff rate on runs to left guard, interior pressures allowed",
+   "threshold": "Stuff rate to left guard top quartile",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel",
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)"
+   ]
+  },
+  "C-1": {
+   "group": "C",
+   "name": "Protection-Calling Center",
+   "notes": "Sets the protection, handles A-gap pressure",
+   "signals": "A-gap pressures allowed, blitz pickup",
+   "threshold": "A-gap pressure allowed bottom third (GG-776)",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)",
+    "vs A-gap blitz rate (opponent LB/S blitz cross)"
+   ]
+  },
+  "C-2": {
+   "group": "C",
+   "name": "Zone-Movement Center",
+   "notes": "Reaches the 1-technique, climbs",
+   "signals": "inside-zone runs up the middle, EPA middle",
+   "threshold": "EPA on runs to the middle top third",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "C-3": {
+   "group": "C",
+   "name": "Power Anchor vs Nose",
+   "notes": "Holds the point against 0/1-technique",
+   "signals": "stuff rate up the middle vs odd fronts",
+   "threshold": "Stuff rate on middle runs vs odd fronts bottom third",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel",
+    "vs NT archetypes (cross)"
+   ]
+  },
+  "C-4": {
+   "group": "C",
+   "name": "Snap / Exchange Liability",
+   "notes": "Bad snaps, exchange fumbles",
+   "signals": "aborted snaps, snap fumbles",
+   "threshold": "Aborted snaps top decile",
+   "split_hooks": [
+    "snap fumbles by game state"
+   ]
+  },
+  "RG-1": {
+   "group": "RG",
+   "name": "Interior Pass-Pro Anchor (RG)",
+   "notes": "Handles stunts and interior bull rush",
+   "signals": "interior pressures allowed",
+   "threshold": "Interior pressure rate allowed bottom third (GG-776)",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)"
+   ]
+  },
+  "RG-2": {
+   "group": "RG",
+   "name": "Puller / Gap-Scheme Guard (RG)",
+   "notes": "Pulls on power and counter",
+   "signals": "gap-scheme run share",
+   "threshold": "Positive EPA on runs behind his pull",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "RG-3": {
+   "group": "RG",
+   "name": "Zone Combo / Climber (RG)",
+   "notes": "Combo blocks to the second level",
+   "signals": "inside-zone runs to right guard",
+   "threshold": "EPA on runs to right guard top third",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "RG-4": {
+   "group": "RG",
+   "name": "Interior Liability (RG)",
+   "notes": "Opponents run and rush through him",
+   "signals": "stuff rate on runs to right guard",
+   "threshold": "Stuff rate to right guard top quartile",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel",
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)"
+   ]
+  },
+  "RT-1": {
+   "group": "RT",
+   "name": "Right-Side Pass-Pro Anchor",
+   "notes": "Holds up against the strong-side rusher",
+   "signals": "pass-block win rate, pressures allowed",
+   "threshold": "PBWR top third among RTs (GG-776)",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)"
+   ]
+  },
+  "RT-2": {
+   "group": "RT",
+   "name": "Run-Game Mauler (RT)",
+   "notes": "Drives defenders on runs to the strong side",
+   "signals": "runs off right tackle/end, stuff rate to his gap",
+   "threshold": "Stuff rate on runs to right tackle bottom third",
+   "split_hooks": [
+    "runs to his gap (pbp run_location x run_gap -> position): stuff rate (gain <= 0), TFL allowed, EPA and success by gap, by box count (FTN) and personnel"
+   ]
+  },
+  "RT-3": {
+   "group": "RT",
+   "name": "Swing / Developmental Tackle",
+   "notes": "Spot starts on either side",
+   "signals": "snap share, starts at LT vs RT",
+   "threshold": "Starts at both tackle spots or snap share <= 50%",
+   "split_hooks": [
+    "pressures/sacks allowed to his side or lane (GG-776: per-blocker attribution not yet free)"
+   ]
+  },
+  "EDGE-1": {
+   "group": "EDGE",
+   "name": "Speed / Bend Rusher",
+   "notes": "Wins around the corner",
+   "signals": "pass-rush win rate, pressure rate, time to pressure, sacks, QB hits",
+   "threshold": "PRWR top third; pressure rate >= 12% (GG-778 for alignment)",
+   "split_hooks": [
+    "pressure rate by opponent tackle archetype (LT/RT cross)",
+    "vs play-action and vs quick game (TTT)"
+   ]
+  },
+  "EDGE-2": {
+   "group": "EDGE",
+   "name": "Power / Long-Arm Rusher",
+   "notes": "Collapses the pocket through the tackle",
+   "signals": "pressures, hurries, knockdowns (PFR advanced), sacks",
+   "threshold": "Pressures top third with low time-to-pressure dependence",
+   "split_hooks": [
+    "vs tackle archetype cross"
+   ]
+  },
+  "EDGE-3": {
+   "group": "EDGE",
+   "name": "Run-Setting Edge",
+   "notes": "Sets the edge, turns runs inside",
+   "signals": "run stops, TFL, opponent EPA on runs to his side",
+   "threshold": "Opponent EPA on runs to his side (end/tackle gap) bottom third",
+   "split_hooks": [
+    "runs to his side: stuff rate, EPA by box count"
+   ]
+  },
+  "EDGE-4": {
+   "group": "EDGE",
+   "name": "Stand-Up Hybrid / Dropper",
+   "notes": "3-4 OLB who rushes and drops",
+   "signals": "rush vs coverage snap mix, pressures, coverage snaps",
+   "threshold": "Coverage drops >= 15% of pass snaps",
+   "split_hooks": [
+    "pressure rate when rushing vs targets when dropping"
+   ]
+  },
+  "EDGE-5": {
+   "group": "EDGE",
+   "name": "Rotational Pass-Rush Specialist",
+   "notes": "Situational, passing downs",
+   "signals": "pass-down snap share, pressure rate",
+   "threshold": "Snap share 25-50%, concentrated on passing downs",
+   "split_hooks": [
+    "pressure rate on 3rd-and-long"
+   ]
+  },
+  "DT3-1": {
+   "group": "DT3",
+   "name": "Interior Penetrator (3-tech)",
+   "notes": "Shoots gaps, disrupts in the backfield",
+   "signals": "TFL, interior pressures, sacks, QB hits",
+   "threshold": "Interior pressure rate >= 8% or TFL top quartile",
+   "split_hooks": [
+    "runs to his gap: stuff rate created",
+    "vs guard archetype cross (LG/RG)"
+   ]
+  },
+  "DT3-2": {
+   "group": "DT3",
+   "name": "Run-Stuffing 3-tech",
+   "notes": "Holds the B gap against the run",
+   "signals": "run stops, opponent EPA on runs to guard/tackle gap",
+   "threshold": "Opponent EPA through his gap bottom third",
+   "split_hooks": [
+    "runs to guard gap by side"
+   ]
+  },
+  "DT3-3": {
+   "group": "DT3",
+   "name": "Sub-Package Interior Rusher",
+   "notes": "Rushes inside on passing downs only",
+   "signals": "pass-down snap share, pressures",
+   "threshold": "Pass-down snaps >= 60% of his snaps",
+   "split_hooks": [
+    "pressure rate on 3rd down"
+   ]
+  },
+  "NT-1": {
+   "group": "NT",
+   "name": "Two-Gap Anchor (0/1-tech)",
+   "notes": "Eats double teams, frees linebackers",
+   "signals": "double-team rate (GG-778), run stops, opponent EPA up the middle",
+   "threshold": "Opponent EPA on middle runs bottom third; pass-rush snaps <= 50%",
+   "split_hooks": [
+    "middle runs: stuff rate",
+    "vs center archetype cross"
+   ]
+  },
+  "NT-2": {
+   "group": "NT",
+   "name": "Penetrating 1-tech",
+   "notes": "Attacks the A gap off the snap",
+   "signals": "TFL, pressures from the A gap",
+   "threshold": "TFL + pressures top third among NTs",
+   "split_hooks": [
+    "middle runs: TFL rate"
+   ]
+  },
+  "DE5-1": {
+   "group": "DE5",
+   "name": "Two-Gap Base End (5/4i)",
+   "notes": "3-4 end who controls the tackle",
+   "signals": "run stops, opponent EPA off tackle",
+   "threshold": "Opponent EPA off tackle bottom third",
+   "split_hooks": [
+    "runs to tackle gap by side"
+   ]
+  },
+  "DE5-2": {
+   "group": "DE5",
+   "name": "Interior Rusher from 4i/5",
+   "notes": "Rushes inside from the end spot",
+   "signals": "pressures, sacks, QB hits",
+   "threshold": "Pressure rate >= 7% from base alignment",
+   "split_hooks": [
+    "vs guard/tackle archetype cross"
+   ]
+  },
+  "MIKE-1": {
+   "group": "MIKE",
+   "name": "Green-Dot Run Stopper",
+   "notes": "Every-down MIKE, fills downhill",
+   "signals": "run stops, TFL, missed tackles, snap share",
+   "threshold": "Snap share >= 95%; run stops top third",
+   "split_hooks": [
+    "runs up the middle: tackles within 3 yds"
+   ]
+  },
+  "MIKE-2": {
+   "group": "MIKE",
+   "name": "Coverage MIKE (middle hook / Tampa 2)",
+   "notes": "Carries the seam and the middle hole",
+   "signals": "targets and yards allowed in coverage, coverage snap share",
+   "threshold": "Yards per coverage snap below median on >= 55% coverage snaps",
+   "split_hooks": [
+    "vs TE/slot archetype cross"
+   ]
+  },
+  "WILL-1": {
+   "group": "WILL",
+   "name": "Run-and-Chase WILL",
+   "notes": "Range sideline to sideline, covers backs",
+   "signals": "tackles on outside runs, coverage on RBs",
+   "threshold": "Outside-run tackles top third",
+   "split_hooks": [
+    "outside runs: tackles past the line"
+   ]
+  },
+  "WILL-2": {
+   "group": "WILL",
+   "name": "Blitzing WILL",
+   "notes": "Pressure from the second level",
+   "signals": "blitz rate, pressures per blitz",
+   "threshold": "Blitz rate >= 15% of pass snaps",
+   "split_hooks": [
+    "A/B-gap blitz vs center/guard cross"
+   ]
+  },
+  "SAM-1": {
+   "group": "SAM",
+   "name": "Overhang / Strong-Side SAM",
+   "notes": "Sets the strong-side edge vs 12/21 personnel",
+   "signals": "run stops vs heavy personnel, snap share in base",
+   "threshold": "Base-personnel snap share high; run stops top third",
+   "split_hooks": [
+    "runs to strong side vs 12/21 personnel"
+   ]
+  },
+  "SAM-2": {
+   "group": "SAM",
+   "name": "Base-Only SAM",
+   "notes": "Leaves the field in nickel",
+   "signals": "base vs sub snap share",
+   "threshold": "Off the field in >= 60% of sub-package snaps",
+   "split_hooks": [
+    "opponent personnel tendency cross"
+   ]
+  },
+  "FS-1": {
+   "group": "FS",
+   "name": "Single-High Centerfielder",
+   "notes": "Middle-of-field closed, erases deep balls",
+   "signals": "deep alignment rate, explosive passes allowed, range",
+   "threshold": "Deep middle alignment >= 60% of snaps",
+   "split_hooks": [
+    "vs vertical WR archetype cross",
+    "opponent deep-attempt rate"
+   ]
+  },
+  "FS-2": {
+   "group": "FS",
+   "name": "Two-High Split-Field Safety",
+   "notes": "Quarters/Cover-2 half-field player",
+   "signals": "two-high alignment rate, targets in deep halves",
+   "threshold": "Two-high alignment >= 50% of snaps",
+   "split_hooks": [
+    "vs MOF-open tendency"
+   ]
+  },
+  "SS-1": {
+   "group": "SS",
    "name": "Box / Robber Safety",
    "notes": "Plays near the line, run and underneath",
-   "signals": "box alignment rate, run stops, tackles",
-   "threshold": "Box alignment >= 40% of snaps"
+   "signals": "box alignment rate, run stops, robber zone",
+   "threshold": "Box alignment >= 40% of snaps",
+   "split_hooks": [
+    "runs: tackles within 3 yds",
+    "vs RB archetype cross"
+   ]
   },
-  "S-3": {
-   "group": "S",
-   "name": "Hybrid Coverage Safety",
-   "notes": "Matches TEs/slots in man",
-   "signals": "slot/man coverage snaps, yards per cov snap",
-   "threshold": "Slot/man snaps >= 25% of coverage snaps"
+  "SS-2": {
+   "group": "SS",
+   "name": "Coverage SS / TE Matcher",
+   "notes": "Matches tight ends and slots in man",
+   "signals": "man coverage snaps on TEs, yards per cov snap",
+   "threshold": "Man snaps on TEs >= 25% of coverage snaps (GG-777)",
+   "split_hooks": [
+    "vs TE-2 Move TE cross"
+   ]
   }
  },
  "modifiers": {
