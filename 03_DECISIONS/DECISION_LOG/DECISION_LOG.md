@@ -2698,3 +2698,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Operator forwarded DigitalOcean's notice and asked what we need to do.
 - Checked on the box (PR #310 added read-only task `php_inventory_read`; result 20261021T222913Z): no PHP packages, no PHP processes, no web-server packages. The three `php*-bpfcc` files are BCC kernel-tracing tools, not PHP. Listening TCP: sshd on 22 (public), dashboard python3 on 127.0.0.1:8050 (local only), systemd-resolved on loopback. Ubuntu 24.04.3 LTS.
 - Action: none required. No patch, no restart.
+
+## 2026-10-21 16:55 PT — Wave 83 re-issued; Muse back to three daily runs (operator)
+- Operator: "Set up the next wave - as protocol, the normal terminal blocks + the one muse block." Wave 83's three terminal blocks never ran (no claims after 05:45 UTC, no PRs after #307), so the next wave is Wave 83, re-issued unchanged after a box re-check (bridge 20261021T234620Z: budget GREEN, 77 live, healthcheck HEALTHY). M83 (Muse) is done: R-015, R-016, R-017.
+- Operator: "not sure why the 3 daily autos scheduled on Muse were cancelled - but if I'm having Muse run ones scheduled block task per day it's going to take fucking forever (even 3 seems small but baby steps - don't want to overload it yet without much inference on how it's operating at scale). So turn it back on in your Muse block".
+- Cause: the window's charter text ("one daily run") — WINDOW_ERROR_LOG W29. Charter v3 §1b rule 3 now names three daily runs, and says the count is the operator's. Muse block M83-D restores them (his times if Muse has them, else 08:50 / 14:50 / 20:50 PT), each run pulls first and commits+pushes before ending, then R-027.
+- MUSE_WEB.json refreshed (archive 6f3bc82).

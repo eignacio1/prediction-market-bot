@@ -98,3 +98,22 @@ From Earl - update, 2026-10-21 morning. Read TO_MUSE.md fresh; the details are i
 4. Same rules: no null records, primary sources, definitions verbatim, free only, nothing written to the bot repo, one STATUS
    entry and commit per ticket.
 ```
+
+## Add-in, 2026-10-21 16:50 PT: restore the three daily runs (Earl, directly)
+
+```
+From Earl, directly - this is me telling you, so it overrides "don't touch scheduled jobs".
+
+1. I had three daily runs set up. Two were removed because the charter said "one daily run" - that was Claude's wording, not
+   my decision. The charter now names three. Restore three daily runs. If you still have the times I set, use those. If you
+   don't: 08:50, 14:50 and 20:50 Pacific. Each run's prompt is exactly the one kickoff line in charter v3 section 1b, nothing
+   else. Change nothing else on the scheduler: no other job is added, removed or edited.
+
+2. Paste the full scheduler listing, verbatim, in STATUS.md so I can see all three.
+
+3. Three runs a day can overlap with work done in chat. Every run starts by pulling, and ends by committing and pushing
+   everything it did, under the ticket's name. Nothing is left uncommitted between runs (your own R-017 lesson).
+
+4. Then run the next cycle now: read the charter and TO_MUSE.md fresh and take the top open ticket. R-017 is closed and
+   verified; R-027 (the NBA PAM signal map, the template for the other three sports) is next.
+```

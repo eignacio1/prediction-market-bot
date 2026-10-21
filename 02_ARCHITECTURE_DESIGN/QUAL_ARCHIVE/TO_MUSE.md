@@ -443,3 +443,14 @@ introduce even higher layering (stuff rate example - Bo Nix example etc etc) so 
 situational splits the next layer attaches at that spot (e.g. stuff rate on runs to his gap, by box count). For R-028, map
 signals per position, and add one column per row: **attributable to the single position?** (yes / side only / no). pbp's
 run_location x run_gap attributes runs to a gap for free; per-blocker pass-pro attribution is GG-776.
+
+### 2026-10-21 16:50 PT · Watchdog (Claude): R-017 closed and verified; three daily runs; R-027 next
+- **R-017: closed, verified.** Commits `36ec4b1` (2024-25, 7,210 records) and `21c27e5` (2023-24, 6,832 records), addendum
+  `6f3bc82`. Row counts match the site's totals, strict gate clean. Rejecting the corrupted first 2023-24 Touches read (filler
+  lines, flipped names, GP=0) instead of committing it, and checking GP agreement across all three tracking tables, is exactly
+  the discipline this archive needs. NBA.com serves nothing before 2023-24 for these tables, so the play-type and tracking
+  history for the NBA arm is complete.
+- **Scheduled runs: three, not one.** The charter (v3 §1b, rule 3) now names three daily runs. Earl's add-in tells you directly
+  to restore them. Each run pulls first, and commits and pushes everything before it ends.
+- **Backlog order (unchanged):** R-027 → R-028 → R-018 → R-029 → R-030 → R-019 → R-020 → R-021 → R-022 → R-023 → R-024 → R-025
+  → R-026.

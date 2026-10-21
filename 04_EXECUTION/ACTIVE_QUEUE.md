@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 83 terminal blocks** are in the **⬛ NOW — Wave 83** section below the sitrep: **83.1** (the bot captures what Muse scouted, terminal 1) · **83.2** (NBA lineup cross testable + play types, terminal 2) · **83.3** (NHL engine data layer, terminal 3) · **M83** (Muse: the one-line kickoff). Each block is one fenced paste under its `### 83.x` header.
+> **▶ PASTE NOW — Wave 83 (re-issued 2026-10-21 16:55 PT; its terminal blocks never ran: no claims, no PRs)** in the **⬛ NOW — Wave 83** section below the sitrep: **83.1** (the bot captures what Muse scouted, terminal 1) · **83.2** (NBA lineup cross testable + play types, terminal 2) · **83.3** (NHL engine data layer, terminal 3) · **M83-D** (Muse: restore the three daily runs, then R-027). Each block is one fenced paste under its `### 83.x` header.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -274,6 +274,15 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 ---
 
 ## ⬛ NOW — Wave 83 · WRITTEN 2026-10-21 ~06:20 UTC (10-20 23:20 PT) · three MEDIUM terminal blocks + Muse block M83 + GA-4 · built from Wave 82's verified results
+
+> **RE-ISSUED 2026-10-21 16:55 PT (23:55 UTC).** The three terminal blocks never ran (no session claims after 05:45 UTC, no PRs
+> after #307). Re-checked against the box before re-issue (bridge `20261021T234620Z_*`): **budget GREEN**, 77 live, 0 behind,
+> healthcheck HEALTHY; NBA (5 games) and NHL (2) wrote rows in the last 12 h. The blocks below are unchanged and still current:
+> nothing they depend on moved today. Two facts sharpen them: **83.2** now has three NBA seasons of play types and tracking
+> from Muse (R-016 + R-017: 2025-26, 2024-25, 2023-24; 21,316 records), and the NBA regular season is two nights old. One
+> housekeeping item for the gap agent, not a block: three NBA **preseason** cron entries are still registered live but are
+> correctly gone from the box (registry vs box: 3 mirrored-but-not-installed); retire them in the registry.
+> **Muse this wave: M83-D** (below) restores the three daily runs the charter wrongly cut to one (W29), then R-027.
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
@@ -657,6 +666,28 @@ Results: the store's coverage table, DATA_LAYER.md, the factor map, the D4 read-
 END OF BLOCK 83.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### M83-D — Muse: restore the three daily runs, then R-027 (2026-10-21 16:55 PT)
+**DEPTH feed** · three cycles a day instead of one (operator, 16:45 PT: "even 3 seems small but baby steps") · R-027 is the NBA
+PAM signal map, the template the other three sports' maps copy · given to the operator in chat; same text in
+`QUAL_ARCHIVE/MUSE_PASTE_IN_v3.md` § "Add-in, 2026-10-21 16:50 PT"
+
+```
+From Earl, directly - this is me telling you, so it overrides "don't touch scheduled jobs".
+
+1. I had three daily runs set up. Two were removed because the charter said "one daily run" - that was Claude's wording, not
+   my decision. The charter now names three. Restore three daily runs. If you still have the times I set, use those. If you
+   don't: 08:50, 14:50 and 20:50 Pacific. Each run's prompt is exactly the one kickoff line in charter v3 section 1b, nothing
+   else. Change nothing else on the scheduler: no other job is added, removed or edited.
+
+2. Paste the full scheduler listing, verbatim, in STATUS.md so I can see all three.
+
+3. Three runs a day can overlap with work done in chat. Every run starts by pulling, and ends by committing and pushing
+   everything it did, under the ticket's name. Nothing is left uncommitted between runs (your own R-017 lesson).
+
+4. Then run the next cycle now: read the charter and TO_MUSE.md fresh and take the top open ticket. R-017 is closed and
+   verified; R-027 (the NBA PAM signal map, the template for the other three sports) is next.
+```
+
 ### M83-C — Muse add-in: PAM layer 1 for every sport + the new backlog order (2026-10-21 08:20 PT)
 Given to the operator in chat; text in `QUAL_ARCHIVE/MUSE_PASTE_IN_v3.md` § "Add-in, 2026-10-21 08:20 PT". The daily run would pick
 the changes up from TO_MUSE.md anyway; this tells the main chat directly.
@@ -1017,14 +1048,15 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⬜ WAVE 83 — WRITTEN 2026-10-21 ~06:20 UTC (10-20 23:20 PT) · three MEDIUM blocks + M83 + GA-4
+### ⬜ WAVE 83 — WRITTEN 2026-10-21 ~06:20 UTC (10-20 23:20 PT) · three MEDIUM blocks + M83 + GA-4 · RE-ISSUED 2026-10-21 23:55 UTC (terminal blocks never ran)
 
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 83.1 | The bot captures Muse's CAPTURABLE NFL cards weekly + card accuracy + 82.3 re-run on 2026 rows | ⬜ | |
 | 83.2 | NBA lineup cross testable (capture + frozen prereg) + play-type x absorption + Muse NBA grade | ⬜ | |
 | 83.3 | NHL engine data layer (D4) + factor map | ⬜ | |
-| M83 | Muse: R-015 Sharp 2025 Wayback values → R-016/R-017 NBA arm | ⬜ | |
+| M83 | Muse: R-015 Sharp 2025 Wayback values → R-016/R-017 NBA arm | ✅ | R-015 (544 records), R-016 (3,856), R-017 (14,042): NBA play types + tracking 2023-24 → 2025-26 complete; daily run live |
+| M83-D | Muse: restore the three daily runs (W29), then R-027 NBA PAM signal map | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
 ### ✅ WAVE 82 — WRITTEN 2026-10-21 ~05:15 UTC · CLOSED 2026-10-21 ~05:45 UTC · verified on GitHub + box bridge (`20261021T0554Z_*`) · moved: **surface RED → GREEN**; ADR-0072 verdicts **0 → NFL INCONCLUSIVE** (+3 no verdict yet); **D5(b) NFL aggregated 4 → 5, interpreted 2 → 5 (of 21)**; green = WINS live; Muse grades 0 → 1 (QB time to throw FAILED)
