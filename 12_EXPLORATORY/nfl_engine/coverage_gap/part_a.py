@@ -11,6 +11,7 @@ MOF map (stated, not tuned): closed/single-high = COVER_1, COVER_3 ; open/two-hi
   excluded = COVER_0, COVER_9, COMBO, BLOWN, missing.  Blitz variants reported side by side: rushers>=5 and FTN n_blitzers>=1.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -45,9 +46,11 @@ def load(season):
         d = d.merge(f, on=["game_id", "play_id"], how="left")
     else:
         d["n_blitzers"] = np.nan
-    return d.rename(columns={"defense_man_zone_type": "man_zone", "defense_coverage_type": "covtype",
-                             "number_of_pass_rushers": "rushers", "was_pressure": "pressure",
-                             "time_to_throw": "ttt", "n_blitzers": "ftn_blitz"})
+    ren = {"defense_man_zone_type": "man_zone", "defense_coverage_type": "covtype",
+           "number_of_pass_rushers": "rushers", "was_pressure": "pressure",
+           "time_to_throw": "ttt", "n_blitzers": "ftn_blitz"}
+    d.columns = [ren.get(c, c) for c in d.columns]
+    return d
 
 
 def team_game(d):
@@ -61,8 +64,8 @@ def team_game(d):
     return (g.groupby(["season", "week", "defteam", "posteam"], as_index=False)
             [["man", "zone", "closed", "open_", "blitz5", "ftnb", "press", "has_mz", "has_cov", "has_rush",
               "has_ftn", "has_press"]].sum()
-            .merge(g.groupby(["season", "week", "defteam", "posteam"], as_index=False).size()
-                   .rename(columns={"size": "dropbacks"}), on=["season", "week", "defteam", "posteam"]))
+            .merge(g.groupby(["season", "week", "defteam", "posteam"], as_index=False)
+                   .agg(dropbacks=("play_id", "size")), on=["season", "week", "defteam", "posteam"]))
 
 
 def main():
@@ -115,7 +118,7 @@ def main():
                            if r["metric"] == "average time to throw (seconds)" and r["value"] is not None])
         # nflverse passer names are "A.Rodgers"; Muse uses full names -> key on first initial + last token
         def key(n):
-            p = str(n).replace(".", ". ").split()
+            p = [x for x in re.split(r"[.\s]+", str(n)) if x]
             return (p[0][0] + "." + p[-1]).lower() if len(p) > 1 else str(n).lower()
         tt["name"] = tt["name"].map(key)
         qbs["name"] = qbs.passer_player_name.map(key)
