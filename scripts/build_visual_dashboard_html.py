@@ -6,9 +6,13 @@ cell matrix, wave timeline, desk. Its stylesheet is kept verbatim in 04_EXECUTIO
 Content: body.html (narrative, edited by the strategic window at each wave close) + script.js (data arrays and
 renderers). The cell matrix is read live from MARKET_TYPE_REGISTRY, so it is always the code's own truth.
 
-Usage: python3 scripts/build_visual_dashboard_html.py [OUTPUT_PATH]
-Default output: "PMBot Visual Dashboard.html" at the repo root. The window copies it to the operator's Mac folder,
-where "Open Visual Dashboard.command" opens it in Safari.
+Where the operator sees it (2026-10-21): the box serves it live at /visual (scripts/web_dashboard.py renders it from the
+box's checkout, which deploy keeps at origin/main). "Open Visual Dashboard.command" opens the SSH tunnel and that page, so it
+is never a stale copy. The old flow (the window copying a built file to the operator's Mac at each wave close) is retired:
+it went stale whenever a copy was missed.
+
+Usage (local check): python3 scripts/build_visual_dashboard_html.py [OUTPUT_PATH]
+Default output: exp_output/VISUAL_DASHBOARD/PMBot Visual Dashboard.html (git-ignored).
 """
 from __future__ import annotations
 
@@ -215,7 +219,8 @@ def wave_chip() -> str:
     return (f"Wave {closed.group(1)} closed · " if closed else "") + (f"{now.group(1)} in flight" if now else "")
 
 
-def build(out: pathlib.Path) -> None:
+def render() -> tuple[str, str]:
+    """The whole page as one HTML string, and the commit it was built at."""
     sha = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short=7", "HEAD"],
                          capture_output=True, text=True).stdout.strip() or "unknown"
     date = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
@@ -228,9 +233,15 @@ def build(out: pathlib.Path) -> None:
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
               .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
+    return html, sha
+
+
+def build(out: pathlib.Path) -> None:
+    html, sha = render()
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html)
     print(f"wrote {out} ({len(html):,} bytes) at {sha}")
 
 
 if __name__ == "__main__":
-    build(pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "PMBot Visual Dashboard.html")
+    build(pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "exp_output" / "VISUAL_DASHBOARD" / "PMBot Visual Dashboard.html")

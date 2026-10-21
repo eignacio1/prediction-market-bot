@@ -1245,6 +1245,30 @@ def _project_page() -> str:
     return html
 
 
+_VISUAL_CACHE: dict = {"t": 0.0, "html": ""}
+_VISUAL_TTL_S = 300.0
+
+
+def _visual_page() -> str:
+    """/visual: the Visual Dashboard (scripts/build_visual_dashboard_html.py) rendered from this checkout, cached at most
+    300 s. The box's checkout follows origin/main, so this is never a stale copy (operator 2026-10-21: one dashboard)."""
+    import time as _t
+    now = _t.time()
+    if _VISUAL_CACHE["html"] and now - _VISUAL_CACHE["t"] < _VISUAL_TTL_S:
+        return _VISUAL_CACHE["html"]
+    try:
+        if str(_REPO_ROOT / "scripts") not in sys.path:
+            sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+        import build_visual_dashboard_html as bvd
+        html, _sha = bvd.render()
+    except Exception as e:  # never 500: say what is missing
+        html = ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
+                f"<body style='font:14px sans-serif;padding:20px'><p>The Visual Dashboard could not be built ({type(e).__name__}: "
+                f"{str(e)[:200]}).</p><p><a href='/'>Live Terminal</a></p>")
+    _VISUAL_CACHE.update(t=now, html=html)
+    return html
+
+
 class DashboardHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         path = self.path.split("?")[0]
@@ -1254,6 +1278,8 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._serve_data()
         elif path == "/project":
             self._serve_project()
+        elif path in ("/visual", "/visual/"):
+            self._serve_visual()
         elif path == "/favicon.ico":
             self.send_response(204)
             self.send_header("Content-Length", "0")
@@ -1272,6 +1298,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def _serve_project(self) -> None:
         body = _project_page().encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store, no-cache")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _serve_visual(self) -> None:
+        body = _visual_page().encode("utf-8")
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
