@@ -180,6 +180,24 @@ engine_slot = "passyds_strike_v1: opp_dev, home"
 stage = "interpreted"
 evidence = "src/prediction_market_bot/pregame_shadow/passyds_model.py"
 
+[[factor]]
+id = "N20"
+factor_class = "F2"
+name = "Defensive man/zone tendency x QB EPA response vs man vs zone (trait-gated, point-in-time)"
+source = "nflverse participation defense_man_zone_type + pbp epa (2018+; fill >=0.996 from 2023)"
+engine_slot = "granularity_index.cross (not wired to a serving model)"
+stage = "interpreted"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_COVERAGE_PRESSURE.md"
+
+[[factor]]
+id = "N21"
+factor_class = "F2"
+name = "Defensive pressure/blitz tendency x QB EPA response pressured vs clean (trait-gated, point-in-time)"
+source = "nflverse participation was_pressure, number_of_pass_rushers + FTN n_blitzers (2022+)"
+engine_slot = "granularity_index.cross (not wired to a serving model)"
+stage = "interpreted"
+evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_COVERAGE_PRESSURE.md"
+
 [[cell]]
 market = "nfl_moneyline"
 band = "T1"

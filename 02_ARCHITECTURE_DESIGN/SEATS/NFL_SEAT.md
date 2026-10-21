@@ -27,6 +27,8 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N17 | F3 | Run-box granularity entry (success/stuffed rate by box count, offense x defense cross) | nflverse pbp + ftn n_defense_box (2022+); participation not needed | granularity_index.cross | applied | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md` |
 | N18 | G4 | Starting-QB availability and role (>=3 prior primary-passer games; OUT/doubtful/IR/suspended -> no forecast) | nflverse player-week stats (attempts >= 15) + nflverse injuries snapshot (QB rows) | passyds_strike_v1: qb_shrunk, availability gate | aggregated | `src/prediction_market_bot/pregame_shadow/passyds_model.py` |
 | N19 | F2 | QB-vs-defense passing matchup (QB recency-shrunk yards x opponent pass-yards-allowed deviation, home flag) | nflverse player-week stats: passing_yards by QB-game and by defense; schedule home_team | passyds_strike_v1: opp_dev, home | interpreted | `src/prediction_market_bot/pregame_shadow/passyds_model.py` |
+| N20 | F2 | Defensive man/zone tendency x QB EPA response vs man vs zone (trait-gated, point-in-time) | nflverse participation defense_man_zone_type + pbp epa (2018+; fill >=0.996 from 2023) | granularity_index.cross (not wired to a serving model) | interpreted | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_COVERAGE_PRESSURE.md` |
+| N21 | F2 | Defensive pressure/blitz tendency x QB EPA response pressured vs clean (trait-gated, point-in-time) | nflverse participation was_pressure, number_of_pass_rushers + FTN n_blitzers (2022+) | granularity_index.cross (not wired to a serving model) | interpreted | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_COVERAGE_PRESSURE.md` |
 
 ## Cells
 

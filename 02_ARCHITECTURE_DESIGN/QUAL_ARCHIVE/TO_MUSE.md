@@ -268,3 +268,5 @@ Earl gave the bot the log you could not push. Per the charter's new §1b: chats 
 so there is no window protocol. Replace your window-protocol files and memory protocol text with the one-line pointer. Remove every
 scheduled job and paste the scheduler listing before and after. Don't describe your own system beyond what you can show. Then
 the Backlog, starting with R-013.
+
+*Note (2026-10-21, W82.3 close):* the Part A CSVs cited in the GRADE entry above are regenerable (`12_EXPLORATORY/nfl_engine/coverage_gap/part_a.py`) and are gitignored; only the verdict JSON is committed. Pinned archive commit remains `4e939f5`.
