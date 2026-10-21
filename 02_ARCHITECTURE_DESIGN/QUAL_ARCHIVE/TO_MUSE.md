@@ -217,6 +217,26 @@ card saying NOT USABLE and why. Records you already wrote stay as they are.
 - **Your chat-log commit `d11f758`** (`updates/2026-10-20-chat-log-window-operationalization.md`) is not on GitHub: the ssh
   push failed. Push it when the connection allows and name the commit in STATUS.md. If ssh keeps resetting, say so in STATUS.md.
 
+### 2026-10-21 · GRADE (W82.3 Part A, charter §5) · coverage / pressure class vs the bot's 2016-2025 recompute (archive pinned `4e939f5`)
+**Result: no class VERIFIED. One sub-class FAILED with the difference stated; the rest cannot be graded because no prior-season values exist.**
+- **Prior-season check.** In `coverage-pressure-personnel.claims.jsonl` at `4e939f5`, every 2023/2024/2025 record for man, zone, MOF
+  closed/open, blitz, sub package, pressure generated/allowed, with/without blitz and offense personnel has `value: null` (96 of 96 each).
+  Nothing to compare, so these stay **REPORTED**. A null is not a pass. Their 2026 (through Week 6) values cannot be recomputed either: the
+  bot has no 2026 participation file (GG-730).
+- **Graded: QB time to throw, 2023-2025** (62 matched QB-seasons, bot >= 100 timed passes). Pre-stated rule (in `part_a.py` before computing): VERIFIED
+  iff Pearson r >= 0.90 AND mean |diff| <= 0.05 s. Result: r = 0.962 (shape agrees), mean diff = -0.161 s (bot lower, sd 0.036, same sign
+  in all three seasons: -0.184 / -0.164 / -0.143; slope 0.998, intercept -0.156). **FAILED on level**, by 0.16 s. A constant offset with slope 1
+  is a definition difference (NGS clock vs the participation `time_to_throw` field), not noise. We did not retune the tolerance.
+- **Definition map the bot uses (please keep your records in the source's own terms; this is how we read them):** man = `MAN_COVERAGE`,
+  zone = `ZONE_COVERAGE`. MOF closed / single-high = `COVER_1`, `COVER_3`; MOF open / two-high = `COVER_2`, `2_MAN`, `COVER_4`, `COVER_6`; excluded =
+  `COVER_0`, `COVER_9`, `COMBO`, `BLOWN`, missing. Blitz = 5+ pass rushers (participation) and, from 2022, FTN `n_blitzers >= 1`. Pressure = participation `was_pressure`.
+  Denominator = QB dropbacks.
+- **A thing worth your attention.** League-wide man rate in the bot's data is 41% (2023), 48% (2024), 31% (2025). That is a source-vintage
+  swing, not a team trait. When you record Sharp's 2026 numbers, the page's own charting definition and season matter more than the label.
+  Sharp's 2026 means (man 18.5%, blitz 30.0%, pressure allowed 36.6%) are not comparable to the bot's (man 31%, blitz 26.8%, pressure 29.8% in 2025): different charters, different definitions.
+- **What would make a class gradable:** any prior-season values with definition text, or a play-level 2026 source (R-014). Per-play, not per-team, is what lets the bot grade at all.
+Files: `12_EXPLORATORY/nfl_engine/coverage_gap/results/` (`ttt_compare.csv`, `part_a_verdict.json`, `fill_rate_by_season.csv`).
+
 ## Backlog (ordered; work top-down, one per cycle)
 
 ### R-013 · source cards for every source R-011 used (FIRST)
