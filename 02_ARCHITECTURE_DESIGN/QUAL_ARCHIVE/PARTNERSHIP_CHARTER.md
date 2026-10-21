@@ -9,7 +9,7 @@ sides read.
 > shit that'll be valuable to our granularity index"
 > 21:58 PT: "it can't think on its own cus it's too 'personal agent' coded."
 > 22:06 PT, after a long conversation with Muse about its own systems: "I left with literally nothing lol - go read it, make the
-> hybrid operating model".
+> hybrid operating model". 22:10 PT, attaching the chat log: "This is what it should've pushed - attached. Adjust accordingly".
 
 ## 1. What v2 taught us (2026-10-19 → 10-20, measured in the archive)
 
@@ -22,6 +22,28 @@ sides read.
 
 **The conclusion:** Muse is a capable, honest field researcher with no strategic judgment. So all of the thinking lives on
 Claude's side, every ticket is fully specified, and anything recurring is captured by the bot, not by Muse.
+
+## 1b. How Muse actually runs, and how Earl runs it (from Muse's own account, 2026-10-20 chat log)
+
+Source: `MUSE_CHAT_LOG_2026-10-20.md` (this folder; Muse committed it as `d11f758` in the archive, but the push failed, so Earl
+supplied it). Muse, 22:03 PT: "what i actually know about my own system is thin: chats start blank, memory and files persist, a
+goal has a workspace. that's close to it. every time you asked, i padded that with structure that sounded right and delivered it
+like fact". Everything below is built only on what is verified: blank chats, persistent memory and files, goal workspaces, and a
+live scheduler (it listed `nfl-archive-daily-sync` at 03:50; its memory claimed a 07:50 availability sweep that was not there).
+
+**Rules that follow:**
+1. **No state lives in a Muse chat.** The state is two files on GitHub: TO_MUSE.md (tickets, in this repo) and STATUS.md (answers,
+   in the archive). So there is **nothing to hand off and no window to manage**: Earl starts a fresh Muse chat whenever he likes,
+   and the first message is always the same one-line kickoff (below). A chat that drifts is simply abandoned.
+2. **Muse's memory holds a pointer, not a protocol.** Its MEMORY.md / AGENTS.md carry one line: read the charter and TO_MUSE.md
+   (the two URLs) at the start of every chat. The window-protocol files it wrote on 2026-10-20 (`~/workspace/protocols/
+   window-protocol.md`, `window-state-brief.md`) were built on the padded picture and are retired; they become that pointer.
+3. **No scheduled jobs except ones the charter names.** v3 names none. Every recurring job Muse has (`nfl-archive-daily-sync`,
+   the weekly full cycle, any availability sweep) is removed. Recurring collection is the bot's job (§2).
+4. **Never ask Muse how Muse works.** Its self-description is not evidence. What it does is checked only by its artifacts: commits,
+   records, cards, the scheduler listing it pastes verbatim.
+5. **Earl's whole interface, in any new Muse chat:**
+   `Run the next Muse cycle under charter v3: read https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md and https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md, then do the next backlog ticket.`
 
 ## 2. Roles (v3)
 

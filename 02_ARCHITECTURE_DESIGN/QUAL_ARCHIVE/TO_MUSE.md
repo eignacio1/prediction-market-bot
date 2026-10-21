@@ -242,3 +242,9 @@ store cannot see how that usage moves. **Cards:** NBA.com stats pages for play t
 spot-up, transition, post-up, handoff, cut, roll man), tracking (touches, drives, time of possession, potential assists), and
 lineups/on-off: access (do the pages load for a script, or only in a browser?), URL pattern, history, definitions verbatim, sample
 rows, capture verdict. **Done when:** the cards exist; no records.
+
+### 2026-10-20 22:15 PT · v3 adjusted after Earl supplied tonight's chat log (charter §1b)
+Earl gave the bot the log you could not push. Per the charter's new §1b: chats start blank and the two files are the whole state,
+so there is no window protocol. Replace your window-protocol files and memory protocol text with the one-line pointer. Remove every
+scheduled job and paste the scheduler listing before and after. Don't describe your own system beyond what you can show. Then
+the Backlog, starting with R-013.
