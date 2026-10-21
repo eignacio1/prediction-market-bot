@@ -115,14 +115,24 @@ def sec_registry(repo: Path) -> dict:
     try:
         sys.path.insert(0, str(repo / "src"))
         from prediction_market_bot.c5_execution import market_type_registry as R  # type: ignore
-        cells = R.MARKET_TYPE_REGISTRY
-        cells = list(cells.values()) if isinstance(cells, dict) else list(cells)
+        reg = R.MARKET_TYPE_REGISTRY
+        cells = list(reg.values()) if isinstance(reg, dict) else list(reg)
+        sys.path.insert(0, str(repo / "scripts"))
+        import cell_display_state as cds  # type: ignore
     except Exception as e:
         return _awaiting(src, f"import failed: {type(e).__name__}")
+    # W82.2: "wins" is the only green state -- the engine's released positive verdict, resolved to the registry key from code.
+    try:
+        engine = sec_calibration(repo).get("cells") or []
+    except Exception:
+        engine = []
     counts: dict[str, int] = {}
-    for c in cells:
+    for key, c in (reg.items() if isinstance(reg, dict) else ((None, c) for c in cells)):
         st = getattr(c.status, "name", str(c.status)).lower()
-        counts[st] = counts.get(st, 0) + 1
+        ec = cds.resolve_engine_cell(engine, key[0].name, key[1].value) if key else None
+        d = cds.display_state(st, ec)
+        counts[d] = counts.get(d, 0) + 1
+    counts.setdefault("wins", 0)
     return _sec(src, _file_as_of(repo, src), total=len(cells), counts=counts)
 
 
@@ -282,6 +292,12 @@ def sec_data(repo: Path) -> dict:
 
 
 CALIB_DIR = "exp_output/CALIBRATION"
+
+
+def _cds():
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import cell_display_state  # type: ignore
+    return cell_display_state
 
 
 def sec_calibration(repo: Path) -> dict:
@@ -609,7 +625,8 @@ def _calibration_html(sec: dict, head: Any) -> str:
         rows.append(f"<tr><th colspan=6>{sport} <span class='tag'>SHADOW · $0 stake · not trading</span></th></tr>")
         for c in cs:
             st = c["status"]
-            cls = {"JUDGED": "ok", "PRELIMINARY": "warn"}.get(st, "nd")
+            # W82.2: green ("ok") is reserved for WINS; a released look is JUDGED, not a win.
+            cls = "ok" if _cds().display_state("shadow", c) == "wins" else {"JUDGED": "warn", "PRELIMINARY": "warn"}.get(st, "nd")
             pct = c.get("pct_to_first_look")
             bar = (f"<span class='bar'><i style='width:{min(pct, 100)}%'></i></span> <span class='num'>{pct}%</span>"
                    if pct is not None else "<span class='nd'>no look registered</span>")
