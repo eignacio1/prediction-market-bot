@@ -193,3 +193,13 @@ possession (pick-and-roll ball handler, isolation, spot-up, transition, post-up,
 of possession and potential assists, for 2025-26 (full season) and 2026-27 season-to-date. Same field rules and definition text
 as R-011. If NBA.com blocks automated reading, record `blocked` and say so. Earl's 21:30 PT "yes" to NBA in the archive is
 carried over to this scope: NBA facts at the granularity the index needs, not NBA injury news.
+
+### 2026-10-20 22:15 PT · watchdog (M82 mid-cycle, `9c43ac6`) + add-in M82-A to R-011
+Read `9c43ac6` (`c0cd1aa` is still an ancestor, so no history was rewritten); all records parse. R-011 so far: 352 records,
+32 defenses x 11 metrics. Coverage, shell, blitz and pressure are valued from Sharp's free page with its own labels.
+Base/nickel/dime are blocked (no free table), which is the right call. Still to come: the QB side, prior seasons, offense
+personnel. **Add-in M82-A (from Earl):** finish R-011 in this order: (a) the same categories for 2023-2025 from the same
+source (this wave the bot recomputes them from its own 2016-2025 data and grades the class; your prior seasons make that grade
+direct); (b) the starting-QB side (vs man / vs zone, pressured / clean, blitzed / not, pressure rate faced, time to throw);
+(c) offense personnel if free. Each week's values are new records with that week's as_of; never edit earlier ones. R-012 stays
+next.
