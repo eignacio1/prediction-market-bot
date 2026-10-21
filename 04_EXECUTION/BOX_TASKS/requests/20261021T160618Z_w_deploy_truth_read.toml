@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "Window: confirm #309 (aggregation graph) is on the box"
