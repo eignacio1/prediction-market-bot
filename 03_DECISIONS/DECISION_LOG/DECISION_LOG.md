@@ -2685,3 +2685,7 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - The radial web is replaced by a force-directed graph: Muse → sport → workstream → five steps + its Muse tickets (shared tickets link workstreams) → for PAM workstreams, the Mapped step opens the layer-1 taxonomy: NFL position unit (navigation only) → position group (per position, OL/DL not merged) → archetype / modifier. Click opens, click again closes; hover highlights neighbours; detail panel with breadcrumb; search; sport focus; Open all / Reset / Fit.
 - Data: MUSE_WEB.json (window, every wave close) + TO_MUSE.md tickets + qualitative_data/pam/*/taxonomy files, all read by the builder. No green.
 - vision_pillar: PLUMBING. gap_measure: none moved.
+
+## 2026-10-21 09:25 PT — Parked: phone versions of the live terminal and the Visual Dashboard (operator)
+- Operator: "Maybe we should have you build out a phone version of our live terminal & visual dashboard but maybe later since I rarely do shit on my phone".
+- Parked, not scheduled. Today both work on a phone (no sideways scroll), but they are built for a desktop. Revisit when the operator asks.
