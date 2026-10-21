@@ -8,12 +8,17 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-from prediction_market_bot.pregame_shadow import passyds_model as pm
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parents[1]))
+sys.path.insert(0, str(HERE.parents[2] / "src"))
+from _fence import safe_out  # noqa: E402
+from prediction_market_bot.pregame_shadow import passyds_model as pm  # noqa: E402
 
 LADDER = (-50, -25, 0, 25, 50)
 
@@ -62,16 +67,9 @@ def main() -> None:
            "brier_baseline": float(np.mean(briers_b)), "brier_delta_model_minus_baseline":
            float(np.mean(briers_m) - np.mean(briers_b)), "gate": "reported, not a verdict"}
     print(json.dumps(out, indent=2))
-    Path(a.report).parent.mkdir(parents=True, exist_ok=True)
-    Path(a.report).write_text(json.dumps(out, indent=2) + "\n")
+    safe_out(a.report).write_text(json.dumps(out, indent=2) + "\n")
     if a.write:
-        md = Path(a.models_dir)
-        p = md / "passyds_strike_v1.json"
-        p.write_text(json.dumps({**art, "model_id": "passyds_strike_v1", "features": list(pm.FEATURES),
-                                 "params": {"min_att": pm.MIN_ATT, "halflife": pm.HALFLIFE, "shrink_k": pm.SHRINK_K,
-                                            "min_prior_starts": pm.MIN_PRIOR_STARTS}}, indent=2, sort_keys=True) + "\n")
-        (md / "passyds_strike_v1.sha256").write_text(f"{pm.sha256_file(p)}  passyds_strike_v1.json\n")
-        print("frozen", pm.sha256_file(p))
+        print("frozen", pm.write_frozen(art, Path(a.models_dir)))
 
 
 if __name__ == "__main__":

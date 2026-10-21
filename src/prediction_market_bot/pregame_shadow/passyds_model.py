@@ -129,6 +129,17 @@ def sha256_file(p: Path) -> str:
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
+def write_frozen(art: dict, models_dir: Path) -> str:
+    """Freeze `art` to models/passyds_strike_v1.json + .sha256 (a new fit = a new model id; never overwrite a frozen one)."""
+    md = Path(models_dir)
+    p = md / "passyds_strike_v1.json"
+    p.write_text(json.dumps({**art, "model_id": "passyds_strike_v1", "features": list(FEATURES),
+                             "params": {"min_att": MIN_ATT, "halflife": HALFLIFE, "shrink_k": SHRINK_K,
+                                        "min_prior_starts": MIN_PRIOR_STARTS}}, indent=2, sort_keys=True) + "\n")
+    (md / "passyds_strike_v1.sha256").write_text(f"{sha256_file(p)}  passyds_strike_v1.json\n")
+    return sha256_file(p)
+
+
 def load_frozen(models_dir: Path) -> tuple[StrikeModel, str]:
     """Load models/passyds_strike_v1.json, refusing if its bytes do not match the committed sha256."""
     art_p = Path(models_dir) / "passyds_strike_v1.json"
