@@ -1,0 +1,2 @@
+task = "php_inventory_read"
+note = "Window: DigitalOcean PHP RCE notice 2026-10-21 - is PHP on the box?"
