@@ -1,0 +1,325 @@
+{
+ "sport": "mlb",
+ "version": "mlb_pam_v4depth_draft1",
+ "status": "DRAFT 2026-10-21 (strategic window, at the operator's request; awaiting operator approval). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
+ "template": "qualitative_data/pam/nba/taxonomy.json (NBA PAM v4: 15 archetypes, 32 modifiers)",
+ "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet.",
+ "groups": "HIT (hitters), SP (starters), RP (relievers), DEF (fielding/catching role)",
+ "archetypes": {
+  "HIT-1": {
+   "group": "HIT",
+   "name": "Power Bat / Damage Hitter",
+   "notes": "Production through slug and barrels",
+   "signals": "barrel %, hard-hit %, ISO, xSLG, launch angle",
+   "threshold": "Barrel % >= 12%; ISO >= .220"
+  },
+  "HIT-2": {
+   "group": "HIT",
+   "name": "Contact / Bat-to-Ball Hitter",
+   "notes": "Puts the ball in play, low strikeouts",
+   "signals": "K %, contact %, whiff %, zone contact",
+   "threshold": "K % <= 15%; whiff % <= 18%"
+  },
+  "HIT-3": {
+   "group": "HIT",
+   "name": "On-Base / Selective Hitter",
+   "notes": "Works counts, walks, chases little",
+   "signals": "BB %, chase %, OBP, pitches per PA",
+   "threshold": "BB % >= 11%; chase % <= 23%"
+  },
+  "HIT-4": {
+   "group": "HIT",
+   "name": "Three-True-Outcomes Slugger",
+   "notes": "HR, BB or K on a large share of PAs",
+   "signals": "(HR+BB+K)/PA, barrel %, K %",
+   "threshold": "TTO share >= 40% of PA"
+  },
+  "HIT-5": {
+   "group": "HIT",
+   "name": "Speed / Table-Setter",
+   "notes": "Gets on and runs",
+   "signals": "sprint speed, SB rate, infield-hit rate, OBP",
+   "threshold": "Sprint speed >= 28.5 ft/s; SB attempts >= 1 per 20 PA"
+  },
+  "HIT-6": {
+   "group": "HIT",
+   "name": "Platoon Bat",
+   "notes": "Big split by pitcher hand",
+   "signals": "wOBA vs RHP vs LHP, PA share by hand",
+   "threshold": "wOBA split >= .060 between hands"
+  },
+  "HIT-7": {
+   "group": "HIT",
+   "name": "Line-Drive / Gap Hitter",
+   "notes": "Doubles, line drives, all fields",
+   "signals": "LD %, doubles rate, spray angle, xBA",
+   "threshold": "LD % >= 24%; xBA >= .270"
+  },
+  "HIT-8": {
+   "group": "HIT",
+   "name": "Low-Leverage Depth Bat",
+   "notes": "Bench or bottom of the order",
+   "signals": "PA share, wRC+",
+   "threshold": "PA share <= 60% of team games; wRC+ <= 90"
+  },
+  "SP-1": {
+   "group": "SP",
+   "name": "Strikeout Ace",
+   "notes": "Misses bats at a high rate",
+   "signals": "K %, whiff %, CSW %, xFIP, stuff metrics",
+   "threshold": "K % >= 28%; CSW % >= 31%"
+  },
+  "SP-2": {
+   "group": "SP",
+   "name": "Command / Weak-Contact Starter",
+   "notes": "Lives on location and soft contact",
+   "signals": "BB %, hard-hit % allowed, xwOBA allowed",
+   "threshold": "BB % <= 6%; hard-hit % allowed <= 36%"
+  },
+  "SP-3": {
+   "group": "SP",
+   "name": "Ground-Ball Sinkerballer",
+   "notes": "Keeps the ball on the ground",
+   "signals": "GB %, sinker usage, HR/9",
+   "threshold": "GB % >= 50%"
+  },
+  "SP-4": {
+   "group": "SP",
+   "name": "Fly-Ball / Pop-Up Starter",
+   "notes": "Elevates, high IFFB, HR risk",
+   "signals": "FB %, IFFB %, HR/FB",
+   "threshold": "FB % >= 42%"
+  },
+  "SP-5": {
+   "group": "SP",
+   "name": "Workhorse / Innings Eater",
+   "notes": "Pitches deep, limited ceiling",
+   "signals": "IP per start, pitches per start, TTO penalty",
+   "threshold": "IP/start >= 6.0"
+  },
+  "SP-6": {
+   "group": "SP",
+   "name": "Short Starter / Opener-Bulk",
+   "notes": "Exits early by plan",
+   "signals": "IP per start, times through the order",
+   "threshold": "IP/start <= 4.5 by usage"
+  },
+  "RP-1": {
+   "group": "RP",
+   "name": "High-Leverage Closer",
+   "notes": "Owns the ninth / highest leverage",
+   "signals": "gmLI, K %, saves/holds",
+   "threshold": "Average entry leverage (gmLI) >= 1.6"
+  },
+  "RP-2": {
+   "group": "RP",
+   "name": "Setup / Bridge",
+   "notes": "7th-8th inning leverage arm",
+   "signals": "gmLI, holds, K %",
+   "threshold": "gmLI 1.1-1.6"
+  },
+  "RP-3": {
+   "group": "RP",
+   "name": "Matchup Specialist",
+   "notes": "Deployed by batter hand or type",
+   "signals": "usage vs same-hand batters, split",
+   "threshold": "Same-hand share >= 65% of batters faced"
+  },
+  "RP-4": {
+   "group": "RP",
+   "name": "Multi-Inning / Long Relief",
+   "notes": "Covers innings",
+   "signals": "IP per appearance",
+   "threshold": "IP/appearance >= 1.5"
+  },
+  "RP-5": {
+   "group": "RP",
+   "name": "Low-Leverage Mop-Up",
+   "notes": "Blowouts and depth",
+   "signals": "gmLI",
+   "threshold": "gmLI <= 0.8"
+  },
+  "DEF-1": {
+   "group": "DEF",
+   "name": "Elite Defender (glove-first)",
+   "notes": "Value from run prevention",
+   "signals": "OAA, DRS, fielding run value",
+   "threshold": "OAA top decile at position"
+  },
+  "DEF-2": {
+   "group": "DEF",
+   "name": "Framing / Game-Calling Catcher",
+   "notes": "Steals strikes",
+   "signals": "framing runs, pop time, blocking",
+   "threshold": "Framing runs top third"
+  },
+  "DEF-3": {
+   "group": "DEF",
+   "name": "Arm / Run-Suppressing Outfielder",
+   "notes": "Throws deter advances",
+   "signals": "arm strength, assists, advance-prevention runs",
+   "threshold": "Arm strength top decile at position"
+  },
+  "DEF-4": {
+   "group": "DEF",
+   "name": "Bat-First / Defensive Liability",
+   "notes": "Defense costs runs",
+   "signals": "OAA, DRS",
+   "threshold": "OAA bottom decile at position"
+  },
+  "DEF-5": {
+   "group": "DEF",
+   "name": "Utility / Multi-Position",
+   "notes": "Plays three or more positions",
+   "signals": "positions played, innings by position",
+   "threshold": ">= 3 positions with >= 50 innings each"
+  }
+ },
+ "modifiers": {
+  "M-1": {
+   "name": "Elite Exit Velocity",
+   "notes": "Top-end raw power",
+   "threshold": "90th-percentile EV top decile"
+  },
+  "M-2": {
+   "name": "Elite Plate Discipline",
+   "notes": "Swings at strikes, takes balls",
+   "threshold": "Chase % bottom decile"
+  },
+  "M-3": {
+   "name": "Elite Two-Strike Approach",
+   "notes": "Shortens up, avoids strikeouts",
+   "threshold": "K % with two strikes bottom decile"
+  },
+  "M-4": {
+   "name": "Pull-Heavy / Shift-Sensitive",
+   "notes": "Pulls grounders and flies",
+   "threshold": "Pull % top decile"
+  },
+  "M-5": {
+   "name": "Elite vs Fastball",
+   "notes": "Crushes velocity",
+   "threshold": "Run value vs fastballs top decile"
+  },
+  "M-6": {
+   "name": "Breaking-Ball Vulnerable",
+   "notes": "Struggles vs spin",
+   "threshold": "Whiff % vs breaking balls top decile"
+  },
+  "M-7": {
+   "name": "Reverse Platoon",
+   "notes": "Hits same-hand pitching better",
+   "threshold": "Reverse split >= .040 wOBA"
+  },
+  "M-8": {
+   "name": "Elite Baserunner",
+   "notes": "Value from taking bases",
+   "threshold": "Baserunning run value top decile"
+  },
+  "M-9": {
+   "name": "Elite Velocity (pitcher)",
+   "notes": "Fastball velocity",
+   "threshold": "Fastball velocity top decile"
+  },
+  "M-10": {
+   "name": "Elite Spin / Movement",
+   "notes": "Pitch shape plays above velocity",
+   "threshold": "Stuff metric or spin/movement top decile"
+  },
+  "M-11": {
+   "name": "Elite Command",
+   "notes": "Hits spots",
+   "threshold": "Zone-edge rate and walk rate top decile"
+  },
+  "M-12": {
+   "name": "Deep Arsenal",
+   "notes": "Four or more quality pitches",
+   "threshold": "4+ pitches each >= 10% usage with positive run value"
+  },
+  "M-13": {
+   "name": "Times-Through-the-Order Fade",
+   "notes": "Weakens sharply the third time",
+   "threshold": "wOBA allowed 3rd time - 1st time >= .060"
+  },
+  "M-14": {
+   "name": "Platoon-Vulnerable Pitcher",
+   "notes": "Big split by batter hand",
+   "threshold": "wOBA allowed split >= .060"
+  },
+  "M-15": {
+   "name": "Ground-Ball Dependence",
+   "notes": "Results hinge on infield defense",
+   "threshold": "GB % >= 50% with team OAA dependence"
+  },
+  "M-16": {
+   "name": "Home-Run Prone",
+   "notes": "Gives up homers",
+   "threshold": "HR/FB top decile"
+  },
+  "M-17": {
+   "name": "Elite Hold / Running-Game Control",
+   "notes": "Shuts down steals",
+   "threshold": "SB allowed per opportunity bottom decile"
+  },
+  "M-18": {
+   "name": "Workload-Managed / Innings Cap",
+   "notes": "Documented limit",
+   "threshold": "Innings or pitch cap documented"
+  },
+  "M-19": {
+   "name": "Velocity Decline Flag",
+   "notes": "Losing velocity in season",
+   "threshold": "Fastball velocity down >= 1.5 mph vs prior season"
+  },
+  "M-20": {
+   "name": "Park-Sensitive",
+   "notes": "Splits by park or environment",
+   "threshold": "Home/road or park-factor split >= 25%"
+  },
+  "M-21": {
+   "name": "Weather / Temperature-Sensitive",
+   "notes": "Splits by temperature or wind",
+   "threshold": "Split >= 20% on adequate sample"
+  },
+  "M-22": {
+   "name": "Umpire-Zone Sensitive",
+   "notes": "Results swing with the plate umpire's zone",
+   "threshold": "Called-strike-rate dependence top decile"
+  },
+  "M-23": {
+   "name": "Catcher-Pairing Effect",
+   "notes": "Performs differently by catcher",
+   "threshold": "Split by catcher >= 20% on adequate sample"
+  },
+  "M-24": {
+   "name": "Developmental Upside",
+   "notes": "Young player on a steep curve",
+   "threshold": "Age <= 24 with fast-rising skill metrics"
+  },
+  "M-25": {
+   "name": "Veteran Decline",
+   "notes": "Age-related decline",
+   "threshold": "Age 33+ with falling bat speed or velocity"
+  },
+  "M-26": {
+   "name": "High Variance / Streaky",
+   "notes": "Output dispersion high",
+   "threshold": "sd of rolling wOBA top quartile"
+  },
+  "M-27": {
+   "name": "Low Variance / Floor",
+   "notes": "Output stable",
+   "threshold": "sd of rolling wOBA bottom quartile"
+  },
+  "M-28": {
+   "name": "Specialist: Pinch-Hit / Bench Bat",
+   "notes": "Used off the bench",
+   "threshold": "Pinch-hit PA share >= 30%"
+  },
+  "M-29": {
+   "name": "Specialist: Opener",
+   "notes": "Starts and exits after one or two innings",
+   "threshold": "Starts with IP <= 2 by design"
+  }
+ }
+}

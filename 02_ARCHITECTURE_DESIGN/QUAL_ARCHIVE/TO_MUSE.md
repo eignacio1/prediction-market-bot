@@ -402,3 +402,35 @@ archives) with history depth and the access pattern. **Done when:** cards + one 
 free signal. **What:** one table in `sources/nba/pam-signal-map.md`: each v4 factor and modifier (names as in the bot's
 `qualitative_data/pam/nba/taxonomy.json`) -> the free source and metric that measures it (from the cards and records you already
 have) -> coverage seasons -> NONE where nothing free measures it. **Done when:** every factor and modifier has a row.
+
+### 2026-10-21 08:10 PT · PAM layer 2 for every sport: the backlog order changes (Earl, 07:54 PT)
+Earl: "I'd like to have that layered in starting today so that Muse can work sequentially on everything, with NBA being the
+architectural template for the other 3". Claude drafted the layer-1 taxonomies for NFL, MLB and NHL in the NBA v4 structure
+(archetypes + modifiers, each with signals and a draft threshold). Status: DRAFT, awaiting Earl's approval. Your signal maps are
+how we find out which parts can be measured for free.
+
+**New backlog order (top-down; supersedes the order above; ticket texts above are unchanged):** R-017 (finish) → **R-027** (NBA
+PAM signal map, now SECOND: the template) → **R-028** → R-018 → **R-029** → **R-030** → R-019 → R-020 → R-021 → R-022 → R-023
+→ R-024 → R-025 → R-026.
+
+### R-028 · NFL PAM signal map (layer 2)
+**Target:** `qualitative_data/pam/nfl/taxonomy_v4depth.json` in the bot repo (raw URL:
+https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/qualitative_data/pam/nfl/taxonomy_v4depth.json): 42
+archetypes across QB, RB, WR, TE, OL, EDGE/DL, LB, CB, S and 32 modifiers.
+**What:** the same table as R-027, in `sources/nfl/pam-signal-map.md`: every archetype and modifier id → each signal it names
+→ the free source and metric that measures it (cite your source cards; add a card for any new source) → seasons covered →
+point-in-time? (weekly / season-end only) → NONE where nothing free measures it. Where an entry cites a GG-### gap, say whether
+R-018 found a free fill. Where a signal is free but defined differently from the taxonomy's wording, quote the source's definition.
+**Done when:** every archetype and modifier has a row; one STATUS line with counts (fully free / partial / none).
+
+### R-029 · MLB PAM signal map (layer 2)
+**Target:** `qualitative_data/pam/mlb/taxonomy_v4depth.json` (24 archetypes: hitters, starters, relievers, defense; 29 modifiers).
+**What:** the same table, in `sources/mlb/pam-signal-map.md`. Expect Baseball Savant (Statcast: barrels, EV, whiff, chase, sprint
+speed, OAA, framing, arm strength), FanGraphs and Baseball-Reference to cover most of it. Card each source you use (eight parts).
+**Done when:** every row filled; STATUS counts.
+
+### R-030 · NHL PAM signal map (layer 2)
+**Target:** `qualitative_data/pam/nhl/taxonomy_v4depth.json` (18 archetypes: forwards, defense, goalies; 25 modifiers).
+**What:** the same table, in `sources/nhl/pam-signal-map.md`, using R-020's NHL source cards (MoneyPuck, Natural Stat Trick, NHL
+EDGE, shift charts, Hockey-Reference). If R-020 isn't done when you reach this, do the cards first, under R-020.
+**Done when:** every row filled; STATUS counts.

@@ -1,0 +1,466 @@
+{
+ "sport": "nfl",
+ "version": "nfl_pam_v4depth_draft1",
+ "status": "DRAFT 2026-10-21 (strategic window, at the operator's request; awaiting operator approval). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
+ "template": "qualitative_data/pam/nba/taxonomy.json (NBA PAM v4: 15 archetypes, 32 modifiers)",
+ "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet.",
+ "groups": "QB, RB, WR, TE, OL, EDGE/DL, LB, CB, S (the operator's deep-tier scope: QB, WR, RB, TE, OL, core defenders)",
+ "archetypes": {
+  "QB-1": {
+   "group": "QB",
+   "name": "Pocket Distributor",
+   "notes": "Wins on timing and processing from the pocket",
+   "signals": "time to throw, out-of-pocket rate, short-mid aDOT, CPOE",
+   "threshold": "TTT <= 2.6s; out-of-pocket <= 12% of dropbacks; aDOT 6-8.5"
+  },
+  "QB-2": {
+   "group": "QB",
+   "name": "Mobile Creator",
+   "notes": "Extends plays and runs by design or scramble",
+   "signals": "scramble rate, designed QB runs, rush EPA, out-of-pocket rate",
+   "threshold": "Scramble >= 6% of dropbacks or >= 4 designed runs/g; rush EPA/play > 0"
+  },
+  "QB-3": {
+   "group": "QB",
+   "name": "Downfield Gunslinger",
+   "notes": "Pushes the ball vertically, accepts risk",
+   "signals": "aDOT, deep-attempt rate (20+ air yds), interception-worthy rate, big-time throws",
+   "threshold": "aDOT >= 9; deep attempts >= 14% of attempts"
+  },
+  "QB-4": {
+   "group": "QB",
+   "name": "System / Play-Action Manager",
+   "notes": "Production tied to scheme (PA, screens, RPO)",
+   "signals": "play-action share, screen/RPO share, EPA gap PA vs non-PA",
+   "threshold": "PA share >= 28% or screen+RPO share >= 20%; EPA gap PA - non-PA >= 0.15"
+  },
+  "QB-5": {
+   "group": "QB",
+   "name": "Pressure Resister",
+   "notes": "Holds efficiency when pressured or blitzed",
+   "signals": "EPA and sack rate under pressure, vs blitz, pressure-to-sack rate",
+   "threshold": "EPA/dropback under pressure in top third; pressure-to-sack <= 15%"
+  },
+  "QB-6": {
+   "group": "QB",
+   "name": "Checkdown Conservator",
+   "notes": "Avoids negative plays, low aDOT, low turnovers",
+   "signals": "aDOT, sack rate, INT rate, throwaway rate",
+   "threshold": "aDOT <= 6.5; INT rate <= 1.8%; sack rate <= 5%"
+  },
+  "RB-1": {
+   "group": "RB",
+   "name": "Workhorse",
+   "notes": "Carries the backfield load in all phases",
+   "signals": "carry share, snap share, goal-line share, routes on pass downs",
+   "threshold": "Carry share >= 60%; snap share >= 65%"
+  },
+  "RB-2": {
+   "group": "RB",
+   "name": "Explosive Runner",
+   "notes": "Gains come in chunks",
+   "signals": "10+ yd rush rate, breakaway %, yards after contact, broken tackles",
+   "threshold": "10+ yd rate >= 12% of carries"
+  },
+  "RB-3": {
+   "group": "RB",
+   "name": "Receiving Back",
+   "notes": "Primary pass-game role from the backfield",
+   "signals": "target share, routes run, receiving yds per route, pass-down snap share",
+   "threshold": "Target share >= 12% or >= 3.5 targets/g"
+  },
+  "RB-4": {
+   "group": "RB",
+   "name": "Grinder / Short-Yardage",
+   "notes": "Converts short yardage, low explosive rate",
+   "signals": "3rd/4th-and-short conversion, goal-line carries, stuff rate",
+   "threshold": "Short-yardage carries >= 25% of carries; conversion >= 70%"
+  },
+  "RB-5": {
+   "group": "RB",
+   "name": "Change-of-Pace / Committee",
+   "notes": "Shares the backfield, situational",
+   "signals": "snap share, split carries with a primary back",
+   "threshold": "Snap share 25-50%; carry share 20-40%"
+  },
+  "WR-VERT": {
+   "group": "WR",
+   "name": "Vertical Stretcher",
+   "notes": "Built (mass tier)",
+   "signals": "aDOT, deep-target rate, deep-route share",
+   "threshold": "see qualitative_data/pam/nfl/taxonomy.json"
+  },
+  "WR-YAC": {
+   "group": "WR",
+   "name": "YAC / Short-Game Weapon",
+   "notes": "Built (mass tier)",
+   "signals": "YAC per reception, short-target rate, screen share",
+   "threshold": "see qualitative_data/pam/nfl/taxonomy.json"
+  },
+  "WR-VOL": {
+   "group": "WR",
+   "name": "Volume Target Earner",
+   "notes": "Built (mass tier)",
+   "signals": "team target share",
+   "threshold": "see qualitative_data/pam/nfl/taxonomy.json"
+  },
+  "WR-MID": {
+   "group": "WR",
+   "name": "Intermediate Chain-Mover",
+   "notes": "Built (mass tier)",
+   "signals": "aDOT near 10, in/dig/out/cross route share",
+   "threshold": "see qualitative_data/pam/nfl/taxonomy.json"
+  },
+  "WR-SLOT": {
+   "group": "WR",
+   "name": "Slot Specialist",
+   "notes": "Works inside; option and choice routes",
+   "signals": "slot alignment share, slot targets",
+   "threshold": "Slot alignment >= 60% of routes (GG-775: alignment not yet free)"
+  },
+  "WR-CC": {
+   "group": "WR",
+   "name": "Contested / Red-Zone Winner",
+   "notes": "Wins at the catch point, red-zone target",
+   "signals": "contested-ball rate and win rate, red-zone target share",
+   "threshold": "Contested targets >= 15% of targets; red-zone target share >= 20%"
+  },
+  "TE-1": {
+   "group": "TE",
+   "name": "Inline Blocker",
+   "notes": "Attached to the line, run-game first",
+   "signals": "inline snap share, run-block snaps, target share",
+   "threshold": "Inline >= 60% of snaps; target share <= 8%"
+  },
+  "TE-2": {
+   "group": "TE",
+   "name": "Move / Flex Receiver",
+   "notes": "Detached receiver in a TE body",
+   "signals": "slot/wide snap share, target share, aDOT",
+   "threshold": "Target share >= 16% or slot+wide >= 50% of snaps"
+  },
+  "TE-3": {
+   "group": "TE",
+   "name": "Hybrid Two-Way TE",
+   "notes": "Blocks and catches at a starter's rate",
+   "signals": "snap share, routes run share, run-block snaps",
+   "threshold": "Snap share >= 75% with route participation >= 60%"
+  },
+  "TE-4": {
+   "group": "TE",
+   "name": "Red-Zone Specialist",
+   "notes": "Targeted inside the 20",
+   "signals": "red-zone target and TD share",
+   "threshold": "Red-zone target share >= 15% at low overall share"
+  },
+  "OL-1": {
+   "group": "OL",
+   "name": "Pass-Pro Anchor",
+   "notes": "Wins pass sets, rarely allows pressure",
+   "signals": "pressures allowed per pass-block snap, pass-block win rate",
+   "threshold": "Pass-block win rate top third; pressures allowed <= 3% of pass snaps (GG-776)"
+  },
+  "OL-2": {
+   "group": "OL",
+   "name": "Run-Game Mauler",
+   "notes": "Drives defenders in gap/power runs",
+   "signals": "run-block win rate, yards before contact on runs to his gap",
+   "threshold": "Run-block win rate top third (GG-776)"
+  },
+  "OL-3": {
+   "group": "OL",
+   "name": "Zone-Scheme Mover",
+   "notes": "Reach and climb blocks; outside-zone fit",
+   "signals": "outside-zone share of team runs, run-block win rate on zone",
+   "threshold": "Team outside-zone share >= 40% with positive zone RBWR"
+  },
+  "OL-4": {
+   "group": "OL",
+   "name": "Liability / Target",
+   "notes": "Opponents attack him",
+   "signals": "pressures and penalties allowed, blown-block rate",
+   "threshold": "Bottom quartile on pressures allowed or >= 6 penalties per 600 snaps"
+  },
+  "DL-1": {
+   "group": "EDGE/DL",
+   "name": "Speed Edge Rusher",
+   "notes": "Wins around the corner",
+   "signals": "pass-rush win rate, pressure rate, time to pressure",
+   "threshold": "Pass-rush win rate top third; pressure rate >= 12% (GG-778)"
+  },
+  "DL-2": {
+   "group": "EDGE/DL",
+   "name": "Power Edge / Run-Setter",
+   "notes": "Sets the edge, collapses the pocket",
+   "signals": "run-stop win rate, pressures, TFL rate",
+   "threshold": "Run-stop win rate top third"
+  },
+  "DL-3": {
+   "group": "EDGE/DL",
+   "name": "Interior Penetrator",
+   "notes": "3-technique disruptor",
+   "signals": "interior pass-rush win rate, TFL, pressure rate",
+   "threshold": "Interior pressure rate >= 8%"
+  },
+  "DL-4": {
+   "group": "EDGE/DL",
+   "name": "Nose / Two-Gap Anchor",
+   "notes": "Eats blocks, holds the point",
+   "signals": "double-team rate, run-stop rate, snap share on early downs",
+   "threshold": "Double-team rate high; pass-rush snaps <= 50% of snaps"
+  },
+  "DL-5": {
+   "group": "EDGE/DL",
+   "name": "Rotational Pass-Rush Specialist",
+   "notes": "Situational rusher",
+   "signals": "pass-down snap share, pressure rate",
+   "threshold": "Snap share 25-50%, concentrated on passing downs"
+  },
+  "LB-1": {
+   "group": "LB",
+   "name": "Coverage LB",
+   "notes": "Carries backs and TEs, plays zone depth",
+   "signals": "targets allowed, yards per coverage snap, coverage snap share",
+   "threshold": "Coverage snap share >= 55% with yards allowed per cov snap below median"
+  },
+  "LB-2": {
+   "group": "LB",
+   "name": "Downhill Run Stopper",
+   "notes": "Fills and finishes against the run",
+   "signals": "run-stop rate, tackles for loss, missed-tackle rate",
+   "threshold": "Run stops top third; missed tackles <= 10%"
+  },
+  "LB-3": {
+   "group": "LB",
+   "name": "Blitzing / Pressure LB",
+   "notes": "Rushes the passer often",
+   "signals": "blitz rate, pressures per blitz",
+   "threshold": "Blitz rate >= 15% of pass snaps"
+  },
+  "LB-4": {
+   "group": "LB",
+   "name": "Green-Dot Signal Caller",
+   "notes": "Every-down, communication role",
+   "signals": "snap share, every-down usage",
+   "threshold": "Snap share >= 95%, wears the green dot"
+  },
+  "CB-1": {
+   "group": "CB",
+   "name": "Man-Coverage Shadow",
+   "notes": "Follows the top receiver",
+   "signals": "shadow rate, targets per cov snap in man, yards per cov snap",
+   "threshold": "Travels with WR1 >= 50% of snaps in man (GG-777)"
+  },
+  "CB-2": {
+   "group": "CB",
+   "name": "Zone / Off-Coverage Corner",
+   "notes": "Reads and breaks in zone",
+   "signals": "zone snap share, yards per cov snap in zone, INT/PBU rate",
+   "threshold": "Team zone rate high and CB yards per cov snap below median"
+  },
+  "CB-3": {
+   "group": "CB",
+   "name": "Slot / Nickel Defender",
+   "notes": "Inside, run fits and short zones",
+   "signals": "slot snap share, run-stop rate, targets in slot",
+   "threshold": "Slot alignment >= 60% (GG-775)"
+  },
+  "CB-4": {
+   "group": "CB",
+   "name": "Press-Physical Corner",
+   "notes": "Disrupts at the line",
+   "signals": "press rate, penalties, contested catches allowed",
+   "threshold": "Press alignment >= 50% of coverage snaps"
+  },
+  "CB-5": {
+   "group": "CB",
+   "name": "Target / Weak Link",
+   "notes": "Offenses throw at him",
+   "signals": "targets per cov snap, yards per cov snap, completion % allowed",
+   "threshold": "Top quartile on targets per cov snap and yards allowed"
+  },
+  "S-1": {
+   "group": "S",
+   "name": "Deep Single-High Eraser",
+   "notes": "Middle-of-field free safety",
+   "signals": "deep alignment rate, explosive plays allowed, range",
+   "threshold": "Deep alignment >= 60% of snaps"
+  },
+  "S-2": {
+   "group": "S",
+   "name": "Box / Robber Safety",
+   "notes": "Plays near the line, run and underneath",
+   "signals": "box alignment rate, run stops, tackles",
+   "threshold": "Box alignment >= 40% of snaps"
+  },
+  "S-3": {
+   "group": "S",
+   "name": "Hybrid Coverage Safety",
+   "notes": "Matches TEs/slots in man",
+   "signals": "slot/man coverage snaps, yards per cov snap",
+   "threshold": "Slot/man snaps >= 25% of coverage snaps"
+  }
+ },
+ "modifiers": {
+  "M-1": {
+   "name": "Elite Processing Speed",
+   "notes": "QB/receiver reads; throws before receivers break",
+   "threshold": "TTT <= 2.5s with CPOE top third"
+  },
+  "M-2": {
+   "name": "Elite Arm / Deep Accuracy",
+   "notes": "Completes 20+ yd throws",
+   "threshold": "Deep completion % top quartile on >= 3 deep att/g"
+  },
+  "M-3": {
+   "name": "Elite Scramble Threat",
+   "notes": "Creates when the play breaks",
+   "threshold": "Scramble EPA/play top decile"
+  },
+  "M-4": {
+   "name": "Elite YAC Creator",
+   "notes": "Yards after catch over expected",
+   "threshold": "YAC over expected top decile"
+  },
+  "M-5": {
+   "name": "Elite Separation",
+   "notes": "Gets open by route quality",
+   "threshold": "Average separation top decile (GG-779)"
+  },
+  "M-6": {
+   "name": "Elite Contested Catcher",
+   "notes": "Wins 50/50 balls",
+   "threshold": "Contested catch rate >= 55% on >= 15 contested targets"
+  },
+  "M-7": {
+   "name": "Elite Route Tree / Versatility",
+   "notes": "Wins across the full tree and alignments",
+   "threshold": "Positive yards per route on >= 6 route types"
+  },
+  "M-8": {
+   "name": "Elite Ball Security",
+   "notes": "Rarely fumbles or throws picks",
+   "threshold": "Turnover rate bottom decile"
+  },
+  "M-9": {
+   "name": "Fumble Risk",
+   "notes": "Ball-security liability",
+   "threshold": "Fumbles per touch top decile"
+  },
+  "M-10": {
+   "name": "Elite Pass Protector (non-OL)",
+   "notes": "Back or TE who stonewalls blitzers",
+   "threshold": "Pressures allowed per pass-block snap bottom decile"
+  },
+  "M-11": {
+   "name": "Elite Run-Game Gravity",
+   "notes": "Defenses load the box for him",
+   "threshold": "8+ box faced rate top decile (FTN box counts)"
+  },
+  "M-12": {
+   "name": "Elite Pass-Rush Win Rate",
+   "notes": "Beats blocks quickly",
+   "threshold": "PRWR top decile (GG-778)"
+  },
+  "M-13": {
+   "name": "Elite Run-Stop Win Rate",
+   "notes": "Wins at the point vs the run",
+   "threshold": "RSWR top decile"
+  },
+  "M-14": {
+   "name": "Elite Ball Skills (DB)",
+   "notes": "Turns targets into turnovers",
+   "threshold": "INT + PBU per target top decile"
+  },
+  "M-15": {
+   "name": "Elite Tackler",
+   "notes": "Finishes plays",
+   "threshold": "Missed-tackle rate bottom decile on >= 40 attempts"
+  },
+  "M-16": {
+   "name": "Penalty Liability",
+   "notes": "Flags at a costly rate",
+   "threshold": "Accepted penalties per 600 snaps top decile"
+  },
+  "M-17": {
+   "name": "Scheme-Dependent Production",
+   "notes": "Output collapses outside one scheme/role",
+   "threshold": "Production drops >= 30% outside his primary alignment or concept"
+  },
+  "M-18": {
+   "name": "Volume Fragility",
+   "notes": "Efficient on small usage, untested at volume",
+   "threshold": "Top-third efficiency on bottom-third volume"
+  },
+  "M-19": {
+   "name": "Injury-Managed / Snap-Limited",
+   "notes": "Documented snap limit or managed workload",
+   "threshold": "Snap share capped while active (documented)"
+  },
+  "M-20": {
+   "name": "Developmental Upside",
+   "notes": "Rookie/second-year on a steep curve",
+   "threshold": "Week-over-week efficiency trend top decile, years <= 2"
+  },
+  "M-21": {
+   "name": "Veteran Decline / IQ Compensation",
+   "notes": "Age-related athletic decline offset by technique",
+   "threshold": "Age 31+ with falling speed metrics and stable production"
+  },
+  "M-22": {
+   "name": "Specialist: Red-Zone Weapon",
+   "notes": "Usage spikes inside the 20",
+   "threshold": "Red-zone share >= 2x overall share"
+  },
+  "M-23": {
+   "name": "Specialist: Third-Down / Money-Down",
+   "notes": "Usage spikes on 3rd down",
+   "threshold": "3rd-down target or snap share >= 1.5x overall"
+  },
+  "M-24": {
+   "name": "Specialist: Two-Minute / Hurry-Up",
+   "notes": "Role grows in no-huddle and end-of-half",
+   "threshold": "No-huddle snap share >= 1.5x overall"
+  },
+  "M-25": {
+   "name": "Specialist: Screen Game",
+   "notes": "Screen usage defines the role",
+   "threshold": "Screen targets >= 25% of targets"
+  },
+  "M-26": {
+   "name": "Specialist: Gadget / Motion Weapon",
+   "notes": "Jet motion, reverses, designed touches",
+   "threshold": "Motion-at-snap usage top decile with designed touches"
+  },
+  "M-27": {
+   "name": "Specialist: Blitz Magnet (QB)",
+   "notes": "Defenses blitz him far above league rate",
+   "threshold": "Blitz faced rate top decile"
+  },
+  "M-28": {
+   "name": "Specialist: Shadow Assignment (CB)",
+   "notes": "Travels with a named WR1",
+   "threshold": "Shadow rate >= 50% (GG-777)"
+  },
+  "M-29": {
+   "name": "Specialist: Dime / Big Nickel Role",
+   "notes": "Sub-package only",
+   "threshold": "Snaps concentrated in dime/big-nickel personnel"
+  },
+  "M-30": {
+   "name": "High Variance / Boom-Bust",
+   "notes": "Weekly output dispersion high",
+   "threshold": "sd of weekly yards top quartile for role"
+  },
+  "M-31": {
+   "name": "Low Variance / Floor",
+   "notes": "Weekly output stable",
+   "threshold": "sd of weekly yards bottom quartile for role"
+  },
+  "M-32": {
+   "name": "Weather / Surface Sensitive",
+   "notes": "Splits by dome vs outdoor, wind, cold",
+   "threshold": "Efficiency split >= 25% between conditions on adequate sample"
+  }
+ }
+}

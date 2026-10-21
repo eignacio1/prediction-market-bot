@@ -1,0 +1,263 @@
+{
+ "sport": "nhl",
+ "version": "nhl_pam_v4depth_draft1",
+ "status": "DRAFT 2026-10-21 (strategic window, at the operator's request; awaiting operator approval). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
+ "template": "qualitative_data/pam/nba/taxonomy.json (NBA PAM v4: 15 archetypes, 32 modifiers)",
+ "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet.",
+ "groups": "F (forwards), D (defense), G (goalies)",
+ "archetypes": {
+  "F-1": {
+   "group": "F",
+   "name": "Elite Scoring Driver",
+   "notes": "Primary goal scorer, top PP unit",
+   "signals": "goals/60, ixG/60, shots/60, PP1 time",
+   "threshold": "ixG/60 top decile; PP1 TOI share >= 60%"
+  },
+  "F-2": {
+   "group": "F",
+   "name": "Playmaking Center / Distributor",
+   "notes": "Creates for linemates",
+   "signals": "primary assists/60, shot assists, zone-entry passes",
+   "threshold": "Primary A/60 top quartile"
+  },
+  "F-3": {
+   "group": "F",
+   "name": "Two-Way / Shutdown Forward",
+   "notes": "Trusted against top lines, defensive zone starts",
+   "signals": "xGA/60 on-ice, DZ start share, QoC",
+   "threshold": "xGA/60 bottom third with DZ starts >= 55%"
+  },
+  "F-4": {
+   "group": "F",
+   "name": "Power Forward / Net-Front",
+   "notes": "Scores from the slot and crease, physical",
+   "signals": "high-danger shots, net-front ixG, hits",
+   "threshold": "High-danger shot share >= 45% of shots"
+  },
+  "F-5": {
+   "group": "F",
+   "name": "Transition / Speed Forward",
+   "notes": "Drives controlled entries and rush chances",
+   "signals": "controlled zone-entry rate, rush shots, skating speed (EDGE)",
+   "threshold": "Controlled entries top quartile; EDGE top-speed bursts top quartile"
+  },
+  "F-6": {
+   "group": "F",
+   "name": "Shooter / One-Timer Specialist",
+   "notes": "Volume and shot quality from distance",
+   "signals": "shots/60, shooting %, one-timer share",
+   "threshold": "Shots/60 top decile"
+  },
+  "F-7": {
+   "group": "F",
+   "name": "Forechecking Energy Forward",
+   "notes": "Bottom-six pressure, hits, low offense",
+   "signals": "hits/60, takeaways, TOI",
+   "threshold": "Hits/60 top quartile, TOI <= 13 min"
+  },
+  "F-8": {
+   "group": "F",
+   "name": "Faceoff Specialist",
+   "notes": "Wins draws in key spots",
+   "signals": "faceoff win %, DZ faceoffs taken",
+   "threshold": "FO% >= 55% on >= 8 draws/g"
+  },
+  "F-9": {
+   "group": "F",
+   "name": "Depth / Fourth-Line",
+   "notes": "Low minutes, limited role",
+   "signals": "TOI, QoC",
+   "threshold": "TOI <= 10 min"
+  },
+  "D-1": {
+   "group": "D",
+   "name": "Puck-Moving / Offensive D",
+   "notes": "Drives play from the back end",
+   "signals": "primary assists, controlled exits, shots/60, PP time",
+   "threshold": "Controlled exit rate top quartile; PP TOI share high"
+  },
+  "D-2": {
+   "group": "D",
+   "name": "Shutdown / Defensive D",
+   "notes": "Kills plays, top-pair minutes against top lines",
+   "signals": "xGA/60 on-ice, blocks, PK time, QoC",
+   "threshold": "xGA/60 bottom third vs top QoC"
+  },
+  "D-3": {
+   "group": "D",
+   "name": "Two-Way Number-One D",
+   "notes": "Big minutes both ways",
+   "signals": "TOI, xGF% on-ice, PP and PK time",
+   "threshold": "TOI >= 23 min with xGF% >= 52%"
+  },
+  "D-4": {
+   "group": "D",
+   "name": "Physical / Stay-at-Home D",
+   "notes": "Hits, blocks, limited offense",
+   "signals": "hits/60, blocks/60, points/60",
+   "threshold": "Hits+blocks top quartile, points/60 bottom half"
+  },
+  "D-5": {
+   "group": "D",
+   "name": "Third-Pair / Depth D",
+   "notes": "Sheltered minutes",
+   "signals": "TOI, QoC, OZ start share",
+   "threshold": "TOI <= 16 min"
+  },
+  "G-1": {
+   "group": "G",
+   "name": "Elite Starter",
+   "notes": "Saves above expected at volume",
+   "signals": "GSAx, high-danger save %, starts share",
+   "threshold": "GSAx/60 top quartile on >= 60% of starts"
+  },
+  "G-2": {
+   "group": "G",
+   "name": "Workhorse Starter",
+   "notes": "Volume with average results",
+   "signals": "starts share, GSAx",
+   "threshold": "Starts share >= 65%, GSAx near 0"
+  },
+  "G-3": {
+   "group": "G",
+   "name": "Tandem / Platoon Goalie",
+   "notes": "Shares the net",
+   "signals": "starts share",
+   "threshold": "Starts share 35-60%"
+  },
+  "G-4": {
+   "group": "G",
+   "name": "Backup",
+   "notes": "Spot starts, back-to-backs",
+   "signals": "starts share, back-to-back starts",
+   "threshold": "Starts share <= 35%"
+  }
+ },
+ "modifiers": {
+  "M-1": {
+   "name": "Elite Shot Quality (finishing)",
+   "notes": "Scores above expected",
+   "threshold": "Goals - ixG top decile"
+  },
+  "M-2": {
+   "name": "Elite Playmaking Vision",
+   "notes": "Creates high-danger chances for others",
+   "threshold": "High-danger shot assists/60 top decile"
+  },
+  "M-3": {
+   "name": "Elite Skating / Speed",
+   "notes": "Top-end speed and acceleration",
+   "threshold": "EDGE max-speed and bursts top decile"
+  },
+  "M-4": {
+   "name": "Elite Shot Power",
+   "notes": "Shot speed",
+   "threshold": "EDGE shot speed top decile"
+  },
+  "M-5": {
+   "name": "Power-Play Weapon",
+   "notes": "Production concentrated on the PP",
+   "threshold": "PP points share >= 45% of points"
+  },
+  "M-6": {
+   "name": "Penalty-Kill Specialist",
+   "notes": "Trusted short-handed",
+   "threshold": "PK TOI share top quartile"
+  },
+  "M-7": {
+   "name": "Penalty Drawer",
+   "notes": "Draws more than he takes",
+   "threshold": "Penalty differential/60 top decile"
+  },
+  "M-8": {
+   "name": "Penalty Liability",
+   "notes": "Takes costly penalties",
+   "threshold": "Penalties taken/60 top decile"
+  },
+  "M-9": {
+   "name": "Elite Puck Retrieval / Possession",
+   "notes": "Recovers and keeps pucks",
+   "threshold": "Takeaways and recoveries top decile"
+  },
+  "M-10": {
+   "name": "Giveaway-Prone",
+   "notes": "Turns pucks over",
+   "threshold": "Giveaways/60 top decile"
+  },
+  "M-11": {
+   "name": "Line-Chemistry Dependent",
+   "notes": "Production tied to one linemate",
+   "threshold": "On-ice xGF% drop >= 5 pp away from the linemate"
+  },
+  "M-12": {
+   "name": "Deployment-Sheltered",
+   "notes": "Easy minutes inflate numbers",
+   "threshold": "OZ start share >= 65% and QoC bottom third"
+  },
+  "M-13": {
+   "name": "Heavy-Minutes / Fatigue-Sensitive",
+   "notes": "Big minutes, splits on back-to-backs",
+   "threshold": "TOI top decile with back-to-back split >= 15%"
+  },
+  "M-14": {
+   "name": "Shooting-% Regression Risk",
+   "notes": "Shooting well above his history",
+   "threshold": "Sh% above 3-season mean by 5+ points"
+  },
+  "M-15": {
+   "name": "Goalie: High-Danger Specialist",
+   "notes": "Elite on the hardest shots",
+   "threshold": "HD save % top decile"
+  },
+  "M-16": {
+   "name": "Goalie: Rebound Control",
+   "notes": "Limits second chances",
+   "threshold": "Rebound rate bottom decile"
+  },
+  "M-17": {
+   "name": "Goalie: Back-to-Back Fade",
+   "notes": "Worse on the second night",
+   "threshold": "GSAx split on back-to-backs <= -0.5/60"
+  },
+  "M-18": {
+   "name": "Goalie: Volume-Sensitive",
+   "notes": "Fades under heavy shot volume",
+   "threshold": "Save % split by shots faced >= 1.5 points"
+  },
+  "M-19": {
+   "name": "Injury-Managed / Load-Limited",
+   "notes": "Documented limit",
+   "threshold": "Minutes or starts capped (documented)"
+  },
+  "M-20": {
+   "name": "Developmental Upside",
+   "notes": "Young player on a steep curve",
+   "threshold": "Age <= 22 with fast-rising underlying metrics"
+  },
+  "M-21": {
+   "name": "Veteran Decline",
+   "notes": "Age-related decline",
+   "threshold": "Age 32+ with falling speed and on-ice xGF%"
+  },
+  "M-22": {
+   "name": "High Variance / Streaky",
+   "notes": "Output dispersion high",
+   "threshold": "sd of rolling points/60 top quartile"
+  },
+  "M-23": {
+   "name": "Low Variance / Floor",
+   "notes": "Output stable",
+   "threshold": "sd of rolling points/60 bottom quartile"
+  },
+  "M-24": {
+   "name": "Travel / Schedule Sensitive",
+   "notes": "Splits by rest and travel",
+   "threshold": "Split >= 15% on adequate sample"
+  },
+  "M-25": {
+   "name": "Specialist: Empty-Net / Late-Game Deployment",
+   "notes": "Used protecting or chasing leads",
+   "threshold": "Late-game TOI share >= 1.5x overall"
+  }
+ }
+}

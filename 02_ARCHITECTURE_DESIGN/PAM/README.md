@@ -36,7 +36,18 @@ layer is only started once the one before it exists.
 | 3. Mass tier | every player classified automatically from those signals, point in time | bot | none | WR only (247 records, 2023-25) | none | none |
 | 4. Deep tier | the players who matter most, Earl + Claude, superseding mass records | Earl + Claude | 100 records (v4 snapshots) | none (scope: QB, WR, RB, TE, OL, core defenders) | none | none |
 
-**So the answer at 2026-10-21:** Muse can work NBA now (layer 2). It can partly work NFL (draft v1 names the signals; R-018
+**Update, 2026-10-21 ~08:10 PT: layer 1 drafted for NFL, MLB and NHL** (operator, 07:54 PT: "are you able to create the taxonomy
+here? I'd like to have that layered in starting today so that Muse can work sequentially on everything, with NBA being the
+architectural template for the other 3"). Files, same structure as NBA v4 (archetypes + modifiers, each with signals and a draft
+threshold): `qualitative_data/pam/nfl/taxonomy_v4depth.json` (42 archetypes across QB, RB, WR, TE, OL, EDGE/DL, LB, CB, S; 32
+modifiers; the 4 built WR mass archetypes keep their ids), `qualitative_data/pam/mlb/taxonomy_v4depth.json` (24 archetypes:
+hitters, starters, relievers, defense; 29 modifiers), `qualitative_data/pam/nhl/taxonomy_v4depth.json` (18 archetypes:
+forwards, defense, goalies; 25 modifiers). **Status: DRAFT, awaiting Earl's approval.** Thresholds are a-priori and get
+calibrated at the mass tier, never fitted to outcomes. Muse's layer-2 signal maps start from these now (tickets R-027 NBA as
+the template, then R-028 NFL, R-029 MLB, R-030 NHL). A signal map can show that an archetype has no free signal, so the
+taxonomy may change after it. The NFL `taxonomy.json` (WR mass classifier) is unchanged.
+
+**The answer before the draft (kept as written):** Muse can work NBA now (layer 2). It can partly work NFL (draft v1 names the signals; R-018
 covers the blocked ones). It cannot usefully work MLB or NHL until those sports have a layer-1 taxonomy. Until then, a Muse
 ticket would be Muse inventing the archetypes, which is thinking, not scouting (charter v3). Next: one terminal block drafts NFL
 to v4 depth (archetypes + modifiers for all 9 groups) plus first-draft MLB and NHL taxonomies, for Earl's approval. Then each
