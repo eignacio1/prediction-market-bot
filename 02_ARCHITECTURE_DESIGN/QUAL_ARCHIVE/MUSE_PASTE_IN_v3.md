@@ -45,3 +45,29 @@ Then: acknowledge v3 in STATUS.md in five lines or fewer, and start the backlog 
 ```
 Run the next Muse cycle under charter v3: read https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md and https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md, then do the next backlog ticket.
 ```
+
+## Daily run setup (2026-10-21; paste once into the main Muse chat)
+
+```
+From Earl - the daily run, from today.
+
+1. I set up a daily automatic run for you. Its whole job: read the charter and TO_MUSE.md fresh, take the TOP OPEN ticket in
+   the Backlog (week of 2026-10-21, R-017 first), do it to its "Done when", then take the next one if you have capacity. Stop
+   when the backlog is empty. Make sure the scheduled run's prompt is exactly this one line and nothing else:
+   Run the next Muse cycle under charter v3: read https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md and https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md, then do the next backlog ticket.
+   That run is the only scheduled job the charter allows (v3 §1b, amended today). Paste the scheduler listing in STATUS.md so
+   I can see it.
+
+2. The backlog is real work, not filler: PAM gap sourcing (R-018), coordinators and play callers (R-019), NHL sources (R-020),
+   split pairs for the granularity index's crosses (R-022), and the rest of the NBA arm I asked for (R-017, R-021, R-023, R-025),
+   plus venue geometry, the weather-forecast archive question, and the NBA PAM signal map. Each ticket says what gap it fills
+   and why the bot can't fill it itself.
+
+3. Never invent tickets or pad. Claude re-orders, adds and removes tickets in TO_MUSE.md at every wave close, so re-read it on
+   every run. If a ticket is blocked, one STATUS line saying why, then move to the next.
+
+4. Every finished ticket: a STATUS.md entry and a commit naming it. Same rules as always: no null or placeholder records,
+   primary sources, definitions verbatim, free only, nothing written to the bot repo, never a bet, pick, odds or model.
+
+Start now with R-017.
+```

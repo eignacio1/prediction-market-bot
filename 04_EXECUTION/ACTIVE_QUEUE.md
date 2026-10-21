@@ -647,6 +647,12 @@ Results: the store's coverage table, DATA_LAYER.md, the factor map, the D4 read-
 END OF BLOCK 83.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### M83-B — Muse daily auto run + the week's backlog (2026-10-21 07:30 PT)
+Earl set a daily Muse run. Backlog R-017 → R-027 in TO_MUSE.md (PAM gap sourcing, coordinators/play callers, NHL sources, split
+pairs for the index's crosses, the NBA arm phases, venue geometry, weather-forecast archive, NBA PAM signal map). The run's prompt
+is the kickoff line; the one-time setup paste is `QUAL_ARCHIVE/MUSE_PASTE_IN_v3.md` § "Daily run setup". The window re-orders
+the backlog at each wave close.
+
 ### M83 — Muse: R-015 (Sharp 2025 season-end values from the Wayback snapshots), then Earl's NBA arm, R-012 completion first
 **DEPTH feed** · R-015 makes the coverage class gradeable (82.3 couldn't: prior values null) · the NBA arm feeds 83.2 · given to the operator in chat
 

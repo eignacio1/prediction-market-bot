@@ -312,3 +312,93 @@ one STATUS line per season the selector doesn't serve.
 
 ### Then, in order, as Earl directed (tickets will be written when R-017 closes): player season layer (traditional + advanced
 incl. usage and true shooting) · lineups and on/off · team advanced (ratings, pace).
+
+---
+
+### 2026-10-21 07:30 PT · watchdog + the week's backlog (Earl set a daily auto run; this backlog feeds it)
+Read archive `b68b506`. **R-015 done** (544 Sharp 2025 season-final values from Wayback, with values, every column), so the bot
+can now grade the coverage class. **R-016 done** (2025-26 NBA phase 1, 3,856 records, strict gate clean). The validation gate and
+the null-placeholder hygiene pass (2,237 moved to a manifest; Earl's order) are good: v3's no-null rule is now enforced
+mechanically. **R-017 is next.**
+
+**How the daily auto run works from today (charter v3 §1b, amended):** each run reads the charter and this file, then takes the
+**top open ticket** below. If it finishes a ticket with capacity left, it takes the next one. It stops when the list is
+empty. **Do not invent work.** The window re-orders, adds and removes tickets here at every wave close; always re-read before
+choosing. Each finished ticket gets a STATUS.md entry and a commit naming it. "Done when" is the bar.
+
+## Backlog — week of 2026-10-21 (supersedes every earlier backlog list; work top-down)
+
+### R-017 · NBA arm, phase 2: prior seasons (OPEN, carried)
+As written 2026-10-20 23:20 PT: the phase-1 families (play types, tracking) for 2024-25 and 2023-24, as far as the season selector
+goes. Same format and gate. **Done when:** recorded with values, or one STATUS line per season the selector doesn't serve.
+
+### R-018 · PAM: source cards for the five NFL PAM gaps (GG-775..GG-779)
+**Target:** the NFL Player Attribute Matrix. Five archetype signals are blocked because the bot found no free source:
+(1) receiver alignment, slot vs wide and TE/RB alignment, plus a routes-run denominator (GG-775); (2) OL block-level win rates
+and blocker attribution (GG-776); (3) defender coverage assignment, who covered whom (GG-777); (4) DL/EDGE pass-rush snaps and
+alignment (GG-778); (5) tracking-derived separation, speed and route quality (GG-779). These decide WR-SLOT, TE-IN, RB-REC and
+every OL/defender archetype in the deep tier Earl wants ("RB's, TEs, OL, and core defenders in that tier").
+**What:** for each gap, every free public source that carries the signal at player level, 2026 and history: one source card each
+(eight parts). Candidates to check, not answers: ESPN's pass-block / run-block / pass-rush win-rate leaderboards; Next Gen Stats
+receiving (separation, cushion) and its tracking pages; PFR advanced receiving/defense; Sharp's line and personnel pages; any free
+charting project. Paid = one-line NOT USABLE. **Done when:** a card per source found, and per gap one STATUS line: FILLABLE (which
+card) / PARTIAL / STILL A GAP.
+
+### R-019 · Play callers and coordinators, NFL 2016-2026 (GG-731)
+**Target:** NFL factor F9, coaching. The bot has head coaches only. Coordinators and the actual play caller change how a team
+attacks, and no free table carries them.
+**What:** per team per season, 2016-2026: offensive coordinator, defensive coordinator, and the offensive and defensive play
+caller where a named source states who calls plays (quote it in `claim`). Mid-season changes as separate records with the
+effective week. Records **with values** (index_fact or coaching class, your choice; say which), `source_link` on each, primary
+sources (team sites, PFR coaches pages, named beat reporting). A season you cannot source gets one STATUS line, not a record.
+**Done when:** 32 teams x 11 seasons covered for OC/DC, play caller where sourced, and STATUS gives coverage counts.
+
+### R-020 · NHL factor sources (feeds the bot's NHL engine, Wave 83.3)
+**Target:** the NHL engine. The bot is building its event-level store from the NHL's free API now. Factor classes needing more
+than play-by-play: expected goals, shot quality, line combinations and deployment, goalie workload and quality, skating/shot
+tracking.
+**What:** source cards for the free NHL sources: MoneyPuck (free data downloads), Natural Stat Trick (line, on-ice, situational
+splits), NHL EDGE tracking stats on nhl.com, the NHL API's shift charts, Hockey-Reference advanced, and any free goalie-start
+source (structural: who starts, not news commentary). **Done when:** a card per source with capture verdicts, and one STATUS
+line listing which factor classes each card fills.
+
+### R-021 · NBA arm, phase 3: player season layer (Earl's order)
+Per player per season, 2023-24 to 2025-26 (and 2026-27 to date once the site serves it): traditional and advanced box
+(minutes, usage rate, true shooting %, assist %, rebound %, offensive/defensive rating), from NBA.com stats (or Basketball-Reference
+if NBA.com blocks; name which). Same format and gate; definitions quoted where the glossary gives them. **Done when:** recorded
+with values, row counts matching the site.
+
+### R-022 · Split pairs for the granularity index (cross-factor mapping)
+**Target:** the index's matchup cross needs BOTH sides of the same split at the same definition, for example offense production
+vs a light box AND defense production in a light box; QB vs man/zone AND defense man/zone rate; offense vs pressure AND
+defense pressure rate; NBA team vs pace AND opponent pace. The bot builds the cross; it can only cross what is defined the same
+way on both sides.
+**What:** for each pair above, the free sources that publish each side; whether both sides share a definition (quote both); the
+history each side has. One card per source not already carded; for already-carded sources, a "Pairs" addendum section. Then one
+STATUS table: pair -> offense-side source, defense-side source, same definition? (yes/no/unclear), seasons.
+**Done when:** the table covers every pair listed.
+
+### R-023 · NBA arm, phase 4: lineups and on/off (Earl's order)
+2025-26: each team's top 10 five-man units by minutes (minutes, net rating, pace) and on/off for each team's top 8 rotation
+players (team net rating on vs off), from the lineup and on/off pages carded in R-012. Same gate. **Done when:** 30 teams
+recorded with values.
+
+### R-024 · Venue geometry tables, NBA and NFL (GG-913; NFL factor G3)
+Every NBA arena and NFL stadium in use 2016-2026: venue id/name, team(s), city, latitude, longitude, IANA time zone, altitude,
+roof type (NFL), the seasons used. Primary sources (team or league pages; coordinates from a named public geographic source).
+**Done when:** both tables are complete with values.
+
+### R-025 · NBA arm, phase 5: team advanced (Earl's order)
+Per team per season, 2023-24 to 2025-26: offensive, defensive and net rating, pace, four factors, from NBA.com (or
+Basketball-Reference). **Done when:** recorded with values.
+
+### R-026 · Is there a free historical weather FORECAST archive? (GG-734; NFL factor G1)
+The bot stores weather observed at kickoff, which leaks the outcome-time state; a model needs the forecast as of the betting
+time. Source cards for any free historical forecast archive (candidates: Open-Meteo's historical forecast API, NOAA/NWS
+archives) with history depth and the access pattern. **Done when:** cards + one STATUS line: usable for 2016-2026 kickoffs or not.
+
+### R-027 · NBA PAM signal map
+**Target:** the NBA PAM (v4: 15 player-role factors, 32 modifiers) has no mass tier because no one has mapped each factor to a
+free signal. **What:** one table in `sources/nba/pam-signal-map.md`: each v4 factor and modifier (names as in the bot's
+`qualitative_data/pam/nba/taxonomy.json`) -> the free source and metric that measures it (from the cards and records you already
+have) -> coverage seasons -> NONE where nothing free measures it. **Done when:** every factor and modifier has a row.

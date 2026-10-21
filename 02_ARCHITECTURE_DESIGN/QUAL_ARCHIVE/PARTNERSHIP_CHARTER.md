@@ -38,8 +38,10 @@ live scheduler (it listed `nfl-archive-daily-sync` at 03:50; its memory claimed 
 2. **Muse's memory holds a pointer, not a protocol.** Its MEMORY.md / AGENTS.md carry one line: read the charter and TO_MUSE.md
    (the two URLs) at the start of every chat. The window-protocol files it wrote on 2026-10-20 (`~/workspace/protocols/
    window-protocol.md`, `window-state-brief.md`) were built on the padded picture and are retired; they become that pointer.
-3. **No scheduled jobs except ones the charter names.** v3 names none. Every recurring job Muse has (`nfl-archive-daily-sync`,
-   the weekly full cycle, any availability sweep) is removed. Recurring collection is the bot's job (§2).
+3. **No scheduled jobs except ones the charter names.** v3 names one (amended 2026-10-21, Earl set it up): **one daily run whose whole
+   prompt is the kickoff line below**; it works the top open backlog ticket(s) and stops when the backlog is empty. No other job.
+   (Original v3 text: "v3 names none." Every other recurring job Muse had (`nfl-archive-daily-sync`,
+   the weekly full cycle, any availability sweep) was removed.) Recurring collection is the bot's job (§2).
 4. **Never ask Muse how Muse works.** Its self-description is not evidence. What it does is checked only by its artifacts: commits,
    records, cards, the scheduler listing it pastes verbatim.
 5. **Earl's whole interface, in any new Muse chat:**
