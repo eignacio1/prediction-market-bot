@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "Window: confirm PR #308 (aggregation web, f43e3fa) reaches the box and the dashboard regenerates"
