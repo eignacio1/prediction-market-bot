@@ -1,0 +1,22 @@
+{
+  "coef": {
+    "home": 4.72143101635188,
+    "intercept": -6.996556595964712,
+    "opp_dev": 0.5497231178845843,
+    "qb_shrunk": 1.0140798860520033
+  },
+  "features": [
+    "qb_shrunk",
+    "opp_dev",
+    "home"
+  ],
+  "model_id": "passyds_strike_v1",
+  "n_train": 2420,
+  "params": {
+    "halflife": 6.0,
+    "min_att": 15,
+    "min_prior_starts": 3,
+    "shrink_k": 4.0
+  },
+  "sigma_c": 0.30025776306370106
+}

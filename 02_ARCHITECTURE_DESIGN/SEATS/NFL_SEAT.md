@@ -25,6 +25,8 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N15 | G3 | Travel / time zone / short week | derived from games.gametime, location | ctx | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
 | N16 | G5 | Qualitative (form, role-fit, motivation, rumours) | none free and structured | none | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
 | N17 | F3 | Run-box granularity entry (success/stuffed rate by box count, offense x defense cross) | nflverse pbp + ftn n_defense_box (2022+); participation not needed | granularity_index.cross | applied | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md` |
+| N18 | G4 | Starting-QB availability and role (>=3 prior primary-passer games; OUT/doubtful/IR/suspended -> no forecast) | nflverse player-week stats (attempts >= 15) + nflverse injuries snapshot (QB rows) | passyds_strike_v1: qb_shrunk, availability gate | aggregated | `src/prediction_market_bot/pregame_shadow/passyds_model.py` |
+| N19 | F2 | QB-vs-defense passing matchup (QB recency-shrunk yards x opponent pass-yards-allowed deviation, home flag) | nflverse player-week stats: passing_yards by QB-game and by defense; schedule home_team | passyds_strike_v1: opp_dev, home | interpreted | `src/prediction_market_bot/pregame_shadow/passyds_model.py` |
 
 ## Cells
 
@@ -58,3 +60,4 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | nfl_game_total | T4NFL-FLOW | not_implemented | none | — |
 | nfl_team_total | T4NFL-ARITH | not_implemented | none | — |
 | nfl_team_total | T4NFL-FLOW | not_implemented | none | — |
+| nfl_player_pass_yds | T1 | not_implemented | passyds_strike_v1 (frozen, sha256 1053c843...; not yet serving) | N18, N19 |

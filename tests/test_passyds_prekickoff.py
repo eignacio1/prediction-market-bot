@@ -76,6 +76,8 @@ class Sched:
 
 
 def _run(tmp_path, monkeypatch, markets, ko_min=20, **kw):
+    # hermetic: the live model hook downloads nflverse data; its own behaviour is covered in test_passyds_model.py
+    monkeypatch.setattr(snap, "model_fields", lambda m, now: {"model_p": None, "model_id": None, "model_sha256": None, "factor_inputs": None, "factor_as_of": None})
     monkeypatch.setattr(snap.tc, "_list_open", lambda client, series, **f: markets)
     cl = FakeClient(markets, {m["ticker"]: book([(0.20, 50)], [(0.76, 50)]) for m in markets})
     out = snap.run(cl, tmp_path, now=NOW.timestamp(), sha="abc", sched=Sched(NOW + timedelta(minutes=ko_min)), **kw)
