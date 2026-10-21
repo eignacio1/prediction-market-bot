@@ -2693,3 +2693,8 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 ## 2026-10-21 13:52 PT — Claude Duet not adopted; Muse stays the scout (operator)
 - Claude Duet (research preview, 2026-10-21) is the same class of product as Muse. Operator: "The fact that it uses the same usage bars is a turn off - no good".
 - Reason: Duet's background work draws on the same plan limits as the strategic window and the terminals. Muse runs on its own budget.
+
+## 2026-10-21 15:30 PT — DigitalOcean PHP RCE notice (CVE-2026-109618/-109619): box not affected
+- Operator forwarded DigitalOcean's notice and asked what we need to do.
+- Checked on the box (PR #310 added read-only task `php_inventory_read`; result 20261021T222913Z): no PHP packages, no PHP processes, no web-server packages. The three `php*-bpfcc` files are BCC kernel-tracing tools, not PHP. Listening TCP: sshd on 22 (public), dashboard python3 on 127.0.0.1:8050 (local only), systemd-resolved on loopback. Ubuntu 24.04.3 LTS.
+- Action: none required. No patch, no restart.
