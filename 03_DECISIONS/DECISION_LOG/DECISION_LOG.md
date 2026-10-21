@@ -2689,3 +2689,7 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 ## 2026-10-21 09:25 PT — Parked: phone versions of the live terminal and the Visual Dashboard (operator)
 - Operator: "Maybe we should have you build out a phone version of our live terminal & visual dashboard but maybe later since I rarely do shit on my phone".
 - Parked, not scheduled. Today both work on a phone (no sideways scroll), but they are built for a desktop. Revisit when the operator asks.
+
+## 2026-10-21 13:52 PT — Claude Duet not adopted; Muse stays the scout (operator)
+- Claude Duet (research preview, 2026-10-21) is the same class of product as Muse. Operator: "The fact that it uses the same usage bars is a turn off - no good".
+- Reason: Duet's background work draws on the same plan limits as the strategic window and the terminals. Muse runs on its own budget.
