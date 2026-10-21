@@ -1,5 +1,7 @@
 # Active queue — the only prompt file to read
 
+> **▶ PASTE NOW — Wave 82 terminal blocks** are in the **⬛ NOW — Wave 82** section below the sitrep: **82.1** (KXNFLPASSYDS live, terminal 1) · **82.2** (forward-test verdict + green = WINS, terminal 2) · **82.3** (depth: 2026 coverage/pressure gap, terminal 3) · **M82-A** (Muse add-in). Each block is one fenced paste under its `### 82.x` header.
+
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
