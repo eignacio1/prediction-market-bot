@@ -66,6 +66,15 @@ TASKS: dict[str, str] = {
     "forward_verdict_read": (
         f"{PY} scripts/demo_fill_forward_report.py --print-json exp_output/FORWARD_TEST/w82_2/demo_fill_forward_report.json"
     ),
+    # 2026-10-21: DigitalOcean PHP RCE notice (CVE-2026-109618/-109619). Read-only inventory: is PHP on the box, what listens.
+    "php_inventory_read": (
+        "echo '--- php binaries'; (command -v php php-fpm php-cgi 2>/dev/null; ls /usr/bin/php* /usr/sbin/php* 2>/dev/null) || true; "
+        "echo '--- php packages'; (dpkg -l 2>/dev/null | grep -i -E '^ii +(php|libapache2-mod-php)' || echo 'no php packages'); "
+        "echo '--- php processes'; (pgrep -a -f 'php' | grep -v pgrep || echo 'none running'); "
+        "echo '--- web servers'; (dpkg -l 2>/dev/null | grep -E '^ii +(nginx|apache2|caddy|lighttpd) ' || echo 'no web server packages'); "
+        "echo '--- listening tcp'; ss -tlnp 2>/dev/null | awk 'NR==1 || /LISTEN/'; "
+        "echo '--- os'; grep PRETTY_NAME /etc/os-release"
+    ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
         "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "
