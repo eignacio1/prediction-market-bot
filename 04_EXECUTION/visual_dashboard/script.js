@@ -254,8 +254,11 @@ function bars(host,data){
     `<div class="bv">${v.toLocaleString()}</div></div>`).join('');
 }
 
-const SLABEL={active:"ACTIVE",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen"};
-const SCLASS={active:"act",shadow:"shd",not_implemented:"ni",blocked:"blk",dark:"dark"};
+const SLABEL={wins:"WINS — pre-registered positive verdict at judged n",active:"ACTIVE — staked, no winning verdict",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen",ruled_out:"RULED OUT",unmapped:"UNMAPPED status"};
+const SCLASS={wins:"win",active:"act",shadow:"shd",not_implemented:"ni",blocked:"blk",dark:"dark",ruled_out:"ro",unmapped:"unm"};
+// Green means one thing: the cell's own pre-registered verdict at judged n is positive (builder: scripts/cell_display_state.py).
+// Never derive it from the registry status alone; an absent `d` falls back to the registry status, which is never "wins".
+const dstate=c=>c&&(c.d||(SCLASS[c.s]?c.s:"unmapped"));
 function matrix(filter="all",q=""){
   let h=`<table><thead><tr><th class="m"></th>`;
   BANDS.forEach(b=>h+=`<th class="b">${b}</th>`);
@@ -264,11 +267,12 @@ function matrix(filter="all",q=""){
     if(q && !(label.toLowerCase().includes(q)||mk.toLowerCase().includes(q))) return;
     h+=`<tr><th class="m">${label}</th>`;
     BANDS.forEach(b=>{
-      const key=mk+"|"+b, cell=CELLS[key], st=cell&&cell.s;
+      const key=mk+"|"+b, cell=CELLS[key], st=dstate(cell);
       let cls="cellbox none", dim="";
       if(st){ cls="cellbox "+SCLASS[st];
-        const keep = filter==="all" || (filter==="act"&&st==="active") ||
-                     (filter==="log"&&(st==="shadow"||st==="active")) || (filter==="blk"&&st==="blocked");
+        const keep = filter==="all" || (filter==="act"&&(st==="active"||st==="wins")) ||
+                     (filter==="log"&&(st==="shadow"||st==="active"||st==="wins")) || (filter==="blk"&&st==="blocked") ||
+                     (filter==="win"&&st==="wins");
         if(!keep) dim="opacity:.14";
       }
       const note = MXNOTE[key] || (cell && cell.n) || "";
@@ -356,11 +360,11 @@ function integrity(){
 function govCounts(){
   $$('.govOpen').forEach(e=>e.textContent=GOV.open); $$('.govLive').forEach(e=>e.textContent=GOV.live);
   $$('.govRetired').forEach(e=>e.textContent=GOV.retired);
-  const st={}; Object.values(CELLS).forEach(c=>st[c.s]=(st[c.s]||0)+1);
-  const n=Object.keys(CELLS).length, logging=(st.shadow||0)+(st.active||0);
+  const st={}; Object.values(CELLS).forEach(c=>{const k=dstate(c); st[k]=(st[k]||0)+1;});
+  const n=Object.keys(CELLS).length, logging=(st.shadow||0)+(st.active||0)+(st.wins||0);
   $$('.cellN').forEach(e=>e.textContent=n); $('#mxLogging').textContent=logging;
-  $('#mxBreak').textContent=`${st.active||0} ACTIVE, ${st.shadow||0} SHADOW`;
-  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK and ${st.not_implemented||0} defined but not built`;
+  $('#mxBreak').textContent=`${st.wins||0} WINS, ${st.active||0} ACTIVE, ${st.shadow||0} SHADOW`;
+  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK ${st.ruled_out?`, ${st.ruled_out} RULED OUT`:""}${st.unmapped?`, ${st.unmapped} UNMAPPED`:""} and ${st.not_implemented||0} defined but not built`;
 }
 
 /* ---- WIRE ---- */

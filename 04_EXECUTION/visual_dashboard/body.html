@@ -258,14 +258,17 @@
       <button class="btn sm mxf" data-f="act">Active</button>
       <button class="btn sm mxf" data-f="log">Logging</button>
       <button class="btn sm mxf" data-f="blk">Blocked</button>
+      <button class="btn sm mxf" data-f="win">Wins</button>
     </div>
     <div class="mx" id="mxHost"></div>
     <div class="mxleg">
-      <span><b style="background:var(--good)"></b>ACTIVE</span>
+      <span><b style="background:var(--good)"></b>WINS — positive pre-registered verdict at judged n (and P&amp;L per fill &gt; 0 if staked)</span>
+      <span><b style="background:#8a5cd6"></b>ACTIVE — staked, no winning verdict</span>
       <span><b style="background:var(--s1)"></b>SHADOW — evaluates and logs, no stake</span>
       <span><b style="background:color-mix(in srgb,var(--s1) 17%,var(--surface-2))"></b>Defined, not implemented</span>
       <span><b style="background:var(--crit)"></b>BLOCKED</span>
       <span><b style="background:var(--surface-3); border:1px solid var(--axis)"></b>DARK / frozen</span>
+      <span><b style="background:repeating-linear-gradient(135deg,var(--crit) 0 3px,var(--surface-3) 3px 6px)"></b>RULED OUT</span>
       <span><b style="border:1px dashed var(--hair-2); background:transparent"></b>Not in registry</span>
     </div>
   </div>

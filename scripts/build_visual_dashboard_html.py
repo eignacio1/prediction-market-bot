@@ -23,14 +23,27 @@ SRC = ROOT / "04_EXECUTION" / "visual_dashboard"
 sys.path.insert(0, str(ROOT / "src"))
 
 
+def _engine_cells() -> list:
+    """Newest calibration-engine output's cells ([] when none): the source of a cell's released verdict (W82.2)."""
+    try:
+        f = sorted((ROOT / "exp_output" / "CALIBRATION").glob("engine_*.json"))[-1]
+        return json.loads(f.read_text()).get("cells", [])
+    except Exception:
+        return []
+
+
 def cells() -> dict:
     from prediction_market_bot.c5_execution.market_type_registry import MARKET_TYPE_REGISTRY
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import cell_display_state as cds
 
+    engine = _engine_cells()
     out = {}
     for (mt, band), cell in MARKET_TYPE_REGISTRY.items():
         status = cell.status.value
         note = (cell.notes or cell.reason or "") if status != "not_implemented" else ""
-        out[f"{mt.name}|{band.value}"] = {"s": status, "n": note[:220]}
+        d = cds.display_state(status, cds.resolve_engine_cell(engine, mt.name, band.value))
+        out[f"{mt.name}|{band.value}"] = {"s": status, "d": d, "n": note[:220]}
     return out
 
 
