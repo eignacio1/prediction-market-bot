@@ -161,6 +161,7 @@ const RUNTIME = __RUNTIME__;
 const LIVE = __LIVE__;
 const WINERR = __WINERR__;
 const GAGENT = __GAGENT__;
+const MUSEWEB = __MUSEWEB__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
@@ -368,7 +369,92 @@ function govCounts(){
 }
 
 /* ---- WIRE ---- */
-distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts();
+
+/* ---------- AGGREGATION WEB (Muse) ---------- */
+function museWeb(){
+  const D=MUSEWEB, host=$('#mwHost');
+  if(!D||!D.ok){ host.innerHTML=`<div class="cap">The web's source file did not validate (${esc((D&&D.error)||'missing')}). Nothing is drawn rather than a wrong picture.</div>`; $('#mwHead').textContent='source invalid'; return; }
+  const C=0, HUB=46, R=[100,140,180,220,260], ARC=R[4]+24, LAB=R[4]+42, NODE=7;
+  const cls={built:'b',pending:'p',future:'f'}, rad=a=>a*Math.PI/180, f1=v=>v.toFixed(1);
+  const pt=(a,r)=>[C+r*Math.cos(rad(a)), C+r*Math.sin(rad(a))];
+  // each sport owns a quadrant; wide gaps top and bottom carry the ring scale
+  const QUAD=[[-90+23,0-7,1],[0+7,90-23,0],[90+23,180-7,0],[180+7,270-23,1]];
+  const count=v=>({b:v.filter(z=>z==='built').length, p:v.filter(z=>z==='pending').length, n:v.length});
+  const spokes=[];
+  D.sports.forEach((sp,k)=>{ const list=D.spokes.filter(x=>x.sport===sp), [lo,hi]=QUAD[k%4];
+    list.forEach((x,i)=>spokes.push({...x, ang: list.length===1?(lo+hi)/2 : lo+(hi-lo)*i/(list.length-1)})); });
+  const tipOf=(x,i)=>{ const ring=D.rings[i], note=(x.notes&&x.notes[i])||'';
+    return encodeURIComponent(`<div class="h">${esc(x.sport)} · ${esc(x.name)}</div>`+
+      `<div class="r"><span>Step</span><b>${esc(ring.label)}</b></div><div class="r"><span>State</span><b>${esc(x.states[i])}</b></div>`+
+      `<div class="r"><span>Tickets</span><b>${esc(x.tickets||'—')}</b></div>`+
+      (note?`<div class="mw-tnote">${esc(note)}</div>`:'')+`<div class="mw-tdesc">${esc(ring.label)}: ${esc(ring.desc)}</div>`); };
+  let svg=`<svg class="mw-web" role="img" aria-label="Aggregation web: Muse's work by sport, workstream and step">`;
+  // ring bands, outer to inner
+  [...R].reverse().forEach((r,j)=>svg+=`<circle class="band${j%2?' alt':''}" cx="${C}" cy="${C}" r="${r+20}"/>`);
+  svg+=`<circle class="band" cx="${C}" cy="${C}" r="${R[0]-20}"/>`;
+  R.forEach(r=>svg+=`<circle class="ring" cx="${C}" cy="${C}" r="${r}"/>`);
+  D.sports.forEach((sp,k)=>{
+    const ss=spokes.filter(x=>x.sport===sp), [lo,hi,top]=QUAD[k%4], c=count(ss.flatMap(x=>x.states));
+    let g=`<g class="q" data-sport="${esc(sp)}">`;
+    R.forEach(r=>{ if(ss.length>1) g+=`<polyline class="webln" points="${ss.map(x=>pt(x.ang,r).map(f1).join(',')).join(' ')}"/>`; });
+    // sport arc with its name set on the arc (reads upright top and bottom)
+    const [s0,e0]=top?[lo-3,hi+3]:[hi+3,lo-3], [ax,ay]=pt(s0,ARC), [bx,by]=pt(e0,ARC), id=`mwarc${k}`;
+    g+=`<path id="${id}" class="sarc" d="M${f1(ax)},${f1(ay)} A${ARC},${ARC} 0 0 ${top} ${f1(bx)},${f1(by)}"/>`;
+    g+=`<text class="sport" data-f="${esc(sp)}" dy="${top?4:4}"><textPath href="#${id}" startOffset="50%">${esc(sp)}  ·  ${c.b} built · ${c.p} pending</textPath></text>`;
+    ss.forEach(x=>{
+      const [ex,ey]=pt(x.ang,R[4]), [hx,hy]=pt(x.ang,HUB);
+      g+=`<line class="spk" x1="${f1(hx)}" y1="${f1(hy)}" x2="${f1(ex)}" y2="${f1(ey)}"/>`;
+      const lastB=x.states.lastIndexOf('built'), lastP=x.states.lastIndexOf('pending');
+      if(lastB>=0){ const [qx,qy]=pt(x.ang,R[lastB]); g+=`<line class="reach" x1="${f1(hx)}" y1="${f1(hy)}" x2="${f1(qx)}" y2="${f1(qy)}"/>`; }
+      if(lastP>lastB){ const [sx,sy]=pt(x.ang,lastB>=0?R[lastB]:HUB), [px,py]=pt(x.ang,R[lastP]); g+=`<line class="reachp" x1="${f1(sx)}" y1="${f1(sy)}" x2="${f1(px)}" y2="${f1(py)}"/>`; }
+      x.states.forEach((s2,i)=>{ const [nx,ny]=pt(x.ang,R[i]);
+        g+=`<g class="nd ${cls[s2]}" data-tip="${tipOf(x,i)}"><circle class="halo" cx="${f1(nx)}" cy="${f1(ny)}" r="${NODE+4}"/><circle class="core" cx="${f1(nx)}" cy="${f1(ny)}" r="${s2==='future'?NODE-2:NODE}"/></g>`; });
+      // radial label, flipped on the left so it always reads left to right
+      const right=Math.cos(rad(x.ang))>=-0.001, [tx,ty]=pt(x.ang,LAB), rot=right?x.ang:x.ang+180, anc=right?'start':'end';
+      const st=x.states.includes('pending')?' open':(x.states.includes('built')?'':' idle');
+      g+=`<text class="slab${st}" transform="translate(${f1(tx)},${f1(ty)}) rotate(${f1(rot)})" text-anchor="${anc}" dy="-1.5">${esc(x.name)}`+
+         `<tspan class="tk" x="0" dy="13">${esc(x.tickets&&x.tickets!=='—'?x.tickets:'no ticket yet')}</tspan></text>`;
+    });
+    svg+=g+`</g>`;
+  });
+  // ring scale in the top gap
+  R.forEach((r,i)=>{ const lab=D.rings[i].label.toUpperCase(), w=lab.length*6.4+12;
+    svg+=`<rect class="rlabbg" x="${f1(C-w/2)}" y="${C-r-8}" width="${f1(w)}" height="16" rx="8"/><text class="rlab" x="${C}" y="${C-r+3.3}">${esc(lab)}</text>`; });
+  svg+=`<text class="rdir" x="${C}" y="${C+R[4]+4}">inside → out: scouted to applied</text>`;
+  const all=spokes.flatMap(x=>x.states), T=count(all);
+  svg+=`<circle class="hub" cx="${C}" cy="${C}" r="${HUB}"/><text class="hubk" x="${C}" y="${C-15}">MUSE</text>`+
+       `<text class="hubv" x="${C}" y="${C+8}">${T.b}<tspan class="hubd">/${T.n}</tspan></text><text class="hubn" x="${C}" y="${C+24}">steps built</text>`;
+  host.innerHTML=svg+`</svg>`;
+  const el=host.querySelector('svg'), bb=el.getBBox(), pad=10;
+  el.setAttribute('viewBox',`${f1(bb.x-pad)} ${f1(bb.y-pad)} ${f1(bb.width+2*pad)} ${f1(bb.height+2*pad)}`);
+  $$('#mwHost .nd[data-tip]').forEach(n=>{ n.addEventListener('mousemove',e=>showTip(e,decodeURIComponent(n.dataset.tip))); n.addEventListener('mouseleave',hideTip); });
+  // filters (buttons and the sport names on the arcs)
+  $('#mwFilters').innerHTML=`<span class="mw-fl">Show</span>`+['All',...D.sports].map((f,i)=>`<button class="btn sm mwf${i?'':' on'}" data-f="${esc(f)}">${esc(f)}</button>`).join('');
+  const setF=f=>{ $$('#mwFilters .mwf').forEach(x=>x.classList.toggle('on',x.dataset.f===f));
+    $$('#mwHost .q').forEach(q=>q.classList.toggle('dim', f!=='All' && q.dataset.sport!==f)); };
+  $$('#mwFilters .mwf').forEach(b=>b.addEventListener('click',()=>setF(b.dataset.f)));
+  $$('#mwHost .sport').forEach(t=>t.addEventListener('click',()=>setF($('#mwFilters .mwf.on').dataset.f===t.dataset.f?'All':t.dataset.f)));
+  // tiles
+  const tile=(k,v,acc,n)=>`<div class="tile" style="--accent:${acc}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`;
+  $('#mwTiles').innerHTML=tile('Built',T.b,'var(--s1)','delivered')+tile('Pending',T.p,'var(--warn)','ticket open')+tile('Future',T.n-T.b-T.p,'var(--axis)','no ticket yet');
+  // by sport
+  $('#mwSports').innerHTML=D.sports.map(sp=>{ const c=count(spokes.filter(x=>x.sport===sp).flatMap(x=>x.states)), t=c.n||1, fu=c.n-c.b-c.p;
+      return `<div class="mw-sbar"><span class="lab">${esc(sp)}</span><span class="trk"><span style="width:${c.b/t*100}%;background:var(--s1)"></span>`+
+        `<span style="width:${c.p/t*100}%;background:var(--warn)"></span></span><span class="n">${c.b} · ${c.p} · ${fu}</span></div>`; }).join('')+
+    `<div class="mw-sleg"><span><i style="background:var(--s1)"></i>built</span><span><i style="background:var(--warn)"></i>pending</span><span><i class="f"></i>future</span></div>`;
+  // by step: how far each ring has got across all workstreams
+  $('#mwRings').innerHTML=D.rings.map((rg,i)=>{ const v=spokes.map(x=>x.states[i]), c=count(v);
+      return `<div class="mw-step"><span class="lab">${esc(rg.label)}</span><span class="dots">${spokes.map(x=>`<i class="${cls[x.states[i]]}" title="${esc(x.sport+' · '+x.name)}"></i>`).join('')}</span><span class="n">${c.b}/${c.n}</span></div>`; }).join('');
+  // open now, one row per workstream
+  const open=spokes.filter(x=>x.states.includes('pending'));
+  $('#mwOpen').innerHTML=open.map(x=>`<div class="mw-orow"><div class="hd"><span class="sp">${esc(x.sport)}</span><span class="w">${esc(x.name)}</span><span class="tg">${esc(x.tickets)}</span></div>`+
+      x.states.map((s2,i)=>s2==='pending'?`<div class="ln"><span class="st">${esc(D.rings[i].label)}</span><span class="d">${esc((x.notes&&x.notes[i])||'')}</span></div>`:'').join('')+`</div>`).join('');
+  $('#mwHead').textContent=`${spokes.length} workstreams · ${D.sports.length} sports · ${T.b} of ${T.n} steps built · ${T.p} open`;
+  $('#nvMuse').textContent=T.p;
+  $('#mwSrc').innerHTML=`Source <span class="mono">QUAL_ARCHIVE/MUSE_WEB.json</span>, kept by the strategic window at every wave close from the archive and TO_MUSE.md · as of <span class="mono">${esc(D.as_of||'?')}</span> · archive <span class="mono">${esc(D.archive_commit||'?')}</span>`;
+}
+
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb();
 bars('#sevBars',SEV); bars('#asymBars',ASYM);
 $('#tblBtn').addEventListener('click',()=>{
   const t=$('#forestTable'); t.classList.toggle('hidden');
