@@ -1135,3 +1135,18 @@ max_age_h = "1"
 schedule = "2,22,42 * * * *"
 mirrors = ["deploy/cron.passyds_prekickoff"]
 command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/passyds_prekickoff_snapshot.py >> logs/passyds_prekickoff_cron.log 2>&1"
+
+[[component]]
+key = "cron|4-54/10 * * * *|scripts/demo_fill_markout_collector.py"
+kind = "cron"
+source = "deploy/cron.demo_fill_markout"
+status = "live"
+reviewed = true
+purpose = "W81.1-B: every 10 min collects the ADR-0072 criterion (c) 30-minute post-fill markout (held-side two-sided mid at fill+1/5/30 min minus fill price, demo 1-minute candles) for each filled shadow order, from the collection epoch forward. Orders from logs/demo_fill_policy.jsonl, fills from the read-only demo GET /portfolio/fills. DEMO host only (refuses otherwise); places, cancels and changes nothing; bounded (400 orders/run)."
+pillar = "PROOF"
+writes = ["logs/demo_fill_markout.log", "exp_output/FORWARD_TEST/markouts/markouts.jsonl", "exp_output/FORWARD_TEST/markouts/EPOCH.json"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/demo_fill_markout.log is older than 1h (one MARKOUT line every run); REFUSED on a non-demo host or missing key exits 2; the forward report marks criterion (c) NOT_EVALUABLE while no markout rows exist"
+max_age_h = "1"
+schedule = "4-54/10 * * * *"
+mirrors = ["deploy/cron.demo_fill_markout"]
+command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/demo_fill_markout_collector.py >> logs/demo_fill_markout.log 2>&1"
