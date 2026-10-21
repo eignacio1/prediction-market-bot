@@ -125,6 +125,30 @@ def governance() -> dict:
     return {"open": n_open, "live": n_live, "retired": retired, "ever": n_live + retired, "sev": sev}
 
 
+MUSE_WEB_STATES = ("built", "pending", "future")
+
+
+def muse_web() -> dict:
+    """The aggregation web (operator 2026-10-21): 02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/MUSE_WEB.json, maintained by the strategic
+    window at every wave close. Validated here; on any defect the section says so instead of drawing a wrong web."""
+    f = ROOT / "02_ARCHITECTURE_DESIGN" / "QUAL_ARCHIVE" / "MUSE_WEB.json"
+    try:
+        d = json.loads(f.read_text())
+        rings, sports = d["rings"], d["sports"]
+        for sp in d["spokes"]:
+            if sp["sport"] not in sports:
+                raise ValueError(f"unknown sport {sp['sport']!r}")
+            if len(sp["states"]) != len(rings) or any(x not in MUSE_WEB_STATES for x in sp["states"]):
+                raise ValueError(f"bad states on {sp['name']!r}")
+            sp.setdefault("notes", [""] * len(rings))
+            if len(sp["notes"]) != len(rings):
+                raise ValueError(f"bad notes on {sp['name']!r}")
+        return {"ok": True, "as_of": d.get("as_of"), "archive_commit": d.get("archive_commit"), "about": d.get("about", ""),
+                "rings": rings, "sports": sports, "spokes": d["spokes"]}
+    except Exception as e:
+        return {"ok": False, "error": f"{e.__class__.__name__}: {e}"}
+
+
 def wave_chip() -> str:
     import re
     q = (ROOT / "04_EXECUTION" / "ACTIVE_QUEUE.md").read_text()
@@ -144,7 +168,7 @@ def build(out: pathlib.Path) -> None:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     out.write_text(html)
     print(f"wrote {out} ({len(html):,} bytes) at {sha}")

@@ -2672,3 +2672,10 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 
 ## 2026-10-21 08:15 PT — NFL PAM taxonomy draft2: per-position, not per-unit (operator)
 - Operator: "OL needs to be broken up per position, DL needs to be broken up per position. The next version of the PAM was gonna introduce even higher layering (stuff rate example - Bo Nix example etc etc) so we can't maintain generalities at those levels." Draft2: OL -> LT, LG, C, RG, RT; DL -> EDGE, DT3 (3-tech), NT (0/1-tech), DE5 (3-4 end). The window applied the same principle to LB (MIKE, WILL, SAM) and S (FS, SS), flagged to the operator. 67 archetypes; position archetypes carry `split_hooks` (e.g. stuff rate on runs to his gap by box count) so granularity-index facts attach to one player at one spot. R-028 (Muse) maps signals per position with an attributable-to-position column.
+
+## 2026-10-21 08:40 PT — Aggregation web on the Visual Dashboard (operator)
+- Operator: "I want a visual spider web for the core 4 sports work that Muse is working on built into our visual dashboard - I couldn't find a good design template in google so pls don't make it look lazy - it should be applied with UI coherence and give us an idea of pending, built, future".
+- Built: section "Aggregation web" (nav ✺). Four sport quadrants; each spoke a workstream; five rings Scouted → Recorded → Mapped → Verified → Applied; node state built (blue) / pending (amber, pulsing) / future (hollow). Side panel: counts, by sport, by step; "Open now" lists every pending step and what it waits on. Green not used (reserved for a cell that WINS, W82.2).
+- Source: `02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/MUSE_WEB.json`. A file that fails validation draws nothing rather than a wrong picture.
+- Standing duty (strategic window): update MUSE_WEB.json at every wave close from the archive, TO_MUSE.md and the wave's merged blocks; record the archive commit and as_of.
+- vision_pillar: PLUMBING (visibility of the DEPTH lane). gap_measure: none moved.

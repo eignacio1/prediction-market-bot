@@ -310,5 +310,86 @@ footer{border-top:1px solid var(--hair); padding:22px 30px 40px; color:var(--ink
   .rail{position:static; height:auto; border-right:none; border-bottom:1px solid var(--hair)}
   .wrap,.topbar,footer{padding-left:16px; padding-right:16px}
 }
+/* ---------- AGGREGATION WEB (Muse) ---------- */
+.mw-wrap{display:grid; grid-template-columns:minmax(0,1fr) minmax(250px,300px); gap:14px; align-items:start}
+.mw-stage{padding:14px 14px 10px}
+#mwHost svg{width:100%; height:auto; display:block; max-height:880px; margin:0 auto}
+.mw-side{display:grid; gap:14px; min-width:0}
+.mw-tiles{grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+.mw-tiles .tile{padding:10px 11px}
+.mw-tiles .tile .v{font-size:24px}
+.mw-tiles .tile .n{font-size:11px}
+.mw-k{display:inline-block; width:9px; height:9px; border-radius:50%; margin:0 4px 0 2px; vertical-align:-1px}
+.mw-k.b{background:var(--s1)}
+.mw-k.p{background:var(--surface); box-shadow:inset 0 0 0 2px var(--warn)}
+.mw-k.f{background:var(--surface-2); box-shadow:inset 0 0 0 1.3px var(--axis)}
+.mw-fl{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-right:2px}
+.btn.mwf.on{background:var(--surface-3); color:var(--ink); border-color:var(--axis)}
+.mw-web{font-family:var(--sans)}
+.mw-web .band{fill:color-mix(in srgb,var(--ink) 2.2%,transparent)}
+.mw-web .band.alt{fill:var(--surface)}
+.mw-web .ring{fill:none; stroke:var(--grid); stroke-width:1}
+.mw-web .webln{fill:none; stroke:color-mix(in srgb,var(--axis) 55%,transparent); stroke-width:1}
+.mw-web .spk{stroke:var(--grid); stroke-width:1}
+.mw-web .reach{stroke:var(--s1); stroke-width:3; stroke-linecap:round}
+.mw-web .reachp{stroke:var(--warn); stroke-width:2; stroke-dasharray:3 4; stroke-linecap:round; opacity:.95}
+.mw-web .nd{cursor:default}
+.mw-web .nd.b circle.core{fill:var(--s1); stroke:var(--surface); stroke-width:2}
+.mw-web .nd.b circle.halo{fill:color-mix(in srgb,var(--s1) 22%,transparent)}
+.mw-web .nd.p circle.core{fill:var(--surface); stroke:var(--warn); stroke-width:2.4}
+.mw-web .nd.p circle.halo{fill:none; stroke:var(--warn); stroke-width:1.4; opacity:.55; transform-box:fill-box; transform-origin:center; animation:mwPulse 2.6s ease-out infinite}
+.mw-web .nd.f circle.core{fill:var(--surface-2); stroke:var(--axis); stroke-width:1.2}
+.mw-web .nd.f circle.halo{fill:transparent}
+.mw-web .nd:hover circle.core{stroke-width:3.4}
+.mw-web .hub{fill:var(--surface-2); stroke:var(--hair); stroke-width:1}
+.mw-web .hubk{font-size:10px; font-weight:700; letter-spacing:.18em; fill:var(--ink-3); text-anchor:middle}
+.mw-web .hubv{font-size:23px; font-weight:650; fill:var(--ink); text-anchor:middle; letter-spacing:-.02em}
+.mw-web .hubd{font-size:13px; font-weight:500; fill:var(--ink-3)}
+.mw-web .hubn{font-size:9.5px; fill:var(--ink-3); text-anchor:middle}
+.mw-web .rlab{font-size:9px; font-weight:650; letter-spacing:.09em; fill:var(--ink-3); text-anchor:middle}
+.mw-web .rlabbg{fill:var(--surface-2); stroke:var(--hair-2)}
+.mw-web .rdir{font-size:9.5px; fill:var(--ink-3); text-anchor:middle; letter-spacing:.04em; opacity:0}
+.mw-web .slab{font-size:12.5px; fill:var(--ink); font-weight:520}
+.mw-web .slab.idle{fill:var(--ink-3)}
+.mw-web .slab .tk{fill:var(--ink-3); font-family:var(--mono); font-size:10px; font-weight:400}
+.mw-web .slab.open .tk{fill:var(--warn)}
+.mw-web .sarc{fill:none; stroke:var(--axis); stroke-width:1.6; stroke-linecap:round; opacity:.8}
+.mw-web .sport{font-size:11px; font-weight:700; letter-spacing:.14em; fill:var(--ink-2); text-anchor:middle; cursor:pointer;
+  paint-order:stroke; stroke:var(--surface); stroke-width:7px; stroke-linejoin:round}
+.mw-web .sport:hover{fill:var(--ink)}
+.mw-web .q{transition:opacity .2s}
+.mw-web .q.dim{opacity:.14}
+.mw-sbar{display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:10px; align-items:center; margin:8px 0; font-size:12px}
+.mw-sbar .lab{font-weight:650; letter-spacing:.06em; color:var(--ink-2)}
+.mw-sbar .trk{display:flex; height:8px; border-radius:4px; overflow:hidden; background:var(--surface-3)}
+.mw-sbar .trk span{display:block; height:100%}
+.mw-sbar .n{font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+.mw-sleg{display:flex; gap:12px; margin-top:8px; font-size:11px; color:var(--ink-3)}
+.mw-sleg i{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; vertical-align:0}
+.mw-sleg i.f{background:var(--surface-3)}
+.mw-step{display:grid; grid-template-columns:66px minmax(0,1fr) auto; gap:8px; align-items:center; margin:7px 0; font-size:12px}
+.mw-step .lab{color:var(--ink-2)}
+.mw-step .dots{display:flex; flex-wrap:wrap; gap:3px}
+.mw-step .dots i{width:9px; height:9px; border-radius:50%; background:var(--surface-2); box-shadow:inset 0 0 0 1.2px var(--axis)}
+.mw-step .dots i.b{background:var(--s1); box-shadow:none}
+.mw-step .dots i.p{background:var(--surface); box-shadow:inset 0 0 0 2px var(--warn)}
+.mw-step .n{font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+.mw-src{line-height:1.5; font-size:11px}
+.mw-src .mono{font-size:10.5px; color:var(--ink-2)}
+.mw-opencard{margin-top:14px}
+.mw-open{columns:2 340px; column-gap:28px}
+.mw-orow{break-inside:avoid; padding:10px 0 9px; border-top:1px solid var(--hair-2)}
+.mw-orow .hd{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap}
+.mw-orow .sp{font-size:10.5px; font-weight:700; letter-spacing:.1em; color:var(--ink-3)}
+.mw-orow .w{font-size:13px; color:var(--ink); font-weight:550}
+.mw-orow .tg{font-family:var(--mono); font-size:10.5px; color:var(--warn); margin-left:auto}
+.mw-orow .ln{display:grid; grid-template-columns:72px minmax(0,1fr); gap:8px; margin-top:5px; font-size:12px}
+.mw-orow .st{color:var(--warn); font-size:11px; letter-spacing:.03em}
+.mw-orow .d{color:var(--ink-2)}
+.mw-tnote{margin-top:6px; font-size:11.5px; color:var(--ink-2); max-width:300px; white-space:normal}
+.mw-tdesc{margin-top:5px; font-size:10.5px; color:var(--ink-3); max-width:300px; white-space:normal}
+@keyframes mwPulse{0%{transform:scale(1); opacity:.6} 70%{transform:scale(1.9); opacity:0} 100%{opacity:0}}
+@media (prefers-reduced-motion: reduce){ .mw-web .nd.p circle.halo{animation:none; opacity:.5} }
+@media(max-width:1080px){ .mw-wrap{grid-template-columns:1fr} }
 @media print{ .rail,.topbar{display:none} body{background:#fff} }
 </style>

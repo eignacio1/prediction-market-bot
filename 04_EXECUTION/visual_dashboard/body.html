@@ -25,6 +25,7 @@
 
     <div class="lbl">Structure</div>
     <a class="nv" href="#matrix"><span class="ic">▦</span>Cell matrix<span class="ct cellN"></span></a>
+    <a class="nv" href="#museweb"><span class="ic">✺</span>Aggregation web<span class="ct" id="nvMuse"></span></a>
     <a class="nv" href="#arms"><span class="ic">⏱</span>Arms &amp; clocks<span class="ct" id="nvArms"></span></a>
     <a class="nv" href="#doctrine"><span class="ic">⟊</span>Band doctrine · C5</a>
     <a class="nv" href="#pipeline"><span class="ic">⇥</span>Pipeline C1–C8</a>
@@ -280,6 +281,27 @@
 </section>
 
 <!-- ============================================================ ARMS -->
+<section id="museweb">
+  <div class="sechead"><h2>Aggregation web</h2><span class="num" id="mwHead"></span></div>
+  <p class="lede">Muse's work across the four sports. Each spoke is a workstream; each ring is a step, from
+  <strong>scouted</strong> at the centre to <strong>applied</strong> at the edge. <span class="mw-k b"></span>built ·
+  <span class="mw-k p"></span>pending (a ticket or block is open) · <span class="mw-k f"></span>future (no ticket yet).
+  The solid line is how far a workstream has reached; the dashed line is the work open now. Muse scouts and records; the bot verifies and applies.</p>
+  <div class="mw-wrap">
+    <div class="card mw-stage">
+      <div class="toolbar" id="mwFilters"></div>
+      <div id="mwHost"></div>
+    </div>
+    <div class="mw-side">
+      <div class="grid g3 mw-tiles" id="mwTiles"></div>
+      <div class="card"><h3>By sport</h3><div class="cap">Steps per sport, every workstream × every ring.</div><div id="mwSports"></div></div>
+      <div class="card"><h3>By step</h3><div class="cap">One dot per workstream at each step, in web order.</div><div id="mwRings"></div></div>
+      <div class="cap mw-src" id="mwSrc"></div>
+    </div>
+  </div>
+  <div class="card mw-opencard"><h3>Open now</h3><div class="cap">Every workstream with a pending step, and what that step is waiting on.</div><div class="mw-open" id="mwOpen"></div></div>
+</section>
+
 <section id="arms">
   <div class="sechead"><h2>Arms &amp; clocks</h2><span class="num">every evidence clock that is running</span></div>
   <p class="lede">An arm is a sport's set of cells under one pre-registration, committed to main before its first
