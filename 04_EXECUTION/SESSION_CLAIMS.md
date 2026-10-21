@@ -984,3 +984,4 @@
 | 2026-10-20T05:37:07Z | W81.3 | CLOSED — merge confirmed, HEAD (050da34) is ancestor of origin/main — PARTIAL: passyds snapshot job merged (#298/#300/#301); frozen strike model + NOT_IMPLEMENTED cell parked on branch session/20261020T045139Z-w81-3-partb, no PR |
 | 2026-10-20T05:41:11Z | T-1037 | CLOSED — merge confirmed, HEAD (f9da112) is ancestor of origin/main — W81.2 NBA lineup cross merged (PR #299, 0cec23a); docs/exploratory only, no src/deploy change so t4-mlb restart not needed; Deploy workflow did not run (tests only, green) |
 | 2026-10-21T04:58:17Z | T-TBD | W82.2 EXECUTION: ADR-0072 forward-test verdict per (book,sport) on box (0 -> verdict words); PLUMBING: green=WINS grid |
+| 2026-10-21T04:58:55Z | GG-990..GG-994 T-1040..T-1042 | STANDARD — KXNFLPASSYDS live: install cron (clear SURFACE RED), land parked strike model, first shadow rows — FOR B1 48/107->49/108, B4 props 2->3, pre-kickoff NFL depth n 0->>0, surface RED->GREEN — W82.1 |
