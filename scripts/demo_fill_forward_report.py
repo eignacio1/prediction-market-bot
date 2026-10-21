@@ -533,6 +533,24 @@ def summary_line(rep: dict) -> str:
             + " | turn-off: " + ("TRIPPED " + ",".join(t) if t else "none tripped"))
 
 
+def print_cached(path: Path) -> int:
+    """W82.2: print a report JSON this script already wrote (no demo-API fetch, no switch edit). Bridge-safe."""
+    try:
+        rep = json.loads(path.read_text())
+    except (OSError, ValueError) as e:
+        print(f"NO CACHED REPORT at {path}: {type(e).__name__}")
+        return 1
+    print(f"generated_utc={rep.get('generated_utc')} test_start={rep.get('test_start_utc')} topup={rep.get('topup_utc')}")
+    print("assignment_check=" + json.dumps(rep.get("assignment_check"), default=str))
+    print("tripped=" + json.dumps(rep.get("tripped"), default=str))
+    for c in rep.get("cells", []):
+        print("CELL " + json.dumps(c, default=str))
+    for k, v in (rep.get("verdicts") or {}).items():
+        print(f"VERDICT {k} " + json.dumps(v, default=str))
+    print("verdict_rules=" + json.dumps(rep.get("verdict_rules"), default=str))
+    return 0
+
+
 def _assign_params(env_path: Path) -> Optional[tuple[str, float]]:
     kv: dict[str, str] = {}
     try:
@@ -553,7 +571,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--no-fills", action="store_true", help="skip demo API reads (log-only counts)")
     ap.add_argument("--since", default=None, help="ISO ts; read-back window (e.g. the cancel-path re-arm epoch)")
     ap.add_argument("--no-act", action="store_true", help="report only; never edit the switch config")
+    ap.add_argument("--print-json", default=None, help="print an already-written report JSON and exit (no fetch, no act)")
     a = ap.parse_args(argv)
+    if a.print_json:
+        return print_cached(Path(a.print_json))
     os.environ["BOT_ENV"] = "paper"  # demo only; .env must not flip the host
     from prediction_market_bot.c5_execution import demo_fill_policy as pol
     now = datetime.now(timezone.utc)

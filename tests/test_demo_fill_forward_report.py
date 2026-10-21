@@ -398,3 +398,17 @@ def test_build_report_verdict_counts_only_post_topup_orders(monkeypatch):
     v = rep["verdicts"]["shadow|NFL"]
     assert (v["control_n"], v["treatment_n"]) == (1, 1)  # the two pre-top-up orders are descriptive only
     assert v["state"].startswith("NO VERDICT YET")
+
+
+def test_print_cached_reads_file_without_fetching(tmp_path, capsys):
+    p = tmp_path / "r.json"
+    p.write_text(json.dumps({"generated_utc": "2026-10-21T00:00:00+00:00", "cells": [{"book": "shadow", "sport": "NFL"}],
+                             "verdicts": {"shadow|NFL": {"state": "NO VERDICT YET"}}, "tripped": []}))
+    assert rpt.main(["--print-json", str(p)]) == 0
+    out = capsys.readouterr().out
+    assert "VERDICT shadow|NFL" in out and "CELL" in out
+
+
+def test_print_cached_missing_file_is_nonzero(tmp_path, capsys):
+    assert rpt.main(["--print-json", str(tmp_path / "nope.json")]) == 1
+    assert "NO CACHED REPORT" in capsys.readouterr().out
