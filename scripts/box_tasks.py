@@ -62,6 +62,10 @@ TASKS: dict[str, str] = {
         "print(json.dumps({k:r.get(k) for k in ('test_start_utc','topup_utc','assignment_check','tripped')},indent=1));"
         "[print(json.dumps(c)) for c in r['cells']]\""
     ),
+    # W82.2: prints the JSON the report already wrote (the cron's, or a detached run's); never re-fetches fills
+    "forward_verdict_read": (
+        f"{PY} scripts/demo_fill_forward_report.py --print-json exp_output/FORWARD_TEST/w82_2/demo_fill_forward_report.json"
+    ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
         "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "
