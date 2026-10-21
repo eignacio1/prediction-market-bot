@@ -992,3 +992,4 @@
 | 2026-10-21T05:44:50Z | T-1044 | CLOSED — merge confirmed, HEAD (9ed089d) is ancestor of origin/main — W82.3 coverage/pressure gap DONE (PRs #305, #307) |
 | 2026-10-21T23:50:14Z | GG-1000..GG-1004 T-1050..T-1052 | STANDARD — W83.1 weekly source-capture job for CAPTURABLE Muse cards + card accuracy + 82.3 refresh — FOR D5(b) NFL (2026 coverage/pressure/personnel splits: 0 -> live weekly capture) + charter v3 s7 Muse card accuracy 0 -> measured |
 | 2026-10-21T23:50:34Z | GG-1010..GG-1014 T-1060..T-1062 | STANDARD — W83.3 DEPTH NHL engine data layer: event-level store + no-look-ahead contract + factor map — FOR D4 NHL none -> data layer; D1/D5 NHL factor classes mapped to free sources (count, not built) |
+| 2026-10-21T23:51:04Z | T-1070..T-1072 GG-1030..GG-1034 | STANDARD — W83.2 NBA lineup-window capture + frozen pre-registration + play-type cross — FOR D5(b) NBA (lineup factor interpreted -> testable; play-type cross interpreted) |
