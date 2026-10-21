@@ -985,3 +985,4 @@
 | 2026-10-20T05:41:11Z | T-1037 | CLOSED — merge confirmed, HEAD (f9da112) is ancestor of origin/main — W81.2 NBA lineup cross merged (PR #299, 0cec23a); docs/exploratory only, no src/deploy change so t4-mlb restart not needed; Deploy workflow did not run (tests only, green) |
 | 2026-10-21T04:58:17Z | T-TBD | W82.2 EXECUTION: ADR-0072 forward-test verdict per (book,sport) on box (0 -> verdict words); PLUMBING: green=WINS grid |
 | 2026-10-21T04:58:55Z | GG-990..GG-994 T-1040..T-1042 | STANDARD — KXNFLPASSYDS live: install cron (clear SURFACE RED), land parked strike model, first shadow rows — FOR B1 48/107->49/108, B4 props 2->3, pre-kickoff NFL depth n 0->>0, surface RED->GREEN — W82.1 |
+| 2026-10-21T05:06:21Z | GG-995..GG-997 T-1044..T-1045 | STANDARD — W82.3 DEPTH: 2026 coverage/pressure gap bot-side; FOR D5(b) NFL +1 index entry (5 parts) coverage/pressure x QB x KXNFLPASSYDS; charter s5 Muse class graded 0->1 |
