@@ -270,3 +270,45 @@ scheduled job and paste the scheduler listing before and after. Don't describe y
 the Backlog, starting with R-013.
 
 *Note (2026-10-21, W82.3 close):* the Part A CSVs cited in the GRADE entry above are regenerable (`12_EXPLORATORY/nfl_engine/coverage_gap/part_a.py`) and are gitignored; only the verdict JSON is committed. Pinned archive commit remains `4e939f5`.
+
+---
+
+### 2026-10-20 23:20 PT · watchdog (Wave 82 close, `2ce6b77`)
+v3 is acknowledged; the protocol is collapsed to the pointer; scheduled jobs removed with the before/after listing pasted; `d11f758` is
+pushed. History is intact (`4e939f5` is an ancestor) and every record parses (8,610).
+- **R-013 and R-014: done well.** 13 NFL cards, all eight parts, live-copied samples, honest verdicts (Sharp static =
+  CAPTURABLE; NGS = browser-only; PFR advanced passing = raw-HTML comments; PFF = NOT USABLE). The NGS definitional flag (the
+  primary excludes sacks; the republisher's text doesn't) is exactly the kind of catch the cards exist for. R-014's answer is
+  clear: no free play-level 2026 charting until nflverse's participation file (~Feb 2027).
+- **R-012: done.** 3 NBA cards (play types, tracking, lineups/on-off; all ONE-OFF: browser-only from a datacenter), plus
+  3,422 play-type records on Earl's direct order. Provenance scripts versioned. Good.
+- **Two corrections under v3:** (1) 110 null time-to-throw records were appended at 22:15 PT, after v3's "no null records" (the
+  QB-not-a-qualifier rows); and 4 blocked NBA records before v3. Leave them; write none from here. (2) The job removal went
+  wider than meant: `ig-unfollow-watch` was Earl's own job, not a project job, and it went because the window's instruction said
+  "every scheduled job" (window error W28). **Do not restore or touch any job unless Earl tells you directly.**
+- **What the bot did with your work:** 82.3 graded QB time to throw FAILED on level (r 0.962, mean -0.161 s against the bot's
+  own data: likely the sacks definition on the republisher); the coverage class could not be graded (prior values null).
+  This wave the bot builds its own weekly capture of the Sharp and PFR pages from your cards (83.1) and scores the cards'
+  sample rows against its fetch.
+
+## Backlog (ordered; work top-down, one per cycle) — replaces the emptied backlog
+
+### R-015 · Sharp 2025 season-end values from the Wayback snapshots (FIRST)
+**Target:** grading the 2026 coverage / pressure class. The bot recomputes 2025 from its own participation data; your 2025
+season-end values from the same Sharp pages make the definition check direct (82.3 could not grade without them).
+**What:** for the 4 Sharp pages whose Jan-Feb 2026 Wayback snapshots render final-2025 tables (your probe #2): every team's row,
+every column, **with values**, as index_fact records (season 2025, split season-final, `source_link` = the Wayback URL with
+its timestamp, `notes` = the live page it archives). Skip the fifth page in one STATUS line.
+**Done when:** 4 pages x 32 teams recorded with values; STATUS.md names R-015.
+
+### R-016 · NBA arm, phase 1: finish 2025-26 (SECOND; Earl's direction, 2026-10-20)
+The remaining 2025-26 play types (post-up, handoff, cut) and the tracking families (touches incl. time of possession, drives,
+passing incl. potential assists), same format as your Isolation / P&R records, with the glossary definitions quoted where
+NBA.com publishes them. **Done when:** every family's 2025-26 table is recorded with values and row counts match the site's totals.
+
+### R-017 · NBA arm, phase 2: prior seasons (THIRD)
+The same families for 2024-25 and 2023-24, as far as the site's season selector goes. Same rules. **Done when:** recorded, or
+one STATUS line per season the selector doesn't serve.
+
+### Then, in order, as Earl directed (tickets will be written when R-017 closes): player season layer (traditional + advanced
+incl. usage and true shooting) · lineups and on/off · team advanced (ratings, pace).
