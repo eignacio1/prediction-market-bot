@@ -2616,3 +2616,7 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - **Criterion (c), the 30-minute post-fill markout, was never collected:** collect it from now on and apply (c) only to fills from the collection start; judge (a) and (b) on all eligible fills. Operator: "Collect from now; judge (c) forward (Recommended)".
 - **Cash-starved days:** exclude fills before 2026-10-16T05:40Z from the verdict; report them separately, descriptive only. Operator: "Exclude them (Recommended)".
 - These go into a dated ADR-0072 addendum (82.1). The authorization is the blockquote in ACTIVE_QUEUE.md "Needs your decision". No other registered parameter changes (seed, share, judged n, the placement rule).
+
+## 2026-10-20 21:30 PT — NBA availability added to Muse's archive (operator, charter v2 §9)
+- Operator, asked by the strategic window: "Yes, add NBA availability (Recommended)". Muse's daily sweep covers NBA game days: availability only, every record with source_time, both the beat-writer and the official report times. Purpose: the missing before-the-news point for the NBA lineup cross (GG-985). No other NBA layers. Ticket R-010; issued with R-009 (Week 7 NFL passing-game availability, timed, for KXNFLPASSYDS) as Muse block M82, ahead of Wave 82.
+- M81 verified: R-008 closed (224 L3 records; PFR has no margin bands and no free historical ranks, so those are bot-side from nflverse), R-004 closed.

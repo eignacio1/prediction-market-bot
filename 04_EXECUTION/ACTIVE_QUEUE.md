@@ -270,7 +270,8 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | 81.1 | The forward test, read: label the arms, clean the count, score it as pre-registered (+ the scoreboard's three broken inputs) | EXECUTION E1–E3 per arm; ADR-0072 verdict 0 → 1 or "no verdict yet"; PLUMBING D1/D4/P3 3 broken → 0 | 🟡 PARTIAL | Part A code merged (#297); box table + Part B descriptive pending; PART C (green=WINS) NOT STARTED — next undone part. See W81_1_forward_test_read.md |
 | 81.2 | Depth lane: the NBA lineup cross on player points, all five parts | DEPTH D5(b) NBA: complete index entries 1 → 2 | 🟨 PARTIAL | Part A + B pushed; entry 2 stops at interpreted (GG-985: no absence time joinable to KXNBAPTS prices) |
 | 81.3 | The first thin-market cell goes live: KXNFLPASSYDS pre-kickoff snapshots, frozen strike model, shadow rows | BREADTH B1 40/107 → 41/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0 | ⬜ | |
-| M81 | Muse: R-008, the first L3 split family (NFL starting-QB passing yards by game script, rank against history) + the R-004 close-out | DEPTH D5(b) feed (granularity-index parts 1-2 for the KXNFLPASSYDS cell); charter §8 archive health | ⬜ | |
+| M81 | Muse: R-008, the first L3 split family (NFL starting-QB passing yards by game script, rank against history) + the R-004 close-out | DEPTH D5(b) feed (granularity-index parts 1-2 for the KXNFLPASSYDS cell); charter §8 archive health | ✅ | R-008: 224 records (126 valued, 98 blocked honestly: PFR has no margin bands, no free ranks); schema v1.5; R-004 closed. Checked 10-20 21:35 PT |
+| M82 | Muse (issued ahead of Wave 82, 10-20 21:35 PT): R-009 Week 7 passing-game availability per game, timed (QB, opposing pass defense, top receivers) + R-010 NBA availability joins the daily sweep | BREADTH/DEPTH feed for KXNFLPASSYDS; DEPTH feed for the NBA lineup cross (GG-985) | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
 
 **Pushback (the strongest reason not to run this as planned):** 81.1 may end without a verdict. NFL fills come from a few dozen
@@ -294,6 +295,50 @@ main when it reads, so neither waits on the other. The gap agent owns GG_BURNDOW
 these files.
 **Not in this wave, by date:** the NBA opening-night read-back (80.2 Part A) needs the 10-20 games played. It is a Wave 82
 candidate once they exist.
+
+### M82 — Muse block (issued ahead of Wave 82, 2026-10-20 21:35 PT): R-009 Week 7 passing-game availability, timed + R-010 NBA availability
+**BREADTH/DEPTH feed** · KXNFLPASSYDS factor inputs (starting-QB availability x pass-defense matchup) · the NBA lineup cross's
+missing "before the news" point (GG-985) · given to the operator in chat; checked at the next wave close.
+
+```
+Work cycle - M82 (from Earl, 2026-10-20). Charter v2 is in force.
+
+1. Start of cycle: read the protocol and every TO_MUSE.md entry after your last reply (Claude's 2026-10-20 21:35 PT watchdog,
+   R-009, R-010).
+   https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md
+   https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md
+
+2. Closed: R-004 and R-008. R-008 was done the right way: the wrong assumption called out, the bands recorded as blocked
+   instead of relabelled, the ranks left null instead of invented. Margin-banded game script and ranks against history are now
+   the bot's job from nflverse; don't look for them again. Your edge is timed availability and role news, which nflverse
+   does not carry.
+
+3. MAIN TICKET - R-009: Week 7 passing-game availability, per game, timed. For every Week 7 game, one record per status change
+   (never edit; add a new record when it changes):
+   (a) each team's starting QB - Wed/Thu/Fri practice participation, game designation, the confirmed starter once named;
+   (b) the opposing pass defense - starting CBs, safeties and edge rushers on the injury report or IR;
+   (c) the QB's main targets - starting WRs and TE out or limited.
+   game_id (2026_07_AWAY_HOME), season 2026, week 7, player exactly as the team lists him, status words exactly as the report
+   uses them, and source_time REQUIRED on every record. No impact judgments; "likely to start" only if a named source says it,
+   quoted. Free sources only. Done when every Week 7 game has its starting-QB trail through Friday (and inactives when
+   posted), plus the defense/receiver changes.
+   Why: the bot's first thin-market cell is NFL player passing yards (KXNFLPASSYDS); its factor is starting-QB availability x
+   the QB-vs-defense matchup. Retail flow first: "beating buddy off his phone placing parlays, that's the first step."
+
+4. CADENCE CHANGE - R-010 (Earl, 2026-10-20: "Yes, add NBA availability"): from your next daily sweep, cover NBA game days too -
+   every player ruled out / doubtful / questionable / probable / cleared for that day's games, with source_time REQUIRED.
+   Record beat-writer and team reports AND the official injury report, each with its own publish time (the earlier one is the
+   point). sport NBA, game_id YYYYMMDD_AWAY_HOME with NBA codes (e.g. 20261021_NYK_BOS), applies_to readable. Availability only -
+   no other NBA layers. Path: team-news-nba/<team>-news.claims.jsonl (or your layout; say which).
+   Why: the bot measured that teammates absorb +1.75 points when a primary creator is out, but cannot yet test whether the
+   points market prices it, because no price history has a moment before and after the news. Your timestamps are that moment.
+
+5. Standing: next weekly cycle, add the Week 7 L3 records as of the last completed game; never edit the Week 6 ones.
+
+6. Report in STATUS.md with commits naming R-009 and R-010: counts per game (NFL) and per day (NBA), anything you could not time,
+   paths. Push every commit; never rewrite history; no paid sources; nothing written to the bot repo; never turn a fact into a
+   bet, pick, odds or model.
+```
 
 ### 81.1 — The forward test, read: label the arms, clean the count, score it as pre-registered
 **EXECUTION** · E1–E3 per arm, the ADR-0072 verdict · plus PLUMBING: the scoreboard's three broken inputs (D1, D4 NBA, P3) · terminal 1
@@ -1137,7 +1182,8 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 81.1 | Forward test read: labels, clean count, pre-registered score (+ generator D1/D4/P3) | 🟡 PARTIAL | Part A code merged (#297); box table + Part B descriptive pending; PART C (green=WINS) NOT STARTED — next undone part. See W81_1_forward_test_read.md |
 | 81.2 | Depth lane: NBA lineup cross, all five parts | ⬜ | |
 | 81.3 | KXNFLPASSYDS live: pre-kickoff snapshots, frozen strike model, shadow rows | ⬜ | |
-| M81 | Muse: R-008 (L3: QB passing yards by game script) + R-004 close-out | ⬜ | |
+| M81 | Muse: R-008 (L3: QB passing yards by game script) + R-004 close-out | ✅ | 224 L3 records; ranks and margin bands are bot-side (nflverse) |
+| M82 | Muse: R-009 Week 7 passing-game availability (timed) + R-010 NBA availability in the daily sweep | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
 ### ✅ WAVE 80 — ISSUED 2026-10-20 ~00:10 UTC · CLOSED ~01:30 UTC · verified on GitHub at the handoff sweep · the last wave of the Waves 61–80 window
