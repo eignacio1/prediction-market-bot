@@ -270,7 +270,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 |---|---|---|---|---|
 | 82.1 | KXNFLPASSYDS live: clear the red (install), land the parked strike model, first shadow rows, flip the cell | BREADTH B1 48/107 → 49/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0; surface RED → GREEN | ⬜ | |
 | 82.2 | The forward-test verdict on the box (per book and sport, post-top-up), then green = WINS on the grid | EXECUTION: ADR-0072 verdicts 0 → per (book, sport); PLUMBING: grid green means WINS (0 cells expected) | 🟡 Part A done | Shadow verdicts read on box 2026-10-21: NFL INCONCLUSIVE (judged, (a) lower95 −0.050); NHL/NBA/MLB NO VERDICT YET (80/137/0 of 550); (c) NOT_EVALUABLE. `W82_2_forward_test_verdict.md`. Part B (WINS grid) merged #304, box read-back pending. |
-| 82.3 | Depth lane: the 2026 coverage / pressure gap, bot-side — recompute 2016-2025, verify Muse's 2026 class, rank, cross with the QB | DEPTH D5(b) NFL: one index entry with all five parts (coverage x QB, mapped to KXNFLPASSYDS); charter §5 VERIFIED/FAILED 0 → 1 class | ⬜ | |
+| 82.3 | Depth lane: the 2026 coverage / pressure gap, bot-side — recompute 2016-2025, verify Muse's 2026 class, rank, cross with the QB | DEPTH D5(b) NFL: one index entry with all five parts (coverage x QB, mapped to KXNFLPASSYDS); charter §5 VERIFIED/FAILED 0 → 1 class | 🟨 Part A done (PR #305 merged) | Muse prior-season coverage/pressure values are ALL null, so nothing gradable; time-to-throw FAILED on level (-0.16 s, r 0.96). Part B next. |
 | M82-A | Muse add-in to the running M82 cycle: finish R-011 (QB side, offense personnel, prior seasons, weekly snapshots) | DEPTH feed for 82.3 | ✅ superseded | delivered 04:39-04:58Z: offense personnel, QB time to throw (via a republisher), Sharp prior seasons = nothing free |
 | M82-B | Muse charter v3 (scout / capture): source cards R-013 → R-014 → R-012 | DEPTH feed: sources the bot can capture itself | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
@@ -1043,7 +1043,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 82.1 | KXNFLPASSYDS live: install (clears the red), land the parked model, first rows, flip | ⬜ | |
 | 82.2 | Forward-test verdict on the box (per book/sport, post-top-up) + green = WINS on the grid | ⬜ | |
-| 82.3 | Depth: the 2026 coverage/pressure gap bot-side; grade Muse's class; coverage x QB index entry | ⬜ | |
+| 82.3 | Depth: the 2026 coverage/pressure gap bot-side; grade Muse's class; coverage x QB index entry | 🟨 Part A done (PR #305 merged) | Muse prior-season coverage/pressure values are ALL null, so nothing gradable; time-to-throw FAILED on level (-0.16 s, r 0.96). Part B next. |
 | M82-A | Muse: finish R-011 | ✅ | superseded by M82-B (charter v3) |
 | M82-B | Muse charter v3: source cards R-013 → R-014 → R-012 | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
