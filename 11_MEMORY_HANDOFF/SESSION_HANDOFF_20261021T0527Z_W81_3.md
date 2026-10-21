@@ -1,5 +1,22 @@
 # SESSION HANDOFF — W82.2 (forward-test verdict on the box + green = WINS)
 
+<!-- session-meta
+task_id: T-TBD (W82.2)
+tier: MICRO
+timestamp: 2026-10-21T05:27:00Z
+commit: 739f5b5
+one_line_summary: W82.2 forward-test verdict read on the box (NFL INCONCLUSIVE; NHL/NBA/MLB no verdict yet) and grid green now means WINS only (0 green).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: P2 verdicts issued (shadow book); grid wins count
+gap_delta: verdict words 0 -> 4 cells stated (1 INCONCLUSIVE, 3 NO VERDICT YET); wins 0 -> 0 (box read-back 2026-10-21)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
+
 **Status:** DONE | branch `session/w82-2-b-wins-state` (merged), docs on `main` @ 03e0a20 | PRs #303 (A, merge 24627a5), #304 (B, merge 2940f23) — CI test jobs green | Result: shadow verdicts read on the box (NFL INCONCLUSIVE; NHL/NBA/MLB NO VERDICT YET) and the grid now shows WINS as the only green state, 0 green cells.
 
 MEASURE MOVED: verdict words per (book, sport) 0 -> 4 shadow cells with a stated state (1 INCONCLUSIVE, 3 NO VERDICT YET), source `exp_output/FORWARD_TEST/w82_2/demo_fill_forward_report.json` (2026-10-21T04:59Z); green cells 0 -> 0 correct (box `build_visual_dashboard_html.cells()`: 107 cells, 47 shadow, 1 active, 2 blocked, 1 dark, 56 not_implemented, 0 wins).
