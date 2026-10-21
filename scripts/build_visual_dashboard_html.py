@@ -143,10 +143,68 @@ def muse_web() -> dict:
             sp.setdefault("notes", [""] * len(rings))
             if len(sp["notes"]) != len(rings):
                 raise ValueError(f"bad notes on {sp['name']!r}")
+        tax = {}
+        for sp in d["spokes"]:
+            key = sp.get("taxonomy")
+            if key and key not in tax:
+                tax[key] = muse_web_taxonomy(key)
         return {"ok": True, "as_of": d.get("as_of"), "archive_commit": d.get("archive_commit"), "about": d.get("about", ""),
-                "rings": rings, "sports": sports, "spokes": d["spokes"]}
+                "rings": rings, "sports": sports, "spokes": d["spokes"], "taxonomy": tax, "tickets": muse_web_tickets()}
     except Exception as e:
         return {"ok": False, "error": f"{e.__class__.__name__}: {e}"}
+
+
+def muse_web_taxonomy(key: str) -> dict:
+    """PAM layer-1 taxonomy for one sport, grouped for the graph: {status, groups:[{id, label, items:[{id, name, ...}]}]}.
+    NBA's v4 file has no position groups, so its role factors form one group."""
+    import re
+    base = ROOT / "qualitative_data" / "pam" / key
+    f = base / "taxonomy_v4depth.json"
+    if not f.exists():
+        f = base / "taxonomy.json"
+    d = json.loads(f.read_text())
+    labels = {}
+    for tok in str(d.get("groups", "")).split(". ")[0].split(", "):
+        m = re.match(r"^\s*([A-Z0-9]+)(?:\s*\((.+?)\))?\s*$", tok)
+        if m:
+            labels[m.group(1)] = f"{m.group(1)} · {m.group(2)}" if m.group(2) else m.group(1)
+
+    def num(k: str) -> tuple:
+        m = re.search(r"(\d+)$", k)
+        return (k.rsplit("-", 1)[0], int(m.group(1)) if m else 0)
+
+    groups: dict = {}
+    for aid in sorted(d["archetypes"], key=num):
+        a = d["archetypes"][aid]
+        g = a.get("group") or "ROLE"
+        groups.setdefault(g, {"id": g, "label": labels.get(g, "Role factors" if g == "ROLE" else g), "kind": "archetype",
+                              "items": []})["items"].append({"id": aid, **a})
+    order = list(labels)
+    out = sorted(groups.values(), key=lambda g: order.index(g["id"]) if g["id"] in order else len(order))
+    mods = [{"id": mid, **d["modifiers"][mid]} for mid in sorted(d.get("modifiers", {}), key=num)]
+    if mods:
+        out.append({"id": "MOD", "label": "Modifiers", "kind": "modifier", "items": mods})
+    return {"status": str(d.get("status", d.get("version", ""))).split(" (")[0], "file": str(f.relative_to(ROOT)), "groups": out}
+
+
+def muse_web_tickets() -> dict:
+    """Muse's tickets from TO_MUSE.md: the latest heading per R-id, its title and the start of its text."""
+    import re
+    f = ROOT / "02_ARCHITECTURE_DESIGN" / "QUAL_ARCHIVE" / "TO_MUSE.md"
+    out: dict = {}
+    if not f.exists():
+        return out
+    parts = re.split(r"^### ", f.read_text(), flags=re.M)[1:]
+    for p in parts:
+        head, _, body = p.partition("\n")
+        m = re.match(r"^(R-\d{3})\s*·\s*(.*)$", head.strip())
+        if not m:
+            continue
+        segs = [x.strip() for x in m.group(2).split("·")]
+        segs = [x for x in segs if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", x)]
+        text = re.sub(r"\*\*|`", "", " ".join(body.split()))
+        out[m.group(1)] = {"title": " · ".join(segs), "text": text[:520] + ("…" if len(text) > 520 else "")}
+    return out
 
 
 def wave_chip() -> str:

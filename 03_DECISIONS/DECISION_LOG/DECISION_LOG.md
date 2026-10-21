@@ -2679,3 +2679,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Source: `02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/MUSE_WEB.json`. A file that fails validation draws nothing rather than a wrong picture.
 - Standing duty (strategic window): update MUSE_WEB.json at every wave close from the archive, TO_MUSE.md and the wave's merged blocks; record the archive commit and as_of.
 - vision_pillar: PLUMBING (visibility of the DEPTH lane). gap_measure: none moved.
+
+## 2026-10-21 09:20 PT — Aggregation web redesigned as an expandable graph (operator)
+- Operator: "It's a bit messy & not easily navigable for an operator (lol me) - design it similar to something like Obsidians universe design system, where you can click into and expand / contract nodes dynamically with added layers of granularity the deeper or further you get w each node".
+- The radial web is replaced by a force-directed graph: Muse → sport → workstream → five steps + its Muse tickets (shared tickets link workstreams) → for PAM workstreams, the Mapped step opens the layer-1 taxonomy: NFL position unit (navigation only) → position group (per position, OL/DL not merged) → archetype / modifier. Click opens, click again closes; hover highlights neighbours; detail panel with breadcrumb; search; sport focus; Open all / Reset / Fit.
+- Data: MUSE_WEB.json (window, every wave close) + TO_MUSE.md tickets + qualitative_data/pam/*/taxonomy files, all read by the builder. No green.
+- vision_pillar: PLUMBING. gap_measure: none moved.

@@ -370,88 +370,260 @@ function govCounts(){
 
 /* ---- WIRE ---- */
 
-/* ---------- AGGREGATION WEB (Muse) ---------- */
+/* ---------- AGGREGATION WEB (Muse) — expandable graph ---------- */
 function museWeb(){
   const D=MUSEWEB, host=$('#mwHost');
-  if(!D||!D.ok){ host.innerHTML=`<div class="cap">The web's source file did not validate (${esc((D&&D.error)||'missing')}). Nothing is drawn rather than a wrong picture.</div>`; $('#mwHead').textContent='source invalid'; return; }
-  const C=0, HUB=46, R=[100,140,180,220,260], ARC=R[4]+24, LAB=R[4]+42, NODE=7;
-  const cls={built:'b',pending:'p',future:'f'}, rad=a=>a*Math.PI/180, f1=v=>v.toFixed(1);
-  const pt=(a,r)=>[C+r*Math.cos(rad(a)), C+r*Math.sin(rad(a))];
-  // each sport owns a quadrant; wide gaps top and bottom carry the ring scale
-  const QUAD=[[-90+23,0-7,1],[0+7,90-23,0],[90+23,180-7,0],[180+7,270-23,1]];
-  const count=v=>({b:v.filter(z=>z==='built').length, p:v.filter(z=>z==='pending').length, n:v.length});
-  const spokes=[];
-  D.sports.forEach((sp,k)=>{ const list=D.spokes.filter(x=>x.sport===sp), [lo,hi]=QUAD[k%4];
-    list.forEach((x,i)=>spokes.push({...x, ang: list.length===1?(lo+hi)/2 : lo+(hi-lo)*i/(list.length-1)})); });
-  const tipOf=(x,i)=>{ const ring=D.rings[i], note=(x.notes&&x.notes[i])||'';
-    return encodeURIComponent(`<div class="h">${esc(x.sport)} · ${esc(x.name)}</div>`+
-      `<div class="r"><span>Step</span><b>${esc(ring.label)}</b></div><div class="r"><span>State</span><b>${esc(x.states[i])}</b></div>`+
-      `<div class="r"><span>Tickets</span><b>${esc(x.tickets||'—')}</b></div>`+
-      (note?`<div class="mw-tnote">${esc(note)}</div>`:'')+`<div class="mw-tdesc">${esc(ring.label)}: ${esc(ring.desc)}</div>`); };
-  let svg=`<svg class="mw-web" role="img" aria-label="Aggregation web: Muse's work by sport, workstream and step">`;
-  // ring bands, outer to inner
-  [...R].reverse().forEach((r,j)=>svg+=`<circle class="band${j%2?' alt':''}" cx="${C}" cy="${C}" r="${r+20}"/>`);
-  svg+=`<circle class="band" cx="${C}" cy="${C}" r="${R[0]-20}"/>`;
-  R.forEach(r=>svg+=`<circle class="ring" cx="${C}" cy="${C}" r="${r}"/>`);
-  D.sports.forEach((sp,k)=>{
-    const ss=spokes.filter(x=>x.sport===sp), [lo,hi,top]=QUAD[k%4], c=count(ss.flatMap(x=>x.states));
-    let g=`<g class="q" data-sport="${esc(sp)}">`;
-    R.forEach(r=>{ if(ss.length>1) g+=`<polyline class="webln" points="${ss.map(x=>pt(x.ang,r).map(f1).join(',')).join(' ')}"/>`; });
-    // sport arc with its name set on the arc (reads upright top and bottom)
-    const [s0,e0]=top?[lo-3,hi+3]:[hi+3,lo-3], [ax,ay]=pt(s0,ARC), [bx,by]=pt(e0,ARC), id=`mwarc${k}`;
-    g+=`<path id="${id}" class="sarc" d="M${f1(ax)},${f1(ay)} A${ARC},${ARC} 0 0 ${top} ${f1(bx)},${f1(by)}"/>`;
-    g+=`<text class="sport" data-f="${esc(sp)}" dy="${top?4:4}"><textPath href="#${id}" startOffset="50%">${esc(sp)}  ·  ${c.b} built · ${c.p} pending</textPath></text>`;
-    ss.forEach(x=>{
-      const [ex,ey]=pt(x.ang,R[4]), [hx,hy]=pt(x.ang,HUB);
-      g+=`<line class="spk" x1="${f1(hx)}" y1="${f1(hy)}" x2="${f1(ex)}" y2="${f1(ey)}"/>`;
-      const lastB=x.states.lastIndexOf('built'), lastP=x.states.lastIndexOf('pending');
-      if(lastB>=0){ const [qx,qy]=pt(x.ang,R[lastB]); g+=`<line class="reach" x1="${f1(hx)}" y1="${f1(hy)}" x2="${f1(qx)}" y2="${f1(qy)}"/>`; }
-      if(lastP>lastB){ const [sx,sy]=pt(x.ang,lastB>=0?R[lastB]:HUB), [px,py]=pt(x.ang,R[lastP]); g+=`<line class="reachp" x1="${f1(sx)}" y1="${f1(sy)}" x2="${f1(px)}" y2="${f1(py)}"/>`; }
-      x.states.forEach((s2,i)=>{ const [nx,ny]=pt(x.ang,R[i]);
-        g+=`<g class="nd ${cls[s2]}" data-tip="${tipOf(x,i)}"><circle class="halo" cx="${f1(nx)}" cy="${f1(ny)}" r="${NODE+4}"/><circle class="core" cx="${f1(nx)}" cy="${f1(ny)}" r="${s2==='future'?NODE-2:NODE}"/></g>`; });
-      // radial label, flipped on the left so it always reads left to right
-      const right=Math.cos(rad(x.ang))>=-0.001, [tx,ty]=pt(x.ang,LAB), rot=right?x.ang:x.ang+180, anc=right?'start':'end';
-      const st=x.states.includes('pending')?' open':(x.states.includes('built')?'':' idle');
-      g+=`<text class="slab${st}" transform="translate(${f1(tx)},${f1(ty)}) rotate(${f1(rot)})" text-anchor="${anc}" dy="-1.5">${esc(x.name)}`+
-         `<tspan class="tk" x="0" dy="13">${esc(x.tickets&&x.tickets!=='—'?x.tickets:'no ticket yet')}</tspan></text>`;
+  if(!D||!D.ok){ host.innerHTML=`<div class="cap mw-err">The web's source file did not validate (${esc((D&&D.error)||'missing')}). Nothing is drawn rather than a wrong picture.</div>`; $('#mwHead').textContent='source invalid'; return; }
+  const SVGNS='http://www.w3.org/2000/svg', ST={built:'b',pending:'p',future:'f'}, SL={b:'built',p:'pending',f:'future'};
+  const R={hub:24,sport:17,ws:10,step:6.5,ticket:5.5,unit:8,group:7,item:4};
+  const LEN={sport:180,ws:118,step:50,ticket:74,unit:62,group:56,item:58};
+  const CH={hub:1600,sport:1400,ws:1000,step:160,ticket:220,unit:340,group:280,item:260};
+  const PAD={hub:18,sport:22,ws:40,step:12,ticket:12,unit:18,group:16,item:12};
+  // NFL has 19 position groups; a unit layer (offense skill, OL, DL, LB, secondary) keeps the graph navigable — positions stay separate
+  const UNITS={nfl:[['SKILL','Offense skill',['QB','RB','WR','TE']],['OL','Offensive line',['LT','LG','C','RG','RT']],['DL','Defensive line',['EDGE','DT3','NT','DE5']],['LB','Linebackers',['MIKE','WILL','SAM']],['DB','Secondary',['CB','FS','SS']]]};
+  const N=new Map(), add=(n)=>{ n.children=n.children||[]; n.parents=n.parents||[]; n.x=n.y=n.vx=n.vy=0; n.seen=false; N.set(n.id,n); return n; };
+  const link=(p,c)=>{ p.children.push(c.id); c.parents.push(p.id); };
+  const cnt=v=>({b:v.filter(z=>z==='b').length, p:v.filter(z=>z==='p').length, f:v.filter(z=>z==='f').length, n:v.length});
+  // ---- build the tree (plus shared ticket nodes)
+  const hub=add({id:'hub',kind:'hub',label:'Muse',sub:'aggregation'});
+  const allSteps=[];
+  D.sports.forEach(sp=>{
+    const s=add({id:'s:'+sp,kind:'sport',label:sp}); link(hub,s);
+    D.spokes.filter(x=>x.sport===sp).forEach((x,wi)=>{
+      const st=x.states.map(z=>ST[z]), w=add({id:`w:${sp}:${wi}`,kind:'ws',label:x.name,sport:sp,steps:st,spoke:x,
+        state: st.includes('b')?'b':(st.includes('p')?'p':'f')}); link(s,w);
+      st.forEach((z,i)=>{ const n=add({id:`${w.id}:r${i}`,kind:'step',label:D.rings[i].label,state:z,ring:i,ws:w.id,note:(x.notes||[])[i]||''});
+        link(w,n); allSteps.push(n);
+        if(i===2 && x.taxonomy && D.taxonomy[x.taxonomy]){ const T=D.taxonomy[x.taxonomy]; n.tax=T;
+          const units=new Map(); (UNITS[x.taxonomy]||[]).forEach(([uid,ul,gs])=>{ const un=add({id:`${n.id}:u:${uid}`,kind:'unit',label:ul,state:z,sport:sp,gs}); link(n,un); gs.forEach(gid=>units.set(gid,un)); });
+          T.groups.forEach(g=>{ const gn=add({id:`${n.id}:g:${g.id}`,kind:'group',label:g.label,state:z,g,tax:T,sport:sp}); link(units.get(g.id)||n,gn);
+            g.items.forEach(it=>link(gn,add({id:`${gn.id}:${it.id}`,kind:'item',label:it.id,name:it.name,state:z,it,group:g.label,sport:sp}))); }); }
+      });
+      (x.tickets||'').split('·').map(t=>t.trim()).filter(t=>/^R-\d{3}$/.test(t)).forEach(t=>{
+        const tn=N.get('t:'+t)||add({id:'t:'+t,kind:'ticket',label:t,info:D.tickets[t]||null}); link(w,tn); });
     });
-    svg+=g+`</g>`;
   });
-  // ring scale in the top gap
-  R.forEach((r,i)=>{ const lab=D.rings[i].label.toUpperCase(), w=lab.length*6.4+12;
-    svg+=`<rect class="rlabbg" x="${f1(C-w/2)}" y="${C-r-8}" width="${f1(w)}" height="16" rx="8"/><text class="rlab" x="${C}" y="${C-r+3.3}">${esc(lab)}</text>`; });
-  svg+=`<text class="rdir" x="${C}" y="${C+R[4]+4}">inside → out: scouted to applied</text>`;
-  const all=spokes.flatMap(x=>x.states), T=count(all);
-  svg+=`<circle class="hub" cx="${C}" cy="${C}" r="${HUB}"/><text class="hubk" x="${C}" y="${C-15}">MUSE</text>`+
-       `<text class="hubv" x="${C}" y="${C+8}">${T.b}<tspan class="hubd">/${T.n}</tspan></text><text class="hubn" x="${C}" y="${C+24}">steps built</text>`;
-  host.innerHTML=svg+`</svg>`;
-  const el=host.querySelector('svg'), bb=el.getBBox(), pad=10;
-  el.setAttribute('viewBox',`${f1(bb.x-pad)} ${f1(bb.y-pad)} ${f1(bb.width+2*pad)} ${f1(bb.height+2*pad)}`);
-  $$('#mwHost .nd[data-tip]').forEach(n=>{ n.addEventListener('mousemove',e=>showTip(e,decodeURIComponent(n.dataset.tip))); n.addEventListener('mouseleave',hideTip); });
-  // filters (buttons and the sport names on the arcs)
-  $('#mwFilters').innerHTML=`<span class="mw-fl">Show</span>`+['All',...D.sports].map((f,i)=>`<button class="btn sm mwf${i?'':' on'}" data-f="${esc(f)}">${esc(f)}</button>`).join('');
+  N.forEach(n=>{ if(n.kind==='ticket'){ const ws=n.parents.map(p=>N.get(p)); n.state=ws.some(w=>w.steps.includes('p'))?'p':'f'; }});
+  N.forEach(n=>{ n.r=R[n.kind]; n.ch=CH[n.kind]; n.pad=PAD[n.kind]; });
+  const T=cnt(allSteps.map(n=>n.state));
+  // ---- state
+  const open=new Set(['hub']); let sel='hub', hov=null;
+  const vis=()=>{ const v=new Set(), walk=id=>{ if(v.has(id))return; v.add(id); if(open.has(id)) N.get(id).children.forEach(walk); }; walk('hub'); return v; };
+  let V=vis(), L=[];
+  const seed=()=>{ // deterministic first layout: sports on diagonals, workstreams fanned outward
+    D.sports.forEach((sp,k)=>{ const a=(-45+90*k)*Math.PI/180, s=N.get('s:'+sp); s.x=Math.cos(a)*150; s.y=Math.sin(a)*150; s.seen=true;
+      s.children.forEach((c,i,arr)=>{ const w=N.get(c), b=a+(i-(arr.length-1)/2)*0.42; w.x=s.x+Math.cos(b)*84; w.y=s.y+Math.sin(b)*84; w.seen=true; }); });
+    hub.seen=true; };
+  // ---- svg scaffold
+  host.innerHTML=`<svg class="mw-g" role="img" aria-label="Aggregation graph: Muse's work by sport, workstream, step and taxonomy"><g class="vp"><g class="lk"></g><g class="nds"></g></g></svg>`;
+  const svg=host.querySelector('svg'), vp=svg.querySelector('.vp'), gL=svg.querySelector('.lk'), gN=svg.querySelector('.nds');
+  let view={x:0,y:0,k:1};
+  const setView=()=>{ vp.setAttribute('transform',`translate(${view.x},${view.y}) scale(${view.k})`); svg.style.setProperty('--k',view.k); svg.classList.toggle('far',view.k<0.8); svg.classList.toggle('near',view.k>=1.35); };
+  const size=()=>{ const r=svg.getBoundingClientRect(); return [r.width||800,r.height||600]; };
+  const el=(tag,attrs,parent)=>{ const e=document.createElementNS(SVGNS,tag); for(const k in attrs)e.setAttribute(k,attrs[k]); if(parent)parent.appendChild(e); return e; };
+  const arc=(r,a0,a1)=>{ const p=a=>[r*Math.cos(a),r*Math.sin(a)], [x0,y0]=p(a0), [x1,y1]=p(a1); return `M${x0.toFixed(2)},${y0.toFixed(2)}A${r},${r} 0 ${a1-a0>Math.PI?1:0} 1 ${x1.toFixed(2)},${y1.toFixed(2)}`; };
+  const DOM=new Map();
+  const hidden=n=>n.children.filter(c=>!V.has(c)).length;
+  function makeNode(n){
+    const g=el('g',{class:`nd k-${n.kind} s-${n.state||'n'}`}); g.dataset.id=n.id;
+    if(n.kind==='hub'){ el('circle',{class:'core',r:n.r},g); }
+    else if(n.kind==='sport'){ el('circle',{class:'core',r:n.r},g);
+      const c=cnt(n.children.flatMap(w=>N.get(w).steps)), tot=c.n||1; let a=-Math.PI/2; const gap=0.05;
+      [['b',c.b],['p',c.p],['f',c.f]].forEach(([k,v])=>{ if(!v)return; const da=v/tot*2*Math.PI; el('path',{class:'seg s-'+k,d:arc(n.r+4.5,a+gap/2,a+da-gap/2)},g); a+=da; }); }
+    else if(n.kind==='ws'){ el('circle',{class:'core',r:n.r},g);
+      const k=n.steps.length, gap=0.16; n.steps.forEach((z,i)=>{ const a0=-Math.PI/2+i*2*Math.PI/k+gap/2, a1=a0+2*Math.PI/k-gap; el('path',{class:'seg s-'+z,d:arc(n.r+3.8,a0,a1)},g); }); }
+    else if(n.kind==='ticket'){ el('rect',{class:'core',x:-n.r,y:-n.r,width:2*n.r,height:2*n.r,rx:1.8,transform:'rotate(45)'},g); }
+    else { el('circle',{class:'core',r:n.r},g); }
+    if(n.kind==='hub'){ el('text',{class:'in hk',y:-3},g).textContent='MUSE'; el('text',{class:'in hv',y:9},g).textContent=`${T.b}/${T.n}`; }
+    else if(n.kind==='sport'){ el('text',{class:'in sk',y:4},g).textContent=n.label; }
+    const lab=el('text',{class:'lab',y:n.r+(n.kind==='ws'||n.kind==='sport'?17:12.5),'text-anchor':'middle'},g);
+    if(n.kind==='hub') lab.textContent='steps built';
+    else if(n.kind!=='sport'){ lab.textContent=n.kind==='item'?`${n.label} · ${n.name}`:n.label; }
+    const bd=el('g',{class:'bd',transform:`translate(${(n.r+2)*0.78},${-(n.r+2)*0.78})`},g); el('circle',{r:6.2},bd); el('text',{y:2.6},bd);
+    g.addEventListener('pointerenter',()=>{ hov=n.id; paintHL(); });
+    g.addEventListener('pointerleave',()=>{ hov=null; paintHL(); });
+    g.addEventListener('pointerdown',e=>startDrag(e,n));
+    return g;
+  }
+  function sync(){
+    V=vis();
+    V.forEach(id=>{ const n=N.get(id); if(!n.seen){ const p=N.get(n.parents.find(q=>V.has(q)&&open.has(q))||n.parents[0]); const gp=p&&N.get(p.parents.find(q=>V.has(q))||''); const sib=p?p.children.indexOf(id):0, m=p?p.children.length:1;
+        const base=p?(gp?Math.atan2(p.y-gp.y,p.x-gp.x):Math.atan2(p.y,p.x)):0, spread=Math.min(Math.PI*1.6,0.5*m), a=base+(m>1?(sib/(m-1)-0.5)*spread:0);
+        n.x=(p?p.x:0)+Math.cos(a)*(LEN[n.kind]||40)*0.6; n.y=(p?p.y:0)+Math.sin(a)*(LEN[n.kind]||40)*0.6; n.vx=n.vy=0; n.seen=true; } });
+    L=[]; V.forEach(id=>{ const n=N.get(id); if(open.has(id)) n.children.forEach(c=>{ if(V.has(c)) L.push([n,N.get(c)]); }); });
+    DOM.forEach((g,id)=>{ if(!V.has(id)){ g.remove(); DOM.delete(id); } });
+    V.forEach(id=>{ if(!DOM.has(id)){ const g=makeNode(N.get(id)); DOM.set(id,g); } });
+    // paint order: deep first so parents sit on top
+    const depth={item:0,group:1,unit:2,ticket:2,step:2,ws:3,sport:4,hub:5};
+    [...V].sort((a,b)=>depth[N.get(a).kind]-depth[N.get(b).kind]).forEach(id=>gN.appendChild(DOM.get(id)));
+    gL.innerHTML=''; L.forEach(([a,b])=>{ const l=el('line',{class:`ln k-${b.kind}`},gL); l._a=a; l._b=b; });
+    DOM.forEach((g,id)=>{ const n=N.get(id), h=hidden(n); g.classList.toggle('has',h>0); g.classList.toggle('open',open.has(id)&&n.children.length>0);
+      g.querySelector('.bd text').textContent=h>99?'99+':h; g.classList.toggle('sel',id===sel); });
+    paintHL(); heat(0.7);
+  }
+  function paintHL(){
+    const focus=hov||null, nb=new Set();
+    if(focus){ nb.add(focus); const n=N.get(focus); n.children.forEach(c=>V.has(c)&&nb.add(c)); n.parents.forEach(p=>V.has(p)&&nb.add(p)); }
+    svg.classList.toggle('hovering',!!focus);
+    DOM.forEach((g,id)=>g.classList.toggle('hl',nb.has(id)));
+    gL.querySelectorAll('line').forEach(l=>l.classList.toggle('hl',!!focus&&(l._a.id===focus||l._b.id===focus)));
+    // labels of items show near the selection
+    const sn=N.get(sel); DOM.forEach((g,id)=>{ const n=N.get(id); g.classList.toggle('ctx', n.kind==='item' && (n.parents.includes(sel) || id===sel || (sn&&sn.parents.includes(id)))); });
+  }
+  // ---- physics (small, dependency-free force layout)
+  let alpha=0, raf=0;
+  const heat=a=>{ alpha=Math.max(alpha,a); if(!raf) raf=requestAnimationFrame(step); };
+  function tick(){
+    const ns=[...V].map(id=>N.get(id));
+    for(let i=0;i<ns.length;i++){ const a=ns[i];
+      for(let j=i+1;j<ns.length;j++){ const b=ns[j]; let dx=b.x-a.x, dy=b.y-a.y, d2=dx*dx+dy*dy;
+        if(d2<1){ dx=(Math.random()-.5); dy=(Math.random()-.5); d2=1; }
+        if(d2>250000) continue; const f=(a.ch+b.ch)*0.5*alpha/d2, fx=dx*f, fy=dy*f;
+        a.vx-=fx/a.ch*90; a.vy-=fy/a.ch*90; b.vx+=fx/b.ch*90; b.vy+=fy/b.ch*90;
+        const md=a.r+b.r+a.pad+b.pad; if(d2<md*md){ const d=Math.sqrt(d2), o=(md-d)/d*0.5; a.x-=dx*o; a.y-=dy*o; b.x+=dx*o; b.y+=dy*o; } } }
+    L.forEach(([p,c])=>{ const want=LEN[c.kind]*(c.kind==='ticket'?1:1), dx=c.x-p.x, dy=c.y-p.y, d=Math.sqrt(dx*dx+dy*dy)||1, f=(d-want)/d*alpha*0.5;
+      const wp=p.kind==='hub'?0:0.35, wc=1-wp; p.vx+=dx*f*wp; p.vy+=dy*f*wp; c.vx-=dx*f*wc; c.vy-=dy*f*wc; });
+    ns.forEach(n=>{ if(n.kind==='hub'||n.fx!=null){ n.x=n.fx??0; n.y=n.fy??0; n.vx=n.vy=0; return; }
+      n.vx-=n.x*0.0025*alpha; n.vy-=n.y*0.0025*alpha; n.vx*=0.58; n.vy*=0.58; n.x+=n.vx; n.y+=n.vy; });
+    alpha*=0.975;
+  }
+  function step(){ raf=0; tick(); draw(); if(alpha>0.004) raf=requestAnimationFrame(step); else alpha=0; }
+  const settle=(k,a)=>{ alpha=Math.max(alpha,a); for(let i=0;i<k;i++) tick(); };
+  // labels sit on the side facing away from the parent, so fans of siblings don't stack their labels
+  const OFF={ws:5,sport:6};
+  function place(g,n){ if(n.kind==='hub'||n.kind==='sport')return; const p=N.get(n.parents.find(q=>V.has(q)&&open.has(q))||''); if(!p)return;
+    const dx=n.x-p.x, dy=n.y-p.y, d=Math.hypot(dx,dy)||1, c=dx/d, sn=dy/d, o=n.r+(OFF[n.kind]||0)+5;
+    const side=c>0.42?'r':c<-0.42?'l':sn>=0?'b':'t'; if(g._side===side)return; g._side=side; const t=g.querySelector('.lab');
+    if(side==='r'){ t.setAttribute('x',o); t.setAttribute('y',3.5); t.setAttribute('text-anchor','start'); }
+    else if(side==='l'){ t.setAttribute('x',-o); t.setAttribute('y',3.5); t.setAttribute('text-anchor','end'); }
+    else if(side==='b'){ t.setAttribute('x',0); t.setAttribute('y',o+8); t.setAttribute('text-anchor','middle'); }
+    else { t.setAttribute('x',0); t.setAttribute('y',-o-1); t.setAttribute('text-anchor','middle'); } }
+  function draw(){
+    DOM.forEach((g,id)=>{ const n=N.get(id); g.setAttribute('transform',`translate(${n.x.toFixed(1)},${n.y.toFixed(1)})`); place(g,n); });
+    gL.querySelectorAll('line').forEach(l=>{ l.setAttribute('x1',l._a.x.toFixed(1)); l.setAttribute('y1',l._a.y.toFixed(1)); l.setAttribute('x2',l._b.x.toFixed(1)); l.setAttribute('y2',l._b.y.toFixed(1)); });
+  }
+  // ---- view: pan, zoom, drag, fit
+  const toWorld=(cx,cy)=>{ const r=svg.getBoundingClientRect(); return [(cx-r.left-view.x)/view.k,(cy-r.top-view.y)/view.k]; };
+  let tween=0;
+  const animateTo=(x,y,k)=>{ cancelAnimationFrame(tween); const s={...view}, t0=performance.now();
+    const f=t=>{ const u=Math.min(1,(t-t0)/380), e=1-Math.pow(1-u,3); view={x:s.x+(x-s.x)*e,y:s.y+(y-s.y)*e,k:s.k+(k-s.k)*e}; setView(); if(u<1) tween=requestAnimationFrame(f); }; tween=requestAnimationFrame(f); };
+  const fit=(ids,maxK=1.6)=>{ const [w,h]=size(), ns=[...(ids||V)].map(id=>N.get(id)); if(!ns.length)return;
+    let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity; ns.forEach(n=>{ x0=Math.min(x0,n.x-n.r-60); x1=Math.max(x1,n.x+n.r+60); y0=Math.min(y0,n.y-n.r-30); y1=Math.max(y1,n.y+n.r+34); });
+    const pr=panelW(), k=Math.min(maxK,(w-pr-24)/(x1-x0),(h-24)/(y1-y0)); animateTo((w-pr)/2-(x0+x1)/2*k, h/2-(y0+y1)/2*k, Math.max(0.3,k)); };
+  const panelW=()=>{ const p=$('#mwPanel'); return p && getComputedStyle(p).position==='absolute' ? p.offsetWidth+16 : 0; };
+  const centerOn=(n,k)=>{ const [w,h]=size(), kk=k||Math.max(view.k,1.1), pr=panelW(); animateTo((w-pr)/2-n.x*kk, h/2-n.y*kk, kk); };
+  let drag=null;
+  function startDrag(e,n){ e.stopPropagation(); svg.setPointerCapture(e.pointerId); drag={n,id:e.pointerId,x:e.clientX,y:e.clientY,moved:false}; }
+  const ptrs=new Map(); let pan=null, pinch=null;
+  svg.addEventListener('pointerdown',e=>{ if(drag)return; ptrs.set(e.pointerId,[e.clientX,e.clientY]); svg.setPointerCapture(e.pointerId);
+    if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; pinch={d:Math.hypot(a[0]-b[0],a[1]-b[1]),k:view.k,mx:(a[0]+b[0])/2,my:(a[1]+b[1])/2}; pan=null; }
+    else pan={x:e.clientX,y:e.clientY,vx:view.x,vy:view.y,moved:false}; });
+  svg.addEventListener('pointermove',e=>{
+    if(drag&&e.pointerId===drag.id){ if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>4) drag.moved=true;
+      if(drag.moved&&drag.n.kind!=='hub'){ const [wx,wy]=toWorld(e.clientX,e.clientY); drag.n.fx=wx; drag.n.fy=wy; heat(0.25); } return; }
+    if(ptrs.has(e.pointerId)) ptrs.set(e.pointerId,[e.clientX,e.clientY]);
+    if(pinch&&ptrs.size===2){ const [a,b]=[...ptrs.values()], d=Math.hypot(a[0]-b[0],a[1]-b[1]); zoomAt(pinch.mx,pinch.my,pinch.k*d/pinch.d,true); return; }
+    if(pan){ const dx=e.clientX-pan.x, dy=e.clientY-pan.y; if(Math.abs(dx)+Math.abs(dy)>3) pan.moved=true; view.x=pan.vx+dx; view.y=pan.vy+dy; setView(); } });
+  const up=e=>{
+    if(drag&&e.pointerId===drag.id){ const n=drag.n; if(!drag.moved) clickNode(n); else { n.fx=n.fy=null; heat(0.2); } drag=null; return; }
+    ptrs.delete(e.pointerId); if(ptrs.size<2) pinch=null; if(pan&&!pan.moved&&e.type==='pointerup') { /* background click: keep selection */ } pan=null; };
+  svg.addEventListener('pointerup',up); svg.addEventListener('pointercancel',up);
+  function zoomAt(cx,cy,k,abs){ const r=svg.getBoundingClientRect(), nk=Math.max(0.3,Math.min(4,abs?k:view.k*k)), px=cx-r.left, py=cy-r.top;
+    view.x=px-(px-view.x)*nk/view.k; view.y=py-(py-view.y)*nk/view.k; view.k=nk; setView(); }
+  svg.addEventListener('wheel',e=>{ e.preventDefault(); zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*0.0016)); },{passive:false});
+  // ---- interaction
+  const pathTo=id=>{ const out=[]; let n=N.get(id); while(n){ out.unshift(n); const p=n.parents.find(q=>V.has(q))||n.parents[0]; n=p?N.get(p):null; } return out; };
+  const hood=n=>[n.id,...n.parents.filter(p=>V.has(p)),...n.children.filter(c=>V.has(c))];
+  function clickNode(n){
+    let opened=false;
+    if(n.children.length){ if(open.has(n.id) && sel===n.id){ collapse(n.id); } else if(!open.has(n.id)){ open.add(n.id); opened=true; } }
+    sel=n.id; sync(); panel();
+    if(opened){ settle(70,0.7); draw(); fit(hood(n),1.5); } }
+  const collapse=id=>{ const walk=x=>{ open.delete(x); N.get(x).children.forEach(c=>{ if(N.get(c).parents.length<=1||!N.get(c).parents.some(p=>p!==x&&open.has(p))) walk(c); }); }; walk(id); };
+  function focus(id,{expand=true,zoom}={}){ const ps=pathTo(id); ps.slice(0,-1).forEach(n=>open.add(n.id)); if(expand&&N.get(id).children.length) open.add(id);
+    sel=id; sync(); panel(); settle(70,0.7); draw(); const n=N.get(id); if(open.has(id)&&n.children.length) fit(hood(n),zoom||1.5); else centerOn(n,zoom); }
+  // ---- detail panel
+  const pill=z=>`<span class="mw-st s-${z}">${SL[z]||z}</span>`;
+  const dots=st=>`<span class="mw-dots">${st.map((z,i)=>`<i class="s-${z}" title="${esc(D.rings[i].label)}: ${SL[z]}"></i>`).join('')}</span>`;
+  const go=(id,txt,cls='')=>`<button class="mw-go ${cls}" data-go="${esc(id)}">${txt}</button>`;
+  function panel(){
+    const n=N.get(sel), P=$('#mwPanel'); if(!n){ P.innerHTML=''; return; }
+    const crumbs=pathTo(sel).map((x,i,a)=>i<a.length-1?go(x.id,esc(x.kind==='item'?x.label:x.label)):`<b>${esc(x.kind==='item'?x.label:x.label)}</b>`).join('<span class="sep">›</span>');
+    let h=`<div class="mw-crumb">${crumbs}</div>`;
+    const kindName={hub:'Overview',sport:'Sport',ws:'Workstream',step:'Step',ticket:'Muse ticket',unit:'Position unit',group:'Position group',item:'Taxonomy entry'}[n.kind];
+    h+=`<div class="mw-kind">${kindName}</div>`;
+    if(n.kind==='hub'){
+      h+=`<h4>Muse's aggregation work</h4><div class="mw-ptiles"><div><b class="c-b">${T.b}</b><span>built</span></div><div><b class="c-p">${T.p}</b><span>pending</span></div><div><b class="c-f">${T.f}</b><span>future</span></div></div>`;
+      h+=`<div class="mw-sec">By sport</div>`+D.sports.map(sp=>{ const c=cnt(N.get('s:'+sp).children.flatMap(w=>N.get(w).steps)), t=c.n||1;
+        return `<button class="mw-row" data-go="s:${esc(sp)}"><span class="nm">${esc(sp)}</span><span class="mw-bar"><i class="s-b" style="width:${c.b/t*100}%"></i><i class="s-p" style="width:${c.p/t*100}%"></i></span><span class="ct">${c.b} · ${c.p} · ${c.f}</span></button>`; }).join('');
+      h+=`<p class="mw-hint">Click a node to open it; click it again to close it. Drag nodes, drag the background to pan, scroll or pinch to zoom.</p>`;
+    } else if(n.kind==='sport'){
+      const ws=n.children.map(c=>N.get(c)), c=cnt(ws.flatMap(w=>w.steps));
+      h+=`<h4>${esc(n.label)}</h4><div class="mw-ptiles"><div><b class="c-b">${c.b}</b><span>built</span></div><div><b class="c-p">${c.p}</b><span>pending</span></div><div><b class="c-f">${c.f}</b><span>future</span></div></div>`;
+      h+=`<div class="mw-sec">Workstreams · ${ws.length}</div>`+ws.map(w=>`<button class="mw-row" data-go="${esc(w.id)}"><span class="nm">${esc(w.label)}</span>${dots(w.steps)}</button>`).join('');
+    } else if(n.kind==='ws'){
+      const x=n.spoke, tk=n.children.filter(c=>c.startsWith('t:')).map(c=>N.get(c));
+      h+=`<h4>${esc(n.label)}</h4><div class="mw-meta">${pill(n.state)} ${dots(n.steps)}</div>`;
+      h+=`<div class="mw-sec">Steps, scouted → applied</div>`+n.children.filter(c=>N.get(c).kind==='step').map(c=>{ const s=N.get(c);
+        return `<button class="mw-row step" data-go="${esc(s.id)}"><span class="nm">${pill(s.state)} ${esc(s.label)}</span>${s.note?`<span class="nt">${esc(s.note)}</span>`:''}</button>`; }).join('');
+      if(tk.length) h+=`<div class="mw-sec">Tickets</div>`+tk.map(t=>`<button class="mw-row" data-go="${esc(t.id)}"><span class="nm mono">${esc(t.label)}</span><span class="nt">${esc((t.info&&t.info.title)||'')}</span></button>`).join('');
+    } else if(n.kind==='step'){
+      const w=N.get(n.ws), ring=D.rings[n.ring];
+      h+=`<h4>${esc(ring.label)} <span class="mw-of">· ${esc(w.label)}</span></h4><div class="mw-meta">${pill(n.state)}</div><p class="mw-desc">${esc(ring.desc)}</p>`;
+      if(n.note) h+=`<div class="mw-sec">Where it stands</div><p>${esc(n.note)}</p>`;
+      if(n.tax){ const items=n.tax.groups.reduce((s,g)=>s+g.items.length,0);
+        h+=`<div class="mw-sec">PAM taxonomy · ${esc(n.tax.status)}</div><p class="mw-desc">${n.tax.groups.length} groups · ${items} entries · <span class="mono">${esc(n.tax.file)}</span></p>`+
+          n.tax.groups.map(g=>go(`${n.id}:g:${g.id}`,`${esc(g.label)} <span class="ct">${g.items.length}</span>`,'chip')).join(''); }
+    } else if(n.kind==='ticket'){
+      h+=`<h4><span class="mono">${esc(n.label)}</span></h4><div class="mw-meta">${pill(n.state)}</div>`;
+      h+=n.info?`<p><b>${esc(n.info.title)}</b></p><p class="mw-desc">${esc(n.info.text)}</p>`:`<p class="mw-desc">Not found in TO_MUSE.md.</p>`;
+      h+=`<div class="mw-sec">Feeds</div>`+n.parents.map(p=>{ const w=N.get(p); return `<button class="mw-row" data-go="${esc(w.id)}"><span class="nm">${esc(w.sport)} · ${esc(w.label)}</span>${dots(w.steps)}</button>`; }).join('');
+    } else if(n.kind==='unit'){
+      const gs=n.children.map(c=>N.get(c)); h+=`<h4>${esc(n.label)}</h4><div class="mw-meta">${pill(n.state)} <span class="mw-of">${gs.length} positions · ${gs.reduce((a,g)=>a+g.g.items.length,0)} archetypes</span></div>`;
+      h+=gs.map(g=>`<button class="mw-row" data-go="${esc(g.id)}"><span class="nm">${esc(g.label)}</span><span class="ct">${g.g.items.length}</span><span class="nt">${g.g.items.map(i=>esc(i.name)).join(' · ')}</span></button>`).join('');
+    } else if(n.kind==='group'){
+      h+=`<h4>${esc(n.label)}</h4><div class="mw-meta">${pill(n.state)} <span class="mw-of">${n.g.items.length} ${n.g.kind==='modifier'?'modifiers':'archetypes'} · ${esc(n.tax.status)}</span></div>`;
+      h+=n.children.map(c=>{ const it=N.get(c); return `<button class="mw-row" data-go="${esc(it.id)}"><span class="nm"><span class="mono">${esc(it.label)}</span> ${esc(it.name)}</span>${it.it.notes?`<span class="nt">${esc(it.it.notes)}</span>`:''}</button>`; }).join('');
+    } else if(n.kind==='item'){
+      const it=n.it; h+=`<h4>${esc(n.name)}</h4><div class="mw-meta"><span class="mono mw-of">${esc(n.label)} · ${esc(n.group)}</span></div>`;
+      [['What it is',it.notes],['Signals',it.signals],['Draft threshold',it.threshold]].forEach(([k,v])=>{ if(v) h+=`<div class="mw-sec">${k}</div><p>${esc(v)}</p>`; });
+      h+=`<p class="mw-hint">Draft, awaiting your approval. Thresholds are a-priori and get calibrated when the mass tier is built.</p>`;
+    }
+    if(n.children.length) h+=`<div class="mw-act"><button class="btn sm" data-tog="1">${open.has(n.id)?'Close':'Open'} · ${n.children.length}</button><button class="btn sm" data-fitsel="1">Frame</button></div>`;
+    P.innerHTML=h;
+    P.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>focus(b.dataset.go,{expand:true})));
+    const tg=P.querySelector('[data-tog]'); if(tg) tg.addEventListener('click',()=>{ if(open.has(n.id)) collapse(n.id); else open.add(n.id); sync(); panel(); });
+    const fs=P.querySelector('[data-fitsel]'); if(fs) fs.addEventListener('click',()=>{ const ids=[n.id,...n.children.filter(c=>V.has(c))]; fit(ids,2.2); });
+  }
+  // ---- toolbar
+  const index=[...N.values()].filter(n=>n.kind!=='hub'&&n.kind!=='step').map(n=>({id:n.id, t:(n.kind==='item'?`${n.label} ${n.name}`:n.kind==='ws'?`${n.sport} · ${n.label}`:(n.kind==='group'||n.kind==='unit')?`${n.sport} PAM · ${n.label}`:n.label)}));
+  $('#mwFilters').innerHTML=`<div class="mw-seg">${['All',...D.sports].map((f,i)=>`<button class="btn sm mwf${i?'':' on'}" data-f="${esc(f)}">${esc(f)}</button>`).join('')}</div>`+
+    `<label class="mw-search"><input id="mwQ" list="mwQL" placeholder="Find a workstream, ticket, archetype…" autocomplete="off"><datalist id="mwQL">${index.map(x=>`<option value="${esc(x.t)}"></option>`).join('')}</datalist></label>`+
+    `<span class="spacer"></span><button class="btn sm" id="mwOpenAll">Open all</button><button class="btn sm" id="mwReset">Reset</button><button class="btn sm" id="mwFit">Fit</button>`;
   const setF=f=>{ $$('#mwFilters .mwf').forEach(x=>x.classList.toggle('on',x.dataset.f===f));
-    $$('#mwHost .q').forEach(q=>q.classList.toggle('dim', f!=='All' && q.dataset.sport!==f)); };
+    open.clear(); open.add('hub'); (f==='All'?D.sports:[f]).forEach(sp=>open.add('s:'+sp));
+    sel=f==='All'?'hub':'s:'+f; sync(); panel(); settle(90,0.6); draw();
+    fit(f==='All'?null:['s:'+f,...N.get('s:'+f).children],1.3); };
   $$('#mwFilters .mwf').forEach(b=>b.addEventListener('click',()=>setF(b.dataset.f)));
-  $$('#mwHost .sport').forEach(t=>t.addEventListener('click',()=>setF($('#mwFilters .mwf.on').dataset.f===t.dataset.f?'All':t.dataset.f)));
-  // tiles
+  $('#mwQ').addEventListener('change',e=>{ const q=e.target.value.trim().toLowerCase(); const hit=index.find(x=>x.t.toLowerCase()===q)||index.find(x=>x.t.toLowerCase().includes(q)); if(hit){ focus(hit.id,{expand:false,zoom:1.5}); e.target.blur(); } });
+  $('#mwFit').addEventListener('click',()=>fit());
+  $('#mwReset').addEventListener('click',()=>{ open.clear(); open.add('hub'); D.sports.forEach(sp=>open.add('s:'+sp)); sel='hub'; N.forEach(n=>{ n.seen=false; n.fx=n.fy=null; }); seed(); sync(); panel(); settle(220,0.9); draw(); fit(); });
+  $('#mwOpenAll').addEventListener('click',()=>{ N.forEach(n=>{ if(n.children.length) open.add(n.id); }); sync(); panel(); settle(160,0.9); draw(); fit(); });
+  // ---- tiles + open-now list
   const tile=(k,v,acc,n)=>`<div class="tile" style="--accent:${acc}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`;
-  $('#mwTiles').innerHTML=tile('Built',T.b,'var(--s1)','delivered')+tile('Pending',T.p,'var(--warn)','ticket open')+tile('Future',T.n-T.b-T.p,'var(--axis)','no ticket yet');
-  // by sport
-  $('#mwSports').innerHTML=D.sports.map(sp=>{ const c=count(spokes.filter(x=>x.sport===sp).flatMap(x=>x.states)), t=c.n||1, fu=c.n-c.b-c.p;
-      return `<div class="mw-sbar"><span class="lab">${esc(sp)}</span><span class="trk"><span style="width:${c.b/t*100}%;background:var(--s1)"></span>`+
-        `<span style="width:${c.p/t*100}%;background:var(--warn)"></span></span><span class="n">${c.b} · ${c.p} · ${fu}</span></div>`; }).join('')+
-    `<div class="mw-sleg"><span><i style="background:var(--s1)"></i>built</span><span><i style="background:var(--warn)"></i>pending</span><span><i class="f"></i>future</span></div>`;
-  // by step: how far each ring has got across all workstreams
-  $('#mwRings').innerHTML=D.rings.map((rg,i)=>{ const v=spokes.map(x=>x.states[i]), c=count(v);
-      return `<div class="mw-step"><span class="lab">${esc(rg.label)}</span><span class="dots">${spokes.map(x=>`<i class="${cls[x.states[i]]}" title="${esc(x.sport+' · '+x.name)}"></i>`).join('')}</span><span class="n">${c.b}/${c.n}</span></div>`; }).join('');
-  // open now, one row per workstream
-  const open=spokes.filter(x=>x.states.includes('pending'));
-  $('#mwOpen').innerHTML=open.map(x=>`<div class="mw-orow"><div class="hd"><span class="sp">${esc(x.sport)}</span><span class="w">${esc(x.name)}</span><span class="tg">${esc(x.tickets)}</span></div>`+
-      x.states.map((s2,i)=>s2==='pending'?`<div class="ln"><span class="st">${esc(D.rings[i].label)}</span><span class="d">${esc((x.notes&&x.notes[i])||'')}</span></div>`:'').join('')+`</div>`).join('');
-  $('#mwHead').textContent=`${spokes.length} workstreams · ${D.sports.length} sports · ${T.b} of ${T.n} steps built · ${T.p} open`;
+  const openT=[...N.values()].filter(n=>n.kind==='ticket'&&n.state==='p').length;
+  $('#mwTiles').innerHTML=tile('Built',T.b,'var(--s1)','steps delivered')+tile('Pending',T.p,'var(--warn)','steps with a ticket or block open')+tile('Future',T.f,'var(--axis)','planned, no ticket yet')+tile('Tickets open',openT,'var(--ink-3)','Muse tickets feeding pending steps');
+  const pend=[...N.values()].filter(n=>n.kind==='ws'&&n.steps.includes('p'));
+  $('#mwOpen').innerHTML=pend.map(w=>`<div class="mw-orow"><div class="hd"><span class="sp">${esc(w.sport)}</span><button class="w mw-go" data-go="${esc(w.id)}">${esc(w.label)}</button><span class="tg">${esc(w.spoke.tickets)}</span></div>`+
+    w.children.filter(c=>N.get(c).kind==='step'&&N.get(c).state==='p').map(c=>{ const s=N.get(c); return `<div class="ln"><button class="st mw-go" data-go="${esc(s.id)}">${esc(s.label)}</button><span class="d">${esc(s.note)}</span></div>`; }).join('')+`</div>`).join('');
+  $$('#mwOpen [data-go]').forEach(b=>b.addEventListener('click',()=>{ $('#museweb').scrollIntoView({behavior:'smooth',block:'start'}); focus(b.dataset.go,{expand:false,zoom:1.4}); }));
+  $('#mwHead').textContent=`${pend.length} workstreams with open steps · ${T.b} of ${T.n} steps built`;
   $('#nvMuse').textContent=T.p;
-  $('#mwSrc').innerHTML=`Source <span class="mono">QUAL_ARCHIVE/MUSE_WEB.json</span>, kept by the strategic window at every wave close from the archive and TO_MUSE.md · as of <span class="mono">${esc(D.as_of||'?')}</span> · archive <span class="mono">${esc(D.archive_commit||'?')}</span>`;
+  $('#mwSrc').innerHTML=`Source <span class="mono">QUAL_ARCHIVE/MUSE_WEB.json</span> (kept by the strategic window at every wave close), <span class="mono">TO_MUSE.md</span> and the PAM taxonomies · as of <span class="mono">${esc(D.as_of||'?')}</span> · archive <span class="mono">${esc(D.archive_commit||'?')}</span>`;
+  // ---- go
+  D.sports.forEach(sp=>open.add('s:'+sp)); seed(); sync(); panel(); setView();
+  cancelAnimationFrame(raf); raf=0; settle(220,0.9); alpha=0; draw();
+  const ro=new ResizeObserver(()=>fit()); ro.observe(host); fit();
 }
 
 distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb();
