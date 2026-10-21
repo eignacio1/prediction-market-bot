@@ -1427,6 +1427,7 @@ unattended on the VPS under their own authorization, and a later block reads wha
   measured change (`gap_measure:` / `gap_delta:` in the session-meta block). A terminal that cannot say what its task is
   for stops and asks before working.
 - **Every wave = three terminal blocks + one Muse block (operator, 2026-10-19 22:25 PT).** The Muse block is written by the window, tied to an R-NNN ticket in `QUAL_ARCHIVE/TO_MUSE.md`, given to the operator in chat AND logged in the NOW section, and checked at wave close (charter v2 §8 watchdog).
+- **Muse is never throttled (operator, 2026-10-21 07:17 PT: "It's never too much or too fast").** It will deliver faster than the bot consumes; that is the point. Every wave's depth lane names the Muse delivery it consumes (a card to capture, a record set to recompute, a split pair to cross), and the sitrep tracks Muse delivered vs consumed.
 - **Three blocks per wave. Not four.** Operator directive 2026-09-15; relaxed 2026-10-14 (operator set the count); **restored as
   the default 2026-10-16 06:51 PT** - more only when the operator asks. The gap agent runs beside the wave and is not counted.
 - **Blocks are LARGE and multi-part (operator 2026-10-06)** — each part pushed and recorded before the next. Waiting is still not work.

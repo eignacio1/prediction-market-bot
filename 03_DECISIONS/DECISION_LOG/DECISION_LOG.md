@@ -2658,3 +2658,7 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 
 ## 2026-10-21 07:12 PT — Muse watchdog posture: lenient during aggregation (operator)
 - Operator: "There'll be a ton of misalignment in the beginning bc we haven't even come close to building out our end - we're still in the early parts of data aggregation > data interpretation > data application. Don't be so strict on its work." Charter v3 §7 posture line added: judge Muse on honesty, the gate and backlog progress; a mismatch re-aims the next ticket, never rejects finished work.
+
+## 2026-10-21 07:17 PT — Muse's pace is a feature (operator)
+- Operator: "The reality is Muse is likely to build exponentially faster than we can act on - simply bc its starting its work at a stage in our project where it can be strategically focused on a core data aggregation gap - meanwhile we still have the entire project to be cognizant of. That should be interpreted as a good thing - that means we'll also be fed info that we can continually arm into our piping - so much so that it'll feel like too much at times or that it's moving too fast. It's never too much or too fast."
+- Standing rule the window adopts (queue "Read this first"): Muse's pace is never throttled. Every wave's depth lane names the Muse delivery it consumes, and the sitrep tracks Muse delivered vs consumed, so the archive keeps being armed into the piping instead of sitting.
