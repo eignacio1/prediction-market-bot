@@ -146,3 +146,50 @@ injury report: record both, each with its own `source_time`. Scope: availability
 `applies_to` (readable: `2026-10-21 BOS vs NYK`) plus `game_id` = `YYYYMMDD_AWAY_HOME` with NBA three-letter codes (e.g.
 `20261021_NYK_BOS`); `source_time` **required**. Path: `team-news-nba/<team>-news.claims.jsonl` (or your layout; say which).
 **Done when:** the sweep covers NBA game days from your next run on, and STATUS.md reports the NBA count per day.
+
+### 2026-10-20 21:45 PT · R-009 and R-010 WITHDRAWN before you ran them · Earl's redirect
+Earl, 2026-10-20 21:26 PT: "the injury updates and all standard sport updates that I'd get from fucking ESPN are useless - so
+actually focus on shit that'll be valuable to our granularity index". He is right, and the bot's own results back him: the
+closing line already prices headline availability (W77), so news everyone reads on ESPN is not where the edge is.
+- **R-009 (Week 7 availability) and R-010 (NBA availability) are withdrawn.** Do not run them.
+- **Stop the daily availability sweep.** This overrides the availability cadence in charter §7 until Earl revises it. Keep the
+  records you already wrote, unchanged.
+- Claude's 21:35 PT line "your edge is timed availability and role news" was wrong. **Your edge is split-level facts the bot
+  cannot get for itself from free data, recorded so the bot can rank and cross them.** R-011 is the main ticket; R-012 is next.
+
+### R-011 · 2026-10-20 · the 2026 coverage / pressure / personnel gap (main ticket this cycle)
+**Measure it serves:** DEPTH D5(b) NFL, granularity-index parts 1-2. Feeds the QB-vs-defense matchup in KXNFLPASSYDS (NFL player
+passing yards, the first thin-market cell).
+**Why you, why now:** the bot's NFL play store has coverage type (man/zone, shell), pressure, time to throw and personnel for
+2016-2025 from nflverse participation data, but **no 2026 file exists** (GG-730). So for the current season the bot is blind
+on exactly the splits the granularity index is built from. FTN charting (box counts, blitzers, motion, play action) the bot
+already has, so skip those.
+**What, through Week 6, then weekly forward:**
+- **Every defense:** man vs zone coverage rate; single-high vs two-high shell rate (or the source's shell categories); blitz rate;
+  pressure rate generated; nickel / dime / base personnel rates.
+- **Every starting QB:** pressure rate faced; average time to throw; production split by coverage (vs man / vs zone) and by
+  pressure (pressured / clean) and by blitz (blitzed / not): yards per dropback, plus EPA per dropback where published.
+- **Every offense:** personnel grouping rates (11 / 12 / 21 / other).
+**For each metric, also record the source's own values for prior seasons where it publishes them** (season-level is fine). The
+bot recomputes the same metrics for 2016-2025 from its participation data and ranks 2026 against history. Your prior-season
+values are the cross-check that the definitions match.
+**Fields:** `index_fact`, layer L3, `sport` NFL, `subject` (team or QB exactly as listed), `metric`, `split`, `value`, the
+sample behind it (dropbacks, snaps or plays) in `notes`, `season`/`week` integers, `source_link`, and in `population` the
+source's **exact definition** of the metric (what counts as pressure, as a blitz, as man or zone; who charted it). Definitions
+are the whole point: a 2026 value only joins the bot's history if both mean the same thing. Rank null unless the source
+publishes one. Never compute a rank or relabel a source's category.
+**Sources (free, public pages only):** Next Gen Stats public pages, Pro-Football-Reference advanced passing/defense tables,
+SumerSports public pages, any other free public charting table you find. Paywalled (PFF, Stathead, FTN premium) is out.
+Where a split exists in no free source, record it `blocked` with the reason.
+**Deliverable:** `L3-split/nfl/coverage-pressure-personnel.claims.jsonl` (or your layout; say which). **Done when:** every team
+and starting QB has a record per available split through Week 6, each with definition text and sample size, and STATUS.md maps
+which splits are free, which are blocked, and where each definition came from.
+
+### R-012 · 2026-10-20 · NBA tracking and play-type splits (next in the queue; start only if R-011 leaves capacity)
+**Measure it serves:** DEPTH D5(b) NBA, the lineup cross. The bot measured that teammates absorb +1.75 points when a team's
+primary creator is out. Its NBA store is play-by-play only, so it cannot see **how** the usage moves.
+**What:** per rotation player, from NBA.com's free stats pages (tracking and play types): play-type frequency and points per
+possession (pick-and-roll ball handler, isolation, spot-up, transition, post-up, handoff, cut, roll man), touches, drives, time
+of possession and potential assists, for 2025-26 (full season) and 2026-27 season-to-date. Same field rules and definition text
+as R-011. If NBA.com blocks automated reading, record `blocked` and say so. Earl's 21:30 PT "yes" to NBA in the archive is
+carried over to this scope: NBA facts at the granularity the index needs, not NBA injury news.

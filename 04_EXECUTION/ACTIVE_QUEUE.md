@@ -271,7 +271,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | 81.2 | Depth lane: the NBA lineup cross on player points, all five parts | DEPTH D5(b) NBA: complete index entries 1 → 2 | 🟨 PARTIAL | Part A + B pushed; entry 2 stops at interpreted (GG-985: no absence time joinable to KXNBAPTS prices) |
 | 81.3 | The first thin-market cell goes live: KXNFLPASSYDS pre-kickoff snapshots, frozen strike model, shadow rows | BREADTH B1 40/107 → 41/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0 | ⬜ | |
 | M81 | Muse: R-008, the first L3 split family (NFL starting-QB passing yards by game script, rank against history) + the R-004 close-out | DEPTH D5(b) feed (granularity-index parts 1-2 for the KXNFLPASSYDS cell); charter §8 archive health | ✅ | R-008: 224 records (126 valued, 98 blocked honestly: PFR has no margin bands, no free ranks); schema v1.5; R-004 closed. Checked 10-20 21:35 PT |
-| M82 | Muse (issued ahead of Wave 82, 10-20 21:35 PT): R-009 Week 7 passing-game availability per game, timed (QB, opposing pass defense, top receivers) + R-010 NBA availability joins the daily sweep | BREADTH/DEPTH feed for KXNFLPASSYDS; DEPTH feed for the NBA lineup cross (GG-985) | ⬜ | |
+| M82 | Muse (issued ahead of Wave 82, 10-20 21:45 PT): R-011 the 2026 coverage / pressure / personnel gap (GG-730) + R-012 NBA tracking and play types (next). Availability sweep stopped (operator 21:26 PT) | DEPTH feed: granularity-index parts 1-2 for the QB-vs-defense matchup (KXNFLPASSYDS) and the NBA lineup cross | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
 
 **Pushback (the strongest reason not to run this as planned):** 81.1 may end without a verdict. NFL fills come from a few dozen
@@ -296,48 +296,51 @@ these files.
 **Not in this wave, by date:** the NBA opening-night read-back (80.2 Part A) needs the 10-20 games played. It is a Wave 82
 candidate once they exist.
 
-### M82 — Muse block (issued ahead of Wave 82, 2026-10-20 21:35 PT): R-009 Week 7 passing-game availability, timed + R-010 NBA availability
-**BREADTH/DEPTH feed** · KXNFLPASSYDS factor inputs (starting-QB availability x pass-defense matchup) · the NBA lineup cross's
-missing "before the news" point (GG-985) · given to the operator in chat; checked at the next wave close.
+### M82 — Muse block (issued ahead of Wave 82, 2026-10-20 21:45 PT; replaces the 21:35 version): R-011 the 2026 coverage / pressure / personnel gap + R-012 NBA tracking and play types
+**DEPTH feed** · granularity-index parts 1-2 where the bot is blind for 2026 (no nflverse participation file, GG-730) and where its
+NBA store has no tracking · given to the operator in chat; checked at the next wave close.
 
 ```
-Work cycle - M82 (from Earl, 2026-10-20). Charter v2 is in force.
+Work cycle - M82 (from Earl, 2026-10-20). Charter v2 is in force. This replaces anything sent earlier tonight.
 
-1. Start of cycle: read the protocol and every TO_MUSE.md entry after your last reply (Claude's 2026-10-20 21:35 PT watchdog,
-   R-009, R-010).
+1. Start of cycle: read the protocol and every TO_MUSE.md entry after your last reply - Claude's 21:35 PT watchdog, then the
+   21:45 PT redirect, R-011 and R-012. R-009 and R-010 are WITHDRAWN; do not run them.
    https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md
    https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md
 
-2. Closed: R-004 and R-008. R-008 was done the right way: the wrong assumption called out, the bands recorded as blocked
-   instead of relabelled, the ranks left null instead of invented. Margin-banded game script and ranks against history are now
-   the bot's job from nflverse; don't look for them again. Your edge is timed availability and role news, which nflverse
-   does not carry.
+2. Earl, in his words: "the injury updates and all standard sport updates that I'd get from fucking ESPN are useless - so
+   actually focus on shit that'll be valuable to our granularity index". So: STOP the daily availability sweep (keep what you
+   already wrote, unchanged). The market already prices headline news. Your edge is split-level facts the bot cannot get for
+   itself from free data, recorded so the bot can rank and cross them.
 
-3. MAIN TICKET - R-009: Week 7 passing-game availability, per game, timed. For every Week 7 game, one record per status change
-   (never edit; add a new record when it changes):
-   (a) each team's starting QB - Wed/Thu/Fri practice participation, game designation, the confirmed starter once named;
-   (b) the opposing pass defense - starting CBs, safeties and edge rushers on the injury report or IR;
-   (c) the QB's main targets - starting WRs and TE out or limited.
-   game_id (2026_07_AWAY_HOME), season 2026, week 7, player exactly as the team lists him, status words exactly as the report
-   uses them, and source_time REQUIRED on every record. No impact judgments; "likely to start" only if a named source says it,
-   quoted. Free sources only. Done when every Week 7 game has its starting-QB trail through Friday (and inactives when
-   posted), plus the defense/receiver changes.
-   Why: the bot's first thin-market cell is NFL player passing yards (KXNFLPASSYDS); its factor is starting-QB availability x
-   the QB-vs-defense matchup. Retail flow first: "beating buddy off his phone placing parlays, that's the first step."
+3. Closed: R-004, R-008 (done the right way - wrong assumption called out, bands blocked not relabelled, ranks left null).
 
-4. CADENCE CHANGE - R-010 (Earl, 2026-10-20: "Yes, add NBA availability"): from your next daily sweep, cover NBA game days too -
-   every player ruled out / doubtful / questionable / probable / cleared for that day's games, with source_time REQUIRED.
-   Record beat-writer and team reports AND the official injury report, each with its own publish time (the earlier one is the
-   point). sport NBA, game_id YYYYMMDD_AWAY_HOME with NBA codes (e.g. 20261021_NYK_BOS), applies_to readable. Availability only -
-   no other NBA layers. Path: team-news-nba/<team>-news.claims.jsonl (or your layout; say which).
-   Why: the bot measured that teammates absorb +1.75 points when a primary creator is out, but cannot yet test whether the
-   points market prices it, because no price history has a moment before and after the news. Your timestamps are that moment.
+4. MAIN TICKET - R-011: the 2026 coverage / pressure / personnel gap. The bot has these splits for 2016-2025 but nflverse has no
+   2026 participation file, so for this season it is blind on exactly what the granularity index is built from. Through Week 6,
+   then weekly:
+   - every defense: man vs zone rate; single-high vs two-high shell rate (or the source's categories); blitz rate; pressure rate
+     generated; base / nickel / dime rates;
+   - every starting QB: pressure rate faced; time to throw; yards per dropback (and EPA if published) vs man / vs zone,
+     pressured / clean, blitzed / not;
+   - every offense: personnel rates (11 / 12 / 21 / other).
+   For each metric, also record the source's values for prior seasons where it publishes them - the bot ranks 2026 against its
+   own 2016-2025 history and uses yours to check the definitions match. In population: the source's EXACT definition (what counts
+   as pressure, blitz, man, zone; who charted it). Sample size in notes. Rank null unless the source publishes one; never
+   compute a rank or relabel a category. Free public pages only (Next Gen Stats, Pro-Football-Reference advanced tables,
+   SumerSports, other free charting); paywalled is out; missing = "blocked" with the reason.
+   Path: L3-split/nfl/coverage-pressure-personnel.claims.jsonl (or your layout; say which).
 
-5. Standing: next weekly cycle, add the Week 7 L3 records as of the last completed game; never edit the Week 6 ones.
+5. NEXT - R-012 (only if R-011 leaves capacity this cycle): NBA tracking and play types from NBA.com's free stats pages, per
+   rotation player - play-type frequency and points per possession (P&R ball handler, isolation, spot-up, transition, post-up,
+   handoff, cut, roll man), touches, drives, time of possession, potential assists - 2025-26 full season and 2026-27 to date.
+   Same field rules. Why: the bot knows teammates absorb +1.75 points when a primary creator is out, but its play-by-play store
+   cannot see how the usage moves.
 
-6. Report in STATUS.md with commits naming R-009 and R-010: counts per game (NFL) and per day (NBA), anything you could not time,
-   paths. Push every commit; never rewrite history; no paid sources; nothing written to the bot repo; never turn a fact into a
-   bet, pick, odds or model.
+6. Standing: next weekly cycle, add the Week 7 L3 game-script records; never edit the Week 6 ones.
+
+7. Report in STATUS.md with commits naming R-011 (and R-012 if started): which splits are free, which are blocked and why, where
+   each definition came from, record counts, paths. Push every commit; never rewrite history; no paid sources; nothing written
+   to the bot repo; never turn a fact into a bet, pick, odds or model.
 ```
 
 ### 81.1 — The forward test, read: label the arms, clean the count, score it as pre-registered
@@ -1183,7 +1186,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 81.2 | Depth lane: NBA lineup cross, all five parts | ⬜ | |
 | 81.3 | KXNFLPASSYDS live: pre-kickoff snapshots, frozen strike model, shadow rows | ⬜ | |
 | M81 | Muse: R-008 (L3: QB passing yards by game script) + R-004 close-out | ✅ | 224 L3 records; ranks and margin bands are bot-side (nflverse) |
-| M82 | Muse: R-009 Week 7 passing-game availability (timed) + R-010 NBA availability in the daily sweep | ⬜ | |
+| M82 | Muse: R-011 2026 coverage/pressure/personnel (GG-730) + R-012 NBA tracking/play types; availability sweep stopped | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
 ### ✅ WAVE 80 — ISSUED 2026-10-20 ~00:10 UTC · CLOSED ~01:30 UTC · verified on GitHub at the handoff sweep · the last wave of the Waves 61–80 window
