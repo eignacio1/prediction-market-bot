@@ -989,3 +989,4 @@
 | 2026-10-21T05:29:09Z | T-TBD (W82.2) | CLOSED — W82.2 forward-test verdict read on the box (NFL INCONCLUSIVE; NHL/NBA/MLB no verdict yet) and grid green now means WINS only (0 green). (commit `739f5b5`) |
 | 2026-10-21T05:38:54Z | T-1040 | CLOSED — merge confirmed, HEAD (1f6b268) is ancestor of origin/main — KXNFLPASSYDS cron installed, budget GREEN, model merged and live; first rows pending Thu 10-22 |
 | 2026-10-21T05:44:36Z | T-1044 | CLOSED — Coverage/pressure gap, bot-side: man share, 5+ rusher rate and pressure are team traits at six games, but crossed with QB response they add no measurable yards beyond the frozen passyds model; Muse prior-season coverage values are null, QB time-to-throw FAILED on level (commit `5bc3572 (Part B code, PR #307), a974892 (Part A, PR #305); docs-only close on top`) |
+| 2026-10-21T05:44:50Z | T-1044 | CLOSED — merge confirmed, HEAD (9ed089d) is ancestor of origin/main — W82.3 coverage/pressure gap DONE (PRs #305, #307) |
