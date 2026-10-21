@@ -283,23 +283,21 @@
 <!-- ============================================================ ARMS -->
 <section id="museweb">
   <div class="sechead"><h2>Aggregation web</h2><span class="num" id="mwHead"></span></div>
-  <p class="lede">Muse's work across the four sports. Each spoke is a workstream; each ring is a step, from
-  <strong>scouted</strong> at the centre to <strong>applied</strong> at the edge. <span class="mw-k b"></span>built ·
-  <span class="mw-k p"></span>pending (a ticket or block is open) · <span class="mw-k f"></span>future (no ticket yet).
-  The solid line is how far a workstream has reached; the dashed line is the work open now. Muse scouts and records; the bot verifies and applies.</p>
-  <div class="mw-wrap">
-    <div class="card mw-stage">
-      <div class="toolbar" id="mwFilters"></div>
+  <p class="lede">Muse's work as a graph you can open up. Muse → sport → workstream → its five steps (scouted, recorded, mapped,
+  verified, applied) and the tickets feeding it → for the PAM workstreams, the taxonomy groups and every archetype.
+  <span class="mw-k b"></span>built · <span class="mw-k p"></span>pending (a ticket or block is open) · <span class="mw-k f"></span>future (no ticket yet).
+  Muse scouts and records; the bot verifies and applies.</p>
+  <div class="grid g4 mw-tiles" id="mwTiles"></div>
+  <div class="card mw-stage">
+    <div class="toolbar mw-tools" id="mwFilters"></div>
+    <div class="mw-canvas">
       <div id="mwHost"></div>
-    </div>
-    <div class="mw-side">
-      <div class="grid g3 mw-tiles" id="mwTiles"></div>
-      <div class="card"><h3>By sport</h3><div class="cap">Steps per sport, every workstream × every ring.</div><div id="mwSports"></div></div>
-      <div class="card"><h3>By step</h3><div class="cap">One dot per workstream at each step, in web order.</div><div id="mwRings"></div></div>
-      <div class="cap mw-src" id="mwSrc"></div>
+      <div class="mw-legend"><span><i class="s-b"></i>built</span><span><i class="s-p"></i>pending</span><span><i class="s-f"></i>future</span><span><i class="tk"></i>ticket</span><span><i class="bd">3</i>closed, click to open</span></div>
+      <aside class="mw-panel" id="mwPanel"></aside>
     </div>
   </div>
-  <div class="card mw-opencard"><h3>Open now</h3><div class="cap">Every workstream with a pending step, and what that step is waiting on.</div><div class="mw-open" id="mwOpen"></div></div>
+  <div class="card mw-opencard"><h3>Open now</h3><div class="cap">Every workstream with a pending step and what that step waits on. Click to find it in the graph.</div><div class="mw-open" id="mwOpen"></div></div>
+  <div class="cap mw-src" id="mwSrc"></div>
 </section>
 
 <section id="arms">

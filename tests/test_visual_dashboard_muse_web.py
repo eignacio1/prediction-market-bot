@@ -47,3 +47,13 @@ def test_web_never_uses_green():
     web_js = js[js.index("function museWeb()"):]
     web_js = web_js[:web_js.index("\n}\n")]
     assert "--good" not in web_css and "--good" not in web_js
+
+
+def test_pam_taxonomies_and_tickets_reach_the_graph():
+    d = bvd.muse_web()
+    assert set(d["taxonomy"]) == {"nfl", "nba", "mlb", "nhl"}
+    nfl = {g["id"] for g in d["taxonomy"]["nfl"]["groups"]}
+    # OL and DL stay per position (operator 2026-10-21 08:01 PT)
+    assert {"LT", "LG", "C", "RG", "RT", "EDGE", "DT3", "NT", "DE5"} <= nfl
+    for t in ("R-018", "R-024", "R-028"):
+        assert d["tickets"][t]["title"]
