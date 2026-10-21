@@ -99,6 +99,12 @@ crosses, maps and tests against the price → Claude posts the verdict (REAL-NOT
 Pushes flowing; history intact; every record parses; **no new null or placeholder records**; source cards complete (all eight
 parts); secondary sources flagged; ticket age; the VERIFIED / REPORTED / FAILED counts. Findings go to TO_MUSE.md.
 
+**Watchdog posture (Earl, 2026-10-21 07:12 PT):** "There'll be a ton of misalignment in the beginning bc we haven't even come close
+to building out our end - we're still in the early parts of data aggregation > data interpretation > data application. Don't be so
+strict on its work." While the bot side is still at aggregation, Muse's work is judged on honesty, the gate and steady progress
+through the backlog. A mismatch with what the bot needs is a re-aim of the next ticket, written into TO_MUSE.md, never a
+rejection of finished work.
+
 ## 8. What goes to Earl (and only this)
 
 A new sport or layer · priorities when Muse and Claude disagree · anything about money, paid sources or real capital · Muse on or
