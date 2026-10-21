@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "Window: second check that #308 (f43e3fa) is on the box"
