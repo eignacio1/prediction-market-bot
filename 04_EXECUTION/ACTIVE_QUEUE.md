@@ -298,6 +298,23 @@ candidate once they exist.
 ### 81.1 — The forward test, read: label the arms, clean the count, score it as pre-registered
 **EXECUTION** · E1–E3 per arm, the ADR-0072 verdict · plus PLUMBING: the scoreboard's three broken inputs (D1, D4 NBA, P3) · terminal 1
 
+**ADD-IN 81.1-B (2026-10-20 21:15 PT): the operator's three forward-test decisions.** Given in chat; paste into terminal 1 when it resumes.
+
+```
+ADD-IN 81.1-B - THE OPERATOR DECIDED THE THREE PRE-REGISTRATION GAPS (2026-10-19 ~22:45 PT, before any score was read).
+Authorization: blockquote "ADR-0072 ADDENDUM" in ACTIVE_QUEUE.md "Needs your decision". Quote him in the addendum.
+1. Verdict unit: per (book, sport) - "Per book and sport (Recommended)".
+2. Criterion (c), 30-min post-fill markout: "Collect from now; judge (c) forward (Recommended)". Write a dated ADR-0072 addendum;
+   build + register + install a markout collector (1/5/30 min after fill, demo 1-minute candles, two-sided mid only); (c) is
+   judged on post-collection fills at the same judged n rule; until then a cell whose (a) and (b) hold reads
+   "(a)/(b) hold, pending (c)" - never ADOPT.
+3. Cash-starved days: "Exclude them (Recommended)" - only fills from 2026-10-16T05:40Z count toward the verdict; earlier fills
+   are reported separately, descriptive only.
+Also: your handoff said "judged n not reached" from Wave 76's fill counts. Count from the labelled box table instead. Nothing
+else in the pre-registration changes.
+END OF ADD-IN 81.1-B. If you cannot see this line, the add-in reached you truncated: stop and report it.
+```
+
 **ADD-IN 81.1-A (2026-10-19 22:10 PT): green means the cell WINS.** Given to the operator in chat; paste into terminal 1.
 
 ```
@@ -1573,6 +1590,13 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **AUTHORIZATION - ADR-0072 ADDENDUM: THREE PRE-REGISTRATION GAPS (operator, 2026-10-19 ~22:45 PT, asked by the strategic window
+> before any score was read).** Verdict unit: "Per book and sport (Recommended)". Criterion (c), the 30-min post-fill markout, never
+> collected: "Collect from now; judge (c) forward (Recommended)". Cash-starved days: "Exclude them (Recommended)" (fills before
+> 2026-10-16T05:40Z are out of the verdict, reported separately). Covers: a dated ADR-0072 addendum with exactly these three
+> decisions; a 30-min markout collector (registered first); the scored read under them. Not covered: seed, share, judged n, the
+> placement rule, any switch. Used by 81.1 (add-in 81.1-B).
 
 > **AUTHORIZATION - KXNFLPASSYDS THIN-MARKET CELL (operator, 2026-10-19 21:40 PT, asked directly by the strategic window,
 > choosing "Yes, accept it (Recommended)").** Covers: marking `12_EXPLORATORY/THIN_MARKET_PREREGISTRATION_2026-10-20.md` ACCEPTED

@@ -2609,3 +2609,10 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Operator words quoted in `INDEX_ENTRY_LINEUP.md` (2026-10-16 "BLEED EM OUT"; 08:18 PT "buddy off his phone placing parlays").
 
 | 2026-10-20 | T-1033 | W81.1 PARTIAL: PR #297 merged (labelled forward-test report, D1/D4/P3 fixes). Hash assignment verified, 0 mismatches over 18,795 armed orders. No verdict: below judged n. Parked Part C (green=WINS) and the box labelled table; ambiguity (per-(book,sport) vs pooled) recommended per-(book,sport). |
+
+## 2026-10-19 ~22:45 PT — ADR-0072 forward test: three pre-registration gaps decided by the operator (before any score was read)
+- Asked by the strategic window at the Wave 81 close; nothing had been scored (the labelled per-cell table did not exist yet). Window correction: 81.1's "below judged n" was written from Wave 76's fill counts without the new table, so it is unverified. The labelled box table decides it.
+- **Verdict unit:** per (book, sport). Operator: "Per book and sport (Recommended)".
+- **Criterion (c), the 30-minute post-fill markout, was never collected:** collect it from now on and apply (c) only to fills from the collection start; judge (a) and (b) on all eligible fills. Operator: "Collect from now; judge (c) forward (Recommended)".
+- **Cash-starved days:** exclude fills before 2026-10-16T05:40Z from the verdict; report them separately, descriptive only. Operator: "Exclude them (Recommended)".
+- These go into a dated ADR-0072 addendum (82.1). The authorization is the blockquote in ACTIVE_QUEUE.md "Needs your decision". No other registered parameter changes (seed, share, judged n, the placement rule).
