@@ -29,3 +29,5 @@ surface_delta: none
 **Operator decisions:** none required. For information: Muse's 2023-25 coverage/pressure values are null, so grading that class needs a play-level 2026 source (TO_MUSE R-014) or prior-season values with definitions. GG-730: no 2026 participation file exists. League man rate swings .41/.48/.31 over 2023/24/25 (source vintage), flagged to Muse.
 
 **Not done:** governance Steps 1-4 and Q1-Q7 were not run in detail (claim + isolation only). Pre-game bet placement and the mid-game design questions are in the index entry.
+
+**Update (post-push):** run 39550671806 (#307 post-merge) ended `cancelled`, superseded by the docs push (concurrency group); no Deploy summary exists. #307 touched only `12_EXPLORATORY`, so the t4-mlb decision is no impact.
