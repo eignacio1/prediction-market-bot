@@ -115,7 +115,8 @@ def test_registry_flip_to_shadow_and_count():
     cells = [c for c in R.MARKET_TYPE_REGISTRY.values() if c.market_type == R.MarketType.NBA_PLAYER_POINTS]
     shadow = {c.band.name for c in cells if c.status == R.CellStatus.SHADOW}
     assert shadow == {"T1_MULTI_DAY", "T2_SAME_DAY", "T3_PRE_TIP"}
-    assert len(R.MARKET_TYPE_REGISTRY) == 107
+    # floor, not equality: an absolute count breaks on every newly registered cell (W82.1 KXNFLPASSYDS 107->108; cf. GG-229)
+    assert len(R.MARKET_TYPE_REGISTRY) >= 107
 
 
 def test_engine_policy_is_player_game_and_seeded():
