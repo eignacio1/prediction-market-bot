@@ -203,3 +203,42 @@ source (this wave the bot recomputes them from its own 2016-2025 data and grades
 direct); (b) the starting-QB side (vs man / vs zone, pressured / clean, blitzed / not, pressure rate faced, time to throw);
 (c) offense personnel if free. Each week's values are new records with that week's as_of; never edit earlier ones. R-012 stays
 next.
+
+---
+
+### 2026-10-20 22:30 PT · CHARTER v3 IS IN FORCE: Muse scouts, the bot captures (Earl's direction)
+Read `PARTNERSHIP_CHARTER.md` (v3) in full. In short: your job is **discovery and definitions**, delivered as **source cards**
+(`sources/<sport>/<source-slug>.md`, eight parts, §3). The bot turns every capturable source into its own scheduled capture job,
+so recurring collection is no longer yours. There is **no standing cadence**: work only from the backlog below, in order, one
+ticket per cycle; an empty backlog means stop. **No null or placeholder records, ever.** A source with nothing usable gets a
+card saying NOT USABLE and why. Records you already wrote stay as they are.
+- **R-011 is closed under v3.** Its 2026 Sharp values stay (the bot uses them this wave), and no more snapshots are needed.
+  Sharp's prior seasons gave nothing free, which is exactly what a source card should say in one line.
+- **Your chat-log commit `d11f758`** (`updates/2026-10-20-chat-log-window-operationalization.md`) is not on GitHub: the ssh
+  push failed. Push it when the connection allows and name the commit in STATUS.md. If ssh keeps resetting, say so in STATUS.md.
+
+## Backlog (ordered; work top-down, one per cycle)
+
+### R-013 · source cards for every source R-011 used (FIRST)
+**Target:** the 2026 coverage / pressure / personnel gap (no nflverse 2026 participation file, GG-730), feeding the QB-vs-defense
+matchup of KXNFLPASSYDS. The bot will build weekly captures from these cards, so the cards must be exact.
+**Cards:** (1) Sharp Football coverage-scheme page; (2) Sharp offense personnel page; (3) Next Gen Stats, the PRIMARY NFL page
+for time to throw and the other passing boards (muffed.ai is a republisher: name it only as secondary, and say whether NGS itself
+is reachable for free); (4) SumerSports defensive personnel tendency; (5) Pro-Football-Reference advanced passing and defense
+tables; (6) PFF / Fantasy Points as NOT USABLE (paid), one line.
+**Done when:** six cards with all eight parts each (target, primary source, access, update cadence, history, definitions verbatim,
+3-5 sample rows, capture verdict). No new records.
+
+### R-014 · is there any free play-level 2026 charting? (SECOND)
+**Target:** splits by situation (down and distance, personnel, box count, coverage on THIS play), which season rates cannot give
+and which the bot has only through 2025. **Question:** does any free public source publish per-play 2026 charting (coverage
+shell, man/zone, pressure, personnel per play), or per-game splits by situation, that a script could read? Candidates to check:
+nflverse's own release notes for the 2026 participation file (is it coming, and when?), NGS game-level pages, any free charting
+project. **Done when:** a card for each candidate (CAPTURABLE / ONE-OFF / NOT USABLE), and one STATUS.md line answering the question.
+
+### R-012 · NBA tracking and play types, as source cards (THIRD; replaces the earlier R-012 wording)
+**Target:** the NBA lineup cross. Teammates absorb +1.75 points when a team's primary creator is out, and the bot's play-by-play
+store cannot see how that usage moves. **Cards:** NBA.com stats pages for play types (pick-and-roll ball handler, isolation,
+spot-up, transition, post-up, handoff, cut, roll man), tracking (touches, drives, time of possession, potential assists), and
+lineups/on-off: access (do the pages load for a script, or only in a browser?), URL pattern, history, definitions verbatim, sample
+rows, capture verdict. **Done when:** the cards exist; no records.

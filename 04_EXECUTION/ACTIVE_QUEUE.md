@@ -271,7 +271,8 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | 82.1 | KXNFLPASSYDS live: clear the red (install), land the parked strike model, first shadow rows, flip the cell | BREADTH B1 48/107 → 49/108, B4 props 2 → 3; EXECUTION pre-kickoff NFL depth n 0 → > 0; surface RED → GREEN | ⬜ | |
 | 82.2 | The forward-test verdict on the box (per book and sport, post-top-up), then green = WINS on the grid | EXECUTION: ADR-0072 verdicts 0 → per (book, sport); PLUMBING: grid green means WINS (0 cells expected) | ⬜ | |
 | 82.3 | Depth lane: the 2026 coverage / pressure gap, bot-side — recompute 2016-2025, verify Muse's 2026 class, rank, cross with the QB | DEPTH D5(b) NFL: one index entry with all five parts (coverage x QB, mapped to KXNFLPASSYDS); charter §5 VERIFIED/FAILED 0 → 1 class | ⬜ | |
-| M82-A | Muse add-in to the running M82 cycle: finish R-011 (QB side, offense personnel, prior seasons, weekly snapshots) | DEPTH feed for 82.3 | ⬜ | |
+| M82-A | Muse add-in to the running M82 cycle: finish R-011 (QB side, offense personnel, prior seasons, weekly snapshots) | DEPTH feed for 82.3 | ✅ superseded | delivered 04:39-04:58Z: offense personnel, QB time to throw (via a republisher), Sharp prior seasons = nothing free |
+| M82-B | Muse charter v3 (scout / capture): source cards R-013 → R-014 → R-012 | DEPTH feed: sources the bot can capture itself | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
 
 **What Wave 81 delivered (verified 2026-10-21 04:40Z: GitHub + box bridge):** B1 **40 → 48 / 107** and B2 **13 → 17 / 18**: the NBA
@@ -666,6 +667,11 @@ a handoff.
 END OF BLOCK 82.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### M82-B — Muse: charter v3, the hybrid model (2026-10-20 22:30 PT) — supersedes M82-A
+**Muse scouts, the bot captures** · operator: "make the hybrid operating model" · given in chat; paste-in at
+`02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/MUSE_PASTE_IN_v3.md`; tickets R-013 → R-014 → R-012 in TO_MUSE.md's Backlog. The bot side:
+each CAPTURABLE source card becomes a capture block in a later wave (the window writes it from the card).
+
 ### M82-A — Muse add-in to the running M82 cycle (2026-10-20 22:15 PT): finish R-011 so the bot can rank and cross it
 **DEPTH feed for 82.3** · given to the operator in chat; checked at the Wave 82 close.
 
@@ -1038,7 +1044,8 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 82.1 | KXNFLPASSYDS live: install (clears the red), land the parked model, first rows, flip | ⬜ | |
 | 82.2 | Forward-test verdict on the box (per book/sport, post-top-up) + green = WINS on the grid | ⬜ | |
 | 82.3 | Depth: the 2026 coverage/pressure gap bot-side; grade Muse's class; coverage x QB index entry | ⬜ | |
-| M82-A | Muse: finish R-011 (prior seasons, QB side, personnel, weekly snapshots) | ⬜ | |
+| M82-A | Muse: finish R-011 | ✅ | superseded by M82-B (charter v3) |
+| M82-B | Muse charter v3: source cards R-013 → R-014 → R-012 | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
 ### 🟨 WAVE 81 — WRITTEN 2026-10-20 ~05:05 UTC · run 10-19 night (cut at session limits) and 10-20 · CLOSED 2026-10-21 ~05:00 UTC · verified on GitHub + box bridge (`20261021T0439Z_*`) · moved: **B1 40 → 48/107, B2 13 → 17/18** (NBA opening-night flips) · D1/D4/P3 readable · D5(b) NBA interpreted 2 → 3 · forward test labelled

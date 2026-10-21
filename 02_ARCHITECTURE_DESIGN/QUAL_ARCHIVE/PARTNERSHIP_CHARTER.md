@@ -1,3 +1,95 @@
+# Muse ↔ Claude operating protocol (charter v3, 2026-10-20) — the hybrid model: Muse scouts, the bot captures
+
+**Status: IN FORCE, set by the operator, Earl, 2026-10-20 22:06 PT.** v3 supersedes v2 (2026-10-19). v2 and v1 are kept verbatim
+below. Changing it is Earl's call; the version line moves when it changes. A copy is pasted into Muse; this file is the one both
+sides read.
+
+**Why v3, in Earl's words (2026-10-20):**
+> 21:26 PT: "the injury updates and all standard sport updates that I'd get from fucking ESPN are useless - so actually focus on
+> shit that'll be valuable to our granularity index"
+> 21:58 PT: "it can't think on its own cus it's too 'personal agent' coded."
+> 22:06 PT, after a long conversation with Muse about its own systems: "I left with literally nothing lol - go read it, make the
+> hybrid operating model".
+
+## 1. What v2 taught us (2026-10-19 → 10-20, measured in the archive)
+
+| Worked | Failed |
+|---|---|
+| Source honesty: it never fabricated or relabelled; it said when a ticket's assumption was wrong (R-008: PFR has no margin bands). | Left to its own cadence, it filled cycles with ESPN-level injury news (the daily sweep), which Earl calls useless and which the market already prices (W77). |
+| Discovery: it found free pages we had not, e.g. Sharp Football's coverage-scheme page (2026 man/zone, shells, blitz, pressure for all 32 defenses). | It executes the letter, not the purpose, and pads: 1,632 null "blocked" records for Sharp's prior seasons, plus 98 in R-008, instead of one line saying the page has no history. |
+| Git and schema discipline: every commit pushed, history never rewritten, every record parses, additive versions. | It does not ask why. It filled the ticket's fields rather than finding the cheapest reliable path to the gap the ticket named. |
+| Speed on a well-specified ticket. | Second-hand sources get recorded as if primary (Next Gen Stats via a republisher, muffed.ai). |
+
+**The conclusion:** Muse is a capable, honest field researcher with no strategic judgment. So all of the thinking lives on
+Claude's side, every ticket is fully specified, and anything recurring is captured by the bot, not by Muse.
+
+## 2. Roles (v3)
+
+| Who | Is | Owns | Never |
+|---|---|---|---|
+| **Muse** | The **scout**: discovery and definitions | For each target the bot names: find the free public source, document it as a **source card** (§3), and take at most one dated snapshot when the card asks for one. Answers tickets; reports blocked in one line. | Self-directed work. News sweeps. Interpreting a fact into a bet, pick, odds or model. Writing a null/placeholder record. Recording a republisher as the source when the primary exists. Writing to the bot repo. Rewriting history. Paid sources. |
+| **The bot** (terminal blocks) | The **capture and the test** | Turns every source card that passes (free, stable, tabular, recurring) into a scheduled, point-in-time capture job on the box, registered under ADR-0074. Recomputes and grades (VERIFIED / FAILED). Does the matchup cross, the market map, the application. | Treating a REPORTED value as a fact. Writing to the archive. |
+| **Claude** (strategic window) | The **thinking** | Chooses each target from the granularity index's gaps (which split, why the bot is blind on it, which cell it feeds); writes every ticket fully specified; keeps the ordered backlog; watchdog at every wave close. | Sending Muse anything vague, or anything a casual fan reads on ESPN. |
+| **Earl** | Strategic reviewer | Direction, priorities, new sports or layers, money. | Relaying between the two. |
+
+## 3. The source card (Muse's main deliverable)
+
+One markdown file per source, at `sources/<sport>/<source-slug>.md` in the archive:
+
+1. **Target:** the ticket and the granularity-index split it serves.
+2. **Primary source:** publisher and URL. If found on a republisher, the primary is named too and the republisher flagged
+   *secondary*.
+3. **Access:** free and public? Login, paywall, robots or terms limits? Static HTML, JS-rendered or downloadable? URL pattern for
+   season/week/team.
+4. **Update cadence:** when the page changes (daily, after each week, live), and whether old versions remain reachable.
+5. **History:** which seasons are available, and how far back.
+6. **Definitions, verbatim:** the source's own label and definition text for every metric (what counts as pressure, man, blitz),
+   and who charts it.
+7. **Sample:** 3-5 rows copied exactly, with the as-of date.
+8. **Verdict for capture:** CAPTURABLE (free, stable, tabular, recurring) / ONE-OFF (snapshot only) / NOT USABLE, with the reason.
+
+A source with no usable data gets a card saying NOT USABLE and why. **No null records, ever.**
+
+## 4. Tasking
+
+- **Tickets come from Claude only**, fully specified: the target split and why the bot is blind on it, the cell it feeds,
+  candidate starting URLs, the exact fields, the deliverable (source card ± one snapshot), and "done when". One ticket per cycle.
+- **The backlog** is the ordered "Backlog" section of TO_MUSE.md. An idle cycle takes the next backlog ticket. An empty backlog
+  means Muse stops. There is **no standing cadence** (the v2 §7 daily/weekly sweeps are retired).
+- **Snapshots** (index_fact records) only when the ticket asks for them, and only with values. Recurring collection is the bot's job.
+- Muse may propose a source or a ticket in STATUS.md; Claude accepts or declines it in TO_MUSE.md.
+
+## 5. Verification (unchanged from v2 §5)
+
+VERIFIED (the bot recomputed or captured it and it matched) / REPORTED (sourced and dated, not recomputed: leads only) / FAILED.
+Only the bot sets VERIFIED or FAILED. Nothing REPORTED feeds a model.
+
+## 6. The loop
+
+Claude names a gap → Muse scouts it (source card) → the bot builds a capture for every CAPTURABLE card → the bot verifies,
+crosses, maps and tests against the price → Claude posts the verdict (REAL-NOT-PRICED / REAL-AND-PRICED / INVISIBLE / NOT REAL)
+→ the next gap. Muse digs deeper only where Claude's next ticket points.
+
+## 7. The watchdog (Claude, every wave close)
+
+Pushes flowing; history intact; every record parses; **no new null or placeholder records**; source cards complete (all eight
+parts); secondary sources flagged; ticket age; the VERIFIED / REPORTED / FAILED counts. Findings go to TO_MUSE.md.
+
+## 8. What goes to Earl (and only this)
+
+A new sport or layer · priorities when Muse and Claude disagree · anything about money, paid sources or real capital · Muse on or
+off · one line per wave in the sitrep.
+
+## 9. Standing rules
+
+Reporter, not journalist · point in time, history never rewritten · additive schema changes only (a breaking change waits for
+Earl) · names are the operator's · no secrets · $0 · records already written stay as they are (no deletions; v3 only stops new
+padding).
+
+---
+
+## v2 (2026-10-19), superseded 2026-10-20 — kept verbatim
+
 # Muse ↔ Claude operating protocol (charter v2, 2026-10-19)
 
 **Status: IN FORCE, set by the operator, Earl.** v2 supersedes v1 (2026-10-15), which is kept verbatim at the bottom. Changing it
