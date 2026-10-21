@@ -987,3 +987,4 @@
 | 2026-10-21T04:58:55Z | GG-990..GG-994 T-1040..T-1042 | STANDARD — KXNFLPASSYDS live: install cron (clear SURFACE RED), land parked strike model, first shadow rows — FOR B1 48/107->49/108, B4 props 2->3, pre-kickoff NFL depth n 0->>0, surface RED->GREEN — W82.1 |
 | 2026-10-21T05:06:21Z | GG-995..GG-997 T-1044..T-1045 | STANDARD — W82.3 DEPTH: 2026 coverage/pressure gap bot-side; FOR D5(b) NFL +1 index entry (5 parts) coverage/pressure x QB x KXNFLPASSYDS; charter s5 Muse class graded 0->1 |
 | 2026-10-21T05:29:09Z | T-TBD (W82.2) | CLOSED — W82.2 forward-test verdict read on the box (NFL INCONCLUSIVE; NHL/NBA/MLB no verdict yet) and grid green now means WINS only (0 green). (commit `739f5b5`) |
+| 2026-10-21T05:38:54Z | T-1040 | CLOSED — merge confirmed, HEAD (1f6b268) is ancestor of origin/main — KXNFLPASSYDS cron installed, budget GREEN, model merged and live; first rows pending Thu 10-22 |
