@@ -53,6 +53,16 @@ Wave 81 close read (`20261021T0439Z_b_distance_read.md`, 04:40Z).*
 with reasons · deploy truth OK. Silent arms: none (NHL, NBA, T1 MLB wrote rows; NFL idle until Thursday). **Gap agent:** no tick
 since 2026-10-16 02:00Z (GA-4 not launched).
 
+**Window, 2026-10-21 morning (no wave; operator on his phone, 07:05-08:15 PT):** Earl set a daily automatic Muse run;
+the window wrote the week's Muse backlog (R-017 → R-030) and amended charter v3 to name that one job. Watchdog posture is
+lenient while the bot side is at aggregation, and Muse is never throttled: every wave's depth lane consumes a Muse delivery.
+**PAM layer 1 is drafted for every sport** in the NBA v4 shape (`qualitative_data/pam/{nfl,mlb,nhl}/taxonomy_v4depth.json`):
+NFL draft2 has 67 archetypes in 19 position groups (OL, DL, LB and S broken out by position, with split hooks such as stuff
+rate on runs to his gap), MLB has 24, NHL 18. DRAFT, awaiting Earl's approval. Muse's signal maps run NBA first as the
+template (R-027), then NFL (R-028), MLB (R-029), NHL (R-030). Muse delivered overnight: R-015 (Sharp 2025 season-end values),
+R-016 (NBA 2025-26 phase 1), a parser/validator gate and the null-placeholder hygiene pass. Every decision: DECISION_LOG
+2026-10-21 07:12-08:15 PT. Muse add-in M83-C below.
+
 **Muse (charter v3 §7 watchdog). Wave 82 close, archive `2ce6b77`:** under v3, 13 NFL + 3 NBA source cards (Sharp static pages CAPTURABLE → the bot captures them in 83.1; NGS and NBA.com browser-only); no free play-level 2026 charting in-season; 3,422 NBA play-type records on Earl's order; scheduler cleared (including a personal job, W28). Grades: VERIFIED 0 · FAILED 1 (QB time to throw, level) · coverage ungradeable until R-015. **Wave 81 close, archive `9c43ac6`:** M81 done (R-004 closed; R-008: 224 L3 QB game-script records, margin bands and ranks blocked honestly). M82 is mid-cycle: R-011 has 352 records (32 defenses x 11 metrics: Sharp coverage, shell, blitz and pressure valued; base/nickel/dime blocked); the QB side and prior seasons are pending (add-in M82-A). Availability sweep stopped (operator 10-20 21:26 PT). Grades: VERIFIED 0, FAILED 0 (82.3 grades the first class). **Earlier, Wave 81 intake, archive `2ba6671`:** 58 commits (34 at the handoff), no history rewritten, 2,107
 records all parse. R-005 and R-006 are closed. R-004 is partly done (two old-name hits in `web/index.html`). R-007 is closed as-is:
 the two Bo Nix `index_fact`s were the operator's examples. They stay REPORTED and are not verified (W25). Cadence installed (daily availability
@@ -646,6 +656,10 @@ Results: the store's coverage table, DATA_LAYER.md, the factor map, the D4 read-
 
 END OF BLOCK 83.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
+
+### M83-C — Muse add-in: PAM layer 1 for every sport + the new backlog order (2026-10-21 08:20 PT)
+Given to the operator in chat; text in `QUAL_ARCHIVE/MUSE_PASTE_IN_v3.md` § "Add-in, 2026-10-21 08:20 PT". The daily run would pick
+the changes up from TO_MUSE.md anyway; this tells the main chat directly.
 
 ### M83-B — Muse daily auto run + the week's backlog (2026-10-21 07:30 PT)
 Earl set a daily Muse run. Backlog R-017 → R-027 in TO_MUSE.md (PAM gap sourcing, coordinators/play callers, NHL sources, split

@@ -71,3 +71,30 @@ From Earl - the daily run, from today.
 
 Start now with R-017.
 ```
+
+## Add-in, 2026-10-21 08:20 PT (paste once into the main Muse chat)
+
+```
+From Earl - update, 2026-10-21 morning. Read TO_MUSE.md fresh; the details are in the entries dated 08:10 and 08:15 PT.
+
+1. PAM now has a layer-1 taxonomy for every sport, built on the NBA v4 template (archetypes + modifiers, each with signals and
+   a draft threshold). They're drafts I still have to approve:
+   - NFL (draft2): 67 archetypes in 19 POSITION groups - QB, RB, WR, TE, LT, LG, C, RG, RT, EDGE, DT3, NT, DE5, MIKE, WILL, SAM,
+     CB, FS, SS - plus 32 modifiers. OL and DL are broken out by position on purpose: the next PAM layer attaches splits like
+     stuff rate on runs through one gap to one player at one spot, so generalities don't work at that level.
+   - MLB: 24 archetypes (hitters, starters, relievers, defense), 29 modifiers.
+   - NHL: 18 archetypes (forwards, defense, goalies), 25 modifiers.
+   Files: qualitative_data/pam/<sport>/taxonomy_v4depth.json in the bot repo (raw URLs in TO_MUSE.md).
+
+2. NEW BACKLOG ORDER: R-017 (finish) -> R-027 NBA PAM signal map (the template) -> R-028 NFL signal map -> R-018 NFL PAM gaps
+   -> R-029 MLB signal map -> R-030 NHL signal map -> then R-019 onward as listed. Work it sequentially, NBA first, the same
+   way for every sport.
+
+3. A signal map = every archetype and modifier -> the free source and metric that measures it -> seasons -> point-in-time
+   or season-end -> NONE where nothing free measures it. For NFL add one column: can the signal be pinned to that single
+   position (yes / side only / no)? A NONE is a real finding, not a failure: it tells us where the taxonomy or the sourcing
+   has to change.
+
+4. Same rules: no null records, primary sources, definitions verbatim, free only, nothing written to the bot repo, one STATUS
+   entry and commit per ticket.
+```
