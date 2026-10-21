@@ -204,9 +204,105 @@ def _historical_404_terminal(r: dict, fills_for: Optional[Callable[[str, str], d
     return terminal_at <= attempt + timedelta(seconds=TERMINAL_SLACK_S)
 
 
+Z95 = 1.645  # one-sided 95%
+REJECT_UPPER = 0.05
+MIN_FILL_RATE_RATIO = 0.25
+MARKOUT_DIR = REPO / "exp_output" / "FORWARD_TEST" / "markouts"
+
+
+def _clustered(vals_by_game: dict) -> Optional[dict]:
+    """Mean and variance of the mean with games as the clusters (ratio estimator, no resampling)."""
+    n = sum(len(v) for v in vals_by_game.values())
+    if n == 0:
+        return None
+    m = sum(sum(v) for v in vals_by_game.values()) / n
+    var = sum((sum(v) - m * len(v)) ** 2 for v in vals_by_game.values()) / (n * n)
+    return {"n": n, "games": len(vals_by_game), "mean": m, "var": var}
+
+
+def _diff(t: Optional[dict], c: Optional[dict]) -> Optional[dict]:
+    if not t or not c:
+        return None
+    d = t["mean"] - c["mean"]
+    se = (t["var"] + c["var"]) ** 0.5
+    return {"diff": d, "se": se, "lower95": d - Z95 * se, "upper95": d + Z95 * se}
+
+
+def load_markouts(path: Path) -> list[dict]:
+    rows: list[dict] = []
+    try:
+        with open(path) as fh:
+            for line in fh:
+                try:
+                    rows.append(json.loads(line))
+                except ValueError:
+                    continue
+    except OSError:
+        pass
+    return rows
+
+
+def markout_c(rows: list[dict], sport: str, epoch: Optional[datetime]) -> dict:
+    """Criterion (c): treatment-minus-control 30-minute held-side markout, post-collection fills only."""
+    by: dict[str, dict] = {"control": defaultdict(list), "treatment": defaultdict(list)}
+    for r in rows:
+        if r.get("sport") != sport or r.get("arm") not in by or r.get("h30") is None:
+            continue
+        ft = _ts({"ts": r.get("fill_ts")}) if r.get("fill_ts") else None
+        if epoch is not None and (ft is None or ft < epoch):
+            continue
+        by[r["arm"]][r.get("game")].append(r["h30"])
+    c, t = _clustered(by["control"]), _clustered(by["treatment"])
+    out: dict[str, Any] = {"control_n": c["n"] if c else 0, "treatment_n": t["n"] if t else 0}
+    d = _diff(t, c)
+    out["diff"] = d
+    judged = bool(c and t and c["n"] >= JUDGED_N and t["n"] >= JUDGED_N)
+    out["judged"] = judged
+    out["holds"] = (d["upper95"] >= 0) if (judged and d) else None  # fails only if the diff is credibly negative
+    return out
+
+
+def verdict_for(arms: dict, markout: dict) -> dict:
+    """ADR-0072 (a)/(b)/(c) for one (book, sport). arms[arm] = {vals_by_game, orders_post, fills_post}."""
+    c, t = arms.get("control"), arms.get("treatment")
+    if not c or not t:
+        return {"state": "NO VERDICT: one arm has no eligible orders", "judged": False}
+    cs, ts_ = _clustered(c["vals_by_game"]), _clustered(t["vals_by_game"])
+    d = _diff(ts_, cs)
+    rate = lambda a: (a["fills_post"] / a["orders_post"]) if a["orders_post"] else None  # noqa: E731
+    rc, rt = rate(c), rate(t)
+    ratio = (rt / rc) if (rc and rt is not None) else None
+    min_n = min(cs["n"] if cs else 0, ts_["n"] if ts_ else 0)
+    out: dict[str, Any] = {
+        "control_n": cs["n"] if cs else 0, "treatment_n": ts_["n"] if ts_ else 0,
+        "control_games": cs["games"] if cs else 0, "treatment_games": ts_["games"] if ts_ else 0,
+        "a_diff": d, "fill_rate_control": rc, "fill_rate_treatment": rt, "b_ratio": ratio,
+        "c_markout": markout, "judged_n": JUDGED_N, "judged": min_n >= JUDGED_N}
+    if min_n < JUDGED_N:
+        out["state"] = f"NO VERDICT YET: judged n not reached (smaller arm n={min_n} of {JUDGED_N}); numbers are descriptive"
+        return out
+    a_holds = bool(d and d["lower95"] > 0)
+    b_holds = bool(ratio is not None and ratio >= MIN_FILL_RATE_RATIO)
+    out["a_holds"], out["b_holds"] = a_holds, b_holds
+    if d and d["upper95"] < REJECT_UPPER:
+        out["state"] = f"REJECT: upper 95% bound of treatment-minus-control {d['upper95']:+.3f} < +{REJECT_UPPER} at judged n"
+    elif a_holds and not b_holds:
+        out["state"] = "(a) holds but (b) fails: removed fills, not adverse selection"
+    elif a_holds and b_holds:
+        if not markout.get("judged"):
+            out["state"] = "(a)/(b) hold, pending (c)"  # never ADOPT before (c) is judged
+        elif markout.get("holds"):
+            out["state"] = "ADOPT: (a), (b), (c) all hold at judged n"
+        else:
+            out["state"] = "(a)/(b) hold, (c) fails: not adopted"
+    else:
+        out["state"] = "INCONCLUSIVE at judged n: (a) lower bound not above 0 and not rejected"
+    return out
+
+
 def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable[[str, str], dict]],
                  window_note: str = "", since: Optional[datetime] = None,
-                 assign: Optional[tuple[str, float]] = None) -> dict:
+                 assign: Optional[tuple[str, float]] = None, markout_dir: Path = MARKOUT_DIR) -> dict:
     if since is not None:
         events = [r for r in events if _ts(r) >= since]
     cells: dict[tuple[str, str, str], dict[str, Any]] = defaultdict(lambda: {
@@ -283,6 +379,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             if ts >= CANCEL_PATH_FIX_EPOCH:
                 day_cancel[day][ev] += 1
     cell_out = []
+    verdict_in: dict[tuple[str, str], dict] = defaultdict(dict)
     for (book, sport, arm), c in sorted(cells.items()):
         if c["first_ts"] is None:
             continue
@@ -295,6 +392,16 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         filled = [x for x in rows if x.get("fills", 0) > 0]
         settled = [x for x in filled if x.get("settled") and x.get("price") is not None]
         wins = sum(1 for x in settled if x.get("won"))
+        if fills_for and book == "shadow" and arm in ("control", "treatment"):
+            vbg: dict = defaultdict(list)  # W81.1-B: only orders submitted at/after the top-up count toward the verdict
+            fills_post_n = 0
+            for (_, tk, ots), x in zip(c["fill_orders"], rows):
+                if ots < TOPUP_TS or x.get("fills", 0) <= 0:
+                    continue
+                fills_post_n += 1
+                if x.get("settled") and x.get("price") is not None:
+                    vbg[game_of(tk)].append((1.0 if x["won"] else 0.0) - x["price"])
+            verdict_in[(book, sport)][arm] = {"vals_by_game": dict(vbg), "orders_post": c["orders_post"], "fills_post": fills_post_n}
         attempts = c["cancel_ok"] + c["cancel_failed"]
         days = max((now - c["first_ts"]).total_seconds() / 86400.0, 1.0)
         per_week = len(filled) / days * 7.0 if fills_for else None
@@ -345,8 +452,21 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
                                                "tripped": len(sk_days) == 3 and len(rates) == 3 and all(x > SKIP_RATE_MAX for x in rates)}
     n_no = sum(x["cancels"]["no_outcome_over_15m"] for x in cell_out)
     checks["scheduled_cancel_no_outcome_15m"] = {"count": n_no, "tripped": n_no > 0}
-    checks["treatment_markout_30m_worse_than_control"] = {"tripped": False, "status": "NOT_EVALUABLE",
-                                                          "reason": "no markout/candle collection in this job"}
+    mrows = load_markouts(markout_dir / "markouts.jsonl")
+    epoch = None
+    try:
+        epoch = _ts({"ts": json.loads((markout_dir / "EPOCH.json").read_text())["collection_start"]})
+    except (OSError, ValueError, KeyError):
+        pass
+    mk = {sp: markout_c(mrows, sp, epoch) for _, sp in SPORTS}
+    mk_tripped = [sp for sp, m in mk.items() if m["judged"] and m["holds"] is False]
+    checks["treatment_markout_30m_worse_than_control"] = {
+        "tripped": bool(mk_tripped), "tripped_sports": mk_tripped,
+        "status": ("COLLECTING" if epoch else "NOT_EVALUABLE"),
+        "collection_start": epoch.isoformat() if epoch else None,
+        "n_by_sport": {sp: {"control": m["control_n"], "treatment": m["treatment_n"], "judged": m["judged"]} for sp, m in mk.items()},
+        "reason": ("forward collector (W81.1-B); judged at the same n rule on post-collection fills" if epoch
+                   else "collector has not written EPOCH.json yet")}
     checks["order_on_non_demo_host"] = {"tripped": False, "status": "GUARDED",
                                         "reason": "demo_host_ok() refuses at the order path; this job reads demo only"}
     for name, ch in checks.items():
@@ -355,6 +475,9 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
     return {"generated_utc": now.isoformat(), "judged_n_per_arm": JUDGED_N, "weeks": WEEKS,
             "since": since.isoformat() if since else None, "cells": cell_out, "turn_off_checks": checks, "tripped": trips, "note": window_note,
             "test_start_utc": CANCEL_PATH_FIX_EPOCH.isoformat(), "topup_utc": TOPUP_TS.isoformat(),
+            "verdicts": {f"{b}|{sp}": verdict_for(arms, mk.get(sp, {})) for (b, sp), arms in sorted(verdict_in.items())},
+            "verdict_rules": {"unit": "per (book, sport)", "eligible_fills": f"order submitted at/after {TOPUP_TS.isoformat()} (cash-starved days excluded; earlier fills are descriptive only)",
+                              "(c)": "forward-collected 30-min markout; never ADOPT before (c) is judged"},
             "assignment_check": assignment_check(events, *assign) if assign else None}
 
 
@@ -403,6 +526,9 @@ def summary_line(rep: dict) -> str:
         s = "n/a" if c["settle_minus_price_on_fills"] is None else f"{c['settle_minus_price_on_fills']:+.2f}"
         parts.append(f"{c['book']}/{c['sport']}/{c.get('arm', '?')}: orders={c['orders']} fills={f} games={c.get('distinct_games', 'n/a')} s-p={s}")
     t = [x["condition"] for x in rep["tripped"]]
+    v = "; ".join(f"{k}: {x['state'].split(':')[0]}" for k, x in (rep.get("verdicts") or {}).items())
+    if v:
+        parts.append("VERDICT[" + v + "]")
     return ("FORWARD-TEST (ADR-0072) " + rep["generated_utc"][:16] + "Z | " + ("; ".join(parts) or "no events yet")
             + " | turn-off: " + ("TRIPPED " + ",".join(t) if t else "none tripped"))
 

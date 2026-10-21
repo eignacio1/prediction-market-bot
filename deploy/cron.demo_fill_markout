@@ -1,0 +1,6 @@
+# BEGIN W81.1-B DEMO FILL MARKOUT COLLECTOR
+# ADR-0072 criterion (c): held-side 1/5/30-minute markouts after each demo fill, collected FORWARD from install (addendum 2026-10-20).
+# Read-only demo GETs (fills + 1-minute candles); places, cancels and changes nothing; refuses off the demo host. Writes ONLY exp_output/FORWARD_TEST/markouts/.
+# Every 10 min at :04,:14,...:54 (no other job runs at :x4); bounded 400 orders/run; resumable (done set = order_ids already in markouts.jsonl).
+4-54/10 * * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/demo_fill_markout_collector.py >> logs/demo_fill_markout.log 2>&1
+# END W81.1-B DEMO FILL MARKOUT COLLECTOR

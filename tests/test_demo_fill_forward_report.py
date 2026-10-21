@@ -331,3 +331,70 @@ def test_summary_line_names_every_arm():
     line = rpt.summary_line(rep)
     assert "shadow/NHL/control" in line and "shadow/NHL/treatment" in line and "shadow/NHL/unassigned_pre_test" in line
     assert "games=1" in line
+
+
+# ---- W81.1-B: per-(book, sport) verdict under the ADR-0072 addendum 2026-10-20 ----
+def _arm(vals_by_game, orders_post, fills_post):
+    return {"vals_by_game": vals_by_game, "orders_post": orders_post, "fills_post": fills_post}
+
+
+def _games(mean, n_games, per_game):
+    # alternating +/- so each game's mean is `mean`+-0.05 and the pooled mean is exactly `mean`
+    return {f"g{i}": [mean + (0.05 if (i + j) % 2 else -0.05) for j in range(per_game)] for i in range(n_games)}
+
+
+def test_verdict_below_judged_n_is_no_verdict():
+    arms = {"control": _arm(_games(0.0, 10, 5), 100, 50), "treatment": _arm(_games(0.3, 10, 5), 100, 50)}
+    v = rpt.verdict_for(arms, {"judged": False})
+    assert v["state"].startswith("NO VERDICT YET") and v["judged"] is False
+
+
+def test_a_and_b_hold_but_c_unjudged_reads_pending_never_adopt():
+    arms = {"control": _arm(_games(0.0, 30, 20), 1000, 600), "treatment": _arm(_games(0.4, 30, 20), 1000, 300)}
+    v = rpt.verdict_for(arms, {"judged": False, "holds": None})
+    assert v["state"] == "(a)/(b) hold, pending (c)"
+
+
+def test_adopt_only_when_c_judged_and_holds():
+    arms = {"control": _arm(_games(0.0, 30, 20), 1000, 600), "treatment": _arm(_games(0.4, 30, 20), 1000, 300)}
+    assert rpt.verdict_for(arms, {"judged": True, "holds": True})["state"].startswith("ADOPT")
+    assert "(c) fails" in rpt.verdict_for(arms, {"judged": True, "holds": False})["state"]
+
+
+def test_a_holds_b_fails_is_removed_fills():
+    arms = {"control": _arm(_games(0.0, 30, 20), 1000, 600), "treatment": _arm(_games(0.4, 30, 20), 1000, 100)}
+    assert "removed fills, not adverse selection" in rpt.verdict_for(arms, {"judged": False})["state"]
+
+
+def test_reject_when_upper_bound_below_005():
+    arms = {"control": _arm(_games(0.10, 30, 20), 1000, 600), "treatment": _arm(_games(0.0, 30, 20), 1000, 500)}
+    assert rpt.verdict_for(arms, {"judged": False})["state"].startswith("REJECT")
+
+
+def test_game_clustering_widens_se_vs_independent_fills():
+    one_game_each = {"g0": [0.5] * 600, "g1": [-0.5] * 600}  # two games, wildly different
+    m = rpt._clustered(one_game_each)
+    assert m["n"] == 1200 and m["games"] == 2 and m["var"] > 0.1
+
+
+def test_markout_c_excludes_pre_collection_and_needs_judged_n():
+    epoch = NOW - timedelta(days=1)
+    rows = [{"sport": "NFL", "arm": "treatment", "game": "g", "h30": -0.1, "fill_ts": (NOW - timedelta(days=2)).isoformat()},
+            {"sport": "NFL", "arm": "control", "game": "g", "h30": 0.0, "fill_ts": NOW.isoformat()}]
+    m = rpt.markout_c(rows, "NFL", epoch)
+    assert m["treatment_n"] == 0 and m["control_n"] == 1 and m["judged"] is False and m["holds"] is None
+
+
+def test_build_report_verdict_counts_only_post_topup_orders(monkeypatch):
+    monkeypatch.setattr(rpt, "CANCEL_PATH_FIX_EPOCH", NOW - timedelta(days=9))
+    monkeypatch.setattr(rpt, "TOPUP_TS", NOW - timedelta(hours=2))
+    tk = "KXNFLGAME-26OCT11AAABBB-AAA"
+    events, fills = [], {}
+    for i, (mins, arm) in enumerate([(600, "control"), (60, "control"), (600, "treatment"), (60, "treatment")]):
+        oid = f"o{i}"
+        events.append(ev(mins, event="shadow_order", row_id=f"run|{tk}|{i}", ok=True, order_id=oid, ticker=tk, arm=arm))
+        fills[oid] = {"fills": 1.0, "settled": True, "won": True, "price": 0.4}
+    rep = rpt.build_report(events, NOW, lambda oid, t: fills[oid])
+    v = rep["verdicts"]["shadow|NFL"]
+    assert (v["control_n"], v["treatment_n"]) == (1, 1)  # the two pre-top-up orders are descriptive only
+    assert v["state"].startswith("NO VERDICT YET")
