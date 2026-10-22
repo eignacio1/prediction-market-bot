@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-21T06:40:00Z (T-1044 — Coverage/pressure gap, bot-side: man share, 5+ rusher rate and pressure are team traits at six games, but crossed with QB response they add no measurable yards beyond the frozen passyds model; Muse prior-season coverage values are null, QB time-to-throw FAILED on level) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261021T0640Z_W82_3.md` for full session detail.
+**Last reviewed:** 2026-10-22T00:30:00Z (T-1050 — Weekly point-in-time capture of five Sharp NFL cards is live on the box; Muse card accuracy 22/22 comparable rows; PFR is not capturable by GET; 82.3 cross cannot run on 2026 (descriptive only)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261022T0030Z_W83_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
