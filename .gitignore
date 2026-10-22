@@ -191,3 +191,6 @@ exp_output/KALSHI_HISTORY/thin_par/
 
 # Visual Dashboard local builds (the box serves it live at /visual)
 exp_output/VISUAL_DASHBOARD/
+
+# W83.3 NHL event store (raw cache + parquet; manifest is committed)
+exp_output/NHL_EVENTS/
