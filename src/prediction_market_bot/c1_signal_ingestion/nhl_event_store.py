@@ -29,6 +29,7 @@ import datetime as dt
 import gzip
 import hashlib
 import json
+import os
 import re
 import sys
 import threading
@@ -89,7 +90,7 @@ def cache_path(root: Path, kind: str, season: Any, key: Any) -> Path:
 def write_cache(path: Path, url: str, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     body = json.dumps({"_url": url, "_fetched_at_utc": utc_stamp(), "payload": payload}, separators=(",", ":"))
-    tmp = path.with_suffix(".tmp")
+    tmp = path.with_name(f"{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")  # unique per writer: two fetchers may race on one game
     with gzip.open(tmp, "wt", encoding="utf8", compresslevel=6) as fh:
         fh.write(body)
     tmp.replace(path)
@@ -338,7 +339,12 @@ def compile_store(root: Path) -> dict:
                 bx += parse_box_players(gid, season, b)
                 facts.update({"box_" + k: v for k, v in parse_box_team(b).items()})
             if have["shifts"]:
-                sh += parse_shifts(gid, season, read_cache(cache_path(root, "shifts", season, gid))["payload"])
+                seen = set()   # the source repeats whole shift rows within a chart; keep the first of each exact repeat
+                for r in parse_shifts(gid, season, read_cache(cache_path(root, "shifts", season, gid))["payload"]):
+                    key = tuple(r.values())
+                    if key not in seen:
+                        seen.add(key)
+                        sh.append(r)
             recon.append(facts)
         for name, rows in (("games", gm), ("events", ev), ("shifts", sh), ("box_players", bx), ("rosters", ro)):
             df = pd.DataFrame(rows)

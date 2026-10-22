@@ -68,3 +68,23 @@ def test_cache_round_trip(tmp_path):
     s.write_cache(path, "http://x", {"a": 1})
     assert s.read_cache(path)["payload"] == {"a": 1}
     assert not list(tmp_path.rglob("*.tmp"))
+
+
+def test_write_cache_concurrent_writers_do_not_collide(tmp_path):
+    # W83.3: two fetchers racing on one game shared a fixed .tmp name and crashed the replace
+    import threading
+    from prediction_market_bot.c1_signal_ingestion import nhl_event_store as m
+    path = tmp_path / "pbp" / "2024" / "1.json.gz"
+    errs = []
+
+    def go():
+        try:
+            for _ in range(30):
+                m.write_cache(path, "u", {"a": 1})
+        except Exception as e:  # noqa: BLE001
+            errs.append(e)
+    ts = [threading.Thread(target=go) for _ in range(6)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert not errs
+    assert not list(path.parent.glob("*.tmp"))
