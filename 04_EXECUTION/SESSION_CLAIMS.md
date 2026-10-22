@@ -1012,3 +1012,4 @@
 | 2026-10-22T03:25:03Z | W84.3 | CLOSED — W84.3 NHL depth lane: 3 PIT factors from event store, Part B vs Kalshi = too few to tell; D5(b) 7/0/0 -> 2/2/3 (PR #322) (commit `779bb3e`) |
 | 2026-10-22T03:25:15Z | W84.3 | CLOSED — merge confirmed, HEAD (138938b) is ancestor of origin/main — NHL depth lane merged PR #322; Part B too few to tell |
 | 2026-10-22T23:32:57Z | GG-1090..GG-1094 T-1110..T-1112 EXP-041 | STANDARD — W85.1 NFL market-anchored price built offline + pre-registered (EXP-041) — FOR D3 NFL 1->2, D5(b) NFL priced-from-line 0->n, P3 — pillars DEPTH+PROOF |
+| 2026-10-22T23:33:03Z | GG-441, GG-1080..GG-1083, T-TBD none | STANDARD — W85.3: install gate refuses on RED + kill switch counts open/unresolved stake & persists state (GG-441) — FOR PLUMBING (before real capital) — kill switch + install gate |
