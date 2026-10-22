@@ -495,7 +495,9 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-078 — T4 MLB's Real ~341-Bet/Day Cadence Means Kill-Switch Fate Is Decided Within ~15 Days Regardless of True Edge Sign; Long-Horizon Projections for T4 Are Not Meaningful at Any Stake Cap
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** WATCH ITEM · **Severity:** LOW
+
+Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ kelly_fraction becomes nonzero (ADR-0048 reactivation).
 
 **Current state (2026-10-08, W59.1):** T4M-PROJ kelly_fraction is 0.0 (ADR-0048), so the kill-switch-fate concern is moot while sizing is zero; reopens on reactivation. **Next:** Re-run mc_empirical_bootstrap.py before any reactivation.
 
@@ -1975,32 +1977,6 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ---
 
-### GG-233 — Task briefing restated ADR-0056 D2 as adopting the superseded `T4N-` convention, not the actually-signed `T4MLB-`/`T4NBA-`/`T4NFL-`/`T4NHL-` form
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** ADR-0056 l.87 explicitly states T4N- is NOT adopted and must be corrected to T4NFL- before code ships; ADR text is correct, only the one-off briefing was wrong. **Next:** Accept as one-off (close) unless a T4N- string is found in src/.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-233 |
-| Category | Documentation drift — a downstream task briefing restated a settled ADR's adopted decision incorrectly, citing a superseded intermediate option as if it were the signed one. |
-| What was found | T-510's task brief (operator-relayed, 2026-08-31/09-01) states: "ADR-0056 ... settled APR-0032's D2 as the `T4N-` naming convention for NFL." Direct reading of `03_DECISIONS/ADR-0056_sport-axis-first-class-attribute-nfl-band-naming-epoch-inheritance.md` §3 shows this is incorrect: the single-letter `T4N-PROJ`-style option (mirroring MLB's `T4M-`) was the *original* 2026-08-20 recommendation, superseded before sign-off by Amendment (iii) ("Revised recommendation", 2026-08-21, T-480/GG-200). The ADR's own text is explicit: "if any draft or prior session used `T4N-` naming, it is not authorized and must be corrected to `T4NFL-` before that code ships." The actually-accepted D2 convention (Earl Ignacio, 2026-08-21) is the four-letter sport-coded form — `T4MLB-`, `T4NBA-`, `T4NFL-`, `T4NHL-` — with MLB/NBA grandfathered on their existing pre-ADR-0056 names and NFL/NHL adopting the four-letter form from their first cell forward. |
-| When it should have been caught | At the point the T-510 briefing text was composed/relayed, by re-reading ADR-0056 §3 in full (not just its D2 summary line) before citing its adopted convention in a downstream task instruction — the same "verify before citing an ADR's settled decision" discipline Hard Rule 10 and this project's external-claims-verification standard already require for shared nav files. |
-| Phases it survived | Unknown how many sessions/briefings between ADR-0056's 2026-08-21 acceptance and this 2026-08-31/09-01 T-510 claim carried the same incorrect `T4N-` citation forward — not traced in this session (out of scope; would require grepping session handoffs and prior task briefs for `T4N-` citations, which is a reasonable follow-on, not done here). |
-| Why it survived | ADR-0056's own structure invites this exact error: §3 presents the original recommendation, the amendment, and the final adopted form in sequence within one section, and a skim (or a summary written from an earlier draft of the ADR, before Amendment (iii) landed) can pick up the superseded option instead of the final one. There is no automated check that diffs a task briefing's ADR citations against the ADR's own current text. |
-| Impact | LOW as caught — no code was written under the wrong convention; T-510 verified against source before drafting ADR-0062 and used the correct `T4NFL-`/`T4NHL-` form throughout. Impact would have been MEDIUM-HIGH had `T4N-*` `ExecutionBand` members shipped to `execution_bands.py` under this mistaken citation — ADR-0056 §3 explicitly authorizes correcting such a slip only *before* the code ships; after shipping it would require a superseding ADR per Hard Rule 3. |
-| Discovery | 2026-08-31/09-01, T-510, while reading ADR-0056 in full to establish the correct naming convention for ADR-0062's NFL/NHL band-member proposals, per the task's own instruction to flag explicitly if the settled convention did not extend cleanly. |
-| Resolution | Not resolved by this entry — registration only. ADR-0062 (this session's deliverable) uses the verified `T4NFL-`/`T4NHL-` form and states this correction explicit in its own text. Follow-on (unstaffed): grep prior session handoffs / carry-forward docs for a `T4N-` citation to determine how far the incorrect restatement propagated before this catch. |
-| Status | OPEN. |
-
-</details>
-
----
-
 ### GG-487 — MLB shadow settlement y is derived from games-cache final scores, never cross-checked against Kalshi's own settlement
 
 **Status:** OPEN · **Severity:** LOW
@@ -2472,32 +2448,6 @@ When a new governance process failure is discovered:
 
 ---
 
-### GG-258 — Task brief pre-assigned `EXP-026`/`HYP-011` to a new NFL moneyline-LR experiment, but those IDs are already canonically registered to a different, pre-existing MLB moneyline experiment
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** HYP011 preregistration l.7 reserves EXP-026 for the MLB moneyline LR experiment; the NFL experiment ID collision cited in the entry is not resolved by any rename found. **Next:** Assign the NFL experiment a fresh EXP id.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-258 |
-| Category | Hypothesis/experiment-ID collision — same root shape as GG-256 (T-number) and GG-162/GG-199 (GG-number): a number gets used twice for two unrelated things because the assigner didn't check the live registry first. This instance is a step upstream of those — it wasn't a race between two live sessions, it was a task brief (handed to this session) that specified `EXP-026`/`HYP-011` for "an NFL moneyline logistic regression" without checking `05_RESEARCH_EXPERIMENTS/HYPOTHESES.md` first. |
-| What was found | `HYPOTHESES.md` line 194-231 already registers `HYP-011` as "Moneyline LR forecasts beat market on a selected subset, net of fill cost" — an **MLB** experiment (`KXMLBGAME`, `MLBTeamStatsStore`, cell `(mlb_moneyline, T1_MULTI_DAY)`), pre-registered 2026-09-03 under APR-0033/T-517, with `EXP-026` explicitly reserved for it ("EXP-026 (reserved, not yet run)", `HYPOTHESES.md` line 231; full pre-registration in `05_RESEARCH_EXPERIMENTS/HYP011_moneyline_lr_preregistration_2026-09-03.md`). This session's task brief independently assigned the same two IDs, `EXP-026` and `HYP-011`, to a different, NFL-specific moneyline LR experiment using `nfl_ingestion.py`/`nfl_team_stats_store.py` (unblocked by T-526, landed 2026-09-08/09). These are not the same experiment — different sport, different data source, different market family — and writing an NFL pre-registration under the already-occupied `EXP-026`/`HYP-011` labels would either silently overwrite/conflate the two in `HYPOTHESES.md`'s registry table or produce two entries claiming the same ID, exactly the ambiguity GG-199's uniqueness check exists to catch for GG-numbers (no equivalent automated check exists for EXP-/HYP-numbers). `04_EXECUTION/ACTIVE_QUEUE.md`'s "Free IDs" hint line (`EXP-026+`) is itself stale — it was written before (or not updated after) the 2026-09-03 MLB HYP-011 reservation consumed EXP-026, so a reader trusting that hint line alone would repeat this exact collision. |
-| When it should have been caught | Before the task brief was written / before this session began substantive pre-registration work — a single grep of `HYPOTHESES.md` for `HYP-011` or `EXP-026` (which this session ran at Deliverable-1 setup time, per Hard Rule 11's register-and-stop discipline) would have surfaced the existing MLB pre-registration immediately. |
-| Phases it survived | N/A — caught before any write occurred under the colliding IDs. This session's own `SESSION_CLAIMS.md` row (`2026-09-09T00:29:49Z \| T-531 \| T-531/EXP-026/HYP-011: NFL moneyline LR...`) already carries the wrong EXP/HYP labels in its free-text description (the claimed task ID itself, `T-531`, is fine and does not collide with anything) — that row is not edited retroactively (SESSION_CLAIMS.md rows are append-only history) but this entry and the corrected pre-registration filed under the real next-free IDs (`HYP-012`/`EXP-027`, verified free against `origin/main` at discovery time) supersede its EXP/HYP text. |
-| Why it survived | `ACTIVE_QUEUE.md`'s "Free IDs (a hint, not an assignment)" line is explicitly documented as a hint, not a live-checked assignment, and nothing forces a reader (including whoever drafted this session's task brief) to cross-check it against `HYPOTHESES.md`'s actual registry table before pre-committing specific ID numbers into task instructions. |
-| Impact | LOW — caught at pre-registration time, before any model was fit or any file written under the colliding IDs; no data corrupted, no work lost. Would have risen to MEDIUM (a corrupted/ambiguous hypothesis registry, two unrelated pre-registrations both claiming `HYP-011`/`EXP-026`) had this session proceeded to write and push Deliverable 1 under the assigned-but-already-taken labels. |
-| Discovery | 2026-09-09, this session (T-531, worktree `session/20260909T002833Z-exp026-hyp011-nfl-moneyline-lr`), while reading `05_RESEARCH_EXPERIMENTS/` for the experiment-file naming convention ahead of writing Deliverable 1 — found `HYP011_moneyline_lr_preregistration_2026-09-03.md` already present and read it in full, confirmed against `HYPOTHESES.md`'s registry table and a repo-wide grep for `EXP-026`. Register-and-stop per Hard Rule 11: this session's NFL moneyline LR pre-registration proceeds under the corrected, verified-free `HYP-012`/`EXP-027` instead of the collision-prone `HYP-011`/`EXP-026` given in the brief. |
-| Resolution | Not started as a systemic fix. This session's local resolution is to use `HYP-012`/`EXP-027` for its own NFL pre-registration (see this session's Deliverable 1 commit). The systemic gap — no atomic reservation or live-registry cross-check exists for EXP-/HYP-numbers, unlike `claim_session.sh`'s (imperfect, per GG-256) protection for T-numbers — remains open; a `check_id_collision.sh`-style check extended to `HYPOTHESES.md`/`EXP-` prefixes would close it. |
-| Status | OPEN. |
-
-</details>
-
----
-
 ### GG-260 — Shared `main` working tree carries uncommitted `ACTIVE_QUEUE.md` drift invisible to worktree-isolated sessions; recurrence of the condition T-505 fixed in Wave 10
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -2671,7 +2621,9 @@ When a new governance process failure is discovered:
 
 ### GG-285 — At observed effect sizes, APR-0024's per-band P&L n* is 10-11 NFL seasons (NFL moneyline) and ~1.6 MLB seasons (T4M-PROJ) from clearing; the P&L gate as currently written may not close within any practical operating horizon for signals whose sd/mean ratio is ~15-28x
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** WATCH ITEM · **Severity:** MEDIUM
+
+Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the operator adopts a practicable G6 gate or APR-0024's n* or the observed effect size changes.
 
 **Current state (2026-10-08, W59.1):** No ADR after APR-0024 supersedes the n* P&L gate (ADR list through ADR-0071 has none; ADR-0057 is cell-scoped G6 rescope only); grep shows GG-285 still listed OPEN in OPERATOR_CONSOLE.md line 272; analysis finding awaiting operator decision. **Next:** Operator decision on a practicable gate (e.g. calibration-based or sequential test) via a decision-request ADR.
 
@@ -2716,28 +2668,6 @@ When a new governance process failure is discovered:
 </details>
 
 ---
-
-### GG-292 — 14 stray remote session branches (2026-08-24 through 2026-09-15) unlanded; `sweep_stray_branches.sh` unavailable on origin/main to sweep them
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** sweep_stray_branches.sh now exists on main; 47 remote branches are not merged into origin/main (was 14). **Next:** Run the sweep after triaging unlanded work.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-292 |
-| Category | Tooling/process — accumulated backlog, out-of-scope discovery during T-557's Step 9 (stray-branch sweep) |
-| What was found | `git branch -r --no-merged origin/main` (the sanctioned manual substitute for the missing `sweep_stray_branches.sh` — see GG-289) returned 15 remote branches never merged to `origin/main`. One (`session/20260918T022544Z-land-strays-install-closeout-fix`, this session's own) was verified content-superseded via diff-stat against `origin/main` and deleted safely. The remaining 14 belong to other, unrelated past sessions, dated 2026-08-24 through 2026-09-15: `session/20260824T233617Z-t484-phase2-input`, `session/20260825T043355Z-t493-adr0058-t1-reopen`, `session/20260826T045926Z-t497-t1-flat-stake-wrapper`, `session/20260903T002904Z-record-signoffs-20260903`, `session/20260903T184908Z-apr0033-accept-and-reroute`, `session/20260904T000244Z-rerecord-adr-signoffs`, `session/20260904T000252Z-gg242-filename-sweep`, `session/20260905T162347Z-hyp011-moneyline-lr-run`, `session/20260905T221723Z-t500-nfl-price-capture`, `session/20260905T221739Z-nfl-readiness-audit`, `session/20260905T221746Z-t4-nfl-nhl-scaffolding`, `session/20260909T153928Z-gg255-mlb-t1-game-market-run-script`, `session/20260910T012346Z-gg267-per-row-model-provenance`, `session/20260915T003401Z-nfl-capture-gap-0912`. |
-| Why it matters | Unknown whether each branch's work was (a) intentionally abandoned, (b) landed by content elsewhere under a different branch/commit, or (c) still-needed work orphaned by a session that never closed out. `sweep_stray_branches.sh`, the script that would normally triage this, does not exist on `origin/main` — it is part of the still classifier-blocked `580e9c9` commit (GG-288/GG-289) — so this triage was done by hand this session and is not repeatable without the same manual `git branch -r --no-merged` grep until that script lands. |
-| Impact | LOW / informational. No action taken on any of the 14 — none merged, none evaluated for content, per Hard Rule 11 (name only, do not merge) and the standing task constraint not to merge anything older than 2026-09-15 without asking (13 of the 14 predate that date outright; the 14th, `20260915T003401Z`, is same-day but a different, unverified session). Nothing is at risk sitting as-is; this is a backlog-visibility gap, not a live failure. |
-| Discovery | 2026-09-18, T-557 (this session), Step 9 of `/session-end` (stray-branch sweep), using the manual `git branch -r --no-merged origin/main` substitute for the unavailable `sweep_stray_branches.sh`. |
-| Resolution | Not resolved — requires operator review of each of the 14 branches to decide land / discard / leave. Blocked in part on the same Deliverable 2/GG-289 classifier question (once `sweep_stray_branches.sh` lands, future sessions get a repeatable triage tool instead of a manual grep). |
-| Cross-references | GG-288, GG-289 (classifier block on `580e9c9`, which contains `sweep_stray_branches.sh`), Hard Rule 11 (register-and-stop on out-of-scope discovery). |
-
-</details>
 
 ### GG-295 — Live NFL T1 portfolio's `kalshi_threshold` backfill (all 42 positions) has no corresponding commit anywhere in repo history and is misattributed to an unrelated session (T-562)
 
@@ -3151,7 +3081,9 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-328 — Archive books are exactly complementary (no_ask = 1 - yes_bid); YES/NO cost asymmetry exists only in availability, contradicting the "separate side costs" premise
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** WATCH ITEM · **Severity:** LOW
+
+Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archive books stop being exactly complementary (no_ask != 1 - yes_bid).
 
 **Current state (2026-10-08, W59.1):** Finding only; books exactly complementary. **Next:** Drop the separate-side-cost premise from future designs.
 
@@ -3762,25 +3694,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 </details>
 
-### GG-420 — Two handoff files share the name SESSION_HANDOFF_20261003_0020.md
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** git log shows 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0020.md written by two commits (59f7f78 W48.3 and 42b3d30 T-631): a content collision is real. **Next:** Rename one handoff with a unique suffix and add a name-collision check.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-420 |
-| Category | Process |
-| What was found | 48.1 (on main) and 48.3 (on session/20261003T000917Z-eyes-and-nhl) both wrote that filename; whichever lands second collides. 48.3's was left on its branch. |
-| Source | 48.1 and 48.3 handoffs |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
 ### GG-421 — vps_job --rate-cap is recorded and cross-checked, not enforced by the runner
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -4189,7 +4102,9 @@ W70.2 (T-850), 2026-10-13. `data/raw/nba/players_2026.json` was missing on the V
 
 ### GG-624 — NFL shadow fills' settle-minus-price (+0.39) rests on ~4 correlated games; must not be cited as E2
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** WATCH ITEM · **Severity:** LOW
+
+Re-filed 2026-10-21 under the operator's observation rule. Reopens if: NFL shadow fills span enough independent games to report E2 with game-clustered CIs.
 
 W70.1 (T-853) audit: 0 of 231 fills after kickoff, so no timing artifact. But all fills are YES-side taker crosses on ladder rungs of totals/spreads that resolve together; first-fill-per-position +0.394 on 58 settled positions across 4 settled games (BUFLAR pending). Report E2 for NFL only with game-clustered CIs.
 

@@ -87,3 +87,13 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 - GG-765 RESOLVED: register rows for ADR-0070..0075 + APR-0034..0036 added, APR-0007/0016 evidence repointed; `check_register_parity.py` CLEAN (93 docs).
 - GG-346 stays OPEN: ISO-date fix + regression test landed in repo (box read-only test: ISO 200, MM/DD/YYYY 406); closes after deploy and a clean box run.
 - OPEN 206 -> 205.
+
+## Sweep tally
+| Sweep | OPEN before -> after | Ids closed / re-filed |
+|---|---|---|
+| GS-3 (2026-10-22) | 210 -> 202 | Closed: GG-233, GG-258, GG-292, GG-420. Re-filed WATCH ITEM: GG-285, GG-328, GG-624, GG-078 |
+
+## Sweep lists
+- GS-3 class P (closed with evidence): GG-233, GG-258, GG-292, GG-420.
+- GS-3 class O (WATCH ITEM): GG-285, GG-328, GG-624, GG-078.
+- GS-3 skipped: GG-234/243/256/353/422 (C, claim_session/check_id_collision code), GG-342 (31 unmerged remote branches, none provably on main), GG-195/260/349/350/417 (shared-tree drift, retirement not authorized), GG-409/418/312/763/299/327/041/266/045/410/423/330/331/691 (C, L or operator), E-class engine gaps untouched.
