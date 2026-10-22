@@ -2704,3 +2704,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Operator: "not sure why the 3 daily autos scheduled on Muse were cancelled - but if I'm having Muse run ones scheduled block task per day it's going to take fucking forever (even 3 seems small but baby steps - don't want to overload it yet without much inference on how it's operating at scale). So turn it back on in your Muse block".
 - Cause: the window's charter text ("one daily run") — WINDOW_ERROR_LOG W29. Charter v3 §1b rule 3 now names three daily runs, and says the count is the operator's. Muse block M83-D restores them (his times if Muse has them, else 08:50 / 14:50 / 20:50 PT), each run pulls first and commits+pushes before ending, then R-027.
 - MUSE_WEB.json refreshed (archive 6f3bc82).
+
+## 2026-10-22 W83.1 — weekly NFL source-card capture live; Muse card accuracy 22/22 on comparable rows
+- Decision: new weekly cron `41 21 * * 2,3` (`scripts/source_capture_nfl.py`, own marked block, registered, budget-gated install) captures the five Sharp static cards into `exp_output/SOURCE_CAPTURE/` (point-in-time, never overwritten, as_of = page dateModified). PR #311 merged; box deploy `deployed`, t4_mlb_verdict not_needed.
+- PFR advanced passing is not capturable by plain GET (Cloudflare 403): GG-1000. Registration-vs-install budget chicken-and-egg: GG-1001.
+- Muse card accuracy posted to TO_MUSE.md (22/22 comparable rows; PFR and NGS not comparable). 82.3 cross not re-run on 2026 (no 2026 QB-game coverage/pressure, GG-730); descriptive only, no verdict. Detail: `12_EXPLORATORY/nfl_engine/coverage_gap/results_W83.md`.
+- No pre-registration, model, order or sizing touched.
