@@ -2710,3 +2710,10 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - PFR advanced passing is not capturable by plain GET (Cloudflare 403): GG-1000. Registration-vs-install budget chicken-and-egg: GG-1001.
 - Muse card accuracy posted to TO_MUSE.md (22/22 comparable rows; PFR and NGS not comparable). 82.3 cross not re-run on 2026 (no 2026 QB-game coverage/pressure, GG-730); descriptive only, no verdict. Detail: `12_EXPLORATORY/nfl_engine/coverage_gap/results_W83.md`.
 - No pre-registration, model, order or sizing touched.
+
+## 2026-10-21 17:20 PT — One Visual Dashboard: served live by the box at /visual (operator)
+- Operator: "I am confused where our most current visual dashboard is? ... I want to delete the multiple visual dashboard files and just keep ONE".
+- Cause: the Visual Dashboard was a file the window had to copy to the operator's Mac at each wave close; last copy 10-16 (WINDOW_ERROR_LOG material: #308/#309 were reported "live" when only deployed).
+- Fix: #312 (box renders it at /visual from origin/main; launcher opens it through the Live Terminal's tunnel), #316 (check fix). Box check 20261022T00xx: / 200, /visual 200 (276 KB, web present), /project 200.
+- Mac folder: the four stale dashboard files and Reload Dashboard.command moved to `_to_delete/` (nothing deleted). Kept: Open Live Terminal.command, Open Visual Dashboard.command (new).
+- Watch: pmbot-web-dashboard MemoryCurrent 133.7 MB of a 128 MiB cap at the check (cgroup figure includes page cache; NRestarts 0); /api/data 28 s, /project 47 s. For the gap agent / next wave, not fixed tonight.
