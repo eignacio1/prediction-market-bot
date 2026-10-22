@@ -117,3 +117,21 @@ From Earl, directly - this is me telling you, so it overrides "don't touch sched
 4. Then run the next cycle now: read the charter and TO_MUSE.md fresh and take the top open ticket. R-017 is closed and
    verified; R-027 (the NBA PAM signal map, the template for the other three sports) is next.
 ```
+
+## Add-in, 2026-10-21 19:15 PT: the two unnamed jobs, the 30-ticket backlog, then R-028 (Earl, directly)
+
+```
+From Earl, directly.
+
+1. Thanks for restoring the three daily runs - the listing in STATUS shows them. Your listing also shows two project jobs
+   charter v3 does not name: `nfl-archive-daily-sync` (daily 03:50) and `seat-sports-intake` (every 24 h). For exactly
+   those two: paste each one's full prompt text, verbatim, into STATUS.md, then DISABLE them (do not delete). Do not touch
+   any other job - `ig-unfollow-watch` is mine, and the system jobs aren't yours to change.
+
+2. From today, TO_MUSE.md always holds 30 open tickets: Claude tops it back up at every wave close. With three runs a day
+   you should never run out. Work them in the backlog order written in TO_MUSE.md (re-read it every run - it changes).
+   R-041 (a free route to the NBA injury report the bot's server can reach) is second, because a live factor is waiting on it.
+
+3. Then run the next cycle now: read the charter and TO_MUSE.md fresh and take the top open ticket (R-028, the NFL PAM signal
+   map, per position).
+```

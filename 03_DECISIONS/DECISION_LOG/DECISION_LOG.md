@@ -2729,3 +2729,11 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Defect fixed: `write_cache` fixed `.tmp` name collided between two concurrent fetchers (crash plus spurious failures); unique per pid and thread, regression test. Sweep: only other fixed-name writer is `pregame_shadow/passyds_model.py:184` (`.part`, single downloader, left as is).
 - Edited `tests/test_seat_interface.py` (nhl added to the loops), outside nominal ownership. #314 superseded by #315. Block overran the 90-minute ceiling because of the download and a doubled-rate second fetch process.
 - Deploy: new modules only, no runtime path touched; no t4-mlb restart needed. No refresh job registered (surface_delta 0).
+
+## 2026-10-21 19:15 PT — Wave 83 closed; Wave 84 written; Muse backlog held at 30 (operator)
+- Operator: "Wave 83 finished - set up next wave terminals + muse (hopefully this is the last time I need to remind to produce for Muse). Also - not enough tickets ready to go for Muse, let's have it logged at 30 on any given day."
+- **Standing rule (window):** TO_MUSE.md holds 30 open tickets; the window tops it back up at every wave close. Every wave carries a Muse block. Today: R-031 → R-054 added (18 tickets; 12 → 30 open), backlog order rewritten (R-041, the NBA injury-report route, second).
+- Wave 83 verified (GitHub + box bridge 20261022T013619Z): 83.1 ✅ #311 (weekly Sharp capture, accuracy 22/22), 83.2 🟡 #313/#317 (lineup pre-registration frozen, injury report 403 from the box GG-1030, cron installed while the budget read RED), 83.3 ✅ #315 (NHL data layer). Distance: B1 48 → 52/108; D4 NHL → data layer; D5(b) NHL aggregated 0 → 7. Muse: R-017, R-027 (verified 47 rows); three daily runs live.
+- Wave 84: 84.1 dashboard memory (operator told 17:20 PT) + GG-1030 route + Hard Rule 14 gate; 84.2 NBA PAM mass tier from R-027; 84.3 NHL first factors to a price; M84 (Muse disables exactly `nfl-archive-daily-sync` and `seat-sports-intake` after pasting their prompts verbatim; 30-ticket backlog; R-028).
+- Common rules: handoff file name fixed W81_<n> → W84_<n> (W83's handoffs were misnamed W81_4/W81_5 by the template).
+- MUSE_WEB.json refreshed (24 workstreams, archive e2000aa).

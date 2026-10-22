@@ -478,3 +478,126 @@ run_location x run_gap attributes runs to a gap for free; per-blocker pass-pro a
 - **What could be graded:** the event store has no play-type labels, so the frequencies themselves cannot be checked. I graded each class's player ordering (2025-26, archive pin e2000aa) against one fixed event-store proxy per class, chosen before looking.
 - **Rank agreement (Spearman, n players, top-15 overlap):** Isolation 0.60 (296, 5) · P&R ball handler 0.64 (334, 8) · Spot-up 0.45 (349, 1) · Transition 0.34 (422, 3) · Cut 0.79 (380, 9) · Post-up 0.41 (169, 5) · Roll man 0.56 (317, 4). Four of seven are at 0.5 or above; that line is a reading rule I set after the run.
 - **Use:** the cards are fine as ordering evidence; do not quote them as frequencies. A play-type definition would let the next grade be a real one.
+
+### 2026-10-21 19:10 PT · Watchdog (Claude): R-027 verified; scheduler; the backlog now stands at 30 open tickets
+- **R-027: closed, verified.** `sources/nba/pam-signal-map.md` has all 47 rows (15 PRF + 32 modifiers); FREE 18 · PARTIAL 15 ·
+  NONE 14. The bot builds the NBA PAM mass tier from the FREE rows next (Wave 84.2). Good work.
+- **Scheduler: the three daily runs are confirmed** (`fda3aa3`). Your listing also shows two project jobs the charter does not
+  name: `nfl-archive-daily-sync` (daily 03:50) and `seat-sports-intake` (every 24 h). Charter v3 §1b rule 3 allows only the
+  three runs. Earl's add-in tells you what to do with exactly those two. `ig-unfollow-watch` is Earl's personal job: never touch it.
+- **Backlog rule, from Earl (2026-10-21 18:35 PT): "not enough tickets ready to go for Muse, let's have it logged at 30 on any
+  given day."** Claude keeps **30 open tickets** in this file and tops it back up at every wave close. With three runs a day you
+  should never run dry. Tickets R-031 → R-048 below take the count from 12 to 30.
+- **Card accuracy (from the bot, W83.1):** Sharp's cards: 22 of 22 comparable rows matched what the bot captured. The bot now
+  captures those five Sharp pages itself every week, so you don't re-collect them.
+
+**Backlog order (top-down; supersedes earlier orders):** R-028 → **R-041** → R-018 → **R-046** → R-029 → R-030 → **R-047** →
+R-019 → R-020 → **R-043** → **R-044** → R-021 → R-022 → R-023 → **R-037** → **R-031** → **R-040** → **R-048** → **R-051** →
+**R-052** → **R-054** → R-024 → R-025 → R-026 → **R-045** → **R-049** → **R-050** → **R-053** → **R-035** → **R-042**.
+
+### R-041 · NBA official injury report: a free route that works without a browser (GG-1030)
+**Gap:** the bot's pre-registered NBA lineup factor needs the league's official injury report at fixed times before tip. The
+bot's server gets 403 from the report's host (it blocks datacenter addresses), so the factor is not accruing.
+**What:** find every free route to the SAME official report (the league's PDFs) that a plain HTTP GET can use: other hosts or
+paths for the same files, public archives or mirrors of the PDFs (e.g. GitHub repositories that collect them), and how far
+back each goes. For each route: an eight-part source card, a sample URL for one 2025-26 report, timestamps covered (the
+report is issued several times a day), and whether the copy is byte-identical to the league's. Do not collect the reports
+themselves; the bot will. ESPN or news injury lists are NOT a substitute (the market already prices them).
+**Done when:** every route found is carded, or one STATUS line says none exists.
+
+### R-046 · NBA player matchup data (who guarded whom), 2023-24 → 2025-26
+**Gap:** the matchup cross (seat interface) needs who defends whom. Your R-027 map marked PRF-10's "matchup difficulty" NONE;
+NBA.com's free matchup pages (player vs player: partial possessions, points allowed, FG% while matched) may fill part of it.
+**What:** a source card for NBA.com's matchup tables (definitions verbatim, how partial possessions are counted), then record
+season totals for each defender-offender pair with at least 25 partial possessions, 2023-24 → 2025-26, as `index_fact` records
+in R-016's format (L3-split/nba/matchups.claims.jsonl). Update R-027's map rows this changes.
+**Done when:** three seasons recorded with row counts matching the site; R-027 rows updated.
+
+### R-047 · NHL starting goalies: who confirms them, when, and how accurately (GG-1010)
+**Gap:** the NHL engine's biggest missing input is the starting goalie, known before puck drop.
+**What:** card every free source that names expected and confirmed starters (team accounts, league pages, starting-goalie
+sites), with when each publishes relative to puck drop, and whether a free archive of past announcements exists (site
+history, Wayback captures) for 2021-22 → 2025-26. For one recent week, check each source's named starter against who started.
+**Done when:** each source carded with a timing and accuracy line; one STATUS line naming the best free archive, or none.
+
+### R-043 · NBA defensive tracking dashboards (rim protection, shots defended by distance), 2023-24 → 2025-26
+**Gap:** most of R-027's NONE rows are defensive constructs. NBA.com's free defense dashboards (opponent FG% at the rim when
+the player is the nearest defender, by distance band) may move some to PARTIAL.
+**What:** card the dashboards (definitions verbatim), record per-player values for the three seasons in R-016's format, and
+update the R-027 rows this changes.
+**Done when:** three seasons recorded, row counts matching; R-027 rows updated.
+
+### R-044 · NBA hustle stats, 2023-24 → 2025-26
+**What:** card NBA.com's hustle tables (contested shots by 2 and 3, deflections, charges drawn, screen assists, loose balls,
+box-outs; definitions verbatim) and record per-player season values for three seasons in R-016's format. Update R-027's
+modifier rows this changes.
+**Done when:** three seasons recorded, row counts matching; R-027 rows updated.
+
+### R-037 · NFL charting fields that are free: motion, play action, RPO, pass rushers, box (nflverse FTN data and others)
+**Gap:** the granularity bar is play-level ("motioned to the boundary", "cover 6 vs 3-wide"). nflverse publishes a free FTN
+charting file from 2022. The bot needs each field defined exactly as the source defines it, and to know what else is free.
+**What:** an eight-part card for nflverse's FTN charting data: every field verbatim (is_motion, is_play_action, is_rpo,
+n_pass_rushers, n_defense_box, read_thrown, …), seasons, when a week's file appears, known gaps. Then card any other free
+source of play-level motion or formation data, with how it differs. Do not record values; the bot reads the files directly.
+**Done when:** the FTN card and one line per other source.
+
+### R-031 · NFL officiating crews: assignments and tendencies, 2016 → 2026
+**What:** card the free sources for which referee's crew worked each game (and week-ahead assignments) and for crew penalty
+tendencies (flags per game by type, home vs away). Record each crew's season totals by penalty type for 2016-2025 and 2026 to
+date as `index_fact` records with the population stated (all games that crew worked that season).
+**Done when:** cards written; crew-season records for every season with row counts stated.
+
+### R-040 · NBA referees: assignments and tendencies, 2023-24 → 2025-26
+**What:** card the league's daily referee assignment page (timing: when it posts relative to tip) and free referee tendency
+sources (fouls, free-throw rate, pace in games each referee works). Record per-referee season values for three seasons.
+**Done when:** cards written; three seasons recorded.
+
+### R-048 · NHL officials: assignments and tendencies (GG-1012)
+**What:** card free sources for NHL referee and linesman assignments per game and referee tendencies (penalties called per
+game, power-play opportunities). Record per-referee season values, 2021-22 → 2025-26.
+**Done when:** cards written; five seasons recorded.
+
+### R-051 · MLB home-plate umpires: zone and run environment, 2016 → 2026
+**What:** card free umpire sources (assignments per game; called-strike accuracy, zone size, favor to pitchers or hitters,
+runs above expected). Record per-umpire season values 2016 → 2026 as `index_fact` records with populations stated.
+**Done when:** cards; every season recorded.
+
+### R-052 · MLB park factors by batter hand and batted-ball type, 2016 → 2026
+**What:** card the free park-factor sources (Statcast park factors by handedness and outcome type; FanGraphs), noting each
+one's rolling window (one year or three). Record per-park, per-season values by hand and type.
+**Done when:** cards; every park and season recorded, with the window stated on each record.
+
+### R-054 · MLB pitch arsenals: pitch mix and results by pitch type, 2023 → 2026
+**What:** card Baseball Savant's pitch-arsenal tables (usage, velocity, movement, whiff %, run value per pitch type;
+definitions verbatim). Record per-pitcher, per-pitch-type season values for 2023 → 2026 (pitchers with at least 100 pitches of
+a type).
+**Done when:** four seasons recorded, row counts matching.
+
+### R-045 · NBA clutch splits, 2023-24 → 2025-26
+**What:** card NBA.com's clutch definition (last five minutes, score within five) and record per-player clutch usage, TS% and
+net rating for three seasons, with the minimum-minutes filter stated.
+**Done when:** three seasons recorded.
+
+### R-049 · NHL head coaches and assistants, 2014-15 → 2025-26
+**What:** every team's head coach and power-play / penalty-kill assistant by season, with mid-season changes dated. One card
+per source used.
+**Done when:** every team-season has its head coach; changes dated.
+
+### R-050 · NHL line combinations: what history is free
+**What:** card each free source of forward lines and defense pairs (current lines pages; line-level stat tables such as
+Natural Stat Trick's), with how far back each goes and whether a game-by-game history of who played together exists.
+**Done when:** each source carded; one STATUS line on the best free history.
+
+### R-053 · MLB team defense: catcher framing, outs above average, arm, 2016 → 2026
+**What:** record Savant's catcher framing runs, fielder outs above average and arm strength, per player and team, per season,
+as `index_fact` records (cards from R-029 where they exist).
+**Done when:** every season recorded, row counts matching.
+
+### R-035 · NFL playing surfaces, 2016 → 2026
+**What:** every stadium's surface per season (grass or turf, and turf brand where stated), with changes dated. Add to R-024's
+venue table if it exists by then.
+**Done when:** every venue-season has a surface with a source.
+
+### R-042 · NBA lineups and on/off, prior seasons (2023-24, 2024-25)
+**What:** after R-023, the same lineup and on/off records for the two prior seasons, same format.
+**Done when:** both seasons recorded, row counts matching.
