@@ -194,9 +194,9 @@ note = ""
 [[component]]
 sport = "nhl"
 component = "cross_reference_compatibility"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/nhl_engine/factors.py"
+test = "tests/test_nhl_factors_pit.py"
+note = "W84.3 one point-in-time frame joining xG, special-teams and goalie-workload factors per game, PIT-asserted against PointInTime.completed_before"
 
 [[component]]
 sport = "nhl"
@@ -210,7 +210,7 @@ sport = "nhl"
 component = "temporal_evolution"
 scaffold = "none"
 test = "none"
-note = ""
+note = "not counted (W84.3): rolling as-of features exist in 12_EXPLORATORY/nhl_engine/factors.py with a PIT test, but no stability test across seasons (see NFL entry for the bar)"
 
 [[component]]
 sport = "nhl"
