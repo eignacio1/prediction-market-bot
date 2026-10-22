@@ -18,6 +18,9 @@ across machines, not about import resolution (that's T-282/GG-109's
 from __future__ import annotations
 
 import os
+
+# W84.1: /api/data is cached off-thread in the service (20 s); tests write files then read, so no cache.
+os.environ.setdefault("DASHBOARD_DATA_TTL_S", "0")
 import random
 
 import pytest
