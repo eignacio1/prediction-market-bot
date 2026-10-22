@@ -27,7 +27,7 @@ def main(terms_p, sched_p, candles_p, out):
     s = pd.read_parquet(sched_p); s = s[(s.season == 2025)].copy()
     s["p0"] = ml_prob(s.home_moneyline.to_numpy(float), s.away_moneyline.to_numpy(float))
     t = pd.DataFrame(json.load(open(terms_p))).set_index("game_id")
-    key = {(r.gameday.replace("-", "")[2:], r.away_team + r.home_team): r for r in s.itertuples()}
+    key = {(r.gameday.translate({45: None})[2:], r.away_team + r.home_team): r for r in s.itertuples()}
     mon = {m: i for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split(), 1)}
     rows, sets = [], 0
     for l in open(candles_p):
