@@ -997,3 +997,4 @@
 | 2026-10-22T00:17:10Z | T-1050 | CLOSED — merge confirmed, HEAD (d221c10) is ancestor of origin/main — W83.1 closed; weekly Sharp NFL capture live |
 | 2026-10-22T00:38:06Z | T-1070 | CLOSED — W83.2 PARTIAL: NBA lineup capture installed but report fetch 403s from box (GG-1030); play-type x absorption null (commit `564f772`) |
 | 2026-10-22T00:38:22Z | T-1070 | CLOSED — merge confirmed, HEAD (1873874) is ancestor of origin/main — W83.2 PARTIAL |
+| 2026-10-22T01:22:29Z | T-1060 | CLOSED — merge confirmed, HEAD (865b07a) is ancestor of origin/main — W83.3 NHL engine data layer: PR #315 merged, D4 NHL none → data layer |
