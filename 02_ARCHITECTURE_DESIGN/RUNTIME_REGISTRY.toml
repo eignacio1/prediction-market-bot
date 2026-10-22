@@ -1178,3 +1178,16 @@ max_age_h = "200"
 schedule = "41 21 * * 2,3"
 mirrors = ["deploy/cron.conf", "deploy/cron.source_capture"]
 command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/source_capture_nfl.py >> logs/source_capture_cron.log 2>&1"
+[[component]]
+key = "workflow|nba_ir_relay.yml"
+kind = "workflow"
+source = ".github/workflows/nba_ir_relay.yml"
+status = "live"
+reviewed = true
+purpose = "Relays the official NBA injury-report PDFs (byte-identical) from a GitHub runner to the data/nba-injury-reports branch because the box IP is 403d by Akamai (GG-1030); read only by nba_lineup_window_capture as a fallback. Capture only, feeds no model."
+pillar = "DEPTH"
+writes = []
+alarm = "capture heartbeat in exp_output/NBA/LINEUP_WINDOW/checks.jsonl shows report_found false on game days while data/nba-injury-reports has no commit in 2h+"
+schedule = "4-59/15 14-23,0-4 UTC"
+mirrors = []
+command = "nba_ir_relay.yml"
