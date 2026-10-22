@@ -2803,3 +2803,8 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 ## 2026-10-22 16:32 PT — Muse paused for the rest of the week (operator)
 - Operator, verbatim: "No more muse for the rest of the week - usage limits hit lol"
 - M85 is HELD, not pasted; the 33-ticket backlog in TO_MUSE.md stays as written and is picked up when Muse is back. No Wave 85 block depends on Muse. The next wave's Muse block is skipped until the operator says Muse is back; the 30-ticket top-up rule resumes then.
+
+## 2026-10-22 16:47 PT — Muse stays backlogged; a daily Muse sweep is scheduled (operator)
+- Operator, verbatim: "We'll just keep it backlogged - I'm still getting periodic updates on autos, not sure what the relationship between those autos and usage limits are but I'll still have you do daily sweeps on Muse anyway just to ensure we're aligned"
+- Scheduled task "Muse daily sweep" (trig_01JAiX7XERTuC9CJgs3DaqTW), daily 21:44 PT, cloud-only, automatic approval, push notification. Each run reads charter v3 + TO_MUSE.md, checks Muse's work since the last watchdog entry (order, charter, strict gate, done claims), appends ONE dated watchdog entry to TO_MUSE.md (docs-only), and never writes to the archive or changes the backlog. The backlog itself is still the strategic window's at wave close.
+- M85 stays held; Muse's daily runs read TO_MUSE.md fresh, so they already see R-057..R-062 and the 10-22 order without the paste.
