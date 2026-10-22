@@ -2704,3 +2704,21 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Operator: "not sure why the 3 daily autos scheduled on Muse were cancelled - but if I'm having Muse run ones scheduled block task per day it's going to take fucking forever (even 3 seems small but baby steps - don't want to overload it yet without much inference on how it's operating at scale). So turn it back on in your Muse block".
 - Cause: the window's charter text ("one daily run") — WINDOW_ERROR_LOG W29. Charter v3 §1b rule 3 now names three daily runs, and says the count is the operator's. Muse block M83-D restores them (his times if Muse has them, else 08:50 / 14:50 / 20:50 PT), each run pulls first and commits+pushes before ending, then R-027.
 - MUSE_WEB.json refreshed (archive 6f3bc82).
+
+## 2026-10-22 W83.1 — weekly NFL source-card capture live; Muse card accuracy 22/22 on comparable rows
+- Decision: new weekly cron `41 21 * * 2,3` (`scripts/source_capture_nfl.py`, own marked block, registered, budget-gated install) captures the five Sharp static cards into `exp_output/SOURCE_CAPTURE/` (point-in-time, never overwritten, as_of = page dateModified). PR #311 merged; box deploy `deployed`, t4_mlb_verdict not_needed.
+- PFR advanced passing is not capturable by plain GET (Cloudflare 403): GG-1000. Registration-vs-install budget chicken-and-egg: GG-1001.
+- Muse card accuracy posted to TO_MUSE.md (22/22 comparable rows; PFR and NGS not comparable). 82.3 cross not re-run on 2026 (no 2026 QB-game coverage/pressure, GG-730); descriptive only, no verdict. Detail: `12_EXPLORATORY/nfl_engine/coverage_gap/results_W83.md`.
+- No pre-registration, model, order or sizing touched.
+
+## 2026-10-21 17:20 PT — One Visual Dashboard: served live by the box at /visual (operator)
+- Operator: "I am confused where our most current visual dashboard is? ... I want to delete the multiple visual dashboard files and just keep ONE".
+- Cause: the Visual Dashboard was a file the window had to copy to the operator's Mac at each wave close; last copy 10-16 (WINDOW_ERROR_LOG material: #308/#309 were reported "live" when only deployed).
+- Fix: #312 (box renders it at /visual from origin/main; launcher opens it through the Live Terminal's tunnel), #316 (check fix). Box check 20261022T00xx: / 200, /visual 200 (276 KB, web present), /project 200.
+- Mac folder: the four stale dashboard files and Reload Dashboard.command moved to `_to_delete/` (nothing deleted). Kept: Open Live Terminal.command, Open Visual Dashboard.command (new).
+- Watch: pmbot-web-dashboard MemoryCurrent 133.7 MB of a 128 MiB cap at the check (cgroup figure includes page cache; NRestarts 0); /api/data 28 s, /project 47 s. For the gap agent / next wave, not fixed tonight.
+
+## 2026-10-22 00:45 UTC — W83.2 closed PARTIAL (NBA lineup capture installed but report half blocked; play-type grade and absorber cross done)
+- Part A merged (#313, 0aff806) and the cron is installed on the box (3,18,33,48 * * * *). The surface budget read RED (box HEAD 52044bdc) and the installer still appended the block; the red reason was not recorded (GG-990 shape). First run 00:33:05Z took a 14-market KXNBAPTS book snapshot; report side none because the box IP gets Akamai 403 (GG-1030). Frozen pre-registration stands; no scored games can accrue until GG-1030 is fixed.
+- Part B merged (#317, 1da11da). Play-type grade PARTIAL (no class FAILED); absorber x profile cross null at n=131 (Spearman +0.06, CI [-0.11, 0.24]); NBA-11 interpreted. The "holds at >= 0.5" line was a post-run reading rule.
+- No order, sizing, registry cell or live-ledger change.

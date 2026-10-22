@@ -1151,6 +1151,20 @@ schedule = "4-54/10 * * * *"
 mirrors = ["deploy/cron.demo_fill_markout"]
 command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/demo_fill_markout_collector.py >> logs/demo_fill_markout.log 2>&1"
 [[component]]
+key = "cron|3,18,33,48 * * * *|scripts/nba_lineup_window_capture.py"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "Every-15-min capture-only timing of official NBA injury-report status changes plus KXNBAPTS book before/after (GG-985); the prospective data for the lineup-window price test. SHADOW: no order, kelly 0."
+pillar = "DEPTH"
+writes = ["logs/nba_lineup_window_cron.log"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/nba_lineup_window_cron.log is older than 2h"
+max_age_h = "2"
+schedule = "3,18,33,48 * * * *"
+mirrors = ["deploy/cron.conf", "deploy/cron.nba_lineup_window"]
+command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_lineup_window.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_lineup_window_capture.py >> logs/nba_lineup_window_cron.log 2>&1"
+[[component]]
 key = "cron|41 21 * * 2,3|scripts/source_capture_nfl.py"
 kind = "cron"
 source = "deploy/cron.conf"

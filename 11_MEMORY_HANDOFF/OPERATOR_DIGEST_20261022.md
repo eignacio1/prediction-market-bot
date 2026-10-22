@@ -1,0 +1,10 @@
+# Operator Digest — 2026-10-22 (W83.2, NBA lineup + usage)
+
+- Status: PARTIAL. Two PRs merged on green CI (#313 capture, #317 play-type x absorption).
+- DEPTH moved only on paper. The NBA lineup factor is now frozen and testable, but nothing is accruing.
+- The report capture is blocked: the NBA's injury-report host returns 403 to the box (GG-1030). It works from your Mac. Order-book snapshots are being taken; injury reports are not.
+- No scored games accrue until that is fixed. A free non-datacenter route (e.g. a scheduled GitHub Actions run) would need its own permission, so it is a strategic-window call.
+- Muse's play-type class graded PARTIAL: four of seven types track the proxy at 0.5 or better, none failed.
+- Absorber-profile cross is null at n=131 (Spearman +0.06, CI -0.11 to 0.24). It is underpowered, not disproven.
+- The installer appended the cron line while the surface budget read RED, and the reason was not recorded (the GG-990 shape).
+- Nothing for you to run. No capital, orders or sizing changed.

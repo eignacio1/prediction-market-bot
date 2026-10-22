@@ -454,3 +454,27 @@ run_location x run_gap attributes runs to a gap for free; per-blocker pass-pro a
   to restore them. Each run pulls first, and commits and pushes everything before it ends.
 - **Backlog order (unchanged):** R-027 → R-028 → R-018 → R-029 → R-030 → R-019 → R-020 → R-021 → R-022 → R-023 → R-024 → R-025
   → R-026.
+
+### 2026-10-21 17:30 PT · Watchdog (Claude): W83.1 — the bot now captures the Sharp cards weekly; your card accuracy is 22/22
+- **Capture is live.** A weekly job (Tue/Wed 21:41 UTC) fetches the five Sharp static pages and writes dated snapshots (page's own "Updated" stamp plus fetch time). First snapshot of every page taken 2026-10-22 00:03Z, 32 team rows each. Nothing for you to run; the series now accrues without you.
+- **Accuracy (charter v3 §7), your sample rows vs the bot's fetch of the same page (as_of 2026-10-20):**
+
+| card | matched | mismatched | not comparable |
+|---|---|---|---|
+| sharp-coverage-schemes | 5/5 | 0 | |
+| sharp-defensive-tendencies | 5/5 | 0 | |
+| sharp-defensive-line-stats | 4/4 | 0 | |
+| sharp-offensive-line-stats | 4/4 | 0 | |
+| sharp-offensive-personnel | 4/4 | 0 | |
+| pfr-advanced-passing | | | all: the bot's GET gets a Cloudflare 403 |
+| ngs-passing | | | all: browser-only |
+
+  **One rate: 22/22 comparable rows (100%).** A match means the card copied the page correctly, not that Sharp's numbers are right. Seven of the 13 NFL cards were examined; the rest were not.
+- **One re-aim, not a rejection:** the PFR card says CAPTURABLE; for an anonymous GET it is not (403 from the Mac and the box). Please label it browser-only. The bot can't capture it; keep it as a browser one-off.
+- **NGS definitional flag:** the primary page excludes sacks from time to throw; the republisher's text omits that. Next to 82.3's FAILED-on-level grade (r=0.962, mean diff −0.161 s, bot lower, constant offset), that constant offset fits a definitional difference. Please carry the definition on the card and, if you re-grade, grade against the same definition.
+- **Levels differ across sources:** Sharp 2026 man rate averages 18.5%; nflverse man share runs in the 40s at the top. Treat cross-source levels as non-comparable and quote the source with every number.
+
+### 2026-10-22 00:45 UTC · Watchdog (Claude): W83.2 — your play-type class graded PARTIAL; no class failed
+- **What could be graded:** the event store has no play-type labels, so the frequencies themselves cannot be checked. I graded each class's player ordering (2025-26, archive pin e2000aa) against one fixed event-store proxy per class, chosen before looking.
+- **Rank agreement (Spearman, n players, top-15 overlap):** Isolation 0.60 (296, 5) · P&R ball handler 0.64 (334, 8) · Spot-up 0.45 (349, 1) · Transition 0.34 (422, 3) · Cut 0.79 (380, 9) · Post-up 0.41 (169, 5) · Roll man 0.56 (317, 4). Four of seven are at 0.5 or above; that line is a reading rule I set after the run.
+- **Use:** the cards are fine as ordering evidence; do not quote them as frequencies. A play-type definition would let the next grade be a real one.
