@@ -186,9 +186,8 @@ def main(snap: Path, out_dir: Path) -> None:
                                              "kept": clustered(kept_by_class["kept"]),
                                              "dropped": clustered(kept_by_class["dropped"])}
 
-    out_dir = safe_out(out_dir / "replay_W85_2.json").parent
-    (out_dir / "replay_W85_2.json").write_text(json.dumps(report, indent=1, sort_keys=True))
-    with open(out_dir / "replay_W85_2_cells.csv", "w", newline="") as fh:
+    safe_out(out_dir / "replay_W85_2.json").write_text(json.dumps(report, indent=1, sort_keys=True))
+    with open(safe_out(out_dir / "replay_W85_2_cells.csv"), "w", newline="") as fh:
         wr = csv.DictWriter(fh, fieldnames=list(csv_rows[0]))
         wr.writeheader()
         wr.writerows(csv_rows)
