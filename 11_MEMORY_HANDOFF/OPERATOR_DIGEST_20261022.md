@@ -14,3 +14,5 @@ Open gaps went from 207 to 205. Two were closed with evidence: one about the NBA
 
 ## GS-3 — gap sweep (process one-offs and observations)
 Plumbing only; no money, orders or models touched. Seven old housekeeping gaps are closed with evidence, and four observations (things with nothing to fix) are now watch items instead of open problems. Under your keep-the-folder rule, the three "folder fell behind" gaps are closed too. The open-gap count went from 210 to 199. Two gaps about a stuck git lock stay open because they need a small code fix.
+
+**W84.1 (plumbing + NBA depth).** The dashboard no longer crawls: the main project page went from ~50 seconds to a quarter of a second. The NBA injury reports the box was blocked from are now copied over by a GitHub job and picked up by the box's capture, with the same source and schedule; the box found tonight's 11 PM report. One thing was not done and stays queued: making the install check refuse to run on a red health reading. No money at risk, nothing needs your decision.

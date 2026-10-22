@@ -1008,3 +1008,4 @@
 | 2026-10-22T02:48:07Z | T-1100 | CLOSED — merge confirmed, HEAD (fe08d36) is ancestor of origin/main — W84.2 NBA PAM mass tier (PARTIAL) |
 | 2026-10-22T02:49:54Z | GS-3 | MERGED: NO — branch `session/20261022T023806Z-gs3-process-obs` awaiting merge — GS-3 gap sweep: closed 7 process/drift gaps, re-filed 4 observations as WATCH ITEM; OPEN 210 -> 199. (commit `c4af572`) |
 | 2026-10-22T02:50:11Z | GS-3 | CLOSED — merge confirmed, HEAD (1f89844) is ancestor of origin/main — GS-3 gap sweep: 11 gaps closed or re-filed; OPEN 210 -> 199 |
+| 2026-10-22T03:16:22Z | W84.1 | CLOSED — W84.1: dashboard cache (/project 50s->0.25s) + NBA injury-report relay live on box (GG-1030); Part C not done. (commit `15ffbd8`) |

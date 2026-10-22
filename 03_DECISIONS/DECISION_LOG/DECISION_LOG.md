@@ -2774,3 +2774,5 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - This is the first refresh: shared-tree drift gaps may now close under the protocol.
 
 | 2026-10-22 | T-1100 | W84.2: NBA PAM mass tier built (PR #319). PRF-1 vs points cross not run (n=0; shadow rows lack actual points, store lacks 2026-27 games); no effect or price claim made. Charter rule 2 vs block-text conflict on PREGAME_SHADOW reads registered as GG-1064, no ledger read done. Muse GP: play-type 2025 and tracking 2026 VERIFIED; play-type 2024/2026, tracking 2024/2025 FAILED (GG-1063). PAM README row not edited (outside permission). Stage: aggregated all scored factors; interpreted stability subset; applied none. |
+
+| 2026-10-22 | W84.1 | NBA official injury PDFs are 403'd for the box (Akamai) but reachable from GitHub runners, byte-identical; adopted a runner relay to data branch `data/nba-injury-reports` with capture fallback only. Same source and cadence, pre-registration untouched; adds cron-jitter latency. Dashboard MemoryMax kept at 128M (cache fix instead). Operator stopped the block after Part B; Part C undone. |
