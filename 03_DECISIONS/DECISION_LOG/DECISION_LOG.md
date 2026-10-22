@@ -2755,3 +2755,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Operator, 19:24 PT: "Yes write it into the plan - the layered approach is fine for now. One thing - we should let Muse take care of a portion of the interpretation, with enough structural integrity that we build. The data aggregation takes a while but we can also cut busy work for the interpretation by using Muse for it."
 - Written into 02_ARCHITECTURE_DESIGN/PAM/README.md: (1) layer 3 may rewrite layer 1 (thresholds from the bot's own distributions, never outcomes; merge / split / drop on evidence; structural changes go to the operator as one line); (2) new step 2b, Muse's interpretation dossier (definition check, proposed thresholds from published distributions, exemplars and counterexamples with record ids, structure proposals, confidence), everything PROPOSED; the bot grades it; agreement rate measured; disagreements to the deep tier.
 - Charter v3 §2 amended for the PAM. Tickets R-055 (NBA dossier, the template) and R-056 (NFL, per position, after R-028); backlog 32 open.
+
+## 2026-10-21 19:35 PT — Observation rule accepted; shared-tree retirement not decided; one sweep terminal, not three
+- Operator: "Yes to observations stop counting as gaps. The shared folder thing - so I'd essentially have an entire folder that becomes stale starting today? and I'd have to check everything on GitHub? Also I can't run 4 new terminal windows while I already have 3 terminal windows running work right now".
+- Observation rule: blockquote in ACTIVE_QUEUE.md "Needs your decision" (WATCH ITEM, not counted as OPEN).
+- Shared-tree retirement: not decided; GS-3 skips shared-tree drift gaps.
+- Sweep sequencing: GS-3 (process one-offs + observations) runs now as the one extra terminal; GS-1/GS-2 (small fixes) run after Wave 84 closes.

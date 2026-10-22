@@ -1640,6 +1640,11 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
+> **AUTHORIZATION - OBSERVATION RULE (operator, 2026-10-21 19:35 PT, asked by the strategic window: "Yes to observations stop
+> counting as gaps").** A gap with nothing to fix (a measured fact, arithmetic such as GG-285, a known limitation of a source)
+> is re-filed as `**Status:** WATCH ITEM` with its severity unchanged, its full record kept, and one line saying what would
+> reopen it. WATCH ITEM is not counted as OPEN. The shared-tree retirement was NOT decided (the operator asked what it means).
+
 > **AUTHORIZATION - THREE CALLS (operator, 2026-10-21 19:15 PT, asked by the strategic window with recommendations: "Log my
 > acceptance for the recommended paths on the first 3").** (1) **PAM layer-1 taxonomies for NFL (draft2, 67 archetypes in 19
 > position groups), MLB (24) and NHL (18) are ACCEPTED as working drafts**: thresholds are calibrated at each sport's mass tier
