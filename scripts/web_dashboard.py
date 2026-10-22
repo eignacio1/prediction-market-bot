@@ -1236,6 +1236,26 @@ def _load_all_data() -> dict:
 # copy; a stale copy is refreshed by one background thread, and every build is
 # serialised behind one lock so two heavy builds never overlap in memory.
 _BUILD_LOCK = threading.Lock()
+
+
+def _release_heap() -> None:
+    """gc + hand freed heap pages back to the OS. A build parses ~10 MB of JSON into ~100 MB of objects; glibc keeps those
+    pages, so without this the cgroup sits at its cap long after the build is done (W84.1)."""
+    gc.collect()
+    try:
+        import ctypes
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except Exception:  # non-glibc / macOS: best effort
+        pass
+
+
+def _limit_arenas() -> None:
+    """One malloc arena: builds are serialised, so per-thread arenas only fragment."""
+    try:
+        import ctypes
+        ctypes.CDLL("libc.so.6").mallopt(-8, 1)  # M_ARENA_MAX
+    except Exception:
+        pass
 _REFRESHING: set[str] = set()
 _REFRESH_GUARD = threading.Lock()
 _PROJECT_CACHE: dict = {"t": 0.0, "html": ""}
@@ -1259,7 +1279,7 @@ def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callabl
                 if key is not None:
                     cache["key"] = key
         finally:
-            gc.collect()
+            _release_heap()
             with _REFRESH_GUARD:
                 _REFRESHING.discard(name)
 
@@ -1275,7 +1295,7 @@ def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callabl
             cache.update(t=time.time(), **{field: value})
             if key is not None:
                 cache["key"] = key
-        gc.collect()
+        _release_heap()
         return cache[field]
     if time.time() - cache["t"] >= ttl:
         with _REFRESH_GUARD:
@@ -2691,6 +2711,7 @@ def main() -> None:
         default=int(os.environ.get("DASHBOARD_PORT", str(DEFAULT_PORT))))
     parser.add_argument("--host", default=os.environ.get("DASHBOARD_HOST", DEFAULT_HOST))
     args = parser.parse_args()
+    _limit_arenas()
 
     global _log_dir
     _log_dir = Path(args.log_dir)
