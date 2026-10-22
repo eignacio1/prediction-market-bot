@@ -4359,3 +4359,33 @@ W82.1, 2026-10-21. `scripts/passyds_install.py install` refused because the surf
 Pattern sweep to do (Hard Rule 13): `scripts/thin_capture_install.py` gates outright on `budget != GREEN`; check each other installer for the same shape. Fix options: healthcheck re-run on a retry/short cadence or a freshness rule on the summary line; installers filter only reasons that are the registered component's own "no write found". The "newly registered component turns the budget red before it can be installed" catch-22 is only half-handled by the passyds substring filter. Not fixed here (Hard Rule 11).
 
 </details>
+
+### GG-1010 — NHL engine: confirmed pre-game starting goalie not available free
+
+**Status:** OPEN · **Severity:** HIGH
+
+W83.3 GAP-1 (NHL-2). The event store has the starter only post-game (box_players). A pre-game confirmed starter is not in a free structured feed with timestamps; W52.D verdict was "cannot tell" (GG-401). Without it the goalie factor cannot be used point-in-time at the pre-game horizon. Pillar: DEPTH (D1/D5 NHL). Proposed fix: capture lines/probable-starter pages on a schedule from the free NHL endpoints and timestamp them (forward only; no history).
+
+### GG-1011 — NHL engine: travel and venue geometry factor not built
+
+**Status:** OPEN · **Severity:** LOW
+
+W83.3 GAP-2 (NHL-8). Arena coordinates, time zones and travel distance between consecutive games are derivable from free data (venue names in the store plus a public arena table) but not built. Pillar: DEPTH. Proposed fix: small static arena table plus a rest/travel feature in the engine.
+
+### GG-1012 — NHL engine: officials, head coaches and scratches are free but not in the store
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W83.3 GAP-3 (NHL-9, NHL-10). `GET /v1/gamecenter/<id>/right-rail` exposes gameInfo.referees, linesmen, headCoach and scratches (verified on 2015-16 and 2024-25 games). Not fetched in W83.3: it needs a fourth fetch kind (~14.7k files, ~25 min). Pillar: DEPTH. Proposed fix: add the `rail` fetch kind to nhl_event_store, compile to a table, extend the point-in-time contract (T-1061).
+
+### GG-1013 — NHL engine: no free injury or availability history
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W83.3 GAP-4 (NHL-11). Scratches are post-game only and there is no free structured injury history. Pillar: DEPTH. Proposed fix: forward-only daily snapshots of the public injury pages once a refresh job is registered; history cannot be backfilled for free.
+
+### GG-1014 — NHL engine: PAM-derived and structured qualitative factors not piped into the engine
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W83.3 GAP-5 (NHL-12). No free structured historical qualitative feed; PAM (DS-01) is not yet read by any NHL engine. Pillar: DEPTH (D2 qualitative count 0). Proposed fix: a PAM-to-engine adapter, separate block; NFL and NBA first per operator directive 2026-10-14.
