@@ -2761,3 +2761,8 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Observation rule: blockquote in ACTIVE_QUEUE.md "Needs your decision" (WATCH ITEM, not counted as OPEN).
 - Shared-tree retirement: not decided; GS-3 skips shared-tree drift gaps.
 - Sweep sequencing: GS-3 (process one-offs + observations) runs now as the one extra terminal; GS-1/GS-2 (small fixes) run after Wave 84 closes.
+
+## 2026-10-21 19:45 PT — The shared folder stays, kept current as a reading copy (operator)
+- Operator: "When I look through the project I check the folders not github - especially when I'm somewhere with no internet. I'd like to keep it going - we should probably just change the protocol for updating it so that it's not elongating the gap list just for the update. But I don't want to retire the shared folder. And also your queue - go update that shit since it's outdated".
+- Protocol: the window fast-forwards the operator's folder to origin/main at every wave close (blockquote in ACTIVE_QUEUE.md). Lag between refreshes is not a gap; shared-tree drift gaps close once the first refresh lands.
+- First attempt (19:42 PT, via the device bridge): fetch worked (folder at 23b54f2, 232 commits behind; no untracked-file collisions), but git cannot replace files in the folder without delete permission (it swaps files by unlinking the old copy: "unable to unlink old 'Open Visual Dashboard.command': Operation not permitted"). No lock left behind; folder unchanged except Live Terminal.html restored to its committed version. Operator asked whether to approve the one-time delete permission for that folder (git needs it to update files).

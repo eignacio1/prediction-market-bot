@@ -795,7 +795,8 @@ PART A - class P (process one-offs), any number: find them by reading the OPEN l
   collision already renumbered, a stray branch already merged or empty (list remote branches; delete ONLY a branch whose every
   commit is already on main, named one by one in your handoff, never "all stale branches"), a claim overlap long past, a register
   row already present. Close each with the evidence. Shared-tree drift gaps: close them ONLY if ACTIVE_QUEUE.md "Needs your
-  decision" carries the operator's blockquote retiring the shared tree; otherwise skip them, one line each.
+  decision" carries the operator's blockquote "THE SHARED FOLDER STAYS, AS A CURRENT READING COPY" AND the window has logged
+  its first refresh (DECISION_LOG); otherwise skip them, one line each.
 PART B - class O (observations), any number. ONLY if ACTIVE_QUEUE.md "Needs your decision" carries the operator's blockquote for the
   observation rule: change each entry's status line to `**Status:** WATCH ITEM · **Severity:** <unchanged>` and add one line
   under it: "Re-filed 2026-10-21 under the operator's observation rule. Reopens if: <the condition>". Keep the full record. If
@@ -1639,6 +1640,14 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **AUTHORIZATION - THE SHARED FOLDER STAYS, AS A CURRENT READING COPY (operator, 2026-10-21 19:39 PT: "When I look through
+> the project I check the folders not github - especially when I'm somewhere with no internet. I'd like to keep it going - we
+> should probably just change the protocol for updating it so that it's not elongating the gap list just for the update. But I
+> don't want to retire the shared folder.").** The operator's Mac folder is NOT retired. Protocol: the strategic window
+> fast-forwards it to origin/main at every wave close (it is never a working tree for terminals; they use worktrees). Lag
+> between refreshes is expected and is not a gap. Shared-tree drift gaps close under this protocol once the first refresh has
+> landed. Local files the operator or a past session left untracked are never touched.
 
 > **AUTHORIZATION - OBSERVATION RULE (operator, 2026-10-21 19:35 PT, asked by the strategic window: "Yes to observations stop
 > counting as gaps").** A gap with nothing to fix (a measured fact, arithmetic such as GG-285, a known limitation of a source)
