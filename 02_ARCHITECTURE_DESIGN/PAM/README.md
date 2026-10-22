@@ -53,3 +53,37 @@ covers the blocked ones). It cannot usefully work MLB or NHL until those sports 
 ticket would be Muse inventing the archetypes, which is thinking, not scouting (charter v3). Next: one terminal block drafts NFL
 to v4 depth (archetypes + modifiers for all 9 groups) plus first-draft MLB and NHL taxonomies, for Earl's approval. Then each
 sport gets its Muse signal-map ticket.
+
+## Update 2026-10-21 19:30 PT: drafts accepted; layer 3 may rewrite them; Muse takes part of the interpretation
+
+**Accepted (operator, 19:15 PT):** the NFL (draft2), MLB and NHL layer-1 taxonomies are working drafts. NBA's map (R-027) is
+done: 47 rows, FREE 18 · PARTIAL 15 · NONE 14.
+
+**What the drafts are, plainly (window, 19:21 PT).** They are layer 1 only: archetypes, modifiers, named signals and starting
+thresholds written from domain knowledge in the v4 shape, in minutes. No data was aggregated, no threshold was derived from a
+distribution, no player was checked. The operator's NBA v4 took 2-3 continual days of full sessions because it did all three
+(aggregate, interpret, apply). That work is still ahead for NFL, MLB and NHL, and is spread over layers 2-4 below.
+
+**Rule (operator, 19:24 PT: "Yes write it into the plan"): layer 3 is allowed to rewrite layer 1, not only tune it.** When a
+sport's mass tier is built, the bot (a) sets each threshold from the actual distribution of its signal, point in time, never from
+outcomes; (b) merges archetypes that do not separate in the data; (c) splits ones that hide two kinds of player; (d) drops or
+parks ones nothing free can measure (a GG, never a proxy). Every rewrite is listed in the sport's mass-tier results with the
+evidence, and a structural change (merge, split, drop) goes to Earl as one line before the taxonomy file changes. Otherwise the
+window's guesses get baked in as findings.
+
+**Muse's share of the interpretation (operator, 19:24 PT):** "we should let Muse take care of a portion of the interpretation,
+with enough structural integrity that we build. The data aggregation takes a while but we can also cut busy work for the
+interpretation by using Muse for it."
+
+| Step | Who | What | Integrity rule |
+|---|---|---|---|
+| 2a. Signal map | Muse | archetype/modifier → free source + metric, or NONE | definitions verbatim; every source carded |
+| **2b. Interpretation dossier** | **Muse** | per archetype group: definition check, proposed threshold from published league distributions, exemplars and counterexamples with their values, merge/split/drop proposals | every number cites archive record ids or a source card and states its population; everything is PROPOSED; no outcome data is used to set anything |
+| 3. Mass tier | bot | compute every signal for every player-season, set thresholds from the bot's own distribution, assign archetypes | Muse's proposed thresholds are compared, not copied; Muse's exemplars are graded against the bot's assignment (agreement rate, VERIFIED / FAILED per exemplar) |
+| 3b. Disagreements | bot → window | where Muse and the bot disagree, both readings with evidence | adjudicated at the deep tier, never averaged away |
+| 4. Deep tier | Earl + Claude | judgment on the players who matter most, starting from 2a-3b | supersedes mass records |
+
+Muse acts as a second, independent rater: the agreement rate between its reading and the bot's computation is itself measured
+and reported, per sport. Muse never sets a final threshold, never assigns a final archetype and never changes a taxonomy file.
+The charter (v3 §2, amended 2026-10-21 19:30 PT) and the dossier ticket (R-055 NBA first, then each sport after its signal map)
+carry the same rules.

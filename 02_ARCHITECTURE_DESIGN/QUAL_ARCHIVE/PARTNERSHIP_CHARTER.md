@@ -59,6 +59,15 @@ live scheduler (it listed `nfl-archive-daily-sync` at 03:50; its memory claimed 
 | **Claude** (strategic window) | The **thinking** | Chooses each target from the granularity index's gaps (which split, why the bot is blind on it, which cell it feeds); writes every ticket fully specified; keeps the ordered backlog; watchdog at every wave close. | Sending Muse anything vague, or anything a casual fan reads on ESPN. |
 | **Earl** | Strategic reviewer | Direction, priorities, new sports or layers, money. | Relaying between the two. |
 
+**Amendment, 2026-10-21 19:30 PT (operator: "we should let Muse take care of a portion of the interpretation, with enough
+structural integrity that we build").** For the PAM only, Muse also writes **interpretation dossiers** (step 2b of
+`02_ARCHITECTURE_DESIGN/PAM/README.md`): per archetype group, a definition check, thresholds proposed from published league
+distributions, exemplars and counterexamples with their values, and merge / split / drop proposals. Rules: every number cites
+archive record ids or a source card and states its population; everything is marked PROPOSED; no outcome data (wins, points
+scored, betting results) is used to set anything; Muse never sets a final threshold, assigns a final archetype or edits a
+taxonomy file. The bot grades the dossier against its own computation; disagreements go to the deep tier. Claude still does the
+application and all verification.
+
 ## 3. The source card (Muse's main deliverable)
 
 One markdown file per source, at `sources/<sport>/<source-slug>.md` in the archive:

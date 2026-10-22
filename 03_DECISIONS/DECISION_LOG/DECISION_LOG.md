@@ -2749,3 +2749,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - (3) Kill switch to count open + settled-but-unresolved stake and persist state (GG-441), as a block before any real capital.
 - (4) GG-347: ssh logins from 73.231.159.158 are probably the operator's home connection; the dashboard restarts match his old Reload Dashboard.command (retired today). Recorded on the gap; the gap agent closes it.
 - Authorization blockquote added to ACTIVE_QUEUE.md "Needs your decision". (2) and (3) go into the next wave.
+
+## 2026-10-21 19:30 PT — PAM: layer 3 may rewrite the drafts; Muse takes part of the interpretation (operator)
+- Window, 19:21 PT (stated plainly to the operator): the NFL/MLB/NHL taxonomies are layer 1 only, written from domain knowledge in minutes; none of the aggregation, interpretation or application his NBA v4 took 2-3 continual days to do has happened for them.
+- Operator, 19:24 PT: "Yes write it into the plan - the layered approach is fine for now. One thing - we should let Muse take care of a portion of the interpretation, with enough structural integrity that we build. The data aggregation takes a while but we can also cut busy work for the interpretation by using Muse for it."
+- Written into 02_ARCHITECTURE_DESIGN/PAM/README.md: (1) layer 3 may rewrite layer 1 (thresholds from the bot's own distributions, never outcomes; merge / split / drop on evidence; structural changes go to the operator as one line); (2) new step 2b, Muse's interpretation dossier (definition check, proposed thresholds from published distributions, exemplars and counterexamples with record ids, structure proposals, confidence), everything PROPOSED; the bot grades it; agreement rate measured; disagreements to the deep tier.
+- Charter v3 §2 amended for the PAM. Tickets R-055 (NBA dossier, the template) and R-056 (NFL, per position, after R-028); backlog 32 open.

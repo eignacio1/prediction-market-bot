@@ -601,3 +601,39 @@ venue table if it exists by then.
 ### R-042 · NBA lineups and on/off, prior seasons (2023-24, 2024-25)
 **What:** after R-023, the same lineup and on/off records for the two prior seasons, same format.
 **Done when:** both seasons recorded, row counts matching.
+
+### 2026-10-21 19:30 PT · Interpretation is partly yours now (PAM only), and two new tickets
+Earl, 19:24 PT: "we should let Muse take care of a portion of the interpretation, with enough structural integrity that we build.
+The data aggregation takes a while but we can also cut busy work for the interpretation by using Muse for it." Charter v3 §2 is
+amended (read it): for the PAM you now write **interpretation dossiers**. You are a second, independent rater: the bot computes
+the same things from its own data and the agreement rate between you is measured. The NFL, MLB and NHL taxonomies are accepted
+as working drafts (Earl, 19:15 PT); the bot's mass tier may merge, split or drop archetypes on the evidence, so your dossiers
+should say where the draft looks wrong.
+
+**Backlog order (supersedes the 19:10 PT order):** R-028 → R-041 → **R-055** → R-018 → **R-056** → R-046 → R-029 → R-030 → R-047 →
+R-019 → R-020 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 → R-052 → R-054 → R-024 → R-025 →
+R-026 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042. (32 open.)
+
+### R-055 · NBA PAM interpretation dossier (the template)
+**Target:** the NBA PAM v4 (`qualitative_data/pam/nba/taxonomy.json`: 15 PRF factors, 32 modifiers) and your R-027 map.
+**What:** one dossier per PRF factor in `L4-interpret/nba/<PRF-id>.md` (modifiers grouped in one file), each with six parts:
+1. **Definition check:** the taxonomy's wording beside how your carded sources define the same role or metric (quote both); say
+   where they differ.
+2. **Proposed threshold:** from a published league distribution (percentile, with the population and season stated), for each
+   FREE or PARTIAL signal. Mark PROPOSED. Never use outcomes (wins, points, betting results) to choose it.
+3. **Exemplars:** 5-10 players per factor per season (2023-24 → 2025-26) who meet it, each with the signal values and the archive
+   record ids that put him there.
+4. **Counterexamples:** players who meet it on the numbers but not in role, or the reverse, with the reason in one line.
+5. **Structure:** merge / split / drop proposals with the evidence, or "none".
+6. **Confidence:** high / medium / low, and what would change it.
+Also one JSONL file `L4-interpret/nba/exemplars.claims.jsonl` (claim_class `pam_interpretation`, status PROPOSED, fields: sport,
+season, player as listed, factor id, signal values, record ids) so the bot can grade every exemplar automatically.
+**Done when:** all 15 factors and the modifier file have the six parts; the JSONL validates under your strict gate.
+
+### R-056 · NFL PAM interpretation dossier, per position (after R-028)
+**Target:** `qualitative_data/pam/nfl/taxonomy_v4depth.json` (draft2, accepted as a working draft) and your R-028 map.
+**What:** R-055's six parts, one dossier per position group (`L4-interpret/nfl/<group>.md`: QB, RB, WR, TE, LT, LG, C, RG, RT,
+EDGE, DT3, NT, DE5, MIKE, WILL, SAM, CB, FS, SS) plus the modifiers, 2023 → 2025 seasons (2026 to date where a source is
+weekly). Exemplars in `L4-interpret/nfl/exemplars.claims.jsonl`. Where R-028 found no single-position attribution for a signal,
+say so in the definition check rather than assigning it to a player.
+**Done when:** every group and the modifiers have the six parts; the JSONL validates.
