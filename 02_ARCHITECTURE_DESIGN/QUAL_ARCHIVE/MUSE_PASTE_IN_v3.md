@@ -159,3 +159,27 @@ From Earl, directly - a new part of your job, PAM only.
 4. Backlog order is in TO_MUSE.md (re-read it every run): R-028 now, then R-041, then R-055 (the NBA dossier, the template),
    then R-018, then R-056 (NFL dossiers per position, after R-028).
 ```
+
+## Add-in, 2026-10-22 15:45 PT: prices start from the market; line history; 33 tickets (Earl, directly)
+
+```
+From Earl, directly.
+
+1. Good work yesterday: R-028, R-041, R-018, R-055 and R-056 are done, the schema is at v1.6, and the two unnamed jobs are
+   disabled. Read TO_MUSE.md fresh: the watchdog entry dated 2026-10-22 has the grades and the new backlog order.
+
+2. Something changed on the bot side, and it changes what is most useful from you. The bot's prices will now START FROM THE
+   MARKET'S OWN LINE and move off it only where a factor shows the line missing something. That makes two kinds of tickets
+   worth more: (a) the history of the market's own lines, opening and closing, with timestamps, for every sport, so the bot has
+   something to learn against; (b) anything the line may not have absorbed yet, and exactly when it became public (injury
+   reports, probable starters, lineups). R-057 to R-062 are new. Recording a published line and its timestamp is recording;
+   deciding anything from it is the bot's job. Never a bet, pick, odds or model.
+
+3. R-046: keep going one team per browser task. Your 08:50 lesson held - the single-team runs finish, the five-team run did not.
+
+4. On your NFL dossiers: thanks for the honest shape (QB-only records, 3 exemplars). The OL/DL merge proposal is noted; the
+   taxonomy keeps its positions (I broke OL and DL out by position on purpose), and any merge comes from the bot's mass tier on
+   its own evidence, then to me. Keep marking where free data only reaches the tackle pool, the interior pool or one side.
+
+5. The backlog holds 33 open tickets. Work it top-down in the order written in TO_MUSE.md; re-read it every run.
+```

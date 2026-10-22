@@ -640,3 +640,65 @@ say so in the definition check rather than assigning it to a player.
 ### GRADE · W84.2 — games-played recompute of the NBA play-type and tracking records (2026-10-22)
 **What:** the bot recomputed GP for 21,249 records from the NBA event store (67 names unmatched). VERIFIED (exact ≥ 99%): play-type frequency and PPP 2025 (2,439/2,461 = 99.1%); tracking touches/time/drives/potential 2026 (575/579 = 99.3%). FAILED: play-type 2024 (80.0%, diff −2…+1), play-type 2026 (15.4%, Muse lower by 1–5, mean −2.29), tracking 2024 (65.4%, diff −3…+2), tracking 2025 (92.6%, diff −5…0). Likely cause for 2026 play-type: snapshot taken before season end (not proven). Only GP was graded; the values themselves were not recomputed (no play-type labels in the store, GG-1031). Detail: `12_EXPLORATORY/nba_pam_mass_tier/results/muse_grade_gp.csv` and `_mismatches.csv`.
 **Done when:** Muse re-dates or refreshes the failed cells, or states why they differ.
+
+### 2026-10-22 15:45 PT · Watchdog (Claude): Wave 84 closed; your five tickets verified; prices now start from the market; six new tickets
+- **Verified (archive at `389b5e8`):** R-028 (`sources/nfl/pam-signal-map.md`, FREE 39 · PARTIAL 44 · NONE 16), R-041, R-018,
+  the v1.6 schema, R-055 (18 files in `L4-interpret/nba/`) and R-056 (19 groups + modifiers in `L4-interpret/nfl/`). Your strict
+  gate on the two exemplar files: **204 records, 0 errors** (NBA 201, NFL 3). The two unnamed jobs: prompts pasted, disabled,
+  nothing else touched. Good work.
+- **The bot's W84.2 grade** is in the GRADE entry above (games-played recompute). The bot also built the NBA PAM mass tier
+  (~1,723 player-seasons assigned) from your R-027 FREE rows; your R-055 dossier is the second rater it will be compared with.
+- **What changed on the bot side (Earl, 2026-10-21 20:28 PT: "Good - I accept them").** The bot's prices will start from the
+  market's own line and move off it only where a factor shows the line missing something. Two kinds of work are worth more
+  now: the market's own line history with timestamps (an anchor to learn against), and the exact time each piece of news
+  became public (what the line could have known). R-057 to R-062 below.
+- **NFL dossiers, OL/DL merge proposal:** noted. The taxonomy keeps its positions (Earl broke OL and DL out by position on
+  purpose, 2026-10-21 08:01 PT); a merge would come from the bot's mass tier on its own evidence, then to Earl. Keep marking
+  where free data reaches only the tackle pool, the interior pool or one side.
+- **R-046:** in progress (2025-26 closed 30/30; 2024-25 started). One team per browser task.
+
+### R-057 · Historical closing and opening lines, NBA, NHL and MLB, 2016 → 2026
+**Gap it fills:** the bot's new prices start from the market's line. For NFL the anchor history is free in nflverse
+(`spread_line`, `total_line`, moneylines). The other three sports have no anchor history in the bot.
+**What:** source cards for free sources of historical game lines: moneyline, spread / puck line / run line, total; opening and
+closing where kept; which book or consensus; the timestamp convention; seasons covered; whether the files stay reachable.
+Primary publisher named; republishers secondary. Definitions verbatim (what "closing" means at that source).
+**Why the bot can't do it itself:** finding which free sources exist, keep history and allow access is scouting.
+**Done when:** one card per source, with sample rows and a capture verdict, and a one-line summary per sport of the best free
+anchor (or NONE).
+
+### R-058 · NFL line history with timestamps: openers and moves, 2016 → 2026
+**Gap it fills:** whether the line moves after news (injury reports, inactives) - the bot can only test this where line
+history has times. Kalshi's own candles in the bot's archive cover 2025-26 only, and none before Friday's report.
+**What:** source cards for free NFL line history that keeps timestamps (opening line and later moves, not only the close):
+what is kept, how granular, which book, how far back, how it's served.
+**Done when:** cards with sample rows and capture verdicts; NONE stated plainly if nothing free keeps times.
+
+### R-059 · NFL official injury reports: when each version is posted, and whether old versions stay reachable, 2016 → 2026
+**Gap it fills:** the bot's availability factor (F8) uses the final weekly report. To know what the line could have known,
+the bot needs each report's posting time (Wed / Thu / Fri practice reports, game statuses, inactives).
+**What:** the primary source (NFL / team sites), the posting schedule as the league defines it (quote it), whether past
+versions are archived (and where: the league, nflverse's injuries file, Wayback), and what each field means verbatim.
+**Done when:** a card per source; one paragraph on what is and isn't time-stamped.
+
+### R-060 · MLB probable pitchers and lineup cards: who posts them, when, and how often they change
+**Gap it fills:** the MLB analogue of R-047 - for the 2027 season and the MLB look-back corpus.
+**What:** where probables and official lineups are first published (MLB.com / Stats API / team accounts), when relative to
+first pitch, whether history is kept, and how often a listed probable doesn't start (any free source that records it).
+**Done when:** cards with sample rows; a one-line answer to "when is the starter known".
+
+### R-061 · MLB PAM interpretation dossier (after R-029)
+**Target:** `qualitative_data/pam/mlb/taxonomy_v4depth.json` (accepted as a working draft) and your R-029 map.
+**What:** R-055's six parts, one dossier per archetype group (`L4-interpret/mlb/<group>.md`) plus the modifiers, seasons 2023 →
+2026. Exemplars in `L4-interpret/mlb/exemplars.claims.jsonl`, strict gate clean.
+**Done when:** every group and the modifiers have the six parts; the JSONL validates.
+
+### R-062 · NHL PAM interpretation dossier (after R-030)
+**Target:** `qualitative_data/pam/nhl/taxonomy_v4depth.json` (accepted as a working draft) and your R-030 map.
+**What:** R-055's six parts, one dossier per archetype group (`L4-interpret/nhl/<group>.md`: forwards, defense, goalies) plus
+the modifiers, 2023-24 → 2025-26. Exemplars in `L4-interpret/nhl/exemplars.claims.jsonl`, strict gate clean.
+**Done when:** every group and the modifiers have the six parts; the JSONL validates.
+
+**Backlog order (supersedes the 19:30 PT order):** R-046 → **R-057** → **R-058** → R-029 → **R-061** → R-030 → **R-062** → R-047 →
+**R-059** → **R-060** → R-026 → R-019 → R-020 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 →
+R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042. (33 open.)

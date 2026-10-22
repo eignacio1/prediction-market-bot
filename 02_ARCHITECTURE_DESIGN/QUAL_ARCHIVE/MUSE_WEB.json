@@ -1,87 +1,576 @@
 {
  "about": "State of Muse's aggregation work across the four sports, drawn as the Visual Dashboard's aggregation web. Maintained by the strategic window at every wave close from the archive (eignacio1/sports-intel-archive, commit below), TO_MUSE.md and the bot repo. built = delivered and in the repo/archive; pending = a ticket or block open now; future = planned, no ticket yet. Operator 2026-10-21 08:11 PT: 'give us an idea of pending, built, future'.",
- "as_of": "2026-10-22T02:15Z",
- "archive_commit": "e2000aa",
+ "as_of": "2026-10-22T22:45Z",
+ "archive_commit": "389b5e8",
  "rings": [
-  {"id": "scout", "label": "Scouted", "desc": "free source found and documented (source cards)"},
-  {"id": "record", "label": "Recorded", "desc": "values in the archive (REPORTED)"},
-  {"id": "map", "label": "Mapped", "desc": "defined against the index or PAM (taxonomy, signal map, split definition)"},
-  {"id": "verify", "label": "Verified", "desc": "the bot captured or recomputed it (VERIFIED / FAILED)"},
-  {"id": "apply", "label": "Applied", "desc": "in a factor tested against the market's price"}
+  {
+   "id": "scout",
+   "label": "Scouted",
+   "desc": "free source found and documented (source cards)"
+  },
+  {
+   "id": "record",
+   "label": "Recorded",
+   "desc": "values in the archive (REPORTED)"
+  },
+  {
+   "id": "map",
+   "label": "Mapped",
+   "desc": "defined against the index or PAM (taxonomy, signal map, split definition)"
+  },
+  {
+   "id": "verify",
+   "label": "Verified",
+   "desc": "the bot captured or recomputed it (VERIFIED / FAILED)"
+  },
+  {
+   "id": "apply",
+   "label": "Applied",
+   "desc": "in a factor tested against the market's price"
+  }
  ],
- "sports": ["NFL", "NBA", "MLB", "NHL"],
+ "sports": [
+  "NFL",
+  "NBA",
+  "MLB",
+  "NHL"
+ ],
  "spokes": [
-  {"sport": "NFL", "name": "PAM · 67 position archetypes", "taxonomy": "nfl", "tickets": "R-028 · R-018",
-   "states": ["pending", "future", "pending", "future", "future"],
-   "notes": ["R-018: free sources for the five blocked PAM signals (alignment, OL win rates, coverage assignment, pass-rush snaps, separation)", "No PAM records yet: the mass tier is the bot's job after the signal map", "Layer-1 taxonomy draft2 (19 position groups, awaiting Earl's approval); signal map R-028 is next in Muse's backlog", "Mass tier: WR only (247 bot records, 2023-25)", "Nothing applied yet"]},
-  {"sport": "NFL", "name": "Coverage · pressure · personnel", "tickets": "R-011 · R-013 · R-015",
-   "states": ["built", "built", "built", "built", "future"],
-   "notes": ["13 NFL source cards (Sharp, NGS, PFR, SumerSports, nflverse)", "2026 through Week 6 for all 32 defenses + Sharp 2025 season-final (Wayback)", "Index entry INDEX_ENTRY_COVERAGE_PRESSURE.md (W82.3)", "W83.1: the bot captures five Sharp pages itself every week; card accuracy 22/22", "W82.3: traits, but no yards beyond the frozen passing model; the 2026 cross needs QB-level data (GG-730)"]},
-  {"sport": "NFL", "name": "QB game script (L3)", "tickets": "R-008",
-   "states": ["built", "built", "built", "future", "future"],
-   "notes": ["PFR splits pages", "224 records, Week 6 (126 valued)", "L3 layer defined (schema v1.5)", "Margin bands and ranks are bot-side from nflverse", "Not applied"]},
-  {"sport": "NFL", "name": "Charting · motion · play action", "tickets": "R-037",
-   "states": ["pending", "future", "future", "future", "future"],
-   "notes": ["R-037: nflverse FTN charting card (motion, play action, RPO, pass rushers, box), field by field", "The bot reads the files itself", "", "", ""]},
-  {"sport": "NFL", "name": "Coordinators · play callers", "tickets": "R-019",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-019 queued (GG-731)", "OC/DC 2016-2026 + named play callers", "Factor F9 coaching", "", ""]},
-  {"sport": "NFL", "name": "Officiating crews", "tickets": "R-031",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-031: crew assignments and tendency sources", "Crew-season penalty totals 2016-2026", "", "", ""]},
-  {"sport": "NFL", "name": "Split pairs for the crosses", "tickets": "R-022",
-   "states": ["pending", "future", "future", "future", "future"],
-   "notes": ["R-022 queued: both sides of each split at the same definition", "", "", "", ""]},
-  {"sport": "NFL", "name": "Venue · surface · weather", "tickets": "R-024 · R-026 · R-035",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-026: is there a free historical forecast archive? (GG-734)", "R-024 stadium geometry; R-035 playing surfaces 2016-2026", "", "", ""]},
-  {"sport": "NBA", "name": "PAM · v4 template", "taxonomy": "nba", "tickets": "R-027",
-   "states": ["built", "built", "built", "pending", "future"],
-   "notes": ["NBA.com source cards (play types, tracking, lineups)", "The signals: R-016/R-017 records (21,316)", "R-027 signal map: 47 rows, FREE 18 · PARTIAL 15 · NONE 14", "84.2: the bot builds the mass tier from the FREE rows and grades Muse's records", "Not applied"]},
-  {"sport": "NBA", "name": "Play types · tracking", "tickets": "R-012 · R-016 · R-017",
-   "states": ["built", "built", "built", "built", "future"],
-   "notes": ["NBA.com, browser-only", "2023-24, 2024-25, 2025-26 complete (21,316 records); NBA.com serves nothing earlier", "Used by the R-027 signal map", "W83.2: play-type class graded PARTIAL (ordering against proxies, GG-1031)", "W83.2: play types x usage absorption null at n=131 (interpreted, not priced)"]},
-  {"sport": "NBA", "name": "Injury report route", "tickets": "R-041",
-   "states": ["pending", "future", "future", "pending", "future"],
-   "notes": ["R-041: free routes to the official report that a server can reach (GG-1030)", "The bot collects the reports itself", "", "84.1 Part B tries routes from the box", "Feeds the frozen lineup pre-registration"]},
-  {"sport": "NBA", "name": "Matchups · who guards whom", "tickets": "R-046",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-046: NBA.com matchup tables card", "Defender-offender pairs, 3 seasons", "Updates R-027's PRF-10 row", "", ""]},
-  {"sport": "NBA", "name": "Defense tracking · hustle", "tickets": "R-043 · R-044",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-043 rim and shot defense dashboards; R-044 hustle tables", "3 seasons each", "Moves R-027 NONE rows where they can", "", ""]},
-  {"sport": "NBA", "name": "Lineups · on/off", "tickets": "R-023 · R-042",
-   "states": ["built", "pending", "future", "future", "future"],
-   "notes": ["Card written (R-012)", "R-023 2025-26, then R-042 for the two prior seasons", "", "", ""]},
-  {"sport": "NBA", "name": "Player & team advanced · clutch", "tickets": "R-021 · R-025 · R-045",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-021 / R-025 / R-045 queued", "Usage, TS%, ratings, pace; clutch splits", "", "", ""]},
-  {"sport": "NBA", "name": "Referees", "tickets": "R-040",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-040: assignment page timing + tendency sources", "Per-referee values, 3 seasons", "", "", ""]},
-  {"sport": "NBA", "name": "Arena geometry", "tickets": "R-024",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-024 queued (GG-913)", "Coordinates, time zones, altitude", "Travel factor N5", "", ""]},
-  {"sport": "MLB", "name": "PAM · 24 archetypes", "taxonomy": "mlb", "tickets": "R-029",
-   "states": ["pending", "future", "pending", "future", "future"],
-   "notes": ["R-029: Statcast / FanGraphs / B-Ref cards", "", "Layer-1 taxonomy draft (awaiting Earl's approval); signal map R-029 queued", "", ""]},
-  {"sport": "MLB", "name": "Pitch arsenals · hitter vs pitcher", "tickets": "R-054",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-054: Savant pitch-arsenal tables", "Per pitcher and pitch type, 2023-2026", "", "", "MLB becomes the look-back corpus after the World Series"]},
-  {"sport": "MLB", "name": "Defense · park · umpire", "tickets": "R-051 · R-052 · R-053",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-051 umpires, R-052 park factors, R-053 team defense", "Per season, 2016-2026", "", "", ""]},
-  {"sport": "NHL", "name": "PAM · 18 archetypes", "taxonomy": "nhl", "tickets": "R-030",
-   "states": ["pending", "future", "pending", "future", "future"],
-   "notes": ["R-030 queued", "", "Layer-1 taxonomy draft (awaiting Earl's approval); signal map R-030 queued", "", ""]},
-  {"sport": "NHL", "name": "xG · lines · EDGE sources", "tickets": "R-020 · R-050",
-   "states": ["pending", "future", "future", "future", "pending"],
-   "notes": ["R-020: MoneyPuck, Natural Stat Trick, NHL EDGE, shifts; R-050 line-combination history", "", "", "The bot's own NHL event store (W83.3: 12 seasons) is the base", "84.3: the bot's shot-quality factor taken to a price"]},
-  {"sport": "NHL", "name": "Goalie starts · workload", "tickets": "R-047",
-   "states": ["pending", "future", "future", "future", "pending"],
-   "notes": ["R-047: who confirms starters, when, how accurately (GG-1010)", "", "", "", "84.3: goalie workload factor from the store"]},
-  {"sport": "NHL", "name": "Officials · coaches", "tickets": "R-048 · R-049",
-   "states": ["pending", "pending", "future", "future", "future"],
-   "notes": ["R-048 officials (GG-1012), R-049 coaches 2014-2026", "Per-referee and per-team-season records", "", "", ""]}
+  {
+   "sport": "NFL",
+   "name": "PAM · 67 position archetypes",
+   "taxonomy": "nfl",
+   "tickets": "R-028 · R-018 · R-056",
+   "states": [
+    "built",
+    "future",
+    "built",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-018: cards for the five blocked signals; one gap still fully open (GG-777), four partly filled",
+    "No PAM records yet: the mass tier is the bot's job",
+    "R-028 signal map: FREE 39 · PARTIAL 44 · NONE 16; R-056 dossiers for 19 groups (3 QB exemplars, PROPOSED)",
+    "Mass tier not built yet (NFL after NBA)",
+    "Nothing applied yet"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Coverage · pressure · personnel",
+   "tickets": "R-011 · R-013 · R-015",
+   "states": [
+    "built",
+    "built",
+    "built",
+    "built",
+    "future"
+   ],
+   "notes": [
+    "13 NFL source cards (Sharp, NGS, PFR, SumerSports, nflverse)",
+    "2026 through Week 6 for all 32 defenses + Sharp 2025 season-final (Wayback)",
+    "Index entry INDEX_ENTRY_COVERAGE_PRESSURE.md (W82.3)",
+    "W83.1: the bot captures five Sharp pages itself every week; card accuracy 22/22",
+    "W82.3: traits, but no yards beyond the frozen passing model; the 2026 cross needs QB-level data (GG-730)"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "QB game script (L3)",
+   "tickets": "R-008",
+   "states": [
+    "built",
+    "built",
+    "built",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "PFR splits pages",
+    "224 records, Week 6 (126 valued)",
+    "L3 layer defined (schema v1.5)",
+    "Margin bands and ranks are bot-side from nflverse",
+    "Not applied"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Charting · motion · play action",
+   "tickets": "R-037",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-037: nflverse FTN charting card (motion, play action, RPO, pass rushers, box), field by field",
+    "The bot reads the files itself",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Coordinators · play callers",
+   "tickets": "R-019",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-019 queued (GG-731)",
+    "OC/DC 2016-2026 + named play callers",
+    "Factor F9 coaching",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Officiating crews",
+   "tickets": "R-031",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-031: crew assignments and tendency sources",
+    "Crew-season penalty totals 2016-2026",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Split pairs for the crosses",
+   "tickets": "R-022",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-022 queued: both sides of each split at the same definition",
+    "",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Venue · surface · weather",
+   "tickets": "R-024 · R-026 · R-035",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-026: is there a free historical forecast archive? (GG-734)",
+    "R-024 stadium geometry; R-035 playing surfaces 2016-2026",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Line history · injury-report timing",
+   "tickets": "R-058 · R-059",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-058 line history with timestamps; R-059 when each injury report is posted",
+    "",
+    "",
+    "",
+    "The anchor for the market-anchored price (85.1 uses nflverse closes)"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "PAM · v4 template",
+   "taxonomy": "nba",
+   "tickets": "R-027 · R-055",
+   "states": [
+    "built",
+    "built",
+    "built",
+    "built",
+    "future"
+   ],
+   "notes": [
+    "NBA.com source cards (play types, tracking, lineups)",
+    "The signals: R-016/R-017 records (21,316)",
+    "R-027 map (47 rows); R-055 dossiers: 15 factors + modifiers, 201 PROPOSED exemplars",
+    "84.2: mass tier ~1,723 player-seasons; games-played grade 2 VERIFIED / 4 FAILED (GG-1063)",
+    "Cross not run (n = 0, GG-1064)"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Play types · tracking",
+   "tickets": "R-012 · R-016 · R-017",
+   "states": [
+    "built",
+    "built",
+    "built",
+    "built",
+    "future"
+   ],
+   "notes": [
+    "NBA.com, browser-only",
+    "2023-24, 2024-25, 2025-26 complete (21,316 records); NBA.com serves nothing earlier",
+    "Used by the R-027 signal map",
+    "W83.2: play-type class graded PARTIAL (ordering against proxies, GG-1031)",
+    "W83.2: play types x usage absorption null at n=131 (interpreted, not priced)"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Injury report route",
+   "tickets": "R-041",
+   "states": [
+    "built",
+    "built",
+    "future",
+    "built",
+    "pending"
+   ],
+   "notes": [
+    "R-041: free plain-GET routes documented",
+    "84.1: the bot relays the official PDFs through a GitHub runner",
+    "",
+    "Read back on the box 10-22 03:15Z (92 rows)",
+    "The lineup factor accrues under its frozen pre-registration"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Matchups · who guards whom",
+   "tickets": "R-046",
+   "states": [
+    "built",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-046: NBA.com matchup tables card",
+    "2025-26 done (30/30 teams); 2024-25 in progress (25,821 records)",
+    "Updates R-027's PRF-10 row",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Defense tracking · hustle",
+   "tickets": "R-043 · R-044",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-043 rim and shot defense dashboards; R-044 hustle tables",
+    "3 seasons each",
+    "Moves R-027 NONE rows where they can",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Lineups · on/off",
+   "tickets": "R-023 · R-042",
+   "states": [
+    "built",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "Card written (R-012)",
+    "R-023 2025-26, then R-042 for the two prior seasons",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Player & team advanced · clutch",
+   "tickets": "R-021 · R-025 · R-045",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-021 / R-025 / R-045 queued",
+    "Usage, TS%, ratings, pace; clutch splits",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Referees",
+   "tickets": "R-040",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-040: assignment page timing + tendency sources",
+    "Per-referee values, 3 seasons",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Arena geometry",
+   "tickets": "R-024",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-024 queued (GG-913)",
+    "Coordinates, time zones, altitude",
+    "Travel factor N5",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Closing lines (the anchor)",
+   "tickets": "R-057",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-057: free historical lines, 2016-2026",
+    "",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "MLB",
+   "name": "PAM · 24 archetypes",
+   "taxonomy": "mlb",
+   "tickets": "R-029 · R-061",
+   "states": [
+    "pending",
+    "future",
+    "pending",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-029: Statcast / FanGraphs / B-Ref cards",
+    "",
+    "Layer-1 taxonomy draft (awaiting Earl's approval); signal map R-029 queued",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "MLB",
+   "name": "Pitch arsenals · hitter vs pitcher",
+   "tickets": "R-054",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-054: Savant pitch-arsenal tables",
+    "Per pitcher and pitch type, 2023-2026",
+    "",
+    "",
+    "MLB becomes the look-back corpus after the World Series"
+   ]
+  },
+  {
+   "sport": "MLB",
+   "name": "Defense · park · umpire",
+   "tickets": "R-051 · R-052 · R-053",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-051 umpires, R-052 park factors, R-053 team defense",
+    "Per season, 2016-2026",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "MLB",
+   "name": "Closing lines · probables timing",
+   "tickets": "R-057 · R-060",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-057 historical lines; R-060 when probables and lineups are posted",
+    "",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "PAM · 18 archetypes",
+   "taxonomy": "nhl",
+   "tickets": "R-030 · R-062",
+   "states": [
+    "pending",
+    "future",
+    "pending",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-030 queued",
+    "",
+    "Layer-1 taxonomy draft (awaiting Earl's approval); signal map R-030 queued",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "xG · lines · EDGE sources",
+   "tickets": "R-020 · R-050",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "built",
+    "built"
+   ],
+   "notes": [
+    "R-020: MoneyPuck, Natural Stat Trick, NHL EDGE, shifts; R-050 line-combination history",
+    "",
+    "",
+    "The bot's own NHL event store (12 seasons) is the base",
+    "84.3: shot quality to a price vs Kalshi (2025, n = 1,306): too few to tell"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "Goalie starts · workload",
+   "tickets": "R-047",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "built",
+    "built"
+   ],
+   "notes": [
+    "R-047: who confirms starters, when, how accurately (GG-1010)",
+    "",
+    "",
+    "Workload built from the store, point-in-time",
+    "84.3: goalie workload tested against the market"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "Officials · coaches",
+   "tickets": "R-048 · R-049",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-048 officials (GG-1012), R-049 coaches 2014-2026",
+    "Per-referee and per-team-season records",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "Closing lines (the anchor)",
+   "tickets": "R-057",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-057: free historical lines, 2016-2026",
+    "",
+    "",
+    "",
+    ""
+   ]
+  }
  ]
 }
