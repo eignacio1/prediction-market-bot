@@ -1164,3 +1164,17 @@ max_age_h = "2"
 schedule = "3,18,33,48 * * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron.nba_lineup_window"]
 command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_lineup_window.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_lineup_window_capture.py >> logs/nba_lineup_window_cron.log 2>&1"
+[[component]]
+key = "cron|41 21 * * 2,3|scripts/source_capture_nfl.py"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "Weekly (Tue, Wed backup) capture-only snapshot of the Sharp Football Analysis static NFL tables (coverage, defensive tendencies, line stats, offensive personnel); point-in-time 2026 coverage/pressure/personnel splits for the NFL engine, since nflverse participation does not exist until ~Feb 2027."
+pillar = "DEPTH"
+writes = ["logs/source_capture_cron.log"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/source_capture_cron.log is older than 200h (a week with no capture run); per-page failures are logged in exp_output/SOURCE_CAPTURE/checks.jsonl"
+max_age_h = "200"
+schedule = "41 21 * * 2,3"
+mirrors = ["deploy/cron.conf", "deploy/cron.source_capture"]
+command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/source_capture_nfl.py >> logs/source_capture_cron.log 2>&1"

@@ -188,3 +188,6 @@ exp_output/KALSHI_HISTORY/thin_capture/
 # W80R thin-market fetch stores (raw candles; box/laptop/cloud scratch only)
 exp_output/KALSHI_HISTORY/thin/
 exp_output/KALSHI_HISTORY/thin_par/
+
+# Visual Dashboard local builds (the box serves it live at /visual)
+exp_output/VISUAL_DASHBOARD/

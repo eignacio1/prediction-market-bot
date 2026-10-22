@@ -38,7 +38,7 @@ def test_allowlist_v1_names():
 def test_only_capture_install_can_change_the_box():
     writers = {n for n, c in bt.TASKS.items() if any(w in c for w in ("crontab - ", "crontab -e", " install", " uninstall", "rm ", "systemctl restart",
                                                                      "git pull", "git checkout"))}
-    assert writers == {"capture_install", "capture_uninstall"}
+    assert writers == {"capture_install", "capture_uninstall", "source_capture_install", "source_capture_uninstall"}
     import re
     for name, c in bt.TASKS.items():      # the only redirections allowed are stderr ones; nothing writes a file
         assert not re.search(r">", re.sub(r"2>&1|2>/dev/null", "", c)), name

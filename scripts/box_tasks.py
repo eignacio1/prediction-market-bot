@@ -49,6 +49,11 @@ TASKS: dict[str, str] = {
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",
     "thin_depth_stats": f"{PY} 12_EXPLORATORY/thin_markets/depth_stats.py",
+    # W83.1: weekly NFL source-card capture (install is budget-gated; run = one-off backfill of this week's state)
+    "source_capture_install": f"{PY} scripts/source_capture_install.py install",
+    "source_capture_readback": f"{PY} scripts/source_capture_install.py readback",
+    "source_capture_run": f"{PY} scripts/source_capture_nfl.py --log logs/source_capture_cron.log",
+    "source_capture_uninstall": f"{PY} scripts/source_capture_install.py uninstall",
     "capture_uninstall": f"{PY} scripts/thin_capture_install.py uninstall",
     "distance_read": (
         f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
@@ -74,6 +79,13 @@ TASKS: dict[str, str] = {
         "echo '--- web servers'; (dpkg -l 2>/dev/null | grep -E '^ii +(nginx|apache2|caddy|lighttpd) ' || echo 'no web server packages'); "
         "echo '--- listening tcp'; ss -tlnp 2>/dev/null | awk 'NR==1 || /LISTEN/'; "
         "echo '--- os'; grep PRETTY_NAME /etc/os-release"
+    ),
+    # 2026-10-21: the dashboards as the operator's tunnel sees them (status, bytes; the web section present on /visual).
+    "dashboard_pages_read": (
+        "for u in / /api/data /visual /project; do printf '%-10s ' \"$u\"; "
+        "curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 60 \"http://127.0.0.1:8050$u\"; echo; done; "
+        "printf 'museweb sections on /visual: '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -c 'id=\"museweb\"'; "
+        "systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,MemoryCurrent,MemoryMax"
     ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
