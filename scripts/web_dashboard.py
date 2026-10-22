@@ -55,10 +55,13 @@ import argparse
 import json
 import os
 import re
+import gc
 import subprocess
 import sys
+import threading
+import time
 from datetime import datetime, timezone
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Callable
 
@@ -1166,12 +1169,18 @@ def _load_all_data() -> dict:
         except Exception:
             return default
 
+    # Each portfolio is parsed ONCE per load (W84.1): the T4 file is ~9.5 MB and
+    # was parsed twice (here and again for mlb_postseason), doubling the
+    # transient memory of the largest request.
+    portfolio = safe(lambda: _load_json(d / "paper_portfolio_mlb.json"), {})
+    # rejected_positions grows unbounded and isn't read by the frontend —
+    # dropped before parse time, not after. See _load_json_dropping_key.
+    t4_portfolio = safe(lambda: _load_json_dropping_key(
+        d / "paper_portfolio_mlb_t4.json", "rejected_positions"), {})
+
     out = {
-        "portfolio":    safe(lambda: _load_json(d / "paper_portfolio_mlb.json"), {}),
-        # rejected_positions grows unbounded and isn't read by the frontend —
-        # dropped before parse time, not after. See _load_json_dropping_key.
-        "t4_portfolio": safe(lambda: _load_json_dropping_key(
-            d / "paper_portfolio_mlb_t4.json", "rejected_positions"), {}),
+        "portfolio":    portfolio,
+        "t4_portfolio": t4_portfolio,
         # Pull more audit history so the trade log is comprehensive
         "audit":        safe(lambda: _load_jsonl(d / "audit_mlb.jsonl",    tail=1000), []),
         "t4_audit":     safe(lambda: _load_jsonl(d / "audit_mlb_t4.jsonl", tail=500), []),
@@ -1203,9 +1212,7 @@ def _load_all_data() -> dict:
                                 {"awaiting": "shadow ledgers", "cells": [], "tape": []}),
         "verdicts":        safe(_verdicts, {}),
         "mlb_postseason":  safe(lambda: _mlb_postseason(
-            d, datetime.now(tz=timezone.utc),
-            _load_json(d / "paper_portfolio_mlb.json"),
-            _load_json_dropping_key(d / "paper_portfolio_mlb_t4.json", "rejected_positions")),
+            d, datetime.now(tz=timezone.utc), portfolio, t4_portfolio),
             {"awaiting": "mlb sources"}),
     }
     out["decisions"] = safe(lambda: _decisions(
@@ -1222,51 +1229,109 @@ def _load_all_data() -> dict:
 # HTTP Handler
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Heavy pages are built OFF the request path (W84.1). Measured on the box
+# 2026-10-21: /api/data peaked at ~98 MB of process memory and took 14-28 s,
+# /project took 40-50 s and filled the cgroup with ~88 MB of file cache, all on
+# the request thread. A built page is now served instantly from its last good
+# copy; a stale copy is refreshed by one background thread, and every build is
+# serialised behind one lock so two heavy builds never overlap in memory.
+_BUILD_LOCK = threading.Lock()
+_REFRESHING: set[str] = set()
+_REFRESH_GUARD = threading.Lock()
 _PROJECT_CACHE: dict = {"t": 0.0, "html": ""}
 _PROJECT_TTL_S = 60.0
+_VISUAL_CACHE: dict = {"t": 0.0, "html": ""}
+_VISUAL_TTL_S = 300.0
+# 0 disables caching (tests read-after-write); the service default is 20 s.
+_DATA_TTL_S = float(os.environ.get("DASHBOARD_DATA_TTL_S", "20"))
+_DATA_CACHE: dict = {"t": 0.0, "key": "", "body": b""}
 
 
-def _project_page() -> str:
-    """/project: analytical page regenerated from this checkout, cached at most 60 s."""
-    import time as _t
-    now = _t.time()
-    if _PROJECT_CACHE["html"] and now - _PROJECT_CACHE["t"] < _PROJECT_TTL_S:
-        return _PROJECT_CACHE["html"]
+def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callable[[], Any],
+                  key: str | None = None) -> Any:
+    """Return cache[field]; build synchronously only when there is none (first request after
+    a start), otherwise serve the stale copy and refresh in the background."""
+    def rebuild() -> None:
+        try:
+            with _BUILD_LOCK:
+                value = build()
+                cache.update(t=time.time(), **{field: value})
+                if key is not None:
+                    cache["key"] = key
+        finally:
+            gc.collect()
+            with _REFRESH_GUARD:
+                _REFRESHING.discard(name)
+
+    have = cache[field] and (key is None or cache.get("key") == key)
+    if not have or ttl <= 0:
+        with _REFRESH_GUARD:
+            _REFRESHING.discard(name)
+        t_wait = time.time()
+        with _BUILD_LOCK:
+            if ttl > 0 and cache[field] and cache["t"] >= t_wait and (key is None or cache.get("key") == key):
+                return cache[field]   # another thread built it while we waited for the lock
+            value = build()
+            cache.update(t=time.time(), **{field: value})
+            if key is not None:
+                cache["key"] = key
+        gc.collect()
+        return cache[field]
+    if time.time() - cache["t"] >= ttl:
+        with _REFRESH_GUARD:
+            if name not in _REFRESHING:
+                _REFRESHING.add(name)
+                threading.Thread(target=rebuild, name=f"dash-refresh-{name}", daemon=True).start()
+    return cache[field]
+
+
+def _build_project_page() -> str:
     try:
         if str(_REPO_ROOT / "scripts") not in sys.path:
             sys.path.insert(0, str(_REPO_ROOT / "scripts"))
         import generate_project_state as gps
-        html = gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
+        return gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
     except Exception as e:  # never 500: say what is missing
-        html = ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
+        return ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
                 f"<body style='font:14px sans-serif;padding:20px'><p>awaiting generate_project_state ({type(e).__name__})</p>"
                 "<p><a href='/'>Live Terminal</a></p>")
-    _PROJECT_CACHE.update(t=now, html=html)
-    return html
 
 
-_VISUAL_CACHE: dict = {"t": 0.0, "html": ""}
-_VISUAL_TTL_S = 300.0
+def _project_page() -> str:
+    """/project: analytical page regenerated from this checkout, refreshed off-thread every 60 s."""
+    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page)
 
 
-def _visual_page() -> str:
-    """/visual: the Visual Dashboard (scripts/build_visual_dashboard_html.py) rendered from this checkout, cached at most
-    300 s. The box's checkout follows origin/main, so this is never a stale copy (operator 2026-10-21: one dashboard)."""
-    import time as _t
-    now = _t.time()
-    if _VISUAL_CACHE["html"] and now - _VISUAL_CACHE["t"] < _VISUAL_TTL_S:
-        return _VISUAL_CACHE["html"]
+def _build_visual_page() -> str:
     try:
         if str(_REPO_ROOT / "scripts") not in sys.path:
             sys.path.insert(0, str(_REPO_ROOT / "scripts"))
         import build_visual_dashboard_html as bvd
         html, _sha = bvd.render()
+        return html
     except Exception as e:  # never 500: say what is missing
-        html = ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
+        return ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
                 f"<body style='font:14px sans-serif;padding:20px'><p>The Visual Dashboard could not be built ({type(e).__name__}: "
                 f"{str(e)[:200]}).</p><p><a href='/'>Live Terminal</a></p>")
-    _VISUAL_CACHE.update(t=now, html=html)
-    return html
+
+
+def _visual_page() -> str:
+    """/visual: the Visual Dashboard (scripts/build_visual_dashboard_html.py) rendered from this checkout, refreshed
+    off-thread every 300 s. The box's checkout follows origin/main, so this is never a stale copy (operator 2026-10-21:
+    one dashboard)."""
+    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page)
+
+
+def _build_data_body() -> bytes:
+    data = _load_all_data()
+    body = json.dumps(data, default=str, separators=(",", ":")).encode("utf-8")
+    del data
+    return body
+
+
+def _data_body() -> bytes:
+    """/api/data payload as compact JSON bytes, refreshed off-thread every 20 s. Keyed on the log dir."""
+    return _serve_cached("data", _DATA_CACHE, "body", _DATA_TTL_S, _build_data_body, key=str(_log_dir))
 
 
 class DashboardHandler(BaseHTTPRequestHandler):
@@ -1316,8 +1381,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
     def _serve_data(self) -> None:
         try:
-            data = _load_all_data()
-            body = json.dumps(data, default=str).encode("utf-8")
+            body = _data_body()
             self.send_response(200)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
@@ -2631,7 +2695,11 @@ def main() -> None:
     global _log_dir
     _log_dir = Path(args.log_dir)
 
-    server = HTTPServer((args.host, args.port), DashboardHandler)
+    ThreadingHTTPServer.daemon_threads = True
+    server = ThreadingHTTPServer((args.host, args.port), DashboardHandler)
+    # Warm the heavy pages before the first visitor (first build is synchronous otherwise).
+    for _warm in (_data_body, _project_page, _visual_page):
+        threading.Thread(target=_warm, name="dash-warm", daemon=True).start()
     print(f"PMBot Dashboard  http://{args.host}:{args.port}")
     print(f"Log dir          {_log_dir}")
     print(f"Access via       ssh -fNL {args.port}:localhost:{args.port} root@157.230.91.33")

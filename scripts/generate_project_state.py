@@ -20,6 +20,7 @@ import argparse
 import csv
 import json
 import re
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -246,6 +247,15 @@ def sec_queue(repo: Path) -> dict:
     return _sec(f"{QUEUE} · {QUEUE_ARCHIVE}", _file_as_of(repo, QUEUE), waves=waves[:10], needs_decision=needs)
 
 
+def _drop_cache_after(fh: Any) -> None:
+    """Best-effort: tell the kernel this scan's pages are not needed again (W84.1). The box's dashboard runs in a
+    128 MiB cgroup, and a full-file count of the big stores filled it with ~88 MB of reclaimable page cache."""
+    try:
+        os.posix_fadvise(fh.fileno(), 0, 0, os.POSIX_FADV_DONTNEED)
+    except Exception:
+        pass
+
+
 def _store_stats(p: Path) -> dict:
     files = [p] if p.is_file() else [f for f in p.rglob("*") if f.is_file()] if p.is_dir() else []
     if not files:
@@ -264,6 +274,7 @@ def _store_stats(p: Path) -> dict:
                     if r.get("game_date"):
                         dates.append(r["game_date"])
                 newest = max(dates) if dates else None
+                _drop_cache_after(fh)
         elif big.suffix == ".jsonl":
             rows = 0
             last = ""
@@ -272,6 +283,7 @@ def _store_stats(p: Path) -> dict:
                     if ln.strip():
                         rows += 1
                         last = ln
+                _drop_cache_after(fh)
             try:
                 j = json.loads(last)
                 newest = j.get("ts") or j.get("timestamp") or j.get("game_date")
