@@ -4292,3 +4292,9 @@ W84.2 Muse grade. Of 21,249 graded GP records, play-type 2026 exact rate is 15.4
 **Status:** OPEN · **Severity:** LOW
 
 W84.2 Part B cross not run (n = 0): PREGAME_SHADOW NBA_PLAYER_POINTS rows (since ~2026-10-18) carry p_yes and the market mid but no actual points, and the store holds no 2026-27 games. Also `12_EXPLORATORY/CHARTER.md` rule 2 (no exploratory reads of PREGAME_SHADOW) conflicts with the block text that names them. Proposed fix: refresh the event store with 2026-27 games, then run the cross as a pre-registered read once a few hundred player-games settle; resolve the charter conflict explicitly.
+
+### GG-1090 — No Kalshi candle history for NFL spread, total or team-total markets, nor for the 2026 season: the market-anchored test could only measure the anchor-timing gap on moneyline 2025
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W85.1 Part A. `exp_output/KALSHI_HISTORY/candles/KXNFLGAME.jsonl` holds 411 one-minute sets (188 games, 2025 season to Jan 2026). There is none for the spread, total or team-total series and none for 2026, so the T1/T2/T3 anchor-versus-close gap (SD 0.026/0.021/0.015 at ko-36h/-24h/-6h vs 0.010 at ko-30min) is measured on moneyline only, and the historical test anchors every family on the de-vigged close. EXP-041's live anchor is the mid at decision time. Proposed fix: archive the three ladder series' candles forward and backfill what the public API serves; free data only. Owner: next DEPTH wave.

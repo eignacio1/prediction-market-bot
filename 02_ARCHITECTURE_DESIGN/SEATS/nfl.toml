@@ -68,7 +68,7 @@ source = "participation defense_man_zone_type (GAP-1: no 2026 file)"
 engine_slot = "def_pass (coverage)"
 stage = "applied"
 evidence = "12_EXPLORATORY/nfl_engine/results_stage2.md"
-result = "applied and tested W75.2: no gain vs engine v0 (MATCHES, beta unstable); motion direction GAP GG-800"
+result = "applied and tested W75.2: no gain vs engine v0 (MATCHES, beta unstable); motion direction GAP GG-800; W85.1 priced from the market line: share priced unidentified (CI spans 0 and 1), gate weight zero (EXP-041)"
 
 [[factor]]
 id = "N8"
@@ -78,7 +78,7 @@ source = "participation offense_personnel, defense_personnel (GAP-1); ftn"
 engine_slot = "off_pass / off_rush"
 stage = "applied"
 evidence = "12_EXPLORATORY/nfl_engine/results_stage2.md"
-result = "applied and tested W75.2: no gain vs engine v0 (MATCHES, beta unstable); motion direction GAP GG-800"
+result = "applied and tested W75.2: no gain vs engine v0 (MATCHES, beta unstable); motion direction GAP GG-800; W85.1 priced from the market line: share priced unidentified (CI spans 0 and 1), gate weight zero (EXP-041)"
 
 [[factor]]
 id = "N9"
@@ -97,7 +97,7 @@ source = "nflverse injuries: report_status; depth_charts; snap_counts (weekly ru
 engine_slot = "qb availability; rating adjustments"
 stage = "applied"
 evidence = "12_EXPLORATORY/nfl_engine/results_stage3.md"
-result = "applied and tested W76.2 (non-QB unit availability): 99% orthogonal to ratings, moves means ~4.5x F5/F6; MATCHES ML/spread/team total, NO on total; no gain"
+result = "applied and tested W76.2 (non-QB unit availability): 99% orthogonal to ratings, moves means ~4.5x F5/F6; MATCHES ML/spread/team total, NO on total; no gain; W85.1 priced FROM the market line (EXP-041, offline): share priced through 2024 spread 0.67, total 0.33, ML 0.86; held-out unpriced gain pooled dBrier +0.00002 [-0.00014, +0.00017], 0 of 18,479 strikes clear fee + measured error"
 
 [[factor]]
 id = "N11"

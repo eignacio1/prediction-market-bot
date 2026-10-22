@@ -277,7 +277,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 85.1 | NFL: the first market-anchored price, built offline and pre-registered with the pooled test | DEPTH D3 NFL 1 → 2, D5(b) NFL factors priced from the line 0 → n · PROOF P3 gains a look | ⬜ | |
+| 85.1 | NFL: the first market-anchored price, built offline and pre-registered with the pooled test | DEPTH D3 NFL 1 → 2, D5(b) NFL factors priced from the line 0 → n · PROOF P3 gains a look | ⬜ ✅ DONE (PR #326 merged 2026-10-22, CI green; EXP-041 frozen, not wired) | Pooled dBrier price−anchor +0.00002 [−0.00014, +0.00017]; 0 of 18,479 strikes clear the gate; D3 NFL 1→2, D5(b) 0→2 (no gain); pooled scored look ≥500 games, ~Jan 2028, modal NOT DISTINGUISHABLE. Recommend: do not wire next wave. |
 | 85.2 | The real gate: replay it on the orders already placed, then build it (unwired) + DRAFT ADR-0072 addendum | EXECUTION: orders per market per band → positions the gate keeps | ✅ DONE (PR #327 merged 2026-10-22T23:54Z, CI green) | Replay: 44,608 orders → 11,447 positions today; no held-out file has a market-referenced Brier so skill weight = 0 and the gate keeps 0 orders (`12_EXPLORATORY/gate_replay/results_W85.md`). Part B merged: `position_gate.py` (pure, unwired, 10 tests) + DRAFT ADR-0072 addendum (third arm). Wiring waits on a market-referenced held-out Brier. |
 | 85.3 | Before real money: the kill switch counts all stake and persists (GG-441); the install gate refuses on RED (84.1 Part C) | PLUMBING | 🟨 | A+B code in PR #325 (gate fix, 3 retired, exposure_gate wired to T1); GG-441 stays OPEN pending GG-1082 (order-path check) |
 | M85 | Muse: the market's line history and "when it was public", the 33-ticket backlog, R-046 one team per task | DEPTH feed for the market-anchored prices | ⏸ HELD | Not pasted. Operator 10-22 16:32 PT: "No more muse for the rest of the week - usage limits hit lol". Paste when Muse is back; nothing in Wave 85 waits on it |
@@ -1169,7 +1169,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 ### ⬜ WAVE 85 — WRITTEN 2026-10-22 ~22:45 UTC (10-22 15:45 PT) · three MEDIUM blocks + M85
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 85.1 | NFL market-anchored price, offline + pre-registered (pooled test) | ⬜ | |
+| 85.1 | NFL market-anchored price, offline + pre-registered (pooled test) | ✅ | PR #326; EXP-041; do not wire next wave |
 | 85.2 | The real gate: replay on placed orders, then built unwired + DRAFT ADR-0072 addendum | ⬜ | |
 | 85.3 | Kill switch sees all stake (GG-441) + install gate refuses on RED (84.1 Part C) | ⬜ | |
 | M85 | Muse: line history + "when was it public" tickets, 33-ticket backlog | ⏸ HELD (Muse out of usage for the week) | |
