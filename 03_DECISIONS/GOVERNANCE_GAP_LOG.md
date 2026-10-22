@@ -2301,6 +2301,18 @@ W79.1 / W80P.1. `scripts/runtime_registry.py` `probe_local` counted every `src/`
 
 W80R.1, 2026-10-16. The budget probe (`runtime_registry.probe_local`) picked the running SHA with `git rev-list -1 --before=<ActiveEnterTimestamp> HEAD`, which selects commits *dated* before the start even when they were pulled after it. On the box at 15:56Z `deploy_truth` (exact SHA from `logs/vps_deploy_decisions.jsonl`) read **ALARM t4-mlb runs dc84fa6c; 2 imported files changed (demo_fill_policy.py, paper_trader.py), 11.0h old**, while the budget read t4-mlb 0.0h behind and GREEN. The W80P.1 capture was installed through the bridge on that false GREEN (Hard Rule 14 breach, unintended). Same defect class as GG-915 (two definitions of one fact); W80P.1's sweep unified "which files" but not "which SHA". Fix (W80R.1 PR): the probe uses `deploy_truth.sha_at` + `unapplied_changes`; `capture_uninstall` bridge task removes the capture until the red clears; regression test. Open item: the real red — t4-mlb running code 11h behind on two files it imports — needs an idle-window restart (standing authorization 2026-10-08) by the window; why GG-432's restart did not fire for those files is not yet diagnosed.
 
+### GG-1000 — PFR advanced passing is not capturable by a plain GET (Cloudflare 403); the source card says CAPTURABLE
+
+**Status:** OPEN · **Severity:** LOW
+
+W83.1 (2026-10-22). `https://www.pro-football-reference.com/years/2026/passing.htm` returns a Cloudflare 403 to an anonymous GET from both the operator's Mac and the box. The Muse source card's CAPTURABLE verdict (commented-out table in raw HTML) holds only for a browser fetch. Not captured; a headless browser on the box is outside W83.1's permissions. Action: Muse re-labels the card browser-only (TO_MUSE entry 2026-10-21 W83.1); close when a free non-browser route is found or the card is re-labelled and the one-off schedule is set.
+
+### GG-1001 — A newly registered cron is RED against the surface budget until its first write, so its own installer refuses to install it
+
+**Status:** OPEN · **Severity:** LOW
+
+W83.1 (2026-10-22). `source_capture_install.py` refused: the registry entry for the not-yet-installed cron reported `STALE ... no write found` (its log did not exist), and the installer gates on budget GREEN. Worked around legitimately by running the job once (`--log`) before the install. Same shape as the W82.1 passyds refusal. Fix: a first-run bootstrap step in the install protocol, or a registry `not_installed_yet` state that is not counted STALE. Pattern sweep: `thin_capture_install.py` and `passyds_install.py` have the same gate.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
