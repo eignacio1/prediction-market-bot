@@ -32,6 +32,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install requests (imported by the capture module's slot helpers)
+        run: pip install requests==2.32.3
       - name: Fetch latest slots
         run: python3 scripts/nba_ir_relay.py --out "$RUNNER_TEMP/ir"
       - name: Append to data branch
