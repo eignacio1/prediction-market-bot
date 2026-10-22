@@ -576,7 +576,8 @@ command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bo
 key = "cron|37 * * * *|scripts/run_nba_player_points_shadow.py --preseason"
 kind = "cron"
 source = "deploy/cron.conf"
-status = "live"
+status = "retired"
+retired_reason = "NBA regular season began 2026-10-20; the box no longer runs the preseason lines (budget_read 2026-10-22T22:22Z: mirrored-but-not-installed). Mirror lines in deploy/ remain as history (W85.3, GG-1081)."
 reviewed = true
 purpose = "NBA player-points shadow arm: evaluates and logs forecasts for its band, no orders (preseason window)."
 pillar = "BREADTH"
@@ -831,7 +832,8 @@ command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHON
 key = "cron|50 13 * * *|scripts/remove_nba_preseason_cron.py --auto"
 kind = "cron"
 source = "deploy/cron.conf"
-status = "live"
+status = "retired"
+retired_reason = "NBA regular season began 2026-10-20; the box no longer runs the preseason lines (budget_read 2026-10-22T22:22Z: mirrored-but-not-installed). Mirror lines in deploy/ remain as history (W85.3, GG-1081)."
 reviewed = true
 purpose = "One-shot: removes the NBA preseason cron lines once the regular season starts."
 pillar = "BREADTH"
@@ -859,7 +861,8 @@ command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHON
 key = "cron|57 * * * *|scripts/run_nba_pregame_shadow.py --preseason"
 kind = "cron"
 source = "deploy/cron.conf"
-status = "live"
+status = "retired"
+retired_reason = "NBA regular season began 2026-10-20; the box no longer runs the preseason lines (budget_read 2026-10-22T22:22Z: mirrored-but-not-installed). Mirror lines in deploy/ remain as history (W85.3, GG-1081)."
 reviewed = true
 purpose = "NBA pre-game shadow arm (EXP-038): evaluates and logs forecasts for its band, no orders (preseason window)."
 pillar = "BREADTH"
