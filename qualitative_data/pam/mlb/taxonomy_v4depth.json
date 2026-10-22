@@ -1,7 +1,7 @@
 {
  "sport": "mlb",
  "version": "mlb_pam_v4depth_draft1",
- "status": "DRAFT 2026-10-21 (strategic window, at the operator's request; awaiting operator approval). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
+ "status": "WORKING DRAFT, accepted by the operator 2026-10-21 19:15 PT (built by the strategic window at his request, 2026-10-21). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
  "template": "qualitative_data/pam/nba/taxonomy.json (NBA PAM v4: 15 archetypes, 32 modifiers)",
  "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet.",
  "groups": "HIT (hitters), SP (starters), RP (relievers), DEF (fielding/catching role)",

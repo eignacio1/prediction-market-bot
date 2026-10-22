@@ -269,7 +269,7 @@ market priced at least as well as our frozen model; expect the 11-02 look to be 
 ~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 · ~~ADR-0072~~ accepted 10-10 · ~~NFL QB challenger~~ accepted 10-10 · ~~T1 MLB counting (GG-536)~~ decided 10-10 · NBA model-class ADR standing (EXP-038/039; not blocking) · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
 gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
 unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
-(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · ~~PAM deep tier start~~ decided 10-15 16:46 PT: much deeper than 75.1's proposal — QBs, WRs, **RBs, TEs, OL and core defenders**, even foundationally; not soon (DEEP_TIER.md) · ~~KXNFLPASSYDS thin-market prereg~~ **accepted 10-19 21:40 PT** · ~~Muse L3~~ **decided 10-19 21:40 PT: the split-level layer (R-008)** · ~~Nix .283/.378~~ **dropped: it was an example (10-19 21:53 PT)**.
+(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · ~~PAM deep tier start~~ decided 10-15 16:46 PT: much deeper than 75.1's proposal — QBs, WRs, **RBs, TEs, OL and core defenders**, even foundationally; not soon (DEEP_TIER.md) · ~~KXNFLPASSYDS thin-market prereg~~ **accepted 10-19 21:40 PT** · ~~Muse L3~~ **decided 10-19 21:40 PT: the split-level layer (R-008)** · ~~Nix .283/.378~~ **dropped: it was an example (10-19 21:53 PT)**. · ~~PAM taxonomies NFL/MLB/NHL~~ **accepted as working drafts 10-21 19:15 PT** · ~~G6 re-definition (GG-204/285)~~ **accepted: superseding ADR, per book and sport, WINS at judged n (19:15 PT)** · ~~kill switch counts unresolved stake (GG-441)~~ **accepted 19:15 PT** · ~~SSH poller (GG-347)~~ **operator: "probably my home connection" (19:15 PT)**.
 
 ---
 
@@ -1502,6 +1502,15 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **AUTHORIZATION - THREE CALLS (operator, 2026-10-21 19:15 PT, asked by the strategic window with recommendations: "Log my
+> acceptance for the recommended paths on the first 3").** (1) **PAM layer-1 taxonomies for NFL (draft2, 67 archetypes in 19
+> position groups), MLB (24) and NHL (18) are ACCEPTED as working drafts**: thresholds are calibrated at each sport's mass tier
+> from data, never fitted to outcomes. (2) **G6 is re-defined by a superseding ADR** (GG-204, GG-285): "ready for real money"
+> is decided per book and sport, a cell qualifies when it WINS at its pre-registered judged n under ADR-0072's forward test,
+> and the kill-switch fix in (3) is a precondition. The ADR is drafted by a block and comes back to the operator to accept.
+> (3) **The kill switch counts open and settled-but-unresolved stake and persists its state** (GG-441), built as a block
+> before any real capital. No real capital, stake or kelly_fraction changes under this authorization.
 
 > **AUTHORIZATION - ADR-0072 NFL SECOND LOOK (operator, 2026-10-20 ~23:05 PT, asked by the strategic window: "Keep running, one
 > more look (Recommended)").** The forward test keeps running for NFL; one more pre-registered NFL read is taken when criterion

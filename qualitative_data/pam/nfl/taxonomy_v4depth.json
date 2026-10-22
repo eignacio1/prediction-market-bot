@@ -1,7 +1,7 @@
 {
  "sport": "nfl",
  "version": "nfl_pam_v4depth_draft2",
- "status": "DRAFT 2026-10-21 (strategic window, at the operator's request; awaiting operator approval). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
+ "status": "WORKING DRAFT, accepted by the operator 2026-10-21 19:15 PT (built by the strategic window at his request, 2026-10-21). Thresholds are a-priori drafts, to be calibrated when the mass tier is built; never fitted to outcomes.",
  "template": "qualitative_data/pam/nba/taxonomy.json (NBA PAM v4: 15 archetypes, 32 modifiers)",
  "structure": "Same as NBA v4: role archetypes (players are weighted hybrids across them) + cross-cutting modifiers. Each archetype carries group, name, notes, signals, threshold; each modifier name, notes, threshold. GG-### in a threshold = the signal has no free source yet. Position-level archetypes carry `split_hooks`: the situational splits the next PAM layer attaches to that position (e.g. stuff rate on runs to his gap, by box count), so a granularity-index fact lands on one player at one spot.",
  "groups": "QB, RB, WR, TE, LT, LG, C, RG, RT, EDGE, DT3 (3-technique), NT (0/1-technique), DE5 (3-4 5/4i end), MIKE, WILL, SAM, CB, FS, SS. OL, DL, LB and S are broken out by position (operator, 2026-10-21 08:01 PT: 'OL needs to be broken up per position, DL needs to be broken up per position. The next version of the PAM was gonna introduce even higher layering (stuff rate example - Bo Nix example etc etc) so we can't maintain generalities at those levels.')",

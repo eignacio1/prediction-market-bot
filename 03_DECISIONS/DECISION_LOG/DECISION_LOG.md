@@ -2741,3 +2741,11 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 ## 2026-10-21 19:05 PT — The updated ACTIVE_QUEUE.md is sent into the chat at every wave close (operator)
 - Operator: "PUT THE UPDATED ACTIVE QUEUE IN THE FUCKING CHAT WHAT IS THE POINT OF THE ACTIVE QUEUE IF ITS NOT GEETTING UPDATED ON EACH WAVE AND READY ACCESSIBLE RIGHT HERE IN THIS WINDOW".
 - Standing rule (window): at every wave close, after the push, the window sends the updated 04_EXECUTION/ACTIVE_QUEUE.md file into the chat. A GitHub link or "it's in the queue" is not enough.
+
+## 2026-10-21 19:15 PT — Operator accepts three recommended paths; SSH poller is his home connection
+- Operator: "Log my acceptance for the recommended paths on the first 3 - the 4th one I have no clue what that means. I'm almost always working on this at home (about 95% of the time) so yes it's probably my home connection".
+- (1) PAM layer-1 taxonomies NFL (draft2, 67 archetypes, 19 position groups), MLB (24), NHL (18): ACCEPTED as working drafts; thresholds calibrated at each sport's mass tier from data, never fitted to outcomes. Status fields updated in qualitative_data/pam/{nfl,mlb,nhl}/taxonomy_v4depth.json.
+- (2) G6 to be re-defined by a superseding ADR (GG-204, GG-285): per book and sport; a cell qualifies when it WINS at its pre-registered judged n under ADR-0072; the kill-switch fix is a precondition. Drafted by a block, returns to the operator to accept.
+- (3) Kill switch to count open + settled-but-unresolved stake and persist state (GG-441), as a block before any real capital.
+- (4) GG-347: ssh logins from 73.231.159.158 are probably the operator's home connection; the dashboard restarts match his old Reload Dashboard.command (retired today). Recorded on the gap; the gap agent closes it.
+- Authorization blockquote added to ACTIVE_QUEUE.md "Needs your decision". (2) and (3) go into the next wave.

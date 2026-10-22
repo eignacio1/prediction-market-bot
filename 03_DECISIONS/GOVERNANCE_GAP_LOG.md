@@ -3409,6 +3409,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Operator answer (2026-10-21 19:15 PT):** "I'm almost always working on this at home (about 95% of the time) so yes it's probably my home connection". The dashboard restarts match his old `Reload Dashboard.command` (it ran `systemctl restart` over SSH; retired to `_to_delete/` 2026-10-21). Next: the gap agent closes this as the operator's own access, unless a login appears from another address.
+
 **Current state (2026-10-08, W59.1):** VPS journalctl 2026-10-03 to 10-07 shows 8 more t4-mlb Stopping/Started pairs (6 on Oct 3 01:12-01:33 UTC, 2 on Oct 5 07:57, 1 on Oct 7 06:13); last -i shows root login from 73.231.159.158 Sep 22 04:35-06:51 and auth.log shows many publickey root logins from the same IP on Oct 8 01:25-01:27 UTC (likely this session's own operator IP, so poller attribution is probable but unconfirmed). No manual-service-action log exists; restarts remain unattributed. **Next:** Operator confirms 73.231.159.158 and the restart bursts are theirs, then add a manual-service-action log or restart note and close.
 
 <details>
