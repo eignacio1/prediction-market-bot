@@ -188,3 +188,6 @@ exp_output/KALSHI_HISTORY/thin_capture/
 # W80R thin-market fetch stores (raw candles; box/laptop/cloud scratch only)
 exp_output/KALSHI_HISTORY/thin/
 exp_output/KALSHI_HISTORY/thin_par/
+
+# W83.3 NHL event store (raw cache + parquet; manifest is committed)
+exp_output/NHL_EVENTS/
