@@ -91,9 +91,10 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 ## Sweep tally
 | Sweep | OPEN before -> after | Ids closed / re-filed |
 |---|---|---|
-| GS-3 (2026-10-22) | 210 -> 202 | Closed: GG-233, GG-258, GG-292, GG-420. Re-filed WATCH ITEM: GG-285, GG-328, GG-624, GG-078 |
+| GS-3 (2026-10-22) | 210 -> 199 | Closed: GG-233, GG-258, GG-292, GG-420, GG-195, GG-260, GG-350 (shared-folder protocol). Re-filed WATCH ITEM: GG-285, GG-328, GG-624, GG-078 |
 
 ## Sweep lists
 - GS-3 class P (closed with evidence): GG-233, GG-258, GG-292, GG-420.
 - GS-3 class O (WATCH ITEM): GG-285, GG-328, GG-624, GG-078.
 - GS-3 skipped: GG-234/243/256/353/422 (C, claim_session/check_id_collision code), GG-342 (31 unmerged remote branches, none provably on main), GG-195/260/349/350/417 (shared-tree drift, retirement not authorized), GG-409/418/312/763/299/327/041/266/045/410/423/330/331/691 (C, L or operator), E-class engine gaps untouched.
+- GS-3 follow-up: GG-349/GG-417 (index.lock, session_guard.sh check) remain OPEN, class C, not drift.

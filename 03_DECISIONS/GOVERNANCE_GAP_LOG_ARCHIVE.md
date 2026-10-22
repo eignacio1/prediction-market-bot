@@ -5978,3 +5978,81 @@ B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073,
 
 **Resolution (GS-3 sweep, 2026-10-22):** `git log --follow` on `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_0020.md` at main shows one writer (42b3d30, T-631); the 48.3 version (59f7f78) never landed on main, and its branch `session/...-eyes-and-nhl` no longer exists on origin. There is one file under that name on main, so there is no collision.
 
+### GG-195 — 14 untracked nav-adjacent files sitting in the shared main working tree, unclaimed and unregistered, outside any session's explicit scope
+
+**Status:** RESOLVED (2026-10-22, GS-3) · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Shared main tree still carries untracked files (git status at session start showed several). **Next:** Track, delete or park them explicitly.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-195 |
+| Category | Working-tree hygiene — nothing enforces that files landing in the shared main tree get tracked, deleted, or explicitly parked within a bounded time; they simply accumulate as `??` in `git status` until some session's scope happens to cover them. |
+| What was missed | `git status --porcelain` on the shared main tree (T-469, 2026-08-19) found 14 untracked files with no corresponding instruction in this session's scope: `04_EXECUTION/TERMINAL_PROMPTS_GG163_HOTFIX.md`, `04_EXECUTION/TERMINAL_PROMPTS_WAVE2_REVISED.md` through `WAVE9.md` (6 files), `05_RESEARCH_EXPERIMENTS/STRATEGIC_REVIEW_2026-08-03_HANDOFF.md`, `11_MEMORY_HANDOFF/NEW_WINDOW_PASTE_IN.md`, `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-08-12.md`/`-08-16.md`/`-08-18.md`, and `scripts/lib/__pycache__/` (a cache dir — likely belongs in `.gitignore`, not tracked). None have been inspected for content in this session. |
+| When it should have been caught | Whichever session first created each file should have tracked, gitignored, or explicitly parked it before ending; absent that, the next session touching this tree's `git status` output should have triaged it rather than working around it. |
+| Phases it survived | Unknown per-file age — at least back through the 2026-08-03 strategic-review window (the WAVE2-9 and STRATEGIC_REVIEW files) and the more recent 2026-08-12/16/18 carry-forward files, i.e. spanning at least this entire ~2.5-week window without triage. |
+| Why it survived | No session-start or session-end step asserts the shared main tree is free of untracked files; `session_guard.sh` checks branch/claim state, not working-tree file hygiene. Each individual session's scope (Hard Rule 11) correctly bounded itself to its own deliverable, which structurally means an unscoped untracked file never gets picked up unless a session happens to be explicitly tasked with tree cleanup, as this one was for a narrower list. |
+| Impact | Low — no code or capital path reads these files; they are dead nav/handoff prose. The risk is purely navigational (a future session mistaking stale untracked content for current state) and repo hygiene (working tree drift from what `git status` should show as clean). |
+| Discovery | T-469 (2026-08-19), `git status --porcelain` during Step 3 of its mandated task, cross-checked against the explicit file list given in scope — these 14 fell outside it. |
+| Resolution | Not started — register-and-stop per Hard Rule 11 (out of T-469's one-deliverable scope). Candidate follow-on: a session tasked with triaging each file (track-for-recoverability-then-delete, vs. delete outright if superseded, vs. `.gitignore` for `__pycache__`) — same judgment pattern T-469 applied to `TERMINAL_PROMPTS_2026-08-03.md` in this session, just not yet applied to this list. |
+| Status | OPEN — unstaffed. |
+
+</details>
+
+---
+
+**Resolution (GS-3 sweep, 2026-10-22):** Operator's reading-copy protocol (ACTIVE_QUEUE.md 'Needs your decision', 2026-10-21 19:39 PT): the shared folder is fast-forwarded to origin/main at every wave close, lag between refreshes is not a gap, untracked local files are never touched, and terminals use worktrees. First refresh logged in DECISION_LOG 2026-10-21 19:50 PT. Shared-tree drift gaps close under this protocol.
+
+
+### GG-260 — Shared `main` working tree carries uncommitted `ACTIVE_QUEUE.md` drift invisible to worktree-isolated sessions; recurrence of the condition T-505 fixed in Wave 10
+
+**Status:** RESOLVED (2026-10-22, GS-3) · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** Shared main tree still has uncommitted drift (git status at session start showed modified OPERATOR_CONSOLE.md and untracked files). **Next:** Make session start read origin/main, not the working tree.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-260 |
+| Category | Process/tooling gap — session-start data freshness, not a code defect. Recurrence of a condition previously fixed once already (T-505, Wave 10) and never structurally closed. |
+| What was found | This session (T-533, worktree `session/20260909T143314Z-nfl-week1-capture-windows-and-depth`) found `04_EXECUTION/ACTIVE_QUEUE.md` in the shared `main` working tree carrying a substantial uncommitted local modification (360 insertions / 263 deletions against the then-current `origin/main`) that was never committed or pushed by whatever prior session produced it. `origin/main`'s committed copy — the only version a fresh worktree clone can see — was stale, still headed "Verified against `origin/main = e66c5cd` (2026-09-07)" and describing a 78-cell/74-OPEN-gap state, while the shared tree's uncommitted copy reflected the live post-T-528/T-530/T-531 state (92 cells, GG-252 CLOSED, GG-254/255/256/257/259 OPEN or partial). A worktree-isolated session — the architecture GG-101/T-335 mandates as the *default* launch mode — has no visibility into the shared tree's working-directory state at all; it only ever sees what is committed to `origin/main`. |
+| Why it matters | `ACTIVE_QUEUE.md` is documented in its own header as "the only prompt file to read" — every session's first substantive read after the session-start protocol. If the authoritative queue state only ever exists as an uncommitted diff in one shared tree, every isolated-worktree session (the now-default launch mode) starts from stale task framing, stale ID hints, and a stale gap/cell census until a session happens to notice and manually port the diff across, as this session did by hand (`cp` from the shared tree's live file into the worktree, verified via `git diff --stat`). This is not self-correcting — worktree isolation, the fix for GG-101, is structurally the same mechanism that hides this drift from every session except one physically `cd`'d into the shared tree. |
+| Impact today | MEDIUM — no data was lost (the shared tree's modification was intact and recoverable, not overwritten), but every isolated-worktree session launched between whenever that modification was written and this session's manual port was working from a queue file understating current state by two full waves of landed work (T-528 through T-531). Recurring, not a one-off: T-505 (Wave 10) already found and fixed this exact condition once; it recurred with no structural change in between. |
+| Discovery | 2026-09-09, T-533 (this session), Deliverable 0 — task brief explicitly anticipated this condition ("origin/main's committed copy is stale") and instructed installing the shared tree's live copy as an unconditional first deliverable; confirmed by direct `git status --porcelain` read of the shared tree showing ` M 04_EXECUTION/ACTIVE_QUEUE.md` before this session began its own worktree work. |
+| Resolution | Not started as a systemic fix. This session's local resolution is the manual port + commit described above (see this session's Deliverable 0 commit). No structural fix exists yet for the underlying cause — the shared `main` tree is where `ACTIVE_QUEUE.md` edits are apparently drafted/reviewed before commit, but nothing currently prompts or forces that commit to land before a new worktree session forks from `origin/main`. A `session_guard.sh`/`new_session_worktree.sh` check that diffs the shared tree's `ACTIVE_QUEUE.md` against `origin/main` at worktree-creation time and warns on drift would close this structurally; not built here (out of this session's scope fence — `deploy/cron.conf`, `ACTIVE_QUEUE.md` content, and the T-530 merge only). |
+| Prior occurrence | T-505 (Wave 10, see `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`) found and fixed the same condition once before; no gap was registered at that time, which is why this had no open ticket to update on recurrence and required a fresh registration instead. |
+| Status | OPEN. |
+
+</details>
+
+---
+
+**Resolution (GS-3 sweep, 2026-10-22):** Operator's reading-copy protocol (ACTIVE_QUEUE.md 'Needs your decision', 2026-10-21 19:39 PT): the shared folder is fast-forwarded to origin/main at every wave close, lag between refreshes is not a gap, untracked local files are never touched, and terminals use worktrees. First refresh logged in DECISION_LOG 2026-10-21 19:50 PT. Shared-tree drift gaps close under this protocol.
+
+
+### GG-350 — Shared tree drift: 140 commits behind, 6 conflicting dirty tracked files, untracked file colliding with a tracked upstream path, untracked files remaining after sync
+
+**Status:** RESOLVED (2026-10-22, GS-3) · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** State changed: shared tree is now 15 commits behind origin/main (not 140) with 1 modified tracked file (OPERATOR_CONSOLE.md) and several untracked files (git status, this session). **Next:** Operator syncs shared tree; commit or discard OPERATOR_CONSOLE.md edit.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-350 |
+| Category | Concurrent-session safety |
+| What was found | WAVE45_land_the_record_results.md item 2; W45_462_sync_and_diagnose_results.md item 9 (three untracked files remain after 46.2). git status at this session start still lists OPERATOR_CONSOLE.md, ACTIVE_QUEUE.md, ACTIVE_QUEUE_ARCHIVE.md modified and three untracked files. |
+| Why it matters | Unowned dirty state in main is the exact GG-101 collision surface. |
+| Disposition | Operator or owning session decides each file; nothing touched here. |
+
+</details>
+
+**Resolution (GS-3 sweep, 2026-10-22):** Operator's reading-copy protocol (ACTIVE_QUEUE.md 'Needs your decision', 2026-10-21 19:39 PT): the shared folder is fast-forwarded to origin/main at every wave close, lag between refreshes is not a gap, untracked local files are never touched, and terminals use worktrees. First refresh logged in DECISION_LOG 2026-10-21 19:50 PT. Shared-tree drift gaps close under this protocol.
+
