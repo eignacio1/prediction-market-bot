@@ -2737,3 +2737,7 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Wave 84: 84.1 dashboard memory (operator told 17:20 PT) + GG-1030 route + Hard Rule 14 gate; 84.2 NBA PAM mass tier from R-027; 84.3 NHL first factors to a price; M84 (Muse disables exactly `nfl-archive-daily-sync` and `seat-sports-intake` after pasting their prompts verbatim; 30-ticket backlog; R-028).
 - Common rules: handoff file name fixed W81_<n> → W84_<n> (W83's handoffs were misnamed W81_4/W81_5 by the template).
 - MUSE_WEB.json refreshed (24 workstreams, archive e2000aa).
+
+## 2026-10-21 19:05 PT — The updated ACTIVE_QUEUE.md is sent into the chat at every wave close (operator)
+- Operator: "PUT THE UPDATED ACTIVE QUEUE IN THE FUCKING CHAT WHAT IS THE POINT OF THE ACTIVE QUEUE IF ITS NOT GEETTING UPDATED ON EACH WAVE AND READY ACCESSIBLE RIGHT HERE IN THIS WINDOW".
+- Standing rule (window): at every wave close, after the push, the window sends the updated 04_EXECUTION/ACTIVE_QUEUE.md file into the chat. A GitHub link or "it's in the queue" is not enough.
