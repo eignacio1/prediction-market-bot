@@ -13,6 +13,11 @@ import unicodedata
 from pathlib import Path
 
 import pandas as pd
+import sys
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+from _fence import safe_out  # noqa: E402
 
 SEASON = 2026  # label = ending year, i.e. 2025-26
 CREATOR_TOP_K = 2
@@ -219,7 +224,7 @@ def main():
     for h in ("h1", "h2"):
         x = d.dropna(subset=[h])
         cross["profile_vs_" + h] = round(spearman(x.profile, x[h]), 3)
-    json.dump({"season": "2025-26", "grade": grade, "cross": cross}, open(a.out, "w"), indent=1)
+    safe_out(a.out).write_text(json.dumps({"season": "2025-26", "grade": grade, "cross": cross}, indent=1))
     print(json.dumps({"grade": grade, "cross": cross}, indent=1))
 
 
