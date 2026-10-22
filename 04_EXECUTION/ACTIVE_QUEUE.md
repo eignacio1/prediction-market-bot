@@ -287,7 +287,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 83.1 | The bot captures what Muse scouted: weekly point-in-time captures of the CAPTURABLE NFL source cards, and Muse's first accuracy score | DEPTH D5(b) NFL: the 2026 coverage / pressure / personnel splits aggregated in-season (GG-730 gap) 0 → weekly; charter v3: card accuracy 0 → measured | ✅ DONE 2026-10-22: #311 merged, cron live, 5 snapshots, accuracy 22/22 (handoff SESSION_HANDOFF_20261022T0030Z_W83_1) | |
-| 83.2 | Depth lane, NBA: the lineup cross made testable this season (GG-985 capture + frozen pre-registration), then how usage moves (Muse's play types x absorption) | DEPTH D5(b) NBA: lineup factor interpreted → testable; play-type cross interpreted | ⬜ | |
+| 83.2 | Depth lane, NBA: the lineup cross made testable this season (GG-985 capture + frozen pre-registration), then how usage moves (Muse's play types x absorption) | DEPTH D5(b) NBA: lineup factor interpreted → testable; play-type cross interpreted | 🟨 PARTIAL | Pre-reg frozen, cron installed, but the box IP gets Akamai 403 on the injury PDFs (GG-1030): book snapshots only. Play-type grade PARTIAL; absorber cross interpreted, null (n=131). PRs #313, #317. |
 | 83.3 | Depth lane, NHL: the engine's data layer (D4 NHL none → data layer), event-level, point-in-time | DEPTH D4 NHL none → data layer; factor classes mapped | ⬜ | |
 | M83 | Muse: R-015 Sharp 2025 season-end values from the Wayback snapshots, then Earl's NBA arm (R-012 completion first) | DEPTH feed: grades the coverage class; feeds 83.2 | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING; first job GG-970 | ⬜ | |
@@ -1053,7 +1053,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 83.1 | The bot captures Muse's CAPTURABLE NFL cards weekly + card accuracy + 82.3 re-run on 2026 rows | ⬜ | ✅ DONE 2026-10-22: #311 merged, cron live, 5 snapshots, accuracy 22/22 (handoff SESSION_HANDOFF_20261022T0030Z_W83_1) |
-| 83.2 | NBA lineup cross testable (capture + frozen prereg) + play-type x absorption + Muse NBA grade | ⬜ | |
+| 83.2 | NBA lineup cross testable (capture + frozen prereg) + play-type x absorption + Muse NBA grade | 🟨 PARTIAL | Pre-reg frozen, cron installed, but the box IP gets Akamai 403 on the injury PDFs (GG-1030): book snapshots only. Play-type grade PARTIAL; absorber cross interpreted, null (n=131). PRs #313, #317. |
 | 83.3 | NHL engine data layer (D4) + factor map | ⬜ | |
 | M83 | Muse: R-015 Sharp 2025 Wayback values → R-016/R-017 NBA arm | ✅ | R-015 (544 records), R-016 (3,856), R-017 (14,042): NBA play types + tracking 2023-24 → 2025-26 complete; daily run live |
 | M83-D | Muse: restore the three daily runs (W29), then R-027 NBA PAM signal map | ⬜ | |
