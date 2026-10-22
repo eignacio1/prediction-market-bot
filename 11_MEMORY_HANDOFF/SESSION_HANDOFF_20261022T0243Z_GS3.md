@@ -1,10 +1,21 @@
+<!-- session-meta
+task_id: GS-3
+tier: STANDARD
+timestamp: 2026-10-22T02:50:00Z
+commit: c4af572
+one_line_summary: GS-3 gap sweep: closed 7 process/drift gaps, re-filed 4 observations as WATCH ITEM; OPEN 210 -> 199.
+gg_touched: GG-233, GG-258, GG-292, GG-420, GG-195, GG-260, GG-350, GG-285, GG-328, GG-624, GG-078
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING (OPEN gap count)
+gap_delta: OPEN 210 -> 199 (Step 3 grep, origin/main c4af572)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — GS-3 (process one-offs and observations)
 
-vision_pillar: PLUMBING
-gap_measure: OPEN gap count (GOVERNANCE_GAP_LOG, anchored grep)
-gap_delta: 210 -> 199 (-11), source: Step 3 grep after rebase
-pattern_sweep: n/a (no defect fixed; closures were evidence-only)
-surface_delta: none (docs only)
 
 Status: pushed docs-only to main (9861f16). PRs: none, no code touched. CI: n/a.
 
@@ -22,3 +33,9 @@ Skipped:
 - E-class engine gaps and anything in Wave 84 files: untouched.
 
 Update (shared-folder protocol): the operator's reading-copy blockquote is in ACTIVE_QUEUE.md and the first refresh is logged (DECISION_LOG 2026-10-21 19:50 PT). Closed GG-195, GG-260, GG-350. GG-349 and GG-417 stay OPEN (index.lock, class C, session_guard.sh check, not drift). Removed GG-195/260/350 from the skipped list above.
+
+## Strategic Decisions This Session
+None — operator authorizations (observation rule, shared-folder reading copy) were already logged by the strategic window.
+
+One-thing-pending: GG-349/GG-417 (session_guard.sh stale index.lock check); next sweep takes class C.
+Resume: `git fetch && git log origin/main -5`, read ACTIVE_QUEUE.md RUNNING SITREP.
