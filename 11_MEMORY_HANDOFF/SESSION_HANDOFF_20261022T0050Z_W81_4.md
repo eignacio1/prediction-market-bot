@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1070
+tier: STANDARD
+timestamp: 2026-10-22T00:50:00Z
+commit: 564f772
+one_line_summary: W83.2 PARTIAL: NBA lineup capture installed but report fetch 403s from box (GG-1030); play-type x absorption null
+gg_touched: GG-1030, GG-1031, GG-1032
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NBA
+gap_delta: NBA lineup factor interpreted -> testable on paper only (not accruing, GG-1030); play-type x absorption interpreted, null n=131 (source: results_W83.md @ 1da11da)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: +1 cron component (nba_lineup_window, registered), book snapshots only until GG-1030 fixed
+-->
+
 # Session handoff — W83.2 (2026-10-22 00:50Z)
 
 vision_pillar: DEPTH

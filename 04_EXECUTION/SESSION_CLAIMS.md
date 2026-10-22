@@ -995,3 +995,4 @@
 | 2026-10-21T23:51:04Z | T-1070..T-1072 GG-1030..GG-1034 | STANDARD — W83.2 NBA lineup-window capture + frozen pre-registration + play-type cross — FOR D5(b) NBA (lineup factor interpreted -> testable; play-type cross interpreted) |
 | 2026-10-22T00:14:34Z | T-1050 | CLOSED — Weekly point-in-time capture of five Sharp NFL cards is live on the box; Muse card accuracy 22/22 comparable rows; PFR is not capturable by GET; 82.3 cross cannot run on 2026 (descriptive only) (commit `18b18d5 (PR #311, merged); docs-only close on top`) |
 | 2026-10-22T00:17:10Z | T-1050 | CLOSED — merge confirmed, HEAD (d221c10) is ancestor of origin/main — W83.1 closed; weekly Sharp NFL capture live |
+| 2026-10-22T00:38:06Z | T-1070 | CLOSED — W83.2 PARTIAL: NBA lineup capture installed but report fetch 403s from box (GG-1030); play-type x absorption null (commit `564f772`) |

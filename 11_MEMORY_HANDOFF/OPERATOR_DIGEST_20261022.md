@@ -1,8 +1,10 @@
+# Operator Digest — 2026-10-22 (W83.2, NBA lineup + usage)
 
-## T-1050 · W83.1 · Weekly NFL source capture (STANDARD)
-- The bot now saves five Sharp Football NFL tables (coverage, defensive tendencies, both line stats, offensive personnel) every Tuesday and Wednesday night. Each save is dated, so we keep the history the website itself throws away.
-- First backfill is in: 32 teams per table, through Week 6.
-- Muse card accuracy: all 22 rows we could compare matched the source. Pro Football Reference blocks automated fetches, and NGS only works in a browser, so neither is captured.
-- The 82.3 re-test was not run. There is no 2026 per-game coverage data yet, so only descriptive numbers were reported.
-- Two low-severity gaps were logged: GG-1000 (the PFR block) and GG-1001 (a new cron shows RED until its first write).
-- Nothing needed from you.
+- Status: PARTIAL. Two PRs merged on green CI (#313 capture, #317 play-type x absorption).
+- DEPTH moved only on paper. The NBA lineup factor is now frozen and testable, but nothing is accruing.
+- The report capture is blocked: the NBA's injury-report host returns 403 to the box (GG-1030). It works from your Mac. Order-book snapshots are being taken; injury reports are not.
+- No scored games accrue until that is fixed. A free non-datacenter route (e.g. a scheduled GitHub Actions run) would need its own permission, so it is a strategic-window call.
+- Muse's play-type class graded PARTIAL: four of seven types track the proxy at 0.5 or better, none failed.
+- Absorber-profile cross is null at n=131 (Spearman +0.06, CI -0.11 to 0.24). It is underpowered, not disproven.
+- The installer appended the cron line while the surface budget read RED, and the reason was not recorded (the GG-990 shape).
+- Nothing for you to run. No capital, orders or sizing changed.
