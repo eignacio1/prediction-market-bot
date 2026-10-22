@@ -5,12 +5,12 @@ name: NBA Injury Report Relay
 # fetches the latest three 15-minute slots and appends new ones plus their Last-Modified header to data/nba-injury-reports
 # (NEVER main). scripts/nba_lineup_window_capture.py falls back to that branch only when the direct fetch fails; the
 # pre-registered source, parsing and cadence are unchanged. Public unauthenticated GETs; no VPS access, no secrets.
-# Minutes sit a few after each 15-minute publish slot and avoid :00/:30 (GG-477). 14:00-04:59 UTC = 10am-midnight ET.
+# Minutes :01/:16/:31/:46 run just ahead of the box capture cron (:03/:18/:33/:48) and avoid :00/:30 (GG-477). 14:00-04:59 UTC = 10am-midnight ET.
 
 on:
   schedule:
-    - cron: '4-59/15 14-23 * * *'
-    - cron: '4-59/15 0-4 * * *'
+    - cron: '1-59/15 14-23 * * *'
+    - cron: '1-59/15 0-4 * * *'
   workflow_dispatch:
 
 permissions:

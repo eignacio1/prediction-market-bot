@@ -1188,6 +1188,6 @@ purpose = "Relays the official NBA injury-report PDFs (byte-identical) from a Gi
 pillar = "DEPTH"
 writes = []
 alarm = "capture heartbeat in exp_output/NBA/LINEUP_WINDOW/checks.jsonl shows report_found false on game days while data/nba-injury-reports has no commit in 2h+"
-schedule = "4-59/15 14-23,0-4 UTC"
+schedule = "1-59/15 14-23,0-4 UTC"
 mirrors = []
 command = "nba_ir_relay.yml"
