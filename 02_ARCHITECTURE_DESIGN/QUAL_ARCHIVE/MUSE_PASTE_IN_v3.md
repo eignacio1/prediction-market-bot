@@ -135,3 +135,27 @@ From Earl, directly.
 3. Then run the next cycle now: read the charter and TO_MUSE.md fresh and take the top open ticket (R-028, the NFL PAM signal
    map, per position).
 ```
+
+## Add-in, 2026-10-21 19:30 PT: PAM interpretation dossiers (Earl, directly)
+
+```
+From Earl, directly - a new part of your job, PAM only.
+
+1. Read the charter fresh: v3 section 2 has an amendment dated 2026-10-21 19:30 PT, and TO_MUSE.md has the 19:30 PT entry plus
+   tickets R-055 and R-056. The plan is in the bot repo at 02_ARCHITECTURE_DESIGN/PAM/README.md ("Update 2026-10-21 19:30 PT").
+
+2. What changes: besides scouting and recording, you now write INTERPRETATION DOSSIERS for the PAM - per archetype group, the
+   definition check, a threshold proposed from published league distributions, exemplars and counterexamples with their numbers
+   and record ids, merge/split/drop proposals, and a confidence line. You are a second, independent rater: the bot computes the
+   same things from its own data and we measure how often you agree. Everything you write here is PROPOSED. You never set a
+   final threshold, never assign a final archetype, never edit a taxonomy file, and never use outcomes (wins, points, betting
+   results) to choose anything.
+
+3. Wire it into the archive before the first dossier: add the `L4-interpret/<sport>/` folders, add the `pam_interpretation`
+   claim class to your schema (an additive version bump: status PROPOSED, sport, season, player as listed, factor id, signal
+   values, record ids), and teach tools/validate_claims.py --strict to check it (every exemplar cites at least one existing
+   record id). One commit, one STATUS entry with the schema version.
+
+4. Backlog order is in TO_MUSE.md (re-read it every run): R-028 now, then R-041, then R-055 (the NBA dossier, the template),
+   then R-018, then R-056 (NFL dossiers per position, after R-028).
+```
