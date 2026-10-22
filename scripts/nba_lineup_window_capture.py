@@ -126,6 +126,42 @@ def fetch_report(now_utc: datetime, get=requests.get) -> Optional[dict]:
     return None
 
 
+RELAY_BRANCH = "origin/data/nba-injury-reports"  # W84.1/GG-1030: GitHub-runner relay of the SAME official PDFs
+
+
+def relay_fetch_report(now_utc: datetime, git=None) -> Optional[dict]:
+    """Fallback when the box's IP is 403'd by Akamai: read the newest of the latest slots from the relay branch. Bytes are
+    the league's own (sha256-verified against the manifest); `published_utc` is the Last-Modified the runner recorded."""
+    import subprocess
+    run_git = git or (lambda *a: subprocess.run(("git", "-C", str(ROOT)) + a, capture_output=True))
+    run_git("fetch", "origin", "data/nba-injury-reports")
+    mf = run_git("show", RELAY_BRANCH + ":manifest.jsonl")
+    if getattr(mf, "returncode", 1) != 0:
+        return None
+    rows = {}
+    for ln in mf.stdout.decode("utf-8", "replace").splitlines():
+        try:
+            d = json.loads(ln)
+            rows[d["file"]] = d
+        except Exception:  # noqa: BLE001
+            continue
+    for slot in slot_candidates(now_utc):
+        url = slot_url(slot)
+        meta = rows.get(url.rsplit("/", 1)[1])
+        if not meta:
+            continue
+        blob = run_git("show", RELAY_BRANCH + ":" + meta["file"])
+        if getattr(blob, "returncode", 1) != 0 or hashlib.sha256(blob.stdout).hexdigest() != meta["sha256"]:
+            continue
+        pub = None
+        if meta.get("last_modified"):
+            from email.utils import parsedate_to_datetime
+            pub = parsedate_to_datetime(meta["last_modified"]).astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        return {"slot_et": slot.strftime("%Y-%m-%d %H:%M"), "url": url, "published_utc": pub,
+                "content": blob.stdout, "via": "relay"}
+    return None
+
+
 def fetch_book(get=requests.get) -> List[dict]:
     mk, cursor = [], None
     for _ in range(10):
@@ -287,6 +323,8 @@ def main(argv=None) -> int:
     rc = 0
     try:
         report = fetch_report(now)
+        if report is None:  # direct source 403s the box's IP (GG-1030): same PDFs via the GitHub-runner relay
+            report = relay_fetch_report(now)
     except Exception as e:  # noqa: BLE001 -- a source outage must not crash the cron; it is logged and exits 2
         print("report fetch failed: %r" % (e,))
         report, rc = None, 2

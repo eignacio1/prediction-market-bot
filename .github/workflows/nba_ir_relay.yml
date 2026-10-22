@@ -1,0 +1,52 @@
+name: NBA Injury Report Relay
+
+# W84.1 Part B / GG-1030. ak-static.cms.nba.com 403s the box's datacenter IP but serves GitHub runners, byte-identical to
+# the league's file (sha256 matched a Mac fetch for two reports, 2026-10-22). This relays the SAME official PDFs: each run
+# fetches the latest three 15-minute slots and appends new ones plus their Last-Modified header to data/nba-injury-reports
+# (NEVER main). scripts/nba_lineup_window_capture.py falls back to that branch only when the direct fetch fails; the
+# pre-registered source, parsing and cadence are unchanged. Public unauthenticated GETs; no VPS access, no secrets.
+# Minutes :01/:16/:31/:46 run just ahead of the box capture cron (:03/:18/:33/:48) and avoid :00/:30 (GG-477). 14:00-04:59 UTC = 10am-midnight ET.
+
+on:
+  schedule:
+    - cron: '1-59/15 14-23 * * *'
+    - cron: '1-59/15 0-4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nba-ir-relay
+  cancel-in-progress: false
+
+env:
+  DATA_BRANCH: data/nba-injury-reports
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch latest slots
+        run: python3 scripts/nba_ir_relay.py --out "$RUNNER_TEMP/ir"
+      - name: Append to data branch
+        run: |
+          set -e
+          if [ ! -s "$RUNNER_TEMP/ir/new_manifest.jsonl" ]; then echo "no new report this slot"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin "$DATA_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$DATA_BRANCH"; git checkout -B "$DATA_BRANCH" "origin/$DATA_BRANCH"
+          else
+            git checkout --orphan "$DATA_BRANCH"; git rm -rf . >/dev/null 2>&1 || true
+          fi
+          cp "$RUNNER_TEMP"/ir/*.pdf . 2>/dev/null || true
+          cat "$RUNNER_TEMP/ir/new_manifest.jsonl" >> manifest.jsonl
+          git add -- ./*.pdf manifest.jsonl
+          git commit -m "nba injury reports $(date -u +%FT%TZ)"
+          git push origin "HEAD:$DATA_BRANCH"
