@@ -14,12 +14,23 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import requests
+import urllib.error
+import urllib.request
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import nba_lineup_window_capture as cap  # noqa: E402
 
 DATA_BRANCH = "data/nba-injury-reports"
+
+
+def _get(url, timeout=30, headers=None):
+    # stdlib only: the runner image has no `requests`; same .status_code/.content/.headers shape
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=headers or {}), timeout=timeout) as r:
+            return SimpleNamespace(status_code=r.status, content=r.read(), headers=r.headers)
+    except urllib.error.HTTPError as e:
+        return SimpleNamespace(status_code=e.code, content=b"", headers=e.headers)
 
 
 def known_files() -> set:
@@ -33,7 +44,7 @@ def known_files() -> set:
     return out
 
 
-def relay(out: Path, now: datetime, known: set, get=requests.get) -> list:
+def relay(out: Path, now: datetime, known: set, get=_get) -> list:
     out.mkdir(parents=True, exist_ok=True)
     rows = []
     for slot in cap.slot_candidates(now, n=3):
