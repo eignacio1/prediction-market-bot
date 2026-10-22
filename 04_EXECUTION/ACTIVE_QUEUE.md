@@ -669,34 +669,21 @@ From Earl, directly.
 
 ---
 
-## 🧹 GAP SWEEP — beside Wave 84 (operator 2026-10-21 19:28 PT) · GA-5 message + three terminals
+## 🧹 GAP SWEEP — beside Wave 84 (operator 2026-10-21 19:28 PT) · three terminals
 
 Operator: "The 30 small fixes and 25 small process one-offs- there has to be an easy way to sweep those. I'm fine with a
-continual list knowing the scale of the project but please 200+ gaps is fucking ludicrous". GA-5 (19:12 PT) closed 2 of 207.
-The sweep: the gap agent writes four lists (C small fixes · P process · O observations · E engine data, untouched); GS-1 and
-GS-2 split list C odd/even; GS-3 takes P, then re-files O as WATCH ITEM if the operator accepts the observation rule.
-Expected: 207 → about 85 OPEN, ~45 of them engine data gaps (DEPTH work, left alone). **Surface:** 0. **Dependencies:** GS-1..3
-read the lists GA-5 writes (they build them by the stated rule if GA-5 hasn't yet); no Wave 84 file is touched.
+continual list knowing the scale of the project but please 200+ gaps is fucking ludicrous". GA-5 closed 2 of 207 and was ended
+(19:33 PT), so there is no shared list: GS-1 and GS-2 split class C small fixes by odd/even gap number; GS-3 takes process
+one-offs, then re-files observations as WATCH ITEM if the operator accepts the observation rule. Engine data gaps (~45) are left
+alone. Expected: 205 → about 85 OPEN. **Surface:** 0. **Dependencies:** none (disjoint by number and class); no Wave 84 file.
 
 | # | Terminal | Status | OPEN before → after |
 |---|---|---|---|
-| GS-0 | message into the running GA-5 terminal | ⬜ | |
-| GS-1 | small fixes, odd positions | ⬜ | |
-| GS-2 | small fixes, even positions | ⬜ | |
+| GS-1 | small fixes, odd-numbered gaps | ⬜ | |
+| GS-2 | small fixes, even-numbered gaps | ⬜ | |
 | GS-3 | process one-offs, then observations (if the rule is accepted) | ⬜ | |
 
-### GS-0 — paste into the gap-agent terminal that is already running
-
-```
-Before your next tick: write a section "Sweep lists" into 03_DECISIONS/GG_BURNDOWN.md (docs-only push) splitting every OPEN gap into four lists, one line each (id, severity, one-line reason, the file area its fix touches):
-C - small fixes: closes with a code or doc change plus a test, about 10-20 minutes, no live model/ledger/cron/pre-registration change.
-P - process one-offs: ID collisions, stray branches, claim-range overlaps, shared-tree drift, register parity, stale docs.
-O - observations: no fix exists (a measured fact, arithmetic like GG-285, a known limitation of a source).
-E - engine data gaps (missing free source or unbuilt factor): leave these alone.
-Number list C in order. Three sweep terminals start from these lists in a few minutes; from then on, skip anything on lists C, P and O in your own ticks and keep going on the rest.
-```
-
-### GS-1 — small fixes, odd positions (new terminal)
+### GS-1 — small fixes, odd-numbered gaps (new terminal)
 
 ```
 COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
@@ -704,8 +691,12 @@ COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fuc
   write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
 - Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
   scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
-- The list you work from: 03_DECISIONS/GG_BURNDOWN.md § "Sweep lists" (written by the gap agent GA-5). If that section is not
-  on origin/main yet, build the list yourself with the same rule (stated in your block) and write it there first, docs-only.
+- Who takes what (no shared list; the gap agent is stopped): GS-1 takes OPEN gaps with an ODD number, GS-2 those with an EVEN
+  number, and both take only class C (small fixes). GS-3 takes classes P and O at any number. Classes: C = closes with a code or
+  doc change plus a test in about 10-20 minutes; P = process one-offs (ID collisions, stray branches, claim overlaps,
+  shared-tree drift, register parity, stale docs); O = observations with nothing to fix (a measured fact, arithmetic like
+  GG-285, a known source limitation); E = engine data gaps (a missing free source or an unbuilt factor) - nobody touches E.
+  A gap that could be C or P is C. Engine gaps stay OPEN.
 - NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
   lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
   84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
@@ -720,20 +711,18 @@ COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fuc
 - After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
   script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
 - Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
-GAP SWEEP GS-1 - SMALL FIXES, ODD POSITIONS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING - OPEN gaps down by closing list C's small fixes for real.
-Work list C in GG_BURNDOWN.md § "Sweep lists", positions 1, 3, 5, 7, ... in order (GS-2 takes the even positions; never take
-one of theirs). For each: read the gap, check it is still true on origin/main (and on the box via the bridge if it is about the
-box), fix it with a test, batch 3-5 per PR, merge on green, close the entry with the PR as evidence. Something already fixed:
-close it with the evidence. Something bigger than 20 minutes or outside the rules: skip it, one line why, move on. Take as many
-as fit in 90 minutes.
-List rule if you have to build it yourself: OPEN gaps that close with a code or doc change plus a test in about 10-20 minutes
-and need no live model, ledger, cron or pre-registration change.
+GAP SWEEP GS-1 - SMALL FIXES, ODD-NUMBERED GAPS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down by closing class C small fixes for real.
+Read every OPEN gap with an odd number (CLAUDE.md Step 3's grep), most severe first, and work the class C ones: check it is
+still true on origin/main (and on the box via the bridge if it is about the box), fix it with a test, batch 3-5 per PR, merge on
+green, close the entry with the PR as evidence. Already fixed: close it with the evidence. Bigger than 20 minutes or outside the
+rules: skip it, one line why. Write the class you gave each gap you read into GG_BURNDOWN.md § "Sweep lists" (one line each) so
+the next sweep starts from it. Take as many as fit in 90 minutes.
 
 END OF BLOCK GS-1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
-### GS-2 — small fixes, even positions (new terminal)
+### GS-2 — small fixes, even-numbered gaps (new terminal)
 
 ```
 COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
@@ -741,8 +730,12 @@ COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fuc
   write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
 - Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
   scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
-- The list you work from: 03_DECISIONS/GG_BURNDOWN.md § "Sweep lists" (written by the gap agent GA-5). If that section is not
-  on origin/main yet, build the list yourself with the same rule (stated in your block) and write it there first, docs-only.
+- Who takes what (no shared list; the gap agent is stopped): GS-1 takes OPEN gaps with an ODD number, GS-2 those with an EVEN
+  number, and both take only class C (small fixes). GS-3 takes classes P and O at any number. Classes: C = closes with a code or
+  doc change plus a test in about 10-20 minutes; P = process one-offs (ID collisions, stray branches, claim overlaps,
+  shared-tree drift, register parity, stale docs); O = observations with nothing to fix (a measured fact, arithmetic like
+  GG-285, a known source limitation); E = engine data gaps (a missing free source or an unbuilt factor) - nobody touches E.
+  A gap that could be C or P is C. Engine gaps stay OPEN.
 - NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
   lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
   84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
@@ -757,15 +750,13 @@ COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fuc
 - After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
   script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
 - Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
-GAP SWEEP GS-2 - SMALL FIXES, EVEN POSITIONS. Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING - OPEN gaps down by closing list C's small fixes for real.
-Work list C in GG_BURNDOWN.md § "Sweep lists", positions 2, 4, 6, 8, ... in order (GS-1 takes the odd positions; never take
-one of theirs). For each: read the gap, check it is still true on origin/main (and on the box via the bridge if it is about the
-box), fix it with a test, batch 3-5 per PR, merge on green, close the entry with the PR as evidence. Something already fixed:
-close it with the evidence. Something bigger than 20 minutes or outside the rules: skip it, one line why, move on. Take as many
-as fit in 90 minutes.
-List rule if you have to build it yourself: OPEN gaps that close with a code or doc change plus a test in about 10-20 minutes
-and need no live model, ledger, cron or pre-registration change.
+GAP SWEEP GS-2 - SMALL FIXES, EVEN-NUMBERED GAPS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down by closing class C small fixes for real.
+Read every OPEN gap with an even number (CLAUDE.md Step 3's grep), most severe first, and work the class C ones: check it is
+still true on origin/main (and on the box via the bridge if it is about the box), fix it with a test, batch 3-5 per PR, merge on
+green, close the entry with the PR as evidence. Already fixed: close it with the evidence. Bigger than 20 minutes or outside the
+rules: skip it, one line why. Write the class you gave each gap you read into GG_BURNDOWN.md § "Sweep lists" (one line each) so
+the next sweep starts from it. Take as many as fit in 90 minutes.
 
 END OF BLOCK GS-2. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
@@ -778,8 +769,12 @@ COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fuc
   write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
 - Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
   scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
-- The list you work from: 03_DECISIONS/GG_BURNDOWN.md § "Sweep lists" (written by the gap agent GA-5). If that section is not
-  on origin/main yet, build the list yourself with the same rule (stated in your block) and write it there first, docs-only.
+- Who takes what (no shared list; the gap agent is stopped): GS-1 takes OPEN gaps with an ODD number, GS-2 those with an EVEN
+  number, and both take only class C (small fixes). GS-3 takes classes P and O at any number. Classes: C = closes with a code or
+  doc change plus a test in about 10-20 minutes; P = process one-offs (ID collisions, stray branches, claim overlaps,
+  shared-tree drift, register parity, stale docs); O = observations with nothing to fix (a measured fact, arithmetic like
+  GG-285, a known source limitation); E = engine data gaps (a missing free source or an unbuilt factor) - nobody touches E.
+  A gap that could be C or P is C. Engine gaps stay OPEN.
 - NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
   lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
   84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
@@ -796,15 +791,15 @@ COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fuc
 - Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
 GAP SWEEP GS-3 - PROCESS ONE-OFFS AND OBSERVATIONS. Repo: eignacio1/prediction-market-bot.
 PURPOSE: PLUMBING - OPEN gaps down: list P closed in one cleanup pass; list O re-filed under the operator's rule.
-PART A - list P (process one-offs) in GG_BURNDOWN.md § "Sweep lists". Most close by checking the current state: an ID
+PART A - class P (process one-offs), any number: find them by reading the OPEN list. Most close by checking the current state: an ID
   collision already renumbered, a stray branch already merged or empty (list remote branches; delete ONLY a branch whose every
   commit is already on main, named one by one in your handoff, never "all stale branches"), a claim overlap long past, a register
   row already present. Close each with the evidence. Shared-tree drift gaps: close them ONLY if ACTIVE_QUEUE.md "Needs your
   decision" carries the operator's blockquote retiring the shared tree; otherwise skip them, one line each.
-PART B - list O (observations). ONLY if ACTIVE_QUEUE.md "Needs your decision" carries the operator's blockquote for the
+PART B - class O (observations), any number. ONLY if ACTIVE_QUEUE.md "Needs your decision" carries the operator's blockquote for the
   observation rule: change each entry's status line to `**Status:** WATCH ITEM · **Severity:** <unchanged>` and add one line
   under it: "Re-filed 2026-10-21 under the operator's observation rule. Reopens if: <the condition>". Keep the full record. If
-  the blockquote is not there, stop after Part A.
+  the blockquote is not there, stop after Part A. Write the class you gave each gap you read into GG_BURNDOWN.md § "Sweep lists".
 
 END OF BLOCK GS-3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
