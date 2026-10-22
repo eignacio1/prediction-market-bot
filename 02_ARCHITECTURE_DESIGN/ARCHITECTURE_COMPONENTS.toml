@@ -242,7 +242,7 @@ engine_test = "none"
 
 [[engine]]
 sport = "nhl"
-data_layer = "none"
+data_layer = "02_ARCHITECTURE_DESIGN/NHL_ENGINE/event_store_manifest.json"
 engine = "none"
 engine_test = "none"
 

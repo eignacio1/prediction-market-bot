@@ -1,0 +1,643 @@
+{
+ "built_utc": "2026-10-22T01:14:12Z",
+ "source": "api-web.nhle.com (public, unauthenticated GETs)",
+ "contract": "src/prediction_market_bot/c1_signal_ingestion/nhl_point_in_time.py",
+ "failures": [],
+ "seasons": {
+  "2015": {
+   "schedule_games": 1321,
+   "finished": 1321,
+   "events": 413912,
+   "shifts": 1059566,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1321,
+   "sog_reconcile": 0.9841029523088569,
+   "sog_checked": 1321,
+   "detail": {
+    "shots": 148192,
+    "xy": 0.9999797559922263,
+    "shot_type": 0.7438795616497517,
+    "shooter": 1.0,
+    "strength_state": 0.9751106515394576
+   }
+  },
+  "2016": {
+   "schedule_games": 1317,
+   "finished": 1317,
+   "events": 413339,
+   "shifts": 1051665,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1317,
+   "sog_reconcile": 0.9787395596051632,
+   "sog_checked": 1317,
+   "detail": {
+    "shots": 149661,
+    "xy": 0.9999732729301555,
+    "shot_type": 0.7462131082914052,
+    "shooter": 1.0,
+    "strength_state": 0.9755043680852763
+   }
+  },
+  "2017": {
+   "schedule_games": 1355,
+   "finished": 1355,
+   "events": 434744,
+   "shifts": 1059923,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1355,
+   "sog_reconcile": 0.9845018450184502,
+   "sog_checked": 1355,
+   "detail": {
+    "shots": 160727,
+    "xy": 0.9999440044298717,
+    "shot_type": 0.7499051186172827,
+    "shooter": 1.0,
+    "strength_state": 0.9925082347312442
+   }
+  },
+  "2018": {
+   "schedule_games": 1358,
+   "finished": 1358,
+   "events": 433203,
+   "shifts": 1050262,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1358,
+   "sog_reconcile": 0.9911634756995582,
+   "sog_checked": 1358,
+   "detail": {
+    "shots": 157478,
+    "xy": 0.9999745996266145,
+    "shot_type": 0.7520288548241659,
+    "shooter": 1.0,
+    "strength_state": 0.9914266521699988
+   }
+  },
+  "2019": {
+   "schedule_games": 1212,
+   "finished": 1212,
+   "events": 382738,
+   "shifts": 936028,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1212,
+   "sog_reconcile": 0.9843234323432343,
+   "sog_checked": 1212,
+   "detail": {
+    "shots": 139200,
+    "xy": 0.999992816091954,
+    "shot_type": 0.7544827586206897,
+    "shooter": 1.0,
+    "strength_state": 0.9883627964821888
+   }
+  },
+  "2020": {
+   "schedule_games": 952,
+   "finished": 952,
+   "events": 287926,
+   "shifts": 733220,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 79,
+   "goal_reconcile": 1.0,
+   "goal_checked": 952,
+   "sog_reconcile": 0.9873949579831933,
+   "sog_checked": 952,
+   "detail": {
+    "shots": 104316,
+    "xy": 1.0,
+    "shot_type": 0.7584167337704667,
+    "shooter": 1.0,
+    "strength_state": 0.9967665302890326
+   }
+  },
+  "2021": {
+   "schedule_games": 1401,
+   "finished": 1401,
+   "events": 436795,
+   "shifts": 1078181,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 707,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1401,
+   "sog_reconcile": 0.9850107066381156,
+   "sog_checked": 1401,
+   "detail": {
+    "shots": 160574,
+    "xy": 1.0,
+    "shot_type": 0.7619353070858296,
+    "shooter": 1.0,
+    "strength_state": 0.9968932794560378
+   }
+  },
+  "2022": {
+   "schedule_games": 1400,
+   "finished": 1400,
+   "events": 440786,
+   "shifts": 1069400,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 3,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1400,
+   "sog_reconcile": 0.9842857142857143,
+   "sog_checked": 1400,
+   "detail": {
+    "shots": 164416,
+    "xy": 1.0,
+    "shot_type": 0.7462108310626703,
+    "shooter": 1.0,
+    "strength_state": 0.9968760350827839
+   }
+  },
+  "2023": {
+   "schedule_games": 1400,
+   "finished": 1400,
+   "events": 445452,
+   "shifts": 1062112,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1400,
+   "sog_reconcile": 0.9878571428571429,
+   "sog_checked": 1400,
+   "detail": {
+    "shots": 171256,
+    "xy": 1.0,
+    "shot_type": 0.7189120381183725,
+    "shooter": 1.0,
+    "strength_state": 0.9999842856244893
+   }
+  },
+  "2024": {
+   "schedule_games": 1398,
+   "finished": 1398,
+   "events": 451857,
+   "shifts": 1018719,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 0.95923,
+   "has_shifts_missing": [
+    2024021235,
+    2024021236,
+    2024021237,
+    2024021238,
+    2024021239,
+    2024021240,
+    2024021241,
+    2024021242,
+    2024021243,
+    2024021244,
+    2024021245,
+    2024021246,
+    2024021247,
+    2024021248,
+    2024021249,
+    2024021250,
+    2024021251,
+    2024021253,
+    2024021252,
+    2024021254,
+    2024021255,
+    2024021256,
+    2024021257,
+    2024021258,
+    2024021259
+   ],
+   "has_shifts_missing_n": 57,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 23,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1398,
+   "sog_reconcile": 0.9828326180257511,
+   "sog_checked": 1398,
+   "detail": {
+    "shots": 167558,
+    "xy": 1.0,
+    "shot_type": 0.7187839434703207,
+    "shooter": 1.0,
+    "strength_state": 1.0
+   }
+  },
+  "2025": {
+   "schedule_games": 1394,
+   "finished": 1394,
+   "events": 443569,
+   "shifts": 1052125,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 1.0,
+   "has_shifts_missing": [],
+   "has_shifts_missing_n": 0,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 32,
+   "goal_reconcile": 1.0,
+   "goal_checked": 1394,
+   "sog_reconcile": 0.9770444763271162,
+   "sog_checked": 1394,
+   "detail": {
+    "shots": 163818,
+    "xy": 1.0,
+    "shot_type": 0.7332649647779853,
+    "shooter": 1.0,
+    "strength_state": 1.0
+   }
+  },
+  "2026": {
+   "schedule_games": 1344,
+   "finished": 151,
+   "events": 48832,
+   "shifts": 99983,
+   "has_pbp": 1.0,
+   "has_pbp_missing": [],
+   "has_pbp_missing_n": 0,
+   "has_box": 1.0,
+   "has_box_missing": [],
+   "has_box_missing_n": 0,
+   "has_shifts": 0.88079,
+   "has_shifts_missing": [
+    2026020090,
+    2026020091,
+    2026020092,
+    2026020093,
+    2026020094,
+    2026020095,
+    2026020096,
+    2026020097,
+    2026020098,
+    2026020099,
+    2026020100,
+    2026020101,
+    2026020102,
+    2026020103,
+    2026020104,
+    2026020105,
+    2026020106,
+    2026020107
+   ],
+   "has_shifts_missing_n": 18,
+   "dup_events": 0,
+   "dup_shifts": 0,
+   "shift_key_conflicts": 0,
+   "goal_reconcile": 1.0,
+   "goal_checked": 151,
+   "sog_reconcile": 0.9867549668874173,
+   "sog_checked": 151,
+   "detail": {
+    "shots": 17429,
+    "xy": 1.0,
+    "shot_type": 0.7271788398645935,
+    "shooter": 1.0,
+    "strength_state": 1.0
+   }
+  }
+ },
+ "files": {
+  "games_2015.parquet": {
+   "rows": 1321,
+   "sha256": "135e6bb8201c76569e38b90a061468b0864f58781e765b81c747311fee8d9e5d"
+  },
+  "games_2016.parquet": {
+   "rows": 1317,
+   "sha256": "2aaff69b667cb1d452cf54ae1f6f765a84874e4084d5c5b17ef7ec6b2caad90b"
+  },
+  "games_2017.parquet": {
+   "rows": 1355,
+   "sha256": "17e16081de212e4571bd3f86f439cdcaae1f6992498513d1a01d370a7d8cd0cf"
+  },
+  "games_2018.parquet": {
+   "rows": 1358,
+   "sha256": "23452747f753ac797d0e1dfab136ccfe3a4b79b2a0e49cec18a18cfa387d5a74"
+  },
+  "games_2019.parquet": {
+   "rows": 1212,
+   "sha256": "ccb8342cae684c170bee0c93c8fcc964df1bea13648b813b6eef8b8f6bf54e79"
+  },
+  "games_2020.parquet": {
+   "rows": 952,
+   "sha256": "756566020a6ebf4655cef27e80f05cd9aea3f000f03a96505d81e02037644ab6"
+  },
+  "games_2021.parquet": {
+   "rows": 1401,
+   "sha256": "d1b0ce57039d010aabfe939d572ffb1e6adffec55fd5d1b8f7e3c66907c768f8"
+  },
+  "games_2022.parquet": {
+   "rows": 1400,
+   "sha256": "d13cc0af1456953147da6f411eecfc22c302bbe310c5d40a9dc4cad769be402d"
+  },
+  "games_2023.parquet": {
+   "rows": 1400,
+   "sha256": "9c374063ed0f1028c998a380859bd1f5193a8dc4d36a6ae40a106524e3f5d1da"
+  },
+  "games_2024.parquet": {
+   "rows": 1398,
+   "sha256": "c352ce2d3f17cf4a376c16517e3c83f8983c88bafcd618a7b8b41c30549ed813"
+  },
+  "games_2025.parquet": {
+   "rows": 1394,
+   "sha256": "3f500b3709cc1840abf17cf062738d6f67887d0c243319bedb27bb9bb40f3d86"
+  },
+  "games_2026.parquet": {
+   "rows": 1344,
+   "sha256": "45eccc2dd250db9d2b0dada819779410bc3e10503e214f8f165290eb7e35627c"
+  },
+  "events_2015.parquet": {
+   "rows": 413912,
+   "sha256": "fd2bbe24b88bd675602197d38c50a1fac58ae6df5c31131fea9cc1eaf1992d4c"
+  },
+  "events_2016.parquet": {
+   "rows": 413339,
+   "sha256": "1f3d44506a8e70fdf6dea044f152cb554e884b5ee84f7e754dc25ba1ad71617c"
+  },
+  "events_2017.parquet": {
+   "rows": 434744,
+   "sha256": "c777fca6b1027526ab3c6d5c12fcd5146f0e76a531dbf1ca202f2e7ee9d8bfd1"
+  },
+  "events_2018.parquet": {
+   "rows": 433203,
+   "sha256": "2d5f829de242098bd594365aaabbb42c6d33292e231615ffe45bb72f46f48f48"
+  },
+  "events_2019.parquet": {
+   "rows": 382738,
+   "sha256": "8142e6a7341c81cf9cbf07a7a8ae9b32e4425ff22d24dd2e0f281a001c5590d1"
+  },
+  "events_2020.parquet": {
+   "rows": 287926,
+   "sha256": "1235fbaa3d02a670c66c5cab14afa75d9acfb107bf7a9d52b3bd167c0bc9f65f"
+  },
+  "events_2021.parquet": {
+   "rows": 436795,
+   "sha256": "e19a9dc6d37069b8aab4eeccefb57f70b46b3704f6384881759f38dbbd958aa8"
+  },
+  "events_2022.parquet": {
+   "rows": 440786,
+   "sha256": "fae8bb9f69131012d524e420cfe71703b271b1988ba2ca5c1b751210c3b6702f"
+  },
+  "events_2023.parquet": {
+   "rows": 445452,
+   "sha256": "45860b20bd145bd0d8117ae8d68d593cd2c564aae22a35a143046b645c56b306"
+  },
+  "events_2024.parquet": {
+   "rows": 451857,
+   "sha256": "dad6f059f8b56543cd03d13b7a64e6317a840fe4132f4140c8aafc6b88dbc6dc"
+  },
+  "events_2025.parquet": {
+   "rows": 443569,
+   "sha256": "c8707b0795bf168f246b0ddcaee1b7eed6b5ec697be573f73614db84130ba327"
+  },
+  "events_2026.parquet": {
+   "rows": 48832,
+   "sha256": "8de03e4939e0f5883438579e0c886fd5173d38d74ce4682bfce58654c0c88702"
+  },
+  "shifts_2015.parquet": {
+   "rows": 1059566,
+   "sha256": "25b145a3f2521b5b2fe05772b123b4ef8f6850fb8d5427d8ee683ce1b10141fd"
+  },
+  "shifts_2016.parquet": {
+   "rows": 1051665,
+   "sha256": "789060862ad9621d302992968b80cb746344f661a0a72aa9899764a32e149e83"
+  },
+  "shifts_2017.parquet": {
+   "rows": 1059923,
+   "sha256": "2af7747f336209f25b21eb5f6785af2aad99f5a45ffad135d8a917b755772e44"
+  },
+  "shifts_2018.parquet": {
+   "rows": 1050262,
+   "sha256": "33495b8a4d8e135b18d1190fdd927a9a231b5f4a3f2d0cdd2aa3fd8a38198264"
+  },
+  "shifts_2019.parquet": {
+   "rows": 936028,
+   "sha256": "d43f03ae7516579f3d8c55e68453f636c5afc8bf291eb5e5e11326a62ea120ec"
+  },
+  "shifts_2020.parquet": {
+   "rows": 733220,
+   "sha256": "4f28de2655b84143836c925cc23cee51742c27d9ef12f27516384c241a7d8c40"
+  },
+  "shifts_2021.parquet": {
+   "rows": 1078181,
+   "sha256": "8d80b6e41369a5420c03aea7936f58d93eb9083aa93b19be98c471b8e0739824"
+  },
+  "shifts_2022.parquet": {
+   "rows": 1069400,
+   "sha256": "fa8646d62a67dd14c82179549cb05490a862fa4bcb8bc0de079d6a8cd5bc5eb9"
+  },
+  "shifts_2023.parquet": {
+   "rows": 1062112,
+   "sha256": "c4705ab6d96168aa8a0b37023ac2344ce8ca498b6013a94b79e9a2fa2ca2f9bc"
+  },
+  "shifts_2024.parquet": {
+   "rows": 1018719,
+   "sha256": "3db2e76699be2726adb4bbf0ca12a9e61a83464568b855603f6906f693e4cb65"
+  },
+  "shifts_2025.parquet": {
+   "rows": 1052125,
+   "sha256": "cc647f1a8125538694c838987a778530ba7c4a4d8bce81dd8df0cf9330dbb527"
+  },
+  "shifts_2026.parquet": {
+   "rows": 99983,
+   "sha256": "469c02ea4fd66c7ae59fcdd3e05d6c61b46ac14b95ad556bab34a21841404f63"
+  },
+  "box_players_2015.parquet": {
+   "rows": 52841,
+   "sha256": "14255fe784729932c00475deac46271efc0e8905052d9f6076b16c863b4c333e"
+  },
+  "box_players_2016.parquet": {
+   "rows": 52677,
+   "sha256": "7b9c8de7b8033fbbe290b6209d1f771c709543a4aca84b714d380292fbaa3a8c"
+  },
+  "box_players_2017.parquet": {
+   "rows": 54200,
+   "sha256": "916ae3dc71f4ee5d505b3a1027634cd0426d2672180782b6efaa34c91ffba09a"
+  },
+  "box_players_2018.parquet": {
+   "rows": 54320,
+   "sha256": "5c09505daf9a9fd46dda7f58dc72cfabad97efdc70cbd7f6d6a618e9975b2f71"
+  },
+  "box_players_2019.parquet": {
+   "rows": 48482,
+   "sha256": "9a4334996cc506e7598f3a7a97cfa1d2a7f8902cfbd754e62ef4971f30269d88"
+  },
+  "box_players_2020.parquet": {
+   "rows": 38060,
+   "sha256": "f4ebad7594de8b21a669e98ef6f749eb99629a499356cb41b758b9b5688220a1"
+  },
+  "box_players_2021.parquet": {
+   "rows": 56020,
+   "sha256": "60423e22aa2f6aeb1e87c6cc14a45914b5ea8cc98d0b7e758566d68733340083"
+  },
+  "box_players_2022.parquet": {
+   "rows": 55980,
+   "sha256": "488be119737d9b8594bdadd679bd34daff1df105a2621dd722ce2ae132aac221"
+  },
+  "box_players_2023.parquet": {
+   "rows": 55988,
+   "sha256": "cb8e653c2adac08ec85aeb8af3dda7b8afc4018e6f354fbb07f554bd89ea0584"
+  },
+  "box_players_2024.parquet": {
+   "rows": 55913,
+   "sha256": "b5c1c61348796b23379e2782984a1aaccb8a7acbe47c97b2ebd7d62b86e17b8d"
+  },
+  "box_players_2025.parquet": {
+   "rows": 55758,
+   "sha256": "2007ce7e0b69a82e23ab8bde28c41f4d592b3e838af36cd5bb2e5dbb5ca2e38b"
+  },
+  "box_players_2026.parquet": {
+   "rows": 6040,
+   "sha256": "61a230f3a2f139112ebb53ae9c1d55f72636b5f7a4b8b02612538a2eb0ecc245"
+  },
+  "rosters_2015.parquet": {
+   "rows": 52841,
+   "sha256": "87ea3428188ac2a59b3fdf088cbf6bd60ce94f9d6baa902013455dc30a93f2d1"
+  },
+  "rosters_2016.parquet": {
+   "rows": 52677,
+   "sha256": "86884aed567c5fa869e7cdb1e026467293824a8c7a84d0a75cff0d89742cac6a"
+  },
+  "rosters_2017.parquet": {
+   "rows": 54200,
+   "sha256": "a6dab42678ddb0e7e3aa490e813813fc9354787d3ccd256f5f16a9d50085ec9f"
+  },
+  "rosters_2018.parquet": {
+   "rows": 54320,
+   "sha256": "430240162d4875aef844a56ebf245d3e86533d2b74aa8da9989d91b7fe1d6990"
+  },
+  "rosters_2019.parquet": {
+   "rows": 48481,
+   "sha256": "c093a2858355b32bf0fe94f7926d7b4ea6ebe4af1d9d8306aaf1306d96fa4793"
+  },
+  "rosters_2020.parquet": {
+   "rows": 38060,
+   "sha256": "fc7330041514456e1a62cc93352c1e331dd0203d7d45fd81161a89259464b196"
+  },
+  "rosters_2021.parquet": {
+   "rows": 56020,
+   "sha256": "70b51aad2c853a4604cd0f6194371595eb820cbd6c0b9dae04740d7e9d5606f0"
+  },
+  "rosters_2022.parquet": {
+   "rows": 55980,
+   "sha256": "b5771a2fea2a84d2fc351e0a824259ddc0baa039beffee8808493e82ade81019"
+  },
+  "rosters_2023.parquet": {
+   "rows": 55988,
+   "sha256": "c84a87248fb739103be46c70a095335f0624efa6949e47080b43ece24bc9cd7d"
+  },
+  "rosters_2024.parquet": {
+   "rows": 55913,
+   "sha256": "591d31cdb5b85fd606d988201613d79b3fa4562664aa66281d1c7b47badaeb16"
+  },
+  "rosters_2025.parquet": {
+   "rows": 55758,
+   "sha256": "ced4b4179908cff2cffd9cde5ae6fea8cf2fe89784001122eceffeb2a50398b9"
+  },
+  "rosters_2026.parquet": {
+   "rows": 6040,
+   "sha256": "7cf030ae6d3c2d98c626c8733b6c375046c98f1eab63ce0a84421c690b82b922"
+  }
+ }
+}
