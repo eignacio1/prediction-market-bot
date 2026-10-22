@@ -871,7 +871,7 @@ local project folder does not have the new command — `/loop /gap-agent` failed
 | GA-2 (beside Waves 77-78) | ❌ never launched (no tick after 02:00Z) | | | |
 | GA-3 (beside Waves 79-80) | ❌ never launched (last tick 2026-10-16 02:00Z, found at the handoff sweep) | | | |
 | GA-4 (beside Wave 81) | ⬜ launch with the line above, in its own terminal, when Wave 81 is pasted; first job GG-970 (verify the ~45 LIVING docs with blank last_verified) | 195 → | | |
-| GA-5 (beside Wave 84; operator 10-21 19:12 PT: "Give me a separate terminal block to burn down some gaps - want to clear some of the load") | ⬜ launched from the chat line below, its own terminal. Focus: CRITICAL/HIGH first; gaps the MLB season end and Waves 81-84 made moot; never a NOW-wave file | 207 → 206 (tick 1, 02:40Z) | ⬜→🟡 running | GG-890 closed with box evidence; all HIGH/CRITICAL have an owner |
+| GA-5 (beside Wave 84; operator 10-21 19:12 PT: "Give me a separate terminal block to burn down some gaps - want to clear some of the load") | ⬜ launched from the chat line below, its own terminal. Focus: CRITICAL/HIGH first; gaps the MLB season end and Waves 81-84 made moot; never a NOW-wave file | 207 → 206 (tick 1, 02:40Z) → 205 (manual burn, GG-765) | ⬜→🟡 running | GG-890 closed with box evidence; all HIGH/CRITICAL have an owner |
 
 ## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
 

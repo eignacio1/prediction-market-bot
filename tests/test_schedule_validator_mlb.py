@@ -302,3 +302,15 @@ class TestResolutionGuard:
         warnings = check_resolution_guard(games)
         assert len(warnings) == 1
         assert "RESOLUTION_RISK" in warnings[0]
+
+
+def test_fetch_schedule_uses_iso_date_gg346():
+    """statsapi 406s on MM/DD/YYYY; the date param must be ISO (GG-346)."""
+    from datetime import date
+
+    from prediction_market_bot.run_schedule_validator_mlb import fetch_schedule
+
+    with patch("prediction_market_bot.run_schedule_validator_mlb.requests.get") as get:
+        get.return_value.json.return_value = {"dates": []}
+        fetch_schedule(date(2026, 10, 21))
+    assert get.call_args.kwargs["params"]["date"] == "2026-10-21"

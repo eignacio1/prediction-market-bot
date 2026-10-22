@@ -2165,12 +2165,6 @@ B74-A L2 (106,012 rows across 81 files, 0 integrity violations). (a) NFL moneyli
 
 B74-A L2. `scripts/assert_ledger_invariants.py:145` `load_json` has no try (one corrupt ledger crashes the scan, which is alarm-only). `validators.py:379` `_load_state` returns `{}` on JSONDecodeError, silently resetting the previous-row-count check. `run_t4_mlb_live.py:1175` fails open on a corrupt T1 portfolio. `demo_fill_policy.py` `append_log` swallows OSError (GG-675 still open; the 897-915 pagination was not re-read). Pillar: PROOF. Proposed fix: catch per file and report CORRUPT; alarm on state reset.
 
-### GG-765 — Register parity: ADR-0070..0074 absent from APPROVALS_REGISTER; APR-0007/0016 dangling
-
-**Status:** OPEN · **Severity:** LOW
-
-B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073, 0074 are ACCEPTED in the doc but never mentioned in APPROVALS_REGISTER.md; APR-0007 and APR-0016 rows point at no real document. The script says to note it in GG-126. Pillar: PLUMBING. Proposed fix: add the five register rows; repoint or retire the two APR rows.
-
 ### GG-766 — Golden-SHA test `test_default_output_unchanged` fails off the pinned pandas; suite is not env-proof
 
 **Status:** OPEN · **Severity:** LOW
@@ -3353,6 +3347,8 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 **Status:** OPEN · **Severity:** MEDIUM
 
 **Current state (2026-10-08, W59.1):** Verified: run_schedule_validator_mlb.py:100 sends date as %m/%d/%Y; repair_stuck_mlb_positions.py:122 and fetch_hits_unblocked_network.py:12 document the schedule endpoint 406s on some URL shapes. **Next:** Switch validator to the ISO-date URL shape and add a regression test.
+
+**Current state (2026-10-22, GA-5):** Fix landed in repo, pending deploy and verification. Box read-only test: statsapi `date=2026-10-20` → 200, `date=10/20/2026` → 406. `run_schedule_validator_mlb.py` and `run_t4_mlb_live.py` (the only two `%m/%d/%Y` sites in src/scripts) now send ISO dates; regression test `test_fetch_schedule_uses_iso_date_gg346` added (28 passed). Closes after a clean box run post-deploy.
 
 <details>
 <summary>Full record ▸</summary>

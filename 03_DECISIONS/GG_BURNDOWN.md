@@ -82,3 +82,8 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 - GG-740 — registry into governance scan + review 75 entries; ~1 session; PLUMBING.
 - GG-189/190 (live-ledger fixes, game_date root cause), GG-301, GG-312 (register backfill), GG-316 (NFL run provenance), GG-094/105 (MLB depth/anti-predictive): each ~1 session.
 - GG-302, GG-441, GG-1010 — see ledger rows (tick 4); each ~1 session.
+
+## Tick 5 (manual burn-through, 2026-10-22)
+- GG-765 RESOLVED: register rows for ADR-0070..0075 + APR-0034..0036 added, APR-0007/0016 evidence repointed; `check_register_parity.py` CLEAN (93 docs).
+- GG-346 stays OPEN: ISO-date fix + regression test landed in repo (box read-only test: ISO 200, MM/DD/YYYY 406); closes after deploy and a clean box run.
+- OPEN 206 -> 205.

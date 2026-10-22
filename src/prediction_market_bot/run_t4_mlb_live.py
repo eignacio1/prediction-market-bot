@@ -1789,7 +1789,7 @@ def _earliest_first_pitch_utc(today: date) -> "Optional[datetime]":
     Fetch today's MLB schedule and return the earliest active game start (UTC).
     Returns None if all games are postponed/cancelled or if the API fails.
     """
-    date_str = today.strftime("%m/%d/%Y")
+    date_str = today.isoformat()  # ISO: statsapi 406s on MM/DD/YYYY (GG-346)
     try:
         schedule_params: dict[str, str | int] = {
             "sportId": _MLB_SPORT_ID, "date": date_str, "hydrate": "team",

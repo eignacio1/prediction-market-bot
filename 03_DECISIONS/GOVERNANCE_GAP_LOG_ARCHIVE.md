@@ -5866,3 +5866,11 @@ W76.1, 2026-10-16. Demo cash $0.1674 against portfolio value $108.14 (read-only 
 
 W76.1, 2026-10-16. On 2026-10-15 the cancel-fail rate was 19.6%, all HTTP 503 (74 rows, 17:00-19:xxZ). A `cancel_failed` row counts as done in `sweep_overdue`, so nothing retries. A sample of 30 of those orders ended `canceled`, so they rested longer than designed. The 11:25Z cron on 2026-10-16 will see `cancel_fail_rate_gt_10pct_in_a_day` and turn the rule off. Root-cause fix: retry `cancel_now` on 5xx inside `c5_execution/demo_fill_policy.py` (live order path, outside the 76.1 ownership). Pillar: EXECUTION.
 
+### GG-765 — Register parity: ADR-0070..0074 absent from APPROVALS_REGISTER; APR-0007/0016 dangling
+
+**Status:** RESOLVED · **Severity:** LOW
+
+B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073, 0074 are ACCEPTED in the doc but never mentioned in APPROVALS_REGISTER.md; APR-0007 and APR-0016 rows point at no real document. The script says to note it in GG-126. Pillar: PLUMBING. Proposed fix: add the five register rows; repoint or retire the two APR rows.
+
+**Resolution (2026-10-22, GA-5 burn-down):** Added register rows for ADR-0070..0075 and APR-0034..0036 (statuses copied from each doc; DECISION REQUESTs stay PENDING) to `00_ADMIN/APPROVALS_REGISTER.md`; repointed APR-0007 and APR-0016 evidence to real files. Evidence: `python3 scripts/check_register_parity.py` → `CLEAN — 93 APR/ADR docs checked against the register`.
+

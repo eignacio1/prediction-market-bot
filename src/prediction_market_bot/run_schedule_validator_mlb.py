@@ -97,7 +97,7 @@ def fetch_schedule(game_date: date) -> list[dict[str, Any]]:
     """Pull today's MLB schedule from official statsapi.mlb.com."""
     params: dict[str, str | int] = {
         "sportId": SPORT_ID_MLB,
-        "date": game_date.strftime("%m/%d/%Y"),
+        "date": game_date.isoformat(),  # ISO: statsapi 406s on MM/DD/YYYY (GG-346)
         "hydrate": "team",
     }
     resp = requests.get(MLB_SCHEDULE_API, params=params, timeout=20)
