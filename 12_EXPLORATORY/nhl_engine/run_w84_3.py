@@ -20,7 +20,7 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE)); sys.path.insert(0, str(HERE.parent))
 from _fence import safe_out  # noqa: E402
-import factors as F  # noqa: E402
+import nhl_factors as F  # noqa: E402
 
 ROOT = F.ROOT
 OUT = HERE / "results"
