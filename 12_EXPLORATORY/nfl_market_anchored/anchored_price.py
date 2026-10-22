@@ -164,6 +164,25 @@ def score(res, use_w, seasons, rng):
     return out
 
 
+def freeze(d, variant="PRIMARY"):
+    """The parameters the pre-registered price would carry into 2026: shares/sigmas fit on ALL seasons <= 2025, w per family from the
+    out-of-sample (rolling) predictions of 2021-2025. Frozen once; no retraining inside a season (Hard Rule 4)."""
+    seasons = sorted(d.season.unique()); rng = np.random.default_rng(SEED); p = fit(d, rng); inner = {f: [] for f in FAMS}
+    for S in seasons[1:]:
+        o = predict(fit(d[d.season < S], rng), d[d.season == S], variant)
+        for f in FAMS: inner[f].append(o[f])
+    w, lam = {}, {}
+    for f in FAMS:
+        an = np.vstack([a for a, _, _ in inner[f]]); ad = np.vstack([b for _, b, _ in inner[f]]); y = np.vstack([c for _, _, c in inner[f]])
+        w[f] = float(WGRID[int(np.argmin([brier(pull(an, ad, x), y).mean() for x in WGRID]))])
+        dep = (ad - an).ravel(); r = (y - an).ravel(); n = len(dep)
+        def lm(ix): return float((dep[ix] @ r[ix]) / max(dep[ix] @ dep[ix], 1e-12))
+        lam[f] = dict(lambda_hat=lm(np.arange(n)), se=float(np.std([lm(rng.integers(0, n, n)) for _ in range(500)])))
+    cl = lambda v: {a: (list(map(float, b)) if isinstance(b, tuple) else float(b)) for a, b in v.items()}
+    return dict(variant=variant, fit_seasons=[int(x) for x in seasons], w=w, gate_lambda=lam, slope=float(p["slope"]), sd_m=p["sd_m"], sd_t=p["sd_t"], sd_tt=p["sd_tt"],
+                F8=cl(p["F8"]), C=cl(p["C"]), strike_offsets=dict(spread_total=SP_OFF.tolist(), team_total=TT_OFF.tolist()))
+
+
 def main(terms_p, sched_p, out_dir):
     d = load(terms_p, sched_p); rng = np.random.default_rng(SEED); out = {"n_games": int(len(d)), "per_season": d.groupby("season").size().to_dict()}
     seasons = sorted(d.season.unique())
@@ -175,6 +194,7 @@ def main(terms_p, sched_p, out_dir):
                             params_last={k: (v if not isinstance(v, dict) else {a: (list(map(float, b)) if isinstance(b, tuple) else float(b)) for a, b in v.items()}) for k, v in res[seasons[-1]]["p"].items()},
                             mean_abs_departure_w1={f: float(np.mean(np.concatenate([np.abs(res[T]['pred'][f][1] - res[T]['pred'][f][0]).ravel() for T in seasons[2:]]))) for f in FAMS},
                             gate_lambda_last={f: res[seasons[-1]]["lam"][f] for f in FAMS})
+    safe_out(Path(out_dir) / "frozen_params_through2025.json").write_text(json.dumps(freeze(d), indent=1))
     safe_out(Path(out_dir) / "results_W85.json").write_text(json.dumps(out, indent=1, default=float)); print(json.dumps(out, indent=1, default=float))
 
 
