@@ -94,7 +94,16 @@ name = "Lineup cross (usage redistribution when a rotation player is out, by rol
 source = "NBA player box scores (sportsdataverse free store, 2016-2026); injury reports for timing"
 engine_slot = "player rating"
 stage = "interpreted"
-evidence = "02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_LINEUP.md"
+evidence = "12_EXPLORATORY/20261020_nba_lineup_cross/PREREG_lineup_window.md"
+
+[[factor]]
+id = "B11"
+factor_class = "NBA-11"
+name = "Absorber play-type profile x usage absorption (who takes a missing creator's shots)"
+source = "NBA player box + pbp shot sub-types (sportsdataverse free store, 2025-26); Synergy play-type frequencies (archive, one-off)"
+engine_slot = "player rating"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/20261020_nba_lineup_cross/results_W83.md"
 
 [[cell]]
 market = "nba_player_points"
