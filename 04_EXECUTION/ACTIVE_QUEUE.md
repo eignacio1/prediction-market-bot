@@ -279,7 +279,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 |---|---|---|---|---|
 | 84.1 | The box's near-red items: the dashboard service at its memory cap, the NBA injury-report route (GG-1030), the install that ran on a RED budget | PLUMBING (dashboard) + DEPTH D5(b) NBA lineup factor testable → accruing | 🟡 Parts A+B ✅ | Part B merged (#321, #323, #324): runner relay `nba_ir_relay.yml` copies the official PDFs (byte-identical, sha256) to data branch `data/nba-injury-reports`; capture falls back to it only when the direct fetch is 403'd. Read back on box 2026-10-22 03:15:46Z: report 2026-10-21 23:00 found (92 rows, published_utc from relay Last-Modified). Part A merged (#318, #320), read back on box 2026-10-22 02:46Z via dashboard_pages_read: /api/data 29 s→0.013 s, /project 50 s→0.25 s, steady anon ~61 MB (was ~110), MemoryMax unchanged (128M; build-time peak touches cap transiently, reclaimable). Next undone: Part C (install gate refuses on RED, test, gap entry, retire 3 NBA preseason registry entries) — stopped by operator for time. |
 | 84.2 | Depth lane, NBA: the PAM mass tier (layer 3) from Muse's R-027 signal map, then stability and one cross | DEPTH D5(b) NBA PAM aggregated → interpreted; Muse records graded | 🟨 PARTIAL | PR #319 merged (a147b76): Part A + B1 done (~1,723 player-seasons assigned, stability interpreted); B2 cross NOT RUN n=0 (GG-1064). GG-1060..1064 |
-| 84.3 | Depth lane, NHL: three factor classes on the new data layer, one taken to a price | DEPTH D5(b) NHL interpreted 0 → ≥3, applied 0 → 1; D5(a) NHL 0/8 → n | ⬜ | |
+| 84.3 | Depth lane, NHL: three factor classes on the new data layer, one taken to a price | DEPTH D5(b) NHL interpreted 0 → ≥3, applied 0 → 1; D5(a) NHL 0/8 → n | ✅ PR #322 @7c30372: D5(b) NHL 7/0/0→2/2/3, D5(a) 0→1/8; Part B too few to tell | |
 | M84 | Muse: disable the two jobs the charter doesn't name (verbatim prompts first), the 30-ticket backlog, then R-028 | DEPTH feed: NFL PAM signal map per position; R-041 backs up 84.1 Part B | ⬜ | |
 | GA-4 | Governance gap agent, beside the wave (not counted). Launch line: STANDING GA section | PLUMBING | ⬜ | |
 
@@ -1153,7 +1153,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 84.1 | Dashboard memory + GG-1030 injury-report route + RED-budget install gate | ⬜ | |
 | 84.2 | NBA PAM mass tier from Muse's R-027 map + stability + one cross | 🟨 PARTIAL | PR #319 (a147b76); cross n=0 |
-| 84.3 | NHL three factor classes + one to a price | ⬜ | |
+| 84.3 | NHL three factor classes + one to a price | ✅ PR #322 @7c30372: D5(b) NHL 7/0/0→2/2/3, D5(a) 0→1/8; Part B too few to tell | |
 | M84 | Muse: two unnamed jobs disabled (verbatim first), 30-ticket backlog, R-028 | ⬜ | |
 | GA-4 | Gap agent beside the wave | ⬜ | |
 
