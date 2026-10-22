@@ -8,6 +8,7 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 | 1 | 2026-10-16T00:25Z | log 186 → 185 exact-OPEN (GG-429 resolved); governance-scan count was 164, re-read next tick | 1 / 0 / 0 | 7 | branch session/20261016T000911Z-gap-agent; also retired 23 resolved-class entries to archive (211 retained; parity 212=212, uniqueness OK) |
 | 2 | 2026-10-16T01:00Z | log 185 → 185 exact-OPEN (no A/B found among the 25 triaged); scan count not re-read this tick | 0 / 0 / 0 | 25 (15 HIGH bucketed + 10 UNSPECIFIED severities filled) | branch session/20261016T000911Z-gap-agent |
 | 3 | 2026-10-16T02:00Z | log 185 → 185 exact-OPEN (no A/B yet; GG-156/158 queued as A-candidates pending read-only ssh) | 0 / 0 / 0 | 24 (10 severities filled + 14 bucketed) | branch session/20261016T000911Z-gap-agent |
+| 4 (GA-5 tick 1) | 2026-10-22T02:40Z | grep-exact OPEN 207 → 206 (GG-890 A; 6 other resolved-class entries retired, no OPEN change) | 1 / 0 / 0 | 9 (all 28 HIGH + CRITICAL carry an owner; 4 new HIGH bucketed; 3 box-read candidates tested) | session/20261022T021353Z-gap-agent |
 
 ## Ledger
 | GG | Sev | Class | Evidence / reason | Next owner | Tick |
@@ -56,6 +57,15 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 | GG-098/154/161/164/192/196/224 | - | L | Same-file or multi-session work (161 shares run_resolve_mlb.py with GG-170; 224 has no service-side ADR-0061 enforcement) | Waves | 3 |
 | GG-153/168/174/202/206/216 | - | O | Need operator/window call (206: sibling outcome store is laptop-only and git-ignored) | Operator | 3 |
 | GG-209 | - | W | Wave-owned | Wave | 3 |
+| GG-890 | HIGH | A → RESOLVED | Box read-only 2026-10-21/22: `nba_autoflip.log` 8 + 4 promotions = 12/12 NBA game cells; `nba_pregame_shadow_t1.log` run 20261022T001104Z wrote all four NBA game families; box HEAD ff415aca | — | 4 |
+| GG-302 | HIGH | L | NFL T1 42-row actor provenance (ledger forensics, live-ledger adjacent); pairs with GG-295/316 | Window block | 4 |
+| GG-1010 | HIGH | L | NHL pre-game starting goalie: forward-only timestamped capture of NHL lines/probable-starter pages; a new cron = new running component (never-list for this agent) | Window (NHL depth lane) | 4 |
+| GG-1030 | HIGH | W | NBA CDN 403 from box = 84.1 owned (`nba_lineup_window_capture.py`, injury-report route) | W84.1 | 4 |
+| GG-038 | HIGH | O | ADR-0060 ACCEPTED as target architecture only, "not authorized to build now"; W76.1 drill (GG-745) shows 29.5 s worst-case halt, inside NFR-03 60 s but not the ≤5 s T4 target. Stays OPEN; operator owns the build trigger | Operator | 4 |
+| GG-441 | HIGH | L | monitor.py l.34-35 still realized-loss-only, in-memory (W59.1 note, code unchanged); needs kill-switch input + persistence change in C4/C7 | Window block | 4 |
+| GG-346 | MEDIUM | tested, NOT moot | schedule_validator_mlb.log still logs HTTP 406 as of 2026-10-21 08:30Z (128 occurrences); fix = request headers in the validator, class C candidate next tick | Next tick (C) | 4 |
+| GG-348 | LOW | tested, NOT moot | t4-mlb.timer still inactive, last fired 2026-07-04; t4-mlb.service active. Still true | Later (C: doc/unit cleanup) | 4 |
+| GG-262/676 | LOW/MED | tested, NOT moot | live crontab `run_mlb_pregame` 22:15 vs repo mirror 18:45; drift persists. Season end does not change it | Window (cron mirror) | 4 |
 
 ## Operator lines
 - GG-417: approve adding a stale `.git/index.lock` check (age>10min, no live git) to `.claude/hooks/session_guard.sh` — hook edits are outside this agent's remit.
@@ -63,8 +73,12 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 - GG-046, GG-172, GG-204, GG-295, GG-320, GG-333, GG-066, GG-150, GG-153, GG-168, GG-174, GG-202, GG-206, GG-216: each needs an operator/window call (see ledger rows).
 - Intake note: handoffs mention tensions registered without GG ids (W76 NFL/NBA tension registers); the window may assign ids if wanted.
 
+## Operator lines (tick 4 add)
+- GG-038: ADR-0060 build trigger is yours; the drill shows 29.5 s worst-case halt, so NFR-03 holds today. Recommend leaving OPEN until T4M-PROJ is reactivated.
+
 ## Large (for waves)
 - GG-170 — pin `run_resolve_mlb.py` gameLog query to dated split + cross-check totals; ~1 session; PROOF integrity.
 - GG-611 — wire EXP-040 shadow logging (forecaster, runner, registry cell, injury fetch, deploy); ~1 session; BREADTH/DEPTH.
 - GG-740 — registry into governance scan + review 75 entries; ~1 session; PLUMBING.
 - GG-189/190 (live-ledger fixes, game_date root cause), GG-301, GG-312 (register backfill), GG-316 (NFL run provenance), GG-094/105 (MLB depth/anti-predictive): each ~1 session.
+- GG-302, GG-441, GG-1010 — see ledger rows (tick 4); each ~1 session.

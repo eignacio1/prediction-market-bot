@@ -2067,30 +2067,6 @@ Registered 2026-10-14 by the strategic window (ADR-0074). Hundreds of short sess
 
 Registered 2026-10-14 (ADR-0074). Twelve window errors seeded in `04_EXECUTION/WINDOW_ERROR_LOG.md` (W1-W12, plus two historical slice failures). **Done 2026-10-14 (window):** the log with a pattern tally; Hard Rules 14-15 in CLAUDE.md (surface budget; error log read first; notes-first; Pushback / Surface / Dependencies lines in every wave; operator routing limited to pre-registration, frozen artifact/book, real capital, strategy); `/strategic-handoff` step 0 + Surface row + wave format; window paste-in updated. **Open until:** two consecutive waves are issued in the new format and the next window handoff reads and extends the log. Pillar: PLUMBING.
 
-### GG-742 — Five cron jobs are mirrored only in arm fragments, not in deploy/cron.conf (the file treated as the live mirror)
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-Found 2026-10-14 by `scripts/runtime_registry.py` discovery — five (schedule, script, flags) signatures appear in a fragment file but not in `deploy/cron.conf`: `18 11 * * 0 scripts/nba_player_box_backfill.py --seasons 2026`; `* * * * * scripts/demo_cancel_sweeper.py`; `7 */6 * * * scripts/run_mlb_pregame_shadow.py --bands T1 --refresh`; `14 */6 * * * scripts/run_nfl_qb_challenger_shadow.py --bands T1`; `44 9 * * * scripts/run_pregame_shadow_settle.py --ledger-dir exp_output/PREGAME_SHADOW_NFLQB --prefix NFLQB`. Not checked whether cron.conf carries the same jobs with a different schedule or flags. Either cron.conf is incomplete as a mirror (GG-676 class) or the fragments differ in schedule/flags from the live lines. Needs: compare against `crontab -l` on the box; make one file the complete mirror (or document that the mirror is the union). Related: GG-676. Pillar: PLUMBING.
-
-**Resolution (2026-10-15, W76.4 Part C):** every one of the 76 registry entries was reviewed against the box (`crontab -l`, `systemctl`, `.github/workflows`) and matched on script+flags, not schedule. The five fragment-only signatures are all installed on the box and registered with their fragment in `mirrors`; 0 installed-but-unmirrored. Two registry entries were not what the box runs and are now `paused` with a reason: the `--refresh` copy of the MLB T1 shadow job (the box runs the no-`--refresh` job) and `t4-mlb.timer` (enabled on the box, dead since 2026-07-04; `t4-mlb.service` runs persistently). `check --box` now keeps this from recurring.
-
-### GG-743 — 21 live components have no alarm if they stop (surface debt)
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-`python3 scripts/runtime_registry.py surface` on 2026-10-14: 75 live components, 21 whose alarm is "none" (settlement joins, price archive, calibration/band monitors, schedule validator, depth/settlement capture, one-shot NBA flips, paused Post-Game Resolve). Under Hard Rule 14 each needs an alarm or an explicit reason it needs none. The silent-arm pattern (W62.1) and the deploy status file (W72.3) are the templates. Pillar: PLUMBING (PROOF data most exposed: settlement joins).
-
-**Resolution (2026-10-15, W76.4 Part C):** 0 live components with no alarm and no written reason. 12 got a staleness alarm (`max_age_h` on their `writes` path: SURFACE BUDGET goes RED when stale), 9 carry a written reason in `alarm = "none: ..."`. Live columns in `governance_scan_full.sh` (RUNTIME block), `/project`, the Live Terminal and the Visual Dashboard.
-
-### GG-745 — The kill switch is not one switch: three flag files, C7 never writes one, paper_trader has no halt check (NFR-03)
-
-**Status:** RESOLVED · **Severity:** HIGH
-
-B74-A L1, 2026-10-14. t4-mlb watches only `logs/t4_mlb_kill_switch.flag` (`run_t4_mlb_live.py:290`); `run_t4_live` watches `t4_kill_switch.flag`; `shadow_flat_stake.maybe_place:55` calls `kill_switch_state.halt_reason()` (glob `*kill_switch*.flag`, fails closed). So `touch logs/t4_kill_switch.flag` halts shadow stake placement but not t4-mlb, the main order placer. C7 `is_kill_switch_active` is in-memory and no code writes a flag file when C7 trips, so cron-launched processes never see it (only `t4_live_runner:509` checks it). `paper_trader.py:685` (T1, NFL game markets) calls `submit_order` with no `halt_reason()` call. No flag exists on the box, so the path was never exercised. Pillar: EXECUTION, PROOF. Proposed fix: one shared `halt_reason()` honoured by every order placer (put it in `paper_trader`/`submit_order`), C7 writes the flag on L4, and a monthly canary that touches the flag on demo and reads back a halt. Related: GG-667 (fixed for shadow stake only).
-
-**Resolution (W76.1, 2026-10-16):** code fix landed W75.4 (one switch in `KalshiMarketClient.submit_order`); drilled on the running processes 2026-10-15T23:50Z-00:14Z: global flag halted `t4-mlb` in 29.5 s and all five caller labels in 19-37 ms, 72 shadow cron skips, 0 orders; band flag halted only `t4_mlb`; removal resumed in 7 s. C7 `kill_switch_drill_result` EVT-3B72CDCB0720, passed_sla true. Not exercised: cancels (none pending). Detail: `W75_4_kill_switch.md` "Drill".
-
 ### GG-747 — T4 portfolio has 4,309 closed rows vs 4,275 in the resolved ledger (gap of 34)
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -2120,14 +2096,6 @@ B74-A L3. `run_t4_mlb_live.py:2037-2220` logs and loops forever; ESPN discovery 
 **Status:** OPEN · **Severity:** MEDIUM
 
 B74-A L4. GG-661 and GG-668 are otherwise fixed and read back as running (t4-mlb started 02:53Z, after the last src commit; pending-restart retry fired). Still open: no rollback after `gate_red`/`verify_failed` (tree stays at the pulled SHA); `dirty_tree_abort` still exits 1 (3 historical, last 10-13 00:28Z) and tracked `deploy/demo_fill.env` is tool-rewritten (heal_dirty_tree L100-130 not read); nothing confirmed to alarm on `deploy_status.json`. Pillar: EXECUTION. Proposed fix: record previous SHA and revert on verify_failed; confirm heal covers demo_fill.env (or untrack it); wire `deploy_truth.py check` into the governance scan.
-
-### GG-753 — runtime_registry check is blind to the box (cron/systemd as installed)
-
-**Status:** RESOLVED · **Severity:** MEDIUM
-
-B74-A L6. `scripts/runtime_registry.py:66-101` discovers components from repo mirrors only. `check` and `surface` pass while the box differs: live `45 22 * * * run_mlb_pregame.py` has no entry (mirror says 18:45; PIPE-08 retimes it daily so a schedule-keyed entry never matches), and the registry's live `run_mlb_pregame_shadow.py --bands T1 --refresh` entry is not installed. Also the script crashes under the default python3.9 (no `tomllib`). Pillar: PLUMBING (affects MLB pregame measurement). Proposed fix: `check --box` reading `ssh crontab -l` + `systemctl list-unit-files`, key cron entries on script+args. Related: GG-676, GG-742.
-
-**Resolution (2026-10-15, W76.4 Part C):** `scripts/runtime_registry.py check --box` reads the box crontab and `systemctl` over one ssh round trip and keys cron entries on script+flags (PIPE-08 retimes). The script now runs on python3.9 (tomllib -> tomli -> built-in mini parser, tested equal to tomllib).
 
 ### GG-754 — demo_fill_forward_report: no_outcome check not epoch-gated; two plain write_text writers
 
@@ -2238,12 +2206,6 @@ W75.1 Part B (2026-10-14). DL-RUSH rates need a pass-rush-snap denominator and a
 **Status:** OPEN · **Severity:** LOW
 
 W75.1 Part B (2026-10-14). Separation, yards per route run and top speed need NGS/Sportradar tracking. Cross-cutting for WR/TE/CB. Registered as a GAP, not bought (ADR-0073 point 4).
-
-### GG-890 — NBA flip scripts hashed model file bytes, not the artifact sha256: no row could ever be valid
-
-**Status:** OPEN · **Severity:** HIGH
-
-Found W78.3 (2026-10-15). `nba_cell_autoflip.py` and `w59_3_nba_flip_check.py` compared rows' `model_sha256` to sha256 of the file bytes (`b05130b0…`); the runner writes the artifact's internal `sha256` (`c351680a…`). Every row invalid, so no NBA game cell could flip on 10-21. Fixed in PR #274 (`frozen_model_sha()` + regression test); deployed to the box. Dry run on box: 9 of 12 cells FLIP-OK. Pattern sweep: no other instance in scripts/src/tests/12_EXPLORATORY. Close on the 10-21 real flip read-back (see NBA_OPENING_NIGHT_RUNBOOK.md).
 
 ### GG-891 — KXNBATEAMTOTAL never listed: the 3 NBA_TEAM_TOTAL cells cannot get rows
 
@@ -4320,18 +4282,6 @@ W75.2 Part A. `defense_coverage_type` is populated for 53-61% of run+pass plays 
 **Status:** OPEN · **Severity:** LOW
 
 W76.3 Part A (2026-10-16) swept src/ and scripts/ for `open(...,"w")` / `write_text` (174 hits, raw list not committed). The five live-ledger or portfolio writers (the four GG-748 scripts + `t437_task3_rederive_outcomes.py`) are converted to `atomic_io` (PR #265, tests `tests/test_w76_3_script_writers.py`, which also pins them against regression). The remaining hits overlap the GG-680 inventory (frozen artifacts, caches, report writers, tmpdir files) and were NOT re-classified one by one in this block. Closes when a re-run of the sweep is diffed against GG-680 and each unlisted hit is converted or listed as not-state. Also noted: `t4_fill_status.py:310` is an append-mode log (O_APPEND, not a rewrite). `backfill_*` scripts use tmp+replace without fsync (crash-durability only, not tear risk). Pillar: PLUMBING.
-
-### GG-840 — Demo account is cash-starved: 1,535 of 1,606 rejections since the re-arm are `insufficient_balance`
-
-**Status:** RESOLVED (W77.1 PR #271; running on t4-mlb restart 04:57Z + shadow cron; cash is the binding constraint, pre-check only skips venue-rejected orders earlier) · **Severity:** HIGH
-
-W76.1, 2026-10-16. Demo cash $0.1674 against portfolio value $108.14 (read-only GET). Since 2026-10-13T23:58Z: 962 orders accepted, 1,606 rejected (insufficient_balance 1,535; market_closed 68; transient 3). Fills for both ADR-0072 arms depend on cash recycling, not on the placement rule, so fill rates are selection-dependent and the judged-n projection is unreliable. Pillar: EXECUTION (E1). Proposed fix: size shadow flat stakes to available cash or add a balance pre-check that logs and skips; a demo top-up is not available through the API.
-
-### GG-841 — `cancel_now` has no 5xx retry; an exchange 503 outage trips the ADR-0072 turn-off
-
-**Status:** RESOLVED (W77.1 PR #269; sweeper cron + t4-mlb restart 04:57Z carry the fix) · **Severity:** HIGH
-
-W76.1, 2026-10-16. On 2026-10-15 the cancel-fail rate was 19.6%, all HTTP 503 (74 rows, 17:00-19:xxZ). A `cancel_failed` row counts as done in `sweep_overdue`, so nothing retries. A sample of 30 of those orders ended `canceled`, so they rested longer than designed. The 11:25Z cron on 2026-10-16 will see `cancel_fail_rate_gt_10pct_in_a_day` and turn the rule off. Root-cause fix: retry `cancel_now` on 5xx inside `c5_execution/demo_fill_policy.py` (live order path, outside the 76.1 ownership). Pillar: EXECUTION.
 
 ### GG-842 — t4-mlb armed message names only the legacy flag path
 

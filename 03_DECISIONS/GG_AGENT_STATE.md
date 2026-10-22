@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Last tick | 2026-10-16T02:00Z (tick 3) |
-| Intake cursor (last main SHA scanned) | `5be6bd8` (tick 2 scraped everything since 1c1cd46: nothing unregistered; all cited-fixed GGs already RESOLVED/archived; unknown refs were claim-range endpoints) |
+| Last tick | 2026-10-22T02:40Z (GA-5 tick 4) |
+| Intake cursor (last main SHA scanned) | `04e515d` (tick 4: scrape of 2026-10-16..22 handoffs not completed; next tick) |
 | Gaps triaged / untriaged | ~56 triaged / ~130 untriaged (MEDIUM 73 and LOW 70 minus fills; HIGH all done) |
-| Session | `session/20261016T000911Z-gap-agent`, claim GG-860..GG-879 |
-| Context note | stopped manually by operator after tick 3 (tick 4 no edits); relaunch with /gap; next: GG-156/158 ssh read-only checks |
+| Session | `session/20261022T021353Z-gap-agent`, claim GG-1070..GG-1079 (GA-5) |
+| Context note | healthy; focus per operator 10-21 19:12 PT: CRIT/HIGH owners, then moot/fixed closures. Never touch W84 files |
