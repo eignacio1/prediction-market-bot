@@ -280,7 +280,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | 85.1 | NFL: the first market-anchored price, built offline and pre-registered with the pooled test | DEPTH D3 NFL 1 → 2, D5(b) NFL factors priced from the line 0 → n · PROOF P3 gains a look | ⬜ | |
 | 85.2 | The real gate: replay it on the orders already placed, then build it (unwired) + DRAFT ADR-0072 addendum | EXECUTION: orders per market per band → positions the gate keeps | ⬜ | |
 | 85.3 | Before real money: the kill switch counts all stake and persists (GG-441); the install gate refuses on RED (84.1 Part C) | PLUMBING | ⬜ | |
-| M85 | Muse: the market's line history and "when it was public", the 33-ticket backlog, R-046 one team per task | DEPTH feed for the market-anchored prices | ⬜ | |
+| M85 | Muse: the market's line history and "when it was public", the 33-ticket backlog, R-046 one team per task | DEPTH feed for the market-anchored prices | ⏸ HELD | Not pasted. Operator 10-22 16:32 PT: "No more muse for the rest of the week - usage limits hit lol". Paste when Muse is back; nothing in Wave 85 waits on it |
 
 **What Wave 84 delivered (verified 2026-10-22 22:45Z: 7 PRs #318-#324 CI green; box bridge `20261022T222233Z_*`):** **84.1 🟡**
 the dashboard is fast and off its cap (/api/data 29 s → 0.22 s, /project 50 s → 0.06 s, 55 MB of 128 MB, 0 restarts); the NBA
@@ -1172,7 +1172,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 85.1 | NFL market-anchored price, offline + pre-registered (pooled test) | ⬜ | |
 | 85.2 | The real gate: replay on placed orders, then built unwired + DRAFT ADR-0072 addendum | ⬜ | |
 | 85.3 | Kill switch sees all stake (GG-441) + install gate refuses on RED (84.1 Part C) | ⬜ | |
-| M85 | Muse: line history + "when was it public" tickets, 33-ticket backlog | ⬜ | |
+| M85 | Muse: line history + "when was it public" tickets, 33-ticket backlog | ⏸ HELD (Muse out of usage for the week) | |
 
 ### ✅ WAVE 84 — WRITTEN 2026-10-22 ~02:15 UTC · CLOSED 2026-10-22 ~03:30 UTC (operator 10-21 20:29 PT) · verified 2026-10-22 22:45Z on GitHub (7 PRs, CI green) + box bridge (`20261022T222233Z_*`) · moved: **D5(b) NHL 7/0/0 → 2/2/3, D5(a) NHL 0 → 1/8; NBA PAM ~1,723 player-seasons assigned**; dashboard /project 50 s → 0.06 s; NBA injury report reaches the box
 
