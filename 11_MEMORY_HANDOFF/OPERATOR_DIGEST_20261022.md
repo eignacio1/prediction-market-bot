@@ -11,3 +11,6 @@
 
 ## GA-5 gap burn-down (2026-10-22)
 Open gaps went from 207 to 205. Two were closed with evidence: one about the NBA auto-promotion, one about the approvals register being out of step with the decision documents. A third, a bug that made the MLB schedule check fail every day since July, now has a fix in the code and a test. It stays open until the fix is deployed and the box runs cleanly. No money, orders or live components were touched. Most of the remaining gaps need deploys, your sign-off, or are data work, so they will not clear quickly. Pillar: plumbing.
+
+## GS-3 — gap sweep (process one-offs and observations)
+Plumbing only; no money, orders or models touched. Seven old housekeeping gaps are closed with evidence, and four observations (things with nothing to fix) are now watch items instead of open problems. Under your keep-the-folder rule, the three "folder fell behind" gaps are closed too. The open-gap count went from 210 to 199. Two gaps about a stuck git lock stay open because they need a small code fix.

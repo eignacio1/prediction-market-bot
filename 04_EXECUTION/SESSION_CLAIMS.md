@@ -1006,3 +1006,4 @@
 | 2026-10-22T02:38:21Z | TBD | GS-3 gap sweep: class P process one-offs + O observations (PLUMBING, OPEN gaps down) |
 | 2026-10-22T02:47:43Z | T-1100 | CLOSED — W84.2 NBA PAM mass tier: ~1,723 player-seasons assigned, stability interpreted, Muse GP graded; cross n=0 (PARTIAL). (commit `1153385`) |
 | 2026-10-22T02:48:07Z | T-1100 | CLOSED — merge confirmed, HEAD (fe08d36) is ancestor of origin/main — W84.2 NBA PAM mass tier (PARTIAL) |
+| 2026-10-22T02:49:54Z | GS-3 | MERGED: NO — branch `session/20261022T023806Z-gs3-process-obs` awaiting merge — GS-3 gap sweep: closed 7 process/drift gaps, re-filed 4 observations as WATCH ITEM; OPEN 210 -> 199. (commit `c4af572`) |
