@@ -1663,6 +1663,17 @@ What should reorder this, and what should stop it:
 > (3) **The kill switch counts open and settled-but-unresolved stake and persists its state** (GG-441), built as a block
 > before any real capital. No real capital, stake or kelly_fraction changes under this authorization.
 
+> **AUTHORIZATION - MARKET-ANCHORED PRICING, A REAL GATE, A POOLED TEST (operator, 2026-10-21 20:28 PT, on the strategic
+> window's model stack assessment, items 1-3: "Good - I accept them").** (1) **Each arm's price starts from the market's
+> probability plus adjustments from factors tested out of sample**; the frozen models become inputs and benchmarks and keep
+> running beside it. Built as a NEW pre-registered challenger per sport, NFL first; each pre-registration is committed before
+> its first row. (2) **A real gate**: one position per market per band; the model is pulled toward the market by its measured
+> skill; an order goes in only when what is left clears the fee plus the model's measured error; a game's ladder counts as one
+> exposure. This changes the running ADR-0072 forward test, so it lands as an amendment the operator sees before it goes live.
+> (3) **One pooled market-anchored test per sport** (all families and bands, clustered by game, corrected for many cells), as
+> a pre-registration amendment. Frozen arms, sealed looks and existing pre-registrations are not edited; demo only, $1 flat,
+> kelly_fraction 0, no real capital. Assessment: Claude Docs "Model stack assessment" (2026-10-21).
+
 > **AUTHORIZATION - ADR-0072 NFL SECOND LOOK (operator, 2026-10-20 ~23:05 PT, asked by the strategic window: "Keep running, one
 > more look (Recommended)").** The forward test keeps running for NFL; one more pre-registered NFL read is taken when criterion
 > (c) has markout-bearing fills at judged n (~550 per arm) on both arms; that verdict word is final for NFL. Nothing else changes.

@@ -2779,3 +2779,17 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 ## 2026-10-21 W84.3 — NHL first factors taken to a price (exploratory)
 - Built shot-quality, goalie-workload, special-teams factors PIT from the NHL event store (2021-25); Part B vs Kalshi KXNHLGAME on 2025 holdout n=1,306: verdict too few to tell (factor coef 0.37, CI [-0.09, 0.80]). No live model, order, stake or registry change.
 - D5(b) NHL: 7/0/0 -> 2 aggregated / 2 interpreted / 3 applied (CLAUDE.md meaning of applied); D5(a) NHL 0/8 -> 1/8. Detail: 12_EXPLORATORY/nhl_engine/results_W84.md; handoff SESSION_HANDOFF_20261022T0259Z_W84_3.md.
+
+## 2026-10-21 20:28 PT — Operator ACCEPTS the model stack assessment's items 1-3 (strategic window)
+
+- Context: the strategic window's "Model stack assessment" (Claude Docs, 2026-10-21) found pricing built from scratch on team
+  averages and gated at net edge > 0, so model error becomes orders. Operator asked "Why aren't we building our model pricing on
+  conviction ... explain how the our bot places a bet"; the window walked one Eagles-Cowboys game through the bot's path.
+- Operator, verbatim: "Good - I accept them. Should've probably had this conversation with you 6 months ago dear lord lol"
+- Accepted: (1) market-anchored pricing (market probability + out-of-sample-tested factor adjustments; frozen models become
+  inputs/benchmarks), a new pre-registered challenger per sport, NFL first; (2) a real gate (one position per market per band,
+  shrink to market by measured skill, enter only when residual clears fee + model error, ladder = one exposure), landing as an
+  ADR-0072 amendment; (3) one pooled market-anchored test per sport with a multiplicity correction, as a pre-registration
+  amendment. Guardrails unchanged: demo only, kelly_fraction 0, no real capital, no edit to frozen arms or sealed looks.
+- Authorization blockquote: ACTIVE_QUEUE.md "Needs your decision". Scheduled: Wave 85 onward. Wave 84 reported finished by the
+  operator 20:29 PT; verification and Wave 85 held at his instruction ("stop before producing the next wave").
