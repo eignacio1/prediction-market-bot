@@ -4371,3 +4371,21 @@ W82.1, 2026-10-21. `scripts/passyds_install.py install` refused because the surf
 Pattern sweep to do (Hard Rule 13): `scripts/thin_capture_install.py` gates outright on `budget != GREEN`; check each other installer for the same shape. Fix options: healthcheck re-run on a retry/short cadence or a freshness rule on the summary line; installers filter only reasons that are the registered component's own "no write found". The "newly registered component turns the budget red before it can be installed" catch-22 is only half-handled by the passyds substring filter. Not fixed here (Hard Rule 11).
 
 </details>
+
+### GG-1030 — The box IP is blocked by the NBA CDN (Akamai 403 on all of ak-static.cms.nba.com), so the injury-report half of the W83.2 lineup-window capture cannot run on the VPS
+
+**Status:** OPEN · **Severity:** HIGH
+
+W83.2, 2026-10-22 00:36Z. `curl` of `https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-10-21_05_00PM.pdf` returns 403 (AkamaiGHost) from the box with and without a browser User-Agent, and the host root also 403s; the same URLs return 200 from the operator's Mac. The installed cron `nba_lineup_window` therefore records `report: none` and only the KXNBAPTS book snapshots (control_books); no report-time/book-before/after pair can form. Not worked around (no proxy, no paid service). Fix options for the next window: (a) capture the PDF from a non-datacenter free path (e.g. a scheduled GitHub Actions run, which needs its own permission and registry entry); (b) fetch a free mirror of the same report (nba_api / stats endpoints are likely blocked the same way: test first). Until fixed the frozen pre-registration (PREREG_lineup_window.md) accrues zero scored games; the first look (30 games) cannot be reached. Related: GG-985.
+
+### GG-1031 — NBA play-type frequencies have no definition or event-store labels, so Muse's play-type class is gradeable by ordering against proxies only
+
+**Status:** OPEN · **Severity:** LOW
+
+W83.2. pbp carries no play-type labels and NBA.com publishes no definitions; the grade (PARTIAL, 4 of 7 classes hold at Spearman >= 0.5 against fixed proxies) cannot test the frequencies themselves. Needs a labelled source or a derivation rule; free only.
+
+### GG-1032 — Python 3.9 on the operator's Mac cannot collect tests/test_seat_interface.py and scripts/render_seat.py (tomllib); /usr/local/bin/python3.11 works
+
+**Status:** OPEN · **Severity:** LOW
+
+W83.2. A stale NBA_SEAT.md render passed locally and failed in CI because the local default python lacks tomllib. Worked around with python3.11; the fix is a pinned local interpreter or a pre-push render check.

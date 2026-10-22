@@ -2717,3 +2717,8 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Fix: #312 (box renders it at /visual from origin/main; launcher opens it through the Live Terminal's tunnel), #316 (check fix). Box check 20261022T00xx: / 200, /visual 200 (276 KB, web present), /project 200.
 - Mac folder: the four stale dashboard files and Reload Dashboard.command moved to `_to_delete/` (nothing deleted). Kept: Open Live Terminal.command, Open Visual Dashboard.command (new).
 - Watch: pmbot-web-dashboard MemoryCurrent 133.7 MB of a 128 MiB cap at the check (cgroup figure includes page cache; NRestarts 0); /api/data 28 s, /project 47 s. For the gap agent / next wave, not fixed tonight.
+
+## 2026-10-22 00:45 UTC — W83.2 closed PARTIAL (NBA lineup capture installed but report half blocked; play-type grade and absorber cross done)
+- Part A merged (#313, 0aff806) and the cron is installed on the box (3,18,33,48 * * * *). The surface budget read RED (box HEAD 52044bdc) and the installer still appended the block; the red reason was not recorded (GG-990 shape). First run 00:33:05Z took a 14-market KXNBAPTS book snapshot; report side none because the box IP gets Akamai 403 (GG-1030). Frozen pre-registration stands; no scored games can accrue until GG-1030 is fixed.
+- Part B merged (#317, 1da11da). Play-type grade PARTIAL (no class FAILED); absorber x profile cross null at n=131 (Spearman +0.06, CI [-0.11, 0.24]); NBA-11 interpreted. The "holds at >= 0.5" line was a post-run reading rule.
+- No order, sizing, registry cell or live-ledger change.
