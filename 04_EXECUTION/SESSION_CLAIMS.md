@@ -998,3 +998,4 @@
 | 2026-10-22T00:38:06Z | T-1070 | CLOSED — W83.2 PARTIAL: NBA lineup capture installed but report fetch 403s from box (GG-1030); play-type x absorption null (commit `564f772`) |
 | 2026-10-22T00:38:22Z | T-1070 | CLOSED — merge confirmed, HEAD (1873874) is ancestor of origin/main — W83.2 PARTIAL |
 | 2026-10-22T01:22:29Z | T-1060 | CLOSED — merge confirmed, HEAD (865b07a) is ancestor of origin/main — W83.3 NHL engine data layer: PR #315 merged, D4 NHL none → data layer |
+| 2026-10-22T02:06:25Z | T-1090..T-1099, GG-1040..GG-1049 | W84.3 DEPTH: NHL first factors (shot quality xG, goalie workload, special teams) PIT, one to a price; measure D5(b) NHL interp 0->>=3 applied 0->1 |
