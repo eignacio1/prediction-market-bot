@@ -2722,3 +2722,10 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Part A merged (#313, 0aff806) and the cron is installed on the box (3,18,33,48 * * * *). The surface budget read RED (box HEAD 52044bdc) and the installer still appended the block; the red reason was not recorded (GG-990 shape). First run 00:33:05Z took a 14-market KXNBAPTS book snapshot; report side none because the box IP gets Akamai 403 (GG-1030). Frozen pre-registration stands; no scored games can accrue until GG-1030 is fixed.
 - Part B merged (#317, 1da11da). Play-type grade PARTIAL (no class FAILED); absorber x profile cross null at n=131 (Spearman +0.06, CI [-0.11, 0.24]); NBA-11 interpreted. The "holds at >= 0.5" line was a post-run reading rule.
 - No order, sizing, registry cell or live-ledger change.
+
+## 2026-10-22 W83.3 — NHL engine data layer (DEPTH; D4 NHL none → data layer)
+- Built the NHL event-level store from free unauthenticated NHL web API GETs, seasons 2015-16..2026-27 (in progress); PR #315 merged on green CI. Part of the Syndicate32-bridge depth lane (ADR-0073).
+- Measured floors set after first full build, with reasons: shifts 0.95 (0.85 current season; the source returns empty shift charts for 75 games, 57 in 2024 and 18 in 2026), SOG reconcile 0.97 (2016 0.979, 2025 0.977). Exact repeated shift rows dropped at compile; same-key rows with different times are counted, not resolved.
+- Defect fixed: `write_cache` fixed `.tmp` name collided between two concurrent fetchers (crash plus spurious failures); unique per pid and thread, regression test. Sweep: only other fixed-name writer is `pregame_shadow/passyds_model.py:184` (`.part`, single downloader, left as is).
+- Edited `tests/test_seat_interface.py` (nhl added to the loops), outside nominal ownership. #314 superseded by #315. Block overran the 90-minute ceiling because of the download and a doubled-rate second fetch process.
+- Deploy: new modules only, no runtime path touched; no t4-mlb restart needed. No refresh job registered (surface_delta 0).
