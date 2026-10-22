@@ -29,7 +29,7 @@ def test_every_registered_cell_has_a_seat_entry_all_sports():
 
 
 def test_every_evidence_path_exists_and_stage_is_valid():
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         d = _seat(sport)
         for x in d["factor"] + d["cell"]:
             assert (ROOT / x["evidence"]).exists(), (sport, x["evidence"])
@@ -40,7 +40,7 @@ def test_every_evidence_path_exists_and_stage_is_valid():
 
 
 def test_cell_factor_ids_reference_declared_factors():
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         d = _seat(sport)
         ids = {f["id"] for f in d["factor"]}
         for c in d["cell"]:
@@ -48,15 +48,15 @@ def test_cell_factor_ids_reference_declared_factors():
 
 
 def test_stub_sports_have_no_factors_and_drafts_say_so():
-    for sport in ("mlb", "nhl"):
+    for sport in ("mlb",):
         assert not _seat(sport).get("factor")
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         assert "v0 DRAFT" in _seat(sport)["meta"]["banner"]
 
 
 def test_rendered_md_is_current():
     sys.path.insert(0, str(ROOT / "scripts"))
     import render_seat
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         p = SEATS / f"{sport}.toml"
         assert (SEATS / f"{sport.upper()}_SEAT.md").read_text() == render_seat.render(p)

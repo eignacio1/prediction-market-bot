@@ -1,10 +1,118 @@
 [meta]
 sport = "nhl"
 version = "v0"
-banner = "STUB. Cells listed, factors empty. NHL's seat is filled when its engine is scaffolded (ADR-0073)."
-taxonomy = "none (NBA taxonomy to be written; NBA-n ids are local to this file)"
+banner = "v0 DRAFT written by a model from files on main (W83.3). A hockey eye has not reviewed it; expect the factor classes, stages and slot assignments to be corrected. Factors listed are in the event store only: no model conditions on any of them yet (every cell's factors = []). Do not cite it as a verdict on anything."
+taxonomy = "02_ARCHITECTURE_DESIGN/NHL_ENGINE/FACTOR_TAXONOMY.md (NHL-n ids)"
 engine_interface = "none"
 stage_rule = "aggregated = in a store; interpreted = turned into a feature or tested; applied = conditioned on by a model that logs forecasts. Set only from the cited file on main."
+
+[[factor]]
+id = "H1"
+factor_class = "NHL-1"
+name = "Skater quality (shot location/type, shooter, box)"
+source = "events: shooter_id, shot_type, x, y; box_players"
+engine_slot = "player rating"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H2"
+factor_class = "NHL-2"
+name = "Goalie quality (saves, workload, starter post-game)"
+source = "box_players goalies: shots_against, saves, starter"
+engine_slot = "player rating"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H3"
+factor_class = "NHL-3"
+name = "Line / pair deployment from shifts"
+source = "shifts: player_id, period, start_s, end_s"
+engine_slot = "none"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H4"
+factor_class = "NHL-4"
+name = "Special teams (strength state, penalties)"
+source = "events: situationCode fields, penalty_*"
+engine_slot = "none"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H5"
+factor_class = "NHL-5"
+name = "Pace / shot volume and quality"
+source = "events: shot attempts by strength state and location"
+engine_slot = "team rating"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H6"
+factor_class = "NHL-6"
+name = "Rest / schedule density"
+source = "games: start_time_utc, teams"
+engine_slot = "schedule context"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H7"
+factor_class = "NHL-7"
+name = "Venue / home ice / neutral site"
+source = "games: venue, neutral_site"
+engine_slot = "schedule context"
+stage = "aggregated"
+evidence = "src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py"
+
+[[factor]]
+id = "H8"
+factor_class = "NHL-8"
+name = "Travel distance / time zone"
+source = "none built (GAP-2, GG-1011)"
+engine_slot = "none"
+stage = "none"
+evidence = ""
+
+[[factor]]
+id = "H9"
+factor_class = "NHL-9"
+name = "Officials (crew)"
+source = "free right-rail endpoint, not in store (GAP-3, GG-1012)"
+engine_slot = "none"
+stage = "none"
+evidence = ""
+
+[[factor]]
+id = "H10"
+factor_class = "NHL-10"
+name = "Head coaches and scratches"
+source = "free right-rail endpoint, not in store (GAP-3, GG-1012)"
+engine_slot = "none"
+stage = "none"
+evidence = ""
+
+[[factor]]
+id = "H11"
+factor_class = "NHL-11"
+name = "Injuries / availability history"
+source = "none free (GAP-4, GG-1013)"
+engine_slot = "none"
+stage = "none"
+evidence = ""
+
+[[factor]]
+id = "H12"
+factor_class = "NHL-12"
+name = "Qualitative and PAM-derived"
+source = "none free and structured (GAP-5, GG-1014)"
+engine_slot = "none"
+stage = "none"
+evidence = ""
 
 [[cell]]
 market = "nhl_moneyline"
