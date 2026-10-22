@@ -80,6 +80,13 @@ TASKS: dict[str, str] = {
         "echo '--- listening tcp'; ss -tlnp 2>/dev/null | awk 'NR==1 || /LISTEN/'; "
         "echo '--- os'; grep PRETTY_NAME /etc/os-release"
     ),
+    # 2026-10-21: the dashboards as the operator's tunnel sees them (status, bytes; the web section present on /visual).
+    "dashboard_pages_read": (
+        "for u in / /api/data /visual /project; do printf '%-10s ' \"$u\"; "
+        "curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 60 \"http://127.0.0.1:8050$u\"; echo; done; "
+        "printf 'museweb sections on /visual: '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -c 'id=\"museweb\"'; "
+        "systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,MemoryCurrent,MemoryMax"
+    ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
         "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "
