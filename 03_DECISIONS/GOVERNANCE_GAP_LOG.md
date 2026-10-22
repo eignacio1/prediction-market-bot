@@ -45,6 +45,8 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 **Status:** OPEN · **Severity:** HIGH
 
+**Update (W85.3, 2026-10-22):** `c4_risk_engine/exposure_gate.py` computes realized loss + open + settled-unresolved stake per book and system-wide, persists atomically, fails closed on missing/corrupt state; wired into T1 MLB only. Remaining: GG-1082. Status stays OPEN.
+
 **Current state (2026-10-08, W59.1):** Sample-adequacy gate still the G6 blocker; governed per band by APR-0024 n*. Not re-derived this session. **Next:** Re-run run_power_calc.py at next governance scan.
 
 <details>
@@ -3736,6 +3738,54 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 | Why it matters | The operator's own machine cannot run the script as written without an `--allow`, pushing toward passing a dummy `--allow` and weakening the allowlist's meaning. |
 | Source | 50.2 Step 1 run, 2026-10-03T20:02Z |
 | Disposition | Registered by 50.2 (registration only). Suggested fix: `${ALLOW[@]+"${ALLOW[@]}"}`. |
+
+</details>
+
+### GG-1080 — Install gate waved W83.2's install through on a RED surface budget
+
+**Status:** RESOLVED · **Severity:** HIGH
+
+`passyds_install.py` / `nba_lineup_window_install.py` exempted any red reason containing the job name as a substring (e.g. `SILENT ARM nfl_passyds_snap`), and passed RED with an empty reasons list. Fixed: `thin_capture_install.gate()` exempts only the exact `STALE cron|…|<script>: no write found` reason; RED with no reasons blocks. Tests added in both install test files. Pattern sweep: no other substring-filter instance in scripts/, src/, .claude/, deploy/.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-1080 |
+| Source | W85.3 (2026-10-22), PR #325 |
+
+</details>
+
+### GG-1081 — Three NBA preseason registry entries retired
+
+**Status:** RESOLVED · **Severity:** LOW
+
+`run_nba_player_points_shadow.py --preseason`, `remove_nba_preseason_cron.py --auto`, `run_nba_pregame_shadow.py --preseason` marked `status = retired` in RUNTIME_REGISTRY.toml (budget_read 2026-10-22T22:22Z: mirrored but not installed). Mirror lines in deploy/ left in place.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-1081 |
+| Source | W85.3 (2026-10-22), PR #325 |
+
+</details>
+
+### GG-1082 — Exposure gate not yet on the order path; settled-ticker feed missing
+
+**Status:** OPEN · **Severity:** HIGH
+
+W85.3 built `c4_risk_engine/exposure_gate.py` (GG-441) and wired it into the T1 MLB drawdown input only. Not done: (a) `KalshiMarketClient.submit_order` calling `exposure_gate.check_before_order` (needs a state writer on every book first, else fail-closed bricks demo orders); (b) a feed of settled tickers so `settled_unresolved_stake` is nonzero in production (positions carry no settled flag today); (c) T4/NFL/NHL books do not call `update`. Next: writer per book, then order-path check.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-1082 |
+| Source | W85.3 (2026-10-22), PR #325 |
 
 </details>
 

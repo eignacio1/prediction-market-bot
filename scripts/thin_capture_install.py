@@ -14,6 +14,7 @@ Exit code is 0 in every outcome except a crontab write that did not verify (the 
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +32,21 @@ def fragment_block(text: str) -> list[str]:
     i = next(k for k, l in enumerate(lines) if l.strip() == BEGIN)
     j = next(k for k, l in enumerate(lines) if l.strip() == END and k > i)
     return lines[i:j + 1]
+
+
+def gate(ev: dict, script: str) -> tuple[list, list]:
+    """(blocking, exempt) red reasons for installing the job that runs `script` (GG-1080, W85.3).
+    The only reason a job's own install may ignore is its own first-run state, matched exactly:
+    `STALE cron|<schedule>|<script>: no write found`. A substring match on the job's name (the earlier rule) also
+    waved through any other red that happened to mention it (a SILENT ARM about the same family), and a RED budget
+    with no reasons recorded passed as 'nothing blocking'. Both now block."""
+    if ev.get("budget") == "GREEN":
+        return [], []
+    reasons = list(ev.get("reasons") or [])
+    if not reasons:
+        return ["budget is %s but no reasons were recorded" % ev.get("budget")], []
+    own = re.compile(r"^STALE cron\|[^|]*\|" + re.escape(script) + r": no write found$")
+    return [r for r in reasons if not own.match(r)], [r for r in reasons if own.match(r)]
 
 
 def merged_crontab(current: str, fragment_text: str) -> tuple[str, bool]:

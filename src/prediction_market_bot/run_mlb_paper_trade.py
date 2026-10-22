@@ -670,6 +670,16 @@ def main() -> None:
         daily_loss = 0.0
     _realized_loss = max(0.0, -_state.get("total_realized_pnl", 0.0))
     current_drawdown_pct = _realized_loss / _initial_bankroll if _initial_bankroll > 0 else 0.0
+    # GG-441 (W85.3): worst case also counts settled-but-unresolved stake, and the reading is
+    # persisted (logs/exposure_gate_state.json). Only ever raises the input; no limit changed.
+    try:
+        from prediction_market_bot.c4_risk_engine import exposure_gate as _xg
+        _xg_out = _xg.update({"MLB_T1": _state})
+        current_drawdown_pct = max(current_drawdown_pct,
+                                   _xg_out["books"]["MLB_T1"]["worst_case_drawdown_pct"])
+    except Exception as _xg_err:  # fail closed: an unreadable gate is a halt, not a pass
+        print(f"[C4] exposure gate error, treating as breach: {_xg_err}", file=sys.stderr)
+        current_drawdown_pct = max(current_drawdown_pct, 1.0)
 
     print(f"[C4] Bankroll ${bankroll:.2f} | Daily loss ${daily_loss:.2f} | "
           f"Drawdown {current_drawdown_pct:.1%}")

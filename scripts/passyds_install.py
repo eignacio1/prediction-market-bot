@@ -30,9 +30,10 @@ def install(live_fn=None, read=base._crontab_read, write=base._crontab_write) ->
         print(f"REFUSED: SURFACE BUDGET could not be read ({ev['error']}); nothing installed")
         return 0
     print(f"SURFACE BUDGET: {ev.get('budget')} (box HEAD {ev.get('head')}, as of {ev.get('as_of')})")
-    # Red items that are about THIS component (not yet installed, so no write / no snapshot) cannot block its own
-    # install; every other red item still does (Hard Rule 14).
-    others = [r for r in ev.get("reasons", []) if "passyds" not in r.lower()]
+    # Only this job's own first-run staleness is exempt (named below); anything else, or RED with no reasons, blocks (GG-1080).
+    others, exempt = base.gate(ev, SCRIPT)
+    for r in exempt:
+        print(f"  (own first-run state, not blocking: {r})")
     if others:
         print("REFUSED: Hard Rule 14 -- no new live component while the budget is RED. Red items:")
         for r in others:

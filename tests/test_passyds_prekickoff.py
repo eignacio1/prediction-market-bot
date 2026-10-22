@@ -183,3 +183,16 @@ def test_install_ignores_red_about_itself_only():
     mixed = lambda: {"budget": "RED", "reasons": ["STALE cron|passyds", "SILENT ARM NHL"]}  # noqa: E731
     pi.install(mixed, rd, wr)
     assert st["t"] == "x\n"
+
+
+def test_install_gate_blocks_name_matching_silent_arm_and_empty_red():
+    """GG-1080: the old substring filter let `SILENT ARM nfl_passyds_snap` and RED-with-no-reasons through."""
+    import sys
+    sys.path.insert(0, str(ROOT_FOR_INSTALL / "scripts"))
+    import passyds_install as pi
+    st = {"t": "x\n"}
+    rd, wr = (lambda: st["t"]), (lambda t: st.__setitem__("t", t))
+    for ev in ({"budget": "RED", "reasons": ["SILENT ARM nfl_passyds_snap: zero rows"]}, {"budget": "RED", "reasons": []}):
+        st["t"] = "x\n"
+        pi.install(lambda ev=ev: ev, rd, wr)
+        assert st["t"] == "x\n", ev
