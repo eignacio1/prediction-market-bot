@@ -1,0 +1,5 @@
+# BEGIN W83.2 NBA LINEUP WINDOW CAPTURE
+# Timed NBA injury-report status changes + KXNBAPTS book before/after (GG-985). Capture only: no model/order/sizing path.
+# Public unauthenticated GETs; flock-guarded; writes ONLY exp_output/NBA/LINEUP_WINDOW/. Report grid is 15 min; run 3 min after each slot.
+3,18,33,48 * * * * cd /opt/prediction-market-bot && flock -n /tmp/nba_lineup_window.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/nba_lineup_window_capture.py >> logs/nba_lineup_window_cron.log 2>&1
+# END W83.2 NBA LINEUP WINDOW CAPTURE
