@@ -49,6 +49,11 @@ TASKS: dict[str, str] = {
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",
     "thin_depth_stats": f"{PY} 12_EXPLORATORY/thin_markets/depth_stats.py",
+    # W83.1: weekly NFL source-card capture (install is budget-gated; run = one-off backfill of this week's state)
+    "source_capture_install": f"{PY} scripts/source_capture_install.py install",
+    "source_capture_readback": f"{PY} scripts/source_capture_install.py readback",
+    "source_capture_run": f"{PY} scripts/source_capture_nfl.py --log logs/source_capture_cron.log",
+    "source_capture_uninstall": f"{PY} scripts/source_capture_install.py uninstall",
     "capture_uninstall": f"{PY} scripts/thin_capture_install.py uninstall",
     "distance_read": (
         f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
