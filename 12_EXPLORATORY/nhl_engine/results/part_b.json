@@ -1,0 +1,40 @@
+{
+ "n": 1306,
+ "market_outcome_agreement": 1.0,
+ "frozen_sha256": "614fcb4b0c1428ce5115e1561e3bc6651eb83d281828c92b820a867fc8488c54",
+ "median_spread": 0.010000000000000009,
+ "brier_market": 0.24419247702909652,
+ "brier_frozen": 0.24733952607616866,
+ "brier_factor_alone": 0.24517500591373212,
+ "brier_cv_market_recal": 0.2451282203052185,
+ "brier_cv_blend": 0.24537497497003943,
+ "cv_brier_diff_blend_minus_market": 0.001182497940942962,
+ "cv_brier_diff_ci95": [
+  -0.0006283678802626732,
+  0.0029964339999188536
+ ],
+ "stack_coef_factor": 0.3685999112724455,
+ "stack_coef_factor_ci95": [
+  -0.08648173516641224,
+  0.804946627902869
+ ],
+ "stack_coef_market": 0.5430197871118814,
+ "frozen_extra_coef": 0.22419911908629064,
+ "frozen_extra_ci95": [
+  -0.27066293185871004,
+  0.6795576858893115
+ ],
+ "factor_train_seasons": [
+  2022,
+  2023,
+  2024
+ ],
+ "factor_coefs_std": {
+  "const": 0.17736910909100534,
+  "xg_share5": 0.33595338952417997,
+  "st_net60": 0.17669558800012294,
+  "gsax": 0.052070626061485055,
+  "rest": 0.12322605247960634
+ },
+ "verdict": "too few to tell"
+}
