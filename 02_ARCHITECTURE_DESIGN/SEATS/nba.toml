@@ -232,3 +232,39 @@ status = "shadow"
 serving_model = "src/prediction_market_bot/pregame_shadow/nba_player_points_model.py"
 factors = ["B3", "B4", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[factor]]
+id = "P1"
+factor_class = "NBA-PAM-1"
+name = "PAM archetypes: usage engine / shot profile (PRF-1,2,3,4,5,8,9,12,14,15), season-end flags"
+source = "NBA event store, taxonomy v4"
+engine_slot = "player role (PAM layer 3)"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nba_pam_mass_tier/results_W84.md"
+
+[[factor]]
+id = "P2"
+factor_class = "NBA-PAM-2"
+name = "PAM modifiers scored from the store (M-2,3,4,5,6,13,14,18,24,29)"
+source = "NBA event store, taxonomy v4"
+engine_slot = "player role modifier (PAM layer 3)"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nba_pam_mass_tier/results_W84.md"
+
+[[factor]]
+id = "P3"
+factor_class = "NBA-PAM-3"
+name = "PAM Muse-reported factors (PRF-6,7,13, M-17): play-type and tracking snapshots"
+source = "Muse archive R-027 map (REPORTED)"
+engine_slot = "player role (PAM layer 3)"
+stage = "aggregated"
+evidence = "12_EXPLORATORY/nba_pam_mass_tier/results_W84.md"
+
+[[factor]]
+id = "P4"
+factor_class = "NBA-PAM-4"
+name = "PAM point-in-time table 2026 (strictly-before-game flags)"
+source = "NBA event store"
+engine_slot = "player role (PAM layer 3)"
+stage = "aggregated"
+evidence = "qualitative_data/pam/nba/mass_tier_pit_2026.csv"

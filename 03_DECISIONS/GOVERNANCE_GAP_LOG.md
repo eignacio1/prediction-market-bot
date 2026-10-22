@@ -4367,3 +4367,33 @@ W83.2. pbp carries no play-type labels and NBA.com publishes no definitions; the
 **Status:** OPEN · **Severity:** LOW
 
 W83.2. A stale NBA_SEAT.md render passed locally and failed in CI because the local default python lacks tomllib. Worked around with python3.11; the fix is a pinned local interpreter or a pre-push render check.
+
+### GG-1060 — NBA PAM mass tier: archetypes and modifiers with no free signal at all stay UNSCORED
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W84.2 Part A. No free source gives a scorable clause for PRF-10, PRF-11 and modifiers M-1, M-7, M-8, M-9, M-10, M-11, M-12, M-15, M-16, M-19, M-20 (plus others listed UNSCORED in `12_EXPLORATORY/nba_pam_mass_tier/results_W84.md`); Muse's R-027 map marks PRF-10 and M-1/7-12/15/16/19/20/23/32 as NONE. All 420 qualified 2026 player-seasons are UNSCORED for each; never proxied. Pillar: DEPTH D5(b). Proposed fix: a source registered per row (tracking, defensive-matchup, or manual panel from the seat), or a v5 taxonomy decision that drops the row.
+
+### GG-1061 — NBA PAM mass tier: the event store lacks height, age, years, hustle, catch-and-shoot, contested rebounds and deflections
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W84.2 Part A. Clauses needing those fields are unscored, so PRF-1…4, 8, 9, 12, 14, 15 can only reach MET_PARTIAL, never MET. stats.nba.com is unreachable and is not scraped around. Pillar: DEPTH D5(b). Proposed fix: add free height/age/experience (roster pages) and any free hustle source to the event store as a registered job; re-run `12_EXPLORATORY/nba_pam_mass_tier/run.py`.
+
+### GG-1062 — NBA PAM taxonomy v4 clauses that cannot be scored as written
+
+**Status:** OPEN · **Severity:** LOW
+
+W84.2 Part A. PRF-14's volatility clause has no defined metric, and PRF-1's 40%-of-possessions clause has no definition; both left unscored rather than interpreted. Pillar: DEPTH D5(b). Proposed fix: Muse/seat define the metric in v5; `taxonomy.json` was not edited here.
+
+### GG-1063 — Muse's NBA 2026 play-type games-played values appear to predate season end; 2024 values differ from the store
+
+**Status:** OPEN · **Severity:** LOW
+
+W84.2 Muse grade. Of 21,249 graded GP records, play-type 2026 exact rate is 15.4% (Muse lower by 1–5, mean −2.29), tracking 2024 65.4%, 2025 92.6%; only play-type 2025 (99.1%) and tracking 2026 (99.3%) reach the 99% VERIFIED bar. Cause for 2026 play-type is likely snapshot timing, not proven. Muse values are used for season-end assignment only and kept out of the point-in-time table. Proposed fix: Muse refreshes or dates its snapshots (TO_MUSE.md entry).
+
+### GG-1064 — NBA player-points shadow rows cannot settle the PRF-1 cross: no outcome field and no 2026-27 games in the store
+
+**Status:** OPEN · **Severity:** LOW
+
+W84.2 Part B cross not run (n = 0): PREGAME_SHADOW NBA_PLAYER_POINTS rows (since ~2026-10-18) carry p_yes and the market mid but no actual points, and the store holds no 2026-27 games. Also `12_EXPLORATORY/CHARTER.md` rule 2 (no exploratory reads of PREGAME_SHADOW) conflicts with the block text that names them. Proposed fix: refresh the event store with 2026-27 games, then run the cross as a pre-registered read once a few hundred player-games settle; resolve the charter conflict explicitly.

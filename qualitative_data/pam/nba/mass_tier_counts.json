@@ -1,0 +1,886 @@
+{
+ "qualifier": {
+  "gp": 15,
+  "mpg": 10.0
+ },
+ "counts": {
+  "2024": {
+   "player_seasons": 572,
+   "qualified": 410,
+   "factors": {
+    "PRF-1": {
+     "MET": 0,
+     "MET_PARTIAL": 17,
+     "NOT_MET": 393,
+     "UNSCORED": 0
+    },
+    "PRF-2": {
+     "MET": 0,
+     "MET_PARTIAL": 45,
+     "NOT_MET": 365,
+     "UNSCORED": 0
+    },
+    "PRF-3": {
+     "MET": 0,
+     "MET_PARTIAL": 121,
+     "NOT_MET": 289,
+     "UNSCORED": 0
+    },
+    "PRF-4": {
+     "MET": 0,
+     "MET_PARTIAL": 191,
+     "NOT_MET": 219,
+     "UNSCORED": 0
+    },
+    "PRF-5": {
+     "MET": 70,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 340,
+     "UNSCORED": 0
+    },
+    "PRF-6": {
+     "MET": 0,
+     "MET_PARTIAL": 4,
+     "NOT_MET": 139,
+     "UNSCORED": 267
+    },
+    "PRF-7": {
+     "MET": 105,
+     "MET_PARTIAL": 54,
+     "NOT_MET": 204,
+     "UNSCORED": 47
+    },
+    "PRF-8": {
+     "MET": 0,
+     "MET_PARTIAL": 20,
+     "NOT_MET": 46,
+     "UNSCORED": 344
+    },
+    "PRF-9": {
+     "MET": 0,
+     "MET_PARTIAL": 41,
+     "NOT_MET": 369,
+     "UNSCORED": 0
+    },
+    "PRF-10": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "PRF-11": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "PRF-12": {
+     "MET": 0,
+     "MET_PARTIAL": 62,
+     "NOT_MET": 348,
+     "UNSCORED": 0
+    },
+    "PRF-13": {
+     "MET": 43,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 284,
+     "UNSCORED": 83
+    },
+    "PRF-14": {
+     "MET": 0,
+     "MET_PARTIAL": 38,
+     "NOT_MET": 253,
+     "UNSCORED": 119
+    },
+    "PRF-15": {
+     "MET": 0,
+     "MET_PARTIAL": 121,
+     "NOT_MET": 289,
+     "UNSCORED": 0
+    },
+    "M-1": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-2": {
+     "MET": 37,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 373,
+     "UNSCORED": 0
+    },
+    "M-3": {
+     "MET": 32,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 378,
+     "UNSCORED": 0
+    },
+    "M-4": {
+     "MET": 0,
+     "MET_PARTIAL": 7,
+     "NOT_MET": 403,
+     "UNSCORED": 0
+    },
+    "M-5": {
+     "MET": 9,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 401,
+     "UNSCORED": 0
+    },
+    "M-6": {
+     "MET": 0,
+     "MET_PARTIAL": 62,
+     "NOT_MET": 348,
+     "UNSCORED": 0
+    },
+    "M-7": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-8": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-9": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-10": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-11": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-12": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-13": {
+     "MET": 0,
+     "MET_PARTIAL": 50,
+     "NOT_MET": 360,
+     "UNSCORED": 0
+    },
+    "M-14": {
+     "MET": 0,
+     "MET_PARTIAL": 29,
+     "NOT_MET": 381,
+     "UNSCORED": 0
+    },
+    "M-15": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-16": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-17": {
+     "MET": 72,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 338,
+     "UNSCORED": 0
+    },
+    "M-18": {
+     "MET": 0,
+     "MET_PARTIAL": 125,
+     "NOT_MET": 285,
+     "UNSCORED": 0
+    },
+    "M-19": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-20": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-21": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-22": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-23": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-24": {
+     "MET": 0,
+     "MET_PARTIAL": 129,
+     "NOT_MET": 281,
+     "UNSCORED": 0
+    },
+    "M-25": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-26": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-27": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-28": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-29": {
+     "MET": 47,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 363,
+     "UNSCORED": 0
+    },
+    "M-30": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-31": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    },
+    "M-32": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 410
+    }
+   }
+  },
+  "2025": {
+   "player_seasons": 569,
+   "qualified": 422,
+   "factors": {
+    "PRF-1": {
+     "MET": 0,
+     "MET_PARTIAL": 19,
+     "NOT_MET": 403,
+     "UNSCORED": 0
+    },
+    "PRF-2": {
+     "MET": 0,
+     "MET_PARTIAL": 44,
+     "NOT_MET": 378,
+     "UNSCORED": 0
+    },
+    "PRF-3": {
+     "MET": 0,
+     "MET_PARTIAL": 144,
+     "NOT_MET": 278,
+     "UNSCORED": 0
+    },
+    "PRF-4": {
+     "MET": 0,
+     "MET_PARTIAL": 212,
+     "NOT_MET": 210,
+     "UNSCORED": 0
+    },
+    "PRF-5": {
+     "MET": 67,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 355,
+     "UNSCORED": 0
+    },
+    "PRF-6": {
+     "MET": 0,
+     "MET_PARTIAL": 5,
+     "NOT_MET": 127,
+     "UNSCORED": 290
+    },
+    "PRF-7": {
+     "MET": 119,
+     "MET_PARTIAL": 49,
+     "NOT_MET": 219,
+     "UNSCORED": 35
+    },
+    "PRF-8": {
+     "MET": 0,
+     "MET_PARTIAL": 20,
+     "NOT_MET": 51,
+     "UNSCORED": 351
+    },
+    "PRF-9": {
+     "MET": 0,
+     "MET_PARTIAL": 47,
+     "NOT_MET": 375,
+     "UNSCORED": 0
+    },
+    "PRF-10": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "PRF-11": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "PRF-12": {
+     "MET": 0,
+     "MET_PARTIAL": 62,
+     "NOT_MET": 360,
+     "UNSCORED": 0
+    },
+    "PRF-13": {
+     "MET": 58,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 336,
+     "UNSCORED": 28
+    },
+    "PRF-14": {
+     "MET": 0,
+     "MET_PARTIAL": 36,
+     "NOT_MET": 260,
+     "UNSCORED": 126
+    },
+    "PRF-15": {
+     "MET": 0,
+     "MET_PARTIAL": 107,
+     "NOT_MET": 315,
+     "UNSCORED": 0
+    },
+    "M-1": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-2": {
+     "MET": 30,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 392,
+     "UNSCORED": 0
+    },
+    "M-3": {
+     "MET": 28,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 394,
+     "UNSCORED": 0
+    },
+    "M-4": {
+     "MET": 0,
+     "MET_PARTIAL": 7,
+     "NOT_MET": 415,
+     "UNSCORED": 0
+    },
+    "M-5": {
+     "MET": 6,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 416,
+     "UNSCORED": 0
+    },
+    "M-6": {
+     "MET": 0,
+     "MET_PARTIAL": 58,
+     "NOT_MET": 364,
+     "UNSCORED": 0
+    },
+    "M-7": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-8": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-9": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-10": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-11": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-12": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-13": {
+     "MET": 0,
+     "MET_PARTIAL": 48,
+     "NOT_MET": 374,
+     "UNSCORED": 0
+    },
+    "M-14": {
+     "MET": 0,
+     "MET_PARTIAL": 32,
+     "NOT_MET": 390,
+     "UNSCORED": 0
+    },
+    "M-15": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-16": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-17": {
+     "MET": 70,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 352,
+     "UNSCORED": 0
+    },
+    "M-18": {
+     "MET": 0,
+     "MET_PARTIAL": 123,
+     "NOT_MET": 299,
+     "UNSCORED": 0
+    },
+    "M-19": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-20": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-21": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-22": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-23": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-24": {
+     "MET": 0,
+     "MET_PARTIAL": 144,
+     "NOT_MET": 278,
+     "UNSCORED": 0
+    },
+    "M-25": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-26": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-27": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-28": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-29": {
+     "MET": 44,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 378,
+     "UNSCORED": 0
+    },
+    "M-30": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-31": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    },
+    "M-32": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 422
+    }
+   }
+  },
+  "2026": {
+   "player_seasons": 582,
+   "qualified": 420,
+   "factors": {
+    "PRF-1": {
+     "MET": 0,
+     "MET_PARTIAL": 23,
+     "NOT_MET": 397,
+     "UNSCORED": 0
+    },
+    "PRF-2": {
+     "MET": 0,
+     "MET_PARTIAL": 49,
+     "NOT_MET": 371,
+     "UNSCORED": 0
+    },
+    "PRF-3": {
+     "MET": 0,
+     "MET_PARTIAL": 163,
+     "NOT_MET": 257,
+     "UNSCORED": 0
+    },
+    "PRF-4": {
+     "MET": 0,
+     "MET_PARTIAL": 199,
+     "NOT_MET": 221,
+     "UNSCORED": 0
+    },
+    "PRF-5": {
+     "MET": 79,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 341,
+     "UNSCORED": 0
+    },
+    "PRF-6": {
+     "MET": 0,
+     "MET_PARTIAL": 5,
+     "NOT_MET": 133,
+     "UNSCORED": 282
+    },
+    "PRF-7": {
+     "MET": 112,
+     "MET_PARTIAL": 65,
+     "NOT_MET": 208,
+     "UNSCORED": 35
+    },
+    "PRF-8": {
+     "MET": 0,
+     "MET_PARTIAL": 27,
+     "NOT_MET": 46,
+     "UNSCORED": 347
+    },
+    "PRF-9": {
+     "MET": 0,
+     "MET_PARTIAL": 44,
+     "NOT_MET": 376,
+     "UNSCORED": 0
+    },
+    "PRF-10": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "PRF-11": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "PRF-12": {
+     "MET": 0,
+     "MET_PARTIAL": 62,
+     "NOT_MET": 358,
+     "UNSCORED": 0
+    },
+    "PRF-13": {
+     "MET": 55,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 343,
+     "UNSCORED": 22
+    },
+    "PRF-14": {
+     "MET": 0,
+     "MET_PARTIAL": 46,
+     "NOT_MET": 253,
+     "UNSCORED": 121
+    },
+    "PRF-15": {
+     "MET": 0,
+     "MET_PARTIAL": 101,
+     "NOT_MET": 319,
+     "UNSCORED": 0
+    },
+    "M-1": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-2": {
+     "MET": 50,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 370,
+     "UNSCORED": 0
+    },
+    "M-3": {
+     "MET": 28,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 392,
+     "UNSCORED": 0
+    },
+    "M-4": {
+     "MET": 0,
+     "MET_PARTIAL": 8,
+     "NOT_MET": 412,
+     "UNSCORED": 0
+    },
+    "M-5": {
+     "MET": 8,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 412,
+     "UNSCORED": 0
+    },
+    "M-6": {
+     "MET": 0,
+     "MET_PARTIAL": 59,
+     "NOT_MET": 361,
+     "UNSCORED": 0
+    },
+    "M-7": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-8": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-9": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-10": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-11": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-12": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-13": {
+     "MET": 0,
+     "MET_PARTIAL": 53,
+     "NOT_MET": 367,
+     "UNSCORED": 0
+    },
+    "M-14": {
+     "MET": 0,
+     "MET_PARTIAL": 28,
+     "NOT_MET": 392,
+     "UNSCORED": 0
+    },
+    "M-15": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-16": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-17": {
+     "MET": 65,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 355,
+     "UNSCORED": 0
+    },
+    "M-18": {
+     "MET": 0,
+     "MET_PARTIAL": 94,
+     "NOT_MET": 326,
+     "UNSCORED": 0
+    },
+    "M-19": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-20": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-21": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-22": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-23": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-24": {
+     "MET": 0,
+     "MET_PARTIAL": 108,
+     "NOT_MET": 312,
+     "UNSCORED": 0
+    },
+    "M-25": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-26": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-27": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-28": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-29": {
+     "MET": 51,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 369,
+     "UNSCORED": 0
+    },
+    "M-30": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-31": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    },
+    "M-32": {
+     "MET": 0,
+     "MET_PARTIAL": 0,
+     "NOT_MET": 0,
+     "UNSCORED": 420
+    }
+   }
+  }
+ },
+ "muse_coverage": {
+  "2024": {
+   "qualified": 410,
+   "with_muse_playtype": 327
+  },
+  "2025": {
+   "qualified": 422,
+   "with_muse_playtype": 394
+  },
+  "2026": {
+   "qualified": 420,
+   "with_muse_playtype": 398
+  }
+ }
+}

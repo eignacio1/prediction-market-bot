@@ -1,0 +1,109 @@
+factor,scope,n,met_a,met_b,retention,kappa
+PRF-1,split-half(odd/even games) 2024,390,20,16,0.7,0.767
+PRF-2,split-half(odd/even games) 2024,390,40,47,0.75,0.651
+PRF-3,split-half(odd/even games) 2024,390,119,119,0.798,0.71
+PRF-4,split-half(odd/even games) 2024,390,181,171,0.895,0.855
+PRF-5,split-half(odd/even games) 2024,390,60,74,0.783,0.64
+PRF-8,split-half(odd/even games) 2024,390,12,15,0.917,0.808
+PRF-9,split-half(odd/even games) 2024,390,39,35,0.667,0.672
+PRF-12,split-half(odd/even games) 2024,390,64,56,0.781,0.803
+PRF-14,split-half(odd/even games) 2024,390,34,35,0.735,0.698
+PRF-15,split-half(odd/even games) 2024,390,111,110,0.847,0.792
+M-2,split-half(odd/even games) 2024,390,32,40,0.656,0.542
+M-3,split-half(odd/even games) 2024,390,32,28,0.625,0.639
+M-4,split-half(odd/even games) 2024,390,9,12,0.111,0.071
+M-5,split-half(odd/even games) 2024,390,12,12,0.25,0.226
+M-6,split-half(odd/even games) 2024,390,58,66,0.948,0.866
+M-13,split-half(odd/even games) 2024,390,46,46,0.804,0.778
+M-14,split-half(odd/even games) 2024,390,31,27,0.71,0.739
+M-18,split-half(odd/even games) 2024,390,122,125,0.656,0.485
+M-24,split-half(odd/even games) 2024,390,135,141,0.733,0.563
+M-29,split-half(odd/even games) 2024,390,49,60,0.367,0.223
+PRF-1,split-half(odd/even games) 2025,405,18,21,0.889,0.811
+PRF-2,split-half(odd/even games) 2025,405,46,42,0.761,0.771
+PRF-3,split-half(odd/even games) 2025,405,144,137,0.819,0.755
+PRF-4,split-half(odd/even games) 2025,405,197,206,0.919,0.798
+PRF-5,split-half(odd/even games) 2025,405,59,62,0.78,0.718
+PRF-8,split-half(odd/even games) 2025,405,18,17,0.889,0.91
+PRF-9,split-half(odd/even games) 2025,405,45,41,0.756,0.766
+PRF-12,split-half(odd/even games) 2025,405,63,66,0.841,0.788
+PRF-14,split-half(odd/even games) 2025,405,33,33,0.727,0.703
+PRF-15,split-half(odd/even games) 2025,405,95,103,0.842,0.746
+M-2,split-half(odd/even games) 2025,405,35,34,0.514,0.477
+M-3,split-half(odd/even games) 2025,405,22,28,0.773,0.659
+M-4,split-half(odd/even games) 2025,405,9,9,0.333,0.318
+M-5,split-half(odd/even games) 2025,405,7,5,0.286,0.324
+M-6,split-half(odd/even games) 2025,405,52,56,0.846,0.786
+M-13,split-half(odd/even games) 2025,405,50,49,0.78,0.758
+M-14,split-half(odd/even games) 2025,405,36,35,0.806,0.799
+M-18,split-half(odd/even games) 2025,405,124,129,0.613,0.42
+M-24,split-half(odd/even games) 2025,405,154,152,0.766,0.632
+M-29,split-half(odd/even games) 2025,405,60,58,0.317,0.206
+PRF-1,split-half(odd/even games) 2026,402,21,23,0.905,0.856
+PRF-2,split-half(odd/even games) 2026,402,47,45,0.766,0.755
+PRF-3,split-half(odd/even games) 2026,402,165,160,0.842,0.757
+PRF-4,split-half(odd/even games) 2026,402,191,191,0.906,0.82
+PRF-5,split-half(odd/even games) 2026,402,72,73,0.764,0.706
+PRF-8,split-half(odd/even games) 2026,402,21,22,0.905,0.877
+PRF-9,split-half(odd/even games) 2026,402,38,41,0.737,0.677
+PRF-12,split-half(odd/even games) 2026,402,61,66,0.885,0.822
+PRF-14,split-half(odd/even games) 2026,402,41,39,0.805,0.806
+PRF-15,split-half(odd/even games) 2026,402,92,88,0.783,0.742
+M-2,split-half(odd/even games) 2026,402,48,53,0.667,0.581
+M-3,split-half(odd/even games) 2026,402,31,27,0.419,0.406
+M-4,split-half(odd/even games) 2026,402,11,9,0.273,0.282
+M-5,split-half(odd/even games) 2026,402,8,6,0.125,0.128
+M-6,split-half(odd/even games) 2026,402,57,55,0.86,0.855
+M-13,split-half(odd/even games) 2026,402,50,57,0.86,0.774
+M-14,split-half(odd/even games) 2026,402,29,26,0.759,0.785
+M-18,split-half(odd/even games) 2026,402,114,99,0.561,0.458
+M-24,split-half(odd/even games) 2026,402,117,115,0.709,0.6
+M-29,split-half(odd/even games) 2026,402,67,64,0.358,0.243
+PRF-1,year-over-year 2024->2025,327,17,18,0.647,0.608
+PRF-2,year-over-year 2024->2025,327,44,40,0.5,0.454
+PRF-3,year-over-year 2024->2025,327,104,112,0.654,0.447
+PRF-4,year-over-year 2024->2025,327,144,164,0.882,0.67
+PRF-5,year-over-year 2024->2025,327,60,53,0.667,0.647
+PRF-6,year-over-year 2024->2025,327,4,5,0.5,0.437
+PRF-7,year-over-year 2024->2025,327,135,138,0.674,0.428
+PRF-8,year-over-year 2024->2025,327,19,15,0.526,0.566
+PRF-9,year-over-year 2024->2025,327,34,33,0.794,0.784
+PRF-12,year-over-year 2024->2025,327,53,51,0.774,0.748
+PRF-13,year-over-year 2024->2025,327,35,44,0.429,0.296
+PRF-14,year-over-year 2024->2025,327,33,28,0.515,0.512
+PRF-15,year-over-year 2024->2025,327,86,79,0.628,0.538
+M-2,year-over-year 2024->2025,327,29,25,0.517,0.516
+M-3,year-over-year 2024->2025,327,31,28,0.645,0.646
+M-4,year-over-year 2024->2025,327,7,7,0.571,0.562
+M-5,year-over-year 2024->2025,327,9,6,0.222,0.25
+M-6,year-over-year 2024->2025,327,55,52,0.709,0.676
+M-13,year-over-year 2024->2025,327,42,38,0.762,0.772
+M-14,year-over-year 2024->2025,327,27,29,0.667,0.609
+M-17,year-over-year 2024->2025,327,69,64,0.623,0.557
+M-18,year-over-year 2024->2025,327,99,97,0.717,0.607
+M-24,year-over-year 2024->2025,327,110,125,0.827,0.649
+M-29,year-over-year 2024->2025,327,28,26,0.143,0.072
+PRF-1,year-over-year 2025->2026,327,19,23,0.632,0.542
+PRF-2,year-over-year 2025->2026,327,41,46,0.488,0.377
+PRF-3,year-over-year 2025->2026,327,113,129,0.611,0.32
+PRF-4,year-over-year 2025->2026,327,165,152,0.842,0.762
+PRF-5,year-over-year 2025->2026,327,54,65,0.759,0.621
+PRF-6,year-over-year 2025->2026,327,5,5,1.0,1.0
+PRF-7,year-over-year 2025->2026,327,141,148,0.631,0.312
+PRF-8,year-over-year 2025->2026,327,18,26,0.667,0.514
+PRF-9,year-over-year 2025->2026,327,37,34,0.784,0.795
+PRF-12,year-over-year 2025->2026,327,47,48,0.83,0.791
+PRF-13,year-over-year 2025->2026,327,50,45,0.44,0.372
+PRF-14,year-over-year 2025->2026,327,31,40,0.613,0.48
+PRF-15,year-over-year 2025->2026,327,70,75,0.729,0.619
+M-2,year-over-year 2025->2026,327,25,44,0.76,0.502
+M-3,year-over-year 2025->2026,327,27,28,0.63,0.583
+M-4,year-over-year 2025->2026,327,7,8,0.429,0.386
+M-5,year-over-year 2025->2026,327,5,8,0.2,0.138
+M-6,year-over-year 2025->2026,327,50,49,0.62,0.56
+M-13,year-over-year 2025->2026,327,34,39,0.853,0.769
+M-14,year-over-year 2025->2026,327,27,27,0.741,0.717
+M-17,year-over-year 2025->2026,327,62,57,0.565,0.497
+M-18,year-over-year 2025->2026,327,97,84,0.608,0.52
+M-24,year-over-year 2025->2026,327,117,95,0.658,0.597
+M-29,year-over-year 2025->2026,327,26,33,0.385,0.274

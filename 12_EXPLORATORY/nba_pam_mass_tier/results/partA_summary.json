@@ -1,0 +1,230 @@
+{
+ "muse_grade": {
+  "n": 21249,
+  "exact": 15153,
+  "within1": 17525,
+  "unmatched_names": 67,
+  "by_family_season": [
+   {
+    "fam": "play-type PPP",
+    "season": 2024,
+    "n": 2266,
+    "exact": 1813,
+    "within1": 2265,
+    "mean_diff": -0.1588702559576346,
+    "min_diff": -2,
+    "max_diff": 1,
+    "exact_rate": 0.8001
+   },
+   {
+    "fam": "play-type PPP",
+    "season": 2025,
+    "n": 2461,
+    "exact": 2439,
+    "within1": 2461,
+    "mean_diff": 0.008126777732629013,
+    "min_diff": -1,
+    "max_diff": 1,
+    "exact_rate": 0.9911
+   },
+   {
+    "fam": "play-type PPP",
+    "season": 2026,
+    "n": 2467,
+    "exact": 380,
+    "within1": 662,
+    "mean_diff": -2.2894203486015403,
+    "min_diff": -5,
+    "max_diff": 1,
+    "exact_rate": 0.154
+   },
+   {
+    "fam": "play-type frequency",
+    "season": 2024,
+    "n": 2266,
+    "exact": 1813,
+    "within1": 2265,
+    "mean_diff": -0.1588702559576346,
+    "min_diff": -2,
+    "max_diff": 1,
+    "exact_rate": 0.8001
+   },
+   {
+    "fam": "play-type frequency",
+    "season": 2025,
+    "n": 2461,
+    "exact": 2439,
+    "within1": 2461,
+    "mean_diff": 0.008126777732629013,
+    "min_diff": -1,
+    "max_diff": 1,
+    "exact_rate": 0.9911
+   },
+   {
+    "fam": "play-type frequency",
+    "season": 2026,
+    "n": 2467,
+    "exact": 380,
+    "within1": 662,
+    "mean_diff": -2.2894203486015403,
+    "min_diff": -5,
+    "max_diff": 1,
+    "exact_rate": 0.154
+   },
+   {
+    "fam": "tracking: drives",
+    "season": 2024,
+    "n": 570,
+    "exact": 373,
+    "within1": 550,
+    "mean_diff": -0.3719298245614035,
+    "min_diff": -3,
+    "max_diff": 2,
+    "exact_rate": 0.6544
+   },
+   {
+    "fam": "tracking: drives",
+    "season": 2025,
+    "n": 566,
+    "exact": 524,
+    "within1": 558,
+    "mean_diff": -0.10070671378091872,
+    "min_diff": -5,
+    "max_diff": 0,
+    "exact_rate": 0.9258
+   },
+   {
+    "fam": "tracking: drives",
+    "season": 2026,
+    "n": 579,
+    "exact": 575,
+    "within1": 579,
+    "mean_diff": -0.0034542314335060447,
+    "min_diff": -1,
+    "max_diff": 1,
+    "exact_rate": 0.9931
+   },
+   {
+    "fam": "tracking: potential",
+    "season": 2024,
+    "n": 570,
+    "exact": 373,
+    "within1": 550,
+    "mean_diff": -0.3719298245614035,
+    "min_diff": -3,
+    "max_diff": 2,
+    "exact_rate": 0.6544
+   },
+   {
+    "fam": "tracking: potential",
+    "season": 2025,
+    "n": 567,
+    "exact": 525,
+    "within1": 559,
+    "mean_diff": -0.10052910052910052,
+    "min_diff": -5,
+    "max_diff": 0,
+    "exact_rate": 0.9259
+   },
+   {
+    "fam": "tracking: potential",
+    "season": 2026,
+    "n": 579,
+    "exact": 575,
+    "within1": 579,
+    "mean_diff": -0.0034542314335060447,
+    "min_diff": -1,
+    "max_diff": 1,
+    "exact_rate": 0.9931
+   },
+   {
+    "fam": "tracking: time",
+    "season": 2024,
+    "n": 570,
+    "exact": 373,
+    "within1": 550,
+    "mean_diff": -0.3719298245614035,
+    "min_diff": -3,
+    "max_diff": 2,
+    "exact_rate": 0.6544
+   },
+   {
+    "fam": "tracking: time",
+    "season": 2025,
+    "n": 566,
+    "exact": 524,
+    "within1": 558,
+    "mean_diff": -0.10070671378091872,
+    "min_diff": -5,
+    "max_diff": 0,
+    "exact_rate": 0.9258
+   },
+   {
+    "fam": "tracking: time",
+    "season": 2026,
+    "n": 579,
+    "exact": 575,
+    "within1": 579,
+    "mean_diff": -0.0034542314335060447,
+    "min_diff": -1,
+    "max_diff": 1,
+    "exact_rate": 0.9931
+   },
+   {
+    "fam": "tracking: touches",
+    "season": 2024,
+    "n": 570,
+    "exact": 373,
+    "within1": 550,
+    "mean_diff": -0.3719298245614035,
+    "min_diff": -3,
+    "max_diff": 2,
+    "exact_rate": 0.6544
+   },
+   {
+    "fam": "tracking: touches",
+    "season": 2025,
+    "n": 566,
+    "exact": 524,
+    "within1": 558,
+    "mean_diff": -0.10070671378091872,
+    "min_diff": -5,
+    "max_diff": 0,
+    "exact_rate": 0.9258
+   },
+   {
+    "fam": "tracking: touches",
+    "season": 2026,
+    "n": 579,
+    "exact": 575,
+    "within1": 579,
+    "mean_diff": -0.0034542314335060447,
+    "min_diff": -1,
+    "max_diff": 1,
+    "exact_rate": 0.9931
+   }
+  ],
+  "by_season": [
+   {
+    "season": 2024,
+    "n": 6812,
+    "exact": 5118,
+    "within1": 6730
+   },
+   {
+    "season": 2025,
+    "n": 7187,
+    "exact": 6975,
+    "within1": 7155
+   },
+   {
+    "season": 2026,
+    "n": 7250,
+    "exact": 3060,
+    "within1": 3640
+   }
+  ]
+ },
+ "pit_rows": 26648,
+ "pit_qualified_rows": 19499
+}

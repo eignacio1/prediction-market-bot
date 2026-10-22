@@ -19,6 +19,10 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | B9 | NBA-9 | Pace and efficiency (point-in-time, engine store; full-game total) | NBA team box scores (sportsdataverse free store, 2016-2026) | team rating | applied | `02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md` |
 | B10 | NBA-10 | Lineup cross (usage redistribution when a rotation player is out, by role) | NBA player box scores (sportsdataverse free store, 2016-2026); injury reports for timing | player rating | interpreted | `12_EXPLORATORY/20261020_nba_lineup_cross/PREREG_lineup_window.md` |
 | B11 | NBA-11 | Absorber play-type profile x usage absorption (who takes a missing creator's shots) | NBA player box + pbp shot sub-types (sportsdataverse free store, 2025-26); Synergy play-type frequencies (archive, one-off) | player rating | interpreted | `12_EXPLORATORY/20261020_nba_lineup_cross/results_W83.md` |
+| P1 | NBA-PAM-1 | PAM archetypes: usage engine / shot profile (PRF-1,2,3,4,5,8,9,12,14,15), season-end flags | NBA event store, taxonomy v4 | player role (PAM layer 3) | interpreted | `12_EXPLORATORY/nba_pam_mass_tier/results_W84.md` |
+| P2 | NBA-PAM-2 | PAM modifiers scored from the store (M-2,3,4,5,6,13,14,18,24,29) | NBA event store, taxonomy v4 | player role modifier (PAM layer 3) | interpreted | `12_EXPLORATORY/nba_pam_mass_tier/results_W84.md` |
+| P3 | NBA-PAM-3 | PAM Muse-reported factors (PRF-6,7,13, M-17): play-type and tracking snapshots | Muse archive R-027 map (REPORTED) | player role (PAM layer 3) | aggregated | `12_EXPLORATORY/nba_pam_mass_tier/results_W84.md` |
+| P4 | NBA-PAM-4 | PAM point-in-time table 2026 (strictly-before-game flags) | NBA event store | player role (PAM layer 3) | aggregated | `qualitative_data/pam/nba/mass_tier_pit_2026.csv` |
 
 ## Cells
 

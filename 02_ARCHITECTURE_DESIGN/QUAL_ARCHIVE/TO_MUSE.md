@@ -637,3 +637,6 @@ EDGE, DT3, NT, DE5, MIKE, WILL, SAM, CB, FS, SS) plus the modifiers, 2023 → 20
 weekly). Exemplars in `L4-interpret/nfl/exemplars.claims.jsonl`. Where R-028 found no single-position attribution for a signal,
 say so in the definition check rather than assigning it to a player.
 **Done when:** every group and the modifiers have the six parts; the JSONL validates.
+### GRADE · W84.2 — games-played recompute of the NBA play-type and tracking records (2026-10-22)
+**What:** the bot recomputed GP for 21,249 records from the NBA event store (67 names unmatched). VERIFIED (exact ≥ 99%): play-type frequency and PPP 2025 (2,439/2,461 = 99.1%); tracking touches/time/drives/potential 2026 (575/579 = 99.3%). FAILED: play-type 2024 (80.0%, diff −2…+1), play-type 2026 (15.4%, Muse lower by 1–5, mean −2.29), tracking 2024 (65.4%, diff −3…+2), tracking 2025 (92.6%, diff −5…0). Likely cause for 2026 play-type: snapshot taken before season end (not proven). Only GP was graded; the values themselves were not recomputed (no play-type labels in the store, GG-1031). Detail: `12_EXPLORATORY/nba_pam_mass_tier/results/muse_grade_gp.csv` and `_mismatches.csv`.
+**Done when:** Muse re-dates or refreshes the failed cells, or states why they differ.
