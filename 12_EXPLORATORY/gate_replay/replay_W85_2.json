@@ -1,0 +1,901 @@
+{
+ "cells": {
+  "MLB|T1|MLB_GAME_TOTAL": {
+   "far_strike_share": 0.5,
+   "games": 4,
+   "ladder_side_agreement": 0.872,
+   "ladders_multi": 4,
+   "orders": 44,
+   "orders_per_game": 11.0,
+   "orders_per_position": 1.57,
+   "positions": 28
+  },
+  "MLB|T1|MLB_RUN_LINE": {
+   "far_strike_share": 0.5,
+   "games": 4,
+   "ladder_side_agreement": 0.8,
+   "ladders_multi": 4,
+   "orders": 24,
+   "orders_per_game": 6.0,
+   "orders_per_position": 1.33,
+   "positions": 18
+  },
+  "MLB|T1|MLB_TEAM_TOTAL": {
+   "far_strike_share": 0.583,
+   "games": 3,
+   "ladder_side_agreement": 0.759,
+   "ladders_multi": 3,
+   "orders": 36,
+   "orders_per_game": 12.0,
+   "orders_per_position": 1.24,
+   "positions": 29
+  },
+  "MLB|T2|MLB_GAME_TOTAL": {
+   "far_strike_share": 0.493,
+   "games": 5,
+   "ladder_side_agreement": 0.948,
+   "ladders_multi": 4,
+   "orders": 69,
+   "orders_per_game": 13.8,
+   "orders_per_position": 2.23,
+   "positions": 31
+  },
+  "MLB|T2|MLB_RUN_LINE": {
+   "far_strike_share": 0.667,
+   "games": 5,
+   "ladder_side_agreement": 0.9,
+   "ladders_multi": 4,
+   "orders": 48,
+   "orders_per_game": 9.6,
+   "orders_per_position": 2.18,
+   "positions": 22
+  },
+  "MLB|T2|MLB_TEAM_TOTAL": {
+   "far_strike_share": 0.429,
+   "games": 5,
+   "ladder_side_agreement": 0.88,
+   "ladders_multi": 5,
+   "orders": 112,
+   "orders_per_game": 22.4,
+   "orders_per_position": 2.11,
+   "positions": 53
+  },
+  "MLB|T3|MLB_GAME_TOTAL": {
+   "far_strike_share": 0.606,
+   "games": 4,
+   "ladder_side_agreement": 0.962,
+   "ladders_multi": 4,
+   "orders": 71,
+   "orders_per_game": 17.8,
+   "orders_per_position": 2.63,
+   "positions": 27
+  },
+  "MLB|T3|MLB_RUN_LINE": {
+   "far_strike_share": 0.657,
+   "games": 4,
+   "ladder_side_agreement": 0.958,
+   "ladders_multi": 4,
+   "orders": 35,
+   "orders_per_game": 8.8,
+   "orders_per_position": 2.5,
+   "positions": 14
+  },
+  "MLB|T3|MLB_TEAM_TOTAL": {
+   "far_strike_share": 0.492,
+   "games": 4,
+   "ladder_side_agreement": 0.978,
+   "ladders_multi": 4,
+   "orders": 120,
+   "orders_per_game": 30.0,
+   "orders_per_position": 2.79,
+   "positions": 43
+  },
+  "NBA|T1|NBA_GAME_TOTAL": {
+   "far_strike_share": 0.522,
+   "games": 28,
+   "ladder_side_agreement": 0.977,
+   "ladders_multi": 27,
+   "orders": 2304,
+   "orders_per_game": 82.3,
+   "orders_per_position": 4.01,
+   "positions": 574
+  },
+  "NBA|T1|NBA_MONEYLINE": {
+   "far_strike_share": 0.109,
+   "games": 28,
+   "ladder_side_agreement": 0.5,
+   "ladders_multi": 28,
+   "orders": 276,
+   "orders_per_game": 9.9,
+   "orders_per_position": 4.93,
+   "positions": 56
+  },
+  "NBA|T1|NBA_PLAYER_POINTS": {
+   "far_strike_share": 0.554,
+   "games": 22,
+   "ladder_side_agreement": 0.73,
+   "ladders_multi": 22,
+   "orders": 1562,
+   "orders_per_game": 71.0,
+   "orders_per_position": 2.92,
+   "positions": 535
+  },
+  "NBA|T1|NBA_SPREAD": {
+   "far_strike_share": 0.546,
+   "games": 28,
+   "ladder_side_agreement": 0.608,
+   "ladders_multi": 28,
+   "orders": 3811,
+   "orders_per_game": 136.1,
+   "orders_per_position": 4.5,
+   "positions": 846
+  },
+  "NBA|T1|NBA_TEAM_TOTAL": {
+   "far_strike_share": 0.33,
+   "games": 28,
+   "ladder_side_agreement": 0.725,
+   "ladders_multi": 28,
+   "orders": 2209,
+   "orders_per_game": 78.9,
+   "orders_per_position": 3.2,
+   "positions": 690
+  },
+  "NBA|T2|NBA_GAME_TOTAL": {
+   "far_strike_share": 0.556,
+   "games": 16,
+   "ladder_side_agreement": 0.963,
+   "ladders_multi": 16,
+   "orders": 1451,
+   "orders_per_game": 90.7,
+   "orders_per_position": 3.6,
+   "positions": 403
+  },
+  "NBA|T2|NBA_MONEYLINE": {
+   "far_strike_share": 0.117,
+   "games": 16,
+   "ladder_side_agreement": 0.5,
+   "ladders_multi": 16,
+   "orders": 120,
+   "orders_per_game": 7.5,
+   "orders_per_position": 3.75,
+   "positions": 32
+  },
+  "NBA|T2|NBA_PLAYER_POINTS": {
+   "far_strike_share": 0.516,
+   "games": 16,
+   "ladder_side_agreement": 0.667,
+   "ladders_multi": 16,
+   "orders": 1908,
+   "orders_per_game": 119.2,
+   "orders_per_position": 3.57,
+   "positions": 535
+  },
+  "NBA|T2|NBA_SPREAD": {
+   "far_strike_share": 0.561,
+   "games": 16,
+   "ladder_side_agreement": 0.601,
+   "ladders_multi": 16,
+   "orders": 1963,
+   "orders_per_game": 122.7,
+   "orders_per_position": 3.74,
+   "positions": 525
+  },
+  "NBA|T2|NBA_TEAM_TOTAL": {
+   "far_strike_share": 0.535,
+   "games": 16,
+   "ladder_side_agreement": 0.679,
+   "ladders_multi": 16,
+   "orders": 1826,
+   "orders_per_game": 114.1,
+   "orders_per_position": 3.49,
+   "positions": 523
+  },
+  "NBA|T3|NBA_GAME_TOTAL": {
+   "far_strike_share": 0.57,
+   "games": 15,
+   "ladder_side_agreement": 1.0,
+   "ladders_multi": 15,
+   "orders": 1394,
+   "orders_per_game": 92.9,
+   "orders_per_position": 3.96,
+   "positions": 352
+  },
+  "NBA|T3|NBA_MONEYLINE": {
+   "far_strike_share": 0.137,
+   "games": 15,
+   "ladder_side_agreement": 0.505,
+   "ladders_multi": 15,
+   "orders": 117,
+   "orders_per_game": 7.8,
+   "orders_per_position": 3.9,
+   "positions": 30
+  },
+  "NBA|T3|NBA_PLAYER_POINTS": {
+   "far_strike_share": 0.517,
+   "games": 15,
+   "ladder_side_agreement": 0.672,
+   "ladders_multi": 15,
+   "orders": 1523,
+   "orders_per_game": 101.5,
+   "orders_per_position": 2.9,
+   "positions": 525
+  },
+  "NBA|T3|NBA_SPREAD": {
+   "far_strike_share": 0.563,
+   "games": 15,
+   "ladder_side_agreement": 0.595,
+   "ladders_multi": 15,
+   "orders": 1976,
+   "orders_per_game": 131.7,
+   "orders_per_position": 4.0,
+   "positions": 494
+  },
+  "NBA|T3|NBA_TEAM_TOTAL": {
+   "far_strike_share": 0.566,
+   "games": 15,
+   "ladder_side_agreement": 0.648,
+   "ladders_multi": 15,
+   "orders": 1998,
+   "orders_per_game": 133.2,
+   "orders_per_position": 3.82,
+   "positions": 523
+  },
+  "NFL|T1|NFL_GAME_TOTAL": {
+   "far_strike_share": 0.481,
+   "games": 16,
+   "ladder_side_agreement": 1.0,
+   "ladders_multi": 16,
+   "orders": 1359,
+   "orders_per_game": 84.9,
+   "orders_per_position": 5.39,
+   "positions": 252
+  },
+  "NFL|T1|NFL_MONEYLINE": {
+   "far_strike_share": 0.348,
+   "games": 13,
+   "ladder_side_agreement": 0.5,
+   "ladders_multi": 13,
+   "orders": 138,
+   "orders_per_game": 10.6,
+   "orders_per_position": 5.31,
+   "positions": 26
+  },
+  "NFL|T1|NFL_SPREAD": {
+   "far_strike_share": 0.512,
+   "games": 16,
+   "ladder_side_agreement": 0.689,
+   "ladders_multi": 16,
+   "orders": 1858,
+   "orders_per_game": 116.1,
+   "orders_per_position": 5.23,
+   "positions": 355
+  },
+  "NFL|T1|NFL_TEAM_TOTAL": {
+   "far_strike_share": 0.555,
+   "games": 16,
+   "ladder_side_agreement": 0.821,
+   "ladders_multi": 16,
+   "orders": 1666,
+   "orders_per_game": 104.1,
+   "orders_per_position": 5.06,
+   "positions": 329
+  },
+  "NFL|T2|NFL_GAME_TOTAL": {
+   "far_strike_share": 0.493,
+   "games": 17,
+   "ladder_side_agreement": 0.979,
+   "ladders_multi": 17,
+   "orders": 973,
+   "orders_per_game": 57.2,
+   "orders_per_position": 3.55,
+   "positions": 274
+  },
+  "NFL|T2|NFL_MONEYLINE": {
+   "far_strike_share": 0.327,
+   "games": 13,
+   "ladder_side_agreement": 0.511,
+   "ladders_multi": 13,
+   "orders": 98,
+   "orders_per_game": 7.5,
+   "orders_per_position": 3.77,
+   "positions": 26
+  },
+  "NFL|T2|NFL_SPREAD": {
+   "far_strike_share": 0.518,
+   "games": 17,
+   "ladder_side_agreement": 0.656,
+   "ladders_multi": 17,
+   "orders": 1300,
+   "orders_per_game": 76.5,
+   "orders_per_position": 3.62,
+   "positions": 359
+  },
+  "NFL|T2|NFL_TEAM_TOTAL": {
+   "far_strike_share": 0.584,
+   "games": 17,
+   "ladder_side_agreement": 0.81,
+   "ladders_multi": 17,
+   "orders": 1218,
+   "orders_per_game": 71.6,
+   "orders_per_position": 3.5,
+   "positions": 348
+  },
+  "NFL|T3|NFL_GAME_TOTAL": {
+   "far_strike_share": 0.463,
+   "games": 18,
+   "ladder_side_agreement": 0.956,
+   "ladders_multi": 18,
+   "orders": 1109,
+   "orders_per_game": 61.6,
+   "orders_per_position": 3.66,
+   "positions": 303
+  },
+  "NFL|T3|NFL_MONEYLINE": {
+   "far_strike_share": 0.388,
+   "games": 14,
+   "ladder_side_agreement": 0.533,
+   "ladders_multi": 14,
+   "orders": 98,
+   "orders_per_game": 7.0,
+   "orders_per_position": 3.5,
+   "positions": 28
+  },
+  "NFL|T3|NFL_SPREAD": {
+   "far_strike_share": 0.531,
+   "games": 19,
+   "ladder_side_agreement": 0.679,
+   "ladders_multi": 19,
+   "orders": 1471,
+   "orders_per_game": 77.4,
+   "orders_per_position": 3.67,
+   "positions": 401
+  },
+  "NFL|T3|NFL_TEAM_TOTAL": {
+   "far_strike_share": 0.595,
+   "games": 20,
+   "ladder_side_agreement": 0.857,
+   "ladders_multi": 20,
+   "orders": 1468,
+   "orders_per_game": 73.4,
+   "orders_per_position": 3.67,
+   "positions": 400
+  },
+  "NHL|T1|NHL_GAME_TOTAL": {
+   "far_strike_share": 0.324,
+   "games": 39,
+   "ladder_side_agreement": 0.972,
+   "ladders_multi": 27,
+   "orders": 105,
+   "orders_per_game": 2.7,
+   "orders_per_position": 1.02,
+   "positions": 103
+  },
+  "NHL|T1|NHL_MONEYLINE": {
+   "far_strike_share": 0.036,
+   "games": 28,
+   "ladder_side_agreement": 0.5,
+   "ladders_multi": 26,
+   "orders": 56,
+   "orders_per_game": 2.0,
+   "orders_per_position": 1.04,
+   "positions": 54
+  },
+  "NHL|T1|NHL_PUCK_LINE": {
+   "far_strike_share": 0.554,
+   "games": 33,
+   "ladder_side_agreement": 0.862,
+   "ladders_multi": 22,
+   "orders": 65,
+   "orders_per_game": 2.0,
+   "orders_per_position": 1.03,
+   "positions": 63
+  },
+  "NHL|T2|NHL_GAME_TOTAL": {
+   "far_strike_share": 0.67,
+   "games": 55,
+   "ladder_side_agreement": 0.997,
+   "ladders_multi": 54,
+   "orders": 2648,
+   "orders_per_game": 48.1,
+   "orders_per_position": 6.62,
+   "positions": 400
+  },
+  "NHL|T2|NHL_MONEYLINE": {
+   "far_strike_share": 0.007,
+   "games": 41,
+   "ladder_side_agreement": 0.519,
+   "ladders_multi": 40,
+   "orders": 548,
+   "orders_per_game": 13.4,
+   "orders_per_position": 6.85,
+   "positions": 80
+  },
+  "NHL|T2|NHL_PUCK_LINE": {
+   "far_strike_share": 0.604,
+   "games": 57,
+   "ladder_side_agreement": 0.867,
+   "ladders_multi": 57,
+   "orders": 1330,
+   "orders_per_game": 23.3,
+   "orders_per_position": 7.07,
+   "positions": 188
+  },
+  "NHL|T3|NHL_GAME_TOTAL": {
+   "far_strike_share": 0.668,
+   "games": 46,
+   "ladder_side_agreement": 0.987,
+   "ladders_multi": 42,
+   "orders": 1213,
+   "orders_per_game": 26.4,
+   "orders_per_position": 3.81,
+   "positions": 318
+  },
+  "NHL|T3|NHL_MONEYLINE": {
+   "far_strike_share": 0.029,
+   "games": 38,
+   "ladder_side_agreement": 0.521,
+   "ladders_multi": 37,
+   "orders": 277,
+   "orders_per_game": 7.3,
+   "orders_per_position": 3.74,
+   "positions": 74
+  },
+  "NHL|T3|NHL_PUCK_LINE": {
+   "far_strike_share": 0.599,
+   "games": 49,
+   "ladder_side_agreement": 0.851,
+   "ladders_multi": 48,
+   "orders": 613,
+   "orders_per_game": 12.5,
+   "orders_per_position": 3.88,
+   "positions": 158
+  }
+ },
+ "descriptive": {
+  "w=0.0": {
+   "dropped": {
+    "games": 90,
+    "hi95": 0.0875,
+    "lo95": -0.0198,
+    "mean": 0.0338,
+    "n": 11388
+   },
+   "kept": null,
+   "label": "DESCRIPTIVE ONLY; never used to choose a parameter"
+  },
+  "w=0.1": {
+   "dropped": {
+    "games": 90,
+    "hi95": 0.0875,
+    "lo95": -0.0198,
+    "mean": 0.0338,
+    "n": 11388
+   },
+   "kept": null,
+   "label": "DESCRIPTIVE ONLY; never used to choose a parameter"
+  },
+  "w=0.25": {
+   "dropped": {
+    "games": 90,
+    "hi95": 0.0875,
+    "lo95": -0.0198,
+    "mean": 0.0338,
+    "n": 11388
+   },
+   "kept": null,
+   "label": "DESCRIPTIVE ONLY; never used to choose a parameter"
+  },
+  "w=0.5": {
+   "dropped": {
+    "games": 90,
+    "hi95": 0.0859,
+    "lo95": -0.0221,
+    "mean": 0.0319,
+    "n": 11257
+   },
+   "kept": {
+    "games": 11,
+    "hi95": 0.3263,
+    "lo95": 0.0797,
+    "mean": 0.203,
+    "n": 131
+   },
+   "label": "DESCRIPTIVE ONLY; never used to choose a parameter"
+  },
+  "w=1.0": {
+   "dropped": {
+    "games": 90,
+    "hi95": 0.0816,
+    "lo95": -0.0259,
+    "mean": 0.0279,
+    "n": 9778
+   },
+   "kept": {
+    "games": 37,
+    "hi95": 0.19,
+    "lo95": -0.0496,
+    "mean": 0.0702,
+    "n": 1610
+   },
+   "label": "DESCRIPTIVE ONLY; never used to choose a parameter"
+  }
+ },
+ "far_threshold": 0.25,
+ "gate": {
+  "w=0.0": {
+   "MLB|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 104,
+    "positions_kept": 0
+   },
+   "MLB|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 229,
+    "positions_kept": 0
+   },
+   "MLB|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NBA|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 10162,
+    "positions_kept": 0
+   },
+   "NBA|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 7268,
+    "positions_kept": 0
+   },
+   "NBA|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 7008,
+    "positions_kept": 0
+   },
+   "NFL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 5021,
+    "positions_kept": 0
+   },
+   "NFL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 3589,
+    "positions_kept": 0
+   },
+   "NFL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4146,
+    "positions_kept": 0
+   },
+   "NHL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NHL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4526,
+    "positions_kept": 0
+   },
+   "NHL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 2103,
+    "positions_kept": 0
+   }
+  },
+  "w=0.1": {
+   "MLB|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 104,
+    "positions_kept": 0
+   },
+   "MLB|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 229,
+    "positions_kept": 0
+   },
+   "MLB|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NBA|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 10162,
+    "positions_kept": 0
+   },
+   "NBA|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 7268,
+    "positions_kept": 0
+   },
+   "NBA|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 7008,
+    "positions_kept": 0
+   },
+   "NFL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 5021,
+    "positions_kept": 0
+   },
+   "NFL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 3589,
+    "positions_kept": 0
+   },
+   "NFL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4146,
+    "positions_kept": 0
+   },
+   "NHL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NHL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4526,
+    "positions_kept": 0
+   },
+   "NHL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 2103,
+    "positions_kept": 0
+   }
+  },
+  "w=0.25": {
+   "MLB|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 104,
+    "positions_kept": 0
+   },
+   "MLB|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 229,
+    "positions_kept": 0
+   },
+   "MLB|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NBA|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 10162,
+    "positions_kept": 0
+   },
+   "NBA|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 7268,
+    "positions_kept": 0
+   },
+   "NBA|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 7008,
+    "positions_kept": 0
+   },
+   "NFL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 5021,
+    "positions_kept": 0
+   },
+   "NFL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 3589,
+    "positions_kept": 0
+   },
+   "NFL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4146,
+    "positions_kept": 0
+   },
+   "NHL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NHL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4526,
+    "positions_kept": 0
+   },
+   "NHL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 2103,
+    "positions_kept": 0
+   }
+  },
+  "w=0.5": {
+   "MLB|T1": {
+    "ladder_exposures_kept": 1,
+    "orders_kept": 1,
+    "orders_total": 104,
+    "positions_kept": 1
+   },
+   "MLB|T2": {
+    "ladder_exposures_kept": 6,
+    "orders_kept": 13,
+    "orders_total": 229,
+    "positions_kept": 13
+   },
+   "MLB|T3": {
+    "ladder_exposures_kept": 5,
+    "orders_kept": 12,
+    "orders_total": 226,
+    "positions_kept": 12
+   },
+   "NBA|T1": {
+    "ladder_exposures_kept": 18,
+    "orders_kept": 70,
+    "orders_total": 10162,
+    "positions_kept": 70
+   },
+   "NBA|T2": {
+    "ladder_exposures_kept": 15,
+    "orders_kept": 72,
+    "orders_total": 7268,
+    "positions_kept": 72
+   },
+   "NBA|T3": {
+    "ladder_exposures_kept": 14,
+    "orders_kept": 66,
+    "orders_total": 7008,
+    "positions_kept": 66
+   },
+   "NFL|T1": {
+    "ladder_exposures_kept": 1,
+    "orders_kept": 1,
+    "orders_total": 5021,
+    "positions_kept": 1
+   },
+   "NFL|T2": {
+    "ladder_exposures_kept": 3,
+    "orders_kept": 5,
+    "orders_total": 3589,
+    "positions_kept": 5
+   },
+   "NFL|T3": {
+    "ladder_exposures_kept": 4,
+    "orders_kept": 9,
+    "orders_total": 4146,
+    "positions_kept": 9
+   },
+   "NHL|T1": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 226,
+    "positions_kept": 0
+   },
+   "NHL|T2": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 4526,
+    "positions_kept": 0
+   },
+   "NHL|T3": {
+    "ladder_exposures_kept": 0,
+    "orders_kept": 0,
+    "orders_total": 2103,
+    "positions_kept": 0
+   }
+  },
+  "w=1.0": {
+   "MLB|T1": {
+    "ladder_exposures_kept": 9,
+    "orders_kept": 35,
+    "orders_total": 104,
+    "positions_kept": 35
+   },
+   "MLB|T2": {
+    "ladder_exposures_kept": 14,
+    "orders_kept": 64,
+    "orders_total": 229,
+    "positions_kept": 64
+   },
+   "MLB|T3": {
+    "ladder_exposures_kept": 12,
+    "orders_kept": 53,
+    "orders_total": 226,
+    "positions_kept": 53
+   },
+   "NBA|T1": {
+    "ladder_exposures_kept": 103,
+    "orders_kept": 642,
+    "orders_total": 10162,
+    "positions_kept": 642
+   },
+   "NBA|T2": {
+    "ladder_exposures_kept": 67,
+    "orders_kept": 481,
+    "orders_total": 7268,
+    "positions_kept": 481
+   },
+   "NBA|T3": {
+    "ladder_exposures_kept": 66,
+    "orders_kept": 490,
+    "orders_total": 7008,
+    "positions_kept": 490
+   },
+   "NFL|T1": {
+    "ladder_exposures_kept": 44,
+    "orders_kept": 262,
+    "orders_total": 5021,
+    "positions_kept": 262
+   },
+   "NFL|T2": {
+    "ladder_exposures_kept": 49,
+    "orders_kept": 303,
+    "orders_total": 3589,
+    "positions_kept": 303
+   },
+   "NFL|T3": {
+    "ladder_exposures_kept": 51,
+    "orders_kept": 317,
+    "orders_total": 4146,
+    "positions_kept": 317
+   },
+   "NHL|T1": {
+    "ladder_exposures_kept": 3,
+    "orders_kept": 3,
+    "orders_total": 226,
+    "positions_kept": 3
+   },
+   "NHL|T2": {
+    "ladder_exposures_kept": 6,
+    "orders_kept": 8,
+    "orders_total": 4526,
+    "positions_kept": 8
+   },
+   "NHL|T3": {
+    "ladder_exposures_kept": 10,
+    "orders_kept": 13,
+    "orders_total": 2103,
+    "positions_kept": 13
+   }
+  }
+ },
+ "ok_orders": 44608,
+ "sigma_note": "sd of (p_yes - mid) per (sport, market_type) over ledger rows; substitute for held-out spread (none exists)",
+ "skill_weight_rule": 0.0,
+ "snapshot_rows": 108945,
+ "unmatched_ok_orders": 0
+}
