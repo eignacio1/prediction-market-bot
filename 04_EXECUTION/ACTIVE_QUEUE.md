@@ -669,6 +669,148 @@ From Earl, directly.
 
 ---
 
+## 🧹 GAP SWEEP — beside Wave 84 (operator 2026-10-21 19:28 PT) · GA-5 message + three terminals
+
+Operator: "The 30 small fixes and 25 small process one-offs- there has to be an easy way to sweep those. I'm fine with a
+continual list knowing the scale of the project but please 200+ gaps is fucking ludicrous". GA-5 (19:12 PT) closed 2 of 207.
+The sweep: the gap agent writes four lists (C small fixes · P process · O observations · E engine data, untouched); GS-1 and
+GS-2 split list C odd/even; GS-3 takes P, then re-files O as WATCH ITEM if the operator accepts the observation rule.
+Expected: 207 → about 85 OPEN, ~45 of them engine data gaps (DEPTH work, left alone). **Surface:** 0. **Dependencies:** GS-1..3
+read the lists GA-5 writes (they build them by the stated rule if GA-5 hasn't yet); no Wave 84 file is touched.
+
+| # | Terminal | Status | OPEN before → after |
+|---|---|---|---|
+| GS-0 | message into the running GA-5 terminal | ⬜ | |
+| GS-1 | small fixes, odd positions | ⬜ | |
+| GS-2 | small fixes, even positions | ⬜ | |
+| GS-3 | process one-offs, then observations (if the rule is accepted) | ⬜ | |
+
+### GS-0 — paste into the gap-agent terminal that is already running
+
+```
+Before your next tick: write a section "Sweep lists" into 03_DECISIONS/GG_BURNDOWN.md (docs-only push) splitting every OPEN gap into four lists, one line each (id, severity, one-line reason, the file area its fix touches):
+C - small fixes: closes with a code or doc change plus a test, about 10-20 minutes, no live model/ledger/cron/pre-registration change.
+P - process one-offs: ID collisions, stray branches, claim-range overlaps, shared-tree drift, register parity, stale docs.
+O - observations: no fix exists (a measured fact, arithmetic like GG-285, a known limitation of a source).
+E - engine data gaps (missing free source or unbuilt factor): leave these alone.
+Number list C in order. Three sweep terminals start from these lists in a few minutes; from then on, skip anything on lists C, P and O in your own ticks and keep going on the rest.
+```
+
+### GS-1 — small fixes, odd positions (new terminal)
+
+```
+COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
+- SIZE: hard ceiling 90 minutes. Push after every batch; stop at a pushed boundary (context ~60%, a blocker, or 90 min) and
+  write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
+- The list you work from: 03_DECISIONS/GG_BURNDOWN.md § "Sweep lists" (written by the gap agent GA-5). If that section is not
+  on origin/main yet, build the list yourself with the same rule (stated in your block) and write it there first, docs-only.
+- NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
+  lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
+  84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
+  NHL_ENGINE/, SEATS/nhl.toml, NHL components). A gap whose fix sits there: skip it, one line in your handoff.
+- No order, position, fill, stake, kelly_fraction, live-ledger row, live model, runner, registry cell, pre-registration,
+  existing cron line or .claude/settings*.json change. A gap that needs one of those is not a sweep item: skip it.
+- ALL CODE through a PR with CI read green; batch 3-5 fixes per PR to save CI cycles; each code fix carries a test. Merge only
+  your own PRs. Doc-only closures may be pushed docs-only.
+- Closing a gap: a real fix, or evidence it is already fixed or moot (commit, file and line, or a box read via the bridge).
+  Never close on a guess. RESOLVED / CLOSED-AS-ARTIFACT entries move verbatim to GOVERNANCE_GAP_LOG_ARCHIVE.md (never edited
+  there). Fetch + rebase right before every push to the gap log; edit only the entries you work.
+- After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
+  script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
+- Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
+GAP SWEEP GS-1 - SMALL FIXES, ODD POSITIONS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down by closing list C's small fixes for real.
+Work list C in GG_BURNDOWN.md § "Sweep lists", positions 1, 3, 5, 7, ... in order (GS-2 takes the even positions; never take
+one of theirs). For each: read the gap, check it is still true on origin/main (and on the box via the bridge if it is about the
+box), fix it with a test, batch 3-5 per PR, merge on green, close the entry with the PR as evidence. Something already fixed:
+close it with the evidence. Something bigger than 20 minutes or outside the rules: skip it, one line why, move on. Take as many
+as fit in 90 minutes.
+List rule if you have to build it yourself: OPEN gaps that close with a code or doc change plus a test in about 10-20 minutes
+and need no live model, ledger, cron or pre-registration change.
+
+END OF BLOCK GS-1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### GS-2 — small fixes, even positions (new terminal)
+
+```
+COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
+- SIZE: hard ceiling 90 minutes. Push after every batch; stop at a pushed boundary (context ~60%, a blocker, or 90 min) and
+  write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
+- The list you work from: 03_DECISIONS/GG_BURNDOWN.md § "Sweep lists" (written by the gap agent GA-5). If that section is not
+  on origin/main yet, build the list yourself with the same rule (stated in your block) and write it there first, docs-only.
+- NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
+  lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
+  84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
+  NHL_ENGINE/, SEATS/nhl.toml, NHL components). A gap whose fix sits there: skip it, one line in your handoff.
+- No order, position, fill, stake, kelly_fraction, live-ledger row, live model, runner, registry cell, pre-registration,
+  existing cron line or .claude/settings*.json change. A gap that needs one of those is not a sweep item: skip it.
+- ALL CODE through a PR with CI read green; batch 3-5 fixes per PR to save CI cycles; each code fix carries a test. Merge only
+  your own PRs. Doc-only closures may be pushed docs-only.
+- Closing a gap: a real fix, or evidence it is already fixed or moot (commit, file and line, or a box read via the bridge).
+  Never close on a guess. RESOLVED / CLOSED-AS-ARTIFACT entries move verbatim to GOVERNANCE_GAP_LOG_ARCHIVE.md (never edited
+  there). Fetch + rebase right before every push to the gap log; edit only the entries you work.
+- After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
+  script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
+- Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
+GAP SWEEP GS-2 - SMALL FIXES, EVEN POSITIONS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down by closing list C's small fixes for real.
+Work list C in GG_BURNDOWN.md § "Sweep lists", positions 2, 4, 6, 8, ... in order (GS-1 takes the odd positions; never take
+one of theirs). For each: read the gap, check it is still true on origin/main (and on the box via the bridge if it is about the
+box), fix it with a test, batch 3-5 per PR, merge on green, close the entry with the PR as evidence. Something already fixed:
+close it with the evidence. Something bigger than 20 minutes or outside the rules: skip it, one line why, move on. Take as many
+as fit in 90 minutes.
+List rule if you have to build it yourself: OPEN gaps that close with a code or doc change plus a test in about 10-20 minutes
+and need no live model, ledger, cron or pre-registration change.
+
+END OF BLOCK GS-2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### GS-3 — process one-offs, then observations (new terminal)
+
+```
+COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
+- SIZE: hard ceiling 90 minutes. Push after every batch; stop at a pushed boundary (context ~60%, a blocker, or 90 min) and
+  write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
+- The list you work from: 03_DECISIONS/GG_BURNDOWN.md § "Sweep lists" (written by the gap agent GA-5). If that section is not
+  on origin/main yet, build the list yourself with the same rule (stated in your block) and write it there first, docs-only.
+- NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
+  lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
+  84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
+  NHL_ENGINE/, SEATS/nhl.toml, NHL components). A gap whose fix sits there: skip it, one line in your handoff.
+- No order, position, fill, stake, kelly_fraction, live-ledger row, live model, runner, registry cell, pre-registration,
+  existing cron line or .claude/settings*.json change. A gap that needs one of those is not a sweep item: skip it.
+- ALL CODE through a PR with CI read green; batch 3-5 fixes per PR to save CI cycles; each code fix carries a test. Merge only
+  your own PRs. Doc-only closures may be pushed docs-only.
+- Closing a gap: a real fix, or evidence it is already fixed or moot (commit, file and line, or a box read via the bridge).
+  Never close on a guess. RESOLVED / CLOSED-AS-ARTIFACT entries move verbatim to GOVERNANCE_GAP_LOG_ARCHIVE.md (never edited
+  there). Fetch + rebase right before every push to the gap log; edit only the entries you work.
+- After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
+  script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
+- Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
+GAP SWEEP GS-3 - PROCESS ONE-OFFS AND OBSERVATIONS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down: list P closed in one cleanup pass; list O re-filed under the operator's rule.
+PART A - list P (process one-offs) in GG_BURNDOWN.md § "Sweep lists". Most close by checking the current state: an ID
+  collision already renumbered, a stray branch already merged or empty (list remote branches; delete ONLY a branch whose every
+  commit is already on main, named one by one in your handoff, never "all stale branches"), a claim overlap long past, a register
+  row already present. Close each with the evidence. Shared-tree drift gaps: close them ONLY if ACTIVE_QUEUE.md "Needs your
+  decision" carries the operator's blockquote retiring the shared tree; otherwise skip them, one line each.
+PART B - list O (observations). ONLY if ACTIVE_QUEUE.md "Needs your decision" carries the operator's blockquote for the
+  observation rule: change each entry's status line to `**Status:** WATCH ITEM · **Severity:** <unchanged>` and add one line
+  under it: "Re-filed 2026-10-21 under the operator's observation rule. Reopens if: <the condition>". Keep the full record. If
+  the blockquote is not there, stop after Part A.
+
+END OF BLOCK GS-3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## 📦 BACKLOG DRAFT — 80Q, the tail scanner ("701st out of 701") · NOT QUEUED: do not paste (operator 08:04 PT)
 
 **Operator, 08:04 PT:** "Don't be so focus on now building something QB specific right now (we'll build all of that as we proceed) - I'm
