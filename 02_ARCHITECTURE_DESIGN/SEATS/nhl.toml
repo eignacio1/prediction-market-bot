@@ -13,7 +13,7 @@ name = "Skater quality (shot location/type, shooter, box)"
 source = "events: shooter_id, shot_type, x, y; box_players"
 engine_slot = "player rating"
 stage = "interpreted"
-evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py (W84.3; exploratory, verdict too few to tell: 12_EXPLORATORY/nhl_engine/results_W84.md)"
+evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py"
 
 [[factor]]
 id = "H2"
@@ -22,7 +22,7 @@ name = "Goalie quality (saves, workload, starter post-game)"
 source = "box_players goalies: shots_against, saves, starter"
 engine_slot = "player rating"
 stage = "applied"
-evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py (W84.3; exploratory, verdict too few to tell: 12_EXPLORATORY/nhl_engine/results_W84.md)"
+evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py"
 
 [[factor]]
 id = "H3"
@@ -40,7 +40,7 @@ name = "Special teams (strength state, penalties)"
 source = "events: situationCode fields, penalty_*"
 engine_slot = "none"
 stage = "applied"
-evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py (W84.3; exploratory, verdict too few to tell: 12_EXPLORATORY/nhl_engine/results_W84.md)"
+evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py"
 
 [[factor]]
 id = "H5"
@@ -49,7 +49,7 @@ name = "Pace / shot volume and quality"
 source = "events: shot attempts by strength state and location"
 engine_slot = "team rating"
 stage = "applied"
-evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py (W84.3; exploratory, verdict too few to tell: 12_EXPLORATORY/nhl_engine/results_W84.md)"
+evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py"
 
 [[factor]]
 id = "H6"
@@ -58,7 +58,7 @@ name = "Rest / schedule density"
 source = "games: start_time_utc, teams"
 engine_slot = "schedule context"
 stage = "interpreted"
-evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py (W84.3; exploratory, verdict too few to tell: 12_EXPLORATORY/nhl_engine/results_W84.md)"
+evidence = "12_EXPLORATORY/nhl_engine/nhl_factors.py"
 
 [[factor]]
 id = "H7"

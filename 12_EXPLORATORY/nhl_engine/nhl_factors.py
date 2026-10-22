@@ -94,14 +94,16 @@ def team_games(g: pd.DataFrame, sx: pd.DataFrame, ev: pd.DataFrame) -> pd.DataFr
     a = sx.groupby(["game_id", "owner_is_home", "state"]).agg(xg=("xg", "sum"), n=("xg", "size"), goals=("goal", "sum")).reset_index()
     p = a.pivot_table(index=["game_id", "owner_is_home"], columns="state", values=["xg", "n", "goals"], fill_value=0)
     p.columns = [f"{x}_{y}" for x, y in p.columns]
-    p = p.reset_index().rename(columns={"owner_is_home": "is_home"})
+    p = p.reset_index()
+    p.columns = ["is_home" if c == "owner_is_home" else c for c in p.columns]
     sec = state_seconds(ev)
     base = pd.concat([g.assign(is_home=True, team=g["home"], opp=g["away"]), g.assign(is_home=False, team=g["away"], opp=g["home"])])
     base = base[["game_id", "season", "game_type", "start_time_utc", "is_home", "team", "opp"]]
     base["game_id"] = base["game_id"].astype("int64")
     d = base.merge(sec, on=["game_id", "is_home"], how="left")
     own = d.merge(p, on=["game_id", "is_home"], how="left")
-    opp = p.assign(is_home=~p["is_home"].astype(bool)).add_prefix("a_").rename(columns={"a_game_id": "game_id", "a_is_home": "is_home"})
+    opp = p.assign(is_home=~p["is_home"].astype(bool)).add_prefix("a_")
+    opp.columns = [c[2:] if c in ("a_game_id", "a_is_home") else c for c in opp.columns]
     out = own.merge(opp, on=["game_id", "is_home"], how="left")
     for c in out.columns:
         if c.startswith(("xg_", "n_", "goals_", "a_xg_", "a_n_", "a_goals_", "s")) and c not in ("season", "start_time_utc"):
