@@ -1,0 +1,84 @@
+{
+ "season": "2025-26",
+ "grade": {
+  "Isolation": {
+   "proxy": "selfcreate_share",
+   "n": 296,
+   "spearman": 0.603,
+   "top15_overlap": 5
+  },
+  "Pick and Roll Ball Handler": {
+   "proxy": "ast_per_min",
+   "n": 334,
+   "spearman": 0.64,
+   "top15_overlap": 8
+  },
+  "Spot-Up": {
+   "proxy": "assisted3_share",
+   "n": 349,
+   "spearman": 0.447,
+   "top15_overlap": 1
+  },
+  "Transition": {
+   "proxy": "fast_share",
+   "n": 422,
+   "spearman": 0.335,
+   "top15_overlap": 3
+  },
+  "Cut": {
+   "proxy": "cut_share",
+   "n": 380,
+   "spearman": 0.79,
+   "top15_overlap": 9
+  },
+  "Post-Up": {
+   "proxy": "hook_share",
+   "n": 169,
+   "spearman": 0.41,
+   "top15_overlap": 5
+  },
+  "Pick and Roll Roll Man": {
+   "proxy": "dunk_share",
+   "n": 317,
+   "spearman": 0.563,
+   "top15_overlap": 4
+  }
+ },
+ "cross": {
+  "pairs": 131,
+  "creators": 13,
+  "teams": 10,
+  "mean_absorb": 0.1035,
+  "split_half_pair_corr": 0.379,
+  "profile": {
+   "spearman": 0.063,
+   "ci95": [
+    -0.11,
+    0.236
+   ]
+  },
+  "selfcreate_share": {
+   "spearman": 0.068,
+   "ci95": [
+    -0.101,
+    0.238
+   ]
+  },
+  "ast_per_min": {
+   "spearman": 0.093,
+   "ci95": [
+    -0.09,
+    0.264
+   ]
+  },
+  "assisted3_share": {
+   "spearman": -0.098,
+   "ci95": [
+    -0.269,
+    0.064
+   ]
+  },
+  "profile_vs_h1": 0.017,
+  "profile_vs_h2": 0.131
+ }
+}
