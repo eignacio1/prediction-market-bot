@@ -1023,3 +1023,4 @@
 | 2026-10-23T00:15:50Z | T-1123..T-1126, GG-1100+ | W86.1 quant core (PURPOSE: PROOF — scorers agreeing with core 0->n; frozen models w/ market-referenced Brier 0->n of 6). STANDARD, deliverable: quant/ package + reconcile + results_W86.md |
 | 2026-10-23T00:16:22Z | T-1163..T-1165, GG-1163..GG-1167 | STANDARD — W86.3 quant A3: size and fills (depth absorption + fill DTMC) — FOR EXECUTION (E3 explained: queue/time-resting vs price; contracts per tier 0->measured) |
 | 2026-10-23T00:16:56Z | T-1150..T-1152, GG-1150..GG-1154 | STANDARD — W86.2: implied per-game mean/spread from ladders + coherence violation counts (measure only, no order) — FOR DEPTH + EXECUTION (games with implied distribution 0->n; violations per 1,000 snapshots) |
+| 2026-10-23T00:46:56Z | T-1123..T-1126 | CLOSED — merge confirmed, HEAD (9f2b031) is ancestor of origin/main — W86.1 quant A1 PARTIAL: PRs #328 and #330 merged; core + NHL reconcile + NFL held-out vs market; 5 models NONE |
