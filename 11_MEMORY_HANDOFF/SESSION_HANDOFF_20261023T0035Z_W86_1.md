@@ -13,4 +13,5 @@ surface_delta: 0 live components (pure library + read-only scripts; no cron, ser
 Results: `12_EXPLORATORY/quant_core_reconcile/results_W86.md`. Headline: no discrepancy between engine and core on any NHL cell; NFL frozen model is not better than the de-vigged close (-0.0071 [-0.0198, +0.0055], n=271, GG-1090 timing caveat favours the market); 1 of 49 cells survives BH at 10% (NHL_GAME_TOTAL_T1, preliminary, p via normal approximation).
 Deploy: PR #328 merge only added an unimported package; no live file touched, so no t4-mlb restart needed (deploy job summary not read before this handoff; verify).
 Not done (next): reconcile `calibration_diagnostics.py`, `fees.py` vs `quant.money`, `distance_to_optimum` E2/E3, forward-test (book, sport) figures; verify the 272-vs-271 NFL tie explanation; BH with bootstrap-tail p-values; nfl_qb_challenger 2025 scoring. Block ran past the 90-minute ceiling.
+Note: NHL reconcile script is not in the repo (exploratory fence forbids the calibration_engine import); numbers are in results_W86.md only.
 Operator decisions: none.

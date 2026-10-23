@@ -8,6 +8,10 @@ import sys
 from datetime import datetime, timezone
 
 import pandas as pd
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402
 
 sys.path.insert(0, "scripts")
 from train_nfl_pregame import build_frame  # noqa: E402
@@ -50,7 +54,7 @@ def main(sched_p, stats_p, games_p, out_p):
         "kalshi_note": "Kalshi KXNFLGAME candles cover only part of 2025 (415 of 862 markets, PARTIAL) and were not used.",
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
-    json.dump(out, open(out_p, "w"), indent=1, default=str)
+    safe_out(Path(__file__).parent / Path(out_p).name).write_text(json.dumps(out, indent=1, default=str))  # lands inside 12_EXPLORATORY; copy to models/ by hand
     print(json.dumps(out, indent=1, default=str))
 
 
