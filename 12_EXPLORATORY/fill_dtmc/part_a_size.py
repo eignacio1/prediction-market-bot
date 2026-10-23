@@ -28,7 +28,7 @@ BUCKETS = [("started", None, 0), ("0-60m", 0, 60), ("60-180m", 60, 180), ("180-7
 
 def parse_ts(s: str) -> datetime:
     """Tolerant ISO parse for py3.9 (Kalshi 5-digit fractional seconds)."""
-    s = s.replace("Z", "+00:00")
+    s = re.sub("Z$", "+00:00", s)
     m = re.match(r"(.*?)(\.\d+)?(\+.*)?$", s)
     base, frac, tz = m.group(1), m.group(2) or "", m.group(3) or "+00:00"
     frac = (frac + "000000")[:7] if frac else ""
