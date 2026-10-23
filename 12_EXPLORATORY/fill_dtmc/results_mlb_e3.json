@@ -1,0 +1,54 @@
+{
+ "t4_mlb": {
+  "n_fills": 177,
+  "n_nonfills": 4139,
+  "win_fill": 0.2542372881355932,
+  "win_nonfill": 0.4829669002174438,
+  "gap": -0.2287296120818506,
+  "mid_fill": 0.5505649717514124,
+  "mid_nonfill": 0.38718289441893966,
+  "adverse_selection (win_fill - mid_fill)": -0.2963276836158192,
+  "price_chosen (mid_fill - mid_nonfill)": 0.16338207733247273,
+  "nonfill_edge (mid_nonfill - win_nonfill)": -0.09578400579850416,
+  "win_fill_ci95_game_clustered": [
+   0.2542372881355932,
+   0.1631578947368421,
+   0.36923076923076925,
+   177,
+   69
+  ],
+  "win_nonfill_ci95_game_clustered": [
+   0.4829669002174438,
+   0.4554431599229287,
+   0.510174717368962,
+   4139,
+   392
+  ]
+ },
+ "t1_mlb": {
+  "n_fills": 83,
+  "n_nonfills": 386,
+  "win_fill": 0.2891566265060241,
+  "win_nonfill": 0.5207253886010362,
+  "gap": -0.23156876209501215,
+  "mid_fill": 0.6809036144578312,
+  "mid_nonfill": 0.46591968911917114,
+  "adverse_selection (win_fill - mid_fill)": -0.3917469879518071,
+  "price_chosen (mid_fill - mid_nonfill)": 0.21498392533866006,
+  "nonfill_edge (mid_nonfill - win_nonfill)": -0.05480569948186509,
+  "win_fill_ci95_game_clustered": [
+   0.2891566265060241,
+   0.20238095238095238,
+   0.3793103448275862,
+   83,
+   57
+  ],
+  "win_nonfill_ci95_game_clustered": [
+   0.5207253886010362,
+   0.467966573816156,
+   0.5691906005221932,
+   386,
+   159
+  ]
+ }
+}
