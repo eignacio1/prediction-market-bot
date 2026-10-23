@@ -1025,3 +1025,4 @@
 | 2026-10-23T00:16:56Z | T-1150..T-1152, GG-1150..GG-1154 | STANDARD — W86.2: implied per-game mean/spread from ladders + coherence violation counts (measure only, no order) — FOR DEPTH + EXECUTION (games with implied distribution 0->n; violations per 1,000 snapshots) |
 | 2026-10-23T00:46:56Z | T-1123..T-1126 | CLOSED — merge confirmed, HEAD (9f2b031) is ancestor of origin/main — W86.1 quant A1 PARTIAL: PRs #328 and #330 merged; core + NHL reconcile + NFL held-out vs market; 5 models NONE |
 | 2026-10-23T00:47:04Z | T-1163 | CLOSED — W86.3 fill DTMC + depth size: E3 gap decomposed (adverse selection dominates), queue position unlogged; PR #329 merged. (commit `b3dd48e`) |
+| 2026-10-23T00:47:20Z | T-1163 | CLOSED — merge confirmed, HEAD (48ff13e) is ancestor of origin/main — W86.3 closed; PR #329 merged, close docs on main |
