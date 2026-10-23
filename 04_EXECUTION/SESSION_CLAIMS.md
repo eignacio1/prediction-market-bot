@@ -1016,3 +1016,4 @@
 | 2026-10-22T23:32:59Z | T-1120..T-1122, GG-1120..GG-1124 | STANDARD — W85.2 real position gate: replay on placed orders, then position_gate.py unwired + DRAFT ADR-0072 addendum — FOR EXECUTION (orders per market per band -> positions the gate keeps; no E1-E3 move) |
 | 2026-10-22T23:58:50Z | CLOSED W85.1 | DONE — PR #326 merged, EXP-041 frozen, GG-1090 registered, not wired |
 | 2026-10-23T00:02:35Z | T-1120 | CLOSED — merge confirmed, HEAD (81a4ada) is ancestor of origin/main — W85.2 real position gate replayed (keeps 0 at accepted rule) and built unwired; DRAFT ADR-0072 addendum |
+| 2026-10-23T00:02:38Z | W85.1 | CLOSED — W85.1: NFL market-anchored price built offline and pre-registered (EXP-041, not wired); pooled dBrier vs anchor +0.00002 [-0.00014,+0.00017]; 0 of 18,479 strikes clear the gate. (commit `67697f3 (code, PR #326); pre-reg commit = this docs push (SHA in DECISION_LOG)`) |

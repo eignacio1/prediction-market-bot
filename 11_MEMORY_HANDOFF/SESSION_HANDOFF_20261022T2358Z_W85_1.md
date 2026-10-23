@@ -16,11 +16,11 @@ surface_delta: none (no runner, cron line or registry cell)
 
 # SESSION HANDOFF — W85.1
 
-**Result:** market-anchored price built offline; held-out (2022-25, n=1,087 games) pooled paired dBrier price−anchor +0.00002 [−0.00014, +0.00017]; at the all-seasons w=1 view +0.00010 [−0.00023, +0.00042]. 0 of 1,087 ML, 5,435 spread, 5,435 total, 6,522 team-total strikes clear fee + measured error. Frozen w: ML 1.0, SPREAD 0.4, TOTAL 0.0, TEAMTOTAL 0.2.
-**Anchor timing:** T1 mid is 1.5-2.6 points from the close (SD 0.026), larger than the whole adjustment; moneyline 2025 only (GG-1090).
-**Stage per factor:** F8 (N10) applied against the market, no measurable unpriced gain. F5/F6 (N7, N8) interpreted; applied-from-line shows no signal (share priced unidentified).
-**Pre-registration:** 05_RESEARCH_EXPERIMENTS/EXP041_NFL_MARKET_ANCHORED_PREREGISTRATION_2026-10-22.md, frozen at the docs commit; code sha256 11fa9cf4…6aab, params sha256 070cd8e4…515e. Pooled judged n ≈ 500 games.
-**CI:** PR #326 failed once on the exploratory write-fence lint (a `.replace()` call, no behaviour change); fixed, re-run green, merged. Deploy: my merge run was cancelled by a newer main push (#327's); no t4-mlb decision from my run; the change is under 12_EXPLORATORY/ only.
-**Operator line:** recommend NOT wiring EXP-041 next wave; the cheapest EDGE move is a factor with a larger unpriced share than F8 (W77.2 MDE ~0.0014-0.0017 vs F8's ~0.0007).
-**Not done / not in scope:** no runner, cron or registry cell; the ADR-0072 gate amendment is 85.2's.
-**Resume:** wire only if the operator says so; otherwise next DEPTH factor.
+**Strategic decisions:** EXP-041 pre-registered and frozen, NOT wired (operator: "sit on it for now").
+**Result:** held-out 2022-25 (n=1,087) pooled dBrier price−anchor +0.00002 [−0.00014, +0.00017]; 0 of 18,479 strikes clear the gate. Frozen w: ML 1.0, SPREAD 0.4, TOTAL 0.0, TEAMTOTAL 0.2.
+**Anchor timing:** T1 mid-to-close gap SD 0.026, larger than the adjustment; ML 2025 only (GG-1090).
+**Stage:** F8 applied, no measurable gain; F5/F6 interpreted.
+**Pre-reg:** 05_RESEARCH_EXPERIMENTS/EXP041_NFL_MARKET_ANCHORED_PREREGISTRATION_2026-10-22.md; judged n ≈ 500 games.
+**CI:** PR #326 merged after one lint fix; deploy run cancelled by newer push, change under 12_EXPLORATORY only.
+**Pending:** recommend not wiring EXP-041; next DEPTH factor with larger unpriced share than F8.
+**Resume:** wire only if the operator says so.

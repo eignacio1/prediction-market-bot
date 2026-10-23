@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-22T03:30:00Z (W84.3 — W84.3 NHL depth lane: 3 PIT factors from event store, Part B vs Kalshi = too few to tell; D5(b) 7/0/0 -> 2/2/3 (PR #322)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261022T0259Z_W84_3.md` for full session detail.
+**Last reviewed:** 2026-10-22T23:58:00Z (W85.1 — W85.1: NFL market-anchored price built offline and pre-registered (EXP-041, not wired); pooled dBrier vs anchor +0.00002 [-0.00014,+0.00017]; 0 of 18,479 strikes clear the gate.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261022T2358Z_W85_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
