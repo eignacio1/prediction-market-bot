@@ -702,3 +702,16 @@ the modifiers, 2023-24 → 2025-26. Exemplars in `L4-interpret/nhl/exemplars.cla
 **Backlog order (supersedes the 19:30 PT order):** R-046 → **R-057** → **R-058** → R-029 → **R-061** → R-030 → **R-062** → R-047 →
 **R-059** → **R-060** → R-026 → R-019 → R-020 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 →
 R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042. (33 open.)
+
+### 2026-10-22 21:50 PT · Watchdog sweep (Claude): ALIGNED — one R-046 run (BKN 2024-25), clean
+- **In scope:** one archive commit since the 15:45 PT entry, `0ac3a28` (2026-10-23 04:00 UTC), "R-046 WIP: BKN 2024-25 extract";
+  history intact (`389b5e8` is its ancestor).
+- **Order:** R-046 is the top open ticket; that is what was worked. One team per browser task, as asked.
+- **Charter:** primary source named (NBA.com stats, team Matchups page, filter URL in each record); population written out in
+  full, including that NBA.com publishes no apportionment method; the `4:60` site quirk kept as displayed and said so in
+  STATUS.md; nothing written to the bot repo; no news sweep, no bet/pick/odds/model; no scheduler listing pasted this run.
+- **Records:** 594 new `index_fact` records (198 pairs × 3), all REPORTED, 0 null values, 594 unique ids, 594 insertions /
+  0 deletions. `python3 -I tools/validate_claims.py --strict L3-split/nba/matchups.claims.jsonl`: **26,415 records, 0 errors.**
+  The provenance file's header ("198 Rows (+4923 filtered); unfiltered 5121") matches the record populations.
+- **Done claims:** none this run (R-046 still WIP: 2024-25 has 28 teams left, 2023-24 has 30). Nothing out of line.
+- **Open tickets:** 33 (unchanged).
