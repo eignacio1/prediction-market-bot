@@ -1,0 +1,652 @@
+{
+ "runs": 2692,
+ "depth_runs_with_samples": 2591,
+ "denominators": {
+  "KXMLBGAME": {
+   "strike_snapshots": 123094,
+   "event_snapshots": 61547,
+   "events": 814
+  },
+  "KXMLBSPREAD": {
+   "strike_snapshots": 152479,
+   "event_snapshots": 24040,
+   "events": 797
+  },
+  "KXMLBTOTAL": {
+   "strike_snapshots": 255379,
+   "event_snapshots": 24052,
+   "events": 796
+  },
+  "KXMLBTEAMTOTAL": {
+   "strike_snapshots": 336532,
+   "event_snapshots": 24038,
+   "events": 797
+  },
+  "KXMLBF3": {
+   "strike_snapshots": 62103,
+   "event_snapshots": 20701,
+   "events": 787
+  },
+  "KXMLBF5": {
+   "strike_snapshots": 65415,
+   "event_snapshots": 21805,
+   "events": 787
+  },
+  "KXMLBF7": {
+   "strike_snapshots": 68970,
+   "event_snapshots": 22990,
+   "events": 792
+  },
+  "KXMLBF5SPREAD": {
+   "strike_snapshots": 87236,
+   "event_snapshots": 21809,
+   "events": 787
+  },
+  "KXMLBF5TOTAL": {
+   "strike_snapshots": 152971,
+   "event_snapshots": 21853,
+   "events": 787
+  },
+  "KXNFLGAME": {
+   "strike_snapshots": 38586,
+   "event_snapshots": 19293,
+   "events": 121
+  },
+  "KXNFLSPREAD": {
+   "strike_snapshots": 269058,
+   "event_snapshots": 10512,
+   "events": 107
+  },
+  "KXNFLTOTAL": {
+   "strike_snapshots": 198403,
+   "event_snapshots": 10526,
+   "events": 107
+  },
+  "KXNFLTEAMTOTAL": {
+   "strike_snapshots": 222631,
+   "event_snapshots": 8363,
+   "events": 107
+  }
+ },
+ "violations": {
+  "KXMLBF3|excl_sum_gt1": {
+   "strike_snapshots": 62103,
+   "event_snapshots": 20701,
+   "events": 787,
+   "raw": {
+    "count": 272,
+    "per_1000_strike_snaps": 4.379820620581936,
+    "ci95": [
+     2.6167067637433945,
+     6.499798523169385
+    ]
+   },
+   "net": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.032204563386631885,
+    "ci95": [
+     0.0,
+     0.09932597866588506
+    ]
+   },
+   "net_size_unknown": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.032204563386631885,
+    "ci95": [
+     0.0,
+     0.09783922921623169
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 1,
+    "median": 2.0,
+    "p90": 2.0,
+    "max": 2,
+    "share_len1": 0.0
+   }
+  },
+  "KXMLBF3|excl_sum_lt1": {
+   "strike_snapshots": 62103,
+   "event_snapshots": 20701,
+   "events": 787,
+   "raw": {
+    "count": 688,
+    "per_1000_strike_snaps": 11.078369805001369,
+    "ci95": [
+     9.229830735790076,
+     13.16769792853303
+    ]
+   },
+   "net": {
+    "count": 6,
+    "per_1000_strike_snaps": 0.09661369015989565,
+    "ci95": [
+     0.03193449288130708,
+     0.17895127487928983
+    ]
+   },
+   "net_size_unknown": {
+    "count": 6,
+    "per_1000_strike_snaps": 0.09661369015989565,
+    "ci95": [
+     0.031838709194601356,
+     0.1797543111004084
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 6,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBF5|excl_sum_gt1": {
+   "strike_snapshots": 65415,
+   "event_snapshots": 21805,
+   "events": 787,
+   "raw": {
+    "count": 265,
+    "per_1000_strike_snaps": 4.05105862569747,
+    "ci95": [
+     2.616220049244752,
+     5.660490693443803
+    ]
+   },
+   "net": {
+    "count": 1,
+    "per_1000_strike_snaps": 0.015287013681877248,
+    "ci95": [
+     0.0,
+     0.04688179900643178
+    ]
+   },
+   "net_size_unknown": {
+    "count": 1,
+    "per_1000_strike_snaps": 0.015287013681877248,
+    "ci95": [
+     0.0,
+     0.0465971363934134
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 1,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBF5|excl_sum_lt1": {
+   "strike_snapshots": 65415,
+   "event_snapshots": 21805,
+   "events": 787,
+   "raw": {
+    "count": 255,
+    "per_1000_strike_snaps": 3.8981884888786973,
+    "ci95": [
+     2.846409537562524,
+     5.111329768575536
+    ]
+   },
+   "net": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.030574027363754495,
+    "ci95": [
+     0.0,
+     0.07678727563282618
+    ]
+   },
+   "net_size_unknown": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.030574027363754495,
+    "ci95": [
+     0.0,
+     0.0768270471900531
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 2,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBF5SPREAD|monotonic": {
+   "strike_snapshots": 87236,
+   "event_snapshots": 21809,
+   "events": 787,
+   "raw": {
+    "count": 8,
+    "per_1000_strike_snaps": 0.09170525929662067,
+    "ci95": [
+     0.023140823802081024,
+     0.16276451713957266
+    ]
+   },
+   "net": {
+    "count": 7,
+    "per_1000_strike_snaps": 0.08024210188454307,
+    "ci95": [
+     0.022916097123720086,
+     0.1571104289305635
+    ]
+   },
+   "net_size_unknown": {
+    "count": 7,
+    "per_1000_strike_snaps": 0.08024210188454307,
+    "ci95": [
+     0.02286992532124623,
+     0.16116152527430883
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 7,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBF5TOTAL|monotonic": {
+   "strike_snapshots": 152971,
+   "event_snapshots": 21853,
+   "events": 787,
+   "raw": {
+    "count": 4,
+    "per_1000_strike_snaps": 0.026148747148152265,
+    "ci95": [
+     0.0,
+     0.07943918735917982
+    ]
+   },
+   "net": {
+    "count": 3,
+    "per_1000_strike_snaps": 0.019611560361114198,
+    "ci95": [
+     0.0,
+     0.059905640223994756
+    ]
+   },
+   "net_size_unknown": {
+    "count": 3,
+    "per_1000_strike_snaps": 0.019611560361114198,
+    "ci95": [
+     0.0,
+     0.05975661248091137
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 1,
+    "median": 3.0,
+    "p90": 3.0,
+    "max": 3,
+    "share_len1": 0.0
+   }
+  },
+  "KXMLBF7|excl_sum_gt1": {
+   "strike_snapshots": 68970,
+   "event_snapshots": 22990,
+   "events": 792,
+   "raw": {
+    "count": 130,
+    "per_1000_strike_snaps": 1.8848774829636072,
+    "ci95": [
+     1.1297213395558316,
+     2.737188391441207
+    ]
+   },
+   "net": {
+    "count": 4,
+    "per_1000_strike_snaps": 0.05799623024503408,
+    "ci95": [
+     0.01429561377988566,
+     0.11663754573318061
+    ]
+   },
+   "net_size_unknown": {
+    "count": 4,
+    "per_1000_strike_snaps": 0.05799623024503408,
+    "ci95": [
+     0.014254220901023403,
+     0.11637845369356566
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 4,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBF7|excl_sum_lt1": {
+   "strike_snapshots": 68970,
+   "event_snapshots": 22990,
+   "events": 792,
+   "raw": {
+    "count": 227,
+    "per_1000_strike_snaps": 3.2912860664056836,
+    "ci95": [
+     2.5135367733504212,
+     4.080130421885384
+    ]
+   },
+   "net": {
+    "count": 4,
+    "per_1000_strike_snaps": 0.05799623024503408,
+    "ci95": [
+     0.014138926019493526,
+     0.11715369085464525
+    ]
+   },
+   "net_size_unknown": {
+    "count": 4,
+    "per_1000_strike_snaps": 0.05799623024503408,
+    "ci95": [
+     0.01419477251179298,
+     0.11866330671374707
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 4,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBGAME|excl_sum_gt1": {
+   "strike_snapshots": 123094,
+   "event_snapshots": 61547,
+   "events": 814,
+   "raw": {
+    "count": 518,
+    "per_1000_strike_snaps": 4.208166116951273,
+    "ci95": [
+     2.919702209543227,
+     5.661277709879093
+    ]
+   }
+  },
+  "KXMLBGAME|excl_sum_lt1": {
+   "strike_snapshots": 123094,
+   "event_snapshots": 61547,
+   "events": 814,
+   "raw": {
+    "count": 906,
+    "per_1000_strike_snaps": 7.360228768258404,
+    "ci95": [
+     5.663369284298627,
+     9.08222428296609
+    ]
+   },
+   "net": {
+    "count": 1,
+    "per_1000_strike_snaps": 0.008123872812647245,
+    "ci95": [
+     0.0,
+     0.024538262079867958
+    ]
+   },
+   "net_size_unknown": {
+    "count": 1,
+    "per_1000_strike_snaps": 0.008123872812647245,
+    "ci95": [
+     0.0,
+     0.024514690941564814
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 1,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBSPREAD|ml_vs_spread": {
+   "strike_snapshots": 152479,
+   "event_snapshots": 24040,
+   "events": 797,
+   "raw": {
+    "count": 3,
+    "per_1000_strike_snaps": 0.01967484046983519,
+    "ci95": [
+     0.0,
+     0.045745702608950424
+    ]
+   },
+   "net": {
+    "count": 3,
+    "per_1000_strike_snaps": 0.01967484046983519,
+    "ci95": [
+     0.0,
+     0.0457815042567404
+    ]
+   },
+   "net_size_unknown": {
+    "count": 3,
+    "per_1000_strike_snaps": 0.01967484046983519,
+    "ci95": [
+     0.0,
+     0.040699396103450025
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 3,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBSPREAD|monotonic": {
+   "strike_snapshots": 152479,
+   "event_snapshots": 24040,
+   "events": 797,
+   "raw": {
+    "count": 6,
+    "per_1000_strike_snaps": 0.03934968093967038,
+    "ci95": [
+     0.013011368426742791,
+     0.07270469160367318
+    ]
+   },
+   "net": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.01311656031322346,
+    "ci95": [
+     0.0,
+     0.03319268410741424
+    ]
+   },
+   "net_size_unknown": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.01311656031322346,
+    "ci95": [
+     0.0,
+     0.033176223392219456
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 2,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXMLBTEAMTOTAL|monotonic": {
+   "strike_snapshots": 336532,
+   "event_snapshots": 24038,
+   "events": 797,
+   "raw": {
+    "count": 14,
+    "per_1000_strike_snaps": 0.04160079873533572,
+    "ci95": [
+     0.014864431499683204,
+     0.0753538590717764
+    ]
+   },
+   "net": {
+    "count": 14,
+    "per_1000_strike_snaps": 0.04160079873533572,
+    "ci95": [
+     0.014887450139075905,
+     0.07517943887276295
+    ]
+   },
+   "net_size_unknown": {
+    "count": 14,
+    "per_1000_strike_snaps": 0.04160079873533572,
+    "ci95": [
+     0.017822110809954075,
+     0.07520231827353102
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 13,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 2,
+    "share_len1": 0.9230769230769231
+   }
+  },
+  "KXMLBTOTAL|monotonic": {
+   "strike_snapshots": 255379,
+   "event_snapshots": 24052,
+   "events": 796,
+   "raw": {
+    "count": 4,
+    "per_1000_strike_snaps": 0.015662994999588845,
+    "ci95": [
+     0.003858714563435271,
+     0.03162802508226176
+    ]
+   }
+  },
+  "KXNFLGAME|excl_sum_gt1": {
+   "strike_snapshots": 38586,
+   "event_snapshots": 19293,
+   "events": 121,
+   "raw": {
+    "count": 152,
+    "per_1000_strike_snaps": 3.9392525786554704,
+    "ci95": [
+     2.0522687837585987,
+     6.4298129854592485
+    ]
+   }
+  },
+  "KXNFLSPREAD|monotonic": {
+   "strike_snapshots": 269058,
+   "event_snapshots": 10512,
+   "events": 107,
+   "raw": {
+    "count": 57,
+    "per_1000_strike_snaps": 0.21185023303525635,
+    "ci95": [
+     0.08667020418964327,
+     0.3873014910143435
+    ]
+   },
+   "net": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.007433341510008995,
+    "ci95": [
+     0.0,
+     0.018858356536839708
+    ]
+   },
+   "net_size_unknown": {
+    "count": 2,
+    "per_1000_strike_snaps": 0.007433341510008995,
+    "ci95": [
+     0.0,
+     0.018706660448333547
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 2,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  },
+  "KXNFLTEAMTOTAL|monotonic": {
+   "strike_snapshots": 222631,
+   "event_snapshots": 8363,
+   "events": 107,
+   "raw": {
+    "count": 100,
+    "per_1000_strike_snaps": 0.4491737448962633,
+    "ci95": [
+     0.07742383156284398,
+     1.0345473132465919
+    ]
+   },
+   "net": {
+    "count": 90,
+    "per_1000_strike_snaps": 0.404256370406637,
+    "ci95": [
+     0.03498260020993917,
+     0.9602550409211047
+    ]
+   },
+   "net_size_unknown": {
+    "count": 90,
+    "per_1000_strike_snaps": 0.404256370406637,
+    "ci95": [
+     0.032138535806568586,
+     0.9437547140320384
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 64,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 15,
+    "share_len1": 0.953125
+   }
+  },
+  "KXNFLTOTAL|monotonic": {
+   "strike_snapshots": 198403,
+   "event_snapshots": 10526,
+   "events": 107,
+   "raw": {
+    "count": 14,
+    "per_1000_strike_snaps": 0.07056344914139404,
+    "ci95": [
+     0.03518092678264238,
+     0.11133276580257939
+    ]
+   },
+   "net": {
+    "count": 1,
+    "per_1000_strike_snaps": 0.005040246367242431,
+    "ci95": [
+     0.0,
+     0.015464085921726062
+    ]
+   },
+   "net_size_unknown": {
+    "count": 1,
+    "per_1000_strike_snaps": 0.005040246367242431,
+    "ci95": [
+     0.0,
+     0.015405223233520912
+    ]
+   },
+   "net_streak_runs": {
+    "n_streaks": 1,
+    "median": 1.0,
+    "p90": 1.0,
+    "max": 1,
+    "share_len1": 1.0
+   }
+  }
+ }
+}
