@@ -1015,3 +1015,4 @@
 | 2026-10-22T23:33:03Z | GG-441, GG-1080..GG-1083, T-TBD none | STANDARD — W85.3: install gate refuses on RED + kill switch counts open/unresolved stake & persists state (GG-441) — FOR PLUMBING (before real capital) — kill switch + install gate |
 | 2026-10-22T23:32:59Z | T-1120..T-1122, GG-1120..GG-1124 | STANDARD — W85.2 real position gate: replay on placed orders, then position_gate.py unwired + DRAFT ADR-0072 addendum — FOR EXECUTION (orders per market per band -> positions the gate keeps; no E1-E3 move) |
 | 2026-10-22T23:58:50Z | CLOSED W85.1 | DONE — PR #326 merged, EXP-041 frozen, GG-1090 registered, not wired |
+| 2026-10-23T00:02:35Z | T-1120 | CLOSED — merge confirmed, HEAD (81a4ada) is ancestor of origin/main — W85.2 real position gate replayed (keeps 0 at accepted rule) and built unwired; DRAFT ADR-0072 addendum |
