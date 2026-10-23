@@ -1,0 +1,384 @@
+{
+ "epoch": "2026-10-21T04:30",
+ "edges_s": [
+  2.0,
+  5.5,
+  10.0,
+  60.0,
+  300.0,
+  1800.0,
+  7200.0
+ ],
+ "e3_identity": {
+  "control|NBA": {
+   "n_fills": 5987,
+   "n_nonfills": 3928,
+   "win_fill": 0.40120260564556537,
+   "win_nonfill": 0.37983706720977595,
+   "gap": 0.021365538435789422,
+   "price_paid_fill": 0.4196381807408103,
+   "price_paid_nonfill": 0.5698396130346248,
+   "adverse_selection_fill (win_fill - price_fill)": -0.018435575095244905,
+   "price_chosen (price_fill - price_nonfill)": -0.15020143229381455,
+   "nonfill_edge (price_nonfill - win_nonfill)": 0.19000254582484888,
+   "gap_check (sum of three)": 0.021365538435789422,
+   "win_fill_ci95_game_clustered": [
+    0.40120260564556537,
+    0.3338062136473259,
+    0.47642679900744417,
+    5987,
+    14
+   ],
+   "win_nonfill_ci95_game_clustered": [
+    0.37983706720977595,
+    0.30719147676827463,
+    0.4426424994037682,
+    3928,
+    14
+   ]
+  },
+  "control|NFL": {
+   "n_fills": 3119,
+   "n_nonfills": 2344,
+   "win_fill": 0.38698300737415836,
+   "win_nonfill": 0.3310580204778157,
+   "gap": 0.05592498689634268,
+   "price_paid_fill": 0.38775888105161743,
+   "price_paid_nonfill": 0.605601535836178,
+   "adverse_selection_fill (win_fill - price_fill)": -0.0007758736774590713,
+   "price_chosen (price_fill - price_nonfill)": -0.2178426547845606,
+   "nonfill_edge (price_nonfill - win_nonfill)": 0.27454351535836236,
+   "gap_check (sum of three)": 0.05592498689634268,
+   "win_fill_ci95_game_clustered": [
+    0.38698300737415836,
+    0.28451492537313433,
+    0.5104936446940586,
+    3119,
+    14
+   ],
+   "win_nonfill_ci95_game_clustered": [
+    0.3310580204778157,
+    0.23308641975308642,
+    0.4336283185840708,
+    2344,
+    14
+   ]
+  },
+  "control|NHL": {
+   "n_fills": 1368,
+   "n_nonfills": 1194,
+   "win_fill": 0.6929824561403509,
+   "win_nonfill": 0.2135678391959799,
+   "gap": 0.47941461694437104,
+   "price_paid_fill": 0.5954385964912295,
+   "price_paid_nonfill": 0.6844221105527631,
+   "adverse_selection_fill (win_fill - price_fill)": 0.09754385964912138,
+   "price_chosen (price_fill - price_nonfill)": -0.0889835140615336,
+   "nonfill_edge (price_nonfill - win_nonfill)": 0.47085427135678326,
+   "gap_check (sum of three)": 0.47941461694437104,
+   "win_fill_ci95_game_clustered": [
+    0.6929824561403509,
+    0.6269571136827774,
+    0.7604235605559232,
+    1368,
+    49
+   ],
+   "win_nonfill_ci95_game_clustered": [
+    0.2135678391959799,
+    0.13588588588588588,
+    0.2944839857651246,
+    1194,
+    45
+   ]
+  },
+  "treatment|NBA": {
+   "n_fills": 800,
+   "n_nonfills": 8348,
+   "win_fill": 0.48625,
+   "win_nonfill": 0.38643986583612844,
+   "gap": 0.09981013416387158,
+   "price_paid_fill": 0.33911785714285736,
+   "price_paid_nonfill": 0.44399616674652853,
+   "adverse_selection_fill (win_fill - price_fill)": 0.14713214285714266,
+   "price_chosen (price_fill - price_nonfill)": -0.10487830960367117,
+   "nonfill_edge (price_nonfill - win_nonfill)": 0.05755630091040009,
+   "gap_check (sum of three)": 0.09981013416387158,
+   "win_fill_ci95_game_clustered": [
+    0.48625,
+    0.31103286384976525,
+    0.6763678696158324,
+    800,
+    14
+   ],
+   "win_nonfill_ci95_game_clustered": [
+    0.38643986583612844,
+    0.3290771909460244,
+    0.4422457432121491,
+    8348,
+    14
+   ]
+  },
+  "treatment|NFL": {
+   "n_fills": 871,
+   "n_nonfills": 3710,
+   "win_fill": 0.43742824339839265,
+   "win_nonfill": 0.3380053908355795,
+   "gap": 0.09942285256281314,
+   "price_paid_fill": 0.28024070034443116,
+   "price_paid_nonfill": 0.48396495956873364,
+   "adverse_selection_fill (win_fill - price_fill)": 0.1571875430539615,
+   "price_chosen (price_fill - price_nonfill)": -0.20372425922430248,
+   "nonfill_edge (price_nonfill - win_nonfill)": 0.14595956873315413,
+   "gap_check (sum of three)": 0.09942285256281314,
+   "win_fill_ci95_game_clustered": [
+    0.43742824339839265,
+    0.23839662447257384,
+    0.642965204236006,
+    871,
+    14
+   ],
+   "win_nonfill_ci95_game_clustered": [
+    0.3380053908355795,
+    0.25578406169665807,
+    0.4166454568592517,
+    3710,
+    14
+   ]
+  },
+  "treatment|NHL": {
+   "n_fills": 95,
+   "n_nonfills": 2525,
+   "win_fill": 0.6842105263157895,
+   "win_nonfill": 0.4538613861386139,
+   "gap": 0.23034914017717562,
+   "price_paid_fill": 0.3830526315789473,
+   "price_paid_nonfill": 0.5114019801980175,
+   "adverse_selection_fill (win_fill - price_fill)": 0.3011578947368422,
+   "price_chosen (price_fill - price_nonfill)": -0.1283493486190702,
+   "nonfill_edge (price_nonfill - win_nonfill)": 0.05754059405940365,
+   "gap_check (sum of three)": 0.23034914017717562,
+   "win_fill_ci95_game_clustered": [
+    0.6842105263157895,
+    0.5057471264367817,
+    0.8155339805825242,
+    95,
+    34
+   ],
+   "win_nonfill_ci95_game_clustered": [
+    0.4538613861386139,
+    0.3883961566888396,
+    0.5129345189975748,
+    2525,
+    46
+   ]
+  }
+ },
+ "chain": {
+  "control|NBA": {
+   "fill_time_s_p10_p50_p90": [
+    0.0,
+    6682.638638019562,
+    31815.140612125397
+   ],
+   "n_orders": 6220,
+   "n_games": 25,
+   "n_fill": 3376,
+   "n_cancel": 2375,
+   "n_censored": 469,
+   "p_fill": 0.5731836351285972,
+   "p_fill_ci95_game_clustered": [
+    0.5246358988952466,
+    0.6348126678709716
+   ],
+   "expected_time_to_fill_given_fill_s": 6408.961476604428,
+   "fill_cdf_by_bin_edge_s": {
+    "2.0": 0.2639401482554514,
+    "5.5": 0.26422063725466016,
+    "10.0": 0.26422063725466016,
+    "60.0": 0.26450112625386896,
+    "300.0": 0.26758650524516536,
+    "1800.0": 0.284976823196109,
+    "7200.0": 0.49646552859952076,
+    "inf": 1.0
+   }
+  },
+  "control|NFL": {
+   "fill_time_s_p10_p50_p90": [
+    0.0,
+    0.0,
+    22291.461983203888
+   ],
+   "n_orders": 149,
+   "n_games": 1,
+   "n_fill": 68,
+   "n_cancel": 0,
+   "n_censored": 81,
+   "p_fill": 1.0,
+   "p_fill_ci95_game_clustered": null,
+   "expected_time_to_fill_given_fill_s": 6552.046979865772,
+   "fill_cdf_by_bin_edge_s": {
+    "2.0": 0.3691275167785235,
+    "5.5": 0.3691275167785235,
+    "10.0": 0.3691275167785235,
+    "60.0": 0.3691275167785235,
+    "300.0": 0.3691275167785235,
+    "1800.0": 0.39597315436241615,
+    "7200.0": 0.39597315436241615,
+    "inf": 1.0
+   }
+  },
+  "control|NHL": {
+   "fill_time_s_p10_p50_p90": [
+    4073.1469061374664,
+    20069.527537107468,
+    30197.860348939896
+   ],
+   "n_orders": 164,
+   "n_games": 12,
+   "n_fill": 83,
+   "n_cancel": 55,
+   "n_censored": 26,
+   "p_fill": 0.5838979223125564,
+   "p_fill_ci95_game_clustered": [
+    0.0,
+    0.7152209492635024
+   ],
+   "expected_time_to_fill_given_fill_s": 8732.335718429704,
+   "fill_cdf_by_bin_edge_s": {
+    "2.0": 0.02088570876039451,
+    "5.5": 0.02088570876039451,
+    "10.0": 0.02088570876039451,
+    "60.0": 0.02088570876039451,
+    "300.0": 0.02088570876039451,
+    "1800.0": 0.02088570876039451,
+    "7200.0": 0.31328563140591764,
+    "inf": 1.0
+   }
+  },
+  "treatment|NBA": {
+   "fill_time_s_p10_p50_p90": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "n_orders": 6247,
+   "n_games": 23,
+   "n_fill": 607,
+   "n_cancel": 5640,
+   "n_censored": 0,
+   "p_fill": 0.09716663998719385,
+   "p_fill_ci95_game_clustered": [
+    0.07679360403955397,
+    0.1211750305997552
+   ],
+   "expected_time_to_fill_given_fill_s": 1.0,
+   "fill_cdf_by_bin_edge_s": {
+    "2.0": 1.0,
+    "5.5": 1.0,
+    "10.0": 1.0,
+    "60.0": 1.0,
+    "300.0": 1.0,
+    "1800.0": 1.0,
+    "7200.0": 1.0,
+    "inf": 1.0
+   }
+  },
+  "treatment|NFL": {
+   "fill_time_s_p10_p50_p90": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "n_orders": 145,
+   "n_games": 1,
+   "n_fill": 46,
+   "n_cancel": 99,
+   "n_censored": 0,
+   "p_fill": 0.31724137931034485,
+   "p_fill_ci95_game_clustered": null,
+   "expected_time_to_fill_given_fill_s": 1.0,
+   "fill_cdf_by_bin_edge_s": {
+    "2.0": 1.0,
+    "5.5": 1.0,
+    "10.0": 1.0,
+    "60.0": 1.0,
+    "300.0": 1.0,
+    "1800.0": 1.0,
+    "7200.0": 1.0,
+    "inf": 1.0
+   }
+  },
+  "treatment|NHL": {
+   "fill_time_s_p10_p50_p90": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "n_orders": 171,
+   "n_games": 12,
+   "n_fill": 3,
+   "n_cancel": 168,
+   "n_censored": 0,
+   "p_fill": 0.017543859649122806,
+   "p_fill_ci95_game_clustered": [
+    0.0,
+    0.02702702702702703
+   ],
+   "expected_time_to_fill_given_fill_s": 1.0,
+   "fill_cdf_by_bin_edge_s": {
+    "2.0": 1.0,
+    "5.5": 1.0,
+    "10.0": 1.0,
+    "60.0": 1.0,
+    "300.0": 1.0,
+    "1800.0": 1.0,
+    "7200.0": 1.0,
+    "inf": 1.0
+   }
+  }
+ },
+ "win_rate_of_fills_by_time_to_fill_bin [mean, lo, hi, n, games]": {
+  "control|NBA|bin0(<2.0s)": [
+   0.5034642032332564,
+   0.33964365256124723,
+   0.7057387057387058,
+   866,
+   11
+  ],
+  "control|NBA|bin5(<1800.0s)": [
+   0.5,
+   0.38596491228070173,
+   0.6379310344827587,
+   62,
+   10
+  ],
+  "control|NBA|bin6(<7200.0s)": [
+   0.4342629482071713,
+   0.3296432964329643,
+   0.5293398533007335,
+   753,
+   11
+  ],
+  "control|NBA|bin7(<infs)": [
+   0.4130710659898477,
+   0.3321377331420373,
+   0.511742892459827,
+   1576,
+   11
+  ],
+  "control|NHL|bin7(<infs)": null,
+  "treatment|NBA|bin0(<2.0s)": [
+   0.5216606498194946,
+   0.3447782546494993,
+   0.7156862745098039,
+   554,
+   11
+  ]
+ },
+ "dropped_orders_no_exit_time": {
+  "control|NBA|assumed_late_cancel": 2375,
+  "treatment|NBA|assumed_late_cancel": 3,
+  "control|NHL|assumed_late_cancel": 55
+ },
+ "limits": "queue position and book path not logged; timed bins stand in for the path"
+}
