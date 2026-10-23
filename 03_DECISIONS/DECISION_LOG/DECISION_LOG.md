@@ -2829,3 +2829,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 - Premise corrections: E3 comes from the MLB paper books, not the demo arms; depth archive is production books, top level + within-5c only, NBA/NHL not sampled; markouts exist only since 2026-10-21T04:30Z and have no MLB.
 - Part B chain (demo, post-epoch): treatment NBA P(fill) 0.097, control NBA 0.573 [0.525, 0.635] (2,375 imputed late-cancel times). Demo books are not production books.
 - PR #329 merged (CI green on retry after a fence-scan fix). No src/ change, so no t4-mlb restart. Deviation: one combined PR for Parts A and B rather than a push after each.
+
+## 2026-10-22 18:15 PT — Wave 86 closed and verified; Wave 87 written (strategic window)
+- Operator, 17:56 PT: "we just barely made it - weekly limit is probably going to hit while you're doing this but 86 has finished - confirm receipt and set up the next wave."
+- Verified: #328-#331 CI green; box `20261023T005716Z_*` GREEN (77 live, deploy truth OK; NFL, NHL, NBA arms and the PASSYDS snapshot wrote rows). 86.1 partial (core merged, NHL paths match < 1e-6; 1 of 6 models scored vs market; BH 1 of 49 = NHL_GAME_TOTAL_T1, preliminary; GG-1100). 86.2 done (market width ~one per sport too; disagreement mostly center; MLB run line is width). 86.3 partial (E3 decomposed: adverse selection dominates; queue position not logged).
+- Correction recorded: the window's 2026-10-21 assessment overstated "one width for every game" as a driver; 86.2 shows the market does nearly the same, except the MLB run line.
+- Wave 87: 87.1 finish the core (reconcile all, re-point where identical, GG-1100); 87.2 kill switch on every order path fed by every book (GG-1082 -> GG-441), log-only day then enforce; 87.3 Kalshi market history for the five unscored models + skill weights (descriptive) + a price-integrity check on NHL_GAME_TOTAL_T1 without reading its score. No Muse block.
