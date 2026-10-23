@@ -10,6 +10,425 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 85 prompts + Muse block (written 2026-10-22 15:45 PT) - archived at the Wave 85 close, 2026-10-22 17:30 PT. 85.1 ✅ 85.2 ✅ 85.3 🟨 M85 ⏸ (held; Muse paused). Verbatim:
+
+## ⬛ NOW — Wave 85 · WRITTEN 2026-10-22 ~22:45 UTC (15:45 PT) · three MEDIUM terminal blocks + Muse block M85 · built from Wave 84's verified results and the operator's acceptance of market-anchored pricing (10-21 20:28 PT)
+
+| # | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|
+| 85.1 | NFL: the first market-anchored price, built offline and pre-registered with the pooled test | DEPTH D3 NFL 1 → 2, D5(b) NFL factors priced from the line 0 → n · PROOF P3 gains a look | ⬜ ✅ DONE (PR #326 merged 2026-10-22, CI green; EXP-041 frozen, not wired) | Pooled dBrier price−anchor +0.00002 [−0.00014, +0.00017]; 0 of 18,479 strikes clear the gate; D3 NFL 1→2, D5(b) 0→2 (no gain); pooled scored look ≥500 games, ~Jan 2028, modal NOT DISTINGUISHABLE. Recommend: do not wire next wave. |
+| 85.2 | The real gate: replay it on the orders already placed, then build it (unwired) + DRAFT ADR-0072 addendum | EXECUTION: orders per market per band → positions the gate keeps | ✅ DONE (PR #327 merged 2026-10-22T23:54Z, CI green) | Replay: 44,608 orders → 11,447 positions today; no held-out file has a market-referenced Brier so skill weight = 0 and the gate keeps 0 orders (`12_EXPLORATORY/gate_replay/results_W85.md`). Part B merged: `position_gate.py` (pure, unwired, 10 tests) + DRAFT ADR-0072 addendum (third arm). Wiring waits on a market-referenced held-out Brier. |
+| 85.3 | Before real money: the kill switch counts all stake and persists (GG-441); the install gate refuses on RED (84.1 Part C) | PLUMBING | 🟨 | A+B code in PR #325 (gate fix, 3 retired, exposure_gate wired to T1); GG-441 stays OPEN pending GG-1082 (order-path check) |
+| M85 | Muse: the market's line history and "when it was public", the 33-ticket backlog, R-046 one team per task | DEPTH feed for the market-anchored prices | ⏸ HELD | Not pasted. Operator 10-22 16:32 PT: "No more muse for the rest of the week - usage limits hit lol". Paste when Muse is back; nothing in Wave 85 waits on it |
+
+**What Wave 84 delivered (verified 2026-10-22 22:45Z: 7 PRs #318-#324 CI green; box bridge `20261022T222233Z_*`):** **84.1 🟡**
+the dashboard is fast and off its cap (/api/data 29 s → 0.22 s, /project 50 s → 0.06 s, 55 MB of 128 MB, 0 restarts); the NBA
+injury report reaches the box through a GitHub-runner relay (byte-identical PDFs; 92 rows read 10-22 03:15Z), so the NBA lineup
+factor now accrues. Part C was stopped by the operator for time → 85.3 Part A. **84.2 🟨** NBA PAM mass tier built from Muse's
+R-027 map: ~1,723 player-seasons assigned (2024-26), stability interpreted for ~30 factors; the cross did not run (n = 0: shadow
+rows carry no actual points; GG-1064); Muse's games-played grade: 2 cells VERIFIED, 4 FAILED (GG-1063). **84.3 ✅** NHL shot
+quality, goalie workload and special teams, point-in-time; taken to a price against Kalshi on the 2025 holdout (n = 1,306): too
+few to tell (coefficient 0.37, CI −0.09 to 0.80). **M84 ✅** the two unnamed jobs disabled after their prompts were pasted;
+R-028, R-041, R-018, schema v1.6, R-055, R-056 done; Muse's strict gate 204 records, 0 errors. **GS-3 ✅** gaps 210 → 199 OPEN.
+**Distance:** D5(b) NHL 7/0/0 → 2/2/3; D5(a) NHL 0 → 1/8; D5(b) NBA 0/4/5 of 11 → 2/6/5 of 15 (seat file grew); everything else 0.
+
+**Pushback:** 85.1 may find the honest answer is "almost no bets": W77.2 measured F8's unpriced share as real but small
+(dBrier −0.0007 against an MDE of 0.0017). A market-anchored price that rarely moves off the line is a correct result, and it
+means the depth lane, not the gate, is what makes money. The second risk: nothing in this wave moves E or P on the board (85.1
+and 85.2 are offline; wiring is Wave 86). The NFL first look on 11-02 is unchanged (modal outcome KEEP ACCRUING ~91%).
+**Surface:** GREEN (box 22:22Z: 80 live, 0 behind, healthcheck HEALTHY, deploy truth OK; 3 NBA preseason entries registered but
+not on the box, retired in 85.3). Expected delta **−3** (85.3 retires them); 85.1 and 85.2 add no running component.
+**Dependencies:** none. 85.1 names the gate rule as accepted; 85.2 builds the code. Neither waits on the other's merge.
+GS-1 / GS-2 (the small-fix sweep) run when a terminal is free; they own no file this wave's blocks own.
+
+### 85.1 — NFL: the first market-anchored price, built offline and pre-registered
+**DEPTH + PROOF** · D3 NFL 1 → 2 · D5(b) NFL priced from the line · P3 · terminal 1
+
+```
+COMMON RULES - WAVE 85 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
+  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-21 20:28 PT - incl. THE OPERATOR'S ACCEPTANCE OF MARKET-ANCHORED PRICING, A REAL
+  GATE AND A POOLED TEST (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-21 20:28 PT: "Good - I accept them"),
+  the THREE CALLS of 19:15 PT (PAM drafts accepted; G6 re-defined by a superseding ADR; the kill switch counts open and unresolved
+  stake, GG-441), the observation rule (WATCH ITEM), the shared folder as a reading copy, one Visual Dashboard served by the box at /visual
+  (2026-10-21 17:20 PT), Muse three daily runs and a 30-ticket backlog (2026-10-21 16:55 / 18:35 PT), the ADR-0072 addenda of 2026-10-20 (verdict per (book,
+  sport), criterion (c) judged forward, cash-starved days excluded) and 2026-10-21 (NFL: one more look at markout judged n),
+  Muse charter v3 (Muse scouts via source cards, the bot captures), Muse off headline news (2026-10-20 21:26 PT), green = the cell
+  WINS (2026-10-19 22:06 PT), the operator's acceptance of the KXNFLPASSYDS
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
+  the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
+  per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
+  interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
+  free), "not a cent on GitHub", the expansion directive, Hard Rule 12. Standing authorizations: shadow-evaluation cron
+  jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service restarts
+  (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
+  ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
+  `git show origin/main:<path>` (window error W20).
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR. Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
+- Three blocks + the standing gap agent run in parallel. File ownership: 85.1 = a new 12_EXPLORATORY/nfl_market_anchored/, one
+  new pre-registration file in 05_RESEARCH_EXPERIMENTS/ (next free EXP number), SEATS/nfl.toml (rows you move only); 85.2 = a new
+  src/prediction_market_bot/c5_execution/position_gate.py + its tests, a new 12_EXPLORATORY/gate_replay/, one new
+  03_DECISIONS/ADR-0072_ADDENDUM_<date>_*.md (DRAFT); 85.3 = scripts/runtime_registry.py (the install gate), RUNTIME_REGISTRY.toml
+  (the three NBA preseason entries only), src/prediction_market_bot/c4_risk_engine/ (the kill switch) + its tests, the GG-441 entry.
+  TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
+  (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
+  main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
+  SURFACE BUDGET GREEN at 2026-10-22 22:22Z (80 live, 0 behind, healthcheck HEALTHY). Register every new component before it runs.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and
+  refusal, skip only that step, finish the rest, hand back. Never work around it. DONE means merged AND, for anything that
+  runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration except where your block's PERMISSIONS name
+  it. Read-only GETs against the Kalshi DEMO API, and public unauthenticated Kalshi market-data GETs, are allowed.
+- Python on the box is 3.9 and rejects Kalshi's 5-digit fractional ISO timestamps: parse with the tolerant parse_ts (W80.2).
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title). Your handoff fills vision_pillar, gap_measure and gap_delta (measured before -> after, with source).
+  If what you find means the block cannot move its measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated / interpreted / applied (a tested path from
+  the fact to a price, compared with the market). Quote the operator's words, never compress them (window error W16).
+- GRANULARITY INDEX (operator 2026-10-16, 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md): every factor you build reports its
+  five parts - the split, the rank against history, the matchup cross, the market map, the application. The operator's
+  examples are illustrations, not build lists (window error W17).
+- ADR-0074: handoffs carry pattern_sweep: ("n/a (no defect fixed)" when nothing was fixed) and surface_delta:.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W85_<n>.md (docs-only push).
+
+WAVE 85.1 - NFL: THE FIRST MARKET-ANCHORED PRICE, BUILT OFFLINE AND PRE-REGISTERED. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH + PROOF. Measures: D3 NFL pre-registered challengers 1 -> 2; D5(b) NFL factors priced FROM the market's line
+0 -> n (name them); P3 gains this challenger's first look (date + pre-registered modal outcome).
+The operator accepted (blockquote, ACTIVE_QUEUE.md "Needs your decision", 2026-10-21 20:28 PT): "Each arm's price starts from
+the market's probability plus adjustments from factors tested out of sample; the frozen models become inputs and benchmarks
+and keep running beside it. Built as a NEW pre-registered challenger per sport, NFL first". His words when he asked: "Why
+aren't we building our model pricing on conviction". Conviction = a reason the line does not already contain, sized by how
+well it has tested. No reason, no position.
+Premises to check before building on them: the frozen nfl_pregame_v1 is slightly worse than Kalshi's moneyline mid on the 2025
+held-out season (-0.008 Brier, CI -0.021 to +0.006; models/nfl_pregame_v1_heldout_2025.json and the W82 report). W77.2
+(12_EXPLORATORY/nfl_engine/market_tests/results.md) measured how much of each factor term the closing line prices: F8 (unit
+availability) about 0.67 on spread [0.45, 0.87] and 0.34 on total [0.16, 0.51]; F5/F6 too small to see; Kalshi candles cover
+2025 Oct - 2026 Jan only, none for 2026.
+PERMISSIONS: a new 12_EXPLORATORY/nfl_market_anchored/ (code by PR), one new pre-registration file in 05_RESEARCH_EXPERIMENTS/
+(next free EXP number; check, never reuse), SEATS/nfl.toml (rows you move only); read the NFL engine, its factor code and
+nflverse files; read-only public Kalshi market-data GETs. NOT: the frozen arms (nfl_pregame_v1, nfl_qb_challenger_v1), their
+runners, rows, registry cells or pre-registrations; no runner, cron line or registry cell this wave (wiring is next wave, after
+the operator has seen the pre-registration); no threshold or weight chosen from game outcomes or P&L.
+
+PART A - The price, offline (~45 min)
+  1. Anchor. The market's de-vigged probability at the moment a row would be written. The only free anchor with history is
+     nflverse's closing line (spread_line, total_line, moneylines); the live anchor will be Kalshi's mid at T1/T2/T3. The close
+     knows more than a T1 price does: measure that gap on the 2025-26 Kalshi candles the archive has, and say what it does to
+     an adjustment trained against the close.
+  2. Adjustment. For each factor with a market-side reading (start with F8 and the terms in W77.2; add any SEATS/nfl.toml factor
+     at stage applied that has one), the unpriced part = the term x (1 - share priced), in points, turned into a probability
+     shift per family through each strike (moneyline, spread ladder, total ladder, team totals). Fit on earlier seasons only,
+     rolling origin 2020 -> 2025, the stage-3 test set where you can.
+  3. Weight. How far the price moves off the anchor is set by held-out skill (how much the adjustment improved Brier over the
+     anchor out of sample), never by P&L.
+  4. Score. Per family and pooled across families: Brier of anchor + adjustment vs the anchor alone, game-clustered bootstrap
+     B=2000, plus how many markets would clear fee + the price's measured error (the accepted gate). If the adjustment is too
+     small to beat the market net of fees, that is the result: say so plainly, with the numbers. Do not hunt for a factor that
+     passes.
+  Each factor reports the five granularity-index parts as far as you get, and its stage.
+PART B - The pre-registration (~30 min)
+  Write and commit it before any live row exists: the frozen price function and its hash; families and bands; the gate as
+  accepted (one position per market per band; the model pulled toward the market by its measured skill; enter only when what
+  is left clears the fee plus the price's measured error; a game's ladder counts as one exposure; 85.2 builds the code, you
+  name the rule and its parameters' source); and THE POOLED TEST as accepted: one market-anchored test for NFL across all
+  families and bands, clustered by game, with a stated correction for many cells; primary metric; judged n from a power calc on
+  Part A's measured effect (state honestly if that n is seasons away); look dates; the modal outcome written down before the
+  first look. Cite the operator's blockquote. Mark it FROZEN at a commit SHA. Do not wire it.
+Results: results_W85.md, the pre-registration file, seat rows, a handoff. Operator line (one line, with your recommendation):
+wire it next wave, or not, from what Part A found.
+
+END OF BLOCK 85.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 85.2 — The real gate: measured on the orders we already placed, then built
+**EXECUTION** · positions kept per sport and band · terminal 2
+
+```
+COMMON RULES - WAVE 85 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
+  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-21 20:28 PT - incl. THE OPERATOR'S ACCEPTANCE OF MARKET-ANCHORED PRICING, A REAL
+  GATE AND A POOLED TEST (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-21 20:28 PT: "Good - I accept them"),
+  the THREE CALLS of 19:15 PT (PAM drafts accepted; G6 re-defined by a superseding ADR; the kill switch counts open and unresolved
+  stake, GG-441), the observation rule (WATCH ITEM), the shared folder as a reading copy, one Visual Dashboard served by the box at /visual
+  (2026-10-21 17:20 PT), Muse three daily runs and a 30-ticket backlog (2026-10-21 16:55 / 18:35 PT), the ADR-0072 addenda of 2026-10-20 (verdict per (book,
+  sport), criterion (c) judged forward, cash-starved days excluded) and 2026-10-21 (NFL: one more look at markout judged n),
+  Muse charter v3 (Muse scouts via source cards, the bot captures), Muse off headline news (2026-10-20 21:26 PT), green = the cell
+  WINS (2026-10-19 22:06 PT), the operator's acceptance of the KXNFLPASSYDS
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
+  the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
+  per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
+  interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
+  free), "not a cent on GitHub", the expansion directive, Hard Rule 12. Standing authorizations: shadow-evaluation cron
+  jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service restarts
+  (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
+  ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
+  `git show origin/main:<path>` (window error W20).
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR. Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
+- Three blocks + the standing gap agent run in parallel. File ownership: 85.1 = a new 12_EXPLORATORY/nfl_market_anchored/, one
+  new pre-registration file in 05_RESEARCH_EXPERIMENTS/ (next free EXP number), SEATS/nfl.toml (rows you move only); 85.2 = a new
+  src/prediction_market_bot/c5_execution/position_gate.py + its tests, a new 12_EXPLORATORY/gate_replay/, one new
+  03_DECISIONS/ADR-0072_ADDENDUM_<date>_*.md (DRAFT); 85.3 = scripts/runtime_registry.py (the install gate), RUNTIME_REGISTRY.toml
+  (the three NBA preseason entries only), src/prediction_market_bot/c4_risk_engine/ (the kill switch) + its tests, the GG-441 entry.
+  TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
+  (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
+  main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
+  SURFACE BUDGET GREEN at 2026-10-22 22:22Z (80 live, 0 behind, healthcheck HEALTHY). Register every new component before it runs.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and
+  refusal, skip only that step, finish the rest, hand back. Never work around it. DONE means merged AND, for anything that
+  runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration except where your block's PERMISSIONS name
+  it. Read-only GETs against the Kalshi DEMO API, and public unauthenticated Kalshi market-data GETs, are allowed.
+- Python on the box is 3.9 and rejects Kalshi's 5-digit fractional ISO timestamps: parse with the tolerant parse_ts (W80.2).
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title). Your handoff fills vision_pillar, gap_measure and gap_delta (measured before -> after, with source).
+  If what you find means the block cannot move its measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated / interpreted / applied (a tested path from
+  the fact to a price, compared with the market). Quote the operator's words, never compress them (window error W16).
+- GRANULARITY INDEX (operator 2026-10-16, 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md): every factor you build reports its
+  five parts - the split, the rank against history, the matchup cross, the market map, the application. The operator's
+  examples are illustrations, not build lists (window error W17).
+- ADR-0074: handoffs carry pattern_sweep: ("n/a (no defect fixed)" when nothing was fixed) and surface_delta:.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W85_<n>.md (docs-only push).
+
+WAVE 85.2 - EXECUTION: A REAL GATE, MEASURED ON THE ORDERS WE ALREADY PLACED, THEN BUILT. Repo: eignacio1/prediction-market-bot.
+PURPOSE: EXECUTION. Measures: orders per market per band per game (today) -> what the accepted gate would leave (per sport,
+band, family); the accepted gate exists as tested, unwired code. E1-E3 do not move this wave: nothing is wired.
+The operator accepted (blockquote, ACTIVE_QUEUE.md "Needs your decision", 2026-10-21 20:28 PT): "A real gate: one position per
+market per band; the model is pulled toward the market by its measured skill; an order goes in only when what is left clears
+the fee plus the model's measured error; a game's ladder counts as one exposure."
+Premises to check: src/prediction_market_bot/c5_execution/shadow_flat_stake.py has EDGE_GATE = 0.0 and places one $1 demo
+order per evaluation run. Box forward-test report 2026-10-22T11:25Z: NFL control 5,622 orders / 3,197 fills over 15 games;
+NBA control 10,551 / 6,138 over 28 games; NHL control 2,624 / 1,380 over 62 games.
+PERMISSIONS: a new src/prediction_market_bot/c5_execution/position_gate.py + tests (by PR), a new 12_EXPLORATORY/gate_replay/
+(code by PR, results docs-only), one new 03_DECISIONS/ADR-0072_ADDENDUM_<date>_*.md marked DRAFT; read-only reads of the
+box's shadow ledgers, fill logs and markouts (ssh read, or the box bridge: add an allowlisted read task by PR if none fits).
+NOT: shadow_flat_stake.py, demo_fill_policy.py, any runner, cron line, registry cell, live ledger or pre-registration; the
+running ADR-0072 control and treatment arms stay exactly as they are; no gate parameter chosen from outcomes or P&L.
+
+PART A - Replay on the orders we placed (~40 min)
+  1. Per sport (NFL, NBA, NHL, MLB game markets): orders per (market, band) and per game; positions vs orders; and the
+     assessment's first open question - what share of positive-edge orders sit on far ladder strikes (by the strike's
+     distance from the market's own 50% line), and do they move together within a game.
+  2. Apply the accepted gate in replay. Skill weight per frozen model from its held-out Brier against the market (the models/
+     *heldout* files; where none exists, say so and use weight 0, i.e. the market's price). Model error = the spread of
+     model-minus-market disagreement on held-out data. One position per market per band (the first row that qualifies).
+     A ladder (one game, one family, one side) counts as one exposure. Report orders and positions kept, per sport and band.
+  3. Descriptive only: settlement minus price on the kept set vs the dropped set, game-clustered intervals, labelled
+     DESCRIPTIVE. Never used to choose a parameter.
+PART B - Build it, unwired (~40 min)
+  position_gate.py: pure functions, no I/O, no clock - the skill shrink, the error bar, the one-position rule, the ladder
+  exposure - with tests (including: zero skill means no order; a full ladder of "edges" from one curve is one exposure).
+  Wired into nothing. Then the DRAFT ADR-0072 addendum: the forward test gains an arm that uses this gate (85.1's NFL
+  challenger is its first user); control and treatment are untouched. It comes back to the operator as one line.
+Results: results_W85.md, the module + tests, the draft addendum, a handoff.
+
+END OF BLOCK 85.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 85.3 — Before real money: the kill switch sees all stake; the install gate refuses on RED
+**PLUMBING** · GG-441 · Hard Rule 14 · terminal 3
+
+```
+COMMON RULES - WAVE 85 (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
+  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-21 20:28 PT - incl. THE OPERATOR'S ACCEPTANCE OF MARKET-ANCHORED PRICING, A REAL
+  GATE AND A POOLED TEST (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-21 20:28 PT: "Good - I accept them"),
+  the THREE CALLS of 19:15 PT (PAM drafts accepted; G6 re-defined by a superseding ADR; the kill switch counts open and unresolved
+  stake, GG-441), the observation rule (WATCH ITEM), the shared folder as a reading copy, one Visual Dashboard served by the box at /visual
+  (2026-10-21 17:20 PT), Muse three daily runs and a 30-ticket backlog (2026-10-21 16:55 / 18:35 PT), the ADR-0072 addenda of 2026-10-20 (verdict per (book,
+  sport), criterion (c) judged forward, cash-starved days excluded) and 2026-10-21 (NFL: one more look at markout judged n),
+  Muse charter v3 (Muse scouts via source cards, the bot captures), Muse off headline news (2026-10-20 21:26 PT), green = the cell
+  WINS (2026-10-19 22:06 PT), the operator's acceptance of the KXNFLPASSYDS
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
+  the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
+  per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
+  interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
+  free), "not a cent on GitHub", the expansion directive, Hard Rule 12. Standing authorizations: shadow-evaluation cron
+  jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service restarts
+  (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
+  ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
+  `git show origin/main:<path>` (window error W20).
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR. Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
+- Three blocks + the standing gap agent run in parallel. File ownership: 85.1 = a new 12_EXPLORATORY/nfl_market_anchored/, one
+  new pre-registration file in 05_RESEARCH_EXPERIMENTS/ (next free EXP number), SEATS/nfl.toml (rows you move only); 85.2 = a new
+  src/prediction_market_bot/c5_execution/position_gate.py + its tests, a new 12_EXPLORATORY/gate_replay/, one new
+  03_DECISIONS/ADR-0072_ADDENDUM_<date>_*.md (DRAFT); 85.3 = scripts/runtime_registry.py (the install gate), RUNTIME_REGISTRY.toml
+  (the three NBA preseason entries only), src/prediction_market_bot/c4_risk_engine/ (the kill switch) + its tests, the GG-441 entry.
+  TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
+  (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
+  main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
+  SURFACE BUDGET GREEN at 2026-10-22 22:22Z (80 live, 0 behind, healthcheck HEALTHY). Register every new component before it runs.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and
+  refusal, skip only that step, finish the rest, hand back. Never work around it. DONE means merged AND, for anything that
+  runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration except where your block's PERMISSIONS name
+  it. Read-only GETs against the Kalshi DEMO API, and public unauthenticated Kalshi market-data GETs, are allowed.
+- Python on the box is 3.9 and rejects Kalshi's 5-digit fractional ISO timestamps: parse with the tolerant parse_ts (W80.2).
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title). Your handoff fills vision_pillar, gap_measure and gap_delta (measured before -> after, with source).
+  If what you find means the block cannot move its measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated / interpreted / applied (a tested path from
+  the fact to a price, compared with the market). Quote the operator's words, never compress them (window error W16).
+- GRANULARITY INDEX (operator 2026-10-16, 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md): every factor you build reports its
+  five parts - the split, the rank against history, the matchup cross, the market map, the application. The operator's
+  examples are illustrations, not build lists (window error W17).
+- ADR-0074: handoffs carry pattern_sweep: ("n/a (no defect fixed)" when nothing was fixed) and surface_delta:.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W85_<n>.md (docs-only push).
+
+WAVE 85.3 - BEFORE REAL MONEY: THE KILL SWITCH SEES ALL STAKE, AND THE INSTALL GATE REFUSES ON RED. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING (before any real capital). The operator's THREE CALLS (blockquote, 2026-10-21 19:15 PT), call (3): "The kill
+switch counts open and settled-but-unresolved stake and persists its state (GG-441), built as a block before any real
+capital." Hard Rule 14 for Part A.
+PERMISSIONS: scripts/runtime_registry.py (the install gate), RUNTIME_REGISTRY.toml (the three NBA preseason entries only),
+src/prediction_market_bot/c4_risk_engine/ (the kill switch) + tests, the GG-441 entry and one new gap entry, by PR. NOT: any
+limit VALUE (max_drawdown_pct, MAX_DAILY_LOSS_PCT, per-event caps - those belong to the G6 ADR), kelly_fraction, stakes, orders,
+live-ledger rows, existing cron lines.
+
+PART A - The install that ran on RED (84.1 Part C, not done: the operator stopped 84.1 for time) (~20 min)
+  W83.2's handoff: "Surface budget was RED at install (own-job staleness expected; the other reasons were not recorded) and the
+  installer appended anyway." Find why the gate let it through, fix it so it refuses on RED unless every red reason is the
+  job's own expected first-run state (named), add a test, record the finding in the gap log. Retire the three NBA preseason
+  registry entries the box no longer runs (budget_read 2026-10-22 22:22Z: 3 mirrored-but-not-installed: run_nba_player_points_
+  shadow.py --preseason, remove_nba_preseason_cron.py --auto, run_nba_pregame_shadow.py --preseason).
+PART B - GG-441: the kill switch (~50 min)
+  Today it counts realized loss only and keeps its state in memory: with resolution dark, stake that has settled but not
+  resolved is invisible to it, and a restart forgets. Build: exposure = realized loss + open stake + settled-but-unresolved
+  stake, per book and system-wide; state persisted (atomic write; survives a restart and is reloaded before the first order);
+  the halt stays within 60 seconds (NFR-03). Tests: the resolution-dark case, a restart mid-day, a corrupt or missing state
+  file (fail closed: halt, never open). Hard Rule 13 / GG-072: grep every consumer of the kill switch and of the risk engine's
+  state, list each with its disposition in the handoff. If t4-mlb imports what you change, the common rules' restart policy
+  applies; read the Deploy job summary and record the decision.
+Results: the two fixes + tests, the gap entries, budget_read before/after, a handoff.
+
+END OF BLOCK 85.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### M85 — Muse: the market's line history, "when was it public", the 33-ticket backlog (2026-10-22 15:45 PT)
+**DEPTH feed** · paste into the main Muse chat · same text in `QUAL_ARCHIVE/MUSE_PASTE_IN_v3.md` § "Add-in, 2026-10-22 15:45 PT" ·
+backlog: 33 open tickets in TO_MUSE.md (R-057 → R-062 added)
+
+```
+From Earl, directly.
+
+1. Good work yesterday: R-028, R-041, R-018, R-055 and R-056 are done, the schema is at v1.6, and the two unnamed jobs are
+   disabled. Read TO_MUSE.md fresh: the watchdog entry dated 2026-10-22 has the grades and the new backlog order.
+
+2. Something changed on the bot side, and it changes what is most useful from you. The bot's prices will now START FROM THE
+   MARKET'S OWN LINE and move off it only where a factor shows the line missing something. That makes two kinds of tickets
+   worth more: (a) the history of the market's own lines, opening and closing, with timestamps, for every sport, so the bot has
+   something to learn against; (b) anything the line may not have absorbed yet, and exactly when it became public (injury
+   reports, probable starters, lineups). R-057 to R-062 are new. Recording a published line and its timestamp is recording;
+   deciding anything from it is the bot's job. Never a bet, pick, odds or model.
+
+3. R-046: keep going one team per browser task. Your 08:50 lesson held - the single-team runs finish, the five-team run did not.
+
+4. On your NFL dossiers: thanks for the honest shape (QB-only records, 3 exemplars). The OL/DL merge proposal is noted; the
+   taxonomy keeps its positions (I broke OL and DL out by position on purpose), and any merge comes from the bot's mass tier on
+   its own evidence, then to me. Keep marking where free data only reaches the tackle pool, the interior pool or one side.
+
+5. The backlog holds 33 open tickets. Work it top-down in the order written in TO_MUSE.md; re-read it every run.
+```
+
+---
+
+---
+
 ## Wave 84 prompts + Muse block (written 2026-10-21 19:15 PT) - archived at the Wave 84 close, 2026-10-22 15:45 PT. 84.1 🟡 (A+B) 84.2 🟨 84.3 ✅ M84 ✅. Verbatim:
 
 ## ⬛ NOW — Wave 84 · WRITTEN 2026-10-22 ~02:15 UTC (10-21 19:15 PT) · three MEDIUM terminal blocks + Muse block M84 + GA-4 · built from Wave 83's verified results
