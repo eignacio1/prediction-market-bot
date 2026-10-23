@@ -1018,3 +1018,4 @@
 | 2026-10-23T00:02:35Z | T-1120 | CLOSED — merge confirmed, HEAD (81a4ada) is ancestor of origin/main — W85.2 real position gate replayed (keeps 0 at accepted rule) and built unwired; DRAFT ADR-0072 addendum |
 | 2026-10-23T00:02:38Z | W85.1 | CLOSED — W85.1: NFL market-anchored price built offline and pre-registered (EXP-041, not wired); pooled dBrier vs anchor +0.00002 [-0.00014,+0.00017]; 0 of 18,479 strikes clear the gate. (commit `67697f3 (code, PR #326); pre-reg commit = this docs push (SHA in DECISION_LOG)`) |
 | 2026-10-23T00:03:14Z | W85.1 | CLOSED — merge confirmed, HEAD (f6cf9af) is ancestor of origin/main — DONE — PR #326 merged, EXP-041 frozen not wired, GG-1090 |
+| 2026-10-23T00:06:03Z | W85.3 | CLOSED — W85.3 PARTIAL: install gate refuses on RED, 3 NBA preseason entries retired, exposure gate built and wired to T1 only (GG-441 open). (commit `40a0a1c`) |

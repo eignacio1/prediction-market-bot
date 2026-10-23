@@ -1,5 +1,22 @@
 # SESSION HANDOFF — W85.3 (kill switch sees all stake; install gate refuses on RED)
 
+<!-- session-meta
+task_id: W85.3
+tier: STANDARD
+timestamp: 2026-10-23T00:04:00Z
+commit: 40a0a1c
+one_line_summary: W85.3 PARTIAL: install gate refuses on RED, 3 NBA preseason entries retired, exposure gate built and wired to T1 only (GG-441 open).
+gg_touched: GG-441, GG-1080, GG-1081, GG-1082
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING (operator call 3, 2026-10-21 19:15 PT, GG-441; Hard Rule 14)
+gap_delta: surface -3 retired entries; GG-441 input now includes settled-unresolved stake for T1 MLB (exposure_gate.py, main @ 40a0a1c)
+pattern_sweep: substring-filter-on-red-reasons swept across scripts/ src/ .claude/ deploy/ tests/; only the two fixed installers had it; the other two installers already refuse on any non-GREEN.
+surface_delta: -3 (NBA preseason entries retired), 0 added
+-->
+
+
 Status: PARTIAL | main @ 40a0a1c | PR #325 (CI `test` green on 87a87be, squash-merged; main run on 40a0a1c green) | Part A done; Part B built and wired to T1 only, GG-441 stays OPEN (GG-1082)
 
 vision_pillar: PLUMBING
