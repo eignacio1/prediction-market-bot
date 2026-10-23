@@ -1,0 +1,8 @@
+{
+ "model_id": "mlb_game_pregame_v1",
+ "market_referenced_heldout_brier": "NONE",
+ "reason": "no MLB game-market price history (moneyline/run line/total) in the repo for 2025",
+ "skill_weight": 0,
+ "generated_utc": "2026-10-23",
+ "note": "new W86.1 file; existing models/ files untouched"
+}

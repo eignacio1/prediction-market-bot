@@ -1,0 +1,19 @@
+{
+ "model_id": "nfl_pregame_v1",
+ "model_sha256": "3f1570860adff62209ea287f666f3876996aadadef8aaf2201bf2804f8bb8af6",
+ "market_source": "nflverse home/away_moneyline close, de-vigged by normalisation",
+ "season": 2025,
+ "market": "NFL moneyline (home win), REG, ties excluded",
+ "n_games": 271,
+ "brier_model": 0.21927522611188702,
+ "brier_market": 0.2121389683507919,
+ "paired_brier_diff_market_minus_model": [
+  -0.007136257761094933,
+  -0.019761051809177872,
+  0.005492233823110646
+ ],
+ "reading": "positive = model better than market",
+ "timing_caveat": "GG-1090: nflverse close is at/near kickoff, later than the model's decision time (ko-36h/-24h/-6h anchor-vs-close SD 0.026/0.021/0.015 vs 0.010 at ko-30min). The comparison flatters the market.",
+ "kalshi_note": "Kalshi KXNFLGAME candles cover only part of 2025 (415 of 862 markets, PARTIAL) and were not used.",
+ "generated_utc": "2026-10-23T00:24:30+00:00"
+}

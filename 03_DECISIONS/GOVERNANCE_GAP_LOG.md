@@ -4298,3 +4298,9 @@ W84.2 Part B cross not run (n = 0): PREGAME_SHADOW NBA_PLAYER_POINTS rows (since
 **Status:** OPEN · **Severity:** MEDIUM
 
 W85.1 Part A. `exp_output/KALSHI_HISTORY/candles/KXNFLGAME.jsonl` holds 411 one-minute sets (188 games, 2025 season to Jan 2026). There is none for the spread, total or team-total series and none for 2026, so the T1/T2/T3 anchor-versus-close gap (SD 0.026/0.021/0.015 at ko-36h/-24h/-6h vs 0.010 at ko-30min) is measured on moneyline only, and the historical test anchors every family on the de-vigged close. EXP-041's live anchor is the mid at decision time. Proposed fix: archive the three ladder series' candles forward and backfill what the public API serves; free data only. Owner: next DEPTH wave.
+
+### GG-1100 — distance_to_optimum D3 undercounts pre-registered challengers (EXP-041 not counted)
+
+**Status:** OPEN · **Severity:** LOW
+
+W86.1 Part B. `scripts/distance_to_optimum.py` `d3()` counts `.md` files under `12_EXPLORATORY/` or `03_DECISIONS/` whose filename contains "challenger" and carry `**Status:** PROPOSED|ACCEPTED`. EXP-041 (`05_RESEARCH_EXPERIMENTS/EXP041_NFL_MARKET_ANCHORED_PREREGISTRATION_2026-10-22.md`, `**Status:** FROZEN`) fails all three tests, so D3 reports 1 where 2 are expected. Not fixed in W86.1 (reconcile-only). Fix: define challengers from a registry, not a filename/dir/status pattern.

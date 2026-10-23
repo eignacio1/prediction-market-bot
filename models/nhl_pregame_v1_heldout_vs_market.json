@@ -1,0 +1,8 @@
+{
+ "model_id": "nhl_pregame_v1",
+ "market_referenced_heldout_brier": "NONE",
+ "reason": "no NHL market history before the shadow period (KXNHL* not fetched); the shadow arm's own market-referenced Brier is in the calibration engine, not a held-out",
+ "skill_weight": 0,
+ "generated_utc": "2026-10-23",
+ "note": "new W86.1 file; existing models/ files untouched"
+}

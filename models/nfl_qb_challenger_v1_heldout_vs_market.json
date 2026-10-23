@@ -1,0 +1,8 @@
+{
+ "model_id": "nfl_qb_challenger_v1",
+ "market_referenced_heldout_brier": "NONE",
+ "reason": "no per-game 2025 predictions stored and no builder run this block; the challenger shares the NFL market (see nfl_pregame_v1 file) but was not scored",
+ "skill_weight": 0,
+ "generated_utc": "2026-10-23",
+ "note": "new W86.1 file; existing models/ files untouched"
+}
