@@ -1,7 +1,7 @@
-"""W86.2 Part A: market-implied margin/total distribution per game from shadow-ledger ladders.
+"""W86.2 Part A: market-implied margin/total distribution per game from pre-game shadow-arm ladders.
 
 usage: python part_a.py <shadow_dir> <out_dir>
-Reads PREGAME_SHADOW jsonl copies (read-only); writes CSV/JSON under 12_EXPLORATORY/ via safe_out.
+Reads local jsonl copies of the shadow arms (read-only); writes CSV/JSON under 12_EXPLORATORY/ via safe_out.
 """
 from __future__ import annotations
 

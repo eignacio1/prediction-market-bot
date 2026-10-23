@@ -29,7 +29,7 @@ def parse_ts(s: str) -> datetime:
     dt = datetime.fromisoformat(f"{d}T{hh}:{mm}:{ss}+00:00")
     if tz and tz != "Z":
         sign = 1 if tz[0] == "+" else -1
-        digits = tz[1:].replace(":", "")
+        digits = "".join(tz[1:].split(":"))
         from datetime import timedelta
         dt = dt - sign * timedelta(hours=int(digits[:2]), minutes=int(digits[2:]))
     return dt.astimezone(timezone.utc)
