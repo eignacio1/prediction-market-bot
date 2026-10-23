@@ -1020,3 +1020,4 @@
 | 2026-10-23T00:03:14Z | W85.1 | CLOSED — merge confirmed, HEAD (f6cf9af) is ancestor of origin/main — DONE — PR #326 merged, EXP-041 frozen not wired, GG-1090 |
 | 2026-10-23T00:06:03Z | W85.3 | CLOSED — W85.3 PARTIAL: install gate refuses on RED, 3 NBA preseason entries retired, exposure gate built and wired to T1 only (GG-441 open). (commit `40a0a1c`) |
 | 2026-10-23T00:06:20Z | W85.3 | CLOSED — merge confirmed, HEAD (1e83984) is ancestor of origin/main — PARTIAL — Part A done, exposure gate wired to T1 only (GG-1082) |
+| 2026-10-23T00:15:50Z | T-1123..T-1126, GG-1100+ | W86.1 quant core (PURPOSE: PROOF — scorers agreeing with core 0->n; frozen models w/ market-referenced Brier 0->n of 6). STANDARD, deliverable: quant/ package + reconcile + results_W86.md |
