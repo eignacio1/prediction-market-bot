@@ -1026,3 +1026,4 @@
 | 2026-10-23T00:46:56Z | T-1123..T-1126 | CLOSED — merge confirmed, HEAD (9f2b031) is ancestor of origin/main — W86.1 quant A1 PARTIAL: PRs #328 and #330 merged; core + NHL reconcile + NFL held-out vs market; 5 models NONE |
 | 2026-10-23T00:47:04Z | T-1163 | CLOSED — W86.3 fill DTMC + depth size: E3 gap decomposed (adverse selection dominates), queue position unlogged; PR #329 merged. (commit `b3dd48e`) |
 | 2026-10-23T00:47:20Z | T-1163 | CLOSED — merge confirmed, HEAD (48ff13e) is ancestor of origin/main — W86.3 closed; PR #329 merged, close docs on main |
+| 2026-10-23T00:53:25Z | W86.2 | CLOSED — W86.2 DONE (measure only): market-implied margin/total distributions for 45 NFL / 28 NBA / 19 MLB games and ladder coherence over 2.0M strike-snapshots; only NFL TEAMTOTAL has net survivors, none with known size. (commit `33a1a39`) |
