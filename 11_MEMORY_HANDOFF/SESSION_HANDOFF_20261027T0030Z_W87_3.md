@@ -1,4 +1,20 @@
 # SESSION_HANDOFF W87.3 — market history for frozen models + NHL totals price check
+
+<!-- session-meta
+task_id: T-1170
+tier: STANDARD
+timestamp: 2026-10-27T00:30:00Z
+commit: 7774370
+one_line_summary: W87.3 PARTIAL: NHL scored vs Kalshi (weight 0), 4 models NONE (model-side data); NHL totals price integrity measured, no score read
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: models with a market-referenced held-out Brier (of 6)
+gap_delta: 1 -> 2 of 6 (NHL from W84.3 stored numbers n=1,306, no clustered interval; 12_EXPLORATORY/market_history/results_W87.md)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
 vision_pillar: PROOF
 gap_measure: models with a market-referenced held-out Brier (of 6)
 gap_delta: 1 -> 2 (NHL added from W84.3 stored numbers n=1,306; NO clustered interval). Skill weights all 0.
