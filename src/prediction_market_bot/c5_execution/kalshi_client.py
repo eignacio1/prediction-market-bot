@@ -1103,6 +1103,18 @@ class KalshiMarketClient:
                 yes_price_cents=0, actual_cost_usd=0.0,
                 status="halted", error=f"kill_switch_halted:{_halt}",
             )
+        # W87.2/GG-1082: the exposure gate (open + realized + settled-unresolved stake, per book and
+        # system-wide). Log mode records the would-halt and places; enforce mode refuses.
+        from prediction_market_bot.c4_risk_engine import exposure_gate as _xg
+        _xg_halt = _xg.gate_for_order(band)
+        if _xg_halt:
+            logger.warning("submit_order REFUSED (exposure gate): %s ticker=%s band=%s", _xg_halt, ticker, band)
+            return KalshiOrder(
+                ok=False, order_id="", client_order_id=client_order_id or "",
+                ticker=ticker, side=side, contracts=0,
+                yes_price_cents=0, actual_cost_usd=0.0,
+                status="halted", error=f"exposure_gate_halted:{_xg_halt}",
+            )
 
         if not self._private_key:
             return KalshiOrder(

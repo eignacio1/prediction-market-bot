@@ -102,7 +102,21 @@ def maybe_place(
                     "ticker": ticker, "error": order.error, "arm": "treatment" if treatment else "control"})
     if treatment and order.ok and order.order_id:
         pol.schedule_cancel(client, order.order_id, rid, ticker)
+    feed_exposure_gate()
     return {"order_id": order.order_id, "ok": order.ok}
+
+
+def feed_exposure_gate() -> None:
+    """W87.2/GG-1082: the ledger-less SHADOW book reports its placed-order stake (from the shadow
+    order log) to the exposure gate. Never raises; a failure marks the book failed (orders refused)."""
+    from prediction_market_bot.c4_risk_engine import exposure_gate as xg
+    try:
+        xg.record_book("SHADOW", xg.shadow_state(pol.log_path()), xg.load_settled()[0])
+    except Exception as e:  # noqa: BLE001
+        try:
+            xg.mark_feed_failed("SHADOW", repr(e)[:200])
+        except Exception:  # noqa: BLE001
+            pass
 
 
 def make_on_row(adapter: Any) -> Optional[Callable[[dict], None]]:
@@ -118,4 +132,5 @@ def make_on_row(adapter: Any) -> Optional[Callable[[dict], None]]:
         pol.append_log({"event": "shadow_skip", "reason": "no_signing_key_switch_inert"})
         return None
     pol.sweep_overdue(client)
+    feed_exposure_gate()  # the book must exist before its first order (no writer = refused)
     return lambda row: maybe_place(row, client)
