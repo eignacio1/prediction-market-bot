@@ -1029,3 +1029,4 @@
 | 2026-10-23T00:53:25Z | W86.2 | CLOSED — W86.2 DONE (measure only): market-implied margin/total distributions for 45 NFL / 28 NBA / 19 MLB games and ladder coherence over 2.0M strike-snapshots; only NFL TEAMTOTAL has net survivors, none with known size. (commit `33a1a39`) |
 | 2026-10-26T23:34:15Z | T-1170..T-1172, GG-1170..GG-1172 | W87.3 STANDARD: market history for frozen models + NHL_GAME_TOTAL_T1 price integrity — FOR PROOF (models with market-referenced held-out Brier 1->n of 6) |
 | 2026-10-26T23:34:49Z | T-1173..T-1175, GG-1173..GG-1175 | STANDARD — W87.2: kill switch (exposure_gate) fed by every book and enforced on submit_order — PLUMBING (before real capital; closes GG-1082/GG-441) |
+| 2026-10-26T23:34:52Z | T-1180..T-1182, GG-1180..GG-1184 | STANDARD — W87.1 quant A1 finished: reconcile every scorer with core, re-point where <1e-6, fix D3 (GG-1100) — FOR PROOF (paths reconciled 2->all; re-pointed 0->n; D3 counts EXP-041) |
