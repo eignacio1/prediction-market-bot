@@ -62,6 +62,7 @@ import pandas as pd
 from prediction_market_bot.atomic_io import (
     LedgerCorruptError, LedgerWriteError, alarm, atomic_write_json, quarantine,
 )
+from prediction_market_bot.c4_risk_engine import exposure_gate as xg  # W87.2/GG-1082
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c5_execution import demo_fill_policy as _fill_policy
 from prediction_market_bot.c5_execution.market_type_registry import MarketType
@@ -371,7 +372,6 @@ class PaperTrader:
         order-capable book reports its open + realized + settled-unresolved stake to the exposure
         gate here (merge writer, other books untouched). A feed failure marks the book failed, which
         refuses its orders; it never raises into the ledger write."""
-        from prediction_market_bot.c4_risk_engine import exposure_gate as xg
         book = xg.book_for_band(self._kill_band)
         if book is None or xg.BOOKS[book]["portfolio"] != self._path.name:
             return
