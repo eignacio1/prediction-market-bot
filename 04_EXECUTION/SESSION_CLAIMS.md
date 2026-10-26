@@ -1027,3 +1027,4 @@
 | 2026-10-23T00:47:04Z | T-1163 | CLOSED — W86.3 fill DTMC + depth size: E3 gap decomposed (adverse selection dominates), queue position unlogged; PR #329 merged. (commit `b3dd48e`) |
 | 2026-10-23T00:47:20Z | T-1163 | CLOSED — merge confirmed, HEAD (48ff13e) is ancestor of origin/main — W86.3 closed; PR #329 merged, close docs on main |
 | 2026-10-23T00:53:25Z | W86.2 | CLOSED — W86.2 DONE (measure only): market-implied margin/total distributions for 45 NFL / 28 NBA / 19 MLB games and ladder coherence over 2.0M strike-snapshots; only NFL TEAMTOTAL has net survivors, none with known size. (commit `33a1a39`) |
+| 2026-10-26T23:34:15Z | T-1170..T-1172, GG-1170..GG-1172 | W87.3 STANDARD: market history for frozen models + NHL_GAME_TOTAL_T1 price integrity — FOR PROOF (models with market-referenced held-out Brier 1->n of 6) |
