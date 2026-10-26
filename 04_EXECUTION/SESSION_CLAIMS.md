@@ -1031,3 +1031,4 @@
 | 2026-10-26T23:34:49Z | T-1173..T-1175, GG-1173..GG-1175 | STANDARD — W87.2: kill switch (exposure_gate) fed by every book and enforced on submit_order — PLUMBING (before real capital; closes GG-1082/GG-441) |
 | 2026-10-26T23:34:52Z | T-1180..T-1182, GG-1180..GG-1184 | STANDARD — W87.1 quant A1 finished: reconcile every scorer with core, re-point where <1e-6, fix D3 (GG-1100) — FOR PROOF (paths reconciled 2->all; re-pointed 0->n; D3 counts EXP-041) |
 | 2026-10-26T23:48:44Z | T-1170 | CLOSED — W87.3 PARTIAL: NHL scored vs Kalshi (weight 0), 4 models NONE (model-side data); NHL totals price integrity measured, no score read (commit `7774370`) |
+| 2026-10-26T23:49:42Z | T-1170 | CLOSED — merge confirmed, HEAD (ffb4ff2) is ancestor of origin/main — W87.3 PARTIAL: handoff + queue landed on main (ffb4ff2) |
