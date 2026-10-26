@@ -1,0 +1,12 @@
+{
+ "model_id": "nfl_pregame_v1",
+ "market_referenced_heldout_brier": {
+  "n": 271,
+  "brier_model": 0.2193,
+  "brier_market": 0.2121,
+  "source": "models/nfl_pregame_v1_heldout_vs_market.json (W86.1)"
+ },
+ "skill_weight": 0.0,
+ "generated_utc": "2026-10-26",
+ "note": "new W87.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}

@@ -1,0 +1,8 @@
+{
+ "model_id": "nba_pregame_v1",
+ "market_referenced_heldout_brier": "NONE",
+ "reason": "Kalshi KXNBAGAME history starts 2025-04 (playoffs only), so the model's held-out season 2024-25 has none. The 2025-26 season (extra_2026) has Kalshi history from 2025-10, but scoring needs the NBA games rebuilt (box has only 2025-10..2026-06 games_2026.json, no 2024-25 windows for rolling features); not rebuilt in this block.",
+ "skill_weight": 0,
+ "generated_utc": "2026-10-26",
+ "note": "new W87.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}

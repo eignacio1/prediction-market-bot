@@ -1,0 +1,8 @@
+{
+ "model_id": "nfl_qb_challenger_v1",
+ "market_referenced_heldout_brier": "NONE",
+ "reason": "No held-out season exists (trained through 2024, calibrated 2025, 2026 is live and sealed).",
+ "skill_weight": 0,
+ "generated_utc": "2026-10-26",
+ "note": "new W87.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}
