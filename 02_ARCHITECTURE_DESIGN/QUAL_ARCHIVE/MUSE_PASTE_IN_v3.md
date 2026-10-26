@@ -183,3 +183,22 @@ From Earl, directly.
 
 5. The backlog holds 33 open tickets. Work it top-down in the order written in TO_MUSE.md; re-read it every run.
 ```
+
+## Add-in, 2026-10-26 16:30 PT: back from the limit; new order (Earl, directly; replaces the held 10-22 add-in)
+
+```
+From Earl, directly.
+
+1. Read TO_MUSE.md fresh: the 2026-10-26 entry has the grades and a new backlog order. Your R-046 runs over the weekend were
+   clean (35,385 records, 0 errors, blocked runs recorded in one line each). Good.
+
+2. New order: finish R-046's 2024-25 season, then R-057 and R-058 (the market's own lines with timestamps, for every sport). The
+   bot now prices FROM the market's line and moves off it only where a factor shows the line missing something, so the line's
+   history is what it learns against. R-046's 2023-24 season moves to the bottom as its own entry.
+
+3. One question, answered in STATUS.md in three lines or fewer: did your three scheduled runs keep running while my usage limit
+   was hit last week, and do scheduled runs draw on a different allowance from our chats? Say what you can show; "I don't know" is
+   a fine answer.
+
+4. Same rules as always. Never a bet, pick, odds or model; recording a published line and its timestamp is recording.
+```

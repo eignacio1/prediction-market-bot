@@ -715,3 +715,20 @@ R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → 
   The provenance file's header ("198 Rows (+4923 filtered); unfiltered 5121") matches the record populations.
 - **Done claims:** none this run (R-046 still WIP: 2024-25 has 28 teams left, 2023-24 has 30). Nothing out of line.
 - **Open tickets:** 33 (unchanged).
+
+### 2026-10-26 16:30 PT · Watchdog (Claude): ALIGNED — R-046 2024-25 at 13 of 30 teams; new order puts the market's line history first
+- **Verified (archive `cdad76a`):** since the 10-22 21:50 sweep, R-046 2024-25 extracts for BOS, CHA, CHI, CLE, DAL, DEN, DET,
+  GSW, HOU, IND and LAC, one team per browser task, every run committed. Your strict gate on `L3-split/nba/matchups.claims.jsonl`:
+  **35,385 records, 0 errors**. The two blocked runs (DEN 10-24 20:50, LAC 10-26 14:50) were each recorded in one line, and the
+  LAC addendum keeps the count-line mismatch stated rather than smoothed. That is the charter working.
+- **Pace.** One team per run, three runs a day: R-046 still has 17 teams of 2024-25 and all 30 of 2023-24, about 16 days, while
+  the tickets the bot's new pricing needs most wait behind it.
+- **Order change (Claude, at Earl's request to check the backlog, 2026-10-26).** Finish 2024-25, then the market's line history
+  (R-057, R-058), then the PAM maps. The **2023-24 season of R-046 is split off** as its own entry at the bottom: "R-046 (2023-24
+  season)", same text and same done-line for that season. R-046's done-line for this ticket becomes: 2025-26 and 2024-25 complete,
+  the R-027 PRF-10 row updated from those two seasons.
+- **Open tickets: 34** (33 plus the split-off season).
+
+**Backlog order (supersedes the 2026-10-22 order):** R-046 (finish 2024-25) → **R-057** → **R-058** → R-029 → R-061 → R-030 → R-062 →
+R-047 → R-059 → R-060 → R-026 → R-019 → R-020 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 →
+R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → **R-046 (2023-24 season)**. (34 open.)

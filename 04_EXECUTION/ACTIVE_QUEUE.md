@@ -1157,7 +1157,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 85.1 | NFL market-anchored price, offline + pre-registered (pooled test) | ✅ | #326 green; EXP-041 frozen, not wired; pooled dBrier vs anchor +0.00002 [−0.00014, +0.00017]; 0 of 18,479 strikes clear the gate |
 | 85.2 | The real gate: replay on placed orders, then built unwired + DRAFT ADR-0072 addendum | ✅ | #327 green; 44,608 orders → 11,447 positions; no market-referenced held-out Brier → skill weight 0 → gate keeps 0 |
 | 85.3 | Kill switch sees all stake (GG-441) + install gate refuses on RED (84.1 Part C) | 🟨 | #325 green; RED gate fixed (GG-1080/1081), 3 entries retired; exposure gate wired to T1 MLB only; GG-441 OPEN on GG-1082 (order path) |
-| M85 | Muse: line history + "when was it public" tickets, 33-ticket backlog | ⏸ HELD (Muse out of usage for the week) | |
+| M85 | Muse: line history + "when was it public" tickets, 33-ticket backlog | ↪ REPLACED 10-26 by the short add-in in MUSE_PASTE_IN_v3.md § "Add-in, 2026-10-26 16:30 PT" (backlog reordered, 34 open) | |
 
 ### ✅ WAVE 84 — WRITTEN 2026-10-22 ~02:15 UTC · CLOSED 2026-10-22 ~03:30 UTC (operator 10-21 20:29 PT) · verified 2026-10-22 22:45Z on GitHub (7 PRs, CI green) + box bridge (`20261022T222233Z_*`) · moved: **D5(b) NHL 7/0/0 → 2/2/3, D5(a) NHL 0 → 1/8; NBA PAM ~1,723 player-seasons assigned**; dashboard /project 50 s → 0.06 s; NBA injury report reaches the box
 
