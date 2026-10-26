@@ -6,12 +6,15 @@ kmult : 0.07 * 0.5 * q * (1-q)     (series API fee_multiplier=0.5; coefficient I
 """
 from __future__ import annotations
 
+from prediction_market_bot.quant import money as _Q  # noqa: E402
+
 K007 = 0.07
 KMULT = 0.035
 
 
 def fee_k007(q: float) -> float:
-    return K007 * q * (1.0 - q)
+    """Thin wrapper: the one definition lives in quant.money (W87.1, bit-equal on the frozen snapshot)."""
+    return _Q.fee_k007(q)
 
 
 def fee_kmult(q: float) -> float:
