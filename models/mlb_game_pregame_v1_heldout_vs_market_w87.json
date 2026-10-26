@@ -1,0 +1,8 @@
+{
+ "model_id": "mlb_game_pregame_v1",
+ "market_referenced_heldout_brier": "NONE",
+ "reason": "KXMLBGAME covers the 2025 held-out season (8,440 markets), but the model's MLB games/probable-starter data is on neither the laptop nor the box; a free statsapi re-fetch was not done in this block.",
+ "skill_weight": 0,
+ "generated_utc": "2026-10-26",
+ "note": "new W87.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}
