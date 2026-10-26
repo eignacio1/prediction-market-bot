@@ -87,6 +87,27 @@ def test_d3_counts_only_proposed_or_accepted_challengers(tmp_path):
     assert r["value"].startswith("2 ") and "NFL: 1" in r["value"] and "unspecified: 1" in r["value"]
 
 
+def test_d3_reads_prereg_files_frozen_and_title_status(tmp_path):
+    """GG-1100: EXP-041 (05_RESEARCH_EXPERIMENTS, Status FROZEN, 'challenger' only in the title) and EXP-040 (status only in the title) count."""
+    (tmp_path / "05_RESEARCH_EXPERIMENTS").mkdir()
+    (tmp_path / "05_RESEARCH_EXPERIMENTS/EXP041_X_PREREGISTRATION.md").write_text(
+        "# EXP-041 - NFL market-anchored price (challenger) - PRE-REGISTRATION (FROZEN, NOT WIRED)\n**Status:** FROZEN at the commit\n")
+    (tmp_path / "05_RESEARCH_EXPERIMENTS/EXP040_X_PREREGISTRATION.md").write_text(
+        "# EXP-040 - NBA points, minutes challenger - PRE-REGISTRATION (ACCEPTED)\n**Accepted by operator:** x\n")
+    (tmp_path / "05_RESEARCH_EXPERIMENTS/EXP036_X_PREREGISTRATION.md").write_text(
+        "# EXP-036 - NHL shadow\n**Status:** FROZEN\n")  # no challenger
+    (tmp_path / "05_RESEARCH_EXPERIMENTS/EXP099_challenger.md").write_text(
+        "# EXP-099\n**Status:** DRAFT\n")
+    r = d.d3(tmp_path)
+    assert r["value"].startswith("2 ")
+    assert sorted(r["files"]) == ["05_RESEARCH_EXPERIMENTS/EXP040_X_PREREGISTRATION.md", "05_RESEARCH_EXPERIMENTS/EXP041_X_PREREGISTRATION.md"]
+
+
+def test_d3_on_this_repo_counts_exp041():
+    r = d.d3(Path(__file__).resolve().parents[1])
+    assert any("EXP041" in f for f in r["files"])
+
+
 def _book(tmp_path, key, closed, sidecar):
     pf, sc = d.BOOKS[key]
     (tmp_path / "logs").mkdir(exist_ok=True)

@@ -176,29 +176,42 @@ def depth(repo: Path) -> list[dict]:
     return [d1, d2, d3(repo)]
 
 
-STATUS_RE = re.compile(r"^\*\*Status:\*\*\s*(PROPOSED|ACCEPTED)\b", re.M)
+STATUS_LINE_RE = re.compile(r"^\*\*Status:?\*\*:?\s*(.*)$|^\*\*Status:\s*(.*)$", re.M)
+LIVE_STATUS_RE = re.compile(r"\b(PROPOSED|ACCEPTED|FROZEN)\b")
 ARM_RE = re.compile(r"^\*\*Arm:\*\*\s*(.+)$", re.M)
+D3_DIRS = ("12_EXPLORATORY", "03_DECISIONS", "05_RESEARCH_EXPERIMENTS")
+
+
+def _prereg_status(text: str) -> bool:
+    """A pre-registration is live when its first `**Status:**` line (else its title) opens with PROPOSED|ACCEPTED|FROZEN."""
+    m = STATUS_LINE_RE.search(text)
+    head = (m.group(1) or m.group(2) or "")[:80] if m else (text.splitlines()[0] if text else "")
+    return bool(LIVE_STATUS_RE.search(head))
 
 
 def d3(repo: Path) -> dict:
-    """Challenger pre-registrations: .md under 12_EXPLORATORY/ or 03_DECISIONS/ whose name contains 'challenger'
-    and that carry a `**Status:** PROPOSED|ACCEPTED` line. Arm from an `**Arm:**` line (else 'unspecified')."""
-    src = "12_EXPLORATORY/ + 03_DECISIONS/ (*challenger*.md with Status PROPOSED|ACCEPTED)"
+    """Challenger pre-registrations, read from the pre-registration files themselves (GG-1100).
+
+    A file counts when it sits under 12_EXPLORATORY/, 03_DECISIONS/ or 05_RESEARCH_EXPERIMENTS/, its name or its title
+    (first line) says 'challenger', and its Status (the `**Status:**` line, else the title) opens PROPOSED, ACCEPTED or
+    FROZEN. Arm from an `**Arm:**` line (else 'unspecified')."""
+    src = "12_EXPLORATORY/ + 03_DECISIONS/ + 05_RESEARCH_EXPERIMENTS/ (pre-registrations naming a challenger, Status PROPOSED|ACCEPTED|FROZEN)"
     found: dict[str, list[str]] = defaultdict(list)
     newest = 0.0
-    for sub in ("12_EXPLORATORY", "03_DECISIONS"):
+    for sub in D3_DIRS:
         for p in sorted((repo / sub).rglob("*.md")) if (repo / sub).is_dir() else []:
-            if "challenger" not in p.name.lower():
-                continue
             t = p.read_text(errors="replace")
-            if not STATUS_RE.search(t):
+            title = t.splitlines()[0] if t else ""
+            if "challenger" not in p.name.lower() and "challenger" not in title.lower():
+                continue
+            if not _prereg_status(t):
                 continue
             a = ARM_RE.search(t)
             found[a.group(1).strip() if a else "unspecified"].append(str(p.relative_to(repo)))
             newest = max(newest, p.stat().st_mtime)
     n = sum(len(v) for v in found.values())
     val = f"{n}" + (" (" + "; ".join(f"{a}: {len(v)}" for a, v in sorted(found.items())) + ")" if n else
-                    " (no PROPOSED/ACCEPTED challenger pre-registration found)")
+                    " (no live challenger pre-registration found)")
     return m_ok("D3", val, src, _iso(newest) if newest else _iso(), files=sorted(x for v in found.values() for x in v))
 
 
