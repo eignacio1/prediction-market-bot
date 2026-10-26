@@ -277,7 +277,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 87.1 | Quant A1 finished: every scorer reconciled with the core, re-pointed only where identical; D3 fixed (GG-1100) | PROOF: paths reconciled 2 → all; re-pointed 0 → n | ⬜ | |
+| 87.1 | Quant A1 finished: every scorer reconciled with the core, re-pointed only where identical; D3 fixed (GG-1100) | PROOF: paths reconciled 2 → all; re-pointed 0 → n | 🟡 Part A DONE (PR #333 merged) | 9 paths reconciled, 0 bugs, 4 definition differences (GG-1180..1183), D3 1 → 3 (GG-1100 resolved); Part B (re-point + absorb) next. `12_EXPLORATORY/quant_core_reconcile/results_W87.md` |
 | 87.2 | Before real money: the kill switch on every order path, fed by every book (GG-1082 → GG-441) | PLUMBING | ⬜ | |
 | 87.3 | The market history the skill weights need (5 models), and a price-integrity check on NHL_GAME_TOTAL_T1 | PROOF: models scored vs market 1 → n of 6 | ⬜ | |
 
