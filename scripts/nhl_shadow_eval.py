@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from prediction_market_bot.c1_signal_ingestion import nhl_ingest as ni  # noqa: E402
 from prediction_market_bot.c3_forecasting.nhl_pregame import TEAM_ALIASES, split_team_codes  # noqa: E402
+from prediction_market_bot.quant import money as _Q  # noqa: E402
 
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
 SERIES = {"KXNHLGAME": "NHL_MONEYLINE", "KXNHLSPREAD": "NHL_PUCK_LINE", "KXNHLTOTAL": "NHL_GAME_TOTAL"}
@@ -56,6 +57,9 @@ def fee_per_contract(price: float, k: float) -> float:
 
 def edge_net(p_yes: float, yes_bid: float, yes_ask: float, k: float) -> tuple[float, float]:
     """(E_net buying YES at ask, E_net buying NO at 1-bid), per $1 contract, fees included."""
+    if k == _Q.K007:  # the core owns the k007 definition (W87.1); any other k keeps the local formula
+        r = _Q.net_edge(p_yes, yes_bid, yes_ask)
+        return r["yes"], r["no"]
     no_ask = 1.0 - yes_bid
     ey = p_yes - yes_ask - fee_per_contract(yes_ask, k)
     en = (1.0 - p_yes) - no_ask - fee_per_contract(no_ask, k)
