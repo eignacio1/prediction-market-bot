@@ -3,7 +3,7 @@ Same feature builder and model file the live runner uses (MLBGameFeatureBuilder,
 unchanged), as of game start - 1h. Inputs: the Stats API schedule snapshot (box: exp_output/MLB_GAME/cache_w47/games.parquet).
 Caveat: the snapshot's home_sp/away_sp are the starters recorded after the fact, so the starter feature is the
 confirmed starter, as in the live runner once starters post; a late scratch is not modelled.
-usage: mlb_model_side.py <repo_root> <games.parquet> <out.json> [season=2025]"""
+usage: mlb_model_side.py <repo_root> <games.parquet> [season=2025] > out.json  (JSON to stdout)"""
 from __future__ import annotations
 
 import json
@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pandas as pd
 
-repo, games_path, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
-season = int(sys.argv[4]) if len(sys.argv) > 4 else 2025
+repo, games_path = Path(sys.argv[1]), Path(sys.argv[2])
+season = int(sys.argv[3]) if len(sys.argv) > 3 else 2025
 sys.path.insert(0, str(repo / "src"))
 from prediction_market_bot.c1_signal_ingestion.mlb_game_pregame_features import MLBGameFeatureBuilder, canon  # noqa: E402
 from prediction_market_bot.pregame_shadow.mlb_model import MLBPregameModel, p_yes_for  # noqa: E402
@@ -36,5 +36,5 @@ for r in sel.itertuples():
     rows.append({"game_id": int(r.game_pk), "game_date": r.game_date, "start_time_utc": r.start_utc,
                  "home": canon(r.home), "away": canon(r.away), "p_model": p, "y": int(r.home_score > r.away_score),
                  "sp_known": f["sp_known"]})
-out.write_text(json.dumps({"model_sha256": model.sha256, "season": season, "n_games_in_season": len(sel), "skipped": skipped, "rows": rows}))
-print(len(sel), "season games;", len(rows), "predicted;", skipped, "skipped;", model.sha256[:12])
+sys.stdout.write(json.dumps({"model_sha256": model.sha256, "season": season, "n_games_in_season": len(sel), "skipped": skipped, "rows": rows}))
+print(len(sel), "season games;", len(rows), "predicted;", skipped, "skipped;", model.sha256[:12], file=sys.stderr)

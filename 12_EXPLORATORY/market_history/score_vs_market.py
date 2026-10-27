@@ -3,7 +3,8 @@ Joins <model_side.json> rows (game_id, start_time_utc, home, away, p_model, y) t
 event, hourly candles). Market price = mid of (yes_bid.close, yes_ask.close) of the last hourly candle ending at or
 before start - 1h (the band's decision time), flipped to the home side when the listed market is the away team; rows
 whose market outcome disagrees with the game outcome are dropped and counted.
-usage: score_vs_market.py <nhl|nba|mlb> <model_side.json> <pregame.jsonl> <out.json>"""
+usage: score_vs_market.py <nhl|nba|mlb> <model_side.json> <pregame.jsonl> [more.jsonl ...] > scored.json  (JSON to stdout;
+several fetch shards are merged, de-duplicated by ticker)"""
 from __future__ import annotations
 
 import json
@@ -76,7 +77,7 @@ def summarize(joined: list[dict]) -> dict:
 def main():
     kind = sys.argv[1]
     model_side = json.loads(Path(sys.argv[2]).read_text())
-    mk = [json.loads(l) for l in Path(sys.argv[3]).open()]
+    mk = list({r["ticker"]: r for p in sys.argv[3:] for r in map(json.loads, Path(p).open())}.values())
     by_teams = defaultdict(list)
     for r in mk:
         ha = parse_game(kind, r["ticker"])
@@ -84,7 +85,7 @@ def main():
             by_teams[ha].append(r)
     joined, drop = [], defaultdict(int)
     for g in model_side["rows"]:
-        start = datetime.fromisoformat(g["start_time_utc"].replace("Z", "+00:00")).timestamp()
+        start = datetime.fromisoformat(re.sub(r"Z$", "+00:00", g["start_time_utc"])).timestamp()
         cands = [r for r in by_teams.get((g["home"], g["away"]), []) if abs(r["occurrence_ts"] - start) < MATCH_WINDOW_S]
         if len(cands) != 1:
             drop["no_market" if not cands else "ambiguous"] += 1
@@ -109,8 +110,8 @@ def main():
     if joined and "inseason_prior_min" in joined[0]:
         res["full_inseason_history_ge30"] = summarize([j for j in joined if j["inseason_prior_min"] >= 30])
     res["rows"] = joined
-    Path(sys.argv[4]).write_text(json.dumps(res))
-    print({k: v for k, v in res.items() if k != "rows"})
+    sys.stdout.write(json.dumps(res))
+    print({k: v for k, v in res.items() if k != "rows"}, file=sys.stderr)
 
 
 if __name__ == "__main__":

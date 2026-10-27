@@ -32,6 +32,8 @@ def main(argv=None):
     ap.add_argument("--to-iso", default="2100-01-01T00:00:00Z")
     ap.add_argument("--out", required=True)
     ap.add_argument("--rate", type=float, default=1.5)
+    ap.add_argument("--reverse", action="store_true", help="walk events from the tail; stop on meeting --meet-file's tickers")
+    ap.add_argument("--meet-file", help="jsonl of a forward worker on the same series (used with --reverse)")
     a = ap.parse_args(argv)
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     client = bs.Client(pause=1.0 / a.rate)
@@ -47,10 +49,16 @@ def main(argv=None):
     done = set()
     if path.exists():
         done = {json.loads(l)["ticker"] for l in path.open()}
+    order = list(enumerate(mk))
+    if a.reverse:
+        order.reverse()
     with path.open("a") as fh:
-        for i, m in enumerate(mk):
+        for i, m in order:
             if m["ticker"] in done:
                 continue
+            if a.reverse and a.meet_file and Path(a.meet_file).exists():
+                if m["ticker"] in {json.loads(l)["ticker"] for l in Path(a.meet_file).open()}:
+                    print("met forward worker at", m["ticker"], flush=True); break
             occ = when(m)
             try:
                 cs = bs.candles(client, store, a.series, m, occ - LOOKBACK_H * 3600, occ + 60, 60, cutoff)

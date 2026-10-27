@@ -4,7 +4,7 @@ History: the live 2025-26 store (data/raw/nba/games_2026.json, ESPN rows) plus 2
 schedule parquet, whose only time-of-day is missing -- those rows get a 23:30Z start (evening ET); this moves only
 rest/back-to-back counts for games early in 2025-26. `inseason_prior_min` (fewer of the two teams' completed 2025-26 games
 before this one) lets the scorer drop rows whose windows touch that approximated history.
-usage: nba_model_side.py <repo_root> <games_2026.json> <schedule_2025.parquet> <out.json>"""
+usage: nba_model_side.py <repo_root> <games_2026.json> <schedule_2025.parquet> > out.json  (JSON to stdout)"""
 from __future__ import annotations
 
 import json
@@ -46,6 +46,6 @@ for g in cur:
     p = NBAPregameModel.p_home_win(model.distribution(r["features"]))
     rows.append({"game_id": g["game_id"], "start_time_utc": g["start_time_utc"], "home": g["home"], "away": g["away"],
                  "p_model": p, "y": int(g["home_score"] > g["away_score"]), "inseason_prior_min": n_prior})
-Path(sys.argv[4]).write_text(json.dumps({"model_sha256": model.sha256, "season": 2026, "n_live_completed_regular": len(cur),
+sys.stdout.write(json.dumps({"model_sha256": model.sha256, "season": 2026, "n_live_completed_regular": len(cur),
                                          "rows": rows}))
-print(len(cur), "completed regular-season games;", len(rows), "predicted;", model.sha256[:12])
+print(len(cur), "completed regular-season games;", len(rows), "predicted;", model.sha256[:12], file=sys.stderr)
