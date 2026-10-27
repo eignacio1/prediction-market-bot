@@ -8,7 +8,8 @@ Nothing here imports or calls any order / position / sizing / paper-trader code
 from __future__ import annotations
 
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -22,6 +23,22 @@ def _f(x) -> Optional[float]:
         return float(x)
     except (TypeError, ValueError):
         return None
+
+
+def quote_fields(m: dict, now_utc: datetime) -> dict:
+    """Additive row fields (W88.2): the exchange's own time for this book read, and its age at evaluation.
+
+    Source is the HTTP Date header of the list response (``_quote_server_date``), not our clock; the age is
+    ``now_utc`` minus that, so it includes clock skew and request latency. None when the header is absent.
+    """
+    ts = None
+    try:
+        ts = parsedate_to_datetime(m["_quote_server_date"]).astimezone(timezone.utc)
+    except (KeyError, TypeError, ValueError):
+        pass
+    return {"quote_ts_utc": ts.isoformat() if ts else None,
+            "quote_age_s": round((now_utc - ts).total_seconds(), 3) if ts else None,
+            "quote_ts_source": "kalshi_response_date" if ts else None}
 
 
 def run_once(*, forecaster, cells: list[tuple[str, str]],
@@ -82,7 +99,7 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 "start_time_utc": start.isoformat(), "start_time_source": src, "code_sha": code_sha,
             }
             led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
-            if led.append(row, row_extra_for(tkr) if row_extra_for else None):
+            if led.append(row, {**quote_fields(m, now_utc), **(row_extra_for(tkr) if row_extra_for else {})}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:
