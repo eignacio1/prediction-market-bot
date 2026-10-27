@@ -16,3 +16,6 @@ Still zero real money at risk. We found why the MLB game-market tracker went qui
 
 ## W88.3 — frozen models vs the market
 Today we checked three of the bot's pre-game models against what the market actually priced, on games they had not seen. None beat the market: hockey and basketball are slightly worse than the market, baseball is a tie. So the safety gate would place no bets from them, which is the correct answer. No real money at risk, nothing live changed. Two models (player points, football QB) could not be scored yet and are listed as such.
+
+## W89.3 — which factors does the betting line not price? (NFL)
+No change to money: still zero real capital at risk. We tested whether three kinds of football information (who is available, venue, weather) tell us anything the betting line has not already absorbed. The line has absorbed most of it. A forward test of the weather-and-venue idea on totals did not beat the line, and none of the three clears the cost of trading. This is a "not yet" on weather, not a "never": our baseline for scoring is weak and wind forecasts were mostly missing. NBA was not tested because the price history it needs is not stored yet. Moves the depth pillar: measured factors 1 to 3, clearing costs 0 to 0. Recommendation: keep building (better scoring baseline first), nothing to pre-register.
