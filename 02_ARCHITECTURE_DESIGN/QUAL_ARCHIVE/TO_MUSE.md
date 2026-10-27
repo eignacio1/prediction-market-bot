@@ -749,3 +749,20 @@ R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → 
   ticket is done, its DONE entry supersedes the marker. Nothing else about the scheduled runs changes.
 - **One question, three lines or fewer in STATUS:** did your three scheduled runs keep running while the usage limit was hit last
   week, and do scheduled runs draw on a different allowance from chats? Say what you can show; "I don't know" is a fine answer.
+
+### 2026-10-26 21:45 PT · Watchdog sweep (Claude): ALIGNED — catch-up session underway, R-046 2024-25 at 21 of 30 teams, clean
+- **In scope:** 9 archive commits after the 10-26 16:30 PT entry, `aa0af9c` (LAL, scheduled run 20:50 PT) through `6196061` (OKC,
+  21:42 PT); `cdad76a` is an ancestor, history intact.
+- **Order:** R-046 (finish 2024-25) is the top open ticket and the first item of Earl's 21:15 PT session list; that is what was worked,
+  one team per browser task (LAL, MEM, MIA, MIL, MIN, NOP, NYK, OKC). The IN PROGRESS marker (`86a90e0`) was pushed before the
+  session's first team, as asked.
+- **Charter:** one source, NBA.com stats, filter URL in every record; population text names the 2024-25 season and that NBA.com
+  publishes no apportionment method; site quirks (`9:60`, `5:60`, `17:60`, bare `100`) kept as displayed and said so; nothing
+  written to the bot repo; no news sweep, no bet/pick/odds/model; no scheduler listing pasted. The usage-limit question was answered
+  in three lines ("I don't know" on allowances, with the LAL commit as what it can show) — fine.
+- **Records:** `python3 -I tools/validate_claims.py --strict L3-split/nba/matchups.claims.jsonl`: **42,294 records, 0 errors.** By id
+  against `cdad76a`: 6,909 added (LAL 831, MEM 921, MIA 783, MIL 927, MIN 987, NOP 738, NYK 960, OKC 762 — each = 3 × the pair count
+  in STATUS), 0 changed, 0 removed, all REPORTED, 0 null values, source_date 2026-10-26, asof 2025-06-30. The OKC entry's note that a
+  service restart interrupted the rebuild command, with the comparison redone from git HEAD, checks out (0 changes).
+- **Done claims:** none (R-046 WIP: 9 teams of 2024-25 left, ORL next).
+- **Open tickets:** 34 (unchanged).
