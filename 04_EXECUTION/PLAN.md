@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-27T01:50:00Z (T-1230 — W88.2 partial: games-cache sync fixed (#336) and shadow rows carry exchange quote time (#339); kill-switch enforce not done.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0150Z_W88_2.md` for full session detail.
+**Last reviewed:** 2026-10-27T02:40:00Z (T-1196 — W88.3: NHL/NBA/MLB frozen models scored vs Kalshi; market >= model on all three, skill weights 0/0/0.0018) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0154Z_W88_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

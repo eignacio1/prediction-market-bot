@@ -13,3 +13,6 @@ Still zero real money at risk. We found why the MLB game-market tracker went qui
 - Wrote a DRAFT rule for what "ready for real money" means, per book and sport (ADR-0076). Nothing takes effect until you accept it. No real money, no stake or limit changed.
 - Your call: accept, change or reject ADR-0076 (recommendation: accept, leaving the blank limits blank until a stake size is proposed).
 - Pillar moved: PROOF (G6 rule 0 → draft).
+
+## W88.3 — frozen models vs the market
+Today we checked three of the bot's pre-game models against what the market actually priced, on games they had not seen. None beat the market: hockey and basketball are slightly worse than the market, baseball is a tie. So the safety gate would place no bets from them, which is the correct answer. No real money at risk, nothing live changed. Two models (player points, football QB) could not be scored yet and are listed as such.
