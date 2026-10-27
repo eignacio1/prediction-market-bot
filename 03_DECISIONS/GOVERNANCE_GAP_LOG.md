@@ -4302,3 +4302,27 @@ W89.2, 2026-10-27. Consistent with run_ts on a known game, not proven for every 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W89.2, 2026-10-27. 11 cells survive BH + split-half sign + net-of-fee lower bound > 0, all in-sample over 2026-08-01 to 2026-10-26. No hold-out exists; pre-registration must fix price band, tier, side and a forward window before any further row is read.
+
+### GG-1280 — KXNBAPTS mid-quote anchor can sit days before tip
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.5, 2026-10-27. 2,156 of 2,369 KXNBAPTS markets open before tip (median about 19h); the first usable quote is a median 16h early, so "price at the row's time" needs a stated anchor. Part B reports both first-usable and last-pre-tip. Any later points-prop cell must pre-register its anchor.
+
+### GG-1281 — Joined KXNBAPTS data shows zero DNP rows
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.5, 2026-10-27. dnp_rows=0 across 2,409 joined strikes; either Kalshi lists only players who played or the ESPN didNotPlay flag is not populated. Not verified. Matters before any "player did not play" treatment.
+
+### GG-1282 — 2026-27 rookies and new signings have no PAM role
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W89.5, 2026-10-27. 14 players with KXNBAPTS strikes (e.g. Cameron Boozer, Kyrie Irving, Tyrese Haliburton) have no 2025-26 season-end PAM record, about 6.8% of usable strikes. Needs a 2026-27 season-to-date PAM refresh (free data) before roles cover the whole board.
+
+### GG-1283 — Two preseason KXNBAPTS events not joined
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.5, 2026-10-27. KXNBAPTS-26OCT08PHIBKN and KXNBAPTS-26OCT05NYKPHI are preseason-dated and were excluded by the 2026-10-20 window; not investigated. GG-1064 (the sealed-store conflict) is superseded for this cross: W89.5 joined from public Kalshi and ESPN data and read no shadow file.

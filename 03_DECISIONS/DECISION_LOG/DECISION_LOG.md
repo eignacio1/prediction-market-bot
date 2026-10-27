@@ -2881,3 +2881,6 @@ Reconciled 9 scoring paths against the quant core (0 bugs; 4 definition differen
 ## 2026-10-27 — W89.2: calibration of Kalshi sports prices (measurement only; operator wave brief)
 - Part A: 1,258 testable cells (family x time-to-start x price bucket x book class), BH q=0.10 family-wise: 66 flagged, 53 of them lose to spread+fee; 11 survive net of the k007 fee with a game-clustered lower bound > 0. Part B (pre-game overreaction): 0 survivors, every net negative. All survivors are in-sample CANDIDATES. Source: `12_EXPLORATORY/longshot_bias/results_W89.md`, `out/summary.json`.
 - Decision: NFL D0 excluded from survivors (date-only tickers, possible in-play). Three cells recommended for operator pre-registration: KXMLBHIT T0-2h 20-25c YES, KXMLBF5TOTAL T6-24h 90-95c YES, KXNFLTOTAL D1 5-10c NO. Nothing registered, traded or sized. GG-1250..1254.
+
+## 2026-10-26 W89.5 — NBA PAM roles vs KXNBAPTS price (exploratory)
+No role explains the KXNBAPTS price error at n≈1.8k strikes / 52 games; 22 roles, none survives BH q=0.10 under either anchor. Join built from public Kalshi + ESPN data (no sealed shadow file read; GG-1064 conflict avoided). No pre-registration, stake or registry change. Gaps GG-1280..1283. Detail: 12_EXPLORATORY/nba_pam_mass_tier/results_W89.md (PR #348).

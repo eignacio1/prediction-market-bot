@@ -282,7 +282,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | 89.2 | Where the line itself is wrong: calibration and longshot bias of Kalshi's sports prices; overreaction | PROOF + DEPTH: families tested 0 → n (BH); market-level adjustments surviving 0 → n | ⬜ ✅ DONE (PR #345 f50f49c) | Part A: 1,258 testable cells, 66 BH-flagged, 11 survive net of fee (KXMLBHIT T0-2h 20-25c YES largest, n=1,892); Part B: 0 survivors (every net negative). 3 candidates for pre-registration; results_W89.md. GG-1250..1254. |
 | 89.3 | Depth, market-anchored: which NFL and NBA factors the line does not price; the top 1-3 taken to a price | DEPTH: factors with a measured share priced 1 → n; factors clearing fee + error 0 → n | 🟨 Parts A+B NFL done (PRs #340, #343): 3 factor classes measured; Part B venue+weather totals dBrier -0.0015 [-0.0034,+0.0005], 0 strikes clear fee+error; NBA screen blocked on GG-1260 | |
 | 89.4 | EXTRA (operator, out of protocol): one NFL game simulation (Markov chain) that prices the whole board consistently | DEPTH: D4 NFL → whole board from one engine (offline); families from one joint distribution 0 → n | ✅ DONE (PR #344 merged 1a741d5) | One chain prices ML/spread/total/team totals from one joint sim, offline; worse than close at centre (ML +0.02 Brier), Gaussian-equivalent in shape, key number 3 missed ~2x. No edge. `12_EXPLORATORY/nfl_gamestate/results_W89.md` |
-| 89.5 | EXTRA: NBA player roles (PAM) against the points-prop line; the 2026-27 actual-points join | DEPTH: D5(b) NBA PAM applied 0 → n | ⬜ | |
+| 89.5 | EXTRA: NBA player roles (PAM) against the points-prop line; the 2026-27 actual-points join | DEPTH: D5(b) NBA PAM applied 0 → n | ✅ | DONE PR #348: 2,409 strikes joined (0 unmatched players); 22 roles tested, NULL, none survives BH q=0.10; PRF-4 detectable ~mid-Nov, PRF-1 ~mid-Dec 2026 |
 | 89.6 | EXTRA: the small-fix gap sweep (GS-1 + GS-2, never run) | PLUMBING: OPEN gaps 211 → as low as 90 min allow | 🟡 PARTIAL: OPEN 213 -> 205 (2 batches), PR #347 pending CI | handoff SESSION_HANDOFF_20261027T042053Z_W89_6.md |
 
 **What Wave 88 delivered (verified 2026-10-27 02:43Z: #336-#339 CI green; box bridge `20261027T024253Z_*`):** **88.1 ✅** tails
@@ -481,7 +481,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 89.2 | Longshot bias and calibration of Kalshi's own sports prices; overreaction | ⬜ | |
 | 89.3 | Which NFL and NBA factors does the line not price? A screen, top 1-3 to a price | ⬜ | |
 | 89.4 | EXTRA: NFL game simulation pricing the whole board | ⬜ | |
-| 89.5 | EXTRA: NBA PAM vs the points-prop line | ⬜ | |
+| 89.5 | EXTRA: NBA PAM vs the points-prop line | ✅ | #348; null at n~1.8k, see 12_EXPLORATORY/nba_pam_mass_tier/results_W89.md |
 | 89.6 | EXTRA: small-fix gap sweep | 🟡 PARTIAL: OPEN 213 -> 205 (2 batches), PR #347 pending CI | handoff SESSION_HANDOFF_20261027T042053Z_W89_6.md |
 
 ### ✅ WAVE 88 — WRITTEN 2026-10-27 ~01:30 UTC · CLOSED 2026-10-27 ~02:00 UTC (operator 19:42 PT) · verified on GitHub (#336-#339 CI green) + box bridge (`20261027T024253Z_*`) · moved: **models scored vs market 2 → 5 of 6 (none beats it); DRAFT ADR-0076 (G6) written; quote times on shadow rows** · box still RED (MLB arm, fix awaiting an in-window row)
