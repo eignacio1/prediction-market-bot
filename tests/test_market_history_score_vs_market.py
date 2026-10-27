@@ -38,3 +38,9 @@ def test_summarize_known_answer():
     assert abs(r["brier_model"] - 0.25) < 1e-12 and abs(r["brier_market"] - 0.01) < 1e-12
     assert abs(r["market_minus_model"] - (-0.24)) < 1e-9 and r["ci95"][1] < 0
     assert r["skill_weight"] == 0.0
+
+
+def test_mlb_parse_2025_ticker_without_hhmm():
+    assert svm.mlb_parse("KXMLBGAME-25APR16ATHCWS-ATH") == {"away": "ATH", "home": "CWS"}
+    assert svm.mlb_parse("KXMLBGAME-25APR16ATHCWS-CWS") == {"away": "ATH", "home": "CWS"}
+    assert svm.mlb_parse("KXMLBGAME-25JUN011910NYYBOS-NYY") == {"away": "NYY", "home": "BOS"}

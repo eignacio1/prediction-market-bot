@@ -3,10 +3,11 @@ Joins <model_side.json> rows (game_id, start_time_utc, home, away, p_model, y) t
 event, hourly candles). Market price = mid of (yes_bid.close, yes_ask.close) of the last hourly candle ending at or
 before start - 1h (the band's decision time), flipped to the home side when the listed market is the away team; rows
 whose market outcome disagrees with the game outcome are dropped and counted.
-usage: score_vs_market.py <nhl|nba> <model_side.json> <pregame.jsonl> <out.json>"""
+usage: score_vs_market.py <nhl|nba|mlb> <model_side.json> <pregame.jsonl> <out.json>"""
 from __future__ import annotations
 
 import json
+import re
 import sys
 from collections import defaultdict
 from datetime import datetime
@@ -15,6 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 from prediction_market_bot.c3_forecasting import nhl_pregame as nhl  # noqa: E402
 from prediction_market_bot.c5_execution.position_gate import skill_weight  # noqa: E402
+from prediction_market_bot.c1_signal_ingestion.mlb_game_pregame_features import canon as mlb_canon  # noqa: E402
 from prediction_market_bot.pregame_shadow.nba_forecaster import parse_market_ticker as nba_parse  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 from prediction_market_bot.quant.scoring import brier, brier_diff  # noqa: E402
@@ -24,12 +26,28 @@ MATCH_WINDOW_S = 12 * 3600
 
 
 def listed_team(ticker: str) -> str:
-    return nhl.TEAM_ALIASES.get(ticker.rsplit("-", 1)[1], ticker.rsplit("-", 1)[1])
+    code = ticker.rsplit("-", 1)[1]
+    return mlb_canon(nhl.TEAM_ALIASES.get(code, code))
+
+
+def mlb_parse(ticker: str):
+    """KXMLBGAME-25APR16ATHCWS-ATH (2025 tickers carry no HHMM; the live parser requires one) -> away first, home second."""
+    m = re.match(r"^KXMLBGAME-\d{2}[A-Z]{3}\d{2}(?:\d{4})?([A-Z]+)-([A-Z]+)$", ticker)
+    if not m:
+        return None
+    teams, sub = m.groups()
+    if teams.startswith(sub):
+        away, home = sub, teams[len(sub):]
+    elif teams.endswith(sub):
+        away, home = teams[:-len(sub)], sub
+    else:
+        return None
+    return {"away": mlb_canon(away), "home": mlb_canon(home)}
 
 
 def parse_game(kind: str, ticker: str):
     """(home, away) of a game-winner market ticker, or None."""
-    pt = nhl.parse_ticker(ticker) if kind == "nhl" else nba_parse(ticker)
+    pt = {"nhl": nhl.parse_ticker, "nba": nba_parse, "mlb": mlb_parse}[kind](ticker)
     return (pt["home"], pt["away"]) if pt else None
 
 
