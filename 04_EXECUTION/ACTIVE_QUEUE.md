@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — 89.7 tonight (one terminal), then Wave 90 on 10-27** · 89.7 is at the bottom of `04_EXECUTION/WAVE_BLOCKS/W89_BLOCKS.md`; **90.1** (the ride tree), **90.2** (the router), **90.3** (momentum) are in `04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md`. Each block is one fenced paste.
+> **▶ PASTE NOW — Wave 90** · all three blocks in `04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md`: **90.1** (finish 89.7, then the ride tree as code), **90.2** (the router), **90.3** (momentum). Each block is one fenced paste.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -280,8 +280,8 @@ are in `04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md` (run them after 89.7 has pushed 
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 89.7 | TONIGHT: ride the market, the data first - Kalshi history for NBA / NHL / NFL with true start times, and 89.2's scan with a hold-out | PROOF + DEPTH: families testable MLB+NFL → +NBA +NHL; candidates tested out of sample 0 → n | ⬜ | |
-| 90.1 | The ride-the-market tree: built, pre-registered, logging in shadow (the red first) | DEPTH D5(a) a second tree type; D3 +1; B1 +n if wired | ⬜ | |
+| 89.7 | Ride the market, the data first (10-26 night) | PROOF + DEPTH | 🟨 PARTIAL → folded into 90.1 | Start times solved (Kalshi time = start + 3.0 h); NBA/NHL game candles in; PR #349 open, CI failed (exploratory fence); Part B not started |
+| 90.1 | Finish 89.7 (PR #349, the remaining candles, the hold-out scan), then the ride tree as code | PROOF + DEPTH: candidates tested out of sample 0 → n; D5(a) a second tree type | ⬜ | |
 | 90.2 | The router: the filtering layer that sends each situation to ride, fade or no-bet; doctrine, code, replay | DEPTH D5(a) filtering_mechanisms + decision_trees | ⬜ | |
 | 90.3 | Momentum, measured: when a line moves, follow it or fade it (Strategy J) | DEPTH + PROOF: momentum_looping with a measured basis | ⬜ | |
 
@@ -475,11 +475,11 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 ### ⬜ WAVE 90 — WRITTEN 2026-10-27 ~05:30 UTC (10-26 22:30 PT) · RIDE THE MARKET: TREES, ROUTER, MOMENTUM · three MEDIUM blocks · runs 10-27 after 89.7
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 90.1 | The ride-the-market tree: built, pre-registered, shadow (+ the red, first) | ⬜ | |
+| 90.1 | Finish 89.7, then the ride tree as code (pre-registration + shadow → Wave 91) | ⬜ | |
 | 90.2 | The router: ride / fade / no-bet, doctrine + code + replay | ⬜ | |
 | 90.3 | Momentum, measured: follow or fade (Strategy J) | ⬜ | |
 
-### ⬜ 89.7 — ONE BLOCK TONIGHT (10-26 22:30 PT): ride the market, the data first (NBA/NHL/NFL Kalshi history + a hold-out scan) | ⬜ |
+### 🟨 89.7 — ran 10-26 night, PARTIAL: PR #349 open (CI failed); remainder folded into 90.1 (operator 10-27 16:30 PT) | 🟨 |
 
 ### ✅ WAVE 89 — WRITTEN 2026-10-27 ~03:00 UTC · CLOSED 2026-10-27 ~05:10 UTC (operator 22:08 PT) · six terminals · verified on GitHub (#340 #343-#346 #348 CI green; #347 green, unmerged) + box bridge (`20261027T051307Z_*`) · moved: **kill switch ENFORCING (GG-1082/441 resolved); first evidence that the market's own price is wrong toward its favourite (11 cells, in-sample)**; NFL factors, NFL simulation, NBA PAM: no edge · box still RED (MLB arm)
 | # | Block | Status | Outcome |
