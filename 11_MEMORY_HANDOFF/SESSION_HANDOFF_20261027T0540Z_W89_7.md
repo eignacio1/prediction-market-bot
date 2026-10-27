@@ -4,7 +4,7 @@ tier: MICRO
 timestamp: 2026-10-27T05:58:00Z
 commit: 07af8ee
 one_line_summary: W89.7 Part A partial: NBA/NHL/NFL Kalshi backfill + true-start join; PR 349 CI failed on EXPLORATORY fence, unmerged
-gg_touched: GG-1260
+gg_touched: GG-1290 (was GG-1260)
 adr_touched: none
 plan_deliverable_moved: no
 vision_pillar: PROOF, DEPTH

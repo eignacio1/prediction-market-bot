@@ -4341,7 +4341,12 @@ W89.5, 2026-10-27. KXNBAPTS-26OCT08PHIBKN and KXNBAPTS-26OCT05NYKPHI are preseas
 
 W89.5, 2026-10-27. A wide start_ts..end_ts at period_interval=1 returns HTTP 400 (candle-count limit); w89_join.py caps its window at 6h. Nine other callers (listed in the W89.5 handoff pattern_sweep) were not checked for the same span problem.
 
-### GG-1260 — W89.7 backfill writes outside the EXPLORATORY fence
-**Status:** OPEN · **Severity:** MEDIUM
+### GG-1290 — W89.7 backfill writes outside the EXPLORATORY fence (renumbered from GG-1260, which W89.3 already held)
+**Status:** RESOLVED (W90.1) · **Severity:** MEDIUM
 
-2026-10-27, T-1290. Block 89.7 mandates data under exp_output/KALSHI_HISTORY/, but tests/test_exploratory_isolation.py (CHARTER rule 3) fails any write outside 12_EXPLORATORY/. PR #349 CI failed on w89_7_backfill.py:86 (.replace) and :277 (.write_text). Fix: manifests via safe_out() in 12_EXPLORATORY; raw writer into src/ via PR, or operator amends the charter. Also open: NFL "LA" alias (Kalshi LA=Rams/ESPN LAR) leaves 135 events unjoined; MLB HHMM-as-ET (GG-1253) unchecked; no candles for spread/total/team-total/props; Part B hold-out not run.
+2026-10-27, T-1290; W90.1 2026-10-27. PR #349 CI failed on w89_7_backfill.py:86 (datetime .replace) and :277 (.write_text). Fixed in W90.1: et_date parses with %z (no .replace), the tracked MANIFEST.json files are written through safe_out() into 12_EXPLORATORY/market_history/manifests/w89_7/<sport>/, and exp_output/KALSHI_HISTORY/w89_7/ is gitignored (untracked 800 MB cache). The same-id collision with W89.3's GG-1260 is the GG-162 class; this entry takes GG-1290.
+
+### GG-1291 — The exploratory fence scan does not see Path.open("w") / method-form writes, so bulk-cache writers sit outside the fence unflagged
+**Status:** OPEN · **Severity:** LOW
+
+W90.1, 2026-10-27. tests/test_exploratory_isolation.py polices builtin open() and a WRITE_ATTRS set, not `path.open("w"|"a")`. w89_7_backfill.py (schedule, events, markets, candles) and market_history/fetch_game_hourly.py write under exp_output/ that way and pass. CHARTER rule 3 says every write goes through safe_out(). Either the scan gains `.open` with a write mode (then these two move their cache inside 12_EXPLORATORY or into src/), or the charter gets a dated addendum naming an untracked-cache exemption. Not fixed in W90.1 (Hard Rule 11).
