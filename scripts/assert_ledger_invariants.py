@@ -98,7 +98,7 @@ FEE_NET_EDGE_CLEAN_FLOOR = 6
 ADR_0050_FLOOR = 12
 ADR_0050_BAND = "T4M-PROJ"
 
-KNOWN_OUTCOMES = {"WIN", "LOSS"}
+KNOWN_OUTCOMES = {"WIN", "LOSS", "CANCELLED"}  # CANCELLED rows are pnl == 0 (GG-691)
 KNOWN_STATUSES = {"OPEN", "CLOSED", "REJECTED"}
 
 # G is band-scoped per ADR-0045/GG-119: T1's gross_edge embeds half-vig
@@ -650,6 +650,8 @@ def assert_L_enums(recs: list[dict], band: str) -> AssertionResult:
         oc = rec.get("outcome")
         if oc is not None and oc not in KNOWN_OUTCOMES:
             problems.append(f"outcome={oc}")
+        if oc == "CANCELLED" and rec.get("pnl") not in (None, 0, 0.0):
+            problems.append(f"outcome=CANCELLED pnl={rec.get('pnl')}")
         st = rec.get("status")
         if st is not None and st not in KNOWN_STATUSES:
             problems.append(f"status={st}")

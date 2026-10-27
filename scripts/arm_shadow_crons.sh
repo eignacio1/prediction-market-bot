@@ -25,7 +25,7 @@ CHANGED="$(R "git diff --name-only HEAD origin/main")"
 echo "$CHANGED"
 
 echo "=== (b) additive allowlist ==="
-printf '%s\n' "$CHANGED" | python3 "$HELPER" check-files "${ALLOW[@]}" || { echo "ABORT: nothing merged." >&2; exit 1; }
+printf '%s\n' "$CHANGED" | python3 "$HELPER" check-files ${ALLOW[@]+"${ALLOW[@]}"} || { echo "ABORT: nothing merged." >&2; exit 1; }
 
 echo "=== (c) ff-only merge ==="
 R "git merge --ff-only origin/main"

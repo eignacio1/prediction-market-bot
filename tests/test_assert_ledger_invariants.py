@@ -445,3 +445,13 @@ def test_validators_state_reset_is_logged(tmp_path, caplog):
     with caplog.at_level("ERROR"):
         assert v._load_state(bad) == {}
     assert "CARDINALITY STATE RESET" in caplog.text
+
+
+def test_L_accepts_cancelled_with_zero_pnl_and_flags_nonzero():
+    """GG-691: CANCELLED is a legitimate outcome (pnl == 0); a CANCELLED row with pnl is still a violation."""
+    ok = ali_module.assert_L_enums([_rec(outcome="CANCELLED", pnl=0.0)], "T1")
+    bad = ali_module.assert_L_enums([_rec(outcome="CANCELLED", pnl=1.5)], "T1")
+    unknown = ali_module.assert_L_enums([_rec(outcome="VOID", pnl=0.0)], "T1")
+    assert ok.n_violations == 0
+    assert bad.n_violations == 1
+    assert unknown.n_violations == 1
