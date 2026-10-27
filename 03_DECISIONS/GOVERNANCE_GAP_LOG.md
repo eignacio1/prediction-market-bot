@@ -4350,3 +4350,33 @@ W89.5, 2026-10-27. A wide start_ts..end_ts at period_interval=1 returns HTTP 400
 **Status:** OPEN · **Severity:** LOW
 
 W90.1, 2026-10-27. tests/test_exploratory_isolation.py polices builtin open() and a WRITE_ATTRS set, not `path.open("w"|"a")`. w89_7_backfill.py (schedule, events, markets, candles) and market_history/fetch_game_hourly.py write under exp_output/ that way and pass. CHARTER rule 3 says every write goes through safe_out(). Either the scan gains `.open` with a write mode (then these two move their cache inside 12_EXPLORATORY or into src/), or the charter gets a dated addendum naming an untracked-cache exemption. Not fixed in W90.1 (Hard Rule 11).
+
+### GG-1330 — NBA and NHL have no price archive, so the router cannot be replayed for them
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W90.2, 2026-10-27. The archiver covers MLB and NFL series only; add KXNBA*/KXNHL* series to the archive (free public data).
+
+### GG-1331 — News timing is not a measured routing condition
+
+**Status:** OPEN · **Severity:** LOW
+
+W90.2, 2026-10-27. No measurement of price reaction to news timing exists, so the router ignores it. A news-timestamp feed plus a pre-registered reaction study would be needed.
+
+### GG-1332 — No measured momentum transition table exists
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W90.2, 2026-10-27. MOMENTUM trees get zero traffic. W89.2 Part B found 0 survivors; Wave 90.3 owns the momentum measurement.
+
+### GG-1333 — FADE not replayed against shadow ledgers
+
+**Status:** OPEN · **Severity:** LOW
+
+W90.2, 2026-10-27. Ledgers are on the box and unsettled locally; FADE is gated to 0 by W88.3 skill regardless. Replay once any (sport, family) shows a positive CI lower bound.
+
+### GG-1334 — RIDE replay is in-sample
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W90.2, 2026-10-27. The stub ride table is the W89.2 survivor list drawn from the same archive; the replay is not evidence. Out-of-sample forward window is 90.1's pre-registration.
