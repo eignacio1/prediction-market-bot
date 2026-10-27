@@ -2843,3 +2843,5 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 
 ## 2026-10-26 W87.1 — Quant A1 finished (PROOF)
 Reconciled 9 scoring paths against the quant core (0 bugs; 4 definition differences registered GG-1180..1183, registered definitions kept). Re-pointed 3 matched paths (<1e-6, equality-tested) and absorbed the 86.2/86.3 helpers; D3 now reads pre-registration files (GG-1100). No verdict, order, runner or live-ledger change. See results_W87.md.
+
+| 2026-10-27 | T-1173 | W87.2: exposure gate now fed by MLB T1, MLB T4, NBA T1 (frozen, excluded) and all shadow books; submit_order consults it. Ships LOG-ONLY (GATE_MODE="log", env EXPOSURE_GATE_MODE); unknown mode and unmapped band fail closed in enforce. t4-mlb restart policy: skip_live_game, restart owed after games end. GG-1082/GG-441 stay OPEN until enforce is flipped (separate PR) after one full game day of exposure_gate_logonly.jsonl is read, and read back on the box. |
