@@ -1042,3 +1042,4 @@
 | 2026-10-27T01:47:06Z | T-1190 | CLOSED — W88.1: GPD tails fit for T4/T1 (T1 filled not fit-able); DRAFT ADR-0076 G6 per book and sport; GG-1190..1192 (commit `e8de314`) |
 | 2026-10-27T01:47:59Z | T-1190 | CLOSED — merge confirmed, HEAD (d1ae8af) is ancestor of origin/main — W88.1 tails + DRAFT ADR-0076 |
 | 2026-10-27T02:38:44Z | T-1196 | CLOSED — merge confirmed, HEAD (735b5a2) is ancestor of origin/main — W88.3: NHL/NBA/MLB frozen models scored vs Kalshi; market >= model, weights 0/0/0.0018 |
+| 2026-10-27T04:02:12Z | T-1240..T-1242, GG-1240..GG-1244 | W89.1 STANDARD: clear silent-arm red then kill switch LOG-ONLY->enforce — PLUMBING (surface budget RED->GREEN; GG-1082/GG-441 OPEN->RESOLVED) |
