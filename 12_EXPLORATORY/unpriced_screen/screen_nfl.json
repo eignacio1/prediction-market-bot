@@ -1,0 +1,157 @@
+{
+ "n_games": 1612,
+ "fee_per_contract": 0.0175,
+ "known_answer_check_true_b_0.6": {
+  "b": 0.6100068247091865,
+  "lo": 0.5725821089632422,
+  "hi": 0.6522158166566622,
+  "n": 1500,
+  "p_unpriced": 0.0024937655860349127
+ },
+ "screen": [
+  {
+   "b": 0.32726455291393997,
+   "lo": 0.14816673863082466,
+   "hi": 0.5097319027778332,
+   "n": 1436,
+   "p_unpriced": 0.0004997501249375312,
+   "factor": "F8 availability",
+   "seat": "N10",
+   "family": "total",
+   "term_sd": 0.9099705161640633,
+   "b_by_season": {
+    "2020": 0.713,
+    "2021": 0.269,
+    "2022": -0.221,
+    "2023": 0.418,
+    "2024": 0.683,
+    "2025": 0.296
+   },
+   "unpriced_prob_1sd": 0.012940066605237771,
+   "unpriced_prob_point": 0.017756083951457308,
+   "identified": true,
+   "clears_fee": false,
+   "bh_survives_q05": true
+  },
+  {
+   "b": 0.665725151492247,
+   "lo": 0.45529808172224423,
+   "hi": 0.8672709554265385,
+   "n": 1436,
+   "p_unpriced": 0.0015,
+   "factor": "F8 availability",
+   "seat": "N10",
+   "family": "spread",
+   "term_sd": 0.9765952009716927,
+   "b_by_season": {
+    "2020": 1.181,
+    "2021": 0.241,
+    "2022": 0.222,
+    "2023": 0.841,
+    "2024": 1.19,
+    "2025": 0.605
+   },
+   "unpriced_prob_1sd": 0.0036380539803515704,
+   "unpriced_prob_point": 0.009162349861352084,
+   "identified": true,
+   "clears_fee": false,
+   "bh_survives_q05": true
+  },
+  {
+   "b": -0.23724155830018973,
+   "lo": -1.1663391564350916,
+   "hi": 0.689455200895009,
+   "n": 1612,
+   "p_unpriced": 1.0,
+   "factor": "F5/F6 coverage x personnel",
+   "seat": "N7/N8",
+   "family": "spread",
+   "term_sd": 0.18453991548539114,
+   "b_by_season": {
+    "2020": -0.952,
+    "2021": -1.688,
+    "2022": 6.66,
+    "2023": -1.2,
+    "2024": 0.747,
+    "2025": -1.567
+   },
+   "unpriced_prob_1sd": 0.0016084336940773098,
+   "unpriced_prob_point": 0.006408160805842194,
+   "identified": false,
+   "clears_fee": false,
+   "bh_survives_q05": false
+  },
+  {
+   "b": -0.15921702379862476,
+   "lo": -1.2824242023286816,
+   "hi": 0.9478510706686638,
+   "n": 1612,
+   "p_unpriced": 1.0,
+   "factor": "F5/F6 coverage x personnel",
+   "seat": "N7/N8",
+   "family": "moneyline",
+   "term_sd": 0.18453991548539114,
+   "b_by_season": {
+    "2020": -1.105,
+    "2021": -1.929,
+    "2022": 6.753,
+    "2023": -1.361,
+    "2024": 1.06,
+    "2025": -1.081
+   },
+   "unpriced_prob_1sd": 0.0002726090228071423,
+   "unpriced_prob_point": 0.006059817989192259,
+   "identified": false,
+   "clears_fee": false,
+   "bh_survives_q05": false
+  },
+  {
+   "b": 0.8393836583416672,
+   "lo": 0.5784061372124895,
+   "hi": 1.10041370614416,
+   "n": 1436,
+   "p_unpriced": 0.1095,
+   "factor": "F8 availability",
+   "seat": "N10",
+   "family": "moneyline",
+   "term_sd": 0.9765952009716927,
+   "b_by_season": {
+    "2020": 1.333,
+    "2021": 0.443,
+    "2022": 0.217,
+    "2023": 0.906,
+    "2024": 1.607,
+    "2025": 0.736
+   },
+   "unpriced_prob_1sd": 0.0,
+   "unpriced_prob_point": 0.0043757741419492655,
+   "identified": true,
+   "clears_fee": false,
+   "bh_survives_q05": false
+  },
+  {
+   "b": 0.24759031435298035,
+   "lo": -0.5492445564654398,
+   "hi": 1.0476015549698867,
+   "n": 1612,
+   "p_unpriced": 1.0,
+   "factor": "F5/F6 coverage x personnel",
+   "seat": "N7/N8",
+   "family": "total",
+   "term_sd": 0.19814074985687322,
+   "b_by_season": {
+    "2020": -0.808,
+    "2021": -1.605,
+    "2022": -2.094,
+    "2023": -0.702,
+    "2024": 1.903,
+    "2025": -0.212
+   },
+   "unpriced_prob_1sd": 0.0,
+   "unpriced_prob_point": 0.0043241797310068966,
+   "identified": false,
+   "clears_fee": false,
+   "bh_survives_q05": false
+  }
+ ]
+}
