@@ -252,9 +252,8 @@ def main():
             keynum=keynum, ep_first_and_10=ep, families=fam, ladder=lad, team_total_pit_5bin_home=pit_hist,
             sd_margin_train=sd_m, sd_total_train=sd_t)
         print(test, "done", len(df), flush=True)
-    outp = safe_out(a.out)
-    Path(outp).write_text(json.dumps(res, indent=1))
-    print("wrote", outp)
+    safe_out(a.out).write_text(json.dumps(res, indent=1))
+    print("wrote", a.out)
 
 
 if __name__ == "__main__":
