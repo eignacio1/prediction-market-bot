@@ -882,6 +882,8 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**W89.6 2026-10-26 (operator-approved disposition):** ADR-0057 was already ACCEPTED 2026-08-26 (T-499); only its section 4 (T1 fate A/B/C) remains deferred. Not retired: the operator reopened T1 on the game-market axis 2026-08-25 (ADR-0058), so retiring T1 (option A) would contradict that. Practical state is option C (dark, excluded from G6 count). Decision still the operator's.
+
 **Current state (2026-10-08, W59.1):** T1 and T4M-PROJ kelly_fraction still 0.0 (execution_bands.py lines 156/167); VPS verdict shows T1 clean_n=0. Operator-blocked. **Next:** Operator decision on edge-conditional reactivation (ADR-0048 table).
 **Blocked-On-Operator:** YES
 
@@ -1774,6 +1776,8 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 **Status:** OPEN · **Severity:** HIGH
 
+**W89.6 2026-10-26 (operator-approved disposition):** ADR-0057 sections 1-2 (cell-scoped G6 re-expression) were ACCEPTED 2026-08-26, so the closure-condition contradiction is addressed; GG-204 stays OPEN only until the operator confirms it can close on that acceptance or names the remaining owed decision (how many cells must clear, APPROVALS_REGISTER).
+
 **Current state (2026-10-08, W59.1):** ADR-0028 is immutable and T1 is clean_n=0 (kelly_fraction 0.0 per ADR-0048); contradiction stands. Operator decision. **Next:** Superseding ADR for the G6 closure condition.
 
 <details>
@@ -1798,7 +1802,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-216 — Venue registry tracked "CA eligibility" but never account-level geo/IP jurisdiction; a Kalshi-side account classification flip is a live-capital blocker with no structural check
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** WATCH ITEM · **Severity:** LOW
+
+**W89.6 2026-10-26 (operator-approved disposition):** Operator disposition: defer to the G6 checklist as a live-capital precondition (account-level geo/IP classification check). Irrelevant while no real capital; MEDIUM -> LOW until G6 is approached.
 
 **Current state (2026-10-08, W59.1):** Partially addressed: VENUE_REGISTRY.md § Jurisdiction / Account Geo-Compliance Tracking was added 2026-08-26 (T-496) and tracks the VPS egress IP 157.230.91.33 and the Nevada_resident 403 trigger (GG-203); the premise that nothing tracked account geo is no longer true, but no structural pre-live check exists. **Next:** Add an account-geo check to the pre-live checklist.
 
@@ -2584,7 +2590,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the opera
 
 ### GG-289 — Auto-mode classifier's Self-Modification block on `.claude/commands/session-end.md` + `scripts/close_session_claim.sh` + `scripts/sweep_stray_branches.sh` is a structural, repeatable barrier — confirmed twice independently — and is the likely actual root cause of T-554's silent closure-row push failure, not mere git divergence
 
-**Status:** OPEN · **Severity:** UNSPECIFIED
+**Status:** OPEN · **Severity:** LOW
+
+**W89.6 2026-10-26 (operator-approved disposition):** Operator disposition: apply the three self-modifying edits (`.claude/commands/session-end.md`, `scripts/close_session_claim.sh`, `scripts/sweep_stray_branches.sh`) by hand, once; no permission rule widened. Stays OPEN until the operator applies them. Severity UNSPECIFIED -> LOW.
 
 **Current state (2026-10-08, W59.1):** Commits 580e9c9 and 1e097e0 (session-end.md / close_session_claim.sh / sweep_stray_branches.sh) ARE ancestors of worktree HEAD, and later edits landed (4874db4, 2365cc7 GG-451), so the files are changeable in git; the classifier denial is a permission-layer behavior that git history cannot disprove, and GG-288's root-cause question is not shown fixed. **Next:** Operator to decide how classifier-flagged self-modifying scripts get approved (allowlist or operator-run cherry-pick); re-test one cherry-pick under current permissions.
 
@@ -2780,30 +2788,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ---
 
-### GG-306 — CLAUDE.md's coverage-target framing ("~25/30 cells") is never reconciled against `market_type_registry.py`'s actual 92-cell granularity, understating the registry's real scope by roughly 3x wherever the coarse figure is read on its own
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** CLAUDE.md line 21 still says "one cell of ~25"; registry granularity not reconciled. **Next:** Reconcile figure in COVERAGE_TARGET_MATRIX.md; CLAUDE.md edits need operator OK.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-306 |
-| Category | Documentation/terminology mismatch, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
-| What was found | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` and CLAUDE.md both use a coarse "~25 cells" / "~25 of ~25" framing throughout when describing the project's `(MarketType, ExecutionBand)` coverage target. A direct read of `market_type_registry.py`'s live registry (`reg._cells`) this wave found the actual registry holds **92 cells** (`Counter({'NOT_IMPLEMENTED': 88, 'BLOCKED': 2, 'ACTIVE': 1, 'DARK': 1})`) — roughly 3.7x the figure used in the narrative documents. Neither document explains or reconciles the discrepancy; the "~25" figure appears to originate from a coarser market-type × band grid (fewer market types × 5 bands) that predates or does not match the registry's finer-grained cell keying described in CLAUDE.md's own "Adding a new sport" section (the registry keys on the pair, and `RULED_OUT` is a first-class status per-cell). |
-| Why this matters | A session reasoning about "how much of the coverage target is done" using the "~25 cells" framing alone, without separately checking the registry, will materially understate the true denominator (92, not ~25) and could overstate fractional progress (e.g. "1 of 25 = 4%" reads very differently from "1 of 92 ≈ 1.1%," and the NOT_IMPLEMENTED count, 88, is the more operationally relevant number for backlog sizing). |
-| Impact | LOW: no gate-status or capital-risk effect — this is a narrative/reporting consistency issue, not a data-integrity one. Becomes higher-impact only if an operator-facing coverage percentage is quoted from the coarse framing without noting the registry's actual cell count. |
-| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), via direct comparison of `COVERAGE_TARGET_MATRIX.md`'s narrative framing against a live `market_type_registry.py` read; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
-| Resolution | Not resolved — recommend `COVERAGE_TARGET_MATRIX.md` be updated to either state both figures side by side (coarse market-type × band grid vs. actual registry cell count) or drop the coarse framing in favor of the registry's own live count going forward. No document change made this session (registration-only, per this wave's scope). |
-| Cross-references | T-572 (discovering session), CLAUDE.md "Adding a new sport" section (registry cell-keying description), `market_type_registry.py`. |
-
-</details>
-
----
-
 ### GG-307 — `build_t4mlb_cohorts`'s edge-reconstruction formula has never been tested against T4M_ARITH/T4M_FLOW inputs, only against T4M-PROJ — a disclosed scope boundary on this wave's scoring-harness work, not a defect
 
 **Status:** OPEN · **Severity:** LOW
@@ -2823,30 +2807,6 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 | Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), disclosed as an explicit scope boundary in its own results; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
 | Resolution | Not resolved — no action needed until T4M_ARITH/T4M_FLOW activation is proposed; at that point, the formula should be validated against that band's actual input schema before being trusted. No code change made this session (out of scope). |
 | Cross-references | T-572 (discovering/building session), `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry (T4M_ARITH/T4M_FLOW BLOCKED status). |
-
-</details>
-
----
-
-### GG-309 — CLAUDE.md Step 4's `SemanticFloorViolation` grep (T1 MLB silent-failure detector) has no recency window, so a single 2.5-month-old hit reads identically to a live-today failure
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** CLAUDE.md line 298 still has the un-windowed SemanticFloorViolation grep. **Next:** Add a tail/recency window; CLAUDE.md edit needs operator OK.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-309 |
-| Category | Session-start protocol defect, same defect class as the already-fixed `payload.staleness_halts` cumulative-counter issue (GG-085). Surfaced by this wave's block 34.3 (T-574) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
-| What was found | CLAUDE.md Step 4's semantic-oracle check `grep -c "SemanticFloorViolation" .../paper_mlb_cron.log` counts all-time occurrences in the log with no recency window — structurally identical to the defect GG-085 already fixed for `payload.staleness_halts` (a cumulative counter misread as a live-status signal). T-574 found one such hit dated 2026-07-10, roughly 2.5 months stale as of this wave (2026-09-24/25), which would still surface as `count > 0` and read as "T1 pipeline silence — investigate immediately" per Step 4's own stated alarm condition, even though nothing about it is current. |
-| Why this matters | GG-085's own text states this exact failure mode was already found and fixed once for a sibling counter in the same protocol step; this is the same class of defect recurring in a different check within the same Step 4 that GG-085 patched. A session running the mandatory session-start protocol today would see a nonzero count and could either falsely alarm on stale history or, worse, grow desensitized to the check if it always reads nonzero. |
-| Impact | MEDIUM: this is a detection-protocol reliability issue, not a live pipeline defect — T1 MLB's actual current health is not affected by this gap, only the session-start check's ability to correctly signal it. |
-| Discovery | 2026-09-24/25, T-574 (Wave 34 block 34.3, this wave), during routine session-start protocol execution; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
-| Resolution | Not resolved — recommend windowing the `SemanticFloorViolation` grep the same way GG-085's fix windowed the staleness-halt check (e.g. `tail -N` by line count or a date-bounded grep), so only recent occurrences alarm. No change made to CLAUDE.md or the check itself this session (out of scope — CLAUDE.md/hook edits belong to 34.3's territory this wave, already closed). |
-| Cross-references | GG-085 (the sibling defect already fixed, same recency-window pattern), T-574 (discovering session), CLAUDE.md Step 4. |
 
 </details>
 
@@ -3157,6 +3117,8 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 ### GG-342 — Remote branch hygiene: a stale pre-rebase branch, 33 unmerged remote branches, ~8 of them content-landed under other SHAs and unlandable by ancestry
 
 **Status:** OPEN · **Severity:** LOW
+
+**W89.6 2026-10-26 (operator-approved disposition):** Operator approved a diff-confirmed prune. `04_EXECUTION/GG342_branch_prune_list.md` lists 36 unmerged remote branches by patch-id check (`git cherry`): 16 content-landed (delete candidates), 20 carry unlanded commits (keep). Nothing deleted; awaiting the operator OK on list A.
 
 **Current state (2026-10-08, W59.1):** Counts changed: git branch -r shows 84 remote branches, 47 not merged into origin/main (this session); earlier entry said 33. **Next:** Triage the 47 unmerged branches; delete content-landed ones after confirming by diff.
 
@@ -3519,7 +3481,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-415 — players_2026.json is stale
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** WATCH ITEM · **Severity:** LOW
+
+**W89.6 2026-10-26 (operator-approved disposition):** Operator disposition: retire at season end. The file is a regenerable cache (`scripts/generate_mlb_features.py` l.210-216 rewrites `exp_output/MLB/cache/players_{season}.json` on demand), so no cron step or deletion is needed. Re-check at 2027 pre-season; re-open only if the generator no longer rewrites it.
 
 **Current state (2026-10-08, W59.1):** Verified on VPS: players_2026.json exists only at exp_output/MLB/cache/players_2026.json, mtime 2026-06-24 (>3 months stale). **Next:** Add a refresh step to the cron or retire the file.
 
@@ -3941,6 +3905,8 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 **Status:** OPEN · **Severity:** LOW
 
+**W89.6 2026-10-26 (operator-approved disposition):** Read-back 2026-10-26 on the box: NBA pregame shadow files exist (15 cells, 416-7904 rows each) but `grep -c shadow_order` is 0 in every one, so the 10-21 read-back this entry waited on has NOT shown NBA shadow_order rows. Premise (W68.2 demo staking on the NBA lines) is not borne out by the rows. Stays OPEN; needs a separate look at why make_on_row does not stage NBA orders.
+
 **W73.1 2026-10-15T00:20Z:** premise stale. Since W68.2 (#228) the NBA game and player-points T1-T3 cron lines already load `deploy/demo_fill.env` with `BOT_ENV=paper` and stake demo-only through `make_on_row` (box crontab read over ssh); the guard test was changed to a demo-only guard. A second runner would double-place the same rows, so none was built (see DECISION_LOG W73.1). Stays OPEN until the 10-21 read-back shows NBA shadow_order rows.
 
 **Current state (2026-10-11, W67.2):** W67.2 wired `deploy/demo_fill.env` into the NFL and MLB shadow pregame cron lines only. The NBA lines (`run_nba_pregame_shadow.py --bands T1/T2/T3`) were left unchanged because `tests/test_nba_shadow_safety.py::test_cron_block_markers_and_scripts_only_nba` asserts they carry no `.env` and no kelly (the EXP-038 NBA shadow is deliberately credential-free). Loading demo_fill.env there would give those jobs order-placing credentials. NBA is also DARK/FROZEN per the standing directive, regular season starts ~2026-10-21. Operator decision needed: keep NBA shadow credential-free (no flat stakes on NBA shadow cells) or amend that guard by ADR/test change.
@@ -4098,7 +4064,9 @@ W76.3 Part A (2026-10-16) swept src/ and scripts/ for `open(...,"w")` / `write_t
 
 ### GG-842 — t4-mlb armed message names only the legacy flag path
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** WATCH ITEM · **Severity:** LOW
+
+**W89.6 2026-10-26 (operator-approved disposition):** Operator disposition: bundle into the next planned t4-mlb restart; no restart for a cosmetic message. Fix `run_t4_mlb_live.py` (~l.2051) to name the one-switch set, with a test, at that time.
 
 W76.1, 2026-10-16. `T4-MLB kill switch armed` prints `t4_mlb_kill_switch.flag` although any flag in the one-switch set halts it. Cosmetic; found in the drill.
 

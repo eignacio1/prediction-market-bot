@@ -6153,3 +6153,51 @@ B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073,
 W72.3 Part B. Assertion L (`actual_hits_outcome_status_enums`, band T1) flags 16 of 499 (3.21%), epochs 1/3/7/8, all `outcome=CANCELLED`; the allowed set is ['LOSS','WIN']. `paper_portfolio_mlb` has exactly 16 CANCELLED closed rows, so this is a stale enum, not data corruption. Left alone while the 16 stay as noise in the alarm count, which hides any real L violation. Fix: add CANCELLED to the allowed set and assert CANCELLED rows have pnl == 0, in a later block.
 
 **Resolution (W89.6 sweep, 2026-10-26):** Fixed in PR #341 (fe21fdc): assert_ledger_invariants.py KNOWN_OUTCOMES now includes CANCELLED and assert_L_enums flags a CANCELLED row with non-zero pnl. Test: tests/test_assert_ledger_invariants.py::test_L_accepts_cancelled_with_zero_pnl_and_flags_nonzero. CI green on the PR.
+
+### GG-309 — CLAUDE.md Step 4's `SemanticFloorViolation` grep (T1 MLB silent-failure detector) has no recency window, so a single 2.5-month-old hit reads identically to a live-today failure
+
+**Status:** RESOLVED (2026-10-26, W89.6) · **Severity:** MEDIUM
+
+**Current state (2026-10-08, W59.1):** CLAUDE.md line 298 still has the un-windowed SemanticFloorViolation grep. **Next:** Add a tail/recency window; CLAUDE.md edit needs operator OK.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-309 |
+| Category | Session-start protocol defect, same defect class as the already-fixed `payload.staleness_halts` cumulative-counter issue (GG-085). Surfaced by this wave's block 34.3 (T-574) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | CLAUDE.md Step 4's semantic-oracle check `grep -c "SemanticFloorViolation" .../paper_mlb_cron.log` counts all-time occurrences in the log with no recency window — structurally identical to the defect GG-085 already fixed for `payload.staleness_halts` (a cumulative counter misread as a live-status signal). T-574 found one such hit dated 2026-07-10, roughly 2.5 months stale as of this wave (2026-09-24/25), which would still surface as `count > 0` and read as "T1 pipeline silence — investigate immediately" per Step 4's own stated alarm condition, even though nothing about it is current. |
+| Why this matters | GG-085's own text states this exact failure mode was already found and fixed once for a sibling counter in the same protocol step; this is the same class of defect recurring in a different check within the same Step 4 that GG-085 patched. A session running the mandatory session-start protocol today would see a nonzero count and could either falsely alarm on stale history or, worse, grow desensitized to the check if it always reads nonzero. |
+| Impact | MEDIUM: this is a detection-protocol reliability issue, not a live pipeline defect — T1 MLB's actual current health is not affected by this gap, only the session-start check's ability to correctly signal it. |
+| Discovery | 2026-09-24/25, T-574 (Wave 34 block 34.3, this wave), during routine session-start protocol execution; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — recommend windowing the `SemanticFloorViolation` grep the same way GG-085's fix windowed the staleness-halt check (e.g. `tail -N` by line count or a date-bounded grep), so only recent occurrences alarm. No change made to CLAUDE.md or the check itself this session (out of scope — CLAUDE.md/hook edits belong to 34.3's territory this wave, already closed). |
+| Cross-references | GG-085 (the sibling defect already fixed, same recency-window pattern), T-574 (discovering session), CLAUDE.md Step 4. |
+
+</details>
+
+**Resolution (W89.6 sweep, 2026-10-26):** CLAUDE.md Step 4 now runs `tail -500 … | grep -c "SemanticFloorViolation"` (recency-windowed, same fix as GG-085) with the alarm text updated; operator approved the CLAUDE.md edit 2026-10-26. Pattern sweep: no other copy of the un-windowed command outside gap-log history.
+
+### GG-306 — CLAUDE.md's coverage-target framing ("~25/30 cells") is never reconciled against `market_type_registry.py`'s actual 92-cell granularity, understating the registry's real scope by roughly 3x wherever the coarse figure is read on its own
+
+**Status:** RESOLVED (2026-10-26, W89.6) · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** CLAUDE.md line 21 still says "one cell of ~25"; registry granularity not reconciled. **Next:** Reconcile figure in COVERAGE_TARGET_MATRIX.md; CLAUDE.md edits need operator OK.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-306 |
+| Category | Documentation/terminology mismatch, surfaced by this wave's block 34.1 (T-572) and registered here per this wave's Deliverable 5 GG/DECISION_LOG ownership split. |
+| What was found | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` and CLAUDE.md both use a coarse "~25 cells" / "~25 of ~25" framing throughout when describing the project's `(MarketType, ExecutionBand)` coverage target. A direct read of `market_type_registry.py`'s live registry (`reg._cells`) this wave found the actual registry holds **92 cells** (`Counter({'NOT_IMPLEMENTED': 88, 'BLOCKED': 2, 'ACTIVE': 1, 'DARK': 1})`) — roughly 3.7x the figure used in the narrative documents. Neither document explains or reconciles the discrepancy; the "~25" figure appears to originate from a coarser market-type × band grid (fewer market types × 5 bands) that predates or does not match the registry's finer-grained cell keying described in CLAUDE.md's own "Adding a new sport" section (the registry keys on the pair, and `RULED_OUT` is a first-class status per-cell). |
+| Why this matters | A session reasoning about "how much of the coverage target is done" using the "~25 cells" framing alone, without separately checking the registry, will materially understate the true denominator (92, not ~25) and could overstate fractional progress (e.g. "1 of 25 = 4%" reads very differently from "1 of 92 ≈ 1.1%," and the NOT_IMPLEMENTED count, 88, is the more operationally relevant number for backlog sizing). |
+| Impact | LOW: no gate-status or capital-risk effect — this is a narrative/reporting consistency issue, not a data-integrity one. Becomes higher-impact only if an operator-facing coverage percentage is quoted from the coarse framing without noting the registry's actual cell count. |
+| Discovery | 2026-09-24, T-572 (Wave 34 block 34.1, this wave), via direct comparison of `COVERAGE_TARGET_MATRIX.md`'s narrative framing against a live `market_type_registry.py` read; handed to block 34.2 (this session) for registration per this wave's explicit task split. |
+| Resolution | Not resolved — recommend `COVERAGE_TARGET_MATRIX.md` be updated to either state both figures side by side (coarse market-type × band grid vs. actual registry cell count) or drop the coarse framing in favor of the registry's own live count going forward. No document change made this session (registration-only, per this wave's scope). |
+| Cross-references | T-572 (discovering session), CLAUDE.md "Adding a new sport" section (registry cell-keying description), `market_type_registry.py`. |
+
+</details>
+
+**Resolution (W89.6 sweep, 2026-10-26):** CLAUDE.md line 23 now qualifies the ~25 figure as the coarse market-type x band count and points to MARKET_TYPE_REGISTRY for the real cell count; operator approved the edit 2026-10-26.
