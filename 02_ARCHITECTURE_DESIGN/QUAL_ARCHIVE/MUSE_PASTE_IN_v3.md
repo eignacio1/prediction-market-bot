@@ -228,3 +228,26 @@ From Earl, directly - you're reset, so let's make up for last week.
 Same rules as always: primary sources, definitions verbatim, free only, no null records, nothing written to the bot repo, never a
 bet, pick, odds or model.
 ```
+
+## Add-in, 2026-10-27 16:55 PT: the market's own flow (Earl, directly)
+
+```
+From Earl, directly.
+
+1. Great catch-up session: R-046, R-057, R-058, R-029, R-061, R-020 and R-030 are closed, and the IN PROGRESS markers kept your
+   scheduled runs out of the way. Read TO_MUSE.md fresh: the entry dated 2026-10-27 16:55 PT has the grades and the new order.
+
+2. Your R-057 / R-058 NONEs mattered: with no free history of sportsbook lines, the bot learns from Kalshi's own price history. The
+   question now is who is moving the line: the bot is building trees that RIDE the market where its own price is wrong, a router that
+   chooses between riding and fading, and a test of whether to follow or fade a moving line. Your next tickets feed that:
+   R-065 (free current sportsbook lines with timestamps, going forward), R-063 (Polymarket's sports price history and how its events
+   map to Kalshi's), R-064 (public betting splits: tickets vs money), R-067 (Kalshi's own contract rules, verbatim, for the edge cases),
+   then R-062 (NHL dossier) and R-066 (NBA starters timing). 32 tickets are open.
+
+3. Work them in the order written in TO_MUSE.md, three scheduled runs a day as usual; if I open a live session, the same IN PROGRESS
+   rule applies.
+
+Same rules as always: primary sources, definitions verbatim, free only (a free API tier that needs no payment is fine; say if it needs
+a key), no null records, nothing written to the bot repo, never a bet, pick, odds or model. Recording a published line or split with
+its timestamp is recording; deciding anything from it is the bot's job.
+```

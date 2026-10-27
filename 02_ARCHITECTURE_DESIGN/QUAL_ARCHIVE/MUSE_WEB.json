@@ -1,7 +1,7 @@
 {
  "about": "State of Muse's aggregation work across the four sports, drawn as the Visual Dashboard's aggregation web. Maintained by the strategic window at every wave close from the archive (eignacio1/sports-intel-archive, commit below), TO_MUSE.md and the bot repo. built = delivered and in the repo/archive; pending = a ticket or block open now; future = planned, no ticket yet. Operator 2026-10-21 08:11 PT: 'give us an idea of pending, built, future'.",
- "as_of": "2026-10-22T22:45Z",
- "archive_commit": "389b5e8",
+ "as_of": "2026-10-27T23:55Z",
+ "archive_commit": "8073e03",
  "rings": [
   {
    "id": "scout",
@@ -194,6 +194,25 @@
    "name": "Line history · injury-report timing",
    "tickets": "R-058 · R-059",
    "states": [
+    "built",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-058: NONE free for timestamped NFL lines 2016-2026; R-059 injury-report timing queued",
+    "",
+    "",
+    "",
+    "The anchor for the market-anchored price (85.1 uses nflverse closes)"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Market flow: forward lines · splits · Polymarket",
+   "tickets": "R-065 · R-063 · R-064 · R-067",
+   "states": [
     "pending",
     "future",
     "future",
@@ -201,11 +220,11 @@
     "future"
    ],
    "notes": [
-    "R-058 line history with timestamps; R-059 when each injury report is posted",
+    "R-065 free current lines with timestamps; R-063 Polymarket history; R-064 public splits; R-067 Kalshi rules verbatim",
     "",
     "",
     "",
-    "The anchor for the market-anchored price (85.1 uses nflverse closes)"
+    "Feeds the ride / fade router (Wave 90)"
    ]
   },
   {
@@ -272,15 +291,15 @@
    "tickets": "R-046",
    "states": [
     "built",
-    "pending",
-    "future",
+    "built",
+    "built",
     "future",
     "future"
    ],
    "notes": [
     "R-046: NBA.com matchup tables card",
-    "2025-26 done (30/30 teams); 2024-25 in progress (25,821 records)",
-    "Updates R-027's PRF-10 row",
+    "2025-26 and 2024-25 complete (~40k records); 2023-24 at the bottom of the backlog",
+    "R-027 PRF-10 row NONE -> PARTIAL",
     "",
     ""
    ]
@@ -385,14 +404,14 @@
    "name": "Closing lines (the anchor)",
    "tickets": "R-057",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-057: free historical lines, 2016-2026",
+    "R-057: no free bulk line history 2016-2026 (OddsPortal one-off only); the bot anchors on Kalshi's own history",
     "",
     "",
     "",
@@ -405,16 +424,16 @@
    "taxonomy": "mlb",
    "tickets": "R-029 · R-061",
    "states": [
-    "pending",
+    "built",
     "future",
-    "pending",
+    "built",
     "future",
     "future"
    ],
    "notes": [
-    "R-029: Statcast / FanGraphs / B-Ref cards",
-    "",
-    "Layer-1 taxonomy draft (awaiting Earl's approval); signal map R-029 queued",
+    "R-029: 6 source cards",
+    "No PAM records yet: the mass tier is the bot's job",
+    "R-029 map FREE 38 / PARTIAL 13 / NONE 2; R-061 dossier (no record-cited exemplars yet)",
     "",
     ""
    ]
@@ -462,14 +481,14 @@
    "name": "Closing lines · probables timing",
    "tickets": "R-057 · R-060",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-057 historical lines; R-060 when probables and lineups are posted",
+    "R-057: no free bulk line history 2016-2026 (OddsPortal one-off only); the bot anchors on Kalshi's own history",
     "",
     "",
     "",
@@ -482,16 +501,16 @@
    "taxonomy": "nhl",
    "tickets": "R-030 · R-062",
    "states": [
-    "pending",
+    "built",
     "future",
-    "pending",
+    "built",
     "future",
     "future"
    ],
    "notes": [
-    "R-030 queued",
+    "R-030 / R-020 cards",
     "",
-    "Layer-1 taxonomy draft (awaiting Earl's approval); signal map R-030 queued",
+    "R-030 map FREE 28 / PARTIAL 13 / NONE 2; R-062 dossier queued",
     "",
     ""
    ]
@@ -501,18 +520,18 @@
    "name": "xG · lines · EDGE sources",
    "tickets": "R-020 · R-050",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "built",
     "built"
    ],
    "notes": [
-    "R-020: MoneyPuck, Natural Stat Trick, NHL EDGE, shifts; R-050 line-combination history",
+    "R-020: 8 NHL factor-source cards; R-050 line-combination history queued",
     "",
     "",
     "The bot's own NHL event store (12 seasons) is the base",
-    "84.3: shot quality to a price vs Kalshi (2025, n = 1,306): too few to tell"
+    "84.3: shot quality to a price vs Kalshi: too few to tell"
    ]
   },
   {
@@ -558,14 +577,14 @@
    "name": "Closing lines (the anchor)",
    "tickets": "R-057",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-057: free historical lines, 2016-2026",
+    "R-057: no free bulk line history 2016-2026 (OddsPortal one-off only); the bot anchors on Kalshi's own history",
     "",
     "",
     "",

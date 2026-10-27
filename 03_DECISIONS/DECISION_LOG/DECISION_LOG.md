@@ -2898,3 +2898,8 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-27 16:40 PT — 89.7's remainder folded into Wave 90.1 (operator)
 - Operator, 16:30 PT: "Just partition the remaining work from 89.7 into one of the blocks and I'll send it"
 - 89.7 ended partial (PR #349 open, CI failed on the exploratory fence; start times solved: Kalshi occurrence_datetime = scheduled start + 3.0 h; NBA/NHL game candles fetched; LA alias, remaining families' candles, the hold-out scan and its gap/log/queue entries undone). 90.1 now takes PR #349 over (fix through safe_out, merge on green), finishes the data and the hold-out scan (Part A), then builds ride.py as code from the out-of-sample table (Part B). The ride tree's pre-registration and shadow arm move to Wave 91. 90.2 and 90.3 run alongside and never touch PR #349.
+
+## 2026-10-27 16:55 PT — Muse: seven tickets verified; five new tickets toward the market's own flow; backlog 32 (strategic window)
+- Operator, 16:47 PT: "Give me the next Muse prompt too".
+- Verified in the archive (8073e03): R-046, R-057 (no free bulk line history), R-058 (NONE free timestamped NFL lines), R-029, R-061, R-020, R-030 closed. Muse's usage answer: "I don't know" whether scheduled runs use a separate allowance; runs kept landing commits.
+- New tickets R-063 (Polymarket history + event mapping), R-064 (public betting splits), R-065 (free current lines with timestamps, forward capture), R-066 (NBA starters timing), R-067 (Kalshi contract rules verbatim). Order puts R-065, R-063, R-064, R-067 first (they feed Wave 90's ride / router / momentum work). Add-in in MUSE_PASTE_IN_v3.md § "Add-in, 2026-10-27 16:55 PT". MUSE_WEB.json updated.
