@@ -2845,3 +2845,9 @@ Done (PR #294, CI green): `00_ADMIN/DOC_REGISTRY.toml` classifies the files in 0
 Reconciled 9 scoring paths against the quant core (0 bugs; 4 definition differences registered GG-1180..1183, registered definitions kept). Re-pointed 3 matched paths (<1e-6, equality-tested) and absorbed the 86.2/86.3 helpers; D3 now reads pre-registration files (GG-1100). No verdict, order, runner or live-ledger change. See results_W87.md.
 
 | 2026-10-27 | T-1173 | W87.2: exposure gate now fed by MLB T1, MLB T4, NBA T1 (frozen, excluded) and all shadow books; submit_order consults it. Ships LOG-ONLY (GATE_MODE="log", env EXPOSURE_GATE_MODE); unknown mode and unmapped band fail closed in enforce. t4-mlb restart policy: skip_live_game, restart owed after games end. GG-1082/GG-441 stay OPEN until enforce is flipped (separate PR) after one full game day of exposure_gate_logonly.jsonl is read, and read back on the box. |
+
+## 2026-10-26 18:30 PT — Wave 87 closed and verified; Wave 88 written (strategic window)
+- Operator, 18:10 PT: "Wave completed - confirm receipt then set up the next wave"
+- Verified: #332-#335 CI green; box `20261027T011024Z_*`. 87.1 done (9 paths reconciled, 0 bugs, 3 re-pointed, D3 1 -> 3). 87.2 partial (exposure gate on every order path, LOG-ONLY; t4-mlb restart pending a no-game window). 87.3 partial (NHL scored: market better, no interval; 4 models NONE for model-side data; NHL totals rows: 65% wide quotes, 67% far strikes). Skill weights all 0.
+- Box budget RED at the close: MLB game-market shadow silent since 2026-10-25 18:07Z while a World Series game started. Hard Rule 14: Wave 88.2 Part 0 fixes it before anything new goes live.
+- Wave 88: 88.1 EVT tails + DRAFT G6 ADR (call 2, 2026-10-21); 88.2 the red, then kill switch to ENFORCE (GG-1082/GG-441), quote times on shadow rows; 88.3 the remaining models scored vs the market with intervals, skill weights. Muse block written 10-27 after Muse's limit resets (operator 16:33 PT).
