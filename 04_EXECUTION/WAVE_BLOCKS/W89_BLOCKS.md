@@ -750,3 +750,133 @@ Results: Status | PRs + CI | OPEN before -> after | ids closed | ids re-filed WA
 
 END OF BLOCK 89.6. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
+
+### 89.7 — ONE BLOCK TONIGHT (operator 2026-10-26 22:12 PT): ride the market, the data first
+**PROOF + DEPTH** · one terminal
+
+```
+COMMON RULES - 89.7, ONE BLOCK TONIGHT (operator 2026-10-26 22:12 PT) (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
+  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-26 22:15 PT - incl. THE RIDE-THE-MARKET DIRECTION (operator 22:12 PT: "we need
+  substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
+  conclusions"; the filtering layer routes each situation to ride / fade / no-bet), Wave 89 results (89.2: 11 cells where Kalshi's own
+  price is wrong net of fee, all MLB plus one NFL, in-sample; NBA, NHL and parlays not archived, GG-1250; NFL tickers date-only,
+  GG-1252; no hold-out, GG-1254), Wave 88 results (5 of 6 frozen models scored against the
+  market: NHL and NBA worse than it, MLB level with it; every skill weight effectively 0, so the gate keeps nothing; DRAFT ADR-0076
+  awaiting the operator; kill switch still LOG-ONLY), Wave 87 results (core reconciled on 9 paths, 3 re-pointed;
+  exposure gate on every order path in LOG-ONLY; 2 of 6 models scored vs market, both no better than it; skill weights all 0),
+  Muse back on its three daily runs with a reordered backlog (2026-10-26), Wave 86 results (quant core merged; 1 of 6 models scored
+  against the market; the market uses about one width per sport too; adverse selection dominates E3), THE QUANT ROLLOUT (operator 2026-10-22 16:58 PT: "I want one
+  of the next waves to be purely quant refinement - I want to get our figures right (structurally ...)" ... "we need to have the same
+  level of optionality - WITH QUALITY"; accepted 17:06 PT: Wave 86 = quant Wave A; a technique enters the library only with a test,
+  a stated condition for when it applies, and one measured result on our data), EXP-041 frozen and NOT wired, position_gate.py
+  built and NOT wired, Muse paused for the week (daily watchdog sweep scheduled), THE OPERATOR'S ACCEPTANCE OF MARKET-ANCHORED PRICING, A REAL
+  GATE AND A POOLED TEST (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-21 20:28 PT: "Good - I accept them"),
+  the THREE CALLS of 19:15 PT (PAM drafts accepted; G6 re-defined by a superseding ADR; the kill switch counts open and unresolved
+  stake, GG-441), the observation rule (WATCH ITEM), the shared folder as a reading copy, one Visual Dashboard served by the box at /visual
+  (2026-10-21 17:20 PT), Muse three daily runs and a 30-ticket backlog (2026-10-21 16:55 / 18:35 PT), the ADR-0072 addenda of 2026-10-20 (verdict per (book,
+  sport), criterion (c) judged forward, cash-starved days excluded) and 2026-10-21 (NFL: one more look at markout judged n),
+  Muse charter v3 (Muse scouts via source cards, the bot captures), Muse off headline news (2026-10-20 21:26 PT), green = the cell
+  WINS (2026-10-19 22:06 PT), the operator's acceptance of the KXNFLPASSYDS
+  thin-market pre-registration (blockquote in ACTIVE_QUEUE.md "Needs your decision", 2026-10-19), L3 = the split-level
+  layer (R-008), operator examples are illustrations, never work items (W17, W25), the granularity index, "retail flow first", three blocks per wave,
+  the box bridge, Muse charter v2 (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md), ADR-0073 (one deep engine
+  per sport), ADR-0074 (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation >
+  interpretation > application; eight components; measure D5), ADR-0070/0071/0072, the repository PUBLIC (Actions minutes
+  free), "not a cent on GitHub", the expansion directive, Hard Rule 12. Standing authorizations: shadow-evaluation cron
+  jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service restarts
+  (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
+  ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
+  `git show origin/main:<path>` (window error W20).
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR. Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
+- One block runs tonight; Wave 90 runs tomorrow and builds on its results. File ownership: a new 12_EXPLORATORY/ride_market_scan/,
+  12_EXPLORATORY/market_history/ (W87.3/W88.3's Kalshi history tooling, additions only), new data under exp_output/KALSHI_HISTORY/,
+  and, only if the budget reads GREEN, the price archiver's family list (register first). May ADD to src/prediction_market_bot/quant/.
+  TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
+  (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
+  main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
+  SURFACE BUDGET: read the box's budget_read before installing anything. At the Wave 88 close it was RED on one silent arm (the
+  MLB game-market shadow; W88.2 merged the fix, #336, awaiting an in-window row). Hard Rule 14: nothing new goes live until GREEN. Register every new component before it runs.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and
+  refusal, skip only that step, finish the rest, hand back. Never work around it. DONE means merged AND, for anything that
+  runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration except where your block's PERMISSIONS name
+  it. Read-only GETs against the Kalshi DEMO API, and public unauthenticated Kalshi market-data GETs, are allowed.
+- Python on the box is 3.9 and rejects Kalshi's 5-digit fractional ISO timestamps: parse with the tolerant parse_ts (W80.2).
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title). Your handoff fills vision_pillar, gap_measure and gap_delta (measured before -> after, with source).
+  If what you find means the block cannot move its measure, say so and stop rather than doing adjacent work.
+- THE QUANT BAR (from Wave 86 on): every technique you add carries (1) a test on known answers (a simulated case where the truth is
+  known), (2) a one-line statement of when it applies and when it does not, (3) one measured result on OUR data with n and an
+  interval. Without all three it is not added. Read-only on every live ledger, model, runner and pre-registration.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated / interpreted / applied (a tested path from
+  the fact to a price, compared with the market). Quote the operator's words, never compress them (window error W16).
+- GRANULARITY INDEX (operator 2026-10-16, 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md): every factor you build reports its
+  five parts - the split, the rank against history, the matchup cross, the market map, the application. The operator's
+  examples are illustrations, not build lists (window error W17).
+- ADR-0074: handoffs carry pattern_sweep: ("n/a (no defect fixed)" when nothing was fixed) and surface_delta:.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W89_7.md (docs-only push).
+
+89.7 - RIDE THE MARKET, THE DATA FIRST: KALSHI PRICE HISTORY FOR NBA, NHL AND NFL WITH TRUE START TIMES, AND 89.2'S SCAN WITH A REAL HOLD-OUT. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF + DEPTH. Measures: families with settled Kalshi price history usable for a calibration test, MLB + NFL -> + NBA + NHL
+(+ props and parlays where Kalshi lists them); 89.2's candidate cells tested OUT OF SAMPLE 0 -> n; in-season candidates (NFL, NBA,
+NHL) 0 -> n. The operator, 2026-10-26 22:12 PT: "we need substantively more architecture around the \"ride the market\" trees than
+we have before we come to any end all be all conclusions." Riding the market pays only where the market's OWN price is wrong
+toward its favourite (or away from its longshot): 89.2 found 11 such cells net of fee, in-sample, nearly all MLB, which ends this
+week. Wave 90 (tomorrow) pre-registers ride trees and builds the router from what this block measures.
+Premises to check: 12_EXPLORATORY/longshot_bias/results_W89.md and its code (calib.py, run_w89_2.py, survivors.py; reuse them, do not
+fork the method); GG-1250 (NBA, NHL, parlays not archived), GG-1252 (NFL tickers date-only: D0 may be in-play), GG-1254 (no hold-out);
+W87.3/W88.3 built Kalshi history fetches (12_EXPLORATORY/market_history/: fetch_game_hourly.py and the kalshi_history_build CLI);
+Kalshi's public API serves settled markets and candlesticks without login.
+PERMISSIONS: per the common rules' ownership; public unauthenticated Kalshi market-data GETs (pace them; respect rate limits); free
+schedule sources for true start times. NOT: any order, gate, model, runner, ledger, registry cell or pre-registration; the archiver
+change only if budget_read says GREEN (register it first; if RED, register the change as a task and stop there).
+
+PART A - The history (~45 min)
+  Backfill settled Kalshi markets for NBA (2025-26 and 2026-27 to date), NHL (2025-26 and 2026-27 to date) and NFL (2025 and 2026 to
+  date): game families, team totals, player props and any parlay/multi-leg family Kalshi lists; hourly or finer candles; the TRUE
+  scheduled start time per event from a free schedule source joined by teams and date (closes GG-1252 for NFL; MLB's HHMM-as-ET
+  assumption GG-1253 checked against the schedule). Store under exp_output/KALSHI_HISTORY/ (git-ignored data, a manifest in git).
+  Report coverage per family and season, and what Kalshi did not list.
+PART B - The scan, with a hold-out (~45 min)
+  89.2's method unchanged (first two-sided snapshot per time tier, price buckets, cluster-robust test, net of k007 fee at the quote,
+  BH at q = 0.10), now with a TIME SPLIT: cells chosen on the earlier half, tested on the later half; report survivors that hold in
+  the later half. For MLB, re-test 89.2's three named candidates on dates after 89.2's window (to the World Series) and on 2025 history.
+  Then run the same on NBA, NHL and NFL (true start times). Every survivor lists: family, tier, bucket, side (ride the favourite /
+  fade the longshot), n, games, net per contract with interval, and whether it held out of sample.
+Results: results_W89_7.md, the manifest, a handoff, and one operator line naming the out-of-sample survivors that Wave 90 should
+pre-register as ride trees.
+
+END OF BLOCK 89.7. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```

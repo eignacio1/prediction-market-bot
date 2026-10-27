@@ -10,6 +10,45 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 89 NOW section (closed 2026-10-26 22:30 PT). 89.1 🟨 89.2 ✅ 89.3 🟨 89.4 ✅ 89.5 ✅ 89.6 🟨. Pastes stay in 04_EXECUTION/WAVE_BLOCKS/W89_BLOCKS.md. Verbatim:
+
+## ⬛ NOW — Wave 89 · WHERE THE LINE IS WEAK · WRITTEN 2026-10-27 ~03:00 UTC (10-26 20:00 PT) · three MEDIUM terminal blocks · Muse block written 10-27 · from Wave 88's verified results
+
+| # | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|
+| 89.1 | Before real money, finished: the red cleared (MLB arm read back), then the kill switch ENFORCING | PLUMBING: budget RED → GREEN; GG-1082 / GG-441 → RESOLVED | 🟡 PARTIAL | Part B DONE: enforce live on box (PR #346 bb03fd4), drill read back, GG-1082/441/1240 RESOLVED, GG-1241 partial. Part A open: first in-window MLB T1 row 06:07Z (silent arm), quote_age_s unread, GG-1230/1232 not closed, GG-1231 no alarm, budget_read not taken. No LOG-ONLY day behind the flip |
+| 89.2 | Where the line itself is wrong: calibration and longshot bias of Kalshi's sports prices; overreaction | PROOF + DEPTH: families tested 0 → n (BH); market-level adjustments surviving 0 → n | ⬜ ✅ DONE (PR #345 f50f49c) | Part A: 1,258 testable cells, 66 BH-flagged, 11 survive net of fee (KXMLBHIT T0-2h 20-25c YES largest, n=1,892); Part B: 0 survivors (every net negative). 3 candidates for pre-registration; results_W89.md. GG-1250..1254. |
+| 89.3 | Depth, market-anchored: which NFL and NBA factors the line does not price; the top 1-3 taken to a price | DEPTH: factors with a measured share priced 1 → n; factors clearing fee + error 0 → n | 🟨 Parts A+B NFL done (PRs #340, #343): 3 factor classes measured; Part B venue+weather totals dBrier -0.0015 [-0.0034,+0.0005], 0 strikes clear fee+error; NBA screen blocked on GG-1260 | |
+| 89.4 | EXTRA (operator, out of protocol): one NFL game simulation (Markov chain) that prices the whole board consistently | DEPTH: D4 NFL → whole board from one engine (offline); families from one joint distribution 0 → n | ✅ DONE (PR #344 merged 1a741d5) | One chain prices ML/spread/total/team totals from one joint sim, offline; worse than close at centre (ML +0.02 Brier), Gaussian-equivalent in shape, key number 3 missed ~2x. No edge. `12_EXPLORATORY/nfl_gamestate/results_W89.md` |
+| 89.5 | EXTRA: NBA player roles (PAM) against the points-prop line; the 2026-27 actual-points join | DEPTH: D5(b) NBA PAM applied 0 → n | ✅ | DONE PR #348: 2,409 strikes joined (0 unmatched players); 22 roles tested, NULL, none survives BH q=0.10; PRF-4 detectable ~mid-Nov, PRF-1 ~mid-Dec 2026 |
+| 89.6 | EXTRA: the small-fix gap sweep (GS-1 + GS-2, never run) | PLUMBING: OPEN gaps 211 → as low as 90 min allow | 🟡 PARTIAL: OPEN 213 -> 205 (2 batches), PR #347 pending CI | handoff SESSION_HANDOFF_20261027T042053Z_W89_6.md |
+
+**What Wave 88 delivered (verified 2026-10-27 02:43Z: #336-#339 CI green; box bridge `20261027T024253Z_*`):** **88.1 ✅** tails
+measured (generalized Pareto) on T4 and T1 MLB; T4's per-game loss exceeded 1 time in 100 is $7.18 [2.98, 12.04] at flat stakes; the
+T1 filled tail is too thin to fit; binary contracts cap a game's loss at the stake on it, so the real control is a per-game exposure
+cap. **DRAFT ADR-0076** (G6 per book and sport) is written and waits for you (below). **88.2 🟨** the silent MLB arm's cause was a
+games-cache sync that stopped chaining (fixed; GG-1230); shadow rows now carry the quote's time; the box stays RED until the arm writes
+its next in-window row; the kill switch is still LOG-ONLY → 89.1. **88.3 ✅** five of six frozen models scored against the market on
+held-out seasons: **NHL and NBA worse than the market (intervals exclude zero), MLB level with it**; skill weights 0 / 0 / 0.0018, so
+the accepted gate places nothing.
+**The plain reading:** our current models do not beat the line anywhere we can measure. Two routes remain, and Wave 89 takes both:
+the market's own price may be biased where retail money sits (89.2, no model needed), and some built factors may carry what the
+line misses (89.3).
+**Distance:** models scored vs market 2 → 5 of 6; everything else 0. **Box: RED** (MLB arm, fix awaiting a row).
+
+**Pushback:** 89.2 and 89.3 can both come back empty. That would be the strongest evidence yet that the edge has to be built at the
+granularity bar (the depth lane, the PAM, the engines) rather than found in what we already have, and the next waves would turn
+fully to that.
+**Surface:** RED at 02:43Z (MLB game-market shadow, fix merged, no in-window row yet). Expected delta 0; nothing new goes live
+before GREEN (Hard Rule 14). 89.1 Part B has a time gate: one full game day of LOG-ONLY with every book feeding.
+**Dependencies:** none.
+
+**The pastes:** `04_EXECUTION/WAVE_BLOCKS/W89_BLOCKS.md` — 89.1-89.3, the addendum for them, and the extra terminals 89.4-89.6 (moved out of this file 2026-10-26 21:15 PT so the queue stays readable).
+
+---
+
+---
+
 ## Sequencing track, Waves 45-79 (moved out of ACTIVE_QUEUE.md 2026-10-26 21:15 PT). Verbatim:
 
 ### ✅ WAVE 79 — ISSUED 2026-10-16 ~13:50 UTC · CLOSED ~14:45 UTC (verified on GitHub) · four blocks + the gap agent · finishes 78.2/78.4, clears the red, branch cleanup
