@@ -1037,3 +1037,4 @@
 | 2026-10-27T01:16:22Z | T-1190..T-1192, GG-1190..GG-1194 | W88.1 STANDARD: EVT tails for real-money limits + DRAFT G6 superseding ADR — FOR PROOF+PLUMBING (G6 ADR 0->DRAFT, every limit derived from measured tails) |
 | 2026-10-27T01:17:01Z | T-1196..T-1198, GG-1196..GG-1198 | STANDARD — W88.3 quant: score remaining frozen models vs market w/ clustered intervals, set skill weights — FOR PROOF (P2 verdicts / models scored vs market 2 -> n of 6) |
 | 2026-10-27T01:17:23Z | T-1230..T-1232, GG-1230..GG-1234 | W88.2 STANDARD: red-first (silent MLB game-market shadow) then kill switch LOG-ONLY->enforce + shadow quote times — PLUMBING (surface budget RED->GREEN; GG-1082/GG-441 OPEN->RESOLVED) |
+| 2026-10-27T01:45:37Z | T-1230 | MERGED: NO — branch `session/20261027T011519Z-w88-2-enforce-quote-times` awaiting merge — W88.2 partial: games-cache sync fixed (#336) and shadow rows carry exchange quote time (#339); kill-switch enforce not done. (commit `651a491`) |
