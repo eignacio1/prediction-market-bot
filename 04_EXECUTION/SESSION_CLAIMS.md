@@ -1047,3 +1047,4 @@
 | 2026-10-27T04:03:04Z | T-1260..T-1262, GG-1260..GG-1262 | STANDARD — W89.3 screen: which NFL/NBA factors the line does not price; top 1-3 to a price — FOR DEPTH D5(b) (factors w/ measured share priced 1 -> n; clearing fee+error 0 -> n) |
 | 2026-10-27T04:06:45Z | GG sweep only; no new T/GG range | W89.6 gap sweep class C/O — PURPOSE: PLUMBING, measure OPEN gaps 211 -> lower (GOVERNANCE_GAP_LOG grep) |
 | 2026-10-27T04:06:51Z | T-1270..T-1272, GG-1270..GG-1274 | STANDARD — W89.4 NFL game simulation (Markov chain) pricing whole board from one joint distribution, results_W89.md — FOR DEPTH D4 (NFL: data layer+scaffold -> whole board priced from one engine, offline; families from one joint distribution 0 -> n) |
+| 2026-10-27T04:07:13Z | T-1280..T-1282, GG-1280..GG-1284 | W89.5 STANDARD: NBA PAM roles vs KXNBAPTS price, join + out-of-sample role cross — FOR DEPTH D5(b) (NBA PAM factors applied 0 -> n; points props w/ settled actuals joined 0 -> n) |
