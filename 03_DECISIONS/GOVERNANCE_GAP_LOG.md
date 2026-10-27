@@ -4326,3 +4326,9 @@ W89.5, 2026-10-27. 14 players with KXNBAPTS strikes (e.g. Cameron Boozer, Kyrie 
 **Status:** OPEN · **Severity:** LOW
 
 W89.5, 2026-10-27. KXNBAPTS-26OCT08PHIBKN and KXNBAPTS-26OCT05NYKPHI are preseason-dated and were excluded by the 2026-10-20 window; not investigated. GG-1064 (the sealed-store conflict) is superseded for this cross: W89.5 joined from public Kalshi and ESPN data and read no shadow file.
+
+### GG-1284 — Other Kalshi candlestick callers not audited for the window-400 limit
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.5, 2026-10-27. A wide start_ts..end_ts at period_interval=1 returns HTTP 400 (candle-count limit); w89_join.py caps its window at 6h. Nine other callers (listed in the W89.5 handoff pattern_sweep) were not checked for the same span problem.

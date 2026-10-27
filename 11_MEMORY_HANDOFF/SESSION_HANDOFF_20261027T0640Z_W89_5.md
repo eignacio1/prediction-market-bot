@@ -10,7 +10,7 @@ plan_deliverable_moved: no
 vision_pillar: DEPTH
 gap_measure: D5(b) NBA PAM factors applied; NBA points props with settled actuals joined
 gap_delta: D5(b) NBA PAM applied 0 -> 22 roles tested via a tested path (null); points props joined 0 -> 2,409 (1,820 usable first anchor, 1,640 last_pretip). Source 12_EXPLORATORY/nba_pam_mass_tier/results/w89/{join_summary,cross_first}.json
-pattern_sweep: swept 12_EXPLORATORY for write-shaped .replace() calls (isolation scan trap) and for Kalshi candlestick calls with wide windows; none found outside w89 files. Full CLAUDE.md Steps 1-4/Q1-Q7 were not individually run; governance hook only (stub scan CLEAN, no duplicate GG ids).
+pattern_sweep: (1) write-shaped .replace() in 12_EXPLORATORY: grep found 0 other instances. (2) Kalshi candlestick window-400 cap: 9 other callers listed (12_EXPLORATORY/nfl_engine/granularity_index/part_b_apply.py, thin_markets/efficiency.py, scripts/{demo_fill_markout_collector,kalshi_history_build,thin_market_depth_capture,w63_3_fetch_candles,board_survey_*}.py) NOT audited for window span; registered GG-1284. Full CLAUDE.md Steps 1-4/Q1-Q7 not individually run; governance hook only (stub scan CLEAN, no duplicate GG ids). Deploy summary for #348 not read.
 surface_delta: 0
 -->
 
