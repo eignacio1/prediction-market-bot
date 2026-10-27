@@ -39,3 +39,10 @@ Read back a box shadow row with the quote fields; close GG-1232 and GG-1230. The
 
 ## Resume
 `scripts/new_session_worktree.sh "w88-2-part-a"`, then read this file.
+
+## Addendum 2026-10-27T02:45Z (post-close verification, read-only)
+- Test Suite on main green at 240742f (descendant of f91c2ee6); the cancelled run 40434217779 was superseded, not failed.
+- Box HEAD 240742f contains f91c2ee6 (Part B code is on the box).
+- Box games cache refreshed 01:26Z (Part 0 delivery works). T2/T3 runs at 02:12Z/02:33Z wrote nothing: all cells outside band windows, no refusal.
+- silent_arms still reads MLB game-market SILENT (last row 2026-10-25 18:07Z). Budget stays RED, and GG-1230/GG-1232 stay OPEN, until an in-window run writes a row with quote_ts_utc. No row to read back yet.
+- Next: after the next in-window MLB run, grep quote_ts_utc in exp_output/PREGAME_SHADOW and re-run silent_arms.
