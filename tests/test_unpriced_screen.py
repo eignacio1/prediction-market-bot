@@ -22,3 +22,11 @@ def test_fully_priced_term_has_no_unpriced_part():
 
 def test_bh_known():
     assert S.bh([0.001, 0.2, 0.9]).tolist() == [True, False, False]
+
+
+def test_part_b_ridge_recovers_known_signal():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "12_EXPLORATORY" / "unpriced_screen"))
+    import part_b_weather as P
+    rng = np.random.default_rng(3); X = rng.normal(0, 1, (4000, 4)); y = 2.0 * X[:, 2] + rng.normal(0, 1, 4000)
+    f = P.ridge(X, y); pred = f(X)
+    assert np.corrcoef(pred, 2.0 * X[:, 2])[0, 1] > 0.98
