@@ -28,3 +28,13 @@ def test_listed_team_maps_kalshi_alias():
 def test_one_per_event_keeps_first_sorted_ticker():
     mk = [{"ticker": "E1-B", "event_ticker": "E1"}, {"ticker": "E1-A", "event_ticker": "E1"}, {"ticker": "E2-Z", "event_ticker": "E2"}]
     assert [m["ticker"] for m in fgh.one_per_event(mk)] == ["E1-A", "E2-Z"]
+
+
+def test_summarize_known_answer():
+    # model p=0.5 always, market p=0.9 on y=1 / 0.1 on y=0: market Brier 0.01, model 0.25 -> market wins, weight 0
+    joined = [{"game_id": i, "p_model": 0.5, "p_market": 0.9 if i % 2 else 0.1, "y": i % 2, "spread": 0.02} for i in range(40)]
+    r = svm.summarize(joined)
+    assert r["n_scored"] == 40
+    assert abs(r["brier_model"] - 0.25) < 1e-12 and abs(r["brier_market"] - 0.01) < 1e-12
+    assert abs(r["market_minus_model"] - (-0.24)) < 1e-9 and r["ci95"][1] < 0
+    assert r["skill_weight"] == 0.0
