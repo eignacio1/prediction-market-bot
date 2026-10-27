@@ -33,9 +33,9 @@ note = "W75.2 one Factor protocol every factor class plugs into, point-in-time t
 [[component]]
 sport = "nfl"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "nfl"
@@ -89,9 +89,9 @@ note = ""
 [[component]]
 sport = "nba"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "nba"
@@ -145,9 +145,9 @@ note = ""
 [[component]]
 sport = "mlb"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "mlb"
@@ -201,9 +201,9 @@ note = "W84.3 one point-in-time frame joining xG, special-teams and goalie-workl
 [[component]]
 sport = "nhl"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "nhl"
