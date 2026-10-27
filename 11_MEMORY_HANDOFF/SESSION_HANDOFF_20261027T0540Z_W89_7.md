@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: T-1290
+tier: MICRO
+timestamp: 2026-10-27T05:58:00Z
+commit: 07af8ee
+one_line_summary: W89.7 Part A partial: NBA/NHL/NFL Kalshi backfill + true-start join; PR 349 CI failed on EXPLORATORY fence, unmerged
+gg_touched: GG-1260
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF, DEPTH
+gap_measure: families with settled Kalshi history for a calibration test; hold-out cells tested
+gap_delta: MLB+NFL -> +NBA,NHL game-family candles (MANIFEST.json 2026-10-27); hold-out cells 0 -> 0
+pattern_sweep: ESPN scoreboard multi-day dates= returns 400; grep of src/scripts/12_EXPLORATORY found 2 other callers, both single-date, no defect
+surface_delta: 0
+-->
 # SESSION HANDOFF — W89.7 (PARTIAL), operator asleep
 vision_pillar: PROOF+DEPTH
 gap_measure: families with settled Kalshi history for a calibration test

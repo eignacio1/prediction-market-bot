@@ -4340,3 +4340,8 @@ W89.5, 2026-10-27. KXNBAPTS-26OCT08PHIBKN and KXNBAPTS-26OCT05NYKPHI are preseas
 **Status:** OPEN · **Severity:** LOW
 
 W89.5, 2026-10-27. A wide start_ts..end_ts at period_interval=1 returns HTTP 400 (candle-count limit); w89_join.py caps its window at 6h. Nine other callers (listed in the W89.5 handoff pattern_sweep) were not checked for the same span problem.
+
+### GG-1260 — W89.7 backfill writes outside the EXPLORATORY fence
+**Status:** OPEN · **Severity:** MEDIUM
+
+2026-10-27, T-1290. Block 89.7 mandates data under exp_output/KALSHI_HISTORY/, but tests/test_exploratory_isolation.py (CHARTER rule 3) fails any write outside 12_EXPLORATORY/. PR #349 CI failed on w89_7_backfill.py:86 (.replace) and :277 (.write_text). Fix: manifests via safe_out() in 12_EXPLORATORY; raw writer into src/ via PR, or operator amends the charter. Also open: NFL "LA" alias (Kalshi LA=Rams/ESPN LAR) leaves 135 events unjoined; MLB HHMM-as-ET (GG-1253) unchecked; no candles for spread/total/team-total/props; Part B hold-out not run.

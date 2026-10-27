@@ -51,7 +51,7 @@ Wave 88 close read (`20261027T024253Z_w_distance_read.md`, 02:43Z); rows not mar
 
 **Surface (box, 2026-10-27 05:13Z):** **77 live components · SURFACE BUDGET RED** (MLB game-market shadow silent since 2026-10-25
 18:07Z; first in-window row expected 06:07Z) · **kill switch ENFORCING on every order path** (89.1). Frozen models vs the market:
-none beats it (88.3). Ride-the-market evidence: 11 in-sample cells (89.2); hold-out pending (89.7).
+none beats it (88.3). Ride-the-market evidence: 11 in-sample cells (89.2); hold-out pending (89.7: Part A partial, PR #349 CI failed on EXPLORATORY fence, GG-1260; Part B not run).
 
 **Window, 2026-10-21 morning (no wave; operator on his phone, 07:05-08:15 PT):** Earl set a daily automatic Muse run;
 the window wrote the week's Muse backlog (R-017 → R-030) and amended charter v3 to name that one job. Watchdog posture is
