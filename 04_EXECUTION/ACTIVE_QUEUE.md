@@ -278,7 +278,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 87.1 | Quant A1 finished: ... | PROOF: paths reconciled 2 → all; re-pointed 0 → n | ✅ DONE (PRs #333, #335) | 9 paths reconciled, 0 bugs, 4 definition diffs (GG-1180..1183); 3 re-pointed; ladder/coherence/dtmc absorbed; D3 1→3. Box read-back pending deploy; deferred: t4_fill_status, ece |
-| 87.2 | Before real money: the kill switch on every order path, fed by every book (GG-1082 → GG-441) | PLUMBING | ⬜ | |
+| 87.2 | Before real money: the kill switch on every order path, fed by every book (GG-1082 → GG-441) | PLUMBING | 🟨 PARTIAL | Parts A+B code merged (PR #334, 360881a), LOG-ONLY on box; t4-mlb restart skipped (live game) so T4 not yet feeding; enforce flip pending one full game day of exposure_gate_logonly.jsonl |
 | 87.3 | The market history the skill weights need (5 models), and a price-integrity check on NHL_GAME_TOTAL_T1 | PROOF: models scored vs market 1 → n of 6 | ✅ PARTIAL | PR #332: 1 → 2 of 6 (NHL, no interval); 4 NONE (model-side data); NHL totals: 65% wide, 67% far strike, stale age not measurable; weights all 0 |
 
 **What Wave 86 delivered (verified 2026-10-23 00:57Z: #328-#331 CI green; box bridge `20261023T005716Z_*`):** **86.1 🟨** the
