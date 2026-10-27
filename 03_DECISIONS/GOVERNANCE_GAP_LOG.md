@@ -4301,6 +4301,34 @@ W85.1 Part A. `exp_output/KALSHI_HISTORY/candles/KXNFLGAME.jsonl` holds 411 one-
 
 ### GG-1100 — distance_to_optimum D3 undercounts pre-registered challengers (EXP-041 not counted)
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED (W87.1, d3() reads the pre-registration files; D3 1 -> 3) · **Severity:** LOW
 
 W86.1 Part B. `scripts/distance_to_optimum.py` `d3()` counts `.md` files under `12_EXPLORATORY/` or `03_DECISIONS/` whose filename contains "challenger" and carry `**Status:** PROPOSED|ACCEPTED`. EXP-041 (`05_RESEARCH_EXPERIMENTS/EXP041_NFL_MARKET_ANCHORED_PREREGISTRATION_2026-10-22.md`, `**Status:** FROZEN`) fails all three tests, so D3 reports 1 where 2 are expected. Not fixed in W86.1 (reconcile-only). Fix: define challengers from a registry, not a filename/dir/status pattern.
+
+
+### GG-1180 — Monitor ECE bins by np.linspace edges; every pre-registered ECE bins by int(p*n)
+
+**Status:** OPEN · **Severity:** LOW
+
+W87.1 Part A (`12_EXPLORATORY/quant_core_reconcile/results_W87.md`). `c7_monitoring/monitor.py::_compute_ece` puts p=0.3, 0.7 etc. one bin lower than `quant.ece` (linspace(0,1,11)[3] = 0.30000000000000004). Snapshot ECE 0.1107 vs 0.1134. Matters for probabilities rounded to 0.1/0.01. Not re-pointed: live ADR-0004 drift ladder (T-281 deferred), c7 not owned by 87.1. Fix = one ADR-0004 amendment + threshold re-derivation.
+
+
+### GG-1181 — irls_logistic differs from quant.slope_intercept by 1.8e-5 / 1.3e-4
+
+**Status:** OPEN · **Severity:** LOW
+
+W87.1 Part A. Clamp and stopping tolerance differ on p=0/1 rows. Pre-registrations use the core's. Not re-pointed.
+
+
+### GG-1182 — scoring._best_side_e_net chooses the side by gross edge; core net_edge by net edge
+
+**Status:** OPEN · **Severity:** LOW
+
+W87.1 Part A. Differs on 2 of 4,000 snapshot quote/outcome pairs. EXP-036/037 pre-registered realised E_net uses the gross choice, so it is kept; any change is a new pre-registration, not an edit. Registered so a future reader does not treat it as a bug.
+
+
+### GG-1183 — Forward-test CI is analytic (Z=1.645 one-sided); the core and every other look use a percentile bootstrap
+
+**Status:** OPEN · **Severity:** LOW
+
+W87.1 Part A. Means identical; half-widths differ 0.16 vs 0.17 on the snapshot. The forward-test rule uses the analytic one; kept. Registered as a definition difference.

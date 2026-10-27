@@ -1,0 +1,17 @@
+{
+ "model_id": "nhl_pregame_v1",
+ "market_referenced_heldout_brier": {
+  "n": 1306,
+  "season": "2025-26",
+  "brier_model": 0.24733952607616866,
+  "brier_market": 0.24419247702909652,
+  "paired_diff_market_minus_model": -0.00315,
+  "interval": "NOT COMPUTED: per-game rows were not retained by W84.3 part_b.py; the KXNHLGAME store it read exists nowhere now",
+  "price": "KXNHLGAME home-team mid, prevailing quote at start-1h, de-vigged by taking mid",
+  "source": "12_EXPLORATORY/nhl_engine/results/part_b.json (W84.3)"
+ },
+ "skill_weight": 0.0,
+ "gate_rule": "position_gate.skill_weight = clip(1 - Bm/Bk, 0, 1)",
+ "generated_utc": "2026-10-26",
+ "note": "new W87.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}
