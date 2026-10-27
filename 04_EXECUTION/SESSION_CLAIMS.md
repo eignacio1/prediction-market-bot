@@ -1056,6 +1056,7 @@
 | 2026-10-27T04:58:12Z | T-1280 | CLOSED — merge confirmed, HEAD (5cd0662) is ancestor of origin/main — W89.5 DONE: null, PR #348 + docs on main |
 | 2026-10-27T05:04:37Z | T-1240 | CLOSED — W89.1 PARTIAL: exposure gate/kill switch now ENFORCING on the box (PR #346), GG-1082/441/1240 resolved; MLB-arm read-backs open (commit `d05bdda`) |
 | 2026-10-27T05:17:21Z | T-1290..T-1299 / GG-1260..GG-1269 | 89.7 PROOF+DEPTH: Kalshi NBA/NHL/NFL history w/ true start times + 89.2 hold-out scan (MEDIUM) |
+| 2026-10-27T05:58:24Z | T-1290 | MERGED: NO — branch `session/20261027T051711Z-w89-7-ride-data` awaiting merge — W89.7 Part A partial: NBA/NHL/NFL Kalshi backfill + true-start join; PR 349 CI failed on EXPLORATORY fence, unmerged (commit `07af8ee`) |
 | 2026-10-27T23:33:57Z | T-1300..T-1309 / GG-1290..GG-1299 (supersedes 89.7's colliding GG-1260..1269) | MEDIUM — W90.1 finish 89.7 (PR #349) + hold-out scan + ride.py — FOR PROOF/DEPTH: testable families MLB+NFL -> +NBA+NHL, 89.2 cells tested OOS 0 -> n, D5(a) decision_trees ride tree |
 | 2026-10-27T23:34:21Z | T-1330..T-1339 / GG-1330..GG-1339 | W90.2 router: DEPTH, D5(a) filtering_mechanisms+decision_trees scaffold, situations replayed 0->n (STANDARD) |
 | 2026-10-27T23:34:29Z | T-1310..T-1319 / GG-1300..GG-1309 | MEDIUM — W90.3 momentum, measured: follow vs fade (Strategy J) — FOR DEPTH+PROOF: D5(a) momentum_looping 0 -> per-sport measured basis; follow/fade transition contexts 0 -> n |

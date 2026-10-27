@@ -1,0 +1,159 @@
+{
+ "generated_utc": "2026-10-27T05:43:14Z",
+ "join": {
+  "matched": 8424,
+  "matched_same_day": 12
+ },
+ "occurrence_minus_start_hours": {
+  "median": 3.0,
+  "n": 1974,
+  "p10": 3.0,
+  "p90": 3.0
+ },
+ "rows": [
+  {
+   "candle_markets": 376,
+   "candle_markets_nonempty": 376,
+   "events": 1454,
+   "events_with_true_start": 1454,
+   "markets": 2908,
+   "markets_with_true_start": 2908,
+   "season": "2025-26",
+   "series": "KXNHLGAME",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 246,
+   "candle_markets_nonempty": 246,
+   "events": 246,
+   "events_with_true_start": 246,
+   "markets": 492,
+   "markets_with_true_start": 492,
+   "season": "2026-27",
+   "series": "KXNHLGAME",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 1283,
+   "events_with_true_start": 1283,
+   "markets": 5134,
+   "markets_with_true_start": 5134,
+   "season": "2025-26",
+   "series": "KXNHLSPREAD",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 246,
+   "events_with_true_start": 246,
+   "markets": 1705,
+   "markets_with_true_start": 1705,
+   "season": "2026-27",
+   "series": "KXNHLSPREAD",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 1283,
+   "events_with_true_start": 1283,
+   "markets": 7808,
+   "markets_with_true_start": 7808,
+   "season": "2025-26",
+   "series": "KXNHLTOTAL",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 246,
+   "events_with_true_start": 246,
+   "markets": 2368,
+   "markets_with_true_start": 2368,
+   "season": "2026-27",
+   "series": "KXNHLTOTAL",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 187,
+   "events_with_true_start": 187,
+   "markets": 1870,
+   "markets_with_true_start": 1870,
+   "season": "2026-27",
+   "series": "KXNHLTEAMTOTAL",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 988,
+   "events_with_true_start": 988,
+   "markets": 37185,
+   "markets_with_true_start": 37185,
+   "season": "2025-26",
+   "series": "KXNHLGOAL",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 187,
+   "events_with_true_start": 187,
+   "markets": 10360,
+   "markets_with_true_start": 10360,
+   "season": "2026-27",
+   "series": "KXNHLGOAL",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 969,
+   "events_with_true_start": 969,
+   "markets": 41199,
+   "markets_with_true_start": 41199,
+   "season": "2025-26",
+   "series": "KXNHLPTS",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 187,
+   "events_with_true_start": 187,
+   "markets": 8139,
+   "markets_with_true_start": 8139,
+   "season": "2026-27",
+   "series": "KXNHLPTS",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 973,
+   "events_with_true_start": 973,
+   "markets": 29369,
+   "markets_with_true_start": 29369,
+   "season": "2025-26",
+   "series": "KXNHLAST",
+   "sport": "nhl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 187,
+   "events_with_true_start": 187,
+   "markets": 6350,
+   "markets_with_true_start": 6350,
+   "season": "2026-27",
+   "series": "KXNHLAST",
+   "sport": "nhl"
+  }
+ ],
+ "sport": "nhl"
+}

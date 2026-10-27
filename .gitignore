@@ -194,3 +194,6 @@ exp_output/VISUAL_DASHBOARD/
 
 # W83.3 NHL event store (raw cache + parquet; manifest is committed)
 exp_output/NHL_EVENTS/
+
+# W90.1: Kalshi history cache for NBA/NHL/NFL (raw pages, markets, candles); manifests are committed from 12_EXPLORATORY/market_history/manifests/
+exp_output/KALSHI_HISTORY/w89_7/
