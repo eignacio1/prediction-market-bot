@@ -7,10 +7,10 @@ repeated evaluations of one market cannot be cherry-picked. Inference clusters o
 from __future__ import annotations
 
 import math
-import random
 from typing import Iterable
 
 from prediction_market_bot.pregame_shadow.fees import fee_k007, fee_kmult
+from prediction_market_bot.quant import inference as _Q
 
 BOOT_B = 2000
 BOOT_SEED = 20261002
@@ -52,22 +52,7 @@ def expected_e_net_entry(r: dict, fee) -> float:
 def cluster_bootstrap_ci(vals_by_cluster: dict[str, list[float]], b: int = BOOT_B,
                          seed: int = BOOT_SEED) -> tuple[float, float, float]:
     """Mean of per-row values with game-cluster resampling -> (mean, lo95, hi95)."""
-    keys = list(vals_by_cluster)
-    if not keys:
-        return (float("nan"),) * 3
-    allv = [v for k in keys for v in vals_by_cluster[k]]
-    mean = sum(allv) / len(allv)
-    rng = random.Random(seed)
-    means = []
-    for _ in range(b):
-        s = n = 0.0
-        for _ in keys:
-            c = vals_by_cluster[keys[rng.randrange(len(keys))]]
-            s += sum(c)
-            n += len(c)
-        means.append(s / n)
-    means.sort()
-    return mean, means[int(0.025 * b)], means[int(0.975 * b) - 1]
+    return _Q.cluster_bootstrap(vals_by_cluster, b=b, seed=seed)  # W87.1: one definition, in the quant core
 
 
 def score_cell(rows: list[dict], b: int = BOOT_B, seed: int = BOOT_SEED, per_game_mean: bool = False) -> dict:

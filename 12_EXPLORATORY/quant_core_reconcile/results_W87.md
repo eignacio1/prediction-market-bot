@@ -40,3 +40,31 @@ None. Nothing in the core needed fixing.
 
 ## GG-1100
 `distance_to_optimum.d3()` now reads the pre-registration files themselves: dirs `12_EXPLORATORY/`, `03_DECISIONS/`, `05_RESEARCH_EXPERIMENTS/`; counts a file whose name or title says "challenger" and whose Status line (else title) opens PROPOSED, ACCEPTED or FROZEN. D3 on this checkout: **1 → 3** (EXP-040, EXP-041, NFL QB-shrunk challenger). Tests: `test_d3_reads_prereg_files_frozen_and_title_status`, `test_d3_on_this_repo_counts_exp041`.
+
+## Part B: re-pointed and absorbed (PR "W87.1 Part B")
+
+Rule: re-point only where Part A said MATCH (< 1e-6); one path per commit; each has an old-vs-new equality test on a frozen seeded snapshot (`tests/test_w87_repoint.py`); the old function stays as a thin wrapper.
+
+| # | Path | Now calls | Test | Result |
+|---|---|---|---|---|
+| B1 | `pregame_shadow/fees.fee_k007` | `quant.money.fee_k007` | 1,001 prices, bit-equal | re-pointed |
+| B2 | `scripts/nhl_shadow_eval.edge_net` | `quant.money.net_edge` when k == 0.07 (other k keeps the local formula) | 2,000 quotes, <1e-12; k=0.035 unchanged | re-pointed |
+| B3 | `pregame_shadow/scoring.cluster_bootstrap_ci` | `quant.inference.cluster_bootstrap` | 40 clusters, B=2000 and B=300, tuple-equal to a frozen copy of the old code; empty -> NaN | re-pointed |
+
+Absorbed into the core (`src/prediction_market_bot/quant/`, known-answer tests in `tests/test_w87_quant_absorb.py`; the `12_EXPLORATORY` files are now wrappers exposing the same function objects):
+- `ladder.py` (parse_ticker, survival_points, fit_normal, keynum pmf/survival, fit_keynum, decompose),
+- `coherence.py` (fee, monotonic, adjacent_monotonic, same_contract, exclusive_set, dominates, sized),
+- `dtmc.py` (bin_of, estimate, summarise, cluster_bootstrap, simulate).
+
+Each technique: known-answer test (above); applies/does-not-apply is in each function's docstring (carried over from 86.2/86.3); measured result on our data is in `ladder_implied/results_W86.md` and `fill_dtmc/results_W86.md` (unchanged here, this block adds no new measurement).
+
+### NOT re-pointed, and why
+- `t4_fill_status.cluster_bootstrap_ci`: ROUNDING row. Matches only after its 4-dp rounding and it has guards the core lacks (None for < 2 clusters, drops empty clusters). A safe wrapper is possible but it feeds the T4 fill report; deferred to a follow-up (not done for time, not for a numerical reason).
+- `analytics/calibration_diagnostics.ece / reliability / brier_murphy`: MATCH, deferred for time (ceiling), not for a numerical reason.
+- `demo_fill_forward_report._clustered`: pooled mean matches, but its CI is the analytic one the forward-test rule uses (GG-1183); kept.
+- `c7_monitoring/monitor._compute_ece` (GG-1180), `irls_logistic` (GG-1181), `scoring._best_side_e_net` (GG-1182): DEFINITION differences, registered, left alone.
+- Not examined in Part A and still unexamined: `run_sensitivity_tests._ece`, `train_model_v2b._compute_ece`, `ab_harness_t4._brier`, `train_nfl_pregame.brier`, `t4_structure_model.brier_gain`.
+
+Note: `quant/ladder.py` needs scipy. scipy is not declared in `pyproject.toml` (it arrives through scikit-learn); nothing else in `src/` imports it. Nothing imports `quant.ladder` from a runner.
+
+Box read-back: no runner imports the re-pointed functions except through the nightly shadow evaluators; the post-merge read-back is recorded in the handoff.
