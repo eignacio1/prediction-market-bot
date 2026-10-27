@@ -50,3 +50,4 @@ Proceed to CLAUDE.md Step 1–4 and the ARE-WE-COMPROMISED checks.
 Reminders while working:
 - Commit early and often. In the shared `main` tree, commit ONLY your own files, path-scoped (`git commit <file> …`). Never `git add -A` / `git commit -a` / unscoped `git stash` / `reset --hard` / `checkout -- <foreign>` / `clean -fd`.
 - Re-read (or `git diff HEAD`) any shared nav file before writing to it (Hard Rule 10).
+- macOS has no `timeout` binary (GG-352): a snippet that uses it exits 127, which reads as "check found nothing". Use `gtimeout` (`brew install coreutils`) or `python3 -c` with `subprocess.run(..., timeout=N)`.

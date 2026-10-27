@@ -1875,32 +1875,6 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ---
 
-### GG-229 — `TestPromoteCellStatus` RULED_OUT fixtures leak global registry state via `del` instead of restore
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** tests/test_market_type_registry.py still uses del in finally (lines 293, 307). **Next:** Restore prior value instead of del.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-229 |
-| Category | Test-hygiene — pre-existing defect in `tests/test_market_type_registry.py`, discovered incidentally, not part of the discovering session's own deliverable. |
-| What was found | `TestPromoteCellStatus._seed_ruled_out` overwrites the pre-existing, already-seeded `(MLB_TEAM_TOTAL, T3_PRE_TIP)` registry cell (a `NOT_IMPLEMENTED` cell seeded by the module's own `_OTHER_MLB_FAMILIES` × `_MLB_COARSE_BANDS` loop) with a `RULED_OUT` test fixture. Both consuming tests (`test_ruled_out_to_active_without_superseding_reference_raises`, `test_ruled_out_to_shadow_with_superseding_reference_succeeds`) `del MARKET_TYPE_REGISTRY[key]` in their `finally` blocks instead of restoring the original cell — this deletes the key entirely rather than returning it to its pre-test `NOT_IMPLEMENTED` state, permanently shrinking the in-process registry by one key for the remainder of that pytest session once either test runs. Confirmed live: a fresh-process import shows `len(MARKET_TYPE_REGISTRY) == 78` (post-T-504); running the full test file in one pytest session and then checking the count shows `77`, order-dependent on `TestPromoteCellStatus` having run first. |
-| When it should have been caught | At whichever session wrote `TestPromoteCellStatus` (predates T-504; not investigated further, out of scope for this discovery). |
-| Phases it survived | Unknown — no prior session is known to have added a test asserting `MARKET_TYPE_REGISTRY`'s total length, which is the only kind of assertion this leak would break; it is otherwise invisible since every other existing test targets specific keys/statuses rather than the aggregate. |
-| Why it survived | No total-count assertion existed anywhere in the test suite before T-504 attempted to add one (see `test_registry_total_cell_count_is_78`, removed from the final T-504 diff for exactly this reason — see the `TestGameMarketT4SubbandIntegration` block's trailing comment in `tests/test_market_type_registry.py`). |
-| Impact | LOW. Test-only leak; does not affect production behavior (each pytest invocation is a fresh process for the module under normal test running, so the leak only manifests within a single process's test session, and no currently-existing test relies on the aggregate count). Would break any future total-count assertion added to this file, non-deterministically depending on test collection/execution order. |
-| Discovery | 2026-08-31, T-504, while adding structural regression tests for the new T4M_ARITH/T4M_FLOW cells; a `len(MARKET_TYPE_REGISTRY) == 78` assertion failed intermittently (77 vs 78) depending on whether run in isolation (file-only) or as part of the full suite alongside `TestPromoteCellStatus`. |
-| Resolution | Not resolved by this entry — registration only, per Hard Rule 11 (discovered outside T-504's declared deliverable of registry scaffolding). Fix (when picked up): change both `finally` blocks in `TestPromoteCellStatus` to restore the original cell (capture it before `_seed_ruled_out()` overwrites, reassign in `finally`) rather than `del`, matching the pattern `test_promotion_without_guard_condition_succeeds` already uses correctly in the same class. |
-| Status | OPEN. |
-
-</details>
-
----
-
 ### GG-234 — Task assignment named `T-508 / GG-231` for new work; both IDs were already consumed by unrelated, already-closed sessions by the time the assigned session actually started
 
 **Status:** OPEN · **Severity:** LOW
@@ -3305,25 +3279,6 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 </details>
 
-### GG-352 — macOS has no `timeout`; protocol and test snippets that use it exit 127 silently
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Verified: no gtimeout/timeout guidance in CLAUDE.md, .claude/ or scripts/ (grep this session); macOS has no timeout binary. **Next:** Document 'brew install coreutils' (gtimeout) in the session-start doc.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-352 |
-| Category | Tooling |
-| What was found | Source: WAVE45_land_the_record_results.md item 8. |
-| Why it matters | A silent 127 reads as a check that found nothing. |
-| Disposition | Document gtimeout or a python wrapper; not changed here. |
-
-</details>
-
 ### GG-353 — Claim rows with open-ended or TBD ID ranges give no collision protection and block later claims
 
 **Status:** OPEN · **Severity:** MEDIUM
@@ -3698,25 +3653,6 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 | Category | UX |
 | What was found | Gap entries without a dated field show no age; ADR title parsing leaves '— —' for several rows. |
 | Source | SESSION_HANDOFF_20261003_0020 (48.3); 49.2 screenshot |
-| Disposition | Registered by 49.3 (registration only, no investigation). |
-
-</details>
-
-### GG-426 — Session-start hook OPEN count (124) disagrees with the anchored grep (141)
-
-**Status:** OPEN · **Severity:** MEDIUM
-
-**Current state (2026-10-08, W59.1):** Verified disagreement persists: governance_scan.sh prints '176 open / 365 total' while the anchored grep on the live log returns 143 (this session). **Next:** Point the hook at the anchored count and the live log.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-426 |
-| Category | Tooling |
-| What was found | governance_scan.sh and the CLAUDE.md Step 3 command report different OPEN totals (and the cloud scan showed 119); the count is not trusted. |
-| Source | SESSION_HANDOFF_20261003_0020 (48.3); 49.1 session scan |
 | Disposition | Registered by 49.3 (registration only, no investigation). |
 
 </details>
