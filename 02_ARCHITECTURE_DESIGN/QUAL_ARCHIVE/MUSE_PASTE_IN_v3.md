@@ -202,3 +202,29 @@ From Earl, directly.
 
 4. Same rules as always. Never a bet, pick, odds or model; recording a published line and its timestamp is recording.
 ```
+
+## Add-in, 2026-10-26 21:15 PT: continuous catch-up session (Earl, directly; replaces the 10-26 16:30 add-in)
+
+```
+From Earl, directly - you're reset, so let's make up for last week.
+
+1. Read TO_MUSE.md fresh: the entry dated 2026-10-26 21:15 PT is today's plan. Your weekend R-046 runs were clean (36,216 records,
+   0 errors at LAL, blocked runs recorded in one line each). Good.
+
+2. Work continuously in this session, ticket after ticket, without waiting for me: finish R-046's 2024-25 season (16 teams left,
+   one team per browser task, one after another), close R-046, then R-057 and R-058 (the market's own lines, with timestamps),
+   then R-029 and R-061 (MLB PAM map and dossier). If time remains, keep going down the backlog order. One commit and one STATUS
+   entry per ticket (per team for R-046); pull before each.
+
+3. Why the lines matter now: the bot prices FROM the market's line and moves off it only where a factor shows the line missing
+   something. Recording a published line and its timestamp is recording; deciding anything from it is the bot's job.
+
+4. Your three scheduled runs keep going. Before you start a ticket here, mark it IN PROGRESS in STATUS and push, so a scheduled run
+   skips it (the rule is in TO_MUSE.md).
+
+5. One question, three lines or fewer in STATUS: did your scheduled runs keep running while the usage limit was hit last week, and
+   do scheduled runs draw on a different allowance from our chats? "I don't know" is a fine answer.
+
+Same rules as always: primary sources, definitions verbatim, free only, no null records, nothing written to the bot repo, never a
+bet, pick, odds or model.
+```

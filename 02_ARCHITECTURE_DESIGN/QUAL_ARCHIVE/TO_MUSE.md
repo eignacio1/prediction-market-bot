@@ -732,3 +732,20 @@ R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → 
 **Backlog order (supersedes the 2026-10-22 order):** R-046 (finish 2024-25) → **R-057** → **R-058** → R-029 → R-061 → R-030 → R-062 →
 R-047 → R-059 → R-060 → R-026 → R-019 → R-020 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 →
 R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → **R-046 (2023-24 season)**. (34 open.)
+
+### 2026-10-26 21:15 PT · Earl: a continuous catch-up session today (three waves of work), and how it shares the backlog with the scheduled runs
+- **Why:** Muse's limit hit early last week, and four days produced little beyond R-046 teams. Earl, 21:08 PT: "ensure you can give it
+  3 waves worth of work so it runs continuous today to make up for over 4 days of nothing".
+- **The session works this list in order, without waiting between tickets**, one commit + one STATUS entry per ticket (per team for
+  R-046), pull before each:
+  1. **R-046, finish 2024-25** (16 teams left after LAL: MEM, MIA, MIL, MIN, NOP, NYK, OKC, ORL, PHI, PHX, POR, SAC, SAS, TOR, UTA,
+     WAS), one team per browser task, tasks run one after another. Then close the ticket per its done-line (2025-26 + 2024-25, the
+     R-027 PRF-10 row updated). The 2023-24 season stays at the bottom of the backlog.
+  2. **R-057** (historical closing and opening lines, NBA / NHL / MLB) and **R-058** (NFL line history with timestamps).
+  3. **R-029** (MLB PAM signal map), then **R-061** (MLB PAM dossier).
+  4. If time remains, continue down the backlog order of 2026-10-26 16:30 PT: R-030 → R-062 → R-047 → R-059 → R-060 → …
+- **Sharing with the three scheduled runs:** before starting a ticket, write one STATUS line "IN PROGRESS (chat session, <time>)"
+  and push it. A scheduled run that finds a ticket marked IN PROGRESS within the last 6 hours skips to the next open ticket. When a
+  ticket is done, its DONE entry supersedes the marker. Nothing else about the scheduled runs changes.
+- **One question, three lines or fewer in STATUS:** did your three scheduled runs keep running while the usage limit was hit last
+  week, and do scheduled runs draw on a different allowance from chats? Say what you can show; "I don't know" is a fine answer.

@@ -10,6 +10,664 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Sequencing track, Waves 45-79 (moved out of ACTIVE_QUEUE.md 2026-10-26 21:15 PT). Verbatim:
+
+### ✅ WAVE 79 — ISSUED 2026-10-16 ~13:50 UTC · CLOSED ~14:45 UTC (verified on GitHub) · four blocks + the gap agent · finishes 78.2/78.4, clears the red, branch cleanup
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 79.1 | Red to green: NFL QB challenger silent arm, glob sweep, 78.1 loose ends | ✅ | #279: QB arm was a false alarm (T1-only rule fixed); exact-cell globs in every sport; dashboard rebuilt. Budget still RED: t4-mlb 8.3 h behind HEAD, a rule defect (counts unrelated merges) → Wave 80 |
+| 79.2 | Thinner markets finished: fetcher landed, NBA sample, gradient, first prereg | ✂️ PARTIAL | #277 merged; NFL 11 + NBA 5 families sampled; store on laptop + VPS. Gradient and prereg not done → Wave 80 |
+| 79.3 | NBA engine finished: store landed, taxonomy, gaps, two factors interpreted | ✅ | #278 + #280: D4 NBA data layer on main + box; D1 0 → 13; pace/efficiency (a trait; moves totals, margin a little) and rest (schedule, not a trait) interpreted |
+| 79.4 | Branch cleanup (MICRO) | ✅ | auto-delete on; 33 archive tags; remote branches 148 → 36 (open PRs + landed branches < 3 days old kept by rule) |
+
+### ✂️ WAVE 78 — ISSUED 2026-10-16 ~05:45 UTC · CLOSED ~06:30 UTC (operator ended it early at his session limits) · verified on GitHub
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 78.1 | Runtime map on both dashboards + gap agent visible (77.4) | ✅ | #266 + #276 merged; box read-back: 73 live, 0 unreviewed, 0 stale; budget RED on the NFL QB challenger silent arm (not 78.1's). Loose ends (#276 box read-back, standalone rebuild, 390 px) → 79.1 |
+| 78.2 | Thinner markets: history, gradient, first pre-registration | ✂️ PARTIAL | #277 open (CI green): 275 series / 310,858 markets inventoried; candles for 8 NFL families sampled (943 MB, one laptop). NBA, RSHYDS/PASSYDS and Part B → 79.2 |
+| 78.3 | NBA opening night ready | ✅ | #274 + #275 merged: flip sha bug (GG-890), silent-arm glob (GG-892), runbook; 9/12 cells flip-ready (ceiling 9: GG-891). Closes on the 10-21 read-back |
+| 78.4 | NBA event-level data layer | ✂️ PARTIAL | #278 open: event store 2016-2026, PIT contract with positive control, manifest. FACTOR_TAXONOMY.md and GG-895..899 not written → 79.3 |
+
+### 🟨 WAVE 77 — CLOSED 2026-10-16 ~05:35 UTC (verified on GitHub at `b02d324d`) · moved: **D5(b) NFL: 4 applied factors with a market verdict (0 → 4)**; forward test kept on past 11:25Z; GG-764 silent read sites 3 → 0; GG-747 41/41 explained
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 77.1 | Fill-fix test alive | ✅ | #269: cancels retry 5xx; exchange 5xx excluded from the turn-off (operator); t4-mlb restarted 04:57Z. #271: arm-blind pre-order cash check (GG-840). Test still on at 04:57Z report. **Cash is the binding constraint**: ~960 flat-stake orders tie it up until settle; demo top-up not possible via API; "treatment not this season" survives per cell (max 407 < 550), pooled ~630 would clear |
+| 77.2 | Real, priced, or invisible? | ✅ | #272 + 77.2b: outcome test detects a fully real F8 only ~20% (F5/F6 ≤5%) → earlier "no gain" was uninformative. Closing line prices the team/QB base fully and **~0.67 of F8** [0.45, 0.87]; F5/F6 invisible. No late drift (inactives) and none in the Friday-report window (n=145). **Operator, 10-16: no new NFL game-market factor without a "thinner edge expected" pre-registration; move toward thinner markets** |
+| 77.3 | Ledger read side + gap | ✅ | #270: silent torn-row sites 3 → 0 (+ nba_cell_autoflip; GG-885 for the rest); GG-747 gap is 41, all stale-ledger rows (Monday rebuild), no correction needed; t4-mlb restarted on dc84fa6c, CellLedger lock read back clean |
+| 77.4 | Runtime map on dashboards | ❌ never started | → 78.1 |
+
+### 🟨 WAVE 76 — CLOSED 2026-10-16 ~00:35 UTC, partly (verified on GitHub at `2f07cebf`) · moved: **D5(b) NFL applied 6 → 7** (F8); ledger writers bypassing atomic_io 4 → 0; registry reviewed 0/76 → 76/76 (not yet deployed)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 76.1 | Kill switch proven; fill-fix numbers | ✅ | #267 (window merged main into it after #268): **kill switch drilled on the running processes, 6/6 order paths halt within 60 s → GG-745**. Report GG-754 fixed. Found GG-840 (demo cash $0.17: 1,535 of 1,606 rejections insufficient_balance) and GG-841 (no 5xx cancel retry; 10-15 503s → turn-off would trip 11:25Z) → 77.1. Treatment arms "not this season" on a cash-starved sample |
+| 76.2 | Second NFL factor the ratings can't hold | ✅ | F8 non-QB starters out: 99% orthogonal to ratings, moves means 4.5x F5/F6, **applied: MATCHES ML/spread/team total, NO on total**. Kalshi mid beats every engine arm by ~0.009 Brier on 182 2025 games; F8 closes ~0.0016. **Pushed code to main without CI → main red ~1.5 h (window fixed, #268)** |
+| 76.3 | Ledger writers atomic + locked | 🟨 Part A | #265: 4 → 0 writers bypassing atomic_io; CellLedger.append flocked, 6-process test. Part B (read side, 34-row gap) → 77.3 |
+| 76.4 | Runtime map live and visible | 🟨 built | #266: 76/76 reviewed against the box, 0 unexplained no-alarm (9 with written reasons), SURFACE BUDGET GREEN live. Not merged (main red) → 77.4 |
+
+### ✅ WAVE 75 — CLOSED 2026-10-15 ~06:00 UTC (verified on GitHub at `836a90cc`) · five blocks (operator 22:06 PT) · moved: **D5(a) NFL ~1 → 5, NBA 0 → 3; D5(b) generated; D4 NFL + factor classes point-in-time; NFL stale positions 4 → 0**
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 75.1 | PAM core | ✅ | #259: sport-agnostic schema + append-only store + `pam_as_of`; NBA v4 ported losslessly (100 records, round-trip tested); NFL 9-group taxonomy; WR mass tier 2023–25 (247 records; primary archetype kept 54–60% year to year vs ~31% chance); DEEP_TIER proposal → your call |
+| 75.2 | NFL engine stage 2 (ran on the original prompt + add-in) | ✅ | #263: reusable factor builder + one Factor protocol; F5/F6 aggregated → interpreted → **applied: no gain** (shell habit a trait, efficiency against it noise). Motion direction is not in free data (GG-800). Engine tests now in CI (GG-757) |
+| 75.3 | Seat interface + structural tensions; D4/D5 generated | ✅ | #260/#261: NFL and NBA seat files (MLB/NHL stubs), tension registers, component manifest, generator. Flagged: registry says NBA game cells not implemented while the code dispatches them (NBA-T1) — checked before 10-20 |
+| 75.4 | One kill switch | 🟡 Part A | #264: one halt check inside `submit_order`, global + band flags, legacy aliases; 1/6 → 6/6 order paths in code. **Drill on the box not run → 76.1.** GG-745 open |
+| 75.5 | NFL book closes | ✅ | #262: 4 stale NFL positions booked (box, 10-15), recurring sweep, typed settlement results in 4 modules, open-past-game-end invariant; GG-746/751 resolved |
+
+### ✅ WAVE 73 — CLOSED 2026-10-15 ~01:00 UTC (verified on GitHub at `39569c5`, main CI green) · moved: **D4 NFL none → data layer + simulation scaffold**, D1 NFL 20 factor classes mapped (15 buildable free), E1 first post-re-arm settled fills (NHL)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 73.1 | Turn-off addendum; NBA stakes; first settled E2/E3 | ✅ | #253/#256: skip-rate turn-off counts policy skips only (operator amendment); stale cancel-fail trip (GG-710) fixed and re-armed; guards GG-665/666/667 resolved. NBA already staked since W68.2 (window error W14). +51 post-re-arm fills, 30 settled, all NHL: **control 29 fills (win 48.3%, +0.123) vs treatment 1 fill** — no verdict |
+| 73.2 | NFL engine data layer | ✅ | #258: FACTOR_TAXONOMY (20 classes from Syndicate32's public factor list, 15 buildable from free data; GG-730..734 gaps); free nflverse event store 1999–2026 (plays, participation, FTN charting, snaps, injuries, depth charts, PFR, officials, schedule) with point-in-time contract; weekly Actions rebuild green. First block to pass the new registry CI check (workflow registered) |
+| 73.3 | NFL engine simulation scaffold | ✅ | #255: possession-level Monte Carlo prices ML/spread/total/team totals from one draw set; **parity with the frozen per-family models, not better**; key-number shape claim not supported. INTERFACE.md is the contract |
+
+### ✅ WAVE 72 — CLOSED 2026-10-14 ~23:40 UTC (verified on GitHub at `b6af6c3`, main CI green) · moved: **E1 per-arm counts first recorded** (0 settled yet); foundation fixed
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 72.1 | Forward-test read-back; order-path guards | ✅ | #246/#252. Since re-arm: paper/MLB 4 orders (138 not-listed skips), shadow/MLB 9 treatment + 13 control, shadow/NHL 21 + 23; fills 0/1/3/1/1; **0 cancel failures**, 12 cancel_ok on KXMLB*; nothing settled. GG-586/623/645/571/646 closed. Guards: live-host refusal (GG-666), kelly from BAND_CONFIGS (GG-665), kill switch on shadow stakes (GG-667) — in t4-mlb after its 02:53Z restart. Skip-rate turn-off at risk from not-listed skips → operator amended 10-14 |
+| 72.2 | Ledger safety; retire /vps; box secrets | ✅ | #248/#250/#251: atomic writes + quarantine-and-halt + tolerant shadow load (GG-663/664/672, all state/cache writers GG-680); /vps archived DO-NOT-RUN, /deploy-audit replaces it (GG-660); box .env 600, backup deleted, key verified demo (GG-662) |
+| 72.3 | Deploy truth; audit remainder | ✅ | #247/#249: pending-restart marker + running-SHA alarm (GG-661), deploy status file (GG-668), healthcheck rewritten — HEALTHY 0 faults (GG-669). Ledger audit: 0 duplicates / bad prices / tz-naive / settle-before-entry; 16 invariant hits = one stale enum (GG-691); 3,495 rows without market_type (GG-690). Point-in-time: 7 tests pass with positive controls — no look-ahead found |
+
+### ✅ WAVE 71 — CLOSED 2026-10-14 ~00:35 UTC (verified on GitHub at `c816f18`, main CI green) · moved: **no measure yet** (second wave running) — forward test re-armed 10-13 23:58Z, E moves at tonight's read-back; D1 NO; B1 protected for 10-21
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 71.1 | MLB-HIT cancel path; forward test on | 🟨 Part A ✅, read-back pending | #243: root cause = cancel DELETE routed to shard 0, MLB orders on shard 3; fix passes `market_ticker`; VPS b9812c8d, t4-mlb restarted 23:58Z (idle); demo canary 4/4 canceled; override deleted, `is_enabled()` True. **Forward test ON.** Read-back of both arms after tonight's NHL/MLB games still owed. GG-645 (cause), GG-646 (report excuses late cancels) |
+| 71.2 | NBA opening night safe | ✅ | #242/#245: old NBA book refuses to open positions (GG-630); players_2026 weekly refresh + scan alarm (GG-621); 10-20 rehearsal ran clean (spread/total/points markets not listed yet — not a bug); scan no longer dirties the main tree |
+| 71.3 | NBA games availability challenger | ✅ NO | #244: injury coverage 33.9% → 96.4%; plan frozen first; fit once (first run invalid — 2015 leaked into train — disclosed and redone): ΔBrier ML −0.00165, spread −0.00181, total −0.00017, every CI spans 0. No pre-registration. D1 stays team-only |
+| 71.H1 | Code hygiene audit (operator) | 🟨 PARTIAL | **SOUND WITH ISSUES**; 18 GGs (GG-660..677): CRITICAL `/vps` (GG-660); HIGH stale t4-mlb restarts (GG-661, mechanism), box `.env` world-readable (GG-662), paper ledger not crash-safe (GG-663). No real-money path found today; protection is entry-point guards (GG-666). Skills in the add-in were covered by direct review, not invoked. H2 remainder: live ledger invariants, mlb_features look-ahead, pip-audit |
+
+### ✅ WAVE 70 — CLOSED 2026-10-13 ~03:00 UTC (verified on GitHub at `a6ad39a`, main CI green) · moved: **no measure** (E unchanged, switches off; D3 2 deployed, 0 rows); main green
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 70.1 | Re-arm forward test; NFL fill audit | 🟨 PARTIAL | #237: GG-596 fixed + deployed — shadow MLB 360 / NFL 229 "failures" were already terminal. Re-arm withheld: **8 real paper KXMLBHIT cancel failures** (404 while resting, then 503; GG-623); 7 orders still resting. NFL audit: **0 post-kickoff fills**, all immediate taker crosses, +0.398 on 137 settled fills — **~4 correlated games, not E2 evidence** (GG-624) |
+| 70.2 | EXP-040 logging beside EXP-039 | 🟨 PARTIAL | #238/#241: wired + deployed (d940bf46), harness 12/12 with sha + injury fields; 0 rows until KXNBAPTS lists. GG-620 (34% coverage was a URL rename), GG-621 (2026 box scores hand-backfilled, in no deploy) |
+| 70.3 | Main green; dark workflows | ✅ | #239 main green; #240 TSS Daily Sync retired (VPS cron does it); Post-Game Resolve paused on purpose since 7-29 — old NBA crons still live (GG-630) |
+
+### ✅ WAVE 69 — CLOSED 2026-10-13 ~01:00 UTC (verified on GitHub at `ca727a3`) · moved: **E1–E3 first forward-test numbers** (one day; not yet meaningful); D3 1 → 2 (EXP-040 accepted, frozen, not yet logging); B1 unmoved until 10-21
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 69.1 | Activate + read back; shadow control arm | 🟨 PARTIAL | #234: GG-586 control arm + GG-587 untracked override merged and deployed (VPS f9ab37de); crontab loads demo_fill.env on all shadow lines + 11:25 report. First numbers: paper/MLB 17 orders 5 fills +0.07 · shadow/MLB 363/75 −0.20 · shadow/NFL 1,135/231 **+0.39** (audit in 70.1). Turn-off tripped on GG-596 (404 = already terminal) → switches OFF; control arm never placed. Settings edit refused |
+| 69.2 | NBA opening night end to end | ✅ | #232: autoflip (12 game cells flip on first valid regular-season rows, from 10-21) + date-guarded preseason retire; 2 cron blocks appended, read back as no-ops before their dates. GG-588 (KXNBATEAMTOTAL never listed). Settings edit refused |
+| 69.3 | NBA points projected-minutes challenger | ✅ | #233: EXP-040 accepted 10-13T00:15Z (strike 15 only; ΔBrier −0.00047, CI −0.00079..−0.00015; worse at 25), artifact c47cbac7 frozen. Not logging (GG-611 → 70.2). GG-610: Jan–Apr 2026 injury coverage 34% |
+| — | Hook timeout fix | ✅ | #235: governance scan = cached wrapper + background full scan. Broke 4 hook tests → main red (→ 70.3) |
+
+### ✅ WAVE 68 — CLOSED 2026-10-12 ~23:30 UTC (verified on GitHub at `fdbf6c1`) · moved: no pillar measure; MLB feeds restored; D1 venue/weather tested — NO
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 68.1 | MLB data on a public repo; CI back | ✅ | #229: both MLB feeds green (games-cache stamp 19:07:42Z accepted by the runner; CSV 19:12Z passes contract); gitleaks 2,845 commits: 4 false positives, no secrets; Test Suite triggers restored; GITHUB ACTIONS STATUS line in the governance scan. Scheduled runs not yet observed. Post-Game Resolve / TSS Daily Sync last ran ~75 days ago (not investigated) |
+| 68.2 | Stakes on NBA + NHL shadow; forward test reports itself | 🟨 merged, not activated | #228 (demo-only guard, demo_fill.env on NBA/NHL lines) + #231 (daily report 11:25 UTC, scan line, /project panel). **The terminal's ssh read of the VPS was refused by its auto-mode classifier** — nothing verified running; no report read. GG-586 (shadow control arm places no order → no verdict possible), GG-587 (turn-off edits a tracked file → trips the deploy guard) |
+| 68.3 | NFL totals venue + weather challenger | ✅ NO | No arm beats frozen; every CI includes zero; no pre-registration. Next: train on observed weather 2015–25, serve forecast |
+
+### ✅ WAVE 67 — CLOSED 2026-10-11 ~19:15 UTC (verified on GitHub at `d358cd0`) · moved: **B1 37/104 → 40/107, B4 1 → 2** (first Breadth move in four waves); first shadow-cell demo orders accepted
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 67.1 | Land NBA points + NFL injury snapshots | ✅ | #223/#226 (supersedes #217): 3 NBA player-points cells SHADOW, crons, engine, own silent-arm check; t4-mlb restarted idle. NFL injury snapshot proven 16:38Z (13 games, 228 rows, 21 min pre-kickoff). Preseason dry run wrote 0 rows (no open KXNBAPTS markets yet) |
+| 67.2 | Forward test day one; listing pre-check; shadow stakes | 🟨 Part B | #222/#225: listing pre-check before arm assignment (GG-564); NFL + MLB shadow lines load demo_fill.env; uuid client ids (demo rejected pipe ids, HTTP 400). **36 shadow demo orders accepted 17:00–17:10Z.** NBA (GG-570) and NHL (GG-571) unstaked → 68.2. Day-one read → automated in 68.2 |
+| 67.3 | GitHub at $0 | 🟨 A done | #221/#224: VPS-side deploy every 5 min, 0 Actions minutes (docs 96 s, code ~4 min). #227: regular-season starters/SP logs cached. statsapi people/* 406 from the VPS with any headers. **17:48Z Actions refused all jobs** ($0 budget) → repo public 12:06 PT; window re-dispatched both MLB jobs 19:06Z → 68.1 |
+
+### ✅ WAVE 66 — CLOSED 2026-10-11 ~15:30 UTC (verified on GitHub at `37a610b`) · moved: no measure (E unblocked); B unmoved for the fourth wave
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 66.1 | GitHub at $0 | 🟨 Part B | #219: postseason batter logs only for postseason players (173 of 673); features 22.5 → 17.5 min; output equal except run-metadata columns. Part A (VPS runner) refused by the terminal classifier [Unauthorized Persistence]. Does not fit 2,000 min to 11-01 → 67.3 |
+| 66.2 | Demo 404s → forward test ON | ✅ | #218/#220: **GG-560 was ours** — the demo venue lists only a subset of production tickers (18 of 55 for CWS@CLE); orders on unlisted tickers 404 (GG-564). Canary placed + cancelled. **ADR-0072 ACCEPTED, forward test ON** (t4-mlb + T1 line, share 0.5, persisted cancel sweeper). GG-536 T1 fills-only shipped. Shadow runners don't load demo_fill.env yet → 67.2 |
+| 66.3 | Land NBA points + NFL injury | 🟨 branch only | Branch w66-3 @ `bf3458b`: #217 merged into it + injury snapshot script and cron; EXP-039 addendum consistent. Nothing on main or the VPS; 11 local test failures not baselined → 67.1 |
+
+### ✅ WAVE 65 — CLOSED 2026-10-11 ~06:30 UTC (verified on GitHub at `7f11b0a`) · moved: **D1 NFL team → team+personnel**; B, E, P unchanged (third wave running for B and E)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 65.1 | NBA player points live | 🟨 built, not landed | PR #217 open + clean (frozen NB+Platt artifact, runner, cron, registry 104→107, engine unit, tests); never merged, no VPS proof, no handoff → 66.3 |
+| 65.2 | Forward test ON + GG-536 | 🟥 BLOCKED | Canary (#210/#212/#214/#215/#216): **every demo order write returns 404**, bot and canary alike (GG-560; 762 t4-mlb failures in 3 h). Switches OFF. Also found: cancel Timer won't fire in cron processes; assign share defaults 1.0 → 66.2 |
+| 65.3 | NFL QB challenger logging | ✅ | #211/#213: frozen challenger, own ledger, new cron block on VPS, engine + silent-arm coverage; **D1 nfl → team+personnel**; first real rows after the Thu 10-15 slate. GG-562: 4 STUB positions are real rows from `StubNFLForecastModel` (archived book). |
+
+### ✅ WAVE 64 — CLOSED 2026-10-11 ~02:30 UTC (verified on GitHub at `70348e3`) · moved: **D3 0→1**; B, E, P unchanged (E made movable; ADR-0072 accepted 10-10)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 64.1 | NFL deep challenger (QB-shrunk) | ✅ | #205/#209: challenger beats frozen in backtest, Brier −0.0027 (99.375% CI −0.0050..−0.0006), 6/7 seasons; all gain from the QB term, EB adds nothing; neither beats the 2025 Kalshi mid. PROPOSED pre-reg (2 moneyline cells, judged n ~984 games) → **accepted 10-10**; ships in 65.3. VPS has NFL_FIRST_LOOK_EXPECTATIONS.md (63.3's UNAVAILABLE was deploy timing). |
+| 64.2 | Demo fill rule + forward test (OFF) | ✅ | #208 `414f05d`: R1+R2 placement policy + shadow flat stakes, both OFF in the running processes; forward test pre-registered in ADR-0072 (50/50 seeded, ~550 fills/arm, underpowered if not reached in 8 weeks) → **accepted 10-10**; switched on in 65.2. Cancel endpoint never run against demo. |
+| 64.3 | NBA player-points arm | 🟨 Part A | #204/#206: Kalshi survey, retrain as a new frozen artifact, EXP-039 pre-registered before any row, D1 manifest entry. Part B (model, runner, cron, flip) → 65.1. |
+
+### ✅ WAVE 63 — CLOSED 2026-10-09 ~17:45 UTC (verified on GitHub) · moved: **B1 25→37, B2 8→12**; E3 cause measured; D, P unchanged
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 63.1 | MLB wired to full | ✅ | #201: 12 MLB game-market cells SHADOW (EXP-037 MLB pre-dated their first row); GG-532 RESOLVED (12:07Z run wrote 33 rows). **Part B: the window's premise was false** — player hits matched players on every game day (32, 32, 9, 27, 15, 12, 27, 6 on 09-29..10-08); zeros only on off-days; the GitHub Actions feature build already includes the postseason. Nothing to wire. |
+| 63.2 | The math: MLB → NFL | 🟨 Part A | `12_EXPLORATORY/NFL_TRANSLATION_MAP.md`: NFL model conditions on team rates only; ranked analogues: starting-QB shrunk performance + QB-change flag, early-season EB shrinkage, QB injury reports. Part B → 64.1. |
+| 63.3 | Distance table computed + why fills lose | ✅ | #202: generator live (governance scan + /project); gap keys required. #203: **fills are adversely selected** — fills win 24–28% vs 49–52% for never-filled orders; settle−price −0.25/−0.39 on fills vs +0.10/+0.07 on non-fills; orders rest 40–100 min at the model mid. Rule supported: cancel after ~60 s, price off the live book. ADR-0072 DRAFT, switch OFF. |
+
+### ✅ WAVE 62 — CLOSED 2026-10-09 ~08:30 UTC (verified on GitHub) · three MEDIUM blocks · moved: E1–E3 measured for T1 MLB; B, D, P unchanged
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 62.1 | MLB postseason shadow back up + silent-arm alarm | ✅ code / ⏳ proof | #195/#198/#199: matcher keys on teams + date, cache kickoff; SILENT ARMS in governance scan + dashboards; GG-532 open until the first scheduled write (→ 63.1) |
+| 62.2 | Exploratory part 2 | ✅ | #197 (landed by the window after the branch went stale): pre-2026 Kalshi history on the VPS, sha-verified (GG-538); **NFL first look: MDE ~0.038 Brier at n=60 vs ~0.008 plausible → ~91% "keep accruing"**; pre-registered SD 0.07 vs measured 0.106 |
+| 62.3 | Gate + T1 fill audit + NBA dry run | ✅ | #196/#200: t4-mlb restarted once, gate in the running process (GG-527 RESOLVED); **T1 MLB 85/485 filled, fills −$1.50/bet, 28.9% vs 52.1% win rate (GG-536)**; NBA flip check + cron-removal script ready (run ≥ 10-21) |
+
+### ✅ WAVE 61 — CLOSED 2026-10-08 ~18:10 PT (verified at `49c6d5a`) · three MEDIUM blocks, all under 60 min
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 61.1 | GG-527: fills-only evidence + stand-down gate | ✅ code / ⚠️ activation | #191/#193; 166 of 4,220 closed T4 positions filled; T4M-PROJ fills n=165, -$42.17 (≈-$0.26/bet) vs all rows n=3,855, -$121.60; gate merged but t4-mlb not restarted (game live) → GG-527 set back to PARTIALLY RESOLVED; 62.3 restarts |
+| 61.2 | Verdict readiness | ✅ | #190: release path did NOT write the REPORT — fixed; NFL 15/60 per cell, first look 11-02 confirmed (~11-09 if a game slips); GG-401 resolved on 510/510 T3 rows; 5 gaps retired; **GG-532: MLB postseason shadow silent since 10-08** |
+| 61.3 | Exploratory track | 🟨 A–C merged | #189/#192/#194: fence + isolation test; no NFL challenger beats frozen EXP-037; 2025 market mid at least as good as the model (EXPLORATORY); history store on the Mac only, GG-533 unregistered → 62.2 |
+
+### ✅ WAVE 60 — CLOSED 2026-10-08 · three MEDIUM blocks (60/90-min rule held) · last wave of the Waves 52–60 window
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 60.1 | Cohort fill truth + Monday guard | ✅ | #185; 107 of 1,952 filled; real fills -0.40/bet; GG-527 to you; GG-228 guarded |
+| 60.2 | NBA engine + addenda | ✅ | #186/#188; 12 NBA cells sealed 0/150; addenda applied; GG-529/530 |
+| 60.3 | Dashboard truth + gap-log hygiene | ✅ | #184/#187; NBA row, 390px fixed, hook count live; OPEN 130 |
+
+### ✅ WAVE 59 — CLOSED 2026-10-08 ~02:05 UTC · three LARGE blocks (ran long: operator set the 60/90-min rule for Wave 60)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 59.1 | The backlog | ✅ | OPEN 176 → 131 re-verified (136 at close); GG-498 resolved (#183) |
+| 59.2 | Calibration correctness | ✅ | #178/#181/#182; NFL look 11-02; NHL n unreachable; 1,229/1,229 settlements agree |
+| 59.3 | NBA, NHL goalie, ADR-0070 | ✅ | #179/#180; goalie verdict (b); ADR-0070 ACCEPTED; GG-400 resolved |
+
+### ✅ WAVE 58 — CLOSED 2026-10-07 ~02:45 UTC · three LARGE blocks
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 58.1 | Arms, books, gaps | ⚠️ A–C done, D not run | GG-489, GG-490 resolved; NHL probe job live; NFL book archived; gap triage outstanding |
+| 58.2 | NBA arm end to end | ⚠️ built + armed | EXP-038, frozen model, crons; rows from ~10-19 |
+| 58.3 | Calibration engine | ✅ | #175; 33 cells, sealed; Calibration section live |
+
+### ✅ WAVE 57 — CLOSED 2026-10-07 ~01:00 UTC · three terminal blocks
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 57.1 | MLB player-hits dark | ⚠️ partial | #171 features via GH Actions (success); T1 PIPE-05 proof pending; GG-489 unregistered |
+| 57.2 | MLB settle + stagger night | ✅ | #170; 128 settled; GG-472, GG-477 resolved |
+| 57.3 | Truthful books | ✅ | #172; T4 placements shown; NFL book unmaintained (GG-490) |
+
+### ✅ WAVE 56 — CLOSED 2026-10-06 ~00:30 UTC · three terminal blocks
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 56.1 | MLB cache via GH Actions + cron stagger | ✅ | #165/#166; GG-482 resolved; stagger applied |
+| 56.2 | Live Terminal decision stream + design | ✅ | #167/#169; NOW view live |
+| 56.3 | Visual Dashboard ops health + design | ✅ | #168; health strip, ops, books, evidence clocks |
+
+### ✅ WAVE 55 — CLOSED 2026-10-05 ~23:40 UTC · three terminal blocks (+55.3b)
+
+| # | Block | Status | Touches | Gate |
+|---|---|---|---|---|
+| 55.1 | Land #159 + book 26 positions | ✅ | #159 merged; 26 booked; T1 12.44%, T4 13.45%; GG-440/450 resolved |
+| 55.2 | Land #160 + Live Terminal + t4-mlb restart | ✅ | #160 merged; 24 SHADOW live; GG-451 resolved; OOM root cause GG-477 |
+| 55.3 | MLB shadow source off statsapi | ⚠️→✅ | ESPN ruled out; 55.3b #164 off-box refresh, 69 MLB T1 rows; GG-482 |
+
+### ✅ WAVE 54 — CLOSED 2026-10-05 ~07:50 UTC · three terminal blocks
+
+| # | Block | Status | Touches | Gate |
+|---|---|---|---|---|
+| 54.1 | Final landing PR #160 | ✅ | #160 @ `5dbddb2` green + clean; SHADOW 24 on landing |
+| 54.2 | Merge #158, VPS proof, arm MLB shadow | ⚠️ partial | #158/#162/#163 merged, t4-mlb never restarted; MLB cells armed, 0 rows (statsapi 406) |
+| 54.3 | Kalshi-settlement resolver | ✅ | ADR-0071; #159 @ `2421c0a` green; drawdown after booking T1 12.44%, T4 13.45% |
+
+### ✅ WAVE 53 — CLOSED 2026-10-05 ~04:30 UTC · three terminal blocks · run 10-04 evening PT
+
+| # | Block | Status | Touches | Gate |
+|---|---|---|---|---|
+| 53.1 | Resolver VPS confirmation (GG-440) | ✅ | 406 on cache-MISS confirmed; 16 cancelled + 10 postponed-game = 0 of 26 settle; #159 @ `c9462a1` CI green |
+| 53.2 | Shadow ledger + crontab audit | ✅ | 9 NHL + 12 NFL logging; 12 MLB postseason never armed (GG-453); 8 NFL T2/T3 not SHADOW on landing |
+| 53.3 | GG-451 guard into #160 | ⚠️ partial | Guard on `w52/landing` @ `2365cc7`; prompt truncated at D3 — GG-452 + CI check not run; #160 `dirty` on union files |
+
+### ✅ WAVE 52 — CLOSED 2026-10-03 22:00 UTC · one Claude Code session · all 5 done · nothing merged (verified on GitHub)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 52.A | Landing prep | ✅ | **PR #160** `w52/landing` @ `6f962400`, CI green, clean: #157 + 51.1 + 51.2 + NHL 9-cell SHADOW flip; suite 3649 passed. Registry on that branch: SHADOW 16. |
+| 52.B | GG-432 decision PR | ✅ | **PR #158** (draft): `t4-mlb` restarts only if its import closure changed AND no MLB game live; dashboard always restarts. Yours to decide. |
+| 52.C | MLB resolver (GG-440) | ✅ (root cause LIKELY) | **PR #159** (draft): statsapi 406 = Fastly IP block of the VPS (GG-084); ESPN fallback silent. Fix books only Kalshi yes/no, cancelled = skip, `--dry-run`. VPS confirmation = 53.1. |
+| 52.D | NHL confirmed goalie (GG-401) | ✅ verdict (c) | Cloud egress refused every NHL source. Probe script on `w52/nhl-goalie-probe`; tonight's measurement = 53.2. |
+| 52.E | Live Terminal truth | ✅ | **PR #161** on top of #160: every registry SHADOW cell shown, ledger-only cells labelled "(ledger only)", NHL settled copies no longer double-counted, GG-431 FROZEN label with true age. |
+| — | New gaps | — | **GG-451 HIGH** `close_session_claim.sh` pushes HEAD to main (fix = 53.3) · **GG-452 LOW** stale dependency locks. |
+
+### ⚠️ WAVE 51 — all 3 done · folded into 52.A
+
+| # | Block | Status | Touches | Gate |
+|---|---|---|---|---|
+| 51.1 | Kill-switch truth | ⚠️ done, branch not merged | Verdict (d): realized drawdown **10.60%**, not tripped; dashboard's 26.63% = 10.60% realized + 16.02% stake in 17 positions already settled on Kalshi but never resolved — Kalshi cancelled 16 of them, so realized after booking is ~11–12% (GG-441, GG-450). Dashboard fix on `6cbe62f`. GG-440..442 | Merge in the landing block |
+| 51.2 | NHL silent drops | ⚠️ done, branch not merged | SJ/TB/LA/NJ codes were silently dropped; fixed + abstention counters on `f822b6b` | Merge in the landing block |
+| 51.3 | PR #157 merge-ready | ✅ done | PR #157 MERGEABLE, CI green (run 37151320465), head `42a0d0d`; 9 NHL cells have rows. **Dirty again by 21:05 UTC** (union-file conflict after main moved) | Re-merge main, then merge in the landing block |
+| — | ~~51.3 original: land #157 + NHL SHADOW flip~~ | ❌ withdrawn | — | Needed an idle window; becomes the landing block below |
+
+**Superseded by 52.A:** all three land as one integration PR in an idle window.
+
+### ✅ WAVES 49–50 — CLOSED 2026-10-03 · run inside harness sessions, not from this queue
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 49.1–49.3 | NFL + MLB shadow code, dashboard fixes, NHL pre-registration | ✅ | On main and auto-deployed by CI (VPS `077558b1`); GG-400..429 registered; crons not armed (cloud can't reach VPS) |
+| 50.1 | Process fixes + GG-400..429 triage (T-636) | ⚠️ | PR #157, draft, green but conflicted — 51.3 makes it mergeable |
+| 50.2 | Cleanup (T-637) | ✅ | Shadow crons ARMED; tree synced; PR #156 closed; #157 held for live games; GG-430..432 (CI restarts t4-mlb) |
+
+### ✂️ WAVE 48 — CLOSED 2026-10-03
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 48.1 | Land NFL + MLB shadow (T-631) | ✂️ | Stopped early at operator request; rebased only — landed later by 49.1 |
+| 48.2 | Record + VPS jobs (T-632) | ✂️ | Queue + `vps_job.py` landed; detached jobs still unauthorized |
+| 48.3 | Dashboards in a real browser (T-621..630) | ⚠️→✅ | Fixes on a branch; landed by 49.2 |
+
+### ✂️ WAVE 47 — CLOSED 2026-10-02 · all three cut at ~2h → the 30-min block rule
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 47.1 | Candles Gate 2 + Live Terminal v2 (T-615) | ✂️ | **Gate 2 PASSED 7/7** on KXMLBTOTAL; Live Terminal v2 + `/project` deployed; GG-340..356 |
+| 47.2 | NFL + MLB postseason shadow (T-608 / EXP-037) | ✂️ | 24 cells built + pre-registered, ADR-0070 PROPOSED; landed later by 49.1 |
+| 47.3 | NHL arm (T-607 / EXP-036) | ✅ | **First new arm flying** — model frozen, cron installed, first T3 rows |
+
+### ✅ WAVE 46 — CLOSED 2026-10-02
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 46.1 | Why candles failed (T-605) | ✅ | Matching rule + sparse candles; Gate 2 pre-registered |
+| 46.2 | EXP-034 control arm | ⚠️ | Gate FAIL as run (runner lookback); numbers VOID; branch not merged |
+| 46.3 | Shared-tree repair (T-606) | ✅ | Stale lock removed, tree synced, ADR-0067 docs landed |
+
+### ⚠️ WAVE 45 — CLOSED 2026-10-02
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 45.1 | Candle reconstruction Part 1 (T-604 / EXP-035) | ✅ | Gate FAILED → candle numbers VOID; GG-329..333 |
+| 45.2 | EXP-034 setup | ⚠️ | Tolerance frozen; comparison not run |
+| 45.3 | Record + dashboard page | ⚠️ | Queue landed; dashboard page running; tree sync blocked |
+
+Waves 10–44: see `ACTIVE_QUEUE_ARCHIVE.md`.
+
+---
+
+---
+
+## Sections moved out of ACTIVE_QUEUE.md on 2026-10-26 21:15 PT (the queue was too large to display; operator 21:08 PT). Verbatim, superseded or historical:
+
+## 🧹 GAP SWEEP — beside Wave 84 (operator 2026-10-21 19:28 PT) · three terminals
+
+Operator: "The 30 small fixes and 25 small process one-offs- there has to be an easy way to sweep those. I'm fine with a
+continual list knowing the scale of the project but please 200+ gaps is fucking ludicrous". GA-5 closed 2 of 207 and was ended
+(19:33 PT), so there is no shared list: GS-1 and GS-2 split class C small fixes by odd/even gap number; GS-3 takes process
+one-offs, then re-files observations as WATCH ITEM if the operator accepts the observation rule. Engine data gaps (~45) are left
+alone. Expected: 205 → about 85 OPEN. **Surface:** 0. **Dependencies:** none (disjoint by number and class); no Wave 84 file.
+
+| # | Terminal | Status | OPEN before → after |
+|---|---|---|---|
+| GS-1 | small fixes, odd-numbered gaps | ⬜ | |
+| GS-2 | small fixes, even-numbered gaps | ⬜ | |
+| GS-3 | process one-offs, then observations (if the rule is accepted) | ⬜ | |
+
+### GS-1 — small fixes, odd-numbered gaps (new terminal)
+
+```
+COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
+- SIZE: hard ceiling 90 minutes. Push after every batch; stop at a pushed boundary (context ~60%, a blocker, or 90 min) and
+  write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
+- Who takes what (no shared list; the gap agent is stopped): GS-1 takes OPEN gaps with an ODD number, GS-2 those with an EVEN
+  number, and both take only class C (small fixes). GS-3 takes classes P and O at any number. Classes: C = closes with a code or
+  doc change plus a test in about 10-20 minutes; P = process one-offs (ID collisions, stray branches, claim overlaps,
+  shared-tree drift, register parity, stale docs); O = observations with nothing to fix (a measured fact, arithmetic like
+  GG-285, a known source limitation); E = engine data gaps (a missing free source or an unbuilt factor) - nobody touches E.
+  A gap that could be C or P is C. Engine gaps stay OPEN.
+- NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
+  lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
+  84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
+  NHL_ENGINE/, SEATS/nhl.toml, NHL components). A gap whose fix sits there: skip it, one line in your handoff.
+- No order, position, fill, stake, kelly_fraction, live-ledger row, live model, runner, registry cell, pre-registration,
+  existing cron line or .claude/settings*.json change. A gap that needs one of those is not a sweep item: skip it.
+- ALL CODE through a PR with CI read green; batch 3-5 fixes per PR to save CI cycles; each code fix carries a test. Merge only
+  your own PRs. Doc-only closures may be pushed docs-only.
+- Closing a gap: a real fix, or evidence it is already fixed or moot (commit, file and line, or a box read via the bridge).
+  Never close on a guess. RESOLVED / CLOSED-AS-ARTIFACT entries move verbatim to GOVERNANCE_GAP_LOG_ARCHIVE.md (never edited
+  there). Fetch + rebase right before every push to the gap log; edit only the entries you work.
+- After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
+  script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
+- Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
+GAP SWEEP GS-1 - SMALL FIXES, ODD-NUMBERED GAPS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down by closing class C small fixes for real.
+Read every OPEN gap with an odd number (CLAUDE.md Step 3's grep), most severe first, and work the class C ones: check it is
+still true on origin/main (and on the box via the bridge if it is about the box), fix it with a test, batch 3-5 per PR, merge on
+green, close the entry with the PR as evidence. Already fixed: close it with the evidence. Bigger than 20 minutes or outside the
+rules: skip it, one line why. Write the class you gave each gap you read into GG_BURNDOWN.md § "Sweep lists" (one line each) so
+the next sweep starts from it. Take as many as fit in 90 minutes.
+
+END OF BLOCK GS-1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### GS-2 — small fixes, even-numbered gaps (new terminal)
+
+```
+COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
+- SIZE: hard ceiling 90 minutes. Push after every batch; stop at a pushed boundary (context ~60%, a blocker, or 90 min) and
+  write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
+- Who takes what (no shared list; the gap agent is stopped): GS-1 takes OPEN gaps with an ODD number, GS-2 those with an EVEN
+  number, and both take only class C (small fixes). GS-3 takes classes P and O at any number. Classes: C = closes with a code or
+  doc change plus a test in about 10-20 minutes; P = process one-offs (ID collisions, stray branches, claim overlaps,
+  shared-tree drift, register parity, stale docs); O = observations with nothing to fix (a measured fact, arithmetic like
+  GG-285, a known source limitation); E = engine data gaps (a missing free source or an unbuilt factor) - nobody touches E.
+  A gap that could be C or P is C. Engine gaps stay OPEN.
+- NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
+  lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
+  84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
+  NHL_ENGINE/, SEATS/nhl.toml, NHL components). A gap whose fix sits there: skip it, one line in your handoff.
+- No order, position, fill, stake, kelly_fraction, live-ledger row, live model, runner, registry cell, pre-registration,
+  existing cron line or .claude/settings*.json change. A gap that needs one of those is not a sweep item: skip it.
+- ALL CODE through a PR with CI read green; batch 3-5 fixes per PR to save CI cycles; each code fix carries a test. Merge only
+  your own PRs. Doc-only closures may be pushed docs-only.
+- Closing a gap: a real fix, or evidence it is already fixed or moot (commit, file and line, or a box read via the bridge).
+  Never close on a guess. RESOLVED / CLOSED-AS-ARTIFACT entries move verbatim to GOVERNANCE_GAP_LOG_ARCHIVE.md (never edited
+  there). Fetch + rebase right before every push to the gap log; edit only the entries you work.
+- After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
+  script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
+- Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
+GAP SWEEP GS-2 - SMALL FIXES, EVEN-NUMBERED GAPS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down by closing class C small fixes for real.
+Read every OPEN gap with an even number (CLAUDE.md Step 3's grep), most severe first, and work the class C ones: check it is
+still true on origin/main (and on the box via the bridge if it is about the box), fix it with a test, batch 3-5 per PR, merge on
+green, close the entry with the PR as evidence. Already fixed: close it with the evidence. Bigger than 20 minutes or outside the
+rules: skip it, one line why. Write the class you gave each gap you read into GG_BURNDOWN.md § "Sweep lists" (one line each) so
+the next sweep starts from it. Take as many as fit in 90 minutes.
+
+END OF BLOCK GS-2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### GS-3 — process one-offs, then observations (new terminal)
+
+```
+COMMON RULES - GAP SWEEP (operator 2026-10-21 19:28 PT: "please 200+ gaps is fucking ludicrous"; read first)
+- SIZE: hard ceiling 90 minutes. Push after every batch; stop at a pushed boundary (context ~60%, a blocker, or 90 min) and
+  write a handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_GS<n>.md. Never leave work unpushed.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY. Read new commands with `git show origin/main:<path>` (window error W20).
+- Who takes what (no shared list; the gap agent is stopped): GS-1 takes OPEN gaps with an ODD number, GS-2 those with an EVEN
+  number, and both take only class C (small fixes). GS-3 takes classes P and O at any number. Classes: C = closes with a code or
+  doc change plus a test in about 10-20 minutes; P = process one-offs (ID collisions, stray branches, claim overlaps,
+  shared-tree drift, register parity, stale docs); O = observations with nothing to fix (a measured fact, arithmetic like
+  GG-285, a known source limitation); E = engine data gaps (a missing free source or an unbuilt factor) - nobody touches E.
+  A gap that could be C or P is C. Engine gaps stay OPEN.
+- NEVER touch a file a Wave 84 block owns (84.1: web_dashboard.py, generate_project_state.py, the dashboard unit, the NBA
+  lineup-window capture/installer/cron, the install gate in runtime_registry.py, the three NBA preseason registry entries;
+  84.2: qualitative_data/pam/nba/, 12_EXPLORATORY/nba_pam_mass_tier/, SEATS/nba.toml; 84.3: 12_EXPLORATORY/nhl_engine/,
+  NHL_ENGINE/, SEATS/nhl.toml, NHL components). A gap whose fix sits there: skip it, one line in your handoff.
+- No order, position, fill, stake, kelly_fraction, live-ledger row, live model, runner, registry cell, pre-registration,
+  existing cron line or .claude/settings*.json change. A gap that needs one of those is not a sweep item: skip it.
+- ALL CODE through a PR with CI read green; batch 3-5 fixes per PR to save CI cycles; each code fix carries a test. Merge only
+  your own PRs. Doc-only closures may be pushed docs-only.
+- Closing a gap: a real fix, or evidence it is already fixed or moot (commit, file and line, or a box read via the bridge).
+  Never close on a guess. RESOLVED / CLOSED-AS-ARTIFACT entries move verbatim to GOVERNANCE_GAP_LOG_ARCHIVE.md (never edited
+  there). Fetch + rebase right before every push to the gap log; edit only the entries you work.
+- After every batch: re-run the gap-log checks (CLAUDE.md Step 3: the OPEN grep, headers = status lines, the id-uniqueness
+  script) and append one row to GG_BURNDOWN.md § "Sweep tally": your sweep, OPEN before -> after, ids closed.
+- Report back: Status | PRs + CI | OPEN before -> after | ids closed | ids skipped with the reason.
+GAP SWEEP GS-3 - PROCESS ONE-OFFS AND OBSERVATIONS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - OPEN gaps down: list P closed in one cleanup pass; list O re-filed under the operator's rule.
+PART A - class P (process one-offs), any number: find them by reading the OPEN list. Most close by checking the current state: an ID
+  collision already renumbered, a stray branch already merged or empty (list remote branches; delete ONLY a branch whose every
+  commit is already on main, named one by one in your handoff, never "all stale branches"), a claim overlap long past, a register
+  row already present. Close each with the evidence. Shared-tree drift gaps: close them ONLY if ACTIVE_QUEUE.md "Needs your
+  decision" carries the operator's blockquote "THE SHARED FOLDER STAYS, AS A CURRENT READING COPY" AND the window has logged
+  its first refresh (DECISION_LOG); otherwise skip them, one line each.
+PART B - class O (observations), any number. ONLY if ACTIVE_QUEUE.md "Needs your decision" carries the operator's blockquote for the
+  observation rule: change each entry's status line to `**Status:** WATCH ITEM · **Severity:** <unchanged>` and add one line
+  under it: "Re-filed 2026-10-21 under the operator's observation rule. Reopens if: <the condition>". Keep the full record. If
+  the blockquote is not there, stop after Part A. Write the class you gave each gap you read into GG_BURNDOWN.md § "Sweep lists".
+
+END OF BLOCK GS-3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+## 📦 BACKLOG DRAFT — 80Q, the tail scanner ("701st out of 701") · NOT QUEUED: do not paste (operator 08:04 PT)
+
+**Operator, 08:04 PT:** "Don't be so focus on now building something QB specific right now (we'll build all of that as we proceed) - I'm
+simply talking about the granularity index and how these are the type of subtle things that we can use to our advantage." So this is
+not a build order. The standing point it records: **the granularity bar includes the tails** - every engine must be able to say
+where a player or unit sits against history at the same point in a season ("701st out of 701"), map that to the markets it should
+move, and test whether the price already knows. It is built per sport as each engine reaches that stage (filtering mechanisms +
+cross-reference compatibility, ADR-0075). The draft below is kept for when it comes due.
+
+Operator, 2026-10-16 08:03 PT: "There are 701 qualified QB seasons through 6 games in the past 20 years. 2026 Bo Nix ranks 701st
+out of 701 in average pass length (4.9 air yards per attempt). His avg pass was thrown behind the line of scrimmage in the 2nd half
+on Thursday. Do we have mechanisms within the bot, spots within our decision tree, ranges within our architecture - to identify
+these opportunities AND FUCKING BLEED EM OUT? Just one of many examples."
+
+**Window's answer (checked against the repo, 2026-10-16):** no. The raw fact is in the store (nflverse `air_yards` per play since
+1999, NFL_ENGINE F2), but nothing ranks a player against history, nothing maps an extreme to the markets it should move, no NFL
+prop cell exists, and nothing reads the game live. Air yards are used today only inside the WR PAM classifier. **Pushback:** the
+extremes are exactly where six-game samples lie most; the scanner is only worth anything if each metric passes a trait test at
+that sample size, and the prop markets it points at (KXNFLPASSYDS, RECYDS) have Kalshi history only from 2025, so the first proof
+is forward, not backtested. **Surface:** +1 at most (a shadow arm, standing authorization 2026-10-08), only if 80P left the budget
+GREEN. **Dependencies:** run after 80P (it reads 80P's thin-market ranking and needs its GREEN budget).
+
+```
+COMMON RULES - PSEUDO-WAVE 80Q (read first; they bind this block)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- SESSION LIMITS: the operator is at his weekly limit until the reset; this session runs on cloud credit. Push at every part boundary; a block that has pushed
+  Part A and written its handoff is a good outcome, not a failure.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-16 08:10 PT (incl. the 10-16 thinner-markets call, the branch-cleanup plan,
+  the ADR-0072 5xx addendum, the PAM deep-tier scope, the standing gap agent, the qualitative-archive intake contract and "the bot
+  repo stays public") - incl. ADR-0073 (one deep engine per sport), ADR-0074
+  (process integrity, Hard Rules 13-15), ADR-0075 ACCEPTED (the betting architecture: aggregation > interpretation >
+  application; eight components; PAM segments; measure D5), the repository PUBLIC since 2026-10-11 (Actions minutes free),
+  "not a cent on GitHub", the expansion directive, Hard Rule 12, ADR-0070/0071/0072. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR (public repo). Never add a paid service. CI fails on any running component missing from
+  02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - only Task 4's shadow arm may be added, registry entry first.
+- One session, four tasks, in order, after 80P. Only Task 4 may add a running component, and only behind its two gates.
+- ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
+  pushed docs-only. (W76.2 pushed exploratory code straight to main and turned main red for every other block for ~1.5 h.)
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means merged AND, for anything that runs, read back where it runs - never "merged" alone.
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule). Never write "operator decision needed" for a demo-only action;
+  only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. No change to a live model, runner, registry cell or pre-registration. Read-only GETs against the Kalshi DEMO API
+  are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book, real capital or an open strategic question goes to the
+  operator - as one line, with your recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (the PURPOSE line
+  under the title; DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- ADR-0075: every factor you touch reports the stage it reached - aggregated (the fact exists, point-in-time) /
+  interpreted (what it says, trait or noise, tested) / applied (a tested path from the fact to a price, compared with the
+  market). Quote the operator's words, never compress them (window error W16).
+- ADR-0074: handoffs carry pattern_sweep: (required after 2026-10-15T12:00Z; "n/a (no defect fixed)" when nothing was
+  fixed) and surface_delta: (+1 at most, Task 4).
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- Free data only. A factor only a paid source has is a registered GAP (GG), never bought. Syndicate32: public pages only,
+  its factor list is a target, never its numbers.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | stage reached per factor | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W80Q_<n>.md (docs-only push).
+
+PSEUDO-WAVE 80Q - THE TAIL SCANNER: FIND THE EXTREMES, MAP THEM TO MARKETS, TEST, THEN LOG (one Claude Code cloud session, four tasks in order). Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH D5 (filtering mechanisms + cross-reference compatibility, two of ADR-0075's eight components: scaffold 0 -> built
+and tested for NFL); D5(b) factor stages (QB depth-of-throw and the other tail metrics: aggregated -> interpreted -> applied where
+the data allows); BREADTH B4 (first NFL prop cell logging, shadow). Pillar: DEPTH + BREADTH.
+Operator, 2026-10-16 08:03 PT (quote it, never compress it): "There are 701 qualified QB seasons through 6 games in the past 20
+years. 2026 Bo Nix ranks 701st out of 701 in average pass length (4.9 air yards per attempt). His avg pass was thrown behind the
+line of scrimmage in the 2nd half on Thursday. Do we have mechanisms within the bot, spots within our decision tree, ranges within
+our architecture - to identify these opportunities AND FUCKING BLEED EM OUT? Just one of many examples."
+Each task: its own PR or docs-only push, its own handoff (SESSION_HANDOFF_<UTC>_W80Q_<n>.md), its own row in the 80Q section of
+04_EXECUTION/ACTIVE_QUEUE.md. Same environment rules as 80P: test reachability first; anything refused is recorded with the exact
+command and left PENDING for the window; no terminal hand-offs.
+
+TASK 1 - The scanner (aggregation -> interpretation)
+  1. Positive control first: reproduce the operator's figure from nflverse pbp - qualified QB seasons through 6 team games,
+     2006-2026, average air yards per attempt, Bo Nix 2026's rank. If it does not reproduce, say exactly where it differs
+     (qualification rule, play filter, season range) before going on.
+  2. Build src/prediction_market_bot/nfl_engine/tails.py (or the engine's existing package): for every player and unit metric in
+     the store that a free source carries - QB: aDOT, air-yards distribution (share behind the line, share 20+), time to throw and
+     aggressiveness if nflverse NGS has them, sack rate, scramble rate, pressure-to-sack; receivers: aDOT, air-yards share, target
+     share, YAC over expected; rushers: yards before contact if free; team units: pace, pass rate over expected, explosive rate
+     allowed - compute, AS OF each week, the player-season's percentile among all player-seasons at the SAME games-played point
+     over 20 seasons (rank n of N, like the operator's example). Point-in-time contract tests: week N reads only weeks < N.
+  3. Trait test per metric at each games-played point (split-half or week-N vs rest-of-season, cluster bootstrap): which tails are
+     real at 6 games and which are noise. Publish the table; only trait metrics go forward. ADR-0075 stage per metric.
+TASK 2 - The map: which markets each tail should move (cross-reference compatibility)
+  4. 02_ARCHITECTURE_DESIGN/NFL_ENGINE/TAIL_MARKET_MAP.md + a machine-readable TOML: for each trait metric, the Kalshi markets it
+     should move and in which direction, with the mechanism in one line (e.g. bottom-1% QB aDOT -> his passing-yards line, his
+     longest completion, his WR1's receiving yards, the team total; and the opposing defense's props). Use inventory.json from
+     12_EXPLORATORY/thin_markets/ for what is actually listed. Wire the map into SEATS/nfl.toml rows (your rows only).
+TASK 3 - Does the market already price the tail? (application)
+  5. Where Kalshi history exists (2025 season, the 80P/79.2 samples of KXNFLPASSYDS, RECYDS, RSHYDS, ANYTD, TEAMTOTAL): for
+     player-weeks in a trait tail vs not, compare the pre-game price to the outcome - pricing share (77.2's method) and residual
+     edge, with CIs, honest about n. Also against the sportsbook-free baseline the engine already has. Verdict per tail family:
+     REAL-NOT-PRICED / REAL-AND-PRICED / INVISIBLE / NOT REAL. A NO is a result.
+  6. Write and FREEZE the forward pre-registration (12_EXPLORATORY/TAIL_SCANNER_PREREGISTRATION_<date>.md): which tails, which
+     markets, expected edge stated before looking ("thinner edge expected" honoured), judged n, the fillability floor from 80P's
+     ranking. One line to the operator for acceptance.
+TASK 4 - Log it forward (shadow) and name the in-game version
+  7. Only if 80P left the surface budget GREEN and the operator has accepted step 6's pre-registration: a pre-registered NFL
+     tail-props shadow arm (evaluate and log, no orders) under the standing 2026-10-08 authorization - RUNTIME_REGISTRY entry
+     first, silent-arm coverage, read back the first rows. Otherwise build it, test it, leave it unscheduled, and say which gate
+     is missing.
+  8. The operator's second half of the example ("behind the line of scrimmage in the 2nd half on Thursday") is an IN-GAME signal.
+     Write 02_ARCHITECTURE_DESIGN/NFL_ENGINE/IN_GAME_TAILS.md: what free live feed carries air yards per play during a game (ESPN /
+     nflverse live?), its latency against Kalshi's NFL in-play markets, and what the T4-NFL arm would need. Design only;
+     register the gap. Horizon doctrine applies: a stripped in-play tree is licensed only by measured speed.
+Report back per task: Status | PR + CI | one-line result | MEASURE MOVED (before -> after, source) | stage per metric | operator
+decisions (one line each, with your recommendation).
+
+END OF PSEUDO-WAVE 80Q. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+## 🔌 ONE-OFF — ARCHIVE PIPE: the private repo Muse pushes to (operator 2026-10-15 22:44 PT) · its own terminal, outside the wave
+
+Operator: "Let's do it - send the terminal block now, I'll have it finish its work then come back to you for confirmation, and
+then after that you'll give me the paste-in prompt to run into Muse." After this block reports, the window gives the Muse prompt.
+
+```
+ONE-OFF BLOCK AP - ARCHIVE PIPE (MICRO). Do this exactly; nothing else.
+PURPOSE: PLUMBING - give the operator's Muse-built Sports Intelligence Archive a private GitHub home that Muse pushes to and the
+bot reads, so the operator is no longer the connector (02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/INTAKE_CONTRACT.md in the bot repo).
+SCOPE: GitHub only. Do NOT touch the bot repo (eignacio1/prediction-market-bot): no claim, no worktree, no commit, no queue edit -
+the strategic window records the result. No running component, no cron, no server change. Free only (a private repo with no
+Actions costs nothing).
+SECRETS (NFR-05): the private key below is a secret. Never commit it, never write it into any repo, handoff or log, never paste it
+into any file other than the one named here. Print it once, at the very end, for the operator to copy to Muse.
+
+STEPS
+  1. `gh auth status` - must be logged in as eignacio1. If not, stop and say so.
+  2. Create the repo, private and empty (no README, so Muse's existing history pushes cleanly):
+     gh repo create eignacio1/sports-intel-archive --private --description "Sports Intelligence Archive (operator + Muse). Read-only for the prediction-market bot."
+     If it already exists, do not recreate or change it - report its visibility and whether it is empty.
+  3. Make a key that can write to THIS repo only (a deploy key), stored outside every project folder:
+     mkdir -p ~/.config/sports-intel-archive && chmod 700 ~/.config/sports-intel-archive
+     ssh-keygen -t ed25519 -N "" -C "muse-archive-push" -f ~/.config/sports-intel-archive/muse_deploy_key
+     chmod 600 ~/.config/sports-intel-archive/muse_deploy_key
+     gh repo deploy-key add ~/.config/sports-intel-archive/muse_deploy_key.pub --repo eignacio1/sports-intel-archive --allow-write --title "Muse archive push (write, this repo only)"
+  4. Verify: `gh repo view eignacio1/sports-intel-archive --json name,visibility,isEmpty,sshUrl` and
+     `gh repo deploy-key list --repo eignacio1/sports-intel-archive` (one key, read-write).
+  5. Report, in plain words: the repo's SSH URL, visibility (must be PRIVATE), empty yes/no, the deploy key's title, id and
+     fingerprint, read-write yes/no, and where the private key file is. Then, as the LAST thing in your reply and nowhere else,
+     print the private key (contents of ~/.config/sports-intel-archive/muse_deploy_key) inside a code fence labelled
+     "FOR MUSE ONLY - scoped to eignacio1/sports-intel-archive, revocable with gh repo deploy-key delete".
+  If any step is refused by a permission control: record the exact command and refusal, stop, report. Never work around it.
+
+END OF ONE-OFF BLOCK AP. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+## ⬛ OPERATOR DIRECTIVE, 2026-10-06 18:10 PT — LARGE BLOCKS (supersedes the 30-minute rule below)
+
+> *"Remember - the terminals can handle plenty of weight. You can expand the workload for each block so that we're not
+> spending each wave back and forth making such incremental build progress... give each block enough that they can handle."*
+
+Blocks are multi-part. Each part is pushed and recorded in the queue before the next, so a cut never strands work.
+Still: three blocks per wave, disjoint surfaces, never a block that can't run now.
+## OPERATOR DIRECTIVE, 2026-10-02 17:03 PT — TIME-BOUNDED BLOCKS (SUPERSEDED 2026-10-06)
+
+> *"We added so many extra tasks to the windows that it was about to take over 2+ hours for each window to
+> complete so I cut it short each way. I'm not letting windows run for hours on end — if there's a task that'll
+> take that long, don't place it."*
+
+> And minutes later, when a wave was first sized at ~75 minutes a block: *"Even 75 minutes is way too long —
+> none of these tasks better take 75 minutes."*
+
+**Every block is sized at about 30 minutes, hard stop at 45** — at the nearest pushed boundary, with a handoff
+that names where the next session resumes. Scope is cut to fit the clock, never the reverse: one job per block,
+done completely. Budget includes the one full test-suite run (~11 minutes) a block landing `src/` code needs.
+
+**What does not belong in a window:** anything whose wall time is set by waiting rather than working. Those run
+unattended on the VPS under their own authorization, and a later block reads what they produced.
+
+---
+## ⬛ WHAT 50.2 FOUND (and what this window found checking it)
+
+- **NFL + MLB postseason shadow crons are armed.** The 33 pre-game cells now log unattended. Nothing restarted. **[Corrected 2026-10-05 by 53.2: only the 12 NFL cells were armed; MLB postseason never was — GG-453.]**
+- **Who restarted t4-mlb: CI.** `deploy.yml` restarts `t4-mlb` and the dashboard on every code push to main (GG-432).
+  That contradicts the standing "never restart t4-mlb" rule; the policy is yours (Needs your decision, first row).
+- **The dashboard's stale panel and its 26.63% drawdown are one file** (strategic window, arithmetic):
+  `paper_portfolio_mlb.json`, last written 2026-08-06 00:05Z (+58d20h = the panel's "read 58d20h ago", GG-431);
+  $733.75 of $1,000 = 26.63%, past the 20% permanent kill switch.
+- **The two drawdowns are not the same quantity** (strategic window, code read — 51.1 verifies): the T1 runner feeds
+  the kill switch *realized* loss only (`run_mlb_paper_trade.py:670-671`); the dashboard shows
+  `(initial − bankroll) / initial` (`web_dashboard.py:761`, `:1498`), which also counts stake locked in ~17 positions
+  open since August. So the tile may be alarming on money that is tied up, not lost — or the kill switch may have
+  missed a real breach. No capital either way (kelly 0.0).
+- **PR #157 is not mergeable as it stands** (GitHub: `mergeable_state = dirty`) — 50.2's report did not say so. 51.3 makes it mergeable; it lands in a later idle window.
+
+---
+## Queued next — not yet fired (HISTORICAL list, refreshed 2026-10-08; the current dated items are in the sitrep Calendar)
+
+- **On/after 10-21 — NBA flip:** `scripts/w59_3_nba_flip_check.py` prints the `promote_cell_status` lines; flip once valid
+  regular-season rows exist. Same block or next: remove the NBA preseason cron line after 10-20 (added under the new-line
+  authorization; removal of a line we added).
+- **After Mon 10-12 14:20 UTC — first real run of the GG-228 guard:** read `band_monitor_cron.log` for a GG-228 WARNING /
+  `rebuild_<UTC>.jsonl`.
+- **After the World Series — T4M-PROJ registry flip to DARK** (GG-527 (c), authorized) + the t4-mlb restart if 62.3 could
+  not do it (authorized) + **T1 MLB winter posture** (your call).
+- **The day an NFL cell crosses n (~11-02):** first scored look, per 61.2's runbook.
+- **Before 2027-01-31 — GG-529:** define EXP-038's date-triggered second look (your call; window will propose).
+- **Exploratory track, Wave 63+:** NFL slate (b) and (a) need a held-out season, not 2025 again; NBA challenger before its
+  first look. 61.1 handed back: local governance scan can't see the VPS fill sidecar (SSH mirror denied) - VPS-side is fine.
+- Carried, unscheduled: board survey (needs the detached-VPS-jobs line) · Step 4 season-awareness (GG-343..345) · PIPE-08
+  406s · T3 disposition (MISFILED) · branch estate · stale PRs #133/#144/#146/#149 · test-suite runtime.
+
+---
+
+---
+
 ## Wave 88 prompts (written 2026-10-26 18:30 PT) - archived at the Wave 88 close, 2026-10-26 20:00 PT. 88.1 ✅ 88.2 🟨 88.3 ✅. Verbatim:
 
 ## ⬛ NOW — Wave 88 · QUANT B + BEFORE REAL MONEY · WRITTEN 2026-10-27 ~01:30 UTC (10-26 18:30 PT) · three MEDIUM terminal blocks · Muse block to be written 10-27 (Muse's limit resets then) · from Wave 87's verified results
