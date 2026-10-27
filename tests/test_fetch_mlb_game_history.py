@@ -67,8 +67,8 @@ def test_fetch_day_retries_406_then_succeeds_and_raises_when_exhausted(monkeypat
         fm.fetch_day("2026-10-04", sleep=lambda s: None)
 
 
-def _seed(tmp_path, rows):
-    base = tmp_path / "games.parquet"
+def _seed(tmp_path, rows, name="games.parquet"):
+    base = tmp_path / name
     pd.DataFrame(rows).to_parquet(base)
     return base
 
@@ -138,3 +138,13 @@ def test_runner_refuses_stale_or_unstamped_cache(tmp_path):
         rs.assert_cache_fresh(cur, now)                                   # 28h old
     meta.write_text('{"refreshed_at": "2026-10-05T08:00:00Z"}')
     rs.assert_cache_fresh(cur, now)                                       # 4h old: ok
+
+
+def test_refresh_chains_from_previous_output_not_the_frozen_seed(tmp_path):
+    """GG-1230: the seed's last Final is >21d old (season over) but the previous output is recent -> patch succeeds."""
+    base = _seed(tmp_path, [_row(1, "2026-10-04")])
+    out = _seed(tmp_path, [_row(1, "2026-10-04"), _row(2, "2026-10-23")], name="cur.parquet")
+    assert fm.refresh_recent(out, base, 2026, date(2026, 10, 27), fetch=lambda d: [], sleep=lambda s: None) == 0
+    with pytest.raises(RuntimeError, match="re-seed"):            # the failure mode the sync job hit
+        fm.refresh_recent(tmp_path / "none.parquet", base, 2026, date(2026, 10, 27), fetch=lambda d: [],
+                          sleep=lambda s: None)

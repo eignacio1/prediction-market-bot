@@ -4332,3 +4332,17 @@ W87.1 Part A. Differs on 2 of 4,000 snapshot quote/outcome pairs. EXP-036/037 pr
 **Status:** OPEN · **Severity:** LOW
 
 W87.1 Part A. Means identical; half-widths differ 0.16 vs 0.17 on the snapshot. The forward-test rule uses the analytic one; kept. Registered as a definition difference.
+
+
+### GG-1230 — MLB games-cache sync seeded from the frozen season seed, not its own previous output; the MLB game-market shadow went silent 31h+
+
+**Status:** OPEN · **Severity:** HIGH
+
+W88.2 Part 0 (RED surface budget). Cause, read on the box and in the run log: `mlb_games_cache_sync.yml` seeded only `games.parquet` (last Final 2026-10-04) and `refresh_recent` measures its 21-day gap from the last Final in whatever it patches. Every run from 2026-10-25 05:16Z failed `REFRESH FAILED: cache last Final 2026-10-04 is >21d behind` (4 consecutive scheduled failures); the box's `games_current.parquet` stayed at 2026-10-24T16:16Z, the runner's 26h stamp check refused to log, and the arm wrote nothing after 2026-10-25 18:07Z. Fix: seed the previous `games_current.parquet` from the VPS too (workflow and `scripts/sync_mlb_games_cache.sh`); regression test `test_refresh_chains_from_previous_output_not_the_frozen_seed`. Stays OPEN until a post-merge sync run is green and a new shadow row is read back on the box.
+
+
+### GG-1231 — A failing cache-sync workflow raised no alarm; only the downstream silent-arm check caught it, ~31h later
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W88.2 Part 0. Four scheduled `MLB Games Cache Sync` failures (2026-10-25 05:17Z to 2026-10-26 18:52Z) were visible only in the Actions tab. The runner's own refusal ("refusing to log on stale data") goes to a log nobody reads. Silent-arm detection works but is the last line, after >12h of lost shadow rows. Candidate: have the silent-arm block print the cache stamp age and the last sync run status beside any arm that reads the games cache. Registered, not fixed in this block (Rule 11).
