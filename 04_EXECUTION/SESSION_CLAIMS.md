@@ -1053,3 +1053,4 @@
 | 2026-10-27T04:45:31Z | T-1250 | CLOSED — W89.2 DONE: 1,258 Kalshi price cells BH-tested, 11 survive net of fee, Part B 0; 3 pre-registration candidates (commit `3791166`) |
 | 2026-10-27T04:45:54Z | T-1250 | CLOSED — merge confirmed, HEAD (1a46c4c) is ancestor of origin/main — W89.2 DONE, merged |
 | 2026-10-27T04:57:59Z | T-1280 | CLOSED — W89.5 joined 2,409 KXNBAPTS strikes to actual points and tested 22 PAM roles against the price; null, none survives BH (commit `5b07cf0`) |
+| 2026-10-27T04:58:12Z | T-1280 | CLOSED — merge confirmed, HEAD (5cd0662) is ancestor of origin/main — W89.5 DONE: null, PR #348 + docs on main |
