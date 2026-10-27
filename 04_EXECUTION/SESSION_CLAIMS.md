@@ -1041,3 +1041,4 @@
 | 2026-10-27T01:46:04Z | T-1230 | CLOSED — merge confirmed, HEAD (3aa4544) is ancestor of origin/main — W88.2 partial: #336 and #339 merged, enforce flip (Part A) not done, handoff on main |
 | 2026-10-27T01:47:06Z | T-1190 | CLOSED — W88.1: GPD tails fit for T4/T1 (T1 filled not fit-able); DRAFT ADR-0076 G6 per book and sport; GG-1190..1192 (commit `e8de314`) |
 | 2026-10-27T01:47:59Z | T-1190 | CLOSED — merge confirmed, HEAD (d1ae8af) is ancestor of origin/main — W88.1 tails + DRAFT ADR-0076 |
+| 2026-10-27T02:38:44Z | T-1196 | CLOSED — merge confirmed, HEAD (735b5a2) is ancestor of origin/main — W88.3: NHL/NBA/MLB frozen models scored vs Kalshi; market >= model, weights 0/0/0.0018 |
