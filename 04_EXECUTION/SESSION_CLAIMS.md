@@ -1055,3 +1055,4 @@
 | 2026-10-27T04:57:59Z | T-1280 | CLOSED — W89.5 joined 2,409 KXNBAPTS strikes to actual points and tested 22 PAM roles against the price; null, none survives BH (commit `5b07cf0`) |
 | 2026-10-27T04:58:12Z | T-1280 | CLOSED — merge confirmed, HEAD (5cd0662) is ancestor of origin/main — W89.5 DONE: null, PR #348 + docs on main |
 | 2026-10-27T05:04:37Z | T-1240 | CLOSED — W89.1 PARTIAL: exposure gate/kill switch now ENFORCING on the box (PR #346), GG-1082/441/1240 resolved; MLB-arm read-backs open (commit `d05bdda`) |
+| 2026-10-27T05:17:21Z | T-1290..T-1299 / GG-1260..GG-1269 | 89.7 PROOF+DEPTH: Kalshi NBA/NHL/NFL history w/ true start times + 89.2 hold-out scan (MEDIUM) |
