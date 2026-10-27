@@ -44,8 +44,11 @@ BOOKS: dict[str, dict[str, Any]] = {
     "MLB_T1": {"band": "t1_mlb", "portfolio": "paper_portfolio_mlb.json", "frozen": False},
     "MLB_T4": {"band": "t4_mlb", "portfolio": "paper_portfolio_mlb_t4.json", "frozen": False},
     "NBA_T1": {"band": "t1_nba", "portfolio": "paper_portfolio.json", "frozen": True},
-    "SHADOW": {"band": "shadow", "portfolio": None, "frozen": False},
+    "SHADOW": {"band": "shadow", "portfolio": None, "frozen": False, "advisory": True},
 }
+# GG-1240: an ``advisory`` book is reported and must have a live writer, but it is excluded from breach
+# and system sums. SHADOW stakes are hypothetical (no ledger, never resolve), so against the $1,000
+# notional they would otherwise reach the limit and halt every real book once enforcing.
 SHADOW_NOTIONAL_USD = 1000.0  # denominator for the ledger-less shadow book (same default as a paper book)
 
 # Switch-on order (W87.2 Part B): "log" records every would-halt, "enforce" refuses the order.
@@ -201,7 +204,8 @@ def log_logonly(event: dict, logs_dir: Optional[Path] = None) -> None:
 
 
 def _recompute(books: dict, mode: str, logs_dir: Optional[Path]) -> dict:
-    live = {n: b for n, b in books.items() if not b.get("frozen") and "worst_case_drawdown_pct" in b}
+    live = {n: b for n, b in books.items() if not b.get("frozen") and not b.get("advisory")
+            and "worst_case_drawdown_pct" in b}
     sysx = system_exposure(live) if live else {"worst_case_drawdown_pct": 0.0}
     limit = _HARD_LIMITS["max_drawdown_pct"]
     breaches = [n for n, b in live.items() if b["worst_case_drawdown_pct"] >= limit]
@@ -230,6 +234,7 @@ def record_book(name: str, portfolio_state: Mapping[str, Any], settled_tickers: 
     t0 = time.monotonic()
     ex = book_exposure(portfolio_state, settled_tickers)
     ex["frozen"] = bool(BOOKS.get(name, {}).get("frozen", False))
+    ex["advisory"] = bool(BOOKS.get(name, {}).get("advisory", False))
     ex["recorded_at"] = _now()
     with _lock(logs_dir):
         st, _ = load_state(logs_dir)

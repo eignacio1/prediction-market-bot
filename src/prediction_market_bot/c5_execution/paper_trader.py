@@ -195,6 +195,9 @@ class PaperTrader:
         self._kalshi = kalshi_client  # None → local-only mode
         self._lock = threading.Lock()
         self._state = self._load_or_init()
+        # GG-1241: seed this book into the exposure gate at construction, not only on the first ledger
+        # write, so an enforcing gate never refuses a book's first order for "no writer".
+        self._feed_exposure_gate()
         # GG-034: detect a desynced realized-P&L scalar at load time and adopt the
         # ledger value before any health surface reads it. In-memory only — does not
         # write the file (correction persists on the next real mutation's _save()).
