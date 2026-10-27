@@ -4334,6 +4334,24 @@ W87.1 Part A. Differs on 2 of 4,000 snapshot quote/outcome pairs. EXP-036/037 pr
 W87.1 Part A. Means identical; half-widths differ 0.16 vs 0.17 on the snapshot. The forward-test rule uses the analytic one; kept. Registered as a definition difference.
 
 
+### GG-1190 — T4 `cache_bankroll` is flat at $1,000 against realized −$140.93
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W88.1 Part A. Any drawdown or exposure limit expressed as a fraction of bankroll reads a bankroll that does not move with realized P&L on the T4 book (cache $1,000; ledger realized −$140.93 on 4,316 paper bets). Percent-of-bankroll limits are therefore not measuring what they say for T4. Needs an owner decision on which bankroll the limits read. Not fixed here (Hard Rule 11).
+
+### GG-1191 — Shadow books have no fill-priced per-game P&L
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W88.1 Part A. Tails for the NFL/NHL/NBA/MLB-postseason shadow arms cannot be fit: those rows are evaluations without fills, so no fill-priced per-game loss exists. ADR-0076 qualifies per (book, sport) on real fills only (GG-527), so these sports have no tail evidence until fills exist.
+
+### GG-1192 — Per-event cap `max_single_event_exposure_usd` (500) has a stale depth rationale
+
+**Status:** OPEN · **Severity:** LOW
+
+W88.1 Part B. The 500 figure was justified by book depth, which GG-155 showed is volatile (10-100x intraday) and not citable. ADR-0076 section 4 leaves the cap BLANK and flagged rather than re-deriving it, because no positive Kelly is authorized (ADR-0048).
+
 ### GG-1230 — MLB games-cache sync seeded from the frozen season seed, not its own previous output; the MLB game-market shadow went silent 31h+
 
 **Status:** OPEN · **Severity:** HIGH

@@ -1,0 +1,338 @@
+{
+ "t4_mlb": {
+  "filled": {
+   "games": 69,
+   "bets": 177,
+   "pnl_total": -37.896300000000004,
+   "stake_total": 119.615,
+   "loss_games": 52,
+   "worst_game_pnl": -9.35,
+   "worst_game_per_$staked": -1.0,
+   "usd": {
+    "fit": {
+     "status": "OK",
+     "n": 69,
+     "n_exc": 17,
+     "u": 1.1,
+     "xi": 0.20111774203409316,
+     "sigma": 1.3505703975473726
+    },
+    "normal_1in100": 5.274270453498161,
+    "normal_1in1000": 6.825797288424013,
+    "empirical_max_loss": 9.35,
+    "ci_fail_rate": 0.16,
+    "gpd_1in100": 7.17679013267167,
+    "gpd_1in100_ci95": [
+     2.977878110332673,
+     12.037746791821014
+    ],
+    "gpd_1in100_extrapolated": true,
+    "gpd_1in1000": 14.711056094509322,
+    "gpd_1in1000_ci95": [
+     3.0497896704395644,
+     57.062233592073284
+    ],
+    "gpd_1in1000_extrapolated": true
+   },
+   "drawdown_usd": {
+    "30": {
+     "empirical_bootstrap": {
+      "q0.99": 44.54465100000001,
+      "q0.999": 55.041164199999436
+     },
+     "gpd_smoothed": {
+      "q0.99": 46.66181551529685,
+      "q0.999": 61.69922095006059
+     },
+     "zero_edge_gpd": {
+      "q0.99": 32.78075827843663,
+      "q0.999": 48.39952057755773
+     }
+    },
+    "90": {
+     "empirical_bootstrap": {
+      "q0.99": 96.20618600000005,
+      "q0.999": 110.66903729999883
+     },
+     "gpd_smoothed": {
+      "q0.99": 99.61426396636968,
+      "q0.999": 121.1353421030594
+     },
+     "zero_edge_gpd": {
+      "q0.99": 56.08234159344513,
+      "q0.999": 77.28073081551734
+     }
+    }
+   },
+   "per_usd_staked": {
+    "fit": {
+     "status": "TOO_FEW",
+     "n": 69,
+     "n_exc": 0,
+     "u": 1.0
+    },
+    "normal_1in100": 2.5800630692394178,
+    "normal_1in1000": 3.2858394964261404,
+    "empirical_max_loss": 1.0,
+    "ci_fail_rate": null,
+    "gpd_1in100": null,
+    "gpd_1in100_ci95": null,
+    "gpd_1in100_extrapolated": true,
+    "gpd_1in1000": null,
+    "gpd_1in1000_ci95": null,
+    "gpd_1in1000_extrapolated": true
+   }
+  },
+  "paper_all": {
+   "games": 394,
+   "bets": 4316,
+   "pnl_total": -140.9322,
+   "stake_total": 3070.825,
+   "loss_games": 215,
+   "worst_game_pnl": -21.452399999999997,
+   "worst_game_per_$staked": -1.0,
+   "usd": {
+    "fit": {
+     "status": "OK",
+     "n": 394,
+     "n_exc": 99,
+     "u": 1.704225,
+     "xi": 0.04461393300225174,
+     "sigma": 3.2842722032344613
+    },
+    "normal_1in100": 12.132101584913821,
+    "normal_1in1000": 15.998369940889578,
+    "empirical_max_loss": 21.452399999999997,
+    "ci_fail_rate": 0.0,
+    "gpd_1in100": 13.091849152328635,
+    "gpd_1in100_ci95": [
+     10.442605916092292,
+     15.944196845920478
+    ],
+    "gpd_1in100_extrapolated": false,
+    "gpd_1in1000": 22.288261814081046,
+    "gpd_1in1000_ci95": [
+     14.448688480541495,
+     36.4692066953712
+    ],
+    "gpd_1in1000_extrapolated": true
+   },
+   "drawdown_usd": {
+    "30": {
+     "empirical_bootstrap": {
+      "q0.99": 70.61689800000006,
+      "q0.999": 88.39501139999996
+     },
+     "gpd_smoothed": {
+      "q0.99": 71.24074935717992,
+      "q0.999": 92.27186200404769
+     },
+     "zero_edge_gpd": {
+      "q0.99": 62.50501636847192,
+      "q0.999": 82.98283574177233
+     }
+    },
+    "90": {
+     "empirical_bootstrap": {
+      "q0.99": 139.55051800000004,
+      "q0.999": 167.39047149999976
+     },
+     "gpd_smoothed": {
+      "q0.99": 141.4662500286109,
+      "q0.999": 171.22267216367962
+     },
+     "zero_edge_gpd": {
+      "q0.99": 113.07134889999544,
+      "q0.999": 142.7022854003686
+     }
+    }
+   },
+   "per_usd_staked": {
+    "fit": {
+     "status": "OK",
+     "n": 394,
+     "n_exc": 99,
+     "u": 0.3904908126500521,
+     "xi": -1.4180580665555826,
+     "sigma": 0.8643194197613315
+    },
+    "normal_1in100": 1.3941246452217317,
+    "normal_1in1000": 1.8354839660440467,
+    "empirical_max_loss": 1.0,
+    "ci_fail_rate": 0.0,
+    "gpd_1in100": 0.9936976590892606,
+    "gpd_1in100_ci95": [
+     0.9865333753985774,
+     0.9999964896511961
+    ],
+    "gpd_1in100_extrapolated": false,
+    "gpd_1in1000": 0.9997593178817434,
+    "gpd_1in1000_ci95": [
+     0.9991090311938013,
+     0.9999999993707773
+    ],
+    "gpd_1in1000_extrapolated": true
+   }
+  }
+ },
+ "t1_mlb": {
+  "filled": {
+   "games": 57,
+   "bets": 83,
+   "pnl_total": -124.72919999999999,
+   "stake_total": 601.8528,
+   "loss_games": 40,
+   "worst_game_pnl": -22.393900000000002,
+   "worst_game_per_$staked": -1.0,
+   "usd": {
+    "fit": {
+     "status": "TOO_FEW",
+     "n": 57,
+     "n_exc": 14,
+     "u": 10.2649
+    },
+    "normal_1in100": 29.946223065762453,
+    "normal_1in1000": 39.060894951468065,
+    "empirical_max_loss": 22.393900000000002,
+    "ci_fail_rate": null,
+    "gpd_1in100": null,
+    "gpd_1in100_ci95": null,
+    "gpd_1in100_extrapolated": true,
+    "gpd_1in1000": null,
+    "gpd_1in1000_ci95": null,
+    "gpd_1in1000_extrapolated": true
+   },
+   "drawdown_usd": {
+    "30": {
+     "empirical_bootstrap": {
+      "q0.99": 218.641045,
+      "q0.999": 259.5033116999993
+     },
+     "gpd_smoothed": {
+      "q0.99": 218.641045,
+      "q0.999": 259.5033116999993
+     },
+     "zero_edge_gpd": {
+      "q0.99": 159.52880226315796,
+      "q0.999": 196.78525459473522
+     }
+    },
+    "90": {
+     "empirical_bootstrap": {
+      "q0.99": 471.3046660000007,
+      "q0.999": 542.258612999986
+     },
+     "gpd_smoothed": {
+      "q0.99": 471.3046660000007,
+      "q0.999": 542.258612999986
+     },
+     "zero_edge_gpd": {
+      "q0.99": 292.71554500000013,
+      "q0.999": 361.40811148946517
+     }
+    }
+   },
+   "per_usd_staked": {
+    "fit": {
+     "status": "TOO_FEW",
+     "n": 57,
+     "n_exc": 0,
+     "u": 1.0
+    },
+    "normal_1in100": 3.202967621165731,
+    "normal_1in1000": 4.203339685680698,
+    "empirical_max_loss": 1.0,
+    "ci_fail_rate": null,
+    "gpd_1in100": null,
+    "gpd_1in100_ci95": null,
+    "gpd_1in100_extrapolated": true,
+    "gpd_1in1000": null,
+    "gpd_1in1000_ci95": null,
+    "gpd_1in1000_extrapolated": true
+   }
+  },
+  "paper_all": {
+   "games": 173,
+   "bets": 469,
+   "pnl_total": -113.16519999999998,
+   "stake_total": 4720.1133,
+   "loss_games": 97,
+   "worst_game_pnl": -64.8336,
+   "worst_game_per_$staked": -1.0,
+   "usd": {
+    "fit": {
+     "status": "OK",
+     "n": 173,
+     "n_exc": 43,
+     "u": 9.3763,
+     "xi": -0.16429413611693994,
+     "sigma": 17.703534984531668
+    },
+    "normal_1in100": 49.02991872108991,
+    "normal_1in1000": 64.91469209193548,
+    "empirical_max_loss": 64.8336,
+    "ci_fail_rate": 0.0,
+    "gpd_1in100": 53.572253374589565,
+    "gpd_1in100_ci95": [
+     40.49427751916499,
+     62.476614411509395
+    ],
+    "gpd_1in100_extrapolated": false,
+    "gpd_1in1000": 73.5918589837324,
+    "gpd_1in1000_ci95": [
+     48.608927325454665,
+     103.30151233475091
+    ],
+    "gpd_1in1000_extrapolated": true
+   },
+   "drawdown_usd": {
+    "30": {
+     "empirical_bootstrap": {
+      "q0.99": 304.04879500000015,
+      "q0.999": 382.17636459999954
+     },
+     "gpd_smoothed": {
+      "q0.99": 304.82656044776604,
+      "q0.999": 379.4850136514405
+     },
+     "zero_edge_gpd": {
+      "q0.99": 288.2228709294557,
+      "q0.999": 362.36721320167953
+     }
+    },
+    "90": {
+     "empirical_bootstrap": {
+      "q0.99": 565.5583030000001,
+      "q0.999": 704.1661742999961
+     },
+     "gpd_smoothed": {
+      "q0.99": 565.760735427338,
+      "q0.999": 707.7117204942049
+     },
+     "zero_edge_gpd": {
+      "q0.99": 517.7730334757189,
+      "q0.999": 655.9999850832655
+     }
+    }
+   },
+   "per_usd_staked": {
+    "fit": {
+     "status": "TOO_FEW",
+     "n": 173,
+     "n_exc": 0,
+     "u": 1.0
+    },
+    "normal_1in100": 2.1323006278013716,
+    "normal_1in1000": 2.800503052439057,
+    "empirical_max_loss": 1.0,
+    "ci_fail_rate": null,
+    "gpd_1in100": null,
+    "gpd_1in100_ci95": null,
+    "gpd_1in100_extrapolated": false,
+    "gpd_1in1000": null,
+    "gpd_1in1000_ci95": null,
+    "gpd_1in1000_extrapolated": true
+   }
+  }
+ }
+}
