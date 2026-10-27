@@ -7,7 +7,7 @@ verbatim by board_survey_sports_store.Store under --out/<sport>/raw. Phases (eac
   schedule  ESPN scoreboard over the window -> schedule.jsonl (start_utc per game)
   join      Kalshi event -> ESPN game by ET date + team pair -> events.jsonl (start_utc, matched or not)
   candles   hourly candles [start-30h, start] for a deterministic, outcome-independent market sample -> candles/<SERIES>.jsonl
-  manifest  coverage per family x season -> MANIFEST.json / manifest.md (the part that is tracked in git)
+  manifest  coverage per family x season -> manifests/w89_7/<sport>/MANIFEST.json (the part that is tracked in git)
 
 Why a schedule: Kalshi's `occurrence_datetime` is NOT the start (measured in this block: it runs ~3-4 h after tip/kickoff/puck
 for the three sports), and NFL event tickers carry the date only (GG-1252).
@@ -27,6 +27,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 import board_survey_sports_store as bs  # noqa: E402
+sys.path.insert(0, str(ROOT / "12_EXPLORATORY"))
+from _fence import safe_out  # noqa: E402
+
+# The tracked manifests live inside the fence (CHARTER rule 3); the bulk Kalshi pages stay in the untracked exp_output cache.
+MANIFEST_DIR = ROOT / "12_EXPLORATORY" / "market_history" / "manifests" / "w89_7"
 
 try:
     from zoneinfo import ZoneInfo
@@ -46,7 +51,7 @@ SPORTS = {
 # Kalshi ticker code <-> ESPN abbreviation differences; the join tries every alias of each side.
 ALIAS = {
     "GS": ["GSW"], "NY": ["NYK"], "NO": ["NOP"], "SA": ["SAS"], "UTAH": ["UTA"], "WSH": ["WAS"],
-    "NJ": ["NJD"], "SJ": ["SJS"], "TB": ["TBL"], "LA": ["LAK", "LAR"], "VGK": ["VGK", "LVG"], "MTL": ["MTL", "MON"],
+    "NJ": ["NJD"], "SJ": ["SJS"], "TB": ["TBL"], "LA": ["LAK"], "LAR": ["LA", "LAR"], "VGK": ["VGK", "LVG"], "MTL": ["MTL", "MON"],
     "CBJ": ["CBJ", "CLB"], "NSH": ["NSH", "NAS"], "WPG": ["WPG", "WIN"], "UTA": ["UTA", "UTAH"], "JAX": ["JAC", "JAX"],
     "LV": ["LVR", "LV"], "NE": ["NEP", "NE"], "NYG": ["NYG"], "NYJ": ["NYJ"], "KC": ["KCC", "KC"], "GB": ["GBP", "GB"],
     "TB_": ["TBB"], "SF": ["SFO", "SF"], "LAC": ["LAC"], "WAS": ["WAS", "WSH"],
@@ -83,7 +88,7 @@ def team_pair_matches(code: str, away: str, home: str) -> bool:
 
 
 def et_date(start_utc: str):
-    return datetime.strptime(start_utc, "%Y-%m-%dT%H:%MZ").replace(tzinfo=timezone.utc).astimezone(ET).date()
+    return datetime.strptime(start_utc + "+0000", "%Y-%m-%dT%H:%MZ%z").astimezone(ET).date()
 
 
 def match_event(code: str, tdate, games: list[dict]):
@@ -274,7 +279,7 @@ def phase_manifest(a, sport, out):
                "occurrence_minus_start_hours": {"n": len(offs), "p10": offs[len(offs) // 10] if offs else None,
                                                 "median": offs[len(offs) // 2] if offs else None,
                                                 "p90": offs[(9 * len(offs)) // 10] if offs else None}}
-    (out / "MANIFEST.json").write_text(json.dumps(summary, indent=1, sort_keys=True))
+    safe_out(MANIFEST_DIR / sport / "MANIFEST.json").write_text(json.dumps(summary, indent=1, sort_keys=True))
     print(json.dumps(summary, indent=1))
 
 

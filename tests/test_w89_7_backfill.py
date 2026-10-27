@@ -35,3 +35,11 @@ def test_season_label():
     assert w.season_label("nfl", "2026-01-10T00:00:00Z") == "2025"
     assert w.season_label("nba", "2026-10-27T00:00:00Z") == "2026-27"
     assert w.season_label("nba", "2026-03-01T00:00:00Z") == "2025-26"
+
+
+def test_nfl_rams_ticker_la_matches_espn_lar():
+    # Kalshi writes the Rams as LA; ESPN writes LAR. The Chargers are LAC in both.
+    assert w.team_pair_matches("LAARI", "LAR", "ARI") or w.team_pair_matches("LAARI", "ARI", "LAR")
+    assert w.team_pair_matches("DETLA", "DET", "LAR")
+    assert w.team_pair_matches("LACLA", "LAC", "LAR")
+    assert not w.team_pair_matches("LAARI", "LAC", "ARI")
