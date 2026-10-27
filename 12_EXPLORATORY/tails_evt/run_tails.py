@@ -1,5 +1,5 @@
 """W88.1 Part A: tail fits on per-game P&L, clustered by game. Read-only on every ledger.
-Usage: PYTHONPATH=src python3 12_EXPLORATORY/tails_evt/run_tails.py <dir with box copies> [out.json]
+Usage: python3 12_EXPLORATORY/tails_evt/run_tails.py <dir with box copies> [out.json]
 Inputs (copies of the box files): paper_portfolio_mlb_t4.json, paper_portfolio_mlb.json, *_fill_status.jsonl.
 """
 import json
@@ -13,7 +13,31 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "12_EXPLORATORY"))
 import gpd  # noqa: E402
 from _fence import safe_out  # noqa: E402
-from prediction_market_bot import t4_fill_status as tfs  # noqa: E402
+
+CONFIRMED_FILLED = "CONFIRMED_FILLED"   # mirrors t4_fill_status (the exploratory fence forbids importing it)
+
+
+def game_key(pos):
+    """Cluster id = the Kalshi event segment of the ticker (one game), else game_date. Mirrors t4_fill_status."""
+    parts = str(pos.get("kalshi_ticker") or pos.get("ticker") or "").split("-")
+    return parts[1] if len(parts) >= 2 and parts[1] else f"date:{pos.get('game_date')}"
+
+
+def load_fill_status(path):
+    out = {}
+    for line in Path(path).read_text().splitlines():
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if row.get("position_id") and row["position_id"] not in out:
+            out[row["position_id"]] = row
+    return out
+
+
+def is_confirmed_filled(rec, status):
+    row = status.get(rec.get("position_id"))
+    return bool(row) and row.get("fill_class") == CONFIRMED_FILLED
 
 BOOKS = {"t4_mlb": ("paper_portfolio_mlb_t4.json", "t4_mlb_fill_status.jsonl"),
          "t1_mlb": ("paper_portfolio_mlb.json", "t1_mlb_fill_status.jsonl")}
@@ -22,7 +46,7 @@ BOOKS = {"t4_mlb": ("paper_portfolio_mlb_t4.json", "t4_mlb_fill_status.jsonl"),
 def by_game(rows):
     g = defaultdict(lambda: [0.0, 0.0, 0])
     for p in rows:
-        k = tfs.game_key(p)
+        k = game_key(p)
         g[k][0] += float(p["pnl"]); g[k][1] += float(p.get("size_usd") or 0); g[k][2] += 1
     keys = sorted(g)
     return (np.array([g[k][0] for k in keys]), np.array([g[k][1] for k in keys]), np.array([g[k][2] for k in keys]))
@@ -54,8 +78,8 @@ def main(d, out="tails_evt/tails_W88.json"):
     for key, (pf, sf) in BOOKS.items():
         closed = [p for p in json.loads((d / pf).read_text())["closed_positions"]
                   if p.get("position_id") and p.get("pnl") is not None and p.get("outcome") in ("WIN", "LOSS")]
-        status = tfs.load_fill_status(d / sf)
-        filled = [p for p in closed if tfs.is_confirmed_filled(p, status)]
+        status = load_fill_status(d / sf)
+        filled = [p for p in closed if is_confirmed_filled(p, status)]
         res[key] = {"filled": analyse(key, *by_game(filled)), "paper_all": analyse(key, *by_game(closed))}
     safe_out(out).write_text(json.dumps(res, indent=1, default=float))
     return res
