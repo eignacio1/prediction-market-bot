@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1260
+tier: STANDARD
+timestamp: 2026-10-27T04:50:00Z
+commit: 972ab5b
+one_line_summary: W89.3 NFL unpriced-factor screen + venue/weather totals build: 3 classes measured, 0 clear fee+error; NBA blocked on GG-1260
+gg_touched: GG-1260, GG-1261
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b)
+gap_delta: measured share priced 1 -> 3; clears fee+error 0 -> 0 (12_EXPLORATORY/unpriced_screen/results_W89.md @ 97f80fb)
+pattern_sweep: seat markdown is generated from SEATS/*.toml; toml edit needs scripts/render_seat.py re-run (py3.9 lacks tomllib, shim tomli); nba.toml not edited
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — W89.3 (Part A, NFL) — 2026-10-27T04:20Z
 
 Status: PARTIAL | PR #340 merged (CI green, test 5m7s) | result: NFL unpriced-share screen — F8 identified in all 3 families (b total 0.33, spread 0.67, ML 0.84), F5/F6 unidentified; **0 factors clear fee + measured error**. Reproduces EXP-041 independently.

@@ -1048,3 +1048,4 @@
 | 2026-10-27T04:06:45Z | GG sweep only; no new T/GG range | W89.6 gap sweep class C/O — PURPOSE: PLUMBING, measure OPEN gaps 211 -> lower (GOVERNANCE_GAP_LOG grep) |
 | 2026-10-27T04:06:51Z | T-1270..T-1272, GG-1270..GG-1274 | STANDARD — W89.4 NFL game simulation (Markov chain) pricing whole board from one joint distribution, results_W89.md — FOR DEPTH D4 (NFL: data layer+scaffold -> whole board priced from one engine, offline; families from one joint distribution 0 -> n) |
 | 2026-10-27T04:07:13Z | T-1280..T-1282, GG-1280..GG-1284 | W89.5 STANDARD: NBA PAM roles vs KXNBAPTS price, join + out-of-sample role cross — FOR DEPTH D5(b) (NBA PAM factors applied 0 -> n; points props w/ settled actuals joined 0 -> n) |
+| 2026-10-27T04:35:27Z | T-1260 | CLOSED — W89.3 NFL unpriced-factor screen + venue/weather totals build: 3 classes measured, 0 clear fee+error; NBA blocked on GG-1260 (commit `972ab5b`) |
