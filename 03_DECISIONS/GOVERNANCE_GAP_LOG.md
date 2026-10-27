@@ -4370,3 +4370,16 @@ W88.2 Part 0. Four scheduled `MLB Games Cache Sync` failures (2026-10-25 05:17Z 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W88.2 Part B. Three reads of `GET /markets?series_ticker=KXMLBGAME` 20s apart (2026-10-27 01:31Z) returned an unchanged `updated_time` (2026-10-20T03:41:00Z, the open time) on a live market whose bid/ask differed from `previous_yes_bid/ask`. W87.3's stale-quote check on NHL_GAME_TOTAL_T1 was NOT MEASURABLE for this reason. Fix shipped (PR for W88.2 Part B): rows now carry `quote_ts_utc` / `quote_age_s` / `quote_ts_source` from the list response's HTTP `Date` header (exchange clock; age includes skew + latency). **Limit, stated plainly:** this is when the book was read, not when the quote last changed; time-since-last-change still needs the orderbook or trades endpoint (last trade `created_time`, one extra request per market) and is not built. Stays OPEN until a box row is read back carrying the fields.
+
+### GG-1240 — SHADOW exposure book can never settle: its stakes accrue as open forever, and a settled-feed hit would count them as unresolved against a $1,000 notional
+
+**Status:** OPEN · **Severity:** HIGH
+
+W89.1, 2026-10-27 04:10Z, read on the box. `logs/exposure_gate_state.json`: SHADOW `open_stake_usd` 86,548.35 against `SHADOW_NOTIONAL_USD` 1000, drawdown 0.0. Open stake is not in the drawdown, so nothing trips today. `shadow_flat_stake.py:114` only READS the settled set (`load_settled()[0]`); `refresh_settled` is called only from `paper_trader.py:388`. So no shadow ticker is ever fed to the settled set by the shadow path. If any shadow ticker reaches it (another book's order on the same market), `settled_unresolved_stake_usd` rises, and since shadow stakes never resolve (GG-1175) the SYSTEM worst-case drawdown reaches 20% and the global halt is written. In ENFORCE that halts every book. Block before the enforce flip: either give SHADOW a resolution path or exclude it from the system drawdown. Registered, not fixed here (Hard Rule 11; the fix is a design choice about what the shadow book's exposure means).
+
+### GG-1241 — The exposure gate has no read-back that every book feeds: MLB_T4 absent from the state file and the settled-feed cache file does not exist
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W89.1, 2026-10-27 04:10Z. `exposure_gate_state.json` holds MLB_T1 and SHADOW only. No MLB_T4 key (t4-mlb restarted 03:13Z; no order since). `exposure_gate_settled.json` does not exist, so the settled feed has never run. `logs/exposure_gate_logonly.jsonl` does not exist: zero would-halts recorded, but no book has yet been through a game day. In ENFORCE, `exposure_book_no_writer:MLB_T4` would refuse the first T4 order if the key is still missing. Part B needs a game day in which T4 writes its book; this is the read-back that proves it.
+

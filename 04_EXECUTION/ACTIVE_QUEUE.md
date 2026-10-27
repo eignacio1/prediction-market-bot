@@ -278,7 +278,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 89.1 | Before real money, finished: the red cleared (MLB arm read back), then the kill switch ENFORCING | PLUMBING: budget RED → GREEN; GG-1082 / GG-441 → RESOLVED | ⬜ | |
+| 89.1 | Before real money, finished: the red cleared (MLB arm read back), then the kill switch ENFORCING | PLUMBING: budget RED → GREEN; GG-1082 / GG-441 → RESOLVED | 🟡 PARTIAL | Cache now fresh (box 01:26Z, accepted by T2); first in-window MLB T1 row due 06:07Z, quote fields unread; Part B waits for the 10-28 game day; GG-1240 (SHADOW book can't settle) blocks the flip |
 | 89.2 | Where the line itself is wrong: calibration and longshot bias of Kalshi's sports prices; overreaction | PROOF + DEPTH: families tested 0 → n (BH); market-level adjustments surviving 0 → n | ⬜ | |
 | 89.3 | Depth, market-anchored: which NFL and NBA factors the line does not price; the top 1-3 taken to a price | DEPTH: factors with a measured share priced 1 → n; factors clearing fee + error 0 → n | ⬜ | |
 | 89.4 | EXTRA (operator, out of protocol): one NFL game simulation (Markov chain) that prices the whole board consistently | DEPTH: D4 NFL → whole board from one engine (offline); families from one joint distribution 0 → n | ⬜ | |
