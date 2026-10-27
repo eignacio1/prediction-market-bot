@@ -1,10 +1,11 @@
 # Wave 90 — paste blocks (ride the market: trees, router, momentum)
 
 Copy each block as one fenced paste. The wave's table, results and status live in `04_EXECUTION/ACTIVE_QUEUE.md` § "NOW — Wave 90".
-Run AFTER 89.7 (tonight's single block) has pushed its results: 90.1 and 90.3 read them.
+Rewritten 2026-10-27 16:40 PT: 89.7 ended partial (PR #349 open, CI failed), so its remainder is 90.1 Part A (operator 16:30 PT); the ride
+tree's pre-registration and shadow arm move to Wave 91. All three blocks run now.
 
-### 90.1 — The ride-the-market tree: built, pre-registered, logging in shadow
-**DEPTH + PROOF** · terminal 1
+### 90.1 — Finish 89.7 (the ride data and the hold-out scan), then the ride tree as code
+**PROOF + DEPTH** · terminal 1
 
 ```
 COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; they bind this block)
@@ -22,8 +23,8 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
   conclusions"; 22:08 PT: "Sometimes it's best just to roll with the market sentiment - we don't always have to be it - that's the
   meaning of having filtering mechs appropriately identifying the correct decision trees and routing mechanisms for execution"),
-  Wave 89 results (kill switch ENFORCING; 89.2 longshot bias: 11 in-sample cells; 89.3/89.4/89.5 no edge) and 89.7 (the ride data
-  and the hold-out scan; read its results first), Wave 88 results (5 of 6 frozen models scored against the
+  Wave 89 results (kill switch ENFORCING; 89.2 longshot bias: 11 in-sample cells; 89.3/89.4/89.5 no edge), 89.7 left PARTIAL (PR #349
+  open, CI failed; its remainder is 90.1 Part A, operator 2026-10-27 16:30 PT), Wave 88 results (5 of 6 frozen models scored against the
   market: NHL and NBA worse than it, MLB level with it; every skill weight effectively 0, so the gate keeps nothing; DRAFT ADR-0076
   awaiting the operator; kill switch still LOG-ONLY), Wave 87 results (core reconciled on 9 paths, 3 re-pointed;
   exposure gate on every order path in LOG-ONLY; 2 of 6 models scored vs market, both no better than it; skill weights all 0),
@@ -56,13 +57,16 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Three blocks run in parallel. File ownership: 90.1 = a new src/prediction_market_bot/decision_trees/ride.py + tests, one new
-  pre-registration file in 05_RESEARCH_EXPERIMENTS/ (next free EXP number), a new shadow runner/cron line for it ONLY if the budget
-  is GREEN (register first), its registry cells, and the GG-1230 / GG-1231 / GG-1232 entries; 90.2 = a new src/prediction_market_bot/decision_trees/router.py + tests, a new
-  12_EXPLORATORY/router_replay/, a new 02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md, the decision_trees and filtering_mechanisms
-  [[component]] entries in ARCHITECTURE_COMPONENTS.toml; 90.3 = a new 12_EXPLORATORY/momentum_j/. 90.2 may import 90.1's ride.py
-  only after it is on main; until then it defines the interface it expects and tests against a stub of its own. May ADD to
-  src/prediction_market_bot/quant/ (new functions with tests, no edits to existing ones); fetch + rebase before every push.
+- Three blocks run in parallel. File ownership: 90.1 = PR #349's branch and files (12_EXPLORATORY/ride_market_scan/,
+  12_EXPLORATORY/market_history/ additions, exp_output/KALSHI_HISTORY/), a new src/prediction_market_bot/decision_trees/ride.py + tests,
+  the GG-1230..1232 and GG-1253 / GG-1260..1269 entries, and the archiver's family list only on GREEN; 90.2 = a new
+  src/prediction_market_bot/decision_trees/router.py + tests, a new 12_EXPLORATORY/router_replay/, a new
+  02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md, the decision_trees and filtering_mechanisms [[component]] entries in
+  ARCHITECTURE_COMPONENTS.toml; 90.3 = a new 12_EXPLORATORY/momentum_j/. Data: 90.2 and 90.3 use the price archive
+  (exp_output/PRICE_ARCHIVE/, MLB + NFL) and, for NBA / NHL, 89.7's Kalshi history tooling - from main once 90.1 merges PR #349, else
+  read its branch's code read-only and fetch for yourself; never merge or push to PR #349. 90.2 defines the interface it expects from
+  ride.py and tests against a stub of its own until ride.py is on main. Everyone may ADD to src/prediction_market_bot/quant/ (new
+  functions with tests, no edits to existing ones); fetch + rebase before every push.
   TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
   (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
   main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
@@ -104,34 +108,40 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   <before> -> <after> (source) or none | stage reached per factor | operator decisions.
   Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W90_<n>.md (docs-only push).
 
-WAVE 90.1 - THE RIDE-THE-MARKET TREE: BUILT, PRE-REGISTERED, LOGGING IN SHADOW. Repo: eignacio1/prediction-market-bot.
-PURPOSE: DEPTH + PROOF. Measures: D5(a) decision_trees - a second tree type (ride) beside the contrarian one, built and tested;
-D3 pre-registered challengers +1 (the ride tree); B1 cells logging +n if wired. The operator, 2026-10-26: "Sometimes it's best just to
-roll with the market sentiment - we don't always have to be it". A ride tree buys the side the market already favours (or sells the
-longshot) only where the market's own price has been measured wrong in that direction net of fees: 89.2 (in-sample) and 89.7 (with a
-hold-out; read 12_EXPLORATORY/ride_market_scan/results_W89_7.md first). Riding is not "always bet the favourite": at a fair price the
-favourite only breaks even before fees.
-PERMISSIONS: per the common rules' ownership; the standing authorization for new pre-registered shadow arms (2026-10-08) covers a
-shadow runner if the budget is GREEN. NOT: any existing runner, cell, model, ledger or pre-registration; stakes stay $1 demo /
-kelly_fraction 0; no cell chosen from data after its pre-registration is committed.
+WAVE 90.1 - FINISH 89.7 (THE RIDE DATA AND THE HOLD-OUT SCAN), THEN THE RIDE TREE AS CODE. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF + DEPTH. Measures: families testable for a calibration test MLB + NFL -> + NBA + NHL (+ props where Kalshi has candles);
+89.2's candidate cells tested OUT OF SAMPLE 0 -> n; in-season ride candidates (NFL, NBA, NHL) 0 -> n; D5(a) decision_trees - a second
+tree type (ride) built and tested as code. The operator, 2026-10-27 16:30 PT: "Just partition the remaining work from 89.7 into one of
+the blocks". The operator, 2026-10-26 22:12 PT: "we need substantively more architecture around the \"ride the market\" trees than we
+have before we come to any end all be all conclusions." The ride tree's PRE-REGISTRATION and SHADOW ARM move to Wave 91: they need this
+block's out-of-sample results first.
+STATE YOU INHERIT (W89.7, handoff 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0540Z_W89_7.md on branch
+session/20261027T051711Z-w89-7-ride-data, PR #349, OPEN, CI FAILED): Kalshi's occurrence_datetime is exactly 3.0 h after the scheduled
+start in all three sports; the ESPN join recovers true start times except 135 NFL events (Kalshi LA = Rams / ESPN LAR, LAC = Chargers
+alias wrong); hourly candles exist for NBA and NHL game families and part of NFL's; spread, total, team-total and prop families are listed
+but not fetched. CI failure: tests/test_exploratory_isolation.py flags w89_7_backfill.py:86 `.replace()` and :277 `.write_text()` as writes
+not routed through safe_out() (CHARTER rule 3, the exploratory fence). Not done: GG-1260..1269 registration, DECISION_LOG, queue row,
+runtime-registry entry, MLB HHMM-as-ET check (GG-1253), session close; the worktree and claim are still open. Note from 89.7: "run a
+sport's phases one at a time - the original chained prep run overwrote a good NFL schedule with an empty one."
+PERMISSIONS: per the common rules' ownership; you take over PR #349 and its branch (rebase on main, fix, merge on green CI); public
+unauthenticated Kalshi market-data GETs (paced) and free schedule sources. NOT: any order, gate, model, runner, ledger, registry cell or
+pre-registration; the price archiver's family list only if budget_read is GREEN (register first; otherwise a task).
 
-PART 0 - The red (~10 min, only if budget_read is RED)
-  At the Wave 89 close (2026-10-27 05:13Z) the box read RED on one fault: the MLB game-market shadow, silent since 2026-10-25 18:07Z;
-  W89.1 expected its first in-window row at 06:07Z and left GG-1230 / GG-1232 open and GG-1231 without an alarm. Read whether that row
-  landed (with the quote-time fields); if so, close GG-1230 / GG-1232 with the evidence and confirm GREEN; if not, find why before
-  wiring anything. You own those three gap entries this wave.
-PART A - The tree, as code (~40 min)
-  decision_trees/ride.py: a pure function from (family, time tier, price, book state: spread / depth where measured, sport) to
-  RIDE-YES / RIDE-NO / NONE, with the expected net per contract and its interval, driven by a table of cells loaded from the
-  pre-registration file (no numbers hard-coded). Tests: a cell outside the table returns NONE; a wide book outside the measured
-  spread returns NONE; the fee is applied at the quote.
-PART B - Pre-register and log (~40 min)
-  The pre-registration: ONLY the cells that held OUT OF SAMPLE in 89.7 (or the in-sample 89.2 cells labelled as such, if none held),
-  per sport; primary metric = net settlement minus entry price per contract, game-clustered; judged n from a power calc on the
-  measured effect; look dates; modal outcome written down first; the pooled-test rule (accepted 2026-10-21) across cells with BH.
-  Commit it, then (budget GREEN only) a shadow arm that evaluates the ride tree on live markets and logs rows - no orders unless the
-  demo switches already cover shadow arms, at $1. If the budget is RED, stop at the pre-registration and say so.
-Results: the module + tests, the pre-registration, read-back of first rows if wired, a handoff.
+PART A - Finish 89.7 (~50 min)
+  1. PR #349: route the two writes through safe_out() (the fence is right; do not weaken it), rebase, CI green, merge, read back.
+  2. Fix the LA alias and re-join the 135 NFL events; check MLB HHMM-as-ET against the schedule (GG-1253).
+  3. Candles for spread, total, team-total and prop families per sport, newest first, one sport's phase at a time.
+  4. 89.2's method unchanged, with a TIME SPLIT: cells chosen on the earlier half, tested on the later half; 89.2's three named MLB
+     candidates re-tested on dates after its window and on 2025 history; then NBA, NHL and NFL with true start times. Every survivor:
+     family, tier, bucket, side (ride the favourite / fade the longshot), n, games, net per contract with interval, held out of sample
+     yes/no. Register GG-1260..1269 (or the numbers you claim), the DECISION_LOG entry, close 89.7's claim.
+PART B - The ride tree as code (~30 min)
+  src/prediction_market_bot/decision_trees/ride.py: a pure function from (sport, family, time tier, price, book state: spread / depth
+  where measured) to RIDE-YES / RIDE-NO / NONE with the expected net per contract and its interval, driven by a table FILE of cells
+  (the Part A out-of-sample survivors, labelled; no numbers hard-coded). Tests: a cell outside the table returns NONE; a book wider than
+  the cell's measured spread returns NONE; the k007 fee is applied at the quote. Wired into nothing.
+Results: results_W89_7.md (or results_W90_1.md), the module + tests, a handoff, and one operator line naming the survivors Wave 91 should
+pre-register as ride trees (or "none held out of sample").
 
 END OF BLOCK 90.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
@@ -155,8 +165,8 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
   conclusions"; 22:08 PT: "Sometimes it's best just to roll with the market sentiment - we don't always have to be it - that's the
   meaning of having filtering mechs appropriately identifying the correct decision trees and routing mechanisms for execution"),
-  Wave 89 results (kill switch ENFORCING; 89.2 longshot bias: 11 in-sample cells; 89.3/89.4/89.5 no edge) and 89.7 (the ride data
-  and the hold-out scan; read its results first), Wave 88 results (5 of 6 frozen models scored against the
+  Wave 89 results (kill switch ENFORCING; 89.2 longshot bias: 11 in-sample cells; 89.3/89.4/89.5 no edge), 89.7 left PARTIAL (PR #349
+  open, CI failed; its remainder is 90.1 Part A, operator 2026-10-27 16:30 PT), Wave 88 results (5 of 6 frozen models scored against the
   market: NHL and NBA worse than it, MLB level with it; every skill weight effectively 0, so the gate keeps nothing; DRAFT ADR-0076
   awaiting the operator; kill switch still LOG-ONLY), Wave 87 results (core reconciled on 9 paths, 3 re-pointed;
   exposure gate on every order path in LOG-ONLY; 2 of 6 models scored vs market, both no better than it; skill weights all 0),
@@ -189,13 +199,16 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Three blocks run in parallel. File ownership: 90.1 = a new src/prediction_market_bot/decision_trees/ride.py + tests, one new
-  pre-registration file in 05_RESEARCH_EXPERIMENTS/ (next free EXP number), a new shadow runner/cron line for it ONLY if the budget
-  is GREEN (register first), its registry cells, and the GG-1230 / GG-1231 / GG-1232 entries; 90.2 = a new src/prediction_market_bot/decision_trees/router.py + tests, a new
-  12_EXPLORATORY/router_replay/, a new 02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md, the decision_trees and filtering_mechanisms
-  [[component]] entries in ARCHITECTURE_COMPONENTS.toml; 90.3 = a new 12_EXPLORATORY/momentum_j/. 90.2 may import 90.1's ride.py
-  only after it is on main; until then it defines the interface it expects and tests against a stub of its own. May ADD to
-  src/prediction_market_bot/quant/ (new functions with tests, no edits to existing ones); fetch + rebase before every push.
+- Three blocks run in parallel. File ownership: 90.1 = PR #349's branch and files (12_EXPLORATORY/ride_market_scan/,
+  12_EXPLORATORY/market_history/ additions, exp_output/KALSHI_HISTORY/), a new src/prediction_market_bot/decision_trees/ride.py + tests,
+  the GG-1230..1232 and GG-1253 / GG-1260..1269 entries, and the archiver's family list only on GREEN; 90.2 = a new
+  src/prediction_market_bot/decision_trees/router.py + tests, a new 12_EXPLORATORY/router_replay/, a new
+  02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md, the decision_trees and filtering_mechanisms [[component]] entries in
+  ARCHITECTURE_COMPONENTS.toml; 90.3 = a new 12_EXPLORATORY/momentum_j/. Data: 90.2 and 90.3 use the price archive
+  (exp_output/PRICE_ARCHIVE/, MLB + NFL) and, for NBA / NHL, 89.7's Kalshi history tooling - from main once 90.1 merges PR #349, else
+  read its branch's code read-only and fetch for yourself; never merge or push to PR #349. 90.2 defines the interface it expects from
+  ride.py and tests against a stub of its own until ride.py is on main. Everyone may ADD to src/prediction_market_bot/quant/ (new
+  functions with tests, no edits to existing ones); fetch + rebase before every push.
   TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
   (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
   main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
@@ -255,7 +268,7 @@ PART A - The routing doctrine (~30 min)
   T3's CONFIRM/FADE fits. One page of plain English first, then the table.
 PART B - The router as code, replayed (~50 min)
   decision_trees/router.py implementing the doctrine as a pure function, with tests; replay it over the shadow ledgers and the
-  Kalshi history (89.7) per sport: how many situations route to each tree, and - DESCRIPTIVE only - settlement minus price for each
+  price history per sport (see the common rules' Data line): how many situations route to each tree, and - DESCRIPTIVE only - settlement minus price for each
   tree's traffic, game-clustered. A tree that gets traffic without measured skill is a defect: the replay should show none.
 Results: the doctrine, the module + tests, results_W90.md, ARCHITECTURE_COMPONENTS.toml updates, a handoff, and one operator line:
 accept the routing doctrine as written, or change it.
@@ -282,8 +295,8 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
   conclusions"; 22:08 PT: "Sometimes it's best just to roll with the market sentiment - we don't always have to be it - that's the
   meaning of having filtering mechs appropriately identifying the correct decision trees and routing mechanisms for execution"),
-  Wave 89 results (kill switch ENFORCING; 89.2 longshot bias: 11 in-sample cells; 89.3/89.4/89.5 no edge) and 89.7 (the ride data
-  and the hold-out scan; read its results first), Wave 88 results (5 of 6 frozen models scored against the
+  Wave 89 results (kill switch ENFORCING; 89.2 longshot bias: 11 in-sample cells; 89.3/89.4/89.5 no edge), 89.7 left PARTIAL (PR #349
+  open, CI failed; its remainder is 90.1 Part A, operator 2026-10-27 16:30 PT), Wave 88 results (5 of 6 frozen models scored against the
   market: NHL and NBA worse than it, MLB level with it; every skill weight effectively 0, so the gate keeps nothing; DRAFT ADR-0076
   awaiting the operator; kill switch still LOG-ONLY), Wave 87 results (core reconciled on 9 paths, 3 re-pointed;
   exposure gate on every order path in LOG-ONLY; 2 of 6 models scored vs market, both no better than it; skill weights all 0),
@@ -316,13 +329,16 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Three blocks run in parallel. File ownership: 90.1 = a new src/prediction_market_bot/decision_trees/ride.py + tests, one new
-  pre-registration file in 05_RESEARCH_EXPERIMENTS/ (next free EXP number), a new shadow runner/cron line for it ONLY if the budget
-  is GREEN (register first), its registry cells, and the GG-1230 / GG-1231 / GG-1232 entries; 90.2 = a new src/prediction_market_bot/decision_trees/router.py + tests, a new
-  12_EXPLORATORY/router_replay/, a new 02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md, the decision_trees and filtering_mechanisms
-  [[component]] entries in ARCHITECTURE_COMPONENTS.toml; 90.3 = a new 12_EXPLORATORY/momentum_j/. 90.2 may import 90.1's ride.py
-  only after it is on main; until then it defines the interface it expects and tests against a stub of its own. May ADD to
-  src/prediction_market_bot/quant/ (new functions with tests, no edits to existing ones); fetch + rebase before every push.
+- Three blocks run in parallel. File ownership: 90.1 = PR #349's branch and files (12_EXPLORATORY/ride_market_scan/,
+  12_EXPLORATORY/market_history/ additions, exp_output/KALSHI_HISTORY/), a new src/prediction_market_bot/decision_trees/ride.py + tests,
+  the GG-1230..1232 and GG-1253 / GG-1260..1269 entries, and the archiver's family list only on GREEN; 90.2 = a new
+  src/prediction_market_bot/decision_trees/router.py + tests, a new 12_EXPLORATORY/router_replay/, a new
+  02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md, the decision_trees and filtering_mechanisms [[component]] entries in
+  ARCHITECTURE_COMPONENTS.toml; 90.3 = a new 12_EXPLORATORY/momentum_j/. Data: 90.2 and 90.3 use the price archive
+  (exp_output/PRICE_ARCHIVE/, MLB + NFL) and, for NBA / NHL, 89.7's Kalshi history tooling - from main once 90.1 merges PR #349, else
+  read its branch's code read-only and fetch for yourself; never merge or push to PR #349. 90.2 defines the interface it expects from
+  ride.py and tests against a stub of its own until ride.py is on main. Everyone may ADD to src/prediction_market_bot/quant/ (new
+  functions with tests, no edits to existing ones); fetch + rebase before every push.
   TO_MUSE.md is append-only: fetch + rebase right before pushing. The gap agent owns GG_BURNDOWN.md and GG_AGENT_STATE.md. Box access: ssh, or the box bridge
   (04_EXECUTION/BOX_TASKS/requests/*.toml naming an allowlisted task; results in 04_EXECUTION/BOX_TASKS/results/). The box pulls
   main on its own timer: before trusting a bridge result after a merge, read deploy_truth_read's box HEAD.
@@ -370,7 +386,8 @@ estimated 0 -> n contexts. STRATEGY_OVERVIEW.md, Strategy J: "J1 - Trend followi
 smart money as it moves the line)"; "J2 - Fade the crowd: Bet against momentum late"; "J1 and J2 are contradictory - the transition
 point between \"follow\" and \"fade\" is the critical unknown." 89.2 Part B tested only FADING: after pre-game moves of 5c or more,
 reverting lost in all 40 testable cells net of costs (every net negative) - which is evidence for FOLLOWING, not yet a test of it.
-Data: the price archive (MLB, NFL, 20-min snapshots) and 89.7's Kalshi history with true start times (NBA, NHL, NFL; hourly or finer).
+Data: the price archive (MLB, NFL, 20-min snapshots) and, for NBA / NHL, Kalshi hourly candles via 89.7's tooling (see the common
+rules' Data line); true start = Kalshi occurrence_datetime minus 3.0 h (89.7's finding).
 PERMISSIONS: per the common rules' ownership; read-only data. NOT: any order, runner, model, ledger or pre-registration.
 
 PART A - Follow, net of costs (~45 min)
