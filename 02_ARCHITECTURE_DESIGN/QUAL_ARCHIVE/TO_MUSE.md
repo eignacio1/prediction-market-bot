@@ -817,3 +817,8 @@ settlement timing, all quoted verbatim from Kalshi's published contract terms, w
 **Backlog order (supersedes the 2026-10-26 order):** **R-065** → **R-063** → **R-064** → **R-067** → R-062 → **R-066** → R-047 → R-059 →
 R-060 → R-026 → R-019 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 → R-052 → R-054 → R-024 →
 R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24 season). (32 open.)
+
+### 2026-10-27 17:00 PT · Earl: a live session, ten tickets straight
+Earl, 16:51 PT: "give it like 10 straight to work on". The live session works the first ten tickets of the 16:55 PT order, one after
+another without waiting: R-065 → R-063 → R-064 → R-067 → R-062 → R-066 → R-047 → R-059 → R-060 → R-026. Same IN PROGRESS rule: mark
+each ticket before starting it, push, and the scheduled runs skip it; the DONE entry supersedes the marker.
