@@ -1035,3 +1035,4 @@
 | 2026-10-27T00:19:42Z | T-1173 | CLOSED — W87.2 PARTIAL: exposure gate fed by every order book and consulted on submit_order, LOG-ONLY on box; enforce flip pending. (commit `360881a`) |
 | 2026-10-27T00:20:04Z | T-1173 | CLOSED — merge confirmed, HEAD (d18e71b) is ancestor of origin/main — W87.2 PARTIAL: gate fed by all books, LOG-ONLY |
 | 2026-10-27T01:16:22Z | T-1190..T-1192, GG-1190..GG-1194 | W88.1 STANDARD: EVT tails for real-money limits + DRAFT G6 superseding ADR — FOR PROOF+PLUMBING (G6 ADR 0->DRAFT, every limit derived from measured tails) |
+| 2026-10-27T01:17:01Z | T-1196..T-1198, GG-1196..GG-1198 | STANDARD — W88.3 quant: score remaining frozen models vs market w/ clustered intervals, set skill weights — FOR PROOF (P2 verdicts / models scored vs market 2 -> n of 6) |
