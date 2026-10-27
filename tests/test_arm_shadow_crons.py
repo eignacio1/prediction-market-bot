@@ -88,3 +88,15 @@ def test_mlb_runner_lines_are_dry_runnable_and_allowlisted():
     assert arm.offenders(["scripts/run_mlb_pregame_shadow.py", "scripts/fetch_mlb_game_history.py"]) == []
     assert arm.offenders(["scripts/fetch_mlb_game_history.py.bak", "scripts/run_mlb_paper.py"]) == [
         "scripts/fetch_mlb_game_history.py.bak", "scripts/run_mlb_paper.py"]
+
+
+def test_shell_wrapper_survives_empty_allow_under_bash32_set_u():
+    """GG-430: macOS bash 3.2 treats "${ARR[@]}" on an empty array as unbound under set -u."""
+    import subprocess
+    text = (ROOT / "scripts" / "arm_shadow_crons.sh").read_text()
+    assert '"${ALLOW[@]}"' not in text.replace('${ALLOW[@]+"${ALLOW[@]}"}', "")
+    out = subprocess.run(
+        ["/bin/bash", "-c", 'set -euo pipefail; ALLOW=(); printf "%s" x ${ALLOW[@]+"${ALLOW[@]}"}'],
+        capture_output=True, text=True,
+    )
+    assert out.returncode == 0 and out.stdout == "x"
