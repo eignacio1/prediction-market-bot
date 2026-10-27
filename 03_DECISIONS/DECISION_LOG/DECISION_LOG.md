@@ -2903,3 +2903,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Operator, 16:47 PT: "Give me the next Muse prompt too".
 - Verified in the archive (8073e03): R-046, R-057 (no free bulk line history), R-058 (NONE free timestamped NFL lines), R-029, R-061, R-020, R-030 closed. Muse's usage answer: "I don't know" whether scheduled runs use a separate allowance; runs kept landing commits.
 - New tickets R-063 (Polymarket history + event mapping), R-064 (public betting splits), R-065 (free current lines with timestamps, forward capture), R-066 (NBA starters timing), R-067 (Kalshi contract rules verbatim). Order puts R-065, R-063, R-064, R-067 first (they feed Wave 90's ride / router / momentum work). Add-in in MUSE_PASTE_IN_v3.md § "Add-in, 2026-10-27 16:55 PT". MUSE_WEB.json updated.
+
+## 2026-10-27 W90.2 — the router (DRAFT doctrine, awaiting operator acceptance)
+- Doctrine in 02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md: four trees (FADE, RIDE, MOMENTUM, NO-BET); a tree gets traffic only with a measured quantity behind it; disqualifiers first; RIDE+FADE same side goes to RIDE, opposite sides to NO-BET; T3 is a FADE-only overlay; news timing is not a condition (unmeasured).
+- Router merged (PR #350, ce78de4): library only, nothing wired. Replay of 164,354 situations: NO_BET 97.66%, RIDE 2.34%, FADE 0, MOMENTUM 0. RIDE settled view is in-sample, not evidence. D5(a) MLB 0/8 -> 2/8. Gaps GG-1330..GG-1334.
