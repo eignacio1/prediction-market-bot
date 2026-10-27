@@ -1,0 +1,4 @@
+{"model_id": "nba_player_points_v1", "market_referenced_heldout_brier": null, "skill_weight": null,
+ "status": "NOT_REBUILT",
+ "reason": "Needs per-player frozen predictions rebuilt point-in-time for every KXNBAPTS market (23,562 markets, history from 2025-11) plus per-market hourly candles; not feasible inside the 90-minute block ceiling at the 1 req/s public-GET rate. No number is claimed.",
+ "generated_utc": "2026-10-27", "note": "new W88.3 file; descriptive record only"}

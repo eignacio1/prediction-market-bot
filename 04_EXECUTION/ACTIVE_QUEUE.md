@@ -279,7 +279,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 |---|---|---|---|---|
 | 88.1 | Quant B1: tails (EVT) for the real-money limits, and the G6 decision record drafted | PROOF + PLUMBING: G6 ADR 0 → DRAFT, every limit derived from measured tails | ✅ Part A+B merged (#337, 83c57f1) | GPD tails fit for T4/T1 (filled+paper); T1 filled tail not fit-able (14 exceedances); DRAFT ADR-0076 written, operator accept/change/reject pending. GG-1190..1192 registered. |
 | 88.2 | The red first (MLB game-market shadow silent 31 h), then the kill switch from LOG-ONLY to ENFORCING; quote times on shadow rows | PLUMBING: budget RED → GREEN; GG-1082 / GG-441 → RESOLVED | 🟡 | Part 0 #336 + Part B #339 merged; budget still RED until next in-window row; enforce not done |
-| 88.3 | Score the remaining frozen models against the market with intervals; set the gate's skill weights | PROOF: models scored vs market 2 → n of 6 | ⬜ | |
+| 88.3 | Score the remaining frozen models against the market with intervals; set the gate's skill weights | PROOF: models scored vs market 2 → 5 of 6 | ✅ DONE (PR #338 merged; results in 12_EXPLORATORY/market_history/results_W88.md) | NHL −0.0030 [−0.0062, −0.00005], NBA −0.0150 [−0.0208, −0.0089], MLB +0.0004 [−0.0030, +0.0037]; skill weights 0 / 0 / 0.0018 — no arm beats the line, gate keeps nothing. Not scored: nba_player_points_v1 (too heavy), nfl_qb_challenger_v1 (no held-out season). |
 
 **What Wave 87 delivered (verified 2026-10-27 01:10Z: #332-#335 CI green; box bridge `20261027T011024Z_*`):** **87.1 ✅** the
 quant core now matches 9 scoring paths (0 bugs, 4 definition differences written down, GG-1180..1183); 3 paths re-pointed; the

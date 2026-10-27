@@ -1,0 +1,43 @@
+{
+ "model_id": "nhl_pregame_v1",
+ "market_referenced_heldout_brier": {
+  "model_sha256": "614fcb4b0c1428ce5115e1561e3bc6651eb83d281828c92b820a867fc8488c54",
+  "season": 2025,
+  "n_model_rows": 1312,
+  "dropped": {
+   "no_market": 5,
+   "no_pre_game_quote": 2
+  },
+  "n_scored": 1305,
+  "brier_model": 0.24720417899545785,
+  "brier_market": 0.24419272030651265,
+  "market_minus_model": -0.0030114586889443554,
+  "ci95": [
+   -0.006226351052772691,
+   -5.242321883184389e-05
+  ],
+  "cluster": "game",
+  "skill_weight": 0.0,
+  "median_spread": 0.010000000000000009,
+  "price": "Kalshi game-winner home-side mid of the last hourly candle ending <= start-1h (band decision time), flipped to home if the listed market is the away side",
+  "interval": "game-clustered percentile bootstrap, 2000 resamples, seed 20261002, via quant.inference.cluster_bootstrap"
+ },
+ "skill_weight": 0.0,
+ "gate_rule": "position_gate.skill_weight = clip(1 - Bm/Bk, 0, 1)",
+ "gate_replay_descriptive": {
+  "at_implied_weight": {
+   "weight": 0.0,
+   "error_bar": 0.053006132707020114,
+   "n_kept": 0,
+   "realised_pnl_per_contract": null
+  },
+  "counterfactual_model_fully_trusted": {
+   "weight": 1.0,
+   "error_bar": 0.053006132707020114,
+   "n_kept": 257,
+   "realised_pnl_per_contract": 0.02842276167315174
+  }
+ },
+ "generated_utc": "2026-10-27",
+ "note": "new W88.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}

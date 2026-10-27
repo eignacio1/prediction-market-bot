@@ -1,0 +1,45 @@
+{
+ "model_id": "mlb_game_pregame_v1",
+ "market_referenced_heldout_brier": {
+  "model_sha256": "a57990a18bcba9e2f0bc8903633ded152df6eb0465cb6a799c70eaba1671f861",
+  "season": 2025,
+  "n_model_rows": 2247,
+  "dropped": {
+   "no_market": 133,
+   "no_pre_game_quote": 56,
+   "outcome_disagrees": 18,
+   "ambiguous": 3
+  },
+  "n_scored": 2037,
+  "brier_model": 0.24236381421176095,
+  "brier_market": 0.24279652675503108,
+  "market_minus_model": 0.0004327125432709396,
+  "ci95": [
+   -0.0030019679139570987,
+   0.003736822855657118
+  ],
+  "cluster": "game",
+  "skill_weight": 0.0017822023611840931,
+  "median_spread": 0.010000000000000009,
+  "price": "Kalshi game-winner home-side mid of the last hourly candle ending <= start-1h (band decision time), flipped to home if the listed market is the away side",
+  "interval": "game-clustered percentile bootstrap, 2000 resamples, seed 20261002, via quant.inference.cluster_bootstrap"
+ },
+ "skill_weight": 0.0017822023611840931,
+ "gate_rule": "position_gate.skill_weight = clip(1 - Bm/Bk, 0, 1)",
+ "gate_replay_descriptive": {
+  "at_implied_weight": {
+   "weight": 0.0017822023611840931,
+   "error_bar": 0.07992420100224173,
+   "n_kept": 0,
+   "realised_pnl_per_contract": null
+  },
+  "counterfactual_model_fully_trusted": {
+   "weight": 1.0,
+   "error_bar": 0.07992420100224173,
+   "n_kept": 417,
+   "realised_pnl_per_contract": 0.05181634472422068
+  }
+ },
+ "generated_utc": "2026-10-27",
+ "note": "new W88.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}

@@ -1,0 +1,56 @@
+{
+ "model_id": "nba_pregame_v1",
+ "market_referenced_heldout_brier": {
+  "model_sha256": "c351680aff9b6d6a83b2fb9c802c295730f9e27f5feaff91ecb17a6dc816e18e",
+  "season": 2026,
+  "n_model_rows": 1231,
+  "dropped": {
+   "no_pre_game_quote": 2,
+   "no_market": 1
+  },
+  "n_scored": 1228,
+  "brier_model": 0.20923475958637272,
+  "brier_market": 0.1942184446254063,
+  "market_minus_model": -0.015016314960965498,
+  "ci95": [
+   -0.020836313586130785,
+   -0.00891479491082943
+  ],
+  "cluster": "game",
+  "skill_weight": 0.0,
+  "median_spread": 0.010000000000000009,
+  "full_inseason_history_ge30": {
+   "n_scored": 773,
+   "brier_model": 0.20471640667691754,
+   "brier_market": 0.18515433376455342,
+   "market_minus_model": -0.01956207291236383,
+   "ci95": [
+    -0.026967780455310012,
+    -0.011976268273507645
+   ],
+   "cluster": "game",
+   "skill_weight": 0.0,
+   "median_spread": 0.010000000000000009
+  },
+  "price": "Kalshi game-winner home-side mid of the last hourly candle ending <= start-1h (band decision time), flipped to home if the listed market is the away side",
+  "interval": "game-clustered percentile bootstrap, 2000 resamples, seed 20261002, via quant.inference.cluster_bootstrap"
+ },
+ "skill_weight": 0.0,
+ "gate_rule": "position_gate.skill_weight = clip(1 - Bm/Bk, 0, 1)",
+ "gate_replay_descriptive": {
+  "at_implied_weight": {
+   "weight": 0.0,
+   "error_bar": 0.11475590645902058,
+   "n_kept": 0,
+   "realised_pnl_per_contract": null
+  },
+  "counterfactual_model_fully_trusted": {
+   "weight": 1.0,
+   "error_bar": 0.11475590645902058,
+   "n_kept": 280,
+   "realised_pnl_per_contract": -0.012439096428571423
+  }
+ },
+ "generated_utc": "2026-10-27",
+ "note": "new W88.3 file; existing models/ files untouched; descriptive only, gate stays unwired"
+}
