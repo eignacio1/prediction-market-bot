@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-27T06:40:00Z (T-1280 — W89.5 joined 2,409 KXNBAPTS strikes to actual points and tested 22 PAM roles against the price; null, none survives BH) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0640Z_W89_5.md` for full session detail.
+**Last reviewed:** 2026-10-27T05:10:00Z (T-1240 — W89.1 PARTIAL: exposure gate/kill switch now ENFORCING on the box (PR #346), GG-1082/441/1240 resolved; MLB-arm read-backs open) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0510Z_W89_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
