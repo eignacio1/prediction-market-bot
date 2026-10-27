@@ -1043,3 +1043,4 @@
 | 2026-10-27T01:47:59Z | T-1190 | CLOSED — merge confirmed, HEAD (d1ae8af) is ancestor of origin/main — W88.1 tails + DRAFT ADR-0076 |
 | 2026-10-27T02:38:44Z | T-1196 | CLOSED — merge confirmed, HEAD (735b5a2) is ancestor of origin/main — W88.3: NHL/NBA/MLB frozen models scored vs Kalshi; market >= model, weights 0/0/0.0018 |
 | 2026-10-27T04:02:12Z | T-1240..T-1242, GG-1240..GG-1244 | W89.1 STANDARD: clear silent-arm red then kill switch LOG-ONLY->enforce — PLUMBING (surface budget RED->GREEN; GG-1082/GG-441 OPEN->RESOLVED) |
+| 2026-10-27T04:02:41Z | T-1250..T-1252, GG-1250..GG-1254 | STANDARD — W89.2 calibration/longshot bias of Kalshi sports prices + overreaction, results_W89.md — FOR PROOF+DEPTH (families calibration-tested 0 -> n with BH; surviving market adjustments 0 -> n) |
