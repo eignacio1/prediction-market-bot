@@ -22,6 +22,13 @@ from prediction_market_bot.c5_execution.paper_trader import PaperTrader
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 
 
+@pytest.fixture(autouse=True)
+def _gate_log_mode(monkeypatch):
+    # These tests cover the order-id write boundary, not the exposure gate;
+    # they submit with no band, which enforce mode refuses (W89.1, GG-1082).
+    monkeypatch.setenv("EXPOSURE_GATE_MODE", "log")
+
+
 def _client() -> KalshiMarketClient:
     # has_signing_key() only requires a non-None private_key; no real RSA
     # material needed since _post() is stubbed directly below submit_order().
