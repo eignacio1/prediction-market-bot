@@ -3667,7 +3667,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-1082 — Exposure gate not yet on the order path; settled-ticker feed missing
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (W89.1):** W89.1 2026-10-27 05:1xZ: PRs #342 (prereqs) + #346 (flip, merge bb03fd4), CI green on the merged head. Box HEAD 5efdf913 (contains it) shows GATE_MODE="enforce". Drill on the box against a temp state dir (live state untouched): missing state file -> `exposure_state_missing`; tripped book -> `exposure_gate_breach:MLB_T1,SYSTEM`; unmapped band -> `exposure_band_unmapped:None` (all REFUSED). Live state: MLB_T1 feeding, SHADOW advisory=True, breaches []. CAVEAT: no LOG-ONLY game day preceded the flip (operator directed it 2026-10-26; the time gate was waived), so the fix was prerequisite-driven (GG-1240, GG-1241), not would-halt-data-driven; 13 test files assuming log default were adjusted.
 
 W85.3 built `c4_risk_engine/exposure_gate.py` (GG-441) and wired it into the T1 MLB drawdown input only. Not done: (a) `KalshiMarketClient.submit_order` calling `exposure_gate.check_before_order` (needs a state writer on every book first, else fail-closed bricks demo orders); (b) a feed of settled tickers so `settled_unresolved_stake` is nonzero in production (positions carry no settled flag today); (c) T4/NFL/NHL books do not call `update`. Next: writer per book, then order-path check.
 
@@ -3683,7 +3685,9 @@ W85.3 built `c4_risk_engine/exposure_gate.py` (GG-441) and wired it into the T1 
 
 ### GG-441 — Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisible to it (breach scenario corrected 2026-10-03: ~11-12%, not 26.6%)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (W89.1):** kill switch/exposure gate now enforcing on the order path. W89.1 2026-10-27 05:1xZ: PRs #342 (prereqs) + #346 (flip, merge bb03fd4), CI green on the merged head. Box HEAD 5efdf913 (contains it) shows GATE_MODE="enforce". Drill on the box against a temp state dir (live state untouched): missing state file -> `exposure_state_missing`; tripped book -> `exposure_gate_breach:MLB_T1,SYSTEM`; unmapped band -> `exposure_band_unmapped:None` (all REFUSED). Live state: MLB_T1 feeding, SHADOW advisory=True, breaches []. CAVEAT: no LOG-ONLY game day preceded the flip (operator directed it 2026-10-26; the time gate was waived), so the fix was prerequisite-driven (GG-1240, GG-1241), not would-halt-data-driven; 13 test files assuming log default were adjusted.
 
 **Current state (2026-10-08, W59.1):** c7_monitoring/monitor.py l.34-35 alerts on realized loss only (5%/10% of initial bankroll); only stale-open detection (7-day threshold, l.122) touches unresolved stake. Unchanged in code. **Next:** Add settled-but-unresolved stake to the kill-switch drawdown input; persist state.
 
@@ -4263,13 +4267,17 @@ W88.2 Part B. Three reads of `GET /markets?series_ticker=KXMLBGAME` 20s apart (2
 
 ### GG-1240 — SHADOW exposure book can never settle: its stakes accrue as open forever, and a settled-feed hit would count them as unresolved against a $1,000 notional
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (W89.1, PR #342):** SHADOW book flagged `advisory: True`; excluded from breaches/system sums like frozen books, still reported and still needs a live writer. Box state confirms SHADOW advisory=True, system drawdown MLB_T1 only (12.444%).
 
 W89.1, 2026-10-27 04:10Z, read on the box. `logs/exposure_gate_state.json`: SHADOW `open_stake_usd` 86,548.35 against `SHADOW_NOTIONAL_USD` 1000, drawdown 0.0. Open stake is not in the drawdown, so nothing trips today. `shadow_flat_stake.py:114` only READS the settled set (`load_settled()[0]`); `refresh_settled` is called only from `paper_trader.py:388`. So no shadow ticker is ever fed to the settled set by the shadow path. If any shadow ticker reaches it (another book's order on the same market), `settled_unresolved_stake_usd` rises, and since shadow stakes never resolve (GG-1175) the SYSTEM worst-case drawdown reaches 20% and the global halt is written. In ENFORCE that halts every book. Block before the enforce flip: either give SHADOW a resolution path or exclude it from the system drawdown. Registered, not fixed here (Hard Rule 11; the fix is a design choice about what the shadow book's exposure means).
 
 ### GG-1241 — The exposure gate has no read-back that every book feeds: MLB_T4 absent from the state file and the settled-feed cache file does not exist
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
+
+**Update (W89.1, PR #342):** `PaperTrader.__init__` now seeds its book at construction, so MLB_T4 exists before any T4 order (no `exposure_book_no_writer:MLB_T4` deadlock). OPEN remainder: MLB_T4 key absent from the state file until a game goes live and T4 constructs its trader; the settled-feed cache file still not observed. Read back after the next MLB game day.
 
 W89.1, 2026-10-27 04:10Z. `exposure_gate_state.json` holds MLB_T1 and SHADOW only. No MLB_T4 key (t4-mlb restarted 03:13Z; no order since). `exposure_gate_settled.json` does not exist, so the settled feed has never run. `logs/exposure_gate_logonly.jsonl` does not exist: zero would-halts recorded, but no book has yet been through a game day. In ENFORCE, `exposure_book_no_writer:MLB_T4` would refuse the first T4 order if the key is still missing. Part B needs a game day in which T4 writes its book; this is the read-back that proves it.
 

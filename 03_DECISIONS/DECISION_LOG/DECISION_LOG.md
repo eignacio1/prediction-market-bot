@@ -2884,3 +2884,6 @@ Reconciled 9 scoring paths against the quant core (0 bugs; 4 definition differen
 
 ## 2026-10-26 W89.5 — NBA PAM roles vs KXNBAPTS price (exploratory)
 No role explains the KXNBAPTS price error at n≈1.8k strikes / 52 games; 22 roles, none survives BH q=0.10 under either anchor. Join built from public Kalshi + ESPN data (no sealed shadow file read; GG-1064 conflict avoided). No pre-registration, stake or registry change. Gaps GG-1280..1283. Detail: 12_EXPLORATORY/nba_pam_mass_tier/results_W89.md (PR #348).
+
+## 2026-10-27 W89.1 — exposure gate / kill switch flipped to ENFORCE
+Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with PR #342 prerequisites (SHADOW book advisory, PaperTrader seeds its book at construction). Operator directed the flip be built and shipped without waiting a LOG-ONLY game day ("no reason why any of my terminals are dependent on an event 2 days away"); the pre-registered time gate was therefore waived, and no would-halt data existed to read. Read back on the box: missing state file halts, tripped book refused, unmapped band refused. No limit value, stake or kelly_fraction changed. Closes GG-1082, GG-441, GG-1240; GG-1241 partial. Rollback: `EXPOSURE_GATE_MODE=log` env or revert bb03fd4.
