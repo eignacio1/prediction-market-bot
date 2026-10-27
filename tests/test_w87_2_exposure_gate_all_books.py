@@ -53,7 +53,8 @@ def test_tripped_book_refuses_order_in_enforce(tmp_path, monkeypatch):
     assert not o.ok and o.status == "halted"
 
 
-def test_log_mode_records_would_halt_and_does_not_refuse(tmp_path):
+def test_log_mode_records_would_halt_and_does_not_refuse(tmp_path, monkeypatch):
+    monkeypatch.setenv(eg.MODE_ENV, "log")  # W89.1: shipped default is now enforce
     assert eg.gate_for_order("t4_mlb", tmp_path) is None  # no state at all: would halt, log only
     rec = [json.loads(l) for l in (tmp_path / eg.LOGONLY_FILE).read_text().splitlines()]
     assert rec[0]["event"] == "would_halt" and rec[0]["book"] == "MLB_T4"

@@ -53,7 +53,7 @@ SHADOW_NOTIONAL_USD = 1000.0  # denominator for the ledger-less shadow book (sam
 
 # Switch-on order (W87.2 Part B): "log" records every would-halt, "enforce" refuses the order.
 # Flipped by a reviewed PR after a full game day of the log is read, never by env on the box.
-GATE_MODE = "log"
+GATE_MODE = "enforce"
 MODE_ENV = "EXPOSURE_GATE_MODE"  # tests / drills only
 LOG_MODE_FLAG_BOOKS = frozenset({"MLB_T1"})  # books whose breach already wrote the flag in W85.3
 
