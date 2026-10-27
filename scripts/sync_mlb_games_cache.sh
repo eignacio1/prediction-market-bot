@@ -7,6 +7,8 @@ cd "$(dirname "$0")/.."
 VPS="${VPS_HOST:-prediction-market-vps}"; REMOTE=/opt/prediction-market-bot/exp_output/MLB_GAME/cache_w47
 C=exp_output/MLB_GAME/cache_w47; mkdir -p "$C"
 [ -f "$C/games.parquet" ] || scp "$VPS:$REMOTE/games.parquet" "$C/games.parquet"     # one-time seed
+# GG-1230: seed the previous output too, or a fresh checkout measures its gap from the frozen seed (>21d => re-seed error)
+[ -f "$C/games_current.parquet" ] || scp "$VPS:$REMOTE/games_current.parquet" "$C/games_current.parquet" || true
 PYTHONPATH=src:. python3 scripts/fetch_mlb_game_history.py --recent --season "$(date -u +%Y)" \
   --base "$C/games.parquet" --out "$C/games_current.parquet"
 scp "$C/games_current.parquet" "$VPS:$REMOTE/games_current.parquet.tmp"

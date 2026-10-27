@@ -51,6 +51,10 @@ jobs:
           set -euo pipefail
           mkdir -p "$C"
           scp -i ~/.ssh/vps_key "$VPS:$REMOTE/games.parquet" "$C/games.parquet"
+          # GG-1230: also seed the PREVIOUS output. refresh_recent patches `out` if it exists, else the frozen
+          # season seed; without this every run measured its gap from the seed's last Final (2026-10-04) and
+          # failed ">21d behind" from 2026-10-25 on (silent MLB shadow). First run (no file yet) falls back to the seed.
+          scp -i ~/.ssh/vps_key "$VPS:$REMOTE/games_current.parquet" "$C/games_current.parquet" || echo "no previous games_current.parquet; using the seed"
 
       - name: Refresh current season from Stats API
         run: |
