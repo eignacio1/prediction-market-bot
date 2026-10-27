@@ -3669,26 +3669,6 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 </details>
 
-### GG-430 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
-
-**Status:** OPEN · **Severity:** LOW
-
-**Current state (2026-10-08, W59.1):** Verified in code: scripts/arm_shadow_crons.sh has set -euo pipefail (l.8), ALLOW=() (l.14) and unguarded "${ALLOW[@]}" (l.28); aborts on bash 3.2 with empty array. **Next:** Guard expansion with ${ALLOW[@]+"${ALLOW[@]}"}.
-
-<details>
-<summary>Full record ▸</summary>
-
-| Field | Detail |
-|---|---|
-| Gap ID | GG-430 |
-| Category | Tooling correctness |
-| What was found | `set -u` plus `"${ALLOW[@]}"` on an empty array is an unbound-variable error in bash 3.2 (the macOS system bash): `scripts/arm_shadow_crons.sh: line 28: ALLOW[@]: unbound variable`, abort before any merge. 50.2 ran an unmodified-logic copy from scratch with only `-u` dropped (allowlist check unchanged: "allowlist OK"); repo script untouched. |
-| Why it matters | The operator's own machine cannot run the script as written without an `--allow`, pushing toward passing a dummy `--allow` and weakening the allowlist's meaning. |
-| Source | 50.2 Step 1 run, 2026-10-03T20:02Z |
-| Disposition | Registered by 50.2 (registration only). Suggested fix: `${ALLOW[@]+"${ALLOW[@]}"}`. |
-
-</details>
-
 ### GG-1080 — Install gate waved W83.2's install through on a RED surface budget
 
 **Status:** RESOLVED · **Severity:** HIGH
@@ -4083,12 +4063,6 @@ W71.H1 A+L4. /hygiene expects FeatureStore.FEATURE_VERSION (absent), baseline 32
 **Status:** OPEN · **Severity:** MEDIUM
 
 W72.3 Part B. `assert_ledger_invariants.py` on read-only VPS copies (2026-10-14): `paper_portfolio_mlb` (485 closed) has market_type None on all 485; `paper_portfolio_mlb_t4` has None on 2,994 of 4,297 (1,311 tagged `mlb_player_prop_hits`). Invariants group these under UNKNOWN_MARKET_TYPE and evaluate 0 of 4 cell assertions, so the fee/edge formulas were never checked on 3,495 rows. Likely legacy rows from before the registry; unconfirmed. Register-only: no backfill (live-ledger rewrite is out of scope). Fix options for a later block: a read-only derivation from ticker prefix (KXMLBHIT) inside the invariants script, not a ledger edit.
-
-### GG-691 — Invariant L's outcome enum omits CANCELLED, so 16 legitimate T1 rows are reported as violations
-
-**Status:** OPEN · **Severity:** LOW
-
-W72.3 Part B. Assertion L (`actual_hits_outcome_status_enums`, band T1) flags 16 of 499 (3.21%), epochs 1/3/7/8, all `outcome=CANCELLED`; the allowed set is ['LOSS','WIN']. `paper_portfolio_mlb` has exactly 16 CANCELLED closed rows, so this is a stale enum, not data corruption. Left alone while the 16 stay as noise in the alarm count, which hides any real L violation. Fix: add CANCELLED to the allowed set and assert CANCELLED rows have pnl == 0, in a later block.
 
 ### GG-680 — Remaining non-atomic state/cache writers in src/ and scripts/ (W72.2 follow-up audit)
 

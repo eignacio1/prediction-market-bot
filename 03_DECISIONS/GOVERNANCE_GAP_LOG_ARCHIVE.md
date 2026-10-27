@@ -6123,3 +6123,33 @@ B74-A Part A, `check_register_parity.py` 2026-10-14: ADR-0070, 0071, 0072, 0073,
 </details>
 
 **Resolution (W89.6 sweep, 2026-10-26):** Documented in .claude/commands/session-start.md reminders: no `timeout` on macOS, use gtimeout (brew install coreutils) or a python subprocess timeout.
+
+### GG-430 — arm_shadow_crons.sh aborts on macOS bash 3.2 when no --allow is passed
+
+**Status:** RESOLVED (2026-10-26, W89.6) · **Severity:** LOW
+
+**Current state (2026-10-08, W59.1):** Verified in code: scripts/arm_shadow_crons.sh has set -euo pipefail (l.8), ALLOW=() (l.14) and unguarded "${ALLOW[@]}" (l.28); aborts on bash 3.2 with empty array. **Next:** Guard expansion with ${ALLOW[@]+"${ALLOW[@]}"}.
+
+<details>
+<summary>Full record ▸</summary>
+
+| Field | Detail |
+|---|---|
+| Gap ID | GG-430 |
+| Category | Tooling correctness |
+| What was found | `set -u` plus `"${ALLOW[@]}"` on an empty array is an unbound-variable error in bash 3.2 (the macOS system bash): `scripts/arm_shadow_crons.sh: line 28: ALLOW[@]: unbound variable`, abort before any merge. 50.2 ran an unmodified-logic copy from scratch with only `-u` dropped (allowlist check unchanged: "allowlist OK"); repo script untouched. |
+| Why it matters | The operator's own machine cannot run the script as written without an `--allow`, pushing toward passing a dummy `--allow` and weakening the allowlist's meaning. |
+| Source | 50.2 Step 1 run, 2026-10-03T20:02Z |
+| Disposition | Registered by 50.2 (registration only). Suggested fix: `${ALLOW[@]+"${ALLOW[@]}"}`. |
+
+</details>
+
+**Resolution (W89.6 sweep, 2026-10-26):** Fixed in PR #341 (fe21fdc): scripts/arm_shadow_crons.sh l.28 uses ${ALLOW[@]+"${ALLOW[@]}"} so an empty ALLOW survives bash 3.2 under set -u. Test: tests/test_arm_shadow_crons.py::test_shell_wrapper_survives_empty_allow_under_bash32_set_u. CI green on the PR.
+
+### GG-691 — Invariant L's outcome enum omits CANCELLED, so 16 legitimate T1 rows are reported as violations
+
+**Status:** RESOLVED (2026-10-26, W89.6) · **Severity:** LOW
+
+W72.3 Part B. Assertion L (`actual_hits_outcome_status_enums`, band T1) flags 16 of 499 (3.21%), epochs 1/3/7/8, all `outcome=CANCELLED`; the allowed set is ['LOSS','WIN']. `paper_portfolio_mlb` has exactly 16 CANCELLED closed rows, so this is a stale enum, not data corruption. Left alone while the 16 stay as noise in the alarm count, which hides any real L violation. Fix: add CANCELLED to the allowed set and assert CANCELLED rows have pnl == 0, in a later block.
+
+**Resolution (W89.6 sweep, 2026-10-26):** Fixed in PR #341 (fe21fdc): assert_ledger_invariants.py KNOWN_OUTCOMES now includes CANCELLED and assert_L_enums flags a CANCELLED row with non-zero pnl. Test: tests/test_assert_ledger_invariants.py::test_L_accepts_cancelled_with_zero_pnl_and_flags_nonzero. CI green on the PR.
