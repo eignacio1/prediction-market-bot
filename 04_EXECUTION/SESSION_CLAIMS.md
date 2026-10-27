@@ -1045,3 +1045,4 @@
 | 2026-10-27T04:02:12Z | T-1240..T-1242, GG-1240..GG-1244 | W89.1 STANDARD: clear silent-arm red then kill switch LOG-ONLY->enforce — PLUMBING (surface budget RED->GREEN; GG-1082/GG-441 OPEN->RESOLVED) |
 | 2026-10-27T04:02:41Z | T-1250..T-1252, GG-1250..GG-1254 | STANDARD — W89.2 calibration/longshot bias of Kalshi sports prices + overreaction, results_W89.md — FOR PROOF+DEPTH (families calibration-tested 0 -> n with BH; surviving market adjustments 0 -> n) |
 | 2026-10-27T04:03:04Z | T-1260..T-1262, GG-1260..GG-1262 | STANDARD — W89.3 screen: which NFL/NBA factors the line does not price; top 1-3 to a price — FOR DEPTH D5(b) (factors w/ measured share priced 1 -> n; clearing fee+error 0 -> n) |
+| 2026-10-27T04:06:45Z | GG sweep only; no new T/GG range | W89.6 gap sweep class C/O — PURPOSE: PLUMBING, measure OPEN gaps 211 -> lower (GOVERNANCE_GAP_LOG grep) |
