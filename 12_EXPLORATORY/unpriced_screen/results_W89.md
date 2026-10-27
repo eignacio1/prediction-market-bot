@@ -29,3 +29,24 @@ Reading:
 Stage per factor (ADR-0075): N7/N8/N10 applied (now with share priced measured); N13/N14 interpreted; all other factors unchanged (no term to screen).
 
 Operator line: **pre-register one of these, or keep building** — recommendation: keep building. Nothing here clears the fee; the next lever is a point-in-time weather/venue term and an NBA price history, not a pre-registration.
+
+---
+# Part B (NFL venue + weather, N13/N14, totals) — added same day
+
+Term: rolling-origin ridge (λ=50) of total − mu_t on stadium indoor/turf share and forecast wind/cold exposure (point-in-time, Open-Meteo previous-day-1 forecast; missing wind → 0, documented imputation), fit on seasons 2021..T−1, applied to T ∈ {2023, 2024, 2025}. N = 816 games. Anchor = Normal(total_line, SD from training seasons); adjusted mean = line + (1 − b_train)·term; strikes at line + {−5.5, −2.5, +0.5, +3.5, +6.5}. Data: `part_b_weather.json`. Known-answer test: ridge recovers a planted signal (r > 0.98).
+
+| Measure | Value |
+|---|---|
+| Share priced b | 0.36 [0.27, 0.44], identified |
+| Term SD / unpriced at 1 SD (b_hi) | 2.17 pts / 3.6 prob pts → **clears the screen's fee bar (1.75)** |
+| Paired ΔBrier vs anchor (positive = adjustment better) | −0.0015 [−0.0034, +0.0005] |
+| Strikes where adjustment moves price > fee | 2,751 of 4,080 strike-games |
+| Realized net edge per contract after fee on those | −1.3¢ [−4.8, +2.1] |
+| Strikes that clear fee + measured error | **0** |
+
+Reading: the screen says the line prices only about a third of the venue/weather term, but the out-of-sample adjustment does not beat the anchor (interval includes zero, point estimate on the wrong side) and no strike nets a positive edge after fee. N=816 games over 3 seasons has limited power; the interval on net edge is ±3¢. Plausible reasons the term is "unpriced" yet unprofitable: the engine total mu_t is a weak base (so b partly measures what the line knows that mu_t doesn't); ridge noise in a 4-parameter weather fit; forecast wind is mostly missing (imputed 0). Not a NO on weather — a NO at this build and n.
+
+**Measure moved (Part B):** factors with a measured share priced 2 → 3 (N13/N14 venue+weather on totals); clearing fee + error 0 → 0.
+Stage: N13/N14 interpreted → **applied** (a tested path from the fact to a price, against the market) for the total family only.
+
+**Next:** which factor classes are worth building: those the line prices least *and* the engine base can carry — a better totals base (pace/scoring environment) before more weather; wind forecast coverage; NBA price history (GG-1260). Operator line unchanged: keep building.
