@@ -1,0 +1,16 @@
+{
+ "settled_tickers": 73662,
+ "ticker_tiers": 164245,
+ "unsettled_skipped": 43787,
+ "partA_bh": {
+  "tested": 1258,
+  "flagged": 66,
+  "q": 0.1
+ },
+ "partB_bh": {
+  "tested": 40,
+  "flagged": 40,
+  "q": 0.1
+ },
+ "partA_bonferroni": 29
+}
