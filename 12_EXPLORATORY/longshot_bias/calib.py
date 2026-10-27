@@ -40,7 +40,7 @@ _MON = {m: i for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV 
 
 def parse_ts(s: str) -> float:
     """Tolerant ISO-8601 parse (Kalshi emits 5-digit fractional seconds). Returns epoch seconds."""
-    s = s.replace("Z", "+00:00")
+    s = re.sub(r"Z$", "+00:00", s)
     m = re.match(r"(.*?)(\.\d+)?(\+.*)?$", s)
     base, frac, tz = m.group(1), m.group(2) or "", m.group(3) or "+00:00"
     frac = (frac + "000000")[:7] if frac else ""

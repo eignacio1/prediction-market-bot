@@ -1,7 +1,7 @@
 """W89.2 runner. Part A: calibration of Kalshi sports prices by family x time-to-start x price bucket x book class.
 Part B: reversion after large pre-game one-step moves. Read-only on the local price archive and cached settlements.
 
-  python 12_EXPLORATORY/longshot_bias/run_w89_2.py --archive <PRICE_ARCHIVE dir> --settle <settle dir> --out <out dir>
+  python 12_EXPLORATORY/longshot_bias/run_w89_2.py --archive <PRICE_ARCHIVE dir> --settle <settle dir> --out <dir inside 12_EXPLORATORY/, e.g. 12_EXPLORATORY/longshot_bias/out>
 """
 from __future__ import annotations
 
@@ -14,7 +14,9 @@ import sys
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import calib as C  # noqa: E402
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant.money import fee_k007  # noqa: E402
 
 TIGHT = 0.01  # half_spread <= 1c = deep/tight book class (archive records spread, not size)
@@ -115,7 +117,7 @@ def main():
     ap.add_argument("--settle", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    os.makedirs(a.out, exist_ok=True)
+    out_dir = safe_out(os.path.join(a.out, "summary.json")).parent  # fence: writes stay inside 12_EXPLORATORY/
     settle = C.load_settlements(a.settle)
     first, series, meta = scan(a.archive)
     cellsA, skipped = part_a(first, meta, settle)
@@ -125,8 +127,8 @@ def main():
     summary = {"settled_tickers": len(settle), "ticker_tiers": len(first), "unsettled_skipped": skipped,
                "partA_bh": famA, "partB_bh": famB,
                "partA_bonferroni": sum(1 for c in cellsA.values() if c["p_value"] is not None and c["p_value"] < 0.05 / max(famA["tested"], 1))}
-    json.dump(summary, open(os.path.join(a.out, "summary.json"), "w"), indent=1)
-    with open(os.path.join(a.out, "partA_cells.csv"), "w", newline="") as fh:
+    json.dump(summary, open(safe_out(os.path.join(out_dir, "summary.json")), "w"), indent=1)
+    with open(safe_out(os.path.join(out_dir, "partA_cells.csv")), "w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["family", "tier", "bucket", "book", "n", "games", "pbar", "f", "gap", "z", "p", "bh", "side",
                     "net_mean", "net_lo", "net_hi", "split_same", "testable"])
@@ -134,7 +136,7 @@ def main():
             w.writerow([fam, t, C.bucket_label(b), book, c["n"], c["games"], round(c["pbar"], 4), round(c["f"], 4),
                         round(c["gap"], 4), c["z"], c["p_value"], c["bh"], c["side"], round(c["net_mean"], 4),
                         round(c["net_lo"], 4), round(c["net_hi"], 4), c["split_sign_same"], c["testable"]])
-    with open(os.path.join(a.out, "partB_cells.csv"), "w", newline="") as fh:
+    with open(safe_out(os.path.join(out_dir, "partB_cells.csv")), "w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["family", "horizon", "direction", "n", "games", "gross", "net", "net_lo", "net_hi", "p", "bh", "testable"])
         for (fam, lab, d), c in sorted(cellsB.items()):

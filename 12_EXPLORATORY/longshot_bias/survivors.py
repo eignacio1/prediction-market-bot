@@ -5,6 +5,9 @@ import csv
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from _fence import safe_out  # noqa: E402
+
 
 def main(out):
     a = list(csv.DictReader(open(os.path.join(out, "partA_cells.csv"))))
@@ -12,7 +15,7 @@ def main(out):
     d0 = [r for r in a if r["bh"] == "True" and r["split_same"] == "True" and float(r["net_lo"]) > 0 and r["tier"] == "D0"]
     b = list(csv.DictReader(open(os.path.join(out, "partB_cells.csv"))))
     bk = [r for r in b if r["bh"] == "True" and float(r["net_lo"]) > 0]
-    with open(os.path.join(out, "survivors_partA.csv"), "w", newline="") as fh:
+    with open(safe_out(os.path.join(out, "survivors_partA.csv")), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=a[0].keys())
         w.writeheader()
         w.writerows(sorted(keep, key=lambda r: (r["family"], r["tier"], r["bucket"], r["book"])))
