@@ -1033,3 +1033,4 @@
 | 2026-10-26T23:48:44Z | T-1170 | CLOSED — W87.3 PARTIAL: NHL scored vs Kalshi (weight 0), 4 models NONE (model-side data); NHL totals price integrity measured, no score read (commit `7774370`) |
 | 2026-10-26T23:49:42Z | T-1170 | CLOSED — merge confirmed, HEAD (ffb4ff2) is ancestor of origin/main — W87.3 PARTIAL: handoff + queue landed on main (ffb4ff2) |
 | 2026-10-27T00:19:42Z | T-1173 | CLOSED — W87.2 PARTIAL: exposure gate fed by every order book and consulted on submit_order, LOG-ONLY on box; enforce flip pending. (commit `360881a`) |
+| 2026-10-27T00:20:04Z | T-1173 | CLOSED — merge confirmed, HEAD (d18e71b) is ancestor of origin/main — W87.2 PARTIAL: gate fed by all books, LOG-ONLY |
