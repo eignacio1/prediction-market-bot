@@ -4273,3 +4273,32 @@ W89.1, 2026-10-27 04:10Z, read on the box. `logs/exposure_gate_state.json`: SHAD
 
 W89.1, 2026-10-27 04:10Z. `exposure_gate_state.json` holds MLB_T1 and SHADOW only. No MLB_T4 key (t4-mlb restarted 03:13Z; no order since). `exposure_gate_settled.json` does not exist, so the settled feed has never run. `logs/exposure_gate_logonly.jsonl` does not exist: zero would-halts recorded, but no book has yet been through a game day. In ENFORCE, `exposure_book_no_writer:MLB_T4` would refuse the first T4 order if the key is still missing. Part B needs a game day in which T4 writes its book; this is the read-back that proves it.
 
+### GG-1250 — NHL, NBA and every parlay/multi-leg Kalshi family are not in the price archive, so none can be calibration-tested
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W89.2, 2026-10-27. The archive covers MLB game-market families, KXMLBHIT and NFL GAME/SPREAD/TOTAL/TEAMTOTAL only. W89.2 BREADTH of the calibration test is capped there. Fix: add the NHL/NBA series and the parlay families to the archiver, then re-run `12_EXPLORATORY/longshot_bias/run_w89_2.py`.
+
+### GG-1251 — Candle history is partial and local-only, so price paths between archive snapshots cannot be rebuilt
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.2, 2026-10-27. KXNFLGAME holds 415 of 862 tickers; EXP-035 candle numbers are VOID. Part B of W89.2 used ~20-min archive snapshots, which cannot see sub-snapshot overreaction.
+
+### GG-1252 — NFL tickers carry the date only, so a D0 first snapshot may be in-play
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W89.2, 2026-10-27. KXNFLTOTAL D0 5-10c NO passed BH and the net filter but is excluded as possibly contaminated by in-play prices. Fix: join NFL kickoff times (free schedule feed) and re-tier by hours to kickoff.
+
+### GG-1253 — MLB ticker HHMM is read as Eastern time without a per-family check
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.2, 2026-10-27. Consistent with run_ts on a known game, not proven for every family. A wrong offset would mis-tier T0-2h cells (the KXMLBHIT candidate sits in T0-2h). Check against the ESPN start time for a sample of games.
+
+### GG-1254 — The W89.2 survivors have no out-of-sample window
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W89.2, 2026-10-27. 11 cells survive BH + split-half sign + net-of-fee lower bound > 0, all in-sample over 2026-08-01 to 2026-10-26. No hold-out exists; pre-registration must fix price band, tier, side and a forward window before any further row is read.
