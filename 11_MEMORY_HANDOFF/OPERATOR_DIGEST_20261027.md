@@ -8,3 +8,8 @@
 
 ## W88.2 (partial)
 Still zero real money at risk. We found why the MLB game-market tracker went quiet: its data feed stopped refreshing after the season's last game, and that is fixed. Shadow records now carry when the price was read. Not done: switching the safety stop from "log only" to "enforcing". It waits for tonight's game to end. Nothing needs you for it.
+## W88.1 — how bad can a losing streak get, and what does "ready for real money" mean
+- Measured how large a one-in-a-hundred bad game and bad stretch could be for the MLB books. The T4 book's bad stretches stay inside the 20% stop at flat stakes; the T1 book's do not, even with no edge. Samples are small (14–99 extreme games), so treat these as rough.
+- Wrote a DRAFT rule for what "ready for real money" means, per book and sport (ADR-0076). Nothing takes effect until you accept it. No real money, no stake or limit changed.
+- Your call: accept, change or reject ADR-0076 (recommendation: accept, leaving the blank limits blank until a stake size is proposed).
+- Pillar moved: PROOF (G6 rule 0 → draft).
