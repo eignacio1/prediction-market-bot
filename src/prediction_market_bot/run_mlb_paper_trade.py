@@ -674,7 +674,7 @@ def main() -> None:
     # persisted (logs/exposure_gate_state.json). Only ever raises the input; no limit changed.
     try:
         from prediction_market_bot.c4_risk_engine import exposure_gate as _xg
-        _xg_out = _xg.update({"MLB_T1": _state})
+        _xg_out = _xg.record_book("MLB_T1", _state)
         current_drawdown_pct = max(current_drawdown_pct,
                                    _xg_out["books"]["MLB_T1"]["worst_case_drawdown_pct"])
     except Exception as _xg_err:  # fail closed: an unreadable gate is a halt, not a pass

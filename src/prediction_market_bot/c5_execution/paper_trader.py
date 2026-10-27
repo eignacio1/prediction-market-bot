@@ -62,6 +62,7 @@ import pandas as pd
 from prediction_market_bot.atomic_io import (
     LedgerCorruptError, LedgerWriteError, alarm, atomic_write_json, quarantine,
 )
+from prediction_market_bot.c4_risk_engine import exposure_gate as xg  # W87.2/GG-1082
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger
 from prediction_market_bot.c5_execution import demo_fill_policy as _fill_policy
 from prediction_market_bot.c5_execution.market_type_registry import MarketType
@@ -359,11 +360,39 @@ class PaperTrader:
             if isinstance(rejected, list) and len(rejected) > MAX_REJECTED_POSITIONS:
                 self._state["rejected_positions"] = rejected[-MAX_REJECTED_POSITIONS:]
             atomic_write_json(self._path, self._state)
+            self._feed_exposure_gate()
             return True
         except OSError as e:
             # GG-664: a failed save means the mutation is NOT on disk; callers must not proceed as if it were.
             alarm(f"{self._path}: save failed: {e!r}")
             raise LedgerWriteError(f"{self._path}: save failed: {e!r}") from e
+
+    def _feed_exposure_gate(self) -> None:
+        """W87.2/GG-1082: _save is the single choke point for every ledger mutation, so a labeled
+        order-capable book reports its open + realized + settled-unresolved stake to the exposure
+        gate here (merge writer, other books untouched). A feed failure marks the book failed, which
+        refuses its orders; it never raises into the ledger write."""
+        book = xg.book_for_band(self._kill_band)
+        if book is None or xg.BOOKS[book]["portfolio"] != self._path.name:
+            return
+        logs_dir = self._path.parent
+        try:
+            settled = xg.load_settled(logs_dir)[0]
+            if self._kalshi is not None:
+                tickers = [p.get("kalshi_ticker") for p in self._state.get("open_positions", [])
+                           if p.get("status", "OPEN") == "OPEN"]
+
+                def _status(t: str):
+                    ok, d = self._kalshi._get(f"/markets/{t}")
+                    return (d.get("market") or {}).get("status") if ok and isinstance(d, dict) else None
+                settled = xg.refresh_settled(tickers, _status, logs_dir)
+            xg.record_book(book, self._state, settled, logs_dir)
+        except Exception as e:  # noqa: BLE001
+            try:
+                xg.mark_feed_failed(book, repr(e)[:200], logs_dir)
+            except Exception:  # noqa: BLE001
+                pass
+            alarm(f"{self._path}: exposure gate feed failed: {e!r}")
 
     def ensure_persisted(self) -> None:
         """Write the portfolio file if it does not yet exist.

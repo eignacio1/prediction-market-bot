@@ -14,18 +14,65 @@ existing global flag (``kill_switch_state``), so the <=60 s order-path check (NF
 from __future__ import annotations
 
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Optional
+from typing import Any, Callable, Iterable, Mapping, Optional
+
+try:  # POSIX only; the box is Linux
+    import fcntl
+    _HAS_FCNTL = True
+except ImportError:  # pragma: no cover
+    _HAS_FCNTL = False
 
 from prediction_market_bot.atomic_io import atomic_write_json
 from prediction_market_bot.c4_risk_engine.risk import _HARD_LIMITS
 from prediction_market_bot.c5_execution import kill_switch_state as ks
 
 STATE_FILE = "exposure_gate_state.json"
+LOGONLY_FILE = "exposure_gate_logonly.jsonl"
+SETTLED_FILE = "exposure_gate_settled.json"
 SYSTEM = "SYSTEM"
 SCHEMA = 1
+
+# W87.2 / GG-1082: the books that can place a demo order. ``band`` is the kill-switch band label
+# submit_order receives; ``portfolio`` is the ledger file name PaperTrader saves. ``frozen`` books are
+# reported but excluded from breach and system sums (the old NBA book's 24.9% is adjudicated
+# history, GG-034/GG-037). SHADOW has no ledger: its exposure comes from the shadow order log.
+BOOKS: dict[str, dict[str, Any]] = {
+    "MLB_T1": {"band": "t1_mlb", "portfolio": "paper_portfolio_mlb.json", "frozen": False},
+    "MLB_T4": {"band": "t4_mlb", "portfolio": "paper_portfolio_mlb_t4.json", "frozen": False},
+    "NBA_T1": {"band": "t1_nba", "portfolio": "paper_portfolio.json", "frozen": True},
+    "SHADOW": {"band": "shadow", "portfolio": None, "frozen": False},
+}
+SHADOW_NOTIONAL_USD = 1000.0  # denominator for the ledger-less shadow book (same default as a paper book)
+
+# Switch-on order (W87.2 Part B): "log" records every would-halt, "enforce" refuses the order.
+# Flipped by a reviewed PR after a full game day of the log is read, never by env on the box.
+GATE_MODE = "log"
+MODE_ENV = "EXPOSURE_GATE_MODE"  # tests / drills only
+LOG_MODE_FLAG_BOOKS = frozenset({"MLB_T1"})  # books whose breach already wrote the flag in W85.3
+
+
+def gate_mode() -> str:
+    m = os.environ.get(MODE_ENV) or GATE_MODE
+    return m if m in ("log", "enforce") else "enforce"  # unknown value fails closed
+
+
+def book_for_portfolio(path: Any) -> Optional[str]:
+    name = Path(str(path)).name
+    for b, meta in BOOKS.items():
+        if meta["portfolio"] == name:
+            return b
+    return None
+
+
+def book_for_band(band: Optional[str]) -> Optional[str]:
+    for b, meta in BOOKS.items():
+        if band is not None and meta["band"] == band:
+            return b
+    return None
 
 
 def _now() -> str:
@@ -122,10 +169,152 @@ def update(books: Mapping[str, Mapping[str, Any]], settled_tickers: Iterable[str
     return state
 
 
-def check_before_order(logs_dir: Optional[Path] = None) -> Optional[str]:
+def _lock(logs_dir: Optional[Path]):
+    from contextlib import contextmanager
+
+    @contextmanager
+    def cm():
+        if not _HAS_FCNTL:  # pragma: no cover
+            yield
+            return
+        lp = state_path(logs_dir).with_suffix(".lock")
+        lp.parent.mkdir(parents=True, exist_ok=True)
+        fd = open(lp, "w")
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            yield
+        finally:
+            fcntl.flock(fd, fcntl.LOCK_UN)
+            fd.close()
+    return cm()
+
+
+def log_logonly(event: dict, logs_dir: Optional[Path] = None) -> None:
+    """Append one would-halt / would-trip record. Never raises."""
+    try:
+        p = ks._logs_dir(logs_dir) / LOGONLY_FILE
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "a") as fh:
+            fh.write(json.dumps({"at": _now(), **event}, sort_keys=True) + "\n")
+    except OSError:
+        pass
+
+
+def _recompute(books: dict, mode: str, logs_dir: Optional[Path]) -> dict:
+    live = {n: b for n, b in books.items() if not b.get("frozen") and "worst_case_drawdown_pct" in b}
+    sysx = system_exposure(live) if live else {"worst_case_drawdown_pct": 0.0}
+    limit = _HARD_LIMITS["max_drawdown_pct"]
+    breaches = [n for n, b in live.items() if b["worst_case_drawdown_pct"] >= limit]
+    if sysx["worst_case_drawdown_pct"] >= limit:
+        breaches.append(SYSTEM)
+    return {"schema": SCHEMA, "updated_at": _now(), "limit_max_drawdown_pct": limit,
+            "books": books, "system": sysx, "breaches": breaches}
+
+
+def _persist(state: dict, mode: str, logs_dir: Optional[Path]) -> dict:
+    atomic_write_json(state_path(logs_dir), state)
+    breaches = state["breaches"]
+    if breaches:
+        trips = breaches if mode == "enforce" else [b for b in breaches if b in LOG_MODE_FLAG_BOOKS]
+        if trips:
+            _write_halt("exposure_gate_breach:" + ",".join(trips), logs_dir)
+        if mode != "enforce" and set(breaches) - set(trips):
+            log_logonly({"event": "would_trip", "breaches": breaches}, logs_dir)
+    return state
+
+
+def record_book(name: str, portfolio_state: Mapping[str, Any], settled_tickers: Iterable[str] = (),
+                logs_dir: Optional[Path] = None) -> dict:
+    """Merge ONE book into the persisted state (other books untouched) under a file lock.
+    ``update`` replaces every book; per-book writers must use this so one book never erases another."""
+    t0 = time.monotonic()
+    ex = book_exposure(portfolio_state, settled_tickers)
+    ex["frozen"] = bool(BOOKS.get(name, {}).get("frozen", False))
+    ex["recorded_at"] = _now()
+    with _lock(logs_dir):
+        st, _ = load_state(logs_dir)
+        books = dict(st["books"]) if st else {}
+        books[name] = ex
+        out = _persist(_recompute(books, gate_mode(), logs_dir), gate_mode(), logs_dir)
+    out["elapsed_ms"] = round((time.monotonic() - t0) * 1000.0, 3)
+    return out
+
+
+def mark_feed_failed(name: str, why: str, logs_dir: Optional[Path] = None) -> None:
+    """A book's writer errored: record it so orders for that book are refused (never left stale-open)."""
+    with _lock(logs_dir):
+        st, _ = load_state(logs_dir)
+        books = dict(st["books"]) if st else {}
+        books[name] = {**books.get(name, {}), "feed_error": why, "recorded_at": _now()}
+        _persist(_recompute(books, gate_mode(), logs_dir), gate_mode(), logs_dir)
+
+
+def shadow_state(log_path: Path, notional: float = SHADOW_NOTIONAL_USD) -> dict:
+    """Portfolio-shaped state for the ledger-less SHADOW book: every placed shadow order whose
+    market has not settled counts as open stake. Realized P&L is not tracked here (GG-1175)."""
+    pos = []
+    try:
+        for line in log_path.read_text().splitlines():
+            try:
+                e = json.loads(line)
+            except ValueError:
+                continue
+            if e.get("event") == "shadow_order" and e.get("ok") and e.get("order_id"):
+                pos.append({"kalshi_ticker": e.get("ticker"), "size_usd": float(e.get("stake_usd") or 0.0),
+                            "status": "OPEN"})
+    except FileNotFoundError:
+        pass
+    return {"initial_bankroll_usd": notional, "total_realized_pnl": 0.0, "open_positions": pos}
+
+
+def load_settled(logs_dir: Optional[Path] = None) -> tuple[set[str], float]:
+    """(tickers known settled, age in seconds of the cache). Missing cache = (empty, inf)."""
+    p = ks._logs_dir(logs_dir) / SETTLED_FILE
+    try:
+        d = json.loads(p.read_text())
+        return set(d["settled"]), max(0.0, time.time() - float(d["fetched_epoch"]))
+    except (OSError, ValueError, KeyError, TypeError):
+        return set(), float("inf")
+
+
+SETTLED_STATUSES = frozenset({"settled", "finalized", "determined", "closed"})
+
+
+def refresh_settled(tickers: Iterable[str], status_fn: Callable[[str], Optional[str]],
+                    logs_dir: Optional[Path] = None, ttl_s: float = 600.0, max_calls: int = 60) -> set[str]:
+    """Settled-ticker feed. ``status_fn(ticker)`` returns the venue market status or None on failure.
+    Tickers already known settled stay settled (settlement is final). A failed GET leaves the ticker
+    out of the set: its stake then counts as plain open stake, which is the weaker reading, so the
+    failure is logged and the cache age is exposed to the caller."""
+    known, age = load_settled(logs_dir)
+    want = [t for t in dict.fromkeys(tickers) if t and t not in known]
+    if age < ttl_s or not want:
+        return known
+    errs = 0
+    for t in want[:max_calls]:
+        try:
+            st = status_fn(t)
+        except Exception:  # noqa: BLE001 - feed must never break an order path
+            st = None
+        if st is None:
+            errs += 1
+        elif str(st).lower() in SETTLED_STATUSES:
+            known.add(t)
+    try:
+        atomic_write_json(ks._logs_dir(logs_dir) / SETTLED_FILE,
+                          {"settled": sorted(known), "fetched_epoch": time.time(), "fetch_errors": errs})
+    except OSError:
+        pass
+    if errs:
+        log_logonly({"event": "settled_feed_errors", "errors": errs, "asked": len(want[:max_calls])}, logs_dir)
+    return known
+
+
+def check_before_order(logs_dir: Optional[Path] = None, book: Optional[str] = None) -> Optional[str]:
     """Reload persisted state before the first order. Returns a halt reason, or None to proceed.
 
-    Fail closed: no state, corrupt state, or a recorded breach all return a reason."""
+    Fail closed: no state, corrupt state, a recorded breach, or (when ``book`` is named) a book
+    with no writer / a failed writer all return a reason."""
     st, why = load_state(logs_dir)
     if st is None:
         return why
@@ -133,4 +322,23 @@ def check_before_order(logs_dir: Optional[Path] = None) -> Optional[str]:
         return "exposure_gate_breach:" + ",".join(st["breaches"])
     if float(st["system"]["worst_case_drawdown_pct"]) >= _HARD_LIMITS["max_drawdown_pct"]:
         return "exposure_gate_breach:SYSTEM"
+    if book is not None:
+        b = st["books"].get(book)
+        if b is None:
+            return f"exposure_book_no_writer:{book}"
+        if "feed_error" in b:
+            return f"exposure_book_feed_error:{book}"
+    return None
+
+
+def gate_for_order(band: Optional[str], logs_dir: Optional[Path] = None) -> Optional[str]:
+    """The order-path call (submit_order). Returns a refusal reason to ENFORCE, or None to place.
+    In log mode a would-halt is recorded and None is returned."""
+    book = book_for_band(band)
+    reason = check_before_order(logs_dir, book=book) if book else f"exposure_band_unmapped:{band}"
+    if reason is None:
+        return None
+    if gate_mode() == "enforce":
+        return reason
+    log_logonly({"event": "would_halt", "reason": reason, "band": band, "book": book}, logs_dir)
     return None
