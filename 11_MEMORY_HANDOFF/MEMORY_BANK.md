@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-27T04:50:00Z (T-1260 — W89.3 NFL unpriced-factor screen + venue/weather totals build: 3 classes measured, 0 clear fee+error; NBA blocked on GG-1260) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0420Z_W89_3.md` for full session detail.
+**Last reviewed:** 2026-10-27T04:50:00Z (T-1250 — W89.2 DONE: 1,258 Kalshi price cells BH-tested, 11 survive net of fee, Part B 0; 3 pre-registration candidates) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0600Z_W89_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

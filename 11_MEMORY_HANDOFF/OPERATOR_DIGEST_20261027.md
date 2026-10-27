@@ -19,3 +19,8 @@ Today we checked three of the bot's pre-game models against what the market actu
 
 ## W89.3 — which factors does the betting line not price? (NFL)
 No change to money: still zero real capital at risk. We tested whether three kinds of football information (who is available, venue, weather) tell us anything the betting line has not already absorbed. The line has absorbed most of it. A forward test of the weather-and-venue idea on totals did not beat the line, and none of the three clears the cost of trading. This is a "not yet" on weather, not a "never": our baseline for scoring is weak and wind forecasts were mostly missing. NBA was not tested because the price history it needs is not stored yet. Moves the depth pillar: measured factors 1 to 3, clearing costs 0 to 0. Recommendation: keep building (better scoring baseline first), nothing to pre-register.
+
+## W89.2 — Where Kalshi's own prices are wrong (PROOF + DEPTH)
+We checked whether Kalshi's sports prices are systematically off, across 14 market families and 1,258 testable price-and-timing cells. 66 looked off; after fees and the gap between buy and sell prices, 11 still look profitable on past data. Checking whether prices overreact to big pre-game moves found nothing: every such cell loses money after costs.
+Three of the 11 deserve a formal pre-registered test: MLB hits at 20–25c (YES), MLB first-5-innings total at 90–95c (YES), NFL total the day before at 5–10c (NO). These are findings on past data, not trades. Nothing was ordered or changed, and no real money is at risk.
+Your call: pre-register those three, or not.

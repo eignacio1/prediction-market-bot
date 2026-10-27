@@ -1050,3 +1050,4 @@
 | 2026-10-27T04:07:13Z | T-1280..T-1282, GG-1280..GG-1284 | W89.5 STANDARD: NBA PAM roles vs KXNBAPTS price, join + out-of-sample role cross — FOR DEPTH D5(b) (NBA PAM factors applied 0 -> n; points props w/ settled actuals joined 0 -> n) |
 | 2026-10-27T04:35:27Z | T-1260 | CLOSED — W89.3 NFL unpriced-factor screen + venue/weather totals build: 3 classes measured, 0 clear fee+error; NBA blocked on GG-1260 (commit `972ab5b`) |
 | 2026-10-27T04:39:22Z | T-1270 | CLOSED — merge confirmed, HEAD (35a29f7) is ancestor of origin/main — W89.4 NFL game sim, PR #344 merged; handoff pushed; nav-file generator skipped (shared docs, parallel W89 blocks) |
+| 2026-10-27T04:45:31Z | T-1250 | CLOSED — W89.2 DONE: 1,258 Kalshi price cells BH-tested, 11 survive net of fee, Part B 0; 3 pre-registration candidates (commit `3791166`) |

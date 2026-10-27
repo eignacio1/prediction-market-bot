@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1250
+tier: STANDARD
+timestamp: 2026-10-27T04:50:00Z
+commit: 3791166
+one_line_summary: W89.2 DONE: 1,258 Kalshi price cells BH-tested, 11 survive net of fee, Part B 0; 3 pre-registration candidates
+gg_touched: GG-1250, GG-1251, GG-1252, GG-1253, GG-1254
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF, DEPTH
+gap_measure: families calibration-tested with BH; surviving market-level adjustments
+gap_delta: families 0 -> 14 (1,258 testable cells); survivors 0 -> 11 cell rows, 3 recommended (12_EXPLORATORY/longshot_bias/out/summary.json, 2026-10-27)
+pattern_sweep: n/a (no defect fixed); exploratory write fence hit by this block's own new code, fixed in PR #345 via _fence.safe_out
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — W89.2 (longshot bias and calibration of Kalshi sports prices)
 
 vision_pillar: PROOF + DEPTH
