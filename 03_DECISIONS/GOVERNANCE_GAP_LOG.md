@@ -2195,6 +2195,18 @@ W83.1 (2026-10-22). `https://www.pro-football-reference.com/years/2026/passing.h
 
 W83.1 (2026-10-22). `source_capture_install.py` refused: the registry entry for the not-yet-installed cron reported `STALE ... no write found` (its log did not exist), and the installer gates on budget GREEN. Worked around legitimately by running the job once (`--log`) before the install. Same shape as the W82.1 passyds refusal. Fix: a first-run bootstrap step in the install protocol, or a registry `not_installed_yet` state that is not counted STALE. Pattern sweep: `thin_capture_install.py` and `passyds_install.py` have the same gate.
 
+### GG-1260 — NBA game-level Kalshi price history is not stored: the W88.3 pull of 1,228 games was kept only as aggregates, so no NBA factor's share priced can be measured
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W89.3, 2026-10-27. The unpriced-share screen (`12_EXPLORATORY/unpriced_screen/results_W89.md`) covered NFL only. NBA has no stored per-game close, and the pace/availability/lineup terms are not stored point-in-time either. Rebuild with `12_EXPLORATORY/market_history/fetch_game_hourly.py` (public GETs, free) and save the per-game table. Next undone part of W89.3.
+
+### GG-1261 — NFL venue (N13) and weather (N14) have no out-of-sample per-game points term, so their share priced cannot be screened
+
+**Status:** OPEN · **Severity:** LOW
+
+W89.3, 2026-10-27. `20261011_nfl_totals_venue_weather` tests fixed league strikes, not a per-game term against the line. A rolling-origin ridge contribution in points, from schedule roof/surface/temp/wind, would let the screen run. Free data.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:
