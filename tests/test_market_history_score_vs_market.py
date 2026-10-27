@@ -1,0 +1,46 @@
+import importlib.util
+from pathlib import Path
+
+p = Path(__file__).resolve().parents[1] / "12_EXPLORATORY/market_history/score_vs_market.py"
+s = importlib.util.spec_from_file_location("svm", p); svm = importlib.util.module_from_spec(s); s.loader.exec_module(svm)
+q = importlib.util.spec_from_file_location("fgh", p.with_name("fetch_game_hourly.py")); fgh = importlib.util.module_from_spec(q); q.loader.exec_module(fgh)
+
+
+def candle(end, bid, ask):
+    return {"end_period_ts": end, "yes_bid": {"close": str(bid)}, "yes_ask": {"close": str(ask)}}
+
+
+def test_pre_game_mid_uses_last_candle_at_or_before_cutoff():
+    cs = [candle(100, 0.40, 0.44), candle(200, 0.50, 0.54), candle(300, 0.90, 0.94)]
+    mid, spread, ts = svm.pre_game_mid(cs, 250)
+    assert (round(mid, 4), round(spread, 4), ts) == (0.52, 0.04, 200)   # the 300 candle is after the cutoff
+    assert svm.pre_game_mid(cs, 50) is None
+
+
+def test_pre_game_mid_skips_candles_without_a_two_sided_quote():
+    assert svm.pre_game_mid([{"end_period_ts": 1, "yes_bid": {}, "yes_ask": {"close": "0.5"}}], 10) is None
+
+
+def test_listed_team_maps_kalshi_alias():
+    assert svm.listed_team("KXNHLGAME-25OCT09TBVGK-TB") == "TBL"
+
+
+def test_one_per_event_keeps_first_sorted_ticker():
+    mk = [{"ticker": "E1-B", "event_ticker": "E1"}, {"ticker": "E1-A", "event_ticker": "E1"}, {"ticker": "E2-Z", "event_ticker": "E2"}]
+    assert [m["ticker"] for m in fgh.one_per_event(mk)] == ["E1-A", "E2-Z"]
+
+
+def test_summarize_known_answer():
+    # model p=0.5 always, market p=0.9 on y=1 / 0.1 on y=0: market Brier 0.01, model 0.25 -> market wins, weight 0
+    joined = [{"game_id": i, "p_model": 0.5, "p_market": 0.9 if i % 2 else 0.1, "y": i % 2, "spread": 0.02} for i in range(40)]
+    r = svm.summarize(joined)
+    assert r["n_scored"] == 40
+    assert abs(r["brier_model"] - 0.25) < 1e-12 and abs(r["brier_market"] - 0.01) < 1e-12
+    assert abs(r["market_minus_model"] - (-0.24)) < 1e-9 and r["ci95"][1] < 0
+    assert r["skill_weight"] == 0.0
+
+
+def test_mlb_parse_2025_ticker_without_hhmm():
+    assert svm.mlb_parse("KXMLBGAME-25APR16ATHCWS-ATH") == {"away": "ATH", "home": "CWS"}
+    assert svm.mlb_parse("KXMLBGAME-25APR16ATHCWS-CWS") == {"away": "ATH", "home": "CWS"}
+    assert svm.mlb_parse("KXMLBGAME-25JUN011910NYYBOS-NYY") == {"away": "NYY", "home": "BOS"}
