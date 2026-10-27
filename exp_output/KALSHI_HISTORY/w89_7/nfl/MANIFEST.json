@@ -1,0 +1,181 @@
+{
+ "generated_utc": "2026-10-27T05:46:24Z",
+ "join": {
+  "matched": 2619,
+  "no_team_pair": 135
+ },
+ "occurrence_minus_start_hours": {
+  "median": 3.0,
+  "n": 925,
+  "p10": 3.0,
+  "p90": 3.0
+ },
+ "rows": [
+  {
+   "candle_markets": 116,
+   "candle_markets_nonempty": 115,
+   "events": 329,
+   "events_with_true_start": 305,
+   "markets": 658,
+   "markets_with_true_start": 610,
+   "season": "2025",
+   "series": "KXNFLGAME",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 153,
+   "candle_markets_nonempty": 153,
+   "events": 153,
+   "events_with_true_start": 153,
+   "markets": 306,
+   "markets_with_true_start": 306,
+   "season": "2026",
+   "series": "KXNFLGAME",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 301,
+   "events_with_true_start": 280,
+   "markets": 7420,
+   "markets_with_true_start": 6926,
+   "season": "2025",
+   "series": "KXNFLSPREAD",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 156,
+   "events_with_true_start": 156,
+   "markets": 4121,
+   "markets_with_true_start": 4121,
+   "season": "2026",
+   "series": "KXNFLSPREAD",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 301,
+   "events_with_true_start": 280,
+   "markets": 5918,
+   "markets_with_true_start": 5518,
+   "season": "2025",
+   "series": "KXNFLTOTAL",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 156,
+   "events_with_true_start": 156,
+   "markets": 3099,
+   "markets_with_true_start": 3099,
+   "season": "2026",
+   "series": "KXNFLTOTAL",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 45,
+   "events_with_true_start": 39,
+   "markets": 809,
+   "markets_with_true_start": 701,
+   "season": "2025",
+   "series": "KXNFLTEAMTOTAL",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 107,
+   "events_with_true_start": 107,
+   "markets": 2944,
+   "markets_with_true_start": 2944,
+   "season": "2026",
+   "series": "KXNFLTEAMTOTAL",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 285,
+   "events_with_true_start": 265,
+   "markets": 5335,
+   "markets_with_true_start": 4960,
+   "season": "2025",
+   "series": "KXNFLANYTD",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 203,
+   "events_with_true_start": 188,
+   "markets": 3248,
+   "markets_with_true_start": 2994,
+   "season": "2025",
+   "series": "KXNFLPASSYDS",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 133,
+   "events_with_true_start": 133,
+   "markets": 2269,
+   "markets_with_true_start": 2269,
+   "season": "2026",
+   "series": "KXNFLPASSYDS",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 204,
+   "events_with_true_start": 189,
+   "markets": 10170,
+   "markets_with_true_start": 9462,
+   "season": "2025",
+   "series": "KXNFLRECYDS",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 113,
+   "events_with_true_start": 113,
+   "markets": 11000,
+   "markets_with_true_start": 11000,
+   "season": "2026",
+   "series": "KXNFLRECYDS",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 161,
+   "events_with_true_start": 148,
+   "markets": 7358,
+   "markets_with_true_start": 6800,
+   "season": "2025",
+   "series": "KXNFLREC",
+   "sport": "nfl"
+  },
+  {
+   "candle_markets": 0,
+   "candle_markets_nonempty": 0,
+   "events": 107,
+   "events_with_true_start": 107,
+   "markets": 9061,
+   "markets_with_true_start": 9061,
+   "season": "2026",
+   "series": "KXNFLREC",
+   "sport": "nfl"
+  }
+ ],
+ "sport": "nfl"
+}
