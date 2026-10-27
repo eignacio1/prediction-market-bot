@@ -1038,3 +1038,4 @@
 | 2026-10-27T01:17:01Z | T-1196..T-1198, GG-1196..GG-1198 | STANDARD — W88.3 quant: score remaining frozen models vs market w/ clustered intervals, set skill weights — FOR PROOF (P2 verdicts / models scored vs market 2 -> n of 6) |
 | 2026-10-27T01:17:23Z | T-1230..T-1232, GG-1230..GG-1234 | W88.2 STANDARD: red-first (silent MLB game-market shadow) then kill switch LOG-ONLY->enforce + shadow quote times — PLUMBING (surface budget RED->GREEN; GG-1082/GG-441 OPEN->RESOLVED) |
 | 2026-10-27T01:45:37Z | T-1230 | MERGED: NO — branch `session/20261027T011519Z-w88-2-enforce-quote-times` awaiting merge — W88.2 partial: games-cache sync fixed (#336) and shadow rows carry exchange quote time (#339); kill-switch enforce not done. (commit `651a491`) |
+| 2026-10-27T01:46:04Z | T-1230 | CLOSED — merge confirmed, HEAD (3aa4544) is ancestor of origin/main — W88.2 partial: #336 and #339 merged, enforce flip (Part A) not done, handoff on main |
