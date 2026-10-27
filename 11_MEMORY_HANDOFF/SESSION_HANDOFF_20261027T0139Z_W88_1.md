@@ -1,12 +1,20 @@
-# SESSION HANDOFF — W88.1 (tails + DRAFT G6 ADR)
+# Session Handoff — 2026-10-27T01:39Z
 
-```
-vision_pillar: PROOF+PLUMBING
-gap_measure: G6 superseding ADR: 0 -> DRAFT (ADR-0076, every limit either derived from measured tails or blank with a reason)
-gap_delta: +1 draft ADR; tails measured for 4 cohorts (T1 filled not fit-able)
-pattern_sweep: sampler double-count of tail mass (gpd.sample_tail_model) fixed in the new code only, no other instance; the 12_EXPLORATORY import fence (no prediction_market_bot.t4_* imports) fixed in run_tails.py, the only importer
-surface_delta: none (no live component added; analysis scripts only)
-```
+<!-- session-meta
+task_id: T-1190
+tier: STANDARD
+timestamp: 2026-10-27T01:50:00Z
+commit: e8de314
+one_line_summary: W88.1: GPD tails fit for T4/T1 (T1 filled not fit-able); DRAFT ADR-0076 G6 per book and sport; GG-1190..1192
+gg_touched: GG-1190, GG-1191, GG-1192
+adr_touched: ADR-0076
+plan_deliverable_moved: no
+vision_pillar: PROOF, PLUMBING
+gap_measure: G6 superseding ADR 0 -> DRAFT
+gap_delta: G6 ADR 0 -> DRAFT (03_DECISIONS/ADR-0076_DRAFT @ 83c57f1)
+pattern_sweep: sampler double-count of tail mass fixed in the new gpd.py only (no other instance); 12_EXPLORATORY t4_* import fence fixed in run_tails.py, the only importer
+surface_delta: 0
+-->
 
 **Status:** DONE (Part A + Part B). PR #337 squash-merged as 83c57f1, CI green (test pass 4m53s).
 
@@ -24,7 +32,7 @@ Tails rest on 14–99 exceedances; the T1 filled tail cannot be fit. The smalles
 Tail risk: aggregated and interpreted; not applied (no limit changes).
 
 ## Open
-GG-1190, GG-1191, GG-1192 registered. Deploy job of the post-merge main run (40433751721) was still in progress at close; PR touched no `src/`, so expected t4-mlb decision is no restart. Next window should read it.
+GG-1190, GG-1191, GG-1192 registered. Post-merge run 40433751721 (83c57f1) was CANCELLED (superseded); read run 40434217779 (head f91c2ee) instead. Its Deploy job, if any, was not yet visible at close; PR touched no `src/`, so expected t4-mlb decision is no restart. Next window should read it.
 
 ## Operator decision (one line)
 Accept, change or reject ADR-0076 as the G6 definition (per book and sport, limits as in section 4; recommendation: accept with the blanks in section 4 left blank until a positive Kelly is proposed).
