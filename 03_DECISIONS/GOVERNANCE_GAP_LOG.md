@@ -4364,3 +4364,9 @@ W88.2 Part 0 (RED surface budget). Cause, read on the box and in the run log: `m
 **Status:** OPEN · **Severity:** MEDIUM
 
 W88.2 Part 0. Four scheduled `MLB Games Cache Sync` failures (2026-10-25 05:17Z to 2026-10-26 18:52Z) were visible only in the Actions tab. The runner's own refusal ("refusing to log on stale data") goes to a log nobody reads. Silent-arm detection works but is the last line, after >12h of lost shadow rows. Candidate: have the silent-arm block print the cache stamp age and the last sync run status beside any arm that reads the games cache. Registered, not fixed in this block (Rule 11).
+
+### GG-1232 — Kalshi list payload has no usable quote time: market.updated_time is static, so shadow rows could not be checked for stale quotes
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W88.2 Part B. Three reads of `GET /markets?series_ticker=KXMLBGAME` 20s apart (2026-10-27 01:31Z) returned an unchanged `updated_time` (2026-10-20T03:41:00Z, the open time) on a live market whose bid/ask differed from `previous_yes_bid/ask`. W87.3's stale-quote check on NHL_GAME_TOTAL_T1 was NOT MEASURABLE for this reason. Fix shipped (PR for W88.2 Part B): rows now carry `quote_ts_utc` / `quote_age_s` / `quote_ts_source` from the list response's HTTP `Date` header (exchange clock; age includes skew + latency). **Limit, stated plainly:** this is when the book was read, not when the quote last changed; time-since-last-change still needs the orderbook or trades endpoint (last trade `created_time`, one extra request per market) and is not built. Stays OPEN until a box row is read back carrying the fields.

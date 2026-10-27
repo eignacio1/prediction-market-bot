@@ -241,6 +241,11 @@ class KalshiVenueAdapter:
             if r.status_code != 200:
                 return False, out or [{"error": f"HTTP {r.status_code}"}]
             data = r.json()
+            # W88.2: the exchange's own clock for this book read (list payloads carry no usable quote time;
+            # market.updated_time is static). Additive underscore key; no consumer reads it for a decision.
+            served_at = (getattr(r, "headers", None) or {}).get("Date")
+            for m in data.get("markets", []):
+                m["_quote_server_date"] = served_at
             out.extend(data.get("markets", []))
             cursor = data.get("cursor") or None
             if not cursor:
