@@ -172,3 +172,58 @@ def test_visual_dashboard_reads_cached_probe(monkeypatch, tmp_path):
     monkeypatch.setattr(rr, "live_cache_path", lambda: tmp_path / "missing.json")
     assert bvd.runtime_live() == {}
     assert all("key" in c for c in bvd.runtime())
+
+
+# ---- W92.1 part B: a registry-live entry with nothing installed is not live, and turns the budget RED ----
+
+def _probe(crontab, **kw):
+    p = {"epoch": 1000000.0, "ts": "t", "head": "abcdef012", "writes": {}, "services": {}, "crontab": crontab,
+         "health": {"line": "HEALTHY: 0 faults"}}
+    p.update(kw)
+    return p
+
+
+def test_live_entry_not_installed_is_excluded_and_budget_red():
+    reg = [_c(key="cron|8 1 * * *|scripts/a.py"), _c(key="cron|9 1 * * *|scripts/b.py")]
+    ev = rr.evaluate(reg, _probe("8 1 * * * cd /x && python scripts/a.py\n"), now=1000000.0)
+    assert ev["counts"]["live"] == 1 and ev["counts"]["not_installed"] == 1
+    assert ev["budget"] == "RED" and "NOT INSTALLED cron|9 1 * * *|scripts/b.py" in ev["reasons"]
+
+
+def test_everything_installed_is_green_and_counts_all():
+    reg = [_c(key="cron|8 1 * * *|scripts/a.py")]
+    ev = rr.evaluate(reg, _probe("8 1 * * * cd /x && python scripts/a.py\n"), now=1000000.0)
+    assert ev["budget"] == "GREEN" and ev["counts"]["live"] == 1 and ev["counts"]["not_installed"] == 0
+
+
+def test_one_installed_sibling_does_not_vouch_for_same_signature_lines():
+    reg = [_c(key="cron|8 1 * * *|scripts/a.py --x"), _c(key="cron|8 5 * * *|scripts/a.py --x|dup1")]
+    ev = rr.evaluate(reg, _probe("8 1 * * * cd /x && python scripts/a.py --x\n"), now=1000000.0)
+    assert ev["counts"]["not_installed"] == 1 and ev["budget"] == "RED"
+    both = "8 1 * * * cd /x && python scripts/a.py --x\n8 5 * * * cd /x && python scripts/a.py --x\n"
+    assert rr.evaluate(reg, _probe(both), now=1000000.0)["budget"] == "GREEN"
+
+
+def test_retimed_job_is_still_installed():
+    reg = [_c(key="cron|8 1 * * *|scripts/a.py")]
+    assert rr.evaluate(reg, _probe("30 4 * * * cd /x && python scripts/a.py\n"), now=1000000.0)["budget"] == "GREEN"
+
+
+def test_probe_without_crontab_says_nothing_about_installation():
+    reg = [_c()]
+    probe = _probe("")
+    del probe["crontab"]
+    assert rr.evaluate(reg, probe, now=1000000.0)["budget"] == "GREEN"
+
+
+def test_missing_systemd_unit_is_not_installed():
+    reg = [_c(key="systemd|foo.service", kind="systemd")]
+    ev = rr.evaluate(reg, _probe("", unit_files=[]), now=1000000.0)
+    assert ev["budget"] == "RED" and ev["counts"]["not_installed"] == 1
+    assert rr.evaluate(reg, _probe("", unit_files=["foo.service"]), now=1000000.0)["budget"] == "GREEN"
+
+
+def test_check_box_agrees_with_evaluate_on_not_installed():
+    reg = [_c(key="cron|8 1 * * *|scripts/a.py"), _c(key="cron|9 1 * * *|scripts/b.py")]
+    probe = _probe("8 1 * * * cd /x && python scripts/a.py\n")
+    assert rr.check_box(probe, reg)["not_installed"] == ["cron|9 1 * * *|scripts/b.py"]

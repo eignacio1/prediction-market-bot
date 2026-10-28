@@ -110,6 +110,7 @@ def _fake_systemctl_dir(tmp_path, started: datetime) -> str:
 def _budget(p, tmp_path, monkeypatch, started):
     monkeypatch.setenv("PATH", _fake_systemctl_dir(tmp_path, started) + os.pathsep + os.environ["PATH"])
     probe = rr.probe_local({"root": str(p), "units": ["t4-mlb.service"], "writes": []})
+    probe["unit_files"] = ["t4-mlb.service"]  # W92.1: a live unit with no unit file is NOT INSTALLED (RED); this fixture has none on disk
     reg = [{"key": "systemd|t4-mlb.service", "kind": "systemd", "status": "live", "purpose": "t4", "pillar": "PROOF",
             "alarm": "deploy truth", "reviewed": True}]
     return probe["services"]["t4-mlb.service"], rr.evaluate(reg, probe)
