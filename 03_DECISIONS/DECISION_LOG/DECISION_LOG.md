@@ -2910,3 +2910,10 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 
 ## 2026-10-27 W90.2 — routing doctrine ACCEPTED by the operator
 - Operator: "Accept - proceed in full". DECISION_ROUTING.md is now ACCEPTED as written (FADE only on measured skill; RIDE only on a net-positive table cell; same side to RIDE, opposite sides to NO-BET; T3 a FADE-only overlay; news timing excluded). No wiring authorized by this: any runner or cell use needs its own pre-registration. Follow-ons stay with their owners: 90.1 ride.py swaps the stub table, 90.3 supplies the momentum table, GG-1330 NBA/NHL archive.
+
+## 2026-10-27 — W90.3 Momentum, measured (Strategy J): no routable momentum context (PR #351, f1d24f4)
+- Pillar DEPTH + PROOF. D5(a) momentum_looping: 0 → measured basis for MLB/NFL/NBA/NHL, stage **interpreted** (not applied: no context beats cost).
+- 20,409 pre-game signals (≥3c move). Gross follow ≈0 at 1h/3h in every sport (MLB +0.0004/+0.0035, NFL −0.005/−0.013). Net follow −4c (tight books) to −13/−17c (wide). 0 of 97 main-grid follow cells have a positive game-clustered interval; 89.2's "reverting lost" was cost-driven, fade gross is the mirror ≈0.
+- Part B (train/hold-out split 2026-09-03): 0 of 4 testable cells route FOLLOW or FADE. Router (90.2) should route nothing to MOMENTUM-FOLLOW/FADE; at most a veto in wide books.
+- Two fragile BH-positive cells (MLB news-window settle-fade n=53/41 games; NBA up-move settle-follow n=52/42) are hypotheses, not verdicts. GG-1300 (news split is a calendar proxy), GG-1301 (MLB HHMM-as-ET start unverified), GG-1302 (NBA/NHL history thin).
+- Deploy: merge touched no src/deploy; no Deploy job ran; no t4-mlb restart decision needed.
