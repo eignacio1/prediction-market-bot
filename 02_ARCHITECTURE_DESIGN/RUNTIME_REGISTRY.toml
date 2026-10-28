@@ -1194,3 +1194,86 @@ alarm = "capture heartbeat in exp_output/NBA/LINEUP_WINDOW/checks.jsonl shows re
 schedule = "1-59/15 14-23,0-4 UTC"
 mirrors = []
 command = "nba_ir_relay.yml"
+[[component]]
+key = "cron|11,31,51 0-5 * * *|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNHLGAME"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NHL game-market price archive (W91.3): ~20-min snapshots with bid/ask for game, spread, total and team-total families, so ride candidates found in NHL can be tested forward. Read-only public GETs."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NHL rows in exp_output/PRICE_ARCHIVE for >36h while NHL had games (silent-arm review in the governance scan)"
+schedule = "11,31,51 0-5 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNHLGAME KXNHLSPREAD KXNHLTOTAL KXNHLTEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|11,31,51 17-23 * * *|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNHLGAME"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NHL game-market price archive (W91.3): ~20-min snapshots with bid/ask for game, spread, total and team-total families, so ride candidates found in NHL can be tested forward. Read-only public GETs."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NHL rows in exp_output/PRICE_ARCHIVE for >36h while NHL had games (silent-arm review in the governance scan)"
+schedule = "11,31,51 17-23 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNHLGAME KXNHLSPREAD KXNHLTOTAL KXNHLTEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|18 12-16 * * *|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNBAGAME"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA game-market price archive (W91.3): ~20-min snapshots with bid/ask for game, spread, total and team-total families, so ride candidates found in NBA can be tested forward. Read-only public GETs."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NBA rows in exp_output/PRICE_ARCHIVE for >36h while NBA had games (silent-arm review in the governance scan)"
+schedule = "18 12-16 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNBAGAME KXNBASPREAD KXNBATOTAL KXNBATEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|21 12-16 * * *|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNHLGAME"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NHL game-market price archive (W91.3): ~20-min snapshots with bid/ask for game, spread, total and team-total families, so ride candidates found in NHL can be tested forward. Read-only public GETs."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NHL rows in exp_output/PRICE_ARCHIVE for >36h while NHL had games (silent-arm review in the governance scan)"
+schedule = "21 12-16 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNHLGAME KXNHLSPREAD KXNHLTOTAL KXNHLTEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|8,28,48 0-5 * * *|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNBAGAME"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA game-market price archive (W91.3): ~20-min snapshots with bid/ask for game, spread, total and team-total families, so ride candidates found in NBA can be tested forward. Read-only public GETs."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NBA rows in exp_output/PRICE_ARCHIVE for >36h while NBA had games (silent-arm review in the governance scan)"
+schedule = "8,28,48 0-5 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNBAGAME KXNBASPREAD KXNBATOTAL KXNBATEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|8,28,48 17-23 * * *|scripts/archive_market_prices.py --depth-sample-per-family 1 --out exp_output/PRICE_ARCHIVE --series KXNBAGAME"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA game-market price archive (W91.3): ~20-min snapshots with bid/ask for game, spread, total and team-total families, so ride candidates found in NBA can be tested forward. Read-only public GETs."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NBA rows in exp_output/PRICE_ARCHIVE for >36h while NBA had games (silent-arm review in the governance scan)"
+schedule = "8,28,48 17-23 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNBAGAME KXNBASPREAD KXNBATOTAL KXNBATEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
