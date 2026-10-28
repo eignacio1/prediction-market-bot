@@ -232,7 +232,7 @@ def render() -> int:
 def surface() -> int:
     reg = load()
     live = [c for c in reg if c.get("status") == "live"]
-    print(f"SURFACE {len(live)} live components · {sum(1 for c in live if not c.get('reviewed'))} unreviewed · "
+    print(f"SURFACE {len(live)} registry-live components (box NOT checked here; `live` excludes not-installed) · {sum(1 for c in live if not c.get('reviewed'))} unreviewed · "
           f"{sum(1 for c in live if str(c.get('alarm', '')).startswith(('UNSET', 'none')))} with no alarm")
     return 0
 
@@ -261,6 +261,45 @@ def crontab_sigs(text: str) -> set:
         if not line or line.startswith("#") or re.match(r"^[A-Z_]+=", line) or len(line.split()) < 6:
             continue
         out.add(_sig(_cron_key(line)[0]))
+    return out
+
+
+def crontab_keys(text: str) -> list:
+    out = []
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or re.match(r"^[A-Z_]+=", line) or len(line.split()) < 6:
+            continue
+        out.append(_cron_key(line)[0])
+    return out
+
+
+def not_installed_keys(reg: list, probe: dict) -> list:
+    """Registry-live entries with nothing installed on the box (W92.1). Cron is matched by exact key first, then by
+    signature COUNT (PIPE-08 retimes jobs, so schedule is not identity -- but N live entries sharing one signature need
+    N installed lines, so one installed sibling does not vouch for the rest). A probe without a crontab / unit list
+    says nothing about installation, so nothing is flagged."""
+    out = []
+    if "crontab" in probe:
+        keys = crontab_keys(probe["crontab"])
+        left = {}
+        for k in keys:
+            left[_sig(k)] = left.get(_sig(k), 0) + 1
+        live = sorted(c["key"] for c in reg if c.get("kind") == "cron" and c.get("status") == "live")
+        exact = [k for k in live if k in keys]
+        for k in exact:
+            left[_sig(k)] -= 1
+        for k in live:
+            if k in exact:
+                continue
+            if left.get(_sig(k), 0) > 0:
+                left[_sig(k)] -= 1
+            else:
+                out.append(k)
+    if "unit_files" in probe:
+        have = set(probe["unit_files"])
+        out += sorted(c["key"] for c in reg if c.get("kind") == "systemd" and c.get("status") == "live"
+                      and c["key"].split("|", 1)[1] not in have)
     return out
 
 
@@ -378,10 +417,11 @@ def check_box(probe: dict, reg: list | None = None) -> dict:
     (live entry, nothing installed)."""
     reg = load() if reg is None else reg
     box = crontab_sigs(probe.get("crontab", ""))
+    missing = set(not_installed_keys(reg, probe))
     rsig = {c["key"]: _sig(c["key"]) for c in reg if c.get("kind") == "cron"}
     allsig = set(rsig.values())
     unmirrored = sorted(box - allsig)
-    not_installed = sorted(k for k, sg in rsig.items() if sg not in box and next(c for c in reg if c["key"] == k).get("status") == "live")
+    not_installed = sorted(k for k in missing if k in rsig)
     unit_files = set(probe.get("unit_files", []))
     reg_units = {c["key"].split("|", 1)[1]: c for c in reg if c.get("kind") == "systemd"}
     units_unmirrored = sorted(u for u in unit_files if u not in reg_units and not u.startswith(VENDOR_UNITS))
@@ -409,8 +449,11 @@ def evaluate(reg: list, probe: dict, now: float | None = None, registry_ok: bool
     """Rows (one per live component) + SURFACE BUDGET from a probe. Pure: no I/O."""
     now = probe.get("epoch", time.time()) if now is None else now
     rows, reasons = [], []
+    missing = set(not_installed_keys(reg, probe))
+    for k in sorted(missing):
+        reasons.append(f"NOT INSTALLED {k}")
     for c in reg:
-        if c.get("status") != "live":
+        if c.get("status") != "live" or c["key"] in missing:
             continue
         name = c["key"].split("|", 1)[1] if c["kind"] == "systemd" else None
         ages = [now - probe["writes"][w] for w in (c.get("writes") or []) if probe.get("writes", {}).get(w)]
@@ -451,7 +494,7 @@ def evaluate(reg: list, probe: dict, now: float | None = None, registry_ok: bool
     if not registry_ok:
         reasons.append("registry check failing")
     return {"rows": rows, "reasons": reasons, "budget": "RED" if reasons else "GREEN",
-            "counts": {"live": len(rows), "stale": sum(r["state"] in ("STALE", "DOWN", "BEHIND") for r in rows),
+            "counts": {"live": len(rows), "not_installed": len(missing), "stale": sum(r["state"] in ("STALE", "DOWN", "BEHIND") for r in rows),
                        "no_alarm_unexplained": sum(r["unexplained"] for r in rows),
                        "no_alarm_reasoned": sum(r["no_alarm"] and not r["unexplained"] for r in rows),
                        "unreviewed": sum(not r["reviewed"] for r in rows)},
@@ -517,7 +560,7 @@ def print_runtime_block(ev: dict) -> None:
         print(f"  UNKNOWN - box probe failed ({ev['error']}); SURFACE BUDGET cannot be computed from here")
         return
     c, b = ev["counts"], ev.get("box", {})
-    print(f"  as of {ev['as_of']} · box HEAD {ev['head']} · {c['live']} live components · {c['unreviewed']} unreviewed · "
+    print(f"  as of {ev['as_of']} · box HEAD {ev['head']} · {c['live']} live components (+{c.get('not_installed', 0)} registry-live NOT installed, excluded) · {c['unreviewed']} unreviewed · "
           f"{c['stale']} stale/down/behind · no alarm: {c['no_alarm_unexplained']} unexplained, {c['no_alarm_reasoned']} with a written reason")
     print(f"  registry vs box: {len(b.get('unmirrored', []))} installed-but-unmirrored · {len(b.get('not_installed', []))} mirrored-but-not-installed"
           f" · units {len(b.get('units_unmirrored', []))}/{len(b.get('units_not_installed', []))}")
