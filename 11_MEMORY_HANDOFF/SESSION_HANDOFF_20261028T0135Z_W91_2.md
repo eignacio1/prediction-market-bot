@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: T-1345
+tier: STANDARD
+timestamp: 2026-10-28T01:35:00Z
+commit: e8d2187
+one_line_summary: W91.2 ride tree is code (#353) + ladder ride measured (#356): 2 of 36 cells HELD_OUT, net +0.007 overall
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, PROOF
+gap_measure: D5(a) decision_trees; ride kinds with measured basis; ladder cells tested OOS
+gap_delta: D5(a) ride stub -> tested code (#353); ride kinds 1 -> 2; ladder cells tested OOS 0 -> 36, 2 HELD_OUT (results_W91_2.md)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
 # SESSION_HANDOFF — W91.2 (ride tree as code + ladder ride)
 
 Status: DONE | Part A #353 merged (6175da7), Part B #356 merged (55362dc), CI green both.

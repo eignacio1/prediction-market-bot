@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-28T01:10:00Z (T-1350 — W91.3 partial: #347 and #354 merged (6 NBA/NHL archive cron lines); box crontab install pending operator OK; scan not started) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028T0110Z_W91_3.md` for full session detail.
+**Last reviewed:** 2026-10-28T01:35:00Z (T-1345 — W91.2 ride tree is code (#353) + ladder ride measured (#356): 2 of 36 cells HELD_OUT, net +0.007 overall) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028T0135Z_W91_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

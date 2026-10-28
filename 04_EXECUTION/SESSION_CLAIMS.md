@@ -1072,3 +1072,4 @@
 | 2026-10-28T01:10:00Z | T-1350..T-1354 / GG-1350..GG-1352 | CLOSED — W91.3 PARTIAL (rerouted 17:32 PT, Polymarket stopped): #347 merged; #354 merged (6 NBA/NHL archive cron lines, registered); box crontab install pending operator OK; Part B scan not started. T-1351..T-1354, GG-1350..GG-1352 unused |
 | 2026-10-28T01:01:04Z | T-1350 | CLOSED — W91.3 partial: #347 and #354 merged (6 NBA/NHL archive cron lines); box crontab install pending operator OK; scan not started (commit `cdd7bc6`) |
 | 2026-10-28T01:23:45Z | T-1340 | CLOSED — merge confirmed, HEAD (9088fe1) is ancestor of origin/main — W91.1 ride cells: EXP-042 frozen, backward VOID (0/11 OOS), ADR-0076 accepted in repo; content landed on main via PR #355 + cherry-picked docs |
+| 2026-10-28T01:39:20Z | T-1345 | CLOSED — W91.2 ride tree is code (#353) + ladder ride measured (#356): 2 of 36 cells HELD_OUT, net +0.007 overall (commit `e8d2187`) |
