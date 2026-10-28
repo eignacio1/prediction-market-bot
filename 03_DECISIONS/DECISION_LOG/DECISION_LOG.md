@@ -2981,3 +2981,6 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - `ride_cells.toml` +2 KXMLBTOTAL T0-2h tight LADDER cells, HELD_OUT (PR #360, f490553). side="by_trigger" is not consumable by `ride.decide()`; registered hazard, not fixed (ride.py out of block scope).
 - EXP-043 frozen at 4fcec70: H-A the two cells forward, H-B pooled ladder trigger. Judged n 71/284 and 16/61 games (full/half); pooled 1,884/7,535. No look before 2027; descriptive checkpoint 2027-01-31.
 - Not done: exact per-trade recompute of 89.2/90.3/91.2 nets. Post-merge Test Suite/Deploy read for #360 was still in progress at write time.
+
+## 2026-10-28 — W92.3 (DEPTH): NBA B7 lineups/on-off built point-in-time from the play-by-play
+- `c1_signal_ingestion/nba_lineups.py` (PR #359): stints from PBP, shrunk (K=1000, decay 0.5) as-of player ratings, rotation-weighted team lineup features. B7 stage none -> interpreted on the TOTAL (held-out gain 4.04 MSE, CI 1.92-6.10, n=2008, survives prior-season carry). Margin: honest null beyond prior carry. Applied test not run: no pre-game NBA prices captured, n 31-55 settled events anyway. Results: `12_EXPLORATORY/nba_lineups/results_W92_3.md`.
