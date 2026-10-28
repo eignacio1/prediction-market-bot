@@ -22,7 +22,7 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N12 | F10 | Penalties / officials crew | nflverse pbp penalty fields; officials | ctx.officials | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N13 | F12 | Home field / venue (roof, surface, division) | nflverse games: location, roof, surface, div_game | ctx.home, ctx.roof | applied | `12_EXPLORATORY/20261011_nfl_totals_venue_weather` |
 | N14 | G1 | Weather (temp, wind) | nflverse games: temp, wind (at-game values; GAP-5 no forecast archive) | ctx.wind / ctx.temp | applied | `12_EXPLORATORY/W68_3_nfl_totals_weather_results.md` |
-| N15 | G3 | Travel / time zone / short week | derived from games.gametime, location | ctx | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
+| N15 | G3 | Travel / time zone / short week | derived from games.gametime, location (c1_signal_ingestion/nfl_schedule_geometry.py) | ctx | interpreted | `12_EXPLORATORY/nfl_board_v2/results_W93_4.md` |
 | N16 | G5 | Qualitative (form, role-fit, motivation, rumours) | none free and structured | none | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
 | N17 | F3 | Run-box granularity entry (success/stuffed rate by box count, offense x defense cross) | nflverse pbp + ftn n_defense_box (2022+); participation not needed | granularity_index.cross | applied | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md` |
 | N18 | G4 | Starting-QB availability and role (>=3 prior primary-passer games; OUT/doubtful/IR/suspended -> no forecast) | nflverse player-week stats (attempts >= 15) + nflverse injuries snapshot (QB rows) | passyds_strike_v1: qb_shrunk, availability gate | aggregated | `src/prediction_market_bot/pregame_shadow/passyds_model.py` |

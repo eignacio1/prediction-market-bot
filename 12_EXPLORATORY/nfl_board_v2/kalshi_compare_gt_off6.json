@@ -1,0 +1,79 @@
+{
+ "conv": "gt",
+ "off": 6.0,
+ "games": 86,
+ "fam": {
+  "game": {
+   "n": 172,
+   "games": 86,
+   "brier_engine": 0.2386,
+   "brier_kalshi": 0.2399,
+   "kalshi_minus_engine": [
+    0.0013,
+    -0.0026,
+    0.0054
+   ],
+   "fired": 63,
+   "fire_games": 33,
+   "pnl_per_contract": [
+    0.0213,
+    -0.1492,
+    0.1855
+   ]
+  },
+  "spread": {
+   "n": 1461,
+   "games": 86,
+   "brier_engine": 0.1227,
+   "brier_kalshi": 0.1239,
+   "kalshi_minus_engine": [
+    0.0012,
+    -0.0015,
+    0.0036
+   ],
+   "fired": 897,
+   "fire_games": 86,
+   "pnl_per_contract": [
+    0.017,
+    -0.0348,
+    0.0613
+   ]
+  },
+  "teamtotal": {
+   "n": 2335,
+   "games": 86,
+   "brier_engine": 0.1311,
+   "brier_kalshi": 0.1308,
+   "kalshi_minus_engine": [
+    -0.0003,
+    -0.0019,
+    0.0013
+   ],
+   "fired": 1054,
+   "fire_games": 86,
+   "pnl_per_contract": [
+    -0.0022,
+    -0.0366,
+    0.0345
+   ]
+  },
+  "total": {
+   "n": 953,
+   "games": 86,
+   "brier_engine": 0.1167,
+   "brier_kalshi": 0.1173,
+   "kalshi_minus_engine": [
+    0.0006,
+    -0.0009,
+    0.0022
+   ],
+   "fired": 498,
+   "fire_games": 86,
+   "pnl_per_contract": [
+    0.0134,
+    -0.0337,
+    0.0609
+   ]
+  }
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "features": [
+  "away_miles_k",
+  "away_tz_east",
+  "away_tz_west",
+  "short_diff",
+  "bye_diff",
+  "neutral",
+  "intl",
+  "away_early_body",
+  "home_late_body"
+ ],
+ "res_m": {
+  "n_games_scored": 3829,
+  "mse_gain": [
+   -0.916,
+   -1.455,
+   -0.374
+  ],
+  "ols": {
+   "away_miles_k": [
+    0.644,
+    0.459
+   ],
+   "away_tz_east": [
+    -0.456,
+    0.321
+   ],
+   "away_tz_west": [
+    -0.575,
+    0.309
+   ],
+   "short_diff": [
+    -2.893,
+    4.396
+   ],
+   "bye_diff": [
+    -0.52,
+    0.458
+   ],
+   "neutral": [
+    0.479,
+    2.018
+   ],
+   "intl": [
+    -2.775,
+    2.804
+   ],
+   "away_early_body": [
+    1.194,
+    0.669
+   ],
+   "home_late_body": [
+    -0.712,
+    0.599
+   ]
+  }
+ },
+ "res_t": {
+  "n_games_scored": 3829,
+  "mse_gain": [
+   -0.029,
+   -0.461,
+   0.374
+  ],
+  "ols": {
+   "away_miles_k": [
+    0.013,
+    0.467
+   ],
+   "away_tz_east": [
+    -0.122,
+    0.326
+   ],
+   "away_tz_west": [
+    0.3,
+    0.315
+   ],
+   "short_diff": [
+    -0.478,
+    4.471
+   ],
+   "bye_diff": [
+    -0.457,
+    0.465
+   ],
+   "neutral": [
+    -2.208,
+    2.053
+   ],
+   "intl": [
+    0.959,
+    2.853
+   ],
+   "away_early_body": [
+    1.158,
+    0.681
+   ],
+   "home_late_body": [
+    -0.558,
+    0.609
+   ]
+  }
+ }
+}

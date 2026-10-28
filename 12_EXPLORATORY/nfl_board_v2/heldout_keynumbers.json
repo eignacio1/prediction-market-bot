@@ -1,0 +1,66 @@
+{
+ "n_games": 3663,
+ "seasons": [
+  2012,
+  2025
+ ],
+ "gauss_sd": 12.951339322007465,
+ "k": {
+  "1": {
+   "observed": 168,
+   "engine": 142.3,
+   "engine_z": 2.2,
+   "gauss": 202.4,
+   "gauss_z": -2.49
+  },
+  "2": {
+   "observed": 169,
+   "engine": 137.1,
+   "engine_z": 2.78,
+   "gauss": 200.9,
+   "gauss_z": -2.32
+  },
+  "3": {
+   "observed": 525,
+   "engine": 539.9,
+   "engine_z": -0.7,
+   "gauss": 198.5,
+   "gauss_z": 23.84
+  },
+  "4": {
+   "observed": 176,
+   "engine": 173.1,
+   "engine_z": 0.22,
+   "gauss": 195.2,
+   "gauss_z": -1.41
+  },
+  "6": {
+   "observed": 244,
+   "engine": 212.5,
+   "engine_z": 2.23,
+   "gauss": 186.0,
+   "gauss_z": 4.36
+  },
+  "7": {
+   "observed": 315,
+   "engine": 346.6,
+   "engine_z": -1.79,
+   "gauss": 180.3,
+   "gauss_z": 10.29
+  },
+  "10": {
+   "observed": 188,
+   "engine": 209.3,
+   "engine_z": -1.52,
+   "gauss": 159.5,
+   "gauss_z": 2.31
+  },
+  "14": {
+   "observed": 183,
+   "engine": 167.1,
+   "engine_z": 1.26,
+   "gauss": 126.6,
+   "gauss_z": 5.1
+  }
+ }
+}
