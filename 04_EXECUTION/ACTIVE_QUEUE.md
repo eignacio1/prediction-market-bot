@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 92** · all three blocks in `04_EXECUTION/WAVE_BLOCKS/W92_BLOCKS.md`: **92.1** (NBA + NHL prices archived for real; a surface budget that tells the truth), **92.2** (exact fees; the ladder ride pre-registered forward), **92.3** (NBA engine: lineups and on/off). Each block is one fenced paste. No Muse paste (ten scheduled cycles a day).
+> **▶ PASTE NOW — Wave 92** · the three blocks are in the **⬛ NOW — Wave 92** section below: **92.1** (NBA + NHL prices archived for real; a surface budget that tells the truth), **92.2** (exact fees; the ladder ride pre-registered forward), **92.3** (NBA engine: lineups and on/off). Each block is one fenced paste. No Muse paste (ten scheduled cycles a day).
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -279,7 +279,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ## ⬛ NOW — Wave 92 · THE WINTER ARCHIVE, EXACT FEES, THE NBA ENGINE · WRITTEN 2026-10-28 ~05:00 UTC (10-27 22:00 PT) · three MEDIUM blocks · no Muse paste (ten scheduled cycles a day)
 
-**The pastes:** `04_EXECUTION/WAVE_BLOCKS/W92_BLOCKS.md` (92.1, 92.2, 92.3; all three run in parallel).
+**The pastes:** below this section's notes, one fenced block per terminal (92.1, 92.2, 92.3; all three run in parallel). Each block points the terminal to the wave's common rules (`04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`), so the pastes stay short.
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
@@ -311,6 +311,133 @@ the winter's evidence runs through, and it fixes a gauge (the budget) that read 
 **Surface:** budget GREEN but overstated by 6 (fixed in 92.1). Expected delta: +6 to about +12 real (the NBA / NHL archive lines); 92.2
 and 92.3 add nothing running. After 92.1's budget fix, a not-installed line reads RED, so the install comes first.
 **Dependencies:** none. 92.2's EXP-043 names "from the date 92.1's lines are installed" for NBA / NHL rows; it does not wait for them.
+
+
+### 92.1 — The winter archive: NBA and NHL prices captured for real, and a surface budget that tells the truth
+**BREADTH + PLUMBING · terminal 1**
+
+```
+Before anything else, read the Wave 92 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 92.1 - THE WINTER ARCHIVE: NBA AND NHL PRICES CAPTURED FOR REAL, AND A SURFACE BUDGET THAT TELLS THE TRUTH. Repo: eignacio1/prediction-market-bot.
+PURPOSE: BREADTH + PLUMBING. Measures: sports in the price archive 2 -> 4 (read back as rows on the box, not as merged lines); NBA / NHL
+families archived 0 -> n (game, spread, total, team total); surface budget: registered-but-not-installed entries counted as live 6 -> 0.
+Why: every ride cell found so far is MLB, and MLB is done until April. Forward evidence this winter has to come from NBA and NHL, and
+neither has a single archived price. 91.3 merged six NBA / NHL archive lines (#354), but they are not installed: deploy does not touch
+the crontab, the terminal's ssh append was refused, and it handed the install to the operator as a decision. It is plumbing, not his
+call. The box's 04:33Z read shows the real gap twice over: "6 mirrored-but-not-installed", counted in "83 live components", with the
+budget still GREEN.
+Premises to check: past cron installs on the box went through allowlisted bridge tasks with their own installer scripts
+(scripts/thin_capture_install.py, scripts/source_capture_install.py: backup, additive install, readback, uninstall) - read them and copy
+the pattern, do not invent a new one. The six lines are in deploy/cron.conf and RUNTIME_REGISTRY.toml (KXNBAGAME, KXNHLGAME only).
+PERMISSIONS: per the common rules' ownership; NEW cron lines only (never edit or remove an existing line); public unauthenticated
+Kalshi market-data GETs, paced. NOT: any order, gate, model, runner, ledger, registry cell or pre-registration; 92.2's or 92.3's files.
+
+PART A - Install route, then the lines (~45 min)
+  1. scripts/archive_cron_install.py with install / readback / uninstall, on the thin_capture / source_capture pattern: back up the
+     crontab first, append only the archiver lines RUNTIME_REGISTRY.toml names as live and the crontab lacks, idempotent, never touch any
+     other line. Add archive_cron_install, archive_cron_readback and archive_cron_uninstall to the bridge allowlist. Tests: idempotent
+     second run; a foreign line is never modified; a missing backup aborts.
+  2. Add the NBA and NHL spread, total and team-total series (list them from Kalshi's public API, never assume) as new lines on the same
+     schedule pattern; measure one run's rows, bytes and duration per series and project a month's disk use against the box's free
+     space; stay within the rate limit 91.1 hit (GG-1341: about 4 requests a second combined with 429s) - state the pacing.
+  3. Merge on green CI, then request the install through the bridge and read back: every new line on the crontab, first rows per
+     series in exp_output/PRICE_ARCHIVE/, no 429 storm, the staleness alarm wired. Resolve GG-1250 / GG-1330 for what is captured.
+PART B - The budget tells the truth (~25 min)
+  scripts/runtime_registry.py: a registry entry marked live with nothing installed on the box must not count as live and must turn the
+  SURFACE BUDGET RED (Hard Rule 14 reads that budget). Tests on a fixture registry. Pattern sweep (Hard Rule 13): every other place that
+  counts registry entries as live without checking the box (distance, dashboard, healthcheck) - fix or register each. Read back on the box
+  after the merge: the budget line and the live count.
+Results: the installer + tests + allowlist entries, the new lines read back with rows, the budget fix read back, a handoff (vision_pillar
+BREADTH + PLUMBING; surface_delta = lines actually installed). If time remains after both parts (and only then): 89.2's calibration scan
+on NBA / NHL candles as discovery (91.3's old Part B), labelled IN_SAMPLE.
+
+END OF BLOCK 92.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 92.2 — Exact fees, and the ladder ride put on a forward clock
+**PROOF · terminal 2**
+
+```
+Before anything else, read the Wave 92 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 92.2 - EXACT FEES, AND THE LADDER RIDE PUT ON A FORWARD CLOCK. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF (+ quant). Measures: fee definitions matching Kalshi's published schedule 0 -> 1 (with every reported net figure
+re-checked); ride cells HELD_OUT in ride_cells.toml 0 -> 2; ride hypotheses pre-registered for a forward look 11 (EXP-042) -> 11 + the
+ladder ride (EXP-043), with at least one look that can fall this winter.
+Why: every net-of-cost number the bot has reported uses fee k007 = 0.07 x p x (1 - p). Muse's R-068 (archive
+sources/kalshi-fees/, read it) quotes Kalshi's schedule: the same taker formula, rounded UP to a centicent; a maker fee of 0.0175 x
+p x (1 - p) on listed series; and for MLB spread, total, team-total and props (and MLB game), a multiplier of 0.5 BEFORE the game goes
+live. The MLB pre-game nets in 89.2, 90.3 and 91.2 therefore charge twice the real taker fee. The ladder ride (91.2) is the one ride idea
+with a mechanism we can see (the strike moves toward the ladder, +1.3c in 1 h), but net of cost it is +0.7c [-0.2c, +1.7c] over the whole
+sample, and its two HELD_OUT cells are MLB, which cannot be judged before April.
+Premises to check: money.py's fee_k007 and its callers (grep every caller first, Hard Rule 13); Muse's three fee cards (they quote a
+PDF effective 2026-07-07 and the live web table); EXP-041 and EXP-042 both froze "k007" - they are frozen artifacts and stay as written.
+PERMISSIONS: per the common rules' ownership; a NEW pre-registration (standing authorization 2026-10-08). NOT: editing fee_k007 or any
+existing function, EXP-041, EXP-042, any order, gate, model, runner, ledger or registry cell; wiring anything.
+
+PART A - Fees as Kalshi publishes them (~40 min)
+  NEW functions in money.py: fee(series, price, contracts, side = taker | maker, phase = prelive | live) driven by a fee-table DATA file
+  built from Muse's cards (series -> taker / maker multiplier, prelive / live), rounding up to a centicent per order. Known-answer tests
+  copied from the schedule's own formula and examples. Then a table: every published net figure that used k007 (89.2's 11 cells, 90.3's
+  momentum grid headline, 91.2's ladder whole-sample and its 2 HELD_OUT cells, distance E2 if it charges a fee) recomputed with the exact
+  fee - old, new, difference. Do not re-select any cell. If a frozen pre-registration's fee differs from the real one, say by how much
+  and which direction, and give one operator line with your recommendation (k007 overstates MLB pre-game fees, so it is conservative).
+PART B - The ladder ride on a forward clock (~40 min)
+  1. ride_cells.toml: add 91.2's two KXMLBTOTAL T0-2h tight LADDER cells with status HELD_OUT and their measured net and interval (from
+     12_EXPLORATORY/ride_ladder/), through a PR; ride.py's tests still pass.
+  2. EXP-043, frozen before any new row is read: (a) the two HELD_OUT cells, forward, scored from the price archive (look dates in the
+     MLB season); (b) the ladder trigger as a POOLED hypothesis across sports and families (91.2's definition exactly: leave-one-out
+     normal fit on a ladder of >= 4 strikes, trigger when the ladder price beats the quote net of cost), scored forward on NFL rows now
+     and on NBA / NHL rows from the date 92.1's archive lines are installed, with the exact fee from Part A; judged n from 91.2's variance
+     at the effect it measured (state power and alpha); the pass rule, the modal outcome, and the earliest look date. If no look can fall
+     before 2027, say so plainly.
+Results: the fee functions + data file + tests, results_W92_2.md (the old / new fee table), the ride table PR, EXP-043 frozen (hash), a
+handoff, and the operator line on the frozen fees.
+
+END OF BLOCK 92.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 92.3 — The NBA engine, depth lane: lineups and on/off, point-in-time
+**DEPTH · terminal 3**
+
+```
+Before anything else, read the Wave 92 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 92.3 - THE NBA ENGINE, DEPTH LANE: LINEUPS AND ON/OFF, BUILT POINT-IN-TIME FROM THE PLAY-BY-PLAY. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH. Measures: D5(b) NBA factor B7 (lineup / on-off / matchup) none -> interpreted (applied only with a market test);
+D4 NBA "data layer" -> first factor class built point-in-time from event-level data; D5(b) NBA aggregated / interpreted / applied
+2 / 6 / 5 of 15 -> n.
+ADR-0073 (operator 2026-10-13): one deep engine per sport, built from the finest event-level data (NBA: possessions), every factor class
+built once, point-in-time; "NFL first, as the template; NBA next". Depth has a continuous lane in every wave until each live sport has its
+engine; Waves 89-91 spent it on riding the market. NBA's seat (02_ARCHITECTURE_DESIGN/SEATS/nba.toml) has B7 "Lineup / on-off, play-type,
+matchup" at stage none, while B10 (lineup cross) and B11 (absorber play-type) are interpreted and need it underneath.
+Premises to check: the NBA event store holds play-by-play 2016 -> 2027 (sportsdataverse nba_stats pbp, 49 columns; manifest
+02_ARCHITECTURE_DESIGN/NBA_ENGINE/event_store_manifest.json) - confirm it carries substitutions and the players on the floor, or what is
+needed to reconstruct them; INDEX_ENTRY_LINEUP.md and FACTORS_FIRST_READ.md in that folder; Muse's R-046 matchup pairs (2024-25,
+2025-26) in the archive, REPORTED only. Kalshi NBA markets exist only from 2026-10-01 (Muse R-069), so any market test is this season.
+PERMISSIONS: per the common rules' ownership. NOT: any live model, runner, shadow arm, pre-registration, order, gate, ledger or registry
+cell; no new running component.
+
+PART A - The lineup layer (~45 min)
+  From the play-by-play, reconstruct lineup stints (the five on the floor for each team, possessions, points for and against), validated
+  against box-score minutes on a sample of games (state the match rate; stints that cannot be reconstructed are dropped and counted).
+  From the stints, point-in-time as of each game (strictly before tip): each team's expected lineup strength given who is available
+  (rotation-weighted net rating with shrinkage to the team mean - state the prior), and the on/off swing of each rotation player.
+  Known-answer test: a simulated league with known lineup effects is recovered. Leakage test: nothing from the game being predicted.
+PART B - Interpreted, then against the market where it can be (~35 min)
+  Interpreted: on held-out seasons (train on earlier seasons, score 2024-25 and 2025-26), does the lineup layer predict game margin and
+  total beyond what B1 (team form) and B9 (pace) already carry? Paired, game-clustered, with intervals. Applied, descriptive only: on this
+  season's Kalshi NBA game / spread / total markets (from 2026-10-01; thin), does it disagree with the price in a direction that settled?
+  Report n and say plainly that the market test is underpowered if it is. Update B7's row in nba.toml with the stage reached and the five
+  granularity-index parts.
+Results: the module + tests, 12_EXPLORATORY/nba_lineups/results_W92_3.md, the seat row, a handoff (stage reached per factor).
+
+END OF BLOCK 92.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
 
 ---
 
@@ -345,135 +472,9 @@ local project folder does not have the new command — `/loop /gap-agent` failed
 
 ## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
 
-### B74-A — Full hygiene check + the runtime map made live and visible (ADR-0074) · brand-new terminal
+*(none: B74-A was issued as Wave 76.4 and is archived verbatim.)*
 
-**Status (2026-10-14 22:16 PT): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Session 2 (Parts C+D) NOT started - the terminal closed when Session 1 ended. **→ ISSUED as Wave 76.4 (2026-10-15 ~06:10 UTC), the 4th terminal the operator asked for at 22:17 PT. Paste 76.4 from the NOW section, not this backlog copy.** Wave 75's "do not touch B74-A Session 2's files" rule stays in force anyway - it keeps those files clear for it.**
-
-```
-COMMON RULES - BACKLOG BLOCK B74-A (read first; they bind this block; B74-A OVERRIDES below take precedence)
-- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
-  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
-  re-verify things this prompt states as verified unless your work depends on them.
-  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
-  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
-  Never leave work unpushed.
-- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
-  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
-  summary after each merge and record the t4-mlb decision.
-- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
-  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
-  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
-  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
-  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
-- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
-  collides, re-claim; never reuse.
-- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
-- CI runs on every PR again (public repo). Never add a paid service.
-- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
-  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
-  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
-  DONE means the running process or cron was read back over ssh - never "merged".
-- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
-  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
-- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
-  branch locally, re-run the suite, push, merge.
-- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
-  only your own entries/rows. DECISION_LOG is append-only.
-- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
-  line. Read-only GETs against the Kalshi DEMO API are allowed.
-- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
-- Never bypass a permission control: record the exact command and refusal, hand back.
-- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
-  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
-  recommendation, after the rest of the block is done.
-- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
-  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
-  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
-  measure, say so and stop rather than doing adjacent work.
-- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
-- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
-- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
-  <before> -> <after> (source) or none | operator decisions.
-  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_B74A_<session n>.md (docs-only push).
-
-B74-A OVERRIDES (this block only):
-- SIZE: LARGE by operator request (2026-10-14: "I'm sending it to a brand new terminal, so make sure it's doing a full
-  hygiene check too not just an add on ... I want this wired into the visual dashboard AND live terminal ... I want to see
-  it"). Four parts, run as TWO sessions in this ONE terminal (Hard Rule 11: one session = one deliverable):
-    SESSION 1 = Parts A + B (the audit; deliverable = HYGIENE_AUDIT report). Target 90 min, ceiling 120. Push, /session-end.
-    SESSION 2 = Parts C + D (registry live + both dashboards; deliverable = merged PRs read back on the box). Fresh claim,
-    then target 90 min, ceiling 120. If either session runs out, stop at a pushed boundary and name the next undone part.
-- In SESSION 1 you change NO code (src/, scripts/, tests/, deploy/, .github/, .claude/): every defect is REGISTERED (GG, with
-  evidence + proposed fix), never fixed (Hard Rule 11). SESSION 2 changes code only for Parts C + D.
-- Audit tools go in a throwaway venv in your worktree (pip; never in pyproject; $0). ssh is read-only throughout
-  (crontab -l, systemctl show/status, cat/stat/tail, git -C /opt/prediction-market-bot rev-parse/status).
-- Never run /_archive:vps_DO_NOT_RUN or anything that deploys by hand.
-
-BLOCK B74-A - FULL HYGIENE CHECK; RUNTIME MAP LIVE AND VISIBLE. Repo: eignacio1/prediction-market-bot.
-PURPOSE: PLUMBING - is the system structurally sound now that Waves 72-73 changed it (re-audit against the 10-13 baseline), and
-make "what runs, is it alive, who owns it" something the operator SEES (GG-740, GG-743, Hard Rules 13-15). Pillar: none;
-every finding names the pillar it would corrupt. Read first: ADR-0074, CLAUDE.md Hard Rules 13-15,
-05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md (the baseline: SOUND WITH ISSUES, GG-660..677, H2 remainder).
-
-WHY
-The 10-13 audit (71.H1) found 18 gaps; Wave 72 fixed the worst (crash-safe ledgers, deploy truth, order-path guards, /vps
-retired). Wave 73 then added code (NFL data layer and engine, forward-test changes). 71.H1 also never invoked the review
-skills - it covered their ground by hand. ADR-0074 (10-14) built the runtime registry (76 components, all auto-classified,
-reviewed = false), a CI check, the pattern-sweep rule and the window error log - but nothing shows it live, and the operator
-wants to see it on both dashboards, not just in the background.
-
-SESSION 1
-PART A - Mechanical sweep, diffed against the baseline (~45 min). Paste counts; triage every HIGH by hand:
-  1. ruff (default + F, E9, B, S, E722) on src/ scripts/ tests/ deploy/ - new vs baseline counts.
-  2. bandit -r src scripts (>= medium); pip-audit (pin what blocks it, in the venv only); secrets grep (NFR-05).
-  3. vulture (>= 80) on src/; radon cc -nc src (top 10, which sit on order/risk/ledger paths); mypy on c4_risk_engine,
-     c5_execution, pregame_shadow, and the new NFL data-layer/engine code.
-  4. Full suite with coverage (pytest-cov): coverage for c4, c5, pregame_shadow, ledger/atomic_io, the NFL engine; every skip.
-  5. Repo checks: Step 2 stub scan, assert_ledger_invariants (on read-only copies pulled from the VPS - a 0 with no data is
-     not a pass), gg_id_uniqueness_check, check_register_parity, runtime_registry.py check + surface.
-  6. Baseline diff: for each of GG-660..677 and GG-690/691 - fixed and running (read back), fixed on disk only, or still open.
-PART B - Judgment review (~45 min). INVOKE each that is available as a skill/command and say which ran and which were not
-listed: /hygiene, /security-review, /deploy-audit, /pregame (read-only), engineering:code-review, engineering:architecture,
-engineering:deploy-checklist, engineering:testing-strategy, engineering:tech-debt, data:validate-data. Use parallel read-only
-subagents per lane:
-  L1 Orders: can any path place a real-money order (GG-666 guard holds?); kelly from BAND_CONFIGS everywhere; kill switch
-     reaches every running process including the new forward-test paths.
-  L2 Ledgers + data: atomic writes everywhere (GG-680 left the read-side policy open); point-in-time on every pre-game
-     feature including the new NFL event store; data:validate-data on every judged ledger.
-  L3 Failure handling: swallowed errors on any path feeding a ledger, an order or a verdict.
-  L4 Deployment (audit, never execute): vps_deploy.sh, restart policy, pending-restart marker, deploy status file, box HEAD
-     vs origin/main, running-code SHA per service, crontab vs every mirror (GG-742), env files and modes, disk/logs (GG-670).
-  L5 Architecture: C4-C8 sport-agnostic in practice; registry cells vs runners vs silent-arm specs; the NFL engine's
-     interface vs the per-cell models it is meant to replace (ADR-0073).
-  L6 Process (ADR-0074): every running component in RUNTIME_REGISTRY.toml; handoffs since 10-15 12:00Z carry pattern_sweep;
-     the last three fixes - was the same defect swept elsewhere?
-REPORT: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_<UTC date>.md - VERDICT first (SOUND / SOUND WITH ISSUES /
-NOT SOUND, with reason and the change since 10-13), 5-line plain-English summary, findings ranked with file:line, evidence,
-pillar, proposed fix, GG id; baseline table; skills run / not available; "Not checked"; punch list sized into MEDIUM blocks.
-Push. /session-end (pattern_sweep: n/a - audit only; surface_delta: 0).
-
-SESSION 2 (fresh claim)
-PART C - The runtime map goes live (~50 min)
-  7. Review every registry entry against the box (crontab -l, systemd, workflows): accurate purpose, pillar, writes, alarm;
-     reviewed = true. Installed but unmirrored -> GG. Mirrored but not installed -> paused/retired with reason. Close GG-742.
-  8. GG-743: give each no-alarm component an alarm or a written reason it needs none; build the cheap ones as staleness checks
-     on its `writes` paths.
-  9. governance_scan_full.sh prints a RUNTIME block: registry check, surface counts, live columns (last-write age per
-     component, running-code SHA vs box HEAD per service), and SURFACE BUDGET: GREEN or RED with reasons (healthcheck faults,
-     silent arm whose sport had games, running SHA > 6h behind HEAD, registry check failing). One cached ssh round trip.
-PART D - Visible on both dashboards (~40 min)
- 10. Web dashboard /project: a "Process integrity" panel - surface (live / no alarm / unreviewed), SURFACE BUDGET GREEN/RED
-     with reasons, the runtime map with live columns (stale rows red), window-error tally. Same data the scan computes.
- 11. Live Terminal (/): a compact strip - SURFACE BUDGET chip, count of components stale or with no alarm, and any red
-     component by name (like the SILENT ARM rows). Phone width checked (390px, no horizontal scroll).
- 12. The operator's standalone Visual Dashboard already has the static section (scripts/build_visual_dashboard_html.py,
-     04_EXECUTION/visual_dashboard/): add the live columns there too if the scan writes them to a file the builder can read.
- Tests; PR; merge; deploy; restart pmbot-web-dashboard (standing authorization); read both pages back over ssh/curl and paste
- what they show. Handoff with pattern_sweep and surface_delta.
-
-END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncated: stop and report it.
-```
+---
 
 ## Sequencing track
 
@@ -694,6 +695,12 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **AUTHORIZATION - WHERE THE PASTES LIVE, AND WHEN THE SHARED FOLDER IS REFRESHED (operator, 2026-10-27 21:46 PT: "you don't need
+> to waste my tokens putting it in this chat, just put it in the Active Queue file. Also - no need to keep updating my folders to catch
+> it up after every wave - we'll just have you do it when we're doing handoffs from window to a new chat.").** Wave blocks live in the
+> NOW section of this file (common rules in a file each block points to), never pasted into the chat. The operator's Mac folder is
+> fast-forwarded only at a window-to-new-chat handoff (amends the 2026-10-21 19:39 PT shared-folder protocol below; the folder stays).
 
 > **AUTHORIZATION - ADR-0076 ACCEPTED AS THE G6 DEFINITION (operator, 2026-10-27 17:30 PT, asked by the strategic window whether he
 > accepts ADR-0076 with the blanks left blank until a positive Kelly is proposed: "Yes I accept").** G6 is qualified per (book, sport):

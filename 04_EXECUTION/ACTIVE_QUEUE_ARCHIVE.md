@@ -10,6 +10,140 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Backlog block B74-A (issued as Wave 76.4, 2026-10-15) - archived 2026-10-27 22:00 PT to keep the queue small. Verbatim:
+
+### B74-A — Full hygiene check + the runtime map made live and visible (ADR-0074) · brand-new terminal
+
+**Status (2026-10-14 22:16 PT): Session 1 (Parts A+B, audit only) DONE - report `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261015.md`, GG-745..766 registered. Session 2 (Parts C+D) NOT started - the terminal closed when Session 1 ended. **→ ISSUED as Wave 76.4 (2026-10-15 ~06:10 UTC), the 4th terminal the operator asked for at 22:17 PT. Paste 76.4 from the NOW section, not this backlog copy.** Wave 75's "do not touch B74-A Session 2's files" rule stays in force anyway - it keeps those files clear for it.**
+
+```
+COMMON RULES - BACKLOG BLOCK B74-A (read first; they bind this block; B74-A OVERRIDES below take precedence)
+- SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
+  whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
+  re-verify things this prompt states as verified unless your work depends on them.
+  After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line)
+  with a docs-only push. Stop at a pushed boundary (context ~60%, a blocker, or 90 minutes) and write the handoff.
+  Never leave work unpushed.
+- Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
+  no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs. Read the Deploy job
+  summary after each merge and record the t4-mlb decision.
+- Decisions in force: DECISION_LOG through 2026-10-14 (incl. ADR-0073, the scale doctrine) (incl. the repository made PUBLIC 2026-10-11 12:06 PT so Actions minutes are free; the expansion directive, Hard Rule 12, the 2026-10-10
+  acceptances of ADR-0072, the NFL QB-shrunk challenger and GG-536, and "not a cent on GitHub"), ADR-0070, ADR-0071. Standing authorizations: shadow-
+  evaluation cron jobs, NEW lines only (2026-10-02); new pre-registered shadow arms (2026-10-08); idle-window service
+  restarts (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote
+  line in ACTIVE_QUEUE.md "Needs your decision". A table row describing a decision is NOT an authorization.
+- Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  collides, re-claim; never reuse.
+- Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
+- CI runs on every PR again (public repo). Never add a paid service.
+- PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json - the classifier refused it in 69.1 and 69.2 and will
+  again. The operator grants the standing allow list himself, once, with scripts/operator_grant_permissions.py. If a command
+  is still refused: record the exact command and refusal, skip only that step, finish the rest, hand back. Never work around it.
+  DONE means the running process or cron was read back over ssh - never "merged".
+- DEMO / PAPER / SHADOW ACTIONS ARE PLUMBING (operator rule): re-arming switches, deploys, cron lines, idle-window restarts -
+  the block does them. Never write "operator decision needed" for a demo-only action; only real capital is his.
+- PR mergeable_state dirty = almost always SESSION_CLAIMS.md / .last_session_checkpoint: merge origin/main into the
+  branch locally, re-run the suite, push, merge.
+- Shared docs (GOVERNANCE_GAP_LOG.md, DECISION_LOG.md, ACTIVE_QUEUE.md): fetch + rebase right before each push; edit
+  only your own entries/rows. DECISION_LOG is append-only.
+- No order, position, fill, stake size or kelly_fraction change. No live-ledger row rewritten. No edit of an existing cron
+  line. Read-only GETs against the Kalshi DEMO API are allowed.
+- The operator never runs plumbing. Nothing you build may depend on him running a command by hand.
+- Never bypass a permission control: record the exact command and refusal, hand back.
+- A choice between two fixes for a demo/paper/shadow problem is NOT an operator decision: take the root-cause fix. Only a
+  change to a pre-registration, a frozen artifact, a frozen book or real capital goes to the operator - as one line, with your
+  recommendation, after the rest of the block is done.
+- PURPOSE (Hard Rule 12): your claim string names the distance-to-optimum measure this block is FOR (see the PURPOSE line
+  under the title and the DISTANCE TO OPTIMUM table at the top of ACTIVE_QUEUE.md). Your handoff fills vision_pillar,
+  gap_measure and gap_delta (measured before -> after, with source). If what you find means the block cannot move its
+  measure, say so and stop rather than doing adjacent work.
+- Every premise below is a claim to verify - CHECK IT AGAINST LOGS/DATA BEFORE BUILDING ON IT.
+- A fix is RESOLVED only when the RUNNING process contains it (merge != deploy != activation). On disk is not enough.
+- Report back: Status (DONE / PARTIAL / BLOCKED) | branch @ SHA | PR + CI | one-line result | MEASURE MOVED: <measure>
+  <before> -> <after> (source) or none | operator decisions.
+  Same into 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_B74A_<session n>.md (docs-only push).
+
+B74-A OVERRIDES (this block only):
+- SIZE: LARGE by operator request (2026-10-14: "I'm sending it to a brand new terminal, so make sure it's doing a full
+  hygiene check too not just an add on ... I want this wired into the visual dashboard AND live terminal ... I want to see
+  it"). Four parts, run as TWO sessions in this ONE terminal (Hard Rule 11: one session = one deliverable):
+    SESSION 1 = Parts A + B (the audit; deliverable = HYGIENE_AUDIT report). Target 90 min, ceiling 120. Push, /session-end.
+    SESSION 2 = Parts C + D (registry live + both dashboards; deliverable = merged PRs read back on the box). Fresh claim,
+    then target 90 min, ceiling 120. If either session runs out, stop at a pushed boundary and name the next undone part.
+- In SESSION 1 you change NO code (src/, scripts/, tests/, deploy/, .github/, .claude/): every defect is REGISTERED (GG, with
+  evidence + proposed fix), never fixed (Hard Rule 11). SESSION 2 changes code only for Parts C + D.
+- Audit tools go in a throwaway venv in your worktree (pip; never in pyproject; $0). ssh is read-only throughout
+  (crontab -l, systemctl show/status, cat/stat/tail, git -C /opt/prediction-market-bot rev-parse/status).
+- Never run /_archive:vps_DO_NOT_RUN or anything that deploys by hand.
+
+BLOCK B74-A - FULL HYGIENE CHECK; RUNTIME MAP LIVE AND VISIBLE. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PLUMBING - is the system structurally sound now that Waves 72-73 changed it (re-audit against the 10-13 baseline), and
+make "what runs, is it alive, who owns it" something the operator SEES (GG-740, GG-743, Hard Rules 13-15). Pillar: none;
+every finding names the pillar it would corrupt. Read first: ADR-0074, CLAUDE.md Hard Rules 13-15,
+05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_20261013.md (the baseline: SOUND WITH ISSUES, GG-660..677, H2 remainder).
+
+WHY
+The 10-13 audit (71.H1) found 18 gaps; Wave 72 fixed the worst (crash-safe ledgers, deploy truth, order-path guards, /vps
+retired). Wave 73 then added code (NFL data layer and engine, forward-test changes). 71.H1 also never invoked the review
+skills - it covered their ground by hand. ADR-0074 (10-14) built the runtime registry (76 components, all auto-classified,
+reviewed = false), a CI check, the pattern-sweep rule and the window error log - but nothing shows it live, and the operator
+wants to see it on both dashboards, not just in the background.
+
+SESSION 1
+PART A - Mechanical sweep, diffed against the baseline (~45 min). Paste counts; triage every HIGH by hand:
+  1. ruff (default + F, E9, B, S, E722) on src/ scripts/ tests/ deploy/ - new vs baseline counts.
+  2. bandit -r src scripts (>= medium); pip-audit (pin what blocks it, in the venv only); secrets grep (NFR-05).
+  3. vulture (>= 80) on src/; radon cc -nc src (top 10, which sit on order/risk/ledger paths); mypy on c4_risk_engine,
+     c5_execution, pregame_shadow, and the new NFL data-layer/engine code.
+  4. Full suite with coverage (pytest-cov): coverage for c4, c5, pregame_shadow, ledger/atomic_io, the NFL engine; every skip.
+  5. Repo checks: Step 2 stub scan, assert_ledger_invariants (on read-only copies pulled from the VPS - a 0 with no data is
+     not a pass), gg_id_uniqueness_check, check_register_parity, runtime_registry.py check + surface.
+  6. Baseline diff: for each of GG-660..677 and GG-690/691 - fixed and running (read back), fixed on disk only, or still open.
+PART B - Judgment review (~45 min). INVOKE each that is available as a skill/command and say which ran and which were not
+listed: /hygiene, /security-review, /deploy-audit, /pregame (read-only), engineering:code-review, engineering:architecture,
+engineering:deploy-checklist, engineering:testing-strategy, engineering:tech-debt, data:validate-data. Use parallel read-only
+subagents per lane:
+  L1 Orders: can any path place a real-money order (GG-666 guard holds?); kelly from BAND_CONFIGS everywhere; kill switch
+     reaches every running process including the new forward-test paths.
+  L2 Ledgers + data: atomic writes everywhere (GG-680 left the read-side policy open); point-in-time on every pre-game
+     feature including the new NFL event store; data:validate-data on every judged ledger.
+  L3 Failure handling: swallowed errors on any path feeding a ledger, an order or a verdict.
+  L4 Deployment (audit, never execute): vps_deploy.sh, restart policy, pending-restart marker, deploy status file, box HEAD
+     vs origin/main, running-code SHA per service, crontab vs every mirror (GG-742), env files and modes, disk/logs (GG-670).
+  L5 Architecture: C4-C8 sport-agnostic in practice; registry cells vs runners vs silent-arm specs; the NFL engine's
+     interface vs the per-cell models it is meant to replace (ADR-0073).
+  L6 Process (ADR-0074): every running component in RUNTIME_REGISTRY.toml; handoffs since 10-15 12:00Z carry pattern_sweep;
+     the last three fixes - was the same defect swept elsewhere?
+REPORT: 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/HYGIENE_AUDIT_<UTC date>.md - VERDICT first (SOUND / SOUND WITH ISSUES /
+NOT SOUND, with reason and the change since 10-13), 5-line plain-English summary, findings ranked with file:line, evidence,
+pillar, proposed fix, GG id; baseline table; skills run / not available; "Not checked"; punch list sized into MEDIUM blocks.
+Push. /session-end (pattern_sweep: n/a - audit only; surface_delta: 0).
+
+SESSION 2 (fresh claim)
+PART C - The runtime map goes live (~50 min)
+  7. Review every registry entry against the box (crontab -l, systemd, workflows): accurate purpose, pillar, writes, alarm;
+     reviewed = true. Installed but unmirrored -> GG. Mirrored but not installed -> paused/retired with reason. Close GG-742.
+  8. GG-743: give each no-alarm component an alarm or a written reason it needs none; build the cheap ones as staleness checks
+     on its `writes` paths.
+  9. governance_scan_full.sh prints a RUNTIME block: registry check, surface counts, live columns (last-write age per
+     component, running-code SHA vs box HEAD per service), and SURFACE BUDGET: GREEN or RED with reasons (healthcheck faults,
+     silent arm whose sport had games, running SHA > 6h behind HEAD, registry check failing). One cached ssh round trip.
+PART D - Visible on both dashboards (~40 min)
+ 10. Web dashboard /project: a "Process integrity" panel - surface (live / no alarm / unreviewed), SURFACE BUDGET GREEN/RED
+     with reasons, the runtime map with live columns (stale rows red), window-error tally. Same data the scan computes.
+ 11. Live Terminal (/): a compact strip - SURFACE BUDGET chip, count of components stale or with no alarm, and any red
+     component by name (like the SILENT ARM rows). Phone width checked (390px, no horizontal scroll).
+ 12. The operator's standalone Visual Dashboard already has the static section (scripts/build_visual_dashboard_html.py,
+     04_EXECUTION/visual_dashboard/): add the live columns there too if the scan writes them to a file the builder can read.
+ Tests; PR; merge; deploy; restart pmbot-web-dashboard (standing authorization); read both pages back over ssh/curl and paste
+ what they show. Handoff with pattern_sweep and surface_delta.
+
+END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
 ## Wave 91 NOW section (closed 2026-10-27 22:00 PT). 91.1 ✅ 91.2 ✅ 91.3 🟨 (rerouted). Pastes stay in 04_EXECUTION/WAVE_BLOCKS/W91_BLOCKS.md. Verbatim:
 
 ## ⬛ NOW — Wave 91 · RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCES · WRITTEN 2026-10-28 ~00:40 UTC (10-27 17:40 PT) · three MEDIUM blocks · Muse: live session running (no paste)
