@@ -1,0 +1,2 @@
+task = "archive_cron_install"
+note = "W92.1 install NBA/NHL archive lines"
