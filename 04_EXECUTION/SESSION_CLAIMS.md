@@ -1080,3 +1080,4 @@
 | 2026-10-28T05:10:40Z | T-1360 | CLOSED — merge confirmed, HEAD (c8ea09f) is ancestor of origin/main — W92.2 PARTIAL: Parts A+B merged, EXP-043 frozen |
 | 2026-10-28T05:20:04Z | TBD | --help |
 | 2026-10-28T05:22:02Z | T-1380 | CLOSED — W92.1 DONE: six NBA/NHL archive lines installed and read back with rows; surface budget excludes uninstalled entries. (commit `d00b2b3`) |
+| 2026-10-28T05:22:13Z | T-1380 | CLOSED — merge confirmed, HEAD (0a253aa) is ancestor of origin/main — W92.1 DONE: archive lines installed and read back; budget fix |
