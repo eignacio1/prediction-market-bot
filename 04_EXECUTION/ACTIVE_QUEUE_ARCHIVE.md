@@ -10,6 +10,174 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 92 NOW section with its pastes (closed 2026-10-27 22:40 PT). 92.1 ✅ 92.2 🟨 92.3 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md. Verbatim:
+
+## ⬛ NOW — Wave 92 · THE WINTER ARCHIVE, EXACT FEES, THE NBA ENGINE · WRITTEN 2026-10-28 ~05:00 UTC (10-27 22:00 PT) · three MEDIUM blocks · no Muse paste (ten scheduled cycles a day)
+
+**The pastes:** below this section's notes, one fenced block per terminal (92.1, 92.2, 92.3; all three run in parallel). Each block points the terminal to the wave's common rules (`04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`), so the pastes stay short.
+
+| # | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|
+| 92.1 | NBA + NHL prices archived for real (install route, spreads / totals / team totals added), and a surface budget that counts only what is installed | BREADTH + PLUMBING: sports archived 2 → 4 (rows read back); phantom live entries 6 → 0 | ✅ | W92.1 DONE 2026-10-28: PRs #358 (installer) + #361 (budget); 8 NBA/NHL series have rows on the box, budget GREEN with 83 live and 0 mirrored-but-not-installed. Handoff: SESSION_HANDOFF_20261028_W92_1.md |
+| 92.2 | Fees exactly as Kalshi publishes them (Muse R-068), every reported net re-checked; the 2 ladder cells into the ride table; the ladder ride pre-registered forward (EXP-043) | PROOF: ride cells HELD_OUT 0 → 2; forward hypotheses 11 → 11 + ladder | 🟨 PARTIAL | Part A (#357) + Part B (#360 ride cells HELD_OUT 0→2; EXP-043 frozen 4fcec70); no look before 2027; exact per-trade net recompute not done |
+| 92.3 | NBA engine, depth lane: lineups and on/off from the play-by-play, point-in-time; interpreted, then against this season's market | DEPTH: D5(b) NBA B7 none → interpreted; D4 NBA first factor class from event data | ✅ | PR #359 merged. B7 interpreted on the total (gain 4.04 MSE, CI 1.92-6.10, n=2008); margin null beyond prior carry; applied test underpowered (no pre-game NBA prices). |
+
+**What Wave 91 delivered (verified 2026-10-28 04:33Z: #347 #353-#356 CI green; box bridge `20261028T043253Z_*`):**
+**91.1 ✅** EXP-042 frozen before any new row: 89.2's 11 cells, forward only. The backward test was VOID (hourly candles failed the
+overlap check, 83.8% < 85%), and Muse's R-069 showed it could never have run: **no Kalshi sports series existed before August 2026**.
+Forward looks: the NFL cell ~2026-12-21, the MLB cells April-June 2027. GG-1253 (MLB ticker clock) validated; GG-204 / GG-285 resolved
+by ADR-0076 (flipped to ACCEPTED, CLAUDE.md's G6 wording fixed). **91.2 ✅** ride.py built, the router's stub replaced: RIDE 3,838 → 0
+(nothing has held out of sample). The ladder ride measured: a strike quoted off its own ladder moves toward it (+1.3c in 1 h, gross),
+the ladder does not move toward the strike; net of cost +0.7c [-0.2c, +1.7c]; 2 of 36 cells HELD_OUT on one time split, both MLB totals
+in the last 2 h with a tight book. **91.3 🟨** #347 and #354 merged; the six NBA / NHL archive lines are registered but not installed
+(the terminal's ssh append was refused and it asked the operator - it is plumbing, 92.1 installs them); Part B not started.
+**Muse (ten scheduled cycles a day since 10-27):** 13 tickets closed today, among them the fee schedule verbatim (R-068: our fee
+formula is right, but MLB pre-game fees are HALF of what we charge), first listing dates (R-069), the favourite-longshot literature
+(R-070: the sign and size depend on venue, aggregation and sport), and the live ten (lines, splits, contract rules, NBA starters, NHL
+goalies, injury-report and lineup timing, weather forecasts).
+**The plain reading:** the ride work produced its first real mechanism (ladders) and a frozen forward test, but every candidate so far
+is MLB, so the scoreboard cannot move before spring. This wave moves the evidence to NBA and NHL (92.1), makes the cost side exact
+(92.2), and puts the depth lane back on the NBA engine (92.3).
+**Distance:** D5(a) +1 per sport (momentum counted); ride cells pre-registered 0 → 11 (EXP-042); ADR-0076 accepted; everything else 0.
+
+**Pushback:** no PROOF number can move this wave: the NFL first look (11-02) is pre-registered as KEEP ACCRUING (~91%), EXP-042's
+earliest look is ~12-21, and NBA / NHL archive rows only start when 92.1 installs them. 92.1 is mostly plumbing; it is the plumbing
+the winter's evidence runs through, and it fixes a gauge (the budget) that read GREEN while wrong.
+**Surface:** budget GREEN but overstated by 6 (fixed in 92.1). Expected delta: +6 to about +12 real (the NBA / NHL archive lines); 92.2
+and 92.3 add nothing running. After 92.1's budget fix, a not-installed line reads RED, so the install comes first.
+**Dependencies:** none. 92.2's EXP-043 names "from the date 92.1's lines are installed" for NBA / NHL rows; it does not wait for them.
+
+
+### 92.1 — The winter archive: NBA and NHL prices captured for real, and a surface budget that tells the truth
+**BREADTH + PLUMBING · terminal 1**
+
+```
+Before anything else, read the Wave 92 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 92.1 - THE WINTER ARCHIVE: NBA AND NHL PRICES CAPTURED FOR REAL, AND A SURFACE BUDGET THAT TELLS THE TRUTH. Repo: eignacio1/prediction-market-bot.
+PURPOSE: BREADTH + PLUMBING. Measures: sports in the price archive 2 -> 4 (read back as rows on the box, not as merged lines); NBA / NHL
+families archived 0 -> n (game, spread, total, team total); surface budget: registered-but-not-installed entries counted as live 6 -> 0.
+Why: every ride cell found so far is MLB, and MLB is done until April. Forward evidence this winter has to come from NBA and NHL, and
+neither has a single archived price. 91.3 merged six NBA / NHL archive lines (#354), but they are not installed: deploy does not touch
+the crontab, the terminal's ssh append was refused, and it handed the install to the operator as a decision. It is plumbing, not his
+call. The box's 04:33Z read shows the real gap twice over: "6 mirrored-but-not-installed", counted in "83 live components", with the
+budget still GREEN.
+Premises to check: past cron installs on the box went through allowlisted bridge tasks with their own installer scripts
+(scripts/thin_capture_install.py, scripts/source_capture_install.py: backup, additive install, readback, uninstall) - read them and copy
+the pattern, do not invent a new one. The six lines are in deploy/cron.conf and RUNTIME_REGISTRY.toml (KXNBAGAME, KXNHLGAME only).
+PERMISSIONS: per the common rules' ownership; NEW cron lines only (never edit or remove an existing line); public unauthenticated
+Kalshi market-data GETs, paced. NOT: any order, gate, model, runner, ledger, registry cell or pre-registration; 92.2's or 92.3's files.
+
+PART A - Install route, then the lines (~45 min)
+  1. scripts/archive_cron_install.py with install / readback / uninstall, on the thin_capture / source_capture pattern: back up the
+     crontab first, append only the archiver lines RUNTIME_REGISTRY.toml names as live and the crontab lacks, idempotent, never touch any
+     other line. Add archive_cron_install, archive_cron_readback and archive_cron_uninstall to the bridge allowlist. Tests: idempotent
+     second run; a foreign line is never modified; a missing backup aborts.
+  2. Add the NBA and NHL spread, total and team-total series (list them from Kalshi's public API, never assume) as new lines on the same
+     schedule pattern; measure one run's rows, bytes and duration per series and project a month's disk use against the box's free
+     space; stay within the rate limit 91.1 hit (GG-1341: about 4 requests a second combined with 429s) - state the pacing.
+  3. Merge on green CI, then request the install through the bridge and read back: every new line on the crontab, first rows per
+     series in exp_output/PRICE_ARCHIVE/, no 429 storm, the staleness alarm wired. Resolve GG-1250 / GG-1330 for what is captured.
+PART B - The budget tells the truth (~25 min)
+  scripts/runtime_registry.py: a registry entry marked live with nothing installed on the box must not count as live and must turn the
+  SURFACE BUDGET RED (Hard Rule 14 reads that budget). Tests on a fixture registry. Pattern sweep (Hard Rule 13): every other place that
+  counts registry entries as live without checking the box (distance, dashboard, healthcheck) - fix or register each. Read back on the box
+  after the merge: the budget line and the live count.
+Results: the installer + tests + allowlist entries, the new lines read back with rows, the budget fix read back, a handoff (vision_pillar
+BREADTH + PLUMBING; surface_delta = lines actually installed). If time remains after both parts (and only then): 89.2's calibration scan
+on NBA / NHL candles as discovery (91.3's old Part B), labelled IN_SAMPLE.
+
+END OF BLOCK 92.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 92.2 — Exact fees, and the ladder ride put on a forward clock
+**PROOF · terminal 2**
+
+```
+Before anything else, read the Wave 92 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 92.2 - EXACT FEES, AND THE LADDER RIDE PUT ON A FORWARD CLOCK. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF (+ quant). Measures: fee definitions matching Kalshi's published schedule 0 -> 1 (with every reported net figure
+re-checked); ride cells HELD_OUT in ride_cells.toml 0 -> 2; ride hypotheses pre-registered for a forward look 11 (EXP-042) -> 11 + the
+ladder ride (EXP-043), with at least one look that can fall this winter.
+Why: every net-of-cost number the bot has reported uses fee k007 = 0.07 x p x (1 - p). Muse's R-068 (archive
+sources/kalshi-fees/, read it) quotes Kalshi's schedule: the same taker formula, rounded UP to a centicent; a maker fee of 0.0175 x
+p x (1 - p) on listed series; and for MLB spread, total, team-total and props (and MLB game), a multiplier of 0.5 BEFORE the game goes
+live. The MLB pre-game nets in 89.2, 90.3 and 91.2 therefore charge twice the real taker fee. The ladder ride (91.2) is the one ride idea
+with a mechanism we can see (the strike moves toward the ladder, +1.3c in 1 h), but net of cost it is +0.7c [-0.2c, +1.7c] over the whole
+sample, and its two HELD_OUT cells are MLB, which cannot be judged before April.
+Premises to check: money.py's fee_k007 and its callers (grep every caller first, Hard Rule 13); Muse's three fee cards (they quote a
+PDF effective 2026-07-07 and the live web table); EXP-041 and EXP-042 both froze "k007" - they are frozen artifacts and stay as written.
+PERMISSIONS: per the common rules' ownership; a NEW pre-registration (standing authorization 2026-10-08). NOT: editing fee_k007 or any
+existing function, EXP-041, EXP-042, any order, gate, model, runner, ledger or registry cell; wiring anything.
+
+PART A - Fees as Kalshi publishes them (~40 min)
+  NEW functions in money.py: fee(series, price, contracts, side = taker | maker, phase = prelive | live) driven by a fee-table DATA file
+  built from Muse's cards (series -> taker / maker multiplier, prelive / live), rounding up to a centicent per order. Known-answer tests
+  copied from the schedule's own formula and examples. Then a table: every published net figure that used k007 (89.2's 11 cells, 90.3's
+  momentum grid headline, 91.2's ladder whole-sample and its 2 HELD_OUT cells, distance E2 if it charges a fee) recomputed with the exact
+  fee - old, new, difference. Do not re-select any cell. If a frozen pre-registration's fee differs from the real one, say by how much
+  and which direction, and give one operator line with your recommendation (k007 overstates MLB pre-game fees, so it is conservative).
+PART B - The ladder ride on a forward clock (~40 min)
+  1. ride_cells.toml: add 91.2's two KXMLBTOTAL T0-2h tight LADDER cells with status HELD_OUT and their measured net and interval (from
+     12_EXPLORATORY/ride_ladder/), through a PR; ride.py's tests still pass.
+  2. EXP-043, frozen before any new row is read: (a) the two HELD_OUT cells, forward, scored from the price archive (look dates in the
+     MLB season); (b) the ladder trigger as a POOLED hypothesis across sports and families (91.2's definition exactly: leave-one-out
+     normal fit on a ladder of >= 4 strikes, trigger when the ladder price beats the quote net of cost), scored forward on NFL rows now
+     and on NBA / NHL rows from the date 92.1's archive lines are installed, with the exact fee from Part A; judged n from 91.2's variance
+     at the effect it measured (state power and alpha); the pass rule, the modal outcome, and the earliest look date. If no look can fall
+     before 2027, say so plainly.
+Results: the fee functions + data file + tests, results_W92_2.md (the old / new fee table), the ride table PR, EXP-043 frozen (hash), a
+handoff, and the operator line on the frozen fees.
+
+END OF BLOCK 92.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 92.3 — The NBA engine, depth lane: lineups and on/off, point-in-time
+**DEPTH · terminal 3**
+
+```
+Before anything else, read the Wave 92 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 92.3 - THE NBA ENGINE, DEPTH LANE: LINEUPS AND ON/OFF, BUILT POINT-IN-TIME FROM THE PLAY-BY-PLAY. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH. Measures: D5(b) NBA factor B7 (lineup / on-off / matchup) none -> interpreted (applied only with a market test);
+D4 NBA "data layer" -> first factor class built point-in-time from event-level data; D5(b) NBA aggregated / interpreted / applied
+2 / 6 / 5 of 15 -> n.
+ADR-0073 (operator 2026-10-13): one deep engine per sport, built from the finest event-level data (NBA: possessions), every factor class
+built once, point-in-time; "NFL first, as the template; NBA next". Depth has a continuous lane in every wave until each live sport has its
+engine; Waves 89-91 spent it on riding the market. NBA's seat (02_ARCHITECTURE_DESIGN/SEATS/nba.toml) has B7 "Lineup / on-off, play-type,
+matchup" at stage none, while B10 (lineup cross) and B11 (absorber play-type) are interpreted and need it underneath.
+Premises to check: the NBA event store holds play-by-play 2016 -> 2027 (sportsdataverse nba_stats pbp, 49 columns; manifest
+02_ARCHITECTURE_DESIGN/NBA_ENGINE/event_store_manifest.json) - confirm it carries substitutions and the players on the floor, or what is
+needed to reconstruct them; INDEX_ENTRY_LINEUP.md and FACTORS_FIRST_READ.md in that folder; Muse's R-046 matchup pairs (2024-25,
+2025-26) in the archive, REPORTED only. Kalshi NBA markets exist only from 2026-10-01 (Muse R-069), so any market test is this season.
+PERMISSIONS: per the common rules' ownership. NOT: any live model, runner, shadow arm, pre-registration, order, gate, ledger or registry
+cell; no new running component.
+
+PART A - The lineup layer (~45 min)
+  From the play-by-play, reconstruct lineup stints (the five on the floor for each team, possessions, points for and against), validated
+  against box-score minutes on a sample of games (state the match rate; stints that cannot be reconstructed are dropped and counted).
+  From the stints, point-in-time as of each game (strictly before tip): each team's expected lineup strength given who is available
+  (rotation-weighted net rating with shrinkage to the team mean - state the prior), and the on/off swing of each rotation player.
+  Known-answer test: a simulated league with known lineup effects is recovered. Leakage test: nothing from the game being predicted.
+PART B - Interpreted, then against the market where it can be (~35 min)
+  Interpreted: on held-out seasons (train on earlier seasons, score 2024-25 and 2025-26), does the lineup layer predict game margin and
+  total beyond what B1 (team form) and B9 (pace) already carry? Paired, game-clustered, with intervals. Applied, descriptive only: on this
+  season's Kalshi NBA game / spread / total markets (from 2026-10-01; thin), does it disagree with the price in a direction that settled?
+  Report n and say plainly that the market test is underpowered if it is. Update B7's row in nba.toml with the stage reached and the five
+  granularity-index parts.
+Results: the module + tests, 12_EXPLORATORY/nba_lineups/results_W92_3.md, the seat row, a handoff (stage reached per factor).
+
+END OF BLOCK 92.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
+---
+
 ## Backlog block B74-A (issued as Wave 76.4, 2026-10-15) - archived 2026-10-27 22:00 PT to keep the queue small. Verbatim:
 
 ### B74-A — Full hygiene check + the runtime map made live and visible (ADR-0074) · brand-new terminal
