@@ -2947,3 +2947,11 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-27 17:35 PT — 91.3 rerouted: NBA and NHL into the price archive + first NBA/NHL calibration scan (operator)
 - Operator, 17:32 PT: "We're going to reroute 91.3 - give me a new block to input into that terminal".
 - Window's choice: GG-1250 / GG-1330 (NBA, NHL not archived), because 10 of the 11 ride cells are MLB and the season ends this week; winter ride evidence needs NBA/NHL forward snapshots. New cron lines only, on GREEN, registered; PR #347 kept as Part 0; Part B is discovery only (IN_SAMPLE), for a pre-registered forward test next wave.
+
+## 2026-10-28 01:10 UTC — W91.3 partial close (rerouted)
+- Operator 17:31/17:32 PT: Polymarket work stopped; 91.3 rerouted to NBA/NHL into the price archive + first calibration scan. No Polymarket files, branches or PRs were created.
+- PR #347 (89.6 lock alignment) merged as 631c74e; lock file only, not imported by t4-mlb: decision NO restart (t4-mlb active since 2026-10-27 04:58:35Z).
+- PR #354 merged (30e2434): 6 new cron lines (NBA 3, NHL 3; 4 game families each) + 6 RUNTIME_REGISTRY entries, budget_read GREEN (00:18Z, 77 components, 0 unreviewed). Surface +6.
+- Finding: the box's vps_deploy.sh updates the checkout but does not install the crontab; box crontab shows 0 of the 6 lines at 00:59Z. An ssh crontab append was denied by the permission classifier; not retried. Needs operator approval or an install path.
+- Part B (NBA/NHL calibration scan) not started: 89.7 candles are not on this machine and a re-pull exceeds the block budget. Props and period families are not archived (registered gap, GG-1250/GG-1330 stay open).
+- Protocol Steps 1-4 / Q1-Q7 not run in full this session (only session_guard + claim).

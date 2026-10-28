@@ -16,7 +16,7 @@
 | Capital | **$0 real.** `kelly_fraction = 0.0` everywhere; flat demo stakes only (ADR-0050/0072). Kill switch ENFORCING on every order path (89.1) |
 | Deploy | t4-mlb and pmbot-web-dashboard run box HEAD `ce78de49`; deployed 00:07Z. A push restarts t4-mlb only on a changed import AND no live MLB game (#158). The box pulls on its own timer |
 | Silent arms | none (00:19Z): MLB game-market, NHL, NBA (3 arms), T1/T4 MLB wrote rows; NFL idle (no game in 12 h) |
-| Open PRs | #347 (89.6 lock alignment, green, unmerged → 91.3 Part 0) · #149 (stale, kept) |
+| Open PRs | #149 (stale, kept) |
 
 ---|---|
 | Highest GG / T / ADR / EXP | Registered to **GG-971** (claims reserve to GG-974) · **T-1032** · **ADR-0075** · **EXP-040** |
@@ -293,7 +293,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 |---|---|---|---|---|
 | 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | 🔶 Part A done | EXP-042 frozen+pushed (11 cells, sha256 4efbc15f…ab35); Part B backward test next |
 | 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | 🟨 Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B (ladder ride) next. |
-| 91.3 | **REROUTED (operator 17:32 PT):** NBA and NHL into the price archive, then the first NBA / NHL calibration scan as discovery (+ PR #347). Polymarket stopped (17:31 PT) | BREADTH + PROOF: sports archived 2 → 4; NBA/NHL families scanned 0 → n | ⬜ | |
+| 91.3 | **REROUTED (operator 17:32 PT):** NBA and NHL into the price archive, then the first NBA / NHL calibration scan as discovery (+ PR #347). Polymarket stopped (17:31 PT) | BREADTH + PROOF: sports archived 2 → 4; NBA/NHL families scanned 0 → n | 🟨 PARTIAL: #347 merged (631c74e, no t4-mlb restart); Part A merged (#354: 6 NBA/NHL cron lines + registry, budget GREEN) but NOT in the box crontab yet (deploy does not install crontab; install denied, needs operator OK); Part B scan not started. Measure not moved (2 → 4 only after rows verified) | |
 
 **What Wave 90 delivered (verified 2026-10-28 00:19Z: #349-#352 CI green; box bridge `20261028T001810Z_*`, box HEAD ce78de49):**
 **90.1 🟨** 89.7 finished (#349) and the hold-out scan run (#352): **0 candidates, but only 1 of 1,850 cells was testable** - the
@@ -491,7 +491,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 91.1 | The ride cells: pre-registered, then tested out of sample (backward + forward) | ⬜ | |
 | 91.2 | The ride tree as code + the ladder ride | 🟨 Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B (ladder ride) next. |
-| 91.3 | REROUTED: NBA + NHL into the price archive + first NBA/NHL calibration scan (+ PR #347); Polymarket stopped | ⬜ | |
+| 91.3 | REROUTED: NBA + NHL into the price archive + first NBA/NHL calibration scan (+ PR #347); Polymarket stopped | 🟨 Part A merged (#354), crontab install pending; #347 merged; Part B next | |
 
 ### ✅ WAVE 90 — WRITTEN 2026-10-27 ~05:30 UTC · CLOSED 2026-10-28 ~00:40 UTC (operator 17:16 PT) · verified on GitHub (#349-#352 CI green) + box bridge (`20261028T001810Z_*`) · moved: **D5(a) MLB 0 → 2/8 (router); momentum measured in four sports (none); box RED → GREEN**; ride hold-out underpowered (0 candidates)
 | # | Block | Status | Outcome |
