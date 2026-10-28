@@ -114,7 +114,7 @@ def main(root: Path, out: Path):
     st0 = tables[0]
     in_scope = st0[st0.season >= 2023]
     res["partA"]["team_games_with_report_by_season"] = (in_scope.groupby(["season", "game_id", "team_id"])["has_report"].max()
-                                                        .groupby("season").agg(["mean", "size"]).rename(columns={"mean": "share", "size": "team_games"}).to_dict("index"))
+                                                        .groupby("season").agg(share="mean", team_games="size").to_dict("index"))
     listed = in_scope[in_scope.has_report].assign(l=lambda d: d.w * (d.status != A.UNREPORTED))
     res["partA"]["rotation_minutes_listed_share_by_season"] = (listed.groupby("season")["l"].sum() / listed.groupby("season")["w"].sum()).to_dict()
     obs = in_scope[in_scope.has_report]
@@ -142,7 +142,7 @@ def main(root: Path, out: Path):
         rates.setdefault(A.UNREPORTED, 1.0)
         res["partA"][f"rates_used_lead{lead}"] = rates
         fx = A.expected_lineup_features(stt, rt, rates)[["game_id", "team_id", "lineup_net_exp", "exp_missing", "cover"]]
-        fx = fx.rename(columns={"lineup_net_exp": f"lineup_net_exp{lead}", "exp_missing": f"exp_missing{lead}", "cover": f"cover{lead}"})
+        fx.columns = [{"lineup_net_exp": f"lineup_net_exp{lead}", "exp_missing": f"exp_missing{lead}", "cover": f"cover{lead}"}.get(c, c) for c in fx.columns]
         tg = tg.merge(fx, on=["game_id", "team_id"], how="left")
         exp_cols += [f"lineup_net_exp{lead}", f"exp_missing{lead}"]
     feats = ["net_ytd", "net_dev_l10", "rest_days", "b2b", "prior_net", "lineup_net", "lineup_net_act"] + exp_cols
@@ -176,7 +176,6 @@ def main(root: Path, out: Path):
         print(name, {k: (round(v["gain"], 3), [round(x, 3) for x in v["gain_ci"]], v["n_test"]) for k, v in res["partB"][name].items()}, flush=True)
     res["partB"]["frame_games"] = int(len(gmf))
     safe_out(out).write_text(json.dumps(res, indent=2, default=float))
-    gmf.to_parquet(out.with_suffix(".frame.parquet"))
     print("done", round(time.time() - t0), "s")
 
 

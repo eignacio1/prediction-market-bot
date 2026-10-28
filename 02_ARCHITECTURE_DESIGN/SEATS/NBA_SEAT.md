@@ -12,8 +12,8 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | B2 | NBA-2 | Rest, back-to-back, 3-in-4 | game dates | schedule context | applied | `src/prediction_market_bot/c1_signal_ingestion/nba_pregame_features.py` |
 | B3 | NBA-3 | Player scoring/minutes/FGA form (10, 30, season) | NBA player game logs | player rating | applied | `src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py` |
 | B4 | NBA-4 | Opponent defence, 10 games | NBA game logs | opponent rating | applied | `src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py` |
-| B5 | NBA-5 | Own injury status and teammates out (minutes / FGA vacated) | NBA official injury reports | availability | interpreted | `12_EXPLORATORY/W69_3_nba_points_minutes_results.md` |
-| B6 | NBA-6 | Game-level availability (who is out for either side) | NBA official injury reports (coverage.json) | availability | interpreted | `12_EXPLORATORY/20261013_nba_games_availability/results.md` |
+| B5 | NBA-5 | Own injury status and teammates out (minutes / FGA vacated) | NBA official injury reports | availability | interpreted | `12_EXPLORATORY/nba_availability/results_W93_1.md` |
+| B6 | NBA-6 | Game-level availability (who is out for either side) | NBA official injury reports (coverage.json) | availability | interpreted | `12_EXPLORATORY/nba_availability/results_W93_1.md` |
 | B7 | NBA-7 | Lineup / on-off, play-type, matchup | src/prediction_market_bot/c1_signal_ingestion/nba_lineups.py (stints from sportsdataverse PBP + lineups, point-in-time) | player rating | interpreted | `12_EXPLORATORY/nba_lineups/results_W92_3.md` |
 | B8 | NBA-8 | Qualitative (form, role-fit, motivation) | none free and structured | none | none | `src/prediction_market_bot/c1_signal_ingestion/nba_player_features.py` |
 | B9 | NBA-9 | Pace and efficiency (point-in-time, engine store; full-game total) | NBA team box scores (sportsdataverse free store, 2016-2026) | team rating | applied | `02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md` |
