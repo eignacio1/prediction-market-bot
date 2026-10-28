@@ -284,7 +284,7 @@ block: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md` (each block's first line p
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 93.1 | Availability known before tip: the official injury report's statuses point-in-time, their real play rates, the lineup layer on expected availability | DEPTH: NBA B5/B6 interpreted → applied (or why not); factor classes from event data 1 → 2 | ⬜ | |
-| 93.2 | Travel, time zones, altitude and officials, point-in-time | DEPTH: NBA travel none → interpreted; officials none → aggregated/interpreted or a registered gap | 🟨 Part A merged (PR #362) | Part A: geometry module merged; margin NO, altitude→total +0.92 MSE [0.43,1.44]; Part B (officials) in progress |
+| 93.2 | Travel, time zones, altitude and officials, point-in-time | DEPTH: NBA travel none → interpreted; officials none → aggregated/interpreted or a registered gap | ✅ DONE (PR #362, #366) | Travel: interpreted (margin NO; altitude→total +0.92 MSE [0.43,1.44]). Officials: interpreted, weak/unstable (+0.51 [-0.12,1.14]); crew-assignment timestamp gap GG-1390 |
 | 93.3 | One model prices the whole NBA board (moneyline, spread, total, team totals) from a joint score distribution; scored vs results and vs this season's Kalshi prices | DEPTH: D4 NBA data layer → whole board priced (scaffold, tested) | ⬜ | |
 | 93.4 | NFL engine (operator 22:30 PT): the whole board priced from the market's own line with the key numbers right (89.4 missed 3 by half), scored vs Kalshi's ladders; then travel / short weeks (N15) | DEPTH: D4 NFL scaffold → board priced, market-anchored, tested; N15 none → interpreted | ⬜ | |
 | 93.Q | Quant in tandem: exact fees per trade for every reported net, ride.py's LADDER side fixed, a generated proof calendar for every frozen test | PROOF: nets re-checked 0 → all; look dates known 1 → all | ⬜ | |
@@ -539,7 +539,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 93.1 | NBA availability known before tip | ⬜ | |
-| 93.2 | NBA travel, time zones, altitude, officials | ⬜ | |
+| 93.2 | NBA travel, time zones, altitude, officials | ✅ | PR #362, #366 |
 | 93.3 | One model prices the whole NBA board | ⬜ | |
 | 93.4 | NFL engine: the board from the line (key numbers), then travel N15 | ⬜ | |
 | 93.Q | Quant in tandem: exact fees per trade, LADDER side, proof calendar | ⬜ | |
