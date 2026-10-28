@@ -2999,3 +2999,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-27 22:35 PT — Wave 93 + one NFL engine block (operator)
 - Operator, 22:30 PT: "It's not in the Active Queue lol also do 1 extra block to do NFL engine work". Added 93.4: NFL board priced from the market's own line with the key-number shape learned from 27 seasons (89.4 missed 3 by about half), scored against Kalshi's NFL ladders net of the exact fee; then N15 travel / short weeks. Five blocks in parallel.
 - "Not in the Active Queue": the operator reads the queue in his Mac folder, which under the 21:46 PT rule is refreshed only at handoffs, so Wave 93 was on GitHub but not in his copy. Window: refresh the folder whenever a wave is written (the queue is how he reads it); otherwise only at handoffs.
+
+## 2026-10-27 22:35 PT — How the operator receives a wave: the Active Queue file sent into the chat (operator; supersedes the window's 22:35 PT reading)
+- Operator, 22:33 PT: "UPDATE IT HERE IN THE ACTIVE QUEUE THAT I CAN CLICK AND OPEN AND COPY AND PASTE IN THIS DESKTOP APP".
+- Rule: at every wave written or changed, the window sends 04_EXECUTION/ACTIVE_QUEUE.md into the chat as a file the operator opens in the app. Never paste blocks as chat text (21:46 PT). The Mac folder is refreshed only at window handoffs (21:46 PT); the window's 22:35 PT "refresh the folder every wave" is withdrawn.

@@ -86,3 +86,6 @@ The operator asked how Polymarket differs from Kalshi out of curiosity; the wind
 
 ## W34 · 2026-10-27 · a queue edit that cut a table in half
 The Wave 90 close replaced the queue's fact table up to the first "---", which was inside the table's own separator row; the old 10-19 table's rows survived under the new one for a wave. Rule: anchor replacements on a unique line, never on a substring that markdown tables contain.
+
+## W35 · 2026-10-27 22:33 PT · read "just put it in the Active Queue file" as "commit it" instead of "send me the file"
+The operator said not to paste blocks into the chat and to "just put it in the Active Queue file"; the window committed the queue and sent nothing, then refreshed his Mac folder when he said he couldn't see it. He opens the queue as a file card in the desktop app. Rule: every wave written or changed ends with SendUserFile of ACTIVE_QUEUE.md; nothing pasted; the Mac folder only at handoffs.
