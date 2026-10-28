@@ -19,3 +19,11 @@ Moved: DEPTH (the NBA model's factor list grew by two).
 - Honest result: travel and time zones do not help predict who wins by how much. High altitude (Denver, Utah) nudges the total score up a little. Referee crews have only a weak, unstable effect.
 - One gap: the league does not publish when a referee crew is assigned, and I found no free, allowed way to capture it live. A workaround attempt was refused by the safety check and I stopped there.
 - No money, no bets, nothing new running. Zero real money at risk.
+
+## W93.1 - NBA availability known before tip (T-1420)
+- Built a point-in-time availability layer from the official injury report: a player listed Out plays 0.1% of the time, Questionable 51%, Probable 92%, Available 86%, not listed 76%.
+- Using only what was known at tip, availability does not demonstrably improve the margin forecast beyond the rotation baseline (gain 0.307, interval spans zero, 2,008 games). That is an honest NO at this sample size.
+- One lead: expected missing minutes does help (2.641, interval excludes zero). Carry it forward.
+- Applied (against a price) is blocked: no 2026-27 event data yet and pre-tip prices only began accruing 2026-10-28. Registered as GG-1420 for the flex lane.
+- PR #364 merged after two CI fixes. Deploy is by VPS cron now, not a GitHub job; no t4-mlb file was touched, so no t4-mlb restart is needed.
+- Nothing needed from you.

@@ -1088,3 +1088,4 @@
 | 2026-10-28T05:36:35Z | T-1400..T-1402 / GG-1400..GG-1402 | MEDIUM — W93.4 NFL engine: board priced from the market line with key numbers right + travel/short-week N15 — FOR DEPTH: D4 NFL scaffold->board priced, market-anchored, tested; key-number mass 3/7/10 within noise; D5(b) NFL N15 none->interpreted |
 | 2026-10-28T23:41:34Z | T-1390 | CLOSED — W93.2 NBA travel/tz/altitude + officials factor classes built point-in-time, tested held-out; margin NO, GG-1390 open (commit `2660522`) |
 | 2026-10-28T23:42:29Z | T-1390 | CLOSED — merge confirmed, HEAD (0185191) is ancestor of origin/main — W93.2 NBA travel/tz/altitude + officials factor classes, seat rows B12/B13, GG-1390 |
+| 2026-10-28T23:52:11Z | T-1420 | CLOSED — W93.1 NBA availability known before tip: interpreted (no demonstrable add beyond rotation, n=2008); applied blocked by data, GG-1420. (commit `e9c8cbb`) |
