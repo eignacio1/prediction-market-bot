@@ -1,0 +1,3 @@
+# Operator Digest 2026-10-28
+
+**Momentum test (W90.3).** We asked: when a game's price jumps 3 cents or more before the game, should the bot follow it or bet against it? Across about 20,000 moves in MLB, NFL, NBA and NHL, the answer is neither. The price afterward drifts randomly, and trading costs eat 4 to 17 cents per dollar either way. No situation was found where following or fading works, so the router gets nothing to route to momentum. Two small hints exist but are probably noise; we wait for real news timestamps and more data. Pillar moved: depth and proof. No money at risk, nothing running changed.

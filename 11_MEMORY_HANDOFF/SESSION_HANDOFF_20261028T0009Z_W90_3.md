@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1310
+tier: STANDARD
+timestamp: 2026-10-28T00:09:00Z
+commit: 4c10fce
+one_line_summary: W90.3 measured momentum (Strategy J): no continuation or reversion at 1-3h; net follow -4c to -17c; 0 routable contexts
+gg_touched: GG-1300, GG-1301, GG-1302
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, PROOF
+gap_measure: D5(a) momentum_looping measured basis; follow/fade transition contexts
+gap_delta: momentum_looping 0 -> measured basis for MLB/NFL/NBA/NHL (interpreted; ARCHITECTURE_COMPONENTS.toml @ f1d24f4); routable contexts 0 -> 0
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — W90.3 Momentum, measured (Strategy J)
 
 ```
