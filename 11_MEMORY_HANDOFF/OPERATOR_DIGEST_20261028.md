@@ -12,3 +12,10 @@ The bot now records NBA and NHL betting prices around the clock, the same way it
 
 ## W92.3 — NBA lineups and on/off (DEPTH)
 Built point-in-time lineup/on-off ratings from play-by-play (PR #359, merged, CI green). On held-out 2024-26 games it lowers total-score error (gain 4.04, CI 1.92 to 6.10); no gain on margin beyond prior-season carry. B7 is interpreted on the total only, not applied: no NBA pre-game prices exist yet (92.1 capture not installed), so a market test is underpowered. K and decay untuned. Deploy read-back: main runs were cancelled by newer pushes; nothing t4-mlb imports changed. No operator decisions.
+
+## W93.2 — NBA travel, time zones, altitude, referees
+Moved: DEPTH (the NBA model's factor list grew by two).
+- Built and tested two new pieces of NBA context: how far and how tired a team is coming into a game, and how tightly each referee crew calls fouls.
+- Honest result: travel and time zones do not help predict who wins by how much. High altitude (Denver, Utah) nudges the total score up a little. Referee crews have only a weak, unstable effect.
+- One gap: the league does not publish when a referee crew is assigned, and I found no free, allowed way to capture it live. A workaround attempt was refused by the safety check and I stopped there.
+- No money, no bets, nothing new running. Zero real money at risk.

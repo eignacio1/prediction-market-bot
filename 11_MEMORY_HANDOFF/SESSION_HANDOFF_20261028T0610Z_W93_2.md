@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1390
+tier: STANDARD
+timestamp: 2026-10-28T23:45:00Z
+commit: 2660522
+one_line_summary: W93.2 NBA travel/tz/altitude + officials factor classes built point-in-time, tested held-out; margin NO, GG-1390 open
+gg_touched: GG-1390
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D4, D5(b)
+gap_delta: D4 NBA +2 factor classes; D5(b) NBA travel none->interpreted, officials none->interpreted (results_W93_2.md, nba.toml B12/B13 @ 9cfcfcf)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — W93.2 NBA engine: travel, time zones, altitude, officials
 
 Status: DONE | main @ 9cfcfcf | PR #362 (CI green, merged), PR #366 (CI green, merged) | Travel geometry and officials factor classes built point-in-time and tested on held-out seasons; margin NO, altitude→total small yes, officials weak/unstable | MEASURE MOVED: D5(b) NBA travel geometry none -> interpreted; officials none -> interpreted (assignment timing gap GG-1390); D4 NBA factor classes +2 (source: results_W93_2.md, nba.toml B12/B13) | stage per factor: travel/tz/altitude interpreted; officials interpreted | operator decisions: none

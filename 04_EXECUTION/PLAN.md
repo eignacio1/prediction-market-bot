@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-28T05:10:00Z (T-1370 — W92.3 NBA lineups/on-off built point-in-time from PBP; B7 interpreted on total only, not applied (PR #359).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028T0510Z_W92_3.md` for full session detail.
+**Last reviewed:** 2026-10-28T23:45:00Z (T-1390 — W93.2 NBA travel/tz/altitude + officials factor classes built point-in-time, tested held-out; margin NO, GG-1390 open) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028T0610Z_W93_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
