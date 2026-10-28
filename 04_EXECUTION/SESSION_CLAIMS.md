@@ -1066,3 +1066,4 @@
 | 2026-10-28T00:11:15Z | T-1310 | CLOSED — merge confirmed, HEAD (afe02ef) is ancestor of origin/main — W90.3 momentum measured; PR #351 f1d24f4 merged |
 | 2026-10-28T00:14:43Z | T-1300..T-1309 / GG-1290..GG-1299 | CLOSED — W90.1 PARTIAL: PRs #349 and #352 merged; hold-out scan 0 candidates (underpowered); Part B not started. Also closes the superseded W89.7 claim |
 | 2026-10-28T00:15:49Z | T-1300 | CLOSED — W90.1 PARTIAL: PRs 349 and 352 merged; hold-out scan 0 candidates (underpowered, GG-1292); Part B not started (commit `80357ad`) |
+| 2026-10-28T00:28:55Z | T-1340..T-1344 / GG-1340..GG-1342 | MEDIUM — W91.1 ride cells: pre-register EXP-042 then backward-test 89.2's 11 cells — FOR PROOF: ride cells pre-registered 0->11, tested OOS 0->n of 11 (EXP-042) |
