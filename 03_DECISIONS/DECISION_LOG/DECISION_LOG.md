@@ -2975,3 +2975,9 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Operator: "you don't need to waste my tokens putting it in this chat, just put it in the Active Queue file. Also - no need to keep updating my folders to catch it up after every wave - we'll just have you do it when we're doing handoffs from window to a new chat."
 - From Wave 92: the blocks sit in the queue's NOW section; each block's first line points the terminal to the wave's common rules file (04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md), which keeps the queue near 100 KB. W92_BLOCKS.md removed (same text). The window's reply names the queue, without pasting blocks. The Mac folder is fast-forwarded at window-to-new-chat handoffs only. Blockquote in "Needs your decision".
 - Backlog block B74-A (issued as Wave 76.4 long ago) archived verbatim to make room.
+
+## 2026-10-28 — W92.2 (PROOF): exact Kalshi fees in code; two ladder cells HELD_OUT; EXP-043 frozen
+- `quant/money.py` gains `fee_multiplier/fee_rate/fee` from `quant/kalshi_fees.json` (PR #357, ac91bf6). `fee_k007` untouched. Finding: k007 is exact for NFL taker but 2x too high for MLB prelive (multiplier 0.5), so k007-based MLB nets are conservative. EXP-041/042 stay frozen on k007 (operator line).
+- `ride_cells.toml` +2 KXMLBTOTAL T0-2h tight LADDER cells, HELD_OUT (PR #360, f490553). side="by_trigger" is not consumable by `ride.decide()`; registered hazard, not fixed (ride.py out of block scope).
+- EXP-043 frozen at 4fcec70: H-A the two cells forward, H-B pooled ladder trigger. Judged n 71/284 and 16/61 games (full/half); pooled 1,884/7,535. No look before 2027; descriptive checkpoint 2027-01-31.
+- Not done: exact per-trade recompute of 89.2/90.3/91.2 nets. Post-merge Test Suite/Deploy read for #360 was still in progress at write time.
