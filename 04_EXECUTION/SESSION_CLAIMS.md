@@ -1090,3 +1090,4 @@
 | 2026-10-28T23:42:29Z | T-1390 | CLOSED — merge confirmed, HEAD (0185191) is ancestor of origin/main — W93.2 NBA travel/tz/altitude + officials factor classes, seat rows B12/B13, GG-1390 |
 | 2026-10-28T23:52:11Z | T-1420 | CLOSED — W93.1 NBA availability known before tip: interpreted (no demonstrable add beyond rotation, n=2008); applied blocked by data, GG-1420. (commit `e9c8cbb`) |
 | 2026-10-28T23:52:29Z | T-1420 | CLOSED — merge confirmed, HEAD (4ca7d43) is ancestor of origin/main — W93.1 merged PR #364; B5/B6 interpreted, applied blocked GG-1420 |
+| 2026-10-28T23:59:48Z | T-1393..T-1395 | CLOSED — merge confirmed, HEAD (f88d455) is ancestor of origin/main — W93.3 NBA board engine merged (PR #363, cfdc423); docs 17d9ba5; PARTIAL, Part B n=0 settled |
