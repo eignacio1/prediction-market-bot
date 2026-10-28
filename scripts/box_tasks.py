@@ -55,6 +55,10 @@ TASKS: dict[str, str] = {
     "source_capture_run": f"{PY} scripts/source_capture_nfl.py --log logs/source_capture_cron.log",
     "source_capture_uninstall": f"{PY} scripts/source_capture_install.py uninstall",
     "capture_uninstall": f"{PY} scripts/thin_capture_install.py uninstall",
+    # W92.1: NBA/NHL price-archiver cron lines (install is budget-gated, backs up the crontab first)
+    "archive_cron_install": f"{PY} scripts/archive_cron_install.py install",
+    "archive_cron_readback": f"{PY} scripts/archive_cron_install.py readback",
+    "archive_cron_uninstall": f"{PY} scripts/archive_cron_install.py uninstall",
     "distance_read": (
         f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
         "tail -n 60 logs/demo_fill_forward_report.log 2>&1"
