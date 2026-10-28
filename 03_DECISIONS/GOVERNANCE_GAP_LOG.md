@@ -4439,3 +4439,9 @@ W91.1, 2026-10-28, T-1341. 8 parallel fetch processes shared ~4 req/s with frequ
 **Status:** WATCH ITEM · **Severity:** LOW
 
 W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB accrues nothing between the World Series and ~2027-03-25. Earliest full-effect looks: cell 6 ~2026-12-21 (NFL); 3 2027-04-11; 10 04-15; 5 04-28; 2 04-29; 4 05-06; 1 05-18; 9 06-07; 8 06-11; 7 06-17; 11 06-25. PASS needs the half-effect judged n (EXP-042 section 3). Reopens if a look date is reached or the operator changes the ride rule.
+
+### GG-1390 — NBA referee crew assignment has no timestamp in the archive and no verified free live-capture route, so the officials factor is a game-day-known upper bound, not a pre-game fact
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W93.2, 2026-10-28, T-1390. `raw/officials/` carries each past game's crew (2016-2026, free) but its manifest marks it post_game: assignment time is not recorded (the league posts crews about 9am on game day). Per-official rates in `nba_officials.py` use only earlier games (point-in-time), but a game's own crew is taken from the archive. Live route unverified: `official.nba.com/referee-assignments/` returned HTTP 403 to a plain curl; a follow-up probe of the same page and the free NBA/ESPN scoreboard JSON with a browser user-agent was refused by the permission classifier (reason: bot-check circumvention) and was not retried. Cheapest free route to verify (hand-back): a plain read of the NBA CDN scoreboard / ESPN scoreboard `officials` field on a game day after ~9am ET, logging the observed-at time per game; if absent, a daily capture of the official.nba.com page by an approved route. No paid source. Reopens on: the route confirmed and a capture timestamped per game.
