@@ -1774,7 +1774,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-204 — ADR-0028's G6 closure condition is unclosable as written: it is scoped to T1, and T1 is permanently `clean_n=0`
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**RESOLVED 2026-10-28 (W91.1 Part C, T-1343).** ADR-0076 section 2 (ACCEPTED 2026-10-27 17:30 PT by the operator, "Yes I accept") redefines G6 per (book, sport) and supersedes the T1-scoped closure condition of ADR-0028 that this gap found unclosable. ADR-0028 stays immutable; a "partially superseded" line was appended.
 
 **W89.6 2026-10-26 (operator-approved disposition):** ADR-0057 sections 1-2 (cell-scoped G6 re-expression) were ACCEPTED 2026-08-26, so the closure-condition contradiction is addressed; GG-204 stays OPEN only until the operator confirms it can close on that acceptance or names the remaining owed decision (how many cells must clear, APPROVALS_REGISTER).
 
@@ -2564,7 +2566,9 @@ When a new governance process failure is discovered:
 
 ### GG-285 — At observed effect sizes, APR-0024's per-band P&L n* is 10-11 NFL seasons (NFL moneyline) and ~1.6 MLB seasons (T4M-PROJ) from clearing; the P&L gate as currently written may not close within any practical operating horizon for signals whose sd/mean ratio is ~15-28x
 
-**Status:** WATCH ITEM · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-10-28 (W91.1 Part C, T-1343).** The operator's 2026-10-21 19:15 PT call ("G6 re-defined by a superseding ADR, per book and sport, WINS at judged n") is now ADR-0076 (ACCEPTED 2026-10-27 17:30 PT). G6 no longer waits on APR-0024's per-band P&L n*, so the finding that the n* gate cannot close in a practical horizon no longer blocks anything. Nothing is left to fix; APR-0024 still governs commercial-validation sample adequacy (unchanged), and the reopen conditions are void.
 
 Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the operator adopts a practicable G6 gate or APR-0024's n* or the observed effect size changes.
 
@@ -4301,7 +4305,9 @@ W89.2, 2026-10-27. KXNFLTOTAL D0 5-10c NO passed BH and the net filter but is ex
 
 ### GG-1253 — MLB ticker HHMM is read as Eastern time without a per-family check
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**RESOLVED 2026-10-28 (W91.1, T-1340).** Checked against each market's `rules_primary` clock for all 8 families: ticker HHMM read as ET matches on 100% of F5TOTAL, F5, F7, SPREAD, TEAMTOTAL, TOTAL and 125,511/126,057 (99.57%) of KXMLBHIT. `occurrence_datetime - 3h` matches 0% for F5/F7, so HHMM-as-ET is the right rule. Evidence: `12_EXPLORATORY/ride_cells/results_W91_1.md`.
 
 W89.2, 2026-10-27. Consistent with run_ts on a known game, not proven for every family. A wrong offset would mis-tier T0-2h cells (the KXMLBHIT candidate sits in T0-2h). Check against the ESPN start time for a sample of games.
 
@@ -4400,10 +4406,32 @@ W90.3, 2026-10-27, T-1310. The follow/fade grid for NBA (91 signals) and NHL (11
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Update 2026-10-28 (W91.1):** the same limit recurred in the backward test (GG-1341); see also GG-1340.
+
 W90.1, 2026-10-27. The candle sample (4 strikes/event, 3-minute fetch budget per family) gives ~67 games per spread/total/team-total family; after the median split a cell cannot reach calib.MIN_EVENTS = 30. Result is "cannot detect", not "no edge" (results_W90_1.md). Fix: longer fetch per family (newest first, one sport at a time) and/or coarser buckets pre-registered before the next scan.
 
 ### GG-1293 — W90.1 Part A undone items
 
 **Status:** OPEN · **Severity:** MEDIUM
 
+**Update 2026-10-28 (W91.1):** item (2), the GG-1253 HHMM-as-ET check, is done and GG-1253 is RESOLVED; the other items remain.
+
 W90.1, 2026-10-27. Not done: (1) re-test of 89.2's three named MLB candidates after its window and on 2025 history (MLB PRICE_ARCHIVE is box-only); (2) GG-1253 MLB HHMM-as-ET check against the schedule; (3) prop-family candles; (4) one residual unmatched NFL event (LACDET, no_team_pair); (5) GG-1254 still open. Ride.py (Part B) not started.
+
+### GG-1340 — Hourly-candle method fails the overlap bucket-agreement bar against the 20-min snapshot method, so the W91.1 backward test is VOID
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W91.1, 2026-10-28, T-1340. EXP-042 overlap check (2026-08-01..10-27, 1,902 matched (ticker, tier) observations): 83.8% same 5c bucket vs the >=85% bar; mean entry-price diff -0.0002 passes. Weakest: KXMLBTEAMTOTAL 73.2%, KXMLBF5 77.8%, KXMLBF5TOTAL 79.3%. Per the pre-registration the backward test is VOID and no pre-August date was scored. Not re-tuned. Fix: a new EXP with a finer-than-hourly source (the 20-min archive is box-only from 2026-08) or a bar re-derived before seeing data; do not relax the bar post hoc.
+
+### GG-1341 — Kalshi public market-data rate limit (~4 req/s global, 429s) makes every-strike candle fetch infeasible in one block
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W91.1, 2026-10-28, T-1341. 8 parallel fetch processes shared ~4 req/s with frequent 429s; one family's every-strike window is tens of thousands of markets. The overlap sample was wall-clock-capped (~100-400 calls per family), so no cell reached 30 games; coverage is partial. Fix: a resumable low-rate background collector over several days, newest first, one sport at a time (also serves GG-1292).
+
+### GG-1342 — Ride cells have no scored look until MLB resumes: forward looks start 2027-04
+
+**Status:** WATCH ITEM · **Severity:** LOW
+
+W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB accrues nothing between the World Series and ~2027-03-25. Earliest full-effect looks: cell 6 ~2026-12-21 (NFL); 3 2027-04-11; 10 04-15; 5 04-28; 2 04-29; 4 05-06; 1 05-18; 9 06-07; 8 06-11; 7 06-17; 11 06-25. PASS needs the half-effect judged n (EXP-042 section 3). Reopens if a look date is reached or the operator changes the ride rule.
