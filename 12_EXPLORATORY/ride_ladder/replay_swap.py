@@ -36,7 +36,7 @@ def sits(archive):
 
 def main(archive, out):
     shipped = ride.load()
-    old = ride.Table(dataclasses.replace(c, status=ride.HELD_OUT) for c in shipped.c.values())
+    old = ride.Table(ride.RideCell(**{**dataclasses.asdict(c), "status": ride.HELD_OUT}) for c in shipped.c.values())
     res = {}
     S = sits(archive)
     for name, tab in (("before_swap_all_cells_rideable", old), ("after_swap_toml_in_sample", shipped)):
