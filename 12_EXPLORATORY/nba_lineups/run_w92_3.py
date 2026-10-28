@@ -20,6 +20,8 @@ import pandas as pd
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion import nba_lineups as L  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion.nba_data_rules import eligible_games, game_quality  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion.nba_factors import game_frame, rest_features, rolling_asof, team_game_table  # noqa: E402
@@ -110,7 +112,7 @@ def main(root: Path, out: Path):
     tg["pace_dev_l10"] = tg["pace_l10"] - tg["pace_ytd"]
     tg["net_dev_l10"] = tg["net_l10"] - tg["net_ytd"]
     # control: last season's team means (the cheapest prior-season carry) - does the lineup layer beat it?
-    sm = tg.groupby(["team_id", "season"])[["pace", "total", "net"]].mean().rename(columns=lambda c: f"prior_{c}")
+    sm = tg.groupby(["team_id", "season"])[["pace", "total", "net"]].mean().add_prefix("prior_")
     sm = sm.reset_index().assign(season=lambda d: d.season + 1)
     tg = tg.merge(sm, on=["team_id", "season"], how="left")
     lf = ["lineup_net", "lineup_ptot", "lineup_pace", "lineup_swing", "lineup_net_act", "lineup_ptot_act", "lineup_pace_act", "lineup_delta"]
@@ -154,8 +156,7 @@ def main(root: Path, out: Path):
         res["partB"][name]["pooled_2025_26"] = gain(gmf, b, e, t, list(TESTS))
         print(name, {k: (round(v["gain"], 3), [round(x, 3) for x in v["gain_ci"]], v["n_test"]) for k, v in res["partB"][name].items()}, flush=True)
     res["partB"]["frame_games"] = int(len(gmf))
-    g.to_parquet(out.with_suffix(".games.parquet"))
-    out.write_text(json.dumps(res, indent=2, default=float))
+    safe_out(out).write_text(json.dumps(res, indent=2, default=float))
     print("done", round(time.time() - t0), "s")
 
 
