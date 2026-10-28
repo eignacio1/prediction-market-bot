@@ -1,0 +1,25 @@
+{
+ "snapshot_rows": 9689,
+ "discovery_cells": 1850,
+ "bh": {
+  "tested": 1,
+  "flagged": 0,
+  "q": 0.1
+ },
+ "candidates": 0,
+ "held_out": 0,
+ "split_start_epoch": {
+  "nba/KXNBAGAME": 1792110600,
+  "nba/KXNBASPREAD": 1792800000,
+  "nba/KXNBATEAMTOTAL": 1792879200,
+  "nba/KXNBATOTAL": 1792800000,
+  "nhl/KXNHLGAME": 1791651600,
+  "nhl/KXNHLSPREAD": 1792710000,
+  "nhl/KXNHLTEAMTOTAL": 1792710000,
+  "nhl/KXNHLTOTAL": 1792710000,
+  "nfl/KXNFLGAME": 1790900100,
+  "nfl/KXNFLSPREAD": 1791750300,
+  "nfl/KXNFLTEAMTOTAL": 1791750300,
+  "nfl/KXNFLTOTAL": 1791750300
+ }
+}
