@@ -1,0 +1,168 @@
+# Ride table (W91.2). ride.py reads this file; no evidence numbers live in code.
+#
+# status: IN_SAMPLE | HELD_OUT | FORWARD_PASSED | FAILED | UNTESTED. ride.py returns RIDE only for HELD_OUT or
+# FORWARD_PASSED (and only with net_lo > 0). The strategic window moves statuses at the wave close.
+# kind:   CALIBRATION (the whole market is biased at this price) | LADDER (a strike quoted off its own ladder).
+# net_*:  per-contract, net of k007 fee, entry at the quote. max_half_spread: the widest book the cell was measured on
+#         (tight = 0.01); omit for "all"/"wide" views.
+#
+# Seeded 2026-10-28 with the 11 W89.2 survivor cells (12_EXPLORATORY/longshot_bias/results_W89.md): all IN_SAMPLE,
+# so ride.py routes NONE for every one of them today. net_hi was not recorded in W89.2.
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBHIT"
+tier = "T0-2h"
+bucket = "20-25c"
+book = "all"
+side = "yes"
+status = "IN_SAMPLE"
+n = 1892
+games = 368
+net_mean = 0.027
+net_lo = 0.0065
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBHIT"
+tier = "T0-2h"
+bucket = "20-25c"
+book = "tight"
+side = "yes"
+status = "IN_SAMPLE"
+n = 1151
+games = 339
+net_mean = 0.044
+net_lo = 0.017
+max_half_spread = 0.01
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBF5TOTAL"
+tier = "T6-24h"
+bucket = "90-95c"
+book = "all"
+side = "yes"
+status = "IN_SAMPLE"
+n = 143
+games = 138
+net_mean = 0.038
+net_lo = 0.022
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBF5TOTAL"
+tier = "T6-24h"
+bucket = "90-95c"
+book = "wide"
+side = "yes"
+status = "IN_SAMPLE"
+n = 111
+games = 107
+net_mean = 0.033
+net_lo = 0.011
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBF5TOTAL"
+tier = "T2-6h"
+bucket = "90-95c"
+book = "tight"
+side = "yes"
+status = "IN_SAMPLE"
+n = 85
+games = 83
+net_mean = 0.043
+net_lo = 0.017
+max_half_spread = 0.01
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXNFLTOTAL"
+tier = "D1"
+bucket = "5-10c"
+book = "all"
+side = "no"
+status = "IN_SAMPLE"
+n = 154
+games = 92
+net_mean = 0.038
+net_lo = 0.0065
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBSPREAD"
+tier = "T>24h"
+bucket = "20-25c"
+book = "tight"
+side = "no"
+status = "IN_SAMPLE"
+n = 186
+games = 147
+net_mean = 0.052
+net_lo = 0.0026
+max_half_spread = 0.01
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBTEAMTOTAL"
+tier = "T6-24h"
+bucket = "15-20c"
+book = "tight"
+side = "no"
+status = "IN_SAMPLE"
+n = 49
+games = 40
+net_mean = 0.095
+net_lo = 0.0085
+max_half_spread = 0.01
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBF5"
+tier = "T2-6h"
+bucket = "10-15c"
+book = "all"
+side = "no"
+status = "IN_SAMPLE"
+n = 44
+games = 44
+net_mean = 0.078
+net_lo = 0.0087
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBTOTAL"
+tier = "T0-2h"
+bucket = "85-90c"
+book = "wide"
+side = "yes"
+status = "IN_SAMPLE"
+n = 52
+games = 52
+net_mean = 0.089
+net_lo = 0.047
+source = "W89.2"
+
+[[cell]]
+kind = "CALIBRATION"
+family = "KXMLBF7"
+tier = "T0-2h"
+bucket = "40-45c"
+book = "wide"
+side = "yes"
+status = "IN_SAMPLE"
+n = 121
+games = 88
+net_mean = 0.065
+net_lo = 0.0006
+source = "W89.2"
