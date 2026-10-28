@@ -3003,3 +3003,8 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-27 22:35 PT — How the operator receives a wave: the Active Queue file sent into the chat (operator; supersedes the window's 22:35 PT reading)
 - Operator, 22:33 PT: "UPDATE IT HERE IN THE ACTIVE QUEUE THAT I CAN CLICK AND OPEN AND COPY AND PASTE IN THIS DESKTOP APP".
 - Rule: at every wave written or changed, the window sends 04_EXECUTION/ACTIVE_QUEUE.md into the chat as a file the operator opens in the app. Never paste blocks as chat text (21:46 PT). The Mac folder is refreshed only at window handoffs (21:46 PT); the window's 22:35 PT "refresh the folder every wave" is withdrawn.
+
+## 2026-10-28 — W93.4 NFL board v2 and N15 (DEPTH)
+- Built `nfl_engine/board_v2.py`: kernel-weighted empirical (margin, total) joint, exponentially tilted so the market's main spread and total are the medians; one pmf prices moneyline, any spread/total strike and team totals. Held-out 2012-2025 (3,829 games): margin 3 observed 525, engine 539.9 (z -0.7), same-median Gaussian z +23.8. k=1,2 under-modelled (z +2.2, +2.8), stated.
+- Kalshi strike convention verified empirically as "yes = value > N". Against 86 settled 2026 games, game-clustered intervals on Brier difference all include 0; no edge demonstrated.
+- N15 (`c1_signal_ingestion/nfl_schedule_geometry.py`): interpreted, margin MSE gain -0.92 [-1.46,-0.37] (worse than no factor), total -0.03 [-0.46,+0.37]; not applied. NFL `[[engine]]` entry now points at board_v2.py and its test. No order, ledger, live model, shadow arm or pre-registration touched. Merge f88d455 ran Test Suite only; no Deploy job, no service-imported file changed, t4-mlb: no restart needed.
