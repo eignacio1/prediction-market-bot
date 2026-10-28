@@ -4445,3 +4445,21 @@ W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W93.2, 2026-10-28, T-1390. `raw/officials/` carries each past game's crew (2016-2026, free) but its manifest marks it post_game: assignment time is not recorded (the league posts crews about 9am on game day). Per-official rates in `nba_officials.py` use only earlier games (point-in-time), but a game's own crew is taken from the archive. Live route unverified: `official.nba.com/referee-assignments/` returned HTTP 403 to a plain curl; a follow-up probe of the same page and the free NBA/ESPN scoreboard JSON with a browser user-agent was refused by the permission classifier (reason: bot-check circumvention) and was not retried. Cheapest free route to verify (hand-back): a plain read of the NBA CDN scoreboard / ESPN scoreboard `officials` field on a game day after ~9am ET, logging the observed-at time per game; if absent, a daily capture of the official.nba.com page by an approved route. No paid source. Reopens on: the route confirmed and a capture timestamped per game.
+
+### GG-1393 — W93.3 no 2026-27 NBA schedule/team_box in the event store
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W93.3, 2026-10-28, T-1393. `nba_event_store --only schedule team_box --min-season 2027` publishes nothing, so the NBA engine prices 2026-27 games from prior-only (2026 full-season) ratings and cannot see this season's results. Fix: publish the 2027 schedule/team_box (free source) and re-run `12_EXPLORATORY/nba_board/study_b.py`.
+
+### GG-1394 — W93.3 no NBA candles (89.7) to score the engine against
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W93.3, 2026-10-28, T-1393. The box's `KALSHI_HISTORY/markets` holds only `KXNFLGAME`; no NBA candles since 10-01. Paired Brier vs Kalshi has no price history beyond the 3 archive snapshots. Fix: extend the 89.7 candle fetch to KXNBAGAME/SPREAD/TOTAL/TEAMTOTAL (public GETs).
+
+### GG-1395 — W93.3 too few archive snapshots and zero settlements for engine-vs-market scoring
+
+**Status:** OPEN · **Severity:** LOW
+
+W93.3, 2026-10-28, T-1393. NBA archive has 3 snapshots (10-28 05:08-05:48Z), 33 games; public GETs show 0 settled markets. Paired Brier and the market-anchored skill weight `w` are n=0. Re-run `study_b.py` once settled games accumulate; do not read edge from the descriptive implied-distribution comparison.

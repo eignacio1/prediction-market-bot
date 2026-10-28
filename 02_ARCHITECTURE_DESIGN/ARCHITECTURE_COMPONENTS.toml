@@ -237,8 +237,8 @@ engine_test = "12_EXPLORATORY/nfl_engine/test_engine.py"
 [[engine]]
 sport = "nba"
 data_layer = "02_ARCHITECTURE_DESIGN/NBA_ENGINE/event_store_manifest.json"
-engine = "none"
-engine_test = "none"
+engine = "src/prediction_market_bot/nba_engine"
+engine_test = "tests/test_nba_engine.py"
 
 [[engine]]
 sport = "nhl"
