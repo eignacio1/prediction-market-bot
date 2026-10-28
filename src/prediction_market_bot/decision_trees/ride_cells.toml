@@ -166,3 +166,44 @@ games = 88
 net_mean = 0.065
 net_lo = 0.0006
 source = "W89.2"
+
+# ---- W92.2: the two W91.2 ladder cells that held out of sample (12_EXPLORATORY/ride_ladder/results_W91_2.md).
+# kind LADDER: bucket is the ladder-gap bin (net edge of the ladder price over the quote after spread and fee), NOT a price
+# bucket, so ride.decide() (which looks up by price bucket) cannot reach these today. side = "by_trigger": the side is the
+# one the ladder points to on each trigger; decide() would map any non-"yes" side to RIDE-NO, so a LADDER consumer must be
+# written with that in mind (it is not wired; EXP-043 scores the cells forward). HELD_OUT = out of sample on a time split of
+# the SAME archive (2026-09-11), not FORWARD_PASSED. net is second-half, net of k007 (not the exact fee; see
+# 12_EXPLORATORY/fees_exact/results_W92_2.md: MLB prelive k007 overstates the fee, so these are conservative).
+# net_hi: 0.1424 / 0.3411.
+
+[[cell]]
+kind = "LADDER"
+family = "KXMLBTOTAL"
+tier = "T0-2h"
+bucket = "net2-5c"
+book = "tight"
+side = "by_trigger"
+status = "HELD_OUT"
+n = 117
+games = 117
+net_mean = 0.0870
+net_lo = 0.0336
+net_hi = 0.1424
+max_half_spread = 0.01
+source = "W91.2"
+
+[[cell]]
+kind = "LADDER"
+family = "KXMLBTOTAL"
+tier = "T0-2h"
+bucket = "net5c+"
+book = "tight"
+side = "by_trigger"
+status = "HELD_OUT"
+n = 30
+games = 30
+net_mean = 0.2166
+net_lo = 0.0951
+net_hi = 0.3411
+max_half_spread = 0.01
+source = "W91.2"
