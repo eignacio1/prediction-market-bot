@@ -1,6 +1,6 @@
 # Decision Routing — which tree gets which situation (W90.2)
 
-**Status:** DRAFT doctrine, awaiting operator acceptance. Nothing here is wired to a runner, cell, model or ledger.
+**Status:** ACCEPTED by the operator as written, 2026-10-27 ("Accept - proceed in full"). Nothing here is wired to a runner, cell, model or ledger; wiring needs its own pre-registration.
 **Pillar / measure:** DEPTH — D5(a) `filtering_mechanisms` and `decision_trees`.
 **Operator, 2026-10-26 22:08 PT:** "that's the meaning of having filtering mechs appropriately identifying the correct decision trees and routing mechanisms for execution"
 **Code:** `src/prediction_market_bot/decision_trees/router.py` (pure function). **Replay:** `12_EXPLORATORY/router_replay/`.

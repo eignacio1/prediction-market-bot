@@ -2907,3 +2907,6 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-27 W90.2 — the router (DRAFT doctrine, awaiting operator acceptance)
 - Doctrine in 02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md: four trees (FADE, RIDE, MOMENTUM, NO-BET); a tree gets traffic only with a measured quantity behind it; disqualifiers first; RIDE+FADE same side goes to RIDE, opposite sides to NO-BET; T3 is a FADE-only overlay; news timing is not a condition (unmeasured).
 - Router merged (PR #350, ce78de4): library only, nothing wired. Replay of 164,354 situations: NO_BET 97.66%, RIDE 2.34%, FADE 0, MOMENTUM 0. RIDE settled view is in-sample, not evidence. D5(a) MLB 0/8 -> 2/8. Gaps GG-1330..GG-1334.
+
+## 2026-10-27 W90.2 — routing doctrine ACCEPTED by the operator
+- Operator: "Accept - proceed in full". DECISION_ROUTING.md is now ACCEPTED as written (FADE only on measured skill; RIDE only on a net-positive table cell; same side to RIDE, opposite sides to NO-BET; T3 a FADE-only overlay; news timing excluded). No wiring authorized by this: any runner or cell use needs its own pre-registration. Follow-ons stay with their owners: 90.1 ride.py swaps the stub table, 90.3 supplies the momentum table, GG-1330 NBA/NHL archive.
