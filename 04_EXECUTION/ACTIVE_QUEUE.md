@@ -283,7 +283,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 92.1 | NBA + NHL prices archived for real (install route, spreads / totals / team totals added), and a surface budget that counts only what is installed | BREADTH + PLUMBING: sports archived 2 → 4 (rows read back); phantom live entries 6 → 0 | ⬜ | |
+| 92.1 | NBA + NHL prices archived for real (install route, spreads / totals / team totals added), and a surface budget that counts only what is installed | BREADTH + PLUMBING: sports archived 2 → 4 (rows read back); phantom live entries 6 → 0 | ✅ | W92.1 DONE 2026-10-28: PRs #358 (installer) + #361 (budget); 8 NBA/NHL series have rows on the box, budget GREEN with 83 live and 0 mirrored-but-not-installed. Handoff: SESSION_HANDOFF_20261028_W92_1.md |
 | 92.2 | Fees exactly as Kalshi publishes them (Muse R-068), every reported net re-checked; the 2 ladder cells into the ride table; the ladder ride pre-registered forward (EXP-043) | PROOF: ride cells HELD_OUT 0 → 2; forward hypotheses 11 → 11 + ladder | 🟨 PARTIAL | Part A (#357) + Part B (#360 ride cells HELD_OUT 0→2; EXP-043 frozen 4fcec70); no look before 2027; exact per-trade net recompute not done |
 | 92.3 | NBA engine, depth lane: lineups and on/off from the play-by-play, point-in-time; interpreted, then against this season's market | DEPTH: D5(b) NBA B7 none → interpreted; D4 NBA first factor class from event data | ✅ | PR #359 merged. B7 interpreted on the total (gain 4.04 MSE, CI 1.92-6.10, n=2008); margin null beyond prior carry; applied test underpowered (no pre-game NBA prices). |
 

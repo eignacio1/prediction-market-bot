@@ -4287,9 +4287,11 @@ W89.1, 2026-10-27 04:10Z. `exposure_gate_state.json` holds MLB_T1 and SHADOW onl
 
 ### GG-1250 — NHL, NBA and every parlay/multi-leg Kalshi family are not in the price archive, so none can be calibration-tested
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** PARTIALLY RESOLVED · **Severity:** MEDIUM
 
 W89.2, 2026-10-27. The archive covers MLB game-market families, KXMLBHIT and NFL GAME/SPREAD/TOTAL/TEAMTOTAL only. W89.2 BREADTH of the calibration test is capped there. Fix: add the NHL/NBA series and the parlay families to the archiver, then re-run `12_EXPLORATORY/longshot_bias/run_w89_2.py`.
+
+**W92.1 (2026-10-28):** NBA and NHL GAME/SPREAD/TOTAL/TEAMTOTAL are now archived on the box (six lines installed 05:03Z, first rows 05:08-05:11Z: 8 series, 66/429/380/459 NBA and 98/78/171/160 NHL rows in `prices_2026-10-28.jsonl`; `04_EXECUTION/BOX_TASKS/results/20261028T051546Z_w921b_archive_cron_readback.md`). STILL OPEN: parlay/multi-leg families, and period/half series (`KXNBA1H`, `KXNHL1P`, ...). Re-running `run_w89_2.py` on NBA/NHL waits for accumulated days.
 
 ### GG-1251 — Candle history is partial and local-only, so price paths between archive snapshots cannot be rebuilt
 
@@ -4359,9 +4361,11 @@ W90.1, 2026-10-27. tests/test_exploratory_isolation.py polices builtin open() an
 
 ### GG-1330 — NBA and NHL have no price archive, so the router cannot be replayed for them
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 W90.2, 2026-10-27. The archiver covers MLB and NFL series only; add KXNBA*/KXNHL* series to the archive (free public data).
+
+**Resolution (W92.1, 2026-10-28):** installed and read back. `archive_cron_install` put the six registry-live lines on the crontab (backup `logs/crontab_backups/crontab_20261028T050346Z.bak`); the box then wrote rows for KXNBAGAME/SPREAD/TOTAL/TEAMTOTAL and KXNHLGAME/SPREAD/TOTAL/TEAMTOTAL, 1 absorbed 429, SURFACE BUDGET GREEN. Replay is possible as days accumulate (about 1.2 GB/month combined against 9.0G free).
 
 ### GG-1331 — News timing is not a measured routing condition
 
