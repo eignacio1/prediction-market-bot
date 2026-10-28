@@ -312,7 +312,7 @@ new sources of ride evidence that work in NBA / NHL / NFL through the winter.
 families much before August: 91.1's backward test may find little to read, and the forward test cannot judge MLB before spring. If so,
 the winter's ride evidence comes from 91.2 (ladder) and 91.3 (other venue). The honest outcome of all three may again be "none held
 out of sample".
-**Window reading of the doctrine (say if you read it otherwise):** DECISION_ROUTING.md allows RIDE on "a net-positive table cell". The
+**Doctrine reading - ACCEPTED by the operator 2026-10-27 17:26 PT ("yes I accept the recommendation"):** DECISION_ROUTING.md allows RIDE on "a net-positive table cell". The
 window reads net-positive as measured OUT OF SAMPLE (HELD_OUT or FORWARD_PASSED), because 90.2 itself called its in-sample RIDE
 "NOT evidence"; ride.py is built that way, so RIDE traffic goes to 0 until a cell holds.
 **Surface:** GREEN (00:18Z). Expected delta **0**: all three blocks are offline; the forward test is scored from the archive, no runner.

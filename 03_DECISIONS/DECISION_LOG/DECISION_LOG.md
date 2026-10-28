@@ -2931,3 +2931,6 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Window reading, flagged to the operator: DECISION_ROUTING.md's "net-positive table cell" is read as measured out of sample; RIDE traffic goes to 0 until a cell holds.
 - GG numbering: from Wave 91 each block reserves 3 GG numbers instead of 5-10 (operator asked why the log has gaps; unused reserved numbers are skipped, never reused).
 - Muse: four new tickets R-068 (Kalshi fee schedule verbatim) -> R-071, placed after the live session's ten; backlog 36 open. No Muse paste this wave.
+
+## 2026-10-27 17:26 PT — RIDE needs out-of-sample evidence (operator)
+- Operator: "yes I accept the recommendation". DECISION_ROUTING.md's "net-positive table cell" means net-positive OUT OF SAMPLE (status HELD_OUT or FORWARD_PASSED); IN_SAMPLE cells route NONE. ride.py (91.2) is built this way. ADR-0076 (G6) is not covered by this line; the window asked separately.
