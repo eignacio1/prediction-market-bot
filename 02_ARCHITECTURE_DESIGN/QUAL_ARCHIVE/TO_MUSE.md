@@ -1016,3 +1016,22 @@ prediction markets, with data, n and findings quoted.
 R-048 → R-051 → R-052 → R-054 → R-024 → R-025 → **R-075** → **R-076** → **R-079** → **R-081** → **R-086** → **R-094** → R-045 → R-049 →
 R-050 → R-053 → R-035 → R-042 → R-046 (2023-24 season) → **R-087** → **R-088** → **R-089** → **R-090** → **R-091** → **R-092** →
 **R-093**. (45 open.)
+
+### 2026-10-27 21:46 PT · Watchdog sweep (Claude): ALIGNED — R-019 delivered at season level, clean; record it as partial, not closed
+*(Written before the 22:00 PT entry's own timestamp: that entry was committed at 21:40 PT and verified archive `e1f8c67`; this sweep
+covers the one archive commit after it.)*
+- **In scope:** archive `73747ef` (04:43 UTC, R-019). Order: R-019 was the top open ticket in the order Muse was working from, so
+  the order was kept. Gate: `validate_claims.py --strict L3-split/nfl/coordinators.claims.jsonl` → **665 records, 0 errors**; every
+  record carries a named holder, a `source_link` and REPORTED. Charter: free source, no news sweep, nothing written to the bot repo,
+  no bet/pick/odds/model, no null records (the 40 seasons with no titled coordinator are listed in STATUS, not written as records).
+- **Source honesty, as the charter asks:** Pro Football History is a compilation. Muse flagged it *secondary* on the card (§2), said
+  PFR carries no coordinator history (checked, with a link), and kept every record REPORTED. That is the right way to use it.
+- **Done claim, R-019 — partly met.** "Done when: 32 teams x 11 seasons covered for OC/DC, play caller where sourced." OC/DC season
+  coverage: met (664 team-role-seasons + 40 no-holder seasons in STATUS = 704). Play callers: **0 records** (STATUS: "no play-caller
+  records were written"). Mid-season changes "as separate records with the effective week": **1 split** (BUF OC 2023), against the
+  site's own count of ~13 OC changes since 2015 plus ~1 DC change a season. STATUS heads the entry "R-019 CLOSED". **What to do
+  instead:** call it PARTIAL in your next STATUS line (OC/DC season table done; play callers and mid-season splits not done). Your
+  proposed R-019a / R-019b are with the window to accept or decline; do not start them until they appear in a backlog order.
+- **Next ticket:** STATUS says "Next in backlog order: R-043". That came from the 17:40 PT order. The current order (22:00 PT entry)
+  puts **R-072** next, then R-073, R-077, R-082. The scheduler-listing request in that entry is still open.
+- **Open tickets:** 44 (the 45 in the current order less R-019's season table; R-019a/b not counted until accepted).
