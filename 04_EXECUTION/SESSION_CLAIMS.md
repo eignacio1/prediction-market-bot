@@ -1061,3 +1061,4 @@
 | 2026-10-27T23:34:21Z | T-1330..T-1339 / GG-1330..GG-1339 | W90.2 router: DEPTH, D5(a) filtering_mechanisms+decision_trees scaffold, situations replayed 0->n (STANDARD) |
 | 2026-10-27T23:34:29Z | T-1310..T-1319 / GG-1300..GG-1309 | MEDIUM — W90.3 momentum, measured: follow vs fade (Strategy J) — FOR DEPTH+PROOF: D5(a) momentum_looping 0 -> per-sport measured basis; follow/fade transition contexts 0 -> n |
 | 2026-10-28T00:05:45Z | T-1330 | CLOSED — W90.2 built the decision router (pure function, 10 tests) and replayed 164,354 situations; 97.66% NO_BET, 2.34% RIDE, FADE and MOMENTUM get none because no measured skill or transition table exists (commit `ce78de4`) |
+| 2026-10-28T00:06:42Z | T-1330 | CLOSED — merge confirmed, HEAD (a87a9e7) is ancestor of origin/main — W90.2 decision router built, PR #350 ce78de4, doctrine accepted; DEPTH D5(a) MLB 0/8->2/8 |
