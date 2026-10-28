@@ -1089,3 +1089,4 @@
 | 2026-10-28T23:41:34Z | T-1390 | CLOSED — W93.2 NBA travel/tz/altitude + officials factor classes built point-in-time, tested held-out; margin NO, GG-1390 open (commit `2660522`) |
 | 2026-10-28T23:42:29Z | T-1390 | CLOSED — merge confirmed, HEAD (0185191) is ancestor of origin/main — W93.2 NBA travel/tz/altitude + officials factor classes, seat rows B12/B13, GG-1390 |
 | 2026-10-28T23:52:11Z | T-1420 | CLOSED — W93.1 NBA availability known before tip: interpreted (no demonstrable add beyond rotation, n=2008); applied blocked by data, GG-1420. (commit `e9c8cbb`) |
+| 2026-10-28T23:52:29Z | T-1420 | CLOSED — merge confirmed, HEAD (4ca7d43) is ancestor of origin/main — W93.1 merged PR #364; B5/B6 interpreted, applied blocked GG-1420 |
