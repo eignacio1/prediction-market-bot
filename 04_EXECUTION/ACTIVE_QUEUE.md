@@ -9,7 +9,7 @@
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Registered to **GG-1334** · **T-1339** · **ADR-0075** accepted, **ADR-0076 DRAFT** (G6, awaiting the operator) · **EXP-041** |
+| Highest GG / T / ADR / EXP | Registered to **GG-1334** · **T-1339** · **ADR-0075** accepted, **ADR-0076 ACCEPTED 10-27 17:30 PT** (G6 per book and sport; status flip in 91.1) · **EXP-041** |
 | Gap log | **222 OPEN** · 264 headers = 264 status lines · no duplicate ids (live + archive). Numbers are reserved in ranges per block; unused ones are skipped, never reused |
 | Registry | **108 cells, 52 logging** (B1, box 10-28) |
 | Surface (ADR-0074) | **77 live components** · 0 unreviewed · 0 stale/down/behind · 9 no-alarm (each with a reason) · **budget GREEN** · healthcheck HEALTHY. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
@@ -694,6 +694,13 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **AUTHORIZATION - ADR-0076 ACCEPTED AS THE G6 DEFINITION (operator, 2026-10-27 17:30 PT, asked by the strategic window whether he
+> accepts ADR-0076 with the blanks left blank until a positive Kelly is proposed: "Yes I accept").** G6 is qualified per (book, sport):
+> a book qualifies when its cell WINS at its pre-registered judged n (ADR-0072; real demo fills only, GG-527), with the exposure gate
+> enforcing, DS sign-off and the operator's acceptance of the limit table. Section 4's blank limits STAY BLANK until a positive Kelly is
+> proposed (ADR-0048 Kelly 0 unchanged). No limit value, kelly_fraction, stake, order or ledger changes. No book qualifies today. The
+> status flip and its references are done by a terminal (91.1 addendum).
 
 > **AUTHORIZATION - THE SHARED FOLDER STAYS, AS A CURRENT READING COPY (operator, 2026-10-21 19:39 PT: "When I look through
 > the project I check the folders not github - especially when I'm somewhere with no internet. I'd like to keep it going - we
