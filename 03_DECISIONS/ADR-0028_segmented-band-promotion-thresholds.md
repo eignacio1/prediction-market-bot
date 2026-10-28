@@ -312,3 +312,6 @@ Passing G6 (T1 live capital) does NOT automatically satisfy the T4 Activation Ga
 **Sign-off:** Earl Ignacio  
 **Date:** 2026-06-22  
 **Role:** DS — Earl Ignacio
+
+---
+**Partially superseded by ADR-0076 (2026-10-27):** the G6 definition (per book and sport, cell wins at its judged n) is now `ADR-0076_g6-per-book-sport-qualification-and-tail-derived-limits.md`. Body above is unchanged.

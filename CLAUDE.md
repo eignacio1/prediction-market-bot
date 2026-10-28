@@ -201,7 +201,7 @@ This is GG-004 (OPEN — scoped to sample adequacy, not to whether EXP-017 has r
 
 ### Gate structure
 
-The project gates from research to paper trading to live capital in stages. G0–G5 are closed. G6 requires 30 resolved paper bets with positive P&L, commercial validation now evaluated per-band against the variance-derived `n*` standard (APR-0024, superseding the flat EXP-017 30/150/500 heuristic for go-forward language — see § "The commercial validation gap" above), and DS sign-off (ADR-0005) before live capital is authorized. Gates G7–G9 govern multi-sport and multi-venue expansion post-live.
+The project gates from research to paper trading to live capital in stages. G0–G5 are closed. G6 is defined by ADR-0076 (ACCEPTED 2026-10-27 17:30 PT): qualified per (book, sport), the cell WINS at its judged n (commercial validation per APR-0024's variance-derived `n*`, see § "The commercial validation gap" above), the exposure gate enforcing, DS sign-off (ADR-0005) and the operator's acceptance of the limit table (ADR-0076 §4, blanks stay blank until a positive Kelly is proposed) before live capital is authorized. No book qualifies today. Gates G7–G9 govern multi-sport and multi-venue expansion post-live.
 
 For current gate progress, read the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md` (kept current at every wave close) and `MEMORY_BANK.md`'s Current State Snapshot (dated; refreshed at handoffs). CLAUDE.md does not track state. **For T4M-PROJ, G6 and every execution claim count real demo fills only; paper-only rows are calibration evidence (GG-527, operator 2026-10-08).**
 
@@ -213,7 +213,7 @@ For current gate progress, read the RUNNING SITREP at the top of `04_EXECUTION/A
 **Project:** Prediction market trading bot (Kalshi primary venue; NBA was the first sport implemented, MLB is the current active pool)  
 **Phase:** 6/7 ACTIVE — paper trading live on VPS 157.230.91.33  
 **Framework:** Compass OS (ADR-0001)  
-**Capital status:** NO live capital until G6 (30 resolved paper bets with positive P&L, per sport/pool)
+**Capital status:** NO live capital until G6 (ADR-0076: per (book, sport), the cell wins at its judged n, exposure gate enforcing, DS sign-off, operator-accepted limit table)
 
 **Dual-ledger state (current since ADR-0035/ADR-0037, confirmed GG-070 RESOLVED):** MLB and NBA run as two independent paper portfolios, not one. MLB is the ACTIVE pool the G6 gate is being pursued against. The old NBA paper book is FROZEN — its 24.9% drawdown is historical/adjudicated (GG-034/GG-037), not a live risk signal. NBA itself is no longer tabled (corrected 2026-10-09): its pre-game arm (EXP-038, 12 cells, shadow — evaluate and log, no orders) logs from the 2026-27 regular season (opening night 2026-10-20); current status in `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry. Read `MEMORY_BANK.md`'s Current State Snapshot for both books' live figures — do not treat one ledger's numbers as if they describe the whole system.
 
@@ -499,7 +499,7 @@ This rule exists because skipping it permanently lost a betting day: `MLB_FEATUR
 ## Hard rules (non-negotiable)
 
 1. `arb/` folder = REFERENCE ONLY. Do not incorporate until APR-0010.
-2. No real capital until G6 gate is formally cleared (30 resolved paper bets, positive P&L, DS sign-off).
+2. No real capital until G6 gate is formally cleared (ADR-0076 definition: per (book, sport) win at judged n, exposure gate enforcing, DS sign-off, operator-accepted limit table).
 3. ADRs are immutable once accepted. Changes require a superseding ADR.
 4. No automated retraining in production. Frozen model policy.
 5. Zero hardcoded secrets. Vault/env-var protocol only (NFR-05).

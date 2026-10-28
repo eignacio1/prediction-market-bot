@@ -120,3 +120,6 @@ This document takes no position on which option is correct and does not recommen
 **Sign-off:** Earl Ignacio (operator/DS)
 **Date:** 2026-08-26
 **Role:** DS — Earl Ignacio
+
+---
+**Partially superseded by ADR-0076 (2026-10-27):** the G6 definition (per book and sport, cell wins at its judged n) is now `ADR-0076_g6-per-book-sport-qualification-and-tail-derived-limits.md`. Body above is unchanged.

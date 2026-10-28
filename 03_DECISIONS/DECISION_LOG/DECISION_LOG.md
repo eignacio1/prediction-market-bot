@@ -2955,3 +2955,10 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Finding: the box's vps_deploy.sh updates the checkout but does not install the crontab; box crontab shows 0 of the 6 lines at 00:59Z. An ssh crontab append was denied by the permission classifier; not retried. Needs operator approval or an install path.
 - Part B (NBA/NHL calibration scan) not started: 89.7 candles are not on this machine and a re-pull exceeds the block budget. Props and period families are not archived (registered gap, GG-1250/GG-1330 stay open).
 - Protocol Steps 1-4 / Q1-Q7 not run in full this session (only session_guard + claim).
+
+## 2026-10-27 (W91.1 Part C) — ADR-0076 flipped to ACCEPTED in the repo; references swept
+- Authority: operator, 2026-10-27 17:30 PT ("Yes I accept"), per ACTIVE_QUEUE "Needs your decision" and the 17:30 PT entry above.
+- `ADR-0076_DRAFT_...` renamed to `ADR-0076_g6-per-book-sport-qualification-and-tail-derived-limits.md`; title and status updated, operator line replaced with the decision. Body unchanged. No limit, kelly_fraction, stake, order or ledger change.
+- ADR-0057 and ADR-0028: dated "partially superseded by ADR-0076" line appended (bodies untouched).
+- CLAUDE.md fixed in place (Hard Rule 7): § Gate structure, Capital status line, Hard Rule 2 parenthetical now state the ADR-0076 G6 definition. Hard Rule 2 itself unchanged.
+- Pattern sweep: "ADR-0076_DRAFT" / "DRAFT ADR-0076" / "ADR-0076 (DRAFT)" live refs fixed (ACTIVE_QUEUE header); archived prompts, handoffs, claims and this log left as history.

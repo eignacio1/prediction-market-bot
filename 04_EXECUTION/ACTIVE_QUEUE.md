@@ -9,7 +9,7 @@
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Registered to **GG-1334** · **T-1339** · **ADR-0075** accepted, **ADR-0076 ACCEPTED 10-27 17:30 PT** (G6 per book and sport; status flip in 91.1) · **EXP-041** |
+| Highest GG / T / ADR / EXP | Registered to **GG-1334** · **T-1339** · **ADR-0075** accepted, **ADR-0076 ACCEPTED 10-27 17:30 PT** (G6 per book and sport; file flipped from DRAFT in 91.1 Part C) · **EXP-041** |
 | Gap log | **222 OPEN** · 264 headers = 264 status lines · no duplicate ids (live + archive). Numbers are reserved in ranges per block; unused ones are skipped, never reused |
 | Registry | **108 cells, 52 logging** (B1, box 10-28) |
 | Surface (ADR-0074) | **77 live components** · 0 unreviewed · 0 stale/down/behind · 9 no-alarm (each with a reason) · **budget GREEN** · healthcheck HEALTHY. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
@@ -291,7 +291,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | 🔶 Part B done | EXP-042 frozen (sha256 4efbc15f…ab35). Backward test VOID (overlap 83.8% < 85%): 0 of 11 tested OOS, all IN_SAMPLE; GG-1253 resolved; GG-1340..1342 filed; PR #355 merged. Part C (ADR-0076 flip) next |
+| 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | ✅ Parts A-C done | EXP-042 frozen (sha256 4efbc15f…ab35). Backward test VOID (overlap 83.8% < 85%): 0 of 11 tested OOS, all IN_SAMPLE; GG-1253 resolved; GG-1340..1342 filed; PR #355 merged. Part C done: ADR-0076 ACCEPTED (file renamed, CLAUDE.md G6 lines, ADR-0057/0028 superseded-in-part notes) |
 | 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | 🟨 Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B (ladder ride) next. |
 | 91.3 | **REROUTED (operator 17:32 PT):** NBA and NHL into the price archive, then the first NBA / NHL calibration scan as discovery (+ PR #347). Polymarket stopped (17:31 PT) | BREADTH + PROOF: sports archived 2 → 4; NBA/NHL families scanned 0 → n | 🟨 PARTIAL: #347 merged (631c74e, no t4-mlb restart); Part A merged (#354: 6 NBA/NHL cron lines + registry, budget GREEN) but NOT in the box crontab yet (deploy does not install crontab; install denied, needs operator OK); Part B scan not started. Measure not moved (2 → 4 only after rows verified) | |
 

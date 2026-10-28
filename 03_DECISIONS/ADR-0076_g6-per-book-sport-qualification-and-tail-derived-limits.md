@@ -1,6 +1,6 @@
-# ADR-0076 (DRAFT): G6 per book and sport, with limits derived from measured tails
+# ADR-0076: G6 per book and sport, with limits derived from measured tails
 
-**Status:** DRAFT. Nothing here takes effect until the operator accepts it. No limit value, `kelly_fraction`, stake, order or ledger changes under this draft.
+**Status:** ACCEPTED 2026-10-27 17:30 PT by the operator ("Yes I accept"); section 4 blanks stay blank until a positive Kelly is proposed (ADR-0048 unchanged).
 **Date:** 2026-10-27 (W88.1) **Pillar:** PROOF + PLUMBING **Decisions logged:** true
 **Evidence:** `12_EXPLORATORY/tails_evt/results_W88.md` and `tails_W88.json` (box data 2026-10-27, game-clustered, PR #337).
 
@@ -48,4 +48,4 @@ Kelly stays at 0 (ADR-0048). The smallest positive Kelly the ADR could allow is 
 GG-1190 T4 cache `cache_bankroll` flat at $1,000 against realized -$140.93; GG-1191 shadow books' fill-priced per-game P&L not obtained; GG-1192 per-event cap rationale is stale.
 
 ## Operator line
-**Accept, change or reject ADR-0076 as the G6 definition (per book and sport, limits as in section 4; recommendation: accept with the blanks in section 4 left blank until a positive Kelly is proposed).**
+**Decision (2026-10-27 17:30 PT): "Yes I accept." Accepted as the G6 definition (per book and sport, limits as in section 4), with the blanks in section 4 left blank until a positive Kelly is proposed.**
