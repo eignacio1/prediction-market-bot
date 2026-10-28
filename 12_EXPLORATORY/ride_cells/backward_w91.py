@@ -27,6 +27,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(HERE), "longshot_bias"))
 sys.path.insert(0, os.path.dirname(HERE))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "scripts"))
 
+from _fence import safe_out  # noqa: E402
+
 ET = ZoneInfo("America/New_York")
 SERIES = ["KXMLBF5TOTAL", "KXMLBF5", "KXMLBTOTAL", "KXMLBTEAMTOTAL", "KXMLBSPREAD", "KXMLBF7", "KXNFLTOTAL", "KXMLBHIT"]
 OVERLAP_START = "2026-08-01T00:00:00Z"
@@ -46,7 +48,7 @@ _MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT 
 
 
 def parse_ts(s: str) -> float:
-    s = s.replace("Z", "+00:00")
+    s = re.sub(r"Z$", "+00:00", s)
     s = re.sub(r"\.(\d+)", lambda m: "." + (m.group(1) + "000000")[:6], s)
     return datetime.fromisoformat(s).timestamp()
 
@@ -124,10 +126,11 @@ def cmd_table(a):
             continue
         hh = int(g.group(1)) % 12 + (12 if g.group(3) == "P" else 0)
         c["ok_rules"] += (hh, int(g.group(2))) == (datetime.fromtimestamp(t_et, ET).hour, datetime.fromtimestamp(t_et, ET).minute)
-    with open(os.path.join(a.out, "markets.jsonl"), "w") as fo:
+    with open(safe_out(os.path.join(a.out, "markets.jsonl")), "w") as fo:
         for m in seen.values():
             fo.write(json.dumps(m) + "\n")
-    json.dump(chk, open(os.path.join(a.out, "gg1253_check.json"), "w"), indent=1)
+    with open(safe_out(os.path.join(a.out, "gg1253_check.json")), "w") as fj:
+        json.dump(chk, fj, indent=1)
     print(len(seen), "markets;", json.dumps(chk))
 
 
@@ -150,7 +153,7 @@ def cmd_fetch(a):
     if os.path.exists(path):
         done = {json.loads(x)["t"] for x in open(path)}
     t0 = time.time()
-    with open(path, "a") as fo:
+    with open(safe_out(path), "a") as fo:
         for m in mk:
             if m["t"] in done:
                 continue
@@ -252,7 +255,8 @@ def cmd_score(a):
                 held = bool(v.get("bh")) and v["net_lo"] > 0 and (v["gap"] > 0) == (v["fixed_side"] == "yes")
                 v["status"] = "HELD_OUT" if held else "FAILED"
         out[window] = {"cells": cells, "bh": bh, "obs": len(first)}
-    json.dump(out, open(os.path.join(a.out, "score_raw.json"), "w"), indent=1, default=str)
+    with open(safe_out(os.path.join(a.out, "score_raw.json")), "w") as fj:
+        json.dump(out, fj, indent=1, default=str)
     print(json.dumps({w: {k: (v["status"], v["games"], v.get("net_mean")) for k, v in d["cells"].items()} for w, d in out.items()}, default=str))
 
 
