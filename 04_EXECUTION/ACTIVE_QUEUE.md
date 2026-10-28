@@ -1,46 +1,37 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 91** · all three blocks in `04_EXECUTION/WAVE_BLOCKS/W91_BLOCKS.md`: **91.1** (the ride cells, pre-registered then tested out of sample), **91.2** (the ride tree as code + the ladder ride), **91.3** (the other venue: Polymarket vs Kalshi). Each block is one fenced paste. No Muse paste (its live session is running).
+> **▶ PASTE NOW — Wave 92** · all three blocks in `04_EXECUTION/WAVE_BLOCKS/W92_BLOCKS.md`: **92.1** (NBA + NHL prices archived for real; a surface budget that tells the truth), **92.2** (exact fees; the ladder ride pre-registered forward), **92.3** (NBA engine: lineups and on/off). Each block is one fenced paste. No Muse paste (ten scheduled cycles a day).
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 
-**Verified against:** `origin/main = 72999822` + the window's Wave 90 close commits (2026-10-27 ~17:40 PT). Box facts from the box bridge, 2026-10-28 00:18Z (`04_EXECUTION/BOX_TASKS/results/20261028T001810Z_*`).
+**Verified against:** `origin/main` at the Wave 91 close (2026-10-27 ~22:00 PT). Box facts from the box bridge, 2026-10-28 04:33Z (`04_EXECUTION/BOX_TASKS/results/20261028T043253Z_*`).
 
 | Fact | Value |
 |---|---|
-| Highest GG / T / ADR / EXP | Registered to **GG-1334** · **T-1339** · **ADR-0075** accepted, **ADR-0076 ACCEPTED 10-27 17:30 PT** (G6 per book and sport; file flipped from DRAFT in 91.1 Part C) · **EXP-041** |
+| Highest GG / T / ADR / EXP | Registered to **GG-1342** (claims reserve to GG-1352) · **T-1354** · **ADR-0076** accepted 10-27 (G6 per book and sport) · **EXP-042** frozen (ride cells, forward) |
 | Gap log | **222 OPEN** · 264 headers = 264 status lines · no duplicate ids (live + archive). Numbers are reserved in ranges per block; unused ones are skipped, never reused |
 | Registry | **108 cells, 52 logging** (B1, box 10-28) |
-| Surface (ADR-0074) | **77 live components** · 0 unreviewed · 0 stale/down/behind · 9 no-alarm (each with a reason) · **budget GREEN** · healthcheck HEALTHY. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
+| Surface (ADR-0074) | Box 04:33Z: "83 live" but **6 of them are registered and NOT installed** (NBA/NHL archive lines, #354) and the budget still read GREEN - a defect (92.1). Real: 77 live · healthcheck HEALTHY. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
 | Capital | **$0 real.** `kelly_fraction = 0.0` everywhere; flat demo stakes only (ADR-0050/0072). Kill switch ENFORCING on every order path (89.1) |
-| Deploy | t4-mlb and pmbot-web-dashboard run box HEAD `ce78de49`; deployed 00:07Z. A push restarts t4-mlb only on a changed import AND no live MLB game (#158). The box pulls on its own timer |
-| Silent arms | none (00:19Z): MLB game-market, NHL, NBA (3 arms), T1/T4 MLB wrote rows; NFL idle (no game in 12 h) |
-| Open PRs | #149 (stale, kept) |
+| Deploy | t4-mlb and pmbot-web-dashboard run box HEAD `fc2999ab`; docs-only deploy 04:33Z. Deploy does NOT install crontab lines (91.3) - installs go through allowlisted bridge tasks |
+| Silent arms | none (04:33Z): MLB game-market, NHL (11 games), NBA (3 arms), T1 MLB wrote rows; NFL and T4 MLB idle |
+| Open PRs | #149 only (stale, kept). #347 merged in 91.3 |
 
----|---|
-| Highest GG / T / ADR / EXP | Registered to **GG-971** (claims reserve to GG-974) · **T-1032** · **ADR-0075** · **EXP-040** |
-| Gap log | **195 OPEN** · 228 headers = 228 status lines · no duplicate ids (live + archive) |
-| Registry | **107 cells, 40 logging** (generator, registry as of 10-13). NBA game cells flip on valid regular-season rows (10-20/21; 9 of 12 is the ceiling, GG-891). KXNFLPASSYDS T1 accepted 10-19, built in 81.3 |
-| Surface (ADR-0074) | **75 live components** · 0 unreviewed · 0 stale/down/behind · 10 no-alarm (each with a reason) · **budget GREEN** · healthcheck 0 faults. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
-| Capital | **$0 real.** `kelly_fraction = 0.0` everywhere; flat demo stakes only (ADR-0050/0072). Demo account topped up to $19,635 on 10-15; forward-test data before 2026-10-16T05:40Z is cash-starved |
-| Deploy | t4-mlb and pmbot-web-dashboard run box HEAD `0f79d901`; deploy noop 04:38Z. A push restarts t4-mlb only on a changed import AND no live MLB game (#158). The box pulls on its own timer |
-| Silent arms | All OK or IDLE at 04:40Z (NFL, NFL QB challenger, NHL, MLB postseason, T1 MLB OK; NBA idle until 10-20) |
-| Open PRs | #149 only (stale, kept: its files are not on main) |
 
 ---
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; this window: Waves 81 →, from 2026-10-19; last window: Waves 61–80)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: **Wave 90 CLOSED, Wave 91 written, 2026-10-27 ~17:40 PT** (box bridge `20261028T001810Z_*`). Before that: Wave 89 closed 10-26 22:30 PT; Wave 88 closed 10-26 20:00 PT.*
+*Updated by the strategic window at every wave close and at every handoff. Last update: **Wave 91 CLOSED, Wave 92 written, 2026-10-27 ~22:00 PT** (box bridge `20261028T043253Z_*`). Before that: Wave 90 closed 10-27 17:40 PT; Wave 89 closed 10-26 22:30 PT.*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
 *Generated by `scripts/distance_to_optimum.py` on the box via the bridge's `distance_read`, result
-`04_EXECUTION/BOX_TASKS/results/20261028T001810Z_w_distance_read.md`, computed 2026-10-28T00:19Z. "Moved" is against the
-Wave 89 close read (`20261027T051307Z_w_distance_read.md`, 05:13Z); rows not marked moved are unchanged.*
+`04_EXECUTION/BOX_TASKS/results/20261028T043253Z_w_distance_read.md`, computed 2026-10-28T04:33Z. "Moved" is against the
+Wave 90 close read (`20261028T001810Z_w_distance_read.md`, 00:19Z); rows not marked moved are unchanged.*
 
-| Pillar | Measure | Now (generated, box, 2026-10-28 00:19Z) | At optimum | Moved, Wave 90 |
+| Pillar | Measure | Now (generated, box, 2026-10-28 04:33Z) | At optimum | Moved, Wave 91 |
 |---|---|---|---|---|
 | **BREADTH** | B1 cells logging / registered | **52 / 108** | the whole board | 0 |
 | | B2 families logging / registered | **17 / 19** | 19 / 19 + parlays | 0 |
@@ -50,20 +41,21 @@ Wave 89 close read (`20261027T051307Z_w_distance_read.md`, 05:13Z); rows not mar
 | | D2 largest pre-game feature set | **18** (MLB player hits, 0 qualitative) | coverage, not a count | 0 |
 | | D3 challengers ready | **3** (NFL QB; EXP-041 NFL market-anchored; one more counted by the corrected script) | ≥ 1 per arm | 0 |
 | | D4 engine stage (ADR-0073) | **NFL: data layer + engine scaffold · NBA: data layer · NHL: data layer** · MLB: none | each sport: data → factors → whole board | 0 |
-| | D5 betting architecture (ADR-0075) | **(a) NFL 6/8, NBA 3/8, NHL 1/8, MLB 2/8** (decision_trees, filtering_mechanisms) · **(b) aggregated / interpreted / applied: NFL 5 / 3 / 10 of 21; NBA 2 / 6 / 5 of 15; NHL 2 / 2 / 3 of 12**; MLB none | 8 of 8 per sport; factors applied | **(a) MLB 0 → 2/8** (90.2 router); momentum_looping measured in all four sports, stage interpreted (90.3, not yet counted by the script); (b) NFL interpreted 5 → 3, applied 8 → 10 (89.3, first read at this close) |
+| | D5 betting architecture (ADR-0075) | **(a) NFL 7/8, NBA 4/8, NHL 2/8, MLB 3/8** (momentum_looping now counted in all four) · **(b) aggregated / interpreted / applied: NFL 5 / 3 / 10 of 21; NBA 2 / 6 / 5 of 15; NHL 2 / 2 / 3 of 12**; MLB none | 8 of 8 per sport; factors applied | (a) +1 per sport (90.3 momentum, counted by the script this close); ride tree is code (91.2), decision_trees count unchanged |
 | **EXECUTION** | E1 demo orders filled | **T4 MLB 177 / 4,316 = 4.1% · T1 MLB 85 / 485 = 17.5%** (MLB books idle since 10-20) | fills ≈ intended orders | 0 |
 | | E2 P&L per filled bet | **T4 −$0.21** (n 177) · **T1 −$1.50** (n 83) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 25.4% vs 48.3% · T1 28.9% vs 52.1%** | fills ≥ non-fills | 0 |
-| | Forward test (ADR-0072), per book and sport (box report 2026-10-27T11:25Z) | **NFL (a)/(b) hold, pending (c)**: control 5,277 / treatment 1,800 fills, 28 games · **NBA (a) holds but (b) fails**: 14,395 / 2,846 fills, 65 games · **NHL** 2,406 / 345 fills, 97 games, no verdict yet · **MLB** 8 / 2, no verdict | ~550 per arm, per (book, sport) | NFL INCONCLUSIVE → (a)/(b) hold, pending (c) (10-26 report) |
+| | Forward test (ADR-0072), per book and sport (box report 2026-10-27T11:25Z) | **NFL (a)/(b) hold, pending (c)**: control 5,277 / treatment 1,800 fills, 28 games · **NBA (a) holds but (b) fails**: 14,395 / 2,846 fills, 65 games · **NHL** 2,406 / 345 fills, 97 games, no verdict yet · **MLB** 8 / 2, no verdict | ~550 per arm, per (book, sport) | 0 |
 | **PROOF** | P1 cells at a scored look | **0 / 49** | every cell judged at its n | 0 |
 | | P2 verdicts | **0** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-02** (NFL, 12 cells); modal outcome **KEEP ACCRUING ~91%** | — | 0 |
 
-**Surface (box, 2026-10-28 00:18Z):** **77 live components · SURFACE BUDGET GREEN · healthcheck HEALTHY** (the MLB game-market arm
-writes rows again: RED since 10-25 is cleared) · kill switch ENFORCING on every order path. Frozen models vs the market: none beats it
-(88.3). Ride the market: the router (90.2) sends 97.66% of 164,354 situations to NO-BET and 2.34% to RIDE, on cells found in the same
-data (not evidence); the hold-out was underpowered (90.1); pre-game momentum is a random walk (90.3). Wave 91 tests the cells out of
-sample and measures two new kinds of ride.
+**Surface (box, 2026-10-28 04:33Z):** budget reads GREEN with **"83 live", but 6 of those are NBA/NHL archive lines registered and NOT
+installed** (deploy does not install crontab; 91.3's ssh append was refused) - the budget counts them live and stays GREEN, a defect
+92.1 fixes. Real: 77 live, healthcheck HEALTHY, no silent arm. Kill switch ENFORCING. **Ride the market:** ride.py is code and routes
+nothing (every cell IN_SAMPLE, by the operator's rule of 17:26 PT); EXP-042 froze the 11 cells for a forward test (NFL look ~12-21, MLB
+looks April-June 2027); the ladder ride is the first mechanism we can see (a strike off its own ladder moves toward it) but net of cost
+it is +0.7c [-0.2c, +1.7c]. **ADR-0076 accepted** (G6 per book and sport).
 
 **Window, 2026-10-21 morning (no wave; operator on his phone, 07:05-08:15 PT):** Earl set a daily automatic Muse run;
 the window wrote the week's Muse backlog (R-017 → R-030) and amended charter v3 to name that one job. Watchdog posture is
@@ -285,39 +277,40 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 91 · RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCES · WRITTEN 2026-10-28 ~00:40 UTC (10-27 17:40 PT) · three MEDIUM blocks · Muse: live session running (no paste)
+## ⬛ NOW — Wave 92 · THE WINTER ARCHIVE, EXACT FEES, THE NBA ENGINE · WRITTEN 2026-10-28 ~05:00 UTC (10-27 22:00 PT) · three MEDIUM blocks · no Muse paste (ten scheduled cycles a day)
 
-**The pastes:** `04_EXECUTION/WAVE_BLOCKS/W91_BLOCKS.md` (91.1, 91.2, 91.3; all three run in parallel).
+**The pastes:** `04_EXECUTION/WAVE_BLOCKS/W92_BLOCKS.md` (92.1, 92.2, 92.3; all three run in parallel).
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
-| 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | ✅ Parts A-C done | EXP-042 frozen (sha256 4efbc15f…ab35). Backward test VOID (overlap 83.8% < 85%): 0 of 11 tested OOS, all IN_SAMPLE; GG-1253 resolved; GG-1340..1342 filed; PR #355 merged. Part C done: ADR-0076 ACCEPTED (file renamed, CLAUDE.md G6 lines, ADR-0057/0028 superseded-in-part notes) |
-| 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | ✅ Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B ✅ (#356 merged, CI green): ladder ride measured on NFL+MLB archive, 108,279 triggers / 2,191 games; strike converges toward ladder (+1.1c at 3h, gross) but net P&L +0.007 [−0.002, 0.017]; 36 cells tested, 7 BH-selected, **2 HELD_OUT** (KXMLBTOTAL T0-2h tight, net 2–5c and 5c+), 5 FAILED. NBA/NHL not covered (no archive, GG-1330). Results: 12_EXPLORATORY/ride_ladder/results_W91_2.md. ride_cells.toml unchanged (window moves statuses). |
-| 91.3 | **REROUTED (operator 17:32 PT):** NBA and NHL into the price archive, then the first NBA / NHL calibration scan as discovery (+ PR #347). Polymarket stopped (17:31 PT) | BREADTH + PROOF: sports archived 2 → 4; NBA/NHL families scanned 0 → n | 🟨 PARTIAL: #347 merged (631c74e, no t4-mlb restart); Part A merged (#354: 6 NBA/NHL cron lines + registry, budget GREEN) but NOT in the box crontab yet (deploy does not install crontab; install denied, needs operator OK); Part B scan not started. Measure not moved (2 → 4 only after rows verified) | |
+| 92.1 | NBA + NHL prices archived for real (install route, spreads / totals / team totals added), and a surface budget that counts only what is installed | BREADTH + PLUMBING: sports archived 2 → 4 (rows read back); phantom live entries 6 → 0 | ⬜ | |
+| 92.2 | Fees exactly as Kalshi publishes them (Muse R-068), every reported net re-checked; the 2 ladder cells into the ride table; the ladder ride pre-registered forward (EXP-043) | PROOF: ride cells HELD_OUT 0 → 2; forward hypotheses 11 → 11 + ladder | ⬜ | |
+| 92.3 | NBA engine, depth lane: lineups and on/off from the play-by-play, point-in-time; interpreted, then against this season's market | DEPTH: D5(b) NBA B7 none → interpreted; D4 NBA first factor class from event data | ⬜ | |
 
-**What Wave 90 delivered (verified 2026-10-28 00:19Z: #349-#352 CI green; box bridge `20261028T001810Z_*`, box HEAD ce78de49):**
-**90.1 🟨** 89.7 finished (#349) and the hold-out scan run (#352): **0 candidates, but only 1 of 1,850 cells was testable** - the
-fetch sampled 4 strikes per event, so this is underpowered, not a null (GG-1292). ride.py not built (→ 91.2). **90.2 ✅** the router
-(#350, wired to nothing; doctrine ACCEPTED by the operator): 164,354 MLB + NFL situations → **NO-BET 97.66%, RIDE 2.34%, FADE 0,
-MOMENTUM 0**; every RIDE came from cells found in the same archive, so it shows the plumbing works, not that riding pays. **90.3 ✅**
-momentum (#351): after a 3c+ pre-game move, the next 1-3 h is a random walk in all four sports (gross ≈ 0); following loses 4c (tight
-books) to 17c (wide) per contract, fading the same; 0 contexts routable. Two thin hypotheses (MLB fade in the lineup window; NBA follow
-up-moves) need real news timestamps (GG-1300).
-**The plain reading:** 98% NO-BET is the router doing its job: nothing the bot can do today has been shown to beat the price out of
-sample, and the doctrine sends nothing to a tree without that. Wave 91 is the first test of whether the ride cells survive, plus two
-new sources of ride evidence that work in NBA / NHL / NFL through the winter.
-**Distance:** D5(a) MLB 0 → 2/8; momentum measured (interpreted) in four sports; box RED → GREEN; everything else 0.
+**What Wave 91 delivered (verified 2026-10-28 04:33Z: #347 #353-#356 CI green; box bridge `20261028T043253Z_*`):**
+**91.1 ✅** EXP-042 frozen before any new row: 89.2's 11 cells, forward only. The backward test was VOID (hourly candles failed the
+overlap check, 83.8% < 85%), and Muse's R-069 showed it could never have run: **no Kalshi sports series existed before August 2026**.
+Forward looks: the NFL cell ~2026-12-21, the MLB cells April-June 2027. GG-1253 (MLB ticker clock) validated; GG-204 / GG-285 resolved
+by ADR-0076 (flipped to ACCEPTED, CLAUDE.md's G6 wording fixed). **91.2 ✅** ride.py built, the router's stub replaced: RIDE 3,838 → 0
+(nothing has held out of sample). The ladder ride measured: a strike quoted off its own ladder moves toward it (+1.3c in 1 h, gross),
+the ladder does not move toward the strike; net of cost +0.7c [-0.2c, +1.7c]; 2 of 36 cells HELD_OUT on one time split, both MLB totals
+in the last 2 h with a tight book. **91.3 🟨** #347 and #354 merged; the six NBA / NHL archive lines are registered but not installed
+(the terminal's ssh append was refused and it asked the operator - it is plumbing, 92.1 installs them); Part B not started.
+**Muse (ten scheduled cycles a day since 10-27):** 13 tickets closed today, among them the fee schedule verbatim (R-068: our fee
+formula is right, but MLB pre-game fees are HALF of what we charge), first listing dates (R-069), the favourite-longshot literature
+(R-070: the sign and size depend on venue, aggregation and sport), and the live ten (lines, splits, contract rules, NBA starters, NHL
+goalies, injury-report and lineup timing, weather forecasts).
+**The plain reading:** the ride work produced its first real mechanism (ladders) and a frozen forward test, but every candidate so far
+is MLB, so the scoreboard cannot move before spring. This wave moves the evidence to NBA and NHL (92.1), makes the cost side exact
+(92.2), and puts the depth lane back on the NBA engine (92.3).
+**Distance:** D5(a) +1 per sport (momentum counted); ride cells pre-registered 0 → 11 (EXP-042); ADR-0076 accepted; everything else 0.
 
-**Pushback:** 10 of the 11 cells are MLB, whose season ends with the World Series this week, and Kalshi may not have listed these
-families much before August: 91.1's backward test may find little to read, and the forward test cannot judge MLB before spring. If so,
-the winter's ride evidence comes from 91.2 (ladder) and 91.3 (other venue). The honest outcome of all three may again be "none held
-out of sample".
-**Doctrine reading - ACCEPTED by the operator 2026-10-27 17:26 PT ("yes I accept the recommendation"):** DECISION_ROUTING.md allows RIDE on "a net-positive table cell". The
-window reads net-positive as measured OUT OF SAMPLE (HELD_OUT or FORWARD_PASSED), because 90.2 itself called its in-sample RIDE
-"NOT evidence"; ride.py is built that way, so RIDE traffic goes to 0 until a cell holds.
-**Surface:** GREEN (00:18Z). Expected delta **0**: all three blocks are offline; the forward test is scored from the archive, no runner.
-**Dependencies:** none. ride.py seeds the 11 cells as IN_SAMPLE; 91.1 and 91.2 Part B write statuses to their own folders; the window
-moves them into ride_cells.toml at the close.
+**Pushback:** no PROOF number can move this wave: the NFL first look (11-02) is pre-registered as KEEP ACCRUING (~91%), EXP-042's
+earliest look is ~12-21, and NBA / NHL archive rows only start when 92.1 installs them. 92.1 is mostly plumbing; it is the plumbing
+the winter's evidence runs through, and it fixes a gauge (the budget) that read GREEN while wrong.
+**Surface:** budget GREEN but overstated by 6 (fixed in 92.1). Expected delta: +6 to about +12 real (the NBA / NHL archive lines); 92.2
+and 92.3 add nothing running. After 92.1's budget fix, a not-installed line reads RED, so the install comes first.
+**Dependencies:** none. 92.2's EXP-043 names "from the date 92.1's lines are installed" for NBA / NHL rows; it does not wait for them.
 
 ---
 
@@ -486,12 +479,19 @@ END OF BLOCK B74-A. If you cannot see this line, the prompt reached you truncate
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⬜ WAVE 91 — WRITTEN 2026-10-28 ~00:40 UTC (10-27 17:40 PT) · RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCES · three MEDIUM blocks · Muse live session (no paste)
+### ⬜ WAVE 92 — WRITTEN 2026-10-28 ~05:00 UTC (10-27 22:00 PT) · THE WINTER ARCHIVE, EXACT FEES, THE NBA ENGINE · three MEDIUM blocks · no Muse paste
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 91.1 | The ride cells: pre-registered, then tested out of sample (backward + forward) | ⬜ | |
-| 91.2 | The ride tree as code + the ladder ride | ✅ Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B ✅ (#356 merged, CI green): ladder ride measured on NFL+MLB archive, 108,279 triggers / 2,191 games; strike converges toward ladder (+1.1c at 3h, gross) but net P&L +0.007 [−0.002, 0.017]; 36 cells tested, 7 BH-selected, **2 HELD_OUT** (KXMLBTOTAL T0-2h tight, net 2–5c and 5c+), 5 FAILED. NBA/NHL not covered (no archive, GG-1330). Results: 12_EXPLORATORY/ride_ladder/results_W91_2.md. ride_cells.toml unchanged (window moves statuses). |
-| 91.3 | REROUTED: NBA + NHL into the price archive + first NBA/NHL calibration scan (+ PR #347); Polymarket stopped | ✅ Part A merged (#354), crontab install pending; #347 merged; Part B next | |
+| 92.1 | NBA + NHL archive installed for real + a truthful surface budget | ⬜ | |
+| 92.2 | Exact fees (R-068); ladder cells into the ride table; EXP-043 ladder ride forward | ⬜ | |
+| 92.3 | NBA engine: lineups and on/off, point-in-time | ⬜ | |
+
+### ✅ WAVE 91 — WRITTEN 2026-10-28 ~00:40 UTC · CLOSED 2026-10-28 ~05:00 UTC (operator 21:32 PT) · verified on GitHub (#347 #353-#356 CI green) + box bridge (`20261028T043253Z_*`) · moved: **ride cells pre-registered 0 → 11 (EXP-042); ride tree is code; ladder ride measured (2 cells held out); ADR-0076 accepted** · 91.3 rerouted then partial (NBA/NHL lines not installed)
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 91.1 | The ride cells: pre-registered (EXP-042), backward test, + ADR-0076 flip | ✅ | #355 green: EXP-042 frozen; backward VOID (overlap 83.8%; and no Kalshi sports before Aug 2026, Muse R-069); forward looks NFL ~12-21, MLB Apr-Jun 2027; ADR-0076 ACCEPTED |
+| 91.2 | The ride tree as code + the ladder ride | ✅ | #353 #356 green: router RIDE 3,838 → 0; ladder net +0.7c [-0.2, +1.7]; 2 of 36 cells HELD_OUT (KXMLBTOTAL T0-2h tight) |
+| 91.3 | REROUTED (Polymarket stopped): NBA + NHL into the price archive (+ #347) | 🟨 | #347 #354 green: 6 lines registered, NOT installed (ssh refused; wrongly sent to the operator); Part B not started → 92.1 |
 
 ### ✅ WAVE 90 — WRITTEN 2026-10-27 ~05:30 UTC · CLOSED 2026-10-28 ~00:40 UTC (operator 17:16 PT) · verified on GitHub (#349-#352 CI green) + box bridge (`20261028T001810Z_*`) · moved: **D5(a) MLB 0 → 2/8 (router); momentum measured in four sports (none); box RED → GREEN**; ride hold-out underpowered (0 candidates)
 | # | Block | Status | Outcome |

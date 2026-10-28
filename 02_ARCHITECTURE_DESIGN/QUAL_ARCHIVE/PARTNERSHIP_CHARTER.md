@@ -38,9 +38,12 @@ live scheduler (it listed `nfl-archive-daily-sync` at 03:50; its memory claimed 
 2. **Muse's memory holds a pointer, not a protocol.** Its MEMORY.md / AGENTS.md carry one line: read the charter and TO_MUSE.md
    (the two URLs) at the start of every chat. The window-protocol files it wrote on 2026-10-20 (`~/workspace/protocols/
    window-protocol.md`, `window-state-brief.md`) were built on the padded picture and are retired; they become that pointer.
-3. **No scheduled jobs except ones the charter names.** v3 names **three daily runs** (amended 2026-10-21 16:50 PT; Earl set them
-   up and they are his: "even 3 seems small but baby steps"). Each run's whole prompt is the kickoff line below; each works the
-   top open backlog ticket, commits and pushes everything before it ends, and stops when the backlog is empty. No other job.
+3. **No scheduled jobs except ones the charter names.** v3 names **ten daily runs** (amended 2026-10-27; Earl set them up and they
+   are his: the scheduled runs do not draw on Muse's chat usage limit, which Earl tends to hit by Wednesday or Thursday, so he moved
+   the workload onto them. Before that: three daily runs, 2026-10-21 16:50 PT, "even 3 seems small but baby steps"). Each run's whole
+   prompt is the kickoff line below; each works the top open backlog ticket (skipping any ticket with a live IN PROGRESS marker),
+   commits and pushes everything before it ends, and stops when the backlog is empty. No other job. Live sessions Earl starts work
+   the same backlog and mark each ticket IN PROGRESS before starting it.
    (Earlier the same day this rule said "one daily run"; that was the window's error, W29, and it made Muse remove two of Earl's
    three runs. The number of runs is Earl's call, never the window's.)
    (Original v3 text: "v3 names none." Every other recurring job Muse had (`nfl-archive-daily-sync`,

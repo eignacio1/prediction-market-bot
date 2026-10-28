@@ -77,3 +77,12 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 
 ## W31 · 2026-10-27 17:31 PT · built on a curiosity question
 The operator asked how Polymarket differs from Kalshi out of curiosity; the window wrote a Polymarket block (91.3) and a Muse ticket (R-071) from it. Operator: "I simply asked as curiosity we're not building shit for polymarket yet". Rule: a question is not a direction; a new venue, sport or data source enters a wave only when the operator says to build it.
+
+## W32 · 2026-10-27 · a backward test written without checking the data existed
+91.1 was told to test the ride cells "on every date before 2026-08-01 that Kalshi lists" (MLB 2026, 2025, NFL 2025). No Kalshi sports series existed before August 2026 (Muse R-069, the same evening; the window had queued R-069 to find out, after the block instead of before it). The test was VOID for another reason first, but it could never have run. Rule: a test window is checked for data before a block is built on it.
+
+## W33 · 2026-10-27 · a cron block with no install route
+91.3 (rerouted) said "installed only if budget_read reads GREEN" and never named how a line gets onto the box's crontab. Deploy does not install crontab; the terminal's ssh was refused and it sent the install to the operator. Rule: a block that adds a running component names its install path (the allowlisted bridge installer pattern).
+
+## W34 · 2026-10-27 · a queue edit that cut a table in half
+The Wave 90 close replaced the queue's fact table up to the first "---", which was inside the table's own separator row; the old 10-19 table's rows survived under the new one for a wave. Rule: anchor replacements on a unique line, never on a substring that markdown tables contain.

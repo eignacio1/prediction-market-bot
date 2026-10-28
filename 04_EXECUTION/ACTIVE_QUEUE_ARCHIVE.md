@@ -10,6 +10,46 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 91 NOW section (closed 2026-10-27 22:00 PT). 91.1 ✅ 91.2 ✅ 91.3 🟨 (rerouted). Pastes stay in 04_EXECUTION/WAVE_BLOCKS/W91_BLOCKS.md. Verbatim:
+
+## ⬛ NOW — Wave 91 · RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCES · WRITTEN 2026-10-28 ~00:40 UTC (10-27 17:40 PT) · three MEDIUM blocks · Muse: live session running (no paste)
+
+**The pastes:** `04_EXECUTION/WAVE_BLOCKS/W91_BLOCKS.md` (91.1, 91.2, 91.3; all three run in parallel).
+
+| # | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|
+| 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | ✅ Parts A-C done | EXP-042 frozen (sha256 4efbc15f…ab35). Backward test VOID (overlap 83.8% < 85%): 0 of 11 tested OOS, all IN_SAMPLE; GG-1253 resolved; GG-1340..1342 filed; PR #355 merged. Part C done: ADR-0076 ACCEPTED (file renamed, CLAUDE.md G6 lines, ADR-0057/0028 superseded-in-part notes) |
+| 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | ✅ Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B ✅ (#356 merged, CI green): ladder ride measured on NFL+MLB archive, 108,279 triggers / 2,191 games; strike converges toward ladder (+1.1c at 3h, gross) but net P&L +0.007 [−0.002, 0.017]; 36 cells tested, 7 BH-selected, **2 HELD_OUT** (KXMLBTOTAL T0-2h tight, net 2–5c and 5c+), 5 FAILED. NBA/NHL not covered (no archive, GG-1330). Results: 12_EXPLORATORY/ride_ladder/results_W91_2.md. ride_cells.toml unchanged (window moves statuses). |
+| 91.3 | **REROUTED (operator 17:32 PT):** NBA and NHL into the price archive, then the first NBA / NHL calibration scan as discovery (+ PR #347). Polymarket stopped (17:31 PT) | BREADTH + PROOF: sports archived 2 → 4; NBA/NHL families scanned 0 → n | 🟨 PARTIAL: #347 merged (631c74e, no t4-mlb restart); Part A merged (#354: 6 NBA/NHL cron lines + registry, budget GREEN) but NOT in the box crontab yet (deploy does not install crontab; install denied, needs operator OK); Part B scan not started. Measure not moved (2 → 4 only after rows verified) | |
+
+**What Wave 90 delivered (verified 2026-10-28 00:19Z: #349-#352 CI green; box bridge `20261028T001810Z_*`, box HEAD ce78de49):**
+**90.1 🟨** 89.7 finished (#349) and the hold-out scan run (#352): **0 candidates, but only 1 of 1,850 cells was testable** - the
+fetch sampled 4 strikes per event, so this is underpowered, not a null (GG-1292). ride.py not built (→ 91.2). **90.2 ✅** the router
+(#350, wired to nothing; doctrine ACCEPTED by the operator): 164,354 MLB + NFL situations → **NO-BET 97.66%, RIDE 2.34%, FADE 0,
+MOMENTUM 0**; every RIDE came from cells found in the same archive, so it shows the plumbing works, not that riding pays. **90.3 ✅**
+momentum (#351): after a 3c+ pre-game move, the next 1-3 h is a random walk in all four sports (gross ≈ 0); following loses 4c (tight
+books) to 17c (wide) per contract, fading the same; 0 contexts routable. Two thin hypotheses (MLB fade in the lineup window; NBA follow
+up-moves) need real news timestamps (GG-1300).
+**The plain reading:** 98% NO-BET is the router doing its job: nothing the bot can do today has been shown to beat the price out of
+sample, and the doctrine sends nothing to a tree without that. Wave 91 is the first test of whether the ride cells survive, plus two
+new sources of ride evidence that work in NBA / NHL / NFL through the winter.
+**Distance:** D5(a) MLB 0 → 2/8; momentum measured (interpreted) in four sports; box RED → GREEN; everything else 0.
+
+**Pushback:** 10 of the 11 cells are MLB, whose season ends with the World Series this week, and Kalshi may not have listed these
+families much before August: 91.1's backward test may find little to read, and the forward test cannot judge MLB before spring. If so,
+the winter's ride evidence comes from 91.2 (ladder) and 91.3 (other venue). The honest outcome of all three may again be "none held
+out of sample".
+**Doctrine reading - ACCEPTED by the operator 2026-10-27 17:26 PT ("yes I accept the recommendation"):** DECISION_ROUTING.md allows RIDE on "a net-positive table cell". The
+window reads net-positive as measured OUT OF SAMPLE (HELD_OUT or FORWARD_PASSED), because 90.2 itself called its in-sample RIDE
+"NOT evidence"; ride.py is built that way, so RIDE traffic goes to 0 until a cell holds.
+**Surface:** GREEN (00:18Z). Expected delta **0**: all three blocks are offline; the forward test is scored from the archive, no runner.
+**Dependencies:** none. ride.py seeds the 11 cells as IN_SAMPLE; 91.1 and 91.2 Part B write statuses to their own folders; the window
+moves them into ride_cells.toml at the close.
+
+---
+
+---
+
 ## Wave 90 NOW section (closed 2026-10-27 17:40 PT). 90.1 🟨 90.2 ✅ 90.3 ✅. Pastes stay in 04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md. Verbatim:
 
 ## ⬛ NOW — Wave 90 · RIDE THE MARKET: TREES, ROUTER, MOMENTUM · WRITTEN 2026-10-27 ~05:30 UTC (10-26 22:30 PT) · runs 10-27 · plus 89.7 tonight

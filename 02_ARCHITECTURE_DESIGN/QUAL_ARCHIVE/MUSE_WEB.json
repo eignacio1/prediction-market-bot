@@ -1,7 +1,7 @@
 {
  "about": "State of Muse's aggregation work across the four sports, drawn as the Visual Dashboard's aggregation web. Maintained by the strategic window at every wave close from the archive (eignacio1/sports-intel-archive, commit below), TO_MUSE.md and the bot repo. built = delivered and in the repo/archive; pending = a ticket or block open now; future = planned, no ticket yet. Operator 2026-10-21 08:11 PT: 'give us an idea of pending, built, future'.",
- "as_of": "2026-10-28T00:45Z",
- "archive_commit": "e199631",
+ "as_of": "2026-10-28T05:00Z",
+ "archive_commit": "e1f8c67",
  "rings": [
   {
    "id": "scout",
@@ -175,14 +175,14 @@
    "name": "Venue · surface · weather",
    "tickets": "R-024 · R-026 · R-035",
    "states": [
-    "pending",
+    "built",
     "pending",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-026: is there a free historical forecast archive? (GG-734)",
+    "R-026 CLOSED: NWS NDFD forecast archive, CAPTURABLE (grid issue + valid time; AWS copy 2020 -> now, NCEI 2004 -> now)",
     "R-024 stadium geometry; R-035 playing surfaces 2016-2026",
     "",
     "",
@@ -194,14 +194,14 @@
    "name": "Line history · injury-report timing",
    "tickets": "R-058 · R-059",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-058: NONE free for timestamped NFL lines 2016-2026; R-059 injury-report timing IN PROGRESS (live session)",
+    "R-058: NONE free for timestamped NFL lines 2016-2026; R-059 CLOSED: injury-report version chain and timestamps (5 cards)",
     "",
     "",
     "",
@@ -488,7 +488,7 @@
     "future"
    ],
    "notes": [
-    "R-057: no free bulk line history 2016-2026 (OddsPortal one-off only); the bot anchors on Kalshi's own history",
+    "R-060 CLOSED: MLB probables and lineup cards, 4 cards (Stats API; past-date probables unverified)",
     "",
     "",
     "",

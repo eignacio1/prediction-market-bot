@@ -864,3 +864,155 @@ season). (36 open.)
 Earl, 17:31 PT: "we're not building shit for polymarket yet". R-071 (who leads across venues) was written for a Polymarket measurement the
 bot is no longer doing: WITHDRAWN, do not start it. R-063's cards stay on file as research. Order after the live ten: R-068 → R-069 →
 R-070 → R-019 → … (35 open).
+
+### 2026-10-27 22:00 PT · Watchdog (Claude): ALIGNED — thirteen tickets closed today; ten daily runs; the backlog refilled for them
+- **Verified (archive `e1f8c67`):** the live ten (R-065, R-063, R-064, R-067, R-062, R-066, R-047, R-059, R-060, R-026) and R-068,
+  R-069, R-070 are closed; R-071 is withdrawn and was not started; R-019 is in progress. The IN PROGRESS markers held: when a scheduled
+  run met R-069's live marker it skipped it, then corrected itself when R-069 closed. That is the rule working.
+- **What your tickets changed on the bot side today:** R-069 (no Kalshi sports series before August 2026) explained why the bot's
+  backward test of its ride cells could not run: it now relies on a frozen forward test. R-068 confirmed the bot's taker fee formula
+  and found the bot over-charges MLB pre-game fees by half; the bot is fixing that this wave. R-070's "the sign and size depend on the
+  venue, the aggregation, and the sport" is the prior the bot holds for its favourite-longshot cells.
+- **Cadence (Earl, 2026-10-27): ten scheduled runs a day.** Charter v3 §1b rule 3 is amended to name ten daily runs. **Request:** in
+  your next run, paste the scheduler listing (non-system jobs, verbatim) in STATUS.md, as you did on 2026-10-21. Nothing else changes:
+  one ticket per run, the IN PROGRESS rule, commit and push before the run ends, stop when the backlog is empty.
+- **Ten runs a day empty a short backlog in two days.** 22 tickets were open; 23 new tickets below (R-072 → R-094). **45 open.**
+  The window refills it at every wave close.
+
+### R-072 · Kalshi's public trade prints: can they rebuild finer-than-hourly price history? (GG-1340)
+**Gap it fills:** the bot's hourly candles were too coarse to reproduce its 20-minute snapshots (91.1: 83.8% agreement, below the bar).
+**What:** Kalshi's public, no-login trades endpoint for settled sports markets: fields (price, size, side, timestamp precision), how far
+back it serves, pagination and limits, verbatim from Kalshi's API documentation, plus one sample pull for one settled NFL game market.
+**Done when:** a card with the quotes and the sample; one line: "a settled market's full trade tape is / is not available, from ...".
+
+### R-073 · Kalshi's rate limits for public market data, verbatim (GG-1341)
+**Gap it fills:** the bot's history fetches hit 429s at about 4 requests a second.
+**What:** Kalshi's published rate limits by tier and endpoint for unauthenticated and basic-tier access, the 429 behaviour and any
+retry guidance, quoted with the document and date.
+**Done when:** a card; one line stating the limit that applies to a no-login market-data client.
+
+### R-074 · Kalshi's market-maker and liquidity programs, verbatim
+**Gap it fills:** the bot's filled orders win 20+ points less often than its unfilled ones (adverse selection). Who is quoting the other
+side matters.
+**What:** Kalshi's published market-maker program(s), liquidity incentive programs and rebates: who qualifies, obligations (spread,
+size, uptime), which series (sports especially), effective dates, from Kalshi's documents and CFTC filings.
+**Done when:** a card per program with the quotes; one line per sport: is a designated market maker present on the game markets?
+
+### R-075 · Kalshi combos (multi-leg / parlay) contracts: how they are built, priced and settled
+**Gap it fills:** the bot logs no parlay family yet (measure B4).
+**What:** the rules for Kalshi's combo series (KXMVE and any sports parlay product): how legs are chosen, how a combo is priced and
+quoted, settlement when a leg is voided or postponed, fees (R-068 found combos at a different maker multiplier), verbatim with dates.
+**Done when:** a card with the quotes; a short list of rules that differ from single contracts.
+
+### R-076 · Kalshi in-game trading rules: pauses, halts and suspensions during play
+**Gap it fills:** the bot's in-game bands (T4/T5) need to know when a live market can stop trading.
+**What:** Kalshi's published rules for live sports markets: trading pauses on scoring or review, halts, suspended games, how resting
+orders are treated, verbatim from contract terms and help pages, per sport where they differ.
+**Done when:** a card per document; one line per sport.
+
+### R-077 · NBA official injury report PDFs: an archive of past reports, 2021-22 → now
+**Gap it fills:** availability has to be known as of a moment before tip. The bot captures the report going forward; it has no history.
+**What:** where past NBA injury reports are reachable (the league's own URL pattern, archives), how far back, each report's timestamp,
+how statuses are worded (verbatim), and whether a report replaced earlier in the day stays reachable.
+**Done when:** a card with sample URLs for three dates per season; one line: "point-in-time NBA injury reports are reachable from ...".
+
+### R-078 · NBA and NHL travel geometry: arenas, time zones and tip times, free, 2016 → now
+**Gap it fills:** rest and travel are factors (NBA B2) the bot builds from dates only; distance and time-zone crossings are missing.
+**What:** a free source for arena coordinates and time zones (including temporary venues and neutral-site games) and scheduled start
+times with the time zone, NBA and NHL, 2016 → now.
+**Done when:** cards with sample rows; one line per sport.
+
+### R-079 · NBA player tracking load: distance and speed, free, 2023-24 → now
+**Gap it fills:** fatigue beyond back-to-backs.
+**What:** NBA.com tracking (speed and distance) and any free alternative: fields, definitions verbatim, per-game or per-season,
+history depth, terms, capturability.
+**Done when:** a card with sample rows; one line on capturability.
+
+### R-080 · NHL shot location and expected goals: free sources and their definitions
+**Gap it fills:** the NHL engine needs shot quality, not shot counts.
+**What:** the NHL's public play-by-play (coordinates, shot types) and free expected-goals publishers (data downloads, terms, model
+descriptions verbatim), history depth.
+**Done when:** cards with sample rows; one line: the best free route to per-shot xG, 2016 → now.
+
+### R-081 · NHL special-teams units: who is on the first power play and penalty kill
+**Gap it fills:** NHL availability matters most through the units a missing player leaves.
+**What:** free sources naming PP1 / PK1 personnel per game (line-combination sites, team releases), how they are measured, update time,
+history kept or not, terms. R-050 covers even-strength lines; this is special teams only.
+**Done when:** cards with sample rows; NONE stated plainly if nothing free keeps history.
+
+### R-082 · Baseball Savant / Statcast: what is free, how much per request, and the terms
+**Gap it fills:** MLB has no engine at all yet (measure D4 "none"); pitch-level data is its event layer.
+**What:** Baseball Savant's search CSV and leaderboards: fields, row limits per request, history (2015 → now), terms of use, and any
+free mirror. Definitions of the key fields verbatim (launch speed, xwOBA, pitch type codes).
+**Done when:** a card with a sample pull; one line: "a full season of pitches is / is not obtainable for free, by ...".
+
+### R-083 · MLB pitch-level and event data: Retrosheet vs the MLB Stats API live feed
+**Gap it fills:** the MLB event store needs one reliable free source per season.
+**What:** for Retrosheet event files and the MLB Stats API game feed: coverage by season, fields, licensing terms verbatim, update lag.
+**Done when:** cards; one line on which source covers which seasons.
+
+### R-084 · MLB bullpen availability: reliever pitch counts over the last three days, point-in-time
+**Gap it fills:** a tired bullpen moves late-inning prices; the bot has no bullpen state.
+**What:** free sources for reliever appearances and pitch counts by date (box scores, team pages, the Stats API), how quickly they
+post after a game, history depth.
+**Done when:** a card with sample rows for one team-week; one line on the capture route.
+
+### R-085 · NFL participation: which players were on the field, play by play, free
+**Gap it fills:** personnel groupings and who was on the field drive the NFL matchup layer. R-037 covers charting fields; this is
+participation only.
+**What:** nflverse participation data (and any other free source): seasons, fields, how it is collected, licensing, lag.
+**Done when:** a card with sample rows; one line on coverage by season.
+
+### R-086 · NFL schedule geometry: short weeks, international games, byes and time zones, 2016 → now
+**Gap it fills:** rest and travel for NFL are built from dates only.
+**What:** a free source listing each game's kickoff time zone, venue (including international and neutral sites), each team's rest
+days and whether it came off a bye or a Thursday game.
+**Done when:** a card with sample rows; one line.
+
+### R-087 · Literature: the decline of home advantage after 2020, four leagues
+**Gap it fills:** the bot's team factors carry a home term; the prior should come from measured work.
+**What:** free-to-read papers measuring home advantage in the NBA, NHL, NFL and MLB before and after 2020 (empty arenas): seasons, n,
+the measured size, the mechanism claimed. Bibliographic record only.
+**Done when:** a card per paper (citation, link, n, finding quoted); one paragraph on agreement and disagreement.
+
+### R-088 · Literature: rest, back-to-backs and travel effects, NBA and NHL
+**What:** free-to-read papers measuring rest and travel effects on results and on totals, with seasons, n, method and finding quoted.
+**Done when:** a card per paper; one paragraph.
+
+### R-089 · Literature: referee and umpire effects on totals and fouls
+**What:** free-to-read papers measuring official crews' effects on scoring, fouls or strike zones (NBA, NHL, NFL, MLB), and whether
+betting markets price them. Bibliographic record only.
+**Done when:** a card per paper; one paragraph.
+
+### R-090 · Literature: how efficient are closing lines, four leagues
+**Gap it fills:** published work on how often anyone beats a closing line sets the bar the bot's models are judged against.
+**What:** free-to-read papers testing the efficiency of closing moneylines, spreads and totals (and line movement), with seasons, n,
+the test and the finding quoted.
+**Done when:** a card per paper; one paragraph.
+
+### R-091 · Literature: player prop markets, efficiency and biases
+**What:** free-to-read papers on player prop pricing (over / under bias, efficiency, how props move), any league. Bibliographic only.
+**Done when:** a card per paper; one paragraph.
+
+### R-092 · Literature: weather and scoring, NFL and MLB
+**What:** free-to-read papers measuring wind, temperature and precipitation effects on scoring and on totals markets, with n and the
+measured size.
+**Done when:** a card per paper; one paragraph.
+
+### R-093 · Literature: adverse selection for resting (maker) orders on betting exchanges and prediction markets
+**Gap it fills:** the bot's resting demo orders fill mostly when they are wrong (E3).
+**What:** free-to-read papers on who trades against resting orders, informed flow, and maker profitability on exchanges and
+prediction markets, with data, n and findings quoted.
+**Done when:** a card per paper; one paragraph.
+
+### R-094 · NBA coaching rotations: who sets them and how stable they are, free
+**Gap it fills:** the bot's NBA lineup layer (built this wave) needs to know when a rotation is likely to change.
+**What:** free sources documenting rotation changes and coaching staff (head coach, lead assistant) by season and mid-season changes,
+2016 → now; NHL's analogue is R-049.
+**Done when:** cards with sample rows; one line.
+
+**Backlog order (supersedes the 17:40 and 17:35 PT orders):** R-019 (in progress) → **R-072** → **R-073** → **R-077** → **R-082** →
+**R-083** → **R-074** → **R-080** → **R-078** → **R-085** → **R-084** → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 →
+R-048 → R-051 → R-052 → R-054 → R-024 → R-025 → **R-075** → **R-076** → **R-079** → **R-081** → **R-086** → **R-094** → R-045 → R-049 →
+R-050 → R-053 → R-035 → R-042 → R-046 (2023-24 season) → **R-087** → **R-088** → **R-089** → **R-090** → **R-091** → **R-092** →
+**R-093**. (45 open.)
