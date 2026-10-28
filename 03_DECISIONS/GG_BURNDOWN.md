@@ -93,6 +93,7 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 |---|---|---|
 | GS-3 (2026-10-22) | 210 -> 199 | Closed: GG-233, GG-258, GG-292, GG-420, GG-195, GG-260, GG-350 (shared-folder protocol). Re-filed WATCH ITEM: GG-285, GG-328, GG-624, GG-078 |
 | W89.6 batch 1 (2026-10-26) | 213 -> 210 | Closed with evidence: GG-229, GG-426, GG-352; closed on PR #341 merge: GG-430, GG-691 |
+| W89.6 batch 2 (2026-10-26, operator-decision) | 210 -> 205 | Closed: GG-309, GG-306 (CLAUDE.md edits). Re-filed WATCH ITEM: GG-415, GG-842, GG-216. Notes only, still OPEN: GG-289 (LOW), GG-342 (prune list awaits OK), GG-570 (0 NBA shadow_order rows), GG-153, GG-204 (ADR-0057 s4 is the operator choice). Pending PR #347: GG-452 |
 
 ## Sweep lists
 - GS-3 class P (closed with evidence): GG-233, GG-258, GG-292, GG-420.

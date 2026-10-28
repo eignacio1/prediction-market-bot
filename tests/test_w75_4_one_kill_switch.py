@@ -14,6 +14,7 @@ from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient
 @pytest.fixture
 def logs(tmp_path, monkeypatch):
     monkeypatch.setenv("PMBOT_KILL_SWITCH_DIR", str(tmp_path))
+    monkeypatch.setenv("EXPOSURE_GATE_MODE", "log")  # W89.1: these test the kill switch, not the exposure gate
     return tmp_path
 
 

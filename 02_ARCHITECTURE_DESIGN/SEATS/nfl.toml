@@ -123,8 +123,9 @@ factor_class = "F12"
 name = "Home field / venue (roof, surface, division)"
 source = "nflverse games: location, roof, surface, div_game"
 engine_slot = "ctx.home, ctx.roof"
-stage = "interpreted"
+stage = "applied"
 evidence = "12_EXPLORATORY/20261011_nfl_totals_venue_weather"
+result = "W89.3 Part B (totals only): share priced 0.36 [0.27,0.44]; OOS anchor+adjustment dBrier -0.0015 [-0.0034,+0.0005], net edge after fee -1.3c [-4.8,+2.1], 0 strikes clear (12_EXPLORATORY/unpriced_screen/results_W89.md)"
 
 [[factor]]
 id = "N14"
@@ -132,8 +133,9 @@ factor_class = "G1"
 name = "Weather (temp, wind)"
 source = "nflverse games: temp, wind (at-game values; GAP-5 no forecast archive)"
 engine_slot = "ctx.wind / ctx.temp"
-stage = "interpreted"
+stage = "applied"
 evidence = "12_EXPLORATORY/W68_3_nfl_totals_weather_results.md"
+result = "W89.3 Part B (totals only): share priced 0.36 [0.27,0.44]; OOS anchor+adjustment dBrier -0.0015 [-0.0034,+0.0005], net edge after fee -1.3c [-4.8,+2.1], 0 strikes clear (12_EXPLORATORY/unpriced_screen/results_W89.md)"
 
 [[factor]]
 id = "N15"

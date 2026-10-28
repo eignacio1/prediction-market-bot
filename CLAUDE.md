@@ -20,7 +20,7 @@ This system will be used by people who trust the person who built it. They are n
 
 Prediction markets are the laboratory. They are the only widely available instrument that provides all three of the following simultaneously: binary-resolved outcomes (you are unambiguously right or wrong), short feedback loops (resolution in hours or days, not quarters), and market-implied probability as an explicit benchmark (you always know what the market said the probability was before you bet). That combination makes prediction markets uniquely rigorous for testing whether a probabilistic model generates consistent edge. There is no survivorship bias, no ambiguity about whether a trade "would have worked" — you know exactly what you bet, what the market said it was worth, and what happened.
 
-**The concrete form of this vision is a coverage target, and it lives in `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` — read it before `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md`, always.** Operator directive, 2026-08-12: cover the standard betting mechanisms (moneyline, spread/run line, totals, team totals) across all five execution bands. When that directive was written (2026-08-12) the bot occupied **one cell of ~25** — player hits, `KXMLBHIT`, band T4M-PROJ; for the live count read `MARKET_TYPE_REGISTRY` or the BREADTH row of the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`, never this sentence. Coverage is the evidence that the methodology generalizes; a phase plan read without the target reads as a checklist to burn down rather than a path from one cell to twenty-five. That file also records the two things the plan does not: the **band dimension is unowned** (T2 `raw_n=2`, T3 `raw_n=0`, T5 never traded, T1 zeroed on ruin geometry), and **generality and edge may point in opposite directions** — the expansion is toward the most-attended markets on the board, which is the opposite end of the efficiency gradient this strategy targets.
+**The concrete form of this vision is a coverage target, and it lives in `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` — read it before `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md`, always.** Operator directive, 2026-08-12: cover the standard betting mechanisms (moneyline, spread/run line, totals, team totals) across all five execution bands. When that directive was written (2026-08-12) the bot occupied **one cell of ~25** (the coarse market-type × band figure; the registry is finer-grained, so read `MARKET_TYPE_REGISTRY` for the real cell count, GG-306) — player hits, `KXMLBHIT`, band T4M-PROJ; for the live count read `MARKET_TYPE_REGISTRY` or the BREADTH row of the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`, never this sentence. Coverage is the evidence that the methodology generalizes; a phase plan read without the target reads as a checklist to burn down rather than a path from one cell to twenty-five. That file also records the two things the plan does not: the **band dimension is unowned** (T2 `raw_n=2`, T3 `raw_n=0`, T5 never traded, T1 zeroed on ruin geometry), and **generality and edge may point in opposite directions** — the expansion is toward the most-attended markets on the board, which is the opposite end of the efficiency gradient this strategy targets.
 
 **P&L is the score. The methodology is the asset.**
 
@@ -345,14 +345,14 @@ ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'pla
 
 ```bash
 # T1 MLB: fires when games exist but 0 players matched → ticker/name pipeline dead
-grep -c "SemanticFloorViolation" /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null || echo "0"
+tail -500 /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | grep -c "SemanticFloorViolation" || echo "0"
 # T4 MLB: fires per-evaluation when staleness detected → ESPN or Kalshi data is stale
 grep -c "CONTAMINATION_HALT" /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null || echo "0"
 # T4 MLB staleness, recency-windowed (see GG-085 below — do not threshold the raw payload.staleness_halts counter):
 tail -500 /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null | grep -c '"failed_checks": \["game_state_fresh"\]' || echo "0"
 ```
 
-`SemanticFloorViolation` count > 0 = T1 pipeline silence (investigate immediately). `CONTAMINATION_HALT` count > 0 in the audit JSONL is expected at game-end (market_active=False normal).
+`SemanticFloorViolation` count > 0 in the last 500 log lines (recency-windowed like the staleness probe, GG-309; an all-time count reads a months-old hit as live) = T1 pipeline silence (investigate immediately). `CONTAMINATION_HALT` count > 0 in the audit JSONL is expected at game-end (market_active=False normal).
 
 **Dashboard OOM-restart-loop probe (T-356/GG-118, added 2026-07-21):** GG-118 found `pmbot-web-dashboard.service` can OOM-crash-loop (`Restart=always`/`RestartSec=5`) while `systemctl is-active` reports `active` throughout, since the service re-enters the active state within ~5s of each restart — a plain `is-active` check would not have caught the ~2-day dark-dashboard incident that prompted GG-118's fix. This step had no probe at all for this service before now.
 

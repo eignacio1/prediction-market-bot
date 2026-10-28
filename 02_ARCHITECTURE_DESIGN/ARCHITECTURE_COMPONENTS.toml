@@ -7,14 +7,14 @@ sport = "nfl"
 component = "decision_trees"
 scaffold = "12_EXPLORATORY/nfl_engine/engine.py"
 test = "tests/test_nfl_engine_v0.py"
-note = "W73.3 possession engine; test moved into CI by W75.2 (GG-757)"
+note = "W73.3 possession engine; test moved into CI by W75.2 (GG-757); also W90.2 router (decision_trees/router.py) replayed on NFL archive"
 
 [[component]]
 sport = "nfl"
 component = "filtering_mechanisms"
 scaffold = "src/prediction_market_bot/nfl_engine/granularity_index.py"
 test = "tests/test_nfl_granularity_index.py"
-note = "W80.3 granularity index: stability-gated filter_entries (tail, min_n, trait, mismatch)"
+note = "W80.3 granularity index: stability-gated filter_entries (tail, min_n, trait, mismatch); also W90.2 router (decision_trees/router.py) replayed on NFL archive"
 
 [[component]]
 sport = "nfl"
@@ -33,9 +33,9 @@ note = "W75.2 one Factor protocol every factor class plugs into, point-in-time t
 [[component]]
 sport = "nfl"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "nfl"
@@ -63,14 +63,14 @@ sport = "nba"
 component = "decision_trees"
 scaffold = "none"
 test = "none"
-note = ""
+note = "W90.2 router is sport-agnostic but not replayed for NBA: no price archive (GG-1330); not counted"
 
 [[component]]
 sport = "nba"
 component = "filtering_mechanisms"
 scaffold = "none"
 test = "none"
-note = ""
+note = "W90.2 router is sport-agnostic but not replayed for NBA: no price archive (GG-1330); not counted"
 
 [[component]]
 sport = "nba"
@@ -89,9 +89,9 @@ note = ""
 [[component]]
 sport = "nba"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "nba"
@@ -117,16 +117,16 @@ note = "W75.3"
 [[component]]
 sport = "mlb"
 component = "decision_trees"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/decision_trees/router.py"
+test = "tests/test_decision_router.py"
+note = "W90.2 router: FADE/RIDE/MOMENTUM/NO_BET routing, evidence-gated; replayed on MLB archive (12_EXPLORATORY/router_replay)"
 
 [[component]]
 sport = "mlb"
 component = "filtering_mechanisms"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/decision_trees/router.py"
+test = "tests/test_decision_router.py"
+note = "W90.2 router disqualifiers + evidence gates (skill, ride cell, book class, tier); replayed on MLB archive"
 
 [[component]]
 sport = "mlb"
@@ -145,9 +145,9 @@ note = ""
 [[component]]
 sport = "mlb"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "mlb"
@@ -175,14 +175,14 @@ sport = "nhl"
 component = "decision_trees"
 scaffold = "none"
 test = "none"
-note = ""
+note = "W90.2 router is sport-agnostic but not replayed for NHL: no price archive (GG-1330); not counted"
 
 [[component]]
 sport = "nhl"
 component = "filtering_mechanisms"
 scaffold = "none"
 test = "none"
-note = ""
+note = "W90.2 router is sport-agnostic but not replayed for NHL: no price archive (GG-1330); not counted"
 
 [[component]]
 sport = "nhl"
@@ -201,9 +201,9 @@ note = "W84.3 one point-in-time frame joining xG, special-teams and goalie-workl
 [[component]]
 sport = "nhl"
 component = "momentum_looping"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "12_EXPLORATORY/momentum_j/core.py"
+test = "tests/test_w90_3_momentum_j.py"
+note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross continuation ~0 at 1-3h, both sides lose to cost; no context routes. Stage: interpreted. See 12_EXPLORATORY/momentum_j/results_W90.md"
 
 [[component]]
 sport = "nhl"

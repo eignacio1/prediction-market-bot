@@ -2877,3 +2877,60 @@ Reconciled 9 scoring paths against the quant core (0 bugs; 4 definition differen
 - Operator, 21:08 PT: "Active Queue being shown as plain text bc the file got too big. Maybe truncate this waves block so I can see it normally. Also - give me the block for Muse, it said it would reset on 10/27 but it just reset for some reason lol - ensure you can give it 3 waves worth of work so it runs continuous today to make up for over 4 days of nothing cus usage hit early last week"
 - Queue 241 KB -> 96 KB: Wave 89's six pastes moved to 04_EXECUTION/WAVE_BLOCKS/W89_BLOCKS.md (from now on each wave's pastes live in WAVE_BLOCKS/W<n>_BLOCKS.md; the queue keeps the table, results and a pointer); superseded sections (Wave 84 gap sweep, 80Q backlog draft, archive-pipe one-off, LARGE and TIME-BOUNDED directives, "What 50.2 found", historical "Queued next") and sequencing rows for Waves 45-79 moved verbatim to ACTIVE_QUEUE_ARCHIVE.md. No authorization blockquote moved.
 - Muse: a continuous session today (R-046 2024-25 finish, R-057, R-058, R-029, R-061, then down the order), with an IN PROGRESS marker so the three scheduled runs skip a ticket the session holds. Add-in in MUSE_PASTE_IN_v3.md § "Add-in, 2026-10-26 21:15 PT".
+
+## 2026-10-27 — W89.2: calibration of Kalshi sports prices (measurement only; operator wave brief)
+- Part A: 1,258 testable cells (family x time-to-start x price bucket x book class), BH q=0.10 family-wise: 66 flagged, 53 of them lose to spread+fee; 11 survive net of the k007 fee with a game-clustered lower bound > 0. Part B (pre-game overreaction): 0 survivors, every net negative. All survivors are in-sample CANDIDATES. Source: `12_EXPLORATORY/longshot_bias/results_W89.md`, `out/summary.json`.
+- Decision: NFL D0 excluded from survivors (date-only tickers, possible in-play). Three cells recommended for operator pre-registration: KXMLBHIT T0-2h 20-25c YES, KXMLBF5TOTAL T6-24h 90-95c YES, KXNFLTOTAL D1 5-10c NO. Nothing registered, traded or sized. GG-1250..1254.
+
+## 2026-10-26 W89.5 — NBA PAM roles vs KXNBAPTS price (exploratory)
+No role explains the KXNBAPTS price error at n≈1.8k strikes / 52 games; 22 roles, none survives BH q=0.10 under either anchor. Join built from public Kalshi + ESPN data (no sealed shadow file read; GG-1064 conflict avoided). No pre-registration, stake or registry change. Gaps GG-1280..1283. Detail: 12_EXPLORATORY/nba_pam_mass_tier/results_W89.md (PR #348).
+
+## 2026-10-27 W89.1 — exposure gate / kill switch flipped to ENFORCE
+Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with PR #342 prerequisites (SHADOW book advisory, PaperTrader seeds its book at construction). Operator directed the flip be built and shipped without waiting a LOG-ONLY game day ("no reason why any of my terminals are dependent on an event 2 days away"); the pre-registered time gate was therefore waived, and no would-halt data existed to read. Read back on the box: missing state file halts, tripped book refused, unmapped band refused. No limit value, stake or kelly_fraction changed. Closes GG-1082, GG-441, GG-1240; GG-1241 partial. Rollback: `EXPOSURE_GATE_MODE=log` env or revert bb03fd4.
+
+## 2026-10-26 22:30 PT — Ride-the-market direction; Wave 89 closed; 89.7 tonight; Wave 90 written (operator + strategic window)
+- Operator, 22:08 PT: "do we have decision trees in our processes for betting with the market to get wins on bets? Or is everything trying to beat the market? Sometimes it's best just to roll with the market sentiment - we don't always have to be it - that's the meaning of having filtering mechs appropriately identifying the correct decision trees and routing mechanisms for execution." Window's answer: no - every live arm runs one contrarian tree (bet where the model disagrees with the price); T3 CONFIRM/FADE (ADR-0014) and Strategy J (momentum) were designed, never built; 89.2 found the first with-market evidence (favourites underpriced at totals ends, in-sample).
+- Operator, 22:12 PT: "Yes - we need substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all conclusions. Proceed with building the next wave - I'll have to run the next wave tomorrow. Also give me just ONE terminal block to run right now". Also 22:08 PT: the window runs until Wave 100 closes; flag context rot.
+- Wave 89 verified (#340 #343-#346 #348 green; #347 green unmerged; box `20261027T051307Z_*` RED on the MLB arm). Kill switch ENFORCING.
+- 89.7 tonight: Kalshi history for NBA/NHL/NFL with true start times + 89.2's scan with a time hold-out. Wave 90 (10-27): 90.1 ride tree (pre-register only what holds out of sample; shadow if GREEN; the red first), 90.2 the router (DECISION_ROUTING.md doctrine + code + replay; no traffic to a tree without measured skill), 90.3 momentum follow-vs-fade. Pastes in 04_EXECUTION/WAVE_BLOCKS/.
+
+| 2026-10-27 | T-1290 | W89.7 scoped to Part A only at operator's request (sleep). Found Kalshi occurrence_datetime = ESPN start + 3.0h exactly (n=1299 NBA/1974 NHL/925 NFL). PR #349 not merged: CI failed on the EXPLORATORY write fence; not worked around, registered GG-1260. Recommend moving manifests in-fence and the raw writer to src/ via PR. |
+## 2026-10-27 16:40 PT — 89.7's remainder folded into Wave 90.1 (operator)
+- Operator, 16:30 PT: "Just partition the remaining work from 89.7 into one of the blocks and I'll send it"
+- 89.7 ended partial (PR #349 open, CI failed on the exploratory fence; start times solved: Kalshi occurrence_datetime = scheduled start + 3.0 h; NBA/NHL game candles fetched; LA alias, remaining families' candles, the hold-out scan and its gap/log/queue entries undone). 90.1 now takes PR #349 over (fix through safe_out, merge on green), finishes the data and the hold-out scan (Part A), then builds ride.py as code from the out-of-sample table (Part B). The ride tree's pre-registration and shadow arm move to Wave 91. 90.2 and 90.3 run alongside and never touch PR #349.
+
+## 2026-10-27 16:55 PT — Muse: seven tickets verified; five new tickets toward the market's own flow; backlog 32 (strategic window)
+- Operator, 16:47 PT: "Give me the next Muse prompt too".
+- Verified in the archive (8073e03): R-046, R-057 (no free bulk line history), R-058 (NONE free timestamped NFL lines), R-029, R-061, R-020, R-030 closed. Muse's usage answer: "I don't know" whether scheduled runs use a separate allowance; runs kept landing commits.
+- New tickets R-063 (Polymarket history + event mapping), R-064 (public betting splits), R-065 (free current lines with timestamps, forward capture), R-066 (NBA starters timing), R-067 (Kalshi contract rules verbatim). Order puts R-065, R-063, R-064, R-067 first (they feed Wave 90's ride / router / momentum work). Add-in in MUSE_PASTE_IN_v3.md § "Add-in, 2026-10-27 16:55 PT". MUSE_WEB.json updated.
+
+## 2026-10-27 W90.2 — the router (DRAFT doctrine, awaiting operator acceptance)
+- Doctrine in 02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md: four trees (FADE, RIDE, MOMENTUM, NO-BET); a tree gets traffic only with a measured quantity behind it; disqualifiers first; RIDE+FADE same side goes to RIDE, opposite sides to NO-BET; T3 is a FADE-only overlay; news timing is not a condition (unmeasured).
+- Router merged (PR #350, ce78de4): library only, nothing wired. Replay of 164,354 situations: NO_BET 97.66%, RIDE 2.34%, FADE 0, MOMENTUM 0. RIDE settled view is in-sample, not evidence. D5(a) MLB 0/8 -> 2/8. Gaps GG-1330..GG-1334.
+
+## 2026-10-27 W90.2 — routing doctrine ACCEPTED by the operator
+- Operator: "Accept - proceed in full". DECISION_ROUTING.md is now ACCEPTED as written (FADE only on measured skill; RIDE only on a net-positive table cell; same side to RIDE, opposite sides to NO-BET; T3 a FADE-only overlay; news timing excluded). No wiring authorized by this: any runner or cell use needs its own pre-registration. Follow-ons stay with their owners: 90.1 ride.py swaps the stub table, 90.3 supplies the momentum table, GG-1330 NBA/NHL archive.
+
+## 2026-10-27 — W90.3 Momentum, measured (Strategy J): no routable momentum context (PR #351, f1d24f4)
+- Pillar DEPTH + PROOF. D5(a) momentum_looping: 0 → measured basis for MLB/NFL/NBA/NHL, stage **interpreted** (not applied: no context beats cost).
+- 20,409 pre-game signals (≥3c move). Gross follow ≈0 at 1h/3h in every sport (MLB +0.0004/+0.0035, NFL −0.005/−0.013). Net follow −4c (tight books) to −13/−17c (wide). 0 of 97 main-grid follow cells have a positive game-clustered interval; 89.2's "reverting lost" was cost-driven, fade gross is the mirror ≈0.
+- Part B (train/hold-out split 2026-09-03): 0 of 4 testable cells route FOLLOW or FADE. Router (90.2) should route nothing to MOMENTUM-FOLLOW/FADE; at most a veto in wide books.
+- Two fragile BH-positive cells (MLB news-window settle-fade n=53/41 games; NBA up-move settle-follow n=52/42) are hypotheses, not verdicts. GG-1300 (news split is a calendar proxy), GG-1301 (MLB HHMM-as-ET start unverified), GG-1302 (NBA/NHL history thin).
+- Deploy: merge touched no src/deploy; no Deploy job ran; no t4-mlb restart decision needed.
+
+## 2026-10-28T00:14:43Z — W90.1 (PROOF + DEPTH): 89.7 finished, hold-out scan run, 0 candidates
+- PR #349 (fence fix via safe_out, LA alias, manifests moved) merged 2757a20 on green CI; no src/ change, no t4-mlb restart needed. PR #352 (holdout_scan.py + tests + results) merged be44377 on green CI.
+- Candles fetched for NBA/NHL/NFL spread, total, team-total. Hold-out scan (89.2 method unchanged, median time split): 9,689 snapshot rows, 1,850 discovery cells, 1 testable, 0 BH-flagged, 0 candidates. Underpowered (GG-1292), not a null. No ride survivors; Wave 91 has nothing to pre-register as a ride tree from this scan.
+- Not done: MLB re-tests, GG-1253, props candles, Part B ride.py (90-minute ceiling) — GG-1293. GG-1290 resolved, GG-1291 open.
+
+## 2026-10-27 17:40 PT — Wave 90 closed; Wave 91 written: ride the market, prove it or drop it (strategic window)
+- Operator, 17:16 PT: "90 wave is done - give me the next wave".
+- Verified: #349, #350, #351, #352 CI green and merged; box bridge 20261028T001810Z_*: SURFACE BUDGET GREEN (77 live, healthcheck HEALTHY), MLB game-market arm writing rows again (RED since 10-25 cleared), box HEAD ce78de49, no silent arms.
+- Wave 90: 90.1 PARTIAL (hold-out 0 candidates, underpowered: 1 of 1,850 cells testable, GG-1292; ride.py not built); 90.2 DONE (router unwired; 97.66% NO-BET / 2.34% RIDE in-sample / 0 FADE / 0 MOMENTUM; doctrine ACCEPTED); 90.3 DONE (pre-game moves a random walk at 1-3 h; both sides lose to cost). Distance: D5(a) MLB 0 -> 2/8; D5(b) NFL 5/3/10 (89.3, first read).
+- Wave 91: 91.1 pre-registers 89.2's 11 cells (frozen before any new row) with a backward test (dates before 2026-08-01, hourly candles, method checked on the overlap first) and a forward test scored from the price archive (no runner), then runs the backward test; 91.2 builds ride.py + ride_cells.toml (statuses IN_SAMPLE / HELD_OUT / FORWARD_PASSED / FAILED / UNTESTED; RIDE only for HELD_OUT or FORWARD_PASSED), swaps the router's stub, and measures the ladder ride (strike quoted off its own leave-one-out ladder); 91.3 merges PR #347 and measures the cross-venue ride (Polymarket vs Kalshi lead-lag, public read-only).
+- Window reading, flagged to the operator: DECISION_ROUTING.md's "net-positive table cell" is read as measured out of sample; RIDE traffic goes to 0 until a cell holds.
+- GG numbering: from Wave 91 each block reserves 3 GG numbers instead of 5-10 (operator asked why the log has gaps; unused reserved numbers are skipped, never reused).
+- Muse: four new tickets R-068 (Kalshi fee schedule verbatim) -> R-071, placed after the live session's ten; backlog 36 open. No Muse paste this wave.
+
+## 2026-10-27 17:26 PT — RIDE needs out-of-sample evidence (operator)
+- Operator: "yes I accept the recommendation". DECISION_ROUTING.md's "net-positive table cell" means net-positive OUT OF SAMPLE (status HELD_OUT or FORWARD_PASSED); IN_SAMPLE cells route NONE. ride.py (91.2) is built this way. ADR-0076 (G6) is not covered by this line; the window asked separately.

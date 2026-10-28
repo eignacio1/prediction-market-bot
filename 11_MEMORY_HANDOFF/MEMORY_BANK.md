@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-10-27T02:40:00Z (T-1196 — W88.3: NHL/NBA/MLB frozen models scored vs Kalshi; market >= model on all three, skill weights 0/0/0.0018) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261027T0154Z_W88_3.md` for full session detail.
+**Last reviewed:** 2026-10-28T00:14:43Z (T-1300 — W90.1 PARTIAL: PRs 349 and 352 merged; hold-out scan 0 candidates (underpowered, GG-1292); Part B not started) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028T0014Z_W90_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

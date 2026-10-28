@@ -1048,3 +1048,23 @@
 | 2026-10-27T04:06:45Z | GG sweep only; no new T/GG range | W89.6 gap sweep class C/O — PURPOSE: PLUMBING, measure OPEN gaps 211 -> lower (GOVERNANCE_GAP_LOG grep) |
 | 2026-10-27T04:06:51Z | T-1270..T-1272, GG-1270..GG-1274 | STANDARD — W89.4 NFL game simulation (Markov chain) pricing whole board from one joint distribution, results_W89.md — FOR DEPTH D4 (NFL: data layer+scaffold -> whole board priced from one engine, offline; families from one joint distribution 0 -> n) |
 | 2026-10-27T04:07:13Z | T-1280..T-1282, GG-1280..GG-1284 | W89.5 STANDARD: NBA PAM roles vs KXNBAPTS price, join + out-of-sample role cross — FOR DEPTH D5(b) (NBA PAM factors applied 0 -> n; points props w/ settled actuals joined 0 -> n) |
+| 2026-10-27T04:35:27Z | T-1260 | CLOSED — W89.3 NFL unpriced-factor screen + venue/weather totals build: 3 classes measured, 0 clear fee+error; NBA blocked on GG-1260 (commit `972ab5b`) |
+| 2026-10-27T04:39:22Z | T-1270 | CLOSED — merge confirmed, HEAD (35a29f7) is ancestor of origin/main — W89.4 NFL game sim, PR #344 merged; handoff pushed; nav-file generator skipped (shared docs, parallel W89 blocks) |
+| 2026-10-27T04:45:31Z | T-1250 | CLOSED — W89.2 DONE: 1,258 Kalshi price cells BH-tested, 11 survive net of fee, Part B 0; 3 pre-registration candidates (commit `3791166`) |
+| 2026-10-27T04:45:54Z | T-1250 | CLOSED — merge confirmed, HEAD (1a46c4c) is ancestor of origin/main — W89.2 DONE, merged |
+| 2026-10-27T04:57:59Z | T-1280 | CLOSED — W89.5 joined 2,409 KXNBAPTS strikes to actual points and tested 22 PAM roles against the price; null, none survives BH (commit `5b07cf0`) |
+| 2026-10-27T04:58:12Z | T-1280 | CLOSED — merge confirmed, HEAD (5cd0662) is ancestor of origin/main — W89.5 DONE: null, PR #348 + docs on main |
+| 2026-10-27T05:04:37Z | T-1240 | CLOSED — W89.1 PARTIAL: exposure gate/kill switch now ENFORCING on the box (PR #346), GG-1082/441/1240 resolved; MLB-arm read-backs open (commit `d05bdda`) |
+| 2026-10-27T05:17:21Z | T-1290..T-1299 / GG-1260..GG-1269 | 89.7 PROOF+DEPTH: Kalshi NBA/NHL/NFL history w/ true start times + 89.2 hold-out scan (MEDIUM) |
+| 2026-10-27T05:58:24Z | T-1290 | MERGED: NO — branch `session/20261027T051711Z-w89-7-ride-data` awaiting merge — W89.7 Part A partial: NBA/NHL/NFL Kalshi backfill + true-start join; PR 349 CI failed on EXPLORATORY fence, unmerged (commit `07af8ee`) |
+| 2026-10-27T23:33:57Z | T-1300..T-1309 / GG-1290..GG-1299 (supersedes 89.7's colliding GG-1260..1269) | MEDIUM — W90.1 finish 89.7 (PR #349) + hold-out scan + ride.py — FOR PROOF/DEPTH: testable families MLB+NFL -> +NBA+NHL, 89.2 cells tested OOS 0 -> n, D5(a) decision_trees ride tree |
+| 2026-10-27T23:34:21Z | T-1330..T-1339 / GG-1330..GG-1339 | W90.2 router: DEPTH, D5(a) filtering_mechanisms+decision_trees scaffold, situations replayed 0->n (STANDARD) |
+| 2026-10-27T23:34:29Z | T-1310..T-1319 / GG-1300..GG-1309 | MEDIUM — W90.3 momentum, measured: follow vs fade (Strategy J) — FOR DEPTH+PROOF: D5(a) momentum_looping 0 -> per-sport measured basis; follow/fade transition contexts 0 -> n |
+| 2026-10-28T00:05:45Z | T-1330 | CLOSED — W90.2 built the decision router (pure function, 10 tests) and replayed 164,354 situations; 97.66% NO_BET, 2.34% RIDE, FADE and MOMENTUM get none because no measured skill or transition table exists (commit `ce78de4`) |
+| 2026-10-28T00:06:42Z | T-1330 | CLOSED — merge confirmed, HEAD (a87a9e7) is ancestor of origin/main — W90.2 decision router built, PR #350 ce78de4, doctrine accepted; DEPTH D5(a) MLB 0/8->2/8 |
+| 2026-10-28T00:11:00Z | T-1310 | CLOSED — W90.3 measured momentum (Strategy J): no continuation or reversion at 1-3h; net follow -4c to -17c; 0 routable contexts (commit `4c10fce`) |
+| 2026-10-28T00:11:15Z | T-1310 | CLOSED — merge confirmed, HEAD (afe02ef) is ancestor of origin/main — W90.3 momentum measured; PR #351 f1d24f4 merged |
+| 2026-10-28T00:14:43Z | T-1300..T-1309 / GG-1290..GG-1299 | CLOSED — W90.1 PARTIAL: PRs #349 and #352 merged; hold-out scan 0 candidates (underpowered); Part B not started. Also closes the superseded W89.7 claim |
+| 2026-10-28T00:15:49Z | T-1300 | CLOSED — W90.1 PARTIAL: PRs 349 and 352 merged; hold-out scan 0 candidates (underpowered, GG-1292); Part B not started (commit `80357ad`) |
+| 2026-10-28T00:28:55Z | T-1340..T-1344 / GG-1340..GG-1342 | MEDIUM — W91.1 ride cells: pre-register EXP-042 then backward-test 89.2's 11 cells — FOR PROOF: ride cells pre-registered 0->11, tested OOS 0->n of 11 (EXP-042) |
+| 2026-10-28T00:30:30Z | T-1350..T-1354 / GG-1350..GG-1352 | MEDIUM — W91.3 cross-venue ride: Kalshi vs Polymarket joined series + who leads — FOR DEPTH+BREADTH: venues with joined history 1->2; sports with Kalshi-vs-Polymarket series 0->n/4; cross-venue ride cells OOS 0->n |

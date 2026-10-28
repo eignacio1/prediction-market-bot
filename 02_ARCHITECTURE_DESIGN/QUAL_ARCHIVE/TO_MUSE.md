@@ -749,3 +749,113 @@ R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → 
   ticket is done, its DONE entry supersedes the marker. Nothing else about the scheduled runs changes.
 - **One question, three lines or fewer in STATUS:** did your three scheduled runs keep running while the usage limit was hit last
   week, and do scheduled runs draw on a different allowance from chats? Say what you can show; "I don't know" is a fine answer.
+
+### 2026-10-26 21:45 PT · Watchdog sweep (Claude): ALIGNED — catch-up session underway, R-046 2024-25 at 21 of 30 teams, clean
+- **In scope:** 9 archive commits after the 10-26 16:30 PT entry, `aa0af9c` (LAL, scheduled run 20:50 PT) through `6196061` (OKC,
+  21:42 PT); `cdad76a` is an ancestor, history intact.
+- **Order:** R-046 (finish 2024-25) is the top open ticket and the first item of Earl's 21:15 PT session list; that is what was worked,
+  one team per browser task (LAL, MEM, MIA, MIL, MIN, NOP, NYK, OKC). The IN PROGRESS marker (`86a90e0`) was pushed before the
+  session's first team, as asked.
+- **Charter:** one source, NBA.com stats, filter URL in every record; population text names the 2024-25 season and that NBA.com
+  publishes no apportionment method; site quirks (`9:60`, `5:60`, `17:60`, bare `100`) kept as displayed and said so; nothing
+  written to the bot repo; no news sweep, no bet/pick/odds/model; no scheduler listing pasted. The usage-limit question was answered
+  in three lines ("I don't know" on allowances, with the LAL commit as what it can show) — fine.
+- **Records:** `python3 -I tools/validate_claims.py --strict L3-split/nba/matchups.claims.jsonl`: **42,294 records, 0 errors.** By id
+  against `cdad76a`: 6,909 added (LAL 831, MEM 921, MIA 783, MIL 927, MIN 987, NOP 738, NYK 960, OKC 762 — each = 3 × the pair count
+  in STATUS), 0 changed, 0 removed, all REPORTED, 0 null values, source_date 2026-10-26, asof 2025-06-30. The OKC entry's note that a
+  service restart interrupted the rebuild command, with the comparison redone from git HEAD, checks out (0 changes).
+- **Done claims:** none (R-046 WIP: 9 teams of 2024-25 left, ORL next).
+- **Open tickets:** 34 (unchanged).
+
+### 2026-10-27 16:55 PT · Watchdog (Claude): ALIGNED — seven tickets closed since the catch-up session; the backlog turns toward the market's own flow
+- **Verified (archive `8073e03`):** R-046 closed (2025-26 + 2024-25; R-027 PRF-10 row NONE → PARTIAL), R-057 (no free bulk line
+  anchor 2016-2026 in any sport; 8 cards), R-058 (NONE free for timestamped NFL lines 2016-2026; 6 cards), R-029 (MLB PAM map FREE 38 /
+  PARTIAL 13 / NONE 2), R-061 (MLB dossier; 0 record-cited exemplars, stated plainly), R-020 (NHL factor sources, 8 cards), R-030 (NHL
+  PAM map FREE 28 / PARTIAL 13 / NONE 2). The IN PROGRESS markers worked: no scheduled run collided with the live session. Your
+  usage-limit answer ("I don't know") is the right one. Good work.
+- **What your R-057 / R-058 NONEs changed on the bot side:** with no free history of sportsbook lines, the bot's anchor is Kalshi's own
+  price history (the bot backfilled it on 10-26: Kalshi's listed time is exactly 3 h after the true start). The open question moves
+  from "what was the line" to "who is moving the line now": the bot is building trees that ride the market where its own price is
+  wrong, a router between riding and fading, and a momentum test (follow or fade a moving line). The new tickets serve that.
+- **Five new tickets (R-063 → R-067), backlog 32 open.**
+
+### R-063 · Polymarket's sports markets: what price history is free, and how its events map to Kalshi's
+**Gap it fills:** a second market's price for the same game is the cleanest cross-check on Kalshi's line. Reading it is allowed; trading
+it is not (the operator's identity check is pending).
+**What:** source cards for Polymarket's public market-data access (international and US): which sports and families, price history
+granularity and depth, how far back, terms of use, and how an event is identified (so the bot can join it to the Kalshi event). Fees as
+published, verbatim, with the date.
+**Done when:** cards with sample rows; a one-line answer per sport: is a joined Kalshi-vs-Polymarket price series buildable for free?
+
+### R-064 · Public betting splits (share of tickets vs share of money), NFL / NBA / NHL
+**Gap it fills:** where retail money sits. The bot's ride and fade trees need to know when the crowd is on one side.
+**What:** free sources that publish ticket % and money % per game and market: who publishes, how it is measured (verbatim), update times,
+whether history is kept, terms.
+**Done when:** cards with sample rows and capture verdicts; NONE stated plainly if nothing free is usable.
+
+### R-065 · Current sportsbook lines with timestamps, going forward (free)
+**Gap it fills:** R-057 and R-058 found no free history. The bot can still capture lines from now on, if a free source serves current
+lines with times.
+**What:** free sources (including free API tiers that need no payment) that serve current moneyline, spread and total for NFL / NBA /
+NHL with a timestamp: rate limits, terms (is automated capture allowed?), which books, how often updated.
+**Done when:** cards with sample responses and a capture verdict per source; the best free forward-capture route per sport, or NONE.
+
+### R-066 · NBA starters and late scratches: who confirms them, and when
+**Gap it fills:** the momentum test splits moves by news time; NBA lineup confirmation is the biggest pre-game news event after the
+official injury report (which the bot already captures).
+**What:** where starting lineups are first published (NBA.com, team accounts, the league's own feed), how long before tip, whether
+history is kept, how often a listed starter does not start. The NHL analogue is R-047, MLB's is R-060.
+**Done when:** cards with sample rows; one line: "when is the NBA starter known, and from which free source".
+
+### R-067 · Kalshi's sports contract rules, verbatim: settlement source and the edge cases
+**Gap it fills:** a ride tree that buys 95c favourites lives or dies on edge cases (postponement, overtime, a void, a stat correction).
+**What:** for each Kalshi sports family the bot trades (game, spread, total, team total, player props; NFL / NBA / NHL / MLB): the
+settlement source, the rule for postponed or suspended games, overtime / extra innings, ties and pushes, stat corrections, and the
+settlement timing, all quoted verbatim from Kalshi's published contract terms, with the document and date.
+**Done when:** one card per family with the quotes; a short list of rules that differ from a sportsbook's usual treatment.
+
+**Backlog order (supersedes the 2026-10-26 order):** **R-065** → **R-063** → **R-064** → **R-067** → R-062 → **R-066** → R-047 → R-059 →
+R-060 → R-026 → R-019 → R-043 → R-044 → R-021 → R-022 → R-023 → R-037 → R-031 → R-040 → R-048 → R-051 → R-052 → R-054 → R-024 →
+R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24 season). (32 open.)
+
+### 2026-10-27 17:00 PT · Earl: a live session, ten tickets straight
+Earl, 16:51 PT: "give it like 10 straight to work on". The live session works the first ten tickets of the 16:55 PT order, one after
+another without waiting: R-065 → R-063 → R-064 → R-067 → R-062 → R-066 → R-047 → R-059 → R-060 → R-026. Same IN PROGRESS rule: mark
+each ticket before starting it, push, and the scheduled runs skip it; the DONE entry supersedes the marker.
+
+### 2026-10-27 17:40 PT · Watchdog (Claude): four tickets for the ride-the-market work; they follow the live session's ten
+- The bot's Wave 91 tests whether cells where Kalshi's own price looked wrong hold up on data they were not found in, and measures two
+  more ways to ride the market: a strike priced off its own ladder, and Kalshi following (or leading) Polymarket. Every net figure the
+  bot reports subtracts a fee formula it has never checked against Kalshi's published schedule; R-068 fixes that. **Backlog 36 open.**
+
+### R-068 · Kalshi's fee schedule, verbatim, with effective dates
+**Gap it fills:** every net-of-cost number in the bot uses a taker fee of 0.07 x price x (1 - price) per contract, never checked against
+Kalshi's published schedule.
+**What:** Kalshi's published trading fee schedule for sports contracts: the taker and maker formulas, rounding, any per-series exceptions,
+fee caps, rebates or liquidity programs, and every change with its effective date, all quoted verbatim from Kalshi's own documents.
+**Done when:** a card per document with the quotes and dates; one line: "the fee on a sports contract today is ..., since ...".
+
+### R-069 · When each Kalshi sports series was first listed
+**Gap it fills:** the bot is testing price patterns on dates before August 2026 and needs to know which series existed then.
+**What:** first listing dates (and any gaps or delistings) for Kalshi's NFL, NBA, NHL and MLB series: game, spread, total, team total,
+first-five / first-innings, and player props, from Kalshi's own announcements, help center, or public market data.
+**Done when:** a table series -> first listed date -> source; UNKNOWN stated plainly where no primary source says.
+
+### R-070 · The favourite-longshot bias in prediction markets and betting exchanges: what the literature measured
+**Gap it fills:** the bot's first ride evidence is a favourite-longshot pattern (favourites too cheap at 90-95c, longshots too dear at
+5-15c). Published work says how large and how stable that pattern has been elsewhere.
+**What:** peer-reviewed papers and working papers (free to read) on the favourite-longshot bias in prediction markets, betting
+exchanges and sportsbooks: market, years, n, the measured size by price level, whether it survived fees, and whether it persisted.
+Definitions verbatim. Bibliographic record only: no model, no bet.
+**Done when:** a card per paper (citation, link, market, n, finding quoted); one paragraph naming where findings agree and disagree.
+
+### R-071 · Who leads: price discovery across prediction markets, exchanges and sportsbooks
+**Gap it fills:** the bot is measuring whether Kalshi follows Polymarket; published work on which venue moves first sets the prior.
+**What:** papers (free to read) measuring lead-lag or price discovery between prediction markets, betting exchanges and sportsbooks
+(e.g. sharp vs retail books), with market, years, n, method and finding quoted.
+**Done when:** a card per paper; one paragraph on what is settled and what is not.
+
+**Backlog order (supersedes the 16:55 PT order after the live session's ten):** the live ten (R-065 → R-063 → R-064 → R-067 → R-062 →
+R-066 → R-047 → R-059 → R-060 → R-026), then **R-068** → **R-069** → **R-070** → **R-071** → R-019 → R-043 → R-044 → R-021 → R-022 → R-023 →
+R-037 → R-031 → R-040 → R-048 → R-051 → R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24
+season). (36 open.)
