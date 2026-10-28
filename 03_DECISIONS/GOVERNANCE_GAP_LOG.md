@@ -4440,6 +4440,12 @@ W91.1, 2026-10-28, T-1341. 8 parallel fetch processes shared ~4 req/s with frequ
 
 W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB accrues nothing between the World Series and ~2027-03-25. Earliest full-effect looks: cell 6 ~2026-12-21 (NFL); 3 2027-04-11; 10 04-15; 5 04-28; 2 04-29; 4 05-06; 1 05-18; 9 06-07; 8 06-11; 7 06-17; 11 06-25. PASS needs the half-effect judged n (EXP-042 section 3). Reopens if a look date is reached or the operator changes the ride rule.
 
+### GG-1420 — NBA availability cannot be tested against a price: no 2026-27 event data and no pre-tip price history
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W93.1, 2026-10-28, T-1420. Known-at-tip availability is interpreted (B5/B6) but cannot be taken to applied. The event store ends at 2025-26, relay injury reports cover about 8 days, pre-game price capture (92.1) starts 2026-10-28 05:03Z, and public settled KXNBAGAME listings carry no pre-tip price (candlesticks are rate-limited, GG-1341). Fix for the flex lane, no new running component: refresh the 2026-27 PBP/lineup/player-box event data weekly and let the existing price capture and injury relay (GG-985, GG-1030) accrue; rerun `12_EXPLORATORY/nba_availability/run_w93_1.py` with the price join once about 100 games have both.
+
 ### GG-1390 — NBA referee crew assignment has no timestamp in the archive and no verified free live-capture route, so the officials factor is a game-day-known upper bound, not a pre-game fact
 
 **Status:** OPEN · **Severity:** MEDIUM

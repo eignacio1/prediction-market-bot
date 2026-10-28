@@ -49,7 +49,11 @@ name = "Own injury status and teammates out (minutes / FGA vacated)"
 source = "NBA official injury reports"
 engine_slot = "availability"
 stage = "interpreted"
-evidence = "12_EXPLORATORY/W69_3_nba_points_minutes_results.md"
+evidence = "12_EXPLORATORY/nba_availability/results_W93_1.md"
+# W93.1: status at last pre-tip report -> P(played): Out 0.0008, Questionable 0.514 [0.492, 0.536], Probable 0.919, Available 0.856 (n=23k listed rows, 2023-26); unlisted rotation players 0.762. Applied NOT reached: no 2026-27 event data and no pre-tip price history (GG-1420).
+# Granularity index: split = last pre-tip status -> P(played), by season and lead; rank = not yet a column (needs same-point-in-season history);
+# matchup cross = expected minus actual lineup (home-away); market map = total via expected pace/ptot, margin only via missing minutes;
+# application = none (price and 2026-27 data gap, GG-1420).
 
 [[factor]]
 id = "B6"
@@ -58,7 +62,10 @@ name = "Game-level availability (who is out for either side)"
 source = "NBA official injury reports (coverage.json)"
 engine_slot = "availability"
 stage = "interpreted"
-evidence = "12_EXPLORATORY/20261013_nba_games_availability/results.md"
+evidence = "12_EXPLORATORY/nba_availability/results_W93_1.md"
+# W93.1: known-at-tip expected availability adds 0.307 MSE [-0.235, 0.829] beyond rotation (n=2008): does not move; expected missing minutes 2.641 [0.038, 5.082] is the one lead. Upper bound (who actually played) 0.956 [-0.674, 2.779]. Applied blocked, GG-1420.
+# Granularity index: split = expected missing minutes by side; rank = not yet a column; matchup cross = home minus away missing minutes;
+# market map = total and margin via rotation-weighted rating; application = none (GG-1420).
 
 [[factor]]
 id = "B7"
