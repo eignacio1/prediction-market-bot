@@ -1,0 +1,187 @@
+{
+ "_about": "Kalshi event-contract fee multipliers [prelive, live] per series, from Muse's cards (R-068, sports-intel-archive sources/kalshi-fees/). taker = round_up_centicent(M*0.07*C*P*(1-P)); maker = same with 0.0175. pdf_2026-07-07 = Kalshi PDF effective 2026-07-07; web_2026-10-27 = kalshi.com/fee-schedule as read 2026-10-27, UNDATED. Series not listed take defaults (taker 1, maker 0). A later group overrides an earlier one for the same series (KXMLBGAME: web 0.5 prelive over PDF 1). Known gap: the web page lists NFL Spread/Total, NBA Game/Spread/Total/Series, NHL Game/Series, NCAAF Spread/Total at multiplier 1 with maker fees, but the cards do not print those codes; they are not here and take maker 0, which understates their maker fee. No NFL team-total, NBA team-total/props or NHL spread/total/team-total series is listed anywhere: defaults apply.",
+ "coefficients": {
+  "taker": 0.07,
+  "maker": 0.0175
+ },
+ "defaults": {
+  "taker": [
+   1.0,
+   1.0
+  ],
+  "maker": [
+   0.0,
+   0.0
+  ]
+ },
+ "groups": [
+  {
+   "source": "pdf_2026-07-07",
+   "taker": [
+    1,
+    1
+   ],
+   "maker": [
+    1,
+    1
+   ],
+   "series": [
+    "KXNFLAFCCHAMP",
+    "KXNFLAFCEAST",
+    "KXNFLAFCNORTH",
+    "KXNFLAFCSOUTH",
+    "KXNFLAFCWEST",
+    "KXNFLCOTY",
+    "KXNFLCPOTY",
+    "KXNFLDPOTY",
+    "KXNFLDROTY",
+    "KXNFLGAME",
+    "KXNFLMVP",
+    "KXNFLNFCCHAMP",
+    "KXNFLNFCEAST",
+    "KXNFLNFCNORTH",
+    "KXNFLNFCSOUTH",
+    "KXNFLNFCWEST",
+    "KXNFLOPOTY",
+    "KXNFLOROTY",
+    "KXNBA",
+    "KXNBAEAST",
+    "KXNBAMVP",
+    "KXNBAROY",
+    "KXNBAWEST",
+    "KXNHL",
+    "KXNHLEAST",
+    "KXNHLWEST",
+    "KXMLB",
+    "KXMLBAL",
+    "KXMLBASGAME",
+    "KXMLBNL",
+    "KXNCAAF",
+    "KXNCAAFACC",
+    "KXNCAAFB10",
+    "KXNCAAFB12",
+    "KXNCAAFGAME",
+    "KXNCAAFPLAYOFF",
+    "KXNCAAFSEC",
+    "KXATPMATCH",
+    "KXBALLONDOR",
+    "KXHEISMAN",
+    "KXLALIGA",
+    "KXMARMAD",
+    "KXMENWORLDCUP",
+    "KXPGARYDER",
+    "KXPGASOLHEIM",
+    "KXPGATOUR",
+    "KXSB",
+    "KXSUPERBOWLHEADLINE",
+    "KXUCL",
+    "KXUCLGAME",
+    "KXWCGAME",
+    "KXWNBA",
+    "KXWNBAGAME",
+    "KXWTAMATCH"
+   ]
+  },
+  {
+   "source": "pdf_2026-07-07",
+   "taker": [
+    1,
+    1
+   ],
+   "maker": [
+    2,
+    2
+   ],
+   "series": [
+    "KXMVE"
+   ]
+  },
+  {
+   "source": "web_2026-10-27",
+   "taker": [
+    1,
+    1
+   ],
+   "maker": [
+    1,
+    1
+   ],
+   "series": [
+    "KXNFL2TD",
+    "KXNFLANYTD",
+    "KXNFLFIRSTTD"
+   ]
+  },
+  {
+   "source": "web_2026-10-27",
+   "taker": [
+    0.5,
+    1
+   ],
+   "maker": [
+    0.5,
+    1
+   ],
+   "series": [
+    "KXMLBGAME"
+   ]
+  },
+  {
+   "source": "web_2026-10-27",
+   "taker": [
+    0.5,
+    1
+   ],
+   "maker": [
+    0,
+    0
+   ],
+   "series": [
+    "KXMLBSPREAD",
+    "KXMLBTOTAL",
+    "KXMLBTEAMTOTAL",
+    "KXMLBHIT",
+    "KXMLBHR",
+    "KXMLBHRR",
+    "KXMLBKS",
+    "KXMLBOUTS",
+    "KXMLBRBI",
+    "KXMLBSB",
+    "KXMLBTB",
+    "KXMLBF3",
+    "KXMLBF5",
+    "KXMLBF5SPREAD",
+    "KXMLBF5TOTAL",
+    "KXMLBF7",
+    "KXMLBEXTRAS",
+    "KXMLBRFI"
+   ]
+  },
+  {
+   "source": "pdf_2026-07-07",
+   "taker": [
+    0,
+    0
+   ],
+   "maker": [
+    0,
+    0
+   ],
+   "series": [
+    "KXBTCY",
+    "KXCITRINI",
+    "KXDOED",
+    "KXELECTIRAN",
+    "KXETHY",
+    "KXGAMBLINGREPEAL",
+    "KXGREENLAND",
+    "KXIRANDEMOCRACY",
+    "KXLAYOFFSYINFO",
+    "KXPAHLAVIHEAD",
+    "KXEXPAND",
+    "KXGDPYEAR",
+    "KXTRUMPOUT"
+   ]
+  }
+ ]
+}
