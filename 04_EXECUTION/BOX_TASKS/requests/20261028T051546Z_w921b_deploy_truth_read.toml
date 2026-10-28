@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W92.1 post-merge read"
