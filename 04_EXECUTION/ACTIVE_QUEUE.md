@@ -292,7 +292,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | 🔶 Part A done | EXP-042 frozen+pushed (11 cells, sha256 4efbc15f…ab35); Part B backward test next |
-| 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | ⬜ | |
+| 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | 🟨 Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B (ladder ride) next. |
 | 91.3 | **REROUTED (operator 17:32 PT):** NBA and NHL into the price archive, then the first NBA / NHL calibration scan as discovery (+ PR #347). Polymarket stopped (17:31 PT) | BREADTH + PROOF: sports archived 2 → 4; NBA/NHL families scanned 0 → n | ⬜ | |
 
 **What Wave 90 delivered (verified 2026-10-28 00:19Z: #349-#352 CI green; box bridge `20261028T001810Z_*`, box HEAD ce78de49):**
@@ -490,7 +490,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 91.1 | The ride cells: pre-registered, then tested out of sample (backward + forward) | ⬜ | |
-| 91.2 | The ride tree as code + the ladder ride | ⬜ | |
+| 91.2 | The ride tree as code + the ladder ride | 🟨 Part A merged (#353, CI green): ride.py + ride_cells.toml (11 cells IN_SAMPLE) + router stub swapped; replay RIDE 3,838 → 0 of 164,354. Part B (ladder ride) next. |
 | 91.3 | REROUTED: NBA + NHL into the price archive + first NBA/NHL calibration scan (+ PR #347); Polymarket stopped | ⬜ | |
 
 ### ✅ WAVE 90 — WRITTEN 2026-10-27 ~05:30 UTC · CLOSED 2026-10-28 ~00:40 UTC (operator 17:16 PT) · verified on GitHub (#349-#352 CI green) + box bridge (`20261028T001810Z_*`) · moved: **D5(a) MLB 0 → 2/8 (router); momentum measured in four sports (none); box RED → GREEN**; ride hold-out underpowered (0 candidates)
