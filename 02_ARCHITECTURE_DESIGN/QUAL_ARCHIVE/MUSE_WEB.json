@@ -1,7 +1,7 @@
 {
  "about": "State of Muse's aggregation work across the four sports, drawn as the Visual Dashboard's aggregation web. Maintained by the strategic window at every wave close from the archive (eignacio1/sports-intel-archive, commit below), TO_MUSE.md and the bot repo. built = delivered and in the repo/archive; pending = a ticket or block open now; future = planned, no ticket yet. Operator 2026-10-21 08:11 PT: 'give us an idea of pending, built, future'.",
- "as_of": "2026-10-27T23:55Z",
- "archive_commit": "8073e03",
+ "as_of": "2026-10-28T00:45Z",
+ "archive_commit": "e199631",
  "rings": [
   {
    "id": "scout",
@@ -194,14 +194,14 @@
    "name": "Line history · injury-report timing",
    "tickets": "R-058 · R-059",
    "states": [
-    "built",
+    "pending",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-058: NONE free for timestamped NFL lines 2016-2026; R-059 injury-report timing queued",
+    "R-058: NONE free for timestamped NFL lines 2016-2026; R-059 injury-report timing IN PROGRESS (live session)",
     "",
     "",
     "",
@@ -213,18 +213,18 @@
    "name": "Market flow: forward lines · splits · Polymarket",
    "tickets": "R-065 · R-063 · R-064 · R-067",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-065 free current lines with timestamps; R-063 Polymarket history; R-064 public splits; R-067 Kalshi rules verbatim",
+    "R-065 CLOSED: best free forward-line route The Odds API free tier (6 cards); R-063 CLOSED: Polymarket history + Kalshi mapping, NFL demonstrated live (3 cards); R-064 CLOSED: splits, single-book routes only; R-067 CLOSED: Kalshi rules verbatim, all four sports",
     "",
     "",
     "",
-    "Feeds the ride / fade router (Wave 90)"
+    "Feeds the ride / fade router; 91.3 measures Kalshi vs Polymarket"
    ]
   },
   {
@@ -510,7 +510,7 @@
    "notes": [
     "R-030 / R-020 cards",
     "",
-    "R-030 map FREE 28 / PARTIAL 13 / NONE 2; R-062 dossier queued",
+    "R-030 map FREE 28 / PARTIAL 13 / NONE 2; R-062 CLOSED: dossier, 4 files, 0 exemplar records",
     "",
     ""
    ]
@@ -539,14 +539,14 @@
    "name": "Goalie starts · workload",
    "tickets": "R-047",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "built",
     "built"
    ],
    "notes": [
-    "R-047: who confirms starters, when, how accurately (GG-1010)",
+    "R-047 CLOSED: 6 cards, 16/16 accuracy on Oct 13, no free announcement archive (GG-1010)",
     "",
     "",
     "Workload built from the store, point-in-time",

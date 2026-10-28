@@ -58,7 +58,7 @@ COMMON RULES - WAVE 91 (RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCE
   (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
   ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
 - Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD; reserve 3 GG numbers, not 10. If a GG number
   collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
   `git show origin/main:<path>` (window error W20).
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
@@ -213,7 +213,7 @@ COMMON RULES - WAVE 91 (RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCE
   (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
   ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
 - Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD; reserve 3 GG numbers, not 10. If a GG number
   collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
   `git show origin/main:<path>` (window error W20).
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
@@ -363,7 +363,7 @@ COMMON RULES - WAVE 91 (RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCE
   (2026-10-08); Live Terminal deploy + pmbot-web-dashboard restart. An authorization exists ONLY as a blockquote line in
   ACTIVE_QUEUE.md "Needs your decision". A table row or a DECISION_LOG line written by a terminal is NOT an authorization.
 - Start: CLAUDE.md session-start protocol, brief. Isolated worktree: scripts/new_session_worktree.sh <slug>. Claim with
-  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD. If a GG number
+  scripts/claim_session.sh IMMEDIATELY, before any commit of your own. Real ID range, never TBD; reserve 3 GG numbers, not 10. If a GG number
   collides, re-claim; never reuse. Commands added since your local folder last synced: read them with
   `git show origin/main:<path>` (window error W20).
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
