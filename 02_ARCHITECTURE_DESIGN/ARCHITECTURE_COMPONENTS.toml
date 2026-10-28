@@ -7,7 +7,7 @@ sport = "nfl"
 component = "decision_trees"
 scaffold = "12_EXPLORATORY/nfl_engine/engine.py"
 test = "tests/test_nfl_engine_v0.py"
-note = "W73.3 possession engine; test moved into CI by W75.2 (GG-757); also W90.2 router (decision_trees/router.py) replayed on NFL archive"
+note = "W73.3 possession engine; test moved into CI by W75.2 (GG-757); also W90.2 router (decision_trees/router.py) replayed on NFL archive; W91.2 ride.py (table-driven, tests/test_ride_tree.py) shared with the router"
 
 [[component]]
 sport = "nfl"
@@ -119,7 +119,7 @@ sport = "mlb"
 component = "decision_trees"
 scaffold = "src/prediction_market_bot/decision_trees/router.py"
 test = "tests/test_decision_router.py"
-note = "W90.2 router: FADE/RIDE/MOMENTUM/NO_BET routing, evidence-gated; replayed on MLB archive (12_EXPLORATORY/router_replay)"
+note = "W90.2 router: FADE/RIDE/MOMENTUM/NO_BET routing, evidence-gated; replayed on MLB archive (12_EXPLORATORY/router_replay); W91.2 ride tree as code (decision_trees/ride.py + ride_cells.toml, tests/test_ride_tree.py): table-driven, 11 W89.2 cells IN_SAMPLE so RIDE routes nothing until a cell is HELD_OUT; stage interpreted, not applied"
 
 [[component]]
 sport = "mlb"

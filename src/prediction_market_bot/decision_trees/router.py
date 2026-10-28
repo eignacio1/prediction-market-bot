@@ -12,6 +12,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Mapping, Optional, Protocol, Sequence
 
+from prediction_market_bot.decision_trees import ride
+from prediction_market_bot.decision_trees.ride import RideCell, RideTable  # noqa: F401  (re-exported)
 from prediction_market_bot.quant.money import net_edge
 
 FADE, RIDE = "FADE", "RIDE"
@@ -54,20 +56,6 @@ class Skill:
 
 
 @dataclass(frozen=True)
-class RideCell:
-    family: str
-    tier: str
-    bucket: str  # e.g. "20-25c"
-    book: str  # "all" | "tight" | "wide"
-    side: str  # "yes" | "no"
-    net_lo: float  # net-of-fee lower bound per contract
-
-
-class RideTable(Protocol):
-    def lookup(self, family: str, tier: str, bucket: str, book: str) -> Optional[RideCell]: ...
-
-
-@dataclass(frozen=True)
 class MomentumCell:
     tree: str  # MOMENTUM_FOLLOW | MOMENTUM_FADE
     min_move: float
@@ -87,14 +75,6 @@ class Route:
     side: Optional[str]
     reasons: tuple
     agreed: bool = False
-
-
-def _bucket(p: float) -> str:
-    edges = [0.0, 0.01, 0.05] + [x / 100 for x in range(10, 100, 5)] + [0.99, 1.0001]
-    for i in range(len(edges) - 1):
-        if edges[i] <= p < edges[i + 1]:
-            return f"{int(round(edges[i] * 100))}-{min(int(round(edges[i + 1] * 100)), 100)}c"
-    return "99-100c"
 
 
 def book_classes(s: Situation) -> tuple:
@@ -129,14 +109,8 @@ def _fade(s: Situation, ev: Evidence):
 
 
 def _ride(s: Situation, ev: Evidence):
-    if ev.ride is None:
-        return None, "ride:no_table"
-    b = _bucket(s.mid)
-    for book in book_classes(s):
-        c = ev.ride.lookup(s.family, s.tier, b, book)
-        if c is not None and c.net_lo > 0:
-            return c.side, f"ride:cell_{s.tier}_{b}_{book}"
-    return None, "ride:no_cell"
+    d = ride.decide(s.family, s.tier, s.mid, s.half_spread, ev.ride, book_classes(s))
+    return d.side, d.reason
 
 
 def _momentum(s: Situation, ev: Evidence):
