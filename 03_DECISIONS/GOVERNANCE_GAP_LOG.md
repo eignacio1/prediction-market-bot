@@ -4395,3 +4395,15 @@ W90.3, 2026-10-27, T-1310. run_w90_3.py `mlb_start` reads the event-ticker HHMM 
 **Status:** OPEN · **Severity:** LOW
 
 W90.3, 2026-10-27, T-1310. The follow/fade grid for NBA (91 signals) and NHL (117) comes from the 89.7 hourly game-market candles only; no spread, total or prop candles exist and the cadence (1 h) is coarser than the MLB/NFL archive (20 min). Their cells are mostly untestable (<30 games) and the NBA settle-follow cell that clears BH is a single marginal split. Re-run W90.3 when the shadow arms have logged a season of two-sided pre-game quotes.
+
+### GG-1292 — The ride hold-out scan is underpowered: 52-121 games per family, 1 of 1,850 discovery cells testable
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W90.1, 2026-10-27. The candle sample (4 strikes/event, 3-minute fetch budget per family) gives ~67 games per spread/total/team-total family; after the median split a cell cannot reach calib.MIN_EVENTS = 30. Result is "cannot detect", not "no edge" (results_W90_1.md). Fix: longer fetch per family (newest first, one sport at a time) and/or coarser buckets pre-registered before the next scan.
+
+### GG-1293 — W90.1 Part A undone items
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W90.1, 2026-10-27. Not done: (1) re-test of 89.2's three named MLB candidates after its window and on 2025 history (MLB PRICE_ARCHIVE is box-only); (2) GG-1253 MLB HHMM-as-ET check against the schedule; (3) prop-family candles; (4) one residual unmatched NFL event (LACDET, no_team_pair); (5) GG-1254 still open. Ride.py (Part B) not started.

@@ -281,7 +281,7 @@ are in `04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md` (run them after 89.7 has pushed 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 89.7 | Ride the market, the data first (10-26 night) | PROOF + DEPTH | 🟨 PARTIAL → folded into 90.1 | Start times solved (Kalshi time = start + 3.0 h); NBA/NHL game candles in; PR #349 open, CI failed (exploratory fence); Part B not started |
-| 90.1 | Finish 89.7 (PR #349, the remaining candles, the hold-out scan), then the ride tree as code | PROOF + DEPTH: candidates tested out of sample 0 → n; D5(a) a second tree type | ⬜ | |
+| 90.1 | Finish 89.7 (PR #349, the remaining candles, the hold-out scan), then the ride tree as code | PROOF + DEPTH: candidates tested out of sample 0 → n; D5(a) a second tree type | 🟨 PARTIAL | #349, #352 merged; 0 candidates, scan underpowered (GG-1292); Part B ride.py next undone |
 | 90.2 | The router: the filtering layer that sends each situation to ride, fade or no-bet; doctrine, code, replay | DEPTH D5(a) filtering_mechanisms + decision_trees | ✅ DONE: PR #350 ce78de4; D5(a) MLB 0/8 -> 2/8; 164,354 replayed, 97.66% NO_BET / 2.34% RIDE / FADE 0; doctrine ACCEPTED by operator 2026-10-27 | handoff SESSION_HANDOFF_*_W90_2.md |
 | 90.3 | Momentum, measured: when a line moves, follow it or fade it (Strategy J) | DEPTH + PROOF: momentum_looping with a measured basis | ✅ | DONE PR #351 f1d24f4: no momentum at 1-3h (gross follow ≈0 every sport); net −4c to −17c; 0 contexts routable to FOLLOW/FADE; momentum_looping = interpreted |
 

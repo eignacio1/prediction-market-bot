@@ -1064,3 +1064,4 @@
 | 2026-10-28T00:06:42Z | T-1330 | CLOSED — merge confirmed, HEAD (a87a9e7) is ancestor of origin/main — W90.2 decision router built, PR #350 ce78de4, doctrine accepted; DEPTH D5(a) MLB 0/8->2/8 |
 | 2026-10-28T00:11:00Z | T-1310 | CLOSED — W90.3 measured momentum (Strategy J): no continuation or reversion at 1-3h; net follow -4c to -17c; 0 routable contexts (commit `4c10fce`) |
 | 2026-10-28T00:11:15Z | T-1310 | CLOSED — merge confirmed, HEAD (afe02ef) is ancestor of origin/main — W90.3 momentum measured; PR #351 f1d24f4 merged |
+| 2026-10-28T00:14:43Z | T-1300..T-1309 / GG-1290..GG-1299 | CLOSED — W90.1 PARTIAL: PRs #349 and #352 merged; hold-out scan 0 candidates (underpowered); Part B not started. Also closes the superseded W89.7 claim |

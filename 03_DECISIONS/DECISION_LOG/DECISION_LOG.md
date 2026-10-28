@@ -2917,3 +2917,8 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Part B (train/hold-out split 2026-09-03): 0 of 4 testable cells route FOLLOW or FADE. Router (90.2) should route nothing to MOMENTUM-FOLLOW/FADE; at most a veto in wide books.
 - Two fragile BH-positive cells (MLB news-window settle-fade n=53/41 games; NBA up-move settle-follow n=52/42) are hypotheses, not verdicts. GG-1300 (news split is a calendar proxy), GG-1301 (MLB HHMM-as-ET start unverified), GG-1302 (NBA/NHL history thin).
 - Deploy: merge touched no src/deploy; no Deploy job ran; no t4-mlb restart decision needed.
+
+## 2026-10-28T00:14:43Z — W90.1 (PROOF + DEPTH): 89.7 finished, hold-out scan run, 0 candidates
+- PR #349 (fence fix via safe_out, LA alias, manifests moved) merged 2757a20 on green CI; no src/ change, no t4-mlb restart needed. PR #352 (holdout_scan.py + tests + results) merged be44377 on green CI.
+- Candles fetched for NBA/NHL/NFL spread, total, team-total. Hold-out scan (89.2 method unchanged, median time split): 9,689 snapshot rows, 1,850 discovery cells, 1 testable, 0 BH-flagged, 0 candidates. Underpowered (GG-1292), not a null. No ride survivors; Wave 91 has nothing to pre-register as a ride tree from this scan.
+- Not done: MLB re-tests, GG-1253, props candles, Part B ride.py (90-minute ceiling) — GG-1293. GG-1290 resolved, GG-1291 open.
