@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W91.3: confirm box applied #347 locks + #354 cron lines; t4-mlb decision"
