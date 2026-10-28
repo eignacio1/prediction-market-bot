@@ -141,10 +141,11 @@ result = "W89.3 Part B (totals only): share priced 0.36 [0.27,0.44]; OOS anchor+
 id = "N15"
 factor_class = "G3"
 name = "Travel / time zone / short week"
-source = "derived from games.gametime, location"
+source = "derived from games.gametime, location (c1_signal_ingestion/nfl_schedule_geometry.py)"
 engine_slot = "ctx"
-stage = "none"
-evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nfl_board_v2/results_W93_4.md"
+result = "W93.4: built point-in-time (c1_signal_ingestion/nfl_schedule_geometry.py). Held-out 2012-2025 (3,829 games), rolling-origin ridge on closing-line residuals: margin MSE gain -0.92 [-1.46,-0.37] (worse than no factor), total -0.03 [-0.46,+0.37]. No detectable effect beyond the line; not applied. Granularity parts: split = away travel miles, tz shift east/west, short week (rest<=5), post-bye, neutral/international, body-clock kickoff hour; rank vs history = rolling origin, each season 2012-2025 scored against earlier seasons only (no same-week ranking built; gap); matchup cross = away team body-clock x home late kick (coefficients inside 1 SE); market map = margin and total closing lines (residual target); application = none, nothing moves a price"
 
 [[factor]]
 id = "N16"
