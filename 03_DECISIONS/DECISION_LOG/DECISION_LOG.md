@@ -2984,3 +2984,8 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 
 ## 2026-10-28 — W92.3 (DEPTH): NBA B7 lineups/on-off built point-in-time from the play-by-play
 - `c1_signal_ingestion/nba_lineups.py` (PR #359): stints from PBP, shrunk (K=1000, decay 0.5) as-of player ratings, rotation-weighted team lineup features. B7 stage none -> interpreted on the TOTAL (held-out gain 4.04 MSE, CI 1.92-6.10, n=2008, survives prior-season carry). Margin: honest null beyond prior carry. Applied test not run: no pre-game NBA prices captured, n 31-55 settled events anyway. Results: `12_EXPLORATORY/nba_lineups/results_W92_3.md`.
+
+## 2026-10-28 — W92.1 (BREADTH + PLUMBING): the surface budget counts only what is installed
+- Registry-live entries missing from the box crontab/units are excluded from `live` and turn the budget RED (`NOT INSTALLED <key>`). Matching is by exact key, then signature count, so one installed sibling cannot vouch for others sharing its signature; retimed jobs still match.
+- Deploy does not touch the crontab, so installs go through the budget-gated `archive_cron_install` box task (backup first, marked block, existing lines untouched). Six NBA/NHL archive lines installed 05:03Z and read back with rows for all 8 series (PRs #358, #361).
+- GG-1330 resolved; GG-1250 partial (parlay families remain).
