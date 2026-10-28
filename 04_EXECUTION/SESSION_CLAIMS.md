@@ -1076,3 +1076,4 @@
 | 2026-10-28T04:44:02Z | T-1360..T-1362 / GG-1360..GG-1362 | MEDIUM — W92.2 exact Kalshi fees (new money.py fee fn + table) + ladder ride EXP-043 forward — FOR PROOF: fee defs matching published schedule 0->1; ride cells HELD_OUT 0->2; forward ride hypotheses 11->11+ladder |
 | 2026-10-28T04:45:30Z | T-1370..T-1372 / GG-1370..GG-1372 | MEDIUM — W92.3 NBA engine B7 lineups/on-off point-in-time from PBP — FOR DEPTH: D5(b) NBA B7 none->interpreted; D4 NBA first factor class built PIT |
 | 2026-10-28T04:46:22Z | T-1380..T-1384 / GG-1380..GG-1382 | MEDIUM — W92.1 winter archive: install route for NBA/NHL archiver lines + budget counts only installed — FOR BREADTH+PLUMBING: sports in price archive 2->4; registered-not-installed counted live 6->0 |
+| 2026-10-28T05:10:29Z | T-1360 | CLOSED — W92.2 PARTIAL: exact Kalshi fee code merged; 2 ladder ride cells HELD_OUT; EXP-043 frozen, no look before 2027. (commit `8c594b7`) |

@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-28T01:35:00Z (T-1345 — W91.2 ride tree is code (#353) + ladder ride measured (#356): 2 of 36 cells HELD_OUT, net +0.007 overall) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028T0135Z_W91_2.md` for full session detail.
+**Last reviewed:** 2026-10-28T05:12:00Z (T-1360 — W92.2 PARTIAL: exact Kalshi fee code merged; 2 ladder ride cells HELD_OUT; EXP-043 frozen, no look before 2027.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261028_0512.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
