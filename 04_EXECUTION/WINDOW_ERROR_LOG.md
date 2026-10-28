@@ -74,3 +74,6 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | PRESET | 1 | W21 (10-15) |
 | REPEAT | 2 | W26 (10-19) |
 | FOREST | 1 | W23 (10-19) |
+
+## W31 · 2026-10-27 17:31 PT · built on a curiosity question
+The operator asked how Polymarket differs from Kalshi out of curiosity; the window wrote a Polymarket block (91.3) and a Muse ticket (R-071) from it. Operator: "I simply asked as curiosity we're not building shit for polymarket yet". Rule: a question is not a direction; a new venue, sport or data source enters a wave only when the operator says to build it.

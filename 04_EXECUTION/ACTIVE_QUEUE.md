@@ -293,7 +293,7 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 |---|---|---|---|---|
 | 91.1 | The ride cells: pre-register first, then test them on data that played no part in finding them (backward in time; forward from the freeze) | PROOF: ride cells pre-registered 0 → 11; tested out of sample 0 → n | ⬜ | |
 | 91.2 | The ride tree as code (router stub replaced) + a second kind of ride: a strike quoted off its own ladder | DEPTH: D5(a) decision_trees; ride kinds with a measured basis 1 → 2; ladder cells tested out of sample 0 → n | ⬜ | |
-| 91.3 | A third kind of ride: Polymarket vs Kalshi, who leads (+ PR #347) | DEPTH + BREADTH: venues with joined history 1 → 2; sports joined 0 → n of 4 | ⬜ | |
+| 91.3 | ~~A third kind of ride: Polymarket vs Kalshi~~ **STOPPED by the operator 17:31 PT** ("we're not building shit for polymarket yet"); Part 0 (PR #347) only | PLUMBING | ⛔ | Polymarket work stopped; nothing Polymarket lands |
 
 **What Wave 90 delivered (verified 2026-10-28 00:19Z: #349-#352 CI green; box bridge `20261028T001810Z_*`, box HEAD ce78de49):**
 **90.1 🟨** 89.7 finished (#349) and the hold-out scan run (#352): **0 candidates, but only 1 of 1,850 cells was testable** - the
@@ -491,7 +491,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 91.1 | The ride cells: pre-registered, then tested out of sample (backward + forward) | ⬜ | |
 | 91.2 | The ride tree as code + the ladder ride | ⬜ | |
-| 91.3 | The other venue: Polymarket vs Kalshi (+ PR #347) | ⬜ | |
+| 91.3 | ~~The other venue: Polymarket vs Kalshi~~ STOPPED by the operator (17:31 PT); PR #347 only | ⛔ | |
 
 ### ✅ WAVE 90 — WRITTEN 2026-10-27 ~05:30 UTC · CLOSED 2026-10-28 ~00:40 UTC (operator 17:16 PT) · verified on GitHub (#349-#352 CI green) + box bridge (`20261028T001810Z_*`) · moved: **D5(a) MLB 0 → 2/8 (router); momentum measured in four sports (none); box RED → GREEN**; ride hold-out underpowered (0 candidates)
 | # | Block | Status | Outcome |

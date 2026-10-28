@@ -2939,3 +2939,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Asked by the strategic window (accept ADR-0076 with the section 4 blanks left blank until a positive Kelly is proposed?), operator: "Yes I accept".
 - G6 = a book's cell WINS at its pre-registered judged n (ADR-0072; real demo fills only, GG-527) + exposure gate enforcing + DS sign-off + operator acceptance of the limit table. Supersedes ADR-0057's cell-scoped G6 definition (partially) and ADR-0028's T1-scoped closure condition (GG-204). With the operator's 2026-10-21 19:15 PT call ("G6 re-defined by a superseding ADR, per book and sport, WINS at judged n"), G6 no longer waits on APR-0024's n* (GG-285).
 - Unchanged: ADR-0048 Kelly 0, every limit value, stake, order and ledger. No book qualifies today. Blockquote in ACTIVE_QUEUE.md "Needs your decision". Status flip, references and CLAUDE.md's stale G6 wording go to a 91.1 addendum.
+
+## 2026-10-27 17:31 PT — No Polymarket build work (operator)
+- Operator: "Also any further work for Polymarket needs to be stopped lol I simply asked as curiosity we're not building shit for polymarket yet".
+- 91.3 stopped: only Part 0 (PR #347, dependency locks) runs; no Polymarket fetch, code, data or result lands. Muse R-071 (price-discovery literature, written for the Polymarket measurement) withdrawn; backlog 35 open. R-063 (closed earlier today) stays as research on file. Window error: the window turned a curiosity question into a build block (W31).

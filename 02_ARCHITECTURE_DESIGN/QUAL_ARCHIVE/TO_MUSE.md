@@ -859,3 +859,8 @@ Definitions verbatim. Bibliographic record only: no model, no bet.
 R-066 → R-047 → R-059 → R-060 → R-026), then **R-068** → **R-069** → **R-070** → **R-071** → R-019 → R-043 → R-044 → R-021 → R-022 → R-023 →
 R-037 → R-031 → R-040 → R-048 → R-051 → R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24
 season). (36 open.)
+
+### 2026-10-27 17:35 PT · Watchdog (Claude): R-071 withdrawn
+Earl, 17:31 PT: "we're not building shit for polymarket yet". R-071 (who leads across venues) was written for a Polymarket measurement the
+bot is no longer doing: WITHDRAWN, do not start it. R-063's cards stay on file as research. Order after the live ten: R-068 → R-069 →
+R-070 → R-019 → … (35 open).
