@@ -116,6 +116,31 @@ engine_slot = "player rating"
 stage = "interpreted"
 evidence = "12_EXPLORATORY/20261020_nba_lineup_cross/results_W83.md"
 
+[[factor]]
+id = "B12"
+factor_class = "NBA-12"
+name = "Travel, time zones, altitude, schedule density (point-in-time geometry)"
+source = "src/prediction_market_bot/c1_signal_ingestion/nba_schedule_geometry.py (ESPN venue city + tip instants; hand-built city table)"
+engine_slot = "schedule context"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nba_geometry/results_W93_2.md"
+# W93.2 Part A: margin: no gain beyond B1/B9/B2 + prior-season carry (honest NO, pooled -0.28 [-0.85, 0.27] MSE). Total: venue altitude only +0.92 MSE [0.43, 1.44], n=2150 (one of 7 specs, not multiplicity-corrected).
+# Granularity index: split = altitude venue / zones by direction / miles / road-run; rank = altitude home edge by season (2025 -3.4, 2026 -1.7 vs +1.4..+9.5 before);
+# matchup cross = visitor altitude gain x back-to-back x road-run; market map = total (altitude term) only, no supported margin/spread/ML use;
+# application = none (descriptive only; this season's Kalshi NBA total/spread rows are tens, underpowered).
+
+[[factor]]
+id = "B13"
+factor_class = "NBA-13"
+name = "Officials: crew foul / FTA / pace tendencies (shrunk, prior games only)"
+source = "src/prediction_market_bot/c1_signal_ingestion/nba_officials.py (raw/officials crews 2016-2026, free; assignment time unpublished, GG-1390)"
+engine_slot = "game environment"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nba_geometry/results_W93_2.md"
+# W93.2 Part B: total over baseline + prior, 3 crew deviations: pooled +0.51 MSE [-0.12, 1.14] (2025 moves, 2026 does not) - weak and unstable, not a verdict. Crew FTA deviation top vs bottom decile: FTA 46.7 vs 43.0, total 224.2 vs 223.2.
+# Granularity index: split = crew FTA/foul deviation decile; rank = shrunk crew rate vs league mean before that date; matchup cross = crew x team FT-drawing style (not built);
+# market map = total (FTA channel) only; application = none (live crew route unverified, GG-1390; Kalshi NBA rows underpowered).
+
 [[cell]]
 market = "nba_player_points"
 band = "T4"
