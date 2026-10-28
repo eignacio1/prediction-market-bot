@@ -1077,3 +1077,4 @@
 | 2026-10-28T04:45:30Z | T-1370..T-1372 / GG-1370..GG-1372 | MEDIUM — W92.3 NBA engine B7 lineups/on-off point-in-time from PBP — FOR DEPTH: D5(b) NBA B7 none->interpreted; D4 NBA first factor class built PIT |
 | 2026-10-28T04:46:22Z | T-1380..T-1384 / GG-1380..GG-1382 | MEDIUM — W92.1 winter archive: install route for NBA/NHL archiver lines + budget counts only installed — FOR BREADTH+PLUMBING: sports in price archive 2->4; registered-not-installed counted live 6->0 |
 | 2026-10-28T05:10:29Z | T-1360 | CLOSED — W92.2 PARTIAL: exact Kalshi fee code merged; 2 ladder ride cells HELD_OUT; EXP-043 frozen, no look before 2027. (commit `8c594b7`) |
+| 2026-10-28T05:10:40Z | T-1360 | CLOSED — merge confirmed, HEAD (c8ea09f) is ancestor of origin/main — W92.2 PARTIAL: Parts A+B merged, EXP-043 frozen |
