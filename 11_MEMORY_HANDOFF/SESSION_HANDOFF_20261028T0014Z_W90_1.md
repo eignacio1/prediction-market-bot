@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: T-1300
+tier: MICRO
+timestamp: 2026-10-28T00:14:43Z
+commit: 80357ad
+one_line_summary: W90.1 PARTIAL: PRs 349 and 352 merged; hold-out scan 0 candidates (underpowered, GG-1292); Part B not started
+gg_touched: GG-1290 resolved; GG-1291, GG-1292, GG-1293 open
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF (+ DEPTH planned)
+gap_measure: families testable out of sample; candidates tested out of sample; D5(a) decision_trees
+gap_delta: testable families MLB+NFL -> +NBA/NHL game-market data in; candidates tested out of sample 0 -> 0; D5(a) unchanged
+pattern_sweep: LA/LAR alias fixed and tested; write-fence scanner gap registered GG-1291; safe_out used for all scan outputs
+surface_delta: none
+-->
 # SESSION HANDOFF — W90.1 (2026-10-28T00:14:43Z) — PARTIAL
 vision_pillar: PROOF (+ DEPTH planned)
 gap_measure: families testable out of sample; candidates tested out of sample; D5(a) decision_trees
