@@ -2,6 +2,8 @@
 import json, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, "src")
+sys.path.insert(0, "12_EXPLORATORY")
+from _fence import safe_out
 from prediction_market_bot.c1_signal_ingestion.nfl_schedule_geometry import schedule_features
 from prediction_market_bot.quant.inference import cluster_bootstrap
 s = pd.read_parquet("exp_output/NFL_EVENTS/raw/schedules/schedules_20261020T001136Z.parquet")
@@ -41,4 +43,4 @@ for tgt in ("res_m", "res_t"):
                     ols={c: [round(float(beta[i + 1]), 3), round(float(se[i + 1]), 3)] for i, c in enumerate(cols)})
     print(tgt, out[tgt]["n_games_scored"], out[tgt]["mse_gain"])
     for c in cols: print("  ", c, out[tgt]["ols"][c])
-json.dump(out, open("12_EXPLORATORY/nfl_board_v2/n15_interpret.json", "w"), indent=1)
+json.dump(out, open(safe_out("12_EXPLORATORY/nfl_board_v2/n15_interpret.json"), "w"), indent=1)
