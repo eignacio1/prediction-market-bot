@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: T-1370
+tier: STANDARD
+timestamp: 2026-10-28T05:10:00Z
+commit: 719deea
+one_line_summary: W92.3 NBA lineups/on-off built point-in-time from PBP; B7 interpreted on total only, not applied (PR #359).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NBA B7 none -> interpreted; D4 NBA first factor class built point-in-time
+gap_delta: B7 none -> interpreted (total side); applied unchanged (results_W92_3.md @ PR #359)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
 # Session handoff — W92.3 NBA engine B7 lineups and on/off (point-in-time from PBP)
 
 ```

@@ -1081,3 +1081,4 @@
 | 2026-10-28T05:20:04Z | TBD | --help |
 | 2026-10-28T05:22:02Z | T-1380 | CLOSED — W92.1 DONE: six NBA/NHL archive lines installed and read back with rows; surface budget excludes uninstalled entries. (commit `d00b2b3`) |
 | 2026-10-28T05:22:13Z | T-1380 | CLOSED — merge confirmed, HEAD (0a253aa) is ancestor of origin/main — W92.1 DONE: archive lines installed and read back; budget fix |
+| 2026-10-28T05:22:44Z | T-1370 | CLOSED — W92.3 NBA lineups/on-off built point-in-time from PBP; B7 interpreted on total only, not applied (PR #359). (commit `719deea`) |
