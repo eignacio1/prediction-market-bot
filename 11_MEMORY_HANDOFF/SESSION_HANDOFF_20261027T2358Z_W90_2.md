@@ -16,20 +16,15 @@ surface_delta: 0
 
 # SESSION_HANDOFF W90.2 — the router (DONE)
 
-PR #350 merged as ce78de4, CI green. Post-merge run was the Test Suite only; no Deploy job ran for this SHA, so there is no t4-mlb decision to record. The change adds a library nothing imports. Nothing live.
+PR #350 merged as ce78de4, CI green; no Deploy job ran, so no t4-mlb decision. Library only; nothing live.
 
 ## Strategic Decisions This Session
-Routing doctrine written as DRAFT in `02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md`. Awaiting operator acceptance.
+Routing doctrine (DECISION_ROUTING.md) written, then ACCEPTED by the operator as written ("Accept - proceed in full"), 840f767. Wiring needs its own pre-registration.
 
 ## Result
-- Router: `src/prediction_market_bot/decision_trees/router.py`, tests `tests/test_decision_router.py` (10 pass).
-- Replay (DESCRIPTIVE): 164,354 situations, MLB and NFL only. FADE traffic is 0, also under a synthetic confident-model stress run. No tree gets traffic without measured evidence.
-- RIDE settled view (n=2,661, 993 games, mean +0.0568 [+0.0424, +0.0718]) is in-sample against the same data that chose the cells. Not evidence.
-- Limits: no NBA/NHL archive (GG-1330), news timing unmeasured (GG-1331), no momentum table (GG-1332), no shadow-ledger FADE replay (GG-1333), RIDE in-sample (GG-1334). RIDE evidence is a hard-coded stub of the W89.2 survivors; swap for 90.1's `ride.py` when it lands.
-- Stage: filtering and routing factors are built and tested (aggregated/interpreted); none is applied against a market with an out-of-sample result.
-
-## Operator line
-Accept the routing doctrine as written (FADE only on measured skill; RIDE only on a net-positive table cell; same-side agreement goes to RIDE; opposite sides go to NO-BET; T3 as a FADE-only overlay; news timing excluded), or change it.
+- Router `decision_trees/router.py`, 10 tests. Replay of 164,354 situations: NO_BET 97.66%, RIDE 2.34%, FADE 0, MOMENTUM 0.
+- RIDE settled view (n=2,661, +0.0568 [+0.0424, +0.0718]) is in-sample, not evidence.
+- Limits GG-1330..1334: no NBA/NHL archive, news timing and momentum table unmeasured, no shadow-ledger FADE replay, RIDE stub in-sample.
 
 ## Next
-90.1's ride.py replaces the stub table; 90.3 supplies a momentum transition table; archive NBA/NHL series to replay them.
+One thing pending: 90.1's ride.py replaces the stub table. Resume: /session-start, read 04_EXECUTION/ACTIVE_QUEUE.md.
