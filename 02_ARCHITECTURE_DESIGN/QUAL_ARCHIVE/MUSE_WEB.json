@@ -488,7 +488,7 @@
     "future"
    ],
    "notes": [
-    "R-060 CLOSED: MLB probables and lineup cards, 4 cards (Stats API; past-date probables unverified)",
+    "R-057: no free bulk line history 2016-2026 (the bot anchors on Kalshi's own history); R-060 CLOSED: MLB probables and lineup cards, 4 cards",
     "",
     "",
     "",
