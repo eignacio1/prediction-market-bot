@@ -4380,3 +4380,18 @@ W90.2, 2026-10-27. Ledgers are on the box and unsettled locally; FADE is gated t
 **Status:** OPEN · **Severity:** MEDIUM
 
 W90.2, 2026-10-27. The stub ride table is the W89.2 survivor list drawn from the same archive; the replay is not evidence. Out-of-sample forward window is 90.1's pre-registration.
+
+### GG-1300 — No archive of observed news-report timestamps; the W90.3 news/no-news split is a calendar proxy
+**Status:** OPEN · **Severity:** MEDIUM
+
+W90.3, 2026-10-27, T-1310. Strategy J's "news-driven vs unexplained" split needs the time a lineup, injury report, inactives list or practice report was actually published. None is archived (the NBA injury-report relay branch is recent-only; MLB lineup and NFL report times were never captured). 12_EXPLORATORY/momentum_j/core.py `news_intervals` substitutes scheduled windows (MLB start-4h..start-1.5h, NFL Wed-Fri 17:00-18:30 ET + inactives, NBA/NHL game-day windows), so 98% of MLB signals read as "quiet" and the one BH-positive cell (MLB news-window settle-fade, n=53/41 games) rests on the proxy. Needs a free source of real publish times captured going forward (MLB lineup posts from the stats API, NFL/NBA/NHL official reports) before any news-conditioned cell is pre-registered.
+
+### GG-1301 — MLB game start taken from the ticker HHMM read as ET is unverified for the W90.3 time-to-start tiers
+**Status:** OPEN · **Severity:** LOW
+
+W90.3, 2026-10-27, T-1310. run_w90_3.py `mlb_start` reads the event-ticker HHMM as US/Eastern, the same assumption as GG-1253, and no join to a schedule source confirms it for the 52,474-ticker archive. It only drives the time-to-start tier and the news-window proxy, not the move or the cost; a wrong offset would shift tier boundaries. Closes with GG-1253.
+
+### GG-1302 — NBA and NHL pre-game history is one hourly-candle season-start window (n<=119 signals), too thin to carry a router decision
+**Status:** OPEN · **Severity:** LOW
+
+W90.3, 2026-10-27, T-1310. The follow/fade grid for NBA (91 signals) and NHL (117) comes from the 89.7 hourly game-market candles only; no spread, total or prop candles exist and the cadence (1 h) is coarser than the MLB/NFL archive (20 min). Their cells are mostly untestable (<30 games) and the NBA settle-follow cell that clears BH is a single marginal split. Re-run W90.3 when the shadow arms have logged a season of two-sided pre-game quotes.
