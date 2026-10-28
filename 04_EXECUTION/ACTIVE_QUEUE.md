@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 93 (all NBA engine + one quant block in tandem)** · the four blocks are in the **⬛ NOW — Wave 93** section below: **93.1** (availability known before tip), **93.2** (travel, time zones, altitude, officials), **93.3** (one model prices the whole NBA board), **93.Q** (quant in tandem: exact fees per trade, the ladder side, a proof calendar). Each block is one fenced paste.
+> **▶ PASTE NOW — Wave 93 (NBA engine x3, NFL engine, quant in tandem)** · the five blocks are in the **⬛ NOW — Wave 93** section below: **93.1** (NBA availability known before tip), **93.2** (NBA travel, time zones, altitude, officials), **93.3** (one model prices the whole NBA board), **93.4** (NFL engine: the board from the line, key numbers right; travel), **93.Q** (quant in tandem: exact fees per trade, the ladder side, a proof calendar). Each block is one fenced paste.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -276,16 +276,17 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 93 · THE NBA ENGINE, ALL LANES · ONE QUANT BLOCK IN TANDEM · WRITTEN 2026-10-28 ~05:40 UTC (10-27 22:40 PT) · four MEDIUM blocks · no Muse paste
+## ⬛ NOW — Wave 93 · THE NBA ENGINE, ALL LANES · ONE QUANT BLOCK IN TANDEM · WRITTEN 2026-10-28 ~05:40 UTC (10-27 22:40 PT) · five MEDIUM blocks · no Muse paste
 
-Operator, 22:27 PT: "make [this wave] all engine for the NBA. Quant blocks can run in tandem with everything". Common rules for every
-block: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md` (each block's first line points the terminal there). All four run in parallel.
+Operator, 22:30 PT: "do 1 extra block to do NFL engine work" (93.4). Operator, 22:27 PT: "make [this wave] all engine for the NBA. Quant blocks can run in tandem with everything". Common rules for every
+block: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md` (each block's first line points the terminal there). All five run in parallel.
 
 | # | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|
 | 93.1 | Availability known before tip: the official injury report's statuses point-in-time, their real play rates, the lineup layer on expected availability | DEPTH: NBA B5/B6 interpreted → applied (or why not); factor classes from event data 1 → 2 | ⬜ | |
 | 93.2 | Travel, time zones, altitude and officials, point-in-time | DEPTH: NBA travel none → interpreted; officials none → aggregated/interpreted or a registered gap | ⬜ | |
 | 93.3 | One model prices the whole NBA board (moneyline, spread, total, team totals) from a joint score distribution; scored vs results and vs this season's Kalshi prices | DEPTH: D4 NBA data layer → whole board priced (scaffold, tested) | ⬜ | |
+| 93.4 | NFL engine (operator 22:30 PT): the whole board priced from the market's own line with the key numbers right (89.4 missed 3 by half), scored vs Kalshi's ladders; then travel / short weeks (N15) | DEPTH: D4 NFL scaffold → board priced, market-anchored, tested; N15 none → interpreted | ⬜ | |
 | 93.Q | Quant in tandem: exact fees per trade for every reported net, ride.py's LADDER side fixed, a generated proof calendar for every frozen test | PROOF: nets re-checked 0 → all; look dates known 1 → all | ⬜ | |
 
 **What Wave 92 delivered (verified 2026-10-28 05:27Z: #357-#361 CI green; box bridge `20261028T052642Z_*`):**
@@ -418,6 +419,46 @@ Results: the package + tests, 12_EXPLORATORY/nba_board/results_W93_3.md, the eng
 END OF BLOCK 93.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+### 93.4 — NFL engine: the board from the line, key numbers right; then travel
+**DEPTH · terminal 5**
+
+```
+Before anything else, read the Wave 93 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 93.4 - NFL ENGINE: THE BOARD FROM THE LINE, WITH THE KEY NUMBERS RIGHT; THEN TRAVEL. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH. Measures: D4 NFL "data layer + engine scaffold" -> "whole board priced, market-anchored, tested"; the engine's margin
+distribution at key numbers 3 / 7 / 10 (89.4: 3 missed by about half) -> within sampling noise; D5(b) NFL N15 travel / time zone /
+short week none -> interpreted.
+Operator, 2026-10-27 22:30 PT: "do 1 extra block to do NFL engine work". NFL is the template engine (ADR-0073: "NFL first, as the
+template"). 89.4's game-state chain priced the whole board from one distribution but was worse than the close at the centre and missed
+key number 3 by about half (no end-of-game logic: 12_EXPLORATORY/nfl_gamestate/results_W89.md). Under market-anchored pricing (accepted
+10-21) the engine does not have to beat the line at the centre: it has to price everything AROUND the centre coherently - alternate
+spreads and totals, team totals, the shape at key numbers - where Kalshi's own ladders can be wrong (91.2 found strikes quoted off their
+own ladder move back toward it).
+Premises to check: 89.4's code and results (12_EXPLORATORY/nfl_gamestate/); src/prediction_market_bot/nfl_engine/; the 27-season NFL
+play-level store (c1_signal_ingestion/nfl_event_store.py); EXP-041 (frozen; read only); the price archive's NFL ladders since 2026-08.
+PERMISSIONS: NEW modules in src/prediction_market_bot/nfl_engine/ + tests, a new src/prediction_market_bot/c1_signal_ingestion/
+nfl_schedule_geometry.py + tests, the N15 row of 02_ARCHITECTURE_DESIGN/SEATS/nfl.toml (re-render with python3.11 scripts/render_seat.py),
+the NFL [[engine]] entry in ARCHITECTURE_COMPONENTS.toml, a new 12_EXPLORATORY/nfl_board_v2/. NOT: EXP-041 or any frozen
+pre-registration, any live model, runner, shadow arm, order, gate, ledger or registry cell; no new running component; nothing wired.
+
+PART A - The board from the line (~50 min)
+  A margin and total joint distribution centred on the market's own main line (spread and total at the quote time), with the SHAPE
+  learned from 27 seasons of results: key-number mass (3, 7, 10, 6, 14...) conditional on the line and the total, the margin-total
+  correlation, overtime. From it: every alternate spread and total strike, both team totals, moneyline. Known-answer tests: the key-number
+  frequencies of a held-out season are reproduced within sampling noise at the same lines; the ladders are coherent. Then against Kalshi
+  (archive, 2026-08 ->): for each strike off the main line, engine price vs Kalshi's quote vs settlement - paired Brier per family with
+  game-clustered intervals, net of the exact fee (quant/money.py fee()) where the engine disagrees by more than cost. Report n plainly.
+PART B - Travel and short weeks, N15 (~30 min)
+  Point-in-time per team-game: miles travelled, time zones crossed and direction, short week (Thursday), off a bye, international /
+  neutral site, kickoff in body-clock time. Known-answer test on a hand-checked week. Interpreted: on held-out seasons, beyond N1-N3 and
+  the line, does it move margin or total (paired, intervals)? Update N15 with stage and the five granularity-index parts.
+Results: the modules + tests, 12_EXPLORATORY/nfl_board_v2/results_W93_4.md, the N15 row, the engine entry, a handoff.
+
+END OF BLOCK 93.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
 ### 93.Q — Quant, in tandem: exact fees per trade, the ladder side, a proof calendar
 **PROOF (quant) · terminal 4, in tandem**
 
@@ -494,12 +535,13 @@ local project folder does not have the new command — `/loop /gap-agent` failed
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ⬜ WAVE 93 — WRITTEN 2026-10-28 ~05:40 UTC (10-27 22:40 PT) · THE NBA ENGINE, ALL LANES · four MEDIUM blocks (93.Q quant in tandem) · no Muse paste
+### ⬜ WAVE 93 — WRITTEN 2026-10-28 ~05:40 UTC (10-27 22:40 PT) · THE NBA ENGINE, ALL LANES + NFL ENGINE · five MEDIUM blocks (93.Q quant in tandem) · no Muse paste
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 93.1 | NBA availability known before tip | ⬜ | |
 | 93.2 | NBA travel, time zones, altitude, officials | ⬜ | |
 | 93.3 | One model prices the whole NBA board | ⬜ | |
+| 93.4 | NFL engine: the board from the line (key numbers), then travel N15 | ⬜ | |
 | 93.Q | Quant in tandem: exact fees per trade, LADDER side, proof calendar | ⬜ | |
 
 ### ✅ WAVE 92 — WRITTEN 2026-10-28 ~05:00 UTC · CLOSED 2026-10-28 ~05:40 UTC (operator 22:24 PT) · verified on GitHub (#357-#361 CI green) + box bridge (`20261028T052642Z_*`) · moved: **sports in the price archive 2 → 4; surface truthful (phantom live 6 → 0); fees exact; NBA B7 interpreted (6 → 7); EXP-043 frozen**

@@ -4,7 +4,8 @@ Every Wave 93 block tells the terminal to read this file first. Text below is th
 
 ```
 COMMON RULES - WAVE 93 (THE NBA ENGINE, ALL LANES; ONE QUANT BLOCK IN TANDEM) (read first; they bind this block)
-- THIS WAVE: three NBA engine blocks (93.1-93.3) plus one quant block running in tandem (93.Q). Operator, 2026-10-27 22:27 PT:
+- THIS WAVE: three NBA engine blocks (93.1-93.3), one NFL engine block (93.4, operator 22:30 PT: "do 1 extra block to do NFL engine
+  work") and one quant block running in tandem (93.Q). Operator, 2026-10-27 22:27 PT:
   "make [this wave] all engine for the NBA. Quant blocks can run in tandem with everything".
 - SIZE: MEDIUM. Target 60 minutes, hard ceiling 90 (operator 2026-10-07). Two parts. If your first estimate for the
   whole block is over 90 minutes, say so in one line, do Part A only, and name Part B as the next undone part. Do not
@@ -82,11 +83,14 @@ COMMON RULES - WAVE 93 (THE NBA ENGINE, ALL LANES; ONE QUANT BLOCK IN TANDEM) (r
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Four blocks run in parallel. File ownership: 93.1 = a new src/prediction_market_bot/c1_signal_ingestion/nba_availability.py +
+- Five blocks run in parallel. File ownership: 93.1 = a new src/prediction_market_bot/c1_signal_ingestion/nba_availability.py +
   tests, B5 / B6 rows of 02_ARCHITECTURE_DESIGN/SEATS/nba.toml, a new 12_EXPLORATORY/nba_availability/; 93.2 = a new
   src/prediction_market_bot/c1_signal_ingestion/nba_schedule_geometry.py (and nba_officials.py if Part B builds it) + tests, the B2
   row and NEW rows for travel and officials in nba.toml, a new 12_EXPLORATORY/nba_geometry/; 93.3 = a new package
   src/prediction_market_bot/nba_engine/ + tests, the NBA [[engine]] entry in ARCHITECTURE_COMPONENTS.toml, a new 12_EXPLORATORY/nba_board/;
+  93.4 = NEW modules in src/prediction_market_bot/nfl_engine/, a new c1_signal_ingestion/nfl_schedule_geometry.py, the N15 row of
+  SEATS/nfl.toml, the NFL [[engine]] entry, a new 12_EXPLORATORY/nfl_board_v2/ (93.3 owns the NBA [[engine]] entry: edit only your
+  own entry, rebase before push);
   93.Q = NEW functions in src/prediction_market_bot/quant/ + tests, src/prediction_market_bot/decision_trees/ride.py (the LADDER side fix
   only), a new 12_EXPLORATORY/quant_w93/, a new allowlisted box task if Part B needs one. nba.toml is shared by 93.1 and 93.2: edit only
   your own rows, fetch + rebase right before each push, re-render the seat with python3.11 scripts/render_seat.py. Data: the NBA event
