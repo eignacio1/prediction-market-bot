@@ -15,6 +15,7 @@ import numpy as np
 
 sys.path.insert(0, __file__.rsplit("/", 1)[0])
 import study_a as A  # noqa: E402
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nba_engine import engine as E, ratings as R  # noqa: E402
 from prediction_market_bot.quant import ladder as L  # noqa: E402
 
@@ -113,7 +114,7 @@ def main(raw, rows_path, out):
         market_ml_vs_spread_p_absdiff_mean=float(np.abs(col("mk_p_home", sp) - col("mk_p_home_from_spread", sp)).mean()),
         settled_games=0)
     print(json.dumps(summ, indent=1))
-    json.dump(dict(summary=summ, games=res_all, skipped=skipped, cal={k: v for k, v in cal.items()}), open(out, "w"), indent=1, default=float)
+    safe_out(out).write_text(json.dumps(dict(summary=summ, games=res_all, skipped=skipped, cal={k: v for k, v in cal.items()}), indent=1, default=float))
     for r in res:
         print({k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items()})
     print("skipped", skipped)

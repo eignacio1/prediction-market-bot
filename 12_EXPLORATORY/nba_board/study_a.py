@@ -13,6 +13,8 @@ from statistics import NormalDist
 import numpy as np
 import pandas as pd
 
+sys.path.insert(0, __file__.rsplit("/", 2)[0])
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion import nba_factors as F, nba_point_in_time as P
 from prediction_market_bot.nba_engine import engine as E, ratings as R
 from prediction_market_bot.quant.inference import cluster_bootstrap
@@ -141,8 +143,8 @@ def main(raw, out):
                             delta=m, lo=lo, hi=hi, verdict=verdict, slope_engine=sl, icpt_engine=ic, slope_gauss=sg, icpt_gauss=ig)
         print(fam, {a: (round(b, 5) if isinstance(b, float) else b) for a, b in summary[fam].items()}, flush=True)
     per_season = {int(s): float((x.be - x.bg).mean()) for s, x in sc.groupby("season")}
-    json.dump(dict(summary=summary, per_season_delta=per_season, shape=shape_log), open(out, "w"), indent=1, default=float)
-    sc.to_csv(out.replace(".json", "_rows.csv.gz"), index=False)
+    safe_out(out).write_text(json.dumps(dict(summary=summary, per_season_delta=per_season, shape=shape_log), indent=1, default=float))
+    sc.to_csv(safe_out(out[: -len(".json")] + "_rows.csv.gz"), index=False)
 
 
 if __name__ == "__main__":
