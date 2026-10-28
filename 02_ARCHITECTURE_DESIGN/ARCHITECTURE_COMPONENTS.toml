@@ -119,7 +119,7 @@ sport = "mlb"
 component = "decision_trees"
 scaffold = "src/prediction_market_bot/decision_trees/router.py"
 test = "tests/test_decision_router.py"
-note = "W90.2 router: FADE/RIDE/MOMENTUM/NO_BET routing, evidence-gated; replayed on MLB archive (12_EXPLORATORY/router_replay); W91.2 ride tree as code (decision_trees/ride.py + ride_cells.toml, tests/test_ride_tree.py): table-driven, 11 W89.2 cells IN_SAMPLE so RIDE routes nothing until a cell is HELD_OUT; stage interpreted, not applied"
+note = "W90.2 router: FADE/RIDE/MOMENTUM/NO_BET routing, evidence-gated; replayed on MLB archive (12_EXPLORATORY/router_replay); W91.2 ride tree as code (decision_trees/ride.py + ride_cells.toml, tests/test_ride_tree.py): table-driven, 11 W89.2 cells IN_SAMPLE so RIDE routes nothing until a cell is HELD_OUT; W91.2 Part B ladder ride (results_W91_2.md): 2 LADDER cells HELD_OUT out of sample once (KXMLBTOTAL T0-2h tight), not yet in the table; ladder-gap factor interpreted, applied only for those 2 cells"
 
 [[component]]
 sport = "mlb"

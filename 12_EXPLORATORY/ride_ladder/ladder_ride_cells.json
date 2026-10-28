@@ -1,0 +1,587 @@
+[
+ {
+  "kind": "LADDER",
+  "family": "KXMLBSPREAD",
+  "tier": "T0-2h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 151,
+  "first_mean": 0.06939934514348789,
+  "first_ci95": [
+   0.01302312538631346,
+   0.12692949955849891
+  ],
+  "first_p": 0.004663557628247834,
+  "selected_bh": true,
+  "second_mean": -0.015430423958333316,
+  "second_ci95": [
+   -0.11166190000000002,
+   0.07005971805555557
+  ],
+  "second_n_games": 48,
+  "status": "FAILED"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBSPREAD",
+  "tier": "T0-2h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 75,
+  "first_mean": 0.15021182444444445,
+  "first_ci95": [
+   0.07290018444444443,
+   0.22577500933333336
+  ],
+  "first_p": 0.0006662225183211193,
+  "selected_bh": true,
+  "second_mean": 0.03588255047619049,
+  "second_ci95": [
+   -0.09173630904761905,
+   0.15010116523809525
+  ],
+  "second_n_games": 35,
+  "status": "FAILED"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBSPREAD",
+  "tier": "T6-24h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 30,
+  "first_mean": -0.02561225,
+  "first_ci95": [
+   -0.14983344166666673,
+   0.09797698888888888
+  ],
+  "first_p": 0.6455696202531646,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBSPREAD",
+  "tier": "T0-2h",
+  "gap": "net5c+",
+  "book": "tight",
+  "first_n_games": 40,
+  "first_mean": 0.25949629333333324,
+  "first_ci95": [
+   0.14524004833333332,
+   0.36867039708333327
+  ],
+  "first_p": 0.0006662225183211193,
+  "selected_bh": true,
+  "second_n_games": 16,
+  "status": "FAILED",
+  "note": "second half underpowered"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T6-24h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 452,
+  "first_mean": -0.03396634900141138,
+  "first_ci95": [
+   -0.060372998269124054,
+   -0.005942500934311595
+  ],
+  "first_p": 0.9933377748167888,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T6-24h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 492,
+  "first_mean": -0.02862717848728351,
+  "first_ci95": [
+   -0.05057035122994578,
+   -0.006346999149200839
+  ],
+  "first_p": 0.9920053297801465,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T6-24h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 207,
+  "first_mean": 0.01859641880585864,
+  "first_ci95": [
+   -0.03798199431098963,
+   0.07000617727220441
+  ],
+  "first_p": 0.23917388407728182,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T>24h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 231,
+  "first_mean": -0.05251153993725127,
+  "first_ci95": [
+   -0.09005935762901134,
+   -0.013729704277937073
+  ],
+  "first_p": 0.9980013324450366,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T>24h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 201,
+  "first_mean": -0.01968948503834468,
+  "first_ci95": [
+   -0.07326042646186032,
+   0.03491064846331114
+  ],
+  "first_p": 0.7754830113257828,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T0-2h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 363,
+  "first_mean": 0.006434480073431317,
+  "first_ci95": [
+   -0.01490309955338509,
+   0.027193548557594826
+  ],
+  "first_p": 0.2811459027315123,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T0-2h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 225,
+  "first_mean": 0.06509656675485005,
+  "first_ci95": [
+   0.019090545633156958,
+   0.10899062904761904
+  ],
+  "first_p": 0.003997335109926716,
+  "selected_bh": true,
+  "second_mean": 0.08701704454619458,
+  "second_ci95": [
+   0.03361734754782256,
+   0.14239522062474558
+  ],
+  "second_n_games": 117,
+  "status": "HELD_OUT"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T6-24h",
+  "gap": "net2-5c",
+  "book": "wide",
+  "first_n_games": 48,
+  "first_mean": -0.03418064285714289,
+  "first_ci95": [
+   -0.11737551785714283,
+   0.04820427678571426
+  ],
+  "first_p": 0.7841439040639574,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T2-6h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 131,
+  "first_mean": -0.019331545293409018,
+  "first_ci95": [
+   -0.058077346898462126,
+   0.015960164632468764
+  ],
+  "first_p": 0.854763491005996,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T2-6h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 43,
+  "first_mean": -0.03562548682170544,
+  "first_ci95": [
+   -0.1462023790697674,
+   0.06500869186046516
+  ],
+  "first_p": 0.7475016655562958,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T0-2h",
+  "gap": "net5c+",
+  "book": "tight",
+  "first_n_games": 61,
+  "first_mean": 0.12208138596799373,
+  "first_ci95": [
+   0.03347459402810305,
+   0.21360765370804052
+  ],
+  "first_p": 0.0033311125916055963,
+  "selected_bh": true,
+  "second_mean": 0.21662078849206348,
+  "second_ci95": [
+   0.09505637202380954,
+   0.34114494178571436
+  ],
+  "second_n_games": 30,
+  "status": "HELD_OUT"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T0-2h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 41,
+  "first_mean": -0.021178780487804888,
+  "first_ci95": [
+   -0.1422667926829268,
+   0.10106792682926832
+  ],
+  "first_p": 0.6262491672218521,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T6-24h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 483,
+  "first_mean": -0.0191696383240476,
+  "first_ci95": [
+   -0.037481245378842246,
+   0.00014427534197262272
+  ],
+  "first_p": 0.9800133244503664,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T6-24h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 314,
+  "first_mean": -0.027359761697706025,
+  "first_ci95": [
+   -0.06939654473505974,
+   0.012960730869289967
+  ],
+  "first_p": 0.90473017988008,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T0-2h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 365,
+  "first_mean": -0.00034258123623712644,
+  "first_ci95": [
+   -0.016339385565051375,
+   0.01738204982401161
+  ],
+  "first_p": 0.5263157894736842,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T0-2h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 268,
+  "first_mean": 0.06668267809612657,
+  "first_ci95": [
+   0.030154553140547265,
+   0.10289099635305618
+  ],
+  "first_p": 0.0013324450366422385,
+  "selected_bh": true,
+  "second_mean": 0.0222112612840136,
+  "second_ci95": [
+   -0.029490653775510207,
+   0.07363591071428574
+  ],
+  "second_n_games": 140,
+  "status": "FAILED"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T0-2h",
+  "gap": "net5c+",
+  "book": "tight",
+  "first_n_games": 132,
+  "first_mean": 0.1766354534541847,
+  "first_ci95": [
+   0.10127726979617604,
+   0.24676433562409794
+  ],
+  "first_p": 0.0006662225183211193,
+  "selected_bh": true,
+  "second_mean": 0.10711035727513225,
+  "second_ci95": [
+   -0.007077239153439186,
+   0.2330341467309145
+  ],
+  "second_n_games": 42,
+  "status": "FAILED"
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T6-24h",
+  "gap": "net2-5c",
+  "book": "wide",
+  "first_n_games": 177,
+  "first_mean": -0.012522552618395418,
+  "first_ci95": [
+   -0.06855435344119161,
+   0.04791134035797851
+  ],
+  "first_p": 0.6615589606928715,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T6-24h",
+  "gap": "net5c+",
+  "book": "wide",
+  "first_n_games": 47,
+  "first_mean": -0.04754672340425532,
+  "first_ci95": [
+   -0.1648529148936171,
+   0.07651721276595747
+  ],
+  "first_p": 0.7721518987341772,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T6-24h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 45,
+  "first_mean": 0.014142208888888898,
+  "first_ci95": [
+   -0.1152638888888889,
+   0.13914460000000006
+  ],
+  "first_p": 0.42771485676215854,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T0-2h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 112,
+  "first_mean": -0.05997942857142856,
+  "first_ci95": [
+   -0.12392012053571426,
+   0.0004729851190476132
+  ],
+  "first_p": 0.9726848767488341,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T2-6h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 131,
+  "first_mean": 0.0013869077438464874,
+  "first_ci95": [
+   -0.02761318398351012,
+   0.029977877083497494
+  ],
+  "first_p": 0.43704197201865425,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T2-6h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 58,
+  "first_mean": -0.06286913505747126,
+  "first_ci95": [
+   -0.13913725000000005,
+   0.018498867816091967
+  ],
+  "first_p": 0.9506995336442372,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T0-2h",
+  "gap": "net2-5c",
+  "book": "wide",
+  "first_n_games": 25,
+  "first_mean": 0.045603539999999984,
+  "first_ci95": [
+   -0.15993834,
+   0.22975306000000006
+  ],
+  "first_p": 0.3384410393071286,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T>24h",
+  "gap": "net2-5c",
+  "book": "tight",
+  "first_n_games": 54,
+  "first_mean": 0.02718748662551436,
+  "first_ci95": [
+   -0.07041749074074082,
+   0.12368758744855957
+  ],
+  "first_p": 0.290473017988008,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T>24h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 172,
+  "first_mean": -0.01918050874315777,
+  "first_ci95": [
+   -0.07178205425853222,
+   0.03545876086089299
+  ],
+  "first_p": 0.7528314457028648,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T2-6h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 66,
+  "first_mean": -0.005663111616161621,
+  "first_ci95": [
+   -0.08950192979797983,
+   0.07935017878787876
+  ],
+  "first_p": 0.5309793471019321,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T>24h",
+  "gap": "net<2c",
+  "book": "tight",
+  "first_n_games": 30,
+  "first_mean": -0.002892708333333314,
+  "first_ci95": [
+   -0.12263458333333335,
+   0.11002205000000001
+  ],
+  "first_p": 0.49566955363091275,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T>24h",
+  "gap": "net2-5c",
+  "book": "wide",
+  "first_n_games": 93,
+  "first_mean": -0.08593459109916368,
+  "first_ci95": [
+   -0.1575529268219833,
+   -0.013577432138590213
+  ],
+  "first_p": 0.9926715522984677,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T>24h",
+  "gap": "net2-5c",
+  "book": "wide",
+  "first_n_games": 22,
+  "first_mean": -0.09212486363636364,
+  "first_ci95": [
+   -0.18679465909090912,
+   0.009025659090909063
+  ],
+  "first_p": 0.9746835443037974,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTEAMTOTAL",
+  "tier": "T>24h",
+  "gap": "net5c+",
+  "book": "wide",
+  "first_n_games": 48,
+  "first_mean": -0.16007111904761911,
+  "first_ci95": [
+   -0.23992589434523814,
+   -0.06000474404761908
+  ],
+  "first_p": 1.0,
+  "selected_bh": false
+ },
+ {
+  "kind": "LADDER",
+  "family": "KXMLBTOTAL",
+  "tier": "T2-6h",
+  "gap": "net<2c",
+  "book": "wide",
+  "first_n_games": 23,
+  "first_mean": -0.1317094347826087,
+  "first_ci95": [
+   -0.2820223043478261,
+   0.02628360869565217
+  ],
+  "first_p": 0.9526982011992006,
+  "selected_bh": false
+ }
+]
