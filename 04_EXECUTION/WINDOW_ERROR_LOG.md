@@ -89,3 +89,6 @@ The Wave 90 close replaced the queue's fact table up to the first "---", which w
 
 ## W35 · 2026-10-27 22:33 PT · read "just put it in the Active Queue file" as "commit it" instead of "send me the file"
 The operator said not to paste blocks into the chat and to "just put it in the Active Queue file"; the window committed the queue and sent nothing, then refreshed his Mac folder when he said he couldn't see it. He opens the queue as a file card in the desktop app. Rule: every wave written or changed ends with SendUserFile of ACTIVE_QUEUE.md; nothing pasted; the Mac folder only at handoffs.
+
+## W36 · 2026-10-27 22:37 PT · wave composition followed the newest directive, not the ranking
+Asked whether waves were ordered by the window's own ranking of the operator's directives (1 market-anchored pricing, 2 one engine per sport, 3 granularity index, 4 quant, 5 betting architecture, 6 PAM, 7 Muse, 8 expansion), the answer is no. Waves 85-92 (about 29 blocks): engine work 4 (89.3, 89.4, 89.5, 92.3), quant / measurement about 9, ride-the-market about 9, plumbing about 6, market-anchored about 2. The newest directive took whole waves (quant 86-88, ride 89.7-91). Rule (lane rule, agreed 10-27 22:26 PT): one engine block every wave at minimum, quant in tandem, a new directive takes a lane, not a wave.
