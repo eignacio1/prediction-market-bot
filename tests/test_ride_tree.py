@@ -65,8 +65,12 @@ def test_k007_at_the_quote():
 
 def test_shipped_table_routes_nothing_today():
     t = ride.load()
-    assert len(t) == 11 and all(c.status == IN_SAMPLE and c.kind == "CALIBRATION" for c in t.c.values())
-    for c in t.c.values():
+    cal = [c for c in t.c.values() if c.kind == "CALIBRATION"]
+    lad = [c for c in t.c.values() if c.kind == LADDER]
+    assert len(t) == 13 and len(cal) == 11 and all(c.status == IN_SAMPLE for c in cal)
+    # W92.2: the two W91.2 ladder cells are HELD_OUT, keyed on the gap bin, which no price bucket can reach
+    assert len(lad) == 2 and all(c.status == HELD_OUT and c.family == "KXMLBTOTAL" for c in lad)
+    for c in cal:
         for tier_price in (0.225, 0.925, 0.075, 0.125, 0.425, 0.875, 0.175):
             r = decide(c.family, c.tier, tier_price, 0.005, t, (c.book, "all"))
             assert r.action == NONE
