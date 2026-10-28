@@ -64,10 +64,14 @@ evidence = "12_EXPLORATORY/20261013_nba_games_availability/results.md"
 id = "B7"
 factor_class = "NBA-7"
 name = "Lineup / on-off, play-type, matchup"
-source = "none built"
-engine_slot = "none"
-stage = "none"
-evidence = "02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md"
+source = "src/prediction_market_bot/c1_signal_ingestion/nba_lineups.py (stints from sportsdataverse PBP + lineups, point-in-time)"
+engine_slot = "player rating"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nba_lineups/results_W92_3.md"
+# W92.3: interpreted on the TOTAL (held-out gain 4.04 MSE, CI 1.92-6.10, n=2008, survives prior-season carry); margin: no gain beyond prior-season carry (honest NO).
+# Granularity index: split = on/off + rotation-weighted rel rating per 100 poss; rank = shrunk rating vs same point in prior seasons (not yet a column);
+# matchup cross = home-away lineup diff, availability delta (played minus expected); market map = total via rotation pace/ptot, margin/spread only via availability delta;
+# application = none (blocked on NBA price capture and availability feed GG-985; this season's Kalshi n~30-55, underpowered).
 
 [[factor]]
 id = "B8"
