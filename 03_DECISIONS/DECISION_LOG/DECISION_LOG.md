@@ -2943,3 +2943,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-27 17:31 PT — No Polymarket build work (operator)
 - Operator: "Also any further work for Polymarket needs to be stopped lol I simply asked as curiosity we're not building shit for polymarket yet".
 - 91.3 stopped: only Part 0 (PR #347, dependency locks) runs; no Polymarket fetch, code, data or result lands. Muse R-071 (price-discovery literature, written for the Polymarket measurement) withdrawn; backlog 35 open. R-063 (closed earlier today) stays as research on file. Window error: the window turned a curiosity question into a build block (W31).
+
+## 2026-10-27 17:35 PT — 91.3 rerouted: NBA and NHL into the price archive + first NBA/NHL calibration scan (operator)
+- Operator, 17:32 PT: "We're going to reroute 91.3 - give me a new block to input into that terminal".
+- Window's choice: GG-1250 / GG-1330 (NBA, NHL not archived), because 10 of the 11 ride cells are MLB and the season ends this week; winter ride evidence needs NBA/NHL forward snapshots. New cron lines only, on GREEN, registered; PR #347 kept as Part 0; Part B is discovery only (IN_SAMPLE), for a pre-registered forward test next wave.

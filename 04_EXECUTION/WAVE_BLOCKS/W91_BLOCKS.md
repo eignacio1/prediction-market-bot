@@ -457,3 +457,53 @@ stage reached per ADR-0075, gaps registered for what is not free, a handoff.
 
 END OF BLOCK 91.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
+
+### 91.3 REROUTED (operator 2026-10-27 17:32 PT) — NBA and NHL into the price archive, then the first NBA / NHL calibration scan
+**BREADTH + PROOF** · terminal 3 · replaces the 91.3 block above (Polymarket stopped, 17:31 PT)
+
+```
+WAVE 91.3 (REROUTED, operator 2026-10-27 17:32 PT) - THE WINTER DATA THE RIDE TREES NEED: NBA AND NHL INTO THE PRICE ARCHIVE, THEN THE
+FIRST NBA / NHL CALIBRATION SCAN. Repo: eignacio1/prediction-market-bot.
+REPLACES your earlier 91.3 entirely. Polymarket is stopped (operator 17:31 PT: "we're not building shit for polymarket yet"): make no
+Polymarket request; commit, push or merge nothing Polymarket; if you opened a Polymarket PR, close it unmerged; leave local Polymarket
+files uncommitted and list them in your handoff. The Wave 91 common rules you already have still bind, except 91.3's file ownership,
+which is replaced below. Keep your claim range (T-1350..T-1354 / GG-1350..GG-1352); append a claim row naming the reroute.
+PURPOSE: BREADTH + PROOF. Measures: sports in the price archive 2 (MLB, NFL) -> 4 (+ NBA, NHL); NBA / NHL families with a calibration
+scan 0 -> n; in-season ride candidates (IN_SAMPLE, for a later pre-registration) 0 -> n.
+Why: 10 of the 11 ride cells are MLB, whose season ends this week. The ride trees need evidence this winter, and that means NBA and NHL.
+Neither is in the price archive (GG-1250, GG-1330): only 89.7's hourly candles exist for them, and only for game families. Without
+~20-minute snapshots with the bid and ask, nothing found in NBA / NHL can ever be tested forward.
+Premises to check: scripts/archive_market_prices.py takes --series and --depth-sample-per-family and writes exp_output/PRICE_ARCHIVE/; its
+MLB and NFL cron lines are in 02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml (MLB windows are UTC evening only, a fit for MLB, not
+necessarily for NBA / NHL tip times and the T6-24h tier). Kalshi's listed time is the true start + 3.0 h (89.7). Which NBA / NHL series
+exist (game, spread, total, team total, player props) - list them from Kalshi's public API, never assume.
+FILE OWNERSHIP (replaces the common rules' 91.3 line): NEW cron lines for the archiver + their RUNTIME_REGISTRY.toml entries, a new
+12_EXPLORATORY/ride_scan_nba_nhl/, NBA / NHL candles under exp_output/KALSHI_HISTORY/nba/ and /nhl/ only (91.1 owns MLB and NFL there),
+the GG-1250 / GG-1330 entries, PR #347's branch.
+PERMISSIONS: NEW cron lines only (never edit an existing line, including the MLB ones that go idle after the World Series), installed
+only if budget_read reads GREEN and only after registering each line; public unauthenticated Kalshi market-data GETs, paced. NOT: any
+order, gate, model, runner, ledger, registry cell or pre-registration; ride.py or the router (91.2's); 91.1's files.
+
+PART 0 - PR #347 (~10 min, if not already merged)
+  Rebase on main, read CI green on the new head, merge, read the Deploy job summary, record the t4-mlb decision.
+PART A - NBA and NHL into the archive (~40 min)
+  1. List the NBA and NHL series Kalshi serves; choose game, spread, total and team-total families first, player props where listed
+     (say which and why any are left out).
+  2. Cron windows that cover each sport's pre-game tiers (T>24h, T6-24h, T2-6h, T0-2h before the TRUE start), ~20-min cadence near
+     the start, coarser further out. Measure one run's rows, bytes and duration per sport, project disk use per month against the box's
+     free space, and stay within Kalshi's rate limits (state the pacing).
+  3. Register, install on GREEN, then read back on the box (bridge or ssh): rows written per sport in the first window, no 429s, the
+     staleness alarm wired. GG-1250 / GG-1330: resolve what is done, keep open what is not (parlays, if not covered).
+PART B - The first NBA / NHL calibration scan, as discovery (~35 min)
+  89.2's method unchanged (12_EXPLORATORY/longshot_bias/calib.py: first two-sided snapshot per ticker per tier, settled outcome, net at
+  the quote minus k007, game-clustered, BH at q = 0.10) on 89.7's NBA / NHL candles plus any spread / total / team-total candles you
+  fetch (every strike, not a sample; 90.1's 4-strikes-per-event sample is why its scan was underpowered, GG-1292). Report every
+  survivor: family, tier, price band, book view, side, n, games, net with interval. Label them all IN_SAMPLE: they are candidates for a
+  pre-registered forward test on the new archive rows next wave, not evidence. If no cell is testable, give the n needed per family and
+  the date the new archive reaches it.
+Results: the cron lines + registry entries (read back on the box), 12_EXPLORATORY/ride_scan_nba_nhl/results_W91_3.md + candidates json
+(status IN_SAMPLE), a handoff (vision_pillar BREADTH + PROOF; surface_delta = the lines added), and one operator line: which NBA / NHL
+candidates a forward test should cover, or none.
+
+END OF BLOCK 91.3 (REROUTED). If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
