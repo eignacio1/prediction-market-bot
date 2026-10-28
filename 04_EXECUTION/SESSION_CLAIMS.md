@@ -1082,3 +1082,4 @@
 | 2026-10-28T05:22:02Z | T-1380 | CLOSED — W92.1 DONE: six NBA/NHL archive lines installed and read back with rows; surface budget excludes uninstalled entries. (commit `d00b2b3`) |
 | 2026-10-28T05:22:13Z | T-1380 | CLOSED — merge confirmed, HEAD (0a253aa) is ancestor of origin/main — W92.1 DONE: archive lines installed and read back; budget fix |
 | 2026-10-28T05:22:44Z | T-1370 | CLOSED — W92.3 NBA lineups/on-off built point-in-time from PBP; B7 interpreted on total only, not applied (PR #359). (commit `719deea`) |
+| 2026-10-28T05:35:10Z | T-1390..T-1392 / GG-1390..GG-1392 | MEDIUM — W93.2 NBA engine travel/time-zone/altitude + officials factor classes — FOR DEPTH: D5(b) NBA travel none->interpreted, officials none->aggregated/gap; D4 NBA +1/+2 |
