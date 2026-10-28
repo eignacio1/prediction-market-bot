@@ -822,3 +822,40 @@ R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (202
 Earl, 16:51 PT: "give it like 10 straight to work on". The live session works the first ten tickets of the 16:55 PT order, one after
 another without waiting: R-065 → R-063 → R-064 → R-067 → R-062 → R-066 → R-047 → R-059 → R-060 → R-026. Same IN PROGRESS rule: mark
 each ticket before starting it, push, and the scheduled runs skip it; the DONE entry supersedes the marker.
+
+### 2026-10-27 17:40 PT · Watchdog (Claude): four tickets for the ride-the-market work; they follow the live session's ten
+- The bot's Wave 91 tests whether cells where Kalshi's own price looked wrong hold up on data they were not found in, and measures two
+  more ways to ride the market: a strike priced off its own ladder, and Kalshi following (or leading) Polymarket. Every net figure the
+  bot reports subtracts a fee formula it has never checked against Kalshi's published schedule; R-068 fixes that. **Backlog 36 open.**
+
+### R-068 · Kalshi's fee schedule, verbatim, with effective dates
+**Gap it fills:** every net-of-cost number in the bot uses a taker fee of 0.07 x price x (1 - price) per contract, never checked against
+Kalshi's published schedule.
+**What:** Kalshi's published trading fee schedule for sports contracts: the taker and maker formulas, rounding, any per-series exceptions,
+fee caps, rebates or liquidity programs, and every change with its effective date, all quoted verbatim from Kalshi's own documents.
+**Done when:** a card per document with the quotes and dates; one line: "the fee on a sports contract today is ..., since ...".
+
+### R-069 · When each Kalshi sports series was first listed
+**Gap it fills:** the bot is testing price patterns on dates before August 2026 and needs to know which series existed then.
+**What:** first listing dates (and any gaps or delistings) for Kalshi's NFL, NBA, NHL and MLB series: game, spread, total, team total,
+first-five / first-innings, and player props, from Kalshi's own announcements, help center, or public market data.
+**Done when:** a table series -> first listed date -> source; UNKNOWN stated plainly where no primary source says.
+
+### R-070 · The favourite-longshot bias in prediction markets and betting exchanges: what the literature measured
+**Gap it fills:** the bot's first ride evidence is a favourite-longshot pattern (favourites too cheap at 90-95c, longshots too dear at
+5-15c). Published work says how large and how stable that pattern has been elsewhere.
+**What:** peer-reviewed papers and working papers (free to read) on the favourite-longshot bias in prediction markets, betting
+exchanges and sportsbooks: market, years, n, the measured size by price level, whether it survived fees, and whether it persisted.
+Definitions verbatim. Bibliographic record only: no model, no bet.
+**Done when:** a card per paper (citation, link, market, n, finding quoted); one paragraph naming where findings agree and disagree.
+
+### R-071 · Who leads: price discovery across prediction markets, exchanges and sportsbooks
+**Gap it fills:** the bot is measuring whether Kalshi follows Polymarket; published work on which venue moves first sets the prior.
+**What:** papers (free to read) measuring lead-lag or price discovery between prediction markets, betting exchanges and sportsbooks
+(e.g. sharp vs retail books), with market, years, n, method and finding quoted.
+**Done when:** a card per paper; one paragraph on what is settled and what is not.
+
+**Backlog order (supersedes the 16:55 PT order after the live session's ten):** the live ten (R-065 → R-063 → R-064 → R-067 → R-062 →
+R-066 → R-047 → R-059 → R-060 → R-026), then **R-068** → **R-069** → **R-070** → **R-071** → R-019 → R-043 → R-044 → R-021 → R-022 → R-023 →
+R-037 → R-031 → R-040 → R-048 → R-051 → R-052 → R-054 → R-024 → R-025 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24
+season). (36 open.)

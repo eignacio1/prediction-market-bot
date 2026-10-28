@@ -10,6 +10,44 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 90 NOW section (closed 2026-10-27 17:40 PT). 90.1 🟨 90.2 ✅ 90.3 ✅. Pastes stay in 04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md. Verbatim:
+
+## ⬛ NOW — Wave 90 · RIDE THE MARKET: TREES, ROUTER, MOMENTUM · WRITTEN 2026-10-27 ~05:30 UTC (10-26 22:30 PT) · runs 10-27 · plus 89.7 tonight
+
+**The pastes:** tonight's single block **89.7** is at the bottom of `04_EXECUTION/WAVE_BLOCKS/W89_BLOCKS.md`; Wave 90's three blocks
+are in `04_EXECUTION/WAVE_BLOCKS/W90_BLOCKS.md` (run them after 89.7 has pushed its results).
+
+| # | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|
+| 89.7 | Ride the market, the data first (10-26 night) | PROOF + DEPTH | 🟨 PARTIAL → folded into 90.1 | Start times solved (Kalshi time = start + 3.0 h); NBA/NHL game candles in; PR #349 open, CI failed (exploratory fence); Part B not started |
+| 90.1 | Finish 89.7 (PR #349, the remaining candles, the hold-out scan), then the ride tree as code | PROOF + DEPTH: candidates tested out of sample 0 → n; D5(a) a second tree type | 🟨 PARTIAL | #349, #352 merged; 0 candidates, scan underpowered (GG-1292); Part B ride.py next undone |
+| 90.2 | The router: the filtering layer that sends each situation to ride, fade or no-bet; doctrine, code, replay | DEPTH D5(a) filtering_mechanisms + decision_trees | ✅ DONE: PR #350 ce78de4; D5(a) MLB 0/8 -> 2/8; 164,354 replayed, 97.66% NO_BET / 2.34% RIDE / FADE 0; doctrine ACCEPTED by operator 2026-10-27 | handoff SESSION_HANDOFF_*_W90_2.md |
+| 90.3 | Momentum, measured: when a line moves, follow it or fade it (Strategy J) | DEPTH + PROOF: momentum_looping with a measured basis | ✅ | DONE PR #351 f1d24f4: no momentum at 1-3h (gross follow ≈0 every sport); net −4c to −17c; 0 contexts routable to FOLLOW/FADE; momentum_looping = interpreted |
+
+**What Wave 89 delivered (verified 2026-10-27 05:13Z: #340 #343-#346 #348 CI green, #347 green unmerged; box bridge `20261027T051307Z_*`):**
+**89.1 🟨** the kill switch now ENFORCES on every order path (drill read back; GG-1082 / GG-441 resolved); the MLB arm's red is not yet
+cleared. **89.2 ✅** Kalshi's own price, tested: 11 of 1,258 cells are wrong net of fee - favourites too cheap at the totals ends
+(MLB first-five totals at 90-95c settle ~99%), MLB player hits at 20-25c within 2 h settle 27%; in-sample, MLB plus one NFL; fading big
+pre-game moves loses everywhere. NBA, NHL and parlays aren't archived (GG-1250). **89.3 🟨** NFL venue + weather from the line: no strike
+clears. **89.4 ✅** one NFL game simulation prices the whole board, but is worse than the close at the centre. **89.5 ✅** NBA PAM roles vs
+the points line: null (detectable mid-Nov / mid-Dec). **89.6 🟨** gaps 213 → 205.
+**The operator's direction (22:08 / 22:12 PT):** "Sometimes it's best just to roll with the market sentiment - we don't always have to
+be it - that's the meaning of having filtering mechs appropriately identifying the correct decision trees and routing mechanisms for
+execution." / "we need substantively more architecture around the \"ride the market\" trees than we have before we come to any end all
+be all conclusions." Every arm today runs one tree (bet where the model disagrees); Wave 90 builds the second tree, the router and the
+momentum evidence.
+**Distance:** kill switch enforcing (PLUMBING); everything else 0. **Box: RED** (MLB game-market shadow; 90.1 Part 0).
+
+**Pushback:** the ride evidence is thin and mostly MLB, whose season ends this week; 89.7's hold-out may shrink the 11 cells to a few
+or none. That is why 90.1 pre-registers only what holds out of sample, and 90.2 routes nothing to a tree without measured skill. A
+router that sends most situations to NO-BET is the honest first result.
+**Surface:** RED at 05:13Z (one silent arm). 89.7's archiver change and 90.1's shadow arm go live only on GREEN. Expected delta 0 to +2.
+**Dependencies:** 89.7 runs tonight, before Wave 90; within Wave 90, none (90.2 stubs 90.1's interface until ride.py is on main).
+
+---
+
+---
+
 ## Wave 89 NOW section (closed 2026-10-26 22:30 PT). 89.1 🟨 89.2 ✅ 89.3 🟨 89.4 ✅ 89.5 ✅ 89.6 🟨. Pastes stay in 04_EXECUTION/WAVE_BLOCKS/W89_BLOCKS.md. Verbatim:
 
 ## ⬛ NOW — Wave 89 · WHERE THE LINE IS WEAK · WRITTEN 2026-10-27 ~03:00 UTC (10-26 20:00 PT) · three MEDIUM terminal blocks · Muse block written 10-27 · from Wave 88's verified results
