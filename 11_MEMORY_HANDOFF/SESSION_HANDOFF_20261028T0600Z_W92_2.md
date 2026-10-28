@@ -1,7 +1,9 @@
-# SESSION_HANDOFF W92.2 — PARTIAL (Part A code merged; recompute table is an estimate; Part B not started)
+# SESSION_HANDOFF W92.2 — PARTIAL (Part A + Part B done; exact per-trade recompute of 89.2/90.3/91.2 not done)
 vision_pillar: PROOF
 gap_measure: fee definitions matching Kalshi's published schedule 0 -> 1 (code merged, PR #357 ac91bf6); every reported net re-checked: estimate for 89.2 only, exact recompute pending
-gap_delta: ride cells HELD_OUT 0 -> 0 (Part B not run); forward hypotheses 11 -> 11 (EXP-043 not frozen)
+gap_delta: ride cells HELD_OUT 0 -> 2 (PR #360, f490553); forward hypotheses 11 -> 11 + ladder ride (EXP-043 frozen at 4fcec70)
 pattern_sweep: grepped all fee_k007 callers; none changed (existing fn untouched by permission); MLB-prelive overstatement applies to every k007 consumer in 12_EXPLORATORY and pregame_shadow, listed in the claim thread; no defect fixed in them
 surface_delta: 0 (new data file + functions, nothing running)
-Next: Part B (ride_cells.toml PR, EXP-043 with hash, power from 91.2 variance) and the per-trade recompute. Settle re-fetch may be in 12_EXPLORATORY/fees_exact/out/settle_cache.json (untracked).
+Part B: ride_cells.toml +2 KXMLBTOTAL T0-2h tight LADDER cells (net2-5c, net5c+) HELD_OUT, second-half net, PR #360. EXP-043 frozen (05_RESEARCH_EXPERIMENTS/EXP043_...2026-10-28.md, commit 4fcec70): H-A the two cells forward (judged n 71/284 and 16/61 games full/half effect, alpha .05 one-sided, power .80); H-B pooled ladder trigger (judged n 1,884 full / 7,535 half at delta .013). **No look can fall before 2027** (MLB idle ~11-01 to ~03-25; pooled n unreachable on NFL+NBA/NHL by winter); descriptive-only checkpoint 2027-01-31.
+Hazard registered, not fixed (ride.py out of permitted files): side='by_trigger' on LADDER cells; ride.decide() keys on price bucket and maps any non-yes side to RIDE-NO, so no consumer until ride.py handles trigger side. Nothing wires LADDER cells today.
+Not done: exact per-trade recompute of 89.2 / 90.3 / 91.2 (results_W92_2.md holds the bucket-midpoint estimate); settle re-fetch cache untracked. Operator line: keep EXP-041/042 frozen on k007 (conservative for MLB prelive).
