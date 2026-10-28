@@ -1073,3 +1073,4 @@
 | 2026-10-28T01:01:04Z | T-1350 | CLOSED — W91.3 partial: #347 and #354 merged (6 NBA/NHL archive cron lines); box crontab install pending operator OK; scan not started (commit `cdd7bc6`) |
 | 2026-10-28T01:23:45Z | T-1340 | CLOSED — merge confirmed, HEAD (9088fe1) is ancestor of origin/main — W91.1 ride cells: EXP-042 frozen, backward VOID (0/11 OOS), ADR-0076 accepted in repo; content landed on main via PR #355 + cherry-picked docs |
 | 2026-10-28T01:39:20Z | T-1345 | CLOSED — W91.2 ride tree is code (#353) + ladder ride measured (#356): 2 of 36 cells HELD_OUT, net +0.007 overall (commit `e8d2187`) |
+| 2026-10-28T04:44:02Z | T-1360..T-1362 / GG-1360..GG-1362 | MEDIUM — W92.2 exact Kalshi fees (new money.py fee fn + table) + ladder ride EXP-043 forward — FOR PROOF: fee defs matching published schedule 0->1; ride cells HELD_OUT 0->2; forward ride hypotheses 11->11+ladder |
