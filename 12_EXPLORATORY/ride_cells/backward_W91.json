@@ -1,0 +1,129 @@
+{
+ "exp": "EXP-042",
+ "prereg_sha256": "4efbc15f26e3fac39c43e48eea9cab19c28fabf60426c863ceccf5976f9cab35",
+ "backward_test": "VOID",
+ "void_reason": "overlap check (a): 83.8% same-5c-bucket < 85% required (1902 matched observations); (b) passes (mean diff -0.0002); (c) not evaluable (no cell >=30 overlap games)",
+ "cells": [
+  {
+   "id": 1,
+   "family": "KXMLBHIT",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-05-18"
+  },
+  {
+   "id": 2,
+   "family": "KXMLBHIT",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-04-29"
+  },
+  {
+   "id": 3,
+   "family": "KXMLBF5TOTAL",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-04-11"
+  },
+  {
+   "id": 4,
+   "family": "KXMLBF5TOTAL",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-05-06"
+  },
+  {
+   "id": 5,
+   "family": "KXMLBF5TOTAL",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-04-28"
+  },
+  {
+   "id": 6,
+   "family": "KXNFLTOTAL",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2026-12-21"
+  },
+  {
+   "id": 7,
+   "family": "KXMLBSPREAD",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-06-17"
+  },
+  {
+   "id": 8,
+   "family": "KXMLBTEAMTOTAL",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-06-11"
+  },
+  {
+   "id": 9,
+   "family": "KXMLBF5",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-06-07"
+  },
+  {
+   "id": 10,
+   "family": "KXMLBTOTAL",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-04-15"
+  },
+  {
+   "id": 11,
+   "family": "KXMLBF7",
+   "status": "UNTESTED",
+   "ride_table_status": "IN_SAMPLE",
+   "net": null,
+   "interval": null,
+   "n": 0,
+   "games": 0,
+   "earliest_full_effect_forward_look": "2027-06-25"
+  }
+ ]
+}
