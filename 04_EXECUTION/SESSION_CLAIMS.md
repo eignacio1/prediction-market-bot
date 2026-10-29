@@ -1101,3 +1101,4 @@
 | 2026-10-29T04:34:38Z | T-1450 | CLOSED — W94.1 NBA engine live arm: EXP-044 and v2 challenger EXP-044b frozen, 56 games ingested; install waits on GREEN budget_read. (commit `1088218`) |
 | 2026-10-29T04:35:07Z | T-1450 | CLOSED — merge confirmed, HEAD (1e339cc) is ancestor of origin/main — W94.1 NBA engine live arm: EXP-044/044b frozen, 56 games ingested; install waits on GREEN |
 | 2026-10-29T05:21:23Z | T-1430 | CLOSED — W94.Q: exact-fee recompute of every reported net, ride.py LADDER side fixed, Bayesian skill weights applied; PROOF_CALENDAR.md generated (64 rows) from the box read (commit `3582308`) |
+| 2026-10-29T05:21:43Z | T-1430 | CLOSED — merge confirmed, HEAD (914cf9e) is ancestor of origin/main — W94.Q done: A, B, C merged; calendar generated |
