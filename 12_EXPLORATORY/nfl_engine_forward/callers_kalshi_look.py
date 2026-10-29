@@ -31,7 +31,7 @@ def implied(g):
     if len(g) < 3 or g.p.max() < 0.5 or g.p.min() > 0.5:
         return np.nan
     return float(np.interp(0.5, g.p.values[::-1], g.strike.values[::-1]))
-imp = df.groupby(["event", "team", "date"]).apply(implied).rename("k_tt").reset_index().dropna()
+imp = df.groupby(["event", "team", "date"]).apply(implied).reset_index(name="k_tt").dropna()
 s = pd.read_parquet(SCHED)
 s = s[(s.season == 2026) & (s.game_type == "REG")].copy()
 s["gameday"] = s.gameday.astype(str)

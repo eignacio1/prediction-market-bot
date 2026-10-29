@@ -73,8 +73,8 @@ def main():
         d = df[(df.season_type == "REG") & df.posteam.notna() & df.epa.notna()]
         ev.append(d.assign(off=d.posteam.map(pc.canon), de=d.defteam.map(pc.canon)))
     ev = pd.concat(ev)
-    eo = ev.groupby(["game_id", "off"]).epa.mean().rename("epa_off")
-    ed = ev.groupby(["game_id", "de"]).epa.mean().rename("epa_def")
+    eo = ev.groupby(["game_id", "off"]).epa.mean().to_frame("epa_off")
+    ed = ev.groupby(["game_id", "de"]).epa.mean().to_frame("epa_def")
     long = []
     for r in s.itertuples():
         for side, t, o, pf, pa, rest in (("h", r.home_team, r.away_team, r.home_score, r.away_score, r.home_rest),
@@ -137,7 +137,7 @@ def main():
         t = D.copy(); t["y"] = (t.hs - (t.line + t.spread) / 2) if side == "h" else (t.as_ - (t.line - t.spread) / 2)
         ren = {f"{side}_{c}": f"o_{c}" for c in ["pf", "pa", "eo", "ed", "rest"] + est_cols}
         ren.update({f"{o}_{c}": f"x_{c}" for c in ["pf", "pa", "eo", "ed", "rest"] + est_cols})
-        t = t.rename(columns=ren); t["tl"] = (t.line + t.spread) / 2 if side == "h" else (t.line - t.spread) / 2; T.append(t)
+        t = t.set_axis([ren.get(c, c) for c in t.columns], axis=1); t["tl"] = (t.line + t.spread) / 2 if side == "h" else (t.line - t.spread) / 2; T.append(t)
     D2 = pd.concat(T, ignore_index=True)
     bt = ["tl", "o_pf", "o_pa", "x_pf", "x_pa", "o_eo", "o_ed", "x_eo", "x_ed", "o_rest", "x_rest"]
     ct = ["o_" + c for c in est_cols] + ["x_" + c for c in est_cols]
@@ -148,7 +148,7 @@ def main():
     D = D2
     out["team_totals_one_feature"] = {f: run(lambda d: d.y.to_numpy(float), bt, ["o_est_" + f, "x_est_" + f], f)["callers_add_mse_gain"] for f in pc.FEATURES}
     json.dump(out, open(safe_out(a.out), "w"), indent=1, default=float)
-    rp.to_parquet(safe_out(a.out.replace(".json", "_asof.parquet")))
+    rp.to_parquet(safe_out(a.out[: -len(".json")] + "_asof.parquet"))
     print(json.dumps(out, indent=1, default=float))
 
 
