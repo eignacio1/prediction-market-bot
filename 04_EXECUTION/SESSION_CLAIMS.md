@@ -1094,3 +1094,4 @@
 | 2026-10-29T00:01:09Z | T-1400 | CLOSED — merge confirmed, HEAD (919cc91) is ancestor of origin/main — W93.4 NFL board v2 + N15 interpreted; PR #365 merged f88d455 |
 | 2026-10-29T00:10:55Z | T-1440..T-1442, GG-1440..GG-1442 | MEDIUM — W94.3 flex lane red-first: t4-mlb silent during World Series game — PLUMBING; SURFACE BUDGET RED->GREEN, silent arms 1->0, cause found + swept |
 | 2026-10-29T00:11:17Z | T-1430..T-1432 / GG-1430..GG-1432 | STANDARD — exact-fee recompute (89.2/90.3/91.2) + ride.py LADDER side fix + generated PROOF_CALENDAR — FOR P3/PROOF (quant) — W94.Q |
+| 2026-10-29T00:11:53Z | T-1450..T-1452, GG-1450..GG-1452, EXP-044/044b | STANDARD — W94.1 (+Part C addendum): NBA engine live forward test EXP-044 + v2 challenger EXP-044b — FOR D4 (NBA data layer -> engine pricing live boards), D3 3->4, D5(b) 4->7 factor classes |
