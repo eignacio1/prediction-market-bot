@@ -142,8 +142,11 @@ def emit(repo: Path, now: datetime | None = None) -> dict:
         rows = [r for r in ce.first_row_per_unit(ce.load_settled(c)) if ce.eligible(pol, r)]
         cut = (now - timedelta(days=WINDOW_DAYS + 7)).date().isoformat()  # bridge output is capped at 30KB: ship per-day counts, recent only
         counts: dict[str, int] = {}
-        for d in (str(r.get("start_time_utc") or r["ts_utc"])[:10] for r in rows):
-            if d >= cut:
+        seen_games: set = set()  # judged_n counts GAMES; a game has several market tickers, so count each game_key once
+        for r in rows:
+            d, g = str(r.get("start_time_utc") or r["ts_utc"])[:10], r.get("game_key")
+            if d >= cut and g not in seen_games:
+                seen_games.add(g)
                 counts[d] = counts.get(d, 0) + 1
         dates[c["cell"]] = counts
     cells = [{k: c.get(k) for k in ("cell", "sport", "band", "market_type", "rows", "judged_n", "settled_games",
