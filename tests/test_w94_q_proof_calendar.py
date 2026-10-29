@@ -49,3 +49,13 @@ def test_render_known_blob():
     from pathlib import Path
     out = pc.render(blob, Path(pc.REPO))
     assert "| x |" in out and "PROOF CALENDAR" in out
+
+
+def test_render_counts_form_matches_list_form():
+    from pathlib import Path
+    base = {"cell": "x", "sport": "NBA", "band": "T1", "market_type": "ML", "rows": 10, "judged_n": 20,
+            "settled_games": 20, "first_look_n": 40, "status_text": "", "projection": {"date": "2027-01-01"}}
+    mk = lambda sd: {"generated": "2026-11-01T00:00:00Z", "archive_games_per_day": {}, "cells": [base | {"settle_dates": sd}]}
+    a = pc.render(mk(["2026-10-30"] * 9 + ["2026-10-29"] * 5), Path(pc.REPO))
+    b = pc.render(mk({"2026-10-30": 9, "2026-10-29": 5}), Path(pc.REPO))
+    assert a == b
