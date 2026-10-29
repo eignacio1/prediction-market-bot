@@ -18,7 +18,7 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | N8 | F6 | Personnel and formation | participation offense_personnel, defense_personnel (GAP-1); ftn | off_pass / off_rush | applied | `12_EXPLORATORY/nfl_engine/results_stage2.md` |
 | N9 | F7 | Special teams | nflverse pbp: kick/punt/FG fields | st | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N10 | F8 | Injuries / availability | nflverse injuries: report_status; depth_charts; snap_counts (weekly rule, GG-732) | qb availability; rating adjustments | applied | `12_EXPLORATORY/nfl_engine/results_stage3.md` |
-| N11 | F9 | Play callers / coaching | GAP-2: head coach only; no coordinator table | coach | none | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md` |
+| N11 | F9 | Play callers / coaching | Muse R-019 OC cards (93.2% of 2016-2025 team-games; coordinator of record, not a confirmed play caller) with head-coach fallback (6.8%); nflverse pbp | coach | interpreted | `12_EXPLORATORY/nfl_engine_forward/results_W94_2.md` |
 | N12 | F10 | Penalties / officials crew | nflverse pbp penalty fields; officials | ctx.officials | aggregated | `02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md` |
 | N13 | F12 | Home field / venue (roof, surface, division) | nflverse games: location, roof, surface, div_game | ctx.home, ctx.roof | applied | `12_EXPLORATORY/20261011_nfl_totals_venue_weather` |
 | N14 | G1 | Weather (temp, wind) | nflverse games: temp, wind (at-game values; GAP-5 no forecast archive) | ctx.wind / ctx.temp | applied | `12_EXPLORATORY/W68_3_nfl_totals_weather_results.md` |
