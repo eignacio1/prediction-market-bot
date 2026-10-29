@@ -13,6 +13,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 from prediction_market_bot.nfl_engine import temporal_evolution as te  # noqa: E402
 
@@ -27,8 +30,8 @@ def team_games(pbp_dir: Path, seasons: range) -> dict[str, pd.DataFrame]:
     key = ["season", "week", "game_id"]
 
     def tab(g, team_col, col, fn) -> pd.DataFrame:
-        r = g.groupby(key + [team_col]).apply(fn, include_groups=False).rename("v").reset_index()
-        return r.rename(columns={team_col: "team"})
+        r = g.groupby(key + [team_col]).apply(fn, include_groups=False).reset_index(name="v")
+        return r.assign(team=r[team_col]).drop(columns=[team_col])
 
     return {
         "off_epa_per_play": tab(p, "posteam", "epa", lambda x: x.epa.mean()),
@@ -52,7 +55,7 @@ def main() -> None:
                      "slope_per_season": sl["per_season"], "reliability": rg,
                      "blend": te.blend_weight_by_week(d)}
         print(name, json.dumps({"slope": res[name]["slope"], "rel": rg}, default=float))
-    Path(a.out).write_text(json.dumps(res, indent=1, default=float))
+    safe_out(a.out).write_text(json.dumps(res, indent=1, default=float))
 
 
 if __name__ == "__main__":
