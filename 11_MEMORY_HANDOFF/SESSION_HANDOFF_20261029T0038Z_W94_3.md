@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1440
+tier: STANDARD
+timestamp: 2026-10-29T00:50:00Z
+commit: 941ac8f
+one_line_summary: W94.3: T4 MLB silent alarm was a false positive (first-row lag); fill cost measured, taker-at-quote safe for EXP-042..045
+gg_touched: GG-1440, GG-1441
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING, EXECUTION
+gap_measure: surface budget RED->GREEN; silent arms 1->0; E3 markout
+gap_delta: silent arms 1->0 (silent_arms read 00:17Z, no code change); E3 markout measured, NHL resting -11c at 5-30m, taker drift within 0.3c (results_W94_3C.md @ 941ac8f)
+pattern_sweep: t4_mlb is the only live-only arm in silent_arms SPECS; no other arm exposed to first-row lag
+surface_delta: 0
+-->
+
 # SESSION_HANDOFF W94.3 (flex lane: red first + fill cost)
 
 ```
@@ -17,3 +33,14 @@ Not a dead process: t4-mlb up since 2026-10-27 04:58Z, NRestarts=0. The silent-a
 
 ## Observed, not fixed
 Live C5-PAPER `kalshi_order_failed` HTTP 400 `insufficient_balance` on the demo account; `market_type_defaulted` warnings. Relevant to execution evidence; unregistered here.
+
+## Strategic Decisions This Session
+| Decision | Rationale | Reference | Owner |
+|---|---|---|---|
+| None. start_grace_h=0.5 for t4_mlb recommended to window, not applied | Block barred changing the gauge | GG-1440 | window |
+
+## One thing pending
+Window decides GG-1440 (grace) and checks GG-1441 lags (doubleheader vs outage) before the 10-31 and 11-01 World Series starts.
+
+## Resume
+`git fetch origin main` then read `12_EXPLORATORY/fill_markout/results_W94_3C.md`.
