@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 94** · the four blocks are in the **⬛ NOW — Wave 94** section below: **94.1** (engine lane: NBA engine prices tonight's board, frozen forward test), **94.2** (proof lane: NFL engine forward test vs Kalshi's ladders; temporal evolution), **94.3** (flex lane, red first: the silent T4 MLB arm), **94.Q** (quant in tandem, carried from 93.Q). Each block is one fenced paste.
+> **▶ PASTE NOW — Wave 94** · the four blocks are in the **⬛ NOW — Wave 94** section below: **94.1** (engine lane: NBA engine prices tonight's board, frozen forward test), **94.2** (proof lane: NFL engine forward test vs Kalshi's ladders; temporal evolution), **94.3** (flex lane, red first: the silent T4 MLB arm), **94.Q** (quant in tandem, carried from 93.Q). Each block is one fenced paste. **Addenda (17:09 PT):** one Part C per terminal, in the "Wave 94 addenda" subsection of the NOW section.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -460,6 +460,94 @@ PART B - The proof calendar (~35 min)
 Results: the code + tests, 12_EXPLORATORY/quant_w94/results_W94_Q.md (the fee table), PROOF_CALENDAR.md, a handoff.
 
 END OF BLOCK 94.Q. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+
+### ➕ Wave 94 addenda (operator 2026-10-28 17:09 PT: "You can stretch the terminals a little bit - they can add more work for all 4") — paste each into its running terminal, on top of its current block
+
+#### 94.1 addendum — Part C: NBA engine v2 (new factors in, calibration fixed) · terminal 1
+
+```
+ADDENDUM TO 94.1 - PART C: NBA ENGINE v2, THE NEW FACTORS PLUGGED IN AND THE CALIBRATION FIXED (operator 2026-10-28 17:09 PT: "You can
+stretch the terminals a little bit - they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is
+now ~130 minutes. Same common rules; rank 2 (engine) with rank 3 (granularity index).
+PURPOSE: DEPTH. Measures: NBA engine v1 -> v2 held-out Brier per family, paired, with intervals; D5(b) NBA factor classes feeding the
+engine 4 (B1, B2, B3/B9, B7) -> 7 (+ availability, travel / altitude, officials where they help).
+93.3's v1 under-states its moneyline (calibration slope 1.83) and over-states the score correlation (~0.06-0.09); 93.1's expected
+missing minutes, 93.2's altitude-to-total and 92.3's lineups-to-total were measured but never fed into the engine.
+1. v2 in src/prediction_market_bot/nba_engine/ as a NEW version beside v1 (v1 stays exactly as pinned in EXP-044): the three factor
+   classes as inputs, each kept only if it improves held-out Brier for some family; the score correlation estimated, not assumed; a
+   calibration step fitted on training seasons only.
+2. Held-out 2021-26: v2 vs v1 vs the Gaussian twin, paired per family (moneyline, spread, total, team total), game-clustered
+   intervals; reliability curves. Which factor carried what, in the granularity index's five parts.
+3. v2 becomes a CHALLENGER: EXP-044b, frozen before its first row, same scoring as EXP-044 (v1 stays pinned there), logged beside v1
+   by the same runner. No live install unless the budget reads GREEN.
+Results: v2 + tests, the comparison in 12_EXPLORATORY/nba_engine_live/results_W94_1.md, the challenger's pre-registration, the handoff.
+```
+
+#### 94.2 addendum — Part C: NFL play callers, point-in-time (N11) · terminal 2
+
+```
+ADDENDUM TO 94.2 - PART C: NFL PLAY CALLERS, BUILT POINT-IN-TIME (N11) (operator 2026-10-28 17:09 PT: "You can stretch the terminals a
+little bit - they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is now ~130 minutes. Same
+common rules; rank 2 (engine) with rank 3 (granularity index).
+PURPOSE: DEPTH. Measures: D5(b) NFL N11 play callers / coaching none -> interpreted (applied only if it moves a priced strike).
+The NFL seat's N11 "Play callers / coaching" is at stage none. The play caller decides the run / pass mix, fourth-down choices, pace
+and how a lead is protected: things a team total or an alternate total can price wrongly. Muse's R-019 (NFL play callers and
+coordinators 2016-2026) may have landed - read its STATUS entry and cards in the archive; do not wait for it.
+1. Who called plays for each team-game, 2016 -> now (R-019's cards where they exist; otherwise the head coach / offensive coordinator
+   of record with the source named), and each caller's tendencies point-in-time from the play-level store: pass rate over expected by
+   down, distance and score, fourth-down go rate over expected, pace (seconds per play, situation-neutral), lead protection. Shrunk to
+   the league mean; only games before the one predicted; a caller change resets toward the prior (state the rule).
+2. Known-answer test: a simulated caller with a known tendency is recovered. Interpreted: on held-out seasons, beyond the line and
+   N1-N3, do the tendencies move totals or team totals (paired, intervals)? Then, descriptive, on Kalshi's NFL team totals and
+   alternate totals in the archive.
+3. N11 in nfl.toml with stage and the five granularity-index parts (re-render with python3.11 scripts/render_seat.py).
+Results: the module + tests (a new c1_signal_ingestion/nfl_play_callers.py), results in 12_EXPLORATORY/nfl_engine_forward/, the N11 row,
+the handoff.
+```
+
+#### 94.3 addendum — Part C: what a fill costs (EXECUTION) · terminal 3
+
+```
+ADDENDUM TO 94.3 - PART C: WHAT A FILL COSTS (EXECUTION, UNOWNED SINCE 86.3) (operator 2026-10-28 17:09 PT: "You can stretch the
+terminals a little bit - they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is now ~130
+minutes. Same common rules; the EXECUTION pillar.
+PURPOSE: EXECUTION. Measures: E3 (fills win 25-29% vs 48-52% for orders that never filled) explained per book: markout after fill
+0 -> measured; the share of the gap that taking at the quote (as EXP-042 / 043 / 044 / 045 assume) would avoid 0 -> measured.
+Every forward test now freezes entry "as a taker at the quote". The bot's real demo orders mostly rest and fill when they are wrong
+(86.3: adverse selection dominates E3). Whether a taker entry escapes that, or the quote itself moves away the moment we would take
+it, is unmeasured.
+1. From the demo fill logs (T4 MLB, T1 MLB, and the NFL / NBA / NHL shadow books' fills in the forward-test report): for each fill, the
+   mid-price 1, 5, 15 and 60 minutes later (archive snapshots or candles), signed toward the order: the markout. Filled vs never
+   filled, maker vs taker where both exist, by book, sport, quote age and time to start; game-clustered intervals.
+2. For a taker entry at the quote: how often the quote was still there at the next snapshot, the markout of an immediate take, and the
+   depth at the quote (the archive's depth samples). Known-answer test: a simulated book with informed flow shows negative maker
+   markout and a taker markout near zero.
+3. One paragraph for the window: is "taker at the quote" a safe assumption for the frozen forward tests, and if not, by how much it
+   overstates them.
+Results: 12_EXPLORATORY/fill_markout/results_W94_3C.md + code + tests, the handoff (vision_pillar EXECUTION for Part C).
+```
+
+#### 94.Q addendum — Part C: Bayesian skill weights for the gate · terminal 4
+
+```
+ADDENDUM TO 94.Q - PART C: BAYESIAN SKILL WEIGHTS FOR THE GATE (operator 2026-10-28 17:09 PT: "You can stretch the terminals a little bit
+- they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is now ~130 minutes. Same common rules;
+rank 4 (quant) serving rank 1 (market-anchored pricing).
+PURPOSE: PROOF (quant). Measures: skill weight per frozen model, point estimate -> posterior with an interval, 0 -> 6 models; the gate's
+replay (85.2's position_gate.py, still unwired) under posterior weights, descriptive.
+The accepted gate (10-21) gives each arm a skill weight from its held-out Brier against the market; today every weight is 0 (88.3: no
+model beats the market) and the weight is a point estimate with no notion of how sure we are, so it cannot say when an arm has earned
+a non-zero weight.
+1. NEW function in quant/: the posterior on each model's paired Brier advantage over the market (prior centred on 0, its width stated
+   and justified), updated by held-out rows and then by forward rows as they arrive, game-clustered; the weight as P(advantage > 0)
+   shrunk, or the posterior mean of the advantage - state which and why. Known-answer tests: a simulated model with a known small
+   advantage earns weight as n grows; a null model's weight stays near 0 and does not drift up with n.
+2. Applied to the six frozen models' held-out scores (88.3) and the NBA / NFL engines' held-out rows: posterior, interval, the n at
+   which each would earn a weight above a stated threshold if its point estimate held.
+3. The gate replay under posterior weights: positions kept, DESCRIPTIVE only (position_gate.py stays unwired).
+Results: the function + tests, results in 12_EXPLORATORY/quant_w94/results_W94_Q.md, the handoff.
 ```
 
 ---
