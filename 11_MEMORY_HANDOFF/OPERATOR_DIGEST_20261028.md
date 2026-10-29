@@ -27,3 +27,10 @@ Moved: DEPTH (the NBA model's factor list grew by two).
 - Applied (against a price) is blocked: no 2026-27 event data yet and pre-tip prices only began accruing 2026-10-28. Registered as GG-1420 for the flex lane.
 - PR #364 merged after two CI fixes. Deploy is by VPS cron now, not a GitHub job; no t4-mlb file was touched, so no t4-mlb restart is needed.
 - Nothing needed from you.
+
+## W93.4 — NFL engine (plain English)
+- The football model now prices every bet on a game (who wins, the spread, the total, each team's points) from one picture of how the game could end, and it gets the "landing on exactly 3 points" bump right. Before, it nearly missed it; now it matches 14 seasons of real results.
+- Checked against Kalshi's real prices on 86 games this season: it matches them, but does not beat them. No edge shown, so nothing changes in what we trade.
+- Travel, time zones and short weeks: tested, and they add nothing beyond what the betting line already knows.
+- Still zero real money at risk. Nothing was switched on; this is research code only.
+- Moved: DEPTH (football engine).
