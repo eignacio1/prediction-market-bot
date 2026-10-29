@@ -9,8 +9,17 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Iterable, Mapping, Optional
 
-from prediction_market_bot.c5_execution.position_gate import skill_weight
 from prediction_market_bot.quant.inference import cluster_bootstrap
+
+
+
+def skill_weight(brier_engine: float, brier_market: float) -> float:
+    """w = clip(1 - Brier_engine / Brier_market, 0, 1): the accepted gate's formula (10-21). Restated here, not
+    imported: the gate module is kept unwired from src/ by a test; equality is tested."""
+    if brier_market <= 0:
+        return 0.0
+    return min(1.0, max(0.0, 1.0 - brier_engine / brier_market))
+
 
 FAMILIES = ("NBA_MONEYLINE", "NBA_SPREAD", "NBA_GAME_TOTAL", "NBA_TEAM_TOTAL")
 

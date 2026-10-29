@@ -29,3 +29,9 @@ def test_score_pairs_and_skips():
     assert abs(m["mean_diff"] - (0.01 - 0.25)) < 1e-12
     assert abs(m["w"] - (1 - 0.01 / 0.25)) < 1e-12
     assert s["NBA_SPREAD"]["n_rows"] == 0
+
+
+def test_skill_weight_matches_gate():
+    from prediction_market_bot.c5_execution.position_gate import skill_weight as g
+    for be, bm in [(0.2, 0.25), (0.3, 0.25), (0.25, 0.25), (0.1, 0.0)]:
+        assert S.skill_weight(be, bm) == g(be, bm)
