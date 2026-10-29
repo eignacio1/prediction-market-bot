@@ -287,7 +287,7 @@ granularity index · 4 quant · 5 the betting architecture · 6 PAM · 7 Muse ·
 | # | Lane | Rank served | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|---|---|
 | 94.1 | engine | 2 (judged by 1) | The NBA engine prices tonight's board: this season's games into the store, then a frozen forward test (EXP-044) logged every game day | DEPTH + PROOF: D4 NBA scaffold → pricing live boards; 2026-27 games in the store 0 → all; D3 3 → 4 | ⬜ | |
-| 94.2 | proof | 1-2 (Part B: 5) | The NFL engine on a forward clock against Kalshi's ladders (EXP-045, scored from the archive, no runner); then temporal evolution for NFL | PROOF: NFL engine look 0 → 1 dated; D5(a) NFL 7/8 → 8/8 | ⬜ | |
+| 94.2 | proof | 1-2 (Part B: 5) | The NFL engine on a forward clock against Kalshi's ladders (EXP-045, scored from the archive, no runner); then temporal evolution for NFL | PROOF: NFL engine look 0 → 1 dated; D5(a) NFL 7/8 → 8/8 | 🟨 A merged (#367, EXP-045 frozen d0df8a49… before 2026-10-29T03:00Z; look 1 2027-01-12 UNDERPOWERED, MDE≈0.032); B in PR #369 (temporal_evolution; neutral pass rate drifts in-season, gap +0.157 [0.071,0.242]); C next | |
 | 94.3 | flex | Hard Rule 14 | Red first: T4 MLB live silent during a World Series game - cause, fix, sweep, read back | PLUMBING: budget RED → GREEN | ⬜ | |
 | 94.Q | quant (tandem) | 4 | Carried from 93.Q (it did not run): exact fees per trade for every reported net, ride.py's LADDER side, a generated proof calendar | PROOF: nets re-checked 0 → all; look dates known 1 → all | ⬜ | |
 
