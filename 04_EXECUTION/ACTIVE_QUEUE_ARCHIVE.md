@@ -10,6 +10,286 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 94 NOW section with its pastes and addenda (closed 2026-10-28 22:40 PT). 94.1 ✅ 94.2 ✅ 94.3 ✅ 94.Q ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md. Verbatim:
+
+## ⬛ NOW — Wave 94 · THE ENGINES GO LIVE · RED FIRST · QUANT IN TANDEM · WRITTEN 2026-10-29 ~00:15 UTC (10-28 17:15 PT) · four MEDIUM blocks · no Muse paste
+
+Common rules for every block: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md` (each block's first line points the terminal there). All
+four run in parallel.
+
+**Lanes and ranks** (the lane rule, operator 10-27 22:24-22:38 PT; ranking: 1 market-anchored pricing · 2 one engine per sport · 3 the
+granularity index · 4 quant · 5 the betting architecture · 6 PAM · 7 Muse · 8 expansion):
+
+| # | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|
+| 94.1 | engine | 2 (judged by 1) | The NBA engine prices tonight's board: this season's games into the store, then a frozen forward test (EXP-044) logged every game day | DEPTH + PROOF: D4 NBA scaffold → pricing live boards; 2026-27 games in the store 0 → all; D3 3 → 4 | ✅ A+B+C merged (#368, #374); EXP-044/044b frozen; install waits for GREEN (GG-1450) | handoff 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261029T0145Z_W94_1.md |
+| 94.2 | proof | 1-2 (Part B: 5) | The NFL engine on a forward clock against Kalshi's ladders (EXP-045, scored from the archive, no runner); then temporal evolution for NFL | PROOF: NFL engine look 0 → 1 dated; D5(a) NFL 7/8 → 8/8 | ✅ A merged (#367, EXP-045 frozen d0df8a49… before 2026-10-29T03:00Z; look 1 2027-01-12 UNDERPOWERED, MDE≈0.032); B merged (#369, temporal_evolution 8/8; neutral pass rate drifts in-season, gap +0.157 [0.071,0.242]); C merged (#371, N11 play callers interpreted; real traits, rigorous null on totals/team totals); GG-1460..1462. Box read-back pending its ~20 min deploy gate | |
+| 94.3 | flex | Hard Rule 14 | Red first: T4 MLB live silent during a World Series game - cause, fix, sweep, read back | PLUMBING: budget RED → GREEN | ✅ A/B: false-positive alarm (first-row lag), GG-1440; C: fill cost measured (results_W94_3C.md, PR #370) | |
+| 94.Q | quant (tandem) | 4 | Carried from 93.Q (it did not run): exact fees per trade for every reported net, ride.py's LADDER side, a generated proof calendar | PROOF: nets re-checked 0 → all; look dates known 1 → all | ✅ | Part A DONE (#372, exact fee: only MLB moves; 89.2 8 of 11 cells keep lo>0, 2 KXMLBHIT cells not reproduced; 90.3 grid 0 cells lo>0; LADDER side fixed). Part B script merged; the box has not pulled #372 so the calendar is not generated (handoff item 1). Part C DONE (#373, no model earns weight >0.02). | **Part B DONE:** PROOF_CALENDAR.md generated from the box read 2026-10-29T05:17Z (64 rows; #375/#376 fixed the emit size and games-not-tickers).
+
+**What Wave 93 delivered (verified 2026-10-29 00:04Z: #362-#366 CI green; box bridge `20261029T000346Z_*`):**
+**93.1 ✅** NBA availability as known before tip, from the official injury report: a Questionable player played 51% of the time, Out
+0.1%, Available 86%. Known-at-tip availability adds nothing measurable beyond the rotation (n 2,008); expected missing minutes is the
+lead. Applied blocked: no 2026-27 games in the store (GG-1420). **93.2 ✅** NBA travel, time zones, altitude and officials built
+point-in-time: nothing for the margin; altitude nudges the total; officials weak and unstable, and crews have no pre-game timestamp
+(GG-1390). **93.3 🟨** the NBA board engine: one simulated score distribution prices moneyline, spread, total and team totals, and
+beats its own Gaussian twin on held-out seasons (n 7,230); moneyline under-confident, correlation over-stated; vs Kalshi: no settled
+rows yet. **93.4 ✅** NFL board v2 priced from the market's line: key number 3 now right on held-out seasons (it was off by half in
+89.4); it matches Kalshi's ladders, no edge; N15 travel interpreted. **93.Q did not run** (→ 94.Q).
+**Distance:** D4 NBA → board engine scaffold, NFL → board priced from the line and tested; D5(b) NBA interpreted 7 → 9; NFL N15
+interpreted. **Box RED** at the close (T4 MLB silent).
+
+**Pushback:** neither engine has found anything the market misses; 94.1 and 94.2 put them on frozen forward tests rather than
+building more on top. That is the honest next step, but it means the engine lane's reward is a date, not a number, this wave. And
+94.1 cannot go live until 94.3 clears the red: if 94.3 runs long, 94.1 merges and installs next wave.
+**Surface:** RED (T4 MLB silent). Expected delta +1 to +3 after GREEN (NBA ingestion refresh, the NBA engine arm); 94.2 and 94.Q add
+nothing running.
+**Dependencies:** none for merges. 94.1's install waits on the budget reading GREEN (Hard Rule 14), whoever clears it.
+
+### 94.1 — Engine lane: the NBA engine prices tonight's board, on a frozen forward test
+**DEPTH + PROOF · rank 2 · terminal 1**
+
+```
+Before anything else, read the Wave 94 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 94.1 - ENGINE LANE: THE NBA ENGINE PRICES TONIGHT'S BOARD, ON A FROZEN FORWARD TEST. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), with rank 1 (market-anchored pricing) as the test it is judged by.
+PURPOSE: DEPTH + PROOF. Measures: D4 NBA "data layer + scaffold test" -> "engine pricing live boards" (logged pre-game, read back on
+the box); NBA 2026-27 games in the event store 0 -> every game played; D3 challengers ready 3 -> 4 (EXP-044); pre-registered NBA
+engine look 0 -> 1 dated.
+Wave 93 built the NBA engine (93.3) and three new factor classes (93.1, 93.2), and every one stopped at "interpreted" for the same
+reason: the event store ends at 2025-26 and holds no game of this season (nba_event_store.py: NBA_STATS_LAST = 2026; GG-1420), and
+NBA pre-game prices only began archiving on 10-28. An engine that cannot price tonight's games cannot be tested against tonight's
+market. This block makes it do so, every game day, with the test frozen before the first row.
+Premises to check: what free source carries 2026-27 NBA play-by-play / box scores and how soon after each game (sportsdataverse's ESPN
+families, the NBA's own endpoints, what the existing NBA shadow arm already reads - pregame_shadow/ and data/raw/nba/players_2026.json);
+how the engine (nba_engine/) takes its inputs; the NBA shadow arm's runner pattern (EXP-038) and how it was pre-registered; the price
+archive's NBA rows (game, spread, total, team total since 2026-10-28 05:03Z).
+PERMISSIONS: per the common rules' ownership; NEW cron lines or bridge tasks only (registered first, installed only if budget_read
+reads GREEN - it reads RED at the wave's start until 94.3 clears the silent T4 MLB arm: if it is still RED, merge everything and install
+next wave, never around the gate); a NEW pre-registration (standing authorization, 2026-10-08). NOT: any order (the arm logs prices
+only), gate, live model, other runner, ledger or frozen pre-registration; no edit of the engine's logic (thin entry point only).
+
+PART A - This season's games in the store (~40 min)
+  Ingest 2026-27 NBA games into the event store from the best free source, point-in-time (each game's rows available only after it
+  ends), refreshed daily; the factors the engine reads recomputed as of each game day. Known-answer check: a sample of this season's
+  games against box-score totals. Read back on the box: games ingested to date, last refresh time.
+PART B - The engine on a forward clock (~40 min)
+  EXP-044, frozen before the first row: the NBA engine as built in 93.3 (pinned commit), pricing every NBA game's moneyline, spread,
+  total and team totals from its joint distribution at a fixed pre-game time (state it, e.g. T-60 min), logged with the archive's Kalshi
+  quote at that moment; scored at a look date - paired Brier engine vs market per family, the skill weight w the accepted gate would
+  give it (market-anchored, 10-21), game-clustered intervals; judged n from 93.3's held-out variance at the effect it measured (power,
+  alpha); pass rule; modal outcome; the look date. Then the runner (registered; installed on GREEN) and a read-back of the first
+  night's rows. Update the NBA [[engine]] entry's stage.
+Results: ingestion + runner + tests, EXP-044 frozen (hash), 12_EXPLORATORY/nba_engine_live/results_W94_1.md, the first rows read back
+(or "merged, install waits for GREEN"), a handoff.
+
+END OF BLOCK 94.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 94.2 — Proof lane: the NFL engine on a forward clock against Kalshi's ladders; temporal evolution
+**PROOF + DEPTH · ranks 1-2 · terminal 2**
+
+```
+Before anything else, read the Wave 94 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 94.2 - PROOF LANE: THE NFL ENGINE ON A FORWARD CLOCK AGAINST KALSHI'S LADDERS; THEN TEMPORAL EVOLUTION. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; ranks 1-2 (the market-anchored test of the one-engine-per-sport NFL engine); Part B rank 5 (the betting
+architecture's eighth component).
+PURPOSE: PROOF + DEPTH. Measures: pre-registered NFL engine look 0 -> 1 dated (EXP-045); D5(a) NFL 7/8 -> 8/8 (temporal_evolution
+scaffold built and tested).
+93.4's board v2 prices the NFL board from the market's own line with the key numbers right, and on the archive so far it matches
+Kalshi's ladders: no edge. That is an in-sample reading on two months. Where it disagrees with a Kalshi strike by more than the cost to
+take it, the disagreement is a hypothesis; freezing it now costs nothing, and the archive scores it every NFL week with no new runner.
+Premises to check: src/prediction_market_bot/nfl_engine/board_v2.py and 12_EXPLORATORY/nfl_board_v2/results_W93_4.md; the price archive's
+NFL ladders; the exact fee (quant/money.py fee()); EXP-041 (frozen: NFL market-anchored, read only - say how EXP-045 differs from it).
+PERMISSIONS: per the common rules' ownership; a NEW pre-registration (standing authorization, 2026-10-08). NOT: EXP-041 or any frozen
+pre-registration, any order, gate, model, runner, ledger or registry cell; no new running component; nothing wired.
+
+PART A - EXP-045, frozen before any new row (~40 min)
+  The rule exactly: board v2 (pinned commit) priced at each archive snapshot from that snapshot's main line; a trigger when board v2's
+  price for a strike (alternate spread, alternate total, team total) beats Kalshi's quote by more than the exact taker fee plus half the
+  spread; side, entry at the quote, settlement from public GETs. Scored from archive rows after the freeze; judged n from 93.4's
+  measured variance (power, alpha); pass rule (net lower bound > 0, game-clustered); BH across families; modal outcome; the look date
+  (NFL weeks remaining this season - say plainly if the regular season cannot reach judged n and what the look then is). A scoring
+  script that reads the archive and writes the look's result, tested on a frozen synthetic archive with a known answer.
+PART B - Temporal evolution, NFL (~35 min)
+  ADR-0075's eighth component for NFL: how each applied factor's weight and its stability change through a season and across seasons,
+  point-in-time (rolling as-of estimates, never using later weeks). A scaffold with tests: a simulated factor whose effect drifts is
+  tracked; one that is stable reads stable. Measured on our data: which NFL factors drift within a season (n, intervals). The
+  temporal_evolution [[component]] entry for NFL with scaffold and test paths.
+Results: EXP-045 frozen (hash) + scoring script + tests, the temporal-evolution scaffold + tests, 12_EXPLORATORY/nfl_engine_forward/
+results_W94_2.md, the component entry, a handoff.
+
+END OF BLOCK 94.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 94.3 — Flex lane, red first: T4 MLB live went silent during a World Series game
+**PLUMBING · Hard Rule 14 · terminal 3**
+
+```
+Before anything else, read the Wave 94 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 94.3 - FLEX LANE, RED FIRST: T4 MLB LIVE WENT SILENT DURING A WORLD SERIES GAME. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; Hard Rule 14 (nothing new goes live while the box reads RED).
+PURPOSE: PLUMBING. Measures: SURFACE BUDGET RED -> GREEN (read back on the box); silent arms 1 -> 0; the cause found and the same
+defect swept (Hard Rule 13).
+The box at 2026-10-29 00:04Z: "SURFACE BUDGET RED: SILENT ARM T4 MLB live: 1 game(s) started in the last 3h but no rows for 19.6h (last
+row 2026-10-28 04:29Z)". t4-mlb is active, runs box HEAD code (78067850, started 2026-10-27 04:58Z), 0 restarts - the GG-163 pattern
+(a process that looks healthy and writes nothing). The MLB arm wrote rows; T1 MLB wrote rows. 94.1's NBA engine arm cannot install
+until this clears.
+Premises to check: logs/t4_mlb_cycle_log.jsonl's last rows and logs/audit_mlb_t4.jsonl around 10-28 (CONTAMINATION_HALT,
+game_state_fresh), the t4-mlb journal, how it discovers games (ESPN game IDs, Kalshi tickers) and whether a World Series game differs
+(series ticker, event naming, a postseason flag), the CLAUDE.md Step 4 probes (cycle-log write recency). Box access: ssh, or the bridge.
+PERMISSIONS: per the common rules' ownership; an idle-window restart of t4-mlb (standing authorization, 2026-10-08) if the fix needs
+it, never mid-game. NOT: any order, stake, kelly_fraction, ledger row, other runner, or the silent-arm alarm's threshold (fix the
+cause, never the gauge).
+
+PART A - Cause (~30 min)
+  From the logs: where the loop stopped writing and why (discovery returning nothing, a feed 403 / schema change, a postseason ticker
+  the mapper rejects, a halt that never clears). Reproduce it against the recorded responses. Say plainly which.
+PART B - Fix, sweep, read back (~40 min)
+  The root-cause fix with a regression test on the recorded case; Hard Rule 13 sweep (every other runner using the same discovery or
+  mapping path - T1 MLB, the MLB game-market arm - fixed or registered); merge on green CI; deploy / idle-window restart per the
+  restart policy; read back during the next live MLB game: cycle-log rows written, silent arms 0, budget GREEN. If no MLB game remains
+  this season by the time the fix lands, say so, register the off-season posture with the silent-arm reason, and leave the fix tested
+  for spring.
+Results: the fix + test, 12_EXPLORATORY/t4_mlb_silent/results_W94_3.md, the budget read back, a handoff (vision_pillar PLUMBING).
+
+END OF BLOCK 94.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 94.Q — Quant in tandem (carried from 93.Q): exact fees per trade, the ladder side, a proof calendar
+**PROOF (quant) · rank 4 · terminal 4, in tandem**
+
+```
+Before anything else, read the Wave 94 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 94.Q - QUANT, IN TANDEM (CARRIED FROM 93.Q, WHICH DID NOT RUN): FINISH THE EXACT-FEE RECOMPUTE, FIX THE LADDER SIDE, AND A PROOF CALENDAR. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: quant in tandem; rank 4 (quant refinement), serving rank 1 (what counts as winning, measured right).
+PURPOSE: PROOF (quant). Measures: reported net figures re-checked with the exact fee, per trade 0 -> all (89.2's 11 cells, 90.3's
+headline, 91.2's ladder whole-sample and its 2 HELD_OUT cells); ride.py's LADDER side hazard open -> fixed; frozen hypotheses with a
+projected look date 1 (P3, the next look only) -> all.
+The operator, 2026-10-27 22:26 PT: "would like a little bit more Quant blocks in between as well"; 22:27 PT: "Quant blocks can run in
+tandem with everything". 92.2 merged the exact fee (quant/money.py fee(), quant/kalshi_fees.json) but re-checked 89.2's cells only at
+bucket midpoints, and left a hazard: ride.py maps a LADDER cell's side 'by_trigger' to RIDE-NO. P3 shows one look date; nobody can see
+when each frozen test (the 49 calibration-engine cells, EXP-041, EXP-042, EXP-043, the NFL first look) will be judged.
+Premises to check: 12_EXPLORATORY/fees_exact/results_W92_2.md; ride.py and ride_cells.toml; each frozen pre-registration's judged-n
+rule; where each one's rows live (the box ledgers and the price archive).
+PERMISSIONS: per the common rules' ownership; ride.py for the LADDER side fix only; a new allowlisted read-only box task if Part B needs
+the box's ledgers. NOT: fee_k007 or any existing quant function, any frozen pre-registration, ride_cells.toml statuses, any order, gate,
+model, runner, ledger or registry cell.
+
+PART A - Exact fees per trade, and the ladder side (~40 min)
+  Re-run 89.2's 11 cells, 90.3's headline grid and 91.2's ladder (whole sample and the 2 HELD_OUT cells) per trade with fee(); for the
+  ladder the trigger itself depends on the fee, so recompute the trigger set too, with no re-selection of cells. A table: old net, exact
+  net, interval, did the status change. Fix the LADDER side in ride.py (the trigger decides YES / NO) with tests; router tests pass.
+PART B - The proof calendar (~35 min)
+  One generated table, every frozen hypothesis: what it tests, its rows to date, its accrual rate over the last 14 days (by sport and
+  season calendar - MLB pauses until spring), its judged n, the projected look date with an interval, and its pre-registered modal
+  outcome. Reads rows where they live (bridge task on the box if needed); writes 04_EXECUTION/PROOF_CALENDAR.md, regenerated by the
+  script, never typed. Known-answer test on a synthetic accrual series.
+Results: the code + tests, 12_EXPLORATORY/quant_w94/results_W94_Q.md (the fee table), PROOF_CALENDAR.md, a handoff.
+
+END OF BLOCK 94.Q. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+
+### ➕ Wave 94 addenda (operator 2026-10-28 17:09 PT: "You can stretch the terminals a little bit - they can add more work for all 4") — paste each into its running terminal, on top of its current block
+
+#### 94.1 addendum — Part C: NBA engine v2 (new factors in, calibration fixed) · terminal 1
+
+```
+ADDENDUM TO 94.1 - PART C: NBA ENGINE v2, THE NEW FACTORS PLUGGED IN AND THE CALIBRATION FIXED (operator 2026-10-28 17:09 PT: "You can
+stretch the terminals a little bit - they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is
+now ~130 minutes. Same common rules; rank 2 (engine) with rank 3 (granularity index).
+PURPOSE: DEPTH. Measures: NBA engine v1 -> v2 held-out Brier per family, paired, with intervals; D5(b) NBA factor classes feeding the
+engine 4 (B1, B2, B3/B9, B7) -> 7 (+ availability, travel / altitude, officials where they help).
+93.3's v1 under-states its moneyline (calibration slope 1.83) and over-states the score correlation (~0.06-0.09); 93.1's expected
+missing minutes, 93.2's altitude-to-total and 92.3's lineups-to-total were measured but never fed into the engine.
+1. v2 in src/prediction_market_bot/nba_engine/ as a NEW version beside v1 (v1 stays exactly as pinned in EXP-044): the three factor
+   classes as inputs, each kept only if it improves held-out Brier for some family; the score correlation estimated, not assumed; a
+   calibration step fitted on training seasons only.
+2. Held-out 2021-26: v2 vs v1 vs the Gaussian twin, paired per family (moneyline, spread, total, team total), game-clustered
+   intervals; reliability curves. Which factor carried what, in the granularity index's five parts.
+3. v2 becomes a CHALLENGER: EXP-044b, frozen before its first row, same scoring as EXP-044 (v1 stays pinned there), logged beside v1
+   by the same runner. No live install unless the budget reads GREEN.
+Results: v2 + tests, the comparison in 12_EXPLORATORY/nba_engine_live/results_W94_1.md, the challenger's pre-registration, the handoff.
+```
+
+#### 94.2 addendum — Part C: NFL play callers, point-in-time (N11) · terminal 2
+
+```
+ADDENDUM TO 94.2 - PART C: NFL PLAY CALLERS, BUILT POINT-IN-TIME (N11) (operator 2026-10-28 17:09 PT: "You can stretch the terminals a
+little bit - they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is now ~130 minutes. Same
+common rules; rank 2 (engine) with rank 3 (granularity index).
+PURPOSE: DEPTH. Measures: D5(b) NFL N11 play callers / coaching none -> interpreted (applied only if it moves a priced strike).
+The NFL seat's N11 "Play callers / coaching" is at stage none. The play caller decides the run / pass mix, fourth-down choices, pace
+and how a lead is protected: things a team total or an alternate total can price wrongly. Muse's R-019 (NFL play callers and
+coordinators 2016-2026) may have landed - read its STATUS entry and cards in the archive; do not wait for it.
+1. Who called plays for each team-game, 2016 -> now (R-019's cards where they exist; otherwise the head coach / offensive coordinator
+   of record with the source named), and each caller's tendencies point-in-time from the play-level store: pass rate over expected by
+   down, distance and score, fourth-down go rate over expected, pace (seconds per play, situation-neutral), lead protection. Shrunk to
+   the league mean; only games before the one predicted; a caller change resets toward the prior (state the rule).
+2. Known-answer test: a simulated caller with a known tendency is recovered. Interpreted: on held-out seasons, beyond the line and
+   N1-N3, do the tendencies move totals or team totals (paired, intervals)? Then, descriptive, on Kalshi's NFL team totals and
+   alternate totals in the archive.
+3. N11 in nfl.toml with stage and the five granularity-index parts (re-render with python3.11 scripts/render_seat.py).
+Results: the module + tests (a new c1_signal_ingestion/nfl_play_callers.py), results in 12_EXPLORATORY/nfl_engine_forward/, the N11 row,
+the handoff.
+```
+
+#### 94.3 addendum — Part C: what a fill costs (EXECUTION) · terminal 3
+
+```
+ADDENDUM TO 94.3 - PART C: WHAT A FILL COSTS (EXECUTION, UNOWNED SINCE 86.3) (operator 2026-10-28 17:09 PT: "You can stretch the
+terminals a little bit - they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is now ~130
+minutes. Same common rules; the EXECUTION pillar.
+PURPOSE: EXECUTION. Measures: E3 (fills win 25-29% vs 48-52% for orders that never filled) explained per book: markout after fill
+0 -> measured; the share of the gap that taking at the quote (as EXP-042 / 043 / 044 / 045 assume) would avoid 0 -> measured.
+Every forward test now freezes entry "as a taker at the quote". The bot's real demo orders mostly rest and fill when they are wrong
+(86.3: adverse selection dominates E3). Whether a taker entry escapes that, or the quote itself moves away the moment we would take
+it, is unmeasured.
+1. From the demo fill logs (T4 MLB, T1 MLB, and the NFL / NBA / NHL shadow books' fills in the forward-test report): for each fill, the
+   mid-price 1, 5, 15 and 60 minutes later (archive snapshots or candles), signed toward the order: the markout. Filled vs never
+   filled, maker vs taker where both exist, by book, sport, quote age and time to start; game-clustered intervals.
+2. For a taker entry at the quote: how often the quote was still there at the next snapshot, the markout of an immediate take, and the
+   depth at the quote (the archive's depth samples). Known-answer test: a simulated book with informed flow shows negative maker
+   markout and a taker markout near zero.
+3. One paragraph for the window: is "taker at the quote" a safe assumption for the frozen forward tests, and if not, by how much it
+   overstates them.
+Results: 12_EXPLORATORY/fill_markout/results_W94_3C.md + code + tests, the handoff (vision_pillar EXECUTION for Part C).
+```
+
+#### 94.Q addendum — Part C: Bayesian skill weights for the gate · terminal 4
+
+```
+ADDENDUM TO 94.Q - PART C: BAYESIAN SKILL WEIGHTS FOR THE GATE (operator 2026-10-28 17:09 PT: "You can stretch the terminals a little bit
+- they can add more work for all 4"). Runs after Parts A and B; your time ceiling for the block is now ~130 minutes. Same common rules;
+rank 4 (quant) serving rank 1 (market-anchored pricing).
+PURPOSE: PROOF (quant). Measures: skill weight per frozen model, point estimate -> posterior with an interval, 0 -> 6 models; the gate's
+replay (85.2's position_gate.py, still unwired) under posterior weights, descriptive.
+The accepted gate (10-21) gives each arm a skill weight from its held-out Brier against the market; today every weight is 0 (88.3: no
+model beats the market) and the weight is a point estimate with no notion of how sure we are, so it cannot say when an arm has earned
+a non-zero weight.
+1. NEW function in quant/: the posterior on each model's paired Brier advantage over the market (prior centred on 0, its width stated
+   and justified), updated by held-out rows and then by forward rows as they arrive, game-clustered; the weight as P(advantage > 0)
+   shrunk, or the posterior mean of the advantage - state which and why. Known-answer tests: a simulated model with a known small
+   advantage earns weight as n grows; a null model's weight stays near 0 and does not drift up with n.
+2. Applied to the six frozen models' held-out scores (88.3) and the NBA / NFL engines' held-out rows: posterior, interval, the n at
+   which each would earn a weight above a stated threshold if its point estimate held.
+3. The gate replay under posterior weights: positions kept, DESCRIPTIVE only (position_gate.py stays unwired).
+Results: the function + tests, results in 12_EXPLORATORY/quant_w94/results_W94_Q.md, the handoff.
+```
+
+---
+
+---
+
 ## Wave 93 NOW section with its pastes (closed 2026-10-28 17:15 PT). 93.1 ✅ 93.2 ✅ 93.3 🟨 93.4 ✅ 93.Q ❌ (not run). Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md. Verbatim:
 
 ## ⬛ NOW — Wave 93 · THE NBA ENGINE, ALL LANES · ONE QUANT BLOCK IN TANDEM · WRITTEN 2026-10-28 ~05:40 UTC (10-27 22:40 PT) · five MEDIUM blocks · no Muse paste

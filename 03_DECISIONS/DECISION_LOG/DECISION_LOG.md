@@ -3031,3 +3031,10 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - EXP-044 (v1, pinned cfdc423) frozen at merge 61ed3e0 (PR #368). EXP-044b (v2_core, params hash d50932902832762d) frozen at PR #374 merge d975509. Both log prices only; no order, stake or ledger touched.
 - Held-out 2021-26 (7,230 games): v2 beats v1 on Brier for moneyline (-0.00554 [-0.00704,-0.00398], calibration step only), total (-0.00143), team total (-0.00058); spread ties. Altitude/travel factors not kept (all CIs include 0). Availability/lineups/officials not built (GG-1451).
 - Install of both runners waits for GREEN `budget_read` (GG-1450). No cron line or registry entry added. Premise corrected: 2026-27 games were obtainable free (56 ingested).
+
+## 2026-10-28 22:40 PT — Wave 94 closed; Wave 95 written (three blocks); GG-1440 decided (strategic window)
+- Operator, 22:25 PT: "94 is finished - confirm receipt and give me a plain english sitrep then produce the next wave. Make it only 3 this time".
+- Verified: #367-#376 CI green; box 20261029T052555Z_*: GREEN, 83 live, healthcheck HEALTHY, no silent arm. 94.1/94.2/94.3/94.Q DONE (EXP-044, 044b, 045 frozen; NFL D5(a) 8/8; E3 explained by fill markout; proof calendar; no model earns a Bayesian skill weight). NBA engine runners merged, not installed (GG-1450).
+- Window decision (plumbing): GG-1440 - t4_mlb silent-arm first-row grace 0.5 h after start, with a regression test for 10-29 00:04Z and a test that a GG-163-style outage still alarms (95.3).
+- Window fix: the common-rules template told terminals to "read the Deploy job summary"; that job is manual-only since W67.3 (GG-1462). Corrected in COMMON_RULES_W95.md; 95.3 sweeps the rest.
+- Wave 95: 95.1 engine lane (NBA engine live on the box + v3), 95.2 proof lane (frozen ride evidence reproduced on the box's full archive; GG-1460), 95.3 flex lane (deploy path, false red, demo insufficient balance).
