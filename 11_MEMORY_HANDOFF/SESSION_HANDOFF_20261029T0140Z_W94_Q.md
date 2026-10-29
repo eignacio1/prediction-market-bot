@@ -3,13 +3,13 @@ task_id: T-1430
 tier: STANDARD
 timestamp: 2026-10-29T01:40:00Z
 commit: 3582308
-one_line_summary: W94.Q: exact-fee recompute of every reported net, ride.py LADDER side fixed, Bayesian skill weights applied; proof calendar code merged but its box read is waiting on the box syncing main
-gg_touched: none registered (see Open items)
+one_line_summary: W94.Q: exact-fee recompute of every reported net, ride.py LADDER side fixed, Bayesian skill weights applied; PROOF_CALENDAR.md generated (64 rows) from the box read
+gg_touched: GG-1430, GG-1431 opened
 adr_touched: none
 plan_deliverable_moved: no
 vision_pillar: PROOF
 gap_measure: nets re-checked with the exact fee; LADDER side hazard; skill weight with an interval; P3 frozen hypotheses with a projected look date
-gap_delta: nets re-checked 0 -> all (89.2's 11 cells, 90.3 headline, 91.2 whole sample + 2 HELD_OUT cells); LADDER side open -> fixed; skill weight posterior with interval 0 -> 4 of 6 models (2 have no held-out score, prior only); look dates: NOT MOVED (Part B not run)
+gap_delta: nets re-checked 0 -> all (89.2's 11 cells, 90.3 headline, 91.2 whole sample + 2 HELD_OUT cells); LADDER side open -> fixed; skill weight posterior with interval 0 -> 4 of 6 models (2 have no held-out score, prior only); frozen hypotheses with a projected look date 1 -> all 64 rows (PROOF_CALENDAR.md, box read 2026-10-29T05:17Z)
 pattern_sweep: side != "yes" swept in decision_trees and c5_execution, no other instance; exploratory-isolation fence defect (write-shaped calls outside safe_out) fixed in the one file I wrote
 surface_delta: +1 allowlisted read-only box task (proof_calendar_read); no running component
 -->

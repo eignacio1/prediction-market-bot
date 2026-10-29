@@ -14,3 +14,9 @@
 - Altitude and travel factors did not help, so they were dropped. Availability, lineups and officials weren't built because their data isn't in the store (GG-1451). NBA applied factor classes stay at 4, not 7.
 - Nothing is installed on the box. The box health read was RED at the start and I never saw GREEN (GG-1450).
 - No orders, stakes or ledgers touched. No decision needed.
+## W94.Q (quant, PROOF pillar)
+- We re-checked every reported profit number using the exact trading fee. Only baseball changes, and it gets slightly worse. Nothing that looked positive turned negative, and the big baseball follow-strategy grid still has zero winning cells.
+- Fixed a side mix-up in the ride-strategy ladder code. It places no orders.
+- Built a skill score per model. No model has earned meaningful weight yet; that is an honest "not yet," not a failure.
+- There is now an auto-generated proof calendar with a projected look date for every pre-registered hypothesis (64 rows). Treat the engine's own dates as binding where they differ.
+- Two small number mismatches are logged for later (GG-1430, GG-1431). Still zero real money at risk.

@@ -4514,3 +4514,15 @@ W93.3, 2026-10-28, T-1393. The box's `KALSHI_HISTORY/markets` holds only `KXNFLG
 **Status:** OPEN · **Severity:** LOW
 
 W93.3, 2026-10-28, T-1393. NBA archive has 3 snapshots (10-28 05:08-05:48Z), 33 games; public GETs show 0 settled markets. Paired Brier and the market-anchored skill weight `w` are n=0. Re-run `study_b.py` once settled games accumulate; do not read edge from the descriptive implied-distribution comparison.
+
+### GG-1430 — W94.Q two KXMLBHIT T0-2h 20-25c cells in 89.2 do not reproduce
+
+**Status:** OPEN · **Severity:** LOW
+
+W94.Q, 2026-10-29, T-1430. `12_EXPLORATORY/quant_w94/exact_fee_recompute.py` re-ran the two KXMLBHIT T0-2h 20-25c cells at n=0 from the local archive subset, so they are not reproduced. Cause not diagnosed (subset coverage vs original cell definition). Reproduce against the full box archive before citing either cell.
+
+### GG-1431 — W94.Q reported n differs from re-run n (KXMLBSPREAD 186 vs 179; 91.2 net2-5c 117 vs 202/324)
+
+**Status:** OPEN · **Severity:** LOW
+
+W94.Q, 2026-10-29, T-1430. Re-run n differs from the n in the source reports: KXMLBSPREAD 186 reported vs 179; 91.2 net2-5c 117 reported vs 202 (324 alternate). Likely cell-definition or dedupe differences; not diagnosed. Do not cite the reported n for those cells until reconciled.
