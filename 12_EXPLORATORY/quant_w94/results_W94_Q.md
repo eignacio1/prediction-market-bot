@@ -79,3 +79,34 @@ END OF GENERATED RESULTS.
 ## LADDER side fix (ride.py)
 
 `decide(..., trigger_side=, ladder_bucket=)`: a LADDER cell with side `by_trigger` takes the trigger's side; missing or non yes/no trigger returns NONE `ride:ladder_needs_trigger`; any unknown side returns NONE `ride:unknown_side` and never falls through to RIDE-NO. Tests: ride and router suites pass.
+
+---
+
+## Part C: Bayesian skill weights for the gate (descriptive; `position_gate.py` stays unwired)
+
+Function: `quant.bayes_skill` (normal-normal; prior N(0, 0.005²) on the paired Brier advantage d = Bmarket − Bmodel; weight = max(0, posterior mean)/Bmarket; 7 known-answer tests). Application: `12_EXPLORATORY/quant_w94/bayes_skill_apply.py` (stdout only; the table below is its output).
+
+**When it applies / doesn't:** paired per-game forecasts, games as n, ≥ ~30 games. Not in-play rows (serial correlation), not a prior meant to be non-zero-centred.
+**Prior width:** 0.005 Brier = a real edge of ~0.010 (about 5% of the market's score) is a 2-sigma surprise; centred on 0 because the market is presumed efficient.
+
+tau=0.005 (prior N(0, tau^2) on the Brier advantage), weight threshold=0.02
+
+| model | source | n | point adv | posterior mean [95% CI] | P(adv>0) | posterior weight | gate-implied w | n for w>=thr if point held ; if adv were +0.01 |
+|---|---|---|---|---|---|---|---|---|
+| nba_pregame_v1 | W88.3 held-out vs Kalshi mid | 1228 | -0.01502 | -0.01096 [-0.01605, -0.00587] | 0.000 | 0.0000 | 0.0000 | never (point adv < 0.0039) ; if adv were +0.01: 289 |
+| mlb_game_pregame_v1 | W88.3 held-out vs Kalshi mid | 2037 | +0.00043 | +0.00039 [-0.00280, +0.00357] | 0.594 | 0.0016 | 0.0018 | never (point adv < 0.0049) ; if adv were +0.01: 227 |
+| nhl_pregame_v1 | W88.3 held-out vs Kalshi mid | 1305 | -0.00301 | -0.00274 [-0.00568, +0.00020] | 0.034 | 0.0000 | 0.0000 | never (point adv < 0.0049) ; if adv were +0.01: 124 |
+| nfl_pregame_v1 | 2025 vs nflverse close (GG-1090 timing caveat) | 271 | -0.00714 | -0.00268 [-0.01042, +0.00506] | 0.249 | 0.0000 | 0.0000 | never (point adv < 0.0042) ; if adv were +0.01: 332 |
+| nfl_qb_challenger_v1 | no held-out season exists | 0 | - | prior only 0.0000 [-0.0098, +0.0098] | - | 0.0000 | - | - |
+| nba_player_points_v1 | NOT_REBUILT (no scored rows) | 0 | - | prior only 0.0000 [-0.0098, +0.0098] | - | 0.0000 | - | - |
+
+Inputs: the W88.3 game-clustered intervals (se ≈ (hi−lo)/(2·1.96), per-game sd = se·√n); NFL from `nfl_pregame_v1_heldout_vs_market.json` and carries the GG-1090 timing caveat (the nflverse close flatters the market, so its disadvantage is probably overstated).
+
+**Reading.**
+- Skill-weight measure, point estimate → posterior with an interval: 4 of 6 models now carry one. The other 2 (`nfl_qb_challenger_v1`, `nba_player_points_v1`) have no held-out score and sit at the prior, weight 0.0000, which is the honest value for them rather than a missing one.
+- No model earns a weight above the 0.02 threshold, and none can on its current point estimate: the weight ceiling at an advantage d is d/Bmarket, so the threshold needs d ≥ ~0.004–0.005. MLB's +0.00043 tops out at 0.0018.
+- The posterior weight tracks the gate's implied weight (MLB 0.0016 vs 0.0018; others 0 vs 0). The Bayesian form adds the interval and the n-to-earn column, not a different answer today.
+- If a model's true advantage were +0.01 Brier, it would earn a weight ≥ 0.02 after about 124 (NHL) to 332 (NFL) games.
+- The NBA and NFL engine held-out rows (W9x engines) are not scored against a market anywhere in the repo; none were invented here.
+
+**Gate replay under posterior weights.** The full `12_EXPLORATORY/gate_replay/replay.py` needs a box snapshot of positions that is not local, so it was not re-run. From the W88 `gate_replay_descriptive` blocks: at the implied weight 0 positions are kept for every model; at a counterfactual weight 1.0 the gate would keep NBA 280, MLB 417, NHL 257. Posterior weights are ≈ 0 for all four scored models (MLB 0.0016), so the posterior replay keeps the same set as the implied-weight replay: none, with MLB the only model whose weight is not exactly zero. Descriptive only; nothing wired.
