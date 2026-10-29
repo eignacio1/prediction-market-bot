@@ -96,15 +96,23 @@ def _none(reason, cell=None):
 
 
 def decide(family: str, tier: Optional[str], price: float, half_spread: Optional[float], table: Optional[RideTable],
-           book_classes: tuple = ("all",), kind: Optional[str] = None) -> RideDecision:
-    """price = YES mid; book_classes = most specific first (e.g. ('tight', 'all')); kind None = any kind."""
+           book_classes: tuple = ("all",), kind: Optional[str] = None, trigger_side: Optional[str] = None,
+           ladder_bucket: Optional[str] = None) -> RideDecision:
+    """price = YES mid; book_classes = most specific first (e.g. ('tight', 'all')); kind None = any kind.
+
+    A LADDER cell's side is "by_trigger": the ladder trigger picks yes or no per quote, so the caller passes
+    `trigger_side` and the cell's gap bucket as `ladder_bucket`. Without them a LADDER cell returns NONE; a side that is
+    not exactly yes/no never becomes RIDE-NO (W94.Q)."""
     if table is None:
         return _none("ride:no_table")
     if tier is None or price is None:
         return _none("ride:no_cell")
     b = bucket(price)
     for book in book_classes:
-        c = table.lookup(family, tier, b, book, kind) if kind else table.lookup(family, tier, b, book)
+        if kind == LADDER and ladder_bucket is not None:
+            c = table.lookup(family, tier, ladder_bucket, book, LADDER)
+        else:
+            c = table.lookup(family, tier, b, book, kind) if kind else table.lookup(family, tier, b, book)
         if c is None:
             continue
         if c.status not in RIDEABLE:
@@ -113,6 +121,13 @@ def decide(family: str, tier: Optional[str], price: float, half_spread: Optional
             return _none("ride:no_positive_lower_bound", c)
         if c.max_half_spread is not None and (half_spread is None or half_spread > c.max_half_spread):
             return _none("ride:book_wider_than_cell", c)
-        return RideDecision(RIDE_YES if c.side == "yes" else RIDE_NO, c.side, c.net_mean, c.net_lo, c.net_hi,
-                            f"ride:cell_{tier}_{b}_{book}", c)
+        side = c.side
+        if c.kind == LADDER and side == "by_trigger":
+            if trigger_side not in ("yes", "no"):
+                return _none("ride:ladder_needs_trigger", c)
+            side = trigger_side
+        if side not in ("yes", "no"):
+            return _none("ride:unknown_side", c)
+        return RideDecision(RIDE_YES if side == "yes" else RIDE_NO, side, c.net_mean, c.net_lo, c.net_hi,
+                            f"ride:cell_{tier}_{c.bucket}_{book}", c)
     return _none("ride:no_cell")

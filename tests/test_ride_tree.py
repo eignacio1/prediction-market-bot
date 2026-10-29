@@ -84,3 +84,31 @@ def test_router_routes_ride_once_cell_is_held_out():
     s = Situation("mlb", "KXMLBHIT", "X", "E", "T0-2h", 0.21, 0.23, 0.01)
     r = route(s, Evidence(ride=Table([held])))
     assert (r.tree, r.side) == (RIDE, "yes")
+
+
+LAD = RideCell("KXMLBTOTAL", "T0-2h", "net2-5c", "tight", "by_trigger", 0.0336, kind=LADDER, status=HELD_OUT,
+               net_mean=0.087, max_half_spread=0.01)
+
+
+def dl(**kw):
+    return decide("KXMLBTOTAL", "T0-2h", 0.50, 0.01, Table([LAD]), ("tight",), kind=LADDER, **kw)
+
+
+def test_ladder_side_follows_trigger_not_default_no():
+    assert dl(ladder_bucket="net2-5c", trigger_side="yes").action == RIDE_YES
+    assert dl(ladder_bucket="net2-5c", trigger_side="no").action == RIDE_NO
+
+
+def test_ladder_without_trigger_or_with_bad_side_is_none():
+    for ts in (None, "", "YES", "by_trigger"):
+        r = dl(ladder_bucket="net2-5c", trigger_side=ts)
+        assert r.action == NONE and r.reason == "ride:ladder_needs_trigger"
+
+
+def test_ladder_cell_unreachable_by_price_bucket():
+    assert dl().action == NONE
+
+
+def test_unknown_side_never_becomes_ride_no():
+    r = d(dataclasses.replace(BASE, side="by_trigger"))
+    assert r.action == NONE and r.reason == "ride:unknown_side"

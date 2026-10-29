@@ -59,6 +59,8 @@ TASKS: dict[str, str] = {
     "archive_cron_install": f"{PY} scripts/archive_cron_install.py install",
     "archive_cron_readback": f"{PY} scripts/archive_cron_install.py readback",
     "archive_cron_uninstall": f"{PY} scripts/archive_cron_install.py uninstall",
+    # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
+    "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
     "distance_read": (
         f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
         "tail -n 60 logs/demo_fill_forward_report.log 2>&1"
