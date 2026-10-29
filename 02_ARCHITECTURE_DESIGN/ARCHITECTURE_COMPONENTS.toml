@@ -40,9 +40,9 @@ note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross contin
 [[component]]
 sport = "nfl"
 component = "temporal_evolution"
-scaffold = "none"
-test = "none"
-note = "not counted: nfl_point_in_time.py + tests/test_nfl_point_in_time.py is the as-of contract, not the ADR-0075 first scaffold (rolling as-of tendency features with stability tests)"
+scaffold = "src/prediction_market_bot/nfl_engine/temporal_evolution.py"
+test = "tests/test_nfl_temporal_evolution.py"
+note = "W94.2: as-of EW level, league in-season slope, odd/even vs early/late reliability gap, blend weight by week; known-answer sims. Measured 2016-2025 (12_EXPLORATORY/nfl_engine_forward/drift_W94_2.json): only neutral pass rate drifts team-vs-team in-season (gap +0.157 [0.071,0.242], n=320 team-seasons). Stage: interpreted"
 
 [[component]]
 sport = "nfl"
