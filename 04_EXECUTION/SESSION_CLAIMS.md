@@ -1097,3 +1097,4 @@
 | 2026-10-29T00:11:53Z | T-1450..T-1452, GG-1450..GG-1452, EXP-044/044b | STANDARD — W94.1 (+Part C addendum): NBA engine live forward test EXP-044 + v2 challenger EXP-044b — FOR D4 (NBA data layer -> engine pricing live boards), D3 3->4, D5(b) 4->7 factor classes |
 | 2026-10-29T00:12:17Z | T-1460..T-1463 / GG-1460..GG-1462 / EXP-045 | W94.2 MEDIUM(+Part C) — NFL engine forward test EXP-045 (archive-scored) + NFL temporal_evolution scaffold + N11 play callers — FOR PROOF+DEPTH: NFL engine look 0->1 dated; D5(a) NFL 7/8->8/8; D5(b) N11 none->interpreted |
 | 2026-10-29T00:47:19Z | T-1440 | CLOSED — W94.3: T4 MLB silent alarm was a false positive (first-row lag); fill cost measured, taker-at-quote safe for EXP-042..045 (commit `941ac8f`) |
+| 2026-10-29T00:47:46Z | T-1440 | CLOSED — merge confirmed, HEAD (dd37ddf) is ancestor of origin/main — W94.3 flex lane: false-positive T4 alarm diagnosed, fill cost measured |
