@@ -1,0 +1,48 @@
+{
+ "freeze": "2026-10-29T01:00:00Z",
+ "replay": true,
+ "triggered": 4163,
+ "settled": 4163,
+ "games_with_result": 86,
+ "fam": {
+  "spread": {
+   "positions": 1610,
+   "games": 86,
+   "mean": -0.0033610559006211492,
+   "lo": -0.03876020025031292,
+   "hi": 0.031654151177199503,
+   "sd_game": 0.16657599544467938,
+   "p": 0.503874031492127,
+   "bh_reject": false,
+   "pass": false
+  },
+  "total": {
+   "positions": 980,
+   "games": 86,
+   "mean": 0.009467755102040837,
+   "lo": -0.029267975206611584,
+   "hi": 0.04506080000000001,
+   "sd_game": 0.16898023793532407,
+   "p": 0.2329417645588603,
+   "bh_reject": false,
+   "pass": false
+  },
+  "teamtotal": {
+   "positions": 1573,
+   "games": 86,
+   "mean": -0.021474507310870982,
+   "lo": -0.05220524166099384,
+   "hi": 0.007949622641509438,
+   "sd_game": 0.14751148365577127,
+   "p": 0.9215196200949762,
+   "bh_reject": false,
+   "pass": false
+  }
+ },
+ "games_remaining": 0,
+ "judged_n_games": {
+  "spread": 429,
+  "total": 442,
+  "teamtotal": 337
+ }
+}
