@@ -1035,3 +1035,31 @@ covers the one archive commit after it.)*
 - **Next ticket:** STATUS says "Next in backlog order: R-043". That came from the 17:40 PT order. The current order (22:00 PT entry)
   puts **R-072** next, then R-073, R-077, R-082. The scheduler-listing request in that entry is still open.
 - **Open tickets:** 44 (the 45 in the current order less R-019's season table; R-019a/b not counted until accepted).
+
+### 2026-10-28 21:46 PT · Watchdog sweep (Claude): ALIGNED — ten tickets closed in backlog order, all clean; R-080's xG card has one open item
+- **In scope:** archive `f920d51` → `25b345a` (21 commits, 2026-10-28 05:55 → 2026-10-29 04:14 UTC). Order: the closes ran R-072
+  (`d54cc15`) → R-073 (`35e1dfe`) → R-077 (`ef7b22a`) → R-082 (`19614f1`) → R-083 (`1816fab`) → R-074 (`87302f8`, addendum `28423cb`)
+  → R-080 (`8e1b77b`) → R-078 (`d03a183`) → R-085 (`3bf10b2`, addendum `df0f13d`) → R-084 (`25b345a`): exactly the top ten of the
+  22:00 PT Oct 27 order. STATUS's next ticket is R-043, which is correct.
+- **Last sweep's asks, both done:** R-019 is now recorded PARTIAL (STATUS, `f920d51`), and the scheduler listing was pasted (`f920d51`,
+  again in `87302f8`): the ten `daily-muse-cycle-*` runs charter v3 §1b names, Earl's `ig-unfollow-watch`, `nfl-archive-daily-sync`
+  and `seat-sports-intake` both disabled, runtime system jobs. Nothing added or changed. No finding.
+- **Charter:** no news or injury-update sweep (R-077 is an archive-route card, not a sweep); free sources only; no bot-repo writes;
+  no bet, pick, odds or model; no null records. Republishers flagged as such with the primary named (ESPN for the NBA schedule in
+  R-078; the secondary R tutorial's `xGoal` in R-080). Negatives are stated in single lines, not padded.
+- **Records:** no claims `.jsonl` file added or changed in scope (`git diff --name-status 73747ef..25b345a`), so there is nothing for
+  `validate_claims.py --strict` to check. All work is source cards and provenance files.
+- **Done claims:** R-072 (card, sample market tapes summing to `volume_fp`, the one line), R-073 (card, one line: no published limit
+  for a no-login client), R-077 (card, 19 sample URLs, three per season 2021-22 → now, one line), R-082 (card, sample pulls, one line:
+  obtainable by day-chunking under a measured 25,000-row cap), R-083 (two cards, one line on seasons), R-074 (six cards, one line per
+  sport), R-078 (three cards with sample rows, one line per sport), R-085 (addendum on the R-014 card, its existing sample rows,
+  one line on coverage; the name-cell re-copy is an open item, stated), R-084 (card, Nationals Sep 21-27 week, 26 rows, off day
+  Sep 24 shown as 0, one line on the route): **met**.
+  **R-080: met for the NHL play-by-play card (sample rows copied), partly met for MoneyPuck.** "Done when: cards with sample rows."
+  The MoneyPuck card's §7 gives a file inventory (shot counts), not rows, and says the per-shot xG field name was not confirmed.
+  The STATUS close says so honestly. **What to do instead:** treat it as an open item on R-080. When the window puts it back into an
+  order, copy two or three shot rows from one season file with the xG column named from MoneyPuck's own shots dictionary.
+- **Note, not a finding:** R-074 quotes the programs in short phrases and paraphrase, not long extracts, and STATUS says so. That
+  is fine. Definitions you need verbatim are still quoted verbatim.
+- **Open tickets:** 34 (the 44 from the last sweep less the ten closed here; R-080's MoneyPuck item and R-019a/b are not counted
+  until they appear in an order).
