@@ -10,6 +10,230 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 93 NOW section with its pastes (closed 2026-10-28 17:15 PT). 93.1 ✅ 93.2 ✅ 93.3 🟨 93.4 ✅ 93.Q ❌ (not run). Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md. Verbatim:
+
+## ⬛ NOW — Wave 93 · THE NBA ENGINE, ALL LANES · ONE QUANT BLOCK IN TANDEM · WRITTEN 2026-10-28 ~05:40 UTC (10-27 22:40 PT) · five MEDIUM blocks · no Muse paste
+
+Operator, 22:30 PT: "do 1 extra block to do NFL engine work" (93.4). Operator, 22:27 PT: "make [this wave] all engine for the NBA. Quant blocks can run in tandem with everything". Common rules for every
+block: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md` (each block's first line points the terminal there). All five run in parallel.
+
+| # | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|
+| 93.1 | Availability known before tip: the official injury report's statuses point-in-time, their real play rates, the lineup layer on expected availability | DEPTH: NBA B5/B6 interpreted → applied (or why not); factor classes from event data 1 → 2 | ✅ DONE (PR #364, 6b41246) | B5/B6 stay interpreted: known-at-tip availability adds 0.307 MSE [-0.235, 0.829], not distinguishable from 0; expected missing minutes 2.641 [0.038, 5.082] is the lead. Applied blocked on 2026-27 data and pre-tip price (GG-1420, flex lane). D4 NBA 1 to 2. |
+| 93.2 | Travel, time zones, altitude and officials, point-in-time | DEPTH: NBA travel none → interpreted; officials none → aggregated/interpreted or a registered gap | ✅ DONE (PR #362, #366) | Travel: interpreted (margin NO; altitude→total +0.92 MSE [0.43,1.44]). Officials: interpreted, weak/unstable (+0.51 [-0.12,1.14]); crew-assignment timestamp gap GG-1390 |
+| 93.3 | One model prices the whole NBA board (moneyline, spread, total, team totals) from a joint score distribution; scored vs results and vs this season's Kalshi prices | DEPTH: D4 NBA data layer → whole board priced (scaffold, tested) | ✅ PARTIAL | Engine merged (#363, CI green): 4 families from one simulated score distribution, BEATS Gaussian twin on held-out n=7,230. Vs Kalshi: n=0 settled, descriptive only (GG-1393..1395). `12_EXPLORATORY/nba_board/results_W93_3.md` |
+| 93.4 | NFL engine (operator 22:30 PT): the whole board priced from the market's own line with the key numbers right (89.4 missed 3 by half), scored vs Kalshi's ladders; then travel / short weeks (N15) | DEPTH: D4 NFL scaffold → board priced, market-anchored, tested; N15 none → interpreted | ✅ DONE (PR #365) | Board v2 (market-anchored empirical joint, one pmf prices ML/spread/total/team totals): margin-3 mass z -0.7 held-out (Gaussian +23.8; 89.4 was 0.07 vs 0.14-0.15). Vs Kalshi ladders (86 settled 2026 games): every dBrier interval includes 0, no edge shown. N15 travel/short week: interpreted, no effect beyond the line (margin MSE gain -0.92 [-1.46,-0.37]) (12_EXPLORATORY/nfl_board_v2/results_W93_4.md) |
+| 93.Q | Quant in tandem: exact fees per trade for every reported net, ride.py's LADDER side fixed, a generated proof calendar for every frozen test | PROOF: nets re-checked 0 → all; look dates known 1 → all | ⬜ | |
+
+**What Wave 92 delivered (verified 2026-10-28 05:27Z: #357-#361 CI green; box bridge `20261028T052642Z_*`):**
+**92.1 ✅** the six NBA / NHL archive lines installed through a new bridge installer and read back with rows for 8 series; the budget
+no longer counts uninstalled entries (83 live is now real). Not archived yet: period / half series, player props, parlays.
+**92.2 🟨** exact Kalshi fees in the quant core; k007 is exact for NFL and 2x too high for MLB pre-game (so MLB nets were understated by
+0.2-0.9c per contract); the two ladder cells HELD_OUT in the ride table; EXP-043 frozen. Not done: the per-trade recompute (→ 93.Q);
+hazard: ride.py turns a LADDER cell's side into RIDE-NO (→ 93.Q). Its line for you: keep EXP-041/042 frozen on k007 (conservative) -
+that is already the case, nothing to decide.
+**92.3 ✅** NBA lineups and on/off from the play-by-play, point-in-time: they sharpen the TOTAL (held-out error down 4.0 [1.9, 6.1],
+2,008 games), not the margin. Who is available moves the margin, but measured with who actually played - 93.1 rebuilds it from what
+was known before tip. Not applied: NBA pre-game prices started archiving only this morning.
+**Distance:** sports in the price archive 2 → 4; D5(b) NBA interpreted 6 → 7; surface truthful (phantom live 6 → 0); fees exact.
+
+**Pushback:** the engine's market test is thin for weeks: NBA pre-game prices have been archived since this morning, and settled
+Kalshi NBA markets number in the dozens per family. 93.1-93.3 will mostly reach "interpreted"; "applied" waits on rows. That is the
+honest pace of the engine lane, not a reason to skip it. 93.Q makes the proof calendar visible so the wait has dates on it.
+**Surface:** GREEN, 83 live. Expected delta 0 (no block adds a running component; 93.Q may add one read-only bridge task).
+**Dependencies:** none. 93.3 prices the board from the factors already built; 93.1's availability and 93.2's geometry plug in next
+wave. 93.1 and 93.2 both edit nba.toml, each only its own rows (rebase before push).
+
+### 93.1 — NBA engine: availability, known before tip
+**DEPTH · terminal 1**
+
+```
+Before anything else, read the Wave 93 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 93.1 - NBA ENGINE: AVAILABILITY, KNOWN BEFORE TIP. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH. Measures: D5(b) NBA B5 / B6 (own and game-level availability) interpreted -> applied, or a measured reason why not;
+D4 NBA factor classes built point-in-time from event-level data 1 (lineups, 92.3) -> 2.
+92.3 found that who is available moves the margin (0.267 [0.105, 0.445]) - but it measured that with who ACTUALLY played, which is
+not known at the price. The engine needs availability as it was known before tip: the official injury report's statuses at each
+report time, then the lineup layer conditioned on them.
+Premises to check: the bot captures the NBA official injury report going forward (c1_signal_ingestion/nba_injury_reports.py; the
+NBA injury relay on the box) - find what it has written and since when; whether past reports are reachable (the league's URL
+pattern; Muse R-077 asks the same and may have landed - read its STATUS entry, do not wait for it); how statuses are worded (Out,
+Doubtful, Questionable, Probable, Available) and how often each status actually played (measure it).
+PERMISSIONS: per the common rules' ownership. NOT: any live model, runner, shadow arm, pre-registration, order, gate, ledger or registry
+cell; no new running component (if a capture is missing, register a gap and name it for the flex lane).
+
+PART A - Availability as of the moment before tip (~45 min)
+  A point-in-time availability table: for each game and player, the last official status published before tip (with its timestamp),
+  for every season where reports are reachable, and what share of rotation minutes it covers. Measure each status's real play rate
+  (P(played | status)), by season. Then the lineup layer (92.3's nba_lineups.py) re-run with EXPECTED availability (each player
+  weighted by P(played | status)) in place of who actually played. Known-answer test: a simulated slate where statuses map to known
+  play rates is recovered. Leakage test: no report published after tip is used.
+PART B - Interpreted, then applied (~35 min)
+  Interpreted: does expected availability predict margin on held-out seasons beyond B1 / B9 and the prior-season carry (92.3's
+  controls), and how much of 92.3's upper bound survives when only pre-tip knowledge is used? Applied: on this season's Kalshi NBA
+  game and spread markets (the archive's pre-game rows since 10-28, 89.7's candles since 10-01): when the factor disagrees with the
+  price, did the settlement go its way? Report n; say plainly if underpowered. Update B5 / B6 in nba.toml (stage and the five
+  granularity-index parts).
+Results: the module + tests, 12_EXPLORATORY/nba_availability/results_W93_1.md, the seat rows, a handoff.
+
+END OF BLOCK 93.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 93.2 — NBA engine: travel, time zones, altitude and officials
+**DEPTH · terminal 2**
+
+```
+Before anything else, read the Wave 93 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 93.2 - NBA ENGINE: TRAVEL, TIME ZONES, ALTITUDE AND OFFICIALS. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH. Measures: D5(b) NBA factor classes: travel geometry (new) none -> interpreted; officials (new) none -> aggregated or
+interpreted (or a registered gap if no free history exists); D4 NBA factor classes built point-in-time 1 -> +1 or +2.
+NBA's seat has rest (B2: back-to-back, 3-in-4) built from dates only, and no venue geometry or officials. ADR-0073 names venue, rest
+and officials among the factor classes every engine builds once, point-in-time.
+Premises to check: B2 in nba.toml and its code; the event store's game rows carry the date, home and away teams, and (check) the tip
+time and arena; free arena coordinates and time zones (Muse R-078 asks for them and may have landed - read STATUS, do not wait);
+official assignments - the league publishes each night's crews on game day; whether past assignments are reachable for free, and
+whether the play-by-play names the officials (check the 49 columns), is the open question (Muse R-040).
+PERMISSIONS: per the common rules' ownership. NOT: any live model, runner, shadow arm, pre-registration, order, gate, ledger or registry
+cell; no new running component.
+
+PART A - Travel and schedule geometry (~40 min)
+  Point-in-time per team-game: miles travelled since the last game, time zones crossed and direction, days of rest, games in the last
+  4 / 6 nights, home-stand / road-trip length, altitude (Denver, Utah), start time in the team's body clock. Known-answer test on a
+  hand-checked week. Interpreted: on held-out seasons, beyond B1 / B9 / B2 and the prior-season carry, does it predict margin and total
+  (paired, game-clustered, intervals)?
+PART B - Officials (~35 min)
+  If crew assignments are reachable for past seasons (or in the play-by-play): per-official and per-crew foul rate, free-throw rate and
+  pace effects, shrunk to the league mean, point-in-time (only games before the one predicted); interpreted on held-out totals. If
+  they are not reachable, measure what IS (this season's game-day assignments, captured how?) and register the gap with the cheapest
+  free route; no factor without data.
+  Then both: applied, descriptive, on this season's Kalshi NBA total / spread markets; new rows in nba.toml with stage and the five
+  granularity-index parts.
+Results: the module(s) + tests, 12_EXPLORATORY/nba_geometry/results_W93_2.md, the seat rows, a handoff.
+
+END OF BLOCK 93.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 93.3 — NBA engine: one model prices the whole board
+**DEPTH (+ PROOF) · terminal 3**
+
+```
+Before anything else, read the Wave 93 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 93.3 - NBA ENGINE: ONE MODEL PRICES THE WHOLE BOARD. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH (+ PROOF). Measures: D4 NBA "data layer" -> "whole board priced from one engine" (scaffold, tested); markets priced
+from one joint distribution 0 -> moneyline, spread, total, team totals (props if Part B reaches them); Brier against this season's
+Kalshi prices 0 -> n.
+ADR-0073: "One engine prices the whole board: a game simulation's joint distribution yields moneyline, spread, total, team totals,
+props and parlays consistently - parlay correlations included." NFL has its scaffold (89.4: one chain priced the board, worse than the
+close at the centre). NBA has the factors to try it: B1, B2, B3, B9 applied; B7 lineups (92.3); not yet 93.1's availability or 93.2's
+geometry (they plug in next wave - do not wait for them).
+Premises to check: how 89.4 built NFL's board (12_EXPLORATORY/, and src/prediction_market_bot/nfl_engine/) - reuse its shape, not its
+sport-specific parts; the NBA factor code in c1_signal_ingestion/ (nba_lineups.py, nba_minutes_features.py and the B1 / B9 builders);
+86.2's ladder-implied distributions (quant/ladder.py) for comparing the engine's distribution with the market's.
+PERMISSIONS: per the common rules' ownership. NOT: any live model, runner, shadow arm, pre-registration, order, gate, ledger or registry
+cell; no new running component; nothing wired.
+
+PART A - The joint distribution (~45 min)
+  src/prediction_market_bot/nba_engine/: from the point-in-time factors, each team's expected possessions and points per possession,
+  then a joint distribution of the two scores (simulated or analytic - state which and why), with the score correlation measured, not
+  assumed. From it, every market on the board: win probability, cover probability at each spread strike, over probability at each
+  total strike, each team total. Tests: internal coherence (the ladders it implies are monotone and agree with each other); a simulated
+  league with known means and correlation is recovered; leakage (nothing from the game priced).
+PART B - Scored against the market (~35 min)
+  On held-out seasons against results (Brier per family, calibration). Then against this season's Kalshi prices (the archive's pre-game
+  rows since 10-28 and 89.7's candles since 10-01; settlements from public GETs): paired Brier, engine vs market, per family, with
+  intervals; where engine and market disagree, the mean and spread of the market's implied distribution against the engine's. Market-
+  anchored reading (accepted 10-21): report the engine's skill weight against the market, not only its standalone Brier. Say plainly
+  where n is too small. Update the NBA [[engine]] entry (engine, engine_test) with the stage reached.
+Results: the package + tests, 12_EXPLORATORY/nba_board/results_W93_3.md, the engine entry, a handoff.
+
+END OF BLOCK 93.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 93.4 — NFL engine: the board from the line, key numbers right; then travel
+**DEPTH · terminal 5**
+
+```
+Before anything else, read the Wave 93 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 93.4 - NFL ENGINE: THE BOARD FROM THE LINE, WITH THE KEY NUMBERS RIGHT; THEN TRAVEL. Repo: eignacio1/prediction-market-bot.
+PURPOSE: DEPTH. Measures: D4 NFL "data layer + engine scaffold" -> "whole board priced, market-anchored, tested"; the engine's margin
+distribution at key numbers 3 / 7 / 10 (89.4: 3 missed by about half) -> within sampling noise; D5(b) NFL N15 travel / time zone /
+short week none -> interpreted.
+Operator, 2026-10-27 22:30 PT: "do 1 extra block to do NFL engine work". NFL is the template engine (ADR-0073: "NFL first, as the
+template"). 89.4's game-state chain priced the whole board from one distribution but was worse than the close at the centre and missed
+key number 3 by about half (no end-of-game logic: 12_EXPLORATORY/nfl_gamestate/results_W89.md). Under market-anchored pricing (accepted
+10-21) the engine does not have to beat the line at the centre: it has to price everything AROUND the centre coherently - alternate
+spreads and totals, team totals, the shape at key numbers - where Kalshi's own ladders can be wrong (91.2 found strikes quoted off their
+own ladder move back toward it).
+Premises to check: 89.4's code and results (12_EXPLORATORY/nfl_gamestate/); src/prediction_market_bot/nfl_engine/; the 27-season NFL
+play-level store (c1_signal_ingestion/nfl_event_store.py); EXP-041 (frozen; read only); the price archive's NFL ladders since 2026-08.
+PERMISSIONS: NEW modules in src/prediction_market_bot/nfl_engine/ + tests, a new src/prediction_market_bot/c1_signal_ingestion/
+nfl_schedule_geometry.py + tests, the N15 row of 02_ARCHITECTURE_DESIGN/SEATS/nfl.toml (re-render with python3.11 scripts/render_seat.py),
+the NFL [[engine]] entry in ARCHITECTURE_COMPONENTS.toml, a new 12_EXPLORATORY/nfl_board_v2/. NOT: EXP-041 or any frozen
+pre-registration, any live model, runner, shadow arm, order, gate, ledger or registry cell; no new running component; nothing wired.
+
+PART A - The board from the line (~50 min)
+  A margin and total joint distribution centred on the market's own main line (spread and total at the quote time), with the SHAPE
+  learned from 27 seasons of results: key-number mass (3, 7, 10, 6, 14...) conditional on the line and the total, the margin-total
+  correlation, overtime. From it: every alternate spread and total strike, both team totals, moneyline. Known-answer tests: the key-number
+  frequencies of a held-out season are reproduced within sampling noise at the same lines; the ladders are coherent. Then against Kalshi
+  (archive, 2026-08 ->): for each strike off the main line, engine price vs Kalshi's quote vs settlement - paired Brier per family with
+  game-clustered intervals, net of the exact fee (quant/money.py fee()) where the engine disagrees by more than cost. Report n plainly.
+PART B - Travel and short weeks, N15 (~30 min)
+  Point-in-time per team-game: miles travelled, time zones crossed and direction, short week (Thursday), off a bye, international /
+  neutral site, kickoff in body-clock time. Known-answer test on a hand-checked week. Interpreted: on held-out seasons, beyond N1-N3 and
+  the line, does it move margin or total (paired, intervals)? Update N15 with stage and the five granularity-index parts.
+Results: the modules + tests, 12_EXPLORATORY/nfl_board_v2/results_W93_4.md, the N15 row, the engine entry, a handoff.
+
+END OF BLOCK 93.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 93.Q — Quant, in tandem: exact fees per trade, the ladder side, a proof calendar
+**PROOF (quant) · terminal 4, in tandem**
+
+```
+Before anything else, read the Wave 93 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W93.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 93.Q - QUANT, IN TANDEM: FINISH THE EXACT-FEE RECOMPUTE, FIX THE LADDER SIDE, AND A PROOF CALENDAR. Repo: eignacio1/prediction-market-bot.
+PURPOSE: PROOF (quant). Measures: reported net figures re-checked with the exact fee, per trade 0 -> all (89.2's 11 cells, 90.3's
+headline, 91.2's ladder whole-sample and its 2 HELD_OUT cells); ride.py's LADDER side hazard open -> fixed; frozen hypotheses with a
+projected look date 1 (P3, the next look only) -> all.
+The operator, 2026-10-27 22:26 PT: "would like a little bit more Quant blocks in between as well"; 22:27 PT: "Quant blocks can run in
+tandem with everything". 92.2 merged the exact fee (quant/money.py fee(), quant/kalshi_fees.json) but re-checked 89.2's cells only at
+bucket midpoints, and left a hazard: ride.py maps a LADDER cell's side 'by_trigger' to RIDE-NO. P3 shows one look date; nobody can see
+when each frozen test (the 49 calibration-engine cells, EXP-041, EXP-042, EXP-043, the NFL first look) will be judged.
+Premises to check: 12_EXPLORATORY/fees_exact/results_W92_2.md; ride.py and ride_cells.toml; each frozen pre-registration's judged-n
+rule; where each one's rows live (the box ledgers and the price archive).
+PERMISSIONS: per the common rules' ownership; ride.py for the LADDER side fix only; a new allowlisted read-only box task if Part B needs
+the box's ledgers. NOT: fee_k007 or any existing quant function, any frozen pre-registration, ride_cells.toml statuses, any order, gate,
+model, runner, ledger or registry cell.
+
+PART A - Exact fees per trade, and the ladder side (~40 min)
+  Re-run 89.2's 11 cells, 90.3's headline grid and 91.2's ladder (whole sample and the 2 HELD_OUT cells) per trade with fee(); for the
+  ladder the trigger itself depends on the fee, so recompute the trigger set too, with no re-selection of cells. A table: old net, exact
+  net, interval, did the status change. Fix the LADDER side in ride.py (the trigger decides YES / NO) with tests; router tests pass.
+PART B - The proof calendar (~35 min)
+  One generated table, every frozen hypothesis: what it tests, its rows to date, its accrual rate over the last 14 days (by sport and
+  season calendar - MLB pauses until spring), its judged n, the projected look date with an interval, and its pre-registered modal
+  outcome. Reads rows where they live (bridge task on the box if needed); writes 04_EXECUTION/PROOF_CALENDAR.md, regenerated by the
+  script, never typed. Known-answer test on a synthetic accrual series.
+Results: the code + tests, 12_EXPLORATORY/quant_w93/results_W93_Q.md (the fee table), PROOF_CALENDAR.md, a handoff.
+
+END OF BLOCK 93.Q. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
+---
+
 ## Wave 92 NOW section with its pastes (closed 2026-10-27 22:40 PT). 92.1 ✅ 92.2 🟨 92.3 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W92.md. Verbatim:
 
 ## ⬛ NOW — Wave 92 · THE WINTER ARCHIVE, EXACT FEES, THE NBA ENGINE · WRITTEN 2026-10-28 ~05:00 UTC (10-27 22:00 PT) · three MEDIUM blocks · no Muse paste (ten scheduled cycles a day)
