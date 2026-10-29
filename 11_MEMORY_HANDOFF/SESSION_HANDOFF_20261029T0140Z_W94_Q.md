@@ -16,7 +16,7 @@ surface_delta: +1 allowlisted read-only box task (proof_calendar_read); no runni
 
 # SESSION_HANDOFF W94.Q (quant in tandem)
 
-## Status: PARTIAL. Parts A and C DONE; Part B code merged, calendar not generated.
+## Status: DONE. Parts A, B, C. Part B closed 2026-10-29T05:2xZ: `04_EXECUTION/PROOF_CALENDAR.md` generated (64 rows) after two emit fixes: #375 (537KB blob cut by the 30KB bridge cap -> per-day counts) and #376 (counted market tickers, 532 vs 58 games -> game_key). Open item 1 below is superseded. NFL look date 10-30 vs the engine's 11-02 (settle lag): treat the engine date as binding. Still unregistered (Rule 11): GG for the 2 non-reproducing KXMLBHIT cells and the reported-n mismatches.
 
 ## Merged (CI green read before each merge)
 - #372: `exact_fee_recompute.py`, ride.py LADDER side fix + tests, `quant/bayes_skill.py` (+7 known-answer tests), `scripts/proof_calendar.py` (+7 tests incl. known-answer on a synthetic accrual series), `proof_calendar_read` box task, results.
