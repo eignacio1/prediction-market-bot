@@ -1,4 +1,21 @@
 # Session handoff — W94.1 (NBA engine live arm + v2 challenger)
+
+<!-- session-meta
+task_id: T-1450
+tier: STANDARD
+timestamp: 2026-10-29T04:40:00Z
+commit: 1088218
+one_line_summary: W94.1 NBA engine live arm: EXP-044 and v2 challenger EXP-044b frozen, 56 games ingested; install waits on GREEN budget_read.
+gg_touched: GG-1450, GG-1451, GG-1452
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, PROOF
+gap_measure: D3 challengers ready; D4 NBA; D5(b) NBA applied classes; P3 NBA look dated
+gap_delta: D3 3 -> 4 (EXP-044b); NBA looks dated 0 -> 2; NBA 2026-27 games in store 0 -> 56; D5(b) NBA 4 -> 4 (target 7 not met) (results_W94_1.md @ d975509)
+pattern_sweep: team_total away-side double-sign and csv path-precedence bugs fixed in my own new study_v2.py; no other caller shares them.
+surface_delta: 0 (runners merged, not installed)
+-->
+
 vision_pillar: DEPTH + PROOF
 gap_measure: D4 NBA (scaffold -> engine priced live-board dry run, not yet forward); D3 challengers 3 -> 4 (EXP-044b); P3 NBA look dated (2027-04-20); NBA 2026-27 games in store 0 -> 56 (last 2026-10-27)
 gap_delta: D5(b) NBA applied factor classes 4 -> 4 (target 7 not met: altitude, travel tested/not kept; availability, lineups, officials not built). Held-out Brier v2-v1: ml -0.00554, total -0.00143, team total -0.00058, spread tie.
