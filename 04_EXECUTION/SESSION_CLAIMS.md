@@ -1091,3 +1091,4 @@
 | 2026-10-28T23:52:11Z | T-1420 | CLOSED — W93.1 NBA availability known before tip: interpreted (no demonstrable add beyond rotation, n=2008); applied blocked by data, GG-1420. (commit `e9c8cbb`) |
 | 2026-10-28T23:52:29Z | T-1420 | CLOSED — merge confirmed, HEAD (4ca7d43) is ancestor of origin/main — W93.1 merged PR #364; B5/B6 interpreted, applied blocked GG-1420 |
 | 2026-10-28T23:59:48Z | T-1393..T-1395 | CLOSED — merge confirmed, HEAD (f88d455) is ancestor of origin/main — W93.3 NBA board engine merged (PR #363, cfdc423); docs 17d9ba5; PARTIAL, Part B n=0 settled |
+| 2026-10-29T00:01:09Z | T-1400 | CLOSED — merge confirmed, HEAD (919cc91) is ancestor of origin/main — W93.4 NFL board v2 + N15 interpreted; PR #365 merged f88d455 |
