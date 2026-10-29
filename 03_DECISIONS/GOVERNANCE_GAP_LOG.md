@@ -4458,6 +4458,21 @@ W94.3, 2026-10-29, T-1441. Found in the same scheduled-start vs first-row compar
 
 W94.2, 2026-10-29, T-1460. `safe_out` (`12_EXPLORATORY/_fence.py:7`) joins a relative path to `ROOT` = `12_EXPLORATORY/`. Three scripts pass the repo-relative form and so write to the nested directory: `nfl_board_v2/heldout_keynumbers.py:35`, `nfl_board_v2/kalshi_compare.py:94`, `nfl_board_v2/n15_interpret.py:46`. This is the likely origin of the untracked `12_EXPLORATORY/12_EXPLORATORY/` in the main tree. Their committed JSONs may be the nested copies or stale. Not fixed in this block (rule 11); the fix is either `safe_out` stripping a leading `12_EXPLORATORY/` or the three call sites, plus a test that fails on a doubled prefix.
 
+### GG-1450 — EXP-044 / EXP-044b runners merged but not installed; no box read-back
+**Status:** OPEN · **Severity:** MEDIUM
+
+W94.1 (2026-10-29). `nba_engine/live.py` and `live_v2.py` plus the current-season refresh are merged (PR #368, #374) but have no cron line or RUNTIME_REGISTRY entry. The 00:04Z `budget_read` was RED (T4 MLB silent arm; 94.3 later diagnosed it as a false positive) and no GREEN read was seen. The box also needs the 2016-2026 `schedule`/`espn_schedule`/`team_box` parquet for `--raw`. Until installed, no forward row exists. Next wave: register, ship the history store, install on GREEN, read back first night's rows.
+
+### GG-1451 — NBA availability, lineups->total and officials factors not built (EXP-044b stays v2_core)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W94.1 Part C. Sources for 93.1 expected missing minutes, 92.3 lineups and officials are not in the event store, so v2 tested only altitude and travel (neither kept). D5(b) NBA applied classes stay 4, not the addendum's 7. Related: GG-1420.
+
+### GG-1452 — Wave 94 common rules reference a Deploy job summary that does not exist for docs-only or skipped runs
+**Status:** OPEN · **Severity:** LOW
+
+W94.1: the post-merge Test Suite run for PR #368 concluded `skipped` (job `test` only); no Deploy job to read. See GG-1462 (same cause). Recorded t4-mlb decision: none taken, no src file t4-mlb imports was changed.
+
 ### GG-1461 — The fence scan in `tests/test_exploratory_isolation.py` treats any `.rename()` / `.replace()` as a write
 
 **Status:** OPEN · **Severity:** LOW
