@@ -136,13 +136,18 @@ def emit(repo: Path, now: datetime | None = None) -> dict:
     from prediction_market_bot.pregame_shadow import calibration_engine as ce
     now = now or datetime.now(timezone.utc)
     res = ce.run(repo, now, persist=False)
-    dates: dict[str, list[str]] = {}
+    dates: dict[str, dict[str, int]] = {}
     for c in ce.discover_cells(repo):
         pol = ce.policy_for(c.get("policy", c["sport"]))
         rows = [r for r in ce.first_row_per_unit(ce.load_settled(c)) if ce.eligible(pol, r)]
-        dates[c["cell"]] = sorted(str(r.get("start_time_utc") or r["ts_utc"])[:10] for r in rows)
+        cut = (now - timedelta(days=WINDOW_DAYS + 7)).date().isoformat()  # bridge output is capped at 30KB: ship per-day counts, recent only
+        counts: dict[str, int] = {}
+        for d in (str(r.get("start_time_utc") or r["ts_utc"])[:10] for r in rows):
+            if d >= cut:
+                counts[d] = counts.get(d, 0) + 1
+        dates[c["cell"]] = counts
     cells = [{k: c.get(k) for k in ("cell", "sport", "band", "market_type", "rows", "judged_n", "settled_games",
-                                    "first_look_n", "status_text", "projection")} | {"settle_dates": dates.get(c["cell"], [])}
+                                    "first_look_n", "status_text", "projection")} | {"settle_dates": dates.get(c["cell"], {})}
              for c in res["cells"]]
     arch: dict[str, dict[str, int]] = {}
     for p in sorted((repo / "exp_output/PRICE_ARCHIVE").glob("prices_*.jsonl")):
@@ -191,7 +196,9 @@ def engine_rows(blob: dict, today: date, modal_nfl: str) -> list[dict]:
     out = []
     for c in blob["cells"]:
         need = (c.get("first_look_n") or 0) - (c.get("judged_n") or 0)
-        k, active = trailing_rate(c.get("settle_dates", []), c["sport"], today)
+        sd = c.get("settle_dates", {})
+        sd = [d for d, n in sd.items() for _ in range(n)] if isinstance(sd, dict) else sd
+        k, active = trailing_rate(sd, c["sport"], today)
         pr = project(need, k, active, c["sport"], today) if c.get("first_look_n") else {"point": None, "note": "no look pre-registered"}
         eng = (c.get("projection") or {}).get("date") or (c.get("projection") or {}).get("note") or "-"
         modal = modal_nfl if c["sport"].startswith("NFL") else MODAL_BY_SPORT.get(c["sport"], "see prereg")
