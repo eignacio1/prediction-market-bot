@@ -3,8 +3,11 @@
 k and season decay are fitted on 2016-2019 only; 2020-2025 is held out. Intervals are game-level bootstrap (seed 94).
 """
 import argparse, json, sys
+from pathlib import Path
 import numpy as np, pandas as pd
 sys.path.insert(0, "src")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out
 from prediction_market_bot.c1_signal_ingestion import nfl_play_callers as pc
 
 COLS = ["game_id", "season", "season_type", "week", "game_date", "home_team", "away_team", "home_coach", "away_coach", "posteam",
@@ -144,8 +147,8 @@ def main():
     # per-feature: does adding ONE tendency (own + opponent) help the team-total model?
     D = D2
     out["team_totals_one_feature"] = {f: run(lambda d: d.y.to_numpy(float), bt, ["o_est_" + f, "x_est_" + f], f)["callers_add_mse_gain"] for f in pc.FEATURES}
-    json.dump(out, open(a.out, "w"), indent=1, default=float)
-    rp.to_parquet(a.out.replace(".json", "_asof.parquet"))
+    json.dump(out, open(safe_out(a.out), "w"), indent=1, default=float)
+    rp.to_parquet(safe_out(a.out.replace(".json", "_asof.parquet")))
     print(json.dumps(out, indent=1, default=float))
 
 

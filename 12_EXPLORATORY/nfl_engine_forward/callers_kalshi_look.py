@@ -1,7 +1,10 @@
 """Descriptive look (W94.2 Part C): do caller tendencies line up with the gap between Kalshi's implied team total
 and the schedule-line-implied team total, 2026 REG games? Descriptive only: no test is claimed, no order is implied."""
 import glob, json, re, sys
+from pathlib import Path
 import numpy as np, pandas as pd
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out
 
 SCHED, ASOF, ARCH, OUT = sys.argv[1:5]
 MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
@@ -51,5 +54,5 @@ if len(imp):
             if c in m and m[c].notna().sum() > 10:
                 x = m[[c, "gap"]].dropna()
                 res[f"corr_{f}_gap"] = float(np.corrcoef(x[c], x.gap)[0, 1]); res[f"n_{f}"] = int(len(x))
-json.dump(res, open(OUT, "w"), indent=1)
+json.dump(res, open(safe_out(OUT), "w"), indent=1)
 print(json.dumps(res, indent=1)); print(asof.columns.tolist())
