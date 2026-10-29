@@ -4440,6 +4440,18 @@ W91.1, 2026-10-28, T-1341. 8 parallel fetch processes shared ~4 req/s with frequ
 
 W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB accrues nothing between the World Series and ~2027-03-25. Earliest full-effect looks: cell 6 ~2026-12-21 (NFL); 3 2027-04-11; 10 04-15; 5 04-28; 2 04-29; 4 05-06; 1 05-18; 9 06-07; 8 06-11; 7 06-17; 11 06-25. PASS needs the half-effect judged n (EXP-042 section 3). Reopens if a look date is reached or the operator changes the ride rule.
 
+### GG-1440 — T4 MLB silent-arm alarm reads RED for 8-16 min every night: "started" is the scheduled start, T4 writes from first pitch
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W94.3, 2026-10-29, T-1440. The 2026-10-29 00:04Z "T4 MLB live SILENT 19.6h" was false: first row 00:08:14Z, process healthy (active since 10-27 04:58Z, 0 restarts). `silent_arms.py` t4_mlb has window 3h, lead 0, scheduled start from a cache rounded to :00/:30; measured lag to first row 8-16 min (10-24 16.4, 10-25 9.8, 10-27 10.1, 10-28 7.7, 10-29 8.2). Recommended fix: `start_grace_h=0.5` on t4_mlb only + regression test on the 00:04Z case and one on a GG-163-style outage. Not applied: the block bars changing the gauge. Hard Rule 14 interaction: installs are blocked for those minutes each night. See `12_EXPLORATORY/t4_mlb_silent/results_W94_3.md`.
+
+### GG-1441 — Three T4 MLB first-row lags far above the 8-16 min pattern are unexplained (2026-10-06 22:00Z 218 min, 10-12 21:00Z 106 min, 10-18 21:08Z 1620 min)
+
+**Status:** OPEN · **Severity:** LOW
+
+W94.3, 2026-10-29, T-1441. Found in the same scheduled-start vs first-row comparison. May be postponed games, doubleheaders or games T4 does not cover; not checked, so a real outage cannot be ruled out. Needs the per-game list against the T4 discovery log.
+
 ### GG-1420 — NBA availability cannot be tested against a price: no 2026-27 event data and no pre-tip price history
 
 **Status:** OPEN · **Severity:** MEDIUM
