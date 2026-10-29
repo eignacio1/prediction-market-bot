@@ -25,7 +25,6 @@ EXP = os.path.dirname(HERE)
 for sub in ("", "longshot_bias", "momentum_j", "ride_ladder"):
     sys.path.insert(0, os.path.join(EXP, sub))
 sys.path.insert(0, os.path.join(EXP, "..", "src"))
-from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap, pooled_cluster_test  # noqa: E402
 from prediction_market_bot.quant.money import fee_k007, fee_rate  # noqa: E402
 
@@ -64,17 +63,9 @@ def status_change(old_lo: float, new_lo: float) -> str:
             "GAINED (lo<=0 -> lo>0)" if new_lo > 0 else "none (lo<=0 both)")
 
 
-def subset_archive(archive: str, until: str, dest: str) -> str:
-    """Symlink prices_*.jsonl dated <= until into dest so the existing loaders run unchanged on a wave's own window."""
-    os.makedirs(dest, exist_ok=True)
-    for f in glob.glob(os.path.join(dest, "prices_*.jsonl")):
-        os.remove(f)
-    n = 0
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        if os.path.basename(f)[7:17] <= until:
-            os.symlink(os.path.abspath(f), os.path.join(dest, os.path.basename(f)))
-            n += 1
-    return dest
+# The archive subset (prices_*.jsonl dated <= --until) is built by the caller, outside 12_EXPLORATORY:
+#   mkdir D; for f in PRICE_ARCHIVE/prices_*.jsonl; do [ "$(basename $f | cut -c8-17)" \< "2026-10-28" ] && ln -s "$f" D/; done
+# This script only reads it and writes to stdout (the results file is that stdout, saved by the caller).
 
 
 # ------------------------------------------------------------------------------------------------ 89.2
@@ -298,13 +289,11 @@ def render(r89, r90, r91, until, notes) -> str:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--archive", required=True)
+    ap.add_argument("--archive", required=True, help="prebuilt subset directory of prices_*.jsonl")
     ap.add_argument("--settle", required=True)
     ap.add_argument("--until", default="2026-10-27")
-    ap.add_argument("--out", required=True)
-    ap.add_argument("--scratch", required=True)
     a = ap.parse_args()
-    sub = subset_archive(a.archive, a.until, os.path.join(a.scratch, "archive_subset"))
+    sub = a.archive
     import sys
     import time
     t0 = time.time()
@@ -316,9 +305,6 @@ def main():
              "NFL (and NBA/NHL game series) have multiplier 1: exact == k007 (test_w94_q_exact_fee). Only MLB rows move.",
              "90.3 NFL rows and the 89.7 NBA/NHL candles need the 89.7 events/candles files, which are not local; unchanged by construction."]
     md = render(r89, r90, r91, a.until, notes)
-    os.makedirs(a.out, exist_ok=True)
-    with open(safe_out(os.path.join(a.out, "exact_fee_table.md")), "w") as f:
-        f.write(md)
     print(md)
 
 
