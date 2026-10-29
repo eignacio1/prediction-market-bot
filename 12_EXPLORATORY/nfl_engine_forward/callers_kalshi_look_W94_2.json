@@ -1,0 +1,16 @@
+{
+ "n_team_games_with_kalshi_ladder": 173,
+ "note": "descriptive; implied = strike where P(X>=k)=0.5 from last tight snapshot",
+ "gap_mean": -0.649695965418693,
+ "gap_sd": 8.451430976576782,
+ "asof_rows_2026": 214,
+ "n_joined": 147,
+ "corr_pass_oe_gap": 0.12118850454483862,
+ "n_pass_oe": 147,
+ "corr_go4_oe_gap": 0.07724258350083969,
+ "n_go4_oe": 147,
+ "corr_pace_gap": -0.038661833317556016,
+ "n_pace": 147,
+ "corr_lead_oe_gap": -0.01547926037766221,
+ "n_lead_oe": 147
+}

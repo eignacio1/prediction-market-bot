@@ -103,10 +103,11 @@ result = "applied and tested W76.2 (non-QB unit availability): 99% orthogonal to
 id = "N11"
 factor_class = "F9"
 name = "Play callers / coaching"
-source = "GAP-2: head coach only; no coordinator table"
+source = "Muse R-019 OC cards (93.2% of 2016-2025 team-games; coordinator of record, not a confirmed play caller) with head-coach fallback (6.8%); nflverse pbp"
 engine_slot = "coach"
-stage = "none"
-evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/FACTOR_TAXONOMY.md"
+stage = "interpreted"
+evidence = "12_EXPLORATORY/nfl_engine_forward/results_W94_2.md"
+result = "interpreted W94.2 (src/prediction_market_bot/c1_signal_ingestion/nfl_play_callers.py, point-in-time, shrunk to league mean, reset on caller change): as-of tendencies are real traits, held-out 2020-2025 corr with the same game's residual pass_oe 0.38 [0.35,0.41] n 2682, pace 0.45 [0.40,0.50] n 1116, lead_oe 0.30 [0.22,0.38] n 530, go4_oe 0.15 [0.11,0.19] n 2939; NOT applied: beyond the line and an N1-N3 proxy they do not move totals (dMSE -0.92 [-2.98,1.04], n 1615) or team totals (-0.24 [-0.56,0.09], n 3230), the line already holds them; Kalshi team-total gap vs tendency corr 0.12/0.08/-0.04/-0.02, n 147, descriptive, CIs span 0. Granularity index: split = pass rate over expected by down/distance/score, 4th-down go over expected, neutral snap pace, lead protection; rank = shrunk estimate vs all callers at the same point, history 2016+; matchup cross = not built (caller x opposing coverage scheme, GAP); market map = team totals and total, KXNFLTEAMTOTAL/KXNFLTOTAL ladders; application = none, rigorous null"
 
 [[factor]]
 id = "N12"
