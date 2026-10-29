@@ -4452,6 +4452,24 @@ W94.3, 2026-10-29, T-1440. The 2026-10-29 00:04Z "T4 MLB live SILENT 19.6h" was 
 
 W94.3, 2026-10-29, T-1441. Found in the same scheduled-start vs first-row comparison. May be postponed games, doubleheaders or games T4 does not cover; not checked, so a real outage cannot be ruled out. Needs the per-game list against the T4 discovery log.
 
+### GG-1460 — `_fence.safe_out` resolves relative paths against `12_EXPLORATORY/`, so a path that already starts `12_EXPLORATORY/` writes to `12_EXPLORATORY/12_EXPLORATORY/…`
+
+**Status:** OPEN · **Severity:** LOW
+
+W94.2, 2026-10-29, T-1460. `safe_out` (`12_EXPLORATORY/_fence.py:7`) joins a relative path to `ROOT` = `12_EXPLORATORY/`. Three scripts pass the repo-relative form and so write to the nested directory: `nfl_board_v2/heldout_keynumbers.py:35`, `nfl_board_v2/kalshi_compare.py:94`, `nfl_board_v2/n15_interpret.py:46`. This is the likely origin of the untracked `12_EXPLORATORY/12_EXPLORATORY/` in the main tree. Their committed JSONs may be the nested copies or stale. Not fixed in this block (rule 11); the fix is either `safe_out` stripping a leading `12_EXPLORATORY/` or the three call sites, plus a test that fails on a doubled prefix.
+
+### GG-1461 — The fence scan in `tests/test_exploratory_isolation.py` treats any `.rename()` / `.replace()` as a write
+
+**Status:** OPEN · **Severity:** LOW
+
+W94.2, 2026-10-29, T-1461. `WRITE_ATTRS` includes `rename` and `replace`, so pandas `DataFrame.rename` and `str.replace` fail CI as writes. It cost this block two CI rounds (`drift_measure.py`, `callers_measure.py`, `callers_kalshi_look.py` reworded to `to_frame` / `set_axis` / slicing). Sweep: no remaining `.rename(` / `.replace(` call in `12_EXPLORATORY/*.py` today, so the false positive bites only new code. Fix would restrict the scan to `Path`-typed receivers or `os.rename` / `os.replace`.
+
+### GG-1462 — Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
+
+**Status:** OPEN · **Severity:** LOW
+
+W94.2, 2026-10-29, T-1462. `deploy.yml` has `workflow_dispatch` only (last run 2026-10-16); deploys run on the box via `scripts/ops/vps_deploy.sh` cron every 5 min, gated by the approval-path tests (13 tests, 5-20 min), so the box lags `main` by up to ~20 min. The correct read-back is `logs/vps_deploy.log` on the box and `git merge-base --is-ancestor <sha> HEAD`. The common-rules text should say so.
+
 ### GG-1420 — NBA availability cannot be tested against a price: no 2026-27 event data and no pre-tip price history
 
 **Status:** OPEN · **Severity:** MEDIUM
