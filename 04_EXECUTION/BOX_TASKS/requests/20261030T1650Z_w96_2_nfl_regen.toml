@@ -1,0 +1,2 @@
+task = "nfl_board_v2_regen_read"
+note = "W96.2 Part A: regenerate nfl_board_v2 JSONs on box"
