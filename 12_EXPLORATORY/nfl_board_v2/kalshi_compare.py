@@ -91,4 +91,4 @@ for f, x in d.groupby("fam"):
                          kalshi_minus_engine=[round(m, 4), round(lo, 4), round(hi, 4)], fired=len(pnl), fire_games=len(pc),
                          pnl_per_contract=[round(v, 4) for v in pm])
     print(f, out["fam"][f])
-json.dump(out, open(safe_out(f"12_EXPLORATORY/nfl_board_v2/kalshi_compare_{CONV}_off{OFF:g}.json"), "w"), indent=1)
+json.dump(out, open(safe_out(f"nfl_board_v2/kalshi_compare_{CONV}_off{OFF:g}.json"), "w"), indent=1)

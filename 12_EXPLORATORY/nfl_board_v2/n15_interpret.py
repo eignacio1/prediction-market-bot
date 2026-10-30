@@ -43,4 +43,4 @@ for tgt in ("res_m", "res_t"):
                     ols={c: [round(float(beta[i + 1]), 3), round(float(se[i + 1]), 3)] for i, c in enumerate(cols)})
     print(tgt, out[tgt]["n_games_scored"], out[tgt]["mse_gain"])
     for c in cols: print("  ", c, out[tgt]["ols"][c])
-json.dump(out, open(safe_out("12_EXPLORATORY/nfl_board_v2/n15_interpret.json"), "w"), indent=1)
+json.dump(out, open(safe_out("nfl_board_v2/n15_interpret.json"), "w"), indent=1)

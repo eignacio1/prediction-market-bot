@@ -32,4 +32,4 @@ for k in KS:
     out["k"][k] = dict(observed=o, engine=round(e, 1), engine_z=round((o - e) / v ** .5, 2), gauss=round(float(pg.sum()), 1),
                        gauss_z=round((o - pg.sum()) / (pg * (1 - pg)).sum() ** .5, 2))
     print(k, out["k"][k])
-json.dump(out, open(safe_out("12_EXPLORATORY/nfl_board_v2/heldout_keynumbers.json"), "w"), indent=1)
+json.dump(out, open(safe_out("nfl_board_v2/heldout_keynumbers.json"), "w"), indent=1)
