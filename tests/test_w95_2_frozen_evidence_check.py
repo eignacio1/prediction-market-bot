@@ -88,3 +88,13 @@ def test_regen_nfl_board_filters_nfl_rows_and_redirects_writes(tmp_path):
         assert str(_fence.safe_out("12_EXPLORATORY/x.json")) == str(tmp_path / "scratch" / "x.json")
     finally:
         _fence.safe_out = orig
+
+
+def test_heartbeat_writes_to_the_given_stream_while_running():
+    """W96.2: a silent long run drops the bridge ssh link; the heartbeat emits a line per interval."""
+    import io
+    import time as _t
+    buf = io.StringIO()
+    R.heartbeat(0.05, buf)
+    _t.sleep(0.3)
+    assert buf.getvalue().count("[repro] alive") >= 2

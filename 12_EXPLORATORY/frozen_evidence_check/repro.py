@@ -21,6 +21,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 import urllib.request
 from collections import Counter, defaultdict
@@ -200,6 +201,19 @@ def render(res: dict) -> str:
     return "\n".join(L) + "\n"
 
 
+def heartbeat(every: float = 30.0, out=None):
+    """Daemon thread writing a line to stderr every `every` s: a silent multi-minute run drops the box-task ssh link (W96.2)."""
+    t0, out = time.time(), out or sys.stderr
+
+    def beat():
+        while True:
+            time.sleep(every)
+            print(f"[repro] alive {round(time.time() - t0)}s", file=out, flush=True)
+    th = threading.Thread(target=beat, daemon=True)
+    th.start()
+    return th
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["inventory", "fetch", "run"])
@@ -214,6 +228,7 @@ def main(argv=None):
     elif a.cmd == "fetch":
         print(json.dumps(fetch(a.archive, a.cache, a.budget), indent=1))
     else:
+        heartbeat()
         print(render(run(a.archive, a.settle, a.until)))
 
 
