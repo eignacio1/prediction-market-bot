@@ -64,3 +64,27 @@ def test_subset_is_symlinks_with_exclusive_bound(tmp_path):
     d = R.archive_files(R.subset(arch, "2026-10-21"))
     assert len(d) == 1 and os.path.islink(d[0])
     assert R.subset(arch, None) == arch
+
+
+def test_regen_nfl_board_filters_nfl_rows_and_redirects_writes(tmp_path):
+    """W96.2: only KXNFL* rows are streamed; the fence is redirected so no file lands in the repo tree."""
+    import regen_nfl_board as G
+    arch = tmp_path / "arch"
+    arch.mkdir()
+    rows = [{"series_ticker": "KXNFLTOTAL", "k": 1}, {"series_ticker": "KXMLBHIT", "k": 2}, {"series_ticker": "KXNFLSPREAD", "k": 3}]
+    (arch / "prices_2026-10-20.jsonl").write_text("\n".join(json.dumps(r) for r in rows))
+    dest = tmp_path / "out.jsonl"
+    import _fence
+    _real = _fence.safe_out
+    _fence.safe_out = lambda p: __import__("pathlib").Path(p)  # fence is for the repo tree; this test writes to tmp_path
+    assert G.nfl_rows(str(arch), str(dest)) == 2
+    assert [json.loads(l)["k"] for l in dest.read_text().splitlines()] == [1, 3]
+    import _fence
+    orig = _real
+    try:
+        G.regenerate.__globals__["RUNS"] = ()  # no scripts: the inputs are box-only; the redirect is what is under test
+        res = G.regenerate(str(arch), str(tmp_path / "scratch"))
+        assert res["archive_nfl_rows"] == 2
+        assert str(_fence.safe_out("12_EXPLORATORY/x.json")) == str(tmp_path / "scratch" / "x.json")
+    finally:
+        _fence.safe_out = orig

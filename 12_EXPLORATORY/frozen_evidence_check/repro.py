@@ -62,9 +62,9 @@ def subset(archive: str, until: str | None) -> str:
     d = under_fence(os.path.join("frozen_evidence_check", "_subset", f"until_{until}"))
     for f in archive_files(archive):
         if file_date(f) < until:
-            link = safe_out(os.path.join(d, os.path.basename(f)))
-            if not link.is_symlink():
-                link.symlink_to(os.path.abspath(f))
+            link = os.path.join(d, os.path.basename(f))
+            if not os.path.islink(link):  # safe_out() resolves a pre-existing link to its target, which is outside the fence
+                safe_out(link).symlink_to(os.path.abspath(f))
     return d
 
 
