@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W96.3 final: t4-mlb runs 32ce531 code after restart"

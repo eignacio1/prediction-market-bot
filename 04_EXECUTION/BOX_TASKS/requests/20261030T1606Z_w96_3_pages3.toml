@@ -1,0 +1,2 @@
+task = "dashboard_pages_read"
+note = "W96.3 final: dashboard memory/restarts after second deploy"
