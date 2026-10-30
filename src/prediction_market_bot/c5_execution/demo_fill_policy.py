@@ -50,6 +50,8 @@ DEFAULT_LISTING_TTL_S = 300.0
 CASH_TTL_ENV = "DEMO_CASH_TTL_S"
 DEFAULT_CASH_TTL_S = 2.0
 _CASH_CACHE: list[Any] = [None, 0.0]  # [balance_usd, monotonic ts]
+_REFUSAL_CACHE: list[Any] = [None, 0.0]  # [balance dict, monotonic ts]; logging only, never read by a gate
+REFUSAL_BAL_TTL_S = 15.0  # a refusal burst is one GET, not one per refused order
 _LISTING_CACHE: dict[str, tuple[bool, float]] = {}  # ticker -> (listed, monotonic ts); unknown is never cached
 
 
@@ -163,6 +165,38 @@ def cash_skip_reason(client: Any, stake_usd: float) -> Optional[str]:
             return None
         _CASH_CACHE[0], _CASH_CACHE[1] = bal, now
     return "insufficient_demo_cash" if bal < float(stake_usd) else None
+
+
+def refusal_context(client: Any, open_positions: Any) -> dict[str, Any]:
+    """W96.3/GG-1481: demo balance and open exposure to log beside a refused order. LOGGING ONLY: it feeds no
+    gate and never raises. Balance is its own short cache (REFUSAL_BAL_TTL_S, with its age logged) so it
+    cannot change what ``cash_skip_reason`` sees. ``open_exposure_usd`` is the bot's own open_positions
+    stakes; cash reserved by resting orders from other books is what the venue balance read reflects."""
+    ctx: dict[str, Any] = {}
+    try:
+        now = time.monotonic()
+        cached = _REFUSAL_CACHE[0]
+        if cached is None or now - _REFUSAL_CACHE[1] >= REFUSAL_BAL_TTL_S:
+            ok, data = client.get_balance()
+            cached = data if ok and isinstance(data, dict) else None
+            if cached is not None:
+                _REFUSAL_CACHE[0], _REFUSAL_CACHE[1] = cached, now
+        if cached is not None:
+            ctx["demo_balance_usd"] = cached.get("balance_usd")
+            ctx["demo_portfolio_value_usd"] = cached.get("portfolio_value_usd")
+            ctx["demo_balance_age_s"] = round(now - _REFUSAL_CACHE[1], 1)
+        else:
+            ctx["demo_balance_usd"] = None
+    except Exception as e:  # noqa: BLE001
+        ctx["demo_balance_usd"] = None
+        ctx["demo_balance_error"] = str(e)[:120]
+    try:
+        stakes = [float(p.get("size_usd") or 0.0) for p in (open_positions or [])]
+        ctx["open_exposure_usd"] = round(sum(stakes), 2)
+        ctx["open_positions_n"] = len(stakes)
+    except Exception:  # noqa: BLE001
+        ctx["open_exposure_usd"] = None
+    return ctx
 
 
 @dataclass
