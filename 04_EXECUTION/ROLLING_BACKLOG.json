@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-10-30T17:10Z",
+ "as_of": "2026-10-30T18:50Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -88,8 +88,20 @@
    "wave": "97.2 Part C"
   },
   {
-   "id": "B-006",
+   "id": "B-012",
    "order": 6,
+   "status": "NOW",
+   "lane": "engine",
+   "rank": "2",
+   "title": "NHL engine: factor classes point-in-time from the shot-level store, then the whole board",
+   "measure": "D4 NHL data layer -> factors -> board",
+   "why": "ADR-0073 order: NFL, NBA, then NHL, MLB.",
+   "source": "ADR-0073",
+   "wave": "97.4"
+  },
+  {
+   "id": "B-006",
+   "order": 7,
    "status": "NOW",
    "lane": "flex",
    "rank": "plumbing",
@@ -101,7 +113,7 @@
   },
   {
    "id": "B-007",
-   "order": 7,
+   "order": 8,
    "status": "NOW",
    "lane": "flex",
    "rank": "plumbing",
@@ -113,7 +125,7 @@
   },
   {
    "id": "B-005",
-   "order": 8,
+   "order": 9,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -125,7 +137,7 @@
   },
   {
    "id": "B-008",
-   "order": 9,
+   "order": 10,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -137,7 +149,7 @@
   },
   {
    "id": "B-010",
-   "order": 10,
+   "order": 11,
    "status": "NEXT",
    "lane": "quant",
    "rank": "4",
@@ -149,7 +161,7 @@
   },
   {
    "id": "B-004",
-   "order": 11,
+   "order": 12,
    "status": "LATER",
    "lane": "flex",
    "rank": "EXECUTION",
@@ -161,7 +173,7 @@
   },
   {
    "id": "B-003",
-   "order": 12,
+   "order": 13,
    "status": "DONE",
    "lane": "flex",
    "rank": "plumbing (operator mandate 10-30)",
@@ -170,18 +182,6 @@
    "why": "Operator 10-30: \"Ensure it gets placed in the visual dashboard for my view also\".",
    "source": "operator 2026-10-30 08:26 PT",
    "wave": "96.3"
-  },
-  {
-   "id": "B-012",
-   "order": 13,
-   "status": "LATER",
-   "lane": "engine",
-   "rank": "2",
-   "title": "NHL engine: factor classes point-in-time from the shot-level store, then the whole board",
-   "measure": "D4 NHL data layer -> factors -> board",
-   "why": "ADR-0073 order: NFL, NBA, then NHL, MLB.",
-   "source": "ADR-0073",
-   "wave": ""
   },
   {
    "id": "B-013",

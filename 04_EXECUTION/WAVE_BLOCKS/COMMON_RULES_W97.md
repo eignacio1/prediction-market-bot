@@ -5,7 +5,8 @@ Every Wave 97 block tells the terminal to read this file first. Text below is th
 ```
 COMMON RULES - WAVE 97 (THE PICKS SHEET; THE NBA ENGINE ON v3; THE FROZEN EVIDENCE, RESUMABLE) (read first; they bind this block)
 - THIS WAVE: three blocks drawn from the top of the ROLLING BACKLOG (04_EXECUTION/ROLLING_BACKLOG.json, maintained by the strategic
-  window only): 97.1 engine lane = B-001 + B-009, 97.2 proof lane = B-002 + B-011, 97.3 flex lane = B-026 + B-006 + B-007. Do not edit
+  window only): 97.1 engine lane = B-001 + B-009, 97.2 proof lane = B-002 + B-011, 97.3 flex lane = B-026 + B-006 + B-007, 97.4 engine lane (second sport,
+  operator 2026-10-30 11:42 PT: "send 4 of the most important blocks ready for this run") = B-012. Do not edit
   ROLLING_BACKLOG.json; report each ticket's state in your handoff.
 - SIZE (operator 2026-10-30 08:38 PT, supersedes the 10-07 MEDIUM ceiling for these waves): THREE parts, about 130 minutes. Part C is a
   task you can switch to whenever an earlier part waits on the box (a game night, a long fetch, a deploy). Push after every part.
@@ -86,7 +87,9 @@ COMMON RULES - WAVE 97 (THE PICKS SHEET; THE NBA ENGINE ON v3; THE FROZEN EVIDEN
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Three blocks run in parallel. File ownership: 97.1 = NEW modules in src/prediction_market_bot/nba_engine/ (v1 / v2 / v3 stay as
+- Four blocks run in parallel. The operator's last wave before the weekend: finish inside the block and leave nothing half-installed.
+  File ownership: 97.4 = a new src/prediction_market_bot/nhl_engine/ + tests, the NHL [[engine]] entry, the NHL seat rows it moves, EXP-046,
+  12_EXPLORATORY/nhl_engine/ (97.1 owns the NBA [[engine]] entry: edit only your own, rebase before push); 97.1 = NEW modules in src/prediction_market_bot/nba_engine/ (v1 / v2 / v3 stay as
   merged), a live_v3 runner + its cron line / install task + RUNTIME_REGISTRY entry, EXP-044c, 12_EXPLORATORY/nba_engine_v3/ additions,
   GG-1450; 97.2 = 12_EXPLORATORY/frozen_evidence_check/ and its box tasks, the NFL regen inputs, GG-1520 / 1521, a new
   12_EXPLORATORY/forward_entry_cost/; 97.3 = a new picks builder (src/prediction_market_bot/pregame_shadow/ addition or scripts/) + its

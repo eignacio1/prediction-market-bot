@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 97** · three blocks, three parts each (~130 min), in the **⬛ NOW — Wave 97** section below: **97.1** (engine: NBA engine on v3, first nights, player points leak-free), **97.2** (proof: frozen evidence reproduced; the forward test's entry cost), **97.3** (flex: **the picks sheet** on your dashboard; MLB winter; box memory). Each block is one fenced paste.
+> **▶ PASTE NOW — Wave 97 (last before the weekend)** · four blocks, three parts each (~130 min), in the **⬛ NOW — Wave 97** section below: **97.1** (NBA engine on v3, first nights, points leak-free), **97.2** (frozen evidence reproduced; the forward test's entry cost), **97.3** (**the picks sheet**; MLB winter; box memory), **97.4** (**the NHL engine** prices the whole board). Each block is one fenced paste.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -276,9 +276,9 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
-## ⬛ NOW — Wave 97 · THE PICKS SHEET · THE NBA ENGINE ON v3 · THE FROZEN EVIDENCE, RESUMABLE · WRITTEN 2026-10-30 ~17:10 UTC (10:10 PT) · three blocks, three parts each (~130 min)
+## ⬛ NOW — Wave 97 · THE PICKS SHEET · THE NBA ENGINE ON v3 · THE FROZEN EVIDENCE, RESUMABLE · WRITTEN 2026-10-30 ~17:10 UTC (10:10 PT) · four blocks, three parts each (~130 min) · the last wave before the weekend
 
-Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`. All three run in parallel. Every block is drawn from the top of the
+Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`. All four run in parallel. Operator, 11:42 PT: "this will likely be the last wave for the rest of the weekend as I'm at 92% of my weekly limit ... Let's send 4 of the most important blocks ready for this run". Every block is drawn from the top of the
 **rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`; on the Visual Dashboard).
 
 | # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
@@ -286,6 +286,7 @@ Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`. All three run in p
 | 97.1 | B-001 + B-009 | engine | 2 (judged by 1) | NBA engine v3 live (EXP-044c), the first nights' rows read back, player points re-tested with no leak | DEPTH + PROOF: arms with rows 0 → 2-3; points held-out 0 → measured | ⬜ | |
 | 97.2 | B-002 + B-011 | proof | 1 + 4 | The 13 frozen ride cells reproduced in resumable box tasks; the NFL regen's missing input; what the forward test's entry costs, for your decision | PROOF + EXECUTION: cells classified 0 → 13; entry cost per book | ⬜ | |
 | 97.3 | B-026 + B-006 + B-007 | flex | 1 (operator 10-30) + plumbing | **The picks sheet**: every game the bot evaluates, its side, %, Kalshi's price, edge, why, fake bet placed, result - nightly on your dashboard; MLB's winter posture; the box's memory | visibility + PLUMBING: picks per game 0 → all | ⬜ | |
+| 97.4 | B-012 | engine (second sport) | 2 (judged by 1) | **The NHL engine**: point-in-time inputs from the shot store, one goals distribution pricing moneyline, puck line, total and team totals, scored vs results and this season's Kalshi prices; EXP-046 frozen only if earned | DEPTH: D4 NHL data layer → board engine | ⬜ | |
 
 **What Wave 96 delivered (verified 2026-10-30 17:01Z: #382-#387 CI green; box bridge `20261030T170102Z_*`):** **96.1 🟨** NBA engine
 v3 (availability + lineups as known before tip) beats v2 on past seasons for spreads and team totals; not frozen yet (needs a live
@@ -297,7 +298,7 @@ Visual Dashboard; refused demo orders now log the balance (none since). Parts C 
 **Pushback:** 97.3 is the block you will see; 97.1 and 97.2 are the ones that could change a number. If the picks sheet shows the
 bot's reasons are thin ("no reasons available" for most arms), that is the honest state of the shadow models - and the argument for
 the engine lane, not a defect in the sheet.
-**Surface:** GREEN, 85. Expected delta +2 (live_v3 runner, the picks builder).
+**Surface:** GREEN, 85. Expected delta +2 (live_v3 runner, the picks builder); 97.4 installs nothing.
 **Dependencies:** none. The picks sheet reads whatever rows the arms write; the v3 arm appears on it when it logs.
 
 ### 97.1 — Engine lane (B-001 + B-009): the NBA engine on v3, live; its first nights; player points without the leak
@@ -422,6 +423,57 @@ results_W97_3.md, the handoff (B-026, B-006, B-007 states).
 END OF BLOCK 97.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
 ```
 
+
+### 97.4 — Engine lane, second sport (B-012): the NHL engine prices the whole board
+**DEPTH (+ PROOF) · rank 2 · terminal 4**
+
+```
+Before anything else, read the Wave 97 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 97.4 - ENGINE LANE, SECOND SPORT (BACKLOG B-012): THE NHL ENGINE PRICES THE WHOLE BOARD. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport: "NFL first, as the template; NBA next; then NHL, MLB"), judged by rank 1.
+PURPOSE: DEPTH (+ PROOF). Measures: D4 NHL "data layer" -> "whole board priced from one engine (scaffold, tested)"; D5(b) NHL factor
+classes feeding the engine 0 -> n; the engine's held-out Brier vs results and vs this season's Kalshi prices 0 -> measured; a frozen
+forward test (EXP-046) only if it earns one.
+Why now: hockey is in season, the NHL forward test has the most demo fills of any book, and NHL game totals were the one cell that
+survived the family-wise test back in Wave 86 (preliminary). NHL has a shot-level event store (02_ARCHITECTURE_DESIGN/NHL_ENGINE/) and
+a seat (SEATS/nhl.toml: skater quality interpreted; goalie, special teams and pace applied; deployment and venue aggregated; travel,
+officials, coaches, injuries and qualitative none) but no engine: every NHL price today comes from a thin pre-game model. This is the
+operator's last wave before the weekend (2026-10-30 11:42 PT), so it is built to finish inside the block and leave nothing running
+half-installed.
+Premises to check: 02_ARCHITECTURE_DESIGN/NHL_ENGINE/DATA_LAYER.md and FACTOR_TAXONOMY.md; c1_signal_ingestion/nhl_event_store.py,
+nhl_point_in_time.py; the NBA engine (src/prediction_market_bot/nba_engine/) and NFL board v2 for the shape to reuse; the price archive's
+NHL rows (game, spread, total, team total since 2026-10-28 05:03Z) and 89.7's NHL candles since 2026-10-01; Muse's R-047 (goalie
+confirmation timing) and R-080 (shot quality sources) cards if they landed.
+PERMISSIONS: NEW package src/prediction_market_bot/nhl_engine/ + tests, the NHL [[engine]] entry in ARCHITECTURE_COMPONENTS.toml, the
+NHL seat rows it moves (re-render with python3.11 scripts/render_seat.py), a NEW EXP-046 pre-registration, a new 12_EXPLORATORY/nhl_engine/.
+NOT: the NHL shadow arm, its model or its forward test; any order, gate, ledger or registry cell; installing a runner this wave (if
+EXP-046 is frozen, the runner is next wave's).
+
+PART A - Point-in-time inputs (~45 min)
+  From the shot store, as known before each game: each team's expected goals for and against per 60 at even strength (shot location and
+  type, shrunk to the league mean), special-teams rates and expected power plays, the probable goalie's save quality over expected
+  (state how the starter is known before the puck drops - R-047), rest and schedule density, home ice. Leakage test: nothing from the
+  game priced. Known-answer test: a simulated league with known team strengths is recovered.
+PART B - One distribution prices the board (~45 min)
+  Each team's goals as a count distribution (Poisson or negative binomial - state which and why, measured on held-out seasons), with
+  the correlation between the two scores and empty-net / overtime handling measured, not assumed. From it: moneyline (regulation and
+  overtime as Kalshi settles them - check KXNHLGAME's rules, Muse R-067), puck line at each strike, total at each strike, both team
+  totals. Tests: the ladders are coherent; a simulated league with a known correlation is recovered.
+PART C - Scored, then frozen if it earns it (~40 min)
+  Held-out seasons vs results (Brier per family, calibration). Then this season vs Kalshi (archive rows and candles; settlements from
+  public GETs): paired Brier engine vs market per family with game-clustered intervals, and the skill weight the accepted gate
+  (market-anchored, 10-21) would give it. Say plainly where n is too small. If the engine is no worse than the market on some family, or
+  beats it held-out, freeze EXP-046 (that family, a forward look from the archive, judged n from the measured variance, pass rule,
+  modal outcome, look date) before any new row; otherwise freeze nothing. Update the NHL [[engine]] entry and seat rows with the stage
+  reached.
+Results: the package + tests, 12_EXPLORATORY/nhl_engine/results_W97_4.md, EXP-046 (or "not earned"), the engine entry, the handoff
+(B-012's state).
+
+END OF BLOCK 97.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
 ---
 
 ## 🔥 STANDING — GA: the governance gap agent (always on, beside every wave; operator 2026-10-15 16:49 / 17:02 PT)
@@ -469,6 +521,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 97.1 | B-001 + B-009 engine: v3 live, first nights, points leak-free | ⬜ | |
 | 97.2 | B-002 + B-011 proof: frozen evidence resumable; entry cost | ⬜ | |
 | 97.3 | B-026 + B-006 + B-007 flex: the picks sheet; MLB winter; memory | ⬜ | |
+| 97.4 | B-012 engine: the NHL engine prices the whole board | ⬜ | |
 
 ### 🟨 WAVE 96 — WRITTEN 2026-10-30 ~15:50 UTC · CLOSED 2026-10-30 ~17:10 UTC (operator 09:46 PT) · verified on GitHub (#382-#387 CI green) + box bridge (`20261030T170102Z_*`) · moved: **NBA v3 interpreted (spread, team total); the rolling backlog live on /visual**; three partials
 | # | Block | Status | Outcome |
