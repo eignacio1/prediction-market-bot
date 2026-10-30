@@ -94,19 +94,19 @@ TASKS: dict[str, str] = {
         "systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,MemoryCurrent,MemoryMax"
     ),
     # W95.2: frozen-evidence reproduction on the box's full archive. Read-only on the archive and the repo; `frozen_settle_fetch`
-    # writes only its own derived settlement cache (exp_output/FROZEN_CHECK/settle, public unauthenticated Kalshi GETs, resumable).
+    # writes only its own derived settlement cache (frozen_evidence_check/_cache/settle, public unauthenticated Kalshi GETs, resumable).
     "frozen_inventory_read": f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py inventory --archive exp_output/PRICE_ARCHIVE",
     "frozen_settle_fetch": (
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py fetch --archive exp_output/PRICE_ARCHIVE "
-        "--cache exp_output/FROZEN_CHECK/settle --budget 780"
+        "--cache frozen_evidence_check/_cache/settle --budget 780"
     ),
     "frozen_repro_full": (
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py run --archive exp_output/PRICE_ARCHIVE "
-        "--settle exp_output/FROZEN_CHECK/settle"
+        "--settle frozen_evidence_check/_cache/settle"
     ),
     "frozen_repro_window": (
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py run --archive exp_output/PRICE_ARCHIVE "
-        "--settle exp_output/FROZEN_CHECK/settle --until 2026-10-28"
+        "--settle frozen_evidence_check/_cache/settle --until 2026-10-28"
     ),
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "

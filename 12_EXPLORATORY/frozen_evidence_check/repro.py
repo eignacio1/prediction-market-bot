@@ -21,11 +21,18 @@ import json
 import os
 import re
 import sys
-import tempfile
 import time
 import urllib.request
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from _fence import safe_out  # noqa: E402
+
+
+def under_fence(p: str) -> str:
+    """Relative paths resolve against 12_EXPLORATORY/ (the only place this module may write)."""
+    return str(safe_out(os.path.join(p, ".keep")).parent)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EXP = os.path.dirname(HERE)
@@ -52,10 +59,12 @@ def subset(archive: str, until: str | None) -> str:
     """Symlink subset of prices_*.jsonl with date < until (exclusive), in a temp dir; the archive is never touched."""
     if not until:
         return archive
-    d = tempfile.mkdtemp(prefix="frozen_subset_")
+    d = under_fence(os.path.join("frozen_evidence_check", "_subset", f"until_{until}"))
     for f in archive_files(archive):
         if file_date(f) < until:
-            os.symlink(os.path.abspath(f), os.path.join(d, os.path.basename(f)))
+            link = safe_out(os.path.join(d, os.path.basename(f)))
+            if not link.is_symlink():
+                link.symlink_to(os.path.abspath(f))
     return d
 
 
@@ -117,7 +126,7 @@ def _event_markets(event: str) -> dict:
 def fetch(archive: str, cache: str, budget_s: float = 780.0, workers: int = 4) -> dict:
     """Resumable: one cache file per event (events with no settled markets are recorded as empty so they are not retried
     until the event could have settled -- an empty file older than 1 day is retried)."""
-    os.makedirs(cache, exist_ok=True)
+    cache = under_fence(cache)
     events = set()
     for f in archive_files(archive):
         with open(f) as fh:
@@ -136,7 +145,7 @@ def fetch(archive: str, cache: str, budget_s: float = 780.0, workers: int = 4) -
         if time.time() - t0 > budget_s:
             return False
         res = _event_markets(e)
-        with open(os.path.join(cache, e + ".json"), "w") as fh:
+        with open(safe_out(os.path.join(cache, e + ".json")), "w") as fh:
             json.dump(res, fh)
         time.sleep(0.15)
         return True
@@ -156,6 +165,7 @@ def classify(rep_n, rep_net, rep_lo, n, net, lo) -> str:
 
 def run(archive: str, settle: str, until: str | None) -> dict:
     import exact_fee_recompute as X
+    settle = settle if os.path.isabs(settle) else under_fence(settle)
     sub = subset(archive, until)
     r89 = X.run_89(sub, settle)
     r91 = X.run_91(sub, settle)
