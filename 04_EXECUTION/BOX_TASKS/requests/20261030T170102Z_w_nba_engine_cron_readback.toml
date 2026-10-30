@@ -1,0 +1,2 @@
+task = "nba_engine_cron_readback"
+note = "Wave 96 close read (strategic window)"
