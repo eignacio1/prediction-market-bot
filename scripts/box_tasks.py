@@ -116,6 +116,8 @@ TASKS: dict[str, str] = {
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py run --archive exp_output/PRICE_ARCHIVE "
         "--settle frozen_evidence_check/_cache/settle --until 2026-10-28"
     ),
+    # W96.2: re-runs 93.4's three nfl_board_v2 scripts unchanged with safe_out redirected to a /tmp scratch dir; prints the JSONs.
+    "nfl_board_v2_regen_read": f"{PY} 12_EXPLORATORY/frozen_evidence_check/regen_nfl_board.py --archive exp_output/PRICE_ARCHIVE",
     "nba_opening_preflight": (
         "git log -1 --format='box HEAD %h %cI'; echo '--- ledgers'; "
         "ls -l --time-style=+%FT%T exp_output/PREGAME_SHADOW/NBA_*.jsonl exp_output/PREGAME_SHADOW_PRESEASON/*.jsonl "
