@@ -3062,3 +3062,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-30 — W96.1: NBA engine v3 study; EXP-044c not frozen
 - v3 (availability + lineups) beats v2 held-out on spread and team_total (paired, game-clustered, 2025-26); no change on moneyline; slightly worse on total. Officials excluded (GG-1390). PR #385.
 - Part A unreadable (no tips since install); GG-1450 stays OPEN. EXP-044c deliberately not frozen: no live_v3 runner exists, and a frozen claim with no rows is worse than none.
+
+## 2026-10-30 — W96.1 Part C: NBA engine player points; leak found, EXP-044d not frozen
+- player_layer.py + 2 known-answer tests merged (PR #387); nothing installed, no service imports it.
+- Held-out study: apparent gain vs existing arm (−0.0034) was a post-game-roster leak (shares normalised over players who played). Leak-free arm: pooled ALL +0.00001 [−0.00029, +0.00032], strike 20 worse, season sign flips. EXP-044d NOT frozen (trigger unmet). No market comparison possible (KXNBAPTS unarchived pre-2026; live rows sealed).

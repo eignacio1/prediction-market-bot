@@ -58,6 +58,34 @@ When it applies: pre-tip pricing of spread and team-total lines for games where 
 
 v3 beats v2 on spread and team total, so the block's EXP-044c path is triggered. A forward arm needs a live runner (`live_v3`) that reads a tip-60 injury snapshot and rotation ratings from a store two days behind (B-017) on a box with 961 MB RAM and a 517 MB runner (B-007). That was not built or safely installable inside this block, and freezing a pre-registration with no runner to log it would only leave a frozen claim with no rows. Handed back as the next step: build `live_v3` (reusing `live_v2` helpers), freeze EXP-044c (claims spread and team total only; no claim for moneyline; total expected ≤ v2; same scoring as EXP-044) before its first row, register in RUNTIME_REGISTRY, install on a GREEN budget read.
 
-## Part C (B-009, NBA engine prices player points)
+## Part C (B-009): NBA engine prices player points — held-out result, with a leak found and removed
 
-Not started in this block.
+Module `src/prediction_market_bot/nba_engine/player_layer.py` (new, PR #387, merged; v1/v2 untouched, imported by no service, nothing installed). `shares_from_means`, `draw_split` (gamma-Dirichlet weights + multinomial per draw, so players' points plus a rest bucket sum exactly to the drawn team points), `fit_concentration` (beta-binomial ML), `p_at_least`. Tests `tests/test_nba_player_layer.py` (2 known-answer: known shares recovered within 0.004 and the sum constraint exact; concentration 120 recovered in 85–170). Study `study_partc.py`, output `study_partc_out.json` (row-level csv.gz kept local).
+
+Design: folds as W69.3 (test 2025 = train 2023 / cal 2024; test 2026 = train 2023–24 / cal 2025); n_test_rows 25233 / 25556 (engine-joined 25210 / 25538), 2 seasons, ~2460 games; Platt on the calibration season; strikes 10/15/20/25; paired, game-clustered bootstrap (B = 20000), 95% intervals. Brier delta, negative = first arm better.
+
+### The leak (stated plainly)
+Arms `engine` and `sumonly` normalise each player's share over the players who played that game. Who played is known only after the game, and the base arm (EXP-039 spec) does not have it. Their gains therefore are **not** a pricing result. I added `engine_pt`, which forms the share as ridge mean / (mean of the team's sum of ridge means over its previous 10 games), so no teammate's presence enters.
+
+| pooled 2025+26 | engine−base (leaky) | engine_pt−base (leak-free) |
+|---|---|---|
+| ALL strikes | −0.00340 [−0.00382, −0.00300] | +0.00001 [−0.00029, +0.00032] |
+| strike 10 | −0.00652 [−0.00735, −0.00571] | −0.00070 [−0.00117, −0.00022] |
+| strike 15 | −0.00360 [−0.00430, −0.00292] | +0.00001 [−0.00046, +0.00050] |
+| strike 20 | −0.00193 [−0.00251, −0.00135] | +0.00072 [+0.00029, +0.00116] |
+| strike 25 | −0.00155 [−0.00204, −0.00104] | +0.00002 [−0.00034, +0.00039] |
+| star (pts10≥15) ALL | −0.00458 [−0.00568, −0.00348] | +0.00078 [−0.00012, +0.00169] |
+| star strike 20 | −0.00531 [−0.00728, −0.00333] | +0.00266 [+0.00113, +0.00423] |
+
+By season, leak-free ALL: 2025 +0.00049 [+0.00005, +0.00094] (worse); 2026 −0.00045 [−0.00086, −0.00004] (better); stars 2025 +0.00247 [+0.00113, +0.00385], 2026 −0.00089 [−0.00206, +0.00030]. The sign flips between seasons.
+
+### Verdict
+No engine-priced-points advantage over the existing arm (nba_player_points_v1 / EXP-040 baseline) once the post-game information is removed: pooled ALL is indistinguishable from zero; strike 10 is slightly better; strike 20 and the star subset at strike 20 are worse; the season sign flips. **EXP-044d is NOT frozen.** The block's trigger for it (engine beats existing arm held-out) is not met. Multiplicity: 4 strikes × 2 subsets × contrasts reported as-is; descriptive.
+
+Caveats: two test seasons; engine 2–3 params fit in-sample on the calibration season; rows condition on the player having played (same as EXP-039); who-played-at-tip is unavailable, so a real pre-tip arm would need an expected-minutes input (the availability factors of Part B are the candidate, not wired here).
+
+Market comparison: none possible. Kalshi KXNBAPTS is not archived before 2026, and the 2026-27 live rows are sealed-cell data (CHARTER rule 2), so there is no admissible market price to compare against; stated, not worked around.
+
+ADR-0075 stage, player points from the engine: aggregated + interpreted (the split and the team-total link are built and tested); **not applied** (no leak-free held-out gain, no forward arm). When it would apply: pre-tip pricing of player-points over/under at strikes 10/15/20/25 for players expected to play, using the engine team total.
+
+Lesson kept: any share normalised over a post-game roster is a leak; run the leak-free variant first.
