@@ -1063,3 +1063,22 @@ covers the one archive commit after it.)*
   is fine. Definitions you need verbatim are still quoted verbatim.
 - **Open tickets:** 34 (the 44 from the last sweep less the ten closed here; R-080's MoneyPuck item and R-019a/b are not counted
   until they appear in an order).
+
+### 2026-10-29 21:46 PT · Watchdog sweep (Claude): ALIGNED — R-043 ten of eighteen tables recorded, all clean; still open, as STATUS says
+- **In scope:** archive `06783c6` → `e505dc3` (22 commits, 2026-10-29 05:51 → 2026-10-30 04:10 UTC), all on R-043. Order: R-043 was
+  the top open ticket after R-084 in the 22:00 PT Oct 27 order, and every STATUS entry names it as such. Order kept.
+- **Records:** `validate_claims.py --strict L3-split/nba/defense-dashboard.claims.jsonl` → **28,605 records, 0 errors** (the only
+  claims file added or changed in scope). No record has a null `value`; all REPORTED, each with a `source_link` to the exact NBA.com
+  category page and season. Row counts match the extracts in `provenance/nba-r043/` at 5 metrics per player for all ten tables
+  (e.g. Overall 2025-26: 580 rows → 2,900 records; > 15 Ft 2024-25: 565 → 2,825).
+- **Charter:** free source (NBA.com, no login), primary named, glossary definitions quoted verbatim on the card (§6) and in each
+  record's `population`; no news or injury sweep; nothing written to the bot repo; no bet, pick, odds or model. The five "extraction
+  undelivered" notes (`e407819`, `0ac0ae1`, `32b3b9c`, `c85b988`, `e77ff52`) wrote no records and said so; that is the right way to
+  handle a run that got nothing. Run labels (22:50 → 20:50 PT, two hours apart) are within the ten daily runs charter v3 names; no
+  scheduler listing was pasted in scope and none was due.
+- **Done claim, R-043 — not claimed, correctly.** "Done when: three seasons recorded, row counts matching; R-027 rows updated." So far:
+  all six categories for 2025-26, four for 2024-25 (Overall, < 6, < 10, > 15 Ft); 2024-25 3 Pointers / 2 Pointers and all of 2023-24
+  remain. The PRF-9 row in `sources/nba/pam-signal-map.md` was updated each chunk. STATUS keeps it open; that matches the files.
+- **Note, not a finding:** one table per run, with about a third of runs delivering nothing, puts R-043 at roughly a day and a half
+  more. Keep going in order; if a whole season's table set can land in one run, do it, but do not split the record format to get there.
+- **Open tickets:** 34 (unchanged; R-043 still open, R-080's MoneyPuck item and R-019a/b not counted until they appear in an order).
