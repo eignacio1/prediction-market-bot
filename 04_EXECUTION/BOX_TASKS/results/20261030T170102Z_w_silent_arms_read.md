@@ -1,0 +1,25 @@
+# Box task `silent_arms_read` — 20261030T170102Z_w_silent_arms_read
+
+- request: `04_EXECUTION/BOX_TASKS/requests/20261030T170102Z_w_silent_arms_read.toml`
+- note: Wave 96 close read (strategic window)
+- ran: 2026-10-30T17:02:05Z on root@157.230.91.33:/opt/prediction-market-bot
+- exit code: 0
+- command (allowlisted, scripts/box_tasks.py): `PYTHONPATH=src:. venv/bin/python -m prediction_market_bot.pregame_shadow.silent_arms`
+
+```
+[IDLE   ] MLB game-market shadow: no games in the last 12h, nothing expected
+[IDLE   ] NFL shadow: no games in the last 12h, nothing expected
+[IDLE   ] NFL QB challenger shadow: no games in the last 12h, nothing expected
+[IDLE   ] NFL passing-yards pre-kickoff snapshot (W81.3): no games in the last 12h, nothing expected
+[IDLE   ] NHL shadow: no games in the last 12h, nothing expected
+[IDLE   ] NBA engine v1 (EXP-044): no games in the last 12h, nothing expected
+[IDLE   ] NBA engine v2 (EXP-044b): no games in the last 12h, nothing expected
+[IDLE   ] NBA preseason shadow: no games in the last 12h, nothing expected
+[IDLE   ] NBA regular-season shadow: no games in the last 12h, nothing expected
+[IDLE   ] NBA player points shadow: no games in the last 12h, nothing expected
+[IDLE   ] NBA player points minutes+injury challenger (EXP-040): no games in the last 12h, nothing expected
+[IDLE   ] T1 MLB paper pipeline: no games in the last 30h, nothing expected
+[IDLE   ] T4 MLB live: no games in the last 3h, nothing expected
+[OK     ] nba_player_box_2026: data/raw/nba/players_2026.json ok (1231 games)
+
+```
