@@ -4560,3 +4560,21 @@ W95.2, 2026-10-30, T-1471. Paths fixed (PR #381). Inputs live only on the box an
 **Status:** OPEN · **Severity:** LOW
 
 W95.2, 2026-10-30, T-1470. The tasks write only under `12_EXPLORATORY/frozen_evidence_check/_cache/` (gitignored, through `safe_out`), but the block called them READ-ONLY. The writer set in `tests/test_box_tasks.py` is unchanged because the tasks have no install/rm/redirect tokens.
+
+### GG-1520 — `repro.py run` on the full archive does not finish inside the 900 s box-task limit
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W96.2, 2026-10-30, T-1520. `frozen_repro_window` (heartbeat deployed, #386) ran the full 900 s and was killed: exit 124, no cell output. The run makes several per-line `json.loads` passes over 1.4 GB on a 1-core ~1 GB box. Fix is a resumable per-series run or a one-time prefilter file; neither is built. Blocks GG-1470 (13 frozen cells not yet classified).
+
+### GG-1521 — EXP-045's pinned schedules parquet is on neither the box nor the local checkout
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W96.2, 2026-10-30, T-1521. `regen_nfl_board.py` failed on the box: `exp_output/NFL_EVENTS/raw/schedules/schedules_20261020T001136Z.parquet` does not exist (no `exp_output/NFL_EVENTS` on the box; no `schedules_2026*.parquet` anywhere on it). The file is pinned in EXP-045 by sha256 c57e424c. Locate it (the session that wrote it) or re-fetch from the free source and record whether the hash matches; do not edit the frozen pin. Corrects GG-1471's claim that the inputs live on the box.
+
+### GG-1522 — Box-task output is lost when the bridge ssh link drops
+
+**Status:** OPEN · **Severity:** LOW
+
+W96.2, 2026-10-30, T-1522. The first window run (exit 255) lost all output; the box process kept running with its stdout gone. The runner has no box-side output file to read back. The stderr heartbeat (#386) prevents idle drops for `repro.py` only.
