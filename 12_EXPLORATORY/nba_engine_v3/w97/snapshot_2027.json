@@ -1,0 +1,2922 @@
+{
+ "rotation": {
+  "1610612737": [
+   {
+    "person_id": "203468",
+    "norm_name": "cj mccollum",
+    "w": 0.117806,
+    "rel_net": 1.160804
+   },
+   {
+    "person_id": "1628396",
+    "norm_name": "tony bradley",
+    "w": 0.031285,
+    "rel_net": -0.297206
+   },
+   {
+    "person_id": "1629216",
+    "norm_name": "gabe vincent",
+    "w": 0.055041,
+    "rel_net": -2.290723
+   },
+   {
+    "person_id": "1629638",
+    "norm_name": "nickeil alexander walker",
+    "w": 0.134084,
+    "rel_net": 0.524766
+   },
+   {
+    "person_id": "1630168",
+    "norm_name": "onyeka okongwu",
+    "w": 0.122677,
+    "rel_net": 0.02523
+   },
+   {
+    "person_id": "1630228",
+    "norm_name": "jonathan kuminga",
+    "w": 0.096757,
+    "rel_net": -1.542343
+   },
+   {
+    "person_id": "1630552",
+    "norm_name": "jalen johnson",
+    "w": 0.131377,
+    "rel_net": 0.628231
+   },
+   {
+    "person_id": "1630700",
+    "norm_name": "dyson daniels",
+    "w": 0.111319,
+    "rel_net": 1.7845
+   },
+   {
+    "person_id": "1631243",
+    "norm_name": "mouhamed gueye",
+    "w": 0.036449,
+    "rel_net": -0.554465
+   },
+   {
+    "person_id": "1642258",
+    "norm_name": "zaccharie risacher",
+    "w": 0.030138,
+    "rel_net": -2.03308
+   },
+   {
+    "person_id": "1630557",
+    "norm_name": "corey kispert",
+    "w": 0.041018,
+    "rel_net": -0.694948
+   },
+   {
+    "person_id": "1630811",
+    "norm_name": "keaton wallace",
+    "w": 0.022972,
+    "rel_net": -3.17615
+   },
+   {
+    "person_id": "1642854",
+    "norm_name": "asa newell",
+    "w": 0.024097,
+    "rel_net": -0.493788
+   },
+   {
+    "person_id": "1627741",
+    "norm_name": "buddy hield",
+    "w": 0.014424,
+    "rel_net": -1.320928
+   },
+   {
+    "person_id": "1631132",
+    "norm_name": "christian koloko",
+    "w": 0.008854,
+    "rel_net": -0.98555
+   },
+   {
+    "person_id": "1642484",
+    "norm_name": "rayj dennis",
+    "w": 0.010972,
+    "rel_net": -0.39163
+   },
+   {
+    "person_id": "1642933",
+    "norm_name": "keshon gilbert",
+    "w": 0.010729,
+    "rel_net": -1.015307
+   }
+  ],
+  "1610612738": [
+   {
+    "person_id": "202696",
+    "norm_name": "nikola vucevic",
+    "w": 0.053943,
+    "rel_net": 0.032193
+   },
+   {
+    "person_id": "1628369",
+    "norm_name": "jayson tatum",
+    "w": 0.108214,
+    "rel_net": 0.747927
+   },
+   {
+    "person_id": "1628401",
+    "norm_name": "derrick white",
+    "w": 0.125733,
+    "rel_net": 0.823027
+   },
+   {
+    "person_id": "1629674",
+    "norm_name": "neemias queta",
+    "w": 0.090792,
+    "rel_net": 2.45733
+   },
+   {
+    "person_id": "1630202",
+    "norm_name": "payton pritchard",
+    "w": 0.12384,
+    "rel_net": 0.868995
+   },
+   {
+    "person_id": "1630573",
+    "norm_name": "sam hauser",
+    "w": 0.092851,
+    "rel_net": 0.609505
+   },
+   {
+    "person_id": "1631248",
+    "norm_name": "baylor scheierman",
+    "w": 0.080615,
+    "rel_net": -0.975325
+   },
+   {
+    "person_id": "1641775",
+    "norm_name": "jordan walsh",
+    "w": 0.067031,
+    "rel_net": -2.241359
+   },
+   {
+    "person_id": "1627759",
+    "norm_name": "jaylen brown",
+    "w": 0.115592,
+    "rel_net": -0.445417
+   },
+   {
+    "person_id": "1630568",
+    "norm_name": "luka garza",
+    "w": 0.048962,
+    "rel_net": -2.653777
+   },
+   {
+    "person_id": "1631199",
+    "norm_name": "ron harper",
+    "w": 0.030792,
+    "rel_net": -2.710173
+   },
+   {
+    "person_id": "1642864",
+    "norm_name": "hugo gonzalez",
+    "w": 0.016164,
+    "rel_net": 3.659097
+   },
+   {
+    "person_id": "1642917",
+    "norm_name": "max shulga",
+    "w": 0.011691,
+    "rel_net": -0.825843
+   },
+   {
+    "person_id": "1630625",
+    "norm_name": "dalano banton",
+    "w": 0.016889,
+    "rel_net": -2.069738
+   },
+   {
+    "person_id": "1642873",
+    "norm_name": "amari williams",
+    "w": 0.004603,
+    "rel_net": -3.404773
+   },
+   {
+    "person_id": "1642910",
+    "norm_name": "john tonje",
+    "w": 0.012289,
+    "rel_net": -1.183128
+   }
+  ],
+  "1610612739": [
+   {
+    "person_id": "201935",
+    "norm_name": "james harden",
+    "w": 0.154016,
+    "rel_net": 0.338526
+   },
+   {
+    "person_id": "203471",
+    "norm_name": "dennis schroder",
+    "w": 0.048449,
+    "rel_net": -0.466484
+   },
+   {
+    "person_id": "1628378",
+    "norm_name": "donovan mitchell",
+    "w": 0.159764,
+    "rel_net": 0.984917
+   },
+   {
+    "person_id": "1628386",
+    "norm_name": "jarrett allen",
+    "w": 0.125931,
+    "rel_net": 1.133665
+   },
+   {
+    "person_id": "1629622",
+    "norm_name": "max strus",
+    "w": 0.115463,
+    "rel_net": -0.455064
+   },
+   {
+    "person_id": "1629731",
+    "norm_name": "dean wade",
+    "w": 0.090518,
+    "rel_net": 1.430386
+   },
+   {
+    "person_id": "1630241",
+    "norm_name": "sam merrill",
+    "w": 0.072388,
+    "rel_net": 0.693398
+   },
+   {
+    "person_id": "1630596",
+    "norm_name": "evan mobley",
+    "w": 0.147898,
+    "rel_net": 0.08039
+   },
+   {
+    "person_id": "1642281",
+    "norm_name": "jaylon tyson",
+    "w": 0.046388,
+    "rel_net": -1.38755
+   },
+   {
+    "person_id": "1628418",
+    "norm_name": "thomas bryant",
+    "w": 0.008973,
+    "rel_net": -2.004693
+   },
+   {
+    "person_id": "1631165",
+    "norm_name": "keon ellis",
+    "w": 0.016918,
+    "rel_net": 0.879494
+   },
+   {
+    "person_id": "1641772",
+    "norm_name": "nae qwan tomlin",
+    "w": 0.004279,
+    "rel_net": -0.125263
+   },
+   {
+    "person_id": "1641854",
+    "norm_name": "craig porter",
+    "w": 0.004986,
+    "rel_net": -0.95185
+   },
+   {
+    "person_id": "1642878",
+    "norm_name": "tyrese proctor",
+    "w": 0.004027,
+    "rel_net": -1.308479
+   }
+  ],
+  "1610612740": [
+   {
+    "person_id": "1627749",
+    "norm_name": "dejounte murray",
+    "w": 0.047174,
+    "rel_net": -0.50261
+   },
+   {
+    "person_id": "1629627",
+    "norm_name": "zion williamson",
+    "w": 0.086236,
+    "rel_net": 0.180528
+   },
+   {
+    "person_id": "1630180",
+    "norm_name": "saddiq bey",
+    "w": 0.092344,
+    "rel_net": 0.692178
+   },
+   {
+    "person_id": "1630529",
+    "norm_name": "herbert jones",
+    "w": 0.071346,
+    "rel_net": 1.680627
+   },
+   {
+    "person_id": "1630530",
+    "norm_name": "trey murphy",
+    "w": 0.043302,
+    "rel_net": -0.377654
+   },
+   {
+    "person_id": "1631255",
+    "norm_name": "karlo matkovic",
+    "w": 0.026542,
+    "rel_net": 2.005082
+   },
+   {
+    "person_id": "1642274",
+    "norm_name": "yves missi",
+    "w": 0.071155,
+    "rel_net": -0.031846
+   },
+   {
+    "person_id": "1642847",
+    "norm_name": "jeremiah fears",
+    "w": 0.133347,
+    "rel_net": -1.451851
+   },
+   {
+    "person_id": "1642852",
+    "norm_name": "derik queen",
+    "w": 0.115566,
+    "rel_net": -2.019393
+   },
+   {
+    "person_id": "201599",
+    "norm_name": "deandre jordan",
+    "w": 0.015708,
+    "rel_net": -3.30981
+   },
+   {
+    "person_id": "1641722",
+    "norm_name": "jordan hawkins",
+    "w": 0.070704,
+    "rel_net": -2.741575
+   },
+   {
+    "person_id": "1642877",
+    "norm_name": "micah peavy",
+    "w": 0.086488,
+    "rel_net": 0.79114
+   },
+   {
+    "person_id": "1629673",
+    "norm_name": "jordan poole",
+    "w": 0.037556,
+    "rel_net": -1.684924
+   },
+   {
+    "person_id": "1626172",
+    "norm_name": "kevon looney",
+    "w": 0.02391,
+    "rel_net": 0.538127
+   },
+   {
+    "person_id": "1630621",
+    "norm_name": "hunter dickinson",
+    "w": 0.015672,
+    "rel_net": -1.808416
+   },
+   {
+    "person_id": "1641725",
+    "norm_name": "trey alexander",
+    "w": 0.028764,
+    "rel_net": -1.704791
+   },
+   {
+    "person_id": "1642490",
+    "norm_name": "josh oduro",
+    "w": 0.034188,
+    "rel_net": 0.470518
+   }
+  ],
+  "1610612741": [
+   {
+    "person_id": "1627824",
+    "norm_name": "guerschon yabusele",
+    "w": 0.074178,
+    "rel_net": -2.533399
+   },
+   {
+    "person_id": "1629012",
+    "norm_name": "collin sexton",
+    "w": 0.121667,
+    "rel_net": -0.150157
+   },
+   {
+    "person_id": "1630171",
+    "norm_name": "isaac okoro",
+    "w": 0.079833,
+    "rel_net": -1.816464
+   },
+   {
+    "person_id": "1630172",
+    "norm_name": "patrick williams",
+    "w": 0.105715,
+    "rel_net": -2.046412
+   },
+   {
+    "person_id": "1630200",
+    "norm_name": "tre jones",
+    "w": 0.111052,
+    "rel_net": 0.74442
+   },
+   {
+    "person_id": "1630581",
+    "norm_name": "josh giddey",
+    "w": 0.052606,
+    "rel_net": -0.120767
+   },
+   {
+    "person_id": "1631159",
+    "norm_name": "leonard miller",
+    "w": 0.120069,
+    "rel_net": -0.584824
+   },
+   {
+    "person_id": "1641824",
+    "norm_name": "matas buzelis",
+    "w": 0.074928,
+    "rel_net": -1.487264
+   },
+   {
+    "person_id": "1642265",
+    "norm_name": "rob dillingham",
+    "w": 0.095762,
+    "rel_net": -3.580818
+   },
+   {
+    "person_id": "1642950",
+    "norm_name": "lachlan olbrich",
+    "w": 0.072486,
+    "rel_net": 2.933599
+   },
+   {
+    "person_id": "1630644",
+    "norm_name": "mac mcclung",
+    "w": 0.036514,
+    "rel_net": 0.150293
+   },
+   {
+    "person_id": "1642530",
+    "norm_name": "yuki kawamura",
+    "w": 0.036353,
+    "rel_net": 0.887214
+   },
+   {
+    "person_id": "1631338",
+    "norm_name": "mouhamadou gueye",
+    "w": 0.018837,
+    "rel_net": 0.037892
+   }
+  ],
+  "1610612742": [
+   {
+    "person_id": "202691",
+    "norm_name": "klay thompson",
+    "w": 0.053326,
+    "rel_net": 0.353072
+   },
+   {
+    "person_id": "203114",
+    "norm_name": "khris middleton",
+    "w": 0.067025,
+    "rel_net": 0.583384
+   },
+   {
+    "person_id": "203939",
+    "norm_name": "dwight powell",
+    "w": 0.077744,
+    "rel_net": 1.859104
+   },
+   {
+    "person_id": "1628963",
+    "norm_name": "marvin bagley",
+    "w": 0.052793,
+    "rel_net": 0.912945
+   },
+   {
+    "person_id": "1629023",
+    "norm_name": "p j washington",
+    "w": 0.036592,
+    "rel_net": -0.642333
+   },
+   {
+    "person_id": "1630230",
+    "norm_name": "naji marshall",
+    "w": 0.062552,
+    "rel_net": -0.743953
+   },
+   {
+    "person_id": "1630314",
+    "norm_name": "brandon williams",
+    "w": 0.059539,
+    "rel_net": 0.782776
+   },
+   {
+    "person_id": "1631108",
+    "norm_name": "max christie",
+    "w": 0.112662,
+    "rel_net": -0.924795
+   },
+   {
+    "person_id": "1641890",
+    "norm_name": "tyler smith",
+    "w": 0.061701,
+    "rel_net": 0.213293
+   },
+   {
+    "person_id": "1642843",
+    "norm_name": "cooper flagg",
+    "w": 0.132059,
+    "rel_net": -0.020729
+   },
+   {
+    "person_id": "1642948",
+    "norm_name": "ryan nembhard",
+    "w": 0.088742,
+    "rel_net": 1.821125
+   },
+   {
+    "person_id": "1642967",
+    "norm_name": "john poulakidas",
+    "w": 0.080938,
+    "rel_net": 0.95387
+   },
+   {
+    "person_id": "1642358",
+    "norm_name": "aj johnson",
+    "w": 0.041938,
+    "rel_net": 1.897713
+   },
+   {
+    "person_id": "1629655",
+    "norm_name": "daniel gafford",
+    "w": 0.02925,
+    "rel_net": -0.115041
+   },
+   {
+    "person_id": "1630619",
+    "norm_name": "moussa cisse",
+    "w": 0.043139,
+    "rel_net": 1.61351
+   }
+  ],
+  "1610612743": [
+   {
+    "person_id": "202685",
+    "norm_name": "jonas valanciunas",
+    "w": 0.043567,
+    "rel_net": -2.126332
+   },
+   {
+    "person_id": "203501",
+    "norm_name": "tim hardaway",
+    "w": 0.086046,
+    "rel_net": -1.081666
+   },
+   {
+    "person_id": "203932",
+    "norm_name": "aaron gordon",
+    "w": 0.060179,
+    "rel_net": 3.407131
+   },
+   {
+    "person_id": "203999",
+    "norm_name": "nikola jokic",
+    "w": 0.127905,
+    "rel_net": 4.338118
+   },
+   {
+    "person_id": "1627750",
+    "norm_name": "jamal murray",
+    "w": 0.128325,
+    "rel_net": 2.126269
+   },
+   {
+    "person_id": "1628971",
+    "norm_name": "bruce brown",
+    "w": 0.091588,
+    "rel_net": -2.971208
+   },
+   {
+    "person_id": "1629661",
+    "norm_name": "cameron johnson",
+    "w": 0.104452,
+    "rel_net": 0.765474
+   },
+   {
+    "person_id": "1631124",
+    "norm_name": "julian strawther",
+    "w": 0.050687,
+    "rel_net": -3.953112
+   },
+   {
+    "person_id": "1631128",
+    "norm_name": "christian braun",
+    "w": 0.104463,
+    "rel_net": 1.413065
+   },
+   {
+    "person_id": "1629618",
+    "norm_name": "jalen pickett",
+    "w": 0.028737,
+    "rel_net": -2.679541
+   },
+   {
+    "person_id": "1630192",
+    "norm_name": "zeke nnaji",
+    "w": 0.024959,
+    "rel_net": -6.514987
+   },
+   {
+    "person_id": "1641747",
+    "norm_name": "daron holmes",
+    "w": 0.005652,
+    "rel_net": -1.375524
+   },
+   {
+    "person_id": "1642354",
+    "norm_name": "kj simpson",
+    "w": 0.004076,
+    "rel_net": -3.256943
+   },
+   {
+    "person_id": "1642938",
+    "norm_name": "curtis jones",
+    "w": 0.022921,
+    "rel_net": 0.384283
+   },
+   {
+    "person_id": "1626145",
+    "norm_name": "tyus jones",
+    "w": 0.030891,
+    "rel_net": -3.094705
+   },
+   {
+    "person_id": "1631223",
+    "norm_name": "david roddy",
+    "w": 0.024385,
+    "rel_net": -1.753425
+   },
+   {
+    "person_id": "1642461",
+    "norm_name": "spencer jones",
+    "w": 0.061168,
+    "rel_net": -3.397777
+   }
+  ],
+  "1610612744": [
+   {
+    "person_id": "203110",
+    "norm_name": "draymond green",
+    "w": 0.109327,
+    "rel_net": -0.239747
+   },
+   {
+    "person_id": "1629001",
+    "norm_name": "de anthony melton",
+    "w": 0.079923,
+    "rel_net": 2.156658
+   },
+   {
+    "person_id": "1630209",
+    "norm_name": "omer yurtseven",
+    "w": 0.026203,
+    "rel_net": -1.084627
+   },
+   {
+    "person_id": "1630311",
+    "norm_name": "pat spencer",
+    "w": 0.090239,
+    "rel_net": -1.938879
+   },
+   {
+    "person_id": "1630611",
+    "norm_name": "gui santos",
+    "w": 0.09747,
+    "rel_net": 1.277203
+   },
+   {
+    "person_id": "1631466",
+    "norm_name": "nate williams",
+    "w": 0.055785,
+    "rel_net": -2.807073
+   },
+   {
+    "person_id": "1641764",
+    "norm_name": "brandin podziemski",
+    "w": 0.12312,
+    "rel_net": 0.584488
+   },
+   {
+    "person_id": "1642366",
+    "norm_name": "quinten post",
+    "w": 0.008075,
+    "rel_net": 1.054702
+   },
+   {
+    "person_id": "1642502",
+    "norm_name": "malevy leons",
+    "w": 0.040954,
+    "rel_net": -1.388333
+   },
+   {
+    "person_id": "1642954",
+    "norm_name": "will richard",
+    "w": 0.059256,
+    "rel_net": -1.760415
+   },
+   {
+    "person_id": "1643018",
+    "norm_name": "lj cryer",
+    "w": 0.061119,
+    "rel_net": 0.545784
+   },
+   {
+    "person_id": "204001",
+    "norm_name": "kristaps porzingis",
+    "w": 0.064778,
+    "rel_net": 1.231746
+   },
+   {
+    "person_id": "1627780",
+    "norm_name": "gary payton",
+    "w": 0.069222,
+    "rel_net": -0.304326
+   },
+   {
+    "person_id": "203552",
+    "norm_name": "seth curry",
+    "w": 0.021413,
+    "rel_net": 0.458954
+   },
+   {
+    "person_id": "1629646",
+    "norm_name": "charles bassey",
+    "w": 0.025951,
+    "rel_net": -2.410588
+   },
+   {
+    "person_id": "201143",
+    "norm_name": "al horford",
+    "w": 0.026118,
+    "rel_net": 0.489907
+   },
+   {
+    "person_id": "201939",
+    "norm_name": "stephen curry",
+    "w": 0.041047,
+    "rel_net": 0.4581
+   }
+  ],
+  "1610612745": [
+   {
+    "person_id": "201142",
+    "norm_name": "kevin durant",
+    "w": 0.063117,
+    "rel_net": 0.689999
+   },
+   {
+    "person_id": "203991",
+    "norm_name": "clint capela",
+    "w": 0.031368,
+    "rel_net": 0.14412
+   },
+   {
+    "person_id": "1628988",
+    "norm_name": "aaron holiday",
+    "w": 0.052712,
+    "rel_net": 0.449377
+   },
+   {
+    "person_id": "1629006",
+    "norm_name": "josh okogie",
+    "w": 0.076445,
+    "rel_net": 0.694748
+   },
+   {
+    "person_id": "1630256",
+    "norm_name": "jae sean tate",
+    "w": 0.029258,
+    "rel_net": -2.300824
+   },
+   {
+    "person_id": "1630578",
+    "norm_name": "alperen sengun",
+    "w": 0.132699,
+    "rel_net": -0.351867
+   },
+   {
+    "person_id": "1631095",
+    "norm_name": "jabari smith",
+    "w": 0.150282,
+    "rel_net": -0.699778
+   },
+   {
+    "person_id": "1631106",
+    "norm_name": "tari eason",
+    "w": 0.124447,
+    "rel_net": 0.950032
+   },
+   {
+    "person_id": "1641708",
+    "norm_name": "amen thompson",
+    "w": 0.158063,
+    "rel_net": 1.301214
+   },
+   {
+    "person_id": "1642263",
+    "norm_name": "reed sheppard",
+    "w": 0.114067,
+    "rel_net": -1.733305
+   },
+   {
+    "person_id": "201145",
+    "norm_name": "jeff green",
+    "w": 0.014137,
+    "rel_net": -3.936497
+   },
+   {
+    "person_id": "1627827",
+    "norm_name": "dorian finney smith",
+    "w": 0.028925,
+    "rel_net": 0.535356
+   },
+   {
+    "person_id": "1631120",
+    "norm_name": "jd davison",
+    "w": 0.013065,
+    "rel_net": -3.246329
+   },
+   {
+    "person_id": "1641803",
+    "norm_name": "tristen newton",
+    "w": 0.004948,
+    "rel_net": -0.046268
+   },
+   {
+    "person_id": "1642384",
+    "norm_name": "isaiah crawford",
+    "w": 0.006467,
+    "rel_net": -0.600734
+   }
+  ],
+  "1610612746": [
+   {
+    "person_id": "201572",
+    "norm_name": "brook lopez",
+    "w": 0.115807,
+    "rel_net": 0.74224
+   },
+   {
+    "person_id": "201587",
+    "norm_name": "nicolas batum",
+    "w": 0.035363,
+    "rel_net": -0.106824
+   },
+   {
+    "person_id": "202695",
+    "norm_name": "kawhi leonard",
+    "w": 0.117238,
+    "rel_net": 3.067072
+   },
+   {
+    "person_id": "1627739",
+    "norm_name": "kris dunn",
+    "w": 0.102837,
+    "rel_net": 0.909173
+   },
+   {
+    "person_id": "1627884",
+    "norm_name": "derrick jones",
+    "w": 0.10434,
+    "rel_net": 1.702656
+   },
+   {
+    "person_id": "1628381",
+    "norm_name": "john collins",
+    "w": 0.103126,
+    "rel_net": 0.202333
+   },
+   {
+    "person_id": "1629636",
+    "norm_name": "darius garland",
+    "w": 0.115701,
+    "rel_net": -0.103799
+   },
+   {
+    "person_id": "1630543",
+    "norm_name": "isaiah jackson",
+    "w": 0.015667,
+    "rel_net": 0.752485
+   },
+   {
+    "person_id": "1631097",
+    "norm_name": "bennedict mathurin",
+    "w": 0.103299,
+    "rel_net": -2.163476
+   },
+   {
+    "person_id": "1642353",
+    "norm_name": "cam christie",
+    "w": 0.012451,
+    "rel_net": -1.249575
+   },
+   {
+    "person_id": "1642920",
+    "norm_name": "kobe sanders",
+    "w": 0.055603,
+    "rel_net": -0.397445
+   },
+   {
+    "person_id": "1642951",
+    "norm_name": "sean pedulla",
+    "w": 0.004771,
+    "rel_net": -1.198041
+   },
+   {
+    "person_id": "1641757",
+    "norm_name": "jordan miller",
+    "w": 0.09136,
+    "rel_net": -2.702139
+   },
+   {
+    "person_id": "1631102",
+    "norm_name": "tyty washington",
+    "w": 0.009326,
+    "rel_net": -1.448469
+   },
+   {
+    "person_id": "203992",
+    "norm_name": "bogdan bogdanovic",
+    "w": 0.009153,
+    "rel_net": 2.11138
+   },
+   {
+    "person_id": "1641807",
+    "norm_name": "norchad omier",
+    "w": 0.003958,
+    "rel_net": -1.539762
+   }
+  ],
+  "1610612747": [
+   {
+    "person_id": "2544",
+    "norm_name": "lebron james",
+    "w": 0.149248,
+    "rel_net": -0.170395
+   },
+   {
+    "person_id": "203935",
+    "norm_name": "marcus smart",
+    "w": 0.138883,
+    "rel_net": 1.55492
+   },
+   {
+    "person_id": "1628379",
+    "norm_name": "luke kennard",
+    "w": 0.128891,
+    "rel_net": 0.242905
+   },
+   {
+    "person_id": "1628467",
+    "norm_name": "maxi kleber",
+    "w": 0.012375,
+    "rel_net": 1.255395
+   },
+   {
+    "person_id": "1629020",
+    "norm_name": "jarred vanderbilt",
+    "w": 0.037453,
+    "rel_net": -0.355291
+   },
+   {
+    "person_id": "1629028",
+    "norm_name": "deandre ayton",
+    "w": 0.116655,
+    "rel_net": -0.79326
+   },
+   {
+    "person_id": "1629060",
+    "norm_name": "rui hachimura",
+    "w": 0.155318,
+    "rel_net": -0.174762
+   },
+   {
+    "person_id": "1631166",
+    "norm_name": "drew timme",
+    "w": 0.002976,
+    "rel_net": -3.30186
+   },
+   {
+    "person_id": "1631222",
+    "norm_name": "jake laravia",
+    "w": 0.053146,
+    "rel_net": -0.316833
+   },
+   {
+    "person_id": "1641733",
+    "norm_name": "nick smith",
+    "w": 0.014407,
+    "rel_net": -1.527823
+   },
+   {
+    "person_id": "1642261",
+    "norm_name": "dalton knecht",
+    "w": 0.011512,
+    "rel_net": -2.857153
+   },
+   {
+    "person_id": "1642355",
+    "norm_name": "bronny james",
+    "w": 0.024495,
+    "rel_net": -2.808344
+   },
+   {
+    "person_id": "1642876",
+    "norm_name": "adou thiero",
+    "w": 0.01603,
+    "rel_net": -2.09567
+   },
+   {
+    "person_id": "1643024",
+    "norm_name": "chris manon",
+    "w": 0.002385,
+    "rel_net": 0.160878
+   },
+   {
+    "person_id": "1629637",
+    "norm_name": "jaxson hayes",
+    "w": 0.061079,
+    "rel_net": -0.4127
+   },
+   {
+    "person_id": "1630559",
+    "norm_name": "austin reaves",
+    "w": 0.075148,
+    "rel_net": 0.291046
+   }
+  ],
+  "1610612748": [
+   {
+    "person_id": "203952",
+    "norm_name": "andrew wiggins",
+    "w": 0.122915,
+    "rel_net": -1.640008
+   },
+   {
+    "person_id": "1626181",
+    "norm_name": "norman powell",
+    "w": 0.045635,
+    "rel_net": -0.003691
+   },
+   {
+    "person_id": "1628389",
+    "norm_name": "bam adebayo",
+    "w": 0.132422,
+    "rel_net": 1.52621
+   },
+   {
+    "person_id": "1629639",
+    "norm_name": "tyler herro",
+    "w": 0.110757,
+    "rel_net": 0.699051
+   },
+   {
+    "person_id": "1630558",
+    "norm_name": "davion mitchell",
+    "w": 0.121854,
+    "rel_net": 1.358614
+   },
+   {
+    "person_id": "1631170",
+    "norm_name": "jaime jaquez",
+    "w": 0.120797,
+    "rel_net": -0.855561
+   },
+   {
+    "person_id": "1631323",
+    "norm_name": "simone fontecchio",
+    "w": 0.033755,
+    "rel_net": 0.619182
+   },
+   {
+    "person_id": "1641796",
+    "norm_name": "pelle larsson",
+    "w": 0.110642,
+    "rel_net": 1.02924
+   },
+   {
+    "person_id": "1642066",
+    "norm_name": "myron gardner",
+    "w": 0.009607,
+    "rel_net": 1.136549
+   },
+   {
+    "person_id": "1642276",
+    "norm_name": "kel el ware",
+    "w": 0.090345,
+    "rel_net": -1.174664
+   },
+   {
+    "person_id": "1642352",
+    "norm_name": "keshad johnson",
+    "w": 0.030496,
+    "rel_net": 2.765746
+   },
+   {
+    "person_id": "1642857",
+    "norm_name": "kasparas jakucionis",
+    "w": 0.046946,
+    "rel_net": -0.338576
+   },
+   {
+    "person_id": "1630696",
+    "norm_name": "dru smith",
+    "w": 0.007802,
+    "rel_net": -3.1686
+   },
+   {
+    "person_id": "1631107",
+    "norm_name": "nikola jovic",
+    "w": 0.0047,
+    "rel_net": 0.023011
+   },
+   {
+    "person_id": "1631211",
+    "norm_name": "trevor keels",
+    "w": 0.004158,
+    "rel_net": 0.442932
+   },
+   {
+    "person_id": "1642884",
+    "norm_name": "vladislav goldin",
+    "w": 0.004158,
+    "rel_net": 0.276862
+   },
+   {
+    "person_id": "1642443",
+    "norm_name": "jahmir young",
+    "w": 0.00301,
+    "rel_net": -0.750368
+   }
+  ],
+  "1610612749": [
+   {
+    "person_id": "1626167",
+    "norm_name": "myles turner",
+    "w": 0.051169,
+    "rel_net": 0.418114
+   },
+   {
+    "person_id": "1627752",
+    "norm_name": "taurean prince",
+    "w": 0.110814,
+    "rel_net": -0.700236
+   },
+   {
+    "person_id": "1629018",
+    "norm_name": "gary trent",
+    "w": 0.046868,
+    "rel_net": -1.59596
+   },
+   {
+    "person_id": "1630579",
+    "norm_name": "jericho sims",
+    "w": 0.120517,
+    "rel_net": -2.734358
+   },
+   {
+    "person_id": "1631157",
+    "norm_name": "ryan rollins",
+    "w": 0.052521,
+    "rel_net": 1.678084
+   },
+   {
+    "person_id": "1631172",
+    "norm_name": "ousmane dieng",
+    "w": 0.134353,
+    "rel_net": -6.350336
+   },
+   {
+    "person_id": "1631250",
+    "norm_name": "pete nance",
+    "w": 0.094457,
+    "rel_net": 1.827029
+   },
+   {
+    "person_id": "1631260",
+    "norm_name": "aj green",
+    "w": 0.138676,
+    "rel_net": 1.336919
+   },
+   {
+    "person_id": "1641748",
+    "norm_name": "andre jackson",
+    "w": 0.063094,
+    "rel_net": 0.251024
+   },
+   {
+    "person_id": "1642504",
+    "norm_name": "cormac ryan",
+    "w": 0.107146,
+    "rel_net": 2.623695
+   },
+   {
+    "person_id": "1628398",
+    "norm_name": "kyle kuzma",
+    "w": 0.038021,
+    "rel_net": -2.575047
+   },
+   {
+    "person_id": "1630828",
+    "norm_name": "alex antetokounmpo",
+    "w": 0.008391,
+    "rel_net": 0.397374
+   },
+   {
+    "person_id": "203648",
+    "norm_name": "thanasis antetokounmpo",
+    "w": 0.015889,
+    "rel_net": 0.874556
+   },
+   {
+    "person_id": "203914",
+    "norm_name": "gary harris",
+    "w": 0.018084,
+    "rel_net": -0.03363
+   }
+  ],
+  "1610612750": [
+   {
+    "person_id": "201144",
+    "norm_name": "mike conley",
+    "w": 0.064056,
+    "rel_net": -0.227842
+   },
+   {
+    "person_id": "203497",
+    "norm_name": "rudy gobert",
+    "w": 0.127917,
+    "rel_net": 1.034566
+   },
+   {
+    "person_id": "203937",
+    "norm_name": "kyle anderson",
+    "w": 0.020185,
+    "rel_net": 0.342594
+   },
+   {
+    "person_id": "203944",
+    "norm_name": "julius randle",
+    "w": 0.138717,
+    "rel_net": -0.174035
+   },
+   {
+    "person_id": "204060",
+    "norm_name": "joe ingles",
+    "w": 0.00566,
+    "rel_net": 0.912656
+   },
+   {
+    "person_id": "1628978",
+    "norm_name": "donte divincenzo",
+    "w": 0.014416,
+    "rel_net": 0.476684
+   },
+   {
+    "person_id": "1629675",
+    "norm_name": "naz reid",
+    "w": 0.115602,
+    "rel_net": 0.18081
+   },
+   {
+    "person_id": "1630162",
+    "norm_name": "anthony edwards",
+    "w": 0.102869,
+    "rel_net": 0.387163
+   },
+   {
+    "person_id": "1630183",
+    "norm_name": "jaden mcdaniels",
+    "w": 0.139899,
+    "rel_net": -0.131999
+   },
+   {
+    "person_id": "1630245",
+    "norm_name": "ayo dosunmu",
+    "w": 0.100118,
+    "rel_net": -1.479066
+   },
+   {
+    "person_id": "1630538",
+    "norm_name": "bones hyland",
+    "w": 0.041842,
+    "rel_net": -0.311623
+   },
+   {
+    "person_id": "1641763",
+    "norm_name": "julian phillips",
+    "w": 0.010576,
+    "rel_net": 2.913355
+   },
+   {
+    "person_id": "1642866",
+    "norm_name": "joan beringer",
+    "w": 0.009647,
+    "rel_net": 0.593859
+   },
+   {
+    "person_id": "1630545",
+    "norm_name": "terrence shannon",
+    "w": 0.084603,
+    "rel_net": -3.534695
+   },
+   {
+    "person_id": "1641740",
+    "norm_name": "jaylen clark",
+    "w": 0.023894,
+    "rel_net": 1.635724
+   }
+  ],
+  "1610612751": [
+   {
+    "person_id": "1629611",
+    "norm_name": "terance mann",
+    "w": 0.037183,
+    "rel_net": -0.494287
+   },
+   {
+    "person_id": "1629651",
+    "norm_name": "nic claxton",
+    "w": 0.047417,
+    "rel_net": -2.253888
+   },
+   {
+    "person_id": "1630533",
+    "norm_name": "ziaire williams",
+    "w": 0.039699,
+    "rel_net": -1.873469
+   },
+   {
+    "person_id": "1630592",
+    "norm_name": "jalen wilson",
+    "w": 0.07891,
+    "rel_net": 2.003356
+   },
+   {
+    "person_id": "1630604",
+    "norm_name": "e j liddell",
+    "w": 0.076924,
+    "rel_net": 1.498184
+   },
+   {
+    "person_id": "1630623",
+    "norm_name": "tyson etienne",
+    "w": 0.086576,
+    "rel_net": -0.176627
+   },
+   {
+    "person_id": "1631169",
+    "norm_name": "josh minott",
+    "w": 0.045963,
+    "rel_net": -1.96737
+   },
+   {
+    "person_id": "1641869",
+    "norm_name": "malachi smith",
+    "w": 0.100507,
+    "rel_net": 0.53555
+   },
+   {
+    "person_id": "1642879",
+    "norm_name": "ben saraf",
+    "w": 0.106111,
+    "rel_net": -0.889577
+   },
+   {
+    "person_id": "1642962",
+    "norm_name": "drake powell",
+    "w": 0.10666,
+    "rel_net": -3.77926
+   },
+   {
+    "person_id": "1643052",
+    "norm_name": "chaney johnson",
+    "w": 0.065222,
+    "rel_net": 0.938379
+   },
+   {
+    "person_id": "1630534",
+    "norm_name": "ochai agbaji",
+    "w": 0.030611,
+    "rel_net": -0.404121
+   },
+   {
+    "person_id": "1641730",
+    "norm_name": "noah clowney",
+    "w": 0.035253,
+    "rel_net": -0.870743
+   },
+   {
+    "person_id": "1642849",
+    "norm_name": "nolan traore",
+    "w": 0.067,
+    "rel_net": -0.661068
+   },
+   {
+    "person_id": "1630286",
+    "norm_name": "trevon scott",
+    "w": 0.075966,
+    "rel_net": -0.187149
+   }
+  ],
+  "1610612752": [
+   {
+    "person_id": "203903",
+    "norm_name": "jordan clarkson",
+    "w": 0.030081,
+    "rel_net": -1.875269
+   },
+   {
+    "person_id": "1626157",
+    "norm_name": "karl anthony towns",
+    "w": 0.128914,
+    "rel_net": 1.021726
+   },
+   {
+    "person_id": "1628404",
+    "norm_name": "josh hart",
+    "w": 0.12518,
+    "rel_net": -1.028719
+   },
+   {
+    "person_id": "1628969",
+    "norm_name": "mikal bridges",
+    "w": 0.141937,
+    "rel_net": -0.244481
+   },
+   {
+    "person_id": "1628973",
+    "norm_name": "jalen brunson",
+    "w": 0.157544,
+    "rel_net": 0.003007
+   },
+   {
+    "person_id": "1629011",
+    "norm_name": "mitchell robinson",
+    "w": 0.056914,
+    "rel_net": -0.929241
+   },
+   {
+    "person_id": "1629013",
+    "norm_name": "landry shamet",
+    "w": 0.08648,
+    "rel_net": -0.618445
+   },
+   {
+    "person_id": "1630540",
+    "norm_name": "miles mcbride",
+    "w": 0.06531,
+    "rel_net": 2.187879
+   },
+   {
+    "person_id": "1630574",
+    "norm_name": "ariel hukporti",
+    "w": 0.011751,
+    "rel_net": -3.436508
+   },
+   {
+    "person_id": "1630631",
+    "norm_name": "jose alvarado",
+    "w": 0.041012,
+    "rel_net": 0.258763
+   },
+   {
+    "person_id": "1631110",
+    "norm_name": "jeremy sochan",
+    "w": 0.005164,
+    "rel_net": -4.310637
+   },
+   {
+    "person_id": "1642278",
+    "norm_name": "tyler kolek",
+    "w": 0.009016,
+    "rel_net": -1.685134
+   },
+   {
+    "person_id": "1642359",
+    "norm_name": "pacome dadiet",
+    "w": 0.008302,
+    "rel_net": -2.707088
+   },
+   {
+    "person_id": "1642885",
+    "norm_name": "mohamed diawara",
+    "w": 0.007072,
+    "rel_net": -1.421288
+   },
+   {
+    "person_id": "1628384",
+    "norm_name": "og anunoby",
+    "w": 0.125321,
+    "rel_net": 0.990073
+   }
+  ],
+  "1610612753": [
+   {
+    "person_id": "1628975",
+    "norm_name": "jevon carter",
+    "w": 0.013951,
+    "rel_net": -0.098612
+   },
+   {
+    "person_id": "1628976",
+    "norm_name": "wendell carter",
+    "w": 0.13561,
+    "rel_net": 0.905953
+   },
+   {
+    "person_id": "1629048",
+    "norm_name": "goga bitadze",
+    "w": 0.054983,
+    "rel_net": -0.036505
+   },
+   {
+    "person_id": "1630217",
+    "norm_name": "desmond bane",
+    "w": 0.143783,
+    "rel_net": 0.983563
+   },
+   {
+    "person_id": "1630532",
+    "norm_name": "franz wagner",
+    "w": 0.08479,
+    "rel_net": 1.985099
+   },
+   {
+    "person_id": "1630591",
+    "norm_name": "jalen suggs",
+    "w": 0.143892,
+    "rel_net": 0.893205
+   },
+   {
+    "person_id": "1631094",
+    "norm_name": "paolo banchero",
+    "w": 0.158042,
+    "rel_net": -0.060394
+   },
+   {
+    "person_id": "1631288",
+    "norm_name": "jamal cain",
+    "w": 0.06904,
+    "rel_net": -0.162134
+   },
+   {
+    "person_id": "1641710",
+    "norm_name": "anthony black",
+    "w": 0.109431,
+    "rel_net": -1.727896
+   },
+   {
+    "person_id": "1641783",
+    "norm_name": "tristan da silva",
+    "w": 0.067992,
+    "rel_net": 0.636351
+   },
+   {
+    "person_id": "1629021",
+    "norm_name": "moritz wagner",
+    "w": 0.007653,
+    "rel_net": -2.142054
+   },
+   {
+    "person_id": "1641724",
+    "norm_name": "jett howard",
+    "w": 0.003611,
+    "rel_net": -2.823044
+   },
+   {
+    "person_id": "1642859",
+    "norm_name": "jase richardson",
+    "w": 0.003611,
+    "rel_net": 0.501932
+   },
+   {
+    "person_id": "1642869",
+    "norm_name": "noah penda",
+    "w": 0.003611,
+    "rel_net": -1.669502
+   }
+  ],
+  "1610612754": [
+   {
+    "person_id": "204456",
+    "norm_name": "t j mcconnell",
+    "w": 0.019159,
+    "rel_net": -0.660516
+   },
+   {
+    "person_id": "1627783",
+    "norm_name": "pascal siakam",
+    "w": 0.062029,
+    "rel_net": 1.627612
+   },
+   {
+    "person_id": "1629614",
+    "norm_name": "andrew nembhard",
+    "w": 0.042542,
+    "rel_net": -1.128949
+   },
+   {
+    "person_id": "1630167",
+    "norm_name": "obi toppin",
+    "w": 0.079366,
+    "rel_net": -0.670655
+   },
+   {
+    "person_id": "1630174",
+    "norm_name": "aaron nesmith",
+    "w": 0.028133,
+    "rel_net": 1.218439
+   },
+   {
+    "person_id": "1630643",
+    "norm_name": "jay huff",
+    "w": 0.093814,
+    "rel_net": -1.237364
+   },
+   {
+    "person_id": "1630695",
+    "norm_name": "micah potter",
+    "w": 0.090273,
+    "rel_net": 0.348866
+   },
+   {
+    "person_id": "1631245",
+    "norm_name": "quenton jackson",
+    "w": 0.091398,
+    "rel_net": 2.634273
+   },
+   {
+    "person_id": "1641716",
+    "norm_name": "jarace walker",
+    "w": 0.050292,
+    "rel_net": -3.239531
+   },
+   {
+    "person_id": "1641738",
+    "norm_name": "kobe brown",
+    "w": 0.100762,
+    "rel_net": -4.567879
+   },
+   {
+    "person_id": "1641767",
+    "norm_name": "ben sheppard",
+    "w": 0.044082,
+    "rel_net": -1.038624
+   },
+   {
+    "person_id": "1641771",
+    "norm_name": "jalen slawson",
+    "w": 0.075903,
+    "rel_net": -0.977586
+   },
+   {
+    "person_id": "1630679",
+    "norm_name": "ethan thompson",
+    "w": 0.098404,
+    "rel_net": 2.578768
+   },
+   {
+    "person_id": "1642880",
+    "norm_name": "kam jones",
+    "w": 0.064069,
+    "rel_net": -0.464781
+   },
+   {
+    "person_id": "1643007",
+    "norm_name": "taelon peter",
+    "w": 0.059773,
+    "rel_net": -0.383357
+   }
+  ],
+  "1610612755": [
+   {
+    "person_id": "202331",
+    "norm_name": "paul george",
+    "w": 0.152166,
+    "rel_net": 1.195432
+   },
+   {
+    "person_id": "203083",
+    "norm_name": "andre drummond",
+    "w": 0.050216,
+    "rel_net": -1.617156
+   },
+   {
+    "person_id": "1626162",
+    "norm_name": "kelly oubre",
+    "w": 0.138299,
+    "rel_net": -1.523778
+   },
+   {
+    "person_id": "1629656",
+    "norm_name": "quentin grimes",
+    "w": 0.091391,
+    "rel_net": -1.403665
+   },
+   {
+    "person_id": "1630178",
+    "norm_name": "tyrese maxey",
+    "w": 0.166983,
+    "rel_net": 0.898151
+   },
+   {
+    "person_id": "1631230",
+    "norm_name": "dominick barlow",
+    "w": 0.03366,
+    "rel_net": 1.272976
+   },
+   {
+    "person_id": "1641737",
+    "norm_name": "adem bona",
+    "w": 0.033978,
+    "rel_net": 1.11484
+   },
+   {
+    "person_id": "1642348",
+    "norm_name": "justin edwards",
+    "w": 0.038605,
+    "rel_net": -2.424304
+   },
+   {
+    "person_id": "1642845",
+    "norm_name": "vj edgecombe",
+    "w": 0.155533,
+    "rel_net": 0.914735
+   },
+   {
+    "person_id": "203954",
+    "norm_name": "joel embiid",
+    "w": 0.097101,
+    "rel_net": 1.56631
+   },
+   {
+    "person_id": "1630570",
+    "norm_name": "trendon watford",
+    "w": 0.013681,
+    "rel_net": -1.979584
+   },
+   {
+    "person_id": "1631133",
+    "norm_name": "jabari walker",
+    "w": 0.010326,
+    "rel_net": 0.178391
+   },
+   {
+    "person_id": "1631207",
+    "norm_name": "dalen terry",
+    "w": 0.013854,
+    "rel_net": -0.563561
+   },
+   {
+    "person_id": "200768",
+    "norm_name": "kyle lowry",
+    "w": 0.001061,
+    "rel_net": -1.396087
+   },
+   {
+    "person_id": "1641780",
+    "norm_name": "johni broome",
+    "w": 0.003146,
+    "rel_net": -0.285491
+   }
+  ],
+  "1610612756": [
+   {
+    "person_id": "1626164",
+    "norm_name": "devin booker",
+    "w": 0.128428,
+    "rel_net": 0.298423
+   },
+   {
+    "person_id": "1626220",
+    "norm_name": "royce o neale",
+    "w": 0.087122,
+    "rel_net": -1.274806
+   },
+   {
+    "person_id": "1628415",
+    "norm_name": "dillon brooks",
+    "w": 0.126378,
+    "rel_net": 0.106609
+   },
+   {
+    "person_id": "1628960",
+    "norm_name": "grayson allen",
+    "w": 0.031514,
+    "rel_net": 1.078116
+   },
+   {
+    "person_id": "1630224",
+    "norm_name": "jalen green",
+    "w": 0.110073,
+    "rel_net": -0.153694
+   },
+   {
+    "person_id": "1630692",
+    "norm_name": "jordan goodwin",
+    "w": 0.044637,
+    "rel_net": 0.798031
+   },
+   {
+    "person_id": "1631109",
+    "norm_name": "mark williams",
+    "w": 0.029465,
+    "rel_net": -1.844341
+   },
+   {
+    "person_id": "1631123",
+    "norm_name": "jamaree bouyea",
+    "w": 0.034051,
+    "rel_net": 0.665262
+   },
+   {
+    "person_id": "1631221",
+    "norm_name": "collin gillespie",
+    "w": 0.090657,
+    "rel_net": 1.32242
+   },
+   {
+    "person_id": "1642345",
+    "norm_name": "oso ighodaro",
+    "w": 0.103987,
+    "rel_net": 2.54149
+   },
+   {
+    "person_id": "1642346",
+    "norm_name": "ryan dunn",
+    "w": 0.053365,
+    "rel_net": -0.403327
+   },
+   {
+    "person_id": "1642853",
+    "norm_name": "rasheer fleming",
+    "w": 0.040157,
+    "rel_net": 2.355072
+   },
+   {
+    "person_id": "1642863",
+    "norm_name": "khaman maluach",
+    "w": 0.049267,
+    "rel_net": 0.516256
+   },
+   {
+    "person_id": "1642886",
+    "norm_name": "koby brea",
+    "w": 0.018403,
+    "rel_net": -0.114781
+   },
+   {
+    "person_id": "1629599",
+    "norm_name": "amir coffey",
+    "w": 0.025376,
+    "rel_net": -1.424595
+   },
+   {
+    "person_id": "1643047",
+    "norm_name": "cj huntley",
+    "w": 0.013868,
+    "rel_net": 0.167887
+   },
+   {
+    "person_id": "1629312",
+    "norm_name": "haywood highsmith",
+    "w": 0.013253,
+    "rel_net": -0.327969
+   }
+  ],
+  "1610612757": [
+   {
+    "person_id": "201950",
+    "norm_name": "jrue holiday",
+    "w": 0.150258,
+    "rel_net": 0.855644
+   },
+   {
+    "person_id": "1629057",
+    "norm_name": "robert williams",
+    "w": 0.083801,
+    "rel_net": 1.928621
+   },
+   {
+    "person_id": "1629680",
+    "norm_name": "matisse thybulle",
+    "w": 0.061961,
+    "rel_net": 0.222438
+   },
+   {
+    "person_id": "1630166",
+    "norm_name": "deni avdija",
+    "w": 0.147547,
+    "rel_net": 0.364843
+   },
+   {
+    "person_id": "1630703",
+    "norm_name": "scoot henderson",
+    "w": 0.123006,
+    "rel_net": -0.100262
+   },
+   {
+    "person_id": "1631200",
+    "norm_name": "kris murray",
+    "w": 0.050129,
+    "rel_net": 1.563144
+   },
+   {
+    "person_id": "1631321",
+    "norm_name": "sidy cissoko",
+    "w": 0.019852,
+    "rel_net": 0.017705
+   },
+   {
+    "person_id": "1641739",
+    "norm_name": "toumani camara",
+    "w": 0.14208,
+    "rel_net": 1.132608
+   },
+   {
+    "person_id": "1642270",
+    "norm_name": "donovan clingan",
+    "w": 0.101667,
+    "rel_net": 0.343298
+   },
+   {
+    "person_id": "1631104",
+    "norm_name": "blake wesley",
+    "w": 0.005152,
+    "rel_net": -2.113927
+   },
+   {
+    "person_id": "1631126",
+    "norm_name": "caleb love",
+    "w": 0.001588,
+    "rel_net": -1.662677
+   },
+   {
+    "person_id": "1631101",
+    "norm_name": "shaedon sharpe",
+    "w": 0.050332,
+    "rel_net": 0.682406
+   },
+   {
+    "person_id": "1642959",
+    "norm_name": "chris youngblood",
+    "w": 0.00077,
+    "rel_net": -2.508363
+   },
+   {
+    "person_id": "1643257",
+    "norm_name": "jayson kent",
+    "w": 0.000997,
+    "rel_net": -0.390222
+   },
+   {
+    "person_id": "1630249",
+    "norm_name": "vit krejci",
+    "w": 0.005707,
+    "rel_net": 1.038284
+   },
+   {
+    "person_id": "1642905",
+    "norm_name": "hansen yang",
+    "w": 0.001278,
+    "rel_net": -2.500928
+   },
+   {
+    "person_id": "203924",
+    "norm_name": "jerami grant",
+    "w": 0.053877,
+    "rel_net": -0.778005
+   }
+  ],
+  "1610612758": [
+   {
+    "person_id": "201942",
+    "norm_name": "demar derozan",
+    "w": 0.082015,
+    "rel_net": 0.032177
+   },
+   {
+    "person_id": "203926",
+    "norm_name": "doug mcdermott",
+    "w": 0.066831,
+    "rel_net": -0.885533
+   },
+   {
+    "person_id": "1628370",
+    "norm_name": "malik monk",
+    "w": 0.072076,
+    "rel_net": 0.714409
+   },
+   {
+    "person_id": "1630165",
+    "norm_name": "killian hayes",
+    "w": 0.058921,
+    "rel_net": -0.276416
+   },
+   {
+    "person_id": "1630173",
+    "norm_name": "precious achiuwa",
+    "w": 0.107996,
+    "rel_net": -1.145928
+   },
+   {
+    "person_id": "1631116",
+    "norm_name": "patrick baldwin",
+    "w": 0.018611,
+    "rel_net": 1.553391
+   },
+   {
+    "person_id": "1642269",
+    "norm_name": "devin carter",
+    "w": 0.122372,
+    "rel_net": 2.353407
+   },
+   {
+    "person_id": "1642363",
+    "norm_name": "nique clifford",
+    "w": 0.113406,
+    "rel_net": 2.896972
+   },
+   {
+    "person_id": "1642875",
+    "norm_name": "maxime raynaud",
+    "w": 0.136978,
+    "rel_net": -0.800446
+   },
+   {
+    "person_id": "1642928",
+    "norm_name": "dylan cardwell",
+    "w": 0.082466,
+    "rel_net": 2.212827
+   },
+   {
+    "person_id": "1631342",
+    "norm_name": "daeqwon plowden",
+    "w": 0.113535,
+    "rel_net": 0.319224
+   },
+   {
+    "person_id": "1629610",
+    "norm_name": "daquan jeffries",
+    "w": 0.024793,
+    "rel_net": -0.296193
+   }
+  ],
+  "1610612759": [
+   {
+    "person_id": "203084",
+    "norm_name": "harrison barnes",
+    "w": 0.023299,
+    "rel_net": -0.079375
+   },
+   {
+    "person_id": "1628436",
+    "norm_name": "luke kornet",
+    "w": 0.03882,
+    "rel_net": -2.417736
+   },
+   {
+    "person_id": "1629162",
+    "norm_name": "jordan mclaughlin",
+    "w": 0.006178,
+    "rel_net": -3.028339
+   },
+   {
+    "person_id": "1629640",
+    "norm_name": "keldon johnson",
+    "w": 0.069261,
+    "rel_net": -1.321242
+   },
+   {
+    "person_id": "1630170",
+    "norm_name": "devin vassell",
+    "w": 0.153058,
+    "rel_net": 0.478089
+   },
+   {
+    "person_id": "1630577",
+    "norm_name": "julian champagnie",
+    "w": 0.136065,
+    "rel_net": 2.107443
+   },
+   {
+    "person_id": "1641705",
+    "norm_name": "victor wembanyama",
+    "w": 0.160283,
+    "rel_net": 4.640352
+   },
+   {
+    "person_id": "1642264",
+    "norm_name": "stephon castle",
+    "w": 0.137844,
+    "rel_net": 0.179468
+   },
+   {
+    "person_id": "1642844",
+    "norm_name": "dylan harper",
+    "w": 0.112351,
+    "rel_net": 0.476413
+   },
+   {
+    "person_id": "1642868",
+    "norm_name": "carter bryant",
+    "w": 0.024378,
+    "rel_net": -2.808988
+   },
+   {
+    "person_id": "202687",
+    "norm_name": "bismack biyombo",
+    "w": 0.001694,
+    "rel_net": -7.418965
+   },
+   {
+    "person_id": "203482",
+    "norm_name": "kelly olynyk",
+    "w": 0.003167,
+    "rel_net": -3.872964
+   },
+   {
+    "person_id": "203486",
+    "norm_name": "mason plumlee",
+    "w": 0.001694,
+    "rel_net": -1.172989
+   },
+   {
+    "person_id": "1628368",
+    "norm_name": "de aaron fox",
+    "w": 0.129665,
+    "rel_net": 0.153269
+   },
+   {
+    "person_id": "1630322",
+    "norm_name": "lindy waters",
+    "w": 0.002243,
+    "rel_net": -3.236228
+   }
+  ],
+  "1610612760": [
+   {
+    "person_id": "1627936",
+    "norm_name": "alex caruso",
+    "w": 0.102072,
+    "rel_net": 1.991171
+   },
+   {
+    "person_id": "1628392",
+    "norm_name": "isaiah hartenstein",
+    "w": 0.100373,
+    "rel_net": 1.055899
+   },
+   {
+    "person_id": "1628983",
+    "norm_name": "shai gilgeous alexander",
+    "w": 0.156119,
+    "rel_net": 2.146396
+   },
+   {
+    "person_id": "1629026",
+    "norm_name": "kenrich williams",
+    "w": 0.018711,
+    "rel_net": -1.744212
+   },
+   {
+    "person_id": "1629652",
+    "norm_name": "luguentz dort",
+    "w": 0.090764,
+    "rel_net": -0.83843
+   },
+   {
+    "person_id": "1630198",
+    "norm_name": "isaiah joe",
+    "w": 0.033956,
+    "rel_net": 0.515124
+   },
+   {
+    "person_id": "1630598",
+    "norm_name": "aaron wiggins",
+    "w": 0.019259,
+    "rel_net": -1.48112
+   },
+   {
+    "person_id": "1631096",
+    "norm_name": "chet holmgren",
+    "w": 0.129432,
+    "rel_net": 2.305091
+   },
+   {
+    "person_id": "1631119",
+    "norm_name": "jaylin williams",
+    "w": 0.064105,
+    "rel_net": -0.086735
+   },
+   {
+    "person_id": "1641717",
+    "norm_name": "cason wallace",
+    "w": 0.104878,
+    "rel_net": -0.393497
+   },
+   {
+    "person_id": "1642272",
+    "norm_name": "jared mccain",
+    "w": 0.07911,
+    "rel_net": -0.089324
+   },
+   {
+    "person_id": "1642349",
+    "norm_name": "ajay mitchell",
+    "w": 0.083358,
+    "rel_net": 0.33866
+   },
+   {
+    "person_id": "1642260",
+    "norm_name": "nikola topic",
+    "w": 0.002245,
+    "rel_net": -3.031822
+   },
+   {
+    "person_id": "1631114",
+    "norm_name": "jalen williams",
+    "w": 0.015619,
+    "rel_net": -0.176909
+   }
+  ],
+  "1610612761": [
+   {
+    "person_id": "1627742",
+    "norm_name": "brandon ingram",
+    "w": 0.103847,
+    "rel_net": -1.048214
+   },
+   {
+    "person_id": "1627751",
+    "norm_name": "jakob poeltl",
+    "w": 0.079192,
+    "rel_net": 0.033555
+   },
+   {
+    "person_id": "1629628",
+    "norm_name": "rj barrett",
+    "w": 0.137553,
+    "rel_net": -0.715265
+   },
+   {
+    "person_id": "1630193",
+    "norm_name": "immanuel quickley",
+    "w": 0.016518,
+    "rel_net": 0.849102
+   },
+   {
+    "person_id": "1630567",
+    "norm_name": "scottie barnes",
+    "w": 0.150075,
+    "rel_net": 0.859772
+   },
+   {
+    "person_id": "1630572",
+    "norm_name": "sandro mamukelashvili",
+    "w": 0.067757,
+    "rel_net": 2.282246
+   },
+   {
+    "person_id": "1630639",
+    "norm_name": "a j lawson",
+    "w": 0.035918,
+    "rel_net": -1.687013
+   },
+   {
+    "person_id": "1641711",
+    "norm_name": "gradey dick",
+    "w": 0.010085,
+    "rel_net": -0.760155
+   },
+   {
+    "person_id": "1642266",
+    "norm_name": "ja kobe walter",
+    "w": 0.125038,
+    "rel_net": -1.622146
+   },
+   {
+    "person_id": "1642347",
+    "norm_name": "jamal shead",
+    "w": 0.121188,
+    "rel_net": 1.550378
+   },
+   {
+    "person_id": "1642367",
+    "norm_name": "jonathan mogbo",
+    "w": 0.012153,
+    "rel_net": -3.734677
+   },
+   {
+    "person_id": "1642419",
+    "norm_name": "jamison battle",
+    "w": 0.035138,
+    "rel_net": -0.324707
+   },
+   {
+    "person_id": "1642867",
+    "norm_name": "collin murray boyles",
+    "w": 0.093088,
+    "rel_net": 0.498235
+   },
+   {
+    "person_id": "1642918",
+    "norm_name": "alijah martin",
+    "w": 0.006117,
+    "rel_net": -1.177346
+   },
+   {
+    "person_id": "202066",
+    "norm_name": "garrett temple",
+    "w": 0.002497,
+    "rel_net": -1.113548
+   },
+   {
+    "person_id": "1631218",
+    "norm_name": "trayce jackson davis",
+    "w": 0.003837,
+    "rel_net": -3.68365
+   }
+  ],
+  "1610612762": [
+   {
+    "person_id": "1629723",
+    "norm_name": "john konchar",
+    "w": 0.125101,
+    "rel_net": -0.997263
+   },
+   {
+    "person_id": "1631113",
+    "norm_name": "kennedy chandler",
+    "w": 0.115233,
+    "rel_net": -0.318407
+   },
+   {
+    "person_id": "1631131",
+    "norm_name": "oscar tshiebwe",
+    "w": 0.090911,
+    "rel_net": 1.677855
+   },
+   {
+    "person_id": "1641729",
+    "norm_name": "brice sensabaugh",
+    "w": 0.09966,
+    "rel_net": -0.12343
+   },
+   {
+    "person_id": "1641989",
+    "norm_name": "elijah harkless",
+    "w": 0.054065,
+    "rel_net": 2.83173
+   },
+   {
+    "person_id": "1642271",
+    "norm_name": "kyle filipowski",
+    "w": 0.083381,
+    "rel_net": 0.641913
+   },
+   {
+    "person_id": "1642846",
+    "norm_name": "ace bailey",
+    "w": 0.118285,
+    "rel_net": -1.800763
+   },
+   {
+    "person_id": "1643016",
+    "norm_name": "bez mbeng",
+    "w": 0.123264,
+    "rel_net": -1.395856
+   },
+   {
+    "person_id": "1642262",
+    "norm_name": "cody williams",
+    "w": 0.131431,
+    "rel_net": -3.0324
+   },
+   {
+    "person_id": "1642396",
+    "norm_name": "blake hinson",
+    "w": 0.034632,
+    "rel_net": 2.581042
+   },
+   {
+    "person_id": "1629004",
+    "norm_name": "svi mykhailiuk",
+    "w": 0.013726,
+    "rel_net": 2.240698
+   },
+   {
+    "person_id": "1643060",
+    "norm_name": "hayden gray",
+    "w": 0.010313,
+    "rel_net": -0.229935
+   }
+  ],
+  "1610612763": [
+   {
+    "person_id": "201959",
+    "norm_name": "taj gibson",
+    "w": 0.016813,
+    "rel_net": 0.562696
+   },
+   {
+    "person_id": "1630610",
+    "norm_name": "dejon jarreau",
+    "w": 0.036361,
+    "rel_net": -1.15301
+   },
+   {
+    "person_id": "1631174",
+    "norm_name": "tyler burton",
+    "w": 0.042456,
+    "rel_net": -2.191027
+   },
+   {
+    "person_id": "1641707",
+    "norm_name": "taylor hendricks",
+    "w": 0.044986,
+    "rel_net": -0.294829
+   },
+   {
+    "person_id": "1641713",
+    "norm_name": "gg jackson",
+    "w": 0.059128,
+    "rel_net": -0.312879
+   },
+   {
+    "person_id": "1641765",
+    "norm_name": "olivier maxence prosper",
+    "w": 0.042956,
+    "rel_net": -4.121806
+   },
+   {
+    "person_id": "1642285",
+    "norm_name": "cam spencer",
+    "w": 0.037549,
+    "rel_net": -0.174606
+   },
+   {
+    "person_id": "1642383",
+    "norm_name": "walter clayton",
+    "w": 0.073576,
+    "rel_net": 0.244394
+   },
+   {
+    "person_id": "1642907",
+    "norm_name": "cedric coward",
+    "w": 0.070064,
+    "rel_net": 3.24864
+   },
+   {
+    "person_id": "1642914",
+    "norm_name": "javon small",
+    "w": 0.048833,
+    "rel_net": 0.101145
+   },
+   {
+    "person_id": "1641712",
+    "norm_name": "rayan rupert",
+    "w": 0.073206,
+    "rel_net": -4.255529
+   },
+   {
+    "person_id": "1642380",
+    "norm_name": "adama bal",
+    "w": 0.100333,
+    "rel_net": -2.318191
+   },
+   {
+    "person_id": "1642942",
+    "norm_name": "jahmai mashack",
+    "w": 0.093465,
+    "rel_net": -3.402335
+   },
+   {
+    "person_id": "1631351",
+    "norm_name": "lucas williamson",
+    "w": 0.09326,
+    "rel_net": -0.260829
+   },
+   {
+    "person_id": "1641727",
+    "norm_name": "dariq whitehead",
+    "w": 0.076382,
+    "rel_net": -0.531565
+   },
+   {
+    "person_id": "1643253",
+    "norm_name": "toby okani",
+    "w": 0.090633,
+    "rel_net": -0.484399
+   }
+  ],
+  "1610612764": [
+   {
+    "person_id": "1630264",
+    "norm_name": "anthony gill",
+    "w": 0.128877,
+    "rel_net": 1.862046
+   },
+   {
+    "person_id": "1630536",
+    "norm_name": "sharife cooper",
+    "w": 0.079289,
+    "rel_net": 0.408463
+   },
+   {
+    "person_id": "1630551",
+    "norm_name": "justin champagnie",
+    "w": 0.08175,
+    "rel_net": 1.10342
+   },
+   {
+    "person_id": "1630702",
+    "norm_name": "jaden hardy",
+    "w": 0.047319,
+    "rel_net": -0.809069
+   },
+   {
+    "person_id": "1641731",
+    "norm_name": "bilal coulibaly",
+    "w": 0.055646,
+    "rel_net": -1.300458
+   },
+   {
+    "person_id": "1641778",
+    "norm_name": "leaky black",
+    "w": 0.090392,
+    "rel_net": 1.906618
+   },
+   {
+    "person_id": "1642259",
+    "norm_name": "alex sarr",
+    "w": 0.009389,
+    "rel_net": -1.105381
+   },
+   {
+    "person_id": "1642267",
+    "norm_name": "bub carrington",
+    "w": 0.116526,
+    "rel_net": -2.56282
+   },
+   {
+    "person_id": "1642364",
+    "norm_name": "jamir watkins",
+    "w": 0.10276,
+    "rel_net": 2.122726
+   },
+   {
+    "person_id": "1642848",
+    "norm_name": "tre johnson",
+    "w": 0.039567,
+    "rel_net": -0.446529
+   },
+   {
+    "person_id": "1642860",
+    "norm_name": "will riley",
+    "w": 0.135449,
+    "rel_net": -1.595648
+   },
+   {
+    "person_id": "1641774",
+    "norm_name": "tristan vukcevic",
+    "w": 0.020118,
+    "rel_net": 0.186989
+   },
+   {
+    "person_id": "1642882",
+    "norm_name": "julian reese",
+    "w": 0.092917,
+    "rel_net": 0.292351
+   }
+  ],
+  "1610612765": [
+   {
+    "person_id": "202699",
+    "norm_name": "tobias harris",
+    "w": 0.14714,
+    "rel_net": 0.457824
+   },
+   {
+    "person_id": "1627747",
+    "norm_name": "caris levert",
+    "w": 0.06132,
+    "rel_net": -2.725207
+   },
+   {
+    "person_id": "1628989",
+    "norm_name": "kevin huerter",
+    "w": 0.008509,
+    "rel_net": 0.029809
+   },
+   {
+    "person_id": "1629130",
+    "norm_name": "duncan robinson",
+    "w": 0.113524,
+    "rel_net": 1.2612
+   },
+   {
+    "person_id": "1629750",
+    "norm_name": "javonte green",
+    "w": 0.040889,
+    "rel_net": -0.363659
+   },
+   {
+    "person_id": "1630191",
+    "norm_name": "isaiah stewart",
+    "w": 0.047854,
+    "rel_net": -3.654983
+   },
+   {
+    "person_id": "1630194",
+    "norm_name": "paul reed",
+    "w": 0.025794,
+    "rel_net": -0.276746
+   },
+   {
+    "person_id": "1630595",
+    "norm_name": "cade cunningham",
+    "w": 0.172221,
+    "rel_net": 2.12222
+   },
+   {
+    "person_id": "1631105",
+    "norm_name": "jalen duren",
+    "w": 0.126622,
+    "rel_net": 1.624088
+   },
+   {
+    "person_id": "1641709",
+    "norm_name": "ausar thompson",
+    "w": 0.135103,
+    "rel_net": 2.244872
+   },
+   {
+    "person_id": "1642450",
+    "norm_name": "daniss jenkins",
+    "w": 0.094467,
+    "rel_net": -2.120388
+   },
+   {
+    "person_id": "1631204",
+    "norm_name": "marcus sasser",
+    "w": 0.014385,
+    "rel_net": 0.165941
+   },
+   {
+    "person_id": "1641842",
+    "norm_name": "ronald holland",
+    "w": 0.010784,
+    "rel_net": -1.436615
+   },
+   {
+    "person_id": "1642404",
+    "norm_name": "chaz lanier",
+    "w": 0.000721,
+    "rel_net": -2.364398
+   },
+   {
+    "person_id": "1642449",
+    "norm_name": "tolu smith",
+    "w": 0.000669,
+    "rel_net": -0.323201
+   }
+  ],
+  "1610612766": [
+   {
+    "person_id": "1626192",
+    "norm_name": "pat connaughton",
+    "w": 0.017572,
+    "rel_net": -2.416308
+   },
+   {
+    "person_id": "1628970",
+    "norm_name": "miles bridges",
+    "w": 0.12223,
+    "rel_net": -1.238398
+   },
+   {
+    "person_id": "1629632",
+    "norm_name": "coby white",
+    "w": 0.070065,
+    "rel_net": -0.771475
+   },
+   {
+    "person_id": "1630163",
+    "norm_name": "lamelo ball",
+    "w": 0.125379,
+    "rel_net": 1.433957
+   },
+   {
+    "person_id": "1630182",
+    "norm_name": "josh green",
+    "w": 0.042766,
+    "rel_net": -0.19242
+   },
+   {
+    "person_id": "1630214",
+    "norm_name": "xavier tillman",
+    "w": 0.014495,
+    "rel_net": -4.359714
+   },
+   {
+    "person_id": "1630544",
+    "norm_name": "tre mann",
+    "w": 0.01244,
+    "rel_net": -5.802412
+   },
+   {
+    "person_id": "1631217",
+    "norm_name": "moussa diabate",
+    "w": 0.089665,
+    "rel_net": 4.039773
+   },
+   {
+    "person_id": "1641706",
+    "norm_name": "brandon miller",
+    "w": 0.131377,
+    "rel_net": 0.313943
+   },
+   {
+    "person_id": "1641750",
+    "norm_name": "ryan kalkbrenner",
+    "w": 0.081173,
+    "rel_net": -2.190818
+   },
+   {
+    "person_id": "1642851",
+    "norm_name": "kon knueppel",
+    "w": 0.127791,
+    "rel_net": -0.14615
+   },
+   {
+    "person_id": "1642862",
+    "norm_name": "liam mcneeley",
+    "w": 0.008757,
+    "rel_net": 1.436989
+   },
+   {
+    "person_id": "1642883",
+    "norm_name": "sion james",
+    "w": 0.083552,
+    "rel_net": -1.171337
+   },
+   {
+    "person_id": "1629684",
+    "norm_name": "grant williams",
+    "w": 0.068168,
+    "rel_net": -0.133958
+   },
+   {
+    "person_id": "1641810",
+    "norm_name": "antonio reeves",
+    "w": 0.000674,
+    "rel_net": 0.654418
+   },
+   {
+    "person_id": "1642275",
+    "norm_name": "tidjane salaun",
+    "w": 0.003897,
+    "rel_net": -1.057201
+   }
+  ]
+ },
+ "abbr": {
+  "1610612737": "ATL",
+  "1610612765": "DET",
+  "1610612741": "CHI",
+  "1610612747": "LAL",
+  "1610612757": "POR",
+  "1610612766": "CHA",
+  "1610612739": "CLE",
+  "1610612759": "SAS",
+  "1610612749": "MIL",
+  "1610612750": "MIN",
+  "1610612744": "GSW",
+  "1610612762": "UTA",
+  "1610612751": "BKN",
+  "1610612748": "MIA",
+  "1610612755": "PHI",
+  "1610612745": "HOU",
+  "1610612758": "SAC",
+  "1610612752": "NYK",
+  "1610612760": "OKC",
+  "1610612743": "DEN",
+  "1610612756": "PHX",
+  "1610612753": "ORL",
+  "1610612764": "WAS",
+  "1610612763": "MEM",
+  "1610612742": "DAL",
+  "1610612746": "LAC",
+  "1610612754": "IND",
+  "1610612761": "TOR",
+  "1610612738": "BOS",
+  "1610612740": "NOP",
+  "1610616833": "DRT",
+  "1610616834": "LBN",
+  "1610616849": "JKM",
+  "1610616847": "BAR",
+  "1610616848": "PAY",
+  "1610616850": "WOR",
+  "12315": "RMD",
+  "1610616855": "TMC",
+  "1610616857": "TMM",
+  "1610616851": "CHK",
+  "1610616852": "SHQ",
+  "1610616862": "MEL",
+  "1610616864": "TMC",
+  "1610616859": "STR",
+  "1610616860": "STP",
+  "50009": "MRA",
+  "15019": "ADL",
+  "15022": "CNS",
+  "15020": "NZB",
+  "12325": "FLA",
+  "15025": "ULM",
+  "1610616856": "TMT",
+  "1610616858": "TMG",
+  "1610616853": "KEN",
+  "1610616854": "CAN",
+  "15016": "MEL",
+  "50013": "SEM",
+  "50014": "HAP",
+  "15018": "GUA",
+  "1610616865": "AUS",
+  "1610616863": "VIN",
+  "1610616861": "WLD"
+ },
+ "rates": {
+  "Available": 0.7609427609427609,
+  "Doubtful": 0.017985611510791366,
+  "Out": 0.0018340210912425492,
+  "Probable": 0.9167686658506732,
+  "Questionable": 0.5119760479041916,
+  "Unreported": 0.7664976451269466
+ },
+ "rates_table": [
+  {
+   "status": "Available",
+   "n": 891,
+   "k": 678,
+   "rate": 0.7609427609,
+   "lo": 0.7318547017,
+   "hi": 0.7877903394
+  },
+  {
+   "status": "Doubtful",
+   "n": 278,
+   "k": 5,
+   "rate": 0.0179856115,
+   "lo": 0.0077061188,
+   "hi": 0.041405155
+  },
+  {
+   "status": "Out",
+   "n": 6543,
+   "k": 12,
+   "rate": 0.0018340211,
+   "lo": 0.0010494655,
+   "hi": 0.003203211
+  },
+  {
+   "status": "Probable",
+   "n": 817,
+   "k": 749,
+   "rate": 0.9167686659,
+   "lo": 0.8958204644,
+   "hi": 0.9338158503
+  },
+  {
+   "status": "Questionable",
+   "n": 2338,
+   "k": 1197,
+   "rate": 0.5119760479,
+   "lo": 0.4917111632,
+   "hi": 0.5322016412
+  },
+  {
+   "status": "Unreported",
+   "n": 55417,
+   "k": 42477,
+   "rate": 0.7664976451,
+   "lo": 0.7629568708,
+   "hi": 0.7700014739
+  }
+ ]
+}
