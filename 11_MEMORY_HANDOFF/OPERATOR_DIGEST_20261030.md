@@ -13,3 +13,11 @@
 - Every refused order now records the account balance, so the next one will show the cause. I added no funds and changed no bets.
 - Nothing is needed from you. If refusals return, a demo-account top-up is the fix. No real money was involved.
 - The "MLB winter posture" item was not part of this block, so it has not been run.
+
+## W96.1 Part C — NBA engine prices player points (T-1530)
+- I tested whether the NBA engine can price player-points lines better than the existing model. It cannot.
+- My first run looked like a gain. It was a leak: the test used who actually played, which nobody knows before the game. I removed it, and the gain went to zero.
+- Result: no better overall, slightly better at 10 points, worse at 20, and the sign flips between seasons.
+- I did not freeze the next experiment (EXP-044d), because its trigger was not met. No market price exists to compare against, so I did not compare.
+- Still pending: no NBA game has tipped since the cron install, so the first-night readback is still needed after tonight's tips.
+- Nothing is needed from you. No real money, orders or bets were touched.
