@@ -1106,3 +1106,4 @@
 | 2026-10-30T13:51:03Z | T-1470..T-1471, GG-1470..GG-1472 | STANDARD — W95.2 proof lane: frozen ride evidence must reproduce on the box's full archive; GG-1460 stale JSONs — FOR PROOF: frozen ride cells reproduced exactly 0->n of 13; n mismatches explained 0->all; stale results regenerated 0->3 |
 | 2026-10-30T13:51:47Z | T-1500..T-1503 / GG-1500..GG-1502 | STANDARD — W95.1 NBA engine live on box (install EXP-044/044b + daily refresh, rows read back) then v3 factors — FOR DEPTH+PROOF: NBA engine arms live 0->2, engine input classes 4->up to 7 |
 | 2026-10-30T14:27:05Z | T-1480 | CLOSED — W95.3 box truth: deploy-lag alarm and t4_mlb start grace shipped (#378, read back on box); insufficient_balance cause unproven, GG-1481. (commit `c3053b5`) |
+| 2026-10-30T14:27:36Z | T-1480 | CLOSED — merge confirmed, HEAD (1320315) is ancestor of origin/main — W95.3 closed PARTIAL (#378 merged; GG-1481 open) |
