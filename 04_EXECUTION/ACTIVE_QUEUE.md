@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 96** · the three blocks are in the **⬛ NOW — Wave 96** section below, drawn from the top of the **rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`): **96.1** (B-001 engine: NBA engine's first nights + v3), **96.2** (B-002 proof: the frozen evidence reproduced), **96.3** (B-003 + B-004 flex: the backlog on the dashboard; demo orders that cannot pay). Each block is one fenced paste.
+> **▶ PASTE NOW — Wave 96** · the three blocks are in the **⬛ NOW — Wave 96** section below, drawn from the top of the **rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`): **96.1** (B-001 engine: NBA engine's first nights + v3), **96.2** (B-002 proof: the frozen evidence reproduced), **96.3** (B-003 + B-004 flex: the backlog on the dashboard; demo orders that cannot pay). Each block is one fenced paste. **Addenda (08:38 PT):** a Part C for each (B-009 NBA engine prices player points; B-011 the forward test's entry style measured for your decision; B-006 MLB's winter posture), in the "Wave 96 addenda" subsection.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -285,9 +285,9 @@ any ticket up or back by telling the window.
 
 | # | Ticket | Lane | Rank served | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|---|---|---|
-| 96.1 | B-001 | engine | 2 (judged by 1; Part B 3) | The NBA engine's first real nights read back (v1 + v2), then v3 with availability, lineups and officials | DEPTH + PROOF: arms logging with rows 0 → 2; engine inputs 4 → up to 7 | ⬜ | |
-| 96.2 | B-002 | proof | 1 + 4 | Finish reproducing the frozen ride evidence on the box's full archive (settle, re-run, classify 13 cells); re-generate the NFL engine JSONs | PROOF: cells reproduced 0 → n of 13 | ⬜ | |
-| 96.3 | B-003 + B-004 | flex | operator mandate + EXECUTION | The rolling backlog on the Visual Dashboard; demo orders refused for insufficient balance - log, prove, fix | PLUMBING + EXECUTION: backlog on /visual 0 → 1; refused orders n → 0 | ⬜ | |
+| 96.1 | B-001 + B-009 | engine | 2 (judged by 1; Part B 3) | The NBA engine's first real nights read back (v1 + v2), then v3 with availability, lineups and officials | DEPTH + PROOF: arms logging with rows 0 → 2; engine inputs 4 → up to 7 | ⬜ | |
+| 96.2 | B-002 + B-011 | proof | 1 + 4 | Finish reproducing the frozen ride evidence on the box's full archive (settle, re-run, classify 13 cells); re-generate the NFL engine JSONs | PROOF: cells reproduced 0 → n of 13 | ⬜ | |
+| 96.3 | B-003 + B-004 + B-006 | flex | operator mandate + EXECUTION | The rolling backlog on the Visual Dashboard; demo orders refused for insufficient balance - log, prove, fix | PLUMBING + EXECUTION: backlog on /visual 0 → 1; refused orders n → 0 | ⬜ | |
 
 **What Wave 95 delivered (verified 2026-10-30 15:27Z: #377-#381 CI green; box bridge `20261030T152653Z_*`):** all three PARTIAL.
 **95.1 🟨** the NBA engine (v1 and the v2 challenger) and the daily store refresh are installed on the box; no forward row yet (the
@@ -408,6 +408,75 @@ Results: the panel + renderer + tests read back on the box, the logging / fix + 
 a handoff naming B-003's and B-004's state.
 
 END OF BLOCK 96.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+
+### ➕ Wave 96 addenda (operator 2026-10-30 08:38 PT: stretched blocks are the default - three parts, ~130 minutes) — paste each into its terminal, on top of its block (or with it, if not yet started)
+
+#### 96.1 addendum — Part C (B-009): the NBA engine prices player points from the same distribution · terminal 1
+
+```
+ADDENDUM TO 96.1 - PART C (BACKLOG B-009): THE NBA ENGINE PRICES PLAYER POINTS FROM THE SAME DISTRIBUTION. Operator 2026-10-30 08:38 PT:
+stretched blocks are the default (three parts, ~130 minutes). Same common rules. Work Part C whenever Part A is waiting on a game night.
+LANE AND RANK: engine lane; rank 2 (ADR-0073: "One engine prices the whole board: a game simulation's joint distribution yields
+moneyline, spread, total, team totals, props and parlays consistently").
+PURPOSE: DEPTH. Measures: markets priced from one NBA engine 4 families -> + player points; held-out Brier of engine-priced points vs the
+existing NBA points arm (nba_player_points_v1 / the EXP-040 challenger), paired, with intervals.
+Today NBA player points are priced by a separate thin model, not by the engine; a team-level score distribution with no player layer
+cannot be consistent with them.
+1. A player layer under the engine (new module; v1 / v2 untouched): each player's share of team points as a distribution, point-in-time
+   (minutes and usage from the store, availability as known before tip where 93.1 has it), drawn jointly with the team score so the
+   players' points add up to the team's. Known-answer test: a simulated team with known shares is recovered and the sum constraint
+   holds.
+2. Held-out seasons: engine-priced over / under at each points strike vs the existing arm and vs results, per strike band, paired,
+   game-clustered. Descriptive only against this season's Kalshi points markets (KXNBAPTS) where the archive or candles have prices.
+3. If the engine beats the existing arm held-out, write a frozen pre-registration (EXP-044d) before its first row; install nothing
+   this wave.
+Results: the module + tests, a Part C section in 12_EXPLORATORY/nba_engine_v3/results_W96_1.md, B-009's state in the handoff.
+```
+
+#### 96.2 addendum — Part C (B-011): how the forward test should enter, measured for your decision · terminal 2
+
+```
+ADDENDUM TO 96.2 - PART C (BACKLOG B-011): HOW THE FORWARD TEST SHOULD ENTER, MEASURED FOR THE OPERATOR'S DECISION. Operator
+2026-10-30 08:38 PT: stretched blocks are the default (three parts, ~130 minutes). Same common rules. Work Part C whenever Part A is
+waiting on the settlement fetch.
+LANE AND RANK: proof lane; rank 1 (what counts as winning) with rank 4 (quant).
+PURPOSE: PROOF + EXECUTION. Measures: the measured cost of each entry style for the ADR-0072 forward test (resting at the touch vs taking
+at the quote) per book, 0 -> a table with intervals; one operator line with a recommendation.
+94.3 found the forward test's resting demo orders get picked off (fills lose 9-17c in MLB and 11c in NHL within 5-30 minutes) while
+taking at the quote drifts within 0.3c - but taking pays the half-spread and the fee every time. ADR-0072's forward test is frozen with
+its current entry rule, so changing it is the operator's decision; he needs the numbers first.
+1. From the forward-test report's orders and fills (control and treatment, per book and sport): the realized P&L per contract as
+   entered today, and a counterfactual "taken at the quote at decision time" (the archive's quote then, the exact fee from
+   quant/money.py fee(), the depth at the quote), net per contract with game-clustered intervals, per book and sport.
+2. What each choice does to the forward test's verdict timeline (fills per game today vs every decision filled) and to its judged n.
+3. One operator line: keep the frozen rule, or a superseding addendum that switches the entry - with the measured cost of each and your
+   recommendation. Change nothing yourself.
+Results: a Part C section in 12_EXPLORATORY/frozen_evidence_check/results_W96_2.md, the operator line, B-011's state in the handoff.
+```
+
+#### 96.3 addendum — Part C (B-006): MLB's winter posture · terminal 3
+
+```
+ADDENDUM TO 96.3 - PART C (BACKLOG B-006): MLB'S WINTER POSTURE. Operator 2026-10-30 08:38 PT: stretched blocks are the default (three
+parts, ~130 minutes). Same common rules.
+LANE AND RANK: flex lane; plumbing (Hard Rule 14 reads the silent-arm gauge; false alarms all winter would block every install).
+PURPOSE: PLUMBING. Measures: MLB arms standing down after the World Series with written idle reasons, 0 -> every MLB arm; false
+silent-arm alarms during the off-season 0; T1 MLB's recent SemanticFloorViolation explained.
+The World Series ends by 11-01. Every MLB arm (T1 MLB, T4 MLB live, the MLB game-market shadow, the MLB archive lines) goes quiet until
+spring; each must read IDLE with a reason, not SILENT, and come back on its own when games return. 94.2 also saw T1 MLB log
+"games_fetched=1 but matched_players=0" with 0 bets on two runs - probably a postseason day with no player markets, not diagnosed.
+1. After the last World Series game (check the schedule; if it has not ended by the time you start, prepare and test, install after):
+   each MLB arm's off-season state - idle reason in the silent-arm specs keyed to MLB's schedule (no games in window = IDLE), crons left
+   running or paused (state which and why; never edit an existing cron line - a pause is a registered change through the install
+   path), the archive lines' disk use while idle.
+2. A test that a regular-season day with games and no rows still alarms (GG-163 detection kept), and that a day with no MLB games does
+   not.
+3. The SemanticFloorViolation: read the T1 MLB log around it and say whether it was a no-player-markets day or a defect; register if
+   a defect.
+Results: the posture + tests, read back on the box (silent arms IDLE with reasons after the season), a Part C section in
+12_EXPLORATORY/demo_balance_w96/results_W96_3.md, B-006's state in the handoff.
 ```
 
 ---

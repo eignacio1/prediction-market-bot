@@ -92,3 +92,6 @@ The operator said not to paste blocks into the chat and to "just put it in the A
 
 ## W36 · 2026-10-27 22:37 PT · wave composition followed the newest directive, not the ranking
 Asked whether waves were ordered by the window's own ranking of the operator's directives (1 market-anchored pricing, 2 one engine per sport, 3 granularity index, 4 quant, 5 betting architecture, 6 PAM, 7 Muse, 8 expansion), the answer is no. Waves 85-92 (about 29 blocks): engine work 4 (89.3, 89.4, 89.5, 92.3), quant / measurement about 9, ride-the-market about 9, plumbing about 6, market-anchored about 2. The newest directive took whole waves (quant 86-88, ride 89.7-91). Rule (lane rule, agreed 10-27 22:26 PT): one engine block every wave at minimum, quant in tandem, a new directive takes a lane, not a wave.
+
+## W37 · 2026-10-30 08:31 PT · blocks shrunk after partials caused by waiting, not size
+Waves 95-96 went back to two-part ~80-minute blocks after the operator had stretched Wave 94 (all four stretched blocks finished). Three 95 partials were waits on the box (a first game night, a rate-limited fetch, an unlogged rejection); less work per block does not fix a wait. Rule: three parts per block by default, the third a switchable task for wait time.
