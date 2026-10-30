@@ -766,6 +766,9 @@ class PaperTrader:
                             "ticker": kalshi_ticker,
                             "error": order.error,
                             "note": "rejected: Kalshi order not placed, no capital deployed",
+                            "size_usd": size,
+                            # W96.3/GG-1481: balance + open exposure at the refusal (logging only)
+                            **_fill_policy.refusal_context(self._kalshi, self._state.get("open_positions")),
                         },
                         session_id=session_id,
                     )
