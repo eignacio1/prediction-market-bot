@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W95.2: retry, box HEAD must include 893e3b5"
