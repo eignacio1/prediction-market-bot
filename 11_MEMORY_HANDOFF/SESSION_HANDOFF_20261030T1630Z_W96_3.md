@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: T-1510
+tier: STANDARD
+timestamp: 2026-10-30T16:30:00Z
+commit: 75461fa
+one_line_summary: W96.3 PARTIAL: rolling backlog on /visual read back on box (0->1); refused-order balance logging live, cause unproven
+gg_touched: GG-1481
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING, EXECUTION
+gap_measure: backlog on /visual (0->1); GG-1481 refused-order cause (unproven)
+gap_delta: backlog sections on /visual 0 -> 1 (box dashboard_pages_read 2026-10-30T16:27:56Z); refusals logging live, no row yet
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
 # SESSION HANDOFF — W96.3 (20261030T1630Z)
 
 Status: PARTIAL | B-003 (rolling backlog on /visual): DONE, read back on the box. B-004 (demo orders that cannot pay, GG-1481): logging shipped and live, cause NOT proven, no fix needed today. Part C (B-006) not run (not in the pasted block) | branches session/20261030T153152Z-w96-3-backlog-demo-balance and ...-partb -> main | PR #382 (`edda7ff`) and PR #384 (`32ce531`) merged, CI green on the current head each time | backlog panel on the box 0 -> 1; refused-order cause still open.
