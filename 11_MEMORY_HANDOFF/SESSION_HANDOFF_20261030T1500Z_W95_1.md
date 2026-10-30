@@ -1,3 +1,21 @@
+# Session Handoff — 2026-10-30T15:00Z
+
+<!-- session-meta
+task_id: T-1500
+tier: STANDARD
+timestamp: 2026-10-30T15:00:00Z
+commit: ffb5847
+one_line_summary: W95.1 PARTIAL: NBA engine v1+v2 cron + daily refresh installed on box (#379); no rows yet, GG-1450 open; Part B not started
+gg_touched: GG-1450
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, PROOF
+gap_measure: D4 (NBA engine live), P-forward rows
+gap_delta: NBA engine arms installed 0 -> 2, rows read back 0 (box nba_engine_cron_readback 2026-10-30T14:4xZ)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: +2 cron lines (registered), 0 services
+-->
+
 # SESSION_HANDOFF W95.1 — NBA engine live on the box (PARTIAL)
 
 Status: PARTIAL | branch session/w95-1-part-a-readback | PR #379 merged f6bb0c7, CI green (test pass 6m12s) | Part A installed, Part B not started.

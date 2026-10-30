@@ -1107,3 +1107,4 @@
 | 2026-10-30T13:51:47Z | T-1500..T-1503 / GG-1500..GG-1502 | STANDARD — W95.1 NBA engine live on box (install EXP-044/044b + daily refresh, rows read back) then v3 factors — FOR DEPTH+PROOF: NBA engine arms live 0->2, engine input classes 4->up to 7 |
 | 2026-10-30T14:27:05Z | T-1480 | CLOSED — W95.3 box truth: deploy-lag alarm and t4_mlb start grace shipped (#378, read back on box); insufficient_balance cause unproven, GG-1481. (commit `c3053b5`) |
 | 2026-10-30T14:27:36Z | T-1480 | CLOSED — merge confirmed, HEAD (1320315) is ancestor of origin/main — W95.3 closed PARTIAL (#378 merged; GG-1481 open) |
+| 2026-10-30T14:43:46Z | T-1500 | CLOSED — W95.1 PARTIAL: NBA engine v1+v2 cron + daily refresh installed on box (#379); no rows yet, GG-1450 open; Part B not started (commit `ffb5847`) |
