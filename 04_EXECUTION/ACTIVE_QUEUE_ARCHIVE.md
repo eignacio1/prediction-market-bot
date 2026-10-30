@@ -10,6 +10,160 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 95 NOW section with its pastes (closed 2026-10-30 08:50 PT). 95.1 🟨 95.2 🟨 95.3 🟨. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W95.md. Verbatim:
+
+## ⬛ NOW — Wave 95 · THE NBA ENGINE LIVE · THE FROZEN EVIDENCE REPRODUCED · THE BOX TELLS THE TRUTH · WRITTEN 2026-10-29 ~05:40 UTC (10-28 22:40 PT) · three MEDIUM blocks (operator: "Make it only 3 this time")
+
+Common rules for every block: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W95.md`. All three run in parallel.
+
+**Lanes and ranks** (ranking: 1 market-anchored pricing · 2 one engine per sport · 3 the granularity index · 4 quant · 5 the betting
+architecture · 6 PAM · 7 Muse · 8 expansion):
+
+| # | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|
+| 95.1 | engine | 2 (judged by 1; Part B 3) | The NBA engine priced live on the box (install EXP-044 / 044b runners + daily store refresh, rows read back), then v3 with availability, lineups and officials | DEPTH + PROOF: NBA engine arms live 0 → 2; engine input classes 4 → up to 7 | 🟨 Part A installed 14:34Z (PR #379); rows pending first tip−60 pass tonight (GG-1450 stays OPEN); Part B not started | `SESSION_HANDOFF_20261030T1500Z_W95_1.md` |
+| 95.2 | proof | 1 + 4 | The frozen ride evidence must reproduce on the box's full archive (2 cells re-ran at n 0; 2 n's differ); stale NFL engine JSONs re-generated (GG-1460) | PROOF: frozen cells reproduced 0 → n of 13 | 🟨 PARTIAL | Harness + box tasks + GG-1460 path fix merged (#377/#380/#381); 0 of 13 cells classified, settlement cache 2,334/5,907 short. See results_W95_2.md. |
+| 95.3 | flex | plumbing + EXECUTION | The box tells the truth: how merged code really reaches it (GG-1462), the false-red grace for t4_mlb (GG-1440, decided), demo orders failing for insufficient balance | PLUMBING: deploy lag alarmed; false reds 1 → 0; refused demo orders n → 0 | 🟨 A DONE+deployed (#378, 152f0763); B cause partly pinned, GG-1481 | results_W95_3.md |
+
+**What Wave 94 delivered (verified 2026-10-29 05:26Z: #367-#376 CI green; box bridge `20261029T052555Z_*`):**
+**94.1 ✅** this season's NBA games into the store (56 to 10-27); the NBA engine frozen for a forward test (EXP-044, v1) with a v2
+challenger (EXP-044b: on past seasons v2 beats v1 on the moneyline, a little on totals, ties on spreads); runners merged, NOT installed.
+**94.2 ✅** the NFL engine's disagreements with Kalshi's ladders frozen as EXP-045 (first look 2027-01-12, likely too few games to call);
+the NFL architecture is now 8 of 8 (temporal evolution: only neutral pass rate drifts within a season); play callers are real traits
+that do not move totals (a rigorous null). **94.3 ✅** the red was a false positive (the gauge looked before the first row); fill cost
+measured: resting demo orders get picked off (9-17c MLB, 11c NHL), taking at the quote does not - so the frozen tests' entry rule is
+safe; demo orders are failing for insufficient balance (→ 95.3). **94.Q ✅** every reported net redone with the exact fee (only MLB
+moves, slightly up); the ladder-side bug fixed; skill weights done properly - no frozen model earns one; the proof calendar generated
+(64 rows); two frozen MLB cells did not reproduce from the local archive (→ 95.2).
+**Distance:** D3 3 → 4; D5(a) NFL 8/8; NFL interpreted +2; E3 explained; every frozen test dated. **Box GREEN.**
+
+**Pushback:** 95.2 may find that a frozen cell was defined on numbers that do not reproduce. A frozen file cannot be edited; the
+honest outcome could be an operator line asking whether to retire a cell before its look. Better to learn that now than at the look.
+**Surface:** GREEN. Expected delta +2 to +3 (the NBA engine arms and the daily store refresh); 95.2 adds read-only bridge tasks; 95.3
+changes a gauge, adds nothing running.
+**Dependencies:** none.
+
+### 95.1 — Engine lane: the NBA engine live on the box, then the factors it still ignores
+**DEPTH + PROOF · rank 2 · terminal 1**
+
+```
+Before anything else, read the Wave 95 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W95.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 95.1 - ENGINE LANE: THE NBA ENGINE LIVE ON THE BOX, THEN THE FACTORS IT STILL IGNORES. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), judged by rank 1 (market-anchored pricing); Part B adds rank 3 (granularity).
+PURPOSE: DEPTH + PROOF. Measures: NBA engine arms logging live (EXP-044 v1, EXP-044b v2) 0 -> 2, read back on the box with rows;
+NBA 2026-27 games in the store refreshed daily (56 to 10-27 -> every game played, read back); engine input factor classes 4 -> up to 7
+(availability, lineups, officials) on held-out seasons.
+94.1 froze EXP-044 and EXP-044b and merged both runners, but nothing is installed: the engine has not priced one real game yet
+(GG-1450), and the store stops at 10-27. The box is GREEN now (05:26Z), so the install is allowed. 94.1 also found that the engine
+still ignores availability, lineups and officials (93.1, 92.3, 93.2 built them; none feeds the engine).
+Premises to check: GG-1450..1452 and 12_EXPLORATORY/nba_engine_live/results_W94_1.md; the install pattern (scripts/archive_cron_install.py,
+the bridge allowlist); what the runner needs on the box (the 2016-26 history parquet - GG-1450 says it must be shipped); the NBA injury
+report capture's rows on the box (pre-tip statuses for tonight).
+PERMISSIONS: per the common rules' ownership; NEW cron lines / install tasks only, registered first, installed only on a GREEN
+budget_read. NOT: EXP-044, EXP-044b or any frozen pre-registration; v1 / v2 code; any order (the arms log prices only), gate, other
+runner, ledger or registry cell.
+
+PART A - Live (~45 min)
+  Ship what the runner needs, install the daily ingestion refresh and both arms through the bridge, and read back on the box: the store's
+  last game date, the first night's rows for v1 and v2 (every NBA game that night, all four families, with the archive's Kalshi quote at
+  the frozen pre-game time), no error in the runner's log, the silent-arm alarm wired for both arms. GG-1450 resolved only on rows.
+PART B - The factors the engine ignores (~40 min)
+  A v3 candidate (new module; v1 and v2 untouched): availability as known before tip (93.1's expected missing minutes, from the injury
+  report statuses), lineups (92.3), officials only where the crew is known before the price (GG-1390), each kept only if it improves
+  held-out Brier for some family over v2. Paired, game-clustered, per family; the granularity index's five parts per factor. If v3 beats
+  v2 somewhere, write EXP-044c frozen before its first row (same scoring) - logged by the same runner from the next night; if not, say so
+  and freeze nothing.
+Results: the arms live with rows read back, v3 + tests, 12_EXPLORATORY/nba_engine_v3/results_W95_1.md, a handoff.
+
+END OF BLOCK 95.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 95.2 — Proof lane: the frozen evidence must reproduce
+**PROOF · ranks 1 + 4 · terminal 2**
+
+```
+Before anything else, read the Wave 95 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W95.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 95.2 - PROOF LANE: THE FROZEN EVIDENCE MUST REPRODUCE. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; rank 1 (what counts as winning) checked with rank 4 (quant): a frozen test is only as good as the numbers it
+was built on.
+PURPOSE: PROOF. Measures: frozen ride cells whose defining numbers reproduce exactly from the full archive 0 -> n of 13 (EXP-042's 11 +
+EXP-043's 2); reported-vs-rerun n mismatches explained 0 -> all; stale committed results (GG-1460) re-generated 0 -> 3.
+94.Q re-ran the evidence behind the frozen ride tests with the exact fee and found: two of 89.2's KXMLBHIT T0-2h 20-25c cells re-ran
+at n = 0 from the local archive; KXMLBSPREAD's n was 179 against 89.2's reported 186; the ladder net2-5c cell gave n 202 / 324 against
+91.2's reported 117. The local archive is a partial copy; the full archive is on the box. EXP-042 and EXP-043 are frozen on those
+cells: if the numbers that defined them cannot be reproduced, the window has to know before any look is read. Separately GG-1460:
+three nfl_board_v2 scripts wrote to a nested 12_EXPLORATORY/12_EXPLORATORY/ path, so their committed JSONs (which 93.4's result cites)
+may be stale.
+Premises to check: 12_EXPLORATORY/quant_w94/results_W94_Q.md; 89.2's and 91.2's code and results (12_EXPLORATORY/longshot_bias/,
+12_EXPLORATORY/ride_ladder/); EXP-042 and EXP-043; which archive files each analysis read (local vs box); GG-1460.
+PERMISSIONS: per the common rules' ownership; new READ-ONLY allowlisted box tasks to run the checks on the box's full archive; fixing
+the three scripts' output paths and re-generating their JSONs. NOT: any frozen pre-registration, ride_cells.toml statuses, any order,
+gate, model, runner or ledger. If a frozen cell's definition is wrong, report it; never edit the frozen file.
+
+PART A - Reproduce on the full archive (~45 min)
+  Run 89.2's and 91.2's code unchanged on the box's full archive (bridge task), then with the exact fee: per frozen cell, the reported
+  n / games / net / interval vs the re-run's, and the reason for every difference (archive coverage, a later-added file, a settlement
+  re-fetch, a code path). Classify each cell: REPRODUCED / DIFFERS (explained) / NOT REPRODUCED. Known-answer: the reproduction harness
+  returns the original numbers on a frozen synthetic archive.
+PART B - Stale results, and what it means for the looks (~30 min)
+  GG-1460: fix the three output paths, re-generate their JSONs, say whether 93.4's stated result changes. Then one paragraph per frozen
+  test (EXP-042, EXP-043, EXP-045): does any finding change what its look will read, and does any need an operator decision (a frozen
+  test's change is his call - one line, your recommendation). Register gaps for the mismatches.
+Results: 12_EXPLORATORY/frozen_evidence_check/results_W95_2.md (the per-cell table), the fixed scripts and JSONs, a handoff with the
+operator line if any.
+
+END OF BLOCK 95.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 95.3 — Flex lane: the box tells the truth (deploy path, a false red, demo orders that cannot pay)
+**PLUMBING + EXECUTION · terminal 3**
+
+```
+Before anything else, read the Wave 95 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W95.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 95.3 - FLEX LANE: THE BOX TELLS THE TRUTH - DEPLOY PATH, A FALSE RED, AND DEMO ORDERS THAT CANNOT PAY. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; plumbing that every lane depends on (Hard Rule 14 reads the gauges this block fixes), and the EXECUTION
+pillar (demo fills are its only evidence).
+PURPOSE: PLUMBING + EXECUTION. Measures: merged code reaching the box - lag measured and an alarm when it exceeds a stated bound (0 ->
+1); false-RED silent-arm alarms on a :00 start 1 -> 0 with GG-163 detection kept; demo orders refused for insufficient balance n -> 0
+(or the cause stated with the one step only the operator can take).
+Three findings from Wave 94, all about the box saying something untrue or nothing at all: (1) GG-1462: GitHub's "Deploy to VPS" has not
+run since 2026-10-16; the box syncs some other way, and #372 reached it late - so "merged" has quietly not meant "on the box", and
+three blocks read back stale code; (2) GG-1440 / GG-1441: the T4 MLB silent-arm alarm fired at 00:04Z, before the first row of a game
+that started at :00 (first-row lag 8-16 min) - a false RED that would have blocked every install; (3) live demo orders failing HTTP 400
+insufficient_balance (C5 paper path) - the forward test's fills, the only execution evidence the bot has, may be stopping.
+WINDOW DECISION (plumbing, not the operator's): GG-1440 - give the t4_mlb arm a first-row grace of 0.5 h after a game's start, with a
+regression test replaying 2026-10-29 00:04Z (no alarm) and a test that a GG-163-style outage (no rows for hours while games are live)
+still alarms. This changes when the gauge looks, not what it alarms on.
+Premises to check: how the box actually pulls (crontab, scripts/ops/, logs/vps_deploy.log, deploy_truth); GG-1440 / GG-1441 and
+12_EXPLORATORY/t4_mlb_silent/; the demo account's balance read (read-only GET on the Kalshi DEMO API), the forward-test report's fill
+counts by day since 10-20, and which books' orders fail.
+PERMISSIONS: per the common rules' ownership; read-only GETs on the Kalshi DEMO API; an idle-window restart if a fix needs one. NOT:
+any real-money account; any stake, kelly_fraction, order logic or ledger row; the silent-arm thresholds of any arm other than t4_mlb.
+
+PART A - Deploy path and the false red (~40 min)
+  Document how the box gets main today (command, schedule, lag measured over the last 10 merges), make deploy_truth / the budget alarm
+  when box HEAD lags origin/main by more than a stated bound for a file a running service imports, and correct every doc or block
+  template that says "read the Deploy job summary" (Hard Rule 13; GG-1462). Then GG-1440 as decided above, with its two tests; read back.
+PART B - Demo orders that cannot pay (~35 min)
+  Which books' demo orders fail and since when; the demo balance; whether fills have stopped (fills per day per book since 10-20). If the
+  fix is in code (an order sized past the balance, a stake not released after settlement), fix it with a test. If the demo account simply
+  needs funds and Kalshi's demo lets the bot do that itself, do it; if only the operator can (a login), state the one step in one line -
+  it is demo, so it is plumbing, and it is the only line this block sends him.
+Results: the fixes + tests, 12_EXPLORATORY/box_truth_w95/results_W95_3.md, the gauges read back, a handoff.
+
+END OF BLOCK 95.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
+---
+
 ## Wave 94 NOW section with its pastes and addenda (closed 2026-10-28 22:40 PT). 94.1 ✅ 94.2 ✅ 94.3 ✅ 94.Q ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W94.md. Verbatim:
 
 ## ⬛ NOW — Wave 94 · THE ENGINES GO LIVE · RED FIRST · QUANT IN TANDEM · WRITTEN 2026-10-29 ~00:15 UTC (10-28 17:15 PT) · four MEDIUM blocks · no Muse paste

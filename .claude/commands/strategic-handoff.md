@@ -15,6 +15,11 @@ A window hands off only after its last wave is **verified**, never when the wave
    outgoing window confirms every mistake it made is a row there (the log, not the carry-forward's §7, is authoritative)
    and updates the pattern tally.
 
+0b. **Read `04_EXECUTION/ROLLING_BACKLOG.json`** (operator 2026-10-30: the rolling backlog, every piece of work in scope in one
+   ordered list, shown on the Visual Dashboard). The window owns it: at every wave close it moves tickets (NOW / NEXT / LATER /
+   PARKED / DONE), re-orders on the operator's mandates, adds what the wave found, and draws the next wave's blocks from the top
+   by lane. The outgoing window hands it over current; the incoming window reads it before writing a wave.
+
 
 1. **Verify the last wave** against GitHub: every block's results doc, PRs merged + CI green, deploy decisions,
    gap-log parity + uniqueness. Close it in `04_EXECUTION/ACTIVE_QUEUE.md` (results table, sequencing track,
