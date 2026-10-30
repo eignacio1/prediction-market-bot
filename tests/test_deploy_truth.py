@@ -127,3 +127,60 @@ def test_short_fetch_failure_is_inside_grace_long_one_alarms(tmp_path):
     dt.status_write(tmp_path, "fetch_failed", "net", now=t0)
     assert dt.check(tmp_path, tmp_path, "false", 6, now=t0 + timedelta(minutes=10))[0].startswith("OK")
     assert dt.check(tmp_path, tmp_path, "false", 6, now=t0 + timedelta(hours=2))[0].startswith("ALARM")
+
+
+# ---- W95.3 (GG-1462): box HEAD vs origin/main -------------------------------------------------------------
+def _remote_pair(tmp_path, now):
+    """A box checkout one commit behind its origin/main; returns (box, push_fn)."""
+    origin = tmp_path / "origin"
+    origin.mkdir()
+    _git(origin, "init", "-q", "-b", "main")
+    _commit(origin, "src/prediction_market_bot/a.py", "x=1\n", now - timedelta(hours=9))
+    box = tmp_path / "box"
+    _git(tmp_path, "clone", "-q", str(origin), "box")
+    return box, origin
+
+
+def _fetch(box):
+    _git(box, "fetch", "-q", "origin")
+
+
+def test_head_lag_current_when_box_is_at_remote(tmp_path):
+    now = datetime.now(timezone.utc)
+    box, _ = _remote_pair(tmp_path, now)
+    assert dt.head_lag(box, now=now)["state"] == "CURRENT"
+
+
+def test_head_lag_inside_bound_no_alarm_outside_alarms(tmp_path):
+    now = datetime.now(timezone.utc)
+    box, origin = _remote_pair(tmp_path, now)
+    _commit(origin, "src/prediction_market_bot/a.py", "x=2\n", now - timedelta(minutes=20))
+    _fetch(box)
+    r = dt.head_lag(box, now=now)
+    assert r["state"] == "BEHIND" and not r["alarm"] and 19 < r["lag_min"] < 21
+    r = dt.head_lag(box, now=now + timedelta(minutes=40))          # same pending commit, 60 min old
+    assert r["alarm"]
+    lines = dt.check(box, tmp_path / "st", "false", 6, now=now + timedelta(minutes=40))
+    assert any(l.startswith("ALARM box HEAD") for l in lines)
+
+
+def test_head_lag_ignores_unrelated_merges(tmp_path):
+    now = datetime.now(timezone.utc)
+    box, origin = _remote_pair(tmp_path, now)
+    _commit(origin, "04_EXECUTION/ACTIVE_QUEUE.md", "docs\n", now - timedelta(hours=5))
+    _fetch(box)
+    r = dt.head_lag(box, now=now)
+    assert r["state"] == "BEHIND_UNRELATED" and not r["alarm"]
+
+
+def test_head_lag_ages_from_first_service_file_commit_not_latest(tmp_path):
+    now = datetime.now(timezone.utc)
+    box, origin = _remote_pair(tmp_path, now)
+    _commit(origin, "src/prediction_market_bot/a.py", "x=2\n", now - timedelta(hours=3))
+    _commit(origin, "src/prediction_market_bot/a.py", "x=3\n", now - timedelta(minutes=1))
+    _fetch(box)
+    assert dt.head_lag(box, now=now)["alarm"]
+
+
+def test_head_lag_not_a_checkout_is_silent(tmp_path):
+    assert dt.head_lag(tmp_path / "nothing", now=datetime.now(timezone.utc)) is None

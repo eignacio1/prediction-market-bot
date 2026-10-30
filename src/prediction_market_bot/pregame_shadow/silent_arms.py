@@ -35,6 +35,9 @@ class ArmSpec:
     # 12h of start, so "a row near the start" is the wrong question (W79.1): ask "was the game served at all inside
     # its own T1 window?" instead. None = the arm runs T2/T3 as well and the recency rule above applies.
     t1_window_h: Optional[tuple] = None
+    # A game is only "expected to have a row" once it has been under way this long. GG-1440 (W95.3): T4 writes from first
+    # pitch, the schedule holds the :00/:30-rounded start, so the first row trails it by 8-16 min every night. 0 = no grace.
+    start_grace_h: float = 0.0
 
 
 @dataclass
@@ -83,7 +86,9 @@ SPECS = {
                       "daily run plus slack"),
     "t4_mlb": ArmSpec("t4_mlb", "T4 MLB live", 3, 0,
                       "T4 writes a cycle-log row every 45-90s while a game is live; a game lasts ~3h, so a game "
-                      "that started 3h ago with no row is a dead process (GG-163 ran 43h unnoticed)"),
+                      "that started 3h ago with no row is a dead process (GG-163 ran 43h unnoticed). GG-1440: first "
+                      "row trails the scheduled start by 8-16 min, so a game is only expected once 0.5h in",
+                      start_grace_h=0.5),
 }
 
 
@@ -100,7 +105,8 @@ def evaluate_arm(inp: ArmInput, now: datetime) -> dict:
         return {**base, "status": "unknown", "games_in_window": None, "hours_silent": None,
                 "text": f"{s.name}: cannot check ({inp.note or 'schedule source unreadable'})"}
     win_start = now - timedelta(hours=s.window_h)
-    games = [g for g in (_aware(x) for x in inp.game_starts) if win_start <= g <= now]
+    games = [g for g in (_aware(x) for x in inp.game_starts)
+             if win_start <= g <= now - timedelta(hours=s.start_grace_h)]
     last = _aware(inp.last_row_ts) if inp.last_row_ts else None
     if s.t1_window_h is not None and games:
         return _evaluate_t1_only(inp, games, last, now)

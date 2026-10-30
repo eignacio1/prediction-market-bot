@@ -210,3 +210,32 @@ def test_w79_1_other_arms_files_never_mask_a_silent_arm_in_any_sport(tmp_path):
                                 (pre / "NBA_NBA_SPREAD_T1.jsonl", "nba_preseason_shadow", "NBA", "NBA_", pre)):
         p.write_text(ts)
         assert {i.spec.key: i for i in sa.load_inputs(tmp_path)}[k].last_row_ts is not None, k
+
+
+# ---- W95.3 / GG-1440: t4_mlb first-row grace (t4_mlb ONLY) -----------------------------------------------------
+def test_t4_mlb_first_pitch_lag_does_not_alarm_replay_2026_10_29_0004z():
+    now = datetime(2026, 10, 29, 0, 4, tzinfo=timezone.utc)
+    prev_night_last_row = now - timedelta(hours=19.6)              # the false "SILENT 19.6h" of W94.3
+    r = evaluate_arm(ArmInput(SPECS["t4_mlb"], [datetime(2026, 10, 29, 0, 0, tzinfo=timezone.utc)], prev_night_last_row), now)
+    assert r["status"] == "idle"
+    assert r["games_in_window"] == 0
+
+
+def test_t4_mlb_alarms_once_grace_has_passed_with_no_row():
+    start = datetime(2026, 10, 29, 0, 0, tzinfo=timezone.utc)
+    last = start - timedelta(hours=19.6)
+    assert evaluate_arm(ArmInput(SPECS["t4_mlb"], [start], last), start + timedelta(minutes=29))["status"] == "idle"
+    assert evaluate_arm(ArmInput(SPECS["t4_mlb"], [start], last), start + timedelta(minutes=31))["status"] == "silent"
+
+
+def test_t4_mlb_gg163_style_outage_still_alarms():
+    # games live for hours, process wrote nothing since the previous night
+    starts = [H(2.5), H(1.0)]
+    r = evaluate_arm(ArmInput(SPECS["t4_mlb"], starts, H(30)), NOW)
+    assert r["status"] == "silent" and r["games_in_window"] == 2
+
+
+def test_grace_applies_to_t4_mlb_only():
+    assert [k for k, sp in SPECS.items() if sp.start_grace_h] == ["t4_mlb"]
+    # a non-T4 arm with the same 4-minute-old game is still counted (thresholds of other arms unchanged)
+    assert evaluate_arm(_arm("mlb_shadow", starts=[NOW - timedelta(minutes=4)], last=H(20)), NOW)["status"] == "silent"

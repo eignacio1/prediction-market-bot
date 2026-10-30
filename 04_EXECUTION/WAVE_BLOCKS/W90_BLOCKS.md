@@ -17,7 +17,7 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-26 22:15 PT - incl. THE RIDE-THE-MARKET DIRECTION (operator 22:12 PT: "we need
   substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
@@ -159,7 +159,7 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-26 22:15 PT - incl. THE RIDE-THE-MARKET DIRECTION (operator 22:12 PT: "we need
   substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
@@ -289,7 +289,7 @@ COMMON RULES - WAVE 90 (RIDE THE MARKET: TREES, ROUTER, MOMENTUM) (read first; t
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-26 22:15 PT - incl. THE RIDE-THE-MARKET DIRECTION (operator 22:12 PT: "we need
   substantively more architecture around the \"ride the market\" trees than we have before we come to any end all be all
