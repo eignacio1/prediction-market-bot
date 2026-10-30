@@ -287,7 +287,7 @@ architecture · 6 PAM · 7 Muse · 8 expansion):
 | # | Lane | Rank served | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|---|---|
 | 95.1 | engine | 2 (judged by 1; Part B 3) | The NBA engine priced live on the box (install EXP-044 / 044b runners + daily store refresh, rows read back), then v3 with availability, lineups and officials | DEPTH + PROOF: NBA engine arms live 0 → 2; engine input classes 4 → up to 7 | 🟨 Part A installed 14:34Z (PR #379); rows pending first tip−60 pass tonight (GG-1450 stays OPEN); Part B not started | `SESSION_HANDOFF_20261030T1500Z_W95_1.md` |
-| 95.2 | proof | 1 + 4 | The frozen ride evidence must reproduce on the box's full archive (2 cells re-ran at n 0; 2 n's differ); stale NFL engine JSONs re-generated (GG-1460) | PROOF: frozen cells reproduced 0 → n of 13 | ⬜ | |
+| 95.2 | proof | 1 + 4 | The frozen ride evidence must reproduce on the box's full archive (2 cells re-ran at n 0; 2 n's differ); stale NFL engine JSONs re-generated (GG-1460) | PROOF: frozen cells reproduced 0 → n of 13 | 🟨 PARTIAL | Harness + box tasks + GG-1460 path fix merged (#377/#380/#381); 0 of 13 cells classified, settlement cache 2,334/5,907 short. See results_W95_2.md. |
 | 95.3 | flex | plumbing + EXECUTION | The box tells the truth: how merged code really reaches it (GG-1462), the false-red grace for t4_mlb (GG-1440, decided), demo orders failing for insufficient balance | PLUMBING: deploy lag alarmed; false reds 1 → 0; refused demo orders n → 0 | 🟨 A DONE+deployed (#378, 152f0763); B cause partly pinned, GG-1481 | results_W95_3.md |
 
 **What Wave 94 delivered (verified 2026-10-29 05:26Z: #367-#376 CI green; box bridge `20261029T052555Z_*`):**

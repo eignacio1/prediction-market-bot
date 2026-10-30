@@ -4540,3 +4540,21 @@ W95.3, 2026-10-30, T-1480. `vps_deploy.sh` DOCS_ONLY_ROOTS omits `12_EXPLORATORY
 **Status:** OPEN · **Severity:** MEDIUM
 
 W95.3, 2026-10-30, T-1481. Paper T4 (`$0.50` stakes) had 2,000 `insufficient_balance` rejections on game dates 10-26..28 at 00–04Z, while `demo_fill_policy.cash_skip_reason` is active in t4-mlb and logged 0 skips; shadow books had 3,743 since 10-12. Demo cash now $3,287.58. Hypothesis: resting 60 s shadow orders on the same account reserve cash not visible to the 2 s-cached guard (or the read failed open). Needed: log `balance_usd` and read status on every `insufficient_balance` rejection, then decide (C5 order-path change needs its own block). No operator step.
+
+### GG-1470 — The frozen ride evidence (EXP-042 x11, EXP-043 x2) is not yet shown to reproduce on the full archive
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W95.2, 2026-10-30, T-1470. 94.Q's partial-archive re-run did not reproduce 89.2 KXMLBHIT cells 1-2 (n=0), KXMLBSPREAD 179 vs 186, F5TOTAL 84 vs 85, KXMLBF5 42 vs 44, or 91.2 HELD_OUT 202/324 vs 117. The box archive does hold 199,937 KXMLBHIT two-sided pre-start rows, so the n=0 is a local-coverage artifact. The full re-run is blocked on a settlement cache that is 2,334/5,907 events short (box SSH resets at ~780 s). Harness merged (PRs #377, #380). Close when `results_W95_2.md` classifies all 13 cells.
+
+### GG-1471 — `nfl_board_v2` JSONs from the GG-1460 defect are not regenerated; 93.4's result is unverified
+
+**Status:** OPEN · **Severity:** LOW
+
+W95.2, 2026-10-30, T-1471. Paths fixed (PR #381). Inputs live only on the box and the scripts write into the repo tree, so regeneration needs a deliberate, new allowlisted task that prints the JSON. Until then 93.4's held-out and Kalshi-comparison numbers are of unconfirmed provenance.
+
+### GG-1472 — `frozen_settle_fetch*` box tasks write a derived cache file, so they are not strictly read-only
+
+**Status:** OPEN · **Severity:** LOW
+
+W95.2, 2026-10-30, T-1470. The tasks write only under `12_EXPLORATORY/frozen_evidence_check/_cache/` (gitignored, through `safe_out`), but the block called them READ-ONLY. The writer set in `tests/test_box_tasks.py` is unchanged because the tasks have no install/rm/redirect tokens.
