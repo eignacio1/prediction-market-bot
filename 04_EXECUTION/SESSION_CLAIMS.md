@@ -1115,3 +1115,5 @@
 | 2026-10-30T15:33:28Z | T-1530..T-1532 / GG-1530..GG-1532 | STANDARD — W96.1 NBA engine first-nights read-back, then v3 (B-001) — FOR DEPTH+PROOF: NBA engine arms logging rows 0->2; engine input factor classes 4->up to 7 |
 | 2026-10-30T16:31:35Z | T-1520 | CLOSED — merge confirmed, HEAD (3a55a8d) is ancestor of origin/main — W96.2 PARTIAL: settle cache complete (5,907/5,907); 0/13 cells classified, 0/3 JSONs; GG-1520..1522 registered; PRs #383, #386 merged |
 | 2026-10-30T16:38:15Z | T-1510 | CLOSED — W96.3 PARTIAL: rolling backlog on /visual read back on box (0->1); refused-order balance logging live, cause unproven (commit `75461fa`) |
+| 2026-10-30T16:38:39Z | T-1530 | CLOSED — W96.1 Part C: NBA engine player-points layer merged; apparent gain was a post-game-roster leak, EXP-044d not frozen. (commit `76a3fb5`) |
+| 2026-10-30T16:38:47Z | T-1530 | CLOSED — merge confirmed, HEAD (3e7d2aa) is ancestor of origin/main — W96.1 Part C: engine player-points layer merged, leak-free no gain, EXP-044d not frozen |

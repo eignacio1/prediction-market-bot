@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1530
+tier: STANDARD
+timestamp: 2026-10-30T16:45:00Z
+commit: 76a3fb5
+one_line_summary: W96.1 Part C: NBA engine player-points layer merged; apparent gain was a post-game-roster leak, EXP-044d not frozen.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5
+gap_delta: none (player points built, post-game-roster leak removed, not applied; 12_EXPLORATORY/nba_engine_v3/results_W96_1.md)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0 (new module imported by no service)
+-->
+
 # SESSION_HANDOFF — W96.1 Part C (B-009) — 2026-10-30
 
 Status: Part C DONE (negative result). Parts A (waits on tonight's tips) and B done earlier.
@@ -10,9 +26,3 @@ Operator decisions: none.
 Next: after tonight's tips (~02:00Z) request box task `nba_engine_cron_readback` for v1+v2 per-game rows, tip−60 quote, errors, v2 memory (GG-1450 stays OPEN). A pre-tip points arm needs an expected-minutes input (Part B availability factors) before retesting.
 Observe-only, untouched: B-017, B-007.
 
-session-meta:
-vision_pillar: DEPTH
-gap_measure: D5
-gap_delta: no change (player points built, leak removed, not applied)
-pattern_sweep: n/a (no defect fixed) — the leak was in this block's own new study and removed there; the same normalise-over-who-played pattern is noted for any EXP-039-style study
-surface_delta: none (new module imported by no service; no restart)
