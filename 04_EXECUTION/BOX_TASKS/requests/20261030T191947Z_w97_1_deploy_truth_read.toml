@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W97.1: confirm box HEAD contains PR 391 (4e5cfd6)"
