@@ -104,6 +104,10 @@ TASKS: dict[str, str] = {
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py fetch --archive exp_output/PRICE_ARCHIVE "
         "--cache frozen_evidence_check/_cache/settle --budget 780"
     ),
+    "frozen_settle_fetch_short": (  # same resumable cache; short budget because a >5 min bridge SSH session was reset by the peer twice
+        f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py fetch --archive exp_output/PRICE_ARCHIVE "
+        "--cache frozen_evidence_check/_cache/settle --budget 200"
+    ),
     "frozen_repro_full": (
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py run --archive exp_output/PRICE_ARCHIVE "
         "--settle frozen_evidence_check/_cache/settle"
