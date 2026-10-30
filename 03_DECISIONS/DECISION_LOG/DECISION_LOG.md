@@ -3042,3 +3042,8 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 ## 2026-10-30 — W95.3 box truth (T-1480..1482)
 - Plumbing: `deploy_truth` gains a head-lag alarm (bound 45 min, ~2x worst gate+tick); t4_mlb silent-arm first-row grace 0.5 h (GG-1440), t4_mlb only; stale "Deploy job summary" wording swept (GG-1462). PR #378 merged 152f0763, deployed 14:04Z, t4-mlb restart `not_needed`.
 - Part B: demo cash $3,287.58 (not exhausted); insufficient_balance cause unproven (GG-1481); no order-path change made. No operator step.
+
+## 2026-10-30 — W95.1 Part A: NBA engine installed on the box (T-1500..1503)
+- Registered the daily store refresh (12:33Z) and the v1+v2 runner (every 10 min, 16-04Z, one flock, sequential: runner peaks ~517MB RSS on a 961MB box) in RUNTIME_REGISTRY; installer `scripts/nba_engine_cron_install.py` + bridge tasks; silent-arm specs `nba_engine_v1/v2`. PR #379 (CI green) merged f6bb0c7.
+- Install on the box 14:34Z. The budget read RED solely on our own two NOT-INSTALLED keys (healthcheck HEALTHY, 0 faults); the installer's gate exempts only own first-run keys. Backup `logs/crontab_backups/crontab_20261030T143437Z.bak`. t4-mlb restart: not_needed.
+- GG-1450 premise corrected: the history store was already on the box. GG-1450 stays OPEN until rows are read back. No order, gate, frozen artifact or existing cron line touched.

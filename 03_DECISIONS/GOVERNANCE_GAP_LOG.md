@@ -4463,6 +4463,8 @@ W94.2, 2026-10-29, T-1460. `safe_out` (`12_EXPLORATORY/_fence.py:7`) joins a rel
 
 W94.1 (2026-10-29). `nba_engine/live.py` and `live_v2.py` plus the current-season refresh are merged (PR #368, #374) but have no cron line or RUNTIME_REGISTRY entry. The 00:04Z `budget_read` was RED (T4 MLB silent arm; 94.3 later diagnosed it as a false positive) and no GREEN read was seen. The box also needs the 2016-2026 `schedule`/`espn_schedule`/`team_box` parquet for `--raw`. Until installed, no forward row exists. Next wave: register, ship the history store, install on GREEN, read back first night's rows.
 
+**W95.1 update (2026-10-30):** registered and INSTALLED 14:34Z (PR #379; two cron lines under one flock; silent-arm specs wired, both IDLE). Premise correction: the box already held the full 2016-2026 store (`exp_output/NBA_EVENTS/raw`), nothing needed shipping. Stays OPEN: resolves only on the first night's rows read back for v1 and v2 (none can exist before tonight's tip−60 pass).
+
 ### GG-1451 — NBA availability, lineups->total and officials factors not built (EXP-044b stays v2_core)
 **Status:** OPEN · **Severity:** MEDIUM
 
