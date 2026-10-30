@@ -162,6 +162,7 @@ const LIVE = __LIVE__;
 const WINERR = __WINERR__;
 const GAGENT = __GAGENT__;
 const MUSEWEB = __MUSEWEB__;
+const BACKLOG = __BACKLOG__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
@@ -369,6 +370,27 @@ function govCounts(){
 }
 
 /* ---- WIRE ---- */
+
+/* ---------- ROLLING BACKLOG ---------- */
+function backlog(){
+  const D=BACKLOG, host=$('#blHost');
+  if(!D||!D.ok){ host.innerHTML=`<div class="card bl-err"><b>The backlog's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong list.</div></div>`; $('#blHead').textContent='source invalid'; $('#nvBacklog').textContent='!'; return; }
+  const n=D.tickets.length, open=D.tickets.filter(t=>t.status!=='DONE').length;
+  $('#blHead').textContent=open+' open · '+n+' tickets'; $('#nvBacklog').textContent=open;
+  let h=`<div class="bl-top"><div class="bl-asof">as of ${esc(D.as_of)}</div><ol class="bl-rank">${D.ranking.map(r=>`<li>${esc(r)}</li>`).join('')}</ol></div>`;
+  for(const [g,ts] of D.groups){
+    if(!ts.length) continue;
+    h+=`<h3 class="bl-grp">${esc(g)}<small>${esc((D.statuses&&D.statuses[g])||'')} · ${ts.length}</small></h3><div class="bl-list">`;
+    for(const t of ts){
+      const tags=['lane','rank','wave'].filter(k=>t[k]).map(k=>`<span>${k} ${esc(t[k])}</span>`).join('');
+      const row=(k,l)=>t[k]?`<dt>${l}</dt><dd>${esc(t[k])}</dd>`:'';
+      h+=`<div class="card bl-t${g==='DONE'?' done':''}"><div class="bl-h"><span class="bl-id">${esc(t.id)}</span><span class="bl-title">${esc(t.title)}</span></div>`+
+         `<div class="bl-tags"><span>#${esc(t.order)}</span>${tags}</div><dl>${row('measure','measure')}${row('why','why')}${row('source','source')}</dl></div>`;
+    }
+    h+='</div>';
+  }
+  host.innerHTML=h;
+}
 
 /* ---------- AGGREGATION WEB (Muse) — expandable graph ---------- */
 function museWeb(){
@@ -626,7 +648,7 @@ function museWeb(){
   const ro=new ResizeObserver(()=>fit()); ro.observe(host); fit();
 }
 
-distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb();
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); backlog();
 bars('#sevBars',SEV); bars('#asymBars',ASYM);
 $('#tblBtn').addEventListener('click',()=>{
   const t=$('#forestTable'); t.classList.toggle('hidden');

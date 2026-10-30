@@ -15,6 +15,7 @@ def test_visual_page_renders_the_current_build():
     wd._VISUAL_CACHE.update(t=0.0, html="")
     html = wd._visual_page()
     assert 'id="museweb"' in html and "__MUSEWEB__" not in html
+    assert 'id="backlog"' in html and "__BACKLOG__" not in html
 
 
 def test_visual_route_serves_200():
@@ -24,7 +25,8 @@ def test_visual_route_serves_200():
     t.start()
     try:
         with urllib.request.urlopen(f"http://127.0.0.1:{srv.server_port}/visual", timeout=60) as r:
-            assert r.status == 200 and b'id="museweb"' in r.read()
+            body = r.read()
+            assert r.status == 200 and b'id="museweb"' in body and b'id="backlog"' in body
     finally:
         t.join(timeout=5)
         srv.server_close()

@@ -211,6 +211,14 @@ def muse_web_tickets() -> dict:
     return out
 
 
+def backlog() -> dict:
+    """The rolling backlog (operator 2026-10-30): 04_EXECUTION/ROLLING_BACKLOG.json via scripts/rolling_backlog.py. On any
+    defect the panel says so (visible error) instead of drawing a wrong or empty list."""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import rolling_backlog
+    return rolling_backlog.load(ROOT)
+
+
 def wave_chip() -> str:
     import re
     q = (ROOT / "04_EXECUTION" / "ACTIVE_QUEUE.md").read_text()
@@ -231,7 +239,7 @@ def render() -> tuple[str, str]:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     return html, sha
 

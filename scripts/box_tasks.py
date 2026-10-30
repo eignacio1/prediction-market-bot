@@ -95,6 +95,7 @@ TASKS: dict[str, str] = {
         "for u in / /api/data /visual /project; do printf '%-10s ' \"$u\"; "
         "curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 60 \"http://127.0.0.1:8050$u\"; echo; done; "
         "printf 'museweb sections on /visual: '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'id=.museweb.' | wc -l; "
+        "printf 'backlog sections on /visual: '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'id=.backlog.' | wc -l; "
         "systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,MemoryCurrent,MemoryMax"
     ),
     # W95.2: frozen-evidence reproduction on the box's full archive. Read-only on the archive and the repo; `frozen_settle_fetch`

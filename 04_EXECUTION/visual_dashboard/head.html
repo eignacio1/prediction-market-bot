@@ -445,5 +445,27 @@ footer{border-top:1px solid var(--hair); padding:22px 30px 40px; color:var(--ink
   .mw-search input{width:100%}
   .mw-search{flex:1 1 100%}
 }
+/* ---------- ROLLING BACKLOG ---------- */
+.bl-top{margin-bottom:14px}
+.bl-asof{font-family:var(--mono); font-size:11.5px; color:var(--ink-3); margin-bottom:8px}
+.bl-rank{display:flex; flex-wrap:wrap; gap:6px; list-style:none; padding:0; margin:0}
+.bl-rank li{font-size:11.5px; padding:2px 8px; border:1px solid var(--hair); border-radius:12px; background:var(--surface-2); color:var(--ink-2)}
+.bl-grp{margin:18px 0 8px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2)}
+.bl-grp small{text-transform:none; letter-spacing:0; color:var(--ink-3); font-size:11.5px; margin-left:8px}
+.bl-list{display:grid; gap:10px; grid-template-columns:minmax(0,1fr)}
+.bl-t{padding:12px 14px; overflow-wrap:anywhere}
+.bl-t .bl-h{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap}
+.bl-t .bl-id{font-family:var(--mono); font-size:11.5px; font-weight:700; color:var(--s1)}
+.bl-t .bl-title{font-size:13.8px; font-weight:600; flex:1 1 220px}
+.bl-t .bl-tags{display:flex; flex-wrap:wrap; gap:5px; margin:6px 0}
+.bl-t .bl-tags span{font-size:10.5px; padding:1px 7px; border:1px solid var(--hair); border-radius:999px; color:var(--ink-2)}
+.bl-t dl{margin:0; display:grid; grid-template-columns:auto minmax(0,1fr); gap:3px 10px; font-size:12.5px}
+.bl-t dt{color:var(--ink-3)}
+.bl-t dd{margin:0; color:var(--ink-2)}
+.bl-t.done{opacity:.5}
+.bl-t.done .bl-title{text-decoration:line-through}
+.bl-err{border-color:var(--crit); color:var(--crit)}
+@media(max-width:560px){ .bl-t dl{grid-template-columns:1fr} .bl-t dt{margin-top:4px} }
+
 @media print{ .rail,.topbar{display:none} body{background:#fff} }
 </style>
