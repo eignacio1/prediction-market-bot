@@ -56,7 +56,7 @@ def prefilter(archive: str, budget_s: float = 600.0) -> dict:
         if time.time() - t0 > budget_s:
             left += 1
             continue
-        hs = {s: open(os.path.join(outs[s], name + ".tmp"), "w") for s in ALL_SERIES}
+        hs = {s: open(safe_out(os.path.join(outs[s], name + ".tmp")), "w") for s in ALL_SERIES}
         try:
             with open(f) as fh:
                 for line in fh:
@@ -68,8 +68,8 @@ def prefilter(archive: str, budget_s: float = 600.0) -> dict:
             for h in hs.values():
                 h.close()
         for s in ALL_SERIES:
-            os.replace(os.path.join(outs[s], name + ".tmp"), os.path.join(outs[s], name))
-            with open(os.path.join(outs[s], name + ".src"), "w") as fh:
+            safe_out(os.path.join(outs[s], name + ".tmp")).replace(safe_out(os.path.join(outs[s], name)))
+            with open(safe_out(os.path.join(outs[s], name + ".src")), "w") as fh:
                 fh.write(str(size))
         done += 1
     return {"source_files": len(files), "prefiltered_this_call": done, "left": left, "elapsed_s": round(time.time() - t0)}
