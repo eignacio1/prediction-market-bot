@@ -1,0 +1,2 @@
+task = "dashboard_pages_read"
+note = "W96.3 final: dashboard warm re-read (cold-start timeouts, memory 123.6MB)"
