@@ -19,6 +19,7 @@
   <div class="navgroup">
     <div class="lbl">Position</div>
     <a class="nv" href="#state"><span class="ic">◉</span>State of the system</a>
+    <a class="nv" href="#picks"><span class="ic">✓</span>Tonight's picks<span class="ct" id="nvPicks"></span></a>
     <a class="nv" href="#backlog"><span class="ic">☰</span>Rolling backlog<span class="ct" id="nvBacklog"></span></a>
     <a class="nv" href="#distance"><span class="ic">◎</span>Distance to optimum<span class="ct">13</span></a>
     <a class="nv" href="#verdicts"><span class="ic">⊢</span>Verdict board<span class="ct" id="nvVerd"></span></a>
@@ -133,6 +134,14 @@
       </ul>
     </div>
   </div>
+</section>
+
+<section id="picks">
+  <div class="sechead"><h2>Tonight's picks</h2><span class="num" id="pkHead"></span></div>
+  <p class="lede">One line per game the bot evaluated: which side it would take, its probability, the Kalshi price, the edge after fees,
+  and whether a fake-money demo order was sent. Arms that disagree are shown side by side. Yesterday's picks follow with results.
+  Source: <span class="mono">exp_output/PICKS_SHEET/</span>.</p>
+  <div id="pkHost"></div>
 </section>
 
 <section id="backlog">

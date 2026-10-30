@@ -219,6 +219,30 @@ def backlog() -> dict:
     return rolling_backlog.load(ROOT)
 
 
+def picks() -> dict:
+    """Tonight's and yesterday's picks (W97.3, B-026): exp_output/PICKS_SHEET/ JSON from scripts/build_picks_sheet.py.
+    A missing, unparseable or empty file returns ok=False with the reason so the panel says so instead of drawing blank."""
+    d = ROOT / "exp_output" / "PICKS_SHEET"
+
+    def load(path):
+        try:
+            doc = json.loads(path.read_text())
+        except (OSError, ValueError) as e:
+            return None, f"{path.name}: {type(e).__name__}"
+        return (doc, None) if isinstance(doc, dict) and "games" in doc else (None, f"{path.name}: not a picks sheet")
+
+    today, err = load(d / "picks_latest.json")
+    if today is None:
+        return {"ok": False, "error": err}
+    prev = None
+    try:
+        y = (dt.date.fromisoformat(today["date"]) - dt.timedelta(days=1)).isoformat()
+        prev, _ = load(d / f"picks_{y}.json")
+    except (KeyError, ValueError):
+        pass
+    return {"ok": True, "today": today, "yesterday": prev}
+
+
 def wave_chip() -> str:
     import re
     q = (ROOT / "04_EXECUTION" / "ACTIVE_QUEUE.md").read_text()
@@ -239,7 +263,7 @@ def render() -> tuple[str, str]:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     return html, sha
 
