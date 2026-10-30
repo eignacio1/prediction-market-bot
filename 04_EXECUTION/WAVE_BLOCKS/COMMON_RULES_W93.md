@@ -15,7 +15,7 @@ COMMON RULES - WAVE 93 (THE NBA ENGINE, ALL LANES; ONE QUANT BLOCK IN TANDEM) (r
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-27 22:30 PT - incl. Wave 92 results (92.1: the six NBA / NHL archive lines
   INSTALLED via the new archive_cron_install bridge task, rows read back for 8 series (NBA and NHL game, spread, total, team total);

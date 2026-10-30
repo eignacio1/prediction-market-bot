@@ -15,7 +15,7 @@ COMMON RULES - WAVE 94 (THE ENGINES GO LIVE: NBA PRICES TONIGHT, NFL ON A FORWAR
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-28 17:10 PT - incl. Wave 93 results (93.1: NBA availability known before tip
   built point-in-time from the injury report (P(played | Questionable) 0.514, Out 0.0008, Available 0.856); it adds nothing measurable

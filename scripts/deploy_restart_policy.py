@@ -12,7 +12,7 @@ deploy runner has no project venv). Two questions, in order:
    new-branch push), the answer is "yes" -- conservative, as before GG-432.
 2. If yes: is an MLB game In Progress right now (MLB Stats API schedule)? If so,
    or if that cannot be determined, the code is pulled but t4-mlb is NOT
-   restarted, and the job summary says so loudly. The skipped restart is done
+   restarted, and the box deploy log (logs/vps_deploy.log, decisions.jsonl) says so loudly. The skipped restart is done
    by the next deploy that changes a t4-mlb file outside a live game, or by
    hand (`systemctl restart t4-mlb`). No cron or timer is added (needs the
    operator's authorization).

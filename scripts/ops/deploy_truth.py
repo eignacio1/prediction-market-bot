@@ -11,7 +11,8 @@ Subcommands
                           outcome so a failed deploy is an alarm, not a log line.
   check                   one block of "DEPLOY TRUTH" lines: deploy status, pending marker, and per running
                           service whether the code it runs is older than box HEAD for files it uses.
-                          ALARM when a service has run stale code for > --max-age-h (default 6h).
+                          ALARM when a service has run stale code for > --max-age-h (default 6h), and (W95.3, GG-1462)
+                          when box HEAD is behind origin/main for a file a service uses for > --max-lag-min (45).
 
 Alarm-only: `check` always exits 0 (the reader decides); lines start with OK / ALARM / UNKNOWN.
 """
@@ -26,6 +27,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 MAX_AGE_H = 6.0
+# W95.3 (GG-1462): box HEAD vs origin/main. Measured over 325 deploys (2026-10-11..30): commit -> box median 2.1 min,
+# p90 4.7, max 37; a deploy = 5-min cron tick + approval-path gate (median 0.4 min, max 23 min under load). 45 min is
+# ~2x the worst gate+tick seen, so a burst of merges never trips it and a stuck deploy (gate red, dirty tree, cron dead) does.
+MAX_HEAD_LAG_MIN = 45.0
+REMOTE_REF = "origin/main"
 FETCH_FAIL_GRACE_S = 30 * 60          # a flaky fetch is normal; 30 min of it is not
 OK_OUTCOMES = {"docs_only", "deployed", "pending_restart_done", "noop"}
 DEFAULT_SERVICES = ("t4-mlb", "pmbot-web-dashboard")
@@ -194,6 +200,33 @@ def unapplied_changes(proj: Path, service: str, sha: str, head: str) -> tuple[li
     return hits, (int(t0.splitlines()[0]) if t0 else None)
 
 
+def head_lag(proj: Path, now: datetime | None = None, max_lag_min: float = MAX_HEAD_LAG_MIN,
+             remote_ref: str = REMOTE_REF, services=DEFAULT_SERVICES) -> dict | None:
+    """W95.3 (GG-1462): is the box checkout behind `remote_ref` for a file a running service imports?
+    The deploy tick fetches `remote_ref` every 5 min, so it is the box's own view of main. None = not a git
+    checkout (nothing to say). Unrelated merges (docs, other scripts) never make the box "behind"; only the
+    first commit touching a service-used file counts, aged from its committer time (GitHub squash = merge time)."""
+    now = now or _now()
+    head = _git(proj, "rev-parse", "HEAD")
+    if not head:
+        return None
+    remote = _git(proj, "rev-parse", remote_ref)
+    if not remote:
+        return {"state": "UNKNOWN", "alarm": False, "detail": f"{remote_ref} not found in the box checkout"}
+    if head == remote:
+        return {"state": "CURRENT", "alarm": False, "head": head[:8], "remote": remote[:8]}
+    changed = (_git(proj, "diff", "--name-only", head, remote) or "").splitlines()
+    hits: list[str] = []
+    for svc in services:
+        hits += [h for h in _hits(changed, relevant_files(proj, svc)) if h not in hits]
+    if not hits:
+        return {"state": "BEHIND_UNRELATED", "alarm": False, "head": head[:8], "remote": remote[:8]}
+    t0 = _git(proj, "log", "--reverse", "--format=%ct", f"{head}..{remote}", "--", *hits[:50])
+    lag = (now.timestamp() - int(t0.splitlines()[0])) / 60 if t0 else None
+    return {"state": "BEHIND", "alarm": bool(lag is None or lag > max_lag_min), "head": head[:8], "remote": remote[:8],
+            "lag_min": round(lag, 1) if lag is not None else None, "n_files": len(hits), "files": hits[:3]}
+
+
 def staleness(proj: Path, state_dir: Path, services=DEFAULT_SERVICES, systemctl: str = "systemctl",
               now: datetime | None = None, max_age_h: float = MAX_AGE_H) -> list[dict]:
     now = now or _now()
@@ -224,7 +257,8 @@ def staleness(proj: Path, state_dir: Path, services=DEFAULT_SERVICES, systemctl:
 
 
 # ----- check -----------------------------------------------------------------------------------------
-def check(proj: Path, state_dir: Path, systemctl: str, max_age_h: float, now: datetime | None = None) -> list[str]:
+def check(proj: Path, state_dir: Path, systemctl: str, max_age_h: float, now: datetime | None = None,
+          max_lag_min: float = MAX_HEAD_LAG_MIN) -> list[str]:
     now = now or _now()
     out = []
     st = _read_json(status_path(state_dir))
@@ -240,6 +274,18 @@ def check(proj: Path, state_dir: Path, systemctl: str, max_age_h: float, now: da
         else:
             out.append(f"ALARM deploy {st.get('outcome')} since {st.get('fail_since')} "
                        f"(last ok {st.get('last_ok_ts')}): {st.get('detail')}")
+    hl = head_lag(proj, now=now, max_lag_min=max_lag_min)
+    if hl:
+        if hl["state"] == "CURRENT":
+            out.append(f"OK box HEAD {hl['head']} = {REMOTE_REF}")
+        elif hl["state"] == "BEHIND_UNRELATED":
+            out.append(f"OK box HEAD {hl['head']} behind {REMOTE_REF} {hl['remote']}, no file a service uses differs")
+        elif hl["state"] == "BEHIND":
+            out.append(f"{'ALARM' if hl['alarm'] else 'OK'} box HEAD {hl['head']} behind {REMOTE_REF} {hl['remote']}: "
+                       f"{hl['n_files']} file(s) a service uses ({', '.join(hl['files'])}) unpulled for {hl['lag_min']} min "
+                       f"(alarm > {max_lag_min:g} min; check logs/vps_deploy.log for a red gate or dirty-tree abort)")
+        else:
+            out.append(f"UNKNOWN box HEAD vs {REMOTE_REF}: {hl['detail']}")
     mk = _read_json(marker_path(state_dir))
     if mk:
         since = _parse_iso(mk.get("since", "")) or now
@@ -278,6 +324,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--detail", default="")
     c = sub.add_parser("check")
     c.add_argument("--max-age-h", type=float, default=MAX_AGE_H)
+    c.add_argument("--max-lag-min", type=float, default=MAX_HEAD_LAG_MIN)
     a = ap.parse_args(argv)
     state, proj = Path(a.state_dir), Path(a.proj)
     if a.cmd == "marker":
@@ -291,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
         status_write(state, a.outcome, a.detail)
     else:
         print("DEPLOY TRUTH (W72.3 / GG-661, GG-668: merge != deploy != activation; alarm-only):")
-        for ln in check(proj, state, a.systemctl, a.max_age_h):
+        for ln in check(proj, state, a.systemctl, a.max_age_h, max_lag_min=a.max_lag_min):
             print("  " + ln)
     return 0
 

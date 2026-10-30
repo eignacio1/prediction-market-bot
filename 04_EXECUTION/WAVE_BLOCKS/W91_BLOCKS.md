@@ -17,7 +17,7 @@ COMMON RULES - WAVE 91 (RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCE
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-27 17:30 PT - incl. Wave 90 results (90.1: PR #349 and #352 merged; the hold-out
   scan found 0 candidates because only 1 of 1,850 cells was testable - UNDERPOWERED, not a null, GG-1292; ride.py not built. 90.2: the
@@ -172,7 +172,7 @@ COMMON RULES - WAVE 91 (RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCE
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-27 17:30 PT - incl. Wave 90 results (90.1: PR #349 and #352 merged; the hold-out
   scan found 0 candidates because only 1 of 1,850 cells was testable - UNDERPOWERED, not a null, GG-1292; ride.py not built. 90.2: the
@@ -322,7 +322,7 @@ COMMON RULES - WAVE 91 (RIDE THE MARKET: PROVE IT OR DROP IT, AND TWO NEW SOURCE
   Never leave work unpushed.
 - Runs at any hour. Since #158 (GG-432), a push to main restarts t4-mlb only if it changes a file t4-mlb imports AND
   no MLB game is live; otherwise the restart is skipped and logged. Merge ONLY your own PRs, and ONLY on a CI result you
-  have read as green (W80.1 merged #291 red and broke main). Read the Deploy job summary after each merge and record the
+  have read as green (W80.1 merged #291 red and broke main). read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) after each merge and record the
   t4-mlb decision.
 - Decisions in force: DECISION_LOG through 2026-10-27 17:30 PT - incl. Wave 90 results (90.1: PR #349 and #352 merged; the hold-out
   scan found 0 candidates because only 1 of 1,850 cells was testable - UNDERPOWERED, not a null, GG-1292; ride.py not built. 90.2: the
@@ -440,7 +440,7 @@ Polymarket account, wallet or order; any Kalshi order, gate, model, runner, ledg
 
 PART 0 - PR #347 (~10 min)
   89.6's lock alignment (pandas 2.2.3, scikit-learn 1.8.0, scipy 1.12.0, read from the box venv 2026-10-26) is green and unmerged: rebase
-  on main, read CI green on the new head, merge, read the Deploy job summary and record the t4-mlb decision.
+  on main, read CI green on the new head, merge, read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462) and record the t4-mlb decision.
 PART A - The joined series (~35 min)
   Polymarket's sports events for NFL, NBA, NHL and MLB game winners first (then spreads and totals if listed): join each to its Kalshi
   event by teams and true start time (Kalshi's listed time is start + 3.0 h); fetch both venues' prices on a common clock (the coarser
@@ -485,7 +485,7 @@ only if budget_read reads GREEN and only after registering each line; public una
 order, gate, model, runner, ledger, registry cell or pre-registration; ride.py or the router (91.2's); 91.1's files.
 
 PART 0 - PR #347 (~10 min, if not already merged)
-  Rebase on main, read CI green on the new head, merge, read the Deploy job summary, record the t4-mlb decision.
+  Rebase on main, read CI green on the new head, merge, read the box deploy (`deploy_truth_read` or logs/vps_deploy.log; the GitHub Deploy job is manual-only, GG-1462), record the t4-mlb decision.
 PART A - NBA and NHL into the archive (~40 min)
   1. List the NBA and NHL series Kalshi serves; choose game, spread, total and team-total families first, player props where listed
      (say which and why any are left out).

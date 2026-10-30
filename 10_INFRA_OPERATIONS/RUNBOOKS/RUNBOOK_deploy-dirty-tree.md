@@ -12,6 +12,8 @@
 
 ---
 
+> **W95.3 note (GG-1462):** the GitHub "Deploy to VPS" workflow described below is manual-only since W67.3. The box pulls `main` itself every 5 min (`scripts/ops/vps_deploy.sh`, cron `3-58/5`); read its outcome in `logs/vps_deploy.log` / `logs/vps_deploy_decisions.jsonl` or via the `deploy_truth_read` box task. A dirty tree shows as `dirty_tree_abort` there, and `deploy_truth` now alarms when box HEAD lags origin/main > 45 min for a service-used file.
+
 ## Read this first: what actually broke, and what didn't
 
 The "Deploy to VPS" workflow has two jobs: `approval-path-tests` (a fast pytest gate, GG-087/GG-077 property suite + golden-replay) and `deploy` (SSH into the VPS, `git pull --ff-only`, restart services, verify). **The vast majority of `deploy` job failures since this pipeline went live (2026-06-15) have been the same root cause, not a new one each time:** a scheduled job on the VPS (see `deploy/cron.conf`) writes new content into a file that is *also* tracked in git. The next `git status --porcelain` the deploy guard runs sees that file as locally modified, and — before GG-130 — hard-failed the entire deploy to avoid a `git pull --ff-only` silently clobbering it.
