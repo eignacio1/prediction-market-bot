@@ -19,6 +19,7 @@
   <div class="navgroup">
     <div class="lbl">Position</div>
     <a class="nv" href="#state"><span class="ic">◉</span>State of the system</a>
+    <a class="nv" href="#backlog"><span class="ic">☰</span>Rolling backlog<span class="ct" id="nvBacklog"></span></a>
     <a class="nv" href="#distance"><span class="ic">◎</span>Distance to optimum<span class="ct">13</span></a>
     <a class="nv" href="#verdicts"><span class="ic">⊢</span>Verdict board<span class="ct" id="nvVerd"></span></a>
     <a class="nv" href="#evidence"><span class="ic">▤</span>Execution ledger</a>
@@ -132,6 +133,14 @@
       </ul>
     </div>
   </div>
+</section>
+
+<section id="backlog">
+  <div class="sechead"><h2>Rolling backlog</h2><span class="num" id="blHead"></span></div>
+  <p class="lede">Every piece of work in scope, in one ordered list, so all blocks are in view at once (operator 2026-10-30). Grouped
+  NOW / NEXT / LATER / PARKED in the file's order; the strategic window moves tickets when you say so or the project needs it.
+  Source: <span class="mono">04_EXECUTION/ROLLING_BACKLOG.json</span>.</p>
+  <div id="blHost"></div>
 </section>
 
 <!-- ============================================================ DISTANCE -->
