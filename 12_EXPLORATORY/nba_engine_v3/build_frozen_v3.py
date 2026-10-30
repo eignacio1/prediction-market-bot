@@ -148,8 +148,8 @@ def main(argv=None):
     a = ap.parse_args(argv)
     b = build(a.root, a.lead_min)
     g, rates, rates_df, names = factor_frame(b, a.lead_min)
-    out_dir = safe_out(HERE.parent / a.out / "_")  .parent  # fence: must resolve inside 12_EXPLORATORY/
-    g.to_parquet(out_dir / "v3_factors_lead{}.parquet".format(int(a.lead_min)))
+    out_dir = HERE.parent / a.out
+    g.to_parquet(safe_out(out_dir / "v3_factors_lead{}.parquet".format(int(a.lead_min))))
     print("factor frame", len(g), g.groupby("season")[["d_exp_missing", "d_lineup_net"]].count().to_dict(), flush=True)
     snap = snapshot_2027(b, names)
     tid_abbr = {}
@@ -157,8 +157,8 @@ def main(argv=None):
     for side in ("home", "away"):
         for _, r in sch.drop_duplicates(f"{side}_team_id").iterrows():
             tid_abbr[str(r[f"{side}_team_id"])] = r[f"{side}_team_abbreviation"]
-    (out_dir / "snapshot_2027.json").write_text(json.dumps(dict(rotation=snap, abbr=tid_abbr, rates=rates,
-                                                                 rates_table=json.loads(rates_df.to_json(orient="records"))), indent=1))
+    safe_out(out_dir / "snapshot_2027.json").write_text(json.dumps(dict(rotation=snap, abbr=tid_abbr, rates=rates,
+                                                                 rates_table=rates_df.astype(object).where(rates_df.notna(), None).to_dict("records")), indent=1, default=float))
     print("teams in snapshot", len(snap), "players", sum(len(v) for v in snap.values()), flush=True)
 
 
