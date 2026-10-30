@@ -4526,3 +4526,15 @@ W94.Q, 2026-10-29, T-1430. `12_EXPLORATORY/quant_w94/exact_fee_recompute.py` re-
 **Status:** OPEN · **Severity:** LOW
 
 W94.Q, 2026-10-29, T-1430. Re-run n differs from the n in the source reports: KXMLBSPREAD 186 reported vs 179; 91.2 net2-5c 117 reported vs 202 (324 alternate). Likely cell-definition or dedupe differences; not diagnosed. Do not cite the reported n for those cells until reconciled.
+
+### GG-1480 — Docs-only pushes under `12_EXPLORATORY/` run the full deploy gate (up to 23 min)
+
+**Status:** OPEN · **Severity:** LOW
+
+W95.3, 2026-10-30, T-1480. `vps_deploy.sh` DOCS_ONLY_ROOTS omits `12_EXPLORATORY/`, so result-only commits there run the approval-path gate and serialize later deploys under flock (burst 10-29 00:26–01:43Z: 13–25 min lag; gate max 23 min). Not fixed (outside block scope). Alarm bound of 45 min sits above this.
+
+### GG-1481 — Demo `insufficient_balance` rejections with the cash guard active: cause unproven
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+W95.3, 2026-10-30, T-1481. Paper T4 (`$0.50` stakes) had 2,000 `insufficient_balance` rejections on game dates 10-26..28 at 00–04Z, while `demo_fill_policy.cash_skip_reason` is active in t4-mlb and logged 0 skips; shadow books had 3,743 since 10-12. Demo cash now $3,287.58. Hypothesis: resting 60 s shadow orders on the same account reserve cash not visible to the 2 s-cached guard (or the read failed open). Needed: log `balance_usd` and read status on every `insufficient_balance` rejection, then decide (C5 order-path change needs its own block). No operator step.

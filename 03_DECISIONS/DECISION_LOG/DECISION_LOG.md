@@ -3038,3 +3038,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Window decision (plumbing): GG-1440 - t4_mlb silent-arm first-row grace 0.5 h after start, with a regression test for 10-29 00:04Z and a test that a GG-163-style outage still alarms (95.3).
 - Window fix: the common-rules template told terminals to "read the Deploy job summary"; that job is manual-only since W67.3 (GG-1462). Corrected in COMMON_RULES_W95.md; 95.3 sweeps the rest.
 - Wave 95: 95.1 engine lane (NBA engine live on the box + v3), 95.2 proof lane (frozen ride evidence reproduced on the box's full archive; GG-1460), 95.3 flex lane (deploy path, false red, demo insufficient balance).
+
+## 2026-10-30 — W95.3 box truth (T-1480..1482)
+- Plumbing: `deploy_truth` gains a head-lag alarm (bound 45 min, ~2x worst gate+tick); t4_mlb silent-arm first-row grace 0.5 h (GG-1440), t4_mlb only; stale "Deploy job summary" wording swept (GG-1462). PR #378 merged 152f0763, deployed 14:04Z, t4-mlb restart `not_needed`.
+- Part B: demo cash $3,287.58 (not exhausted); insufficient_balance cause unproven (GG-1481); no order-path change made. No operator step.
