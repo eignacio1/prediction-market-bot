@@ -1103,3 +1103,4 @@
 | 2026-10-29T05:21:23Z | T-1430 | CLOSED — W94.Q: exact-fee recompute of every reported net, ride.py LADDER side fixed, Bayesian skill weights applied; PROOF_CALENDAR.md generated (64 rows) from the box read (commit `3582308`) |
 | 2026-10-29T05:21:43Z | T-1430 | CLOSED — merge confirmed, HEAD (914cf9e) is ancestor of origin/main — W94.Q done: A, B, C merged; calendar generated |
 | 2026-10-30T13:50:57Z | T-1480..T-1482, GG-1480..GG-1482 | MEDIUM — W95.3 flex lane: box truth (deploy path lag alarm, t4_mlb first-row grace GG-1440, demo insufficient_balance) — FOR PLUMBING + EXECUTION (E1: demo fills; deploy-lag alarm 0->1; false-RED 1->0) |
+| 2026-10-30T13:51:03Z | T-1470..T-1471, GG-1470..GG-1472 | STANDARD — W95.2 proof lane: frozen ride evidence must reproduce on the box's full archive; GG-1460 stale JSONs — FOR PROOF: frozen ride cells reproduced exactly 0->n of 13; n mismatches explained 0->all; stale results regenerated 0->3 |
