@@ -163,6 +163,7 @@ const WINERR = __WINERR__;
 const GAGENT = __GAGENT__;
 const MUSEWEB = __MUSEWEB__;
 const BACKLOG = __BACKLOG__;
+const PICKS = __PICKS__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
@@ -370,6 +371,26 @@ function govCounts(){
 }
 
 /* ---- WIRE ---- */
+
+/* ---------- PICKS SHEET (W97.3) ---------- */
+function picksSheet(){
+  const D=PICKS, host=$('#pkHost');
+  if(!D||!D.ok){ host.innerHTML=`<div class="card pk-err"><b>No picks sheet to show.</b><div class="cap">${esc((D&&D.error)||'missing')}. The nightly builder writes it after the arms' decision passes; nothing is drawn rather than a blank list.</div></div>`; $('#pkHead').textContent='no sheet'; $('#nvPicks').textContent='!'; return; }
+  const sheet=(S,withRes)=>{
+    if(!S) return '<div class="card pk-err"><b>No sheet for this day.</b></div>';
+    if(!S.games.length) return `<div class="card pk-err"><b>The sheet for ${esc(S.date)} has no picks.</b><div class="cap">${esc((S.notes||[]).join(' · ')||'no arm found a positive edge in the window')}</div></div>`;
+    return S.games.map(g=>{
+      const rows=g.picks.map(p=>{
+        const o=p.demo_order, od=o?(o.placed?`demo order $${esc(o.stake_usd)}`:`no order (${esc(o.reason)})`):'no order logged';
+        const r=withRes&&p.result?` · <b>${esc(p.result.outcome)}</b> ${p.result.pnl_per_contract>=0?'+':''}${esc(p.result.pnl_per_contract)}/contract`:'';
+        return `<li><b>${esc(p.pick)}</b> <span class="cap">[${esc(p.arm)}]</span><br>bot ${Math.round(p.bot_prob_for_pick*100)}% · Kalshi ${Math.round(p.kalshi_price_yes*100)}¢ (yes) · edge ${(p.edge_after_fee*100).toFixed(1)}¢ after fees · ${od}${r}<br><span class="cap">why: ${esc(p.reasons.join('; '))}</span></li>`;
+      }).join('');
+      return `<div class="card"><div class="bl-h"><span class="bl-title">${esc(g.game)}</span>${g.arms_disagree?'<span class="bl-id">ARMS DISAGREE</span>':''}</div><ul>${rows}</ul></div>`;
+    }).join('');
+  };
+  $('#pkHead').textContent=D.today.n_picks+' picks · '+D.today.games.length+' games'; $('#nvPicks').textContent=D.today.n_picks;
+  host.innerHTML=`<h3 class="bl-grp">Tonight<small>${esc(D.today.date)}</small></h3>${sheet(D.today,false)}<h3 class="bl-grp">Yesterday, with results<small>${D.yesterday?esc(D.yesterday.date):''}</small></h3>${sheet(D.yesterday,true)}`;
+}
 
 /* ---------- ROLLING BACKLOG ---------- */
 function backlog(){
@@ -648,7 +669,7 @@ function museWeb(){
   const ro=new ResizeObserver(()=>fit()); ro.observe(host); fit();
 }
 
-distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); backlog();
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); backlog(); picksSheet();
 bars('#sevBars',SEV); bars('#asymBars',ASYM);
 $('#tblBtn').addEventListener('click',()=>{
   const t=$('#forestTable'); t.classList.toggle('hidden');

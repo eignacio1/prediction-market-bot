@@ -1304,3 +1304,17 @@ alarm = "exp_output/NBA_EVENTS/current/status.json last game date more than 2 da
 schedule = "33 12 * * *"
 mirrors = ["deploy/cron.conf"]
 command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.c1_signal_ingestion.nba_current_season >> logs/nba_engine_live_cron.log 2>&1"
+[[component]]
+key = "cron|37 5,22 * * *|scripts/build_picks_sheet.py"
+kind = "cron"
+source = "deploy/cron.picks_sheet"
+status = "live"
+reviewed = true
+purpose = "Twice nightly builds the plain-English picks sheet (one line per pick: side, bot probability, Kalshi price, edge after fee, demo order, result) from the arms' ledgers for the Visual Dashboard (read-only; no order path)."
+pillar = "PROOF"
+writes = ["logs/picks_sheet_cron.log"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/picks_sheet_cron.log is older than 18h"
+max_age_h = "18"
+schedule = "37 5,22 * * *"
+mirrors = ["deploy/cron.picks_sheet"]
+command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/build_picks_sheet.py >> logs/picks_sheet_cron.log 2>&1"
