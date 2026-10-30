@@ -40,27 +40,26 @@ def parse_ts(s) -> Optional[dt.datetime]:
 
 
 def tail_rows(path: str, max_bytes: int = 6_000_000) -> Iterator[dict]:
-    """Rows from the last `max_bytes` of a JSONL file (partial first line dropped). Missing file -> nothing."""
+    """Rows from the last `max_bytes` of a JSONL file (partial first line dropped), streamed line by line so peak
+    memory is one row, not the window. Missing file -> nothing."""
     try:
-        size = os.path.getsize(path)
-        with open(path, "rb") as fh:
-            start = max(0, size - max_bytes)
-            fh.seek(start)
-            data = fh.read()
+        fh = open(path, "rb")
     except OSError:
         return
-    lines = data.split(b"\n")
-    if start > 0:
-        lines = lines[1:]
-    for ln in lines:
-        if not ln.strip():
-            continue
-        try:
-            row = json.loads(ln)
-        except ValueError:
-            continue
-        if isinstance(row, dict):
-            yield row
+    with fh:
+        start = max(0, os.path.getsize(path) - max_bytes)
+        fh.seek(start)
+        if start > 0:
+            fh.readline()
+        for ln in fh:
+            if not ln.strip():
+                continue
+            try:
+                row = json.loads(ln)
+            except ValueError:
+                continue
+            if isinstance(row, dict):
+                yield row
 
 
 def edge_both(p_yes: float, yes_bid: float, yes_ask: float, ticker: str) -> dict:
