@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1480
+tier: STANDARD
+timestamp: 2026-10-30T14:30:00Z
+commit: c3053b5
+one_line_summary: W95.3 box truth: deploy-lag alarm and t4_mlb start grace shipped (#378, read back on box); insufficient_balance cause unproven, GG-1481.
+gg_touched: GG-1480, GG-1481, GG-1462
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING, EXECUTION
+gap_measure: deploy-lag alarm; false-RED silent-arm on :00 start; demo orders refused for insufficient balance
+gap_delta: deploy-lag alarm 0 -> 1; t4_mlb false red 1 -> 0; refused demo orders unchanged, cause is a hypothesis (GG-1481) (results_W95_3.md @ c3053b5)
+pattern_sweep: fixed stale "Deploy job summary" wording in COMMON_RULES_W92/93/94, W89/W90/W91_BLOCKS, RUNBOOK_deploy-dirty-tree, deploy_restart_policy.py; dated history left; grace on t4_mlb only.
+surface_delta: 0 running components; deploy_truth +1 check line; silent_arms +1 per-arm field
+-->
+
 # SESSION_HANDOFF 2026-10-30 W95.3 — the box tells the truth
 Status: PARTIAL (A done and read back on the box; B diagnosed, cause not proven). Claim T-1480..1482 / GG-1480..1482.
 vision_pillar: PLUMBING + EXECUTION

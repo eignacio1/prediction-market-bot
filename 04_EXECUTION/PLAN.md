@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-10-29T01:40:00Z (T-1430 — W94.Q: exact-fee recompute of every reported net, ride.py LADDER side fixed, Bayesian skill weights applied; PROOF_CALENDAR.md generated (64 rows) from the box read) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261029T0140Z_W94_Q.md` for full session detail.
+**Last reviewed:** 2026-10-30T14:30:00Z (T-1480 — W95.3 box truth: deploy-lag alarm and t4_mlb start grace shipped (#378, read back on box); insufficient_balance cause unproven, GG-1481.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261030T1415Z_W95_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
