@@ -75,6 +75,12 @@ SPECS = {
         "nba_player_points_minutes_shadow", "NBA player points minutes+injury challenger (EXP-040)", 12, 1,
         "W70.2: EXP-040 rides the EXP-039 runner (same T1/T2/T3 crons), strike 15 only, own NBAMIN_*.jsonl ledgers; "
         "silent while EXP-039 writes means the challenger arm itself is dead (runner exits rc 3 and prints EXP-040 ARM FAILED)"),
+    "nba_engine_v1": ArmSpec("nba_engine_v1", "NBA engine v1 (EXP-044)", 12, 1,
+                             "W95.1: one cron pass every 10 min over 16-04 UTC logs each regular-season game once at the "
+                             "first pass in [tip-60, tip); a game that tipped in 12h with no logged_at row inside the "
+                             "window (or the hour before) means the runner or the daily refresh is dead"),
+    "nba_engine_v2": ArmSpec("nba_engine_v2", "NBA engine v2 (EXP-044b)", 12, 1,
+                             "W95.1: same cron line as v1 (run second); silent while v1 writes means v2 itself failed"),
     "nfl_passyds_snap": ArmSpec(
         "nfl_passyds_snap", "NFL passing-yards pre-kickoff snapshot (W81.3)", 12, 0.1,
         "W81.3: the snapshot cron runs every 20 min, so any listed game gets >=1 row inside the 30 min before its "
@@ -289,6 +295,17 @@ def _nba_starts(repo: Path, season_type: int) -> list[datetime]:
     return [t for t in (_parse(g.get("start_time_utc")) for g in games if g.get("season_type") == season_type) if t]
 
 
+def _nba_engine_starts(repo: Path) -> list[datetime]:
+    """Tips of the current-season regular-season games, from the event store the runner itself reads."""
+    import pandas as pd
+    e = pd.read_parquet(repo / "exp_output" / "NBA_EVENTS" / "raw" / "espn_schedule" / "espn_schedule_2027.parquet",
+                        columns=["date", "season_type", "status_type_name"])
+    e = e[e["season_type"] == 2]
+    e = e[~e["status_type_name"].astype(str).str.lower().str.contains("|".join(_NOT_STARTED))]
+    tips = pd.to_datetime(e["date"], utc=True, errors="coerce").dropna()
+    return [t.to_pydatetime() for t in tips]
+
+
 def _t1_last(logs: Path, until: datetime) -> Optional[datetime]:
     p = logs / "audit_mlb.jsonl"
     if not p.exists():
@@ -363,6 +380,10 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             row_times_fn=lambda: row_times_in_files(passyds_files(), until=now)),
         arm("nhl_shadow", lambda: _nhl_starts(repo, now),
             lambda: last_ts_in_files(cell_files(repo / "data" / "shadow" / "nhl", "NHL"), until=now)),
+        arm("nba_engine_v1", lambda: _nba_engine_starts(repo),
+            lambda: last_ts_in_files([repo / "exp_output" / "NBA_ENGINE_LIVE" / "rows.jsonl"], keys=("logged_at",), until=now)),
+        arm("nba_engine_v2", lambda: _nba_engine_starts(repo),
+            lambda: last_ts_in_files([repo / "exp_output" / "NBA_ENGINE_LIVE_V2" / "rows.jsonl"], keys=("logged_at",), until=now)),
         arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(cell_files(pre, "NBA", "NBA_"), until=now)),
         arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(cell_files(led, "NBA", "NBA_"), until=now)),
         arm("nba_player_points_shadow", lambda: _nba_starts(repo, 2),
