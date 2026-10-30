@@ -27,8 +27,10 @@ RUNS = (("heldout_keynumbers.py", []), ("kalshi_compare.py", ["{PR}", "3", "gt"]
 
 def nfl_rows(archive: str, dest: str) -> int:
     """Stream the archive's KXNFL* rows into one file (kalshi_compare.py reads a single JSONL path)."""
+    sys.path[:0] = [EXP]
+    import _fence
     n = 0
-    with open(dest, "w") as out:
+    with open(_fence.safe_out(dest), "w") as out:
         for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
             with open(f) as fh:
                 for line in fh:
@@ -53,7 +55,6 @@ def regenerate(archive: str, out_dir: str) -> dict:
     for script, argv in RUNS:
         sys.argv = [script] + [pr if a == "{PR}" else a for a in argv]
         runpy.run_path(os.path.join(SCRIPTS, script), run_name="__main__")
-    os.remove(pr)
     res = {"archive_nfl_rows": n_rows}
     for p in sorted(glob.glob(os.path.join(out_dir, "*.json"))):
         res[os.path.basename(p)] = json.load(open(p))

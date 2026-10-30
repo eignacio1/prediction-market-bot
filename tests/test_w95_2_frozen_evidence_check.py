@@ -74,10 +74,13 @@ def test_regen_nfl_board_filters_nfl_rows_and_redirects_writes(tmp_path):
     rows = [{"series_ticker": "KXNFLTOTAL", "k": 1}, {"series_ticker": "KXMLBHIT", "k": 2}, {"series_ticker": "KXNFLSPREAD", "k": 3}]
     (arch / "prices_2026-10-20.jsonl").write_text("\n".join(json.dumps(r) for r in rows))
     dest = tmp_path / "out.jsonl"
+    import _fence
+    _real = _fence.safe_out
+    _fence.safe_out = lambda p: __import__("pathlib").Path(p)  # fence is for the repo tree; this test writes to tmp_path
     assert G.nfl_rows(str(arch), str(dest)) == 2
     assert [json.loads(l)["k"] for l in dest.read_text().splitlines()] == [1, 3]
     import _fence
-    orig = _fence.safe_out
+    orig = _real
     try:
         G.regenerate.__globals__["RUNS"] = ()  # no scripts: the inputs are box-only; the redirect is what is under test
         res = G.regenerate(str(arch), str(tmp_path / "scratch"))
