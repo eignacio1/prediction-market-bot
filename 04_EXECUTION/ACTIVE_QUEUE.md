@@ -287,7 +287,7 @@ any ticket up or back by telling the window.
 |---|---|---|---|---|---|---|---|
 | 96.1 | B-001 + B-009 | engine | 2 (judged by 1; Part B 3) | The NBA engine's first real nights read back (v1 + v2), then v3 with availability, lineups and officials | DEPTH + PROOF: arms logging with rows 0 → 2; engine inputs 4 → up to 7 | ⬜ | |
 | 96.2 | B-002 + B-011 | proof | 1 + 4 | Finish reproducing the frozen ride evidence on the box's full archive (settle, re-run, classify 13 cells); re-generate the NFL engine JSONs | PROOF: cells reproduced 0 → n of 13 | ⬜ | |
-| 96.3 | B-003 + B-004 + B-006 | flex | operator mandate + EXECUTION | The rolling backlog on the Visual Dashboard; demo orders refused for insufficient balance - log, prove, fix | PLUMBING + EXECUTION: backlog on /visual 0 → 1; refused orders n → 0 | ⬜ | |
+| 96.3 | B-003 + B-004 + B-006 | flex | operator mandate + EXECUTION | The rolling backlog on the Visual Dashboard; demo orders refused for insufficient balance - log, prove, fix | PLUMBING + EXECUTION: backlog on /visual 0 → 1; refused orders n → 0 | ◐ PARTIAL | W96.3: B-003 DONE (/visual backlog sections 0→1 on box, dashboard 0 restarts). B-004: refusal logging live (PR #384, t4-mlb restarted 16:06Z); cause unproven; shadow refusals 0 since 10-29T00:16Z; first row with balance awaits next refused order. B-006 (Part C) not run. See `12_EXPLORATORY/demo_balance_w96/results_W96_3.md`. |
 
 **What Wave 95 delivered (verified 2026-10-30 15:27Z: #377-#381 CI green; box bridge `20261030T152653Z_*`):** all three PARTIAL.
 **95.1 🟨** the NBA engine (v1 and the v2 challenger) and the daily store refresh are installed on the box; no forward row yet (the
@@ -525,7 +525,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 96.1 | B-001 engine: NBA engine's first nights + v3 | 🟨 Part B done, Part A waits on tonight's tips | PR #385 merged (3f42ff6): v3 beats v2 held-out on spread (−0.0079 [−0.0107,−0.0051]) and team_total (−0.0026); EXP-044c NOT frozen/installed (no live_v3 runner); v1/v2 rows still 0 (no game tipped); Part C (B-009) done: PR #387 merged (3809802), player_layer.py + tests; engine-priced points beat base only through a post-game roster leak, leak-free arm = no gain (pooled ALL +0.00001 [−0.00029,+0.00032]) → EXP-044d NOT frozen; nothing installed; Part A readback still pending tonight's tips |
 | 96.2 | B-002 proof: frozen evidence reproduced | ⬜ | |
-| 96.3 | B-003 + B-004 flex: backlog on the dashboard; demo balance | ⬜ | |
+| 96.3 | B-003 + B-004 flex: backlog on the dashboard; demo balance | ◐ PARTIAL | B-003 done; B-004 logging live, cause awaits first refusal row; B-006 not run |
 
 ### 🟨 WAVE 95 — WRITTEN 2026-10-29 ~05:40 UTC · CLOSED 2026-10-30 ~15:50 UTC (operator 08:26 PT) · verified on GitHub (#377-#381 CI green) + box bridge (`20261030T152653Z_*`) · moved: **NBA engine arms installed (85 live); deploy-lag alarm; false red fixed**; three partials
 | # | Block | Status | Outcome |

@@ -4541,6 +4541,8 @@ W95.3, 2026-10-30, T-1480. `vps_deploy.sh` DOCS_ONLY_ROOTS omits `12_EXPLORATORY
 
 W95.3, 2026-10-30, T-1481. Paper T4 (`$0.50` stakes) had 2,000 `insufficient_balance` rejections on game dates 10-26..28 at 00–04Z, while `demo_fill_policy.cash_skip_reason` is active in t4-mlb and logged 0 skips; shadow books had 3,743 since 10-12. Demo cash now $3,287.58. Hypothesis: resting 60 s shadow orders on the same account reserve cash not visible to the 2 s-cached guard (or the read failed open). Needed: log `balance_usd` and read status on every `insufficient_balance` rejection, then decide (C5 order-path change needs its own block). No operator step.
 
+**W96.3 update (2026-10-30):** logging shipped (PR #384): every `kalshi_order_failed` row now carries `demo_balance_usd`, `demo_portfolio_value_usd`, `demo_balance_age_s`, `open_exposure_usd`, `open_positions_n`, live on the box since the 16:06Z t4-mlb restart. Shadow refusals ran 2026-10-12T23:13Z to 2026-10-29T00:16Z and are zero since (~39 h, orders still placing); no balance series existed to prove the cause. Stays OPEN until the first refusal row carrying `demo_balance_usd` is read. Detail: `12_EXPLORATORY/demo_balance_w96/results_W96_3.md`.
+
 ### GG-1470 — The frozen ride evidence (EXP-042 x11, EXP-043 x2) is not yet shown to reproduce on the full archive
 
 **Status:** OPEN · **Severity:** MEDIUM

@@ -47,3 +47,7 @@ Sources: box read-only reads 2026-10-30 ~16:00Z (`logs/demo_fill_policy.jsonl`, 
 
 ### Read-back still owed
 The new fields reach the box with the next t4-mlb restart (`paper_trader.py` is imported by t4-mlb). The first `kalshi_order_failed` row carrying `demo_balance_usd` can only appear on the next refused order (next evening game window with refusals). That read, and the verdict on the cause, belong to the first block after it appears.
+
+## Deploy read-back for Part B (box, 2026-10-30)
+- Gate passed; box deployed `f6fb0463` (contains `32ce531`). `deploy_truth_read` 16:08Z: t4-mlb runs box HEAD code (started 16:06:33Z); decision logged: `restart -- t4-mlb imports changed: demo_fill_policy.py, paper_trader.py; no MLB game in progress`.
+- Dashboard right after that restart (16:08Z): `/api/data` and `/visual` timed out at 60 s and memory read 123.6 MB of 134 MB. Re-read directly at 16:27Z (dashboard restarted again by a later deploy): `/visual` 200 in 0.88 s, `NRestarts=0`, memory 2.9 MB (fresh), box load average 3.7–5 on a 961 MB single box. Read as cold-start under load, not caused by the backlog panel, but the 92%-of-cap reading right after a restart is worth a look (not registered as a defect: one observation, recovered).
