@@ -121,6 +121,9 @@ TASKS: dict[str, str] = {
         f"{PY} 12_EXPLORATORY/frozen_evidence_check/repro.py run --archive exp_output/PRICE_ARCHIVE "
         "--settle frozen_evidence_check/_cache/settle --until 2026-10-28"
     ),
+    # W97.2 (GG-1520): the same reproduction in resumable units, each call inside the 900 s limit; re-request until remaining_units is 0.
+    "frozen_resume_step": f"{PY} 12_EXPLORATORY/frozen_evidence_check/resume.py step --budget 700",
+    "frozen_resume_combine": f"{PY} 12_EXPLORATORY/frozen_evidence_check/resume.py combine",
     # W96.2: re-runs 93.4's three nfl_board_v2 scripts unchanged with safe_out redirected to a /tmp scratch dir; prints the JSONs.
     "nfl_board_v2_regen_read": f"{PY} 12_EXPLORATORY/frozen_evidence_check/regen_nfl_board.py --archive exp_output/PRICE_ARCHIVE",
     "nba_opening_preflight": (

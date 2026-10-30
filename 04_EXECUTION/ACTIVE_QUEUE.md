@@ -286,7 +286,7 @@ Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`. All four run in pa
 | 97.1 | B-001 + B-009 | engine | 2 (judged by 1) | NBA engine v3 live (EXP-044c), the first nights' rows read back, player points re-tested with no leak | DEPTH + PROOF: arms with rows 0 → 2-3; points held-out 0 → measured | ⬜ | |
 | 97.2 | B-002 + B-011 | proof | 1 + 4 | The 13 frozen ride cells reproduced in resumable box tasks; the NFL regen's missing input; what the forward test's entry costs, for your decision | PROOF + EXECUTION: cells classified 0 → 13; entry cost per book | ⬜ | |
 | 97.3 | B-026 + B-006 + B-007 | flex | 1 (operator 10-30) + plumbing | **The picks sheet**: every game the bot evaluates, its side, %, Kalshi's price, edge, why, fake bet placed, result - nightly on your dashboard; MLB's winter posture; the box's memory | visibility + PLUMBING: picks per game 0 → all | ⬜ | |
-| 97.4 | B-012 | engine (second sport) | 2 (judged by 1) | **The NHL engine**: point-in-time inputs from the shot store, one goals distribution pricing moneyline, puck line, total and team totals, scored vs results and this season's Kalshi prices; EXP-046 frozen only if earned | DEPTH: D4 NHL data layer → board engine | ⬜ | |
+| 97.4 | B-012 | engine (second sport) | 2 (judged by 1) | **The NHL engine**: point-in-time inputs from the shot store, one goals distribution pricing moneyline, puck line, total and team totals, scored vs results and this season's Kalshi prices; EXP-046 frozen only if earned | DEPTH: D4 NHL data layer → board engine | 🟨 Part A done | PR #390 merged (CI green): PIT inputs + goals distribution + board pricer, leakage and known-answer tests; real-data fit waits on the store rebuild (in progress) |
 
 **What Wave 96 delivered (verified 2026-10-30 17:01Z: #382-#387 CI green; box bridge `20261030T170102Z_*`):** **96.1 🟨** NBA engine
 v3 (availability + lineups as known before tip) beats v2 on past seasons for spreads and team totals; not frozen yet (needs a live
@@ -521,7 +521,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 97.1 | B-001 + B-009 engine: v3 live, first nights, points leak-free | ⬜ | |
 | 97.2 | B-002 + B-011 proof: frozen evidence resumable; entry cost | ⬜ | |
 | 97.3 | B-026 + B-006 + B-007 flex: the picks sheet; MLB winter; memory | ⬜ | |
-| 97.4 | B-012 engine: the NHL engine prices the whole board | ⬜ | |
+| 97.4 | B-012 engine: the NHL engine prices the whole board | 🟨 Part A | PR #390 merged |
 
 ### 🟨 WAVE 96 — WRITTEN 2026-10-30 ~15:50 UTC · CLOSED 2026-10-30 ~17:10 UTC (operator 09:46 PT) · verified on GitHub (#382-#387 CI green) + box bridge (`20261030T170102Z_*`) · moved: **NBA v3 interpreted (spread, team total); the rolling backlog live on /visual**; three partials
 | # | Block | Status | Outcome |
