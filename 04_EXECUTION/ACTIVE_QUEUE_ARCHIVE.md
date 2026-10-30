@@ -10,6 +10,214 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 96 NOW section with its pastes and addenda (closed 2026-10-30 10:10 PT). 96.1 🟨 96.2 🟨 96.3 🟨. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W96.md. Verbatim:
+
+## ⬛ NOW — Wave 96 · FINISH WHAT 95 STARTED · THE BACKLOG ON THE DASHBOARD · WRITTEN 2026-10-30 ~15:50 UTC (08:50 PT) · three MEDIUM blocks
+
+Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W96.md`. All three run in parallel. **Every block is a ticket from the top of the
+rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`, from `ROLLING_BACKLOG.json`): the window moves tickets at each close; you can move
+any ticket up or back by telling the window.
+
+| # | Ticket | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|---|
+| 96.1 | B-001 + B-009 | engine | 2 (judged by 1; Part B 3) | The NBA engine's first real nights read back (v1 + v2), then v3 with availability, lineups and officials | DEPTH + PROOF: arms logging with rows 0 → 2; engine inputs 4 → up to 7 | ⬜ | |
+| 96.2 | B-002 + B-011 | proof | 1 + 4 | Finish reproducing the frozen ride evidence on the box's full archive (settle, re-run, classify 13 cells); re-generate the NFL engine JSONs | PROOF: cells reproduced 0 → n of 13 | PARTIAL | Part A: settle cache complete (5,907 events); window re-run hit the 900 s task limit, NFL regen failed (schedules parquet not on box); 0 of 13 cells classified. GG-1520..1522. Part C is the other terminal's. |
+| 96.3 | B-003 + B-004 + B-006 | flex | operator mandate + EXECUTION | The rolling backlog on the Visual Dashboard; demo orders refused for insufficient balance - log, prove, fix | PLUMBING + EXECUTION: backlog on /visual 0 → 1; refused orders n → 0 | ◐ PARTIAL | W96.3: B-003 DONE (/visual backlog sections 0→1 on box, dashboard 0 restarts). B-004: refusal logging live (PR #384, t4-mlb restarted 16:06Z); cause unproven; shadow refusals 0 since 10-29T00:16Z; first row with balance awaits next refused order. B-006 (Part C) not run. See `12_EXPLORATORY/demo_balance_w96/results_W96_3.md`. |
+
+**What Wave 95 delivered (verified 2026-10-30 15:27Z: #377-#381 CI green; box bridge `20261030T152653Z_*`):** all three PARTIAL.
+**95.1 🟨** the NBA engine (v1 and the v2 challenger) and the daily store refresh are installed on the box; no forward row yet (the
+first comes at a game's tip-60); v3 not started. **95.2 🟨** the reproduction harness is built and the "n = 0" cells were only a gap in
+the local copy (the box holds them); the settlement fetch ran short, so 0 of 13 cells are re-run yet; GG-1460 fixed. **95.3 🟨** the box
+now alarms when merged code has not reached it, and the T4 MLB false red is fixed (a 30-minute grace after start); the demo-balance
+refusals are not explained yet.
+**Distance:** surface 83 → 85 live (NBA engine arms); the deploy-lag gauge added; everything else 0 this wave - three partials.
+
+**Pushback:** three partials in a row is a sizing problem, not bad luck: 95's blocks each waited on the box (a first game night, a
+rate-limited fetch, an unlogged rejection). 96 finishes them rather than starting new work; if a block again hits a wait it cannot
+shorten, it should push what it has and say what it is waiting on, not stretch.
+**Surface:** GREEN, 85. Expected delta 0 to +1 (an EXP-044c arm only if v3 wins and the budget is GREEN).
+**Dependencies:** none.
+
+### 96.1 — Engine lane (B-001): the NBA engine's first real nights, then v3
+**DEPTH + PROOF · rank 2 · terminal 1**
+
+```
+Before anything else, read the Wave 96 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W96.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 96.1 - ENGINE LANE (BACKLOG B-001): THE NBA ENGINE'S FIRST REAL NIGHTS, THEN v3 WITH THE FACTORS IT IGNORES. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), judged by rank 1 (market-anchored pricing); Part B adds rank 3 (granularity).
+PURPOSE: DEPTH + PROOF. Measures: NBA engine arms logging with rows 0 -> 2 (v1 EXP-044, v2 EXP-044b; every game of each night, all
+four families, the archive's Kalshi quote at the frozen pre-game time); engine input factor classes 4 -> up to 7.
+95.1 installed both arms and the daily store refresh on 10-30 14:34Z; the first row can only appear at that night's tip-60. Its
+handoff names the first thing to do: read the rows, and treat any game that tipped without rows as a silent arm. It also saw the store
+two days behind and a 517 MB runner on a 961 MB box (backlog B-017, B-007: note what you see, do not fix them here).
+Premises to check: 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261030T1500Z_W95_1.md ("Next"); the nba_engine_cron_readback bridge task; the
+injury capture's pre-tip statuses; 93.1 / 92.3 / 93.2 modules (c1_signal_ingestion/nba_availability.py, nba_lineups.py, the officials
+module) and GG-1390.
+PERMISSIONS: per the common rules' ownership. NOT: EXP-044 / 044b or v1 / v2 code; any order, gate, other runner, ledger or registry
+cell; installing anything new except a v3 arm under a frozen EXP-044c on a GREEN budget.
+
+PART A - The first nights (~25 min)
+  Read back every night since the install: rows per game per family for v1 and v2, quote present at tip-60, runner errors, v2's memory.
+  Any game that tipped without rows: diagnose and fix before Part B. Resolve GG-1450 only on rows.
+PART B - v3 (~55 min)
+  A v3 candidate (new module): availability as known before tip (93.1's expected missing minutes from the injury report statuses),
+  lineups (92.3), officials only where the crew is known before the price (GG-1390); each kept only if it improves held-out Brier for some
+  family over v2. Paired, game-clustered, per family; the granularity index's five parts per factor. If v3 beats v2 somewhere, EXP-044c,
+  frozen before its first row (same scoring as EXP-044), logged by the same runner from the next night, installed on GREEN; otherwise
+  say so and freeze nothing.
+Results: the rows read back, v3 + tests, 12_EXPLORATORY/nba_engine_v3/results_W96_1.md, a handoff naming B-001's state.
+
+END OF BLOCK 96.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 96.2 — Proof lane (B-002): finish reproducing the frozen ride evidence
+**PROOF · ranks 1 + 4 · terminal 2**
+
+```
+Before anything else, read the Wave 96 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W96.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 96.2 - PROOF LANE (BACKLOG B-002): FINISH REPRODUCING THE FROZEN RIDE EVIDENCE. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; rank 1 (what counts as winning) with rank 4 (quant).
+PURPOSE: PROOF. Measures: frozen ride cells re-run on the box's full archive 0 -> 13 (EXP-042's 11 + EXP-043's 2), each classified
+REPRODUCED / DIFFERS (explained) / NOT REPRODUCED; the three nfl_board_v2 JSONs re-generated on the box 0 -> 3.
+95.2 built the harness and the read-only box tasks (#377, #380) and found the n = 0 was local coverage (the box holds 199,937 KXMLBHIT
+pre-start rows), but stopped with the settlement cache 2,334 of 5,907 events short. Its handoff says exactly what is left.
+Premises to check: 12_EXPLORATORY/frozen_evidence_check/results_W95_2.md ("Next"); the box tasks frozen_settle_fetch_short,
+frozen_repro_window, frozen_repro_full; GG-1470..1472; Kalshi's public rate limit (GG-1341: about 4 requests a second).
+PERMISSIONS: per the common rules' ownership. NOT: any frozen pre-registration, ride_cells.toml statuses, any order, gate, model,
+runner or ledger. A frozen cell that does not reproduce is reported, never edited.
+
+PART A - Settle, re-run, classify (~55 min)
+  Finish the settlement fetch in paced rounds, then run the reproduction on the full archive with the original fee and with the exact
+  fee. Per cell: reported n / games / net / interval vs the re-run's, the reason for every difference, the class. Re-generate the three
+  nfl_board_v2 JSONs on the box and say whether 93.4's stated result changes.
+PART B - What it means for the looks (~25 min)
+  One paragraph per frozen test (EXP-042, EXP-043, EXP-045): does any finding change what its look will read? If a frozen cell rests on
+  numbers that do not reproduce, give the operator one line with your recommendation (retire the cell before its look, or keep it and
+  read it as frozen). Register gaps for what is not explained.
+Results: 12_EXPLORATORY/frozen_evidence_check/results_W96_2.md (the per-cell table), the re-generated JSONs, a handoff naming B-002's
+state and any operator line.
+
+END OF BLOCK 96.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 96.3 — Flex lane (B-003 + B-004): the rolling backlog on the dashboard; demo orders that cannot pay
+**PLUMBING + EXECUTION · terminal 3**
+
+```
+Before anything else, read the Wave 96 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W96.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 96.3 - FLEX LANE (BACKLOG B-003 + B-004): THE ROLLING BACKLOG ON THE DASHBOARD; DEMO ORDERS THAT CANNOT PAY. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; B-003 is the operator's mandate of 2026-10-30; B-004 is the EXECUTION pillar (demo fills are its only evidence).
+PURPOSE: PLUMBING + EXECUTION. Measures: the rolling backlog visible on the Visual Dashboard 0 -> 1 (read back on the box); demo orders
+refused for insufficient balance n -> 0, or the cause proven and the one step that is not the bot's named.
+The operator, 2026-10-30 08:26 PT: "can you do a rolling backlog of tickets for us as well, just so you (as well as any future windows)
+have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the
+project needs, this will also help with keeping my \"forest beyond the trees\" doctrine bc it puts all blocks in scope at once. Ensure it
+gets placed in the visual dashboard for my view also - not just logged in our foundational documents." The window keeps the data in
+04_EXECUTION/ROLLING_BACKLOG.json (the same pattern as MUSE_WEB.json, which the dashboard already renders). Separately, 95.3 could not
+prove why demo orders fail with HTTP 400 insufficient_balance (GG-1481): the balance is not logged when an order is refused.
+Premises to check: scripts/build_visual_dashboard_html.py (how it renders MUSE_WEB.json; the stylesheet in 04_EXECUTION/visual_dashboard/);
+the dashboard_pages_read bridge task; the box's Python is 3.9 (JSON, not TOML); GG-1481 and 12_EXPLORATORY/box_truth_w95/results_W95_3.md;
+the C5 paper / demo order path and its logs; the Kalshi DEMO API's balance and positions endpoints (read-only GETs).
+PERMISSIONS: per the common rules' ownership; read-only GETs on the Kalshi DEMO API. NOT: editing ROLLING_BACKLOG.json; any other
+dashboard panel; any real-money account; any stake, kelly_fraction, order logic beyond logging, or ledger row.
+
+PART A - The backlog on the dashboard (~40 min)
+  A backlog panel on /visual rendered from ROLLING_BACKLOG.json: grouped NOW / NEXT / LATER / PARKED in the file's order, each ticket's
+  id, title, lane, rank served, measure, why, source and wave, readable on a phone; the ranking and the "as of" time at the top; DONE
+  tickets greyed. A renderer that writes 04_EXECUTION/ROLLING_BACKLOG.md from the same JSON (never typed). Tests: a malformed or missing
+  JSON shows a visible error in the panel, never a blank page; order and grouping on a fixture. Merge on green CI, then read back on the
+  box: the panel present on /visual (dashboard_pages_read, extended if needed), the dashboard's memory and restarts unchanged.
+PART B - Demo orders that cannot pay (~40 min)
+  Log the demo balance and open exposure with every refused order (logging only); from the demo API and the logs: the balance over time,
+  which books' orders fail and since when, fills per day per book since 10-20. If the cause is in code (an order sized past the balance,
+  stake not released after settlement), fix it with a test and read back fills resuming. If the demo account only needs funds and
+  Kalshi's demo lets the bot add them, do it; if only the operator can (a login), state that one step in one line - it is demo, so it
+  is plumbing, and it is the only line this block sends him.
+Results: the panel + renderer + tests read back on the box, the logging / fix + tests, 12_EXPLORATORY/demo_balance_w96/results_W96_3.md,
+a handoff naming B-003's and B-004's state.
+
+END OF BLOCK 96.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+
+### ➕ Wave 96 addenda (operator 2026-10-30 08:38 PT: stretched blocks are the default - three parts, ~130 minutes) — paste each into its terminal, on top of its block (or with it, if not yet started)
+
+#### 96.1 addendum — Part C (B-009): the NBA engine prices player points from the same distribution · terminal 1
+
+```
+ADDENDUM TO 96.1 - PART C (BACKLOG B-009): THE NBA ENGINE PRICES PLAYER POINTS FROM THE SAME DISTRIBUTION. Operator 2026-10-30 08:38 PT:
+stretched blocks are the default (three parts, ~130 minutes). Same common rules. Work Part C whenever Part A is waiting on a game night.
+LANE AND RANK: engine lane; rank 2 (ADR-0073: "One engine prices the whole board: a game simulation's joint distribution yields
+moneyline, spread, total, team totals, props and parlays consistently").
+PURPOSE: DEPTH. Measures: markets priced from one NBA engine 4 families -> + player points; held-out Brier of engine-priced points vs the
+existing NBA points arm (nba_player_points_v1 / the EXP-040 challenger), paired, with intervals.
+Today NBA player points are priced by a separate thin model, not by the engine; a team-level score distribution with no player layer
+cannot be consistent with them.
+1. A player layer under the engine (new module; v1 / v2 untouched): each player's share of team points as a distribution, point-in-time
+   (minutes and usage from the store, availability as known before tip where 93.1 has it), drawn jointly with the team score so the
+   players' points add up to the team's. Known-answer test: a simulated team with known shares is recovered and the sum constraint
+   holds.
+2. Held-out seasons: engine-priced over / under at each points strike vs the existing arm and vs results, per strike band, paired,
+   game-clustered. Descriptive only against this season's Kalshi points markets (KXNBAPTS) where the archive or candles have prices.
+3. If the engine beats the existing arm held-out, write a frozen pre-registration (EXP-044d) before its first row; install nothing
+   this wave.
+Results: the module + tests, a Part C section in 12_EXPLORATORY/nba_engine_v3/results_W96_1.md, B-009's state in the handoff.
+```
+
+#### 96.2 addendum — Part C (B-011): how the forward test should enter, measured for your decision · terminal 2
+
+```
+ADDENDUM TO 96.2 - PART C (BACKLOG B-011): HOW THE FORWARD TEST SHOULD ENTER, MEASURED FOR THE OPERATOR'S DECISION. Operator
+2026-10-30 08:38 PT: stretched blocks are the default (three parts, ~130 minutes). Same common rules. Work Part C whenever Part A is
+waiting on the settlement fetch.
+LANE AND RANK: proof lane; rank 1 (what counts as winning) with rank 4 (quant).
+PURPOSE: PROOF + EXECUTION. Measures: the measured cost of each entry style for the ADR-0072 forward test (resting at the touch vs taking
+at the quote) per book, 0 -> a table with intervals; one operator line with a recommendation.
+94.3 found the forward test's resting demo orders get picked off (fills lose 9-17c in MLB and 11c in NHL within 5-30 minutes) while
+taking at the quote drifts within 0.3c - but taking pays the half-spread and the fee every time. ADR-0072's forward test is frozen with
+its current entry rule, so changing it is the operator's decision; he needs the numbers first.
+1. From the forward-test report's orders and fills (control and treatment, per book and sport): the realized P&L per contract as
+   entered today, and a counterfactual "taken at the quote at decision time" (the archive's quote then, the exact fee from
+   quant/money.py fee(), the depth at the quote), net per contract with game-clustered intervals, per book and sport.
+2. What each choice does to the forward test's verdict timeline (fills per game today vs every decision filled) and to its judged n.
+3. One operator line: keep the frozen rule, or a superseding addendum that switches the entry - with the measured cost of each and your
+   recommendation. Change nothing yourself.
+Results: a Part C section in 12_EXPLORATORY/frozen_evidence_check/results_W96_2.md, the operator line, B-011's state in the handoff.
+```
+
+#### 96.3 addendum — Part C (B-006): MLB's winter posture · terminal 3
+
+```
+ADDENDUM TO 96.3 - PART C (BACKLOG B-006): MLB'S WINTER POSTURE. Operator 2026-10-30 08:38 PT: stretched blocks are the default (three
+parts, ~130 minutes). Same common rules.
+LANE AND RANK: flex lane; plumbing (Hard Rule 14 reads the silent-arm gauge; false alarms all winter would block every install).
+PURPOSE: PLUMBING. Measures: MLB arms standing down after the World Series with written idle reasons, 0 -> every MLB arm; false
+silent-arm alarms during the off-season 0; T1 MLB's recent SemanticFloorViolation explained.
+The World Series ends by 11-01. Every MLB arm (T1 MLB, T4 MLB live, the MLB game-market shadow, the MLB archive lines) goes quiet until
+spring; each must read IDLE with a reason, not SILENT, and come back on its own when games return. 94.2 also saw T1 MLB log
+"games_fetched=1 but matched_players=0" with 0 bets on two runs - probably a postseason day with no player markets, not diagnosed.
+1. After the last World Series game (check the schedule; if it has not ended by the time you start, prepare and test, install after):
+   each MLB arm's off-season state - idle reason in the silent-arm specs keyed to MLB's schedule (no games in window = IDLE), crons left
+   running or paused (state which and why; never edit an existing cron line - a pause is a registered change through the install
+   path), the archive lines' disk use while idle.
+2. A test that a regular-season day with games and no rows still alarms (GG-163 detection kept), and that a day with no MLB games does
+   not.
+3. The SemanticFloorViolation: read the T1 MLB log around it and say whether it was a no-player-markets day or a defect; register if
+   a defect.
+Results: the posture + tests, read back on the box (silent arms IDLE with reasons after the season), a Part C section in
+12_EXPLORATORY/demo_balance_w96/results_W96_3.md, B-006's state in the handoff.
+```
+
+---
+
+---
+
 ## Wave 95 NOW section with its pastes (closed 2026-10-30 08:50 PT). 95.1 🟨 95.2 🟨 95.3 🟨. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W95.md. Verbatim:
 
 ## ⬛ NOW — Wave 95 · THE NBA ENGINE LIVE · THE FROZEN EVIDENCE REPRODUCED · THE BOX TELLS THE TRUTH · WRITTEN 2026-10-29 ~05:40 UTC (10-28 22:40 PT) · three MEDIUM blocks (operator: "Make it only 3 this time")
