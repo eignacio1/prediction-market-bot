@@ -1117,3 +1117,4 @@
 | 2026-10-30T16:38:15Z | T-1510 | CLOSED — W96.3 PARTIAL: rolling backlog on /visual read back on box (0->1); refused-order balance logging live, cause unproven (commit `75461fa`) |
 | 2026-10-30T16:38:39Z | T-1530 | CLOSED — W96.1 Part C: NBA engine player-points layer merged; apparent gain was a post-game-roster leak, EXP-044d not frozen. (commit `76a3fb5`) |
 | 2026-10-30T16:38:47Z | T-1530 | CLOSED — merge confirmed, HEAD (3e7d2aa) is ancestor of origin/main — W96.1 Part C: engine player-points layer merged, leak-free no gain, EXP-044d not frozen |
+| 2026-10-30T16:40:02Z | T-1510 | CLOSED — merge confirmed, HEAD (3e7d2aa) is ancestor of origin/main — W96.3 PARTIAL: backlog on /visual read back on box (0->1); refused-order logging live, cause unproven |
