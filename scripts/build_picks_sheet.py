@@ -44,10 +44,8 @@ def collect(root: str, since: dt.datetime, tail_bytes: int) -> tuple:
             notes.append(f"{arm}: no pick in window")
     orders = ps.orders_by_ticker(ps.tail_rows(os.path.join(root, "logs/demo_fill_policy.jsonl"), 15_000_000), since)
     ps.attach_orders(picks, orders)
-    settled = []
-    for path in glob.glob(os.path.join(root, "exp_output/PREGAME_SHADOW/settled/*.jsonl")):
-        settled += list(ps.tail_rows(path, 2_000_000))
-    ps.attach_results(picks, settled)
+    paths = glob.glob(os.path.join(root, "exp_output/PREGAME_SHADOW/settled/*.jsonl"))
+    ps.attach_results(picks, (r for path in paths for r in ps.tail_rows(path, 2_000_000)))
     return picks, notes
 
 
