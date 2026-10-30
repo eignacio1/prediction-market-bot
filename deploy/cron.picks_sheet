@@ -1,0 +1,7 @@
+# BEGIN W97.3 PICKS SHEET
+# Nightly plain-English picks sheet (B-026). Read-only over the arms' ledgers and logs/demo_fill_policy.jsonl; writes ONLY
+# exp_output/PICKS_SHEET/. No network, no order path, no model code. Ledgers are tailed (bounded bytes), never loaded whole:
+# the box has under 1 GB of memory. Minute :37 is used by no other job. 22:37 UTC = before NBA tip-offs (tonight's picks);
+# 05:37 UTC = after the late passes and settle (the finished night, with results).
+37 5,22 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/build_picks_sheet.py >> logs/picks_sheet_cron.log 2>&1
+# END W97.3 PICKS SHEET
