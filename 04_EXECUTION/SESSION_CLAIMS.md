@@ -1118,3 +1118,4 @@
 | 2026-10-30T16:38:39Z | T-1530 | CLOSED — W96.1 Part C: NBA engine player-points layer merged; apparent gain was a post-game-roster leak, EXP-044d not frozen. (commit `76a3fb5`) |
 | 2026-10-30T16:38:47Z | T-1530 | CLOSED — merge confirmed, HEAD (3e7d2aa) is ancestor of origin/main — W96.1 Part C: engine player-points layer merged, leak-free no gain, EXP-044d not frozen |
 | 2026-10-30T16:40:02Z | T-1510 | CLOSED — merge confirmed, HEAD (3e7d2aa) is ancestor of origin/main — W96.3 PARTIAL: backlog on /visual read back on box (0->1); refused-order logging live, cause unproven |
+| 2026-10-30T18:46:10Z | T-1540; GG-1540..GG-1542 | STANDARD — W97.1 NBA engine v3 live (live_v3 + EXP-044c), first-nights readback, leak-free player points — FOR D4/D5 (NBA engine arms logging 0->2, v3 frozen 0->1) + P1 — engine lane B-001+B-009 |
