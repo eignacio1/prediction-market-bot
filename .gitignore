@@ -197,3 +197,7 @@ exp_output/NHL_EVENTS/
 
 # W90.1: Kalshi history cache for NBA/NHL/NFL (raw pages, markets, candles); manifests are committed from 12_EXPLORATORY/market_history/manifests/
 exp_output/KALSHI_HISTORY/w89_7/
+
+# W95.2 frozen-evidence check: box-local derived caches
+12_EXPLORATORY/frozen_evidence_check/_cache/
+12_EXPLORATORY/frozen_evidence_check/_subset/
