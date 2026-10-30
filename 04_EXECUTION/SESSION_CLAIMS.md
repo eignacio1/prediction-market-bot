@@ -1111,3 +1111,4 @@
 | 2026-10-30T15:10:53Z | T-1470 | CLOSED — W95.2 PARTIAL: frozen-evidence harness + GG-1460 path fix merged; 0 of 13 cells re-run (settlement cache short) (commit `6b8b45a`) |
 | 2026-10-30T15:11:07Z | T-1470 | CLOSED — merge confirmed, HEAD (44c1727) is ancestor of origin/main — W95.2 PARTIAL: harness + GG-1460 merged; 0/13 cells re-run |
 | 2026-10-30T15:32:55Z | T-1510..T-1512, GG-1510..GG-1512 | MEDIUM — W96.3 flex lane: rolling backlog on /visual (B-003) + demo orders that cannot pay (B-004, GG-1481) — FOR PLUMBING + EXECUTION: backlog on /visual 0->1; refused demo orders n->0 |
+| 2026-10-30T15:32:57Z | T-1520..T-1522 / GG-1520..GG-1522 | STANDARD — finish reproducing the 13 frozen ride cells on the box's full archive + regenerate 3 nfl_board_v2 JSONs (B-002) — FOR P1/P2 PROOF: frozen ride cells re-run on full archive 0->13, nfl_board_v2 JSONs regenerated on box 0->3 |
