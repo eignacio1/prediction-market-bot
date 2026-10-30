@@ -1108,3 +1108,4 @@
 | 2026-10-30T14:27:05Z | T-1480 | CLOSED — W95.3 box truth: deploy-lag alarm and t4_mlb start grace shipped (#378, read back on box); insufficient_balance cause unproven, GG-1481. (commit `c3053b5`) |
 | 2026-10-30T14:27:36Z | T-1480 | CLOSED — merge confirmed, HEAD (1320315) is ancestor of origin/main — W95.3 closed PARTIAL (#378 merged; GG-1481 open) |
 | 2026-10-30T14:43:46Z | T-1500 | CLOSED — W95.1 PARTIAL: NBA engine v1+v2 cron + daily refresh installed on box (#379); no rows yet, GG-1450 open; Part B not started (commit `ffb5847`) |
+| 2026-10-30T15:10:53Z | T-1470 | CLOSED — W95.2 PARTIAL: frozen-evidence harness + GG-1460 path fix merged; 0 of 13 cells re-run (settlement cache short) (commit `6b8b45a`) |
