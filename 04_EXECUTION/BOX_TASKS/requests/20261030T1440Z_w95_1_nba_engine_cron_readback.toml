@@ -1,0 +1,2 @@
+task = "nba_engine_cron_readback"
+note = "W95.1: post-install readback"
