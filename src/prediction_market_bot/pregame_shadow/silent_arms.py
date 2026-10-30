@@ -81,6 +81,10 @@ SPECS = {
                              "window (or the hour before) means the runner or the daily refresh is dead"),
     "nba_engine_v2": ArmSpec("nba_engine_v2", "NBA engine v2 (EXP-044b)", 12, 1,
                              "W95.1: same cron line as v1 (run second); silent while v1 writes means v2 itself failed"),
+    "nba_engine_v3": ArmSpec("nba_engine_v3", "NBA engine v3 (EXP-044c)", 12, 1,
+                             "W97.1: own cron line (own lock) every 10 min over 16-04 UTC; a game that tipped in 12h with no "
+                             "logged_at row means the v3 runner, its injury-snapshot log or the daily refresh is dead; silent "
+                             "while v1/v2 write means v3 itself failed"),
     "nfl_passyds_snap": ArmSpec(
         "nfl_passyds_snap", "NFL passing-yards pre-kickoff snapshot (W81.3)", 12, 0.1,
         "W81.3: the snapshot cron runs every 20 min, so any listed game gets >=1 row inside the 30 min before its "
@@ -384,6 +388,8 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             lambda: last_ts_in_files([repo / "exp_output" / "NBA_ENGINE_LIVE" / "rows.jsonl"], keys=("logged_at",), until=now)),
         arm("nba_engine_v2", lambda: _nba_engine_starts(repo),
             lambda: last_ts_in_files([repo / "exp_output" / "NBA_ENGINE_LIVE_V2" / "rows.jsonl"], keys=("logged_at",), until=now)),
+        arm("nba_engine_v3", lambda: _nba_engine_starts(repo),
+            lambda: last_ts_in_files([repo / "exp_output" / "NBA_ENGINE_LIVE_V3" / "rows.jsonl"], keys=("logged_at",), until=now)),
         arm("nba_preseason_shadow", lambda: _nba_starts(repo, 1), lambda: last_ts_in_files(cell_files(pre, "NBA", "NBA_"), until=now)),
         arm("nba_shadow", lambda: _nba_starts(repo, 2), lambda: last_ts_in_files(cell_files(led, "NBA", "NBA_"), until=now)),
         arm("nba_player_points_shadow", lambda: _nba_starts(repo, 2),

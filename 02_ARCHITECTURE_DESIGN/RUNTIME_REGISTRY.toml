@@ -1304,6 +1304,21 @@ alarm = "exp_output/NBA_EVENTS/current/status.json last game date more than 2 da
 schedule = "33 12 * * *"
 mirrors = ["deploy/cron.conf"]
 command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.c1_signal_ingestion.nba_current_season >> logs/nba_engine_live_cron.log 2>&1"
+
+[[component]]
+key = "cron|3,13,23,33,43,53 16-23,0-4 * * *|--no-refresh --raw exp_output/NBA_EVENTS/raw"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA engine v3 live arm (W97.1, EXP-044c): frozen v3 (availability + rotation lineups) prices spread and team total from the tip-60 injury snapshot, beside the archive Kalshi quote, every 10 min over 16-04 UTC. Own lock; shadow only, no order path."
+pillar = "DEPTH"
+writes = ["exp_output/NBA_ENGINE_LIVE_V3/rows.jsonl", "exp_output/NBA_ENGINE_LIVE_V3/injury_snapshots.jsonl", "logs/nba_engine_live_cron.log"]
+alarm = "silent-arm alarm nba_engine_v3 (no rows for an NBA game that tipped in the last 12h); runner errors in logs/nba_engine_live_cron.log"
+schedule = "3,13,23,33,43,53 16-23,0-4 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live_v3.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.nba_engine.live_v3 --raw exp_output/NBA_EVENTS/raw --no-refresh >> logs/nba_engine_live_cron.log 2>&1"
+
 [[component]]
 key = "cron|37 5,22 * * *|scripts/build_picks_sheet.py"
 kind = "cron"
