@@ -523,7 +523,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 ### ⬜ WAVE 96 — WRITTEN 2026-10-30 ~15:50 UTC (08:50 PT) · FINISH WHAT 95 STARTED · THE BACKLOG ON THE DASHBOARD · three MEDIUM blocks (backlog B-001..B-004)
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 96.1 | B-001 engine: NBA engine's first nights + v3 | ⬜ | |
+| 96.1 | B-001 engine: NBA engine's first nights + v3 | 🟨 Part B done, Part A waits on tonight's tips | PR #385 merged (3f42ff6): v3 beats v2 held-out on spread (−0.0079 [−0.0107,−0.0051]) and team_total (−0.0026); EXP-044c NOT frozen/installed (no live_v3 runner); v1/v2 rows still 0 (no game tipped); Part C (B-009) not started |
 | 96.2 | B-002 proof: frozen evidence reproduced | ⬜ | |
 | 96.3 | B-003 + B-004 flex: backlog on the dashboard; demo balance | ⬜ | |
 

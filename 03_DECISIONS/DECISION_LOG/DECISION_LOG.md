@@ -3058,3 +3058,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Window, 08:31 PT, asked why blocks had shrunk: it had reverted to the 10-07 MEDIUM size after Wave 94's stretch, over-read "only 3" as "lean", and shrank scope after three partials whose cause was waiting on the box, not size; Wave 94's four stretched blocks all finished. Operator, 08:38 PT: "Yes" (to the stretched size as default and a Part C for each Wave 96 block).
 - Default from Wave 96: three parts per block, ~130 minutes, Part C a task the terminal can switch to while an earlier part waits on the box. Amends the 10-07 MEDIUM ceiling (60-90 minutes) for the strategic window's waves.
 - Wave 96 addenda: 96.1 C = B-009 (NBA engine prices player points), 96.2 C = B-011 (forward-test entry style measured for an operator decision), 96.3 C = B-006 (MLB winter posture). Backlog re-ordered.
+
+## 2026-10-30 — W96.1: NBA engine v3 study; EXP-044c not frozen
+- v3 (availability + lineups) beats v2 held-out on spread and team_total (paired, game-clustered, 2025-26); no change on moneyline; slightly worse on total. Officials excluded (GG-1390). PR #385.
+- Part A unreadable (no tips since install); GG-1450 stays OPEN. EXP-044c deliberately not frozen: no live_v3 runner exists, and a frozen claim with no rows is worse than none.
