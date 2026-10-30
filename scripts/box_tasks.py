@@ -59,6 +59,10 @@ TASKS: dict[str, str] = {
     "archive_cron_install": f"{PY} scripts/archive_cron_install.py install",
     "archive_cron_readback": f"{PY} scripts/archive_cron_install.py readback",
     "archive_cron_uninstall": f"{PY} scripts/archive_cron_install.py uninstall",
+    # W95.1: NBA engine (EXP-044 v1 + EXP-044b v2) refresh + runner cron lines (install is budget-gated)
+    "nba_engine_cron_install": f"{PY} scripts/nba_engine_cron_install.py install",
+    "nba_engine_cron_readback": f"{PY} scripts/nba_engine_cron_install.py readback",
+    "nba_engine_cron_uninstall": f"{PY} scripts/nba_engine_cron_install.py uninstall",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
     "distance_read": (

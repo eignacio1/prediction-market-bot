@@ -1277,3 +1277,30 @@ alarm = "no new NBA rows in exp_output/PRICE_ARCHIVE for >36h while NBA had game
 schedule = "8,28,48 17-23 * * *"
 mirrors = ["deploy/cron.conf"]
 command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNBAGAME KXNBASPREAD KXNBATOTAL KXNBATEAMTOTAL --out exp_output/PRICE_ARCHIVE --depth-sample-per-family 1 >> logs/price_archive_cron.log 2>&1"
+[[component]]
+key = "cron|2,12,22,32,42,52 16-23,0-4 * * *|--no-refresh --no-refresh --raw exp_output/NBA_EVENTS/raw --raw exp_output/NBA_EVENTS/raw"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA engine live arms (W95.1): EXP-044 v1 then EXP-044b v2 every 10 min over the tip-60 windows (16-04 UTC); logs engine prices beside the archive Kalshi quote for every NBA game, all four families. Shadow only, no order path."
+pillar = "DEPTH"
+writes = ["exp_output/NBA_ENGINE_LIVE/rows.jsonl", "exp_output/NBA_ENGINE_LIVE_V2/rows.jsonl", "logs/nba_engine_live_cron.log"]
+alarm = "silent-arm alarm nba_engine_v1 / nba_engine_v2 (no rows for an NBA game that tipped in the last 12h); runner errors in logs/nba_engine_live_cron.log"
+schedule = "2,12,22,32,42,52 16-23,0-4 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot sh -c '/opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.nba_engine.live --raw exp_output/NBA_EVENTS/raw --no-refresh; /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.nba_engine.live_v2 --raw exp_output/NBA_EVENTS/raw --n"
+
+[[component]]
+key = "cron|33 12 * * *|cmd:10bda36275"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA current-season refresh (W95.1): daily ingest of the 2026-27 games played so far into exp_output/NBA_EVENTS/current so the engine ratings are current. Public GETs only."
+pillar = "DEPTH"
+writes = ["exp_output/NBA_EVENTS/current/team_game_2027.parquet", "exp_output/NBA_EVENTS/current/status.json", "logs/nba_engine_live_cron.log"]
+alarm = "exp_output/NBA_EVENTS/current/status.json last game date more than 2 days behind while NBA played; error lines in logs/nba_engine_live_cron.log"
+schedule = "33 12 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.c1_signal_ingestion.nba_current_season >> logs/nba_engine_live_cron.log 2>&1"
