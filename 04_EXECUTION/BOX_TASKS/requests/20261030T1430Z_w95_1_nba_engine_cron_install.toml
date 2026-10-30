@@ -1,0 +1,2 @@
+task = "nba_engine_cron_install"
+note = "W95.1: install NBA engine refresh + v1/v2 runner lines (budget_read 14:23Z: only own NOT INSTALLED reds, healthcheck HEALTHY)"
