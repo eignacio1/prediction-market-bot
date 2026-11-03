@@ -67,6 +67,11 @@ TASKS: dict[str, str] = {
     "nba_engine_v3_cron_install": f"{PY} scripts/nba_engine_v3_cron_install.py install",
     "nba_engine_v3_cron_readback": f"{PY} scripts/nba_engine_v3_cron_install.py readback",
     "nba_engine_v3_cron_uninstall": f"{PY} scripts/nba_engine_v3_cron_install.py uninstall",
+    # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
+    "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
+    "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",
+    "t3_lock_stagger_uninstall": f"{PY} scripts/t3_lock_stagger.py uninstall",
+    "box_memory_read": f"{PY} scripts/box_memory_read.py --since '24 hours ago'",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
     # W98.2 Part A: READ-ONLY. Prints the released first-look verdicts from the latest saved calibration-engine JSON (no re-scoring).

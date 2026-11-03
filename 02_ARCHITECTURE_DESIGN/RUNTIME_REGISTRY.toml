@@ -270,7 +270,7 @@ writes = ["logs/nba_player_points_shadow_t3.log"]
 alarm = "SILENT ARMS block in the governance scan"
 schedule = "14,24,44,54 * * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron.nba_player_points_shadow"]
-command = "cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_player_points_shadow.py --bands T3 >> logs/nba_player_points_shadow_t3.log 2>&1"
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nba_player_points_t3\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nba_player_points_t3.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_player_points_shadow.py --bands T3 >> logs/nba_player_points_shadow_t3.log 2>&1 ) 9>/tmp/nba_player_points_t3.lock"
 
 [[component]]
 key = "cron|15 * * * *|scripts/nhl_shadow_settle.py"
@@ -470,7 +470,7 @@ writes = ["logs/mlb_pregame_shadow_t3.log"]
 alarm = "SILENT ARMS block in the governance scan"
 schedule = "3,13,23,33,43,53 * * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron_exp037_pregame_shadow.conf"]
-command = "cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_mlb_pregame_shadow.py --bands T3 >> logs/mlb_pregame_shadow_t3.log 2>&1"
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"mlb_pregame_shadow_t3\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/mlb_pregame_shadow_t3.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_mlb_pregame_shadow.py --bands T3 >> logs/mlb_pregame_shadow_t3.log 2>&1 ) 9>/tmp/mlb_pregame_shadow_t3.lock"
 
 [[component]]
 key = "cron|3-58/5 * * * *|scripts/ops/vps_deploy.sh"
@@ -884,7 +884,7 @@ writes = ["logs/nhl_shadow_cron.log"]
 alarm = "SILENT ARMS block in the governance scan"
 schedule = "6,16,26,36,46,56 0-2 * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron.nhl_shadow"]
-command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date -u +\\%Y\\%m\\%dT\\%H\\%M) >> logs/nhl_shadow_cron.log 2>&1"
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_staked_t3\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_staked_t3.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date -u +\\%Y\\%m\\%dT\\%H\\%M) >> logs/nhl_shadow_cron.log 2>&1 ) 9>/tmp/nhl_staked_t3.lock"
 
 [[component]]
 key = "cron|6,16,26,36,46,56 17-23 * * *|scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date"
@@ -898,7 +898,7 @@ writes = ["logs/nhl_shadow_cron.log"]
 alarm = "SILENT ARMS block in the governance scan"
 schedule = "6,16,26,36,46,56 17-23 * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron.nhl_shadow"]
-command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date -u +\\%Y\\%m\\%dT\\%H\\%M) >> logs/nhl_shadow_cron.log 2>&1"
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_staked_t3\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_staked_t3.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd $PROJ && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper $PYTHON scripts/run_nhl_shadow_staked.py --band T3 --run-id T3-$(date -u +\\%Y\\%m\\%dT\\%H\\%M) >> logs/nhl_shadow_cron.log 2>&1 ) 9>/tmp/nhl_staked_t3.lock"
 
 [[component]]
 key = "cron|7 */6 * * *|scripts/run_mlb_pregame_shadow.py --bands T1"
@@ -940,10 +940,10 @@ writes = ["logs/pregame_shadow_t3.log"]
 alarm = "SILENT ARMS block in the governance scan"
 schedule = "8,18,28,38,48,58 * * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron_exp037_pregame_shadow.conf"]
-command = "cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_pregame_shadow.py --bands T3 >> logs/pregame_shadow_t3.log 2>&1"
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"pregame_shadow_t3\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/pregame_shadow_t3.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_pregame_shadow.py --bands T3 >> logs/pregame_shadow_t3.log 2>&1 ) 9>/tmp/pregame_shadow_t3.lock"
 
 [[component]]
-key = "cron|9,19,29,39,49,59 * * * *|scripts/run_nba_pregame_shadow.py --bands T3"
+key = "cron|1,11,21,31,41,51 * * * *|scripts/run_nba_pregame_shadow.py --bands T3"
 kind = "cron"
 source = "deploy/cron.conf"
 status = "live"
@@ -952,9 +952,9 @@ purpose = "NBA pre-game shadow arm (EXP-038): evaluates and logs forecasts for i
 pillar = "BREADTH"
 writes = ["logs/nba_pregame_shadow_t3.log"]
 alarm = "SILENT ARMS block in the governance scan"
-schedule = "9,19,29,39,49,59 * * * *"
+schedule = "1,11,21,31,41,51 * * * *"
 mirrors = ["deploy/cron.conf", "deploy/cron.nba_shadow"]
-command = "cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba_pregame_shadow_t3.log 2>&1"
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nba_pregame_shadow_t3\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nba_pregame_shadow_t3.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba_pregame_shadow_t3.log 2>&1 ) 9>/tmp/nba_pregame_shadow_t3.lock"
 
 [[component]]
 key = "systemd|pmbot-web-dashboard.service"

@@ -90,7 +90,10 @@ def command_of(line: str) -> str:
 def dry_command(line: str) -> str:
     """Command with side effects neutralised: no log redirect; run_pregame_shadow gets
     --dry-run; the settle script (no --dry-run flag) gets a throwaway ledger dir."""
-    cmd = re.sub(r"\s>>\s*\S+\s+2>&1\s*$", "", command_of(line))
+    cmd = command_of(line)
+    # W98.3: a flock-wrapped T3 line ( flock -n 9 || {skip row; exit 0}; <original> ) 9>/tmp/x.lock -> dry-run the original only
+    cmd = re.sub(r"^\( flock -n 9 \|\| \{.*?exit 0; \}; (.*) \) 9>/tmp/\w+\.lock$", r"\1", cmd)
+    cmd = re.sub(r"\s>>\s*\S+\s+2>&1\s*$", "", cmd)
     if "run_pregame_shadow_settle.py" in cmd:
         return cmd + ' --ledger-dir "$(mktemp -d)"'
     if "run_mlb_pregame_shadow.py" in cmd:        # GG-471: dry-run validates evaluation offline; the

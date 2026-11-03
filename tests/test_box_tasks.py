@@ -41,7 +41,8 @@ def test_only_capture_install_can_change_the_box():
     assert writers == {"capture_install", "capture_uninstall", "source_capture_install", "source_capture_uninstall",
                        "archive_cron_install", "archive_cron_uninstall",
                        "nba_engine_cron_install", "nba_engine_cron_uninstall",
-                       "nba_engine_v3_cron_install", "nba_engine_v3_cron_uninstall"}
+                       "nba_engine_v3_cron_install", "nba_engine_v3_cron_uninstall",
+                       "t3_lock_stagger_install", "t3_lock_stagger_uninstall"}
     import re
     for name, c in bt.TASKS.items():      # the only redirections allowed are stderr ones; nothing writes a file
         assert not re.search(r">", re.sub(r"2>&1|2>/dev/null", "", c)), name
