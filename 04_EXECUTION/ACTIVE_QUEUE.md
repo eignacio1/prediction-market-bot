@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 99** · three blocks, three parts each (~130 min), in the **⬛ NOW — Wave 99** section below: **99.1** (**Muse's archive tested in an engine**: officials into NFL / NBA totals; NHL overtime), **99.2** (the first verdicts carried out; frozen evidence finished; why the NFL totals model lost), **99.3** (the install gate unstuck; every arm says why; NBA store on time). Each block is one fenced paste. **One question for you** in Needs your decision: may the window run box installs?
+> **▶ PASTE NOW — Wave 99** · three blocks, three parts each (~130 min), in the **⬛ NOW — Wave 99** section below: **99.1** (**Muse's archive tested in an engine**: officials into NFL / NBA totals; NHL overtime), **99.2** (the first verdicts carried out; frozen evidence finished; why the NFL totals model lost), **99.3** (the install gate unstuck; every arm says why; NBA store on time). Each block is one fenced paste. Installs: authorized by the operator (22:40 PT) but still refused by the classifier - waiting.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -745,11 +745,12 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
-> **OPEN QUESTION, 2026-11-02 22:50 PT (not yet an authorization) - MAY THE STRATEGIC WINDOW RUN BOX INSTALLS?** The auto-mode classifier
-> refused the window's push of `t3_lock_stagger_install` (11-03 06:33Z, "Unauthorized Persistence"), as it refused the terminals. Installs
-> are crontab lines on the paper / shadow box - no capital, no orders. The box is OOM-killing the arms (142 kills / 24 h) and the fix is
-> merged but not installed. Recommendation: yes - the window runs allowlisted `*_install` tasks named in a merged block's handoff, each
-> with its backup and readback. Your answer goes here as a blockquote; the window retries only after it.
+> **AUTHORIZATION - THE STRATEGIC WINDOW RUNS BOX INSTALLS (operator, 2026-11-02 22:40 PT, asked by the window whether it may run
+> box installs after the classifier refused it: "Yeah go ahead - fix the deadweights then I'm going to sleep").** The strategic window
+> runs the allowlisted `*_install` bridge tasks named in a merged block's handoff (paper / shadow box only: no capital, no orders), each
+> with its crontab backup and a readback. Hard Rule 14 still applies. Terminals still never run installs. **Status 22:45 PT: the
+> classifier refused the window's install request again after this authorization ("Unauthorized Persistence"); nothing was pushed or
+> run. The installs wait until the session's permissions allow them or the operator starts the Box Tasks workflow by hand.**
 
 > **AUTHORIZATION - WHERE THE PASTES LIVE, AND WHEN THE SHARED FOLDER IS REFRESHED (operator, 2026-10-27 21:46 PT: "you don't need
 > to waste my tokens putting it in this chat, just put it in the Active Queue file. Also - no need to keep updating my folders to catch
