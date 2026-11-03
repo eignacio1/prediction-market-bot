@@ -10,6 +10,224 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 98 NOW section with its pastes (closed 2026-11-02 22:50 PT). 98.1 ✅ 98.2 🟨 98.3 🟨 M98 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W98.md. Verbatim:
+
+## ⬛ NOW — Wave 98 · THE FIRST NFL VERDICTS, READ · THE BOX'S MEMORY · THE ENGINES MADE WHOLE · WRITTEN 2026-11-03 ~03:30 UTC (11-02 19:30 PT) · three blocks, three parts each (~130 min), plus Muse
+
+Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W98.md`. All three run in parallel; Muse runs on its own. Operator, 19:09 PT: "97 is
+finished - confirm receipt and get back to 3 for a wave. Also give me Muse's block after you review its work. Ensure Muse's backlog is
+topped back up". Every block is drawn from the top of the **rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`; on the Visual Dashboard).
+
+| # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|---|
+| 98.1 | B-030 + B-029 + B-031 | engine | 2 (judged by 1; Part C 3) | NBA v1 arm logs fewer games than v2 - find and fix; NHL engine v2 with empty-net and overtime scoring; v3's two factors fully indexed | DEPTH + PROOF: games logged 100%; NHL totals bias → noise; indexed factors 0 → 2 | ✅ A,B,C merged (#397, #403, #404) | A: every game logged via coverage ledger (misses = box OOM/flock, 98.3). B: NHL v2 spread gain only, totals bias unchanged, EXP-046 NOT frozen. C: rank + cross built, no Brier lift. Handoff `SESSION_HANDOFF_W98_1`. |
+| 98.2 | B-005 + B-011 + B-002 | proof | 1 + 4 | **The 12 NFL first-look verdicts printed and told to you in plain English**; what the forward test's entry costs (your decision line); the frozen evidence in units that fit the box | PROOF: verdicts read 0 → 12; entry cost table; cells classified 0 → 13 | ⬜ | |
+| 98.3 | B-027 + B-001 / B-026 + B-028 | flex | plumbing + rank 2 + operator 10-30 | **The box stops running out of memory** (lock + stagger, the 62-min run); the three held installs prepared for the window; every pick carries its top three reasons | PLUMBING: OOM kills 20 → 0; installs 0 → 3; picks with reasons 0 → all | ⬜ | |
+| M98 | R-048 → R-110 → R-095 → … | Muse | 7 (feeds 2) | Live session working the new order from the top (43 open) | sources for the engines | ⬜ | |
+| M98b | standing role | Muse | 7 | Role stays data aggregator; honest scorecard; every card names the engine and factor it feeds and whether the bot can capture the source itself | sources the bot can use | ⬜ | |
+
+**What Wave 97 delivered (verified 2026-11-03 03:10Z: #388-#395 merged, CI green; box bridge `20261103T030946Z_*`):** **97.1 🟨** NBA engine
+v1 / v2 priced every game since the install (1,645 / 2,008 rows, 0 errors); v3 frozen as EXP-044c but not installed (the terminal could
+not run the install); player points with availability: no win, nothing frozen. **97.2 🟨** resumable reproduction built; 2 of 20 units
+done - the ladder units still time out on the box; entry cost not started. **97.3 🟨** the picks sheet built, its nightly line not
+installed; MLB arms read IDLE for the winter; **the box is OOM-killing runners** (GG-1581, HIGH); the arms don't log their reasons
+(GG-1580). **97.4 ✅** the NHL engine prices the whole board from one goals distribution; beats a naive baseline on past seasons, trails
+Kalshi on 33 games (not significant); EXP-046 not earned. **Meanwhile, on its own schedule:** the calibration engine judged the NFL first
+look (11-02): P1 0 → 12, P2 0 → 12.
+**Distance:** P1 0 → 12 / 49, P2 0 → 12; D3 4 → 5; D4 NHL → board engine. **Box RED** (uninstalled lines + memory).
+
+**Pushback:** the strongest reason not to run 98.1 as planned: if the v1 arm's missing games are the OOM kills, Part A is 98.3's job and
+98.1 should spend that time on Part B. The block says so and hands it over. And 98.2's verdicts will almost certainly read "keep
+accruing" - that is the pre-registered expectation, not a disappointment.
+**Surface:** RED → GREEN once 98.3's memory fix lands and the window installs the three held lines (expected +3: 85 → 88 live).
+98.1 / 98.2 install nothing.
+**Dependencies:** none for merges. The window's installs wait on 98.3's memory fix reading back on the box; no block waits on another.
+
+### 98.1 — Engine lane (B-030 + B-029 + B-031): NBA arms that miss games; NHL totals that run low; v3 fully indexed
+**DEPTH + PROOF · rank 2 · terminal 1**
+
+```
+Before anything else, read the Wave 98 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W98.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 98.1 - ENGINE LANE (BACKLOG B-030 + B-029 + B-031): THE ENGINES MADE WHOLE - NBA ARMS THAT MISS GAMES, NHL TOTALS THAT RUN LOW, v3'S FACTORS FULLY INDEXED. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), judged by rank 1; Part C rank 3 (the granularity index).
+PURPOSE: DEPTH + PROOF. Measures: NBA engine v1 events logged / games played -> 100% (today v1 69 vs v2 81 events); NHL engine held-out
+total-goals bias -> within noise; NBA v3 factors with all five granularity-index parts 0 -> 2 (availability, lineups).
+Wave 97 left three engine defects: (1) the NBA v1 arm logs fewer games than v2 (69 vs 81 events by 11-03) and its log has two "Killed"
+lines - a forward test that silently drops games is biased; (2) the NHL engine's totals run low because late and empty-net scoring is
+not modelled (97.4); (3) 96.1 / 97.1 marked v3's availability and lineup factors "rank vs history" and "matchup cross" as not computed.
+Premises to check: 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261103T0100Z_W97_1.md and _W97_4.md; the box read 04_EXECUTION/BOX_TASKS/results/
+20261103T030946Z_w_nba_engine_cron_readback.md; 12_EXPLORATORY/nhl_engine/results_W97_4.md; GRANULARITY_INDEX.md; the box's memory
+problem (GG-1581, being fixed by 98.3 - do not fix it here; say if the "Killed" lines are that).
+PERMISSIONS: per the common rules' ownership. NOT: EXP-044 / 044b / 044c or any frozen pre-registration (if v1 is dropping games, fix the
+runner so it logs every game - never change what it logs for a game); any order, gate, ledger or registry cell; installing anything
+(name it for the window).
+
+PART A - Every game logged (~40 min)
+  Per night since the install: games played vs games each arm logged (v1, v2), and for every missing game why (OOM-killed run, a store
+  lag, a market not found, a timing window). Fix the cause in the runner with a test that a night's slate is logged in full (or each skip
+  is logged with a reason); read back on the box after the next night. If the cause is the box's memory, say so and leave the fix to 98.3.
+PART B - NHL totals that run low (~50 min)
+  A new version of the NHL engine (the merged model stays) that models the end of a game: empty-net goals by score margin and time
+  (Muse R-095 may have landed - read its STATUS; do not wait), overtime and shootouts as Kalshi settles them (R-096, R-067). Held-out
+  seasons: total-goals bias, Brier per family vs the merged model and climatology, paired, game-clustered. Then this season vs Kalshi,
+  descriptive. If it is no worse than the market on a family, freeze EXP-046 (forward from the archive, judged n from the measured
+  variance, look date) before any new row; otherwise freeze nothing.
+PART C - v3's factors, fully indexed (~40 min)
+  For availability and lineups (v3's two factors): the rank against history at the same point in past seasons, and the matchup cross
+  (whose missing player matters against which opponent), point-in-time; whether either changes v3's held-out Brier; the seat rows
+  updated with all five parts.
+Results: the runner fix + tests read back, NHL engine v2 + results, the indexed factors, a handoff (B-030, B-029, B-031 states).
+
+END OF BLOCK 98.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 98.2 — Proof lane (B-005 + B-011 + B-002): the first NFL verdicts, read; the entry cost; the frozen evidence
+**PROOF + EXECUTION · ranks 1 + 4 · terminal 2**
+
+```
+Before anything else, read the Wave 98 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W98.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 98.2 - PROOF LANE (BACKLOG B-005 + B-002 + B-011): THE FIRST VERDICTS IN THE PROJECT'S HISTORY, READ; THE FROZEN EVIDENCE; THE ENTRY COST. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; rank 1 (what counts as winning) with rank 4 (quant).
+PURPOSE: PROOF + EXECUTION. Measures: NFL first-look verdicts read and reported 0 -> 12 (P2 says 12 were issued on 2026-11-02); frozen
+ride cells classified 0 -> n of 13; the forward test's entry cost per book 0 -> a table, with one operator line.
+The calibration engine judged the NFL first look on 2026-11-02 (exp_output/CALIBRATION/engine_20261102T135056Z.json on the box: P1 12 / 49,
+P2 12), the first scored looks this project has ever had. No bridge task prints the verdicts, so nobody has read them. The pre-registered
+expectation (12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md): KEEP ACCRUING ~91% per cell vs the market, RULED_OUT ~9%, CANDIDATE < 1%.
+The frozen ride evidence (B-002) stalled on the box's capacity (ladder units time out at 900 s); the entry-cost study (B-011) has been
+named three waves running and never started.
+Premises to check: EXP-037's verdict rules; the calibration engine's output schema; 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261103T0310Z_W97_2.md
+(the resume path); ADR-0072's forward test and its frozen placement rule; 12_EXPLORATORY/fill_markout/results_W94_3C.md.
+PERMISSIONS: per the common rules' ownership; new READ-ONLY box tasks. NOT: any frozen pre-registration, ride_cells.toml, ADR-0072's
+switches or placement rule, any order, gate, model, runner or ledger.
+
+PART A - The NFL verdicts (~30 min, FIRST)
+  A read-only bridge task that prints the 2026-11-02 verdicts per cell: cell, n, delta vs market and vs climatology with intervals, the
+  verdict (RULED_OUT / KEEP ACCRUING / CANDIDATE), against the pre-registered odds. Then, in plain English, one paragraph for the
+  operator: what the bot's NFL models showed against the market and against a naive baseline, what was surprising and what was not
+  (the pre-registration's own list), and the next look date for each cell. No interpretation past what EXP-037 says a verdict means.
+PART B - What the forward test's entry costs (~50 min)
+  From the forward-test report's orders and fills, per book and sport: P&L per contract as entered today (control: resting at the model's
+  mid; treatment: posted at the book, cancelled after 60 s) and the counterfactual "taken at the quote at decision time" (the archive's
+  quote then, the exact fee, the depth at the quote), net with game-clustered intervals; what each does to fills per game and to the
+  verdict timeline. One operator line: keep the frozen rule, or a superseding addendum switching the entry - the cost of each and your
+  recommendation. Change nothing yourself.
+PART C - The frozen evidence, in units that fit (~40 min)
+  Shard the ladder units per date or per file so each fits 900 s on the box (log each unit's time), resume until the 13 cells are
+  classified (REPRODUCED / DIFFERS / NOT REPRODUCED); if a unit still cannot fit, register the box-capacity finding (GG-1570) with the
+  measured times and say what would fit.
+Results: the verdict task + 12_EXPLORATORY/nfl_first_look/results_W98_2.md (the plain-English paragraph first), the entry-cost table +
+operator line, the frozen-evidence table, a handoff (B-005, B-011, B-002 states).
+
+END OF BLOCK 98.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 98.3 — Flex lane (B-027 + B-001/B-026 installs + B-028): the box stops running out of memory; the held arms go live; picks say why
+**PLUMBING + visibility · terminal 3**
+
+```
+Before anything else, read the Wave 98 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W98.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 98.3 - FLEX LANE (BACKLOG B-027 + B-001 / B-026 INSTALLS + B-028): THE BOX STOPS RUNNING OUT OF MEMORY; THE HELD ARMS GO LIVE; THE PICKS SAY WHY. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; plumbing every lane depends on (Hard Rule 14), the operator's picks sheet (B-026), and the NBA engine v3 arm
+(rank 2) waiting to go live.
+PURPOSE: PLUMBING + visibility. Measures: OOM kills per night 20 / 90 min -> 0 across a full NBA + NHL night; held installs (NBA engine
+v3 arm, NBA events refresh, picks builder) live with rows 0 -> 3; picks with real reasons 0 -> every arm that can give them.
+97.3 measured the box (1 core, 961 MB) killing processes 20 times in about 90 minutes: the T3 shadow runners stack two or three deep with
+no lock, and one NBA pre-game T3 run lasted 62 minutes (GG-1581, HIGH). Every new arm makes it worse, and three are waiting: NBA engine v3
+(EXP-044c), the NBA events refresh, and the picks builder - their registered-not-installed lines turn the budget RED, and the v3 arm reads
+SILENT until installed. The picks sheet's "why" column is empty because the arms do not log their reasons (GG-1580).
+WINDOW DECISION (plumbing, not the operator's): GG-1581 - each T3 shadow runner's cron line gets a per-runner non-blocking lock (flock -n)
+and a staggered start, changed through the install path (backup first, readback after). This changes WHEN a run happens, never what it
+computes: a run that finds its previous run still going logs a skip row with the reason, so each arm's frozen test can tell a skipped
+window from a silent one. Check each affected arm's pre-registration first and say in the handoff that none of them assumed concurrency.
+Premises to check: 12_EXPLORATORY/picks_sheet_w97/results_W97_3.md (the memory table) and GG-1581 / 1580; the T3 runners' cron lines and
+runtimes; the install tasks for the three held lines; the picks builder's reasons column; each arm's decision-row writer.
+PERMISSIONS: per the common rules' ownership; the T3 runners' cron lines for lock + stagger ONLY (the decision above); the arms' decision-
+row writers for added reason fields ONLY (logging; no change to any probability, threshold, order or stake). NOT: any model, frozen
+pre-registration, order, stake, gate or ledger. Installs: prepare and push; the strategic window runs the install tasks.
+
+PART A - Memory (~50 min)
+  Why an NBA pre-game T3 run takes 62 minutes (profile it; fix the cause if it is in the runner's I/O and not its logic), then the lock +
+  stagger change with tests, pushed with its install task; a box memory read task (peak RSS per process and OOM kills since a time). Name
+  in the handoff what the window must install and in what order (memory fix first).
+PART B - The held arms (~30 min)
+  Re-check each of the three held lines' memory and schedule against the new stagger; push any change; write the exact install order for
+  the window (memory fix -> NBA events refresh -> NBA engine v3 -> picks builder) and the readback each needs. After the window installs:
+  read back rows for v3, the store refresh time, and the picks panel after a real night.
+PART C - The picks say why (~40 min)
+  Each arm's decision row gains its top three reasons (the model's largest contributions, with the factor name and its value in plain
+  words); the picks builder shows them; an arm that cannot give reasons says so. Tests on fixture rows; deploy follows the box's own
+  timer (no runner restart mid-slate).
+Results: the memory fix + tests, the install order for the window, the reasons fields + picks update, 12_EXPLORATORY/box_memory_w98/
+results_W98_3.md, a handoff (B-027, B-001, B-026, B-028 states).
+
+END OF BLOCK 98.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### M98 — Muse: live session (paste into Muse's chat)
+**rank 7 · feeds the engines (rank 2)**
+
+```
+From Earl, directly.
+
+1. Big week: seventeen tickets closed since 10-28 (R-072, R-073, R-077, R-082, R-083, R-074, R-078, R-085, R-084, R-043, R-044, R-021,
+   R-022, R-023, R-037, R-031, R-040), 177,346 records, every one parses, no null values, gate clean on every batch. The IN PROGRESS /
+   PROGRESS discipline across the ten daily runs held: R-031 carried eleven NFL seasons across thirteen runs without a slip. Read
+   TO_MUSE.md fresh: the entry dated 2026-11-02 19:20 PT has the grades and the new order.
+
+2. What your work changed: R-077's injury reports are now how the bot's NBA engine knows who is playing before tip, and that version (v3)
+   beats the older ones on past seasons for spreads and team totals. R-072 and R-073 unblocked the bot's Kalshi history fetches.
+
+3. The bot now has an engine per sport being built: NFL, NBA (three versions live) and NHL (built this week). The seventeen new tickets
+   (R-095 to R-111) feed those engines. Top of the order: finish R-048, then R-110 (how fast free sources publish last night's NBA games -
+   the bot's store runs two days behind), R-095 (NHL empty-net goals and goalie pulls - the NHL engine's totals run low without them),
+   R-097 (when NBA referee crews are posted), R-101, R-102, R-111 (NHL shift-chart gaps). 43 tickets are open.
+
+4. This is a live session: work the order from the top until you hit your limit, marking IN PROGRESS before each ticket and PROGRESS on
+   anything you stop mid-way, so the scheduled runs pick up exactly where you leave off.
+
+Same rules as always: primary sources, definitions verbatim, free only (a free API tier that needs no payment is fine; say if it needs
+a key), no null records, nothing written to the bot repo, never a bet, pick, odds or model. Recording a published line or timing with
+its timestamp is recording; deciding anything from it is the bot's job.
+```
+
+### M98b — Muse: standing role, after the 11-02 review (paste into Muse's chat, before or after M98)
+**rank 7 · operator 11-02 21:33 PT: "we're still gonna run it as a data aggregator bc it's far from getting to the type of stats/pulls I'm envisioning"**
+
+```
+From Earl, directly. Read this before your next ticket, and add it to the top of your archive's README as your standing role.
+
+1. Your role stays the same: data aggregator and scout. The kind of deep stats and pulls I want are a long way off, and they rest on the
+   sources you find now.
+
+2. An honest scorecard. Your research changed the bot in real ways: the exact Kalshi fees (R-068) are in its code, and your finding that
+   no free sportsbook line history exists (R-057 / R-058) changed its direction. But the bot reads none of the 177,346 records in your
+   archive yet. The value so far is "where the data lives, and whether it exists", not the records themselves.
+
+3. What changes from today:
+   a. Every card names the engine (NFL / NBA / NHL / MLB) and the factor it feeds, as the ticket states them. A card that cannot say
+      that is noted and skipped in one line.
+   b. For every source you find, say plainly whether the bot can capture it itself: free, stable, tabular, recurring, and the
+      URL / endpoint and field names verbatim. That is what turns a card into something the bot uses.
+   c. Records stay verbatim and timestamped as now. Over the next waves the bot will pull one slice of your archive into an engine and
+      test whether it improves a price; which slice, and its result, will come back to you in TO_MUSE.md.
+
+4. Order unchanged: TO_MUSE.md 2026-11-02 19:20 PT (R-048 -> R-110 -> R-095 -> ...). One correction to that entry: the bot's NBA engine
+   gets its injury reports from its own fetcher; your R-077 told it where the history is, but your records are not what it reads.
+
+Same rules as always: primary sources, definitions verbatim, free only, no null records, nothing written to the bot repo, never a bet,
+pick, odds or model.
+```
+
+---
+
+---
+
 ## Wave 97 NOW section with its pastes (closed 2026-11-02 19:30 PT). 97.1 🟨 97.2 🟨 97.3 🟨 97.4 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md. Verbatim:
 
 ## ⬛ NOW — Wave 97 · THE PICKS SHEET · THE NBA ENGINE ON v3 · THE FROZEN EVIDENCE, RESUMABLE · WRITTEN 2026-10-30 ~17:10 UTC (10:10 PT) · four blocks, three parts each (~130 min) · the last wave before the weekend

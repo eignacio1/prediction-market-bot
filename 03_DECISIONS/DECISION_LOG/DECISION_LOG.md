@@ -3113,3 +3113,12 @@ GG-1630 registered (OPEN, LOW): NHL, NBA player-points and nba_engine writers st
 
 ## 2026-11-03 06:25 UTC — W98.2 close (PROOF)
 NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keeping the frozen entry rule (operator decides). Frozen-evidence re-run 11/13 classified (all DIFFERS), capped at time limit; GG-1600 registered. Merged PR #400 with a failing check; fixed by #402.
+
+## 2026-11-03 06:50 UTC (11-02 22:50 PT) - Strategic window: Wave 98 closed, Wave 99 written
+- Operator 22:33 PT: "98 finished - confirm receipt then set up the next wave".
+- Wave 98 verified: #396-#404 merged, main CI green (#400 merged red, fixed by #402); box bridge `20261103T063449Z_*`. 98.1 DONE, 98.2 PARTIAL (B-002), 98.3 PARTIAL (nothing installed).
+- NFL first look read: GAME_TOTAL T1 + T2 RULED_OUT, 10 KEEP ACCRUING, 0 CANDIDATE. Entry cost: keep the frozen rule (window agrees; no operator action needed). Frozen evidence 11/13 DIFFERS, signs held.
+- Box: RED; 142 OOM kills in 24 h (122 python); NBA v1 47 / v2 23 games past tip unlogged.
+- The classifier refused the window's t3_lock_stagger_install push (06:33Z, "Unauthorized Persistence"). Nothing was pushed or run. Open question to the operator in the queue: may the window run allowlisted installs? (W39.) Read-only close reads and B-002's remaining frozen_resume_step x5 + combine were queued by the window (read-only).
+- Install gate deadlock found by the window: gate() exempts only each install's own NOT INSTALLED red; v3's SILENT ARM red is never exempt. 99.3 Part A fixes it (batch install exempting its own reds only).
+- Wave 99: 99.1 engine = B-032 + B-033 + B-029 (Muse's archive officials into NFL / NBA totals - the first engine read of the archive; NHL OT / SO); 99.2 proof = B-034 + B-002 + B-035; 99.3 flex = B-036 + B-037 + B-017. No new Muse block (M98 / M98b stand). Common rules: COMMON_RULES_W99.md.

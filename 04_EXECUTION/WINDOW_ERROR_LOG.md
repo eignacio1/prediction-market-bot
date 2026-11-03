@@ -98,3 +98,6 @@ Waves 95-96 went back to two-part ~80-minute blocks after the operator had stret
 
 ## W38 · 2026-11-02 19:30 PT · wrote box installs into terminal blocks the terminals cannot run
 Waves 95-97 told terminals to "install on GREEN" through bridge `*_install` tasks; the terminals' permission classifier refuses those dispatches as production deploys, so 97.1 (NBA v3) and 97.3 (picks builder) merged, froze and stopped short, and the surface went RED on registered-but-not-installed lines. The window knew from 91.3 that installs can be refused. Rule (COMMON_RULES_W98 "INSTALLS ON THE BOX"): terminals prepare, test and push the install and name the order; the strategic window runs the install task and reads it back.
+
+## W39 · 2026-11-02 22:40 PT · made "the window runs installs" a rule without testing that the window could
+W38's fix (COMMON_RULES_W98: terminals prepare, the window runs installs) assumed the window's classifier would allow what the terminals' refused. It refused the window's first install push (11-03 06:33Z, "Unauthorized Persistence"), and the window had not checked that the install gate could pass three held installs at once (it deadlocks). A rule about who acts must be tested once before a wave depends on it. Fix: the operator is asked (Needs your decision); 99.3 fixes the gate.
