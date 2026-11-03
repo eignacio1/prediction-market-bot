@@ -8,7 +8,7 @@ the kernel OOM-killed 20 of them in ~90 min. Cause = no lock, not the runner's I
 WHAT: each line is wrapped `( flock -n 9 || {skip row; exit 0}; <ORIGINAL COMMAND UNCHANGED> ) 9>/tmp/<name>.lock`.
 A run that finds its predecessor still going exits without running and appends one JSON skip row to
 logs/t3_skips.jsonl (ts, runner, reason), so a frozen test can tell a skipped window from a silent one.
-It changes WHEN a run happens, never what it computes. The only schedule change is NBA pre-game T3 :09 -> :00 (it ran one
+It changes WHEN a run happens, never what it computes. The only schedule change is NBA pre-game T3 :09 -> :01 (it ran one
 minute after run_pregame_shadow's :08).
 
 The wrapper deliberately contains no `>>` and no `--flag` before the original command, so scripts/runtime_registry.py
@@ -36,7 +36,7 @@ RUNNERS = [
     ("pregame_shadow_t3", "scripts/run_pregame_shadow.py --bands T3", None),
     ("mlb_pregame_shadow_t3", "scripts/run_mlb_pregame_shadow.py --bands T3", None),
     ("nba_pregame_shadow_t3", "scripts/run_nba_pregame_shadow.py --bands T3",
-     ("9,19,29,39,49,59", "0,10,20,30,40,50")),
+     ("9,19,29,39,49,59", "1,11,21,31,41,51")),
     ("nba_player_points_t3", "scripts/run_nba_player_points_shadow.py --bands T3", None),
 ]
 WRAP_RE = re.compile(r"\( flock -n 9 \|\| \{ printf '.*?t3_skips\.jsonl > /dev/null; exit 0; \}; (?P<orig>.*) \) 9>/tmp/(?P<name>\w+)\.lock\s*$")

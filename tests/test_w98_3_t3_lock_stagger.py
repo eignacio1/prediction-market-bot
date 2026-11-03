@@ -11,7 +11,7 @@ import box_memory_read as bmr  # noqa: E402
 import runtime_registry as rr  # noqa: E402
 import t3_lock_stagger as ts  # noqa: E402
 
-NBA = "9,19,29,39,49,59 16-23,0-4 * * * cd $PROJ && $PYTHON scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba.log 2>&1"
+NBA = "9,19,29,39,49,59 * * * * cd $PROJ && $PYTHON scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba.log 2>&1"
 NHL = "*/10 17-23 * * * cd $PROJ && $PYTHON scripts/run_nhl_shadow_staked.py --band T3 >> logs/nhl.log 2>&1"
 OTHER = "0 1 * * * cd $PROJ && $PYTHON scripts/other_job.py --x 1 >> logs/o.log 2>&1"
 T2 = "5 * * * * cd $PROJ && $PYTHON scripts/run_pregame_shadow.py --bands T2 >> logs/t2.log 2>&1"
@@ -38,7 +38,7 @@ def test_round_trip_and_idempotent():
 
 def test_nba_stagger_only_schedule_change():
     w = ts.wrap(NBA)
-    assert w.startswith("0,10,20,30,40,50 16-23,0-4 * * * ( flock -n 9 ||")
+    assert w.startswith("1,11,21,31,41,51 * * * * ( flock -n 9 ||")
     assert w.endswith("9>/tmp/nba_pregame_shadow_t3.lock")
     assert ts.wrap(NHL).startswith("*/10 17-23 * * * ( flock")
 
