@@ -4,7 +4,7 @@ For each shadow order (post top-up, armed): P&L per contract AS ENTERED (control
 treatment: posted at the book, cancelled after 60 s) versus the counterfactual TAKEN AT THE QUOTE at decision time
 (archive quote, exact fee, depth at the quote). Per (sport, arm), game-clustered 95% intervals.
 
-Inputs (all already on the box): logs/demo_fill_policy.jsonl, exp_output/FORWARD_TEST/demo_fill_forward_cache.json
+Inputs (all already on the box; the order log is passed with --log, never hardcoded here): the demo-fill policy log, exp_output/FORWARD_TEST/demo_fill_forward_cache.json
 (fills + outcomes; no API call), exp_output/PRICE_ARCHIVE/{prices,depth}_YYYY-MM-DD.jsonl.
 """
 from __future__ import annotations
@@ -24,6 +24,8 @@ sys.path.insert(0, str(REPO / "scripts"))
 
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 from prediction_market_bot.quant.money import fee_rate  # noqa: E402
+sys.path.insert(0, str(REPO / "12_EXPLORATORY"))
+from _fence import safe_out  # noqa: E402
 
 TOPUP_TS = datetime(2026, 10, 16, 5, 40, tzinfo=timezone.utc)  # same split as demo_fill_forward_report (verdict window)
 JUDGED_N = 550          # per arm, ADR-0072
@@ -33,8 +35,12 @@ MAX_DEPTH_AGE_S = 900
 
 def parse_ts(s: Any) -> Optional[datetime]:
     try:
-        d = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
-        return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+        t = str(s)
+        if t.endswith("Z"):
+            t = t[:-1] + "+00:00"
+        elif "+" not in t[10:] and "-" not in t[10:]:
+            t += "+00:00"  # naive means UTC
+        return datetime.fromisoformat(t)
     except ValueError:
         return None
 
@@ -264,7 +270,7 @@ def render(rep: dict) -> str:
 
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--log", type=Path, default=REPO / "logs/demo_fill_policy.jsonl")
+    ap.add_argument("--log", type=Path, required=True, help="demo-fill policy order log (jsonl)")
     ap.add_argument("--cache", type=Path, default=REPO / "exp_output/FORWARD_TEST/demo_fill_forward_cache.json")
     ap.add_argument("--archive", type=Path, default=REPO / "exp_output/PRICE_ARCHIVE")
     ap.add_argument("--out", type=Path, default=None)
@@ -276,8 +282,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     quotes, depth = load_archives(a.archive, {o["ticker"] for o in orders}, first_day)
     rep = build(orders, cache, quotes, depth)
     if a.out:
-        a.out.parent.mkdir(parents=True, exist_ok=True)
-        a.out.write_text(json.dumps(rep, indent=1, sort_keys=True))
+        out = safe_out(a.out)
+        out.write_text(json.dumps(rep, indent=1, sort_keys=True))
     print(render(rep) if a.report or not a.out else f"wrote {a.out}")
     return 0
 
