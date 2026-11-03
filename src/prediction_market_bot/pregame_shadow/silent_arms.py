@@ -106,6 +106,17 @@ def _aware(t: datetime) -> datetime:
     return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
 
 
+def _idle_reason(inp: ArmInput, now: datetime) -> str:
+    """Why nothing is expected: the last scheduled game seen, or an empty schedule (offseason)."""
+    past = [g for g in (_aware(x) for x in inp.game_starts) if g <= now]
+    ahead = [g for g in (_aware(x) for x in inp.game_starts) if g > now]
+    if ahead:
+        return f"next game {min(ahead).strftime('%Y-%m-%d %H:%MZ')}"
+    if past:
+        return f"last game {max(past).strftime('%Y-%m-%d')}, none scheduled after"
+    return "no games on the schedule (offseason or no slate)"
+
+
 def evaluate_arm(inp: ArmInput, now: datetime) -> dict:
     """Pure. status: silent | ok | idle | unknown."""
     now = _aware(now)
@@ -125,7 +136,7 @@ def evaluate_arm(inp: ArmInput, now: datetime) -> dict:
     if not games:
         return {**base, "status": "idle", "games_in_window": 0, "hours_silent": None,
                 "last_row": last.isoformat() if last else None,
-                "text": f"{s.name}: no games in the last {s.window_h:g}h, nothing expected"}
+                "text": f"{s.name}: no games in the last {s.window_h:g}h, nothing expected ({_idle_reason(inp, now)})"}
     if wrote:
         return {**base, "status": "ok", "games_in_window": len(games), "hours_silent": None,
                 "last_row": last.isoformat(),

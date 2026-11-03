@@ -239,3 +239,17 @@ def test_grace_applies_to_t4_mlb_only():
     assert [k for k, sp in SPECS.items() if sp.start_grace_h] == ["t4_mlb"]
     # a non-T4 arm with the same 4-minute-old game is still counted (thresholds of other arms unchanged)
     assert evaluate_arm(_arm("mlb_shadow", starts=[NOW - timedelta(minutes=4)], last=H(20)), NOW)["status"] == "silent"
+
+
+# ---- W97.3 Part B: MLB winter posture - idle carries a written reason, alarm unchanged ---------------------------
+def test_mlb_arms_idle_in_winter_with_a_written_reason():
+    for key in ("mlb_shadow", "t1_mlb", "t4_mlb"):
+        r = evaluate_arm(_arm(key, starts=[], last=None), NOW)
+        assert r["status"] == "idle" and "offseason" in r["text"]
+        r = evaluate_arm(_arm(key, starts=[H(100)], last=H(100)), NOW)
+        assert r["status"] == "idle" and "last game" in r["text"]
+
+
+def test_mlb_regular_season_game_with_no_rows_still_alarms():
+    for key, ago in (("mlb_shadow", 5), ("t1_mlb", 20), ("t4_mlb", 2)):
+        assert evaluate_arm(_arm(key, starts=[H(ago)], last=H(ago + 20)), NOW)["status"] == "silent"
