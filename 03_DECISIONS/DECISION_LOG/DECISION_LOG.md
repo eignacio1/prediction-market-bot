@@ -3093,3 +3093,9 @@ Picks builder cron not installed: Hard Rule 14 (surface RED: silent NBA engine v
 - WINDOW DECISION (installs): terminals prepare, test and push installs and name the order; the strategic window runs the `*_install` bridge tasks (the terminals' classifier refuses them; W38). Order after 98.3's memory fix reads back: memory fix -> NBA events refresh -> NBA engine v3 -> picks builder.
 - Muse reviewed (archive 8e1edc4, 171 commits since 10-28): 17 tickets closed, 177,346 records parse, 0 null-value records; R-048 in progress. Backlog topped up with R-095 -> R-111 (17 new): 43 open, new order in TO_MUSE.md 2026-11-02 19:20 PT.
 - Rolling backlog: B-009, B-006, B-007 DONE; B-012 -> LATER (forward test at ~200 games); B-003 dropped (DONE one wave); new B-027..B-031; B-017 -> NEXT (Muse R-110 feeds it).
+
+## 2026-11-03 W98.3 close (PLUMBING + visibility)
+- GG-1581: T3 runners wrapped in per-runner `flock -n` + staggered start (NBA T3 :09 -> :01), skip rows to logs/t3_skips.jsonl (PR #398). NBA engine v3 line shares the v1/v2 engine lock with `flock -w 240` (PR #401) so two ~500 MB runners are never co-resident. Changes WHEN a run happens, not what it computes. EXP036/037/038/040 assume no concurrency or cadence.
+- GG-1580: ridge arms (NBA/NFL/MLB game markets) log top-3 factor contributions as `reasons` (else `reasons_note`); picks sheet renders them. Logging only; no probability, threshold, order, stake or kelly change.
+- Installs prepared, not run: order t3_lock_stagger -> nba_engine (events refresh + v1/v2) -> nba_engine_v3 -> picks_sheet; see 12_EXPLORATORY/box_memory_w98/results_W98_3.md.
+- Open: NHL, NBA-points and nba_engine row writers give no reasons yet (they fall back to "no reasons available").

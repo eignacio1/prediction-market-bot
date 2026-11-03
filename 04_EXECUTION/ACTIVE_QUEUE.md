@@ -506,7 +506,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 98.1 | B-030 + B-029 + B-031 engine: NBA arms log every game; NHL totals; v3 indexed | ⬜ | |
 | 98.2 | B-005 + B-011 + B-002 proof: NFL verdicts read; entry cost; frozen evidence | ⬜ | |
-| 98.3 | B-027 + B-001/B-026 + B-028 flex: memory; held installs; picks say why | ⬜ | |
+| 98.3 | B-027 + B-001/B-026 + B-028 flex: memory; held installs; picks say why | ✅ code merged (#398 de539ff, #401 5e2eb1c); installs NOT run - window runs them in order in results_W98_3.md | `12_EXPLORATORY/box_memory_w98/results_W98_3.md` |
 | M98 | Muse live session (R-048 → R-110 → R-095 …) | ⬜ | |
 
 ### 🟨 WAVE 97 — WRITTEN 2026-10-30 ~17:10 UTC · CLOSED 2026-11-03 ~03:30 UTC (operator 11-02 19:09 PT) · verified on GitHub (#388-#395 CI green) + box bridge (`20261103T030946Z_*`) · moved: **NBA engine priced real games (v1/v2); NHL board engine; D3 4 → 5; P1/P2 0 → 12 (NFL first look, on its own schedule)**; three partials · box RED (uninstalled lines + OOM)
