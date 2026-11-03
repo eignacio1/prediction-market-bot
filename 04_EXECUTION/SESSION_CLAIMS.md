@@ -1127,3 +1127,4 @@
 | 2026-11-03T01:07:25Z | T-1590 | CLOSED — W97.4 NHL engine built+scored (one Poisson sim prices whole board); trails Kalshi at n=33, EXP-046 not earned (commit `24d9c52`) |
 | 2026-11-03T01:07:50Z | T-1590 | CLOSED — merge confirmed, HEAD (a05bba5) is ancestor of origin/main — W97.4 NHL engine built+scored; EXP-046 not earned |
 | 2026-11-03T03:06:03Z | T-1570 | CLOSED — merge confirmed, HEAD (f41ebad) is ancestor of origin/main — PARKED, not complete: W97.2 B-002 2/20 units cached, B-011 not started |
+| 2026-11-03T03:27:52Z | T-1600..T-1603, GG-1600..GG-1602 | STANDARD — NFL first-look verdicts read + forward entry-cost table + frozen-evidence sharded resume — FOR PROOF P2 (verdicts read 0->12) / EXECUTION E2 / frozen cells classified 0->13 — W98.2 B-005 B-011 B-002 |
