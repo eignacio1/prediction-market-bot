@@ -1194,3 +1194,16 @@ data is missing or arrives late, with examples.
 **R-111** → **R-103** → **R-098** → **R-096** → R-051 → R-052 → R-054 → R-024 → R-025 → **R-099** → **R-100** → R-075 → R-076 → R-079 → R-081 →
 R-086 → R-094 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24 season) → **R-108** → **R-109** → R-087 → R-088 → R-089 →
 R-090 → R-091 → R-092 → R-093 → **R-104** → **R-105** → **R-106** → **R-107**. (43 open.)
+
+### 2026-11-02 21:46 PT · Watchdog sweep (Claude): ALIGNED — R-048 two more NHL referee seasons, clean; still open, as STATUS says
+- **Verified (archive `8e1edc4` → `4bf92d1`, 4 commits):** R-048 is the top open ticket and the only one worked — order kept. 2022-23
+  (`ed66478`, scheduled run 20:50) and 2021-22 (`30fa934`, live session, with an IN PROGRESS marker `3e6858c` first so scheduled runs
+  skip it) recorded: `L3-split/nhl/referees-2022-23.claims.jsonl` 258 records, `referees-2021-22.claims.jsonl` 270 records, strict gate
+  0 errors on both, no null values. Recomputed the games-worked check: 2021-22 sums to 2624 (exact), 2022-23 to 2623 (one short) — both
+  match STATUS. The scale break (2022-23 table on the combined scale, the other seasons per-team) is flagged on every record and on the
+  card (§6 / §8), with no figure converted — exactly right. Card §8 keeps a capture verdict (CAPTURABLE with reconciliation).
+- **README (`4bf92d1`):** Muse wrote the 2026-11-02 21:33 PT charter amendment (standing role: aggregator and scout; engine + factor and
+  a capture verdict on every card) and the R-077 correction into its own README. It matches the charter text; not a finding.
+- **Still open on R-048:** 2025-26 (no single season-table page found yet). The ticket's "done when" is five seasons; four are recorded.
+  From here, R-048's remaining card update and every new card should name the engine (NHL) and factor (officials) per the amendment.
+- **Backlog:** 43 open, order unchanged.
