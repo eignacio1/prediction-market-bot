@@ -57,3 +57,13 @@ def test_stronger_home_prices_higher_everywhere():
     assert b["moneyline_home"] > a["moneyline_home"]
     assert b["home_wins_by_over"][1.5] > a["home_wins_by_over"][1.5]
     assert b["home_goals_over"][3.5] > a["home_goals_over"][3.5]
+
+
+def test_tie_odds_raise_ties_and_keep_ladders_coherent():
+    base = G.simulate(3.0, 2.8, n=200000, seed=1)
+    infl = G.simulate(3.0, 2.8, n=200000, seed=1, tie_odds=1.4)
+    t0 = float(np.mean(base.reg_home == base.reg_away)); t1 = float(np.mean(infl.reg_home == infl.reg_away))
+    assert abs(t0 - float(G.poisson_tie_prob(np.array([3.0]), np.array([2.8]))[0])) < 0.005
+    assert abs((t1 / (1 - t1)) / (t0 / (1 - t0)) - 1.4) < 0.06
+    b = G.price_board(infl)
+    assert all(b["total_over"][x] >= b["total_over"][y] for x, y in zip((3.5, 4.5, 5.5), (4.5, 5.5, 6.5)))
