@@ -1,0 +1,2 @@
+task = "frozen_resume_step"
+note = "W97.2 Part A: resumable reproduction step 1 (box deployed 552bd996; t4-mlb restart not_needed)"
