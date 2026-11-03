@@ -29,7 +29,9 @@ class GoalSample:
 
 
 def simulate(lam_h: float, lam_a: float, k: float = np.inf, p_home_ot: float = 0.5, n: int = 200000,
-             seed: int = 0) -> GoalSample:
+             seed: int = 0, tie_odds: float = 1.0) -> GoalSample:
+    """``tie_odds`` multiplies the odds of a regulation tie (importance-resampled from the one joint sample, so every
+    ladder stays coherent); 1.0 is the unmodified distribution. Measured NHL ties run above independent Poisson."""
     rng = np.random.default_rng(seed)
     if np.isfinite(k):
         g = rng.gamma(k, 1.0 / k, size=n)
@@ -37,6 +39,10 @@ def simulate(lam_h: float, lam_a: float, k: float = np.inf, p_home_ot: float = 0
         g = np.ones(n)
     h = rng.poisson(lam_h * g)
     a = rng.poisson(lam_a * g)
+    if tie_odds != 1.0:
+        w = np.where(h == a, tie_odds, 1.0)
+        idx = rng.choice(n, size=n, p=w / w.sum())
+        h, a = h[idx], a[idx]
     tie = h == a
     home_wins_ot = rng.random(n) < p_home_ot
     fh = h + (tie & home_wins_ot)
@@ -82,6 +88,16 @@ def price_board(s: GoalSample, spreads=(0.5, 1.5, 2.5, 3.5), totals=(3.5, 4.5, 5
         "away_goals_over": {x: p_team_total_over(s, "away", x) for x in team_totals},
         "score_corr": score_corr(s),
     }
+
+
+def poisson_tie_prob(lam_h: np.ndarray, lam_a: np.ndarray, kmax: int = 25) -> np.ndarray:
+    """Exact P(H == A) for independent Poisson(lam_h), Poisson(lam_a), per game."""
+    from math import lgamma
+    k = np.arange(kmax + 1)
+    lg = np.array([lgamma(i + 1) for i in k])
+    lh = np.asarray(lam_h, float)[:, None]; la = np.asarray(lam_a, float)[:, None]
+    ph = np.exp(-lh + k * np.log(lh) - lg); pa = np.exp(-la + k * np.log(la) - lg)
+    return (ph * pa).sum(axis=1)
 
 
 def fit_dispersion(h: np.ndarray, a: np.ndarray, lam_h: np.ndarray, lam_a: np.ndarray) -> float:

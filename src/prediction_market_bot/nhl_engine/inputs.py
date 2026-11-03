@@ -138,14 +138,25 @@ def decayed_shrunk_rates(team: np.ndarray, num: np.ndarray, den: np.ndarray, hal
     return out
 
 
-def league_rate_prior(num: np.ndarray, den: np.ndarray, season: np.ndarray, first_season_rate: float) -> np.ndarray:
-    """League rate used as the shrinkage target: the rate over ALL earlier seasons (seasons strictly before the row's),
-    or ``first_season_rate`` if none (burn-in, supplied from data of the same earlier period by the caller)."""
-    out = np.full(len(num), first_season_rate)
-    for s in np.unique(season):
+def league_rate_prior(num: np.ndarray, den: np.ndarray, season: np.ndarray, first_season_rate: float,
+                      warm_rows: float = 60.0, start: Optional[np.ndarray] = None) -> np.ndarray:
+    """League rate used as the shrinkage target: the rate over ALL earlier seasons (seasons strictly before the row's).
+    The first season has none; there the target is an expanding in-season rate over rows with an EARLIER ``start``
+    (both sides of one game share a start, so neither sees the other), shrunk to ``first_season_rate`` with ``warm_rows``
+    rows of prior weight. Without ``start`` the first season keeps the flat ``first_season_rate``."""
+    out = np.full(len(num), first_season_rate, dtype=float)
+    seasons = np.unique(season)
+    for s in seasons:
         m = season < s
         if m.any() and den[m].sum() > 0:
             out[season == s] = num[m].sum() / den[m].sum()
+    if start is not None and len(seasons):
+        idx = np.where(season == seasons[0])[0]
+        d = pd.DataFrame({"st": np.asarray(start)[idx], "n": num[idx], "d": den[idx], "r": 1.0}).groupby("st").sum().sort_index()
+        c = d.cumsum().shift(1).fillna(0.0)
+        dbar = (c["d"] / c["r"].replace(0, np.nan)).fillna(0.0)
+        rate = (c["n"] + warm_rows * dbar * first_season_rate) / (c["d"] + warm_rows * dbar).replace(0, np.nan)
+        out[idx] = rate.reindex(np.asarray(start)[idx]).fillna(first_season_rate).to_numpy()
     return out
 
 
@@ -204,7 +215,7 @@ def game_features(tg: pd.DataFrame, gsax: pd.DataFrame, half_life: float = 40.0,
     lr = {}
     for name, num, den, dflt in (("f5", t["xf5"], sec5, fr.get("f5", 2.2 / 3600)), ("pp", t["xfpp"], spp, fr.get("pp", 6.5 / 3600)),
                                  ("pk", t["xa_on_our_pk"], spk, fr.get("pk", 6.5 / 3600))):
-        lr[name] = league_rate_prior(num.to_numpy(float), den, season, dflt)
+        lr[name] = league_rate_prior(num.to_numpy(float), den, season, dflt, start=t["start"].to_numpy())
     out = pd.DataFrame({"game_id": t["game_id"], "is_home": t["is_home"], "team_id": team, "season": season, "start": t["start"]})
     out["f5"] = decayed_shrunk_rates(team, t["xf5"].to_numpy(float), sec5, half_life, prior_sec, lr["f5"]) * 3600
     out["a5"] = decayed_shrunk_rates(team, t["xa5"].to_numpy(float), sec5, half_life, prior_sec, lr["f5"]) * 3600

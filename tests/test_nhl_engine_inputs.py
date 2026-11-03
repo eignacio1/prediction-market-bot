@@ -74,3 +74,17 @@ def test_game_features_have_no_outcome_column():
     tg, _, _ = _league(n_days=5)
     f = I.game_features(tg, _gs(tg))
     assert not any(c.startswith("reg_goals") for c in f.columns)
+
+
+def test_league_rate_prior_first_season_expands_point_in_time():
+    """True first-season rate 3.0 vs flat default 2.2: later rows move toward 3.0, a row never sees its own start."""
+    n = 400
+    start = np.repeat(pd.date_range("2022-10-10", periods=n // 2, tz="UTC").to_numpy(), 2)
+    den = np.ones(n); num = np.full(n, 3.0)
+    season = np.full(n, 2022)
+    r = I.league_rate_prior(num, den, season, 2.2, warm_rows=60.0, start=start)
+    assert r[0] == 2.2 and r[1] == 2.2                      # nothing earlier: default
+    assert abs(r[-1] - 3.0) < 0.15 and r[-1] > r[100] > r[2]  # converges to the in-season rate
+    num2 = num.copy(); num2[-2:] = 99.0                     # last game's own outcome cannot change its own prior
+    assert I.league_rate_prior(num2, den, season, 2.2, 60.0, start)[-1] == r[-1]
+    assert (I.league_rate_prior(num, den, season, 2.2)[:5] == 2.2).all()  # no start: legacy flat default
