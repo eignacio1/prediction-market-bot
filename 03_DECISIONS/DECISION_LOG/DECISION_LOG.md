@@ -3079,3 +3079,7 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 
 ## 2026-11-03 00:40 UTC - W97.3: picks cron held; OOM finding registered
 Picks builder cron not installed: Hard Rule 14 (surface RED: silent NBA engine v3 arm). Found 20 OOM kills in ~90 min from stacked unlocked T3 shadow runners (GG-1581, HIGH); not fixed here because it edits existing cron lines. MLB arms' idle text now states the reason (#393).
+
+## 2026-11-03 01:00Z — W97.1 close (engine lane, NBA v3)
+- EXP-044c frozen at PR #391 merge; v3 cron line registered but NOT installed: `nba_engine_v3_cron_install` dispatch denied by the auto-mode classifier (Production Deploy). Operator decision pending (recommend install; health HEALTHY).
+- B-009: availability-conditioned engine points share (engine_set) loses held-out to the existing arm, +0.0131 Brier [+0.0106,+0.0158], every strike, both seasons. EXP-044d not frozen. Leakage test passed. Details: 12_EXPLORATORY/nba_engine_v3/results_W97_1.md.
