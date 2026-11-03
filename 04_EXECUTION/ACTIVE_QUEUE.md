@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 98** · three blocks, three parts each (~130 min), plus Muse, in the **⬛ NOW — Wave 98** section below: **98.1** (NBA arms that miss games; NHL totals; v3 indexed), **98.2** (**the first NFL verdicts, read**; entry cost; frozen evidence), **98.3** (**the box's memory**; the held installs; picks say why), **M98** (Muse live session). Each block is one fenced paste.
+> **▶ PASTE NOW — Wave 98** · three blocks, three parts each (~130 min), plus Muse, in the **⬛ NOW — Wave 98** section below: **98.1** (NBA arms that miss games; NHL totals; v3 indexed), **98.2** (**the first NFL verdicts, read**; entry cost; frozen evidence), **98.3** (**the box's memory**; the held installs; picks say why), **M98** (Muse live session), **M98b** (Muse standing role). Each block is one fenced paste.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -289,6 +289,7 @@ topped back up". Every block is drawn from the top of the **rolling backlog** (`
 | 98.2 | B-005 + B-011 + B-002 | proof | 1 + 4 | **The 12 NFL first-look verdicts printed and told to you in plain English**; what the forward test's entry costs (your decision line); the frozen evidence in units that fit the box | PROOF: verdicts read 0 → 12; entry cost table; cells classified 0 → 13 | ⬜ | |
 | 98.3 | B-027 + B-001 / B-026 + B-028 | flex | plumbing + rank 2 + operator 10-30 | **The box stops running out of memory** (lock + stagger, the 62-min run); the three held installs prepared for the window; every pick carries its top three reasons | PLUMBING: OOM kills 20 → 0; installs 0 → 3; picks with reasons 0 → all | ⬜ | |
 | M98 | R-048 → R-110 → R-095 → … | Muse | 7 (feeds 2) | Live session working the new order from the top (43 open) | sources for the engines | ⬜ | |
+| M98b | standing role | Muse | 7 | Role stays data aggregator; honest scorecard; every card names the engine and factor it feeds and whether the bot can capture the source itself | sources the bot can use | ⬜ | |
 
 **What Wave 97 delivered (verified 2026-11-03 03:10Z: #388-#395 merged, CI green; box bridge `20261103T030946Z_*`):** **97.1 🟨** NBA engine
 v1 / v2 priced every game since the install (1,645 / 2,008 rows, 0 errors); v3 frozen as EXP-044c but not installed (the terminal could
@@ -458,6 +459,34 @@ From Earl, directly.
 Same rules as always: primary sources, definitions verbatim, free only (a free API tier that needs no payment is fine; say if it needs
 a key), no null records, nothing written to the bot repo, never a bet, pick, odds or model. Recording a published line or timing with
 its timestamp is recording; deciding anything from it is the bot's job.
+```
+
+### M98b — Muse: standing role, after the 11-02 review (paste into Muse's chat, before or after M98)
+**rank 7 · operator 11-02 21:33 PT: "we're still gonna run it as a data aggregator bc it's far from getting to the type of stats/pulls I'm envisioning"**
+
+```
+From Earl, directly. Read this before your next ticket, and add it to the top of your archive's README as your standing role.
+
+1. Your role stays the same: data aggregator and scout. The kind of deep stats and pulls I want are a long way off, and they rest on the
+   sources you find now.
+
+2. An honest scorecard. Your research changed the bot in real ways: the exact Kalshi fees (R-068) are in its code, and your finding that
+   no free sportsbook line history exists (R-057 / R-058) changed its direction. But the bot reads none of the 177,346 records in your
+   archive yet. The value so far is "where the data lives, and whether it exists", not the records themselves.
+
+3. What changes from today:
+   a. Every card names the engine (NFL / NBA / NHL / MLB) and the factor it feeds, as the ticket states them. A card that cannot say
+      that is noted and skipped in one line.
+   b. For every source you find, say plainly whether the bot can capture it itself: free, stable, tabular, recurring, and the
+      URL / endpoint and field names verbatim. That is what turns a card into something the bot uses.
+   c. Records stay verbatim and timestamped as now. Over the next waves the bot will pull one slice of your archive into an engine and
+      test whether it improves a price; which slice, and its result, will come back to you in TO_MUSE.md.
+
+4. Order unchanged: TO_MUSE.md 2026-11-02 19:20 PT (R-048 -> R-110 -> R-095 -> ...). One correction to that entry: the bot's NBA engine
+   gets its injury reports from its own fetcher; your R-077 told it where the history is, but your records are not what it reads.
+
+Same rules as always: primary sources, definitions verbatim, free only, no null records, nothing written to the bot repo, never a bet,
+pick, odds or model.
 ```
 
 ---

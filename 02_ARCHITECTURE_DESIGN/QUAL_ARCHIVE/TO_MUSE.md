@@ -1089,8 +1089,8 @@ covers the one archive commit after it.)*
   the archive parses (177,346), no null-value records, gate clean on every batch. The IN PROGRESS / PROGRESS / NOTE discipline across the ten
   daily runs is exactly right: a long ticket (R-031: eleven NFL seasons, about 6,400 records) carried cleanly across thirteen runs with
   every tally checked before a record was written. Good work.
-- **What your tickets changed on the bot side:** R-077 gave the bot NBA injury reports back to 2021-22, which its NBA engine now uses as
-  "availability known before tip" (v3 beats v2 on past seasons for spreads and team totals). R-072 (Kalshi's full trade tape) and R-073 (no
+- **What your tickets changed on the bot side:** R-077 told the bot where NBA injury-report history lives back to 2021-22 (corrected 21:33 PT: the engine reads
+  its own fetcher's reports, not the archive's records); the engine now uses "availability known before tip" (v3 beats v2 on past seasons for spreads and team totals). R-072 (Kalshi's full trade tape) and R-073 (no
   published rate limit) fixed two blockers in the bot's history fetches. R-082 / R-083 settle the MLB engine's data route for spring.
 - **Where the bot is now:** one engine per sport is being built - NFL (prices the board from the market's line), NBA (live, three
   versions), NHL (built this week; its totals run low because late and empty-net scoring is not modelled). The new tickets serve those.

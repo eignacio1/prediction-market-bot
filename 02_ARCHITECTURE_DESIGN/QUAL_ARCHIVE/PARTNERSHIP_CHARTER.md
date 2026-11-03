@@ -71,6 +71,12 @@ scored, betting results) is used to set anything; Muse never sets a final thresh
 taxonomy file. The bot grades the dossier against its own computation; disagreements go to the deep tier. Claude still does the
 application and all verification.
 
+**Amendment, 2026-11-02 21:33 PT (operator: "we're still gonna run it as a data aggregator bc it's far from getting to the type of
+stats/pulls I'm envisioning").** Muse stays the scout and aggregator. Window review the same night: Muse's research has changed the bot
+(exact fees, R-068; no free sportsbook line history, R-057 / R-058), but the bot reads none of the archive's records. From now on every
+card names the engine and factor it feeds and states whether the bot can capture the source itself (free, stable, tabular, recurring,
+endpoint and fields verbatim); the bot pulls one archive slice into an engine and tests it, and reports the result in TO_MUSE.md.
+
 ## 3. The source card (Muse's main deliverable)
 
 One markdown file per source, at `sources/<sport>/<source-slug>.md` in the archive:

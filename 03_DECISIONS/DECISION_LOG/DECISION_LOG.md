@@ -3102,3 +3102,7 @@ Picks builder cron not installed: Hard Rule 14 (surface RED: silent NBA engine v
 
 ## 2026-11-03 W98.3 session-end
 GG-1630 registered (OPEN, LOW): NHL, NBA player-points and nba_engine writers still log no reasons; register-and-stop per Hard Rule 11. No other decision this close-out. Installs remain the strategic window's to run, in the order in results_W98_3.md.
+## 2026-11-03 05:35 UTC (11-02 21:33 PT) - Muse: role stays data aggregator; archive-to-engine test queued
+- Operator: "we're still gonna run it as a data aggregator bc it's far from getting to the type of stats/pulls I'm envisioning".
+- Window review (code checked): Muse's research is in the bot's code in two places (quant/kalshi_fees.json from R-068; nfl_play_callers.py) and changed direction once (R-057/R-058: no free sportsbook line history); the bot reads none of the archive's 177,346 records. The 19:20 PT TO_MUSE claim that the NBA engine uses R-077's injury reports was wrong (the engine reads its own fetcher) and is corrected in place.
+- Charter v3 §2 amended; M98b in the queue: every card names the engine and factor it feeds and whether the bot can capture the source itself. Next engine block that can take it pipes one archive slice into an engine and tests it.
