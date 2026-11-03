@@ -1,5 +1,21 @@
 # SESSION HANDOFF - W97.4 (NHL engine, B-012) - COMPLETE
 
+<!-- session-meta
+task_id: T-1590
+tier: STANDARD
+timestamp: 2026-11-03T01:10:00Z
+commit: 24d9c52
+one_line_summary: W97.4 NHL engine built+scored (one Poisson sim prices whole board); trails Kalshi at n=33, EXP-046 not earned
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, PROOF
+gap_measure: D4 NHL; D5(b) NHL factor classes; engine held-out Brier vs results and vs Kalshi
+gap_delta: D4 NHL data layer -> whole board priced from one engine (scaffold, 154 tests passed, PR #394 90889dd); D5(b) NHL 0 -> 3 applied + 1 interpreted; vs Kalshi n=33 engine .1849 vs market .1792
+pattern_sweep: flat first-season league baseline fixed; swept src/ scripts/ 12_EXPLORATORY/ -> only c2_feature_store/nhl_features.py:23-24 (shadow arm prior, out of scope, not edited); exploratory writes routed via safe_out
+surface_delta: 0
+-->
+
 Status: DONE | ticket B-012: engine scaffold built and scored (EXP-046 not earned; ticket stays open for the forward test, state change is the strategic window's) | branch session/20261030T184514Z-w97-4-nhl-engine | PRs #390, #394 merged (#394 squash 90889dd), CI green
 vision_pillar: DEPTH (+PROOF)
 gap_measure: D4 NHL; D5(b) NHL factor classes; engine held-out Brier vs results and vs Kalshi

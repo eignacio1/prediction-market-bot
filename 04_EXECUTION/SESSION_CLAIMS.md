@@ -1124,3 +1124,4 @@
 | 2026-10-30T18:47:33Z | T-1590..T-1592, GG-1590..GG-1592 | STANDARD — W97.4 NHL engine prices the whole board (nhl_engine pkg, scored vs held-out + Kalshi, EXP-046 only if earned) — FOR DEPTH (D4 NHL data layer -> whole board priced from one engine; D5(b) NHL factor classes 0->n) + PROOF — B-012 |
 | 2026-11-03T00:41:02Z | T-1580 | CLOSED — merge confirmed, HEAD (5ec8ff5) is ancestor of origin/main — W97.3 picks sheet + MLB winter posture + box memory; PARTIAL (cron held, GG-1581 OOM open) |
 | 2026-11-03T01:01:42Z | T-1540 | CLOSED — merge confirmed, HEAD (32ce647) is ancestor of origin/main — W97.1 NBA v3 built+frozen+merged, NOT live (install refused); points study no win |
+| 2026-11-03T01:07:25Z | T-1590 | CLOSED — W97.4 NHL engine built+scored (one Poisson sim prices whole board); trails Kalshi at n=33, EXP-046 not earned (commit `24d9c52`) |
