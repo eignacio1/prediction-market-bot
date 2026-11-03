@@ -166,6 +166,38 @@ def price_event_rows(event_rows: dict, parsed_by_ticker: dict, tg: pd.DataFrame,
     return rows
 
 
+def coverage_misses(seen: dict, tips: dict, done: set, now: datetime) -> list:
+    """Events in the archive that are not logged and can no longer be: tip has passed (or no tip is known).
+
+    ``seen`` maps event_ticker -> parsed first ticker. Pure; used by every live runner so a game that goes unlogged
+    is always accounted for with a reason instead of vanishing (W98.1 / B-030).
+    """
+    out = []
+    for ev, p0 in sorted(seen.items()):
+        if ev in done:
+            continue
+        tip = tips.get((p0["game_date"], p0["home"], p0["away"]))
+        if tip is None:
+            out.append(dict(event_ticker=ev, reason="no_tip_in_schedule", tip_utc=None))
+        elif now >= tip:
+            out.append(dict(event_ticker=ev, reason="window_closed_without_a_successful_run", tip_utc=tip.isoformat()))
+    return out
+
+
+def write_coverage(out_dir: Path, misses: list, now: datetime) -> int:
+    """Append each (event, reason) to ``coverage.jsonl`` once. Never touches rows.jsonl. Returns rows appended."""
+    f = out_dir / "coverage.jsonl"
+    have = set()
+    if f.exists():
+        have = {(d["event_ticker"], d["reason"]) for d in map(json.loads, (l for l in f.read_text().splitlines() if l.strip()))}
+    new = [dict(m, first_seen=now.isoformat()) for m in misses if (m["event_ticker"], m["reason"]) not in have]
+    if new:
+        with open(f, "a") as fh:
+            for m in new:
+                fh.write(json.dumps(m) + "\n")
+    return len(new)
+
+
 def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Optional[datetime] = None,
         out_dir: Path = OUT_DIR, archive_dir: Path = ARCHIVE_DIR) -> dict:
     """Log rows for every game whose tip - 60 min has passed and that is not yet logged. Idempotent per event."""
@@ -185,7 +217,7 @@ def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Op
     done = set()
     if f_out.exists():
         done = {json.loads(l)["event_ticker"] for l in f_out.read_text().splitlines() if l.strip()}
-    logged, skipped = 0, []
+    logged, skipped, seen = 0, [], {}
     for day in sorted({(now + timedelta(days=d)).strftime("%Y-%m-%d") for d in (0, 1)}):
         arch = read_archive(day, archive_dir) + read_archive((now - timedelta(days=1)).strftime("%Y-%m-%d"), archive_dir)
         by_event = {}
@@ -194,6 +226,7 @@ def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Op
             if p:
                 by_event.setdefault(p["event_ticker"], {})[r["ticker"]] = p
         for ev, parsed in by_event.items():
+            seen.setdefault(ev, next(iter(parsed.values())))
             if ev in done:
                 continue
             p0 = next(iter(parsed.values()))
@@ -213,7 +246,10 @@ def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Op
                     fh.write(json.dumps(r) + "\n")
             done.add(ev)
             logged += len(rows)
-    status = dict(as_of=now.isoformat(), rows_logged_this_run=logged, events_logged_total=len(done), skipped=skipped, params_hash=pid)
+    misses = coverage_misses(seen, tips, done, now)
+    write_coverage(out_dir, misses, now)
+    status = dict(as_of=now.isoformat(), rows_logged_this_run=logged, events_logged_total=len(done), skipped=skipped, params_hash=pid,
+                  unlogged_past_tip=len(misses))
     (out_dir / "status.json").write_text(json.dumps(status, indent=2) + "\n")
     return status
 
