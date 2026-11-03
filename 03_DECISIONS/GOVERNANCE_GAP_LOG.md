@@ -4602,3 +4602,8 @@ W97.3, 2026-11-03, T-1582. `paper_mlb_cron.log` line 1229: 16 games fetched, 0 p
 **Status:** OPEN · **Severity:** LOW
 
 W98.3, 2026-11-03, T-1630. GG-1580 is fixed for the NBA, NFL and MLB game-market arms (PR #401): each row now carries its top three exact ridge contributions. The NHL, NBA player-points and `nba_engine` row writers were not swept, so their picks still show "no reasons available" and their rows carry no `reasons_note`. Fix: give them a reasons path or a `reasons_note` (NOT: any model, stake or frozen pre-registration).
+
+### GG-1600 — Frozen-evidence ladder re-run does not complete in one session on the 1-core box
+**Status:** OPEN · **Severity:** LOW
+
+W98.2 Part C: 259/570 ladder shards done in about 33 min of box time (total 2390.6 s, mean 9.2 s, max 52.3 s). No unit exceeds 900 s; the constraint is total throughput. 311 shards remain (KXMLBTOTAL, KXMLBSPREAD, KXMLBTEAMTOTAL x95, KXNFLTEAMTOTAL x26), needing about 5 more `frozen_resume_step` runs. The two 91.2 held-out KXMLBTOTAL cells stay unclassified until then. Registered by W98.2; no code fix needed.
