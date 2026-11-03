@@ -3099,3 +3099,6 @@ Picks builder cron not installed: Hard Rule 14 (surface RED: silent NBA engine v
 - GG-1580: ridge arms (NBA/NFL/MLB game markets) log top-3 factor contributions as `reasons` (else `reasons_note`); picks sheet renders them. Logging only; no probability, threshold, order, stake or kelly change.
 - Installs prepared, not run: order t3_lock_stagger -> nba_engine (events refresh + v1/v2) -> nba_engine_v3 -> picks_sheet; see 12_EXPLORATORY/box_memory_w98/results_W98_3.md.
 - Open: NHL, NBA-points and nba_engine row writers give no reasons yet (they fall back to "no reasons available").
+
+## 2026-11-03 W98.3 session-end
+GG-1630 registered (OPEN, LOW): NHL, NBA player-points and nba_engine writers still log no reasons; register-and-stop per Hard Rule 11. No other decision this close-out. Installs remain the strategic window's to run, in the order in results_W98_3.md.
