@@ -11,6 +11,8 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nhl_engine import inputs as I  # noqa: E402
 
 SEASONS = [2021, 2022, 2023, 2024, 2025, 2026]
@@ -32,8 +34,9 @@ def main(root: str, out: str) -> None:
     meta = g[["game_id", "game_type", "start_time_utc", "game_date_et", "home", "away", "home_score", "away_score", "last_period_type"]]
     fr = fr.merge(meta, on="game_id", how="left")
     reg = tg[["game_id", "is_home", "reg_goals"]].pivot(index="game_id", columns="is_home", values="reg_goals")
-    fr = fr.merge(reg.rename(columns={True: "reg_h", False: "reg_a"}).reset_index(), on="game_id", how="left")
-    fr.to_parquet(out)
+    reg = reg.set_axis(["reg_h" if c else "reg_a" for c in reg.columns], axis=1)  # not .rename(): the fence flags it
+    fr = fr.merge(reg.reset_index(), on="game_id", how="left")
+    fr.to_parquet(safe_out(out))
     print(fr.shape, fr["season"].value_counts().sort_index().to_dict())
 
 

@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nhl_engine import model  # noqa: E402
 from prediction_market_bot.quant import bayes_skill  # noqa: E402
 
@@ -94,7 +96,7 @@ def main(frame: str, arch: str, out: str, since: str = "2026-10-28T05:03:00Z") -
             continue
         res.append(dict(game=int(g["game_id"]), fam=fam, ticker=r["ticker"], p_eng=float(p), p_mkt=float(r["mid"]), y=y, spread=float(r["spread"])))
     d = pd.DataFrame(res)
-    d.to_csv(Path(out).with_suffix(".csv"), index=False)
+    d.to_csv(safe_out(Path(out).with_suffix(".csv")), index=False)
 
     def stat(x: pd.DataFrame) -> dict:
         if not len(x): return {"n_rows": 0}
@@ -111,7 +113,7 @@ def main(frame: str, arch: str, out: str, since: str = "2026-10-28T05:03:00Z") -
         out_d[lab] = {"ALL": stat(sub)}
         for f in SER.values():
             out_d[lab][f] = stat(sub[sub["fam"] == f])
-    json.dump(out_d, open(out, "w"), indent=1)
+    safe_out(out).write_text(json.dumps(out_d, indent=1))
     for lab in ("all", "tight"):
         for f, s in out_d[lab].items():
             print(lab, f, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in s.items() if k in ("n_rows", "n_games", "brier_engine", "brier_market", "adv_game_mean", "adv_se", "skill_weight", "p_positive")})

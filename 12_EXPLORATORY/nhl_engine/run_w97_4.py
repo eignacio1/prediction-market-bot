@@ -14,6 +14,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nhl_engine import model  # noqa: E402
 
 TEST = [2023, 2024, 2025]
@@ -41,7 +43,7 @@ def probs(b: list) -> dict:
 
 
 def main(frame: str, out: str) -> None:
-    out_d = Path(out); out_d.mkdir(parents=True, exist_ok=True)
+    out_d = Path(out)
     fr = pd.read_parquet(frame)
     fr = fr[(fr["game_type"] == 2) & fr["reg_h"].notna() & fr["home_score"].notna()].reset_index(drop=True)
     rows, summ = [], {}
@@ -65,8 +67,8 @@ def main(frame: str, out: str) -> None:
                 if name == "nb":
                     rows.append(pd.DataFrame({"game_id": te["game_id"], "season": S, "family": key[0], "strike": key[1] if key[1] is not None else np.nan,
                                               "p": p, "y": y, "start": te["start"], "home": te["home"], "away": te["away"]}))
-    pd.concat(rows).to_parquet(out_d / "heldout_predictions.parquet")
-    json.dump(summ, open(out_d / "heldout_summary.json", "w"), indent=1)
+    pd.concat(rows).to_parquet(safe_out(out_d / "heldout_predictions.parquet"))
+    safe_out(out_d / "heldout_summary.json").write_text(json.dumps(summ, indent=1))
     for S in TEST:
         print(S, summ[S]["n_test"], "k=%.1f" % summ[S]["k_nb"], "pOT=%.3f" % summ[S]["p_home_ot"])
         for key in summ[S]["nb"]:
