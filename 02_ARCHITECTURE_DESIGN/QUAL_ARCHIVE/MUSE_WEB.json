@@ -1,7 +1,7 @@
 {
- "about": "State of Muse's aggregation work across the four sports, drawn as the Visual Dashboard's aggregation web. Maintained by the strategic window at every wave close from the archive (eignacio1/sports-intel-archive, commit below), TO_MUSE.md and the bot repo. built = delivered and in the repo/archive; pending = a ticket or block open now; future = planned, no ticket yet. Operator 2026-10-21 08:11 PT: 'give us an idea of pending, built, future'.",
- "as_of": "2026-10-28T05:00Z",
- "archive_commit": "e1f8c67",
+ "about": "State of Muse's aggregation work across the four sports, drawn as the Visual Dashboard's aggregation web. Maintained by the strategic window at every wave close from the archive (eignacio1/sports-intel-archive, commit below), TO_MUSE.md and the bot repo. built = delivered and in the repo/archive; pending = a ticket or block open now; future = planned, no ticket yet. Operator 2026-10-21 08:11 PT: 'give us an idea of pending, built, future'. Where it is going (operator 2026-11-02 21:40 PT): the raw tables are the starting place for conceptual aggregation - compound splits such as \"mid range jumper shooting archetypes during 2-4 minute close games on the road with your primary point guard hurt against a team that plays zone\" - and \"the interpretative data should be able to feed each other as each branch gets built - exponentially making each branch easier to build\". Each sport's 'Compound splits' spoke is that layer; its notes name the base branches it is built from. Muse's standing role (charter v3 amendment, 2026-11-02): aggregator and scout; every card names the engine and factor it feeds and whether the bot can capture the source itself. As of 11-02 the bot reads none of the archive's records directly (177,346); Muse's value so far is the scouting (fees, data routes, what does not exist).",
+ "as_of": "2026-11-03T05:50Z",
+ "archive_commit": "4bf92d1",
  "rings": [
   {
    "id": "scout",
@@ -99,14 +99,14 @@
    "name": "Charting · motion · play action",
    "tickets": "R-037",
    "states": [
-    "pending",
+    "built",
     "future",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-037: nflverse FTN charting card (motion, play action, RPO, pass rushers, box), field by field",
+    "R-037 CLOSED: nflverse FTN charting card (motion, play action, RPO, pass rushers, box), field by field",
     "The bot reads the files itself",
     "",
     "",
@@ -118,18 +118,18 @@
    "name": "Coordinators · play callers",
    "tickets": "R-019",
    "states": [
-    "pending",
-    "pending",
-    "future",
-    "future",
+    "built",
+    "built",
+    "built",
+    "built",
     "future"
    ],
    "notes": [
-    "R-019 queued (GG-731)",
-    "OC/DC 2016-2026 + named play callers",
-    "Factor F9 coaching",
-    "",
-    ""
+    "R-019 PARTIAL: OC/DC season table done",
+    "665 team-role-seasons; play callers 0 records, mid-season changes 1",
+    "Factor N11 coaching (seat: interpreted)",
+    "94.2: the bot built its own caller proxy (nfl_play_callers.py)",
+    "94.2: rigorous null - the line already holds the callers' tendencies (totals, team totals)"
    ]
   },
   {
@@ -137,15 +137,15 @@
    "name": "Officiating crews",
    "tickets": "R-031",
    "states": [
-    "pending",
-    "pending",
+    "built",
+    "built",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-031: crew assignments and tendency sources",
-    "Crew-season penalty totals 2016-2026",
+    "R-031 CLOSED: assignment and tendency cards",
+    "Crew-season penalty records, all eleven seasons 2016-2026",
     "",
     "",
     ""
@@ -156,15 +156,15 @@
    "name": "Split pairs for the crosses",
    "tickets": "R-022",
    "states": [
-    "pending",
-    "future",
+    "built",
+    "built",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-022 queued: both sides of each split at the same definition",
-    "",
+    "R-022 CLOSED",
+    "Both sides of each split at the same definition",
     "",
     "",
     ""
@@ -183,7 +183,7 @@
    ],
    "notes": [
     "R-026 CLOSED: NWS NDFD forecast archive, CAPTURABLE (grid issue + valid time; AWS copy 2020 -> now, NCEI 2004 -> now)",
-    "R-024 stadium geometry; R-035 playing surfaces 2016-2026",
+    "R-024 stadium geometry and R-035 playing surfaces queued",
     "",
     "",
     ""
@@ -228,6 +228,82 @@
    ]
   },
   {
+   "sport": "NFL",
+   "name": "Participation · schedule geometry",
+   "tickets": "R-085 · R-086",
+   "states": [
+    "built",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-085 CLOSED: nflverse participation (who was on the field, play by play) - the bot can read it itself; R-086 schedule geometry queued",
+    "",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Kickers · extra points · 4th-down models",
+   "tickets": "R-100 · R-101 · R-102",
+   "states": [
+    "pending",
+    "pending",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "New 11-02: kicker range and accuracy by distance / stadium / weather; XP and 2-pt rates since 2015; public go / kick models",
+    "Per kicker and per season",
+    "Feeds the NFL engine's scoring and key numbers",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Kalshi venue data (all four sports)",
+   "tickets": "R-068 · R-072 · R-073 · R-074 · R-075 · R-076 · R-108 · R-109",
+   "states": [
+    "built",
+    "future",
+    "future",
+    "built",
+    "built"
+   ],
+   "notes": [
+    "CLOSED: R-068 fees verbatim, R-072 full trade tape, R-073 no published rate limit, R-074 liquidity programs. Queued: R-075 combos, R-076 in-game halts, R-108 open interest, R-109 depth history",
+    "",
+    "",
+    "The bot fetches Kalshi itself; R-072 / R-073 unblocked its history pulls",
+    "R-068 is in the bot's code: quant/kalshi_fees.json - every net is after the exact fee"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "name": "Compound splits (the conceptual layer)",
+   "tickets": "future",
+   "states": [
+    "future",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "Built from the base branches: coverage / pressure / personnel, charting, participation, play callers, officials, venue and weather",
+    "e.g. a defense's pressure rate vs 3-wide motion sets, by down and field zone, against the QB's game script",
+    "The granularity index: split -> rank vs history -> matchup cross -> market map -> application",
+    "",
+    ""
+   ]
+  },
+  {
    "sport": "NBA",
    "name": "PAM · v4 template",
    "taxonomy": "nba",
@@ -269,7 +345,7 @@
   {
    "sport": "NBA",
    "name": "Injury report route",
-   "tickets": "R-041",
+   "tickets": "R-041 · R-077",
    "states": [
     "built",
     "built",
@@ -278,11 +354,11 @@
     "pending"
    ],
    "notes": [
-    "R-041: free plain-GET routes documented",
+    "R-041: free plain-GET routes documented; R-077 CLOSED: the archive of past reports 2021-22 -> now (one card, no records)",
     "84.1: the bot relays the official PDFs through a GitHub runner",
     "",
     "Read back on the box 10-22 03:15Z (92 rows)",
-    "The lineup factor accrues under its frozen pre-registration"
+    "v3 uses availability known before tip from the bot's own fetcher: beats v2 held-out on spreads and team totals; frozen EXP-044c"
    ]
   },
   {
@@ -309,15 +385,15 @@
    "name": "Defense tracking · hustle",
    "tickets": "R-043 · R-044",
    "states": [
-    "pending",
-    "pending",
+    "built",
+    "built",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-043 rim and shot defense dashboards; R-044 hustle tables",
-    "3 seasons each",
+    "R-043 / R-044 CLOSED",
+    "R-043 three seasons (~51,000 records); R-044 three seasons (20,580)",
     "Moves R-027 NONE rows where they can",
     "",
     ""
@@ -329,14 +405,14 @@
    "tickets": "R-023 · R-042",
    "states": [
     "built",
-    "pending",
+    "built",
     "future",
     "future",
     "future"
    ],
    "notes": [
     "Card written (R-012)",
-    "R-023 2025-26, then R-042 for the two prior seasons",
+    "R-023 CLOSED: 2025-26, 30 teams (1,380 records); R-042 prior seasons queued",
     "",
     "",
     ""
@@ -347,15 +423,15 @@
    "name": "Player & team advanced · clutch",
    "tickets": "R-021 · R-025 · R-045",
    "states": [
-    "pending",
-    "pending",
+    "built",
+    "built",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-021 / R-025 / R-045 queued",
-    "Usage, TS%, ratings, pace; clutch splits",
+    "R-021 CLOSED (player season layer); R-025 team advanced and R-045 clutch queued",
+    "R-021: 2023-24 -> 2026-27 to date, minutes + advanced, eight chunks",
     "",
     "",
     ""
@@ -364,17 +440,17 @@
   {
    "sport": "NBA",
    "name": "Referees",
-   "tickets": "R-040",
+   "tickets": "R-040 · R-097",
    "states": [
-    "pending",
-    "pending",
+    "built",
+    "built",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-040: assignment page timing + tendency sources",
-    "Per-referee values, 3 seasons",
+    "R-040 CLOSED: league assignment card + NBAstuffer",
+    "Referee-season records, three seasons; R-097 (when crews are posted) queued - the bot can only use a crew known before the price (GG-1390)",
     "",
     "",
     ""
@@ -383,16 +459,16 @@
   {
    "sport": "NBA",
    "name": "Arena geometry",
-   "tickets": "R-024",
+   "tickets": "R-024 · R-078",
    "states": [
-    "pending",
+    "built",
     "pending",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-024 queued (GG-913)",
+    "R-078 CLOSED: NBA and NHL arenas, time zones, tip times (3 cards); R-024 queued",
     "Coordinates, time zones, altitude",
     "Travel factor N5",
     "",
@@ -414,6 +490,44 @@
     "R-057: no free bulk line history 2016-2026 (OddsPortal one-off only); the bot anchors on Kalshi's own history",
     "",
     "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Data speed · rest rules · garbage time",
+   "tickets": "R-110 · R-098 · R-103 · R-099",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "New 11-02: how fast free sources post last night's games (the bot's store runs two days behind - top of the order); rest policy; garbage-time flags; NBA Cup games",
+    "",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NBA",
+   "name": "Compound splits (the conceptual layer)",
+   "tickets": "future",
+   "states": [
+    "future",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "Built from the base branches: play types and tracking, matchups (who guards whom), lineups and on/off, availability, clutch, defense tracking, arenas and travel",
+    "Operator 11-02: \"mid range jumper shooting archetypes during 2-4 minute close games on the road with your primary point guard hurt against a team that plays zone\"",
+    "PAM archetype x clutch split x road x availability x opponent scheme; each branch, once interpreted, feeds the next",
     "",
     ""
    ]
@@ -441,16 +555,16 @@
   {
    "sport": "MLB",
    "name": "Pitch arsenals · hitter vs pitcher",
-   "tickets": "R-054",
+   "tickets": "R-054 · R-082 · R-083",
    "states": [
-    "pending",
+    "built",
     "pending",
     "future",
     "future",
     "future"
    ],
    "notes": [
-    "R-054: Savant pitch-arsenal tables",
+    "R-054 queued; R-082 CLOSED (Savant: what is free, per request, terms); R-083 CLOSED (Retrosheet vs the Stats API live feed)",
     "Per pitcher and pitch type, 2023-2026",
     "",
     "",
@@ -496,6 +610,44 @@
    ]
   },
   {
+   "sport": "MLB",
+   "name": "Bullpen availability",
+   "tickets": "R-084",
+   "states": [
+    "built",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "R-084 CLOSED: reliever pitch counts over the last three days, point-in-time route",
+    "The bot can build it from the pitch feed (R-083)",
+    "",
+    "",
+    "For the MLB engine before spring"
+   ]
+  },
+  {
+   "sport": "MLB",
+   "name": "Compound splits (the conceptual layer)",
+   "tickets": "future",
+   "states": [
+    "future",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "Built from: pitch arsenals, park factors by hand and batted-ball type, umpires, team defense, bullpen availability",
+    "e.g. a lineup's results vs a pitcher's secondary pitch in a hitter's park with a tired bullpen behind him",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
    "sport": "NHL",
    "name": "PAM · 18 archetypes",
    "taxonomy": "nhl",
@@ -518,7 +670,7 @@
   {
    "sport": "NHL",
    "name": "xG · lines · EDGE sources",
-   "tickets": "R-020 · R-050",
+   "tickets": "R-020 · R-080 · R-050 · R-081 · R-111",
    "states": [
     "built",
     "future",
@@ -527,11 +679,11 @@
     "built"
    ],
    "notes": [
-    "R-020: 8 NHL factor-source cards; R-050 line-combination history queued",
+    "R-020: 8 factor-source cards; R-080 CLOSED (shot location and xG definitions); R-050 lines, R-081 special-teams units, R-111 shift-chart gaps queued",
     "",
     "",
     "The bot's own NHL event store (12 seasons) is the base",
-    "84.3: shot quality to a price vs Kalshi: too few to tell"
+    "97.4: the NHL board engine reads shot quality; trails Kalshi at n 33"
    ]
   },
   {
@@ -565,8 +717,8 @@
     "future"
    ],
    "notes": [
-    "R-048 officials (GG-1012), R-049 coaches 2014-2026",
-    "Per-referee and per-team-season records",
+    "R-048 IN PROGRESS (3 of 5 seasons); R-049 coaches queued",
+    "Referee-season records 2021-22 -> 2025-26",
     "",
     "",
     ""
@@ -586,6 +738,44 @@
    "notes": [
     "R-057: no free bulk line history 2016-2026 (OddsPortal one-off only); the bot anchors on Kalshi's own history",
     "",
+    "",
+    "",
+    ""
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "Late-game scoring · overtime",
+   "tickets": "R-095 · R-096",
+   "states": [
+    "pending",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "New 11-02: empty-net goals and goalie pulls; OT / shootout formats by season",
+    "",
+    "Why the NHL engine's totals run low (97.4)",
+    "",
+    "98.1 Part B models it"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "name": "Compound splits (the conceptual layer)",
+   "tickets": "future",
+   "states": [
+    "future",
+    "future",
+    "future",
+    "future",
+    "future"
+   ],
+   "notes": [
+    "Built from: shot quality, goalie starts and workload, special-teams units, line combinations, officials, travel",
+    "e.g. a power play's shot quality vs a penalty kill's scheme on the second night of a back-to-back with the backup in net",
     "",
     "",
     ""
