@@ -67,6 +67,10 @@ TASKS: dict[str, str] = {
     "nba_engine_v3_cron_install": f"{PY} scripts/nba_engine_v3_cron_install.py install",
     "nba_engine_v3_cron_readback": f"{PY} scripts/nba_engine_v3_cron_install.py readback",
     "nba_engine_v3_cron_uninstall": f"{PY} scripts/nba_engine_v3_cron_install.py uninstall",
+    # W98.3: picks-sheet builder cron line (B-026; install is budget-gated, backs up the crontab first)
+    "picks_sheet_cron_install": f"{PY} scripts/picks_sheet_cron_install.py install",
+    "picks_sheet_cron_readback": f"{PY} scripts/picks_sheet_cron_install.py readback",
+    "picks_sheet_cron_uninstall": f"{PY} scripts/picks_sheet_cron_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",

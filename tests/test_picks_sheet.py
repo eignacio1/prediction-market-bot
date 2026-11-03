@@ -106,3 +106,18 @@ def test_build_injects_the_picks_panel(tmp_path):
     bvd.build(out)
     html = out.read_text()
     assert 'id="picks"' in html and "function picksSheet()" in html and "__PICKS__" not in html
+
+
+def test_reasons_from_row_in_plain_words_and_flip_with_side():
+    r = {"factor": "home team points scored per game, last 10", "value": 118.2, "pts": 2.4, "toward_yes": 2.4}
+    yes_row = dict(_row("KXNBAGAME-26OCT30LALDEN-LAL", 0.70, 0.55, 0.57), reasons=[r])
+    no_row = dict(_row("KXNBAGAME-26OCT30LALDEN-DEN", 0.30, 0.55, 0.57), reasons=[r])
+    assert "supports this pick" in ps.pick_from_row(yes_row, "a")["reasons"][0]
+    assert "works against this pick" in ps.pick_from_row(no_row, "a")["reasons"][0]
+    assert "118.2" in ps.pick_from_row(yes_row, "a")["reasons"][0]
+
+
+def test_arm_without_reasons_says_so():
+    row = dict(_row("KXNBAGAME-26OCT30LALDEN-LAL", 0.70, 0.55, 0.57), reasons=None, reasons_note="no per-factor model")
+    out = ps.pick_from_row(row, "a")["reasons"]
+    assert len(out) == 1 and out[0].startswith(ps.NO_REASONS) and "no per-factor model" in out[0]

@@ -14,6 +14,7 @@ class PregameForecast:
     model_id: str                  # frozen model artifact id
     model_sha256: str              # sha256 of the frozen artifact file
     feature_row_sha256: str        # sha256 of the exact feature row used
+    reasons: Optional[tuple] = None  # W98.3: top-3 factor contributions (logging only); None = arm cannot give them
 
 class PregameForecaster(Protocol):
     sport: str
