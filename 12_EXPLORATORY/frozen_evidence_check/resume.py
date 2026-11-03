@@ -93,27 +93,48 @@ def _unit_path(series: str, until: str | None) -> str:
 
 
 def run_unit(series: str, until: str | None, settle: str) -> dict:
+    """89.2 scan/cell test for one series (whole window: the cell test pools across dates, so it is not shardable by file)."""
     import exact_fee_recompute as X
     sd = _series_dir(series, until)
-    if series in R.SERIES:
-        cells = [c for c in X.run_89(sd, settle) if c["cell"][0] == series]
-        out = {"series": series, "until": until, "kind": "89", "cells": cells}
-    else:
-        out = {"series": series, "until": until, "kind": "91", "rows": None}
-    if series in R.LADDER_SERIES:
-        import calib
-        import ladder_ride as LR
-        st = calib.load_settlements(settle)
-        recs, _ = LR.build_records(LR.load(sd))
-        rows = {"old": X.ladder_rows(recs, st, lambda s, q: X.fee_k007(q)), "exact": X.ladder_rows(recs, st, X.fee_x)}
-        out["rows"] = rows
+    cells = [c for c in X.run_89(sd, settle) if c["cell"][0] == series]
+    out = {"series": series, "until": until, "kind": "89", "cells": cells}
     with open(safe_out(_unit_path(series, until)), "w") as fh:
         json.dump(out, fh)
     return out
 
 
+def _shard_path(series: str, date: str) -> str:
+    return os.path.join(_dir("units91"), f"{series}__{date}.json")
+
+
+def shard_dates(series: str) -> list:
+    return sorted(R.file_date(f) for f in glob.glob(os.path.join(_dir("pre", series), "prices_*.jsonl")))
+
+
+def run_shard(series: str, date: str, settle: str) -> dict:
+    """91.2 ladder build for ONE series on ONE date file (W98.2 Part C, GG-1600). Ladder records are per (series, event, group);
+    an event whose rows straddle two date files is split across two shards (see the handoff's caveat)."""
+    import exact_fee_recompute as X
+    import calib
+    import ladder_ride as LR
+    sub = _dir("shard", series, date)
+    link = os.path.join(sub, f"prices_{date}.jsonl")
+    if not os.path.islink(link):
+        safe_out(link).symlink_to(os.path.abspath(os.path.join(_dir("pre", series), f"prices_{date}.jsonl")))
+    st = calib.load_settlements(settle)
+    recs, _ = LR.build_records(LR.load(sub))
+    rows = {"old": X.ladder_rows(recs, st, lambda s, q: X.fee_k007(q)), "exact": X.ladder_rows(recs, st, X.fee_x)}
+    out = {"series": series, "date": date, "kind": "91", "rows": rows}
+    with open(safe_out(_shard_path(series, date)), "w") as fh:
+        json.dump(out, fh)
+    return out
+
+
 def pending_units() -> list:
-    return [(s, w) for w in WINDOWS for s in ALL_SERIES if not os.path.exists(_unit_path(s, w))]
+    """89 units (series, window) then 91 shards ('91', series, date)."""
+    u = [(s, w) for w in WINDOWS for s in R.SERIES if not os.path.exists(_unit_path(s, w))]
+    sh = [("91", s, d) for s in R.LADDER_SERIES for d in shard_dates(s) if not os.path.exists(_shard_path(s, d))]
+    return u + sh
 
 
 def step(archive: str, settle: str, budget_s: float = 700.0) -> dict:
@@ -122,15 +143,23 @@ def step(archive: str, settle: str, budget_s: float = 700.0) -> dict:
     if pf["left"]:
         return {"prefilter": pf, "units_done": 0, "remaining_units": len(pending_units()) + 0, "note": "prefilter incomplete; re-run"}
     done, slowest = 0, 0.0
-    for s, w in pending_units():
+    for u in pending_units():
         left = budget_s - (time.time() - t0)
-        if left < max(_UNIT_GUARD_S, 1.3 * slowest):
+        if left < max(_UNIT_GUARD_S if u[0] != "91" else 20.0, 1.3 * slowest):
             break
         t1 = time.time()
-        run_unit(s, w, settle)
-        slowest = max(slowest, time.time() - t1)
+        if u[0] == "91":
+            run_shard(u[1], u[2], settle)
+            label = f"91 {u[1]} {u[2]}"
+        else:
+            run_unit(u[0], u[1], settle)
+            label = f"89 {u[0]} {u[1] or 'full'}"
+        dt = time.time() - t1
+        slowest = max(slowest, dt)
         done += 1
-        print(f"[resume] unit {s} {w or 'full'} {time.time() - t1:.0f}s", flush=True)
+        print(f"[resume] unit {label} {dt:.1f}s", flush=True)
+        with open(safe_out(os.path.join(_dir("units91"), "_timing.log")), "a") as lg:
+            lg.write(f"{label}\t{dt:.1f}\n")
     return {"prefilter": pf, "units_done": done, "remaining_units": len(pending_units()), "slowest_unit_s": round(slowest),
             "elapsed_s": round(time.time() - t0)}
 
@@ -144,8 +173,15 @@ def _ladder_stat(rs: list):
 
 
 def combine_window(until: str | None) -> dict:
-    units = {s: json.load(open(_unit_path(s, until))) for s in ALL_SERIES if os.path.exists(_unit_path(s, until))}
-    missing = [s for s in ALL_SERIES if s not in units]
+    units = {s: json.load(open(_unit_path(s, until))) for s in R.SERIES if os.path.exists(_unit_path(s, until))}
+    missing = [s for s in R.SERIES if s not in units]
+    lad = {}
+    for s_ in R.LADDER_SERIES:
+        ds = shard_dates(s_)
+        todo = [d for d in ds if not os.path.exists(_shard_path(s_, d))]
+        if not ds or todo:
+            missing.append(f"{s_}(91:{len(todo)}/{len(ds)} shards left)")
+        lad[s_] = [json.load(open(_shard_path(s_, d))) for d in ds if os.path.exists(_shard_path(s_, d)) and (not until or d < until)]
     import exact_fee_recompute as X
     cells = []
     for fam in R.SERIES:
@@ -162,7 +198,7 @@ def combine_window(until: str | None) -> dict:
         out.append({"id": f"89.2 {fam} {t} {lab} {bk} {c['side']}", "rep": (c["rep_n"], c["rep_net"], c["rep_lo"]), "n": c["n"],
                     "games": c["games"], "k007": c["old"], "exact": c["exact"],
                     "status": R.classify(c["rep_n"], c["rep_net"], c["rep_lo"], c["n"], c["old"]["net"], c["old"]["lo"])})
-    rows = {tag: [r for s in R.LADDER_SERIES if s in units for r in (units[s]["rows"] or {}).get(tag, [])] for tag in ("old", "exact")}
+    rows = {tag: [r for s_ in R.LADDER_SERIES for sh in lad[s_] for r in sh["rows"].get(tag, [])] for tag in ("old", "exact")}
     dates = sorted({r["date"] for r in rows["old"]})
     split = dates[len(dates) // 2] if dates else ""
     for gap, rep in (("net2-5c", (117, 0.0870, 0.0336)), ("net5c+", (30, 0.2166, 0.0951))):

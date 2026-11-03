@@ -89,3 +89,19 @@ def test_box_tasks_registered_and_read_only_on_the_archive():
     import box_tasks as B
     for t in ("frozen_resume_step", "frozen_resume_combine"):
         assert "resume.py" in B.TASKS[t] and "rm " not in B.TASKS[t]
+
+
+def test_w98_2_ladder_units_are_one_per_date_file_and_timed(tmp_path, monkeypatch):
+    """GG-1600: a ladder series is sharded per date file (one unit each), each unit logs its time."""
+    arch, settle = _setup(tmp_path, monkeypatch)
+    M.prefilter(arch)
+    pend = M.pending_units()
+    shards = [u for u in pend if u[0] == "91"]
+    assert shards and all(len(u) == 3 for u in shards)
+    assert {u[1] for u in shards} <= set(M.R.LADDER_SERIES)
+    assert {u[2] for u in shards} == {"2026-10-20"}  # the synthetic archive has one date file
+    M.step(arch, settle, budget_s=10_000)
+    assert M.pending_units() == []
+    log = (pathlib.Path(M._dir("units91")) / "_timing.log").read_text().splitlines()
+    assert any(l.startswith("91 KXMLBTOTAL 2026-10-20\t") for l in log)
+    assert M.combine_window(None)["missing_units"] == []
