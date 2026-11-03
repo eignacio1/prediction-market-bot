@@ -1,10 +1,21 @@
 # SESSION_HANDOFF 2026-11-03T01:00Z — W97.1 (engine lane, NBA v3)
-task_id: W97.1 (B-001 + B-009)
+
+<!-- session-meta
+task_id: T-1540
+tier: STANDARD
+timestamp: 2026-11-03T01:00:00Z
+commit: 3843413
+one_line_summary: W97.1 NBA v3 engine built+frozen (EXP-044c), merged, NOT live (install refused); points availability study loses, no EXP-044d
+gg_touched: GG-1450
+adr_touched: none
+plan_deliverable_moved: no
 vision_pillar: DEPTH + PROOF
 gap_measure: D4/D5 (NBA engine arms with rows; v3 frozen), P1
 gap_delta: v3 frozen+merged 0→1 (EXP-044c, PR #391); v1, v2 rows verified 2 arms OK on 6/6 games (box read 20261103T0052Z); v3 installed 0→0 (install refused); points: engine_set measured, loses (+0.0131 Brier [+0.0106,+0.0158]), no EXP-044d
 pattern_sweep: build_frozen_v3.py and study_partc_w97.py write via safe_out; study_partc_w97 first joined its csv path to HERE rather than HERE.parent (doubled dir) — fixed; freeze_v3.py, study_v3_lead60.py, factors_frame.py, study_v3.py already use safe_out
 surface_delta: +1 cron line registered (nba_engine_live_v3), NOT installed; +1 silent-arm spec (additive); 0 live components added
+-->
+task_id: W97.1 (B-001 + B-009)
 
 Status: PARTIAL | B-001: v3 built+frozen+merged, NOT live (install refused; GG-1450 open) | B-009: DONE, no win — EXP-044d not frozen
 Branches/PRs: #391 merged `4e5cfd65` (CI green); #395 `session/w97-1-partc-points-availability` (Part C module+study; CI result in PR)
