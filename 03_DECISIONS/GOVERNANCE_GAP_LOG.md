@@ -4578,3 +4578,21 @@ W96.2, 2026-10-30, T-1521. `regen_nfl_board.py` failed on the box: `exp_output/N
 **Status:** OPEN · **Severity:** LOW
 
 W96.2, 2026-10-30, T-1522. The first window run (exit 255) lost all output; the box process kept running with its stdout gone. The runner has no box-side output file to read back. The stderr heartbeat (#386) prevents idle drops for `repro.py` only.
+
+### GG-1580 — Picks sheet cannot say why: ledger rows hold `feature_row_sha256`, not the features
+
+**Status:** OPEN · **Severity:** LOW
+
+W97.3, 2026-11-03, T-1580. The picks sheet prints "no reasons available" for every pick because shadow ledger rows store a hash of the feature row, not the factors behind the probability. Fix: a separate, permissioned change to the runner rows (log the top factors), not made here (NOT: any model or live runner).
+
+### GG-1581 — Box is OOM-killing shadow-arm cycles: the T3 runners stack with no lock
+
+**Status:** OPEN · **Severity:** HIGH
+
+W97.3, 2026-11-03, T-1581. 20 OOM kills of `python` in about 90 min (6 at 23:xx on Nov 2, 14 at 00:xx on Nov 3; `dmesg -T`), two of them 171-180 MB shadow runners; RAM 961 MB, available 57-134 MB, swap 1.3-1.5 GB, load 9.5. Cause: `run_nba_pregame_shadow`, `run_pregame_shadow`, `run_nhl_shadow_staked` and `run_nba_player_points_shadow` T3 lines launch every 10 min with no `flock`, each run lasts 13-62 min, so 2-3 copies of each run at once (peak RSS 243-381 MB each). Every kill is a lost cycle (rows not written). Proposed fix, for the strategic window (it edits existing cron lines, outside W97.3 PERMISSIONS): wrap each T3 line in `flock -n /tmp/<runner>.lock`, as the NBA engine lines already are, and spread the start minutes; first confirm with each arm's pre-registration that skipping a launch while the prior run is alive is acceptable. Also look at why an NBA pregame T3 run lasts 62 min. Detail: `12_EXPLORATORY/picks_sheet_w97/results_W97_3.md`.
+
+### GG-1582 — T1 MLB `SemanticFloorViolation` on 2026-07-10 is unexplained
+
+**Status:** OPEN · **Severity:** LOW
+
+W97.3, 2026-11-03, T-1582. `paper_mlb_cron.log` line 1229: 16 games fetched, 0 players matched. The other hit (2026-10-16, 1 game, "No KXMLBHIT markets available") is a no-player-markets postseason day and needs nothing. The July hit predates this window and was not diagnosed.
