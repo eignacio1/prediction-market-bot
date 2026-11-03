@@ -4596,3 +4596,9 @@ W97.3, 2026-11-03, T-1581. 20 OOM kills of `python` in about 90 min (6 at 23:xx 
 **Status:** OPEN · **Severity:** LOW
 
 W97.3, 2026-11-03, T-1582. `paper_mlb_cron.log` line 1229: 16 games fetched, 0 players matched. The other hit (2026-10-16, 1 game, "No KXMLBHIT markets available") is a no-player-markets postseason day and needs nothing. The July hit predates this window and was not diagnosed.
+
+### GG-1630 — Three shadow-arm writers still log no reasons: NHL, NBA player-points, `nba_engine`
+
+**Status:** OPEN · **Severity:** LOW
+
+W98.3, 2026-11-03, T-1630. GG-1580 is fixed for the NBA, NFL and MLB game-market arms (PR #401): each row now carries its top three exact ridge contributions. The NHL, NBA player-points and `nba_engine` row writers were not swept, so their picks still show "no reasons available" and their rows carry no `reasons_note`. Fix: give them a reasons path or a `reasons_note` (NOT: any model, stake or frozen pre-registration).
