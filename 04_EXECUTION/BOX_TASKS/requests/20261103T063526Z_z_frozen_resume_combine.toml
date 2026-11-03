@@ -1,0 +1,2 @@
+task = "frozen_resume_combine"
+note = "B-002: classify the 13 cells (window, read-only)"
