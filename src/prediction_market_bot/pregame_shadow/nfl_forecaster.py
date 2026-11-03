@@ -9,7 +9,9 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 
 from prediction_market_bot.c1_signal_ingestion.nfl_pregame_features import NFLPregameFeatureBuilder
+from prediction_market_bot.c1_signal_ingestion.nfl_pregame_features import FEATURE_NAMES
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
+from prediction_market_bot.pregame_shadow.reasons import ridge_reasons
 from prediction_market_bot.pregame_shadow.nfl_model import NFLPregameModel, p_yes_for
 
 KALSHI_TO_NFLVERSE = {"LAR": "LA", "JAC": "JAX"}  # Kalshi uses WAS for Washington (live 2026-10-02)
@@ -124,5 +126,8 @@ class NFLForecaster:
                           subject_is_home=(p["subject"] == g["home"]) if p["subject"] else None,
                           strike=p["strike"])
         p_yes = min(max(p_yes, 1e-4), 1 - 1e-4)
+        why = ridge_reasons(self.model.a, FEATURE_NAMES, row["features"], p["market_type"],
+                            subject_is_home=(p["subject"] == g["home"]) if p["subject"] else None)
         return PregameForecast("NFL", p["market_type"], p["event_ticker"], market_ticker, p_yes,
-                               as_of_utc, self.model.model_id, self.model.sha256, row["sha256"])
+                               as_of_utc, self.model.model_id, self.model.sha256, row["sha256"],
+                               tuple(why) if why else None)

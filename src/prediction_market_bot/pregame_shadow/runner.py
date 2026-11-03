@@ -13,6 +13,7 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Callable, Optional
 
+from prediction_market_bot.pregame_shadow.reasons import NO_REASONS_NOTE
 from prediction_market_bot.pregame_shadow.bands import band_for_horizon
 from prediction_market_bot.pregame_shadow.fees import e_net, fee_kmult, fee_k007
 from prediction_market_bot.pregame_shadow.ledger import CellLedger
@@ -99,7 +100,10 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 "start_time_utc": start.isoformat(), "start_time_source": src, "code_sha": code_sha,
             }
             led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
-            if led.append(row, {**quote_fields(m, now_utc), **(row_extra_for(tkr) if row_extra_for else {})}):
+            # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
+            why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
+                   else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
+            if led.append(row, {**quote_fields(m, now_utc), **why, **(row_extra_for(tkr) if row_extra_for else {})}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:

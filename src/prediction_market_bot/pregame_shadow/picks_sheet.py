@@ -16,6 +16,7 @@ from prediction_market_bot.pregame_shadow.settled_schema import settled_y
 from prediction_market_bot.quant.money import fee_rate
 
 NO_REASONS = "no reasons available"
+from prediction_market_bot.pregame_shadow.reasons import reason_text  # noqa: E402
 SCHEMA = 1
 
 
@@ -87,6 +88,18 @@ def describe(row: dict, side: str) -> str:
     return f"{sport} {mt} {tail}: {side.upper()}".strip()
 
 
+def reasons_for(row: dict, side: str) -> list:
+    """Plain-word top reasons stored on the decision row (W98.3); an arm that did not log any says so, in its own words."""
+    stored = row.get("reasons")
+    if isinstance(stored, list) and stored:
+        try:
+            return [reason_text(r, side) for r in stored[:3]]
+        except (KeyError, TypeError):
+            pass
+    note = row.get("reasons_note")
+    return [("%s (%s)" % (NO_REASONS, note)) if note else NO_REASONS]
+
+
 def pick_from_row(row: dict, arm: str) -> Optional[dict]:
     """One decision row -> a pick dict (or None when there is no usable two-sided quote or no positive edge)."""
     ticker = row.get("market_ticker") or row.get("ticker")
@@ -113,7 +126,7 @@ def pick_from_row(row: dict, arm: str) -> Optional[dict]:
         "bot_prob_for_pick": round(p if side == "yes" else 1.0 - p, 4),
         "kalshi_price_yes": round(price_yes, 4),
         "edge_after_fee": round(e["edge"], 4),
-        "reasons": [NO_REASONS],
+        "reasons": reasons_for(row, side),
         "decided_utc": row.get("ts_utc") or row.get("logged_at"),
         "demo_order": None,
         "result": None,

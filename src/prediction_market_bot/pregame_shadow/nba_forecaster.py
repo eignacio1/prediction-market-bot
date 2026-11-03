@@ -7,7 +7,9 @@ from typing import Any, Optional
 
 from prediction_market_bot.c1_signal_ingestion.nba_ingest import KALSHI_TEAMS
 from prediction_market_bot.c1_signal_ingestion.nba_pregame_features import NBAFeatureBuilder, _dt, et_date
+from prediction_market_bot.c1_signal_ingestion.nba_pregame_features import FEATURE_NAMES
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
+from prediction_market_bot.pregame_shadow.reasons import ridge_reasons
 from prediction_market_bot.pregame_shadow.nba_model import NBAPregameModel, p_yes_for
 
 KALSHI_CODES = set(KALSHI_TEAMS)
@@ -99,5 +101,8 @@ class NBAForecaster:
                           subject_is_home=(p["subject"] == g["home"]) if p["subject"] else None,
                           strike=p["strike"])
         p_yes = min(max(p_yes, 1e-4), 1 - 1e-4)
+        why = ridge_reasons(self.model.a, FEATURE_NAMES, row["features"], p["market_type"],
+                            subject_is_home=(p["subject"] == g["home"]) if p["subject"] else None)
         return PregameForecast("NBA", p["market_type"], p["event_ticker"], market_ticker, p_yes,
-                               as_of_utc, self.model.model_id, self.model.sha256, row["sha256"])
+                               as_of_utc, self.model.model_id, self.model.sha256, row["sha256"],
+                               tuple(why) if why else None)
