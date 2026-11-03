@@ -285,7 +285,7 @@ topped back up". Every block is drawn from the top of the **rolling backlog** (`
 
 | # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|---|---|---|
-| 98.1 | B-030 + B-029 + B-031 | engine | 2 (judged by 1; Part C 3) | NBA v1 arm logs fewer games than v2 - find and fix; NHL engine v2 with empty-net and overtime scoring; v3's two factors fully indexed | DEPTH + PROOF: games logged 100%; NHL totals bias → noise; indexed factors 0 → 2 | ⬜ | |
+| 98.1 | B-030 + B-029 + B-031 | engine | 2 (judged by 1; Part C 3) | NBA v1 arm logs fewer games than v2 - find and fix; NHL engine v2 with empty-net and overtime scoring; v3's two factors fully indexed | DEPTH + PROOF: games logged 100%; NHL totals bias → noise; indexed factors 0 → 2 | ✅ A,B,C merged (#397, #403, #404) | A: every game logged via coverage ledger (misses = box OOM/flock, 98.3). B: NHL v2 spread gain only, totals bias unchanged, EXP-046 NOT frozen. C: rank + cross built, no Brier lift. Handoff `SESSION_HANDOFF_W98_1`. |
 | 98.2 | B-005 + B-011 + B-002 | proof | 1 + 4 | **The 12 NFL first-look verdicts printed and told to you in plain English**; what the forward test's entry costs (your decision line); the frozen evidence in units that fit the box | PROOF: verdicts read 0 → 12; entry cost table; cells classified 0 → 13 | ⬜ | |
 | 98.3 | B-027 + B-001 / B-026 + B-028 | flex | plumbing + rank 2 + operator 10-30 | **The box stops running out of memory** (lock + stagger, the 62-min run); the three held installs prepared for the window; every pick carries its top three reasons | PLUMBING: OOM kills 20 → 0; installs 0 → 3; picks with reasons 0 → all | ⬜ | |
 | M98 | R-048 → R-110 → R-095 → … | Muse | 7 (feeds 2) | Live session working the new order from the top (43 open) | sources for the engines | ⬜ | |
@@ -533,7 +533,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 ### ⬜ WAVE 98 — WRITTEN 2026-11-03 ~03:30 UTC (11-02 19:30 PT) · FIRST NFL VERDICTS READ · BOX MEMORY · ENGINES MADE WHOLE · three blocks × three parts + Muse
 | # | Block | Status | Outcome |
 |---|---|---|---|
-| 98.1 | B-030 + B-029 + B-031 engine: NBA arms log every game; NHL totals; v3 indexed | ⬜ | |
+| 98.1 | B-030 + B-029 + B-031 engine: NBA arms log every game; NHL totals; v3 indexed | ✅ | A,B,C merged; see handoff |
 | 98.2 | B-005 + B-011 + B-002 proof: NFL verdicts read; entry cost; frozen evidence | ⬜ | |
 | 98.3 | B-027 + B-001/B-026 + B-028 flex: memory; held installs; picks say why | ✅ code merged (#398 de539ff, #401 5e2eb1c); installs NOT run - window runs them in order in results_W98_3.md | `12_EXPLORATORY/box_memory_w98/results_W98_3.md` |
 | M98 | Muse live session (R-048 → R-110 → R-095 …) | ⬜ | |
