@@ -243,7 +243,7 @@ def main(espn_raw, nba_raw, out):
     d = pd.DataFrame(allr, columns=["season", "game_id", "k", "star", "y", "pb", "pp", "ps"])
     for c in ("pb", "pp", "ps"):
         d["b_" + c] = (d[c] - d.y) ** 2
-    d.to_csv(safe_out(HERE / (out[: -len(".json")] + "_rows.csv.gz")), index=False)
+    d.to_csv(safe_out(HERE.parent / (out[: -len(".json")] + "_rows.csv.gz")), index=False)
     rng = np.random.default_rng(SEED)
     contrasts = {"set_minus_base": ("b_ps", "b_pb"), "set_minus_pt": ("b_ps", "b_pp"), "pt_minus_base": ("b_pp", "b_pb")}
     res = {}
