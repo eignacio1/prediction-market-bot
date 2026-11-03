@@ -1082,3 +1082,115 @@ covers the one archive commit after it.)*
 - **Note, not a finding:** one table per run, with about a third of runs delivering nothing, puts R-043 at roughly a day and a half
   more. Keep going in order; if a whole season's table set can land in one run, do it, but do not split the record format to get there.
 - **Open tickets:** 34 (unchanged; R-043 still open, R-080's MoneyPuck item and R-019a/b not counted until they appear in an order).
+
+### 2026-11-02 19:20 PT · Watchdog (Claude): ALIGNED — seventeen tickets closed in six days; the backlog refilled toward the engines
+- **Verified (archive `8e1edc4`, 171 commits since 10-28):** closed R-072, R-073, R-077, R-082, R-083, R-074, R-078, R-085, R-084, R-043, R-044,
+  R-021, R-022, R-023, R-037, R-031, R-040 (and R-019, R-080 before them). R-048 is mid-ticket (two NHL seasons of four done). Every record in
+  the archive parses (177,346), no null-value records, gate clean on every batch. The IN PROGRESS / PROGRESS / NOTE discipline across the ten
+  daily runs is exactly right: a long ticket (R-031: eleven NFL seasons, about 6,400 records) carried cleanly across thirteen runs with
+  every tally checked before a record was written. Good work.
+- **What your tickets changed on the bot side:** R-077 gave the bot NBA injury reports back to 2021-22, which its NBA engine now uses as
+  "availability known before tip" (v3 beats v2 on past seasons for spreads and team totals). R-072 (Kalshi's full trade tape) and R-073 (no
+  published rate limit) fixed two blockers in the bot's history fetches. R-082 / R-083 settle the MLB engine's data route for spring.
+- **Where the bot is now:** one engine per sport is being built - NFL (prices the board from the market's line), NBA (live, three
+  versions), NHL (built this week; its totals run low because late and empty-net scoring is not modelled). The new tickets serve those.
+- **Backlog:** 26 open; 17 new tickets below (R-095 → R-111). **43 open.** Order at the end.
+
+### R-095 · NHL late-game scoring: empty-net goals and pulled-goalie timing
+**Gap it fills:** the bot's new NHL engine under-predicts game totals because it does not model late scoring with the goalie pulled.
+**What:** where the NHL's public play-by-play marks empty-net goals and goalie pulls (field names and values verbatim), how far back, and any
+free published measurement of pull timing by score margin and of empty-net goal rates (with seasons and n).
+**Done when:** cards with sample rows; one line: "empty-net events are / are not recoverable per game from free data, from season ...".
+
+### R-096 · NHL overtime and shootouts: formats by season and how often games reach them
+**What:** the regular-season OT format by season (5v5 / 4v4 / 3v3, length) and shootout rules, quoted from the NHL rulebook or official
+releases with dates; free sources for the share of games reaching OT and shootouts by season.
+**Done when:** a card per format period; a table season -> format -> share to OT -> share to shootout, sources named.
+
+### R-097 · NBA referee crews: when assignments are published, and whether past postings are reachable (GG-1390)
+**Gap it fills:** the bot's NBA officials factor can only be used if the crew is known before the price.
+**What:** the time of day the league posts each night's crew assignments (official.nba.com or the league's feed), how long the posting stays
+up, and any archive of past postings (the page's own history, web archives) with timestamps.
+**Done when:** a card; one line: "crews are known at ... before tip; past postings are / are not reachable from ...".
+
+### R-098 · NBA rest rules: the player participation policy and how teams rest players
+**What:** the league's player participation / resting policy text (quoted, with the effective date and season), which players it covers, the
+penalties, and free sources that list rest days by player and game.
+**Done when:** a card with the policy quotes; one line on whether rest days are recoverable per game for free.
+
+### R-099 · NBA Cup (in-season tournament) games: which games count, by season
+**What:** the NBA Cup format by season (group games, knockout, which games count toward standings), quoted from the league, and a free source
+that flags Cup games in the schedule.
+**Done when:** a card; a table season -> group-stage dates -> knockout dates -> source of the per-game flag.
+
+### R-100 · NFL fourth-down decision models: public "go / kick" models and their definitions
+**Gap it fills:** the bot's NFL play-caller factor measures aggressiveness against an expectation; the published models define that expectation.
+**What:** free public fourth-down models (their method, inputs and published season tables), quoted definitions, data access and terms.
+**Done when:** cards; one line on which gives a per-play expected go rate for free.
+
+### R-101 · NFL kickers: field-goal range and accuracy by distance, stadium and weather, free
+**Gap it fills:** key number 3 (the most important margin in NFL betting) runs through field goals; the bot's board engine needs kicker
+quality as of each game.
+**What:** free sources for every field-goal attempt with distance, result, stadium and weather (nflverse and others), field definitions
+verbatim, seasons covered.
+**Done when:** cards with sample rows; one line on coverage by season.
+
+### R-102 · NFL extra points and two-point tries since the 2015 rule change
+**Gap it fills:** key numbers 7 and 8 depend on extra-point and two-point rates.
+**What:** the 2015 extra-point rule change quoted (and any later changes), and free per-season rates for extra points and two-point tries.
+**Done when:** a card with the rule quotes; a table season -> XP rate -> 2-pt attempt and success rates, sources named.
+
+### R-103 · NBA garbage time: published definitions and free data that flag it
+**Gap it fills:** blowouts change who plays and how many points stars score; the bot's player-points layer needs to know when minutes are
+garbage time.
+**What:** published definitions of garbage time (quoted verbatim, with the publisher), and free play-by-play or lineup data that flag it.
+**Done when:** cards; one line on the best free per-possession flag.
+
+### R-104 · Literature: how hockey scores are modelled (Poisson, bivariate, correlation)
+**Gap it fills:** the bot's NHL engine found the two teams' regulation scores slightly negatively correlated and chose Poisson; published
+work sets the prior.
+**What:** free-to-read papers modelling NHL / hockey goal counts (Poisson, bivariate Poisson, negative binomial, score dependence, empty-net
+effects): data, n, the fitted dependence, findings quoted.
+**Done when:** a card per paper; one paragraph on agreement and disagreement.
+
+### R-105 · Literature: NBA final-score distributions and the correlation between the two teams' scores
+**What:** free-to-read papers on modelling NBA game scores, margins and totals (normal vs other distributions, team-score correlation,
+pace), with data, n and findings quoted.
+**Done when:** a card per paper; one paragraph.
+
+### R-106 · Literature: NFL score distributions and key numbers
+**What:** free-to-read papers on NFL margin and total distributions, the frequency of key numbers, and how lines map to cover probabilities,
+with data, n and findings quoted.
+**Done when:** a card per paper; one paragraph.
+
+### R-107 · Literature: modelling player points (minutes x usage x efficiency) and prop pricing
+**What:** free-to-read papers or published methods for projecting a player's points distribution in a game and pricing over / under lines,
+with data, n and findings quoted.
+**Done when:** a card per paper; one paragraph.
+
+### R-108 · Kalshi open interest and volume history: what the public API serves for settled markets
+**What:** the public, no-login fields for open interest and volume on settled sports markets (live and historical endpoints), their
+granularity and how far back, quoted from Kalshi's API documentation, with one sample for a settled NFL game market.
+**Done when:** a card; one line on whether open interest over time is recoverable.
+
+### R-109 · Kalshi order book: is historical depth served anywhere?
+**What:** whether any public Kalshi endpoint (or documented export) serves past order-book depth for a settled market, quoted from the
+documentation; if not, say NONE plainly.
+**Done when:** a card; one line.
+
+### R-110 · NBA current-season play-by-play: how fast free sources publish each game
+**Gap it fills:** the bot's NBA engine reads a store that runs about two days behind; it needs last night's games by morning.
+**What:** for each free NBA play-by-play / box source (the league's stats endpoints, ESPN, the sportsdataverse releases), how soon after a
+game ends the data appears, how often it is updated, and any limits; measured on three recent nights where possible.
+**Done when:** cards with the measured lags; one line naming the fastest free route.
+
+### R-111 · NHL shift charts: reliability of the free feed
+**Gap it fills:** 131 games in the bot's NHL store have empty shift charts.
+**What:** the NHL's public shift-chart endpoint(s) and any free alternative: coverage by season, known gaps, and how often a game's shift
+data is missing or arrives late, with examples.
+**Done when:** cards; one line on the most reliable free route and its known gaps.
+
+**Backlog order (supersedes the 10-27 22:00 PT order):** R-048 (in progress) → **R-110** → **R-095** → **R-097** → **R-101** → **R-102** →
+**R-111** → **R-103** → **R-098** → **R-096** → R-051 → R-052 → R-054 → R-024 → R-025 → **R-099** → **R-100** → R-075 → R-076 → R-079 → R-081 →
+R-086 → R-094 → R-045 → R-049 → R-050 → R-053 → R-035 → R-042 → R-046 (2023-24 season) → **R-108** → **R-109** → R-087 → R-088 → R-089 →
+R-090 → R-091 → R-092 → R-093 → **R-104** → **R-105** → **R-106** → **R-107**. (43 open.)

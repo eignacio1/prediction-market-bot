@@ -95,3 +95,6 @@ Asked whether waves were ordered by the window's own ranking of the operator's d
 
 ## W37 · 2026-10-30 08:31 PT · blocks shrunk after partials caused by waiting, not size
 Waves 95-96 went back to two-part ~80-minute blocks after the operator had stretched Wave 94 (all four stretched blocks finished). Three 95 partials were waits on the box (a first game night, a rate-limited fetch, an unlogged rejection); less work per block does not fix a wait. Rule: three parts per block by default, the third a switchable task for wait time.
+
+## W38 · 2026-11-02 19:30 PT · wrote box installs into terminal blocks the terminals cannot run
+Waves 95-97 told terminals to "install on GREEN" through bridge `*_install` tasks; the terminals' permission classifier refuses those dispatches as production deploys, so 97.1 (NBA v3) and 97.3 (picks builder) merged, froze and stopped short, and the surface went RED on registered-but-not-installed lines. The window knew from 91.3 that installs can be refused. Rule (COMMON_RULES_W98 "INSTALLS ON THE BOX"): terminals prepare, test and push the install and name the order; the strategic window runs the install task and reads it back.

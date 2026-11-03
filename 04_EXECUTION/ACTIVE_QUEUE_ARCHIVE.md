@@ -10,6 +10,210 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Wave 97 NOW section with its pastes (closed 2026-11-02 19:30 PT). 97.1 🟨 97.2 🟨 97.3 🟨 97.4 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md. Verbatim:
+
+## ⬛ NOW — Wave 97 · THE PICKS SHEET · THE NBA ENGINE ON v3 · THE FROZEN EVIDENCE, RESUMABLE · WRITTEN 2026-10-30 ~17:10 UTC (10:10 PT) · four blocks, three parts each (~130 min) · the last wave before the weekend
+
+Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`. All four run in parallel. Operator, 11:42 PT: "this will likely be the last wave for the rest of the weekend as I'm at 92% of my weekly limit ... Let's send 4 of the most important blocks ready for this run". Every block is drawn from the top of the
+**rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`; on the Visual Dashboard).
+
+| # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|---|
+| 97.1 | B-001 + B-009 | engine | 2 (judged by 1) | NBA engine v3 live (EXP-044c), the first nights' rows read back, player points re-tested with no leak | DEPTH + PROOF: arms with rows 0 → 2-3; points held-out 0 → measured | PARTIAL | v3 merged+frozen (#391), install refused (classifier), v1/v2 rows OK 6/6; points: no win, EXP-044d not frozen; #395 |
+| 97.2 | B-002 + B-011 | proof | 1 + 4 | The 13 frozen ride cells reproduced in resumable box tasks; the NFL regen's missing input; what the forward test's entry costs, for your decision | PROOF + EXECUTION: cells classified 0 → 13; entry cost per book | 🟨 PARKED | Part A tooling merged (PR #388, cc23cd13: resume.py + box tasks frozen_resume_step/combine). Box deploy in flight at park time. Not yet run; Parts B, C not started. |
+| 97.3 | B-026 + B-006 + B-007 | flex | 1 (operator 10-30) + plumbing | **The picks sheet**: every game the bot evaluates, its side, %, Kalshi's price, edge, why, fake bet placed, result - nightly on your dashboard; MLB's winter posture; the box's memory | visibility + PLUMBING: picks per game 0 → all | ⬜ | | **STATUS 2026-10-30 ~19:30Z: PARTIAL, parked at token limit.** Part A built+merged (#389, #392), cron NOT yet installed; Parts B, C not started. See SESSION_HANDOFF_20261030T1930Z_W97_3.md.
+| 97.4 | B-012 | engine (second sport) | 2 (judged by 1) | **The NHL engine**: point-in-time inputs from the shot store, one goals distribution pricing moneyline, puck line, total and team totals, scored vs results and this season's Kalshi prices; EXP-046 frozen only if earned | DEPTH: D4 NHL data layer → board engine | ✅ Done (EXP-046 not earned) | PRs #390, #394 merged (CI green): NHL engine scaffold prices ML, puck line, totals, team totals from one Poisson goals distribution; beats climatology on ML/team totals held-out 2023-25; vs Kalshi (33 games) 0.1849 vs 0.1792, behind and not significant; `12_EXPLORATORY/nhl_engine/results_W97_4.md` |
+
+**What Wave 96 delivered (verified 2026-10-30 17:01Z: #382-#387 CI green; box bridge `20261030T170102Z_*`):** **96.1 🟨** NBA engine
+v3 (availability + lineups as known before tip) beats v2 on past seasons for spreads and team totals; not frozen yet (needs a live
+runner); the engine's points layer had a leak (post-game rosters) - removed, not applied. **96.2 🟨** settlement data complete; the
+13-cell reproduction does not fit the box's 15-minute task limit (→ resumable pieces). **96.3 🟨** the rolling backlog is live on the
+Visual Dashboard; refused demo orders now log the balance (none since). Parts C were not pasted for 96.2 / 96.3 (→ 97).
+**Distance:** D5(b) NBA availability + lineups interpreted on spreads and team totals; backlog visible; everything else 0.
+
+**Pushback:** 97.3 is the block you will see; 97.1 and 97.2 are the ones that could change a number. If the picks sheet shows the
+bot's reasons are thin ("no reasons available" for most arms), that is the honest state of the shadow models - and the argument for
+the engine lane, not a defect in the sheet.
+**Surface:** GREEN, 85. Expected delta +2 (live_v3 runner, the picks builder); 97.4 installs nothing.
+**Dependencies:** none. The picks sheet reads whatever rows the arms write; the v3 arm appears on it when it logs.
+
+### 97.1 — Engine lane (B-001 + B-009): the NBA engine on v3, live; its first nights; player points without the leak
+**DEPTH + PROOF · rank 2 · terminal 1**
+
+```
+Before anything else, read the Wave 97 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 97.1 - ENGINE LANE (BACKLOG B-001 + B-009): THE NBA ENGINE ON v3, LIVE; ITS FIRST NIGHTS; PLAYER POINTS WITHOUT THE LEAK. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), judged by rank 1 (market-anchored pricing); rank 3 (granularity) in Part C.
+PURPOSE: DEPTH + PROOF. Measures: NBA engine arms logging with rows 0 -> 2 (v1, v2) and v3 frozen + installed 0 -> 1 (EXP-044c);
+player points priced from the engine, leak-free, held-out vs the existing points arm 0 -> measured.
+96.1 found v3 (availability + lineups, as known before tip) beats v2 on past seasons for the spread (Brier -0.0079) and team totals, but
+froze nothing: there is no live_v3 runner. The v1 / v2 arms have still not written a forward row (no game had tipped since the install).
+96.1 Part C found the engine's player-points gain was a post-game-roster leak; with the leak removed, nothing has been tested.
+Premises to check: 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261030T1549Z_W96_1.md and SESSION_HANDOFF_20261030T1740Z_W96_1_PartC.md;
+12_EXPLORATORY/nba_engine_v3/results_W96_1.md; the live_v2 runner; the injury capture's tip-60 snapshot; the nba_engine_cron_readback task.
+PERMISSIONS: per the common rules' ownership; NEW cron lines / install tasks, registered first, installed only on a GREEN budget_read; a
+NEW pre-registration (EXP-044c; EXP-044d only if Part C earns it). NOT: EXP-044 / 044b or v1 / v2 / v3 code; any order, gate, other
+runner, ledger or registry cell.
+
+PART A - v3 live (~50 min)
+  A live_v3 runner built from live_v2's helpers: the tip-60 injury snapshot and the rotation ratings as known then (state how the store's
+  lag is handled). EXP-044c frozen before its first row (it claims spread and team total only, where v3 won held-out), same scoring as
+  EXP-044. Register, install on GREEN, read back.
+PART B - The first nights (~20 min, whenever games have tipped)
+  nba_engine_cron_readback: rows per game per family for v1, v2 (and v3 from its first night), the archive's Kalshi quote at tip-60,
+  runner errors, memory. Any game that tipped without rows is a silent arm - diagnose and fix first. GG-1450 resolves only on rows.
+PART C - Player points, leak-free (~50 min)
+  Re-test 96.1's player-points layer with no post-game information anywhere (who played comes from the injury report and rotation as
+  known before tip): held-out seasons, engine-priced over / under at each points strike vs the existing arm (nba_player_points_v1 and the
+  EXP-040 challenger) and vs results, paired, game-clustered, per strike band. Leakage test that fails if any post-tip field is read.
+  If it wins held-out, freeze EXP-044d before its first row (install nothing this wave); if not, say so.
+Results: live_v3 + EXP-044c + read-back rows, the points study, 12_EXPLORATORY/nba_engine_v3/results_W97_1.md, the handoff (B-001,
+B-009 states).
+
+END OF BLOCK 97.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 97.2 — Proof lane (B-002 + B-011): the frozen evidence, reproduced in resumable pieces; what the forward test's entry costs
+**PROOF + EXECUTION · ranks 1 + 4 · terminal 2**
+
+```
+Before anything else, read the Wave 97 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 97.2 - PROOF LANE (BACKLOG B-002 + B-011): THE FROZEN EVIDENCE, REPRODUCED IN RESUMABLE PIECES; WHAT THE FORWARD TEST'S ENTRY COSTS. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; rank 1 (what counts as winning) with rank 4 (quant).
+PURPOSE: PROOF + EXECUTION. Measures: frozen ride cells classified 0 -> 13 (REPRODUCED / DIFFERS / NOT REPRODUCED); the NFL engine
+JSONs re-generated or their missing input explained 0 -> 3; the forward test's entry style costed per book 0 -> a table, with one
+operator line.
+96.2 completed the settlement cache but could not run the full-archive reproduction inside the box's 900-second task limit (GG-1520),
+and the NFL regen's pinned schedules parquet is on neither the box nor main (GG-1521). Its handoff names the fix: a resumable
+per-series reproduction, or a one-time prefilter of the target series' pre-start rows. 96.2's Part C (B-011, the forward test's entry
+cost) was not run.
+Premises to check: 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261030T1645Z_W96_2.md; 12_EXPLORATORY/frozen_evidence_check/results_W95_2.md and
+the box tasks; GG-1520 / 1521; ADR-0072's forward-test design and its frozen placement rule; 94.3's markout results
+(12_EXPLORATORY/fill_markout/results_W94_3C.md).
+PERMISSIONS: per the common rules' ownership; read-only box tasks (resumable, each inside 900 s). NOT: any frozen pre-registration,
+ride_cells.toml statuses, ADR-0072's switches or placement rule, any order, gate, model, runner or ledger.
+
+PART A - Resumable reproduction (~50 min)
+  One series per task (or a prefiltered pre-start file built once), cached derived rows, resumed across tasks until all 13 cells have run
+  with the original and the exact fee. Per cell: reported vs re-run n / games / net / interval, the reason for each difference, the class.
+PART B - The NFL regen's missing input (~20 min)
+  Locate or re-fetch the pinned schedules parquet (compare its sha256 with the one 93.4 recorded); re-generate the three JSONs; say
+  whether 93.4's stated result changes. If it cannot be recovered, register that and what it means for EXP-045's frozen scorer.
+PART C - What the forward test's entry costs (~50 min)
+  From the forward-test report's orders and fills, per book and sport: P&L per contract as entered today (control: resting at the
+  model's mid; treatment: posted at the book, cancelled after 60 s), and the counterfactual "taken at the quote at decision time" (the
+  archive's quote then, the exact fee, the depth at the quote), net with game-clustered intervals; what each does to fills per game and
+  to the verdict timeline. One operator line: keep the frozen rule, or a superseding addendum switching the entry - the measured cost of
+  each and your recommendation. Change nothing yourself.
+Results: 12_EXPLORATORY/frozen_evidence_check/results_W97_2.md (the per-cell table), the regen outcome,
+12_EXPLORATORY/forward_entry_cost/results_W97_2C.md, the operator line, the handoff (B-002, B-011 states).
+
+END OF BLOCK 97.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 97.3 — Flex lane (B-026 + B-006 + B-007): the picks sheet; MLB's winter posture; the box's memory
+**PROOF (visibility) + PLUMBING · terminal 3**
+
+```
+Before anything else, read the Wave 97 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 97.3 - FLEX LANE (BACKLOG B-026 + B-006 + B-007): THE PICKS SHEET; MLB'S WINTER POSTURE; THE BOX'S MEMORY. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; B-026 is the operator's mandate of 2026-10-30; B-006 and B-007 are plumbing every lane depends on.
+PURPOSE: PROOF (visibility) + PLUMBING. Measures: games with a plain-English pick line on the Visual Dashboard each night 0 -> every
+game the bot evaluates; MLB arms idle with written reasons after the World Series 0 -> all; peak memory per runner measured, no OOM
+across a full NBA night.
+The operator, 2026-10-30 09:59 PT, asked for the bot's pick on five games: "give me just the conviction picks - again keep it simple.
+Give me just one side whats the bot betting and why". The window could not answer: the bot logs its decisions on the box, but nothing
+shows, per game, which side it took, its probability, Kalshi's price, the edge, why, and whether a fake-money bet was placed.
+Premises to check: every shadow arm's decision rows (NFL, NFL QB challenger, NBA game and points arms, NHL, MLB) and the NBA engine's
+rows - their fields (side, model_p, the quote, edge, the order placed or skipped) and where they live; what each model can say about
+WHY (its largest feature contributions); the dashboard builder (scripts/build_visual_dashboard_html.py) and how the backlog panel (96.3)
+reads its JSON; the silent-arm specs; the runners' memory (95.1 measured 517 MB for the NBA engine on a 961 MB box).
+PERMISSIONS: per the common rules' ownership; a NEW cron line / install task for the picks builder, registered first, installed on GREEN.
+NOT: any model, its logic or its thresholds; any order, stake, gate or ledger; any other dashboard panel.
+
+PART A - The picks sheet (~60 min)
+  A builder that runs each night after every arm's decision pass and writes one JSON: per game and market the bot evaluated - the pick
+  (side and contract in plain words, e.g. "Brunson 25+ points: YES"), the bot's probability, Kalshi's price at decision time, the edge
+  after the exact fee, the top three reasons in plain English (from the model's largest contributions; "no reasons available" where a
+  model cannot say), whether a fake-money (demo) order was placed and its stake, and later the result (hit / miss, P&L at the fill).
+  One line per pick; arms that disagree on the same game are shown side by side. A Visual Dashboard panel "Tonight's picks" (and
+  yesterday's, with results) rendered from it, readable on a phone. Tests on a fixture night; a missing or empty JSON shows a visible
+  message, never a blank. Merge, install the builder on GREEN, read back the panel on the box after a real game night.
+PART B - MLB's winter posture (~30 min)
+  After the last World Series game (prepare and test now if it has not ended): each MLB arm reads IDLE with a reason when MLB has no
+  games, and still alarms on a regular-season day with games and no rows (GG-163 detection kept), with tests; the T1 MLB
+  SemanticFloorViolation explained (a no-player-markets day, or a defect - register if a defect).
+PART C - The box's memory (~30 min)
+  Peak RSS of every runner and the dashboard across a full NBA night (the NBA engine arms, the picks builder, the archive lines, the
+  dashboard), the box's headroom, and the schedule overlaps that stack them; if a night can approach the limit, stagger or cap with a
+  test - never by stopping an arm.
+Results: the builder + panel + tests read back on the box, the MLB posture + tests, the memory table, 12_EXPLORATORY/picks_sheet_w97/
+results_W97_3.md, the handoff (B-026, B-006, B-007 states).
+
+END OF BLOCK 97.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+
+### 97.4 — Engine lane, second sport (B-012): the NHL engine prices the whole board
+**DEPTH (+ PROOF) · rank 2 · terminal 4**
+
+```
+Before anything else, read the Wave 97 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W97.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 97.4 - ENGINE LANE, SECOND SPORT (BACKLOG B-012): THE NHL ENGINE PRICES THE WHOLE BOARD. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport: "NFL first, as the template; NBA next; then NHL, MLB"), judged by rank 1.
+PURPOSE: DEPTH (+ PROOF). Measures: D4 NHL "data layer" -> "whole board priced from one engine (scaffold, tested)"; D5(b) NHL factor
+classes feeding the engine 0 -> n; the engine's held-out Brier vs results and vs this season's Kalshi prices 0 -> measured; a frozen
+forward test (EXP-046) only if it earns one.
+Why now: hockey is in season, the NHL forward test has the most demo fills of any book, and NHL game totals were the one cell that
+survived the family-wise test back in Wave 86 (preliminary). NHL has a shot-level event store (02_ARCHITECTURE_DESIGN/NHL_ENGINE/) and
+a seat (SEATS/nhl.toml: skater quality interpreted; goalie, special teams and pace applied; deployment and venue aggregated; travel,
+officials, coaches, injuries and qualitative none) but no engine: every NHL price today comes from a thin pre-game model. This is the
+operator's last wave before the weekend (2026-10-30 11:42 PT), so it is built to finish inside the block and leave nothing running
+half-installed.
+Premises to check: 02_ARCHITECTURE_DESIGN/NHL_ENGINE/DATA_LAYER.md and FACTOR_TAXONOMY.md; c1_signal_ingestion/nhl_event_store.py,
+nhl_point_in_time.py; the NBA engine (src/prediction_market_bot/nba_engine/) and NFL board v2 for the shape to reuse; the price archive's
+NHL rows (game, spread, total, team total since 2026-10-28 05:03Z) and 89.7's NHL candles since 2026-10-01; Muse's R-047 (goalie
+confirmation timing) and R-080 (shot quality sources) cards if they landed.
+PERMISSIONS: NEW package src/prediction_market_bot/nhl_engine/ + tests, the NHL [[engine]] entry in ARCHITECTURE_COMPONENTS.toml, the
+NHL seat rows it moves (re-render with python3.11 scripts/render_seat.py), a NEW EXP-046 pre-registration, a new 12_EXPLORATORY/nhl_engine/.
+NOT: the NHL shadow arm, its model or its forward test; any order, gate, ledger or registry cell; installing a runner this wave (if
+EXP-046 is frozen, the runner is next wave's).
+
+PART A - Point-in-time inputs (~45 min)
+  From the shot store, as known before each game: each team's expected goals for and against per 60 at even strength (shot location and
+  type, shrunk to the league mean), special-teams rates and expected power plays, the probable goalie's save quality over expected
+  (state how the starter is known before the puck drops - R-047), rest and schedule density, home ice. Leakage test: nothing from the
+  game priced. Known-answer test: a simulated league with known team strengths is recovered.
+PART B - One distribution prices the board (~45 min)
+  Each team's goals as a count distribution (Poisson or negative binomial - state which and why, measured on held-out seasons), with
+  the correlation between the two scores and empty-net / overtime handling measured, not assumed. From it: moneyline (regulation and
+  overtime as Kalshi settles them - check KXNHLGAME's rules, Muse R-067), puck line at each strike, total at each strike, both team
+  totals. Tests: the ladders are coherent; a simulated league with a known correlation is recovered.
+PART C - Scored, then frozen if it earns it (~40 min)
+  Held-out seasons vs results (Brier per family, calibration). Then this season vs Kalshi (archive rows and candles; settlements from
+  public GETs): paired Brier engine vs market per family with game-clustered intervals, and the skill weight the accepted gate
+  (market-anchored, 10-21) would give it. Say plainly where n is too small. If the engine is no worse than the market on some family, or
+  beats it held-out, freeze EXP-046 (that family, a forward look from the archive, judged n from the measured variance, pass rule,
+  modal outcome, look date) before any new row; otherwise freeze nothing. Update the NHL [[engine]] entry and seat rows with the stage
+  reached.
+Results: the package + tests, 12_EXPLORATORY/nhl_engine/results_W97_4.md, EXP-046 (or "not earned"), the engine entry, the handoff
+(B-012's state).
+
+END OF BLOCK 97.4. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
+---
+
 ## Wave 96 NOW section with its pastes and addenda (closed 2026-10-30 10:10 PT). 96.1 🟨 96.2 🟨 96.3 🟨. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W96.md. Verbatim:
 
 ## ⬛ NOW — Wave 96 · FINISH WHAT 95 STARTED · THE BACKLOG ON THE DASHBOARD · WRITTEN 2026-10-30 ~15:50 UTC (08:50 PT) · three MEDIUM blocks

@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-10-30T18:50Z",
+ "as_of": "2026-11-03T03:30Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -28,52 +28,52 @@
  },
  "tickets": [
   {
-   "id": "B-026",
+   "id": "B-005",
    "order": 1,
    "status": "NOW",
-   "lane": "flex",
-   "rank": "1 (operator 10-30)",
-   "title": "The picks sheet: every game the bot looks at, one line - its side, its %, Kalshi's price, the edge, the top reasons, and whether a fake-money bet was placed; nightly on the Visual Dashboard",
-   "measure": "picks visible per game per night 0 -> every evaluated game",
-   "why": "Operator 10-30 09:59 PT asked for the bot's conviction pick and why on five games; no read shows the bot's per-game picks today.",
-   "source": "operator 2026-10-30",
-   "wave": "97.3"
-  },
-  {
-   "id": "B-001",
-   "order": 2,
-   "status": "NOW",
-   "lane": "engine",
-   "rank": "2",
-   "title": "NBA engine live: read back the first nights' rows (v1 + v2), then v3 with availability, lineups and officials",
-   "measure": "D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7",
-   "why": "Installed 10-30 14:34Z (95.1) but no forward row yet; the engine still ignores three factor classes it has built.",
-   "source": "95.1 handoff, GG-1450",
-   "wave": "97.1"
-  },
-  {
-   "id": "B-009",
-   "order": 3,
-   "status": "NOW",
-   "lane": "engine",
-   "rank": "2",
-   "title": "NBA engine prices player props from the same distribution (points first)",
-   "measure": "markets priced from one engine: 4 families -> + props",
-   "why": "ADR-0073: one engine prices the whole board, props and parlays included; the NBA points arm today is a separate thin model.",
-   "source": "ADR-0073",
-   "wave": "97.1 Part C"
-  },
-  {
-   "id": "B-002",
-   "order": 4,
-   "status": "NOW",
    "lane": "proof",
-   "rank": "1 + 4",
-   "title": "Frozen ride evidence reproduced on the box's full archive (13 cells), classified REPRODUCED / DIFFERS / NOT REPRODUCED",
-   "measure": "frozen cells reproduced 0 -> n of 13",
-   "why": "EXP-042 / 043 are frozen on numbers that did not reproduce locally; the harness is built (95.2), the settlement fetch and the re-run are not.",
-   "source": "95.2 handoff, GG-1470..1472",
-   "wave": "97.2"
+   "rank": "1",
+   "title": "Read the NFL first look (judged 11-02 by the calibration engine): print the 12 verdicts and tell the operator in plain English",
+   "measure": "P1 0 -> 12 of 49 at a scored look; P2 verdicts",
+   "why": "The calibration engine issued 12 verdicts on 11-02 (P1 0 -> 12, P2 0 -> 12) - the first ever; no bridge task prints them, so nobody has read them.",
+   "source": "PROOF_CALENDAR.md, NFL_FIRST_LOOK_EXPECTATIONS.md",
+   "wave": "98.2 Part A"
+  },
+  {
+   "id": "B-027",
+   "status": "NOW",
+   "lane": "flex",
+   "rank": "plumbing",
+   "title": "The box stops running out of memory: a lock and a staggered start on each T3 shadow runner (skips logged), and why one NBA pre-game T3 run takes 62 minutes",
+   "measure": "OOM kills per night 20 / 90 min -> 0",
+   "why": "97.3 measured 20 OOM kills in ~90 minutes on the 961 MB box; runners stack two or three deep with no lock (GG-1581, HIGH). Every new arm makes it worse.",
+   "source": "97.3 / GG-1581",
+   "wave": "98.3",
+   "order": 2
+  },
+  {
+   "id": "B-030",
+   "status": "NOW",
+   "lane": "engine",
+   "rank": "2",
+   "title": "NBA engine arms log every game: v1 logged fewer events than v2 (69 vs 81) and its log shows \"Killed\" lines",
+   "measure": "games logged / games played per arm -> 100%, or every skip logged with a reason",
+   "why": "A frozen forward test that silently drops games is biased; the cause may be the OOM kills (B-027).",
+   "source": "box read 2026-11-03",
+   "wave": "98.1 Part A",
+   "order": 3
+  },
+  {
+   "id": "B-029",
+   "status": "NOW",
+   "lane": "engine",
+   "rank": "2",
+   "title": "NHL engine v2: empty-net goals by margin and time, overtime and shootouts as Kalshi settles them; totals bias measured",
+   "measure": "held-out total-goals bias -> within noise; Brier per family vs v1 and the market",
+   "why": "97.4: the NHL engine runs low on totals because late and empty-net scoring is not modelled; it trails Kalshi at n 33.",
+   "source": "97.4",
+   "wave": "98.1 Part B",
+   "order": 4
   },
   {
    "id": "B-011",
@@ -85,59 +85,83 @@
    "measure": "an operator decision with the measured cost of each choice",
    "why": "94.3 measured the cost; whether the ADR-0072 forward test should change its entry is a change to a frozen design, so it is the operator's call.",
    "source": "94.3C",
-   "wave": "97.2 Part C"
+   "wave": "98.2 Part B"
   },
   {
-   "id": "B-012",
+   "id": "B-002",
    "order": 6,
+   "status": "NOW",
+   "lane": "proof",
+   "rank": "1 + 4",
+   "title": "Frozen ride evidence reproduced on the box's full archive (13 cells), classified REPRODUCED / DIFFERS / NOT REPRODUCED",
+   "measure": "frozen cells reproduced 0 -> n of 13",
+   "why": "EXP-042 / 043 are frozen on numbers that did not reproduce locally; the harness is built (95.2), the settlement fetch and the re-run are not. 97.2: resumable tasks built; 2 of 20 units done; ladder units time out at 900 s (-> shard smaller).",
+   "source": "95.2 handoff, GG-1470..1472",
+   "wave": "98.2 Part C"
+  },
+  {
+   "id": "B-001",
+   "order": 7,
    "status": "NOW",
    "lane": "engine",
    "rank": "2",
-   "title": "NHL engine: factor classes point-in-time from the shot-level store, then the whole board",
-   "measure": "D4 NHL data layer -> factors -> board",
-   "why": "ADR-0073 order: NFL, NBA, then NHL, MLB.",
-   "source": "ADR-0073",
-   "wave": "97.4"
+   "title": "NBA engine v3 (EXP-044c) live: frozen, not installed - install after the memory fix, read back rows",
+   "measure": "D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7",
+   "why": "97.1 froze v3 (EXP-044c); the terminal could not run the install. Its silent-arm alarm reads SILENT until installed.",
+   "source": "95.1 handoff, GG-1450",
+   "wave": "98.3 Part B (window installs)"
   },
   {
-   "id": "B-006",
-   "order": 7,
-   "status": "NOW",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "MLB winter posture after the World Series: stand MLB arms down with written idle reasons; T1 MLB SemanticFloorViolation explained",
-   "measure": "silent-arm alarms during the off-season 0 false; MLB arms idle with reasons",
-   "why": "The World Series ends by 11-01; every MLB arm goes quiet until spring and must not read as broken.",
-   "source": "94.2 Q6 concern; CLAUDE.md open call 'MLB winter posture'",
-   "wave": "97.3 Part B"
-  },
-  {
-   "id": "B-007",
+   "id": "B-026",
    "order": 8,
    "status": "NOW",
    "lane": "flex",
-   "rank": "plumbing",
-   "title": "Box memory: the NBA engine runner uses 517 MB on a 961 MB box",
-   "measure": "peak RSS per runner measured; no OOM across a full NBA night",
-   "why": "The dashboard has OOM-crash-looped before (GG-118); a second heavy runner raises that risk.",
-   "source": "95.1 handoff (observed, unregistered)",
-   "wave": "97.3 Part C"
+   "rank": "1 (operator 10-30)",
+   "title": "The picks sheet: every game the bot looks at, one line - its side, its %, Kalshi's price, the edge, the top reasons, and whether a fake-money bet was placed; nightly on the Visual Dashboard",
+   "measure": "picks visible per game per night 0 -> every evaluated game",
+   "why": "Operator 10-30 09:59 PT asked for the bot's conviction pick and why on five games; no read shows the bot's per-game picks today. 97.3: built and merged; its nightly line is not installed (surface RED).",
+   "source": "operator 2026-10-30",
+   "wave": "98.3 Part B (window installs)"
   },
   {
-   "id": "B-005",
-   "order": 9,
+   "id": "B-028",
+   "status": "NOW",
+   "lane": "flex",
+   "rank": "1 (operator 10-30)",
+   "title": "Picks say why: each arm's decision row carries its top three reasons; the picks sheet shows them",
+   "measure": "picks with real reasons 0 -> every arm that can give them",
+   "why": "The picks sheet's why column is empty: the arms do not log their reasons (GG-1580).",
+   "source": "97.3 / GG-1580",
+   "wave": "98.3 Part C",
+   "order": 9
+  },
+  {
+   "id": "B-031",
+   "status": "NOW",
+   "lane": "engine",
+   "rank": "3",
+   "title": "v3's two factors (availability, lineups) fully indexed: rank against history at the same point in past seasons, the matchup cross",
+   "measure": "NBA v3 factors with all five granularity-index parts 0 -> 2",
+   "why": "96.1 / 97.1 left rank-vs-history and the matchup cross not computed for v3's factors.",
+   "source": "97.1",
+   "wave": "98.1 Part C",
+   "order": 10
+  },
+  {
+   "id": "B-017",
+   "order": 11,
    "status": "NEXT",
-   "lane": "proof",
-   "rank": "1",
-   "title": "Read the NFL first look (11-02) exactly as pre-registered: 12 cells, modal KEEP ACCRUING ~91%",
-   "measure": "P1 0 -> 12 of 49 at a scored look; P2 verdicts",
-   "why": "The first scored look in the project's history; read it, do not interpret past it.",
-   "source": "PROOF_CALENDAR.md, NFL_FIRST_LOOK_EXPECTATIONS.md",
-   "wave": "window, wave close after 11-02"
+   "lane": "flex",
+   "rank": "plumbing",
+   "title": "NBA store refresh lag: the last game date trails by about two days",
+   "measure": "store lag <= 1 day",
+   "why": "Observed in 95.1; the engine prices tonight with yesterday's games. Muse R-110 (fastest free route for last night's games) feeds it.",
+   "source": "95.1 handoff (observed)",
+   "wave": ""
   },
   {
    "id": "B-008",
-   "order": 10,
+   "order": 12,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -149,7 +173,7 @@
   },
   {
    "id": "B-010",
-   "order": 11,
+   "order": 13,
    "status": "NEXT",
    "lane": "quant",
    "rank": "4",
@@ -160,8 +184,20 @@
    "wave": ""
   },
   {
+   "id": "B-012",
+   "order": 14,
+   "status": "LATER",
+   "lane": "engine",
+   "rank": "2",
+   "title": "NHL engine: factor classes point-in-time from the shot-level store, then the whole board",
+   "measure": "D4 NHL data layer -> factors -> board",
+   "why": "97.4 built the NHL board engine; it trails Kalshi at n 33 and EXP-046 was not earned. Revisit with B-029 and ~200 games of this season.",
+   "source": "ADR-0073",
+   "wave": "97.4 done (scaffold); forward test at ~200 games"
+  },
+  {
    "id": "B-004",
-   "order": 12,
+   "order": 15,
    "status": "LATER",
    "lane": "flex",
    "rank": "EXECUTION",
@@ -172,20 +208,8 @@
    "wave": "logging live (96.3); revisit on the first refusal"
   },
   {
-   "id": "B-003",
-   "order": 13,
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "plumbing (operator mandate 10-30)",
-   "title": "This backlog on the Visual Dashboard, rendered from ROLLING_BACKLOG.json",
-   "measure": "backlog visible on /visual 0 -> 1, read back on the box",
-   "why": "Operator 10-30: \"Ensure it gets placed in the visual dashboard for my view also\".",
-   "source": "operator 2026-10-30 08:26 PT",
-   "wave": "96.3"
-  },
-  {
    "id": "B-013",
-   "order": 14,
+   "order": 16,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -197,7 +221,7 @@
   },
   {
    "id": "B-014",
-   "order": 15,
+   "order": 17,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -209,7 +233,7 @@
   },
   {
    "id": "B-015",
-   "order": 16,
+   "order": 18,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -221,7 +245,7 @@
   },
   {
    "id": "B-016",
-   "order": 17,
+   "order": 19,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -232,20 +256,8 @@
    "wave": ""
   },
   {
-   "id": "B-017",
-   "order": 18,
-   "status": "LATER",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "NBA store refresh lag: the last game date trails by about two days",
-   "measure": "store lag <= 1 day",
-   "why": "Observed in 95.1; the engine prices tonight with yesterday's games.",
-   "source": "95.1 handoff (observed)",
-   "wave": ""
-  },
-  {
    "id": "B-018",
-   "order": 19,
+   "order": 20,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -257,7 +269,7 @@
   },
   {
    "id": "B-019",
-   "order": 20,
+   "order": 21,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -269,7 +281,7 @@
   },
   {
    "id": "B-020",
-   "order": 21,
+   "order": 22,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -281,7 +293,7 @@
   },
   {
    "id": "B-021",
-   "order": 22,
+   "order": 23,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -292,8 +304,44 @@
    "wave": "after a pass"
   },
   {
+   "id": "B-009",
+   "order": 24,
+   "status": "DONE",
+   "lane": "engine",
+   "rank": "2",
+   "title": "NBA engine prices player props from the same distribution (points first)",
+   "measure": "markets priced from one engine: 4 families -> + props",
+   "why": "ADR-0073: one engine prices the whole board, props and parlays included; the NBA points arm today is a separate thin model. 97.1: leak-free player points with availability did not beat the existing arm held-out; EXP-044d not frozen.",
+   "source": "ADR-0073",
+   "wave": "97.1 Part C"
+  },
+  {
+   "id": "B-006",
+   "order": 25,
+   "status": "DONE",
+   "lane": "flex",
+   "rank": "plumbing",
+   "title": "MLB winter posture after the World Series: stand MLB arms down with written idle reasons; T1 MLB SemanticFloorViolation explained",
+   "measure": "silent-arm alarms during the off-season 0 false; MLB arms idle with reasons",
+   "why": "The World Series ends by 11-01; every MLB arm goes quiet until spring and must not read as broken. 97.3: MLB arms read IDLE with reasons (box 11-03).",
+   "source": "94.2 Q6 concern; CLAUDE.md open call 'MLB winter posture'",
+   "wave": "97.3 Part B"
+  },
+  {
+   "id": "B-007",
+   "order": 26,
+   "status": "DONE",
+   "lane": "flex",
+   "rank": "plumbing",
+   "title": "Box memory: the NBA engine runner uses 517 MB on a 961 MB box (measured; the fix is B-027)",
+   "measure": "peak RSS per runner measured; no OOM across a full NBA night",
+   "why": "The dashboard has OOM-crash-looped before (GG-118); a second heavy runner raises that risk.",
+   "source": "95.1 handoff (observed, unregistered)",
+   "wave": "97.3 Part C"
+  },
+  {
    "id": "B-022",
-   "order": 23,
+   "order": 27,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -305,7 +353,7 @@
   },
   {
    "id": "B-023",
-   "order": 24,
+   "order": 28,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -317,7 +365,7 @@
   },
   {
    "id": "B-024",
-   "order": 25,
+   "order": 29,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -329,7 +377,7 @@
   },
   {
    "id": "B-025",
-   "order": 26,
+   "order": 30,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
