@@ -1128,3 +1128,4 @@
 | 2026-11-03T01:07:50Z | T-1590 | CLOSED — merge confirmed, HEAD (a05bba5) is ancestor of origin/main — W97.4 NHL engine built+scored; EXP-046 not earned |
 | 2026-11-03T03:06:03Z | T-1570 | CLOSED — merge confirmed, HEAD (f41ebad) is ancestor of origin/main — PARKED, not complete: W97.2 B-002 2/20 units cached, B-011 not started |
 | 2026-11-03T03:27:52Z | T-1600..T-1603, GG-1600..GG-1602 | STANDARD — NFL first-look verdicts read + forward entry-cost table + frozen-evidence sharded resume — FOR PROOF P2 (verdicts read 0->12) / EXECUTION E2 / frozen cells classified 0->13 — W98.2 B-005 B-011 B-002 |
+| 2026-11-03T03:28:03Z | T-1630..T-1632, GG-1630..GG-1632 | STANDARD — W98.3 flex lane: box memory lock+stagger (B-027/GG-1581), held installs order (B-001), picks reasons (B-028/GG-1580) — FOR PLUMBING (OOM kills 20/90min -> 0; held installs 0->3; picks with reasons 0->all) |
