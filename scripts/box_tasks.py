@@ -69,6 +69,8 @@ TASKS: dict[str, str] = {
     "nba_engine_v3_cron_uninstall": f"{PY} scripts/nba_engine_v3_cron_install.py uninstall",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
+    # W98.2 Part A: READ-ONLY. Prints the released first-look verdicts from the latest saved calibration-engine JSON (no re-scoring).
+    "first_look_verdicts_read": f"{PY} scripts/first_look_verdicts_read.py --report",
     "distance_read": (
         f"{PY} scripts/distance_to_optimum.py; echo; echo '--- forward-test report (tail)'; "
         "tail -n 60 logs/demo_fill_forward_report.log 2>&1"
