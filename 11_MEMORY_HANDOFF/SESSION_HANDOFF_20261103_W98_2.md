@@ -1,9 +1,21 @@
-# SESSION_HANDOFF W98.2 PROOF LANE — 2026-11-03
-vision_pillar: PROOF + EXECUTION
-gap_measure: P2 verdicts issued (NFL first look), E-side entry cost (ADR-0072), frozen-evidence classification
-gap_delta: NFL verdicts read 0→12 (2 RULED_OUT, 10 KEEP ACCRUING, 0 CANDIDATE); frozen ride cells classified 0→11 of 13 (all DIFFERS); entry-cost table delivered (box, 2026-11-03T05:35Z)
-surface_delta: none (no live component added)
-pattern_sweep: exploratory-fence pattern (hardcoded logs/ literals and unfenced writes in 12_EXPLORATORY) fixed in entry_cost.py; other 12_EXPLORATORY scripts NOT swept this session — register/sweep next block.
+# Session Handoff — 2026-11-03T06:30Z
+
+<!-- session-meta
+task_id: T-1600
+tier: STANDARD
+timestamp: 2026-11-03T06:30:00Z
+commit: 805d4ca
+one_line_summary: W98.2 proof lane: NFL first look read (2 RULED_OUT), entry-cost says keep rule, frozen re-run 11/13 DIFFERS (GG-1600)
+gg_touched: GG-1600
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF, EXECUTION
+gap_measure: P2 verdicts issued; E-side entry cost; frozen-evidence classification
+gap_delta: NFL verdicts read 0->12; frozen cells classified 0->11 of 13 (box results 2026-11-03T06:20Z); entry-cost table delivered
+pattern_sweep: exploratory-fence pattern (logs/ literal, unfenced writes) fixed in entry_cost.py; other 12_EXPLORATORY scripts not swept this session
+surface_delta: 0
+-->
+
 
 ## States
 - B-005 (NFL first look): DONE. `12_EXPLORATORY/nfl_first_look/results_W98_2.md`. GAME_TOTAL_T1 and T2 RULED_OUT (one finding, shared games); T1 RULED_OUT was a listed surprise.
