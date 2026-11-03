@@ -3076,3 +3076,6 @@ Decision: `exposure_gate.GATE_MODE` "log" -> "enforce" (PR #346, bb03fd4), with 
 - Operator, 11:42 PT: "this will likely be the last wave for the rest of the weekend as I'm at 92% of my weekly limit - 8% left will likely mean only one more wave. Let's send 4 of the most important blocks ready for this run".
 - Window's fourth block: 97.4 = B-012, the NHL engine (rank 2, second sport): point-in-time inputs from the shot store, one goals distribution pricing the board, scored vs results and Kalshi; EXP-046 only if earned; installs nothing. Chosen over B-013 (NFL factors from the line, null so far) and B-010 (proof calendar schedule): hockey is in season, has the most forward-test fills, and NHL totals are the one cell that survived the Wave 86 family-wise test.
 - Weekend: blocks finish inside themselves; nothing left half-installed. The NFL first look (11-02) is read at the next wave close.
+
+## 2026-11-03 00:40 UTC - W97.3: picks cron held; OOM finding registered
+Picks builder cron not installed: Hard Rule 14 (surface RED: silent NBA engine v3 arm). Found 20 OOM kills in ~90 min from stacked unlocked T3 shadow runners (GG-1581, HIGH); not fixed here because it edits existing cron lines. MLB arms' idle text now states the reason (#393).

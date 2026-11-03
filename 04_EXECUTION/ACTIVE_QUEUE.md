@@ -520,7 +520,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 97.1 | B-001 + B-009 engine: v3 live, first nights, points leak-free | ⬜ | |
 | 97.2 | B-002 + B-011 proof: frozen evidence resumable; entry cost | ⬜ | |
-| 97.3 | B-026 + B-006 + B-007 flex: the picks sheet; MLB winter; memory | ⬜ | |
+| 97.3 | B-026 + B-006 + B-007 flex: the picks sheet; MLB winter; memory | PARTIAL | A/B/C merged (#389,#392,#393); picks cron held (surface RED); box OOM-killing arms: GG-1581 HIGH |
 | 97.4 | B-012 engine: the NHL engine prices the whole board | 🟨 Part A | PR #390 merged |
 
 ### 🟨 WAVE 96 — WRITTEN 2026-10-30 ~15:50 UTC · CLOSED 2026-10-30 ~17:10 UTC (operator 09:46 PT) · verified on GitHub (#382-#387 CI green) + box bridge (`20261030T170102Z_*`) · moved: **NBA v3 interpreted (spread, team total); the rolling backlog live on /visual**; three partials
