@@ -101,3 +101,6 @@ Waves 95-97 told terminals to "install on GREEN" through bridge `*_install` task
 
 ## W39 · 2026-11-02 22:40 PT · made "the window runs installs" a rule without testing that the window could
 W38's fix (COMMON_RULES_W98: terminals prepare, the window runs installs) assumed the window's classifier would allow what the terminals' refused. It refused the window's first install push (11-03 06:33Z, "Unauthorized Persistence"), and the window had not checked that the install gate could pass three held installs at once (it deadlocks). A rule about who acts must be tested once before a wave depends on it. Fix: the operator is asked (Needs your decision); 99.3 fixes the gate.
+
+## W40 · 2026-11-03 18:30 PT · a 399-chunk queue with a condition no free source serves
+The split queue (R-112) put "Opponent above .500" on all eight NBA tables (40 chunks) without checking that NBA.com or any free source offers that filter; Muse's runs correctly returned NONE on the first four. And the queue lived only in the bot repo, so runs past C-020 could not read their own chunk (NONE C-032: "no queue definition on file"). Rule: check every condition against its source before queueing at volume, and put a queue where the runs read it (their own archive).
