@@ -1634,3 +1634,74 @@ R-090 → R-091 → R-092 → R-093 → **R-104** → **R-105** → **R-106** �
 | C-399 | NHL | skater on-ice by situation | home / road | 2021-22 | NHL engine · team / goalie splits (index part 1) |
 
 **Backlog:** 43 R-tickets (order unchanged, 11-02 19:20 PT) + R-112's 399 chunks. At 100 runs a day that is about five days of work.
+
+### 2026-11-03 18:25 PT · Watchdog (Claude): THE 50-RUN STRESS TEST - X-001 → X-050, simple to hardest. RUNS START WITHIN MINUTES. READ THIS FIRST.
+- **Earl, 18:21 PT:** "I'm going to test it immediately by having it schedule 50 at one time within the next 5-10 minutes to see how it
+  goes. Include higher complexity tasks - everything within simple to complex within the range so we can pull back its work and see where
+  we need to adjust."
+- **Order of work for every run, from now:** (1) the lowest unclaimed X- ticket below; (2) when every X- ticket is claimed, the split queue
+  (R-112, C-001 → C-399); (3) then the R-ticket order of 11-02 19:20 PT.
+- **Separation (the claim protocol of R-112 applies to X- tickets too):** append `CLAIM X-NNN <start, ISO>` to `CLAIMS.md` at the
+  archive root, commit that line alone, push; on a rejected push, pull and take the next unclaimed id. One output folder per ticket:
+  `L3-split/stress-test/X-NNN/` (records + a `README.md` for the ticket) - no two runs ever write the same file. STATUS.md: append only,
+  one short entry per run, pull + rebase immediately before each push, retry the push up to five times.
+- **Every X- ticket ends with one line in CLAIMS.md:** `DONE X-NNN tier=<1-4> start=<ISO> end=<ISO> records=<n> gate=<clean|fail>` or
+  `NONE X-NNN tier=<n> <one-line reason>` (the source does not serve it - a result) or `PROGRESS X-NNN tier=<n> <what is left>` (too big
+  for one run; the next free run continues it with `CONTINUE X-NNN`) or `FAILED X-NNN tier=<n> <what broke>`. This line is the test's
+  data: Earl and the window grade by tier.
+- **Rules unchanged:** primary sources, values verbatim with the filter visible in the URL, free only, no nulls, never a bet, pick, odds
+  or model. Tiers 3-4 COUNT and JOIN recorded facts; they never judge, rate or predict. Where a component does not exist free, say NONE
+  for that component and record the rest.
+
+**Tier 1 - one table, one condition, one season (20).** X-001 → X-020 = split-queue chunks C-001 → C-020 exactly as written (R-112); mark
+the C- chunk DONE too.
+
+**Tier 2 - two sources reconciled, or one table across many filters (15).**
+- X-021 NBA team shooting by zone, Clutch, 2025-26: NBA.com and Basketball-Reference; per team, the counts from each and every disagreement.
+- X-022 NBA referee crews for every game 2026-10-21 → 11-02 from the league's assignment posting (or its archived copies), joined to game date and teams.
+- X-023 NBA team pace and offensive rating, Home vs Road vs Clutch, 2025-26, all 30 teams in one file (three filters).
+- X-024 NFL team red-zone TD % 2025: Pro-Football-Reference and one second free source; reconcile per team.
+- X-025 NFL QB splits 2025 (PFR): leading / tied / trailing, for every QB with 200+ attempts.
+- X-026 NFL kicker field goals by distance band, 2021-2025 (PFR), every kicker with 20+ attempts (feeds R-101).
+- X-027 MLB Statcast batter results vs fastballs 2025, 25 hitters: the leaderboard and each player page; reconcile.
+- X-028 MLB park factors 2023-2025 by batter hand (Savant), all 30 parks.
+- X-029 MLB team bullpen ERA / FIP in high leverage vs low leverage, 2025, two free sources reconciled.
+- X-030 NHL team 5v5 score-close xGF % 2025-26: Natural Stat Trick and MoneyPuck; reconcile per team, state each source's xG model.
+- X-031 NHL goalie save % by danger (low / medium / high), 2025-26, all goalies with 10+ starts, two sources reconciled.
+- X-032 NHL power-play units (who is on PP1) for all 32 teams as of 2026-11-03, from two free sources; disagreements listed (feeds R-081).
+- X-033 NBA team play types (spot-up, isolation, PnR ball handler) offense AND defense, 2025-26, Home vs Road (four files).
+- X-034 NFL team pass rate over expected by quarter, 2025, from a free published source; every team.
+- X-035 MLB pitcher pitch mix by count (ahead / even / behind), 2025, 20 starting pitchers.
+
+**Tier 3 - derive a split from raw event data, then check it against a published number (10).**
+- X-036 NBA: from the league's free play-by-play, 20 games of 2025-26 (list the game ids), count each team's mid-range attempts / makes in
+  clutch time; compare per team with NBA.com's clutch shooting-by-zone; show the method.
+- X-037 NHL: from the NHL's public play-by-play, 30 games of 2025-26, every goalie pull (time, score margin) and empty-net goal; compare the
+  empty-net goal count with a published season figure (feeds R-095).
+- X-038 NFL: from nflverse play-by-play 2025, each team's 4th-down go rate when trailing by 1-8 in the 4th quarter; compare with one
+  published fourth-down table.
+- X-039 MLB: Statcast pitch-level, 5 starting pitchers 2025, pitch mix the 1st vs 3rd time through the order; compare with Savant's split.
+- X-040 NBA: from box scores, each team's points in the 4th quarter when leading by 15+ entering it (garbage time), 2025-26; compare with
+  any published garbage-time definition (feeds R-103).
+- X-041 NFL: from FTN charting (nflverse), each defense's blitz rate on 3rd down, 2025; compare with one published blitz table.
+- X-042 NHL: from shift charts, 10 games, each team's PP1 time on ice; compare with the published PP TOI; list games whose shift charts
+  are empty (feeds R-111).
+- X-043 MLB: from the Stats API live feed, 10 games, each reliever's pitch count over the prior three days at the moment he entered;
+  compare with one published bullpen-usage table (feeds R-084).
+- X-044 NBA: from play-by-play, 20 games, each team's points per possession in the first 6 minutes vs the last 6 minutes; compare with
+  NBA.com's quarter splits.
+- X-045 NFL: from nflverse participation 2025, 5 teams, how often each ran 3+ WR sets with motion; compare with FTN's motion rate.
+
+**Tier 4 - compound splits: three or more conditions, every component sourced, point-in-time (5).**
+- X-046 NBA, Earl's example (2025-26, team level): mid-range FG % in clutch time, ROAD games only, in games the team's primary point guard
+  (most PG minutes that season to date) did not play, against opponents a free source labels as playing the most zone (if no free
+  source labels zone usage, record NONE for that component and every other component). Each component's source; the final n per team.
+- X-047 NFL 2025, 10 QBs: EPA per play on 3rd down vs the blitz (FTN) when trailing in the 2nd half; each component's source and n.
+- X-048 MLB 2025, 20 batters: results vs fastballs 95+ mph from relievers in high-leverage spots, home vs road; n per cell.
+- X-049 NHL 2024-25, all teams: power-play xG per 2 minutes on the second night of a back-to-back vs rested, using the schedule and a
+  free xG source; n per cell.
+- X-050 NBA 2025-26, 15 players: points per game when the team's second-leading scorer was listed OUT on the official injury report
+  before tip vs when he played (injury reports, R-077's archive + box scores); n per cell.
+
+**After the 50:** the split queue (R-112), then the R-tickets. Earl and the window read CLAIMS.md and STATUS.md to see where runs collided,
+stalled or failed, by tier.
