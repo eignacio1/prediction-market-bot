@@ -855,6 +855,8 @@ def promote_cell_status(
     new_status: CellStatus,
     *,
     superseding_reference: Optional[str] = None,
+    reason: Optional[str] = None,
+    measured_date: Optional[date] = None,
 ) -> MarketTypeCell:
     """
     Mutate MARKET_TYPE_REGISTRY in place, replacing the cell at (market_type,
@@ -887,6 +889,8 @@ def promote_cell_status(
         current,
         status=new_status,
         citing_decision=superseding_reference or current.citing_decision,
+        reason=reason if reason is not None else current.reason,
+        measured_date=measured_date if measured_date is not None else current.measured_date,
     )
     MARKET_TYPE_REGISTRY[key] = new_cell
     return new_cell
@@ -910,6 +914,25 @@ _EXP037_NFL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
 )
 for _mt, _bd in _EXP037_NFL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
+
+# --- EXP-037 first look (W99.2, B-034): the two RULED_OUT verdicts, applied as the pre-registration
+# says (section 5, rule 1) and nothing more. Source: 12_EXPLORATORY/nfl_first_look/results_W98_2.md
+# (engine file engine_20261102T135056Z.json, 60 settled games per cell). The other ten NFL cells are
+# KEEP ACCRUING: they stay SHADOW to the pre-stated second look (150 games or week 18).
+# EXP-037 is silent on stopping the arm; nothing in the registry gates the shadow cron, so the
+# RULED_OUT game-total T1/T2 arms keep logging (evaluate-and-log, kelly 0) and are not scored again.
+_EXP037_NFL_FIRST_LOOK_MEASURED = date(2026, 11, 2)
+for _bd, _delta, _ci in (
+    (ExecutionBand.T1_MULTI_DAY, "-0.0161", "[-0.0294, -0.0027]"),
+    (ExecutionBand.T2_SAME_DAY, "-0.0157", "[-0.0299, -0.0011]"),
+):
+    promote_cell_status(
+        MarketType.NFL_GAME_TOTAL, _bd, CellStatus.RULED_OUT,
+        superseding_reference="EXP-037 first look (W98.2)",
+        reason=(f"EXP-037 first look, n=60 settled games: delta Brier vs market {_delta} {_ci} "
+                f"(game-cluster 95% CI upper bound < 0); rule 5.1"),
+        measured_date=_EXP037_NFL_FIRST_LOOK_MEASURED,
+    )
 
 
 # --- EXP-036 / T-654 (Wave 52.A): NHL pre-game SHADOW cells, flipped via promote_cell_status ---
