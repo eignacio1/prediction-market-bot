@@ -37,6 +37,8 @@ def wanted_lines(conf_text: str, reg: list) -> list[tuple[str, str]]:
         line = raw.strip()
         if not line or line.startswith("#") or len(line.split()) < 6 or not any(m in line for m in MARKERS):
             continue
+        if "nba_engine.live_v3" in line:   # W99.3: the "nba_engine.live" marker is a prefix of live_v3; v3 has its own installer/block
+            continue
         key, _ = rr._cron_key(line)
         if key in live:
             out.append((key, line))
