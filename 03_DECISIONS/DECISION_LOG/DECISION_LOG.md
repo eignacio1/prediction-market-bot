@@ -3140,3 +3140,7 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 ## 2026-11-04 02:25 UTC (11-03 18:25 PT) - Muse 50-run stress test written (X-001 -> X-050)
 - Operator 18:21 PT: "I'm going to test it immediately by having it schedule 50 at one time within the next 5-10 minutes to see how it goes. Include higher complexity tasks - everything within simple to complex within the range so we can pull back its work and see where we need to adjust."
 - TO_MUSE 18:25 PT: 50 tickets in four tiers (20 single-table, 15 reconciled / multi-filter, 10 derived from raw events and checked, 5 compound splits incl. the operator's mid-range example); claim protocol (CLAIMS.md), one folder per ticket, outcome line per ticket with tier and times. Order: X- first, then R-112, then R-tickets.
+
+## 2026-11-04 02:40 UTC (11-03 18:40 PT) - Muse stress-test schedule (M99-ST)
+- Operator 18:23 PT: "give me a paste in to drop into Muse ... make in run on go for 1/5/10 minute intervals - I'll test it for 20 minutes for all 50 tasks. Stack them accordingly based on complexity. Be precise with this bc it needs direction due to its limited logic scaffolding - I want to get a clear quality test going."
+- M99-ST in the queue: 50 one-time runs from T0 over 20 minutes; tier 1 every minute (20), tier 2 stacks every 5 min (4/4/4/3), tiers 3-4 stacks every 10 min (hardest first: 8 at T0, 7 at T0+10). Peaks: 13 runs at T0, 12 at T0+10. Each run assigned its ticket; collisions logged (TO_MUSE 18:35 PT). Muse schedules only, reports what its scheduler could not do.

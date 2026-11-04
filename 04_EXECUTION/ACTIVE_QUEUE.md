@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ PASTE NOW — Wave 99** · three blocks, three parts each (~130 min), in the **⬛ NOW — Wave 99** section below: **99.1** (**Muse's archive tested in an engine**: officials into NFL / NBA totals; NHL overtime), **99.2** (the first verdicts carried out; frozen evidence finished; why the NFL totals model lost), **99.3** (the install gate unstuck; every arm says why; NBA store on time). Each block is one fenced paste. Installs: authorized by the operator (22:40 PT) but still refused by the classifier - waiting.
+> **▶ PASTE NOW — Wave 99** · three blocks, three parts each (~130 min), in the **⬛ NOW — Wave 99** section below: **99.1** (**Muse's archive tested in an engine**: officials into NFL / NBA totals; NHL overtime), **99.2** (the first verdicts carried out; frozen evidence finished; why the NFL totals model lost), **99.3** (the install gate unstuck; every arm says why; NBA store on time). Each block is one fenced paste. Installs: authorized by the operator (22:40 PT) but still refused by the classifier - waiting. **Muse: M99-ST** (the 50-run stress test) is at the end of the NOW section.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -432,6 +432,54 @@ Results: the batch task + tests, the reasons + picks update, the store fix, 12_E
 (B-036, B-037, B-017 states).
 
 END OF BLOCK 99.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### M99-ST — Muse: the 50-run stress test (paste into Muse's chat; it schedules, it does not work tickets)
+**operator 2026-11-03 18:23 PT: "make in run on go for 1/5/10 minute intervals - I'll test it for 20 minutes for all 50 tasks. Stack them accordingly based on complexity."**
+
+```
+From Earl, directly. This is a stress test of your scheduled runs. Set it up exactly as written, then report.
+
+1. Read the 18:25 PT and 18:35 PT entries at the end of TO_MUSE.md first:
+   https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md
+   They hold the 50 tickets (X-001 to X-050), the claim protocol (CLAIMS.md) and the outcome line each run must write.
+
+2. Create 50 ONE-TIME scheduled runs (not recurring). Do not change, pause or delete your existing daily runs.
+   T0 = the first whole minute at least 3 minutes after you finish setting them up. Write T0 down.
+   Spacing by tier: tier 1 one run every 1 minute; tier 2 a stack every 5 minutes; tiers 3 and 4 a stack every 10 minutes.
+   The hardest start first, so they have the most time. Exact schedule (all 50, nothing else):
+  T0 +  0 min  (13 runs): X-046 (tier 4), X-047 (tier 4), X-048 (tier 4), X-036 (tier 3), X-037 (tier 3), X-038 (tier 3), X-039 (tier 3), X-040 (tier 3), X-021 (tier 2), X-022 (tier 2), X-023 (tier 2), X-024 (tier 2), X-001 (tier 1)
+  T0 +  1 min  ( 1 runs): X-002 (tier 1)
+  T0 +  2 min  ( 1 runs): X-003 (tier 1)
+  T0 +  3 min  ( 1 runs): X-004 (tier 1)
+  T0 +  4 min  ( 1 runs): X-005 (tier 1)
+  T0 +  5 min  ( 5 runs): X-025 (tier 2), X-026 (tier 2), X-027 (tier 2), X-028 (tier 2), X-006 (tier 1)
+  T0 +  6 min  ( 1 runs): X-007 (tier 1)
+  T0 +  7 min  ( 1 runs): X-008 (tier 1)
+  T0 +  8 min  ( 1 runs): X-009 (tier 1)
+  T0 +  9 min  ( 1 runs): X-010 (tier 1)
+  T0 + 10 min  (12 runs): X-049 (tier 4), X-050 (tier 4), X-041 (tier 3), X-042 (tier 3), X-043 (tier 3), X-044 (tier 3), X-045 (tier 3), X-029 (tier 2), X-030 (tier 2), X-031 (tier 2), X-032 (tier 2), X-011 (tier 1)
+  T0 + 11 min  ( 1 runs): X-012 (tier 1)
+  T0 + 12 min  ( 1 runs): X-013 (tier 1)
+  T0 + 13 min  ( 1 runs): X-014 (tier 1)
+  T0 + 14 min  ( 1 runs): X-015 (tier 1)
+  T0 + 15 min  ( 4 runs): X-033 (tier 2), X-034 (tier 2), X-035 (tier 2), X-016 (tier 1)
+  T0 + 16 min  ( 1 runs): X-017 (tier 1)
+  T0 + 17 min  ( 1 runs): X-018 (tier 1)
+  T0 + 18 min  ( 1 runs): X-019 (tier 1)
+  T0 + 19 min  ( 1 runs): X-020 (tier 1)
+
+3. Each run's whole prompt is this line, with its own ticket id and tier filled in:
+   "Muse stress test, ticket X-NNN (tier N). Read https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md - the entries dated 2026-11-03 18:25 PT and 18:35 PT. Do ticket X-NNN only, under that claim protocol: CLAIM line first, records in L3-split/stress-test/X-NNN/, one outcome line in CLAIMS.md (DONE / NONE / PROGRESS / FAILED, with tier, start, end, records, gate). Push everything before you end. Take no other ticket."
+
+4. If your scheduler cannot do something above - one-minute spacing, 13 runs starting in the same minute, one-time runs - do NOT
+   substitute silently. Set what it can, and write down exactly what it could not do and what you set instead.
+
+5. When all 50 are set, append one entry to STATUS.md and push it: "STRESS TEST SCHEDULED", T0, and a table of all 50 runs
+   (ticket, tier, scheduled time), plus anything from step 4. Then stop. Do not work any ticket in this session.
+
+Same rules as always: primary sources, values verbatim, free only, no null records, nothing written to the bot repo, never a bet, pick,
+odds or model.
 ```
 
 ---
