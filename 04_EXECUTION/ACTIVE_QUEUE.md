@@ -601,6 +601,22 @@ RUN 50 · at T0 + 19 min · X-020 · tier 1
 "Muse stress test from Earl, ticket X-020 (tier 1). TASK: NBA team traditional, filter Period=4th quarter, season 2021-22: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-020: also append 'DONE C-020' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-020 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-020' is already in CLAIMS.md, append 'COLLISION X-020 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-020/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-020 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-020 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-020 tier=1 <what is left>', or 'FAILED X-020 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
 ```
 
+### M99-ST-MOVE — Muse: move the stress test up (paste into Muse's chat)
+**operator 2026-11-03 18:39 PT: "Can we move it up please lol I want it running within the next 10 minutes not in the next hour"**
+
+```
+From Earl, directly. Move the stress test up. Everything you need is in this message; fetch nothing.
+
+1. Move all 50 stress-test runs you scheduled (T0 19:07 PT) EARLIER by the same amount, so the new T0 is 18:48 PT today.
+   Keep every run's offset from T0, its ticket and its prompt exactly as they are: 13 runs at 18:48, 12 at 18:58, the rest as set.
+   If you cannot finish moving all 50 before 18:45, use the first whole minute at least 3 minutes after you finish as the new T0
+   instead, and shift everything by that amount.
+2. Move them; do not add copies. When done there must be exactly 50 stress-test runs, none left at the old 19:07-19:26 times.
+   Do not change, pause or delete your daily runs.
+3. Append to STATUS.md and push: "STRESS TEST MOVED", the new T0, the new time of all 50 (run, ticket, tier, time), and anything
+   the scheduler would not do (say so; do not substitute silently). Then stop. Do not work any ticket in this session.
+```
+
 ---
 
 ## 🔥 STANDING — GA: the governance gap agent (always on, beside every wave; operator 2026-10-15 16:49 / 17:02 PT)
