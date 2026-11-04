@@ -38,7 +38,10 @@ live scheduler (it listed `nfl-archive-daily-sync` at 03:50; its memory claimed 
 2. **Muse's memory holds a pointer, not a protocol.** Its MEMORY.md / AGENTS.md carry one line: read the charter and TO_MUSE.md
    (the two URLs) at the start of every chat. The window-protocol files it wrote on 2026-10-20 (`~/workspace/protocols/
    window-protocol.md`, `window-state-brief.md`) were built on the padded picture and are retired; they become that pointer.
-3. **No scheduled jobs except ones the charter names.** v3 names **ten daily runs** (amended 2026-10-27; Earl set them up and they
+3. **No scheduled jobs except ones the charter names.** v3 names **as many daily runs as Earl schedules** (amended 2026-11-03 18:18 PT:
+   "we're actually gonna stretch it as much as feasibly possible ... I want to test it to its limits - 30 autos a day doesn't seem like
+   enough"; many runs may start at once, so the split queue R-112 uses claim lines in the archive's CLAIMS.md - see TO_MUSE.md
+   2026-11-03 18:30 PT). Before that: **ten daily runs** (amended 2026-10-27; Earl set them up and they
    are his: the scheduled runs do not draw on Muse's chat usage limit, which Earl tends to hit by Wednesday or Thursday, so he moved
    the workload onto them. Before that: three daily runs, 2026-10-21 16:50 PT, "even 3 seems small but baby steps"). Each run's whole
    prompt is the kickoff line below; each works the top open backlog ticket (skipping any ticket with a live IN PROGRESS marker),

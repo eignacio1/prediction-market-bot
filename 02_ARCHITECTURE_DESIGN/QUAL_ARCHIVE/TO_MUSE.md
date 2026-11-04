@@ -1207,3 +1207,430 @@ R-090 → R-091 → R-092 → R-093 → **R-104** → **R-105** → **R-106** �
 - **Still open on R-048:** 2025-26 (no single season-table page found yet). The ticket's "done when" is five seasons; four are recorded.
   From here, R-048's remaining card update and every new card should name the engine (NHL) and factor (officials) per the amendment.
 - **Backlog:** 43 open, order unchanged.
+
+### 2026-11-03 18:30 PT · Watchdog (Claude): THE SPLIT QUEUE - 399 small chunks built for many scheduled runs at once
+- **Why:** Earl, 18:18 PT: "we're actually gonna stretch it as much as feasibly possible ... I want to test it to its limits - 30 autos a
+  day doesn't seem like enough". Earl will add scheduled runs well past ten a day. And the direction (Earl, 11-02 21:40 PT): the raw tables
+  are "a starting place that we'll be able to build on once we start hitting conceptual data aggregation" - compound splits such as a
+  player type's mid-range shooting in close games on the road. The building block for that is **the same table under a condition**
+  (home, road, clutch, fourth quarter, vs left-handers, power play, score-close). That is what this queue records.
+- **R-112 · The split queue (C-001 → C-399).** One chunk = one table × one condition × one season, small enough for one scheduled run.
+  Every chunk names the engine and factor it feeds (the standing rule). Work them in id order, after the R-ticket order above is clear
+  OR in parallel with it: a run that finds the next R-ticket IN PROGRESS by another run takes the next unclaimed chunk instead.
+
+**How runs share the queue without colliding (many runs may start at the same minute):**
+1. Claim before working: append one line `CLAIM C-NNN <run start time, ISO>` to `CLAIMS.md` at your archive's root, commit that line
+   alone, push. If the push is rejected, pull, and if another run claimed that chunk, take the next unclaimed one. A claim older than
+   6 hours with no DONE line is stale and may be re-claimed (say so in the line).
+2. When finished: append `DONE C-NNN <records> <file>` (or `NONE C-NNN <one-line reason>` when the source does not serve that table
+   under that condition for that season - a NONE is a result, not a failure) and push.
+3. Records go in `L3-split/<sport>/splits/<table-slug>/<condition-slug>-<season>.claims.jsonl`, one file per chunk, so two runs never
+   write the same file. Same gate as always: verbatim values, timestamps, source URL with the filter visible, no nulls.
+4. Source first: if a chunk's table has no source card yet, the first run to reach that table writes the card (the URL pattern with the
+   condition filter, verbatim field names, whether the bot can capture it itself), then records. Later chunks of that table reuse it.
+5. Report per day in STATUS.md, one line: runs that worked chunks, chunks DONE / NONE, claim collisions, stale claims, gate failures.
+   That line is how Earl and the window measure where the limit is.
+
+| chunk | sport | table | condition | season | feeds |
+|---|---|---|---|---|---|
+| C-001 | NBA | team traditional | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-002 | NBA | team traditional | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-003 | NBA | team traditional | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-004 | NBA | team traditional | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-005 | NBA | team traditional | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-006 | NBA | team traditional | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-007 | NBA | team traditional | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-008 | NBA | team traditional | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-009 | NBA | team traditional | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-010 | NBA | team traditional | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-011 | NBA | team traditional | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-012 | NBA | team traditional | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-013 | NBA | team traditional | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-014 | NBA | team traditional | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-015 | NBA | team traditional | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-016 | NBA | team traditional | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-017 | NBA | team traditional | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-018 | NBA | team traditional | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-019 | NBA | team traditional | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-020 | NBA | team traditional | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-021 | NBA | team traditional | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-022 | NBA | team traditional | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-023 | NBA | team traditional | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-024 | NBA | team traditional | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-025 | NBA | team traditional | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-026 | NBA | team advanced | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-027 | NBA | team advanced | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-028 | NBA | team advanced | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-029 | NBA | team advanced | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-030 | NBA | team advanced | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-031 | NBA | team advanced | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-032 | NBA | team advanced | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-033 | NBA | team advanced | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-034 | NBA | team advanced | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-035 | NBA | team advanced | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-036 | NBA | team advanced | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-037 | NBA | team advanced | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-038 | NBA | team advanced | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-039 | NBA | team advanced | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-040 | NBA | team advanced | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-041 | NBA | team advanced | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-042 | NBA | team advanced | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-043 | NBA | team advanced | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-044 | NBA | team advanced | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-045 | NBA | team advanced | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-046 | NBA | team advanced | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-047 | NBA | team advanced | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-048 | NBA | team advanced | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-049 | NBA | team advanced | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-050 | NBA | team advanced | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-051 | NBA | team four factors | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-052 | NBA | team four factors | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-053 | NBA | team four factors | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-054 | NBA | team four factors | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-055 | NBA | team four factors | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-056 | NBA | team four factors | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-057 | NBA | team four factors | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-058 | NBA | team four factors | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-059 | NBA | team four factors | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-060 | NBA | team four factors | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-061 | NBA | team four factors | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-062 | NBA | team four factors | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-063 | NBA | team four factors | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-064 | NBA | team four factors | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-065 | NBA | team four factors | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-066 | NBA | team four factors | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-067 | NBA | team four factors | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-068 | NBA | team four factors | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-069 | NBA | team four factors | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-070 | NBA | team four factors | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-071 | NBA | team four factors | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-072 | NBA | team four factors | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-073 | NBA | team four factors | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-074 | NBA | team four factors | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-075 | NBA | team four factors | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-076 | NBA | team shooting by zone (incl. mid-range) | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-077 | NBA | team shooting by zone (incl. mid-range) | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-078 | NBA | team shooting by zone (incl. mid-range) | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-079 | NBA | team shooting by zone (incl. mid-range) | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-080 | NBA | team shooting by zone (incl. mid-range) | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-081 | NBA | team shooting by zone (incl. mid-range) | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-082 | NBA | team shooting by zone (incl. mid-range) | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-083 | NBA | team shooting by zone (incl. mid-range) | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-084 | NBA | team shooting by zone (incl. mid-range) | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-085 | NBA | team shooting by zone (incl. mid-range) | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-086 | NBA | team shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-087 | NBA | team shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-088 | NBA | team shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-089 | NBA | team shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-090 | NBA | team shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-091 | NBA | team shooting by zone (incl. mid-range) | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-092 | NBA | team shooting by zone (incl. mid-range) | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-093 | NBA | team shooting by zone (incl. mid-range) | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-094 | NBA | team shooting by zone (incl. mid-range) | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-095 | NBA | team shooting by zone (incl. mid-range) | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-096 | NBA | team shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-097 | NBA | team shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-098 | NBA | team shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-099 | NBA | team shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-100 | NBA | team shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-101 | NBA | player shooting by zone (incl. mid-range) | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-102 | NBA | player shooting by zone (incl. mid-range) | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-103 | NBA | player shooting by zone (incl. mid-range) | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-104 | NBA | player shooting by zone (incl. mid-range) | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-105 | NBA | player shooting by zone (incl. mid-range) | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-106 | NBA | player shooting by zone (incl. mid-range) | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-107 | NBA | player shooting by zone (incl. mid-range) | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-108 | NBA | player shooting by zone (incl. mid-range) | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-109 | NBA | player shooting by zone (incl. mid-range) | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-110 | NBA | player shooting by zone (incl. mid-range) | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-111 | NBA | player shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-112 | NBA | player shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-113 | NBA | player shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-114 | NBA | player shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-115 | NBA | player shooting by zone (incl. mid-range) | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-116 | NBA | player shooting by zone (incl. mid-range) | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-117 | NBA | player shooting by zone (incl. mid-range) | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-118 | NBA | player shooting by zone (incl. mid-range) | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-119 | NBA | player shooting by zone (incl. mid-range) | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-120 | NBA | player shooting by zone (incl. mid-range) | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-121 | NBA | player shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-122 | NBA | player shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-123 | NBA | player shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-124 | NBA | player shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-125 | NBA | player shooting by zone (incl. mid-range) | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-126 | NBA | player catch-and-shoot / pull-up | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-127 | NBA | player catch-and-shoot / pull-up | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-128 | NBA | player catch-and-shoot / pull-up | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-129 | NBA | player catch-and-shoot / pull-up | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-130 | NBA | player catch-and-shoot / pull-up | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-131 | NBA | player catch-and-shoot / pull-up | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-132 | NBA | player catch-and-shoot / pull-up | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-133 | NBA | player catch-and-shoot / pull-up | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-134 | NBA | player catch-and-shoot / pull-up | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-135 | NBA | player catch-and-shoot / pull-up | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-136 | NBA | player catch-and-shoot / pull-up | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-137 | NBA | player catch-and-shoot / pull-up | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-138 | NBA | player catch-and-shoot / pull-up | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-139 | NBA | player catch-and-shoot / pull-up | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-140 | NBA | player catch-and-shoot / pull-up | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-141 | NBA | player catch-and-shoot / pull-up | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-142 | NBA | player catch-and-shoot / pull-up | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-143 | NBA | player catch-and-shoot / pull-up | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-144 | NBA | player catch-and-shoot / pull-up | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-145 | NBA | player catch-and-shoot / pull-up | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-146 | NBA | player catch-and-shoot / pull-up | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-147 | NBA | player catch-and-shoot / pull-up | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-148 | NBA | player catch-and-shoot / pull-up | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-149 | NBA | player catch-and-shoot / pull-up | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-150 | NBA | player catch-and-shoot / pull-up | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-151 | NBA | team play types (offense) | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-152 | NBA | team play types (offense) | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-153 | NBA | team play types (offense) | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-154 | NBA | team play types (offense) | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-155 | NBA | team play types (offense) | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-156 | NBA | team play types (offense) | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-157 | NBA | team play types (offense) | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-158 | NBA | team play types (offense) | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-159 | NBA | team play types (offense) | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-160 | NBA | team play types (offense) | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-161 | NBA | team play types (offense) | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-162 | NBA | team play types (offense) | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-163 | NBA | team play types (offense) | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-164 | NBA | team play types (offense) | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-165 | NBA | team play types (offense) | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-166 | NBA | team play types (offense) | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-167 | NBA | team play types (offense) | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-168 | NBA | team play types (offense) | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-169 | NBA | team play types (offense) | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-170 | NBA | team play types (offense) | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-171 | NBA | team play types (offense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-172 | NBA | team play types (offense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-173 | NBA | team play types (offense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-174 | NBA | team play types (offense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-175 | NBA | team play types (offense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-176 | NBA | team play types (defense) | Location=Home | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-177 | NBA | team play types (defense) | Location=Home | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-178 | NBA | team play types (defense) | Location=Home | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-179 | NBA | team play types (defense) | Location=Home | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-180 | NBA | team play types (defense) | Location=Home | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-181 | NBA | team play types (defense) | Location=Road | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-182 | NBA | team play types (defense) | Location=Road | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-183 | NBA | team play types (defense) | Location=Road | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-184 | NBA | team play types (defense) | Location=Road | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-185 | NBA | team play types (defense) | Location=Road | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-186 | NBA | team play types (defense) | Clutch (last 5 min, within 5) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-187 | NBA | team play types (defense) | Clutch (last 5 min, within 5) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-188 | NBA | team play types (defense) | Clutch (last 5 min, within 5) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-189 | NBA | team play types (defense) | Clutch (last 5 min, within 5) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-190 | NBA | team play types (defense) | Clutch (last 5 min, within 5) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-191 | NBA | team play types (defense) | Period=4th quarter | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-192 | NBA | team play types (defense) | Period=4th quarter | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-193 | NBA | team play types (defense) | Period=4th quarter | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-194 | NBA | team play types (defense) | Period=4th quarter | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-195 | NBA | team play types (defense) | Period=4th quarter | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-196 | NBA | team play types (defense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2025-26 | NBA engine · team + player splits (index part 1) |
+| C-197 | NBA | team play types (defense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2024-25 | NBA engine · team + player splits (index part 1) |
+| C-198 | NBA | team play types (defense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2023-24 | NBA engine · team + player splits (index part 1) |
+| C-199 | NBA | team play types (defense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2022-23 | NBA engine · team + player splits (index part 1) |
+| C-200 | NBA | team play types (defense) | Opponent above .500 (team splits only; skip for player tables if absent) | 2021-22 | NBA engine · team + player splits (index part 1) |
+| C-201 | NFL | team offense splits | home / road | 2025 | NFL engine · team splits (index part 1) |
+| C-202 | NFL | team offense splits | home / road | 2024 | NFL engine · team splits (index part 1) |
+| C-203 | NFL | team offense splits | home / road | 2023 | NFL engine · team splits (index part 1) |
+| C-204 | NFL | team offense splits | home / road | 2022 | NFL engine · team splits (index part 1) |
+| C-205 | NFL | team offense splits | home / road | 2021 | NFL engine · team splits (index part 1) |
+| C-206 | NFL | team offense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2025 | NFL engine · team splits (index part 1) |
+| C-207 | NFL | team offense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2024 | NFL engine · team splits (index part 1) |
+| C-208 | NFL | team offense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2023 | NFL engine · team splits (index part 1) |
+| C-209 | NFL | team offense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2022 | NFL engine · team splits (index part 1) |
+| C-210 | NFL | team offense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2021 | NFL engine · team splits (index part 1) |
+| C-211 | NFL | team offense splits | by quarter (4th) | 2025 | NFL engine · team splits (index part 1) |
+| C-212 | NFL | team offense splits | by quarter (4th) | 2024 | NFL engine · team splits (index part 1) |
+| C-213 | NFL | team offense splits | by quarter (4th) | 2023 | NFL engine · team splits (index part 1) |
+| C-214 | NFL | team offense splits | by quarter (4th) | 2022 | NFL engine · team splits (index part 1) |
+| C-215 | NFL | team offense splits | by quarter (4th) | 2021 | NFL engine · team splits (index part 1) |
+| C-216 | NFL | team offense splits | red zone | 2025 | NFL engine · team splits (index part 1) |
+| C-217 | NFL | team offense splits | red zone | 2024 | NFL engine · team splits (index part 1) |
+| C-218 | NFL | team offense splits | red zone | 2023 | NFL engine · team splits (index part 1) |
+| C-219 | NFL | team offense splits | red zone | 2022 | NFL engine · team splits (index part 1) |
+| C-220 | NFL | team offense splits | red zone | 2021 | NFL engine · team splits (index part 1) |
+| C-221 | NFL | team offense splits | 3rd down | 2025 | NFL engine · team splits (index part 1) |
+| C-222 | NFL | team offense splits | 3rd down | 2024 | NFL engine · team splits (index part 1) |
+| C-223 | NFL | team offense splits | 3rd down | 2023 | NFL engine · team splits (index part 1) |
+| C-224 | NFL | team offense splits | 3rd down | 2022 | NFL engine · team splits (index part 1) |
+| C-225 | NFL | team offense splits | 3rd down | 2021 | NFL engine · team splits (index part 1) |
+| C-226 | NFL | team defense splits | home / road | 2025 | NFL engine · team splits (index part 1) |
+| C-227 | NFL | team defense splits | home / road | 2024 | NFL engine · team splits (index part 1) |
+| C-228 | NFL | team defense splits | home / road | 2023 | NFL engine · team splits (index part 1) |
+| C-229 | NFL | team defense splits | home / road | 2022 | NFL engine · team splits (index part 1) |
+| C-230 | NFL | team defense splits | home / road | 2021 | NFL engine · team splits (index part 1) |
+| C-231 | NFL | team defense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2025 | NFL engine · team splits (index part 1) |
+| C-232 | NFL | team defense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2024 | NFL engine · team splits (index part 1) |
+| C-233 | NFL | team defense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2023 | NFL engine · team splits (index part 1) |
+| C-234 | NFL | team defense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2022 | NFL engine · team splits (index part 1) |
+| C-235 | NFL | team defense splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2021 | NFL engine · team splits (index part 1) |
+| C-236 | NFL | team defense splits | by quarter (4th) | 2025 | NFL engine · team splits (index part 1) |
+| C-237 | NFL | team defense splits | by quarter (4th) | 2024 | NFL engine · team splits (index part 1) |
+| C-238 | NFL | team defense splits | by quarter (4th) | 2023 | NFL engine · team splits (index part 1) |
+| C-239 | NFL | team defense splits | by quarter (4th) | 2022 | NFL engine · team splits (index part 1) |
+| C-240 | NFL | team defense splits | by quarter (4th) | 2021 | NFL engine · team splits (index part 1) |
+| C-241 | NFL | team defense splits | red zone | 2025 | NFL engine · team splits (index part 1) |
+| C-242 | NFL | team defense splits | red zone | 2024 | NFL engine · team splits (index part 1) |
+| C-243 | NFL | team defense splits | red zone | 2023 | NFL engine · team splits (index part 1) |
+| C-244 | NFL | team defense splits | red zone | 2022 | NFL engine · team splits (index part 1) |
+| C-245 | NFL | team defense splits | red zone | 2021 | NFL engine · team splits (index part 1) |
+| C-246 | NFL | team defense splits | 3rd down | 2025 | NFL engine · team splits (index part 1) |
+| C-247 | NFL | team defense splits | 3rd down | 2024 | NFL engine · team splits (index part 1) |
+| C-248 | NFL | team defense splits | 3rd down | 2023 | NFL engine · team splits (index part 1) |
+| C-249 | NFL | team defense splits | 3rd down | 2022 | NFL engine · team splits (index part 1) |
+| C-250 | NFL | team defense splits | 3rd down | 2021 | NFL engine · team splits (index part 1) |
+| C-251 | NFL | QB splits | home / road | 2025 | NFL engine · team splits (index part 1) |
+| C-252 | NFL | QB splits | home / road | 2024 | NFL engine · team splits (index part 1) |
+| C-253 | NFL | QB splits | home / road | 2023 | NFL engine · team splits (index part 1) |
+| C-254 | NFL | QB splits | home / road | 2022 | NFL engine · team splits (index part 1) |
+| C-255 | NFL | QB splits | home / road | 2021 | NFL engine · team splits (index part 1) |
+| C-256 | NFL | QB splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2025 | NFL engine · team splits (index part 1) |
+| C-257 | NFL | QB splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2024 | NFL engine · team splits (index part 1) |
+| C-258 | NFL | QB splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2023 | NFL engine · team splits (index part 1) |
+| C-259 | NFL | QB splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2022 | NFL engine · team splits (index part 1) |
+| C-260 | NFL | QB splits | score margin bands (leading, tied, trailing by 1-8, trailing 9+) | 2021 | NFL engine · team splits (index part 1) |
+| C-261 | NFL | QB splits | by quarter (4th) | 2025 | NFL engine · team splits (index part 1) |
+| C-262 | NFL | QB splits | by quarter (4th) | 2024 | NFL engine · team splits (index part 1) |
+| C-263 | NFL | QB splits | by quarter (4th) | 2023 | NFL engine · team splits (index part 1) |
+| C-264 | NFL | QB splits | by quarter (4th) | 2022 | NFL engine · team splits (index part 1) |
+| C-265 | NFL | QB splits | by quarter (4th) | 2021 | NFL engine · team splits (index part 1) |
+| C-266 | NFL | QB splits | red zone | 2025 | NFL engine · team splits (index part 1) |
+| C-267 | NFL | QB splits | red zone | 2024 | NFL engine · team splits (index part 1) |
+| C-268 | NFL | QB splits | red zone | 2023 | NFL engine · team splits (index part 1) |
+| C-269 | NFL | QB splits | red zone | 2022 | NFL engine · team splits (index part 1) |
+| C-270 | NFL | QB splits | red zone | 2021 | NFL engine · team splits (index part 1) |
+| C-271 | NFL | QB splits | 3rd down | 2025 | NFL engine · team splits (index part 1) |
+| C-272 | NFL | QB splits | 3rd down | 2024 | NFL engine · team splits (index part 1) |
+| C-273 | NFL | QB splits | 3rd down | 2023 | NFL engine · team splits (index part 1) |
+| C-274 | NFL | QB splits | 3rd down | 2022 | NFL engine · team splits (index part 1) |
+| C-275 | NFL | QB splits | 3rd down | 2021 | NFL engine · team splits (index part 1) |
+| C-276 | MLB | batter results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-277 | MLB | batter results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-278 | MLB | batter results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-279 | MLB | batter results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-280 | MLB | batter results by pitch type | home / away | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-281 | MLB | batter results by pitch type | home / away | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-282 | MLB | batter results by pitch type | home / away | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-283 | MLB | batter results by pitch type | home / away | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-284 | MLB | batter results by pitch type | day / night | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-285 | MLB | batter results by pitch type | day / night | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-286 | MLB | batter results by pitch type | day / night | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-287 | MLB | batter results by pitch type | day / night | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-288 | MLB | batter results by pitch type | high leverage | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-289 | MLB | batter results by pitch type | high leverage | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-290 | MLB | batter results by pitch type | high leverage | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-291 | MLB | batter results by pitch type | high leverage | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-292 | MLB | pitcher results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-293 | MLB | pitcher results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-294 | MLB | pitcher results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-295 | MLB | pitcher results by pitch type | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-296 | MLB | pitcher results by pitch type | home / away | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-297 | MLB | pitcher results by pitch type | home / away | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-298 | MLB | pitcher results by pitch type | home / away | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-299 | MLB | pitcher results by pitch type | home / away | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-300 | MLB | pitcher results by pitch type | day / night | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-301 | MLB | pitcher results by pitch type | day / night | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-302 | MLB | pitcher results by pitch type | day / night | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-303 | MLB | pitcher results by pitch type | day / night | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-304 | MLB | pitcher results by pitch type | high leverage | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-305 | MLB | pitcher results by pitch type | high leverage | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-306 | MLB | pitcher results by pitch type | high leverage | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-307 | MLB | pitcher results by pitch type | high leverage | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-308 | MLB | team batting splits | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-309 | MLB | team batting splits | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-310 | MLB | team batting splits | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-311 | MLB | team batting splits | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-312 | MLB | team batting splits | home / away | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-313 | MLB | team batting splits | home / away | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-314 | MLB | team batting splits | home / away | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-315 | MLB | team batting splits | home / away | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-316 | MLB | team batting splits | day / night | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-317 | MLB | team batting splits | day / night | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-318 | MLB | team batting splits | day / night | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-319 | MLB | team batting splits | day / night | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-320 | MLB | team batting splits | high leverage | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-321 | MLB | team batting splits | high leverage | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-322 | MLB | team batting splits | high leverage | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-323 | MLB | team batting splits | high leverage | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-324 | MLB | team pitching splits (bullpen vs starters) | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-325 | MLB | team pitching splits (bullpen vs starters) | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-326 | MLB | team pitching splits (bullpen vs starters) | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-327 | MLB | team pitching splits (bullpen vs starters) | vs LHP / vs RHP (or vs LHB / RHB for pitchers) | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-328 | MLB | team pitching splits (bullpen vs starters) | home / away | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-329 | MLB | team pitching splits (bullpen vs starters) | home / away | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-330 | MLB | team pitching splits (bullpen vs starters) | home / away | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-331 | MLB | team pitching splits (bullpen vs starters) | home / away | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-332 | MLB | team pitching splits (bullpen vs starters) | day / night | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-333 | MLB | team pitching splits (bullpen vs starters) | day / night | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-334 | MLB | team pitching splits (bullpen vs starters) | day / night | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-335 | MLB | team pitching splits (bullpen vs starters) | day / night | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-336 | MLB | team pitching splits (bullpen vs starters) | high leverage | 2026 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-337 | MLB | team pitching splits (bullpen vs starters) | high leverage | 2025 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-338 | MLB | team pitching splits (bullpen vs starters) | high leverage | 2024 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-339 | MLB | team pitching splits (bullpen vs starters) | high leverage | 2023 | MLB engine · pitcher / batter / team splits (index part 1) |
+| C-340 | NHL | team shot quality (xG for / against) | 5v5 score-close | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-341 | NHL | team shot quality (xG for / against) | 5v5 score-close | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-342 | NHL | team shot quality (xG for / against) | 5v5 score-close | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-343 | NHL | team shot quality (xG for / against) | 5v5 score-close | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-344 | NHL | team shot quality (xG for / against) | 5v5 score-close | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-345 | NHL | team shot quality (xG for / against) | power play | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-346 | NHL | team shot quality (xG for / against) | power play | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-347 | NHL | team shot quality (xG for / against) | power play | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-348 | NHL | team shot quality (xG for / against) | power play | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-349 | NHL | team shot quality (xG for / against) | power play | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-350 | NHL | team shot quality (xG for / against) | penalty kill | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-351 | NHL | team shot quality (xG for / against) | penalty kill | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-352 | NHL | team shot quality (xG for / against) | penalty kill | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-353 | NHL | team shot quality (xG for / against) | penalty kill | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-354 | NHL | team shot quality (xG for / against) | penalty kill | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-355 | NHL | team shot quality (xG for / against) | home / road | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-356 | NHL | team shot quality (xG for / against) | home / road | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-357 | NHL | team shot quality (xG for / against) | home / road | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-358 | NHL | team shot quality (xG for / against) | home / road | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-359 | NHL | team shot quality (xG for / against) | home / road | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-360 | NHL | goalie save % by danger | 5v5 score-close | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-361 | NHL | goalie save % by danger | 5v5 score-close | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-362 | NHL | goalie save % by danger | 5v5 score-close | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-363 | NHL | goalie save % by danger | 5v5 score-close | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-364 | NHL | goalie save % by danger | 5v5 score-close | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-365 | NHL | goalie save % by danger | power play | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-366 | NHL | goalie save % by danger | power play | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-367 | NHL | goalie save % by danger | power play | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-368 | NHL | goalie save % by danger | power play | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-369 | NHL | goalie save % by danger | power play | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-370 | NHL | goalie save % by danger | penalty kill | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-371 | NHL | goalie save % by danger | penalty kill | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-372 | NHL | goalie save % by danger | penalty kill | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-373 | NHL | goalie save % by danger | penalty kill | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-374 | NHL | goalie save % by danger | penalty kill | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-375 | NHL | goalie save % by danger | home / road | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-376 | NHL | goalie save % by danger | home / road | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-377 | NHL | goalie save % by danger | home / road | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-378 | NHL | goalie save % by danger | home / road | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-379 | NHL | goalie save % by danger | home / road | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-380 | NHL | skater on-ice by situation | 5v5 score-close | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-381 | NHL | skater on-ice by situation | 5v5 score-close | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-382 | NHL | skater on-ice by situation | 5v5 score-close | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-383 | NHL | skater on-ice by situation | 5v5 score-close | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-384 | NHL | skater on-ice by situation | 5v5 score-close | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-385 | NHL | skater on-ice by situation | power play | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-386 | NHL | skater on-ice by situation | power play | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-387 | NHL | skater on-ice by situation | power play | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-388 | NHL | skater on-ice by situation | power play | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-389 | NHL | skater on-ice by situation | power play | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-390 | NHL | skater on-ice by situation | penalty kill | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-391 | NHL | skater on-ice by situation | penalty kill | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-392 | NHL | skater on-ice by situation | penalty kill | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-393 | NHL | skater on-ice by situation | penalty kill | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-394 | NHL | skater on-ice by situation | penalty kill | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+| C-395 | NHL | skater on-ice by situation | home / road | 2025-26 | NHL engine · team / goalie splits (index part 1) |
+| C-396 | NHL | skater on-ice by situation | home / road | 2024-25 | NHL engine · team / goalie splits (index part 1) |
+| C-397 | NHL | skater on-ice by situation | home / road | 2023-24 | NHL engine · team / goalie splits (index part 1) |
+| C-398 | NHL | skater on-ice by situation | home / road | 2022-23 | NHL engine · team / goalie splits (index part 1) |
+| C-399 | NHL | skater on-ice by situation | home / road | 2021-22 | NHL engine · team / goalie splits (index part 1) |
+
+**Backlog:** 43 R-tickets (order unchanged, 11-02 19:20 PT) + R-112's 399 chunks. At 100 runs a day that is about five days of work.
