@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W99.3 post-merge deploy read (#405/#407/#409); record t4-mlb decision"
