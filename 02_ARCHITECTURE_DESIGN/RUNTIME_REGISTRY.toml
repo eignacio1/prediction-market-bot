@@ -1333,3 +1333,17 @@ max_age_h = "18"
 schedule = "37 5,22 * * *"
 mirrors = ["deploy/cron.picks_sheet"]
 command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/build_picks_sheet.py >> logs/picks_sheet_cron.log 2>&1"
+
+[[component]]
+key = "cron|46 15 * * *|cmd:10bda36275"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA current-season refresh, second daily run (W99.3 / B-017): the 12:33Z run happens before nba_stats (15:15Z) and ESPN box (13:28Z) publish the previous day, so the store trailed ~2 days; this 15:46Z run brings last_game_date to yesterday before the 16:02Z runner. Same command as the 12:33Z line. Public GETs only."
+pillar = "DEPTH"
+writes = ["exp_output/NBA_EVENTS/current/team_game_2027.parquet", "exp_output/NBA_EVENTS/current/status.json", "logs/nba_engine_live_cron.log"]
+alarm = "exp_output/NBA_EVENTS/current/status.json last game date more than 1 day behind at 16:00Z while NBA played the day before; error lines in logs/nba_engine_live_cron.log"
+schedule = "46 15 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.c1_signal_ingestion.nba_current_season >> logs/nba_engine_live_cron.log 2>&1"
