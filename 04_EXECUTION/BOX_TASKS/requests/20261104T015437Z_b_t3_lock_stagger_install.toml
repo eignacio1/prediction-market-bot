@@ -1,0 +1,2 @@
+task = "t3_lock_stagger_install"
+note = "GG-1581 lock + stagger; operator approved 2026-11-03 17:54 PT"

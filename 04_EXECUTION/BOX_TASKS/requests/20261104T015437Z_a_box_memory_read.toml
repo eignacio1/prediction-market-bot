@@ -1,0 +1,2 @@
+task = "box_memory_read"
+note = "memory before the T3 lock install (window)"
