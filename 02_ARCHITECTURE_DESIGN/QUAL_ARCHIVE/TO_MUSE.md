@@ -1712,3 +1712,33 @@ stalled or failed, by tier.
   `COLLISION X-NNN <start ISO>` and stop (that is data, not a failure of yours). Then the outcome line exactly as in the 18:25 PT entry.
 - Your regular daily runs do NOT take X- tickets: their order is R-112 (C-001 →), then the R-tickets. The X- tickets belong to the test.
 - Charter v3 §1b rule 3 (as many daily runs as Earl schedules) covers these 50 one-time runs; they are his.
+
+### 2026-11-03 21:50 PT · Watchdog sweep (Claude): DRIFT (quality, not rules) — stress test and split queue ran as Earl ordered; four false NONEs, one mislabelled chunk, 45 of 48 stress tickets outside the gate
+- **Scope:** archive `2e2d3b2` → `a3147a5`, 247 commits, 18:37–20:19 PT. Rules held: no news/injury sweeps, nothing written to the bot
+  repo, no bet, pick, odds or model; every claims file changed in scope passes the strict gate — 26 files, 10,262 records, 0 errors.
+- **Order:** R-098 (`STATUS.md` "R-098 CLOSED (scheduled run 18:50)") was the top open R-ticket (R-110, R-095, R-097, R-101, R-102, R-111,
+  R-103 all closed before it) — done-when met: `sources/nba/nba-player-participation-policy.md` quotes the policy and §10 gives the
+  one-line rest-day answer (CAPTURABLE from injury-report PDFs). Caveat it states itself: the league PDF was not read; quotes are via
+  Eurohoops/ESPN, so the bot re-pulls the PDF before treating them as verified. Stress test: each X- run did its assigned ticket; 44 DONE,
+  4 FAILED at Earl's close (X-027, X-044, X-049, X-050, closing lines in `CLAIMS.md`), X-033 DONE with an honest gate=fail
+  (values changed on reload — `X-033/README.md` "Gate checks").
+- **Scheduler:** 50 stress jobs removed; 10 daily-muse-cycle jobs replaced by 100 queue-daily jobs (90 split, 10 ticket) plus a one-time
+  enabler at 11-04 00:01 PT (`3204592`), all at Earl's order — charter §1b rule 3 covers it. Listing still shows `nfl-archive-daily-sync`
+  (disabled); charter v3 says it was removed — Muse should remove it, not leave it disabled. ("flight scour" and "NY pre-purchase check"
+  are not Muse jobs and not judged here.)
+- **Out of line — 1. False NONEs.** C-032, C-037, C-040, C-041 (and C-044, since superseded by a DONE) closed with "no queue definition on
+  file beyond C-020" (`CLAIMS.md`; e.g. `1041c9f` area, commit "NONE C-032 no queue definition beyond C-020"). The definitions are in this
+  file, R-112 table (C-032 = team advanced Road 2024-25, etc.). Rule: a NONE means the source does not serve it, not that the run did not
+  find the ticket. Muse should: append a REOPEN line for each and let the queue runs work them.
+- **2. Mislabelled chunk.** `88bd194` "C-052: four factors Home 2025-26" — that is C-051's definition; C-052 is Home **2024-25**. C-051
+  has no outcome and Home 2024-25 is unrecorded. Muse should: relabel the file/line as C-051 and reopen C-052.
+- **3. Partial tables marked DONE.** C-026, C-038, C-039 hold 4 of the table's 19 columns (120 records; the same table elsewhere is 570),
+  C-052 holds 8 of 13 (240 vs 390). One chunk = the whole table under the condition. Muse should: expand each, as it did for C-034
+  (`DONE C-034 ... supersedes 120-record partial file`).
+- **4. Records outside the gate.** 45 of 48 X- folders hold CSV only, no claims file (only X-019, X-023, X-024 do), so their "gate=clean"
+  lines cannot be checked by `validate_claims.py`; C-001 → C-020 were marked DONE from these CSVs with nothing at the R-112 path. Rule: same
+  gate as always. Muse should: convert C-001 → C-020 to claims files at the split path (the X- CSVs can stay as test data).
+- **For the window (not Muse findings):** Earl's new run prompt writes `L3-split/<sport>/splits/C-NNN.claims.jsonl` and the archive's
+  `QUEUE.md` retires the 40 "Opponent above .500" chunks (359 rows) — both differ from R-112 as written here; sync at wave close.
+  Duplicate claims (C-021 ×4, C-047 ×3 …) and doubled outcome lines (C-034, C-047) are stress data, not faults.
+- **Open:** 33 R-tickets (next R-096); split queue 315 of 359 without an outcome, 321 counting the reopens above.
