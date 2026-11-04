@@ -21,7 +21,8 @@ LEDGER_GLOBS = [
     "exp_output/PREGAME_SHADOW_EXP040/*.jsonl",
     "data/shadow/nhl/NHL_*_T[123].jsonl",
 ]
-ENGINE_FILES = {"nba_engine_v1": "exp_output/NBA_ENGINE_LIVE/rows.jsonl", "nba_engine_v2": "exp_output/NBA_ENGINE_LIVE_V2/rows.jsonl"}
+ENGINE_FILES = {"nba_engine_v1": "exp_output/NBA_ENGINE_LIVE/rows.jsonl", "nba_engine_v2": "exp_output/NBA_ENGINE_LIVE_V2/rows.jsonl",
+                "nba_engine_v3": "exp_output/NBA_ENGINE_LIVE_V3/rows.jsonl"}
 
 
 def _arm_name(path: str) -> str:

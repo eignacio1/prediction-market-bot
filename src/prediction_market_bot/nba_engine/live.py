@@ -21,7 +21,7 @@ import pandas as pd
 
 from prediction_market_bot.c1_signal_ingestion import nba_factors as F, nba_point_in_time as P
 from prediction_market_bot.c1_signal_ingestion.nba_point_in_time import COMPLETION_BUFFER, ESPN_TO_NBA_ABBR
-from prediction_market_bot.nba_engine import engine as E, ratings as R
+from prediction_market_bot.nba_engine import engine as E, ratings as R, why as W
 from prediction_market_bot.pregame_shadow.nba_forecaster import parse_market_ticker
 from prediction_market_bot.quant.ladder import parse_ts
 
@@ -152,18 +152,35 @@ def price_event_rows(event_rows: dict, parsed_by_ticker: dict, tg: pd.DataFrame,
     h = team_rating(tg, team_ids[home], SEASON, cut)
     a = team_rating(tg, team_ids[away], SEASON, cut)
     s = sim_game(game_means(h, a), cal, seed)
+    cf = _counterfactual_samples(tg, h, a, cal, seed)   # W99.3: one re-sim per input at the league average (logging only)
     rows = []
     for t, q in event_rows.items():
         p = parsed_by_ticker[t]
         pe = engine_p(s, p)
         if pe is None or q.get("yes_mid") is None:
             continue
-        rows.append(dict(ticker=t, event_ticker=p["event_ticker"], family=p["market_type"], game_date=p["game_date"],
+        rows.append(W.attach(dict(ticker=t, event_ticker=p["event_ticker"], family=p["market_type"], game_date=p["game_date"],
                          home=home, away=away, subject=p["subject"], strike_n=None if p["strike"] is None else int(round(p["strike"] + 0.5)),
                          p_engine=float(pe), p_market=float(q["yes_mid"]), half_spread=q.get("half_spread"),
                          quote_ts=q["run_ts"], tip_utc=tip.isoformat(), logged_at=now.isoformat(),
-                         n_games_home=h["n_prior"], n_games_away=a["n_prior"], engine_commit=ENGINE_COMMIT))
+                         n_games_home=h["n_prior"], n_games_away=a["n_prior"], engine_commit=ENGINE_COMMIT),
+                           lambda p=p, pe=pe: W.top_reasons(pe, [(lab, val, engine_p(sc, p)) for lab, val, sc in cf])))
     return rows
+
+
+def _counterfactual_samples(tg, h: dict, a: dict, cal: dict, seed: int) -> list:
+    """[(label, value, sample)] -- the game re-simulated (same seed) with one team stat at its league average."""
+    try:
+        lm = W.league_means(tg, SEASON)
+        out = []
+        for side, r in (("home", h), ("away", a)):
+            for stat in W.STATS:
+                r2 = dict(r, **{stat: lm[stat]})
+                hh, aa = (r2, a) if side == "home" else (h, r2)
+                out.append((W.team_label(side, stat), r[stat], sim_game(game_means(hh, aa), cal, seed)))
+        return out
+    except Exception:  # noqa: BLE001 - logging only
+        return []
 
 
 def coverage_misses(seen: dict, tips: dict, done: set, now: datetime) -> list:

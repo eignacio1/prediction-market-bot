@@ -8,11 +8,12 @@ import re
 from datetime import datetime
 from typing import Any, Optional
 
-from prediction_market_bot.c1_signal_ingestion.nba_player_features import PlayerFeatureBuilder
+from prediction_market_bot.c1_signal_ingestion.nba_player_features import FEATURE_NAMES, PlayerFeatureBuilder
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
 from prediction_market_bot.pregame_shadow.nba_forecaster import (
     _MON, KALSHI_CODES, NBAScheduleIndex)
 from prediction_market_bot.pregame_shadow.nba_player_points_model import NBAPlayerPointsModel
+from prediction_market_bot.pregame_shadow.point_reasons import counterfactual_reasons
 
 MARKET_TYPE = "NBA_PLAYER_POINTS"
 SERIES = "KXNBAPTS"
@@ -112,7 +113,10 @@ class NBAPlayerPointsForecaster:
             return None
         p_yes = min(max(self.model.p_at_least(row["features"], p["points_threshold"]), 1e-4), 1 - 1e-4)
         return PregameForecast("NBA", MARKET_TYPE, p["event_ticker"], market_ticker, p_yes, as_of_utc,
-                               self.model.model_id, self.model.sha256, row["sha256"])
+                               self.model.model_id, self.model.sha256, row["sha256"],
+                               reasons=counterfactual_reasons(
+                                   row["features"], list(FEATURE_NAMES), self.model.a["mean_model"]["mean"],
+                                   lambda f: self.model.p_at_least(f, p["points_threshold"])))
 
 
 def kickoff_for_event(schedule: NBAScheduleIndex, event_ticker: str):

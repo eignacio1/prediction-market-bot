@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from prediction_market_bot.c1_signal_ingestion import nhl_ingest as ni  # noqa: E402
 from prediction_market_bot.c3_forecasting.nhl_pregame import TEAM_ALIASES, split_team_codes  # noqa: E402
+from prediction_market_bot.pregame_shadow.reasons import NO_REASONS_NOTE  # noqa: E402
 from prediction_market_bot.quant import money as _Q  # noqa: E402
 
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
@@ -135,6 +136,9 @@ def make_row(market: dict, series: str, fc: Any, start: datetime, start_src: str
         # EXP-036 goalie amendment (2026-10-08): rows are flagged confirmed=False; no pre-drop confirmed source (GG-530).
         "confirmed": bool(getattr(fc, "confirmed", False)),
         "starter_source": getattr(fc, "starter_source", "projected_last_start"),
+        # W99.3 (GG-1630): top-3 input contributions (logging only); an arm that cannot give them says so.
+        **({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
+           else {"reasons": None, "reasons_note": NO_REASONS_NOTE}),
     }
 
 
