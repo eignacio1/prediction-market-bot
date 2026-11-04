@@ -928,6 +928,14 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
+> **AUTHORIZATION - RETIRE EXP-042 CELL 10 BEFORE ITS LOOK (operator, 2026-11-03 19:16 PT, asked by the window with the 99.2
+> recommendation - "KXMLBTOTAL T0-2h 85-90c wide yes: frozen net .089 / lo .047, re-run .0383 / lo -.0301 ... needs ~370 judged games,
+> against 19 frozen" - "Yes").** Cell 10 is retired before its look by a superseding addendum to EXP-042 (the frozen file is not edited);
+> ride_cells.toml marks it retired with the reason and date. Cells 9 and 11 are NOT retired. Done by a terminal block (Wave 100).
+
+> **AUTHORIZATION - THE WAVE 99 BATCH INSTALL (operator, 2026-11-03 19:16 PT: "I approve the box-task request that runs
+> install_batch_w99_install, which adds crontab lines on the paper box.").** Run by the window 03:16Z with its readback.
+
 > **AUTHORIZATION - THE STRATEGIC WINDOW RUNS BOX INSTALLS (operator, 2026-11-02 22:40 PT, asked by the window whether it may run
 > box installs after the classifier refused it: "Yeah go ahead - fix the deadweights then I'm going to sleep").** The strategic window
 > runs the allowlisted `*_install` bridge tasks named in a merged block's handoff (paper / shadow box only: no capital, no orders), each
