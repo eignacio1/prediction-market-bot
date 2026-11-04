@@ -50,11 +50,18 @@ GATED = [s for s in STEPS if s[0] != "t3_lock"]
 FAIL_PREFIXES = ("ERROR", "ABORTED", "REFUSED")
 
 
-def pending(cur: str, conf_text: str, reg: list) -> dict:
+def _conf(mod, override):
+    """The deploy conf a step reads: its OWN module's CRON_CONF (deploy/cron.conf for the NBA engine lines,
+    deploy/cron.picks_sheet for the picks builder), unless a test passes one text for every step. Reading one shared
+    conf for all steps made the picks step see no wanted line on the box (11-04 03:16Z: "would add 0 line(s)")."""
+    return override if override is not None else mod.CRON_CONF.read_text()
+
+
+def pending(cur: str, conf_text, reg: list) -> dict:
     """{step: [registry keys it would install]} for the gated steps, from the crontab as it stands."""
     out = {}
     for name, mod, _ in GATED:
-        out[name] = [k for k, _l in aci.missing_lines(cur, mod.wanted_lines(conf_text, reg))]
+        out[name] = [k for k, _l in aci.missing_lines(cur, mod.wanted_lines(_conf(mod, conf_text), reg))]
     return out
 
 
@@ -95,7 +102,6 @@ def install(live_fn=None, read=aci._crontab_read, write=aci._crontab_write, back
             conf_text=None, reg=None) -> int:
     rr = aci._rr()
     reg = rr.load() if reg is None else reg
-    conf_text = (aci.CRON_CONF.read_text() if conf_text is None else conf_text)
     done = []
 
     def stop(step, out):
@@ -136,7 +142,7 @@ def install(live_fn=None, read=aci._crontab_read, write=aci._crontab_write, back
     for name, mod, _arms in GATED:
         print("== step %s ==" % name)
         ok, out = _run_step(name, mod, mod.install, live_fn=lambda: green, read=read, write=write, backup=backup,
-                            conf_text=conf_text, reg=reg)
+                            conf_text=_conf(mod, conf_text), reg=reg)
         if not ok:
             return stop(name, out)
         print(out, end="")

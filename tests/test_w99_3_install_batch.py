@@ -155,3 +155,19 @@ def test_box_tasks_allowlist_has_the_batch():
     import box_tasks as bt
     for k in ("install_batch_w99_install", "install_batch_w99_readback", "install_batch_w99_uninstall"):
         assert k in bt.TASKS or k in getattr(bt, "ALLOW", {}) or any(k in str(v) for v in vars(bt).values() if isinstance(v, dict))
+
+
+def test_each_step_reads_its_own_deploy_conf(tmp_path, monkeypatch):
+    """11-04 03:16Z on the box: with no override, the batch read deploy/cron.conf for every step, so the picks step (whose
+    line lives only in deploy/cron.picks_sheet) saw nothing to install and its NOT INSTALLED red blocked the batch."""
+    engine_conf = tmp_path / "cron.conf"
+    engine_conf.write_text("\n".join(["SHELL=/bin/bash", REFRESH, RUN, V3, T3, OTHER]) + "\n")
+    picks_conf = tmp_path / "cron.picks_sheet"
+    picks_conf.write_text(PICKS + "\n")
+    for _name, mod, _arms in ib.GATED:
+        monkeypatch.setattr(mod, "CRON_CONF", picks_conf if mod is ib.psi else engine_conf)
+    todo = ib.pending(BOX_1103, None, _reg())
+    assert todo["picks_builder"] == [PICKS_KEY]
+    assert todo["nba_engine_v3"] == [V3_KEY]
+    blocking, _exempt = ib.gate_batch(EV_1103, todo)
+    assert blocking == []
