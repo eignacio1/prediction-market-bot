@@ -3126,3 +3126,8 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 ## 2026-11-03 06:45 UTC (11-02 22:40 PT) - Operator authorizes window installs; classifier still refuses
 - Operator: "Yeah go ahead - fix the deadweights then I'm going to sleep". Recorded as a blockquote in ACTIVE_QUEUE.md "Needs your decision".
 - The window's retry (t3_lock_stagger_install + readback) was refused again by the auto-mode classifier ("Unauthorized Persistence"); nothing pushed or run. Not worked around. The T3 lock install has no budget gate and can run the moment a request is allowed; the other three wait on 99.3 Part A (gate deadlock).
+
+## 2026-11-04 01:56 UTC (11-03 17:56 PT) - T3 lock + stagger INSTALLED on the box (GG-1581)
+- Operator, 17:54 PT: "I approve the box-task request that runs t3_lock_stagger_install, which edits the crontab on the paper box."
+- Result `20261104T015437Z_b_t3_lock_stagger_install.md`: backup crontab_20261104T015458Z.bak; 6 T3 lines wrapped with flock + skip row; line count 661 -> 661. Readback: 6 wrapped, 0 unwrapped, 0 skips yet. Memory before: 24 OOM kills in the prior 24 h (down from 142 at 11-03 06:35Z, light day). Re-read box_memory_read after an NBA night to confirm.
+- The three gated installs (NBA events refresh, NBA engine v3, picks builder) still wait on 99.3 Part A (gate deadlock) and a named approval each.
