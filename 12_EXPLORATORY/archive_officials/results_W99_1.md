@@ -42,6 +42,10 @@ Result (test 2026, n=1072): crew-prior vs total residual correlations 0.00-0.04;
 
 Verification (local `w99_1_nba_verify.csv`, gitignored, not pushed): box officials joined to schedule points and team-box fouls vs the archive, 236 of 239 referee-seasons matched; median |games diff| 0, median |points/g diff| 0.02, median |PF/g diff| 0.03, corr 1.000 on both. E.g. Ray Acosta 2025 67 games, 226.8 vs 226.82. **VERIFIED** (well beyond three).
 
+## Part C — NHL overtime and shootouts (full write-up: `12_EXPLORATORY/nhl_engine/results_W99_1.md`)
+
+Question: does Kalshi's OT/SO settlement explain the merged NHL model's under-predicted totals (held-out 2023-2025: -0.16 / -0.12 / -0.05 goals/game)? **No.** Rules read verbatim from R-067's cards: OT and the shootout count in moneyline, totals and spread; the shootout winner is credited one goal. Settled total minus regulation total is +1 on 1,222 of 1,222 regulation ties and 0 on 4,257 of 4,257 non-ties, and the merged model's `goals.simulate` already settles that way, so there is nothing to build. The bias sits in the regulation total (-0.20 / -0.13 / -0.03); the tie-credit part is +0.03 / +0.02 / -0.03, which changes sign (noise around a correct rule). The one OT knob (`tie_odds` fitted vs 1.0) gives a spread gain of -0.0019 Brier (CI excludes 0), a totals loss of +0.0002 (CI excludes 0), nothing on ML or team totals; picked after seeing held-out data, so not frozen. This season (33 games, same as W97.4) the merged model is still below Kalshi (advantage -0.0057, SE 0.0035), unscored at n=33. **EXP-046 not earned, not frozen.** No new `src/` module; the merged model stays. Open: the regulation-level drift, untried.
+
 ## Granularity index (five parts) and one line for Muse
 
 NFL crews and NBA referees, same shape:
@@ -55,4 +59,4 @@ Muse, NFL crews: yards/season is right to the yard; the penalty COUNT is defined
 Muse, NBA referees: your register reproduces from the box to two decimals; add the per-game crew assignment with a posted-at time and it becomes usable before tip.
 
 ## Files
-`src/prediction_market_bot/nfl_engine/crew.py`, `src/prediction_market_bot/nba_engine/crew_archive.py`, `tests/test_nfl_crew.py`, `tests/test_nba_crew_archive.py`, `12_EXPLORATORY/archive_officials/run_w99_1_{nfl,nba}.py`, `w99_1_{nfl,nba}_heldout.json`, `w99_1_nba_probe.json`, (verify CSVs kept local, gitignored).
+`src/prediction_market_bot/nfl_engine/crew.py`, `src/prediction_market_bot/nba_engine/crew_archive.py`, `tests/test_nfl_crew.py`, `tests/test_nba_crew_archive.py`, `12_EXPLORATORY/archive_officials/run_w99_1_{nfl,nba}.py`, `12_EXPLORATORY/nhl_engine/{diag,run}_w99_1_ot.py` + `results_W99_1.md` + `results/w99_1_*`, `w99_1_{nfl,nba}_heldout.json`, `w99_1_nba_probe.json`, (verify CSVs kept local, gitignored).
