@@ -3172,3 +3172,6 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 
 ## 2026-11-04 03:40 UTC (11-03 19:35 PT) - Muse: close the stress test, move to 100 daily runs on the split queue
 - Operator 19:33 PT: "Are we done with the test? Can I tell Muse to wipe out the rest of it and then set up 100 per day or should we let it get through the remaining tickets". Window: the test is over; keep the seven open tickets' files and close each with a PROGRESS / FAILED line (data, not waste); 100 daily runs work the single-table split queue (R-112) - the tier that never strained - one run about every 14 minutes; stale claims re-claimable after 6 h. M99-ST-CLOSE in the queue. Hard tickets are to be re-cut into single-run pieces by the next window before they go to the daily runs.
+
+## 2026-11-04 03:45 UTC - Muse stress test, final tally (correction)
+- All 50 have outcome lines (03:36Z). Three of the seven "open" runs were still working and finished late: X-022 (44 min, clean), X-030 (34 min, clean), X-033 (21 min, gate=fail - the test's only quality failure). X-027, X-044, X-049, X-050 FAILED: stopped when the test was closed, no records. Final: 46 DONE (45 clean, 1 gate fail), 4 stopped. The window's 19:33 PT read that the seven were "almost certainly dead" was wrong for three of them.
