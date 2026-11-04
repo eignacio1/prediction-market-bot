@@ -28,7 +28,7 @@ for s in (2025, 2026):
 bt = ["base_total", "pace_mean", "eff_mean", "pace_dev_mean", "b2b_sum", "prior_total_mean", "prior_pace_mean"]
 d = g.dropna(subset=bt + ["crew_pf", "crew_fta", "crew_pts", "base_margin", "net_dev_diff", "rest_diff", "b2b_diff", "prior_margin"]).copy()
 pts = tg.pivot_table(index="game_id", columns="side", values="pts", aggfunc="first")
-d = d.merge(pts.rename(columns={"home": "hp", "away": "ap"}), left_on="game_id", right_index=True)
+d = d.merge(pts[["home", "away"]].set_axis(["hp", "ap"], axis=1), left_on="game_id", right_index=True)
 d["T"], d["M"] = d.hp + d.ap, d.hp - d.ap
 bm = ["base_margin", "net_dev_diff", "rest_diff", "b2b_diff", "prior_margin"]
 tr = d[d.season.isin(list(A.TRAIN))]
