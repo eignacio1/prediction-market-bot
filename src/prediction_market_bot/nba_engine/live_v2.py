@@ -19,7 +19,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from prediction_market_bot.nba_engine import engine_v2 as V, live as L, ratings as R
+from prediction_market_bot.nba_engine import engine_v2 as V, live as L, ratings as R, why as W
 from prediction_market_bot.pregame_shadow.nba_forecaster import parse_market_ticker
 
 TRAIN_SEASONS = (2024, 2025, 2026)   # the three seasons before the 2026-27 arm, as the held-out study used T-3..T-1
@@ -95,20 +95,41 @@ def price_event_rows(event_rows: dict, parsed_by_ticker: dict, tg: pd.DataFrame,
     a = L.team_rating(tg, team_ids[away], L.SEASON, cut)
     gm = L.game_means(h, a)
     m, t = V.game_means(p, gm["mu_poss"] * gm["ppp_h"] / 100.0, gm["mu_poss"] * gm["ppp_a"] / 100.0)
+    cf = team_counterfactuals(tg, h, a, lambda hh, aa: _mt(p, hh, aa))   # W99.3: logging only
     rows = []
     for tk, q in event_rows.items():
         pr = parsed_by_ticker[tk]
         pe = engine_p(p, m, t, pr)
         if pe is None or q.get("yes_mid") is None:
             continue
-        rows.append(dict(ticker=tk, event_ticker=pr["event_ticker"], family=pr["market_type"], game_date=pr["game_date"],
+        rows.append(W.attach(dict(ticker=tk, event_ticker=pr["event_ticker"], family=pr["market_type"], game_date=pr["game_date"],
                          home=home, away=away, subject=pr["subject"],
                          strike_n=None if pr["strike"] is None else int(round(pr["strike"] + 0.5)),
                          p_engine=float(pe), p_market=float(q["yes_mid"]), half_spread=q.get("half_spread"),
                          quote_ts=q["run_ts"], tip_utc=tip.isoformat(), logged_at=now.isoformat(),
                          n_games_home=h["n_prior"], n_games_away=a["n_prior"], engine_version="v2",
-                         engine_commit=L.ENGINE_COMMIT, params_hash=pid))
+                         engine_commit=L.ENGINE_COMMIT, params_hash=pid),
+                           lambda pr=pr, pe=pe: W.top_reasons(pe, [(lab, val, engine_p(p, mm, tt, pr)) for lab, val, (mm, tt) in cf])))
     return rows
+
+
+def _mt(p: V.V2Params, h: dict, a: dict) -> tuple:
+    gm = L.game_means(h, a)
+    return V.game_means(p, gm["mu_poss"] * gm["ppp_h"] / 100.0, gm["mu_poss"] * gm["ppp_a"] / 100.0)
+
+
+def team_counterfactuals(tg, h: dict, a: dict, price_fn) -> list:
+    """[(label, value, price_fn(h', a'))] with one team stat at its league average. [] on any failure (logging only)."""
+    try:
+        lm = W.league_means(tg, L.SEASON)
+        out = []
+        for side, r in (("home", h), ("away", a)):
+            for stat in W.STATS:
+                r2 = dict(r, **{stat: lm[stat]})
+                out.append((W.team_label(side, stat), r[stat], price_fn(*((r2, a) if side == "home" else (h, r2)))))
+        return out
+    except Exception:  # noqa: BLE001
+        return []
 
 
 def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Optional[datetime] = None,

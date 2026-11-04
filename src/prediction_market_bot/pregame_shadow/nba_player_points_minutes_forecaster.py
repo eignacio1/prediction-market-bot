@@ -13,6 +13,7 @@ from prediction_market_bot.c1_signal_ingestion.nba_minutes_features import Minut
 from prediction_market_bot.c1_signal_ingestion.nba_player_features import PlayerFeatureBuilder
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
 from prediction_market_bot.pregame_shadow.nba_forecaster import NBAScheduleIndex
+from prediction_market_bot.pregame_shadow.point_reasons import counterfactual_reasons
 from prediction_market_bot.pregame_shadow.nba_player_points_forecaster import (
     MARKET_TYPE, NBAPlayerResolver, parse_market_ticker)
 from prediction_market_bot.pregame_shadow.nba_player_points_minutes_model import (
@@ -58,4 +59,7 @@ class NBAPlayerPointsMinutesForecaster:
             "mean_points": round(self.model.mean_points(f), 4), **{k: f[k] for k in DETAIL_KEYS}}
         sha = hashlib.sha256(json.dumps(f, sort_keys=True).encode()).hexdigest()
         return PregameForecast("NBAMIN", MARKET_TYPE, p["event_ticker"], market_ticker, p_yes, as_of_utc,
-                               self.model.model_id, self.model.sha256, sha)
+                               self.model.model_id, self.model.sha256, sha,
+                               reasons=counterfactual_reasons(
+                                   f, list(self.model.names), self.model.a["mean_model"]["mean"],
+                                   lambda x: self.model.p_at_least(x, p["points_threshold"])))

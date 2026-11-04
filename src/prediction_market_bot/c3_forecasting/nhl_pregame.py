@@ -126,6 +126,23 @@ def side_vector(row: dict, own: str, opp: str, is_home: int) -> list[float]:
             row[o + "rest_days"], row[p + "rest_days"], row[p + "goalie_svp"], float(is_home)]
 
 
+_NHL_STAT = {"gf_ew": "goals scored (recent, weighted)", "ga_ew": "goals allowed (recent, weighted)",
+             "sf_ew": "shots taken (recent, weighted)", "sa_ew": "shots allowed (recent, weighted)",
+             "pp_ew": "power-play goals (recent, weighted)", "pim_ew": "penalty minutes (recent, weighted)",
+             "gf_l10": "goals scored, last 10", "ga_l10": "goals allowed, last 10", "b2b": "on a back-to-back (1 = yes)",
+             "rest_days": "days of rest", "goalie_svp": "starting goalie save percentage"}
+_NHL_TEAM = {"h": "home", "a": "away"}
+
+
+def _nhl_label(feature: str, own: str, opp: str) -> str:
+    """'own_gf_ew' in the home-goals equation -> 'home team goals scored (recent, weighted)'."""
+    if feature == "is_home":
+        return "home-ice advantage (%s team's scoring)" % _NHL_TEAM[own]
+    who, _, stat = feature.partition("_")
+    team = _NHL_TEAM[own if who == "own" else opp]
+    return "%s team %s" % (team, _NHL_STAT.get(stat, stat))
+
+
 class NhlGoalsModel:
     """Frozen parameters; ``params`` is the JSON-serialisable artifact body."""
 
@@ -147,6 +164,26 @@ class NhlGoalsModel:
         t = self.p["tiebreak"]
         return _sigmoid(t["a"] + t["b"] * math.log(lam_h / lam_a))
 
+    def counterfactual_ladders(self, row: dict) -> list:
+        """W99.3 (GG-1630), logging only: [(label, value, Ladder)] -- the CALIBRATED ladder re-built with ONE GLM input
+        at its training mean (z = 0), for each input of each team's goal rate (exact: same Platt tilt as the price)."""
+        s = self.p["calibration"]["total_scale"]
+        base = []
+        for own, opp, h in (("h", "a", 1), ("a", "h", 0)):
+            base.append((own, opp, h, (np.array(side_vector(row, own, opp, h)) - self.mu) / self.sd))
+        out = []
+        for k, (own, opp, h, z) in enumerate(base):
+            lam = [float(np.exp(self.icpt + zz @ self.coef)) for _o, _p, _h, zz in base]
+            for j, name in enumerate(GLM_FEATURES):
+                z2 = z.copy()
+                z2[j] = 0.0
+                lam2 = list(lam)
+                lam2[k] = float(np.exp(self.icpt + z2 @ self.coef))
+                lh, la = lam2[0] * s, lam2[1] * s
+                raw = side_vector(row, own, opp, h)[j]
+                out.append((_nhl_label(name, own, opp), raw, self._calibrated(lh, la)))
+        return out
+
     def raw_ladder(self, row: dict) -> tuple[Ladder, float, float]:
         lh, la = self.lambdas(row)
         s = self.p["calibration"]["total_scale"]
@@ -155,7 +192,11 @@ class NhlGoalsModel:
 
     def ladder(self, row: dict) -> Ladder:
         """Calibrated ladder: Platt on logit(P(home win)), propagated by a lam tilt."""
-        lad, lh, la = self.raw_ladder(row)
+        _lad, lh, la = self.raw_ladder(row)
+        return self._calibrated(lh, la)
+
+    def _calibrated(self, lh: float, la: float) -> Ladder:
+        lad = Ladder(joint_pmf(lh, la, self.p["bivariate_c"]), self.pt(lh, la))
         cal = self.p["calibration"]
         p_raw = min(max(lad.p_home_win(), 1e-6), 1 - 1e-6)
         z = cal["platt_a"] + cal["platt_b"] * math.log(p_raw / (1 - p_raw))
@@ -253,6 +294,7 @@ class NhlPregameForecaster:
         self.model, self.sha, self.store = model, model_sha256, store
         self.model_id, self.starter_provider = model_id, starter_provider
         self.last_abstain: Optional[str] = None
+        self._cf_cache: dict = {}
         self._sched = {}
         for g in schedule:
             self._sched[(g["game_date"], g["home"], g["away"])] = g
@@ -316,4 +358,31 @@ class NhlPregameForecaster:
         return PregameForecast(sport=self.sport, market_type=info["market_type"],
                                event_ticker=info["event_ticker"], market_ticker=market_ticker, p_yes=p,
                                as_of_utc=as_of_utc, model_id=self.model_id, model_sha256=self.sha,
-                               feature_row_sha256=feature_row_sha256(row))
+                               feature_row_sha256=feature_row_sha256(row),
+                               reasons=self._reasons(info, row, game, as_of_utc, p))
+
+    def _reasons(self, info: dict, row: dict, game: dict, as_of_utc: datetime, p: float) -> Optional[tuple]:
+        """W99.3 (GG-1630): top-3 inputs by counterfactual move toward YES (calibrated ladder, one input at its training mean).
+        Logging only; any failure -> None and the row carries a reasons_note."""
+        try:
+            key = (game["game_id"], as_of_utc.isoformat())
+            cf = self._cf_cache.get(key)
+            if cf is None:
+                self._cf_cache.clear()
+                cf = self._cf_cache[key] = self.model.counterfactual_ladders(row)
+            lad0 = self.model.ladder(row)
+
+            def price(l: Ladder) -> float:
+                if info["series"] == "TOTAL":
+                    return l.p_total_over(info["strike"])
+                side = "home" if info["team"] == info["home"] else "away"
+                return l.p_team_win(side) if info["series"] == "GAME" else l.p_win_by_over(side, info["strike"])
+            base = price(lad0)
+            out = []
+            for label, value, l in cf:
+                d = (base - price(l)) * 100.0
+                out.append({"factor": label, "value": round(float(value), 3), "pts": round(d, 3), "toward_yes": round(d, 3)})
+            out.sort(key=lambda r: -abs(r["toward_yes"]))
+            return tuple(out[:3]) or None
+        except Exception:  # noqa: BLE001 - logging only
+            return None

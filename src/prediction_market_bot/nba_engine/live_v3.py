@@ -23,7 +23,7 @@ import pandas as pd
 
 from prediction_market_bot.c1_signal_ingestion.nba_availability import ET, UNREPORTED
 from prediction_market_bot.c1_signal_ingestion.nba_injury_reports import norm_name
-from prediction_market_bot.nba_engine import engine_v2 as V, engine_v3 as V3, live as L, live_v2 as L2
+from prediction_market_bot.nba_engine import engine_v2 as V, engine_v3 as V3, live as L, live_v2 as L2, why as W
 from prediction_market_bot.pregame_shadow.nba_forecaster import parse_market_ticker
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -148,13 +148,14 @@ def price_event_rows(event_rows: dict, parsed_by_ticker: dict, tg: pd.DataFrame,
     slot, statuses = select_snapshot(snaps, tip)
     x, cov = game_factors(art, team_ids[home], team_ids[away], statuses, slot is not None)
     m, t = V3.game_means(p, centers, gm["mu_poss"] * gm["ppp_h"] / 100.0, gm["mu_poss"] * gm["ppp_a"] / 100.0, x)
+    cf = _counterfactuals(tg, h, a, p, centers, x)   # W99.3: logging only
     rows = []
     for tk, q in event_rows.items():
         pr = parsed_by_ticker[tk]
         pe = L2.engine_p(p, m, t, pr)
         if pe is None or q.get("yes_mid") is None:
             continue
-        rows.append(dict(ticker=tk, event_ticker=pr["event_ticker"], family=pr["market_type"], game_date=pr["game_date"],
+        rows.append(W.attach(dict(ticker=tk, event_ticker=pr["event_ticker"], family=pr["market_type"], game_date=pr["game_date"],
                          home=home, away=away, subject=pr["subject"],
                          strike_n=None if pr["strike"] is None else int(round(pr["strike"] + 0.5)),
                          p_engine=float(pe), p_market=float(q["yes_mid"]), half_spread=q.get("half_spread"),
@@ -163,8 +164,23 @@ def price_event_rows(event_rows: dict, parsed_by_ticker: dict, tg: pd.DataFrame,
                          engine_commit=L.ENGINE_COMMIT, params_hash=pid,
                          claim=pr["market_type"] in CLAIMED, injury_slot_et=slot,
                          injury_report=slot is not None, rotation_known=bool(x),
-                         factors={k: round(v, 5) for k, v in x.items()}, **cov))
+                         factors={k: round(v, 5) for k, v in x.items()}, **cov),
+                           lambda pr=pr, pe=pe: W.top_reasons(pe, [(lab, val, L2.engine_p(p, mm, tt, pr)) for lab, val, (mm, tt) in cf])))
     return rows
+
+
+def _counterfactuals(tg, h: dict, a: dict, p, centers, x: dict) -> list:
+    """[(label, value, (m, t))]: each team stat at its league average, and each injury/rotation factor at its centre."""
+    def mt(hh, aa, xx):
+        gm = L.game_means(hh, aa)
+        return V3.game_means(p, centers, gm["mu_poss"] * gm["ppp_h"] / 100.0, gm["mu_poss"] * gm["ppp_a"] / 100.0, xx)
+    try:
+        out = L2.team_counterfactuals(tg, h, a, lambda hh, aa: mt(hh, aa, x))
+        for f, v in x.items():
+            out.append((W.factor_label(f), v, mt(h, a, {k: w for k, w in x.items() if k != f})))
+        return out
+    except Exception:  # noqa: BLE001 - logging only
+        return []
 
 
 def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Optional[datetime] = None,
