@@ -3184,3 +3184,66 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 ## 2026-11-04 04:00 UTC - M99-RUNS revised after Muse's first 100-run burst
 - Muse (via operator 19:42 PT): 100 daily-split runs set from M99-ST-CLOSE; the new jobs fired catch-up runs at creation, claims reached C-037 with duplicates (C-021 claimed four times). Window read of CLAIMS.md: runs past C-020 had no chunk definition in their archive (NONE C-032); NONE C-022..025 are correct (no free opponent-above-.500 filter - window error W40).
 - M99-RUNS revised: 40 NBA opponent-above-.500 chunks retired (ids kept, listed as retired); claim tie-break = the FIRST CLAIM line in CLAIMS.md wins, later claimants YIELD; the new runs start tomorrow with no catch-up runs.
+
+## 2026-11-04 04:10 UTC - M99-RUNS sent in chat, compact form (operator: "the file got too big so just give me the paste in this chat and remove it from the active queue")
+Muse generates QUEUE.md from a stated nested-loop rule with six spot checks and a 359-row count; 40 NBA opponent-above-.500 ids retired; split outputs to L3-split/<sport>/splits/C-NNN.claims.jsonl; first-claim-wins; runs start tomorrow, no catch-up. Full text:
+```
+From Earl, directly. This replaces your 100 daily-split runs. Everything is in this message; fetch nothing.
+
+STEP 0 - Pause: remove all 100 daily-split runs now. Leave every claim and file already written.
+
+STEP 1 - Build QUEUE.md at your archive root from this rule, commit, push.
+Columns: chunk | sport | table | condition | season. Number C-001 upward with three nested loops, in this order: for each
+table (in the order listed) -> for each condition (in order) -> for each season (in order).
+  NBA (C-001 to C-200). Tables: team traditional; team advanced; team four factors; team shooting by zone (incl. mid-range);
+    player shooting by zone (incl. mid-range); player catch-and-shoot / pull-up; team play types (offense); team play types (defense).
+    Conditions: Location=Home; Location=Road; Clutch (last 5 min, within 5); Period=4th quarter; Opponent above .500.
+    Seasons: 2025-26; 2024-25; 2023-24; 2022-23; 2021-22.
+  NFL (C-201 to C-275). Tables: team offense splits; team defense splits; QB splits.
+    Conditions: home / road; score margin bands (leading, tied, trailing by 1-8, trailing 9+); by quarter (4th); red zone; 3rd down.
+    Seasons: 2025; 2024; 2023; 2022; 2021.
+  MLB (C-276 to C-339). Tables: batter results by pitch type; pitcher results by pitch type; team batting splits; team pitching
+    splits (bullpen vs starters). Conditions: vs LHP / vs RHP (vs LHB / RHB for pitchers); home / away; day / night; high leverage.
+    Seasons: 2026; 2025; 2024; 2023.
+  NHL (C-340 to C-399). Tables: team shot quality (xG for / against); goalie save % by danger; skater on-ice by situation.
+    Conditions: 5v5 score-close; power play; penalty kill; home / road. Seasons: 2025-26; 2024-25; 2023-24; 2022-23; 2021-22.
+RETIRED - leave these 40 out of QUEUE.md (no free source serves NBA "Opponent above .500"): C-021-025, C-046-050, C-071-075,
+  C-096-100, C-121-125, C-146-150, C-171-175, C-196-200. QUEUE.md then has 359 rows.
+CHECK before you push (all must hold, or fix and re-check): C-001 = NBA, team traditional, Location=Home, 2025-26.
+  C-026 = NBA, team advanced, Location=Home, 2025-26. C-201 = NFL, team offense splits, home / road, 2025.
+  C-276 = MLB, batter results by pitch type, vs LHP / vs RHP, 2026. C-340 = NHL, team shot quality, 5v5 score-close, 2025-26.
+  C-399 = NHL, skater on-ice by situation, home / road, 2021-22. Row count 359. Write these checks into the commit message.
+Under the table add: "Source to try first - NBA: NBA.com/stats with the filter set; NFL: Pro-Football-Reference splits pages;
+  MLB: Baseball Savant; NHL: Natural Stat Trick, NHL.com second."
+
+STEP 2 - Create 100 recurring daily runs, one every 14 minutes from 00:05 PT (00:05, 00:19, 00:33 ...), never two in one minute.
+They start TOMORROW at 00:05 PT. None may fire for times already past today (tonight's catch-up burst claimed the same chunks
+several times): create them so they cannot, and if you cannot prevent it, say so in STEP 3.
+- Runs 10, 20, ... 100 are TICKET runs. Whole prompt:
+  "Run the next Muse cycle under charter v3: read https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md and https://raw.githubusercontent.com/eignacio1/prediction-market-bot/main/02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/TO_MUSE.md, then do the next backlog ticket."
+- The other 90 are SPLIT runs. Whole prompt, copied exactly:
+  "Muse split run. Follow these steps in order; do nothing else.
+  1. Pull your archive. Read QUEUE.md and CLAIMS.md at its root. Fetch no web page for instructions.
+  2. Pick ONE chunk: the lowest C- id in QUEUE.md with no CLAIM line in CLAIMS.md, or whose first CLAIM is over 6 hours old with no
+     outcome line. Skip it if CLAIMS.md has a BLOCKED line for the same sport in the last 2 hours. If none is left, append
+     'QUEUE EMPTY <now UTC>' to STATUS.md, push, stop.
+  3. Claim: append 'CLAIM C-NNN <now UTC, like 2026-11-04T08:05:00Z>' to CLAIMS.md, commit that line alone, push (on rejection pull
+     and push again, up to 5 tries). Then pull once more: the FIRST CLAIM line for that chunk in the file wins. If yours is not
+     first, append 'YIELD C-NNN <now UTC>', push, go back to step 2.
+  4. Source card: if sources/<sport>/splits-<table>.md does not exist, write it first: source (QUEUE.md's 'Source to try first'),
+     the URL pattern with the filter visible, field names verbatim, free with no login (yes/no), could the bot fetch it itself
+     (yes/no and why), terms. Else read it and use it.
+  5. Record every row the source shows for that table, condition and season, every column verbatim, each record with the source
+     URL (filter visible) and retrieved_at in UTC (Z), into L3-split/<sport>/splits/C-NNN.claims.jsonl only. No null values.
+  6. Gate: run python tools/validate_claims.py on that file. If it fails, do not push the file; append 'FAILED C-NNN gate: <first
+     error>', push, stop.
+  7. Outcome, one line, pushed with the file: 'DONE C-NNN records=<n> gate=clean <start>Z <end>Z', or 'NONE C-NNN <the source does
+     not serve this, and how you checked>'. If the source refuses you (403, captcha, blocked, rate-limited): 'BLOCKED C-NNN <sport>
+     <source> <error>', stop, never get around it. If you cannot finish in about 30 minutes: 'PROGRESS C-NNN <done, left>'.
+  8. Stop. One chunk per run. Rules: primary sources, values verbatim, free only, no nulls, nothing outside your archive, never a
+     bet, pick, odds or model."
+If the scheduler will not take 100, set the most it will, keep one ticket run in ten, and say so. Do not substitute silently.
+
+STEP 3 - Append "SCHEDULE SET (split + ticket runs)" to STATUS.md: QUEUE.md commit and its checks, runs of each kind and their
+times, anything the scheduler would not do. Push. Stop; work no chunk or ticket in this session.
+```
