@@ -285,7 +285,7 @@ evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 [[cell]]
 market = "nfl_game_total"
 band = "T1"
-status = "shadow"
+status = "ruled_out"
 serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
 factors = ["N1", "N2", "N3"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
@@ -293,7 +293,7 @@ evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 [[cell]]
 market = "nfl_game_total"
 band = "T2"
-status = "shadow"
+status = "ruled_out"
 serving_model = "src/prediction_market_bot/pregame_shadow/nfl_model.py"
 factors = ["N1", "N2", "N3"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
