@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "is #412 on the box before the batch install retry"
