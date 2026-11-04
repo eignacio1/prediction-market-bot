@@ -1,0 +1,2 @@
+task = "install_batch_w99_readback"
+note = "readback after the batch install"
