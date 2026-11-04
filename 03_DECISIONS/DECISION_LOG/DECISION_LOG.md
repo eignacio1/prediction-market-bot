@@ -3144,3 +3144,7 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 ## 2026-11-04 02:40 UTC (11-03 18:40 PT) - Muse stress-test schedule (M99-ST)
 - Operator 18:23 PT: "give me a paste in to drop into Muse ... make in run on go for 1/5/10 minute intervals - I'll test it for 20 minutes for all 50 tasks. Stack them accordingly based on complexity. Be precise with this bc it needs direction due to its limited logic scaffolding - I want to get a clear quality test going."
 - M99-ST in the queue: 50 one-time runs from T0 over 20 minutes; tier 1 every minute (20), tier 2 stacks every 5 min (4/4/4/3), tiers 3-4 stacks every 10 min (hardest first: 8 at T0, 7 at T0+10). Peaks: 13 runs at T0, 12 at T0+10. Each run assigned its ticket; collisions logged (TO_MUSE 18:35 PT). Muse schedules only, reports what its scheduler could not do.
+
+## 2026-11-04 02:45 UTC (11-03 18:45 PT) - M99-ST v2: self-contained (Muse paused on v1)
+- Muse, relayed by the operator 18:31 PT: it paused before creating anything because "the fresh read of the TO_MUSE tail you pointed me to did not pass a safety check". Nothing created. The file is intact (174 KB, tail as written); the likely cause is Muse declining to act on instructions fetched from a web page, which is correct behaviour.
+- v2 in the queue carries all 50 runs' full prompts inline (task + protocol); nothing is fetched to set up or to run. Lesson for the window: anything Muse is to ACT on goes in Earl's message, not in a fetched file; TO_MUSE stays the record and backlog.
