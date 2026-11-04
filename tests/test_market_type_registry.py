@@ -71,11 +71,35 @@ class TestRegistryStartingState:
         assert cell.market_type is MarketType.MLB_PLAYER_PROP_HITS
         assert cell.band is ExecutionBand.T4M_PROJ
 
-    def test_no_cells_ruled_out_yet(self):
-        """Phase 0-I's depth signal exists but the operator has not promoted
-        either family to a kill decision ('neither declared dead') — the
-        registry must not invent a verdict that isn't the operator's."""
-        assert cells_by_status(CellStatus.RULED_OUT) == []
+    def test_only_the_exp037_first_look_cells_are_ruled_out(self):
+        """The registry must not invent a verdict. The only RULED_OUT cells are the
+        two EXP-037 first-look verdicts (W98.2 / W99.2): NFL game total T1 and T2."""
+        ruled = {(c.market_type, c.band) for c in cells_by_status(CellStatus.RULED_OUT)}
+        assert ruled == {
+            (MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY),
+            (MarketType.NFL_GAME_TOTAL, ExecutionBand.T2_SAME_DAY),
+        }
+
+    def test_exp037_ruled_out_cells_carry_reason_date_and_citation(self):
+        from datetime import date
+        for band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
+            cell = get_cell(MarketType.NFL_GAME_TOTAL, band)
+            assert cell.status is CellStatus.RULED_OUT
+            assert cell.measured_date == date(2026, 11, 2)
+            assert "n=60" in cell.reason and "rule 5.1" in cell.reason
+            assert cell.citing_decision == "EXP-037 first look (W98.2)"
+
+    def test_exp037_keep_accruing_nfl_cells_stay_shadow(self):
+        """The other ten NFL cells (incl. game total T3) are KEEP ACCRUING = SHADOW."""
+        nfl = [MarketType.NFL_MONEYLINE, MarketType.NFL_SPREAD,
+               MarketType.NFL_GAME_TOTAL, MarketType.NFL_TEAM_TOTAL]
+        bands = [ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP]
+        ruled = {(MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY),
+                 (MarketType.NFL_GAME_TOTAL, ExecutionBand.T2_SAME_DAY)}
+        shadow = [(m, b) for m in nfl for b in bands if (m, b) not in ruled]
+        assert len(shadow) == 10
+        for m, b in shadow:
+            assert get_cell(m, b).status is CellStatus.SHADOW, (m, b)
 
     def test_blocked_cells_are_the_mlb_native_t4_subbands(self):
         blocked = {cell.band for cell in cells_by_status(CellStatus.BLOCKED)}
@@ -83,7 +107,7 @@ class TestRegistryStartingState:
 
     def test_every_other_cell_is_not_implemented_or_dark(self):
         # T-597 D3: prop-hits T1/T2/T3 are SHADOW (running, kelly 0.0) -- records reality.
-        allowed = {CellStatus.NOT_IMPLEMENTED, CellStatus.DARK, CellStatus.SHADOW}
+        allowed = {CellStatus.NOT_IMPLEMENTED, CellStatus.DARK, CellStatus.SHADOW, CellStatus.RULED_OUT}
         for cell in MARKET_TYPE_REGISTRY.values():
             if cell.status in (CellStatus.ACTIVE, CellStatus.BLOCKED):
                 continue

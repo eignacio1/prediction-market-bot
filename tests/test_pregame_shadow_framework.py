@@ -247,6 +247,10 @@ def test_nfl_pregame_cells_shadow_and_inplay_untouched():
                MarketType.NFL_GAME_TOTAL, MarketType.NFL_TEAM_TOTAL):
         for b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
             c = get_cell(mt, b)
+            if mt is MarketType.NFL_GAME_TOTAL and b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
+                # W99.2: EXP-037 first look verdicts (rule 5.1); the arm itself keeps logging.
+                assert c.status is CellStatus.RULED_OUT and c.measured_date and c.reason, (mt, b)
+                continue
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
         assert get_cell(mt, ExecutionBand.T4NFL_ARITH).status is CellStatus.NOT_IMPLEMENTED
 
@@ -262,7 +266,9 @@ def test_mlb_game_market_cells_shadow_and_inplay_untouched():
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
 
 
-def test_registry_shadow_total_is_39():
-    """3 MLB player-hits + 12 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1) + 3 NBA player-points (W65.1)."""
+def test_registry_shadow_total_is_37_plus_2_ruled_out():
+    """3 MLB player-hits + 10 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1) + 3 NBA player-points (W65.1)
+    = 37 SHADOW; the 2 NFL game-total cells ruled out at the EXP-037 first look (W99.2) make the earlier 39."""
     from prediction_market_bot.c5_execution.market_type_registry import CellStatus, cells_by_status
-    assert len(cells_by_status(CellStatus.SHADOW)) == 39
+    assert len(cells_by_status(CellStatus.SHADOW)) == 37
+    assert len(cells_by_status(CellStatus.RULED_OUT)) == 2
