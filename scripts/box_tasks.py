@@ -75,6 +75,10 @@ TASKS: dict[str, str] = {
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",
     "t3_lock_stagger_uninstall": f"{PY} scripts/t3_lock_stagger.py uninstall",
+    # W99.3 / B-036: ONE batch (T3 lock -> NBA events refresh -> NBA engine v3 -> picks builder), one gate rule, stops at the first failed step
+    "install_batch_w99_install": f"{PY} scripts/install_batch_w99.py install",
+    "install_batch_w99_readback": f"{PY} scripts/install_batch_w99.py readback",
+    "install_batch_w99_uninstall": f"{PY} scripts/install_batch_w99.py uninstall",
     "box_memory_read": f"{PY} scripts/box_memory_read.py --since '24 hours ago'",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
