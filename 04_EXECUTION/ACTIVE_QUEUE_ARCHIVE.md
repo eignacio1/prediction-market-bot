@@ -10,6 +10,691 @@ it. Rule adopted at the same time: **the live queue holds only active blocks.**
 
 ---
 
+## Sitrep history moved out of the queue (window notes 10-21 onward; historical scoreboard, builds, proof-per-arm, calendar, open calls as of 10-08 / 10-19). Verbatim:
+
+**Window, 2026-10-21 morning (no wave; operator on his phone, 07:05-08:15 PT):** Earl set a daily automatic Muse run;
+the window wrote the week's Muse backlog (R-017 → R-030) and amended charter v3 to name that one job. Watchdog posture is
+lenient while the bot side is at aggregation, and Muse is never throttled: every wave's depth lane consumes a Muse delivery.
+**PAM layer 1 is drafted for every sport** in the NBA v4 shape (`qualitative_data/pam/{nfl,mlb,nhl}/taxonomy_v4depth.json`):
+NFL draft2 has 67 archetypes in 19 position groups (OL, DL, LB and S broken out by position, with split hooks such as stuff
+rate on runs to his gap), MLB has 24, NHL 18. DRAFT, awaiting Earl's approval. Muse's signal maps run NBA first as the
+template (R-027), then NFL (R-028), MLB (R-029), NHL (R-030). Muse delivered overnight: R-015 (Sharp 2025 season-end values),
+R-016 (NBA 2025-26 phase 1), a parser/validator gate and the null-placeholder hygiene pass. Every decision: DECISION_LOG
+2026-10-21 07:12-08:15 PT. Muse add-in M83-C below.
+
+**Muse (charter v3 §7 watchdog). Wave 82 close, archive `2ce6b77`:** under v3, 13 NFL + 3 NBA source cards (Sharp static pages CAPTURABLE → the bot captures them in 83.1; NGS and NBA.com browser-only); no free play-level 2026 charting in-season; 3,422 NBA play-type records on Earl's order; scheduler cleared (including a personal job, W28). Grades: VERIFIED 0 · FAILED 1 (QB time to throw, level) · coverage ungradeable until R-015. **Wave 81 close, archive `9c43ac6`:** M81 done (R-004 closed; R-008: 224 L3 QB game-script records, margin bands and ranks blocked honestly). M82 is mid-cycle: R-011 has 352 records (32 defenses x 11 metrics: Sharp coverage, shell, blitz and pressure valued; base/nickel/dime blocked); the QB side and prior seasons are pending (add-in M82-A). Availability sweep stopped (operator 10-20 21:26 PT). Grades: VERIFIED 0, FAILED 0 (82.3 grades the first class). **Earlier, Wave 81 intake, archive `2ba6671`:** 58 commits (34 at the handoff), no history rewritten, 2,107
+records all parse. R-005 and R-006 are closed. R-004 is partly done (two old-name hits in `web/index.html`). R-007 is closed as-is:
+the two Bo Nix `index_fact`s were the operator's examples. They stay REPORTED and are not verified (W25). Cadence installed (daily availability
+sweep, Monday full cycle). Week 6 delta in (46 claims). **R-008 issued (operator 10-19 21:40 PT: L3 = the split-level layer):**
+QB passing yards by game script, current week forward. It feeds KXNFLPASSYDS. Grades: VERIFIED 0 · REPORTED 48 (+2,059 pre-v1.3
+records, ungraded) · FAILED 0.
+
+**This window in one paragraph (Waves 61–80, 2026-10-08 → 10-19):** it turned the project from "build cells" to "build the
+engine": the north star and its distance table (10-09), the scale doctrine (ADR-0073: one deep engine per sport), the betting
+architecture (ADR-0075: aggregation > interpretation > application, eight components, D5) and the granularity index (10-16) are
+all its doing, in the operator's words. The NFL engine got a 27-season play-level store, a whole-board simulation and a granularity
+machine; NBA got its event store and two factors interpreted. Four NFL factors and one NBA factor reached the market: every one
+was already priced or invisible - the market prices the headline facts, so the operator moved the hunt to thinner markets and
+"buddy off his phone" (10-16). The thin markets now have a measured ranking, a live order-book capture and a frozen
+pre-registration (KXNFLPASSYDS). Process integrity (ADR-0074: runtime registry, pattern sweep, surface budget, the window's own
+error log), a kill switch drilled on the box, a box bridge so cloud sessions can read and act on the server, a governance gap
+agent, a doc registry, a Muse charter, and a 148 → 34 branch cleanup. Execution did not move: fills still lose and the
+forward test's scored read has not been taken.
+
+**Wave 80 (10-19), in one line:** the thin-market ranking is real (game ML 1¢ and 96% fillable; every thinner family ≥2¢ and
+0.08-0.33 fillable; only NBA prices move in the lineup window) and the first thin-market pre-registration is frozen; NBA's
+pace/efficiency totals are already priced (a rigorous NO); the NFL granularity machine exists and its first cross says nothing yet;
+the foundation docs are registered and the three dangerous ones rewritten. NBA opening night is read back next.
+
+**Demo cash (operator, 10-15 22:41 PT):** demo account topped up to **$19,635** (from $0.17 cash; GG-840). Forward-test data before
+2026-10-16T05:40Z is cash-starved: the next read-back reports before/after separately and re-projects judged n from post-top-up fill rates.
+
+**Process integrity (ADR-0074, operator 2026-10-14):** every running piece is in `RUNTIME_REGISTRY.toml` (CI-enforced); every fix is
+swept for the same defect elsewhere (`pattern_sweep:`); no new running component while a health signal is red; the window logs its
+own mistakes in `WINDOW_ERROR_LOG.md` and every wave carries Pushback / Surface / Dependencies lines (Hard Rules 13-15).
+
+**The scale (ADR-0073, operator 2026-10-13):** one deep engine per sport at Syndicate32-level granularity or deeper, pricing
+the whole board from one simulation; the data layer is the work, free sources first; a DEPTH lane in every wave until each live
+sport has its engine; NFL first as the template. Read back with `/vision`. Full text: `CLAUDE.md` § "The scale", ADR-0073.
+
+**Edge (ADR-0075, accepted 2026-10-14 21:55 PT):** "data aggregation > data interpretation > data application" — application
+("cool info, so what?") is the hardest and never finished. That granularity governs all eight components of the betting
+architecture; structural tensions = "where the architecture strains", seat interface = "deep mapping of sports-eyes to cells".
+PAM goes into every engine, NFL and NBA first; the deep tier is the operator's and Claude's. Measured by D5.
+
+**Rule (operator, 2026-10-09: "perfection isn't a dream, it's a protocol"):** every block, session and review states before it starts
+which measure it is meant to move, and reports at close what moved and by how much — or says PLUMBING in plain words. Two waves in a
+row that move nothing is drift, and the strategic window says so unprompted.
+
+**Forest read (2026-10-09):** Waves 52–61 were almost entirely BREADTH plumbing and PROOF machinery. The instrument is ready; the
+thing it measures — model depth — and the thing that converts it into money — execution — were never staffed. Both books now show
+the same execution signature (fills lose, non-fills "win"), so every paper P&L figure in the project's history is calibration
+evidence at best.
+
+**Wave 79 (10-16), in one line:** the NBA engine is real: a play-level store on the box with a no-look-ahead contract, 13 factor
+classes mapped to free sources, and the first two read - pace/efficiency is a team trait that moves game totals (and margin a
+little); rest is schedule, not a trait. The NFL QB arm was never silent (a false alarm, fixed in every sport). Branches 167 → 34
+with nothing lost. Still open: the thin-market ranking and pre-registration (data fetched, not measured), and one false-red on
+the surface budget (t4-mlb "behind" on merges it doesn't import) that blocks Wave 80's new components until the rule is fixed.
+
+**Wave 78 (10-16), in one line:** cut short at the operator's session limits, half of it landed: the runtime map and the gap
+agent's progress are on the dashboards, NBA's opening-night cells are ready to flip (9 of 12 - one family is never listed), and
+NBA now has an event-level store (on a branch). The thin-market history is inventoried and sampled for NFL but not yet measured. One
+red signal holds up new components: the NFL QB challenger arm went silent. 148 stale branches get cleaned up in Wave 79.
+
+**Wave 77 (10-15/16), in one line:** our "no gain" verdicts were weaker than they looked: the outcome test would catch a real
+F8 only one time in five. Against the market, though, the closing line already prices the team/QB base and most of F8, coverage
+is invisible, and there is no late move to time. You moved the work to thinner markets (10-16). The fill-fix test survived the
+503 day, but the demo account's cash, not the rule, now caps how fast either arm fills.
+
+**Wave 76 (10-15), in one line:** the second NFL factor (starters out, beyond the QB) is real new information, 99% of it absent
+from the ratings, and it still prices to no gain. That is four game-market factors in a row, so Wave 77 asks whether the
+market already prices them or the test is too weak to see them. Ledger writers are now crash- and race-safe. The runtime map
+is built and reviewed against the server, but not yet on the dashboards: 76.2 broke main by skipping CI. The kill-switch drill
+is still unproven. A standing gap agent now runs beside every wave.
+
+**Wave 75 (10-14), in one line:** ADR-0075's foundations are in. PAM has one schema for every sport (NBA ported losslessly, an NFL
+receiver classifier whose types hold year to year), seat files map every NFL and NBA cell to what a sports eye reads, tension
+registers name where the architecture strains, and D4/D5 are computed, not hand-written. NFL coverage went through the full
+chain to a price and added nothing (habit is a trait, efficiency against it is noise) — the third factor in a row to price at
+parity. The NFL book closes (4 → 0 stale positions). The kill switch is one switch in code; the drill on the box is 76.1.
+
+**Wave 73 (10-14), in one line:** the NFL engine exists — Syndicate32's factor list mapped to free data, a 27-season
+play-level store with a no-look-ahead contract, and a simulation that prices the whole NFL board from one draw (as good as
+the old per-market models, not yet better). The forward test is back on; the first settled fills are NHL, and the treatment
+arm barely fills (1 vs 29). ADR-0074's registry check caught 73.2's new workflow and made it register — the system working.
+
+**Wave 72 (10-13 → 10-14), in one line:** the foundation is fixed — ledgers survive a crash, deploys prove the running code is
+current, the order path itself refuses real money, and `/vps` is retired. The forward test is live with both arms and cancels
+work (0 failures); nothing has settled yet. The data audit found no look-ahead and no corrupt rows. Drift ends here: E1 has
+per-arm counts. You amended the skip-rate turn-off and gave NBA a staked runner (10-14).
+
+**Wave 71 (10-13), in one line:** the cancel bug was one wrong address — cancels went to the exchange's shard 0 while
+MLB orders live on shard 3 — and with that fixed the forward test is back on. NBA opening night is rehearsed and the
+frozen book can't take bets. Who-is-out did not improve the NBA game model (a clean NO). The hygiene audit says SOUND WITH
+ISSUES: no real-money path, but the paper ledger isn't crash-safe and the old `/vps` command would double every cron job.
+**Second wave in a row with no measure moved — that is drift by our own rule**, though E is one game night from moving.
+
+**Wave 70 (10-12), in one line:** the bright number didn't survive scrutiny — NFL's +0.39 a fill is real fills before kickoff,
+but on about four games whose bets settle together, so it is not evidence. The cancel "failures" were mostly bookkeeping,
+except 8 that are real: t4-mlb's cancel on MLB player hits fails while the order is still resting, and because the turn-off
+is global, those 8 keep the whole forward test off. EXP-040 is deployed and waits for NBA points markets to list. Main is
+green. **No measure moved** — first wave since 68; Wave 71 is built so all three blocks move one.
+
+**Wave 69 (10-12), in one line:** the forward test produced its first real numbers on the box, NBA opening night is automated
+end to end, and the second depth challenger (NBA points, projected minutes) is accepted and frozen. Then the test switched
+itself off: its turn-off counted "order already finished" (HTTP 404) as a failed cancel. The block handed the re-arm back to
+you; it is demo plumbing, and 70.1 does it. NFL's +0.39 a fill is too good to believe before checking when those fills
+happened — 70.1 checks. Main is red (6 tests, two merges) — 70.3.
+
+**Wave 67 (10-11), in one line:** Breadth moved for the first time in four waves — NBA player points is live (40 of 107 cells
+logging, 2 props families) — shadow cells placed their first accepted demo orders, and NFL injury reports are now captured
+before kickoff. Then GitHub refused every job: the free private-repo minutes were gone, and the two MLB data feeds lived
+only there. You made the repository public (12:06 PT); the window re-dispatched both feeds at 19:06Z.
+
+**Wave 66 (10-11), in one line:** demo orders were never down — the bot was ordering tickers the demo venue does not list,
+and the canary that "proved" an outage had picked production tickers. That is fixed, the fill-fix forward test is **ON**, and
+first orders come with tonight's game. Breadth has now not moved for **four waves**: NBA player points sits on a branch, built
+and reviewed, unmerged — 67.1 exists only to land it. GitHub minutes still do not fit to 11-01; 67.3 moves deploys and the MLB
+build off GitHub.
+
+**Wave 65 (10-10), in one line:** NFL now has a live model that knows who the quarterback is (D1). Everything else stalled:
+the NBA points arm was built but never merged, and the forward test found that **every demo order write returns 404** — the
+bot has not been able to place a demo order (GG-560), so Execution cannot move until that is fixed. **Breadth and Execution
+have now moved nothing for three waves: that is drift, and Wave 66 is built against it.** GitHub is held at $0 (your call).
+
+**Wave 64 (10-09 → 10-10), in one line:** the first NFL depth challenger exists and beats the frozen model in backtest (D3 0→1) —
+but only as a better model: it does not beat the market, and its own judged n is ~984 games (~3.6 seasons), so it changes nothing
+about the 11-02 look. The fix for fills that get picked off is built; you accepted it 10-10 and 65.2 turns it on. The NBA points
+arm missed its wiring part, so props breadth is still one family — the one that ends with the World Series. Not drift (D3 moved),
+but BREADTH and EXECUTION moved nothing for the second wave running: 65 is built to move both.
+
+**Wave 63 (10-09), in one line:** MLB's 12 game-market cells now count (37 of 104 cells logging); the distance table is computed
+from data; and we know why fills lose — orders rest at the model's price while the book moves, so they fill mostly when they are
+about to lose. 64 builds the fix (switched off until you accept it), the first NFL depth challenger, and the first new props arm.
+**Correction:** the window told you MLB player hits had been dark since 9-27; that was false — 63.1 checked the logs (players
+matched every game day). The window took it from a stale note without checking, which is the failure Hard Rule 12's "check it
+against logs/data" line now names.
+
+**Wave 62 (10-09), in one line:** the T1 MLB book has the same execution problem as T4M-PROJ (fills lose, non-fills "win"), and the
+NFL first look is ~91% likely to say "keep accruing" with the current model — so Wave 63 goes to MLB coverage while games
+remain, NFL model depth (the math), and why our fills lose.
+
+**Bottom line.** The plumbing is now sound. Code lands at any hour without killing live services, MLB data no longer
+depends on a blocked source, every resolved bet books from Kalshi's own settlement (1,229 of 1,229 match), and four
+sports log shadow forecasts. **We still have no verdict that the model beats the market anywhere.** Wave 60 settled
+what the only ACTIVE cell's sample is: **94.5% of T4M-PROJ's 1,952 rows were never filled.** The 107 real fills lose
+$0.40 a bet. So T4M-PROJ is a calibration record, not trading evidence. **You decided that 2026-10-08 (GG-527 (b)+(c)); Wave 61 builds it.** The first scored
+look is **NFL, ~2026-11-02** (15 of 60 games per cell; date confirmed by 61.2) — and its own pre-registration expects it to be
+inconclusive (plausible edge below what 60 games can detect). See the distance-to-optimum table above.
+
+**Wave 61 (10-08):** fills-only counting is live on both dashboards (T4M-PROJ real fills n=165, about -$0.26/bet). The
+stand-down gate is merged but not yet in the running process (62.3). The first-look release path had a real bug (no
+REPORT written) — fixed before it mattered. **The MLB postseason shadow arm has been silent since 10-08 (GG-532)** —
+found by hand, which is why 62.1 also builds an alarm. Early exploratory read (not a verdict): on 2025 NFL games the
+market priced at least as well as our frozen model; expect the 11-02 look to be hard-pressed to show edge.
+
+### Scoreboard (historical: the Waves 52–60 window, as of 10-08; current values are in the DISTANCE table above)
+
+| Measure | Start of window (10-03) | Now (10-08) |
+|---|---|---|
+| Real capital | $0 | $0 — demo only, Kelly 0 everywhere |
+| Cells (registry) | 92 · ACTIVE 1 · SHADOW 16 on an unmerged branch | 104 · ACTIVE 1 · SHADOW 24 on main · 12 NBA ready to flip ~10-21 · MLB postseason logging |
+| Sports logging forecasts | NFL, NHL (partly) | NFL, NHL, MLB postseason, NBA (preseason labelled + excluded) |
+| Cells at a scored look | 0 | 0 — engine sealed below each cell's pre-registered n |
+| Books truthful? | 26 MLB positions stuck; NFL book orphaned | All booked from Kalshi (ADR-0071); NFL book archived; **T4 fills classified: 166 of 4,220; dashboards count fills only for T4M-PROJ** (T1 book: 62.3 asks) |
+| Open gaps | 176, many stale | **129** (10-09); resolved entries retired to the archive |
+| VPS stability | Nightly out-of-memory crashes | Staggered crons + swap; clean since 10-05 |
+
+### What this window built, by theme
+
+| Theme | Waves | Outcome |
+|---|---|---|
+| **Landing + deploy safety** | 52–55 | Four stuck PRs landed (#158–#161). Deploys restart t4-mlb only when its code changed and no game is live. |
+| **MLB data off statsapi** | 52–58 | Schedule, cache and features build on GitHub Actions; the degrading 22:30 cron is off; player-hits restored. |
+| **Books + settlement** | 53–60 | Kalshi settlement is the paper resolution source; 26 stuck positions booked; settlements cross-checked; T4M-PROJ fill truth established; weekly rebuild can no longer wipe a repair. |
+| **Shadow arms** | 53–60 | NFL 12, NHL 9, MLB postseason 12, NBA 12 (EXP-038, frozen model, crons, preseason ledger). |
+| **Calibration engine** | 58–60 | One engine, every cell under its own pre-registration, sealed below n, frozen tamper-evident releases, schedule-based projections, NBA included, pre-registration holes closed by dated addenda. |
+| **Dashboards** | 52, 56–60 | Live Terminal (`/`) = what the bot places/evaluates now; Visual Dashboard (`/project`) = health, books, evidence clocks, Calibration. Phone-width clean. |
+| **Fill truth + verdict readiness** | 61 | Fills-only T4M-PROJ counting on both dashboards; stand-down gate; first-look release path fixed + runbook; exploratory track fenced (no NFL challenger beats frozen). |
+| **Governance** | 58–60 | Gap log 176 → 130, all re-verified; deploy/ mirrors the live crontab; ADR-0070 accepted; window handoff is now a command (`/strategic-handoff`). |
+
+### PROOF, per arm — does the model know something the market doesn't? (as of 10-08; P1–P3 above are current)
+
+| Arm | Status | When a verdict is possible |
+|---|---|---|
+| **T4M-PROJ** (MLB player hits, ACTIVE) | All rows -0.053/bet (CI spans 0); **real fills -0.40/bet (CI excludes 0), n=107**; latency thesis not supported (T-569) | Execution evidence says no. **Built (61.1):** fills-only counting live (fills n=165, ≈-$0.26/bet); calibration record kept; stand-down gate in the running process (62.3). Fill fix (ADR-0072) on in 65.2 |
+| **NFL** (12 SHADOW) | Logging; 15/60 per cell (61.2). Exploratory 2025: market mid Brier 0.2115 vs model 0.2182 (CI spans 0) | First look **11-02** (~11-09 if a game slips); expectations written (62.2): ~91% "keep accruing" |
+| **NFL QB-shrunk challenger** (2 moneyline cells) | Beats frozen in backtest (Brier −0.0027, 6/7 seasons); not the market. Accepted 10-10; logs from 65.3 | Better-model verdict at ~984 games (~3.6 seasons); market comparison reported, never judged |
+| **NHL** (9 SHADOW) | Logging; T3 rows now carry the projected-goalie flag (new rows) | PRELIMINARY all 2026-27 (accepted); base-rate check at 500 games |
+| **NBA** (12 cells) | Sealed 0/150; opening night 10-20 | Cells flip ~10-21; first look at 150 games/cell |
+| **NBA player points** (3 cells, EXP-039) | Pre-registered; model + runner in 65.1 | Must log from 10-20 |
+| **MLB** game markets (12 SHADOW) | Logging; GG-532 resolved (63.1); silent-arm alarm live | 2027 regular season |
+
+### Calendar ahead (refreshed 2026-10-19, Wave 81)
+
+| Date | What happens |
+|---|---|
+| Tue 10-20 (PT evening) | NBA opening night: game cells flip to SHADOW on valid rows; EXP-039 + EXP-040 points rows begin |
+| from Wed 10-21 | NBA opening-night read-back (80.2 Part A) can run: flips, registry, T2/T3 rows, points cells, silent arms |
+| Thu 10-22 | Week 7 TNF: the first NFL game the KXNFLPASSYDS pre-kickoff snapshot can record, if 81.3 is live by then |
+| after one full NFL week of snapshots | KXNFLPASSYDS fillability floor check (prereg §5) |
+| Mon 10-26 | Muse's first scheduled weekly full cycle (R-008 due in its next cycle) |
+| ~11-02 | NFL first scored look, the project's first pre-registered edge verdict (12 cells) |
+| World Series end | MLB live betting idle; MLB look-back one-shot (W80P.4); T4M-PROJ registry flip to DARK |
+| before 2027-01-31 | Define EXP-038's date-triggered second look (GG-529) |
+
+### Your open calls
+~~T4M-PROJ cohort (GG-527)~~ decided 10-08 · ~~t4-mlb restart~~ authorized 10-08 · ~~expansion~~ directed 10-08 · ~~ADR-0072~~ accepted 10-10 · ~~NFL QB challenger~~ accepted 10-10 · ~~T1 MLB counting (GG-536)~~ decided 10-10 · NBA model-class ADR standing (EXP-038/039; not blocking) · MLB winter posture (T1 MLB; T4M-PROJ already stands down) · T4M-PROJ band placement (GG-320) · a P&L
+gate that can be reached (GG-285) · approval path for self-modifying scripts (GG-289) · kill switch to count
+unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB postseason flag · EXP-038 second look
+(GG-529, January) · EXP-034 (park recommended) · ~~generality vs edge~~ decided EDGE 10-14 · ~~ADR-0075 + D5~~ accepted 10-14 21:55 PT · ~~PAM deep tier start~~ decided 10-15 16:46 PT: much deeper than 75.1's proposal — QBs, WRs, **RBs, TEs, OL and core defenders**, even foundationally; not soon (DEEP_TIER.md) · ~~KXNFLPASSYDS thin-market prereg~~ **accepted 10-19 21:40 PT** · ~~Muse L3~~ **decided 10-19 21:40 PT: the split-level layer (R-008)** · ~~Nix .283/.378~~ **dropped: it was an example (10-19 21:53 PT)**. · ~~PAM taxonomies NFL/MLB/NHL~~ **accepted as working drafts 10-21 19:15 PT** · ~~G6 re-definition (GG-204/285)~~ **accepted: superseding ADR, per book and sport, WINS at judged n (19:15 PT)** · ~~kill switch counts unresolved stake (GG-441)~~ **accepted 19:15 PT** · ~~SSH poller (GG-347)~~ **operator: "probably my home connection" (19:15 PT)**.
+
+---
+
+---
+
+## Wave 99 NOW section with its pastes and the Muse stress-test pastes (closed 2026-11-03 20:00 PT). 99.1 ✅ 99.2 🟨 99.3 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W99.md. Verbatim:
+
+## ⬛ NOW — Wave 99 · MUSE'S ARCHIVE IN AN ENGINE · THE FIRST VERDICTS APPLIED · THE INSTALL GATE UNSTUCK · WRITTEN 2026-11-03 ~06:50 UTC (11-02 22:50 PT) · three blocks, three parts each (~130 min)
+
+Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W99.md`. All three run in parallel. No new Muse block: M98 / M98b stand (Muse's
+order and standing role). Every block is drawn from the top of the **rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`; on the Visual Dashboard).
+
+| # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|---|
+| 99.1 | B-032 + B-033 + B-029 | engine | 2 (judged by 1) + 7 + 3 | **Muse's archive in an engine for the first time**: NFL crews (R-031, 11 seasons) and NBA referees (R-040) into totals, held-out and vs Kalshi; Muse's records verified against the bot's own; NHL overtime / shootout credit | DEPTH + PROOF: archive slices tested 0 → 2; NHL totals bias → noise | 🟨 A+B+C done 2026-11-04 (PR #408 code; CI re-running after an isolation-scan fix): NFL crews NULL, NBA referees NULL (upper bound, GG-1390); Muse NBA record VERIFIED, NFL yards VERIFIED / counts not reproduced. Part C: OT/SO settlement already exact in the merged model, bias is regulation level, EXP-046 not earned. See `12_EXPLORATORY/archive_officials/results_W99_1.md` | |
+| 99.2 | B-034 + B-002 + B-035 | proof | 1 (+2) | The 12 NFL verdicts carried out as EXP-037 says (2 ruled out); the last 2 frozen cells and what every frozen look will read; why the NFL totals model lost | PROOF: verdicts applied 0 → 12; frozen cells 11 → 13 | 🟨 Parts A+B done (12 verdicts; 13/13; retire-cell-10 line to operator), Part C PARTIAL (18/72 games, box 60KB cap) — `12_EXPLORATORY/nfl_first_look/results_W99_2.md` | |
+| 99.3 | B-036 + B-037 + B-017 | flex | plumbing | The install gate's deadlock fixed (one batch: T3 lock → NBA events → v3 → picks); NHL / NBA points / NBA engine rows say why; the NBA store on time | PLUMBING: installs passable 0 → 4; arms with reasons 3 → 6 | ✅ A+B merged (#405, #407); C merged (#409), install HELD → `install_batch_w99_install`, then readback after the 15:46Z run (2026-11-04) | `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261104T025115Z_W99_3.md` |
+
+**What Wave 98 delivered (verified 2026-11-03 06:35Z: #396-#404 merged, CI green on main; box bridge `20261103T063449Z_*`):** **98.1 ✅** NBA
+v1's missing games are the box's OOM kills, not the runner; both arms now log every unlogged game with a reason. NHL engine v2 (late
+game, empty net): better on the puck line, totals unchanged - late scoring is not why they run low. v3's two factors fully indexed: no
+lift. **98.2 🟨** **the NFL first look read: game totals T1 + T2 ruled out (lost to the market), 10 keep accruing, 0 candidates**; entry
+cost: keep the frozen rule (taking at the quote costs ~0.10 / contract); frozen evidence 11 of 13 DIFFERS (signs held, nets smaller).
+(#400 merged red, fixed by #402 - disclosed.) **98.3 🟨** lock + stagger, picks install task, v3 on the shared lock, reasons on three arms:
+all merged, **none installed** (the classifier refuses installs for the window too).
+**Distance:** P2 read 0 → 12 (2 ruled out). Box RED and worse: 142 OOM kills / 24 h.
+
+**Pushback:** the strongest reason not to run 99.1 as planned: officials are a small effect in every published study, so the most likely
+result is "no lift" - a cheap, honest first test of whether Muse's records can enter an engine at all (the join, the point-in-time
+discipline, VERIFIED / FAILED), not a bet on edge. And none of this wave's runtime fixes reach the box until installs are allowed.
+**Surface:** RED. Expected after your answer and 99.3: GREEN, 85 → 88 live (+NBA events refresh, +v3, +picks; the T3 lock edits existing
+lines). 99.1 / 99.2 install nothing.
+**Dependencies:** none for merges. The window's batch install waits on 99.3 Part A and on your answer.
+
+### 99.1 — Engine lane (B-032 + B-033 + B-029): Muse's archive tested in an engine - officials into NFL and NBA totals; NHL overtime
+**DEPTH + PROOF · ranks 2, 7, 3 · terminal 1**
+
+```
+Before anything else, read the Wave 99 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W99.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 99.1 - ENGINE LANE (BACKLOG B-032 + B-033 + B-029): MUSE'S ARCHIVE, TESTED IN AN ENGINE FOR THE FIRST TIME - OFFICIALS INTO NFL AND NBA TOTALS; NHL OVERTIME. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), judged by rank 1; Parts A-B also rank 7 (Muse) and rank 3 (the granularity index).
+PURPOSE: DEPTH + PROOF. Measures: Muse archive slices tested in an engine 0 -> 2 (NFL crews, NBA referees), each against the market's
+price where it exists; D5(b) officials stage per sport (NFL / NBA: aggregated -> interpreted or applied); NHL held-out total-goals bias
+-0.16 / -0.12 / -0.05 -> within noise.
+Why: the bot reads none of Muse's 177,346 records (window review, 2026-11-02). The operator, 21:33 PT: "we're still gonna run it as a data
+aggregator bc it's far from getting to the type of stats/pulls I'm envisioning"; the window committed to piping one slice into an engine
+and testing it. Officials are the cleanest first slice: Muse recorded NFL crew-season penalty records for eleven seasons (R-031) and NBA
+referee-season records for three (R-040), and a crew is a pre-game fact. 98.1 found the NHL engine's low totals are NOT late-game scoring;
+the remaining candidate is how overtime and shootouts are credited.
+Premises to check: the archive's L3-split/nfl/crew-penalties-*.claims.jsonl and L3-split/nba/referees-*.claims.jsonl (pin the commit;
+READ ONLY), their source cards (R-031: nflpenalties-referee-logs, football-zebras-assignments-crews; R-040: nba-official-referee-assignments,
+basketball-reference-referees); nflverse schedules' referee column; how far before the price each crew is known (NFL: the weekly
+assignment; NBA: the morning posting - R-097 may have landed, read its STATUS); 93.2's NBA officials module and GG-1390; the NFL engine
+(board v2) and NBA engine v2 / v3 held-out harnesses; 12_EXPLORATORY/nhl_engine/results_W98_1.md and Kalshi's NHL settlement rules (R-067).
+PERMISSIONS: per the common rules' ownership. NOT: any frozen engine, runner or pre-registration (EXP-044 / 044b / 044c / 045 / 046);
+writing to the archive; any order, gate, ledger or registry cell; installing anything.
+
+PART A - NFL crews into totals (~45 min)
+  Each game's referee (nflverse) joined to the crew's PRIOR-season record from the archive (penalties per game, accepted yards, the
+  split Muse recorded), shrunk to the league mean; leakage test (nothing from the season priced). Held-out seasons: does the crew term
+  improve the NFL engine's game total and team totals (Brier, paired, game-clustered)? Then this season vs Kalshi's ladders, descriptive.
+  Also: does Muse's record match the bot recomputing it from nflverse play-by-play for three crew-seasons (VERIFIED / FAILED)?
+PART B - NBA referees into totals (~45 min)
+  The same for NBA: each game's crew from a free per-game source as known before tip (state the source and when it is posted; if no
+  free source gives the crew before tip, say so and test held-out only, marked as an upper bound), the crew's prior-season record from the
+  archive, into NBA engine v2's total and team totals held-out, paired, game-clustered. VERIFIED / FAILED on three referee-seasons.
+PART C - NHL overtime and shootouts (~40 min)
+  A new version (the merged model stays): overtime and shootout credit as Kalshi settles each family (moneyline incl. OT / SO; totals
+  and puck line - read the rules verbatim from R-067's cards), tie handling in regulation. Held-out totals bias and Brier per family vs the
+  merged model; then this season vs Kalshi (the 98.1 descriptive rerun that was skipped). EXP-046 only if earned.
+For each archive slice report the five granularity-index parts and the stage reached; for each, one line for Muse (what its records
+did in the engine), written into your results for the window to pass on (do not edit TO_MUSE.md).
+Results: modules + tests, 12_EXPLORATORY/archive_officials/results_W99_1.md, the NHL section in 12_EXPLORATORY/nhl_engine/, a handoff
+(B-032, B-033, B-029 states).
+
+END OF BLOCK 99.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 99.2 — Proof lane (B-034 + B-002 + B-035): the first verdicts applied; the frozen evidence finished; why the NFL totals model lost
+**PROOF · rank 1 · terminal 2**
+
+```
+Before anything else, read the Wave 99 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W99.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 99.2 - PROOF LANE (BACKLOG B-034 + B-002 + B-035): THE FIRST VERDICTS APPLIED; THE FROZEN EVIDENCE FINISHED AND WHAT IT MEANS FOR THE LOOKS; WHY THE NFL TOTALS MODEL LOST. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; rank 1 (what counts as winning), with rank 2 in Part C.
+PURPOSE: PROOF. Measures: released verdicts carried out as EXP-037 states 0 -> 12 (2 RULED_OUT, 10 KEEP ACCRUING); frozen ride cells
+classified 11 -> 13 of 13, with what each EXP-042 / 043 look will read; the RULED_OUT NFL game-total model's loss decomposed 0 -> 1.
+98.2 read the NFL first look: GAME_TOTAL T1 and T2 RULED_OUT (about 0.016 Brier worse than the market; one finding, shared games), 10 KEEP
+ACCRUING, 0 CANDIDATE. A verdict nobody acts on is not a result. 98.2 also found all 11 classified frozen ride cells DIFFER: every sign
+held, every net smaller than reported (the frozen thresholds were set on larger numbers); the window queued the last shards for the two
+held-out KXMLBTOTAL cells (results 20261103T0636*).
+Premises to check: EXP-037's text on what each verdict does (registry status, logging, the next look); MarketTypeCell's RULED_OUT
+requirements (reason + measured_date, c5_execution/market_type_registry.py); 12_EXPLORATORY/nfl_first_look/results_W98_2.md;
+PROOF_CALENDAR.md and its generator; EXP-042 / EXP-043 and ride_cells.toml; 12_EXPLORATORY/frozen_evidence_check/results_W98_2.md and
+the new box results; the NFL shadow arm's game-total model and its rows.
+PERMISSIONS: per the common rules' ownership: the registry cells EXP-037's verdicts name, changed ONLY as EXP-037 says (if EXP-037 says
+nothing changes until a later look, change nothing and say so); READ-ONLY box tasks. NOT: any frozen pre-registration or ride_cells.toml;
+any model, runner, order, gate or ledger.
+
+PART A - Carry out the verdicts (~35 min)
+  For each of the 12 cells, exactly what EXP-037 says the verdict does - RULED_OUT: registry status with reason and measured date (and
+  whether the arm keeps logging); KEEP ACCRUING: the next look date and judged n. A test that the registry carries them; the proof
+  calendar regenerated; distance P1 / P2 / P3 read back on the box.
+PART B - The frozen evidence, finished (~45 min)
+  Read the remaining shards' results; classify the two held-out KXMLBTOTAL cells. Then per frozen test (EXP-042: 11 cells; EXP-043: 2): at
+  the re-run's net and n, what each look will most likely read and when; whether any cell's frozen threshold now sits above what the
+  re-run supports. If a cell should be retired before its look, one operator line with your recommendation - never edit a frozen file.
+PART C - Why the NFL totals model lost (~45 min)
+  Descriptive only, nothing re-scored: the ruled-out game-total model's 60 games - where its probability sat vs the market's (direction,
+  size), by total range, weather, dome, week; which inputs drove the misses; what that says for the NFL engine (a note for 99.1 / later
+  engine blocks, not a change).
+Results: the registry change + tests (or "EXP-037 changes nothing yet"), 12_EXPLORATORY/nfl_first_look/results_W99_2.md, the frozen-
+evidence table + look outlook, a handoff (B-034, B-002, B-035 states).
+
+END OF BLOCK 99.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 99.3 — Flex lane (B-036 + B-037 + B-017): the install gate unstuck; every arm says why; the NBA store on time
+**PLUMBING · terminal 3**
+
+```
+Before anything else, read the Wave 99 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W99.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 99.3 - FLEX LANE (BACKLOG B-036 + B-037 + B-017): THE INSTALL GATE UNSTUCK; EVERY ARM SAYS WHY; THE NBA STORE ON TIME. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; plumbing every lane depends on (Hard Rule 14), the operator's picks sheet (B-026 / GG-1630), the NBA engine's
+data (rank 2).
+PURPOSE: PLUMBING. Measures: held installs that can pass the gate 0 -> 4 (T3 lock, NBA events refresh, NBA engine v3, picks builder);
+arms whose rows carry reasons 3 -> 6 (+ NHL, NBA points, NBA engine); NBA store lag ~2 days -> under 1 day.
+The box is OOM-killing the shadow arms: 142 OOM kills in the 24 h to 11-03 06:35Z (122 python), and NBA engine v1 has 47 games past tip
+it never logged (v2: 23) - every frozen forward test is losing rows. 98.3's lock + stagger is merged but not installed. Two problems stand
+between it and the box: (1) the auto-mode classifier refuses *_install tasks, for the window too (the operator is asked separately);
+(2) the install gate deadlocks: each install exempts only its OWN first-run reds ("NOT INSTALLED <its key>"), so the NBA events refresh,
+the picks builder and the v3 arm block each other, and v3's own "SILENT ARM NBA engine v3" red blocks v3 even alone. The T3 lock install
+has no gate.
+Premises to check: scripts/archive_cron_install.py gate() and _budget(); the install scripts that call it (nba_engine_cron_install,
+nba_engine_v3_cron_install, picks_sheet_cron_install); the box's red set at 20261103T063449Z_w_budget_read.md; the silent-arm specs;
+GG-1630; the NBA store refresh job and status.json (last game 10-31 at 11-03 06:35Z); Muse R-110 if it has landed (read its STATUS).
+PERMISSIONS: per the common rules' ownership. NOT: Hard Rule 14's meaning - a red that is NOT explained by a held install still blocks;
+any model, probability, threshold, order, stake, gate on orders, ledger or pre-registration; running any *_install task.
+
+PART A - The install gate (~50 min)
+  One rule, tested on the exact 11-03 red set: an install batch (a new allowlisted task that installs the held lines in order: T3 lock
+  -> NBA events refresh -> NBA engine v3 -> picks builder, each with its backup and readback) exempts the reds that belong to the batch -
+  its lines' NOT INSTALLED and the silent-arm reds of the arms those lines feed (mapped explicitly, not by string match on a name) - and
+  blocks on every other red. Tests: the 11-03 set passes; the same set plus any healthcheck fault or another arm's silence blocks; a
+  partial failure stops the batch and reports which step. Push; name the task for the window.
+PART B - Every arm says why (~40 min)
+  GG-1630: the NHL shadow, NBA player points (both arms) and the NBA engine (v1 / v2 / v3) rows carry their top three reasons (the
+  engine's: the inputs that moved its price most vs the league mean), or a reasons_note; the picks sheet shows them. Logging only.
+PART C - The NBA store on time (~40 min)
+  Why the store's last game trails by two days (the 12:33 UTC refresh, source publish lags, the parse); fix it in the job if the fix is
+  ours, with a test; if a faster free source is needed, name it (R-110). Read back after the next refresh (store last game = yesterday).
+Results: the batch task + tests, the reasons + picks update, the store fix, 12_EXPLORATORY/install_gate_w99/results_W99_3.md, a handoff
+(B-036, B-037, B-017 states).
+
+END OF BLOCK 99.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### M99-ST — Muse: the 50-run stress test, SELF-CONTAINED (v2, 18:45 PT; replaces v1, which Muse paused on)
+**operator 2026-11-03 18:23 PT: "make in run on go for 1/5/10 minute intervals - I'll test it for 20 minutes for all 50 tasks. Stack them accordingly based on complexity."** v1 asked Muse to fetch its instructions from a web page; Muse's safety check would not act on fetched instructions (18:31 PT). v2 carries every run's full prompt inline: nothing is fetched.
+
+```
+From Earl, directly. Stress test of your scheduled runs. Everything you need is in this message: do NOT fetch any web page or file to set this up, and the runs themselves must not need one either.
+
+1. Create 50 ONE-TIME scheduled runs (not recurring). Do not change, pause or delete your existing daily runs.
+   T0 = the first whole minute at least 3 minutes after you finish creating them. Write T0 down.
+   Spacing by complexity: tier 1 one run every minute; tier 2 a stack every 5 minutes; tiers 3-4 a stack every 10 minutes, hardest first.
+   Peak load: 13 runs at T0, 12 at T0 + 10.
+2. Each run below has its time and its WHOLE prompt (the text in quotes). Copy each prompt exactly; change nothing.
+3. If your scheduler cannot do something (one-minute spacing, 13 runs in the same minute, one-time runs), do NOT substitute silently:
+   set what it can and write down exactly what it could not do and what you set instead.
+4. When all 50 are set, append one entry to STATUS.md and push: "STRESS TEST SCHEDULED", T0, a table of all 50 (run, ticket, tier,
+   scheduled time), and anything from step 3. Then stop. Do not work any ticket in this session.
+
+RUN 01 · at T0 + 0 min · X-046 · tier 4
+"Muse stress test from Earl, ticket X-046 (tier 4). TASK: NBA, Earl's example (2025-26, team level): mid-range FG % in clutch time, ROAD games only, in games the team's primary point guard (most PG minutes that season to date) did not play, against opponents a free source labels as playing the most zone (if no free source labels zone usage, record NONE for that component and still record every other component). Each component's source; the final n per team. PROTOCOL: (1) Append the line 'CLAIM X-046 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-046' is already in CLAIMS.md, append 'COLLISION X-046 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-046/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-046 tier=4 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-046 tier=4 <one-line reason the source does not serve it>', or 'PROGRESS X-046 tier=4 <what is left>', or 'FAILED X-046 tier=4 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 02 · at T0 + 0 min · X-047 · tier 4
+"Muse stress test from Earl, ticket X-047 (tier 4). TASK: NFL 2025, 10 QBs: EPA per play on 3rd down vs the blitz (FTN) when trailing in the 2nd half; each component's source and n. PROTOCOL: (1) Append the line 'CLAIM X-047 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-047' is already in CLAIMS.md, append 'COLLISION X-047 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-047/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-047 tier=4 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-047 tier=4 <one-line reason the source does not serve it>', or 'PROGRESS X-047 tier=4 <what is left>', or 'FAILED X-047 tier=4 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 03 · at T0 + 0 min · X-048 · tier 4
+"Muse stress test from Earl, ticket X-048 (tier 4). TASK: MLB 2025, 20 batters: results vs fastballs 95+ mph from relievers in high-leverage spots, home vs road; n per cell. PROTOCOL: (1) Append the line 'CLAIM X-048 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-048' is already in CLAIMS.md, append 'COLLISION X-048 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-048/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-048 tier=4 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-048 tier=4 <one-line reason the source does not serve it>', or 'PROGRESS X-048 tier=4 <what is left>', or 'FAILED X-048 tier=4 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 04 · at T0 + 0 min · X-036 · tier 3
+"Muse stress test from Earl, ticket X-036 (tier 3). TASK: NBA: from the league's free play-by-play, 20 games of 2025-26 (list the game ids), count each team's mid-range attempts / makes in clutch time; compare per team with NBA.com's clutch shooting-by-zone; show the method. PROTOCOL: (1) Append the line 'CLAIM X-036 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-036' is already in CLAIMS.md, append 'COLLISION X-036 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-036/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-036 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-036 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-036 tier=3 <what is left>', or 'FAILED X-036 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 05 · at T0 + 0 min · X-037 · tier 3
+"Muse stress test from Earl, ticket X-037 (tier 3). TASK: NHL: from the NHL's public play-by-play, 30 games of 2025-26, every goalie pull (time, score margin) and empty-net goal; compare the empty-net goal count with a published season figure (feeds R-095). PROTOCOL: (1) Append the line 'CLAIM X-037 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-037' is already in CLAIMS.md, append 'COLLISION X-037 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-037/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-037 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-037 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-037 tier=3 <what is left>', or 'FAILED X-037 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 06 · at T0 + 0 min · X-038 · tier 3
+"Muse stress test from Earl, ticket X-038 (tier 3). TASK: NFL: from nflverse play-by-play 2025, each team's 4th-down go rate when trailing by 1-8 in the 4th quarter; compare with one published fourth-down table. PROTOCOL: (1) Append the line 'CLAIM X-038 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-038' is already in CLAIMS.md, append 'COLLISION X-038 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-038/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-038 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-038 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-038 tier=3 <what is left>', or 'FAILED X-038 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 07 · at T0 + 0 min · X-039 · tier 3
+"Muse stress test from Earl, ticket X-039 (tier 3). TASK: MLB: Statcast pitch-level, 5 starting pitchers 2025, pitch mix the 1st vs 3rd time through the order; compare with Savant's split. PROTOCOL: (1) Append the line 'CLAIM X-039 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-039' is already in CLAIMS.md, append 'COLLISION X-039 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-039/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-039 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-039 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-039 tier=3 <what is left>', or 'FAILED X-039 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 08 · at T0 + 0 min · X-040 · tier 3
+"Muse stress test from Earl, ticket X-040 (tier 3). TASK: NBA: from box scores, each team's points in the 4th quarter when leading by 15+ entering it (garbage time), 2025-26; compare with any published garbage-time definition (feeds R-103). PROTOCOL: (1) Append the line 'CLAIM X-040 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-040' is already in CLAIMS.md, append 'COLLISION X-040 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-040/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-040 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-040 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-040 tier=3 <what is left>', or 'FAILED X-040 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 09 · at T0 + 0 min · X-021 · tier 2
+"Muse stress test from Earl, ticket X-021 (tier 2). TASK: NBA team shooting by zone, Clutch, 2025-26: NBA.com and Basketball-Reference; per team, the counts from each and every disagreement. PROTOCOL: (1) Append the line 'CLAIM X-021 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-021' is already in CLAIMS.md, append 'COLLISION X-021 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-021/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-021 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-021 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-021 tier=2 <what is left>', or 'FAILED X-021 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 10 · at T0 + 0 min · X-022 · tier 2
+"Muse stress test from Earl, ticket X-022 (tier 2). TASK: NBA referee crews for every game 2026-10-21 → 11-02 from the league's assignment posting (or its archived copies), joined to game date and teams. PROTOCOL: (1) Append the line 'CLAIM X-022 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-022' is already in CLAIMS.md, append 'COLLISION X-022 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-022/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-022 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-022 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-022 tier=2 <what is left>', or 'FAILED X-022 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 11 · at T0 + 0 min · X-023 · tier 2
+"Muse stress test from Earl, ticket X-023 (tier 2). TASK: NBA team pace and offensive rating, Home vs Road vs Clutch, 2025-26, all 30 teams in one file (three filters). PROTOCOL: (1) Append the line 'CLAIM X-023 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-023' is already in CLAIMS.md, append 'COLLISION X-023 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-023/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-023 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-023 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-023 tier=2 <what is left>', or 'FAILED X-023 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 12 · at T0 + 0 min · X-024 · tier 2
+"Muse stress test from Earl, ticket X-024 (tier 2). TASK: NFL team red-zone TD % 2025: Pro-Football-Reference and one second free source; reconcile per team. PROTOCOL: (1) Append the line 'CLAIM X-024 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-024' is already in CLAIMS.md, append 'COLLISION X-024 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-024/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-024 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-024 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-024 tier=2 <what is left>', or 'FAILED X-024 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 13 · at T0 + 0 min · X-001 · tier 1
+"Muse stress test from Earl, ticket X-001 (tier 1). TASK: NBA team traditional, filter Location=Home, season 2025-26: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-001: also append 'DONE C-001' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-001 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-001' is already in CLAIMS.md, append 'COLLISION X-001 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-001/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-001 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-001 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-001 tier=1 <what is left>', or 'FAILED X-001 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 14 · at T0 + 1 min · X-002 · tier 1
+"Muse stress test from Earl, ticket X-002 (tier 1). TASK: NBA team traditional, filter Location=Home, season 2024-25: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-002: also append 'DONE C-002' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-002 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-002' is already in CLAIMS.md, append 'COLLISION X-002 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-002/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-002 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-002 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-002 tier=1 <what is left>', or 'FAILED X-002 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 15 · at T0 + 2 min · X-003 · tier 1
+"Muse stress test from Earl, ticket X-003 (tier 1). TASK: NBA team traditional, filter Location=Home, season 2023-24: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-003: also append 'DONE C-003' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-003 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-003' is already in CLAIMS.md, append 'COLLISION X-003 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-003/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-003 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-003 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-003 tier=1 <what is left>', or 'FAILED X-003 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 16 · at T0 + 3 min · X-004 · tier 1
+"Muse stress test from Earl, ticket X-004 (tier 1). TASK: NBA team traditional, filter Location=Home, season 2022-23: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-004: also append 'DONE C-004' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-004 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-004' is already in CLAIMS.md, append 'COLLISION X-004 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-004/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-004 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-004 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-004 tier=1 <what is left>', or 'FAILED X-004 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 17 · at T0 + 4 min · X-005 · tier 1
+"Muse stress test from Earl, ticket X-005 (tier 1). TASK: NBA team traditional, filter Location=Home, season 2021-22: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-005: also append 'DONE C-005' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-005 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-005' is already in CLAIMS.md, append 'COLLISION X-005 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-005/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-005 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-005 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-005 tier=1 <what is left>', or 'FAILED X-005 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 18 · at T0 + 5 min · X-025 · tier 2
+"Muse stress test from Earl, ticket X-025 (tier 2). TASK: NFL QB splits 2025 (PFR): leading / tied / trailing, for every QB with 200+ attempts. PROTOCOL: (1) Append the line 'CLAIM X-025 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-025' is already in CLAIMS.md, append 'COLLISION X-025 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-025/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-025 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-025 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-025 tier=2 <what is left>', or 'FAILED X-025 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 19 · at T0 + 5 min · X-026 · tier 2
+"Muse stress test from Earl, ticket X-026 (tier 2). TASK: NFL kicker field goals by distance band, 2021-2025 (PFR), every kicker with 20+ attempts (feeds R-101). PROTOCOL: (1) Append the line 'CLAIM X-026 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-026' is already in CLAIMS.md, append 'COLLISION X-026 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-026/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-026 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-026 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-026 tier=2 <what is left>', or 'FAILED X-026 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 20 · at T0 + 5 min · X-027 · tier 2
+"Muse stress test from Earl, ticket X-027 (tier 2). TASK: MLB Statcast batter results vs fastballs 2025, 25 hitters: the leaderboard and each player page; reconcile. PROTOCOL: (1) Append the line 'CLAIM X-027 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-027' is already in CLAIMS.md, append 'COLLISION X-027 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-027/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-027 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-027 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-027 tier=2 <what is left>', or 'FAILED X-027 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 21 · at T0 + 5 min · X-028 · tier 2
+"Muse stress test from Earl, ticket X-028 (tier 2). TASK: MLB park factors 2023-2025 by batter hand (Savant), all 30 parks. PROTOCOL: (1) Append the line 'CLAIM X-028 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-028' is already in CLAIMS.md, append 'COLLISION X-028 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-028/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-028 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-028 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-028 tier=2 <what is left>', or 'FAILED X-028 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 22 · at T0 + 5 min · X-006 · tier 1
+"Muse stress test from Earl, ticket X-006 (tier 1). TASK: NBA team traditional, filter Location=Road, season 2025-26: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-006: also append 'DONE C-006' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-006 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-006' is already in CLAIMS.md, append 'COLLISION X-006 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-006/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-006 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-006 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-006 tier=1 <what is left>', or 'FAILED X-006 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 23 · at T0 + 6 min · X-007 · tier 1
+"Muse stress test from Earl, ticket X-007 (tier 1). TASK: NBA team traditional, filter Location=Road, season 2024-25: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-007: also append 'DONE C-007' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-007 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-007' is already in CLAIMS.md, append 'COLLISION X-007 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-007/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-007 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-007 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-007 tier=1 <what is left>', or 'FAILED X-007 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 24 · at T0 + 7 min · X-008 · tier 1
+"Muse stress test from Earl, ticket X-008 (tier 1). TASK: NBA team traditional, filter Location=Road, season 2023-24: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-008: also append 'DONE C-008' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-008 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-008' is already in CLAIMS.md, append 'COLLISION X-008 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-008/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-008 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-008 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-008 tier=1 <what is left>', or 'FAILED X-008 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 25 · at T0 + 8 min · X-009 · tier 1
+"Muse stress test from Earl, ticket X-009 (tier 1). TASK: NBA team traditional, filter Location=Road, season 2022-23: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-009: also append 'DONE C-009' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-009 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-009' is already in CLAIMS.md, append 'COLLISION X-009 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-009/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-009 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-009 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-009 tier=1 <what is left>', or 'FAILED X-009 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 26 · at T0 + 9 min · X-010 · tier 1
+"Muse stress test from Earl, ticket X-010 (tier 1). TASK: NBA team traditional, filter Location=Road, season 2021-22: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-010: also append 'DONE C-010' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-010 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-010' is already in CLAIMS.md, append 'COLLISION X-010 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-010/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-010 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-010 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-010 tier=1 <what is left>', or 'FAILED X-010 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 27 · at T0 + 10 min · X-049 · tier 4
+"Muse stress test from Earl, ticket X-049 (tier 4). TASK: NHL 2024-25, all teams: power-play xG per 2 minutes on the second night of a back-to-back vs rested, using the schedule and a free xG source; n per cell. PROTOCOL: (1) Append the line 'CLAIM X-049 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-049' is already in CLAIMS.md, append 'COLLISION X-049 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-049/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-049 tier=4 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-049 tier=4 <one-line reason the source does not serve it>', or 'PROGRESS X-049 tier=4 <what is left>', or 'FAILED X-049 tier=4 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 28 · at T0 + 10 min · X-050 · tier 4
+"Muse stress test from Earl, ticket X-050 (tier 4). TASK: NBA 2025-26, 15 players: points per game when the team's second-leading scorer was listed OUT on the official injury report before tip vs when he played (injury reports, R-077's archive + box scores); n per cell. PROTOCOL: (1) Append the line 'CLAIM X-050 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-050' is already in CLAIMS.md, append 'COLLISION X-050 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-050/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-050 tier=4 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-050 tier=4 <one-line reason the source does not serve it>', or 'PROGRESS X-050 tier=4 <what is left>', or 'FAILED X-050 tier=4 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 29 · at T0 + 10 min · X-041 · tier 3
+"Muse stress test from Earl, ticket X-041 (tier 3). TASK: NFL: from FTN charting (nflverse), each defense's blitz rate on 3rd down, 2025; compare with one published blitz table. PROTOCOL: (1) Append the line 'CLAIM X-041 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-041' is already in CLAIMS.md, append 'COLLISION X-041 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-041/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-041 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-041 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-041 tier=3 <what is left>', or 'FAILED X-041 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 30 · at T0 + 10 min · X-042 · tier 3
+"Muse stress test from Earl, ticket X-042 (tier 3). TASK: NHL: from shift charts, 10 games, each team's PP1 time on ice; compare with the published PP TOI; list games whose shift charts are empty (feeds R-111). PROTOCOL: (1) Append the line 'CLAIM X-042 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-042' is already in CLAIMS.md, append 'COLLISION X-042 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-042/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-042 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-042 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-042 tier=3 <what is left>', or 'FAILED X-042 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 31 · at T0 + 10 min · X-043 · tier 3
+"Muse stress test from Earl, ticket X-043 (tier 3). TASK: MLB: from the Stats API live feed, 10 games, each reliever's pitch count over the prior three days at the moment he entered; compare with one published bullpen-usage table (feeds R-084). PROTOCOL: (1) Append the line 'CLAIM X-043 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-043' is already in CLAIMS.md, append 'COLLISION X-043 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-043/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-043 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-043 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-043 tier=3 <what is left>', or 'FAILED X-043 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 32 · at T0 + 10 min · X-044 · tier 3
+"Muse stress test from Earl, ticket X-044 (tier 3). TASK: NBA: from play-by-play, 20 games, each team's points per possession in the first 6 minutes vs the last 6 minutes; compare with NBA.com's quarter splits. PROTOCOL: (1) Append the line 'CLAIM X-044 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-044' is already in CLAIMS.md, append 'COLLISION X-044 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-044/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-044 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-044 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-044 tier=3 <what is left>', or 'FAILED X-044 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 33 · at T0 + 10 min · X-045 · tier 3
+"Muse stress test from Earl, ticket X-045 (tier 3). TASK: NFL: from nflverse participation 2025, 5 teams, how often each ran 3+ WR sets with motion; compare with FTN's motion rate. PROTOCOL: (1) Append the line 'CLAIM X-045 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-045' is already in CLAIMS.md, append 'COLLISION X-045 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-045/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-045 tier=3 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-045 tier=3 <one-line reason the source does not serve it>', or 'PROGRESS X-045 tier=3 <what is left>', or 'FAILED X-045 tier=3 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 34 · at T0 + 10 min · X-029 · tier 2
+"Muse stress test from Earl, ticket X-029 (tier 2). TASK: MLB team bullpen ERA / FIP in high leverage vs low leverage, 2025, two free sources reconciled. PROTOCOL: (1) Append the line 'CLAIM X-029 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-029' is already in CLAIMS.md, append 'COLLISION X-029 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-029/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-029 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-029 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-029 tier=2 <what is left>', or 'FAILED X-029 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 35 · at T0 + 10 min · X-030 · tier 2
+"Muse stress test from Earl, ticket X-030 (tier 2). TASK: NHL team 5v5 score-close xGF % 2025-26: Natural Stat Trick and MoneyPuck; reconcile per team, state each source's xG model. PROTOCOL: (1) Append the line 'CLAIM X-030 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-030' is already in CLAIMS.md, append 'COLLISION X-030 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-030/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-030 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-030 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-030 tier=2 <what is left>', or 'FAILED X-030 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 36 · at T0 + 10 min · X-031 · tier 2
+"Muse stress test from Earl, ticket X-031 (tier 2). TASK: NHL goalie save % by danger (low / medium / high), 2025-26, all goalies with 10+ starts, two sources reconciled. PROTOCOL: (1) Append the line 'CLAIM X-031 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-031' is already in CLAIMS.md, append 'COLLISION X-031 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-031/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-031 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-031 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-031 tier=2 <what is left>', or 'FAILED X-031 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 37 · at T0 + 10 min · X-032 · tier 2
+"Muse stress test from Earl, ticket X-032 (tier 2). TASK: NHL power-play units (who is on PP1) for all 32 teams as of 2026-11-03, from two free sources; disagreements listed (feeds R-081). PROTOCOL: (1) Append the line 'CLAIM X-032 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-032' is already in CLAIMS.md, append 'COLLISION X-032 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-032/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-032 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-032 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-032 tier=2 <what is left>', or 'FAILED X-032 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 38 · at T0 + 10 min · X-011 · tier 1
+"Muse stress test from Earl, ticket X-011 (tier 1). TASK: NBA team traditional, filter Clutch (last 5 min, within 5), season 2025-26: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-011: also append 'DONE C-011' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-011 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-011' is already in CLAIMS.md, append 'COLLISION X-011 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-011/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-011 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-011 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-011 tier=1 <what is left>', or 'FAILED X-011 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 39 · at T0 + 11 min · X-012 · tier 1
+"Muse stress test from Earl, ticket X-012 (tier 1). TASK: NBA team traditional, filter Clutch (last 5 min, within 5), season 2024-25: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-012: also append 'DONE C-012' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-012 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-012' is already in CLAIMS.md, append 'COLLISION X-012 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-012/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-012 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-012 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-012 tier=1 <what is left>', or 'FAILED X-012 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 40 · at T0 + 12 min · X-013 · tier 1
+"Muse stress test from Earl, ticket X-013 (tier 1). TASK: NBA team traditional, filter Clutch (last 5 min, within 5), season 2023-24: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-013: also append 'DONE C-013' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-013 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-013' is already in CLAIMS.md, append 'COLLISION X-013 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-013/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-013 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-013 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-013 tier=1 <what is left>', or 'FAILED X-013 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 41 · at T0 + 13 min · X-014 · tier 1
+"Muse stress test from Earl, ticket X-014 (tier 1). TASK: NBA team traditional, filter Clutch (last 5 min, within 5), season 2022-23: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-014: also append 'DONE C-014' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-014 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-014' is already in CLAIMS.md, append 'COLLISION X-014 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-014/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-014 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-014 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-014 tier=1 <what is left>', or 'FAILED X-014 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 42 · at T0 + 14 min · X-015 · tier 1
+"Muse stress test from Earl, ticket X-015 (tier 1). TASK: NBA team traditional, filter Clutch (last 5 min, within 5), season 2021-22: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-015: also append 'DONE C-015' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-015 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-015' is already in CLAIMS.md, append 'COLLISION X-015 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-015/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-015 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-015 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-015 tier=1 <what is left>', or 'FAILED X-015 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 43 · at T0 + 15 min · X-033 · tier 2
+"Muse stress test from Earl, ticket X-033 (tier 2). TASK: NBA team play types (spot-up, isolation, PnR ball handler) offense AND defense, 2025-26, Home vs Road (four files). PROTOCOL: (1) Append the line 'CLAIM X-033 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-033' is already in CLAIMS.md, append 'COLLISION X-033 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-033/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-033 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-033 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-033 tier=2 <what is left>', or 'FAILED X-033 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 44 · at T0 + 15 min · X-034 · tier 2
+"Muse stress test from Earl, ticket X-034 (tier 2). TASK: NFL team pass rate over expected by quarter, 2025, from a free published source; every team. PROTOCOL: (1) Append the line 'CLAIM X-034 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-034' is already in CLAIMS.md, append 'COLLISION X-034 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-034/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-034 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-034 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-034 tier=2 <what is left>', or 'FAILED X-034 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 45 · at T0 + 15 min · X-035 · tier 2
+"Muse stress test from Earl, ticket X-035 (tier 2). TASK: MLB pitcher pitch mix by count (ahead / even / behind), 2025, 20 starting pitchers. PROTOCOL: (1) Append the line 'CLAIM X-035 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-035' is already in CLAIMS.md, append 'COLLISION X-035 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-035/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-035 tier=2 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-035 tier=2 <one-line reason the source does not serve it>', or 'PROGRESS X-035 tier=2 <what is left>', or 'FAILED X-035 tier=2 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 46 · at T0 + 15 min · X-016 · tier 1
+"Muse stress test from Earl, ticket X-016 (tier 1). TASK: NBA team traditional, filter Period=4th quarter, season 2025-26: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-016: also append 'DONE C-016' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-016 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-016' is already in CLAIMS.md, append 'COLLISION X-016 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-016/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-016 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-016 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-016 tier=1 <what is left>', or 'FAILED X-016 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 47 · at T0 + 16 min · X-017 · tier 1
+"Muse stress test from Earl, ticket X-017 (tier 1). TASK: NBA team traditional, filter Period=4th quarter, season 2024-25: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-017: also append 'DONE C-017' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-017 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-017' is already in CLAIMS.md, append 'COLLISION X-017 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-017/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-017 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-017 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-017 tier=1 <what is left>', or 'FAILED X-017 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 48 · at T0 + 17 min · X-018 · tier 1
+"Muse stress test from Earl, ticket X-018 (tier 1). TASK: NBA team traditional, filter Period=4th quarter, season 2023-24: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-018: also append 'DONE C-018' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-018 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-018' is already in CLAIMS.md, append 'COLLISION X-018 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-018/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-018 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-018 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-018 tier=1 <what is left>', or 'FAILED X-018 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 49 · at T0 + 18 min · X-019 · tier 1
+"Muse stress test from Earl, ticket X-019 (tier 1). TASK: NBA team traditional, filter Period=4th quarter, season 2022-23: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-019: also append 'DONE C-019' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-019 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-019' is already in CLAIMS.md, append 'COLLISION X-019 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-019/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-019 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-019 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-019 tier=1 <what is left>', or 'FAILED X-019 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+
+RUN 50 · at T0 + 19 min · X-020 · tier 1
+"Muse stress test from Earl, ticket X-020 (tier 1). TASK: NBA team traditional, filter Period=4th quarter, season 2021-22: every team, every column the source shows under that filter, values verbatim. (Same as split-queue chunk C-020: also append 'DONE C-020' with the same record count.) PROTOCOL: (1) Append the line 'CLAIM X-020 <your start time, ISO>' to CLAIMS.md at the root of your archive, commit that line alone, push. If a line 'CLAIM X-020' is already in CLAIMS.md, append 'COLLISION X-020 <start ISO>', push, and stop. (2) Write records and a README.md (sources with URLs and the filter visible, method, row counts) ONLY in L3-split/stress-test/X-020/. (3) Finish with ONE line appended to CLAIMS.md: 'DONE X-020 tier=1 start=<ISO> end=<ISO> records=<n> gate=<clean|fail>', or 'NONE X-020 tier=1 <one-line reason the source does not serve it>', or 'PROGRESS X-020 tier=1 <what is left>', or 'FAILED X-020 tier=1 <what broke>'. Pull and rebase right before every push; retry a rejected push up to 5 times. RULES: primary sources, values verbatim, free only, no null records, nothing outside your archive, never a bet, pick, odds or model. Tiers 3-4 count and join recorded facts; where a component is not available free, record NONE for that component and record the rest."
+```
+
+### M99-ST-MOVE — Muse: move the stress test up (paste into Muse's chat)
+**operator 2026-11-03 18:39 PT: "Can we move it up please lol I want it running within the next 10 minutes not in the next hour"**
+
+```
+From Earl, directly. Move the stress test up. Everything you need is in this message; fetch nothing.
+
+1. Move all 50 stress-test runs you scheduled (T0 19:07 PT) EARLIER by the same amount, so the new T0 is 18:48 PT today.
+   Keep every run's offset from T0, its ticket and its prompt exactly as they are: 13 runs at 18:48, 12 at 18:58, the rest as set.
+   If you cannot finish moving all 50 before 18:45, use the first whole minute at least 3 minutes after you finish as the new T0
+   instead, and shift everything by that amount.
+2. Move them; do not add copies. When done there must be exactly 50 stress-test runs, none left at the old 19:07-19:26 times.
+   Do not change, pause or delete your daily runs.
+3. Append to STATUS.md and push: "STRESS TEST MOVED", the new T0, the new time of all 50 (run, ticket, tier, time), and anything
+   the scheduler would not do (say so; do not substitute silently). Then stop. Do not work any ticket in this session.
+```
+
+### M99-RUNS — Muse standing run setup: sent in chat (operator 19:44 PT: "the file got too big so just give me the paste in this chat and remove it from the active queue"). Compact form: QUEUE.md is generated by Muse from a stated rule; full text in DECISION_LOG 2026-11-04 04:10 UTC.
+
+---
+
+---
+
+## Sequencing rows, Waves 45-89 (moved 2026-11-04). Verbatim:
+
+### ✅ WAVE 89 — WRITTEN 2026-10-27 ~03:00 UTC · CLOSED 2026-10-27 ~05:10 UTC (operator 22:08 PT) · six terminals · verified on GitHub (#340 #343-#346 #348 CI green; #347 green, unmerged) + box bridge (`20261027T051307Z_*`) · moved: **kill switch ENFORCING (GG-1082/441 resolved); first evidence that the market's own price is wrong toward its favourite (11 cells, in-sample)**; NFL factors, NFL simulation, NBA PAM: no edge · box still RED (MLB arm)
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 89.1 | The red cleared, then the kill switch ENFORCING (GG-1082 / GG-441) | 🟨 | #346 green: kill switch ENFORCING on the box, drill read back, GG-1082 / GG-441 / GG-1240 RESOLVED; red not yet cleared (MLB arm row expected 06:07Z) → 90.1 Part 0 |
+| 89.2 | Longshot bias and calibration of Kalshi's own sports prices; overreaction | ✅ | #345 green: 1,258 cells, 66 BH-flagged, 11 survive net of fee (in-sample; MLB + one NFL); fading big moves loses everywhere; NBA/NHL/parlays not archived (GG-1250) |
+| 89.3 | Which NFL and NBA factors does the line not price? | 🟨 | #340 #343 green: NFL venue + weather to a price, no strike clears; NBA screen blocked (GG-1260) |
+| 89.4 | EXTRA: NFL game simulation pricing the whole board | ✅ | #344 green: one chain prices the board; worse than the close at the centre; misses key number 3 |
+| 89.5 | EXTRA: NBA PAM vs the points-prop line | ✅ | #348; null at n~1.8k, see 12_EXPLORATORY/nba_pam_mass_tier/results_W89.md |
+| 89.6 | EXTRA: small-fix gap sweep | 🟨 | OPEN 213 → 205; PR #347 green but not merged (its owner merges) |
+
+### ✅ WAVE 88 — WRITTEN 2026-10-27 ~01:30 UTC · CLOSED 2026-10-27 ~02:00 UTC (operator 19:42 PT) · verified on GitHub (#336-#339 CI green) + box bridge (`20261027T024253Z_*`) · moved: **models scored vs market 2 → 5 of 6 (none beats it); DRAFT ADR-0076 (G6) written; quote times on shadow rows** · box still RED (MLB arm, fix awaiting an in-window row)
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 88.1 | Quant B1: tails (EVT) for the real-money limits + the DRAFT G6 ADR | ✅ | #337 green: tails fit for T4/T1 (T1 filled tail too thin to fit); DRAFT ADR-0076 awaits the operator; GG-1190..1192 |
+| 88.2 | The red first (silent MLB game-market shadow), then kill switch to ENFORCE; quote times on rows | 🟨 | #336 #339 green: cause found (games-cache sync, GG-1230/1231), quote time on shadow rows (GG-1232); budget still RED until a new in-window row; enforce not started → 89.1 |
+| 88.3 | Score the remaining frozen models vs the market with intervals; set the skill weights | ✅ | #338 green: NHL −0.0030 [−0.0062, −0.00005], NBA −0.0150 [−0.0208, −0.0089], MLB +0.0004 [−0.0030, +0.0037] (market − model sign: negative = market better); weights 0 / 0 / 0.0018; gate keeps nothing |
+
+### ✅ WAVE 87 — WRITTEN 2026-10-23 ~01:15 UTC · CLOSED 2026-10-27 ~00:30 UTC (operator 18:10 PT) · verified on GitHub (#332-#335 CI green) + box bridge (`20261027T011024Z_*`) · moved: **core reconciled 2 → 9 paths, 3 re-pointed; D3 1 → 3; kill switch on every order path (LOG-ONLY); models scored vs market 1 → 2 of 6** · box budget RED at the close (silent MLB game-market shadow → 88.2 Part 0)
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 87.1 | Quant A1 finished: every scorer reconciled, re-pointed where identical; GG-1100 | ✅ | #333 #335 green: 9 paths reconciled, 0 bugs, 4 definition differences (GG-1180..1183); 3 re-pointed; ladder/coherence/DTMC absorbed; D3 1 → 3 |
+| 87.2 | Kill switch on every order path, fed by every book (GG-1082 → GG-441) | 🟨 | #334 green: every order-capable book feeds the exposure gate, submit_order consults it, LOG-ONLY on the box; t4-mlb restart pending (live game); enforce → 88.2 |
+| 87.3 | Market history for the skill weights + NHL totals price-integrity check | 🟨 | #332 green: 2 of 6 models scored vs market (NHL: market better, no interval); 4 NONE (model-side data); NHL totals rows: 65% wide quotes, 67% far strikes, staleness unmeasurable; weights all 0 |
+
+### ✅ WAVE 86 — WRITTEN 2026-10-23 ~00:30 UTC · CLOSED 2026-10-23 ~00:50 UTC (operator 17:56 PT) · verified on GitHub (#328-#331 CI green) + box bridge (`20261023T005716Z_*`) · moved: **quant core live (2 scoring paths matched); market-implied distributions 0 → 92 games; E3 decomposed**; 1 of 6 models scored vs market
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 86.1 | Quant A1: one measurement core, reconciled; every frozen model scored against the market | 🟨 PARTIAL | #328 #330 green: core matches NHL scoring to < 1e-6; 1 of 6 models scored vs market (NFL); BH q=0.10: 1 of 49 (NHL_GAME_TOTAL_T1, preliminary); GG-1100 |
+| 86.2 | Quant A2: what the ladders imply + coherence | ✅ | #331 green: market width ≈ one per sport too; disagreement mostly center (MLB run line: width); ~0.07 net violations per 1,000, none with known size |
+| 86.3 | Quant A3: size + fills as a Markov chain | 🟨 PARTIAL | #329 green: E3 decomposed (adverse selection −29.6 pp, price chosen +16.3, other −9.6); queue position not logged; size per tier measured |
+
+### ✅ WAVE 85 — WRITTEN 2026-10-22 ~22:45 UTC · CLOSED 2026-10-23 ~00:05 UTC (operator 17:10 PT) · verified on GitHub (#325-#327 CI green, main green at 40a0a1cc) + box bridge (`20261023T001106Z_*`) · moved: **surface 80 → 77 live; EXP-041 frozen (D3 2 by the plan, 1 by the script)**; NFL market-anchored price adds nothing measurable; the gate keeps 0 orders · M85 held
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 85.1 | NFL market-anchored price, offline + pre-registered (pooled test) | ✅ | #326 green; EXP-041 frozen, not wired; pooled dBrier vs anchor +0.00002 [−0.00014, +0.00017]; 0 of 18,479 strikes clear the gate |
+| 85.2 | The real gate: replay on placed orders, then built unwired + DRAFT ADR-0072 addendum | ✅ | #327 green; 44,608 orders → 11,447 positions; no market-referenced held-out Brier → skill weight 0 → gate keeps 0 |
+| 85.3 | Kill switch sees all stake (GG-441) + install gate refuses on RED (84.1 Part C) | 🟨 | #325 green; RED gate fixed (GG-1080/1081), 3 entries retired; exposure gate wired to T1 MLB only; GG-441 OPEN on GG-1082 (order path) |
+| M85 | Muse: line history + "when was it public" tickets, 33-ticket backlog | ↪ REPLACED 10-26 by the short add-in in MUSE_PASTE_IN_v3.md § "Add-in, 2026-10-26 16:30 PT" (backlog reordered, 34 open) | |
+
+### ✅ WAVE 84 — WRITTEN 2026-10-22 ~02:15 UTC · CLOSED 2026-10-22 ~03:30 UTC (operator 10-21 20:29 PT) · verified 2026-10-22 22:45Z on GitHub (7 PRs, CI green) + box bridge (`20261022T222233Z_*`) · moved: **D5(b) NHL 7/0/0 → 2/2/3, D5(a) NHL 0 → 1/8; NBA PAM ~1,723 player-seasons assigned**; dashboard /project 50 s → 0.06 s; NBA injury report reaches the box
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 84.1 | Dashboard memory + GG-1030 injury-report route + RED-budget install gate | 🟡 A+B ✅, C not done | #318 #320 #321 #323 #324 green: /api/data 29 s → 0.22 s, /project 50 s → 0.06 s, 55 MB of 128M (box 10-22 22:22Z); NBA injury PDFs via runner relay (92 rows read 10-22 03:15Z). Part C stopped by operator for time → 85.3 Part A |
+| 84.2 | NBA PAM mass tier from Muse's R-027 map + stability + one cross | 🟨 PARTIAL | PR #319 (a147b76); cross n=0 |
+| 84.3 | NHL three factor classes + one to a price | ✅ PR #322 @7c30372: D5(b) NHL 7/0/0→2/2/3, D5(a) 0→1/8; Part B too few to tell | |
+| M84 | Muse: two unnamed jobs disabled (verbatim first), 30-ticket backlog, R-028 | ✅ | jobs disabled (prompts in STATUS); R-028, R-041, R-018, schema v1.6, R-055, R-056 done; strict gate 204 records 0 errors (archive 389b5e8) |
+| GA-4 | Gap agent beside the wave | ⬜ | |
+
+### ✅ WAVE 83 — WRITTEN 2026-10-21 ~06:20 UTC · RE-ISSUED 23:55 UTC · CLOSED 2026-10-22 ~01:30 UTC · verified on GitHub + box bridge (`20261022T013619Z_*`) · moved: **D4 NHL none → data layer; D5(b) NHL aggregated 0 → 7; B1 48 → 52 / 108**; NFL weekly source capture live; Muse card accuracy 22/22
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 83.1 | The bot captures Muse's CAPTURABLE NFL cards weekly + card accuracy + 82.3 re-run on 2026 rows | ✅ | ✅ DONE 2026-10-22: #311 merged, cron live, 5 snapshots, accuracy 22/22 (handoff SESSION_HANDOFF_20261022T0030Z_W83_1) |
+| 83.2 | NBA lineup cross testable (capture + frozen prereg) + play-type x absorption + Muse NBA grade | 🟨 PARTIAL | Pre-reg frozen, cron installed, but the box IP gets Akamai 403 on the injury PDFs (GG-1030): book snapshots only. Play-type grade PARTIAL; absorber cross interpreted, null (n=131). PRs #313, #317. |
+| 83.3 | NHL engine data layer (D4) + factor map | ✅ | #315: 12 seasons, ~5.2M events; D4 NHL → data layer; 12 factor classes mapped, 7 aggregated |
+| M83 | Muse: R-015 Sharp 2025 Wayback values → R-016/R-017 NBA arm | ✅ | R-015 (544 records), R-016 (3,856), R-017 (14,042): NBA play types + tracking 2023-24 → 2025-26 complete; daily run live |
+| M83-D | Muse: restore the three daily runs (W29), then R-027 NBA PAM signal map | ✅ | three runs live (fda3aa3); R-027 47 rows (e2000aa) |
+| GA-4 | Gap agent beside the wave | ⬜ | |
+
+### ✅ WAVE 82 — WRITTEN 2026-10-21 ~05:15 UTC · CLOSED 2026-10-21 ~05:45 UTC · verified on GitHub + box bridge (`20261021T0554Z_*`) · moved: **surface RED → GREEN**; ADR-0072 verdicts **0 → NFL INCONCLUSIVE** (+3 no verdict yet); **D5(b) NFL aggregated 4 → 5, interpreted 2 → 5 (of 21)**; green = WINS live; Muse grades 0 → 1 (QB time to throw FAILED)
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 82.1 | KXNFLPASSYDS live | 🟡 | cron installed (RED → GREEN), passyds_strike_v1 merged and live (#306), cell registered NOT_IMPLEMENTED; first rows Thu 10-22 NE @ CHI; GG-990 (installer gate) |
+| 82.2 | Forward-test verdict + green = WINS | ✅ | NFL INCONCLUSIVE at judged n (+0.153, LB −0.050, 13 games; (b) 0.288; (c) 0 markouts); NHL/NBA/MLB no verdict yet; #304 green = WINS only (0 green); `forward_verdict_read` bridge task |
+| 82.3 | Depth: 2026 coverage/pressure gap | ✅ | #305/#307: man 0.79, 5+ rushers 0.64, pressure 0.31 split-half = traits; cross with QB response adds no yards beyond the frozen model; INDEX_ENTRY_COVERAGE_PRESSURE.md; seat N20/N21 interpreted; Muse TTT FAILED on level |
+| M82 | Muse R-011 → v3 R-013/R-014/R-012 | ✅ | 16 source cards; no free in-season play-level charting; 3,422 NBA play-type records (Earl's order); 110 null TTT rows after v3; removed `ig-unfollow-watch` (W28) |
+| GA-4 | Gap agent | ❌ | not launched |
+
+### 🟨 WAVE 81 — WRITTEN 2026-10-20 ~05:05 UTC · run 10-19 night (cut at session limits) and 10-20 · CLOSED 2026-10-21 ~05:00 UTC · verified on GitHub + box bridge (`20261021T0439Z_*`) · moved: **B1 40 → 48/107, B2 13 → 17/18** (NBA opening-night flips) · D1/D4/P3 readable · D5(b) NBA interpreted 2 → 3 · forward test labelled
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 81.1 | Forward test read: labels, clean count, verdict (+ D1/D4/P3; + 81.1-A green=WINS; + 81.1-B addendum) | 🟡 | #297 labels (0 assignment mismatches / 18,795) + D1/D4/P3 fixed (read back: all three readable); #302 ADR-0072 addendum + 30-min markout collector (installed) + per-(book,sport) verdict code. Verdict NOT read on the box (bridge task times out) → 82.2. Green = WINS not built → 82.2 |
+| 81.2 | Depth: NBA lineup cross | ✅ | #299: creator out +1.75 pts for teammates [1.46, 2.06], starter +1.00, rotation +0.34; player level mostly noise; price test impossible on history (GG-985). INDEX_ENTRY_LINEUP.md; seat B10 interpreted |
+| 81.3 | KXNFLPASSYDS: snapshots, model, rows | 🟡 | #298/#300/#301 snapshot job + installer merged, registered live, NOT installed (budget RED). Frozen passyds_strike_v1 (held-out Brier 0.2002 vs 0.2189 baseline) parked on branch, no PR → 82.1 |
+| M81 | Muse R-008 + R-004 | ✅ | 224 L3 game-script records (margin bands and ranks blocked honestly: not in free sources) |
+| M82 | Muse R-011 (+R-012 next); availability sweep stopped | ⏳ | mid-cycle at close: 32 defenses' coverage/shell/blitz/pressure (Sharp, free); personnel blocked; QB side + prior seasons pending → M82-A |
+| GA-4 | Gap agent | ❌ | never launched |
+
+### ✅ WAVE 80 — ISSUED 2026-10-20 ~00:10 UTC · CLOSED ~01:30 UTC · verified on GitHub at the handoff sweep · the last wave of the Waves 61–80 window
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 80.1 | Thin-market ranking on measured depth + first thin-market prereg (+ capture fix) | ✅ | #288 capture `listed=0` root cause (close_time trails the game ~45 h; now event-time windowed, registered live, 743 listed) · #291/#292/#293/#295 depth stats + efficiency table (14 families, 2025 sample) · `THIN_MARKET_PREREGISTRATION_2026-10-20.md` frozen (KXNFLPASSYDS T1 shadow). Pre-kickoff NFL depth n = 0 (in-game only). Process error: #291 merged with CI red, repaired by #292 |
+| 80.2 | NBA opens: cells live + first factor meets the market | 🟡 | Part B ✅: pace/efficiency vs KXNBATOTAL **REAL-AND-PRICED**; first NBA index entry (`INDEX_ENTRY_PACE.md`); #289 parser fix. Part A (opening-night read-back) pending: the 10-20 games had not been played |
+| 80.3 | The granularity index machine for NFL (run-box positive control) | ✅ | #290: split / rank vs history / matchup cross / market map built and tested; run-box entry N17: loaded-box not a trait, the cross adds nothing over the season rating, application too few to tell; D5(a) NFL 5 → 6 |
+| 80.4 | Foundation docs freshness + DOC_REGISTRY rule (added 10-19, operator) | ✅ | #294: 83-entry `00_ADMIN/DOC_REGISTRY.toml`; kill-switch runbook, access-control matrix, vendor risk rewritten; 2 superseded docs archived; staleness alarm live in the governance scan; GG-970/971. 9 of ~54 LIVING docs verified, the rest registered blank |
+
+### ✅ PSEUDO-WAVE 80R — ISSUED 2026-10-16 ~15:35 UTC · one cloud session, three tasks in order · CLOSED ~16:15 UTC · verified on GitHub. W80R.1 🟡 bridge live, budget honestly read (then GREEN after the window's t4-mlb restart), capture installed by the window at :51 (#287). W80R.2/.3 🟡 tools merged (#286), no results → Wave 80.
+
+| # | Task | Status | Outcome |
+|---|---|---|---|
+| W80R.1 | The box bridge + budget read + capture install + NBA pre-flight | ⬜ | |
+| W80R.2 | Thin-market ranking + first thin-market prereg | 🟡 | W80.1 Part A DONE 2026-10-20 ~01:10Z: capture listed=0 root-caused (close_time lags the game ~45h) and fixed (#288), box read-back listed=743 books=500; registry live, max_age_h=2; depth tooling merged (#291-293). Weekend books are in/post-game, not pre-kickoff. Part B (ranking table, F8, prereg) next. W80.1 Part B DONE 2026-10-20: efficiency table (#295, 12_EXPLORATORY/thin_markets/results.md) + frozen THIN_MARKET_PREREGISTRATION_2026-10-20 (KXNFLPASSYDS, awaiting operator). Status PARTIAL: pre-kickoff depth is forward-capture only. |
+| W80R.3 | NBA pace/efficiency vs Kalshi NBA totals | ⬜ | |
+
+### ✅ PSEUDO-WAVE 80P — ISSUED 2026-10-16 ~14:50 UTC · CLOSED ~15:25 UTC · one Claude Code cloud session · verified on GitHub
+
+| # | Task | Status | Outcome |
+|---|---|---|---|
+| W80P.1 | Surface-budget false red fixed; depth capture running | 🟡 | #281: budget counts "behind" only on an imported file; capture built + tested, not installed (no box access) → 80R.1 |
+| W80P.2 | Thin-market ranking + first thin-market prereg | ⛔ | Cloud session reaches neither the box nor Kalshi; nothing measured → 80R.2 |
+| W80P.3 | NBA pace/efficiency vs Kalshi NBA totals | ⛔ | Same cause; factor stays interpreted → 80R.3 |
+| W80P.4 | MLB 2026 season look-back | ✅ | #282: P1 0/16 at a look (the game cells' prereg bars scoring 2026 games), P2 0, P3 = 2027 at 150 games/cell; final read after the World Series |
+
+### Waves 45-79
+Their sequencing rows moved verbatim to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` § "Sequencing track, Waves 45-79" on 2026-10-26 21:15 PT (operator 21:08 PT: the queue was too large to display).
+
+---
+
 ## Wave 98 NOW section with its pastes (closed 2026-11-02 22:50 PT). 98.1 ✅ 98.2 🟨 98.3 🟨 M98 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W98.md. Verbatim:
 
 ## ⬛ NOW — Wave 98 · THE FIRST NFL VERDICTS, READ · THE BOX'S MEMORY · THE ENGINES MADE WHOLE · WRITTEN 2026-11-03 ~03:30 UTC (11-02 19:30 PT) · three blocks, three parts each (~130 min), plus Muse
