@@ -617,6 +617,29 @@ From Earl, directly. Move the stress test up. Everything you need is in this mes
    the scheduler would not do (say so; do not substitute silently). Then stop. Do not work any ticket in this session.
 ```
 
+### M99-ST-CLOSE — Muse: close the stress test, then 100 runs a day (paste into Muse's chat)
+**operator 2026-11-03 19:33 PT: "Can I tell Muse to wipe out the rest of it and then set up 100 per day"**
+
+```
+From Earl, directly. The stress test is over. Everything you need is in this message; fetch nothing.
+
+1. Close the test. Do not delete anything, and do not redo any ticket. For each stress-test ticket that has a CLAIM line in
+   CLAIMS.md but no outcome line - X-022, X-027, X-030, X-033, X-044, X-049, X-050 - look at what its folder
+   L3-split/stress-test/X-NNN/ holds and append ONE line to CLAIMS.md: "PROGRESS X-NNN tier=<n> <what was recorded, what is left>"
+   or "FAILED X-NNN tier=<n> <what broke>". Keep every file already written. Push.
+2. Remove any stress-test runs still scheduled (there should be none). Do not touch your daily runs yet.
+3. Set up 100 recurring daily runs, spread evenly through the day (one about every 14 minutes, never more than one in the same
+   minute). Each run's whole prompt: "Muse daily run. Take the lowest unclaimed chunk of the split queue (C-001 onward, R-112):
+   append 'CLAIM C-NNN <start ISO>' to CLAIMS.md, commit that line alone, push; if a CLAIM for that chunk is already there, take the
+   next. A CLAIM older than 6 hours with no outcome line may be re-claimed (say so in your line). Records only in
+   L3-split/<sport>/splits/<table-slug>/<condition-slug>-<season>.claims.jsonl. Finish with one line: 'DONE C-NNN records=<n>
+   gate=<clean|fail>' or 'NONE C-NNN <reason>' or 'FAILED C-NNN <what broke>'. Pull and rebase before every push; retry a rejected
+   push up to 5 times. Primary sources, values verbatim, free only, no nulls, never a bet, pick, odds or model."
+   Then remove your old daily runs, so 100 remain in total. If the scheduler will not take 100, set the most it will and say so.
+4. Append "STRESS TEST CLOSED; 100 DAILY RUNS SET" to STATUS.md with the seven closing lines, the number of daily runs set and
+   their times, and anything the scheduler would not do. Push, then stop.
+```
+
 ---
 
 ## 🔥 STANDING — GA: the governance gap agent (always on, beside every wave; operator 2026-10-15 16:49 / 17:02 PT)
