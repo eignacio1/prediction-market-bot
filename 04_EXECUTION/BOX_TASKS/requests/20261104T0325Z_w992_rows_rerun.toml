@@ -1,0 +1,2 @@
+task = "nfl_total_rows_read"
+note = "W99.2 re-run after box deploy of #410"
