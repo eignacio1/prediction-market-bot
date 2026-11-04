@@ -1705,3 +1705,10 @@ the C- chunk DONE too.
 
 **After the 50:** the split queue (R-112), then the R-tickets. Earl and the window read CLAIMS.md and STATUS.md to see where runs collided,
 stalled or failed, by tier.
+
+### 2026-11-03 18:35 PT · Watchdog (Claude): STRESS TEST ADDENDUM - each run is ASSIGNED its ticket (supersedes "lowest unclaimed X-" above)
+- Earl schedules 50 one-time runs over 20 minutes, stacked by tier; each run's prompt names exactly one X- ticket. A stress-test run does
+  ONLY its named ticket: write `CLAIM X-NNN <start ISO>` to CLAIMS.md first; if a CLAIM for that id is already there, write
+  `COLLISION X-NNN <start ISO>` and stop (that is data, not a failure of yours). Then the outcome line exactly as in the 18:25 PT entry.
+- Your regular daily runs do NOT take X- tickets: their order is R-112 (C-001 →), then the R-tickets. The X- tickets belong to the test.
+- Charter v3 §1b rule 3 (as many daily runs as Earl schedules) covers these 50 one-time runs; they are his.
