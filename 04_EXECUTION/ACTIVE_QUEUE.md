@@ -287,7 +287,7 @@ order and standing role). Every block is drawn from the top of the **rolling bac
 |---|---|---|---|---|---|---|---|
 | 99.1 | B-032 + B-033 + B-029 | engine | 2 (judged by 1) + 7 + 3 | **Muse's archive in an engine for the first time**: NFL crews (R-031, 11 seasons) and NBA referees (R-040) into totals, held-out and vs Kalshi; Muse's records verified against the bot's own; NHL overtime / shootout credit | DEPTH + PROOF: archive slices tested 0 → 2; NHL totals bias → noise | 🟨 A+B+C done 2026-11-04 (PR #408 code; CI re-running after an isolation-scan fix): NFL crews NULL, NBA referees NULL (upper bound, GG-1390); Muse NBA record VERIFIED, NFL yards VERIFIED / counts not reproduced. Part C: OT/SO settlement already exact in the merged model, bias is regulation level, EXP-046 not earned. See `12_EXPLORATORY/archive_officials/results_W99_1.md` | |
 | 99.2 | B-034 + B-002 + B-035 | proof | 1 (+2) | The 12 NFL verdicts carried out as EXP-037 says (2 ruled out); the last 2 frozen cells and what every frozen look will read; why the NFL totals model lost | PROOF: verdicts applied 0 → 12; frozen cells 11 → 13 | ⬜ | |
-| 99.3 | B-036 + B-037 + B-017 | flex | plumbing | The install gate's deadlock fixed (one batch: T3 lock → NBA events → v3 → picks); NHL / NBA points / NBA engine rows say why; the NBA store on time | PLUMBING: installs passable 0 → 4; arms with reasons 3 → 6 | ⬜ | |
+| 99.3 | B-036 + B-037 + B-017 | flex | plumbing | The install gate's deadlock fixed (one batch: T3 lock → NBA events → v3 → picks); NHL / NBA points / NBA engine rows say why; the NBA store on time | PLUMBING: installs passable 0 → 4; arms with reasons 3 → 6 | ✅ A+B merged (#405, #407); C merged (#409), install HELD → `install_batch_w99_install`, then readback after the 15:46Z run (2026-11-04) | `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261104T025115Z_W99_3.md` |
 
 **What Wave 98 delivered (verified 2026-11-03 06:35Z: #396-#404 merged, CI green on main; box bridge `20261103T063449Z_*`):** **98.1 ✅** NBA
 v1's missing games are the box's OOM kills, not the runner; both arms now log every unlogged game with a reason. NHL engine v2 (late
@@ -663,7 +663,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 99.1 | B-032 + B-033 + B-029 engine: officials from Muse's archive into NFL / NBA totals; NHL OT | ⬜ | |
 | 99.2 | B-034 + B-002 + B-035 proof: verdicts applied; frozen evidence finished; NFL totals loss | ⬜ | |
-| 99.3 | B-036 + B-037 + B-017 flex: install gate; reasons on every arm; NBA store lag | ⬜ | |
+| 99.3 | B-036 + B-037 + B-017 flex: install gate; reasons on every arm; NBA store lag | ✅ merged (#405 d7ba397, #407 292b863, #409 454beeb); install held for the operator | results_W99_3.md |
 
 ### 🟨 WAVE 98 — WRITTEN 2026-11-03 ~03:30 UTC · CLOSED 2026-11-03 ~06:50 UTC (operator 11-02 22:33 PT) · verified on GitHub (#396-#404 merged, main CI green) + box bridge (`20261103T063449Z_*`) · moved: **the first verdicts read (2 RULED_OUT, 10 keep accruing); entry cost measured; frozen evidence 11/13 classified** · nothing installed (classifier) · box RED, 142 OOM kills / 24 h
 | # | Block | Status | Outcome |
