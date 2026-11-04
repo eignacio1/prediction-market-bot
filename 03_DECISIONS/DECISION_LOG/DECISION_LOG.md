@@ -3175,3 +3175,8 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 
 ## 2026-11-04 03:45 UTC - Muse stress test, final tally (correction)
 - All 50 have outcome lines (03:36Z). Three of the seven "open" runs were still working and finished late: X-022 (44 min, clean), X-030 (34 min, clean), X-033 (21 min, gate=fail - the test's only quality failure). X-027, X-044, X-049, X-050 FAILED: stopped when the test was closed, no records. Final: 46 DONE (45 clean, 1 gate fail), 4 stopped. The window's 19:33 PT read that the seven were "almost certainly dead" was wrong for three of them.
+
+## 2026-11-04 03:55 UTC (11-03 19:50 PT) - Muse standing run setup (M99-RUNS)
+- Operator 19:41 PT: "do we have suitable protocol for Muse to identify and work on the current backlog of tickets? It needs to be directed thoroughly otherwise it runs into trouble - so if we're sending it on autos the scaffolding it's being directed on needs to be airtight".
+- Window: it was not airtight - the split runs depended on fetching TO_MUSE for chunk definitions (the fetch pattern that tripped Muse's safety check), no source per table, no rule for a blocked source or a failed gate, mixed timestamp formats, and the 43 R-tickets had no runs once the old daily runs were replaced.
+- M99-RUNS (replaces M99-ST-CLOSE step 3): QUEUE.md written once into Muse's own archive from the paste (399 chunks, output file and source per chunk); 100 runs every 14 min: 90 split runs on an 8-step self-contained card (pick, claim, source card, record, validate_claims.py gate, outcome incl. NONE / BLOCKED / PROGRESS / FAILED, UTC Z timestamps, one chunk per run), 10 ticket runs on the charter's proven kickoff line for the R-tickets.
