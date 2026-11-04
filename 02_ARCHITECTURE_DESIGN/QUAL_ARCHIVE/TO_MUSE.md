@@ -1727,7 +1727,7 @@ stalled or failed, by tier.
   (disabled); charter v3 says it was removed — Muse should remove it, not leave it disabled. ("flight scour" and "NY pre-purchase check"
   are not Muse jobs and not judged here.)
 - **Out of line — 1. False NONEs.** C-032, C-037, C-040, C-041 (and C-044, since superseded by a DONE) closed with "no queue definition on
-  file beyond C-020" (`CLAIMS.md`; e.g. `1041c9f` area, commit "NONE C-032 no queue definition beyond C-020"). The definitions are in this
+  file beyond C-020" (`CLAIMS.md`; e.g. `681623c` "NONE C-032 no queue definition beyond C-020"). The definitions are in this
   file, R-112 table (C-032 = team advanced Road 2024-25, etc.). Rule: a NONE means the source does not serve it, not that the run did not
   find the ticket. Muse should: append a REOPEN line for each and let the queue runs work them.
 - **2. Mislabelled chunk.** `88bd194` "C-052: four factors Home 2025-26" — that is C-051's definition; C-052 is Home **2024-25**. C-051
