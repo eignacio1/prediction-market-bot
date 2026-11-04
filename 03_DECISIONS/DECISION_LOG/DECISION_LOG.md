@@ -3154,3 +3154,8 @@ NFL first look read (2 RULED_OUT, 10 SHADOW). Entry-cost study recommends keepin
 - NHL OT/SO: hypothesis that settlement/tie handling causes the totals bias FALSIFIED. Merged model already settles as Kalshi does (+1 on 1,222/1,222 ties, 0 on 4,257/4,257 non-ties). Bias is regulation level. EXP-046 not earned, not frozen. Merged model unchanged.
 - GG numbers claimed GG-1640..1642, used as: 1640 = exploratory-isolation scan flags any `.rename()` by name (DataFrame column rename false positive; worked around, scan not loosened); 1641 = NFL penalty-count definition vs nflverse unverified; 1642 = NHL regulation-level drift untried. Full GAP_LOG entries not written this block (docs-only budget); register on pickup.
 - Pillar: DEPTH + PROOF. Archive slices tested in an engine 0 -> 2 (both null); D5(b) officials stage per sport: interpreted, not applied.
+
+## 2026-11-04 — W99.2 proof lane (T-1660..1662)
+- EXP-037 verdicts carried out: NFL GAME_TOTAL T1/T2 RULED_OUT in registry (reason + measured_date 2026-11-02, #406); 10 cells KEEP ACCRUING to second look (n=150 or week 18; season ends 2027-01-10). Box read-back P1 12/49, P2 12, P3 2026-11-13.
+- Frozen evidence 13/13 classified; all 11 ride cells DIFFERS with smaller net. Recommendation to operator: retire EXP-042 cell 10 before its look; 9 and 11 next. No frozen file edited.
+- Part C PARTIAL: box output cap (60KB) truncated per-game rows to 18/72 games; follow-up needs per-game aggregate task. Registered: proof_calendar no second-look state; B1 undercounts RULED_OUT-but-logging arms.
