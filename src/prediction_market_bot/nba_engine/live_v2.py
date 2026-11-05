@@ -198,7 +198,10 @@ def main(argv: Optional[list] = None) -> int:
         C.refresh(a.current_dir)
     espn, _ = C.fetch("espn_schedule")
     cur = pd.read_parquet(a.current_dir / f"team_game_{C.SEASON}.parquet")
-    print(json.dumps(run(a.raw, espn, cur), indent=2, default=str))
+    from prediction_market_bot.nba_engine.attempts import attempt  # W102.1: a start with no end = the kernel killed this run
+    with attempt("v2", OUT_DIR):
+        out = run(a.raw, espn, cur)
+    print(json.dumps(out, indent=2, default=str))
     return 0
 
 

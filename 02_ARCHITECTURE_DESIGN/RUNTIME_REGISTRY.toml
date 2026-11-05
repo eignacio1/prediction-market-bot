@@ -1320,6 +1320,20 @@ mirrors = ["deploy/cron.conf"]
 command = "cd /opt/prediction-market-bot && flock -w 240 /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.nba_engine.live_v3 --raw exp_output/NBA_EVENTS/raw --no-refresh >> logs/nba_engine_live_cron.log 2>&1"
 
 [[component]]
+key = "cron|7,17,27,37,47,57 16-23,0-4 * * *|--raw exp_output/NBA_EVENTS/raw"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA engine in-window catch-up (W102.1, B-030): a 10 MB stdlib process runs only an engine arm (v1/v2/v3) whose last completed run is more than 12 min old, one at a time, retrying once after a kernel kill, so a lost fire no longer costs a game its tip-60 row. Shadow only, no order path, no row rewritten."
+pillar = "DEPTH"
+writes = ["exp_output/NBA_ENGINE_LIVE/attempts.jsonl", "exp_output/NBA_ENGINE_LIVE_V2/attempts.jsonl", "exp_output/NBA_ENGINE_LIVE_V3/attempts.jsonl", "logs/nba_engine_live_cron.log"]
+alarm = "silent-arm alarm nba_engine_v1/v2/v3 (no rows for an NBA game that tipped in the last 12h); a start with no end in attempts.jsonl = a killed run"
+schedule = "7,17,27,37,47,57 16-23,0-4 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd /opt/prediction-market-bot && flock -w 240 /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.nba_engine.catchup --raw exp_output/NBA_EVENTS/raw >> logs/nba_engine_live_cron.log 2>&1"
+
+[[component]]
 key = "cron|37 5,22 * * *|scripts/build_picks_sheet.py"
 kind = "cron"
 source = "deploy/cron.picks_sheet"
