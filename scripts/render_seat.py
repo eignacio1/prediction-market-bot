@@ -1,7 +1,12 @@
 """Render a seat TOML (02_ARCHITECTURE_DESIGN/SEATS/<sport>.toml) to <SPORT>_SEAT.md. Pure formatting; no judgement."""
 from __future__ import annotations
-import sys, tomllib
+import sys
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11 (the box runs 3.9)
+    import tomli as tomllib  # type: ignore
 
 def render(path: Path) -> str:
     d = tomllib.loads(path.read_text())
