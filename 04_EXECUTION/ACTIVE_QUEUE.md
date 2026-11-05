@@ -69,7 +69,7 @@ A new strategic window takes over when this wave closes; every handoff carries a
 
 | # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
 |---|---|---|---|---|---|---|---|
-| 100.1 | B-029 + B-001 + B-030 | engine | 2 (judged by 1) | NHL engine totals: the regulation-scoring cause, fixed; NBA v3's first nights read back; every NBA game logged since the memory fix | DEPTH + PROOF: NHL totals bias → noise; v3 rows 0 → every game | ⬜ | |
+| 100.1 | B-029 + B-001 + B-030 | engine | 2 (judged by 1) | NHL engine totals: the regulation-scoring cause, fixed; NBA v3's first nights read back; every NBA game logged since the memory fix | DEPTH + PROOF: NHL totals bias → noise; v3 rows 0 → every game | ✅ PR #414 merged; NHL bias -0.080 → -0.059, EXP-046 not earned; NBA misses = box OOM (window installs named) | results_W100_1.md |
 | 100.2 | B-038 + B-035 + B-039 | proof | 1 | **EXP-042 cell 10 retired as you decided**; the NFL totals loss on all 72 games; proof calendar second looks + B1 | PROOF: cell retired; loss read 18 → 72 games | ⬜ | |
 | 100.3 | B-026 + B-027 + B-040 | flex | plumbing + operator 10-30 | **The picks sheet's first real nights**, with reasons, read back; memory after the fix; leftover defects | PLUMBING: OOM 0; budget GREEN; picks visible | ⬜ | |
 
