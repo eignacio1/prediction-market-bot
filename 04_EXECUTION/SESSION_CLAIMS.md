@@ -1151,3 +1151,4 @@
 | 2026-11-05T02:21:51Z | TBD | W101.2 proof lane: ADR-0072 NFL final word + 11-13 NFL QB look + B-039 calendar (MEASURE: P2/P3; STANDARD) |
 | 2026-11-05T02:21:54Z | TBD | W101.3 flex: B-027 box memory, B-026 picks night 2, B-043 branch list (STANDARD; PLUMBING + EXECUTION-adjacent) |
 | 2026-11-05T02:21:58Z | T-1730..T-1732, GG-1730..GG-1732 | STANDARD — W101.1 engine lane: NBA v3 coverage.jsonl + coverage read task + v3 first read + NHL totals challenger pre-reg (B-030/B-001/B-029) — FOR D4 NBA arms w/ complete coverage on full night 1 of 3 -> 3 of 3; D5(b) NHL totals challenger pre-registered 0 -> 1 |
+| 2026-11-05T05:32:49Z | W101.1 | MERGED: NO — branch `session/20261105T022016Z-w101-1-nba-coverage-nhl-totals` awaiting merge — W101.1: NBA v3 coverage writer + read task merged; NHL totals shrink challenger held-out = NO; box night read and v1/v2/v3 scoring pending (commit `942aaac`) |
