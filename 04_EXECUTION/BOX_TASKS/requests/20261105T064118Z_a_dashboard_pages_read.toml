@@ -1,0 +1,2 @@
+task = "dashboard_pages_read"
+note = "is /visual serving the compact picks panel (#428)?"
