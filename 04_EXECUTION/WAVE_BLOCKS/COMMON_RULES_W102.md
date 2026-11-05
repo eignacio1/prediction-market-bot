@@ -6,7 +6,8 @@ Every Wave 102 block tells the terminal to read this file first. Text below is t
 COMMON RULES - WAVE 102 (NBA EVERY GAME, ROOT CAUSE; THE NFL ADOPT PACKAGE; THE PICKS SHEET READABLE) (read first; they bind this block)
 - THIS WAVE (three blocks): drawn from the top of the ROLLING BACKLOG (04_EXECUTION/ROLLING_BACKLOG.json, maintained by the
   strategic window only): 102.1 engine lane = B-030 (root cause) + B-012 + B-017, 102.2 proof lane = the ADR-0072 NFL ADOPT package +
-  its two registered observations + GG-529, 102.3 flex lane = GG-1690 (#422) + B-026 + B-004. Do not edit ROLLING_BACKLOG.json; report
+  its two registered observations + GG-529, 102.3 flex lane = GG-1690 (#422) + B-026 + B-004; added at the operator's ask
+  (2026-11-04 21:57 PT): 102.4 quant lane = the ADOPT decomposition + the multiplicity ledger + B-010, 102.5 = B-043 branch deletion. Do not edit ROLLING_BACKLOG.json; report
   each ticket's state in your handoff.
 - NO FUTURE DATA (operator 2026-11-04 21:45 PT: "please ensure you're not give me an active block that requires some sort of future time
   to hit - that makes no sense"): every part of this block runs on data that exists at paste time. Never wait for a game, a night, a
@@ -144,7 +145,9 @@ COMMON RULES - WAVE 102 (NBA EVERY GAME, ROOT CAUSE; THE NFL ADOPT PACKAGE; THE 
   src/prediction_market_bot/c5_execution/demo_fill_policy.py (default OFF), scripts/demo_fill_markout_collector.py and
   scripts/demo_fill_forward_report.py (book key only), a draft GG-529 definition, 12_EXPLORATORY/forward_test_nfl_final/;
   102.3 = scripts/build_picks_sheet.py and its /visual panel, the demo-order rejection logging in c5_execution (balance read only),
-  12_EXPLORATORY/picks_sheet_w102/ and 12_EXPLORATORY/demo_balance_w102/. Data: the box's ledgers and archive, the NBA / NHL stores,
+  12_EXPLORATORY/picks_sheet_w102/ and 12_EXPLORATORY/demo_balance_w102/; 102.4 = NEW functions in quant/, a NEW
+  /visual panel module for the calendar age, 12_EXPLORATORY/quant_w102/; 102.5 = branch deletions on origin and
+  12_EXPLORATORY/branch_cleanup_w101/LIST.md only. Data: the box's ledgers and archive, the NBA / NHL stores,
   the forward-test report. Muse's cards and records: github.com/eignacio1/sports-intel-archive (READ ONLY; pin the commit you read).
   Everyone may ADD to src/prediction_market_bot/quant/ (new functions with tests, no edits to existing ones); fetch + rebase before every
   push.

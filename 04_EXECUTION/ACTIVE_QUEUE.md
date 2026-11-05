@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 102 READY TO PASTE - three blocks in NOW (102.1 engine, 102.2 proof, 102.3 flex).** Written 2026-11-05 ~06:10 UTC. Every part runs on data that exists now. **One addendum: 102.3 branch cleanup (authorized 21:54 PT). Waiting on you: w83-3 keep/delete; the NFL ADOPT call comes with 102.2.**
+> **▶ WAVE 102 READY TO PASTE - three blocks in NOW (102.1 engine, 102.2 proof, 102.3 flex).** Written 2026-11-05 ~06:10 UTC. Every part runs on data that exists now. **Two more blocks added (102.4 quant, 102.5 branch cleanup). Waiting on you: w83-3 keep/delete; the NFL ADOPT call comes with 102.2.**
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -61,7 +61,7 @@ NBA player tables failing spot-checks (B-041); your Muse chat resets 11-09 20:50
 
 ---
 
-## ▶ NOW — WAVE 102 · WRITTEN 2026-11-05 ~06:10 UTC (11-04 22:10 PT) · three blocks · paste each block below into its own terminal
+## ▶ NOW — WAVE 102 · WRITTEN 2026-11-05 ~06:10 UTC (11-04 22:10 PT) · five blocks (102.4 quant + 102.5 branch cleanup added at the operator's ask, 21:57 PT) · paste each block below into its own terminal
 
 **Every part runs on data that exists now** - no part waits for a game, a night or a clock (operator 11-04 21:45 PT; W45). Anything that
 needs tonight's results is window work through the box bridge.
@@ -87,6 +87,8 @@ Muse B-041 + B-042, the setup paste ready before 11-09 20:50 PT.
 | 102.1 | engine · 2 | NBA v2 / v3 miss runs without OOM: root cause and fix; NHL goalie / rest factors point-in-time, pre-registered, held-out; NBA store lag | ⏳ pasted? | — |
 | 102.2 | proof · 1/4 | The NFL ADOPT package for your decision (draft addendum + switch, default OFF); markout book key; GG-529 second-look definition drafted | ⏳ pasted? | — |
 | 102.3 | flex · 1/EXECUTION | Picks sheet de-duplicated (#422) and its last settled night in plain English; demo balance rejections found and fixed | ⏳ pasted? | — |
+| 102.4 | quant · 4 (operator 21:57 PT) | The ADOPT gain split into selection vs placement; one multiplicity ledger for every verdict; calendar age on /visual | ⏳ pasted? | — |
+| 102.5 | plumbing (operator 21:54 / 21:57 PT) | Delete the 31 approved stray branches (window's proxy refuses ref deletes) | ⏳ pasted? | — |
 
 ### 102.1 - ENGINE
 
@@ -216,22 +218,79 @@ END OF BLOCK 102.3
 ```
 
 
-### 102.3 ADDENDUM - BRANCH CLEANUP (paste into the 102.3 terminal; any terminal may run it if 102.3 is closed)
+### 102.4 - QUANT
 
 ```
-ADDENDUM TO BLOCK 102.3 - BRANCH CLEANUP (B-043), operator-authorized 2026-11-04 21:54 PT (blockquote in ACTIVE_QUEUE.md "Needs your decision")
+WAVE 102 - BLOCK 102.4 - QUANT LANE (rank 4: quant refinement, "get our figures right structurally")
+THE ADOPT GAIN DECOMPOSED (SELECTION VS PLACEMENT); ONE MULTIPLE-TESTING LEDGER FOR EVERY VERDICT; THE PROOF CALENDAR'S AGE ON /VISUAL
 
-PURPOSE: PLUMBING - stray branches on origin 35 -> 4 (2 data branches, #149's branch, w83-3 pending the operator).
-Do this between parts; ~10 minutes. Delete NOTHING not named below.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_4.md. Every part runs on data that exists now.
+
+PURPOSE: PROOF / EXECUTION measurement quality. (1) The operator's NFL ADOPT decision gets a number for W98.2's caution: of the
+treatment-minus-control +0.190 per filled contract (W101.2), how much is WHICH markets / prices fill (selection) and how much is the
+placement itself. (2) Every pre-registered test that has issued or will issue a verdict sits in one multiplicity ledger, so "12 verdicts"
+and "1 ADOPT" are read against how many tests and looks were run. (3) B-010: calendar age <= 1 day visible.
+
+PERMISSIONS: READ-ONLY on every ledger, log, report, pre-registration and verdict. ADD new functions with tests to
+src/prediction_market_bot/quant/ (no edits to existing ones); a NEW /visual panel module for the calendar age; READ-ONLY box tasks
+(one line in scripts/box_tasks.py if needed); 12_EXPLORATORY/quant_w102/. No pre-registered rule, alpha or verdict changes - a
+recommendation goes to the window in your handoff.
+
+PART A (~55 min) - the ADOPT gain decomposed (NFL shadow, post-top-up, the same rows W101.2 used)
+1. From logs/demo_fill_policy.jsonl + settlements (box, read-only), build matched sets: the same ticker, side and decision window in
+   both arms. Report: (i) on markets where BOTH arms filled, treatment-minus-control settle-minus-price (placement effect);
+   (ii) control's settle-minus-price on the fills treatment did NOT get (what waiting skipped); (iii) the reweighting that makes
+   control's fill mix look like treatment's (selection effect). Game-clustered intervals, n stated.
+2. Known-answer test first: a synthetic fixture where the true split is set (all selection; all placement; half/half) and the method
+   recovers it. Then the real numbers.
+3. Plain English for the operator, one paragraph: "of the 19 cents, about X is the price we get by waiting and Y is which orders end up
+   filling". Write 12_EXPLORATORY/quant_w102/adopt_decomposition.md. Descriptive - not a verdict, not a new test.
+
+PART B (~50 min) - the multiplicity ledger
+1. Enumerate every pre-registered test with a verdict issued or scheduled: EXP-037 (12 NFL cells, first look 11-02, second looks),
+   ADR-0072 forward test (4 book-sports, daily recompute - see W101.2 obs 2), EXP-041, EXP-042 (10 live ride cells), EXP-043, EXP-044 /
+   044b / 044c, EXP-045, the NHL challengers (W100, W101), the NFL QB look (11-13). For each: alpha, sidedness, looks planned, verdict so far.
+2. Add quant functions (Holm, Benjamini-Hochberg, and an alpha-spending view for repeated looks) with known-answer tests, and produce
+   the ledger: per verdict, its pre-registered result beside a multiplicity-adjusted reading. The pre-registered word stands; the
+   adjusted reading is information. Name any verdict whose word would change under a family-wise view (e.g. ADOPT read daily).
+3. Write 12_EXPLORATORY/quant_w102/MULTIPLICITY_LEDGER.md + one recommendation line for the window (whether future pre-registrations
+   should state a family and an alpha-spending rule) - the operator decides, not you.
+
+PART C (~25 min, switch here whenever A or B waits on the box or CI) - calendar age on /visual (B-010)
+1. A NEW panel module that shows 04_EXECUTION/PROOF_CALENDAR.md's generated-at time and age in days, red when > 1 day. No cron, no
+   new running component: the window regenerates it at every wave close through proof_calendar_aggregate. PR with tests; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: ADOPT gain split (selection / placement, with intervals); verdicts in the ledger N of N;
+calendar age visible. Operator decisions: none from you - the recommendation goes to the window.
+END OF BLOCK 102.4
+```
+
+### 102.5 - BRANCH CLEANUP
+
+```
+WAVE 102 - BLOCK 102.5 - PLUMBING (B-043), operator-authorized 2026-11-04 21:54 PT ("Yes proceed with the branch cleanup";
+blockquote in ACTIVE_QUEUE.md "Needs your decision")
+DELETE THE 31 APPROVED STRAY BRANCHES ON ORIGIN; NOTHING ELSE
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_5.md. Short block (~20 minutes); stop when done.
+
+PURPOSE: PLUMBING - stray branches on origin 35 -> 4 (data/nba-injury-reports, data/nhl-goalie-probe, #149's branch, and
+w83-3-nhl-data-layer pending the operator). Why a terminal: the strategic window's session proxy refuses ref deletion (HTTP 403, 05:56Z).
 
 1. Source: the two DELETE tables in 12_EXPLORATORY/branch_cleanup_w101/LIST.md (31 rows: branch name + 10-char tip SHA).
-2. `git ls-remote --heads origin`. For each of the 31: delete ONLY if the remote tip starts with the recorded SHA
-   (`git push origin --delete <branch>`, one branch per push). If a tip differs, do not delete it; list it.
-3. Never touch: main, data/nba-injury-reports, data/nhl-goalie-probe, session/20260924T045227Z-resolved-filter (#149),
-   session/20261021T235008Z-w83-3-nhl-data-layer, w101-3-gg1690-dedupe (#422), or any branch created after 2026-11-05T02:00Z.
-4. Append to LIST.md a "DONE <UTC>" section: deleted (count + names), skipped (with reason), and the `git ls-remote --heads origin`
-   output after. Docs-only push. Record it in your handoff (pattern_sweep: n/a).
-END OF ADDENDUM 102.3
+2. Run `git ls-remote --heads origin`. For each of the 31: delete ONLY if the remote tip starts with the recorded SHA,
+   one branch per push: `git push origin --delete <branch>`. If a tip differs or the branch is gone, do not touch it; list it.
+3. NEVER delete: main, data/nba-injury-reports, data/nhl-goalie-probe, session/20260924T045227Z-resolved-filter (#149),
+   session/20261021T235008Z-w83-3-nhl-data-layer, w101-3-gg1690-dedupe (#422), or ANY branch not in the 31 rows (Wave 102's own
+   branches included).
+4. If your own push of a delete is refused (403 / permission), stop and say so in the handoff - do not try another route.
+5. Append a "DONE <UTC>" section to LIST.md: deleted (count + names), skipped (reason each), and the full `git ls-remote --heads origin`
+   output after. Docs-only push. Handoff: pattern_sweep: n/a.
+
+Report: per COMMON RULES. MEASURE MOVED: stray branches 35 -> N (source: your ls-remote after). Operator decisions: none.
+END OF BLOCK 102.5
 ```
 
 ---
@@ -426,7 +485,7 @@ What should reorder this, and what should stop it:
 > **AUTHORIZATION - BRANCH CLEANUP (operator, 2026-11-04 21:54 PT: "Yes proceed with the branch cleanup").** Delete the 31 branches in
 > `12_EXPLORATORY/branch_cleanup_w101/LIST.md` "DELETE" tables (29 merged-PR + 2 with nothing unlanded), each only if its remote tip still
 > equals the recorded SHA. KEEP `data/nba-injury-reports`, `data/nhl-goalie-probe`, #149's branch, and `w83-3-nhl-data-layer` (operator did
-> not decide it). The window's attempt was refused by its session proxy (HTTP 403 on ref deletion, 11-05 05:56Z); run by a terminal (102.3 addendum).
+> not decide it). The window's attempt was refused by its session proxy (HTTP 403 on ref deletion, 11-05 05:56Z); run by a terminal (block 102.5).
 
 **OPEN - waiting on you (not an authorization until you answer):**
 1. **w83-3-nhl-data-layer:** keep or delete (#314 closed as superseded by #315; two of its files differ from main).
