@@ -4621,3 +4621,8 @@ W99.3, 2026-11-04. Found while running the full suite for PR #407: both files fa
 **Status:** OPEN · **Severity:** LOW
 
 W100.3, 2026-11-05, T-1690. The 2026-11-04 22:47Z sheet has 2614 picks in 134 games (median 8, max 74 per game). The moneyline sample shows `ATL: YES` and `WAS: NO` at the same bot 0.8351, which are one bet seen from both tickers; the same pick also appears once per arm (T1 and T2). The count therefore overstates how many distinct opinions the bot holds. Registered, not fixed (the sheet's grouping is a presentation choice for the window to decide; Hard Rule 11). Also registered here: 259 picks still show "no reasons available" (the oldest arms), 2 more name a model that exposes no per-factor contributions.
+
+### GG-1720 — `proof_calendar_read` box task drops its ssh session (exit 255) on the long `--emit` run and sits at the 60 KB cap
+**Status:** OPEN · **Severity:** MEDIUM
+
+Found in W100.2 (2026-11-05). `proof_calendar_read` (`scripts/proof_calendar.py --emit`) ran ~11 minutes and succeeded once (50,856 bytes, old code) and then failed three times in a row (retries b, c, d) with ssh exit 255 ("Connection reset by peer" / "Broken pipe"). Its output is already ~50 KB of the 60 KB cap and grew with the new looks/verdict fields. Effect: `04_EXECUTION/PROOF_CALENDAR.md` cannot be regenerated with the second-look and closed columns from a box read; the committed calendar is the pre-100.2 render. Fix directions (not done in-session, Hard Rule 11): emit per-cell chunks or a trimmed blob, or run the emit on the box in the background and read the result file. Also noted, unregistered: pre-existing collection errors in `tests/test_seat_interface.py` and `tests/test_tensions.py` when the whole tests dir is collected.
