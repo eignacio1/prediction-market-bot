@@ -86,7 +86,7 @@ Muse B-041 + B-042, the setup paste ready before 11-09 20:50 PT.
 |---|---|---|---|---|
 | 102.1 | engine · 2 | NBA v2 / v3 miss runs without OOM: root cause and fix; NHL goalie / rest factors point-in-time, pre-registered, held-out; NBA store lag | ⏳ pasted? | — |
 | 102.2 | proof · 1/4 | The NFL ADOPT package for your decision (draft addendum + switch, default OFF); markout book key; GG-529 second-look definition drafted | ✅ PR #424 merged; addenda PROPOSED/DRAFT; GG-1750 registered; box re-reads queued | 3 operator yes/no lines |
-| 102.3 | flex · 1/EXECUTION | Picks sheet de-duplicated (#422) and its last settled night in plain English; demo balance rejections found and fixed | ⏳ pasted? | — |
+| 102.3 | flex · 1/EXECUTION | Picks sheet de-duplicated (#422) and its last settled night in plain English; demo balance rejections found and fixed | DONE (PR #426 awaiting CI) | #422 merged; last settled night + RESULT written; 2259 refusals counted; GG-1770/GG-1771 (NO orders mirror-priced) registered |
 | 102.4 | quant · 4 (operator 21:57 PT) | The ADOPT gain split into selection vs placement; one multiplicity ledger for every verdict; calendar age on /visual | ✅ done, PR #427 merged (7ec2349) | SESSION_HANDOFF_20261105T0700Z_W102_4 |
 | 102.5 | plumbing (operator 21:54 / 21:57 / 21:59 PT) | Delete the 31 approved stray branches + w83-3 after a 5-minute check (window's proxy refuses ref deletes) | ⏳ pasted? | — |
 
