@@ -22,3 +22,9 @@ surface_delta: 0 (no live component added; 1 log-field addition, 0 new cron/serv
 - After #426 merges: read `deploy_truth_read` / `logs/vps_deploy.log`; the t4-mlb restart decision is NOT recorded (no merge deploy read yet). Box installs not run by this terminal.
 - Not run: the 102.3 addendum (B-043 branch cleanup, done by W102.5). CLAUDE.md Step 1-4 and Q1-Q7 outputs were not shown in this session.
 - GG numbers 1770/1771 were taken without a claimed range (claim row said TBD); check for collisions.
+
+## Close-out addendum (operator asleep)
+- PR #426 first CI failed on tests/test_exploratory_isolation.py: my box-side collect_night.py/analyze_night.py sat in fenced 12_EXPLORATORY (also red on main). Fixed in d432a7e by moving them to scripts/w102_3_night/. #426 rebased, 210 tests pass locally, GitHub auto-merge ARMED (squash, only on green CI). NOT confirmed merged.
+- NOT DONE: box deploy read + t4-mlb restart decision for #422/#426; picks_sheet_read before/after de-dup check on the rebuilt live sheet; removal of box temp files /tmp/w102_collect_night.py, /tmp/w102_sheet.json, /tmp/w102_night.json.
+- Box-install task to name: after #426 merges, a box task to deploy + restart as the deploy policy dictates, then picks_sheet_read.
+- Next window: first check `gh pr view 426` state; if CI red, read the failure and fix.
