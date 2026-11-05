@@ -102,9 +102,12 @@ def maybe_place(
     order = client.submit_order(ticker=ticker, side=direction, size_usd=stake,
                                 mid_price=price_yes, band=SHADOW_KILL_BAND,
                                 client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
-    pol.append_log({"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
-                    "stake_usd": stake, "price_yes": price_yes, "side": direction,
-                    "ticker": ticker, "error": order.error, "arm": "treatment" if hash_treatment else ("adopt" if adopt else "control")})
+    entry_row = {"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
+                 "stake_usd": stake, "price_yes": price_yes, "side": direction,
+                 "ticker": ticker, "error": order.error, "arm": "treatment" if hash_treatment else ("adopt" if adopt else "control")}
+    if not order.ok:  # W102.3/GG-1481: every refusal carries the demo balance read beside it (logging only; never raises)
+        entry_row.update(pol.refusal_context(client, None))
+    pol.append_log(entry_row)
     if treatment and order.ok and order.order_id:
         pol.schedule_cancel(client, order.order_id, rid, ticker)
     feed_exposure_gate()

@@ -580,3 +580,40 @@ def test_adopt_does_not_enable_placement_rule(monkeypatch):
     c = _client()
     assert sfs.maybe_place(_nfl_row(), c, lambda e: 1.0) is None
     c.submit_order.assert_not_called()
+
+# ---- W102.3 / GG-1481: a refused SHADOW order logs the demo balance beside it ----------------
+def _shadow_on(monkeypatch):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.SHARE_ENV, "0")
+    pol._REFUSAL_CACHE[0], pol._REFUSAL_CACHE[1] = None, 0.0
+
+
+def test_shadow_refusal_logs_balance(monkeypatch, tmp_path):
+    _shadow_on(monkeypatch)
+    c = _client(ok=False)
+    c.get_balance.return_value = (True, {"balance_usd": 7.5, "portfolio_value_usd": 99.0})
+    sfs.maybe_place(_row(), c, lambda e: 1.0)
+    ev = [e for e in _events(tmp_path) if e["event"] == "shadow_order"][0]
+    assert ev["ok"] is False
+    assert ev["demo_balance_usd"] == 7.5 and ev["demo_portfolio_value_usd"] == 99.0
+    assert "demo_balance_age_s" in ev
+
+
+def test_shadow_refusal_balance_read_failing_is_logged_not_raised(monkeypatch, tmp_path):
+    _shadow_on(monkeypatch)
+    c = _client(ok=False)
+    c.get_balance.side_effect = RuntimeError("net down")
+    res = sfs.maybe_place(_row(), c, lambda e: 1.0)
+    assert res and res["ok"] is False
+    ev = [e for e in _events(tmp_path) if e["event"] == "shadow_order"][0]
+    assert ev["demo_balance_usd"] is None and "net down" in ev["demo_balance_error"]
+
+
+def test_shadow_success_row_has_no_balance_fields_and_no_extra_read(monkeypatch, tmp_path):
+    _shadow_on(monkeypatch)
+    c = _client(ok=True)
+    c.get_balance.return_value = (True, {"balance_usd": 500.0, "portfolio_value_usd": 0.0})
+    sfs.maybe_place(_row(), c, lambda e: 1.0)
+    ev = [e for e in _events(tmp_path) if e["event"] == "shadow_order"][0]
+    assert "demo_balance_usd" not in ev
