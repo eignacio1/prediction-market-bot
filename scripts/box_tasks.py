@@ -82,6 +82,8 @@ TASKS: dict[str, str] = {
     "install_batch_w99_readback": f"{PY} scripts/install_batch_w99.py readback",
     "install_batch_w99_uninstall": f"{PY} scripts/install_batch_w99.py uninstall",
     "box_memory_read": f"{PY} scripts/box_memory_read.py --since '24 hours ago'",
+    # W101.3 / B-027: READ-ONLY. Fixed window 11-03 20:00Z -> now = pre-lock night (11-03 PT slate) + the lock install (11-05 02:11Z) + the first locked night.
+    "box_memory_read_w101": f"{PY} scripts/box_memory_read.py --since '2026-11-03 20:00'",
     "picks_sheet_read": f"{PY} scripts/picks_sheet_read.py",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
