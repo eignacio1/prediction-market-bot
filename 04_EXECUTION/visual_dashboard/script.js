@@ -373,6 +373,20 @@ function govCounts(){
 
 /* ---- WIRE ---- */
 
+/* picks: sport icons + bet-type tags (operator 2026-11-04 22:44 PT: "color code ... so I'm not looking at an excel ledger") */
+const PK_SPORT={NBA:{i:'🏀',c:'#f97316'},NHL:{i:'🏒',c:'#38bdf8'},NFL:{i:'🏈',c:'#22c55e'},MLB:{i:'⚾',c:'#ef4444'}};
+const PK_TYPE={GAME:['Moneyline','#3b82f6'],SPREAD:['Spread','#a855f7'],TOTAL:['Total','#f59e0b'],TEAMTOTAL:['Team total','#14b8a6'],
+  PTS:['Player points','#ec4899'],PASSYDS:['Passing yards','#ec4899'],HIT:['Player hits','#ec4899'],F3:['First 3 inn.','#64748b'],F5:['First 5 inn.','#64748b'],F7:['First 7 inn.','#64748b']};
+function pkParse(t){ t=String(t||''); const m=/^KX(NBA|NHL|NFL|MLB)([A-Z0-9]*)-(\d{2}[A-Z]{3}\d{2})?([A-Z]*)/.exec(t);
+  if(!m) return {sport:null,type:null,label:t};
+  const ty=PK_TYPE[m[2]]||[m[2]||'Other','#64748b'], teams=m[4]||'';
+  const two=new Set(['KC','LA','NY','SF','TB','GB','NE','NO','LV','SJ','NJ','SD','DC','GS','OK','UT']);
+  const cut=teams.length===6?3:teams.length===5?(two.has(teams.slice(0,2))?2:3):teams.length===4?2:0;
+  const label=cut?`${teams.slice(0,cut)} @ ${teams.slice(cut)}`:(teams||t);
+  return {sport:m[1],type:ty,label}; }
+function pkSportTag(sp){ const S=PK_SPORT[sp]; return S?`<span class="pk-sp" title="${sp}" style="--sc:${S.c}">${S.i} ${sp}</span>`:''; }
+function pkEdge(e){ const c=e>=.10?'#22c55e':e>=.05?'#eab308':'var(--ink-3)'; return `<span style="color:${c};font-weight:600">${(e*100).toFixed(1)}¢</span>`; }
+function pkTypeTag(ty){ return ty?`<span class="pk-ty" style="--tc:${ty[1]}">${esc(ty[0])}</span>`:''; }
 /* ---------- PICKS SHEET (W97.3; compact summary view, operator 2026-11-04 22:26 PT: not 90% of the page) ---------- */
 function picksSheet(){
   const D=PICKS, host=$('#pkHost');
@@ -382,6 +396,9 @@ function picksSheet(){
     '.pk-tabs button.on{background:var(--surface-3);font-weight:600}.pk-sum{margin:2px 0 8px}.pk-box{max-height:440px;overflow:auto;border:1px solid rgba(127,127,127,.25);border-radius:8px}'+
     '.pk-t{width:100%;border-collapse:collapse;font-size:12.5px}.pk-t th{position:sticky;top:0;background:var(--surface-2);color:var(--ink-2);text-align:left;padding:6px 8px;border-bottom:1px solid rgba(127,127,127,.3);font-weight:600}'+
     '.pk-t td{padding:5px 8px;border-bottom:1px solid rgba(127,127,127,.12);vertical-align:top}.pk-g{cursor:pointer}.pk-g:hover{background:rgba(127,127,127,.08)}'+
+    '.pk-sp{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,var(--sc) 22%,transparent);color:var(--sc);margin-right:6px;white-space:nowrap}'+
+    '.pk-ty{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:4px;border:1px solid var(--tc);color:var(--tc);margin-left:6px;white-space:nowrap}'+
+    '.pk-g td:first-child{border-left:3px solid var(--sc,transparent)}.pk-fil{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}.pk-fil button{font:inherit;font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid rgba(127,127,127,.35);background:transparent;color:inherit;cursor:pointer}.pk-fil button.on{background:var(--surface-3);font-weight:600}'+
     '.pk-d td{background:rgba(127,127,127,.05)}.pk-d ul{margin:4px 0 4px 16px;padding:0}.pk-d li{margin:0 0 6px}.pk-flag{font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid currentColor;opacity:.8}';
     document.head.appendChild(st); }
   const summary=(S,withRes)=>{
@@ -397,22 +414,27 @@ function picksSheet(){
     if(!S) return '<div class="card pk-err"><b>No sheet for this day.</b></div>';
     if(!S.games.length) return `<div class="card pk-err"><b>The sheet for ${esc(S.date)} has no picks.</b><div class="cap">${esc((S.notes||[]).join(' · ')||'no arm found a positive edge in the window')}</div></div>`;
     const line=p=>{ const o=p.demo_order, od=o?(o.placed?`order $${esc(o.stake_usd)}`:`no order (${esc(o.reason)})`):'no order logged';
-      const r=withRes&&p.result?` · <b>${esc(p.result.outcome)}</b> ${p.result.pnl_per_contract>=0?'+':''}${esc(p.result.pnl_per_contract)}/contract`:'';
-      return `<li><b>${esc(p.pick)}</b> <span class="cap">[${esc((p.arms||[p.arm]).join(', '))}]</span> bot ${Math.round(p.bot_prob_for_pick*100)}% · Kalshi ${Math.round(p.kalshi_price_yes*100)}¢ · edge ${(p.edge_after_fee*100).toFixed(1)}¢ · ${od}${r}<br><span class="cap">why: ${esc((p.reasons||[]).slice(0,3).join('; '))}</span></li>`; };
+      const r=withRes&&p.result?` · <b style="color:${p.result.outcome==='hit'?'#22c55e':p.result.outcome==='miss'?'#ef4444':'inherit'}">${esc(p.result.outcome)}</b> ${p.result.pnl_per_contract>=0?'+':''}${esc(p.result.pnl_per_contract)}/contract`:'';
+      return `<li>${pkTypeTag(pkParse(p.ticker||'').type)} <b>${esc(p.pick)}</b> <span class="cap">[${esc((p.arms||[p.arm]).join(', '))}]</span> bot ${Math.round(p.bot_prob_for_pick*100)}% · Kalshi ${Math.round(p.kalshi_price_yes*100)}¢ · edge ${pkEdge(p.edge_after_fee)} · ${od}${r}<br><span class="cap">why: ${esc((p.reasons||[]).slice(0,3).join('; '))}</span></li>`; };
     const rows=S.games.map((g,i)=>{
       const ps=[...g.picks].sort((x,y)=>y.edge_after_fee-x.edge_after_fee), top=ps[0], n=ps.filter(p=>p.demo_order&&p.demo_order.placed).length;
-      const res=withRes?(()=>{const st=ps.filter(p=>p.demo_order&&p.demo_order.placed&&p.result);return st.length?`${st.filter(p=>p.result.outcome==='hit').length}/${st.length} hit`:'-';})():'';
+      const res=withRes?(()=>{const st=ps.filter(p=>p.demo_order&&p.demo_order.placed&&p.result);if(!st.length) return '-'; const h=st.filter(p=>p.result.outcome==='hit').length, r=h/st.length; return `<span style="color:${r>=.55?'#22c55e':r<.45?'#ef4444':'#eab308'};font-weight:600">${h}/${st.length} hit</span>`;})():'';
       const shown=ps.slice(0,8), more=ps.length-shown.length;
-      return `<tr class="pk-g" data-k="${key}${i}"><td>${esc(g.game)} ${g.arms_disagree?'<span class="pk-flag">arms disagree</span>':''}</td><td>${ps.length}</td><td>${n}</td><td>${esc(top.pick)} <span class="cap">${(top.edge_after_fee*100).toFixed(1)}¢</span></td>${withRes?`<td>${res}</td>`:''}</tr>`+
+      const P=pkParse(g.game), SC=(PK_SPORT[P.sport]||{}).c||'transparent';
+      return `<tr class="pk-g" data-k="${key}${i}" data-sp="${P.sport||''}" style="--sc:${SC}"><td>${pkSportTag(P.sport)}<b>${esc(P.label)}</b>${pkTypeTag(P.type)} ${g.arms_disagree?'<span class="pk-flag">arms disagree</span>':''}</td><td>${ps.length}</td><td>${n}</td><td>${esc(top.pick)} ${pkEdge(top.edge_after_fee)}</td>${withRes?`<td>${res}</td>`:''}</tr>`+
         `<tr class="pk-d" id="pkd${key}${i}" hidden><td colspan="${withRes?5:4}"><ul>${shown.map(line).join('')}</ul>${more>0?`<button class="pk-more" data-k="${key}${i}">show all ${ps.length}</button><ul hidden id="pkm${key}${i}">${ps.slice(8).map(line).join('')}</ul>`:''}</td></tr>`;
     }).join('');
-    return `<div class="pk-box"><table class="pk-t"><thead><tr><th>Game</th><th>Picks</th><th>Orders</th><th>Best pick (edge)</th>${withRes?'<th>Result</th>':''}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    const cnt={}; S.games.forEach(g=>{const sp=pkParse(g.game).sport||'Other'; cnt[sp]=(cnt[sp]||0)+1;});
+    const fil=`<div class="pk-fil" data-day="${key}"><button class="on" data-sp="">All ${S.games.length}</button>${Object.keys(cnt).sort().map(sp=>`<button data-sp="${sp}">${(PK_SPORT[sp]||{}).i||''} ${sp} ${cnt[sp]}</button>`).join('')}</div>`;
+    return fil+`<div class="pk-box"><table class="pk-t"><thead><tr><th>Game</th><th>Picks</th><th>Orders</th><th>Best pick (edge)</th>${withRes?'<th>Result</th>':''}</tr></thead><tbody>${rows}</tbody></table></div>`;
   };
   $('#pkHead').textContent=D.today.n_picks+' picks · '+D.today.games.length+' games'; $('#nvPicks').textContent=D.today.n_picks;
   host.innerHTML=`<div class="pk-tabs"><button class="on" data-t="t">Tonight <span class="cap">${esc(D.today.date)}</span></button><button data-t="y">Yesterday, with results <span class="cap">${D.yesterday?esc(D.yesterday.date):''}</span></button></div>`+
     `<div id="pkT">${summary(D.today,false)}${table(D.today,false,'t')}</div><div id="pkY" hidden>${summary(D.yesterday,true)}${table(D.yesterday,true,'y')}</div>`;
   host.querySelectorAll('.pk-tabs button').forEach(b=>b.onclick=()=>{ host.querySelectorAll('.pk-tabs button').forEach(x=>x.classList.toggle('on',x===b)); $('#pkT').hidden=b.dataset.t!=='t'; $('#pkY').hidden=b.dataset.t!=='y'; });
   host.querySelectorAll('.pk-g').forEach(r=>r.onclick=()=>{ const d=document.getElementById('pkd'+r.dataset.k); d.hidden=!d.hidden; });
+  host.querySelectorAll('.pk-fil').forEach(f=>f.querySelectorAll('button').forEach(b=>b.onclick=()=>{ f.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    const sp=b.dataset.sp, box=f.nextElementSibling; box.querySelectorAll('.pk-g').forEach(r=>{ const show=!sp||r.dataset.sp===sp; r.hidden=!show; if(!show){ const d=document.getElementById('pkd'+r.dataset.k); if(d) d.hidden=true; } }); }));
   host.querySelectorAll('.pk-more').forEach(b=>b.onclick=e=>{ e.stopPropagation(); document.getElementById('pkm'+b.dataset.k).hidden=false; b.remove(); });
 }
 
