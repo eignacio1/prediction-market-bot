@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-05T02:20Z",
+ "as_of": "2026-11-05T02:30Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -36,7 +36,7 @@
    "measure": "OOM kills per night 20 / 90 min -> 0",
    "why": "45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.",
    "source": "97.3 / GG-1581",
-   "wave": "installed on the operator's named approval 11-04 18:10 PT",
+   "wave": "101.3 Part A (measure after a full locked night)",
    "order": 1
   },
   {
@@ -48,7 +48,7 @@
    "measure": "games past tip unlogged per arm -> 0 new",
    "why": "100.1: v1 11/11, v2 5/11, v3 6/11 on 11-04; cause box OOM. Re-read after B-027; then a v3 coverage.jsonl PR.",
    "source": "98.1 / 99",
-   "wave": "after B-027",
+   "wave": "101.1 Part A",
    "order": 2
   },
   {
@@ -61,7 +61,7 @@
    "measure": "D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7",
    "why": "v3 logging since 11-04 03:30Z (412 rows) but silent for 5 games (OOM).",
    "source": "95.1 handoff, GG-1450",
-   "wave": "after B-027"
+   "wave": "101.1 Part B"
   },
   {
    "id": "B-039",
@@ -72,7 +72,7 @@
    "measure": "calendar rows with second looks 0 -> all; B1 corrected",
    "why": "B1 fixed (52/108); PROOF_CALENDAR.md regeneration on the box blocked (GG-1720).",
    "source": "99.2",
-   "wave": "100.2 Part C (partial)",
+   "wave": "101.2 Part C (GG-1720)",
    "order": 4
   },
   {
@@ -85,7 +85,7 @@
    "measure": "picks visible per game per night 0 -> every evaluated game",
    "why": "Night 1: 134 games, 2,614 picks, reasons 90%; results not filled (built mid-games); GG-1690 duplicate presentation. Read the next 05:37Z sheet; plain-English summary for the operator.",
    "source": "operator 2026-10-30",
-   "wave": "100.3 Part A (partial)"
+   "wave": "101.3 Part B"
   },
   {
    "id": "B-041",
@@ -113,26 +113,26 @@
   },
   {
    "id": "B-029",
-   "status": "NEXT",
+   "status": "NOW",
    "lane": "engine",
    "rank": "2",
    "title": "NHL engine totals: the remaining regulation-scoring bias (season drift, early-season level, over-spread predictions) - a challenger, then Kalshi descriptive",
    "measure": "held-out total-goals bias -> within noise; Brier per family vs v1 and the market",
    "why": "#414: stale denominator was ~a quarter of the bias (-0.080 -> -0.059, Brier flat); the rest is season drift / early-season level and over-spread predictions (slope 0.4-0.5) - a challenger candidate; Kalshi comparison not run.",
    "source": "97.4",
-   "wave": "100.1 Part A (partial)",
+   "wave": "101.1 Part C",
    "order": 8
   },
   {
    "id": "B-043",
-   "status": "NEXT",
+   "status": "NOW",
    "lane": "flex",
    "rank": "plumbing",
    "title": "Branch cleanup: 27 merged-PR branches to delete; 5 unmerged to check first (#149 open since 09-24; #314 w83-3 NHL data layer closed unmerged; b74a-s1 hygiene audit, w81-3 partb, w897 - no PR); keep data/nba-injury-reports and data/nhl-goalie-probe",
    "measure": "stray branches on origin 35 -> 2 (the data branches) after one operator-approved list",
    "why": "Operator 11-04 17:36 PT: \"Do we need to do anything w stray branches?\"; 17:38 PT: \"Yes pls\" to registering it. A terminal's sweep listed branches that do not exist on origin (w89-* .. w91-*); the window's git ls-remote is the source. For each unmerged branch check whether its GG / T is resolved on main, then give the operator one exact list to approve for deletion (deletes name exact items).",
    "source": "operator 2026-11-04",
-   "wave": "next window",
+   "wave": "101.3 Part C (list only; deletes need the operator)",
    "order": 9
   },
   {
