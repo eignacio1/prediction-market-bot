@@ -1155,3 +1155,4 @@
 | 2026-11-05T05:33:08Z | TBD (W101.2, no T- number minted) | CLOSED — W101.2 proof lane: NFL forward test final word ADOPT (P2 12->13), NFLQB look runnable, proof calendar second-look states (commit `ef80ff9`) |
 | 2026-11-05T05:33:40Z | TBD | CLOSED — merge confirmed, HEAD (39976f1) is ancestor of origin/main — W101.2 proof lane |
 | 2026-11-05T05:34:11Z | W101.1 | CLOSED — merge confirmed, HEAD (14fb34e) is ancestor of origin/main — NBA v3 coverage + read task merged (#417/#418/#421/#423); NHL challenger NO; box read and Part B pending |
+| 2026-11-05T05:54:42Z | TBD | W102.3 flex: GG-1690 dedupe merge, last settled night, demo balance rejections — EXECUTION E1 / B-026 (picks sheet distinct picks/night; E1 refusals before->after) |
