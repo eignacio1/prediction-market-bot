@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W102.5
+tier: MICRO
+timestamp: 2026-11-05T06:02:00Z
+commit: 7038326
+one_line_summary: W102.5 (B-043) deleted 32 stray origin branches; stray branches 35 -> 3; w83-3 check found nothing lost, no GG.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING (stray branches on origin)
+gap_delta: 35 -> 3 (git ls-remote --heads origin, LIST.md DONE section)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION HANDOFF - W102.5 (B-043 branch deletion)
 vision_pillar: PLUMBING
 gap_measure: stray branches on origin
@@ -10,3 +26,9 @@ Done: 32 branches deleted (31 approved rows + w83-3 after the 3b check); none sk
 Note for window: LIST.md's w83-3 note had the diff direction reversed. Rows parse caveat: LIST.md last table row had no trailing newline (my loop initially skipped w81-3-partb; deleted afterwards with the tip checked).
 Remaining non-main refs also include in-flight w102-2-nfl-adopt and #422's w101-3-gg1690-dedupe (untouched). #149 still holds 3 unlanded items.
 Operator decisions: none.
+
+## Strategic Decisions This Session
+None — implementation-only session.
+
+One-thing-pending: #149 still holds 3 unlanded items (GG-279 script, CLAUDE.md T-574 correction, T-574 docs); landing them as a small PR off main would take stray branches 3 -> 2.
+Resume: `git fetch origin && git ls-remote --heads origin`

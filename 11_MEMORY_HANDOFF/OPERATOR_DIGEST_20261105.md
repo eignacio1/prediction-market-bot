@@ -15,3 +15,4 @@ The box kills fewer runners than two days ago (142 → 39 a day) but not zero. T
 - The NBA v3 arm now records every game it misses and why; the tool to read that from the box is merged. Box numbers are not read yet (they wait until after 07:30Z).
 - NHL totals: a fix for the model's habit of predicting too-extreme totals helped a little on paper but did not clear the bar we set in advance. Result: NO. Nothing changes in the live bot.
 - Still zero real money at risk. Pillar: DEPTH (partly plumbing).
+- W102.5 (auto): W102.5 (B-043) deleted 32 stray origin branches; stray branches 35 -> 3; w83-3 check found nothing lost, no GG.
