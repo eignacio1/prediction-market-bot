@@ -121,3 +121,28 @@ def test_arm_without_reasons_says_so():
     row = dict(_row("KXNBAGAME-26OCT30LALDEN-LAL", 0.70, 0.55, 0.57), reasons=None, reasons_note="no per-factor model")
     out = ps.pick_from_row(row, "a")["reasons"]
     assert len(out) == 1 and out[0].startswith(ps.NO_REASONS) and "no per-factor model" in out[0]
+
+
+def test_dedupe_merges_arms_and_mirror_sides_gg1690():
+    ev = "KXNBAGAME-26OCT30LALDEN"
+    rows = [
+        ("t1", _row(ev + "-LAL", 0.70, 0.55, 0.57)),
+        ("t2", _row(ev + "-LAL", 0.70, 0.55, 0.57)),
+        ("t1", _row(ev + "-DEN", 0.30, 0.55, 0.57)),   # NO on DEN == YES on LAL
+    ]
+    picks = [ps.pick_from_row(r, a) for a, r in rows]
+    out = ps.dedupe(picks)
+    assert len(out) == 1
+    assert out[0]["side"] == "yes" and out[0]["ticker"].endswith("-LAL")
+    assert out[0]["arms"] == ["t1", "t2"]
+    assert out[0]["also_seen_as"] == ["DEN NO"]
+    sheet = ps.build("2026-10-30", picks)
+    assert sheet["n_picks"] == 1 and sheet["n_rows_before_dedupe"] == 3
+
+
+def test_dedupe_keeps_distinct_bets_and_non_mirror_tickers():
+    ev = "KXNBAGAME-26OCT30LALDEN"
+    a = ps.pick_from_row(_row(ev + "-LAL", 0.70, 0.55, 0.57), "t1")
+    b = ps.pick_from_row(_row(ev + "-DEN", 0.70, 0.55, 0.57), "t1")   # YES on both teams: conflicting, not mirror
+    c = ps.pick_from_row(_row("KXNBASPREAD-26OCT30LALDEN-LAL5", 0.70, 0.55, 0.57), "t1")
+    assert len(ps.dedupe([a, b, c])) == 3
