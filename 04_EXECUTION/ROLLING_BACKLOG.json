@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-04T04:15Z",
+ "as_of": "2026-11-05T00:35Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -140,16 +140,28 @@
    "status": "NEXT",
    "lane": "muse",
    "rank": "7",
-   "title": "Re-cut Muse's hard tickets (multi-source, compound splits) into single-run pieces before they go to the daily runs",
+   "title": "Fix Muse's split queue: prune unservable chunks, take ~560-row player tables off single runs unless a full-table source exists, redo C-052 (wrong season)",
    "measure": "hard tickets as single-run chunks",
-   "why": "Stress test: simple jobs never strained; multi-source jobs took up to 45 min and 4 were cut off.",
+   "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "next window",
    "order": 10
   },
   {
+   "id": "B-042",
+   "status": "NEXT",
+   "lane": "muse",
+   "rank": "7",
+   "title": "Muse to 200 daily runs: a pre-checked queue of thousands of chunks across all four sports, ~25 runs a day on perishable snapshots (injury reports, lineups / starting goalies, referee assignments, Kalshi lines), one setup paste for the operator on 2026-11-09",
+   "measure": "daily runs 100 -> 200; perishable snapshots captured daily 0 -> 4 kinds",
+   "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
+   "source": "operator 2026-11-04",
+   "wave": "next window",
+   "order": 11
+  },
+  {
    "id": "B-017",
-   "order": 11,
+   "order": 12,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -161,7 +173,7 @@
   },
   {
    "id": "B-008",
-   "order": 12,
+   "order": 13,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -173,7 +185,7 @@
   },
   {
    "id": "B-010",
-   "order": 13,
+   "order": 14,
    "status": "NEXT",
    "lane": "quant",
    "rank": "4",
@@ -185,7 +197,7 @@
   },
   {
    "id": "B-012",
-   "order": 14,
+   "order": 15,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -197,7 +209,7 @@
   },
   {
    "id": "B-004",
-   "order": 15,
+   "order": 16,
    "status": "LATER",
    "lane": "flex",
    "rank": "EXECUTION",
@@ -209,7 +221,7 @@
   },
   {
    "id": "B-013",
-   "order": 16,
+   "order": 17,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -221,7 +233,7 @@
   },
   {
    "id": "B-014",
-   "order": 17,
+   "order": 18,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -233,7 +245,7 @@
   },
   {
    "id": "B-015",
-   "order": 18,
+   "order": 19,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -245,7 +257,7 @@
   },
   {
    "id": "B-016",
-   "order": 19,
+   "order": 20,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -257,7 +269,7 @@
   },
   {
    "id": "B-018",
-   "order": 20,
+   "order": 21,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -269,7 +281,7 @@
   },
   {
    "id": "B-019",
-   "order": 21,
+   "order": 22,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -281,7 +293,7 @@
   },
   {
    "id": "B-020",
-   "order": 22,
+   "order": 23,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -293,7 +305,7 @@
   },
   {
    "id": "B-021",
-   "order": 23,
+   "order": 24,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -305,7 +317,7 @@
   },
   {
    "id": "B-002",
-   "order": 24,
+   "order": 25,
    "status": "DONE",
    "lane": "proof",
    "rank": "1 + 4",
@@ -325,7 +337,7 @@
    "why": "NFL crews into totals: NULL; Muse yards exact, counts not reproduced.",
    "source": "operator 2026-11-02 21:33 PT; window",
    "wave": "99.1 Part A",
-   "order": 25
+   "order": 26
   },
   {
    "id": "B-033",
@@ -337,7 +349,7 @@
    "why": "NBA referees into totals: NULL (upper bound); Muse records VERIFIED 236/239.",
    "source": "window",
    "wave": "99.1 Part B",
-   "order": 26
+   "order": 27
   },
   {
    "id": "B-034",
@@ -349,7 +361,7 @@
    "why": "EXP-037 verdicts in the registry (#406).",
    "source": "98.2",
    "wave": "99.2 Part A",
-   "order": 27
+   "order": 28
   },
   {
    "id": "B-036",
@@ -361,7 +373,7 @@
    "why": "Batch install + one gate rule; per-step conf fixed by the window (#412); all held installs ran 03:30Z.",
    "source": "window, 11-03",
    "wave": "99.3 + window #412",
-   "order": 28
+   "order": 29
   },
   {
    "id": "B-037",
@@ -373,11 +385,11 @@
    "why": "Reasons on NHL, NBA points and NBA engine rows (#407).",
    "source": "98.3 / GG-1630",
    "wave": "99.3 Part B",
-   "order": 29
+   "order": 30
   },
   {
    "id": "B-022",
-   "order": 30,
+   "order": 31,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -389,7 +401,7 @@
   },
   {
    "id": "B-023",
-   "order": 31,
+   "order": 32,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -401,7 +413,7 @@
   },
   {
    "id": "B-024",
-   "order": 32,
+   "order": 33,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -413,7 +425,7 @@
   },
   {
    "id": "B-025",
-   "order": 33,
+   "order": 34,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
