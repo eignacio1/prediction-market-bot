@@ -116,3 +116,10 @@ The engine reads its own injury-report fetcher, not the archive. Found by the wi
 
 ## Pattern tags, W31-W43 (added at the 2026-11-04 handoff; the sections above had none)
 W31 LITERAL (a curiosity question taken as a directive) · W32 UNVERIFIED · W33 PROCESS · W34 PROCESS · W35 PROCESS · W36 FOREST (composition by newest directive, not the ranking) · W37 UNVERIFIED (shrank blocks without checking why parts stalled) · W38 UNVERIFIED · W39 UNVERIFIED · W40 UNVERIFIED · W41 UNVERIFIED · W42 PROCESS · W43 UNVERIFIED. (W30 was tagged REPEAT in its row but not counted in the tally; counted now.)
+
+## W44 · 2026-11-03 → 11-04 · the forward test's NFL "ADOPT" went unread for two days (found by the Waves 101 -> window, 11-05)
+From 2026-11-03T11:25Z the daily ADR-0072 report (distance_read tail) printed "shadow|NFL: ADOPT" - the word the 10-21 addendum
+makes final for NFL. The window read distance_read at every close and the carry-forward and queue still said "INCONCLUSIVE,
+keep running" / "(a)/(b) hold, pending (c)" (sitrep row sourced from the 10-27 report). The operator was never told. Pattern:
+UNVERIFIED (a sitrep row carried from an old report instead of re-read). Rule: at every close, read the forward-test VERDICT line
+of the newest report and update the sitrep's forward-test row from it; a change in any verdict word goes to the operator that close.

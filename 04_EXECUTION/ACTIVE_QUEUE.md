@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ NOTHING TO PASTE - the window handed off (2026-11-04 18:30 PT).** Wave 101 is the incoming window's. The T1/T2 shadow-line lock was installed 02:11Z on your approval; nothing is waiting on you.
+> **▶ WAVE 101 READY TO PASTE - three blocks in NOW (101.1 engine, 101.2 proof, 101.3 flex).** Written 2026-11-05 ~02:30 UTC by the Waves 101 -> window. Nothing is waiting on you.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -10,7 +10,7 @@
 | Fact | Value |
 |---|---|
 | Highest GG / T / ADR / EXP | see the gap log and SESSION_CLAIMS for the live numbers · **ADR-0076** accepted 10-27 · **EXP-043** frozen (ladder ride forward) |
-| Gap log | **222 OPEN** · 264 headers = 264 status lines · no duplicate ids (live + archive). Numbers are reserved in ranges per block; unused ones are skipped, never reused |
+| Gap log | **250 OPEN** · 298 headers = 298 status lines (window, origin/main 36f49a9, 11-05) · no duplicate ids (live + archive). Numbers are reserved in ranges per block; unused ones are skipped, never reused |
 | Registry | **108 cells, 52 logging** (B1, box 10-28) |
 | Surface (ADR-0074) | **88 live components** · budget **GREEN** · healthcheck HEALTHY · no silent arm (02:00Z) · **45 OOM kills / 24 h, 223 MB free** - the binding constraint. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
 | Capital | **$0 real.** `kelly_fraction = 0.0` everywhere; flat demo stakes only (ADR-0050/0072). Kill switch ENFORCING on every order path (89.1) |
@@ -45,7 +45,7 @@ Wave 99 close read (`20261104T040109Z_w_distance_read.md`, 11-04 04:02Z); rows n
 | **EXECUTION** | E1 demo orders filled | **T4 MLB 177 / 4,316 = 4.1% · T1 MLB 85 / 485 = 17.5%** (MLB books idle since 10-20) | fills ≈ intended orders | 0 |
 | | E2 P&L per filled bet | **T4 −$0.21** (n 177) · **T1 −$1.50** (n 83) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 25.4% vs 48.3% · T1 28.9% vs 52.1%** · resting fills picked off; **entry cost measured (98.2): taking at the quote loses ~0.10 / contract in NBA and NFL - keep the frozen rule**; NHL unclear | fills ≥ non-fills | 0 |
-| | Forward test (ADR-0072), per book and sport (box report 2026-10-27T11:25Z) | **NFL (a)/(b) hold, pending (c)**: control 5,277 / treatment 1,800 fills, 28 games · **NBA (a) holds but (b) fails**: 14,395 / 2,846 fills, 65 games · **NHL** 2,406 / 345 fills, 97 games, no verdict yet · **MLB** 8 / 2, no verdict | ~550 per arm, per (book, sport) | 0 |
+| | Forward test (ADR-0072), per book and sport (box report 2026-11-04T11:25Z) | **NFL: the report prints ADOPT since 11-03** (control 6,960 / treatment 2,604 fills, 43 games) - not yet verified against the 10-21 addendum (101.2) · **NBA (a) holds but (b) fails**: 19,706 / 3,896 fills, 121-123 games · **NHL (a) holds but (b) fails**: 3,499 / 783 fills, 148 games · **MLB** 8 / 2, no verdict | ~550 per arm, per (book, sport) | NFL pending (c) → ADOPT (report) |
 | **PROOF** | P1 cells at a scored look | **12 / 49** (the NFL first look, 2026-11-02) | every cell judged at its n | 0 |
 | | P2 verdicts | **12, read (98.2): NFL game total T1 + T2 RULED_OUT (model ~0.016 Brier worse than the market); 10 KEEP ACCRUING (all slightly behind the market, slightly ahead of a naive baseline, none proven); 0 CANDIDATE** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-13** (NFL QB moneyline); modal outcome **KEEP ACCRUING ~91%** | — | 0 |
@@ -60,56 +60,212 @@ done, ~180k records, 20 NONE); the operator's Muse chat is out of usage until 11
 
 ---
 
-## ⬛ NOW — no wave in flight · Wave 101 is the INCOMING strategic window's to write (handoff 2026-11-05 ~02:30 UTC / 11-04 18:30 PT)
+## ▶ NOW — WAVE 101 · WRITTEN 2026-11-05 ~02:30 UTC (11-04 18:30 PT) · three blocks · paste each block below into its own terminal
 
-The window that ran Waves 81 → 100 (2026-10-19 → 11-04) handed off here. Read `04_EXECUTION/WINDOW_ERROR_LOG.md`, then
-`04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md`, then the rolling backlog (`04_EXECUTION/ROLLING_BACKLOG.md`), before writing Wave 101.
+**Drawn from the rolling backlog by lane (ranking: 1 market-anchored · 2 one engine per sport · 3 granularity · 4 quant · 5 architecture · 6 PAM · 7 Muse · 8 expansion):**
+101.1 **engine** (rank 2) = B-030 + B-001 + B-029 · 101.2 **proof** (rank 1/4) = the ADR-0072 NFL final word + the 11-13 look + B-039 · 101.3 **flex** (plumbing / rank 1) = B-027 measured + B-026 + B-043.
+Window work beside the wave (no terminal): Muse B-041 + B-042, the setup paste ready before 11-09 20:50 PT.
 
-**What Wave 100 delivered (verified 2026-11-05: #413-#416 merged, CI green on main; box bridge `20261105T020020Z_*`):**
-**100.1 🟨** NHL engine: a stale league denominator was ~a quarter of the low-totals bias (bias -0.080 → -0.059, Brier flat; new
-`model_pit.py`, not in cron); the rest is season drift / early-season level and over-spread predictions (a challenger candidate);
-EXP-046 not earned. NBA v3 logs (412 rows) but missed 5 of 11 games on 11-04, v2 too - cause the box running out of memory, not code.
-**100.2 🟨** EXP-042 cell 10 RETIRED by addendum (`05_RESEARCH_EXPERIMENTS/EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04.md`); the ruled-out NFL
-totals model lost in every band from noise in its disagreements, not bias (72 games); B1 counts ruled-out-but-logging arms again
-(52 / 108); the proof calendar could not be regenerated on the box (GG-1720). **100.3 🟨** installer markers and Python 3.9 test
-collection fixed; the T1/T2 shadow lines' lock (#416) **installed 11-05 02:11Z on the operator's named approval (17 of 17 lines locked)**; picks sheet's first night read: 134 games, 2,614 picks, reasons on 90% (GG-1690: duplicate presentation).
-**Box at handoff:** 88 live, budget GREEN, healthcheck HEALTHY, no silent arm, box HEAD = main - **but 45 OOM kills in 24 h and
-223 MB free**: memory is the binding constraint on every NBA forward test.
+- **Pushback:** the memory read after a full night with the T1/T2 lock (installed 02:11Z) is not in yet - if kills continue, NBA coverage
+  will still be partial and 101.1's v3 first read is thin. Mitigated: the night-dependent parts run after 07:30Z and 101.3 Part A measures
+  the night first. Second: the forward-test report has printed **"NFL: ADOPT"** since 11-03 11:25Z and no wave read it - 101.2 Part A
+  verifies it before it reaches the operator; nothing changes placement this wave.
+- **Surface:** 88 live · budget GREEN · healthcheck HEALTHY · no silent arm (box 11-05 02:00Z / 02:11Z). Red signals: none; memory is
+  the binding constraint (45 OOM kills / 24 h, 223 MB free, pre-lock). Delta this wave: **+0 running components** (101.1 adds a
+  coverage writer to an existing runner; read-only bridge tasks only; anything else is prepared, not installed).
+- **Dependencies:** none between blocks. Each block takes its own box reads. All three may add ONE read-only line to
+  `scripts/box_tasks.py` (fetch + rebase before push; touch only your own line). No block edits ACTIVE_QUEUE.md this wave - the window
+  updates it from your handoff.
 
----
-
-## 🔥 STANDING — GA: the governance gap agent (always on, beside every wave; operator 2026-10-15 16:49 / 17:02 PT)
-
-Operator: "can we keep this as a loose bird watcher that continually buckets, scrapes, fills, extracts, burns burns burns -
-basically a governance gap agent? ... I kinda want this to be more than just a one shot push" ("within reason of corse").
-
-**It is not a one-shot block.** The procedure lives in the repo as `.claude/commands/gap-agent.md`; one terminal runs it on a
-self-paced loop. Each tick it syncs to main, **scrapes** new handoffs, reports, tension registers and decisions for findings with
-no gap id, **fills** missing severities and pillars, **buckets** gaps (already fixed · duplicate · small fix · yours · wave-owned
-· large), **burns** what evidence supports, retires closed entries to the archive, reports `OPEN x → y`, and schedules its next
-tick (5–10 min while there is work, 30 min while it is only watching). State lives in `03_DECISIONS/GG_BURNDOWN.md` and
-`GG_AGENT_STATE.md`, so any terminal picks up where the last stopped. At ~60% context it hands off and asks to be relaunched
-(this row will say so). **Surface:** 0 running components. **Dependencies:** it reads the NOW wave's file ownership every tick and
-skips any gap whose fix sits in a wave block's files.
-
-**To start it, paste exactly this into its own terminal** (it reads the procedure from GitHub, so it works even though the
-local project folder does not have the new command — `/loop /gap-agent` failed there at 17:05 PT, window error W20):
-
-```
-/loop Run one governance gap agent tick. First run `git fetch origin`, then read the procedure with `git show origin/main:.claude/commands/gap-agent.md` and follow it exactly for this tick (first tick: its session-start steps). Self-pace the next tick as it says.
-```
-
-| Session | Status | OPEN before → after | Last tick | One line |
+| # | Lane · rank | Block | Status | Outcome |
 |---|---|---|---|---|
-| GA-1 (beside Wave 76) | ⏸ stopped by operator after tick 3 | 186 → 185 in the log (new gaps from Wave 76 put it back at 187) | 02:00Z | 1 closed (GG-429), 23 resolved entries retired, ~56 triaged, every HIGH bucketed, 20 severities filled; next: GG-156/158 ssh checks |
-| GA-2 (beside Waves 77-78) | ❌ never launched (no tick after 02:00Z) | | | |
-| GA-3 (beside Waves 79-80) | ❌ never launched (last tick 2026-10-16 02:00Z, found at the handoff sweep) | | | |
-| GA-4 (beside Wave 81) | ⬜ launch with the line above, in its own terminal, when Wave 81 is pasted; first job GG-970 (verify the ~45 LIVING docs with blank last_verified) | 195 → | | |
-| GA-5 (beside Wave 84; operator 10-21 19:12 PT: "Give me a separate terminal block to burn down some gaps - want to clear some of the load") | ⬜ launched from the chat line below, its own terminal. Focus: CRITICAL/HIGH first; gaps the MLB season end and Waves 81-84 made moot; never a NOW-wave file | 207 → 206 (tick 1, 02:40Z) → 205 (manual burn, GG-765) | ⬜→🟡 running | GG-890 closed with box evidence; all HIGH/CRITICAL have an owner |
+| 101.1 | engine · 2 | NBA: every game logged on all three arms after the lock; v3 first read; NHL totals challenger pre-registered | ⏳ pasted? | — |
+| 101.2 | proof · 1/4 | The ADR-0072 NFL final word read and recorded; the 11-13 NFL QB look ready; the proof calendar honest (GG-1720) | ⏳ pasted? | — |
+| 101.3 | flex · plumbing/1 | Box memory after a full locked night; picks sheet night 2 in plain English; one exact branch list | ⏳ pasted? | — |
 
-## 📦 BACKLOG — ready blocks, not in a wave (the operator sends these when he chooses)
+### 101.1 - ENGINE
 
-*(none: B74-A was issued as Wave 76.4 and is archived verbatim.)*
+```
+WAVE 101 - BLOCK 101.1 - ENGINE LANE (rank 2: one engine per sport)
+NBA: EVERY GAME LOGGED ON ALL THREE ARMS AFTER THE LOCK; V3 FIRST READ; NHL TOTALS CHALLENGER PRE-REGISTERED
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md` and quote its first line.
+Those rules bind this block, with the WAVE 101 OVERRIDES below replacing W100's "THIS WAVE", "File ownership", "Decisions in force"
+date and "update this block's row in ACTIVE_QUEUE.md" lines. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W101_1.md.
+
+WAVE 101 OVERRIDES (all three blocks):
+- THIS WAVE: 101.1 engine = B-030 + B-001 + B-029; 101.2 proof = ADR-0072 NFL final word + 11-13 look + B-039; 101.3 flex =
+  B-027 measured + B-026 + B-043. A new strategic window (Waves 101 ->) runs this wave. Do not edit ROLLING_BACKLOG.json or
+  ACTIVE_QUEUE.md; report each ticket's state in your handoff.
+- Decisions in force: DECISION_LOG through 2026-11-04 18:30 PT, incl. Wave 100 results (#413-#416) and THE T1/T2 SHADOW-LINE LOCK
+  INSTALLED 2026-11-05 02:11Z on the operator's named approval (t3_lock_stagger_install: 17 of 17 lines wrapped, crontab backup
+  logs/crontab_backups/crontab_20261105T021134Z.bak, 670 -> 670 lines; budget GREEN after).
+- Box reads: take your own (read-only bridge tasks). A "full night" = the 11-04 PT slate, read after 2026-11-05T07:30Z.
+- New read-only bridge tasks: one line in scripts/box_tasks.py per block, through a PR with CI green; fetch + rebase before push.
+
+PURPOSE: D4 NBA - the engine prices every game: arms with complete coverage on a full night 1 of 3 (11-04: v1 11/11, v2 5/11,
+v3 6/11) -> 3 of 3. Secondary: D5(b) NHL totals - a challenger for the regulation-scoring bias pre-registered (0 -> 1).
+
+PERMISSIONS: src/prediction_market_bot/nba_engine/ - the coverage writer only (rows, prices, features and the frozen EXP-044 /
+044b / 044c specs untouched); the v3 runner's call to that writer; ONE new read-only task in scripts/box_tasks.py;
+12_EXPLORATORY/nba_engine_v3/ and 12_EXPLORATORY/nhl_engine/ additions; NEW modules in src/prediction_market_bot/nhl_engine/ + tests.
+Nothing installed, no cron line edited.
+
+PART A (~45 min) - v3 coverage, then the full-night count (B-030)
+1. Verify first: v1 / v2 write coverage.jsonl (src/prediction_market_bot/nba_engine/live.py) and v3 does not. Read EXP-044c's
+   pre-registration and confirm a coverage log (games past tip unlogged + reason) changes nothing it freezes; if it does, stop
+   this step and say so.
+2. PR: v3 writes the same coverage.jsonl rows as v1 / v2 (its own path). Test on a fixture night. Merge on green; read
+   deploy_truth_read for the box HEAD.
+3. PR: add read-only task `nba_engine_coverage_read` - per arm, per night (ET game date): games scheduled, games logged before tip,
+   missed past tip, reasons (from coverage.jsonl + the runners' logs + logs/t3_skips.jsonl), aggregated so the output stays well
+   under the bridge's ~60 KB cap. Merge on green.
+4. After 2026-11-05T07:30Z: run it for the 11-03 and 11-04 PT nights (before / after the lock). Report per arm: games, logged,
+   missed, reason. v3's 11-03 / early 11-04 misses will be reconstructed from logs, not coverage.jsonl - say which is which.
+   Also confirm the NBA store's last game date reaches yesterday (B-017) from the same read or nba_engine_cron_readback.
+   If before 07:30Z, do Part B / C first and come back.
+
+PART B (~40 min) - v3 first read, descriptive (B-001)
+1. From the box (read-only), v1 / v2 / v3 rows on the games all three logged: Brier and log loss per market family against Kalshi's
+   price at the same snapshot, n games, game-clustered intervals. DESCRIPTIVE ONLY - it is not a look; EXP-044 / 044b / 044c's judged
+   n and look dates are untouched. Name the judged n and say how far each arm is from it.
+2. One plain-English line: is v3 (availability + lineups known before tip) pricing differently from v2 on the same games, where, and
+   by how much. Results to 12_EXPLORATORY/nba_engine_v3/results_W101_1.md (docs-only push).
+
+PART C (~45 min, switch here whenever A waits on the box) - NHL totals challenger (B-029)
+1. Verify the premise from #414 / 12_EXPLORATORY/nhl_engine/: after the denominator fix the held-out regulation total-goals bias is
+   -0.059 and predictions are over-spread (calibration slope 0.4-0.5). Reproduce both numbers first.
+2. Pre-register ONE challenger (12_EXPLORATORY/nhl_engine/NHL_TOTALS_CHALLENGER_PREREGISTRATION_<date>.md, committed BEFORE any
+   challenger row): the candidate fixes (season-to-date scoring level; shrinking predicted spread toward the league), the held-out
+   split, the metric (Brier per family vs v2 and vs Kalshi descriptive), the judged n and the decision rule. Then the held-out
+   result on past seasons, in a NEW module under src/prediction_market_bot/nhl_engine/ (merged model untouched). No cron line.
+3. Quant bar: test on known answers, when it applies, one measured result on our data with n and an interval.
+
+Report: per COMMON RULES. MEASURE MOVED: D4 NBA arms with complete coverage on the 11-04 full night X of 3 (source: your bridge
+result); D5(b) NHL totals stage. Operator decisions: none expected.
+END OF BLOCK 101.1
+```
+
+### 101.2 - PROOF
+
+```
+WAVE 101 - BLOCK 101.2 - PROOF LANE (rank 1 market-anchored / 4 quant)
+THE ADR-0072 NFL FINAL WORD READ AND RECORDED; THE 11-13 NFL QB LOOK READY; THE PROOF CALENDAR HONEST
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md` and quote its first line.
+Those rules bind this block, with the WAVE 101 OVERRIDES below replacing W100's "THIS WAVE", "File ownership", "Decisions in force"
+date and "update this block's row in ACTIVE_QUEUE.md" lines. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W101_2.md.
+
+WAVE 101 OVERRIDES (all three blocks):
+- THIS WAVE: 101.1 engine = B-030 + B-001 + B-029; 101.2 proof = ADR-0072 NFL final word + 11-13 look + B-039; 101.3 flex =
+  B-027 measured + B-026 + B-043. A new strategic window (Waves 101 ->) runs this wave. Do not edit ROLLING_BACKLOG.json or
+  ACTIVE_QUEUE.md; report each ticket's state in your handoff.
+- Decisions in force: DECISION_LOG through 2026-11-04 18:30 PT, incl. Wave 100 results (#413-#416) and THE T1/T2 SHADOW-LINE LOCK
+  INSTALLED 2026-11-05 02:11Z on the operator's named approval (17 of 17 lines; budget GREEN after).
+- Box reads: take your own (read-only bridge tasks).
+- New read-only bridge tasks: one line in scripts/box_tasks.py per block, through a PR with CI green; fetch + rebase before push.
+
+PURPOSE: P2 verdicts 12 -> 13 - the pre-registered final NFL word of the ADR-0072 forward test (addendum 2026-10-21: "the verdict
+word is final for NFL: ADOPT / 'removed fills, not adverse selection' / REJECT / INCONCLUSIVE") read, checked and recorded;
+P3 (11-13 NFL QB moneyline) confirmed runnable; B-039 calendar rows with second-look state 0 -> all.
+
+PERMISSIONS: read-only on every ledger, report, runner, placement rule and pre-registration. New files under
+12_EXPLORATORY/forward_test_nfl_final/ and 12_EXPLORATORY/nfl_first_look/; scripts/proof_calendar.py and
+04_EXECUTION/PROOF_CALENDAR.md; ONE new read-only task in scripts/box_tasks.py.
+NOTHING about order placement, the forward test's switches or the frozen entry rule changes this wave.
+
+PART A (~55 min) - the NFL final word
+Premise to verify: logs/demo_fill_forward_report.log has printed "shadow|NFL: ADOPT" daily since 2026-11-03T11:25Z (11-02 read
+"(a)/(b) hold, pending (c)"); scripts/demo_fill_forward_report.py prints ADOPT only when (a), (b), (c) all hold at judged n.
+1. Run forward_report_read (and forward_verdict_read if useful). From the JSON, for NFL: per arm, post-top-up fills; fills that
+   carry a 30-minute markout (post-EPOCH, exp_output/FORWARD_TEST/markouts/EPOCH.json); (a) treatment-minus-control
+   settle-minus-price with its one-sided 95% game-clustered bound; (b) the fill-rate ratio; (c) the markout difference and bound;
+   the date each crossed.
+2. Check the code against the 2026-10-20 and 2026-10-21 addenda, line by line: is "judged" counted on MARKOUT-BEARING fills >= 550
+   per arm (the 10-21 rule) or on all fills? Cash-starved days (before 2026-10-16T05:40Z) excluded? Per (book, sport)? Game-clustered?
+   If the code departs from the addendum, register a GG, and report BOTH: what the code says and what the addendum's rule gives.
+   Never relabel a verdict; never change a pre-registered parameter.
+3. Reconcile with W98.2 (12_EXPLORATORY/forward_entry_cost/results_W98_2.md: "treatment's large positive P&L comes from which orders
+   fill after waiting 60 s, not from a measured edge"). Say plainly whether criterion (c) - the 30-minute markout - answers that
+   concern for NFL, and what it does not answer.
+4. Write 12_EXPLORATORY/forward_test_nfl_final/results_W101_2.md: the verdict word the pre-registration gives, the numbers, and one
+   OPERATOR LINE in plain English: what ADOPT would change (NFL shadow demo orders placed treatment-style: post at the book,
+   cancel at 60 s) and your recommendation. Applying it is the operator's call (it changes a pre-registered test's placement);
+   do not apply it. Also give NBA and NHL's state in one line each (both "(a) holds but (b) fails" on 11-04).
+
+PART B (~35 min) - the 11-13 look ready (P3)
+1. Confirm the calibration engine will score NFLQB_NFL_MONEYLINE_T1 on its own schedule: how it is triggered, rows logged, settled
+   games so far vs its judged n, the data it needs by 11-13. Use a run that exercises the scoring path with the verdict text
+   SUPPRESSED (no score read below judged n). If anything blocks it, fix it by PR or register it.
+2. Pre-registered modal outcome per 12_EXPLORATORY/NFL_FIRST_LOOK_EXPECTATIONS.md: KEEP ACCRUING ~91%. Quote it; do not restate it.
+
+PART C (~40 min, switch here whenever A or B waits on the box) - the proof calendar (B-039, GG-1720)
+1. GG-1720: the box task's output exceeded the ~60 KB cap. Add an aggregate mode to scripts/proof_calendar.py (per cell: id, sport,
+   family, band, rows, settled games, judged n, first-look date, second-look state) that prints compact JSON on the box, and render
+   PROOF_CALENDAR.md in the repo from it. Second looks: EXP-037's 10 KEEP ACCRUING cells, EXP-042's frozen cells (~12-21), EXP-045
+   (2027-01-12), GG-529 EXP-038 (second look undefined - say so, do not define it).
+2. PR with tests; merge on green; run the read; push the rendered calendar docs-only.
+
+Report: per COMMON RULES. MEASURE MOVED: P2 (verdicts recorded) before -> after; P3 readiness; calendar rows with second-look
+state. Operator decisions: ONE line - the NFL forward-test word and your recommendation.
+END OF BLOCK 101.2
+```
+
+### 101.3 - FLEX
+
+```
+WAVE 101 - BLOCK 101.3 - FLEX LANE (plumbing + rank 1 operator ask)
+BOX MEMORY AFTER A FULL LOCKED NIGHT; THE PICKS SHEET'S SECOND NIGHT IN PLAIN ENGLISH; ONE EXACT BRANCH LIST
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md` and quote its first line.
+Those rules bind this block, with the WAVE 101 OVERRIDES below replacing W100's "THIS WAVE", "File ownership", "Decisions in force"
+date and "update this block's row in ACTIVE_QUEUE.md" lines. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W101_3.md.
+
+WAVE 101 OVERRIDES (all three blocks):
+- THIS WAVE: 101.1 engine = B-030 + B-001 + B-029; 101.2 proof = ADR-0072 NFL final word + 11-13 look + B-039; 101.3 flex =
+  B-027 measured + B-026 + B-043. A new strategic window (Waves 101 ->) runs this wave. Do not edit ROLLING_BACKLOG.json or
+  ACTIVE_QUEUE.md; report each ticket's state in your handoff.
+- Decisions in force: DECISION_LOG through 2026-11-04 18:30 PT, incl. Wave 100 results (#413-#416) and THE T1/T2 SHADOW-LINE LOCK
+  INSTALLED 2026-11-05 02:11Z on the operator's named approval (17 of 17 lines; backup logs/crontab_backups/crontab_20261105T021134Z.bak;
+  budget GREEN after).
+- Box reads: take your own (read-only bridge tasks). A "full night" = the 11-04 PT slate, read after 2026-11-05T07:30Z.
+- New read-only bridge tasks: one line in scripts/box_tasks.py per block, through a PR with CI green; fetch + rebase before push.
+
+PURPOSE: B-027 - OOM kills per night 45 / 24 h (11-05 02:00Z, pre-lock) -> 0, MEASURED after a full locked night (if not 0, a
+prepared, tested fix); B-026 - the picks sheet readable per game per night (night 2 read, GG-1690 fixed); B-043 - stray branches
+35 -> 2 after one operator-approved list (this block only writes the list).
+
+PERMISSIONS: scripts/box_memory_read.py; READ-ONLY box tasks (ONE new line in scripts/box_tasks.py if needed); the picks builder
+(scripts/build_picks_sheet.py) and its /visual panel for GG-1690; 12_EXPLORATORY/box_health_w101/, 12_EXPLORATORY/picks_sheet_w101/,
+12_EXPLORATORY/branch_cleanup_w101/. Any memory fix is PREPARED and TESTED only (PR + an allowlisted *_install task named in the
+handoff); the window runs installs only on the operator's named approval. Delete NO branch.
+
+PART A (~45 min, after 2026-11-05T07:30Z; before then do B / C) - memory after the lock (B-027)
+1. box_memory_read with --since covering 2026-11-05T02:11Z -> now (add the window as an argument through a PR if the task cannot
+   take one). Report: OOM kills since the lock and by process, MemAvailable / swap, per-runner peak RSS, lock skips by runner
+   (logs/t3_skips.jsonl: 32 at 02:11Z), and the same figures for the 11-04 pre-lock night for comparison.
+2. Verify the "3 copies running" lines in the 02:00Z read are flock / timeout wrappers around ONE python, not three pythons; say which.
+3. If kills continue: name the job(s) by peak and overlap, and prepare the root-cause fix (serialise or cap the long jobs - e.g. the
+   62-minute NBA pre-game T3 run) as a PR with tests and a named install task. If kills are 0, say so and stop this part.
+
+PART B (~45 min) - picks sheet night 2 (B-026, GG-1690)
+1. picks_sheet_read for the 11-05 05:37Z sheet (the 11-04 PT slate, results filled where settled). In plain English for the operator:
+   games, picks, picks with a fake-money bet placed, how many settled and how they did against Kalshi's price at the pick
+   (descriptive, n stated, not a verdict), reasons coverage. Keep it to what he can read on a phone.
+2. GG-1690 (duplicate presentation): fix by PR in the builder / panel, test, merge on green, read the next sheet back.
+3. Write 12_EXPLORATORY/picks_sheet_w101/night2.md (docs-only).
+
+PART C (~35 min, switch here whenever A waits) - one exact branch list (B-043)
+1. Source of truth: `git ls-remote --heads origin` (a terminal's sweep listed branches that do not exist, 11-04). For every branch
+   but main: merged into main? PR number and state? For the unmerged ones (#149 open since 09-24; #314 w83-3 NHL data layer closed
+   unmerged; b74a-s1 hygiene audit, w81-3 partb, w897 - no PR): is its GG / T resolved on main, is any of its work not on main?
+2. Write 12_EXPLORATORY/branch_cleanup_w101/LIST.md: DELETE (exact names, one reason each), KEEP (data/nba-injury-reports,
+   data/nhl-goalie-probe, anything with unlanded work - say what). Delete nothing; the window gives the operator the list.
+
+Report: per COMMON RULES. MEASURE MOVED: OOM kills per locked night X (source: your bridge result); picks night 2 visible;
+branch list ready. Operator decisions: none expected (a memory install, if needed, is named for the window).
+END OF BLOCK 101.3
+```
 
 ---
 
@@ -117,7 +273,7 @@ local project folder does not have the new command — `/loop /gap-agent` failed
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### 🟨 WAVE 100 — WRITTEN 2026-11-04 ~04:15 UTC · CLOSED 2026-11-05 ~02:30 UTC (operator 11-04 17:59 PT) · verified on GitHub (#413-#416, main CI green) + box bridge (`20261105T020020Z_*`) · moved: **EXP-042 cell 10 retired; NFL totals loss decomposed (72 games); NHL bias -0.080 → -0.059; B1 50 → 52 (count fixed)** · one install waits on a named approval · last wave of the Waves 81-100 window
+### 🟨 WAVE 100 — WRITTEN 2026-11-04 ~04:15 UTC · CLOSED 2026-11-05 ~02:30 UTC (operator 11-04 17:59 PT) · verified on GitHub (#413-#416, main CI green) + box bridge (`20261105T020020Z_*`) · moved: **EXP-042 cell 10 retired; NFL totals loss decomposed (72 games); NHL bias -0.080 → -0.059; B1 50 → 52 (count fixed)** · the T1/T2 lock install ran 11-05 02:11Z on the operator's named approval (17/17) · last wave of the Waves 81-100 window
 | # | Block | Status | Outcome |
 |---|---|---|---|
 | 100.1 | B-029 + B-001 + B-030 engine | 🟨 | #414: NHL denominator fix (quarter of the bias); v3 412 rows, 5/11 games missed - box OOM |
