@@ -1153,3 +1153,4 @@
 | 2026-11-05T02:21:58Z | T-1730..T-1732, GG-1730..GG-1732 | STANDARD — W101.1 engine lane: NBA v3 coverage.jsonl + coverage read task + v3 first read + NHL totals challenger pre-reg (B-030/B-001/B-029) — FOR D4 NBA arms w/ complete coverage on full night 1 of 3 -> 3 of 3; D5(b) NHL totals challenger pre-registered 0 -> 1 |
 | 2026-11-05T05:32:49Z | W101.1 | MERGED: NO — branch `session/20261105T022016Z-w101-1-nba-coverage-nhl-totals` awaiting merge — W101.1: NBA v3 coverage writer + read task merged; NHL totals shrink challenger held-out = NO; box night read and v1/v2/v3 scoring pending (commit `942aaac`) |
 | 2026-11-05T05:33:08Z | TBD (W101.2, no T- number minted) | CLOSED — W101.2 proof lane: NFL forward test final word ADOPT (P2 12->13), NFLQB look runnable, proof calendar second-look states (commit `ef80ff9`) |
+| 2026-11-05T05:33:40Z | TBD | CLOSED — merge confirmed, HEAD (39976f1) is ancestor of origin/main — W101.2 proof lane |
