@@ -1,0 +1,2 @@
+task = "proof_calendar_read"
+note = "W100.2 Part C retry (first run: ssh reset)"

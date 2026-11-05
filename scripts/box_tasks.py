@@ -46,6 +46,7 @@ TASKS: dict[str, str] = {
     "budget_read": f"{PY} scripts/runtime_registry.py live --refresh; echo; tail -n 40 logs/health.log | grep '^===' | tail -1",
     "silent_arms_read": f"{PY} -m prediction_market_bot.pregame_shadow.silent_arms",
     "nfl_total_rows_read": f"{PY} scripts/nfl_total_rows_read.py",  # W99.2 Part C, read-only per-game rows
+    "nfl_total_agg_read": f"{PY} scripts/nfl_total_rows_read.py --agg",  # W100.2 Part B, read-only per-game aggregates (<60KB)
     "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",
@@ -81,6 +82,7 @@ TASKS: dict[str, str] = {
     "install_batch_w99_readback": f"{PY} scripts/install_batch_w99.py readback",
     "install_batch_w99_uninstall": f"{PY} scripts/install_batch_w99.py uninstall",
     "box_memory_read": f"{PY} scripts/box_memory_read.py --since '24 hours ago'",
+    "picks_sheet_read": f"{PY} scripts/picks_sheet_read.py",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
     # W98.2 Part A: READ-ONLY. Prints the released first-look verdicts from the latest saved calibration-engine JSON (no re-scoring).

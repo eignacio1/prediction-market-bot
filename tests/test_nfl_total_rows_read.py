@@ -24,3 +24,23 @@ def test_allowlisted_and_read_only():
     import scripts.box_tasks as bt
     assert "nfl_total_rows_read" in bt.TASKS
     assert "write" not in bt.TASKS["nfl_total_rows_read"]
+
+
+def test_agg_allowlisted_and_read_only():
+    import scripts.box_tasks as bt
+    assert bt.TASKS["nfl_total_agg_read"].endswith("nfl_total_rows_read.py --agg")
+
+
+def test_median_total_and_aggregate_bins():
+    assert m.median_total([(40.5, 0.6), (45.5, 0.4)]) == 43.0
+    assert m.median_total([(40.5, 0.4), (45.5, 0.3)]) is None
+    rows = [{"game_key": "g", "band": "b", "market_ticker": "T-40.5", "p_yes": 0.6, "mid": 0.5, "y": 1, "week": 5, "roof": "dome", "temp": None, "wind": None},
+            {"game_key": "g", "band": "b", "market_ticker": "T-45.5", "p_yes": 0.4, "mid": 0.45, "y": 0, "week": 5, "roof": "dome", "temp": None, "wind": None}]
+    (o,) = m.aggregate(rows)
+    assert o["n"] == 2 and o["bm"] == 0.32 and o["bins"]["m1"][0] == 1 and o["bins"]["m2"][0] == 1
+
+
+def test_weather_falls_back_to_previous_day():
+    sched = {("2026-10-04", "KC", "BUF"): (5, "outdoors", 50, 8)}
+    assert m.lookup_weather(sched, "2026-10-05:KC@BUF") == (5, "outdoors", 50, 8)
+    assert m.lookup_weather(sched, "2026-10-09:KC@BUF", blank="") == ("", "", "", "")
