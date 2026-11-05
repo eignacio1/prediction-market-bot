@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-05T02:30Z",
+ "as_of": "2026-11-05T06:10Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -29,14 +29,14 @@
  "tickets": [
   {
    "id": "B-027",
-   "status": "NOW",
+   "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
    "title": "Box memory: T1/T2 shadow-line lock INSTALLED 11-05 02:11Z (17 of 17 lines); measure a full NBA + NHL night; if kills continue, serialise / cap long jobs",
    "measure": "OOM kills per night 20 / 90 min -> 0",
    "why": "45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.",
    "source": "97.3 / GG-1581",
-   "wave": "101.3 Part A (measure after a full locked night)",
+   "wave": "0 OOM kills since the lock (box 05:48Z); window reads a full slate",
    "order": 1
   },
   {
@@ -48,31 +48,31 @@
    "measure": "games past tip unlogged per arm -> 0 new",
    "why": "100.1: v1 11/11, v2 5/11, v3 6/11 on 11-04; cause box OOM. Re-read after B-027; then a v3 coverage.jsonl PR.",
    "source": "98.1 / 99",
-   "wave": "101.1 Part A",
+   "wave": "102.1 Part A (root cause: runs miss without OOM; 11-04 slate v2 44/56, v3 38/56)",
    "order": 2
   },
   {
    "id": "B-001",
    "order": 3,
-   "status": "NOW",
+   "status": "NEXT",
    "lane": "engine",
    "rank": "2",
    "title": "NBA engine v3 (EXP-044c): installed 11-04 03:30Z; log every game (5 of 11 missed on 11-04, OOM) and read its first week",
    "measure": "D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7",
    "why": "v3 logging since 11-04 03:30Z (412 rows) but silent for 5 games (OOM).",
    "source": "95.1 handoff, GG-1450",
-   "wave": "101.1 Part B"
+   "wave": "v3 first read once it has settled games (window checks; next wave)"
   },
   {
    "id": "B-039",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "proof",
    "rank": "1",
    "title": "Proof calendar second-look state; B1 counts RULED_OUT-but-logging arms",
    "measure": "calendar rows with second looks 0 -> all; B1 corrected",
    "why": "B1 fixed (52/108); PROOF_CALENDAR.md regeneration on the box blocked (GG-1720).",
    "source": "99.2",
-   "wave": "101.2 Part C (GG-1720)",
+   "wave": "101.2: #420 aggregate mode, 65 rows with second-look state",
    "order": 4
   },
   {
@@ -85,7 +85,7 @@
    "measure": "picks visible per game per night 0 -> every evaluated game",
    "why": "Night 1: 134 games, 2,614 picks, reasons 90%; results not filled (built mid-games); GG-1690 duplicate presentation. Read the next 05:37Z sheet; plain-English summary for the operator.",
    "source": "operator 2026-10-30",
-   "wave": "101.3 Part B"
+   "wave": "102.3 Part A-B (#422 + last settled night)"
   },
   {
    "id": "B-041",
@@ -113,39 +113,39 @@
   },
   {
    "id": "B-029",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "engine",
    "rank": "2",
    "title": "NHL engine totals: the remaining regulation-scoring bias (season drift, early-season level, over-spread predictions) - a challenger, then Kalshi descriptive",
    "measure": "held-out total-goals bias -> within noise; Brier per family vs v1 and the market",
    "why": "#414: stale denominator was ~a quarter of the bias (-0.080 -> -0.059, Brier flat); the rest is season drift / early-season level and over-spread predictions (slope 0.4-0.5) - a challenger candidate; Kalshi comparison not run.",
    "source": "97.4",
-   "wave": "101.1 Part C",
+   "wave": "101.1: challenger pre-registered, held-out NO (#421)",
    "order": 8
   },
   {
    "id": "B-043",
-   "status": "NOW",
+   "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
    "title": "Branch cleanup: 27 merged-PR branches to delete; 5 unmerged to check first (#149 open since 09-24; #314 w83-3 NHL data layer closed unmerged; b74a-s1 hygiene audit, w81-3 partb, w897 - no PR); keep data/nba-injury-reports and data/nhl-goalie-probe",
    "measure": "stray branches on origin 35 -> 2 (the data branches) after one operator-approved list",
    "why": "Operator 11-04 17:36 PT: \"Do we need to do anything w stray branches?\"; 17:38 PT: \"Yes pls\" to registering it. A terminal's sweep listed branches that do not exist on origin (w89-* .. w91-*); the window's git ls-remote is the source. For each unmerged branch check whether its GG / T is resolved on main, then give the operator one exact list to approve for deletion (deletes name exact items).",
    "source": "operator 2026-11-04",
-   "wave": "101.3 Part C (list only; deletes need the operator)",
+   "wave": "101.3 list written; deletion waits on the operator",
    "order": 9
   },
   {
    "id": "B-017",
    "order": 10,
-   "status": "LATER",
+   "status": "NOW",
    "lane": "flex",
    "rank": "plumbing",
    "title": "NBA store refresh lag: the last game date trails by about two days",
    "measure": "store lag <= 1 day",
    "why": "15:46Z refresh line live; confirm the store reaches yesterday after its first run (next window).",
    "source": "95.1 handoff (observed)",
-   "wave": "second refresh installed 11-04 03:30Z"
+   "wave": "102.1 Part C"
   },
   {
    "id": "B-008",
@@ -174,26 +174,26 @@
   {
    "id": "B-012",
    "order": 13,
-   "status": "LATER",
+   "status": "NOW",
    "lane": "engine",
    "rank": "2",
    "title": "NHL engine: factor classes point-in-time from the shot-level store, then the whole board",
    "measure": "D4 NHL data layer -> factors -> board",
    "why": "97.4 built the NHL board engine; it trails Kalshi at n 33 and EXP-046 was not earned. Revisit with B-029 and ~200 games of this season.",
    "source": "ADR-0073",
-   "wave": "97.4 done (scaffold); forward test at ~200 games"
+   "wave": "102.1 Part B (goalie + rest PIT, pre-registered)"
   },
   {
    "id": "B-004",
    "order": 14,
-   "status": "LATER",
+   "status": "NOW",
    "lane": "flex",
    "rank": "EXECUTION",
    "title": "Demo orders refused for insufficient balance: log the balance on every rejection, find the cause, fix it",
    "measure": "refused demo orders n -> 0; fills per day per book restored",
    "why": "Demo fills are the bot's only execution evidence; the cause is still a hypothesis (95.3).",
    "source": "94.3, 95.3, GG-1481",
-   "wave": "logging live (96.3); revisit on the first refusal"
+   "wave": "102.3 Part C"
   },
   {
    "id": "B-013",
