@@ -38,6 +38,19 @@ RUNNERS = [
     ("nba_pregame_shadow_t3", "scripts/run_nba_pregame_shadow.py --bands T3",
      ("9,19,29,39,49,59", "1,11,21,31,41,51")),
     ("nba_player_points_t3", "scripts/run_nba_player_points_shadow.py --bands T3", None),
+    # W100.3 / B-027: the same lock for the T1/T2 shadow lines (box_memory_read 11-05 showed 4 stacked
+    # `run_nba_pregame_shadow --bands T2` copies on a box with 51 MB available; the T3 lock covered only T3).
+    # One lock per runner+band, so it never delays a different band; no schedule change.
+    ("nba_pregame_shadow_t2", "scripts/run_nba_pregame_shadow.py --bands T2", None),
+    ("nba_pregame_shadow_t1", "scripts/run_nba_pregame_shadow.py --bands T1", None),
+    ("pregame_shadow_t2", "scripts/run_pregame_shadow.py --bands T2", None),
+    ("pregame_shadow_t1", "scripts/run_pregame_shadow.py --refresh --bands T1", None),
+    ("mlb_pregame_shadow_t2", "scripts/run_mlb_pregame_shadow.py --bands T2", None),
+    ("mlb_pregame_shadow_t1", "scripts/run_mlb_pregame_shadow.py --bands T1", None),
+    ("nba_player_points_t2", "scripts/run_nba_player_points_shadow.py --bands T2", None),
+    ("nba_player_points_t1", "scripts/run_nba_player_points_shadow.py --bands T1", None),
+    ("nhl_staked_t2", "scripts/run_nhl_shadow_staked.py --band T2", None),
+    ("nhl_staked_t1", "scripts/run_nhl_shadow_staked.py --band T1", None),
 ]
 WRAP_RE = re.compile(r"\( flock -n 9 \|\| \{ printf '.*?t3_skips\.jsonl > /dev/null; exit 0; \}; (?P<orig>.*) \) 9>/tmp/(?P<name>\w+)\.lock\s*$")
 

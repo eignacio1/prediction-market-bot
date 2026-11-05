@@ -14,7 +14,8 @@ import t3_lock_stagger as ts  # noqa: E402
 NBA = "9,19,29,39,49,59 * * * * cd $PROJ && $PYTHON scripts/run_nba_pregame_shadow.py --bands T3 >> logs/nba.log 2>&1"
 NHL = "*/10 17-23 * * * cd $PROJ && $PYTHON scripts/run_nhl_shadow_staked.py --band T3 >> logs/nhl.log 2>&1"
 OTHER = "0 1 * * * cd $PROJ && $PYTHON scripts/other_job.py --x 1 >> logs/o.log 2>&1"
-T2 = "5 * * * * cd $PROJ && $PYTHON scripts/run_pregame_shadow.py --bands T2 >> logs/t2.log 2>&1"
+T2 = "5 * * * * cd $PROJ && $PYTHON scripts/run_pregame_shadow_settle.py --refresh >> logs/t2.log 2>&1"  # not a locked runner
+T2_SHADOW = "10 * * * * cd $PROJ && $PYTHON scripts/run_nba_pregame_shadow.py --bands T2 >> logs/t2s.log 2>&1"
 ALL = ["SHELL=/bin/bash", "# a comment", NBA, NHL, OTHER, T2]
 
 
@@ -90,3 +91,16 @@ def test_memory_read_parses_oom():
          "Nov  3 kernel: Out of memory: Killed process 55 (python) total-vm:1kB, anon-rss:2048kB, file-rss:0kB\n")
     r = bmr.parse_oom(t)
     assert [x["pid"] for x in r] == [1234, 55] and r[0]["anon_rss_mb"] == 150.0
+
+
+def test_t1_t2_lines_locked_without_schedule_change():
+    """W100.3 / B-027: the T1/T2 shadow lines get their own lock (per runner+band), schedule untouched, round trip exact."""
+    w = ts.wrap(T2_SHADOW)
+    assert w.startswith("10 * * * * ( flock -n 9 ||") and w.endswith("9>/tmp/nba_pregame_shadow_t2.lock")
+    assert ts.unwrap(w) == T2_SHADOW and ts.wrap(w) is None
+    # T1/T2/T3 of one sport never share a lock (a T2 run must not make a T3 window skip)
+    t3 = ts.wrap(NBA)
+    assert "nba_pregame_shadow_t3.lock" in t3 and "nba_pregame_shadow_t2.lock" not in t3
+    # the band markers do not claim a different runner's line
+    assert ts._runner("0 * * * * x scripts/run_pregame_shadow.py --bands T2 >> l")[0] == "pregame_shadow_t2"
+    assert ts._runner("0 * * * * x scripts/run_nba_pregame_shadow.py --bands T2 >> l")[0] == "nba_pregame_shadow_t2"
