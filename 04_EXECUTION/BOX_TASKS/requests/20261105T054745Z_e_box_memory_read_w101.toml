@@ -1,0 +1,2 @@
+task = "box_memory_read_w101"
+note = "W101 close read (window)"
