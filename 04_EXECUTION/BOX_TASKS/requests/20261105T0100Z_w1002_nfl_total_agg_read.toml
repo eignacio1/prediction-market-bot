@@ -1,0 +1,2 @@
+task = "nfl_total_agg_read"
+note = "W100.2 Part B: per-game aggregates for the NFL totals decomposition (read-only)"
