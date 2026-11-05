@@ -373,24 +373,47 @@ function govCounts(){
 
 /* ---- WIRE ---- */
 
-/* ---------- PICKS SHEET (W97.3) ---------- */
+/* ---------- PICKS SHEET (W97.3; compact summary view, operator 2026-11-04 22:26 PT: not 90% of the page) ---------- */
 function picksSheet(){
   const D=PICKS, host=$('#pkHost');
   if(!D||!D.ok){ host.innerHTML=`<div class="card pk-err"><b>No picks sheet to show.</b><div class="cap">${esc((D&&D.error)||'missing')}. The nightly builder writes it after the arms' decision passes; nothing is drawn rather than a blank list.</div></div>`; $('#pkHead').textContent='no sheet'; $('#nvPicks').textContent='!'; return; }
-  const sheet=(S,withRes)=>{
+  if(!document.getElementById('pkStyle')){ const st=document.createElement('style'); st.id='pkStyle'; st.textContent=
+    '.pk-tabs{display:flex;gap:6px;margin:4px 0 8px}.pk-tabs button{font:inherit;padding:4px 12px;border-radius:6px;border:1px solid rgba(127,127,127,.35);background:transparent;color:inherit;cursor:pointer}'+
+    '.pk-tabs button.on{background:var(--surface-3);font-weight:600}.pk-sum{margin:2px 0 8px}.pk-box{max-height:440px;overflow:auto;border:1px solid rgba(127,127,127,.25);border-radius:8px}'+
+    '.pk-t{width:100%;border-collapse:collapse;font-size:12.5px}.pk-t th{position:sticky;top:0;background:var(--surface-2);color:var(--ink-2);text-align:left;padding:6px 8px;border-bottom:1px solid rgba(127,127,127,.3);font-weight:600}'+
+    '.pk-t td{padding:5px 8px;border-bottom:1px solid rgba(127,127,127,.12);vertical-align:top}.pk-g{cursor:pointer}.pk-g:hover{background:rgba(127,127,127,.08)}'+
+    '.pk-d td{background:rgba(127,127,127,.05)}.pk-d ul{margin:4px 0 4px 16px;padding:0}.pk-d li{margin:0 0 6px}.pk-flag{font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid currentColor;opacity:.8}';
+    document.head.appendChild(st); }
+  const summary=(S,withRes)=>{
+    if(!S||!S.games.length) return '';
+    const ps=S.games.flatMap(g=>g.picks), placed=ps.filter(p=>p.demo_order&&p.demo_order.placed), dis=S.games.filter(g=>g.arms_disagree).length;
+    let t=`${S.games.length} games · ${ps.length} picks · ${placed.length} fake-money orders · arms disagree on ${dis}`;
+    if(withRes){ const st=placed.filter(p=>p.result); const hit=st.filter(p=>p.result.outcome==='hit').length, miss=st.filter(p=>p.result.outcome==='miss').length;
+      const pnl=st.reduce((x,p)=>x+(+p.result.pnl_per_contract||0),0);
+      t+=st.length?` · settled orders: ${hit} hit, ${miss} miss, ${pnl>=0?'+':''}${pnl.toFixed(2)} per contract in total`:' · no settled orders yet'; }
+    return `<div class="cap pk-sum">${t}</div>`;
+  };
+  const table=(S,withRes,key)=>{
     if(!S) return '<div class="card pk-err"><b>No sheet for this day.</b></div>';
     if(!S.games.length) return `<div class="card pk-err"><b>The sheet for ${esc(S.date)} has no picks.</b><div class="cap">${esc((S.notes||[]).join(' · ')||'no arm found a positive edge in the window')}</div></div>`;
-    return S.games.map(g=>{
-      const rows=g.picks.map(p=>{
-        const o=p.demo_order, od=o?(o.placed?`demo order $${esc(o.stake_usd)}`:`no order (${esc(o.reason)})`):'no order logged';
-        const r=withRes&&p.result?` · <b>${esc(p.result.outcome)}</b> ${p.result.pnl_per_contract>=0?'+':''}${esc(p.result.pnl_per_contract)}/contract`:'';
-        return `<li><b>${esc(p.pick)}</b> <span class="cap">[${esc(p.arm)}]</span><br>bot ${Math.round(p.bot_prob_for_pick*100)}% · Kalshi ${Math.round(p.kalshi_price_yes*100)}¢ (yes) · edge ${(p.edge_after_fee*100).toFixed(1)}¢ after fees · ${od}${r}<br><span class="cap">why: ${esc(p.reasons.join('; '))}</span></li>`;
-      }).join('');
-      return `<div class="card"><div class="bl-h"><span class="bl-title">${esc(g.game)}</span>${g.arms_disagree?'<span class="bl-id">ARMS DISAGREE</span>':''}</div><ul>${rows}</ul></div>`;
+    const line=p=>{ const o=p.demo_order, od=o?(o.placed?`order $${esc(o.stake_usd)}`:`no order (${esc(o.reason)})`):'no order logged';
+      const r=withRes&&p.result?` · <b>${esc(p.result.outcome)}</b> ${p.result.pnl_per_contract>=0?'+':''}${esc(p.result.pnl_per_contract)}/contract`:'';
+      return `<li><b>${esc(p.pick)}</b> <span class="cap">[${esc((p.arms||[p.arm]).join(', '))}]</span> bot ${Math.round(p.bot_prob_for_pick*100)}% · Kalshi ${Math.round(p.kalshi_price_yes*100)}¢ · edge ${(p.edge_after_fee*100).toFixed(1)}¢ · ${od}${r}<br><span class="cap">why: ${esc((p.reasons||[]).slice(0,3).join('; '))}</span></li>`; };
+    const rows=S.games.map((g,i)=>{
+      const ps=[...g.picks].sort((x,y)=>y.edge_after_fee-x.edge_after_fee), top=ps[0], n=ps.filter(p=>p.demo_order&&p.demo_order.placed).length;
+      const res=withRes?(()=>{const st=ps.filter(p=>p.demo_order&&p.demo_order.placed&&p.result);return st.length?`${st.filter(p=>p.result.outcome==='hit').length}/${st.length} hit`:'-';})():'';
+      const shown=ps.slice(0,8), more=ps.length-shown.length;
+      return `<tr class="pk-g" data-k="${key}${i}"><td>${esc(g.game)} ${g.arms_disagree?'<span class="pk-flag">arms disagree</span>':''}</td><td>${ps.length}</td><td>${n}</td><td>${esc(top.pick)} <span class="cap">${(top.edge_after_fee*100).toFixed(1)}¢</span></td>${withRes?`<td>${res}</td>`:''}</tr>`+
+        `<tr class="pk-d" id="pkd${key}${i}" hidden><td colspan="${withRes?5:4}"><ul>${shown.map(line).join('')}</ul>${more>0?`<button class="pk-more" data-k="${key}${i}">show all ${ps.length}</button><ul hidden id="pkm${key}${i}">${ps.slice(8).map(line).join('')}</ul>`:''}</td></tr>`;
     }).join('');
+    return `<div class="pk-box"><table class="pk-t"><thead><tr><th>Game</th><th>Picks</th><th>Orders</th><th>Best pick (edge)</th>${withRes?'<th>Result</th>':''}</tr></thead><tbody>${rows}</tbody></table></div>`;
   };
   $('#pkHead').textContent=D.today.n_picks+' picks · '+D.today.games.length+' games'; $('#nvPicks').textContent=D.today.n_picks;
-  host.innerHTML=`<h3 class="bl-grp">Tonight<small>${esc(D.today.date)}</small></h3>${sheet(D.today,false)}<h3 class="bl-grp">Yesterday, with results<small>${D.yesterday?esc(D.yesterday.date):''}</small></h3>${sheet(D.yesterday,true)}`;
+  host.innerHTML=`<div class="pk-tabs"><button class="on" data-t="t">Tonight <span class="cap">${esc(D.today.date)}</span></button><button data-t="y">Yesterday, with results <span class="cap">${D.yesterday?esc(D.yesterday.date):''}</span></button></div>`+
+    `<div id="pkT">${summary(D.today,false)}${table(D.today,false,'t')}</div><div id="pkY" hidden>${summary(D.yesterday,true)}${table(D.yesterday,true,'y')}</div>`;
+  host.querySelectorAll('.pk-tabs button').forEach(b=>b.onclick=()=>{ host.querySelectorAll('.pk-tabs button').forEach(x=>x.classList.toggle('on',x===b)); $('#pkT').hidden=b.dataset.t!=='t'; $('#pkY').hidden=b.dataset.t!=='y'; });
+  host.querySelectorAll('.pk-g').forEach(r=>r.onclick=()=>{ const d=document.getElementById('pkd'+r.dataset.k); d.hidden=!d.hidden; });
+  host.querySelectorAll('.pk-more').forEach(b=>b.onclick=e=>{ e.stopPropagation(); document.getElementById('pkm'+b.dataset.k).hidden=false; b.remove(); });
 }
 
 /* ---------- ROLLING BACKLOG ---------- */
