@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-03T06:30:00Z (T-1600 — W98.2 proof lane: NFL first look read (2 RULED_OUT), entry-cost says keep rule, frozen re-run 11/13 DIFFERS (GG-1600)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261103_W98_2.md` for full session detail.
+**Last reviewed:** 2026-11-05T01:25:00Z (T-1710 — W100.1: NHL same-vintage league denominator fix (-0.080 to -0.059 bias, Brier flat); NBA v2/v3 misses traced to box OOM.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T0125Z_W100_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
