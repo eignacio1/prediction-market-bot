@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ NOTHING TO PASTE - the window handed off (2026-11-04 18:30 PT).** Wave 101 is the incoming window's. One approval is waiting (see Needs your decision): `t3_lock_stagger_install` for the T1/T2 shadow lines.
+> **▶ NOTHING TO PASTE - the window handed off (2026-11-04 18:30 PT).** Wave 101 is the incoming window's. The T1/T2 shadow-line lock was installed 02:11Z on your approval; nothing is waiting on you.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -51,8 +51,8 @@ Wave 99 close read (`20261104T040109Z_w_distance_read.md`, 11-04 04:02Z); rows n
 | | P3 next look | **2026-11-13** (NFL QB moneyline); modal outcome **KEEP ACCRUING ~91%** | — | 0 |
 
 **Surface (box, 2026-11-05 02:00Z):** 88 live, budget GREEN, healthcheck HEALTHY, no silent arm, box HEAD = main. **Memory is the
-constraint: 45 OOM kills in 24 h, 223 MB free; NBA v2 / v3 missed 5 of 11 games on 11-04.** The T1/T2 shadow lock (#416) waits on
-the operator's named approval of `t3_lock_stagger_install`. **Proof:** 12 NFL cells judged (2 ruled out, 10 accruing; next look 11-13);
+constraint: 45 OOM kills in 24 h, 223 MB free; NBA v2 / v3 missed 5 of 11 games on 11-04.** The T1/T2 shadow lock (#416) was installed 02:11Z (17 of 17
+lines locked); memory to be re-read after a full night. **Proof:** 12 NFL cells judged (2 ruled out, 10 accruing; next look 11-13);
 EXP-042 cell 10 retired; 12 frozen ride cells await their looks (~12-21). **Muse:** 100 daily runs since 11-04 00:01 PT (day 1: 43 chunks
 done, ~180k records, 20 NONE); the operator's Muse chat is out of usage until 11-09 20:50 PT; 200 runs planned (B-042).
 
@@ -72,8 +72,7 @@ EXP-046 not earned. NBA v3 logs (412 rows) but missed 5 of 11 games on 11-04, v2
 **100.2 🟨** EXP-042 cell 10 RETIRED by addendum (`05_RESEARCH_EXPERIMENTS/EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04.md`); the ruled-out NFL
 totals model lost in every band from noise in its disagreements, not bias (72 games); B1 counts ruled-out-but-logging arms again
 (52 / 108); the proof calendar could not be regenerated on the box (GG-1720). **100.3 🟨** installer markers and Python 3.9 test
-collection fixed; the T1/T2 shadow lines' lock is merged (#416) but **NOT installed - needs the operator's named approval of
-`t3_lock_stagger_install`**; picks sheet's first night read: 134 games, 2,614 picks, reasons on 90% (GG-1690: duplicate presentation).
+collection fixed; the T1/T2 shadow lines' lock (#416) **installed 11-05 02:11Z on the operator's named approval (17 of 17 lines locked)**; picks sheet's first night read: 134 games, 2,614 picks, reasons on 90% (GG-1690: duplicate presentation).
 **Box at handoff:** 88 live, budget GREEN, healthcheck HEALTHY, no silent arm, box HEAD = main - **but 45 OOM kills in 24 h and
 223 MB free**: memory is the binding constraint on every NBA forward test.
 
@@ -293,10 +292,9 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
-> **OPEN - WAITING ON THE OPERATOR'S NAMED APPROVAL (2026-11-04):** `t3_lock_stagger_install` again, to wrap the 10 T1/T2 shadow cron
-> lines in the per-runner lock (#416, merged, tested). Approve by sending, in chat: "I approve the box-task request that runs
-> t3_lock_stagger_install, which edits the crontab on the paper box." The window then runs it with `t3_lock_stagger_readback` and a
-> `box_memory_read` after a full NBA + NHL night.
+> **AUTHORIZATION - T1/T2 SHADOW-LINE LOCK (operator, 2026-11-04 18:10 PT: "I approve the box-task request that runs
+> t3_lock_stagger_install, which edits the crontab on the paper box.").** Run by the window 02:11Z: 11 more lines wrapped (17 of 17),
+> backup crontab_20261105T021134Z.bak, line count 670 -> 670, budget GREEN. Next: `box_memory_read` after a full NBA + NHL night.
 
 > **AUTHORIZATION - RETIRE EXP-042 CELL 10 BEFORE ITS LOOK (operator, 2026-11-03 19:16 PT, asked by the window with the 99.2
 > recommendation - "KXMLBTOTAL T0-2h 85-90c wide yes: frozen net .089 / lo .047, re-run .0383 / lo -.0301 ... needs ~370 judged games,

@@ -47,6 +47,5 @@ FIRST TASK
    and diff against section 4 of the carry-forward. Report drift. Read Muse's CLAIMS.md and STATUS.md (archive
    eignacio1/sports-intel-archive, read-only).
 2. Send ACTIVE_QUEUE.md here. Give me a short plain-English sitrep.
-3. If I have not yet approved it, ask me for the named approval of t3_lock_stagger_install (the T1/T2 shadow-line lock,
-   PR #416) - box memory is the binding constraint. Then write Wave 101 into the queue from the top of the rolling
-   backlog and send it. Before 11-09, have the Muse 200-run setup (backlog B-041, B-042) ready as one paste.
+3. Check box memory after a full NBA + NHL night (box_memory_read; the T1/T2 shadow-line lock went in 11-05 02:11Z) -
+   memory is the binding constraint. Then write Wave 101 into the queue from the top of the rolling backlog and send it. Before 11-09, have the Muse 200-run setup (backlog B-041, B-042) ready as one paste.

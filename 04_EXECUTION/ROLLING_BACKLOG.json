@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-05T02:30Z",
+ "as_of": "2026-11-05T02:20Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -32,11 +32,11 @@
    "status": "NOW",
    "lane": "flex",
    "rank": "plumbing",
-   "title": "Box memory: install the T1/T2 shadow-line lock (#416) on the operator's named approval of t3_lock_stagger_install; then measure a full NBA + NHL night; if kills continue, serialise / cap long jobs",
+   "title": "Box memory: T1/T2 shadow-line lock INSTALLED 11-05 02:11Z (17 of 17 lines); measure a full NBA + NHL night; if kills continue, serialise / cap long jobs",
    "measure": "OOM kills per night 20 / 90 min -> 0",
    "why": "45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.",
    "source": "97.3 / GG-1581",
-   "wave": "install waits on operator named approval",
+   "wave": "installed on the operator's named approval 11-04 18:10 PT",
    "order": 1
   },
   {

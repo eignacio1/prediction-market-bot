@@ -3276,3 +3276,7 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 - Handoff deliverables: STRATEGIC_WINDOW_CARRY_FORWARD.md and NEW_WINDOW_PASTE_IN.md rewritten (previous versions archived as 11_MEMORY_HANDOFF/*_2026-10-19.md); ACTIVE_QUEUE.md closed for handoff (NOW: Wave 101 is the incoming window's; open approval blockquote); rolling backlog current (29 tickets); WINDOW_ERROR_LOG W41-W43 added, W31-W43 tagged, tally updated (UNVERIFIED 15).
 - Stale-rule sweep: the queue's 10-07 "MEDIUM blocks, two parts" directive marked SUPERSEDED by the 10-30 three-part rule; the sitrep header names the window range. Charter's run-count history left as history (current rule "as many as Earl schedules").
 - Tension review: NBA-T8 (box memory starves the NBA forward tests), NBA-T9 (officials add nothing as a single term), NFL-T11 (NFL totals lost from noise in disagreement) added; renders current, tests pass.
+
+## 2026-11-05 02:15 UTC (11-04 18:10 PT) - T1/T2 shadow-line lock INSTALLED
+- Operator: "I already did this yesterday no? ... If not then I approve the box-task request that runs t3_lock_stagger_install, which edits the crontab on the paper box." (Yesterday's approval covered the T3 run; #416 added T1/T2 lines, so a new run needed a new approval.)
+- Window ran it at 02:11Z (20261105T021112Z_*): box HEAD = main; 11 more lines wrapped (17 of 17), backup crontab_20261105T021134Z.bak, line count 670 -> 670; budget GREEN. Carry-forward, paste-in, queue and backlog updated.

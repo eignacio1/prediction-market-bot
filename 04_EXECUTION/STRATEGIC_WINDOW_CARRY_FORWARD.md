@@ -129,7 +129,7 @@ Kalshi keeps no historical order book · Python 3.9 on the box.
 New this window:
 - **Box memory is the binding constraint (961 MB, 1 core).** 142 OOM kills / 24 h on 11-03; lock + stagger on the T3 lines
   (installed 11-04 01:55Z) cut it, but 45 kills / 24 h and 223 MB free at handoff; NBA v2 / v3 missed 5 of 11 games on 11-04.
-  The T1/T2 lock (#416) waits on his named approval. Every new arm costs memory — Hard Rule 14 in spirit even when the budget reads GREEN.
+  The T1/T2 lock (#416) was installed 11-05 02:11Z on his named approval (17 of 17 lines locked); the next full night's `box_memory_read` is the test. Every new arm costs memory — Hard Rule 14 in spirit even when the budget reads GREEN.
 - **The silent-arm spec alarms on zero rows, not partial coverage** — read `coverage.jsonl` (NBA engine) for missed games.
 - **The box pulls main every 5 minutes** (`vps_deploy.sh` at :03/:08/...). A request pushed right after a merge can run old code;
   read `deploy_truth_read`'s box HEAD first (the window's #412 retry).
@@ -185,8 +185,8 @@ second look must be defined before January · his Muse chat resets **11-09 20:50
 engine before spring (B-018).
 
 **Wave 101 candidates (judgment, by lane — let 101's results set 102):**
-1. **First, before writing it:** ask him for the named approval of `t3_lock_stagger_install` (T1/T2 lines, #416) if he has not
-   given it, run it, read `box_memory_read` after a full NBA + NHL night. Memory decides whether the NBA tests are worth reading.
+1. **First, before writing it:** read `box_memory_read` after a full NBA + NHL night (the T1/T2 lock went in 11-05 02:11Z). Memory
+   decides whether the NBA tests are worth reading.
 2. **Engine lane:** NBA coverage per arm after the lock (B-030 / B-001; then a v3 `coverage.jsonl` PR) — or NHL totals challenger
    (B-029: over-spread predictions, slope 0.4-0.5). PAM into the NBA engine (B-014) is the larger rank-6 move when memory allows.
 3. **Proof lane:** regenerate the proof calendar off-box or with an aggregate task (GG-1720 / B-039); prepare the 11-13 NFL QB look;
@@ -202,7 +202,7 @@ engine before spring (B-018).
 
 | Item | State |
 |---|---|
-| **`t3_lock_stagger_install` for the T1/T2 lines (#416)** | Waiting on his named approval (queue blockquote). The window runs it + readback. |
+| `t3_lock_stagger_install` for the T1/T2 lines (#416) | **DONE** - approved by name 11-04 18:10 PT, installed 11-05 02:11Z (17 of 17 lines locked, backup taken, budget GREEN). Re-read `box_memory_read` after a full NBA + NHL night. |
 | **Muse to 200 runs (B-042)** | He wants it; held for the next window (11-04 16:31 PT). Setup paste on 11-09 when his chat resets. |
 | **C-052 redo** | Muse asked "Redo C-052 or leave the gap" (wrong season under the label). Window recommends redo; goes in the 11-09 paste. |
 | **Branch deletion (B-043)** | Give him one exact list after checking the 5 unmerged branches; delete only what he approves. |
@@ -250,7 +250,7 @@ job") · REDUCED (W29 "one daily run") · FOREST (W36 composition by newest dire
    a file card.
 4. Read Muse's archive (attach `eignacio1/sports-intel-archive` read-only): `CLAIMS.md` since 11-04 08:00Z and `STATUS.md` — runs
    per day, DONE / NONE / BLOCKED / FAILED, stale reclaims, spot-check failures.
-5. Short plain-English sitrep to him; ask for the named approval of `t3_lock_stagger_install` if not given; then write Wave 101
+5. Short plain-English sitrep to him (incl. memory after the T1/T2 lock); then write Wave 101
    (three blocks, lane rule, ranking) into the queue and send it.
 6. Before 11-09 20:50 PT: B-041 + B-042 ready, so his first Muse message after the reset is one setup paste.
 7. At your own handoff: `/strategic-handoff`.
