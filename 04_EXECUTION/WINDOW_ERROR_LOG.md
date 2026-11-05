@@ -61,7 +61,7 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 
 | Pattern | Count | Last |
 |---|---|---|
-| UNVERIFIED | 8 | W24 (10-19) |
+| UNVERIFIED | 15 | W43 (11-02) / W41 (11-03) |
 | NOTES | 4 | W27 (10-20) |
 | NO-PUSHBACK | 2 | W12 (10-13) |
 | SLICE | 2 | H2 (history) |
@@ -69,11 +69,11 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 | COLLISION | 2 | W13 (10-14) |
 | SCOPE | 2 | W28 (10-20) |
 | REDUCED | 2 | W29 (10-21) |
-| PROCESS | 2 | W19 (10-15) |
-| LITERAL | 2 | W25 (10-19) |
+| PROCESS | 6 | W42 (11-03) |
+| LITERAL | 3 | W31 (10-27) |
 | PRESET | 1 | W21 (10-15) |
-| REPEAT | 2 | W26 (10-19) |
-| FOREST | 1 | W23 (10-19) |
+| REPEAT | 3 | W30 (10-26) |
+| FOREST | 2 | W36 (10-27) |
 
 ## W31 · 2026-10-27 17:31 PT · built on a curiosity question
 The operator asked how Polymarket differs from Kalshi out of curiosity; the window wrote a Polymarket block (91.3) and a Muse ticket (R-071) from it. Operator: "I simply asked as curiosity we're not building shit for polymarket yet". Rule: a question is not a direction; a new venue, sport or data source enters a wave only when the operator says to build it.
@@ -104,3 +104,15 @@ W38's fix (COMMON_RULES_W98: terminals prepare, the window runs installs) assume
 
 ## W40 · 2026-11-03 18:30 PT · a 399-chunk queue with a condition no free source serves
 The split queue (R-112) put "Opponent above .500" on all eight NBA tables (40 chunks) without checking that NBA.com or any free source offers that filter; Muse's runs correctly returned NONE on the first four. And the queue lived only in the bot repo, so runs past C-020 could not read their own chunk (NONE C-032: "no queue definition on file"). Rule: check every condition against its source before queueing at volume, and put a queue where the runs read it (their own archive).
+
+## W41 · 2026-11-03 19:33 PT · told the operator seven stress-test runs were "almost certainly dead" without checking
+Three of the seven were still working and finished clean minutes later (X-022, X-030, X-033). Caught by the window's own background watcher. Rule: report "no outcome yet at <time>", never a cause, until the record says.
+
+## W42 · 2026-11-03 18:30 PT · put Muse's action instructions in a fetched file
+M99-ST v1 told Muse to fetch TO_MUSE.md and act on it (create 50 scheduled runs); Muse's safety check refused to act on fetched instructions. Cost ~10 minutes. Rule: anything Muse is to ACT on goes in the operator's message; TO_MUSE.md is backlog and record only.
+
+## W43 · 2026-11-02 19:20 PT · told Muse its R-077 records feed the NBA engine
+The engine reads its own injury-report fetcher, not the archive. Found by the window checking the code on the operator's question the same night; corrected in TO_MUSE and the charter. Rule: before telling anyone a source feeds the bot, grep the code for the path.
+
+## Pattern tags, W31-W43 (added at the 2026-11-04 handoff; the sections above had none)
+W31 LITERAL (a curiosity question taken as a directive) · W32 UNVERIFIED · W33 PROCESS · W34 PROCESS · W35 PROCESS · W36 FOREST (composition by newest directive, not the ranking) · W37 UNVERIFIED (shrank blocks without checking why parts stalled) · W38 UNVERIFIED · W39 UNVERIFIED · W40 UNVERIFIED · W41 UNVERIFIED · W42 PROCESS · W43 UNVERIFIED. (W30 was tagged REPEAT in its row but not counted in the tally; counted now.)
