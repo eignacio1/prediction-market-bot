@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-05T06:30:00Z (W102.3 — W102.3: picks sheet de-duped (#422 merged), last-night write-up, demo refusals counted; #426 balance logging auto-merge armed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T0830Z_W102_3.md` for full session detail.
+**Last reviewed:** 2026-11-05T09:00:00Z (B-030 — W102.1: NBA v2/v3 misses root-caused to OOM burst; catch-up cron + attempt trace merged, install awaits approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T0900Z_W102_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

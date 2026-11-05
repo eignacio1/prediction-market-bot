@@ -4642,3 +4642,18 @@ W102.3, 2026-11-05. Kalshi returns an order placed as `side="no"` (bot's `submit
 **Status:** OPEN · **Severity:** HIGH
 
 W102.3, 2026-11-05. For `side="no"`, `submit_order` computes `price = 1.0 - mid_price` (a NO-frame price) and posts it as the v2 `price` with `side="ask"`. The v2 book price is in the YES frame (the order GET returns `action=sell, side=yes, yes_price_dollars=<sent price>, no_price_dollars=1-sent`). So a NO order meant to cost `1-mid_yes` is placed at a NO cost of `mid_yes`. Evidence, 2026-11-03 shadow slate (collector `12_EXPLORATORY/picks_sheet_w102/collect_night.py`, 222 filled orders): all 185 filled NO orders have fill cost ≈ `price_yes` logged at the order (e.g. logged 0.395 -> filled NO at 0.40, the correct cost would be 0.605); the contract-weighted mean NO fill cost is 0.715 vs 0.44 on YES fills. Where the YES mid is high the bot buys NO far above fair and fills at once; where it is low the NO bid rests far under market and fills only after the market moves against it. This is a candidate cause of the fills-concentrate-on-the-low-probability-side pattern (filled picks hit 8 of 54 vs 64% for unfilled, W102.3 Part B) and of E3 adverse selection on every NO-side demo order since the v2 migration (GG-063/T-217). Demo only (kelly_fraction 0, no real capital). Also unreviewed: every other caller of `submit_order` with side="no" (T1/T4 MLB, NBA, shadow arms). Registered, not fixed (Hard Rule 11); the fix is one line plus a test pinning the YES-frame price, and then every NO-side fill statistic needs a before/after cut. Related: GG-1770.
+
+### GG-1772 — Killed engine runs left no trace; a SIGKILL/OOM miss was invisible until coverage was counted by hand
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+W102.1, 2026-11-05. NBA engine v1/v2/v3 runs killed by the OOM killer (481 kills since 10-30) wrote nothing. Fixed by `nba_engine/attempts.py` (start/end records in `attempts.jsonl`; an unfinished start is a kill), merged in PR #425. Other lanes' runners not swept.
+
+### GG-1773 — `live.run()` loads history and calibrates before checking for pending events, so every cron fire pays full memory
+**Status:** OPEN · **Severity:** MEDIUM
+
+W102.1, 2026-11-05. Each ~500 MB runner pays full load even when no event is in its tip-60 window; on the 961 MB box that feeds the OOM burst. Not changed (frozen runner logic). Catch-up process only runs stale arms; the root cost remains.
+
+### GG-1774 — `flock -w 240` cron lines exit silently on lock timeout (v3 confirmed; other lanes not audited)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W102.1, 2026-11-05. v3's wait-then-silent-exit lost games with no log line. Same pattern may exist in other cron lines in `deploy/cron.conf`; audit and add a timeout log line.

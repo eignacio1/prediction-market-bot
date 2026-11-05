@@ -3291,3 +3291,5 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 - Markout rows now carry `book`; report filters (book, sport); legacy rows are shadow by construction (collector reads only `shadow_order`).
 - ADR-0072 addendum written PROPOSED; EXP-038 second-look definition DRAFT, not frozen. Nothing accepted by the terminal. Look day unpinned (GG-1750). P2 unchanged by design (execution-rule verdict).
 - Premise note: the block called ADR-0072 a DRAFT; it is ACCEPTED.
+
+| 2026-11-05 | W102.1 | NBA engine v2/v3 misses root-caused to the OOM burst (961 MB box, ~500 MB runners) plus no in-window retry/trace. Fix is additive: stdlib catch-up cron + attempt trace (PR #425). Cron line is NOT installed; install awaits the operator's named approval of `nba_engine_catchup_install`. Parts B (NHL goalie/rest) and C (NBA store lag) not started. GG-1772..1774 registered. |
