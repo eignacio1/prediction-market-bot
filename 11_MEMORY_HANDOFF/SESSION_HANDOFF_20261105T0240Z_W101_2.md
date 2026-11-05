@@ -1,10 +1,21 @@
 # SESSION HANDOFF — W101.2 (PROOF lane: NFL forward-test final word, NFLQB first-look readiness, proof-calendar aggregate)
 
+<!-- session-meta
+task_id: TBD (W101.2, no T- number minted)
+tier: STANDARD
+timestamp: 2026-11-05T05:40:00Z
+commit: ef80ff9
+one_line_summary: W101.2 proof lane: NFL forward test final word ADOPT (P2 12->13), NFLQB look runnable, proof calendar second-look states
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
 vision_pillar: PROOF
 gap_measure: P2 (verdicts issued), P3 (next look runnable), calendar second-look coverage
 gap_delta: P2 12 -> 13 (ADR-0072 NFL forward test: ADOPT, first reached 2026-11-02T11:25Z, not 11-03 as the brief said); P3 ready (no blocker); 65 calendar rows carry a second-look state (was 64, no state field)
-surface_delta: +1 read-only box task (proof_calendar_aggregate); no live component added
 pattern_sweep: NFLQB-not-in-SEASONS (calendar read it as "season paused"): fixed via season_sport() in every proof_calendar lookup; other SEASONS names in scripts/src are unrelated year lists. n/a elsewhere.
+surface_delta: +1 read-only box task (proof_calendar_aggregate); no live component added
+-->
+
 
 ## Results
 - Part A: `12_EXPLORATORY/forward_test_nfl_final/results_W101_2.md`. Verdict ADOPT. (a) diff +0.190, lower95 +0.088; (b) fill ratio 0.376 >= 0.25; (c) diff -0.0117, [-0.0334, +0.0101], not credibly worse. Code and addenda agree. Caveat from W98.2 stands: gain reflects which orders fill. (c) is weakly powered.
