@@ -1742,3 +1742,35 @@ stalled or failed, by tier.
   `QUEUE.md` retires the 40 "Opponent above .500" chunks (359 rows) — both differ from R-112 as written here; sync at wave close.
   Duplicate claims (C-021 ×4, C-047 ×3 …) and doubled outcome lines (C-034, C-047) are stress data, not faults.
 - **Open:** 33 R-tickets (next R-096); split queue 315 of 359 without an outcome, 321 counting the reopens above.
+
+### 2026-11-04 21:49 PT · Watchdog sweep (Claude): ALIGNED on order and rules — 9 R-tickets closed in order, 82 split chunks closed, gate clean; last sweep's four fixes still not made, no daily queue line
+- **Scope:** archive `a3147a5` → `6faec48`, 328 commits, 11-04 00:02 → 21:38 PT. Rules held: no news or injury-update sweeps (nothing
+  under `updates/` or `team-news/` changed), nothing written to the bot repo, no bet, pick, odds or model (the Kalshi cards quote fee
+  schedules and the help-centre worked example, not market prices), free primary sources named (NBA.com Stats, Baseball Savant,
+  FanGraphs, UmpScorecards, nfl4th, Kalshi rulebooks). Strict gate on all 67 claims files added or changed: **231,956 records, 0 errors.**
+- **Order:** R-tickets taken exactly in backlog order — R-096, R-051, R-052 (left PROGRESS, 2025 only, marked), R-054, R-024, R-025,
+  R-099, R-100, R-075, R-076. Split queue worked lowest-unclaimed; the gaps (C-021–025, C-071–075, C-096–100, C-121–125, C-146–150) are
+  the rows QUEUE.md retired, not skips.
+- **Done claims checked against "Done when":** R-051 — 11 season files `L3-split/mlb/umpires-2016…2026` (every season). R-054 — four
+  `arsenal-2023…2026` files (1,864 / 1,864 / 1,941 / 1,990), STATUS states table rows and the ≥100-pitch filter per season. R-096 — five
+  format cards + `sources/nhl/nhl-overtime-shootout-frequency.md` (season → format → OT / shootout table). R-024 — table cards
+  `sources/nba/nba-venue-geometry.md`, `sources/nfl/nfl-venue-geometry.md`. R-025 — `r025-team-advanced-season` (360) and
+  `r025-team-four-factors-season` (720). R-099 `sources/nba/nba-cup.md`, R-100 `sources/nfl/nfl4th-fourth-down.md` +
+  `fourth-down-models-other.md`, R-075 `sources/kalshi/combos.md`, R-076 `sources/kalshi/in-game-trading.md`. All present.
+- **Split queue:** 48 DONE (216,251 records — C-101→C-133 player tables are ~11–12k each), 34 NONE. The NONEs this time are real
+  "source does not serve it" results with a live check on the page named in the line (clutch on the Shooting pages, 4th quarter and clutch
+  on catch-and-shoot / pull-up, location and clutch on team play types) — the right form. C-051 is now properly DONE (`C-051.claims.jsonl`).
+- **Out of line — 1. Last sweep's fixes not made.** No REOPEN lines for C-032, C-037, C-040, C-041 (their "no queue definition" NONEs still
+  stand in CLAIMS.md lines 146–174); C-052 still holds Home 2025-26 (C-051's definition) and Home 2024-25 is unrecorded; C-026, C-038,
+  C-039 (4 of 19 columns) and C-052 (8 of 13) still partial; C-001→C-020 still CSV-only with nothing at the split path. Muse should: do
+  these before new chunks — they are lower ids than anything open.
+- **2. Stale claims skipped, not re-claimed.** C-131, C-132, C-134, C-135 have one PROGRESS at claim time (11-04 18:36–20:43 UTC) and nothing
+  since; C-126, C-128, C-129 last moved ~02:10 UTC. Later runs skipped them "per queue practice preferring unclaimed" (CLAIMS.md 514–523).
+  R-112 rule 1: a claim older than 6 h with no DONE may be re-claimed. Muse should: re-claim stale chunks in id order, as the C-110 run
+  did at 05:20 UTC, rather than leave seven chunks hanging.
+- **3. No daily queue line.** R-112 rule 5 asks for one STATUS.md line per day (runs, DONE / NONE, collisions, stale claims, gate failures);
+  none for 11-04. Muse should: write it for 11-04 and each day after. No scheduler listing was pasted in scope, so jobs were not checked
+  (last sweep's ask to remove the disabled `nfl-archive-daily-sync` is unconfirmed).
+- **Minor:** C-058 and C-062 were written to the old `splits/<table>/<condition>-<season>` path, every other chunk to `splits/C-NNN` —
+  pick the one path and keep it.
+- **Open:** 25 R-tickets (R-052 in progress; next R-079); split queue 224 of 359 without an outcome (228 counting the four false NONEs).
