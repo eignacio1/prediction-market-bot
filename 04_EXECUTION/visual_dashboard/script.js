@@ -164,6 +164,7 @@ const GAGENT = __GAGENT__;
 const MUSEWEB = __MUSEWEB__;
 const BACKLOG = __BACKLOG__;
 const PICKS = __PICKS__;
+const CALAGE = __CALAGE__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
@@ -393,6 +394,12 @@ function picksSheet(){
 }
 
 /* ---------- ROLLING BACKLOG ---------- */
+function calendarAge(){
+  const D=CALAGE, host=$('#caHost');
+  if(!D||!D.ok){ host.innerHTML=`<div class="card ca-err"><b>The proof calendar's age could not be read.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is shown rather than a wrong age.</div></div>`; return; }
+  const age=(Date.now()-Date.parse(D.generated_at))/864e5, red=age>1;
+  host.innerHTML=`<div class="card ${red?'ca-red':''}"><b>Proof calendar generated ${esc(D.generated_at)}</b><div class="cap">${age.toFixed(1)} days old${red?' — older than 1 day; regenerate with the proof_calendar_read box task':''}.</div></div>`;
+}
 function backlog(){
   const D=BACKLOG, host=$('#blHost');
   if(!D||!D.ok){ host.innerHTML=`<div class="card bl-err"><b>The backlog's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong list.</div></div>`; $('#blHead').textContent='source invalid'; $('#nvBacklog').textContent='!'; return; }
@@ -669,7 +676,7 @@ function museWeb(){
   const ro=new ResizeObserver(()=>fit()); ro.observe(host); fit();
 }
 
-distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); backlog(); picksSheet();
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); backlog(); picksSheet(); calendarAge();
 bars('#sevBars',SEV); bars('#asymBars',ASYM);
 $('#tblBtn').addEventListener('click',()=>{
   const t=$('#forestTable'); t.classList.toggle('hidden');

@@ -219,6 +219,13 @@ def backlog() -> dict:
     return rolling_backlog.load(ROOT)
 
 
+def calendar_age() -> dict:
+    """Generated-at time and age of PROOF_CALENDAR.md (W102.4 Part C); red when older than one day."""
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import proof_calendar_age
+    return proof_calendar_age.load(ROOT)
+
+
 def picks() -> dict:
     """Tonight's and yesterday's picks (W97.3, B-026): exp_output/PICKS_SHEET/ JSON from scripts/build_picks_sheet.py.
     A missing, unparseable or empty file returns ok=False with the reason so the panel says so instead of drawing blank."""
@@ -263,7 +270,7 @@ def render() -> tuple[str, str]:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())).replace("__CALAGE__", js(calendar_age())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     return html, sha
 
