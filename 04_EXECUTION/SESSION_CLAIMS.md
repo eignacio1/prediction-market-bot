@@ -1148,3 +1148,4 @@
 | 2026-11-05T01:54:20Z | T-1670 | CLOSED — W100.2: EXP-042 cell 10 retired; NFL totals loss read on 72 games (noise in disagreement); calendar regen blocked, GG-1720 (commit `9b37fa6`) |
 | 2026-11-05T01:55:14Z | T-1690 | CLOSED — W100.3: installer MARKERS + Py3.9 fixed (B-040); T1/T2 lock merged not installed (OOM 142->39); picks night 1 read (commit `81d3a4d`) |
 | 2026-11-05T01:55:51Z | T-1690 | CLOSED — merge confirmed, HEAD (38d5eed) is ancestor of origin/main — W100.3 flex lane: B-040 done, B-027 fix merged not installed, B-026 night 1 read |
+| 2026-11-05T02:21:51Z | TBD | W101.2 proof lane: ADR-0072 NFL final word + 11-13 NFL QB look + B-039 calendar (MEASURE: P2/P3; STANDARD) |
