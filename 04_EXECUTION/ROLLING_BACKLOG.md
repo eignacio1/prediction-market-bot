@@ -40,16 +40,9 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ## NEXT — drawn into the next wave or two
 
-### B-027 · Box memory: T1/T2 shadow-line lock INSTALLED 11-05 02:11Z (17 of 17 lines); measure a full NBA + NHL night; if kills continue, serialise / cap long jobs
-
-- order 2 · lane: flex · rank: plumbing · wave: 0 OOM kills since the lock (box 05:48Z); window reads a full slate
-- **measure:** OOM kills per night 20 / 90 min -> 0
-- **why:** 45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.
-- **source:** 97.3 / GG-1581
-
 ### B-030 · Every NBA game logged: v1 / v2 / v3 coverage since the memory fix (11-04 01:55Z)
 
-- order 3 · lane: engine · rank: 2 · wave: 102.1: root cause + #425 catch-up; install awaits the operator
+- order 3 · lane: engine · rank: 2 · wave: catch-up installed 06:40Z 11-05; 11-05 slate is the first test (window reads coverage)
 - **measure:** games past tip unlogged per arm -> 0 new
 - **why:** 100.1: v1 11/11, v2 5/11, v3 6/11 on 11-04; cause box OOM. Re-read after B-027; then a v3 coverage.jsonl PR.
 - **source:** 98.1 / 99
@@ -185,6 +178,13 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 - **source:** ranking 10-27
 
 ## DONE — closed at a wave close (kept for one wave, then dropped)
+
+### B-027 · ~~Box memory: T1/T2 shadow-line lock INSTALLED 11-05 02:11Z (17 of 17 lines); measure a full NBA + NHL night; if kills continue, serialise / cap long jobs~~
+
+- order 2 · lane: flex · rank: plumbing · wave: 0 OOM kills over the full 11-04 slate after the T1/T2 lock; 652 MB available (box 11-05 14:0xZ)
+- **measure:** OOM kills per night 20 / 90 min -> 0
+- **why:** 45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.
+- **source:** 97.3 / GG-1581
 
 ### B-039 · ~~Proof calendar second-look state; B1 counts RULED_OUT-but-logging arms~~
 

@@ -52,7 +52,7 @@ close read (`20261105T054745Z_b_distance_read.md`): Waves 101-102 moved measurem
 | | P3 next look | **2026-11-13** (NFL QB moneyline); modal outcome **KEEP ACCRUING ~91%** | — | 0 |
 
 **Surface (box, 2026-11-05 06:36Z):** 88 live, healthcheck HEALTHY, no silent arm, box HEAD = main. **Budget RED only because the NBA
-catch-up cron (#425) is merged but not installed** - your named approval clears it. Memory: 0 OOM kills since the lock (02:11Z), 405 MB available.
+catch-up cron (#425) is merged but not installed** - your named approval clears it. Memory over the FULL 11-04 slate (box 14:0xZ 11-05): **0 OOM kills since the lock**, 652 MB available - B-027 fixed. NBA v2 / v3 11-04 misses predate the catch-up install (06:40Z); the 11-05 slate is its first test.
 **RED ALERT (103.4): GG-1771 - every NO-side demo order since the v2 migration was sent at the mirror price;** E1-E3 and the forward test's
 NO-side fills are suspect until 103.4's before / after cut. **Proof:** NFL ADOPT is ~18c selection / ~1c placement (102.4) - window
 recommends hold. Next cell look 11-13 (NFL QB moneyline). **Muse:** 100 daily runs; B-041 / B-042 setup paste due before 11-09 20:50 PT.
