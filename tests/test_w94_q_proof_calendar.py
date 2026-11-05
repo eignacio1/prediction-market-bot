@@ -87,3 +87,51 @@ def test_retired_cell10_closed_in_static_rows_and_render():
     assert rows["EXP-042 cell 10"]["proj"].startswith("CLOSED") and "RETIRED" in rows["EXP-042 cell 10"]["note"]
     assert not rows["EXP-042 cell 9"]["proj"].startswith("CLOSED") and not rows["EXP-042 cell 11"]["proj"].startswith("CLOSED")
     assert all("second" in r for r in rows.values())
+
+
+# ---- W101.2: NFLQB season mapping + aggregate mode (B-039 / GG-1720) ----
+def test_nflqb_uses_nfl_season():
+    assert pc.season_sport("NFLQB") == "NFL"
+    assert pc.is_active("NFLQB", date(2026, 11, 8)) == pc.is_active("NFL", date(2026, 11, 8))
+    assert pc.is_active("NFLQB", date(2026, 11, 8))
+
+
+def _blob():
+    cell = {"cell": "NFLQB_NFL_MONEYLINE_T1", "sport": "NFLQB", "market_type": "MONEYLINE", "band": "T1",
+            "rows": 528, "judged_n": 47, "settled_games": 47, "first_look_n": 60, "looks": [60, 150],
+            "settle_dates": {"2026-10-26": 5, "2026-11-02": 6}, "projection": {"date": "2026-11-13"}}
+    return {"generated": "2026-11-05", "cells": [cell], "archive_games_per_day": {}}
+
+
+def test_aggregate_record_shape_and_second_state():
+    rows = pc.aggregate(_blob(), pc.REPO)
+    r = next(x for x in rows if x["id"] == "NFLQB_NFL_MONEYLINE_T1")
+    assert set(r) == set(pc.AGG_KEYS)
+    assert r["rows_n"] == 528 and r["settled_games"] == 47
+    assert "second look n=150" in r["second_state"]
+    ids = [x["id"] for x in rows]
+    assert "EXP-045" in ids
+
+
+def test_exp045_is_dated_look():
+    r = next(x for x in pc.aggregate(_blob(), pc.REPO) if x["id"] == "EXP-045")
+    assert r["first_look"] == "2027-01-12"
+    assert "337" in r["second_state"]
+
+
+def test_nba_second_state_flags_gg529_without_defining_it():
+    b = _blob()
+    b["cells"] = [{"cell": "NBA_X_T1", "sport": "NBA", "market_type": "PLAYER_POINTS", "band": "T1", "rows": 1,
+                   "judged_n": 0, "first_look_n": 150, "looks": [150, 400], "settle_dates": {}, "projection": {}}]
+    r = next(x for x in pc.aggregate(b, pc.REPO) if x["id"] == "NBA_X_T1")
+    assert "GG-529" in r["second_state"] and "undefined" in r["second_state"]
+
+
+def test_aggregate_cli_is_compact_json(tmp_path, capsys):
+    f = tmp_path / "b.json"
+    f.write_text(__import__("json").dumps(_blob()))
+    assert pc.main(["--aggregate", "--input", str(f)]) == 0
+    out = capsys.readouterr().out.strip()
+    parsed = __import__("json").loads(out)
+    assert "\n" not in out and isinstance(parsed, list)
+    assert out == __import__("json").dumps(parsed, separators=(",", ":"))
