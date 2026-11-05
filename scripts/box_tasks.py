@@ -105,6 +105,7 @@ TASKS: dict[str, str] = {
         "[print(json.dumps(c)) for c in r['cells']]\""
     ),
     # W82.2: prints the JSON the report already wrote (the cron's, or a detached run's); never re-fetches fills
+    "markout_book_proof_read": f"{PY} scripts/markout_book_proof_read.py",  # W102.2 Part B: legacy markout rows are all shadow_order
     "forward_verdict_read": (
         f"{PY} scripts/demo_fill_forward_report.py --print-json exp_output/FORWARD_TEST/w82_2/demo_fill_forward_report.json"
     ),
