@@ -88,6 +88,25 @@ def is_enabled() -> bool:
     return switch_value(SWITCH_ENV) == SWITCH_ON_VALUE
 
 
+ADOPT_ENV = "DEMO_FILL_ADOPT_BOOK_SPORT"  # W102.2: per-(book, sport) placement switch, default OFF everywhere
+_ADOPT_SPORTS = (("KXMLB", "MLB"), ("KXNBA", "NBA"), ("KXNHL", "NHL"), ("KXNFL", "NFL"))
+
+
+def sport_of_ticker(ticker: Any) -> str:
+    t = str(ticker or "").upper()
+    return next((s for p, s in _ADOPT_SPORTS if t.startswith(p)), "OTHER" if t else "UNKNOWN")
+
+
+def adopt_on(book: str, sport: str) -> bool:
+    """W102.2 / ADR-0072 addendum (PROPOSED): True only if ``book:SPORT`` is listed in
+    DEMO_FILL_ADOPT_BOOK_SPORT (comma-separated, e.g. ``shadow:NFL``). Unset/empty/anything
+    unlisted = OFF (fail closed). Applies the treatment placement rule (book-anchored post,
+    cancel at the configured seconds) to every order of that (book, sport), whatever its
+    forward-test hash arm. Does not itself enable the placement rule: that switch must be ON."""
+    want = f"{book}:{sport}".strip().lower()
+    return want in {x.strip().lower() for x in switch_value(ADOPT_ENV).split(",") if x.strip()}
+
+
 def _float_env(name: str, default: float) -> float:
     try:
         v = float(os.environ.get(name, ""))
