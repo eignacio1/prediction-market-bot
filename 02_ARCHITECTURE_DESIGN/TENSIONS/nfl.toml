@@ -95,3 +95,13 @@ evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_RUN_BOX.md + 02_ARCHIT
 pillar = "DEPTH (D5b)"
 relief = "the light-box stuffed-rate trait tested on team rushing yards/attempts (W80.3 pending line); a calibrated cross-to-price step; more seasons of FTN box counts"
 added = "2026-10-20 (strategic window handoff sweep)"
+
+[[tension]]
+id = "NFL-T11"
+title = "The NFL game-total model lost to the market from noise in its disagreements, not bias - and the first verdicts are mostly KEEP ACCRUING"
+status = "OPEN"
+where = "NFL shadow game-total arm (RULED_OUT T1 + T2, EXP-037); NFL engine (EXP-045)"
+evidence = "W98.2 / W100.2 12_EXPLORATORY/nfl_first_look/results_W100_2.md: 72 games, worse than the market in every band (+0.015 dBrier, intervals exclude 0) from noise in disagreement; weather untestable (61 of 72 blank); NFL crews into totals null (W99.1)"
+pillar = "PROOF (P2) and DEPTH (D4 NFL)"
+relief = "the NFL engine's EXP-045 look (2027-01-12) beating the ladders, or a challenger that shrinks disagreement toward the line (market-anchored, rank 1) and still separates"
+added = "2026-11-04 (strategic window handoff sweep, Waves 81-100)"

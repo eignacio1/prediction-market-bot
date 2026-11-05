@@ -67,3 +67,23 @@ evidence = "02_ARCHITECTURE_DESIGN/NBA_ENGINE/INDEX_ENTRY_PACE.md (W80.2 Part B)
 pillar = "DEPTH (D5b NBA: applied 5 of 9, no REAL-NOT-PRICED)"
 relief = "a split or matchup cross (rest x pace, lineup on/off, officials) that tests REAL-NOT-PRICED; NBA player-points late moves (W80.1: KXNBAPTS lineup-window move 0.030 vs placebo 0.000) are the first lead"
 added = "2026-10-20 (strategic window handoff sweep)"
+
+[[tension]]
+id = "NBA-T8"
+title = "The NBA engine's forward tests depend on a 961 MB box: memory kills runs, so frozen arms miss games"
+status = "OPEN"
+where = "NBA engine arms (EXP-044 / 044b / 044c) on the VPS; every shadow runner sharing the box"
+evidence = "W100.1 12_EXPLORATORY/nhl_engine/results_W100_1.md: v1 11/11, v2 5/11, v3 6/11 games logged on 2026-11-04; box_memory_read 2026-11-05 02:00Z: 45 OOM kills / 24 h, 223 MB free; 142 kills / 24 h on 11-03 before the T3 lock"
+pillar = "PROOF (a frozen test that silently drops games is biased) and DEPTH (D4 NBA)"
+relief = "the T1/T2 shadow-line lock (#416, awaiting the operator's named install approval), serialised or capped long jobs, or more memory; measured as games past tip unlogged per arm per night -> 0"
+added = "2026-11-04 (strategic window handoff sweep, Waves 81-100)"
+
+[[tension]]
+id = "NBA-T9"
+title = "Single officials terms add nothing to NBA totals; officials only matter, if at all, as a cross known before the price"
+status = "OPEN"
+where = "NBA engine totals; officials factor class; Muse archive (R-040)"
+evidence = "W99.1 12_EXPLORATORY/archive_officials/results_W99_1.md: NBA referees' prior-season records into engine v2 totals - no lift (an upper bound: no free pre-tip crew time); Muse's records VERIFIED 236/239"
+pillar = "DEPTH (D5b NBA officials: interpreted, not applied)"
+relief = "a crew known before the price (R-097 / B-016) crossed with pace or foul-drawing teams that tests REAL-NOT-PRICED"
+added = "2026-11-04 (strategic window handoff sweep, Waves 81-100)"

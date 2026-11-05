@@ -21,7 +21,7 @@
 
 ---
 
-## 🌲 RUNNING SITREP — the forest (kept by every strategic window; this window: Waves 81 →, from 2026-10-19; last window: Waves 61–80)
+## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 81–100, 2026-10-19 → 11-04; next: Waves 101 →)
 
 *Updated by the strategic window at every wave close and at every handoff. Last update: **Wave 100 CLOSED; the Waves 81-100 window HANDED OFF, 2026-11-04 ~18:30 PT** (box bridge `20261105T020020Z_*`). Before that: Wave 99 closed 11-03 20:15 PT.*
 
@@ -231,6 +231,8 @@ each substantive and MEDIUM-sized (below). More only when the operator asks. The
 does not count. Wave 79 (four blocks) was issued before this.
 
 ## ⬛ OPERATOR DIRECTIVE, 2026-10-07 18:58 PT — MEDIUM BLOCKS (amends the LARGE-block directive below)
+
+**SUPERSEDED 2026-10-30 08:38 PT** (operator, "Yes" to the window's proposal): blocks are three parts, ~130 minutes; Part C is work a terminal can switch to while waiting on the box. The 10-07 text below is kept as history.
 
 "You're making some of these tasks far too long. The terminals are coming back stating ETAs upwards of 3 hours which is
 ludicrous from any one terminal to take on." Rule from Wave 60: each block is two parts, ~60-minute target, 90-minute
