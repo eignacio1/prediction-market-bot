@@ -123,3 +123,11 @@ makes final for NFL. The window read distance_read at every close and the carry-
 keep running" / "(a)/(b) hold, pending (c)" (sitrep row sourced from the 10-27 report). The operator was never told. Pattern:
 UNVERIFIED (a sitrep row carried from an old report instead of re-read). Rule: at every close, read the forward-test VERDICT line
 of the newest report and update the sitrep's forward-test row from it; a change in any verdict word goes to the operator that close.
+
+## W45 · 2026-11-05 (Wave 101) · blocks written with parts that could not start until a future clock time
+Wave 101's 101.1 Part A step 4 and 101.3 Part A were gated "after 2026-11-05T07:30Z" (a full NBA + NHL night) while the terminals were
+pasted at ~02:20Z. Result: 101.1 closed with D4 NOT MEASURED and Part B not run; 101.3 left no handoff, its memory read and picks night 2
+undone, and PR #422 open (conflicting, no CI). Operator, 11-04 21:45 PT: "please ensure you're not give me an active block that requires
+some sort of future time to hit - that makes no sense". Pattern: PROCESS (scheduling a block around data that did not exist yet).
+Rule: every part of a block must be runnable on data that exists at paste time. Anything that needs a future night, game or settle is
+WINDOW work through the box bridge (scheduled with send_later), or waits for the next wave.
