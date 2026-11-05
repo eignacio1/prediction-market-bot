@@ -70,6 +70,9 @@ TASKS: dict[str, str] = {
     "nba_engine_v3_cron_install": f"{PY} scripts/nba_engine_v3_cron_install.py install",
     "nba_engine_v3_cron_readback": f"{PY} scripts/nba_engine_v3_cron_install.py readback",
     "nba_engine_v3_cron_uninstall": f"{PY} scripts/nba_engine_v3_cron_install.py uninstall",
+    "nba_engine_catchup_install": f"{PY} scripts/nba_engine_catchup_install.py install",
+    "nba_engine_catchup_readback": f"{PY} scripts/nba_engine_catchup_install.py readback",
+    "nba_engine_catchup_uninstall": f"{PY} scripts/nba_engine_catchup_install.py uninstall",
     # W98.3: picks-sheet builder cron line (B-026; install is budget-gated, backs up the crontab first)
     "picks_sheet_cron_install": f"{PY} scripts/picks_sheet_cron_install.py install",
     "picks_sheet_cron_readback": f"{PY} scripts/picks_sheet_cron_install.py readback",
