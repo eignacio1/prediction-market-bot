@@ -131,3 +131,10 @@ undone, and PR #422 open (conflicting, no CI). Operator, 11-04 21:45 PT: "please
 some sort of future time to hit - that makes no sense". Pattern: PROCESS (scheduling a block around data that did not exist yet).
 Rule: every part of a block must be runnable on data that exists at paste time. Anything that needs a future night, game or settle is
 WINDOW work through the box bridge (scheduled with send_later), or waits for the next wave.
+
+## W46 · 2026-11-05 · "Deleting exactly the 31 branches" - claimed before testing that this session could delete a ref
+The operator approved the branch cleanup (21:54 PT); the window replied that it was deleting them, then found the session proxy refuses
+ref deletion (git push --delete -> HTTP 403; REST DELETE git/refs -> 403). Nothing was deleted; the work went back to a terminal.
+Operator, 21:57 PT: "You should've known that you couldn't do it from here before claiming it". Pattern: UNVERIFIED - the very pattern this
+window named as its biggest risk in its first message. Rule: before telling the operator the window will do something on GitHub or the box,
+test the exact operation once on something harmless (or read the proxy rules); if it is untested, say "a terminal does this".
