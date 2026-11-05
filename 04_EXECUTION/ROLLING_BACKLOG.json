@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-05T00:35Z",
+ "as_of": "2026-11-05T01:40Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -160,8 +160,20 @@
    "order": 11
   },
   {
+   "id": "B-043",
+   "status": "NEXT",
+   "lane": "flex",
+   "rank": "plumbing",
+   "title": "Branch cleanup: 27 merged-PR branches to delete; 5 unmerged to check first (#149 open since 09-24; #314 w83-3 NHL data layer closed unmerged; b74a-s1 hygiene audit, w81-3 partb, w897 - no PR); keep data/nba-injury-reports and data/nhl-goalie-probe",
+   "measure": "stray branches on origin 35 -> 2 (the data branches) after one operator-approved list",
+   "why": "Operator 11-04 17:36 PT: \"Do we need to do anything w stray branches?\"; 17:38 PT: \"Yes pls\" to registering it. A terminal's sweep listed branches that do not exist on origin (w89-* .. w91-*); the window's git ls-remote is the source. For each unmerged branch check whether its GG / T is resolved on main, then give the operator one exact list to approve for deletion (deletes name exact items).",
+   "source": "operator 2026-11-04",
+   "wave": "next window",
+   "order": 12
+  },
+  {
    "id": "B-017",
-   "order": 12,
+   "order": 13,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -173,7 +185,7 @@
   },
   {
    "id": "B-008",
-   "order": 13,
+   "order": 14,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -185,7 +197,7 @@
   },
   {
    "id": "B-010",
-   "order": 14,
+   "order": 15,
    "status": "NEXT",
    "lane": "quant",
    "rank": "4",
@@ -197,7 +209,7 @@
   },
   {
    "id": "B-012",
-   "order": 15,
+   "order": 16,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -209,7 +221,7 @@
   },
   {
    "id": "B-004",
-   "order": 16,
+   "order": 17,
    "status": "LATER",
    "lane": "flex",
    "rank": "EXECUTION",
@@ -221,7 +233,7 @@
   },
   {
    "id": "B-013",
-   "order": 17,
+   "order": 18,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -233,7 +245,7 @@
   },
   {
    "id": "B-014",
-   "order": 18,
+   "order": 19,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -245,7 +257,7 @@
   },
   {
    "id": "B-015",
-   "order": 19,
+   "order": 20,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -257,7 +269,7 @@
   },
   {
    "id": "B-016",
-   "order": 20,
+   "order": 21,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -269,7 +281,7 @@
   },
   {
    "id": "B-018",
-   "order": 21,
+   "order": 22,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -281,7 +293,7 @@
   },
   {
    "id": "B-019",
-   "order": 22,
+   "order": 23,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -293,7 +305,7 @@
   },
   {
    "id": "B-020",
-   "order": 23,
+   "order": 24,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -305,7 +317,7 @@
   },
   {
    "id": "B-021",
-   "order": 24,
+   "order": 25,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -317,7 +329,7 @@
   },
   {
    "id": "B-002",
-   "order": 25,
+   "order": 26,
    "status": "DONE",
    "lane": "proof",
    "rank": "1 + 4",
@@ -337,7 +349,7 @@
    "why": "NFL crews into totals: NULL; Muse yards exact, counts not reproduced.",
    "source": "operator 2026-11-02 21:33 PT; window",
    "wave": "99.1 Part A",
-   "order": 26
+   "order": 27
   },
   {
    "id": "B-033",
@@ -349,7 +361,7 @@
    "why": "NBA referees into totals: NULL (upper bound); Muse records VERIFIED 236/239.",
    "source": "window",
    "wave": "99.1 Part B",
-   "order": 27
+   "order": 28
   },
   {
    "id": "B-034",
@@ -361,7 +373,7 @@
    "why": "EXP-037 verdicts in the registry (#406).",
    "source": "98.2",
    "wave": "99.2 Part A",
-   "order": 28
+   "order": 29
   },
   {
    "id": "B-036",
@@ -373,7 +385,7 @@
    "why": "Batch install + one gate rule; per-step conf fixed by the window (#412); all held installs ran 03:30Z.",
    "source": "window, 11-03",
    "wave": "99.3 + window #412",
-   "order": 29
+   "order": 30
   },
   {
    "id": "B-037",
@@ -385,11 +397,11 @@
    "why": "Reasons on NHL, NBA points and NBA engine rows (#407).",
    "source": "98.3 / GG-1630",
    "wave": "99.3 Part B",
-   "order": 30
+   "order": 31
   },
   {
    "id": "B-022",
-   "order": 31,
+   "order": 32,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -401,7 +413,7 @@
   },
   {
    "id": "B-023",
-   "order": 32,
+   "order": 33,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -413,7 +425,7 @@
   },
   {
    "id": "B-024",
-   "order": 33,
+   "order": 34,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -425,7 +437,7 @@
   },
   {
    "id": "B-025",
-   "order": 34,
+   "order": 35,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
