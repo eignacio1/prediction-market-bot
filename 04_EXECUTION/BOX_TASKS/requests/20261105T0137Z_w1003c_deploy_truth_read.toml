@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W100.3 read-only retry after deploy"
