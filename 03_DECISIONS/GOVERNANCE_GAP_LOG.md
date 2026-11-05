@@ -4614,3 +4614,10 @@ W98.2 Part C: 259/570 ladder shards done in about 33 min of box time (total 2390
 **Status:** OPEN · **Severity:** LOW
 
 W99.3, 2026-11-04. Found while running the full suite for PR #407: both files fail at collection (pre-existing, unrelated to W99.3). Registered, not fixed (Hard Rule 11). They therefore cover nothing for D5 components (seat interface, structural tensions) until repaired.
+
+**Resolved 2026-11-05 (W100.3, PR #415, 73eda44):** `tomllib` falls back to `tomli` on Py3.9; both files collect and pass. Awaiting the gap agent to archive.
+
+### GG-1690 — Picks sheet lists both mirror sides of one moneyline/spread bet, and T1 and T2 arms as separate picks
+**Status:** OPEN · **Severity:** LOW
+
+W100.3, 2026-11-05, T-1690. The 2026-11-04 22:47Z sheet has 2614 picks in 134 games (median 8, max 74 per game). The moneyline sample shows `ATL: YES` and `WAS: NO` at the same bot 0.8351, which are one bet seen from both tickers; the same pick also appears once per arm (T1 and T2). The count therefore overstates how many distinct opinions the bot holds. Registered, not fixed (the sheet's grouping is a presentation choice for the window to decide; Hard Rule 11). Also registered here: 259 picks still show "no reasons available" (the oldest arms), 2 more name a model that exposes no per-factor contributions.

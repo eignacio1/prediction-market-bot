@@ -240,7 +240,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 |---|---|---|---|
 | 100.1 | B-029 + B-001 + B-030 engine: NHL regulation totals; v3 first nights; NBA coverage | ⬜ | |
 | 100.2 | B-038 + B-035 + B-039 proof: cell 10 retired; NFL totals loss in full; calendar + B1 | ⬜ | |
-| 100.3 | B-026 + B-027 + B-040 flex: picks read back; memory after fix; leftovers | ⬜ | |
+| 100.3 | B-026 + B-027 + B-040 flex: picks read back; memory after fix; leftovers | 🟨 PARTIAL | B-040 done (#415); lock for T1/T2 merged (#416), install awaits operator approval of `t3_lock_stagger_install`; 05:37Z picks sheet still to read |
 
 ### ✅ WAVE 99 — WRITTEN 2026-11-03 ~06:50 UTC · CLOSED 2026-11-04 ~04:15 UTC (operator 11-03 19:14 PT) · verified on GitHub (#405-#412 CI green) + box bridge (`20261104T040109Z_*`) · moved: **Muse archive tested in an engine (2 slices, null); verdicts applied; 13/13 frozen cells classified; all held installs live (85 → 88); OOM kills → 0**
 | # | Block | Status | Outcome |
