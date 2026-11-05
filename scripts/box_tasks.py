@@ -46,6 +46,7 @@ TASKS: dict[str, str] = {
     "budget_read": f"{PY} scripts/runtime_registry.py live --refresh; echo; tail -n 40 logs/health.log | grep '^===' | tail -1",
     "silent_arms_read": f"{PY} -m prediction_market_bot.pregame_shadow.silent_arms",
     "nfl_total_rows_read": f"{PY} scripts/nfl_total_rows_read.py",  # W99.2 Part C, read-only per-game rows
+    "nfl_total_agg_read": f"{PY} scripts/nfl_total_rows_read.py --agg",  # W100.2 Part B, read-only per-game aggregates (<60KB)
     "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",

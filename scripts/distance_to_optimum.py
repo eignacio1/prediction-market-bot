@@ -26,6 +26,11 @@ REPO = Path(__file__).resolve().parent.parent
 MANIFEST_REL = "scripts/distance_to_optimum_d1_manifest.json"
 REGISTRY_SRC = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 LOGGING = {"active", "shadow"}
+# W100.2 (B-039): a RULED_OUT cell is a verdict, not a stop. The registry records that the ruled-out NFL game-total arms
+# keep evaluating and logging (market_type_registry.py, EXP-037 first look: "nothing in the registry gates the shadow cron"),
+# so B1/B2/B3 count them as logging. A ruled-out cell whose cron is actually stopped must be moved out of this set by a
+# dated edit; the silent-arms probe (Hard Rule 14) is the check that a ruled-out arm is still writing.
+RULED_OUT_STATUS = "ruled_out"
 BOOKS = {"t4_mlb": ("logs/paper_portfolio_mlb_t4.json", "logs/t4_mlb_fill_status.jsonl"),
          "t1_mlb": ("logs/paper_portfolio_mlb.json", "logs/t1_mlb_fill_status.jsonl")}
 BANDS5 = ("T1", "T2", "T3", "T4", "T5")
@@ -83,14 +88,15 @@ def breadth(repo: Path, cells_fams: Optional[tuple] = None) -> list[dict]:
         as_of = _mtime(p) if p.exists() else _iso()
     except Exception as e:
         return [m_na(i, f"registry import failed: {type(e).__name__}: {e}", src) for i in ("B1", "B2", "B3", "B4")]
-    logging_cells = [c for c in cells if c[2] in LOGGING]
+    logging_cells = [c for c in cells if c[2] in LOGGING or c[2] == RULED_OUT_STATUS]
+    ruled_logging = sum(1 for c in logging_cells if c[2] == RULED_OUT_STATUS)
     lf = {c[0] for c in logging_cells}
     lb = {c[1] for c in logging_cells}
     props = sorted(f for f in fams if "PLAYER" in f)
     parl = sorted(f for f in fams if "PARLAY" in f)
     pl, ql = [f for f in props if f in lf], [f for f in parl if f in lf]
     return [
-        m_ok("B1", f"{len(logging_cells)} / {len(cells)}", src, as_of, note="registered cells logging (ACTIVE+SHADOW) / registered cells"),
+        m_ok("B1", f"{len(logging_cells)} / {len(cells)}", src, as_of, note=f"registered cells logging (ACTIVE+SHADOW+RULED_OUT-still-logging) / registered cells; {ruled_logging} of the logging cells are RULED_OUT (verdict issued, arm still logging; W100.2)"),
         m_ok("B2", f"{len(lf)} / {len(fams)}", src, as_of, note="market families with a logging cell / registered families"),
         m_ok("B3", f"{len([b for b in BANDS5 if b in lb])} of 5 (missing: {', '.join(b for b in BANDS5 if b not in lb) or 'none'})",
              src, as_of, note="execution bands with a logging cell; T4 sub-bands collapsed to T4"),
