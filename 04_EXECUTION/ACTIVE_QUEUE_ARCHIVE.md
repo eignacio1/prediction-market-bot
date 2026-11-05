@@ -22295,3 +22295,243 @@ END OF BLOCK 101.3
 
 ---
 
+---
+
+## (archived 2026-11-05) WAVE 102 · WRITTEN 2026-11-05 ~06:10 UTC (11-04 22:10 PT) · five blocks (102.4 quant + 102.5 branch cleanup added at the operator's ask, 21:57 PT) · paste each block below into its own terminal
+
+**Every part runs on data that exists now** - no part waits for a game, a night or a clock (operator 11-04 21:45 PT; W45). Anything that
+needs tonight's results is window work through the box bridge.
+
+**Drawn from the rolling backlog by lane (ranking: 1 market-anchored · 2 one engine per sport · 3 granularity · 4 quant · 5 architecture · 6 PAM · 7 Muse · 8 expansion):**
+102.1 **engine** (rank 2) = B-030 root cause + B-012 + B-017 · 102.2 **proof** (rank 1/4) = the ADR-0072 NFL ADOPT package + GG-529 ·
+102.3 **flex** (rank 1 operator ask / EXECUTION) = GG-1690 (#422) + B-026 + B-004.
+Window work beside the wave (no terminal): tonight's NBA / NHL coverage + memory read after the slate settles; the branch list to you;
+Muse B-041 + B-042, the setup paste ready before 11-09 20:50 PT.
+
+- **Pushback:** the NBA engine is the rank-2 lane and NBA v3 has **no settled game yet** (0 logged before 11-04; 38 of 56 markets tonight),
+  so its first read cannot run this wave - 102.1 fixes why runs miss instead. Second: 102.2 prepares a placement change for NFL that only
+  you can approve; if you would rather not change a live test's placement at all, the package still records the look and the two
+  defects, and nothing flips.
+- **Surface:** 88 live · budget GREEN · healthcheck HEALTHY · no silent arm · box HEAD = main (box 2026-11-05 05:48Z). **0 OOM kills since
+  the lock (02:11Z)**, 375 MB available (was 223). Red: none. Delta this wave: **+0 running components** - any crontab or flag change is
+  prepared and tested, never installed or switched on.
+- **Dependencies:** none between blocks. Each block takes its own box reads. Shared files: fetch + rebase before every push; each block
+  touches only the files in COMMON_RULES_W102's ownership list.
+
+| # | Lane · rank | Block | Status | Outcome |
+|---|---|---|---|---|
+| 102.1 | engine · 2 | NBA v2 / v3 miss runs without OOM: root cause and fix; NHL goalie / rest factors point-in-time, pre-registered, held-out; NBA store lag | ⏳ pasted? | — |
+| 102.2 | proof · 1/4 | The NFL ADOPT package for your decision (draft addendum + switch, default OFF); markout book key; GG-529 second-look definition drafted | ✅ PR #424 merged; addenda PROPOSED/DRAFT; GG-1750 registered; box re-reads queued | 3 operator yes/no lines |
+| 102.3 | flex · 1/EXECUTION | Picks sheet de-duplicated (#422) and its last settled night in plain English; demo balance rejections found and fixed | PARTIAL (#426 auto-merge armed after CI fix; box deploy read + picks_sheet_read not done) | #422 merged; last settled night + RESULT written; 2259 refusals counted; GG-1770/GG-1771 (NO orders mirror-priced) registered |
+| 102.4 | quant · 4 (operator 21:57 PT) | The ADOPT gain split into selection vs placement; one multiplicity ledger for every verdict; calendar age on /visual | ✅ done, PR #427 merged (7ec2349) | SESSION_HANDOFF_20261105T0700Z_W102_4 |
+| 102.5 | plumbing (operator 21:54 / 21:57 / 21:59 PT) | Delete the 31 approved stray branches + w83-3 after a 5-minute check (window's proxy refuses ref deletes) | ⏳ pasted? | — |
+
+### 102.1 - ENGINE
+
+```
+WAVE 102 - BLOCK 102.1 - ENGINE LANE (rank 2: one engine per sport)
+NBA V2 / V3 MISS RUNS WITHOUT OOM: ROOT CAUSE AND FIX; NHL GOALIE + REST FACTORS POINT-IN-TIME; NBA STORE LAG
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_1.md.
+
+PURPOSE: D4 NBA - the engine prices every game: arms with complete coverage on the 11-04 slate 1 of 3 (v1 56/56, v2 44/56, v3 38/56
+markets; box 2026-11-05 05:48Z, nba_engine_coverage_read) -> a named root cause and a tested fix that would make it 3 of 3.
+Secondary: D5(b) NHL - goalie and rest factor classes aggregated -> interpreted (held-out), pre-registered first.
+
+PART A (~50 min) - why v2 / v3 miss (B-030)
+1. Facts that exist now: 04_EXECUTION/BOX_TASKS/results/20261105T054745Z_f_nba_engine_coverage_read.md (reason on every miss:
+   "window_closed_without_a_successful_run"), ..._e_box_memory_read_w101.md (0 OOM kills since 02:11Z; lock skips 38, of which
+   nba_pregame_shadow_t3 22). Read the v2 / v3 runners' logs for the 11-04 slate on the box (ssh or a READ-ONLY bridge task):
+   every attempted run, start / end, exit, lock skip, timeout, error.
+2. Name the root cause per arm with the log lines that show it (e.g. the T1/T2/T3 lock makes v2 / v3 skip while a long T3 run holds
+   it, and the pre-tip window closes). Say which games each cause cost.
+3. Fix it: a code change (retry inside the window, priority or a separate lock for the engine arms) by PR with tests, merged on green;
+   or, if the fix is a crontab change, PREPARE it as an allowlisted install task (backup + readback, like t3_lock_stagger_install) and
+   name it in the handoff - the window runs it only on the operator's named approval. Rows, prices and the frozen EXP-044 / 044b / 044c
+   specs untouched.
+
+PART B (~50 min) - NHL goalie + rest, point-in-time (B-012)
+1. From the NHL shot store (historical seasons, data that exists): build per game, point-in-time, (i) the starting goalie and his
+   shot-quality-adjusted save rate over a trailing window known before the game, (ii) rest / back-to-back / travel for both teams.
+   Say plainly that "starting goalie" uses who actually started (known before puck drop in real life; the live capture branch
+   data/nhl-goalie-probe stopped writing 10-14).
+2. Pre-register ONE challenger first (12_EXPLORATORY/nhl_engine/NHL_GOALIE_REST_PREREGISTRATION_<date>.md, committed BEFORE any row):
+   the inputs, the held-out split (same as W101.1: 2023-2025), the metric (Brier per family vs model_pit), the judged n and the rule.
+3. Run the held-out test in a NEW module under src/prediction_market_bot/nhl_engine/ (+ tests). Verdict by the pre-registered rule;
+   a NO is a result. Write 12_EXPLORATORY/nhl_engine/results_W102_1.md. No cron line.
+
+PART C (~30 min, switch here whenever A or B waits on the box) - NBA store lag (B-017)
+1. Read the NBA event store's last game date against yesterday's schedule (nba_engine_cron_readback or ssh, read-only). If it trails,
+   find why (refresh times 12:33Z / 15:46Z vs when games finalize; the source's lag) and fix by PR. If it does not trail, say so.
+
+Report: per COMMON RULES. MEASURE MOVED: D4 NBA - root cause named + fix merged / prepared (coverage itself is re-read by the window
+after the next slate); D5(b) NHL goalie / rest stage. Operator decisions: only if Part A needs an install (name the task).
+END OF BLOCK 102.1
+```
+
+### 102.2 - PROOF
+
+```
+WAVE 102 - BLOCK 102.2 - PROOF LANE (rank 1 market-anchored / 4 quant)
+THE NFL ADOPT PACKAGE FOR THE OPERATOR; THE MARKOUT BOOK KEY; THE GG-529 SECOND-LOOK DEFINITION DRAFTED
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_2.md.
+
+PURPOSE: P2 / EXECUTION - the first ADOPT in the forward test (ADR-0072, NFL shadow book; 12_EXPLORATORY/forward_test_nfl_final/
+results_W101_2.md) turned into ONE decision the operator can answer yes / no, with the change already built and tested behind a
+switch that is OFF. PROOF hygiene: the two defects W101.2 observed fixed or registered; GG-529 (EXP-038 second look undefined, due
+before January) drafted for his acceptance.
+
+PERMISSIONS: per COMMON_RULES_W102 ownership. Nothing switched on, no placement changed on any book, no pre-registered parameter
+changed, no verdict relabeled. ADR-0072 is a DRAFT ADR: the application is a PROPOSED addendum, never accepted by a terminal.
+
+PART A (~55 min) - the ADOPT package
+1. Read ADR-0072 (DRAFT) and its addenda 10-20 / 10-21 / 10-22: what does ADOPT change, for which (book, sport), and what happens to the
+   NFL control arm (does the forward test keep running for NBA / NHL; does NFL keep a control)? If the documents do not say, list the
+   open questions; do not answer them yourself.
+2. Write 03_DECISIONS/ADR-0072_ADDENDUM_<date>_nfl-adopt-application.md, status PROPOSED: the verdict and numbers (cite W101.2), what
+   would change, what would not, W98.2's caution in one line, the open questions from step 1, and one blockquote-ready sentence the
+   operator can accept.
+3. PR: a per-(book, sport) placement switch in demo_fill_policy.py, default OFF for every book and sport, that when ON places NFL shadow
+   orders treatment-style (post at the book, cancel at 60 s). Tests: OFF = today's behaviour byte-for-byte on a fixture; ON = only NFL
+   shadow changes. Merge on green. Read deploy_truth_read after the merge.
+
+PART B (~40 min) - the two observations (W101.2)
+1. Markout book key: scripts/demo_fill_markout_collector.py rows carry no `book`, so markout_c filters by sport only. Add the book to
+   new rows and filter by (book, sport) in the report; old rows keep their meaning (they are all shadow_order today - prove it from the
+   log). PR with tests; merge on green; confirm the 11-04 verdict words are unchanged by re-running the report read-only on the box.
+2. "Which day was the look": the 10-21 addendum says the look is taken once; the report recomputes daily. Register a GG (number from
+   your claim range) and put the question in the PROPOSED addendum for the operator. Do not pin it yourself.
+
+PART C (~35 min, switch here whenever A or B waits on CI or the box) - GG-529
+1. Read GG-529 and EXP-038's pre-registration. Draft the second-look definition (the trigger: settled games / date, whichever first,
+   exact), as a PROPOSED addendum to EXP-038 for the operator. Do not freeze it. Put the calendar row's second-look state as
+   "draft definition pending operator".
+
+Report: per COMMON RULES. MEASURE MOVED: P2 unchanged by design (the forward-test word is an execution-rule verdict, not a cell
+verdict; say so); defects fixed / registered. Operator decisions: (1) the NFL ADOPT addendum, yes / no; (2) the look-day question;
+(3) the GG-529 definition. One plain-English line each.
+END OF BLOCK 102.2
+```
+
+### 102.3 - FLEX
+
+```
+WAVE 102 - BLOCK 102.3 - FLEX LANE (rank 1 operator ask / EXECUTION)
+THE PICKS SHEET DE-DUPLICATED AND ITS LAST SETTLED NIGHT IN PLAIN ENGLISH; DEMO BALANCE REJECTIONS FOUND AND FIXED
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_3.md (W101.3 left none - write yours before you stop).
+
+PURPOSE: B-026 - the picks sheet readable per game per night: GG-1690 (one pick per distinct opinion) merged and the last fully settled
+night summarised for the operator; B-004 / EXECUTION E1 - demo orders refused for insufficient balance: cause found, balance logged on
+every rejection, fixed.
+
+PART A (~35 min) - GG-1690 (#422)
+1. PR #422 (w101-3-gg1690-dedupe) is open, CONFLICTING and has no CI run. Rebase it on main, resolve, run the tests, push, read CI as
+   green, merge. Then picks_sheet_read and confirm: picks before / after de-duplication, n_rows_before_dedupe kept, nothing lost.
+
+PART B (~45 min) - the last settled night in plain English (B-026)
+1. Use the most recent sheet whose games have ALL settled at the time you run (today that is the 2026-11-04 sheet, the 11-03 PT slate;
+   tonight's 2026-11-05 sheet is still open - do not wait for it). If the sheet does not carry results, fill them from the settled
+   ledgers / Kalshi settlements (read-only), by PR in the builder if needed.
+2. For the operator, on a phone: games, distinct picks, picks with a fake-money order placed and filled, how the filled ones did against
+   Kalshi's price at the pick (descriptive, n stated, not a verdict), and the three games where the arms disagreed most and what happened.
+   Write 12_EXPLORATORY/picks_sheet_w102/last_settled_night.md (docs-only).
+
+PART C (~45 min, switch here whenever A or B waits on CI or the box) - demo balance rejections (B-004)
+1. From logs/demo_fill_policy.jsonl and the order paths' logs (read-only), count orders refused for insufficient balance by book and
+   sport since 10-16, and the demo balance at each refusal where it was read.
+2. Find the cause (stake vs balance, a book never topped up, a balance read failing, double-counted reservations). Fix by PR with tests:
+   at minimum, log the balance read on every rejection. A demo top-up is plumbing - if one is needed, say so in the handoff; no real money.
+3. Write 12_EXPLORATORY/demo_balance_w102/RESULT.md.
+
+Report: per COMMON RULES. MEASURE MOVED: picks sheet distinct picks / night; E1 refusals before -> after (counted on existing logs).
+Operator decisions: none expected.
+END OF BLOCK 102.3
+```
+
+
+### 102.4 - QUANT
+
+```
+WAVE 102 - BLOCK 102.4 - QUANT LANE (rank 4: quant refinement, "get our figures right structurally")
+THE ADOPT GAIN DECOMPOSED (SELECTION VS PLACEMENT); ONE MULTIPLE-TESTING LEDGER FOR EVERY VERDICT; THE PROOF CALENDAR'S AGE ON /VISUAL
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_4.md. Every part runs on data that exists now.
+
+PURPOSE: PROOF / EXECUTION measurement quality. (1) The operator's NFL ADOPT decision gets a number for W98.2's caution: of the
+treatment-minus-control +0.190 per filled contract (W101.2), how much is WHICH markets / prices fill (selection) and how much is the
+placement itself. (2) Every pre-registered test that has issued or will issue a verdict sits in one multiplicity ledger, so "12 verdicts"
+and "1 ADOPT" are read against how many tests and looks were run. (3) B-010: calendar age <= 1 day visible.
+
+PERMISSIONS: READ-ONLY on every ledger, log, report, pre-registration and verdict. ADD new functions with tests to
+src/prediction_market_bot/quant/ (no edits to existing ones); a NEW /visual panel module for the calendar age; READ-ONLY box tasks
+(one line in scripts/box_tasks.py if needed); 12_EXPLORATORY/quant_w102/. No pre-registered rule, alpha or verdict changes - a
+recommendation goes to the window in your handoff.
+
+PART A (~55 min) - the ADOPT gain decomposed (NFL shadow, post-top-up, the same rows W101.2 used)
+1. From logs/demo_fill_policy.jsonl + settlements (box, read-only), build matched sets: the same ticker, side and decision window in
+   both arms. Report: (i) on markets where BOTH arms filled, treatment-minus-control settle-minus-price (placement effect);
+   (ii) control's settle-minus-price on the fills treatment did NOT get (what waiting skipped); (iii) the reweighting that makes
+   control's fill mix look like treatment's (selection effect). Game-clustered intervals, n stated.
+2. Known-answer test first: a synthetic fixture where the true split is set (all selection; all placement; half/half) and the method
+   recovers it. Then the real numbers.
+3. Plain English for the operator, one paragraph: "of the 19 cents, about X is the price we get by waiting and Y is which orders end up
+   filling". Write 12_EXPLORATORY/quant_w102/adopt_decomposition.md. Descriptive - not a verdict, not a new test.
+
+PART B (~50 min) - the multiplicity ledger
+1. Enumerate every pre-registered test with a verdict issued or scheduled: EXP-037 (12 NFL cells, first look 11-02, second looks),
+   ADR-0072 forward test (4 book-sports, daily recompute - see W101.2 obs 2), EXP-041, EXP-042 (10 live ride cells), EXP-043, EXP-044 /
+   044b / 044c, EXP-045, the NHL challengers (W100, W101), the NFL QB look (11-13). For each: alpha, sidedness, looks planned, verdict so far.
+2. Use the EXISTING Holm / Benjamini-Hochberg in src/prediction_market_bot/quant/inference.py (do not duplicate); ADD only an
+   alpha-spending view for repeated looks, with known-answer tests, and produce
+   the ledger: per verdict, its pre-registered result beside a multiplicity-adjusted reading. The pre-registered word stands; the
+   adjusted reading is information. Name any verdict whose word would change under a family-wise view (e.g. ADOPT read daily).
+3. Write 12_EXPLORATORY/quant_w102/MULTIPLICITY_LEDGER.md + one recommendation line for the window (whether future pre-registrations
+   should state a family and an alpha-spending rule) - the operator decides, not you.
+
+PART C (~25 min, switch here whenever A or B waits on the box or CI) - calendar age on /visual (B-010)
+1. A NEW panel module that shows 04_EXECUTION/PROOF_CALENDAR.md's generated-at time and age in days, red when > 1 day. No cron, no
+   new running component: the window regenerates it at every wave close through proof_calendar_aggregate. PR with tests; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: ADOPT gain split (selection / placement, with intervals); verdicts in the ledger N of N;
+calendar age visible. Operator decisions: none from you - the recommendation goes to the window.
+END OF BLOCK 102.4
+```
+
+### 102.5 - BRANCH CLEANUP
+
+```
+WAVE 102 - BLOCK 102.5 - PLUMBING (B-043), operator-authorized 2026-11-04 21:54 PT ("Yes proceed with the branch cleanup";
+blockquote in ACTIVE_QUEUE.md "Needs your decision")
+DELETE THE 31 APPROVED STRAY BRANCHES ON ORIGIN; NOTHING ELSE
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W102.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W102_5.md. Short block (~20 minutes); stop when done.
+
+PURPOSE: PLUMBING - stray branches on origin 35 -> 3 (data/nba-injury-reports, data/nhl-goalie-probe, #149's branch). Why a terminal: the strategic window's session proxy refuses ref deletion (HTTP 403, 05:56Z).
+
+1. Source: the two DELETE tables in 12_EXPLORATORY/branch_cleanup_w101/LIST.md (31 rows: branch name + 10-char tip SHA).
+2. Run `git ls-remote --heads origin`. For each of the 31: delete ONLY if the remote tip starts with the recorded SHA,
+   one branch per push: `git push origin --delete <branch>`. If a tip differs or the branch is gone, do not touch it; list it.
+3. NEVER delete: main, data/nba-injury-reports, data/nhl-goalie-probe, session/20260924T045227Z-resolved-filter (#149),
+   w101-3-gg1690-dedupe (#422), or ANY branch not in the 31 rows + w83-3 below (Wave 102's own branches included).
+3b. session/20261021T235008Z-w83-3-nhl-data-layer (operator 21:59 PT: "input whats recommended"; LIST.md's recommendation): first a
+   5-minute check - diff its nhl_event_store.py and nhl_store_checks.py against main. For each line main lacks (the duplicate-shifts
+   failure check, COVERAGE_FLOOR / SOG_RECONCILE_FLOOR, the atomic tmp-file write): is it still wanted? If yes, register ONE GG
+   (number from your claim range) naming the lines and the tip SHA 8219b53bec; do not port the code here. Then delete the branch,
+   only if its tip still starts with 8219b53bec.
+4. If your own push of a delete is refused (403 / permission), stop and say so in the handoff - do not try another route.
+5. Append a "DONE <UTC>" section to LIST.md: deleted (count + names), skipped (reason each), and the full `git ls-remote --heads origin`
+   output after. Docs-only push. Handoff: pattern_sweep: n/a.
+
+Report: per COMMON RULES. MEASURE MOVED: stray branches 35 -> N (source: your ls-remote after). Operator decisions: none.
+END OF BLOCK 102.5
+```
+
+---
+
