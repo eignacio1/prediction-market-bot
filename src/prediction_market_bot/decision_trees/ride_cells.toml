@@ -146,12 +146,16 @@ tier = "T0-2h"
 bucket = "85-90c"
 book = "wide"
 side = "yes"
-status = "IN_SAMPLE"
+status = "RETIRED"
 n = 52
 games = 52
 net_mean = 0.089
 net_lo = 0.047
 source = "W89.2"
+# EXP-042 cell 10, retired before its look (operator 2026-11-03 19:16 PT, "Yes"). Never scored forward. Router: any
+# status outside RIDEABLE routes NONE ("ride:status_RETIRED"). Addendum: 05_RESEARCH_EXPERIMENTS/EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04.md
+retired_date = "2026-11-04"
+retired_reason = "re-run net .0383 lo -.0301 (exact fee -.0265) vs frozen .089 / lo .047; judged n ~370 games vs 19 frozen"
 
 [[cell]]
 kind = "CALIBRATION"
