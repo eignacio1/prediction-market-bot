@@ -16,3 +16,8 @@ The box kills fewer runners than two days ago (142 → 39 a day) but not zero. T
 - NHL totals: a fix for the model's habit of predicting too-extreme totals helped a little on paper but did not clear the bar we set in advance. Result: NO. Nothing changes in the live bot.
 - Still zero real money at risk. Pillar: DEPTH (partly plumbing).
 - W102.5 (auto): W102.5 (B-043) deleted 32 stray origin branches; stray branches 35 -> 3; w83-3 check found nothing lost, no GG.
+## W101.3 flex lane
+- Branch cleanup: the exact list is written (32 branches safe to delete once you approve; nothing deleted). One call is yours: the NHL data-layer branch.
+- Picks sheet: fixed the double counting, so one opinion now shows once instead of per arm and per team side. Waiting on CI to merge.
+- Not done yet: tonight's picks results and the memory-crash check need the clock to pass (about 07:30Z). The next window picks both up.
+- Plumbing only; no pillar moved. Still zero real money at risk.
