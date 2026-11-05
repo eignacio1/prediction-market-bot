@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "Wave 100 close / window handoff read (read-only)"
