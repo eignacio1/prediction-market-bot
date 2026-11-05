@@ -251,7 +251,8 @@ PART B (~50 min) - the multiplicity ledger
 1. Enumerate every pre-registered test with a verdict issued or scheduled: EXP-037 (12 NFL cells, first look 11-02, second looks),
    ADR-0072 forward test (4 book-sports, daily recompute - see W101.2 obs 2), EXP-041, EXP-042 (10 live ride cells), EXP-043, EXP-044 /
    044b / 044c, EXP-045, the NHL challengers (W100, W101), the NFL QB look (11-13). For each: alpha, sidedness, looks planned, verdict so far.
-2. Add quant functions (Holm, Benjamini-Hochberg, and an alpha-spending view for repeated looks) with known-answer tests, and produce
+2. Use the EXISTING Holm / Benjamini-Hochberg in src/prediction_market_bot/quant/inference.py (do not duplicate); ADD only an
+   alpha-spending view for repeated looks, with known-answer tests, and produce
    the ledger: per verdict, its pre-registered result beside a multiplicity-adjusted reading. The pre-registered word stands; the
    adjusted reading is information. Name any verdict whose word would change under a family-wise view (e.g. ADOPT read daily).
 3. Write 12_EXPLORATORY/quant_w102/MULTIPLICITY_LEDGER.md + one recommendation line for the window (whether future pre-registrations
@@ -399,6 +400,12 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 Rows moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04).
 
 ---
+
+## ⬛ OPERATOR DIRECTIVE, 2026-11-04 22:01 PT — THREE BLOCKS STAYS STANDING; WAVE 103 = ALL QUANT + ONE RED ALERT
+"Don't treat 5 as the operating procedure moving forward - it'll still be a standing 3, unless I request so. I want the next wave to be
+all Quant + 1 red alert for whatever needs attention immediately. We've done a lot of engine work, I want to get the quant work moved up too"
+Wave 102's five blocks were a one-off. Wave 103 = two quant blocks (backlog B-010, B-044, B-045, B-046) + one red-alert block for
+whatever is red at Wave 102's close; the lane rule is suspended for Wave 103 only (DECISION_LOG 2026-11-04 22:01 PT).
 
 ## ⬛ OPERATOR DIRECTIVE, 2026-10-08 23:16–23:20 PT — EXPANSION ("we're trying to win"); supersedes calibration-only mode
 

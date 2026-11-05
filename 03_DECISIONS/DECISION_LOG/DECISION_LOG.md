@@ -3280,3 +3280,7 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 ## 2026-11-05 02:15 UTC (11-04 18:10 PT) - T1/T2 shadow-line lock INSTALLED
 - Operator: "I already did this yesterday no? ... If not then I approve the box-task request that runs t3_lock_stagger_install, which edits the crontab on the paper box." (Yesterday's approval covered the T3 run; #416 added T1/T2 lines, so a new run needed a new approval.)
 - Window ran it at 02:11Z (20261105T021112Z_*): box HEAD = main; 11 more lines wrapped (17 of 17), backup crontab_20261105T021134Z.bak, line count 670 -> 670; budget GREEN. Carry-forward, paste-in, queue and backlog updated.
+
+## 2026-11-04 22:01 PT — Wave size stays three; Wave 103 = all quant + one red-alert block (operator)
+- Operator, verbatim: "Don't treat 5 as the operating procedure moving forward - it'll still be a standing 3, unless I request so. I want the next wave to be all Quant + 1 red alert for whatever needs attention immediately. We've done a lot of engine work, I want to get the quant work moved up too"
+- Window's reading: Wave 102's five blocks were a one-off at his request (21:57 PT). Wave 103 = three blocks: two quant blocks (drawn from the quant tickets B-010, B-044..B-046, the remainder of the accepted 2026-10-22 rollout's Waves B and C) + one red-alert block for whatever is red at Wave 102's close. The lane rule (engine / proof / flex) is suspended for Wave 103 only. Told to the operator so he can correct the count.
