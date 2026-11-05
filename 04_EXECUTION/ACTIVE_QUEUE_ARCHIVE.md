@@ -234,6 +234,145 @@ unresolved stake (GG-441) · the unexplained SSH poller (GG-347) · T1 MLB posts
 
 ---
 
+## Wave 100 NOW section with its pastes (closed 2026-11-04 17:59 PT; the Waves 81-100 window's last). 100.1 🟨 100.2 🟨 100.3 🟨. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md. Verbatim:
+
+## ⬛ NOW — Wave 100 · THE LIVE ARMS READ BACK · NHL TOTALS AT THE ROOT · THE PROOF CALENDAR HONEST · WRITTEN 2026-11-04 ~04:15 UTC (11-03 20:15 PT) · three blocks, three parts each (~130 min) · the last wave of this window
+
+Common rules: `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md`. All three run in parallel. No Muse block: Muse runs on its own (100 daily
+runs from 11-04 00:01 PT; see the sitrep). Every block is drawn from the top of the **rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.md`).
+A new strategic window takes over when this wave closes; every handoff carries a plain-English paragraph for it.
+
+| # | Tickets | Lane | Rank served | Block | Pillar · measure | Status | One line |
+|---|---|---|---|---|---|---|---|
+| 100.1 | B-029 + B-001 + B-030 | engine | 2 (judged by 1) | NHL engine totals: the regulation-scoring cause, fixed; NBA v3's first nights read back; every NBA game logged since the memory fix | DEPTH + PROOF: NHL totals bias → noise; v3 rows 0 → every game | ✅ PR #414 merged; NHL bias -0.080 → -0.059, EXP-046 not earned; NBA misses = box OOM (window installs named) | results_W100_1.md |
+| 100.2 | B-038 + B-035 + B-039 | proof | 1 | **EXP-042 cell 10 retired as you decided**; the NFL totals loss on all 72 games; proof calendar second looks + B1 | PROOF: cell retired; loss read 18 → 72 games | ⬜ | |
+| 100.3 | B-026 + B-027 + B-040 | flex | plumbing + operator 10-30 | **The picks sheet's first real nights**, with reasons, read back; memory after the fix; leftover defects | PLUMBING: OOM 0; budget GREEN; picks visible | ⬜ | |
+
+**What Wave 99 delivered (verified 2026-11-04: #405-#412 merged, CI green; box bridge `20261104T040109Z_*`):** **99.1 ✅** Muse's archive in an
+engine for the first time - NFL crews and NBA referees into totals: no lift (Muse's NBA referee records checked out 236/239); NHL overtime
+already right - the totals problem is regulation scoring. **99.2 🟨** the 12 NFL verdicts in the registry; all 13 frozen ride cells re-run
+(signs held, edges smaller; the held-out MLB totals 5c+ cell +0.26 on 24 games); the NFL totals loss read on 18 of 72 games (box output cap).
+**99.3 ✅** install gate fixed; every arm now logs its reasons. **Installed (your named approvals, 11-03):** memory fix 01:55Z; NBA events
+refresh, NBA v3, picks builder 03:30Z (the window fixed the batch, #412). **Box after: 0 OOM kills in 24 h, no silent arm, 88 live.**
+**You decided:** retire EXP-042 cell 10 (100.2 does it).
+
+**Pushback:** 100.1 Part A may find the NHL low totals are the league scoring more this season than the seasons the engine learned from
+- a level shift, not a defect. Then the honest fix is a dated season effect, and it says so rather than tuning until the bias vanishes.
+**Surface:** 88 live; RED only until the picks builder's first write (05:37Z). Expected delta 0 - this wave installs nothing.
+**Dependencies:** none.
+
+### 100.1 — Engine lane (B-029 + B-001 + B-030): the NHL engine's totals fixed at the root; NBA v3's first nights; every NBA game logged
+**DEPTH + PROOF · rank 2 · terminal 1**
+
+```
+Before anything else, read the Wave 100 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 100.1 - ENGINE LANE (BACKLOG B-029 + B-001 + B-030): THE NHL ENGINE'S TOTALS FIXED AT THE ROOT; NBA v3'S FIRST NIGHTS; EVERY NBA GAME LOGGED. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: engine lane; rank 2 (one engine per sport), judged by rank 1.
+PURPOSE: DEPTH + PROOF. Measures: NHL held-out total-goals bias (-0.16 / -0.12 / -0.05 by season) -> within noise; NBA engine v3 rows
+per game read back 0 -> every game since its install; NBA v1 / v2 games past tip never logged (47 / 23 at 11-04 03:22Z) -> 0 new since
+the T3 lock (installed 11-04 01:55Z).
+98.1 ruled out late-game / empty-net scoring and 99.1 ruled out overtime and shootout settlement: the NHL engine's totals run low in
+REGULATION. NBA engine v3 (EXP-044c) went live 11-04 03:30Z; nobody has read a row. The box's memory fix went in at 01:55Z; whether the
+NBA arms now log every game is unmeasured.
+Premises to check: 12_EXPLORATORY/nhl_engine/results_W98_1.md and results_W99_1.md; the NHL engine's regulation rate inputs (expected
+goals per 60, special-teams time, shrinkage to the league mean); the NBA engine cron readback task and coverage.jsonl; logs/t3_skips.jsonl.
+PERMISSIONS: per the common rules' ownership. NOT: EXP-044 / 044b / 044c or any frozen pre-registration; any order, gate, ledger or
+registry cell; installing anything (name it for the window).
+
+PART A - NHL regulation totals (~50 min)
+  Where the low total comes from, measured on held-out seasons: per-team scoring rate vs actual by game state, the shrinkage strength,
+  the power-play time the engine expects vs what happened, the season trend in league scoring (is the model fit to a lower-scoring era?).
+  Fix the cause in a new version with tests; held-out bias and Brier per family vs the merged model, paired, game-clustered; then this
+  season vs Kalshi, descriptive. EXP-046 only if earned.
+PART B - NBA v3's first nights (~30 min)
+  Read back every night since 11-04 03:30Z: rows per game per family for v3, quote present at tip-60, errors, memory, lock waits. Any game
+  that tipped without a v3 row is a silent arm - diagnose first.
+PART C - Every NBA game logged (~40 min)
+  From coverage.jsonl and the T3 skip log: games past tip unlogged per arm per night, before and after 11-04 01:55Z, with the reason for
+  each miss. If misses remain, find the cause (lock wait, schedule, OOM) and fix it with a test, or name what the window must install.
+Results: modules + tests, 12_EXPLORATORY/nhl_engine/results_W100_1.md, the readbacks, a handoff (B-029, B-001, B-030 states) with a
+plain-English paragraph for the next window on where each engine stands.
+
+END OF BLOCK 100.1. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 100.2 — Proof lane (B-038 + B-035 + B-039): cell 10 retired as you decided; why the NFL totals model lost, in full; the proof calendar and B1 honest
+**PROOF · rank 1 · terminal 2**
+
+```
+Before anything else, read the Wave 100 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 100.2 - PROOF LANE (BACKLOG B-038 + B-035 + B-039): CELL 10 RETIRED AS THE OPERATOR DECIDED; WHY THE NFL TOTALS MODEL LOST, IN FULL; THE PROOF CALENDAR AND B1 HONEST. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: proof lane; rank 1 (what counts as winning).
+PURPOSE: PROOF. Measures: EXP-042 cell 10 retired by addendum 0 -> 1; the ruled-out NFL game-total model's loss decomposed 18 -> all 72
+games; proof calendar rows carrying second-look state 0 -> every frozen test; B1 counting RULED_OUT-but-logging arms correctly.
+The operator, 2026-11-03 19:16 PT, answered "Yes" to retiring EXP-042 cell 10 (KXMLBTOTAL T0-2h 85-90c wide yes: frozen net .089 / lo
+.047, re-run .0383 / lo -.0301; needs ~370 judged games against 19 frozen) - blockquote in the queue's "Needs your decision". 99.2's Part C
+read only 18 of 72 games (the bridge caps output at 60 KB) and registered two defects: proof_calendar.py has no second-look state, and B1
+undercounts arms that are RULED_OUT but still logging.
+Premises to check: EXP-042 and its addendum format (how earlier superseding addenda were written); ride_cells.toml; results_W99_2.md
+(the 18-game read and the registered defects); scripts/proof_calendar.py; scripts/distance_to_optimum.py's B1.
+PERMISSIONS: per the common rules' ownership: a NEW addendum file for EXP-042 and cell 10's status in ride_cells.toml ONLY (cells 9 and 11
+untouched); proof_calendar.py and B1; READ-ONLY box tasks. NOT: the frozen EXP-042 file or any other frozen test; any model, runner,
+order, gate or ledger.
+
+PART A - Cell 10 retired (~25 min)
+  The superseding addendum (quote the operator's blockquote, the re-run numbers and the reason; retired before its look, never scored),
+  cell 10's status in ride_cells.toml with reason and date, the router reading it, a test, the proof calendar regenerated.
+PART B - Why the NFL totals model lost, all games (~45 min)
+  A compact read-only box task (aggregates per game, under the 60 KB cap) and the full decomposition: where the model's probability sat
+  vs the market's (direction, size), by total range, weather, dome, week; which inputs drove the misses; a note for the NFL engine.
+PART C - The calendar and B1 honest (~45 min)
+  proof_calendar.py carries each frozen test's next look after its first (second-look state, judged n left) and RULED_OUT cells as
+  closed; B1 counts RULED_OUT-but-logging arms as logging (or the definition is changed by a dated edit to CLAUDE.md's table - say
+  which and why). Tests; distance and calendar read back on the box.
+Results: the addendum + status + tests, 12_EXPLORATORY/nfl_first_look/results_W100_2.md, the calendar / B1 fixes read back, a handoff
+(B-038, B-035, B-039 states) with a plain-English paragraph for the next window on every frozen test's next date.
+
+END OF BLOCK 100.2. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+### 100.3 — Flex lane (B-026 + B-027 + B-040): the picks sheet's first real nights; the box's memory after the fix; the leftover defects
+**PLUMBING + visibility · terminal 3**
+
+```
+Before anything else, read the Wave 100 common rules (they bind this block): `git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W100.md`.
+Say in your first reply that you have read them, quoting their first line.
+
+WAVE 100.3 - FLEX LANE (BACKLOG B-026 + B-027 + B-040): THE PICKS SHEET'S FIRST REAL NIGHTS; THE BOX'S MEMORY AFTER THE FIX; THE LEFTOVER DEFECTS. Repo: eignacio1/prediction-market-bot.
+LANE AND RANK: flex lane; the operator's picks sheet (2026-10-30), plumbing every lane depends on (Hard Rule 14).
+PURPOSE: PLUMBING + visibility. Measures: picks-sheet panel showing real picks with reasons after real nights 0 -> 2 nights; OOM kills
+per 24 h 142 (11-03) / 24 (11-04) -> 0 across a full NBA + NHL night; surface budget RED -> GREEN; registered leftovers (install MARKERS
+overlap, tests that fail to collect on Python 3.9) closed.
+The picks builder was installed 11-04 03:30Z; its first run is 05:37Z and the budget reads RED until it writes. The T3 lock went in at
+01:55Z. 99.3 registered: other installers' MARKERS may overlap (the v1 / v2 installer matched live_v3), and tests/test_seat_interface.py
+and tests/test_tensions.py fail to collect on Python 3.9 (CI passes).
+Premises to check: the picks builder and its panel; picks_sheet_cron_readback; box_memory_read; logs/t3_skips.jsonl; every
+*_cron_install.py MARKERS; the two tests on 3.9.
+PERMISSIONS: per the common rules' ownership. NOT: any model, probability, threshold, order, stake, gate or ledger; installing anything.
+
+PART A - The picks sheet, read back (~40 min)
+  After its first two nights: the panel on /visual (dashboard_pages_read), picks per game, the reasons shown, games with no pick and why,
+  yesterday's results filled. Fix what is wrong with a test. Then one plain-English summary of the first night's picks for the operator.
+PART B - Memory after the fix (~30 min)
+  box_memory_read after a full NBA + NHL night: OOM kills since 11-04 01:55Z, peak RSS per runner, lock skips per runner, the surface
+  budget. If kills continue, the next cause with numbers and the fix (name any install for the window).
+PART C - The leftovers (~50 min)
+  Sweep every *_cron_install.py for MARKERS that match another installer's lines; fix with tests. Make the two tests collect on Python
+  3.9 (the box's version). Any other defect found: register, do not fix (Hard Rule 11).
+Results: fixes + tests, 12_EXPLORATORY/box_health_w100/results_W100_3.md, a handoff (B-026, B-027, B-040 states) with a plain-English
+paragraph for the next window on the box's health and what is installed.
+
+END OF BLOCK 100.3. If you cannot see this line, the prompt reached you truncated: stop and report it.
+```
+
+---
+
+---
+
 ## Wave 99 NOW section with its pastes and the Muse stress-test pastes (closed 2026-11-03 20:00 PT). 99.1 ✅ 99.2 🟨 99.3 ✅. Common rules: 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W99.md. Verbatim:
 
 ## ⬛ NOW — Wave 99 · MUSE'S ARCHIVE IN AN ENGINE · THE FIRST VERDICTS APPLIED · THE INSTALL GATE UNSTUCK · WRITTEN 2026-11-03 ~06:50 UTC (11-02 22:50 PT) · three blocks, three parts each (~130 min)

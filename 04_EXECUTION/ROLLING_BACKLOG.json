@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-05T01:40Z",
+ "as_of": "2026-11-05T02:30Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -28,28 +28,16 @@
  },
  "tickets": [
   {
-   "id": "B-029",
+   "id": "B-027",
    "status": "NOW",
-   "lane": "engine",
-   "rank": "2",
-   "title": "NHL engine: overtime and shootout credit as Kalshi settles each family; totals bias",
-   "measure": "held-out total-goals bias -> within noise; Brier per family vs v1 and the market",
-   "why": "98.1 / 99.1: not late-game, not OT / SO settlement - the low totals are in regulation scoring.",
-   "source": "97.4",
-   "wave": "100.1 Part A",
+   "lane": "flex",
+   "rank": "plumbing",
+   "title": "Box memory: install the T1/T2 shadow-line lock (#416) on the operator's named approval of t3_lock_stagger_install; then measure a full NBA + NHL night; if kills continue, serialise / cap long jobs",
+   "measure": "OOM kills per night 20 / 90 min -> 0",
+   "why": "45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.",
+   "source": "97.3 / GG-1581",
+   "wave": "install waits on operator named approval",
    "order": 1
-  },
-  {
-   "id": "B-001",
-   "order": 2,
-   "status": "NOW",
-   "lane": "engine",
-   "rank": "2",
-   "title": "NBA engine v3 (EXP-044c) live: frozen, not installed - install after the memory fix, read back rows",
-   "measure": "D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7",
-   "why": "v3 (EXP-044c) installed 11-04 03:30Z (operator named approval); first rows unread.",
-   "source": "95.1 handoff, GG-1450",
-   "wave": "100.1 Part B"
   },
   {
    "id": "B-030",
@@ -58,34 +46,22 @@
    "rank": "2",
    "title": "Every NBA game logged: v1 / v2 / v3 coverage since the memory fix (11-04 01:55Z)",
    "measure": "games past tip unlogged per arm -> 0 new",
-   "why": "47 (v1) / 23 (v2) games were never logged before the fix; coverage.jsonl names each miss.",
+   "why": "100.1: v1 11/11, v2 5/11, v3 6/11 on 11-04; cause box OOM. Re-read after B-027; then a v3 coverage.jsonl PR.",
    "source": "98.1 / 99",
-   "wave": "100.1 Part C",
-   "order": 3
+   "wave": "after B-027",
+   "order": 2
   },
   {
-   "id": "B-038",
+   "id": "B-001",
+   "order": 3,
    "status": "NOW",
-   "lane": "proof",
-   "rank": "1",
-   "title": "Retire EXP-042 cell 10 by superseding addendum (operator \"Yes\", 11-03 19:16 PT)",
-   "measure": "cell retired 0 -> 1",
-   "why": "Re-run net .0383 lo -.0301 vs frozen .089 / lo .047; needs ~370 judged games against 19.",
-   "source": "operator 2026-11-03",
-   "wave": "100.2 Part A",
-   "order": 4
-  },
-  {
-   "id": "B-035",
-   "status": "NOW",
-   "lane": "proof",
-   "rank": "1 + 2",
-   "title": "Why the NFL game-total model lost to the market (descriptive, 60 games)",
-   "measure": "loss decomposed 0 -> 1; a note for the NFL engine",
-   "why": "99.2 read 18 of 72 games (box 60 KB output cap); needs a compact per-game task.",
-   "source": "98.2",
-   "wave": "100.2 Part B",
-   "order": 5
+   "lane": "engine",
+   "rank": "2",
+   "title": "NBA engine v3 (EXP-044c): installed 11-04 03:30Z; log every game (5 of 11 missed on 11-04, OOM) and read its first week",
+   "measure": "D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7",
+   "why": "v3 logging since 11-04 03:30Z (412 rows) but silent for 5 games (OOM).",
+   "source": "95.1 handoff, GG-1450",
+   "wave": "after B-027"
   },
   {
    "id": "B-039",
@@ -94,46 +70,22 @@
    "rank": "1",
    "title": "Proof calendar second-look state; B1 counts RULED_OUT-but-logging arms",
    "measure": "calendar rows with second looks 0 -> all; B1 corrected",
-   "why": "Registered by 99.2; B1 fell 52 -> 50 on a counting defect.",
+   "why": "B1 fixed (52/108); PROOF_CALENDAR.md regeneration on the box blocked (GG-1720).",
    "source": "99.2",
-   "wave": "100.2 Part C",
-   "order": 6
+   "wave": "100.2 Part C (partial)",
+   "order": 4
   },
   {
    "id": "B-026",
-   "order": 7,
+   "order": 5,
    "status": "NOW",
    "lane": "flex",
    "rank": "1 (operator 10-30)",
    "title": "The picks sheet: every game the bot looks at, one line - its side, its %, Kalshi's price, the edge, the top reasons, and whether a fake-money bet was placed; nightly on the Visual Dashboard",
    "measure": "picks visible per game per night 0 -> every evaluated game",
-   "why": "Installed 11-04 03:30Z; first run 05:37Z; read the panel after real nights.",
+   "why": "Night 1: 134 games, 2,614 picks, reasons 90%; results not filled (built mid-games); GG-1690 duplicate presentation. Read the next 05:37Z sheet; plain-English summary for the operator.",
    "source": "operator 2026-10-30",
-   "wave": "100.3 Part A"
-  },
-  {
-   "id": "B-027",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "The box stops running out of memory: a lock and a staggered start on each T3 shadow runner (skips logged), and why one NBA pre-game T3 run takes 62 minutes",
-   "measure": "OOM kills per night 20 / 90 min -> 0",
-   "why": "Lock + stagger installed (operator named approval); 0 OOM kills in 24 h at 04:02Z. 100.3 confirms over a full night.",
-   "source": "97.3 / GG-1581",
-   "wave": "installed 11-04 01:55Z",
-   "order": 8
-  },
-  {
-   "id": "B-040",
-   "status": "NOW",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "Leftovers: installer MARKERS overlap sweep; two tests that fail to collect on Python 3.9",
-   "measure": "registered leftovers closed",
-   "why": "Registered by 99.3.",
-   "source": "99.3",
-   "wave": "100.3 Part C",
-   "order": 9
+   "wave": "100.3 Part A (partial)"
   },
   {
    "id": "B-041",
@@ -145,7 +97,7 @@
    "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "next window",
-   "order": 10
+   "order": 6
   },
   {
    "id": "B-042",
@@ -157,7 +109,19 @@
    "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
    "source": "operator 2026-11-04",
    "wave": "next window",
-   "order": 11
+   "order": 7
+  },
+  {
+   "id": "B-029",
+   "status": "NEXT",
+   "lane": "engine",
+   "rank": "2",
+   "title": "NHL engine totals: the remaining regulation-scoring bias (season drift, early-season level, over-spread predictions) - a challenger, then Kalshi descriptive",
+   "measure": "held-out total-goals bias -> within noise; Brier per family vs v1 and the market",
+   "why": "#414: stale denominator was ~a quarter of the bias (-0.080 -> -0.059, Brier flat); the rest is season drift / early-season level and over-spread predictions (slope 0.4-0.5) - a challenger candidate; Kalshi comparison not run.",
+   "source": "97.4",
+   "wave": "100.1 Part A (partial)",
+   "order": 8
   },
   {
    "id": "B-043",
@@ -169,11 +133,11 @@
    "why": "Operator 11-04 17:36 PT: \"Do we need to do anything w stray branches?\"; 17:38 PT: \"Yes pls\" to registering it. A terminal's sweep listed branches that do not exist on origin (w89-* .. w91-*); the window's git ls-remote is the source. For each unmerged branch check whether its GG / T is resolved on main, then give the operator one exact list to approve for deletion (deletes name exact items).",
    "source": "operator 2026-11-04",
    "wave": "next window",
-   "order": 12
+   "order": 9
   },
   {
    "id": "B-017",
-   "order": 13,
+   "order": 10,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -185,7 +149,7 @@
   },
   {
    "id": "B-008",
-   "order": 14,
+   "order": 11,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -197,7 +161,7 @@
   },
   {
    "id": "B-010",
-   "order": 15,
+   "order": 12,
    "status": "NEXT",
    "lane": "quant",
    "rank": "4",
@@ -209,7 +173,7 @@
   },
   {
    "id": "B-012",
-   "order": 16,
+   "order": 13,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -221,7 +185,7 @@
   },
   {
    "id": "B-004",
-   "order": 17,
+   "order": 14,
    "status": "LATER",
    "lane": "flex",
    "rank": "EXECUTION",
@@ -233,7 +197,7 @@
   },
   {
    "id": "B-013",
-   "order": 18,
+   "order": 15,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -245,7 +209,7 @@
   },
   {
    "id": "B-014",
-   "order": 19,
+   "order": 16,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -257,7 +221,7 @@
   },
   {
    "id": "B-015",
-   "order": 20,
+   "order": 17,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -269,7 +233,7 @@
   },
   {
    "id": "B-016",
-   "order": 21,
+   "order": 18,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -281,7 +245,7 @@
   },
   {
    "id": "B-018",
-   "order": 22,
+   "order": 19,
    "status": "LATER",
    "lane": "engine",
    "rank": "2",
@@ -293,11 +257,11 @@
   },
   {
    "id": "B-019",
-   "order": 23,
+   "order": 20,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
-   "title": "Muse watchdog and backlog top-up (>= 30 open; ten runs a day)",
+   "title": "Muse watchdog at every wave close: STATUS / CLAIMS read, quality spot-checks, R-ticket backlog >= 30 open (100 daily runs since 11-04)",
    "measure": "Muse open tickets >= 30",
    "why": "Ten scheduled runs a day empty a short backlog in two days.",
    "source": "operator 10-27",
@@ -305,11 +269,11 @@
   },
   {
    "id": "B-020",
-   "order": 24,
+   "order": 21,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
-   "title": "Governance gap burn-down (about 230 OPEN)",
+   "title": "Governance gap burn-down (250 OPEN at 11-05)",
    "measure": "OPEN gaps down",
    "why": "The gap agent runs beside every wave; the count keeps rising.",
    "source": "gap agent",
@@ -317,7 +281,7 @@
   },
   {
    "id": "B-021",
-   "order": 25,
+   "order": 22,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -328,80 +292,44 @@
    "wave": "after a pass"
   },
   {
-   "id": "B-002",
-   "order": 26,
-   "status": "DONE",
-   "lane": "proof",
-   "rank": "1 + 4",
-   "title": "Frozen ride evidence reproduced on the box's full archive (13 cells), classified REPRODUCED / DIFFERS / NOT REPRODUCED",
-   "measure": "frozen cells reproduced 0 -> n of 13",
-   "why": "13/13 frozen cells classified; cell 10 retired by the operator (B-038).",
-   "source": "95.2 handoff, GG-1470..1472",
-   "wave": "99.2 Part B"
-  },
-  {
-   "id": "B-032",
-   "status": "DONE",
-   "lane": "engine",
-   "rank": "2 + 7 + 3",
-   "title": "Muse's archive in an engine, first slice: NFL crews' prior-season penalty records (R-031, 11 seasons) into the NFL engine's totals; Muse's records VERIFIED / FAILED against nflverse",
-   "measure": "archive slices tested in an engine 0 -> 1; NFL officials stage aggregated -> interpreted or applied",
-   "why": "NFL crews into totals: NULL; Muse yards exact, counts not reproduced.",
-   "source": "operator 2026-11-02 21:33 PT; window",
-   "wave": "99.1 Part A",
-   "order": 27
-  },
-  {
-   "id": "B-033",
-   "status": "DONE",
-   "lane": "engine",
-   "rank": "2 + 7 + 3",
-   "title": "NBA referees' prior-season records (R-040) into NBA engine v2's totals, crew as known before tip",
-   "measure": "archive slices tested 1 -> 2; NBA officials stage",
-   "why": "NBA referees into totals: NULL (upper bound); Muse records VERIFIED 236/239.",
-   "source": "window",
-   "wave": "99.1 Part B",
-   "order": 28
-  },
-  {
-   "id": "B-034",
+   "id": "B-038",
    "status": "DONE",
    "lane": "proof",
    "rank": "1",
-   "title": "Carry out the NFL first-look verdicts exactly as EXP-037 says (2 RULED_OUT, 10 KEEP ACCRUING): registry, next looks, proof calendar",
-   "measure": "verdicts applied 0 -> 12",
-   "why": "EXP-037 verdicts in the registry (#406).",
-   "source": "98.2",
-   "wave": "99.2 Part A",
-   "order": 29
+   "title": "Retire EXP-042 cell 10 by superseding addendum (operator \"Yes\", 11-03 19:16 PT)",
+   "measure": "cell retired 0 -> 1",
+   "why": "Retired by addendum 05_RESEARCH_EXPERIMENTS/EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04.md (#413); cells 9 and 11 untouched.",
+   "source": "operator 2026-11-03",
+   "wave": "100.2 Part A",
+   "order": 23
   },
   {
-   "id": "B-036",
+   "id": "B-035",
+   "status": "DONE",
+   "lane": "proof",
+   "rank": "1 + 2",
+   "title": "Why the NFL game-total model lost to the market (descriptive, 60 games)",
+   "measure": "loss decomposed 0 -> 1; a note for the NFL engine",
+   "why": "72 games: worse than the market in every band from noise in disagreement, not bias; weather untestable (61 of 72 blank).",
+   "source": "98.2",
+   "wave": "100.2 Part B",
+   "order": 24
+  },
+  {
+   "id": "B-040",
    "status": "DONE",
    "lane": "flex",
    "rank": "plumbing",
-   "title": "The install gate deadlock: one batch install (T3 lock -> NBA events -> v3 -> picks) that exempts only its own reds",
-   "measure": "held installs that can pass the gate 0 -> 4",
-   "why": "Batch install + one gate rule; per-step conf fixed by the window (#412); all held installs ran 03:30Z.",
-   "source": "window, 11-03",
-   "wave": "99.3 + window #412",
-   "order": 30
-  },
-  {
-   "id": "B-037",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "1 (operator 10-30)",
-   "title": "Reasons on the NHL, NBA player points and NBA engine rows (GG-1630); shown on the picks sheet",
-   "measure": "arms with reasons 3 -> 6",
-   "why": "Reasons on NHL, NBA points and NBA engine rows (#407).",
-   "source": "98.3 / GG-1630",
-   "wave": "99.3 Part B",
-   "order": 31
+   "title": "Leftovers: installer MARKERS overlap sweep; two tests that fail to collect on Python 3.9",
+   "measure": "registered leftovers closed",
+   "why": "#415: boundary-safe installer markers; Py3.9 collection fixed (GG-1650 resolved).",
+   "source": "99.3",
+   "wave": "100.3 Part C",
+   "order": 25
   },
   {
    "id": "B-022",
-   "order": 32,
+   "order": 26,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -413,7 +341,7 @@
   },
   {
    "id": "B-023",
-   "order": 33,
+   "order": 27,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -425,7 +353,7 @@
   },
   {
    "id": "B-024",
-   "order": 34,
+   "order": 28,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -437,7 +365,7 @@
   },
   {
    "id": "B-025",
-   "order": 35,
+   "order": 29,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
