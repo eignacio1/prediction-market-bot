@@ -63,3 +63,17 @@ Reasons worth a line: **w96-2-frozen-repro** has 3 commits not squash-identical 
 
 ## Result if the operator approves as written
 35 stray branches -> 2 data branches + #149 (until its three items land) = 3; -> 2 once #149 lands. Deleting the 29 + 2 + w83-3 = 32. Delete command is in the window's hands; this block deleted nothing.
+
+
+## DONE 2026-11-05T06:02Z (W102.5, B-043)
+Deleted 32 (one `git push origin --delete` each, remote tip checked against the recorded SHA first): the 29 merged-PR branches, the 2 no-PR branches (b74a-s1-hygiene-audit, w81-3-partb), and session/20261021T235008Z-w83-3-nhl-data-layer (tip 8219b53bec). Skipped: none (no tip differed, none already gone). Every push was accepted.
+
+w83-3 check (item 3b): the diff direction in the LIST.md note was reversed. main already HAS the duplicate-shifts check, the shifts-coverage and SOG floors with the current-season shifts floor, and the unique-per-writer tmp-file write in nhl_event_store.py and nhl_store_checks.py; the branch is the older version that lacks them. Nothing is lost, so no GG was registered.
+
+`git ls-remote --heads origin` after (6 refs; the stray count is 35 -> 3 plus the in-flight branches w102-2-nfl-adopt and w101-3-gg1690-dedupe #422):
+    a72af748a11fa7098c1a12b614f5e84f8518bcff	refs/heads/data/nba-injury-reports
+    f98bdca9dde1f757296931b3327deb535cc6f43c	refs/heads/data/nhl-goalie-probe
+    8ea85557208d4c960e6b567d8eb6bc750f5ecffa	refs/heads/main
+    649440aa45bfa9a57ba7a6a69766ab7eb3cceaf1	refs/heads/session/20260924T045227Z-resolved-filter
+    539ef541176cee4fdf043897f1284aecb65e4b1d	refs/heads/session/20261105T055446Z-w102-2-nfl-adopt
+    bb64b5a981b443656229879a7c3b8f2f0b06e4cd	refs/heads/w101-3-gg1690-dedupe
