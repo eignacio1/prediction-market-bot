@@ -21,3 +21,5 @@ The box kills fewer runners than two days ago (142 → 39 a day) but not zero. T
 - Picks sheet: fixed the double counting, so one opinion now shows once instead of per arm and per team side. Waiting on CI to merge.
 - Not done yet: tonight's picks results and the memory-crash check need the clock to pass (about 07:30Z). The next window picks both up.
 - Plumbing only; no pillar moved. Still zero real money at risk.
+
+**W102.4 (quant lane).** We split the NFL practice-bet "ADOPT" gain into two parts: about 1 cent from paying a better price, about 18 cents from simply which bets got filled. So the gain is mostly a selection effect, not a better-price win. We also listed every pre-registered test together and adjusted for how many we run: the ADOPT result holds up, but the EXP-037 game-totals "ruled out" call would not hold up under that stricter view. The dashboard now shows how old the proof calendar is and turns red after a day. Nothing changed in any rule or verdict; no real money at risk. Pillar: PROOF.
