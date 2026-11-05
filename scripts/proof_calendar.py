@@ -68,6 +68,11 @@ STATIC = [
     {"id": "EXP-043 H-A net5c+", "tests": "KXMLBTOTAL T0-2h tight, gap 5c+, forward", "sport": "MLB",
      "freeze": "2026-10-28", "need": 61, "unit": "games", "family": "KXMLBTOTAL",
      "modal": "FAIL or UNDECIDED", "note": "counts every game with a snapshot; the cell's qualifying subset is smaller (upper bound)"},
+    {"id": "EXP-045", "tests": "NFL board v2 engine forward test: spread / total / team-total, net P&L per contract, game-clustered",
+     "sport": "NFL", "freeze": "2026-10-28", "need": 165, "unit": "games", "family": "KXNFL",
+     "fixed_look": "2027-01-12", "second": "state: continues into the 2027 regular season; second scored look when >= 337 games per family",
+     "modal": "NOT DISTINGUISHABLE at Look 1 ~85% (family PASS ~5%)",
+     "note": "dated look after the last 2026 game (2027-01-10); UNDERPOWERED by construction (MDE ~0.032 at n=165); counts every KXNFL game-day seen"},
 ] + [
     {"id": f"EXP-042 cell {i}", "tests": "W89.2 ride cell %d, forward (price archive after the 2026-10-28 freeze)" % i, "sport": "NFL" if i == 6 else "MLB",
      "freeze": "2026-10-28", "need": n, "unit": "games", "family": "KXNFL" if i == 6 else "KXMLB",
@@ -83,8 +88,13 @@ def _d(s: str) -> date:
     return date.fromisoformat(s[:10])
 
 
+def season_sport(sport: str) -> str:
+    """Calendar key for a cell's sport: NFLQB is NFL data under another ledger prefix (W101.2: it was reading as 'season paused')."""
+    return "NFL" if sport == "NFLQB" else sport
+
+
 def is_active(sport: str, day: date) -> bool:
-    return any(_d(a) <= day <= _d(b) for a, b in SEASONS.get(sport, []))
+    return any(_d(a) <= day <= _d(b) for a, b in SEASONS.get(season_sport(sport), []))
 
 
 def trailing_rate(unit_dates: list[str], sport: str, today: date, window: int = WINDOW_DAYS) -> tuple[int, int]:
@@ -197,7 +207,9 @@ def static_rows(arch: dict, today: date) -> list[dict]:
     for h in STATIC:
         if h.get("closed"):
             rows.append({"id": h["id"], "tests": h["tests"], "rows": "closed", "rate": "closed", "judged_n": "closed",
-                         "second": "closed", "proj": "CLOSED (no look)", "modal": "none: never scored", "note": h["closed"]})
+                         "second": "closed", "proj": "CLOSED (no look)", "modal": "none: never scored", "note": h["closed"],
+                         "sport": h["sport"], "family": h["family"], "band": "-", "rows_n": None, "settled_games": None,
+                         "first_look": None, "second_state": "closed (retired before its look)"})
             continue
         per_day = archive_series(arch, h["family"], h["freeze"], today)
         total = sum(per_day.values())
@@ -205,9 +217,13 @@ def static_rows(arch: dict, today: date) -> list[dict]:
         k = sum(v for d, v in per_day.items() if (today - _d(d)).days <= WINDOW_DAYS)
         active = sum(1 for i in range(1, WINDOW_DAYS + 1) if is_active(h["sport"], today - timedelta(days=i)))
         pr = project(h["need"] - total, k, active, h["sport"], today)
+        proj = f"{h['fixed_look']} (dated, pre-registered)" if h.get("fixed_look") else fmt_proj(pr)
         rows.append({"id": h["id"], "tests": h["tests"], "rows": f"{total} game-days seen since {h['freeze']}",
                      "rate": f"{k} in {active} active days" if active else "season paused",
-                     "judged_n": f"{h['need']} {h['unit']}", "second": h.get("second", "none pre-registered"), "proj": fmt_proj(pr), "modal": h["modal"], "note": h["note"]})
+                     "judged_n": f"{h['need']} {h['unit']}", "second": h.get("second", "none pre-registered"), "proj": proj, "modal": h["modal"], "note": h["note"],
+                     "sport": h["sport"], "family": h["family"], "band": "-", "rows_n": total, "settled_games": None,
+                     "first_look": h.get("fixed_look") or pr.get("point"),
+                     "second_state": h.get("second", "none pre-registered")})
     return rows
 
 
@@ -218,26 +234,37 @@ def engine_rows(blob: dict, today: date, modal_nfl: str) -> list[dict]:
             out.append({"id": c["cell"], "tests": f"{c['sport']} {c['market_type']} {c['band']} vs market",
                         "rows": f"{c['rows']} rows / {c['judged_n']} judged", "rate": "closed", "judged_n": "closed",
                         "second": "closed", "proj": "CLOSED (RULED_OUT)", "modal": "verdict issued",
-                        "note": "arm may keep logging (registry); not scored again"})
+                        "note": "arm may keep logging (registry); not scored again",
+                        "sport": c["sport"], "family": c["market_type"], "band": c["band"], "rows_n": c.get("rows"),
+                        "settled_games": c.get("settled_games"), "first_look": None, "second_state": "closed (RULED_OUT)"})
             continue
         looks = c.get("looks") or []
         need = (c.get("first_look_n") or 0) - (c.get("judged_n") or 0)
         sd = c.get("settle_dates", {})
         sd = [d for d, n in sd.items() for _ in range(n)] if isinstance(sd, dict) else sd
-        k, active = trailing_rate(sd, c["sport"], today)
-        pr = project(need, k, active, c["sport"], today) if c.get("first_look_n") else {"point": None, "note": "no look pre-registered"}
+        k, active = trailing_rate(sd, season_sport(c["sport"]), today)
+        pr = project(need, k, active, season_sport(c["sport"]), today) if c.get("first_look_n") else {"point": None, "note": "no look pre-registered"}
         eng = (c.get("projection") or {}).get("date") or (c.get("projection") or {}).get("note") or "-"
         modal = modal_nfl if c["sport"].startswith("NFL") else MODAL_BY_SPORT.get(c["sport"], "see prereg")
         second = "none pre-registered"
+        second_state = "none pre-registered"
         if len(looks) > 1:
             left = looks[1] - (c.get("judged_n") or 0)
-            p2 = project(left, k, active, c["sport"], today) if left > 0 else {"point": today.isoformat(), "lo": None, "hi": None}
+            p2 = project(left, k, active, season_sport(c["sport"]), today) if left > 0 else {"point": today.isoformat(), "lo": None, "hi": None}
             second = f"n={looks[1]} ({max(left, 0)} left): {fmt_proj(p2)}"
+            first_open = (c.get("judged_n") or 0) < (c.get("first_look_n") or 0)
+            second_state = (f"not open: first look (n={c.get('first_look_n')}) not reached; second look n={looks[1]}, {max(left, 0)} left" if first_open
+                            else f"first look reached; second look n={looks[1]} waiting, {max(left, 0)} left")
+        if c["sport"] == "NBA":
+            second_state += "; EXP-038's date-triggered second look (2027-01-31) is undefined, GG-529 (not defined here)"
         out.append({"id": c["cell"], "tests": f"{c['sport']} {c['market_type']} {c['band']} vs market",
                     "second": second, "rows": f"{c['rows']} rows / {c['judged_n']} judged",
                     "rate": f"{k} in {active} active days" if active else "season paused",
                     "judged_n": str(c.get("first_look_n") or "-"), "proj": fmt_proj(pr),
-                    "modal": modal, "note": f"engine: {eng}"})
+                    "modal": modal, "note": f"engine: {eng}",
+                    "sport": c["sport"], "family": c["market_type"], "band": c["band"], "rows_n": c.get("rows"),
+                    "settled_games": c.get("settled_games"), "first_look": pr.get("point") or (eng if eng != "-" else None),
+                    "second_state": second_state})
     return out
 
 
@@ -265,14 +292,29 @@ def render(blob: dict, repo: Path, today: date | None = None) -> str:
     return "\n".join(L) + "\n"
 
 
+AGG_KEYS = ("id", "sport", "family", "band", "rows_n", "settled_games", "judged_n", "first_look", "second_state")
+
+
+def aggregate(blob: dict, repo: Path, today: date | None = None) -> list[dict]:
+    """One compact record per cell (engine cells + frozen hypotheses): the B-039 / GG-1720 aggregate."""
+    today = today or _d(blob["generated"])
+    rows = engine_rows(blob, today, "") + static_rows(blob.get("archive_games_per_day", {}), today)
+    return [{k: r.get(k) for k in AGG_KEYS} for r in rows]
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--emit", action="store_true")
+    ap.add_argument("--aggregate", action="store_true", help="print the per-cell aggregate as compact JSON (read-only)")
     ap.add_argument("--input")
     ap.add_argument("--repo", default=str(REPO))
     ap.add_argument("--out", default="04_EXECUTION/PROOF_CALENDAR.md")
     a = ap.parse_args(argv)
     repo = Path(a.repo)
+    if a.aggregate:
+        blob = json.loads(Path(a.input).read_text()) if a.input else emit(repo)
+        print(json.dumps(aggregate(blob, repo), separators=(",", ":")))
+        return 0
     if a.emit:
         print(json.dumps(emit(repo)))
         return 0

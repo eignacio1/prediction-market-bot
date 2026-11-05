@@ -88,6 +88,7 @@ TASKS: dict[str, str] = {
     "picks_sheet_read": f"{PY} scripts/picks_sheet_read.py",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
+    "proof_calendar_aggregate": f"{PY} scripts/proof_calendar.py --aggregate",
     # W98.2 Part A: READ-ONLY. Prints the released first-look verdicts from the latest saved calibration-engine JSON (no re-scoring).
     "forward_entry_cost_read": f"{PY} 12_EXPLORATORY/forward_entry_cost/entry_cost.py --log logs/demo_fill_policy.jsonl --report",
     "first_look_verdicts_read": f"{PY} scripts/first_look_verdicts_read.py --report",
