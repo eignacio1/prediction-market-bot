@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W102.3
+tier: STANDARD
+timestamp: 2026-11-05T06:30:00Z
+commit: 0576b1e
+one_line_summary: W102.3: picks sheet de-duped (#422 merged), last-night write-up, demo refusals counted; #426 balance logging auto-merge armed.
+gg_touched: GG-1770, GG-1771, GG-1481
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: B-026 picks sheet distinct picks/night; E1 demo-order refusals
+gap_delta: 2026-11-03 slate 259 raw -> 127 distinct picks (offline); refusals 2,259 since 10-16 (all 10-16..10-29); balance now logged on refusal (PR #426, not yet merged)
+pattern_sweep: GG-1690 de-dup applied in the one builder (picks_sheet.build); refusal-balance logging added to the only order path that logged refusals without it; lookup_fill consumers swept: only demo_fill_forward_report.py (GG-1770); exploratory-fence violation (box scripts in 12_EXPLORATORY) fixed by moving both files.
+surface_delta: 0
+-->
+
 # Session handoff - W102.3 flex (2026-11-05)
 
 Rules read first: `# Wave 102 common rules`.

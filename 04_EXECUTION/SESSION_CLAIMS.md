@@ -1163,3 +1163,4 @@
 | 2026-11-05T05:36:00Z | W101.3 | MERGED: NO — branch `w101-3-gg1690-dedupe` awaiting merge — W101.3: branch-cleanup list (#419) and GG-1690 picks-sheet dedupe (#422) done; box memory read and night-2 sheet still open. (commit `d816e9b`) |
 | 2026-11-05T06:25:41Z | W102.4 | CLOSED — W102.4 quant lane - ADOPT gain split (placement ~1c, selection ~18c), multiplicity ledger with Holm/BH/alpha-spending, proof-calendar age panel on /visual. (commit `7ec2349`) |
 | 2026-11-05T06:26:36Z | W102.4 | CLOSED — merge confirmed, HEAD (d470d76) is ancestor of origin/main — quant lane: ADOPT split, multiplicity ledger, calendar age panel; PR #427 merged |
+| 2026-11-05T06:29:39Z | W102.3 | CLOSED — W102.3: picks sheet de-duped (#422 merged), last-night write-up, demo refusals counted; #426 balance logging auto-merge armed. (commit `0576b1e`) |
