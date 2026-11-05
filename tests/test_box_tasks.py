@@ -178,3 +178,15 @@ def test_uninstall_removes_only_the_block_and_is_idempotent():
     writes = []
     ci.uninstall(read=lambda: state["cron"], write=writes.append)
     assert writes == []
+
+
+def test_markout_book_proof(tmp_path):
+    import json
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+    import markout_book_proof_read as m
+    (tmp_path / "l.jsonl").write_text(json.dumps({"event": "shadow_order", "order_id": "a"}) + "\n")
+    (tmp_path / "m.jsonl").write_text(json.dumps({"order_id": "a"}) + "\n" + json.dumps({"order_id": "b", "book": "shadow"}) + "\n")
+    out = m.proof(tmp_path / "m.jsonl", tmp_path / "l.jsonl")
+    assert out["legacy_no_book"] == 1 and out["legacy_in_shadow_order"] == 1 and out["legacy_not_shadow_order"] == 0
+    assert "markout_book_proof_read" in __import__("box_tasks").TASKS

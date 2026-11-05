@@ -521,3 +521,62 @@ def test_cash_check_fails_open_on_unreadable_balance():
     c.get_balance.side_effect = RuntimeError("x")
     assert pol.cash_skip_reason(c, 1.0) is None
     assert pol.cash_skip_reason(MagicMock(), 1.0) is None   # malformed (mock) read
+
+
+# ---- W102.2: per-(book, sport) adopt switch (ADR-0072 addendum, PROPOSED) -------------------------
+def _nfl_row():
+    r = _row()
+    r["market_ticker"] = "KXNFLGAME-26NOV09AAABBB-AAA"
+    return r
+
+
+def _run_control_share0(monkeypatch, tmp_path, row, adopt=None):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.SHARE_ENV, "0")                      # hash says control for every order
+    if adopt is not None:
+        monkeypatch.setenv(pol.ADOPT_ENV, adopt)
+    c = _client()
+    sfs.maybe_place(row, c, lambda e: 1.0)
+    return c, _events(tmp_path)
+
+
+def test_adopt_off_is_todays_behaviour_byte_for_byte(monkeypatch, tmp_path):
+    base_c, base_ev = _run_control_share0(monkeypatch, tmp_path, _nfl_row())
+    (tmp_path / "pol.jsonl").unlink()
+    for off in ("", "shadow:nhl", "mlb:NFL", "garbage"):          # unset / other sport / other book / junk
+        c, ev = _run_control_share0(monkeypatch, tmp_path, _nfl_row(), adopt=off)
+        assert c.submit_order.call_args.kwargs == base_c.submit_order.call_args.kwargs
+        assert [{k: v for k, v in e.items() if k != "ts"} for e in ev] == \
+               [{k: v for k, v in e.items() if k != "ts"} for e in base_ev]
+        assert ev[0]["arm"] == "control" and not any(e["event"] == "cancel_scheduled" for e in ev)
+        (tmp_path / "pol.jsonl").unlink()
+
+
+def test_adopt_on_changes_only_nfl_shadow(monkeypatch, tmp_path):
+    c, ev = _run_control_share0(monkeypatch, tmp_path, _nfl_row(), adopt="shadow:NFL")
+    assert c.get_market_book.called                              # book-anchored
+    assert c.submit_order.call_args.kwargs["mid_price"] == 0.40  # posted at the bid, not the model mid
+    orders = [e for e in ev if e["event"] == "shadow_order"]
+    assert orders[0]["arm"] == "adopt"                           # pre-registered arm labels untouched
+    assert any(e["event"] == "cancel_scheduled" for e in ev)
+    (tmp_path / "pol.jsonl").unlink()
+    c2, ev2 = _run_control_share0(monkeypatch, tmp_path, _row(), adopt="shadow:NFL")   # NBA unchanged
+    assert ev2[0]["arm"] == "control" and not c2.get_market_book.called
+
+
+def test_adopt_on_keeps_hash_treatment_label(monkeypatch, tmp_path):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.SHARE_ENV, "1")
+    monkeypatch.setenv(pol.ADOPT_ENV, "shadow:NFL")
+    sfs.maybe_place(_nfl_row(), _client(), lambda e: 1.0)
+    assert [e for e in _events(tmp_path) if e["event"] == "shadow_order"][0]["arm"] == "treatment"
+
+
+def test_adopt_does_not_enable_placement_rule(monkeypatch):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.ADOPT_ENV, "shadow:NFL")              # placement rule OFF
+    c = _client()
+    assert sfs.maybe_place(_nfl_row(), c, lambda e: 1.0) is None
+    c.submit_order.assert_not_called()

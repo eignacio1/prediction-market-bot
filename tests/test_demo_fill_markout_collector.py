@@ -47,6 +47,6 @@ def test_collect_skips_pre_epoch_immature_done_and_failed_fetch():
     fills = {"a": fl(-10), "b": fl(5), "c": fl(100), "d": fl(10), "e": fl(20)}  # a pre-epoch; c not matured
     cs = col.Candles([candle(T0 + timedelta(minutes=m), 0.5, 0.6) for m in range(0, 60)])
     rows = col.collect(orders, fills, epoch, now, {"d"}, lambda tk, a, b: cs, 50)
-    assert [r["order_id"] for r in rows] == ["b", "e"] and rows[0]["h30"] == 0.05 and rows[0]["sport"] == "NFL"
+    assert [r["order_id"] for r in rows] == ["b", "e"] and rows[0]["h30"] == 0.05 and rows[0]["sport"] == "NFL" and rows[0]["book"] == "shadow"
     assert col.collect(orders, fills, epoch, now, set(), lambda *a: None, 50) == []  # transient failure: retry later
     assert len(col.collect(orders, fills, epoch, now, set(), lambda *a: cs, 1)) == 1  # cap respected

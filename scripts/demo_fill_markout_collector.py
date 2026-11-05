@@ -233,7 +233,7 @@ def collect(orders: dict, fills: dict, epoch: datetime, now: datetime, done: set
         c = cache[key]
         if c is None:
             continue  # transient fetch failure: retry next run
-        rows.append({"order_id": oid, "arm": o["arm"], "sport": sport_of(tk), "game": game_of(tk), "ticker": tk,
+        rows.append({"order_id": oid, "book": "shadow", "arm": o["arm"], "sport": sport_of(tk), "game": game_of(tk), "ticker": tk,
                      "side": fl["side"], "fill_ts": fl["fill_ts"].isoformat(), "fill_price": round(fl["price"], 4),
                      "collected_ts": now.isoformat(), **markouts_for(c, fl["fill_ts"], fl["side"], fl["price"])})
     return rows

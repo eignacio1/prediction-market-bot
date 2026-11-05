@@ -412,3 +412,13 @@ def test_print_cached_reads_file_without_fetching(tmp_path, capsys):
 def test_print_cached_missing_file_is_nonzero(tmp_path, capsys):
     assert rpt.main(["--print-json", str(tmp_path / "nope.json")]) == 1
     assert "NO CACHED REPORT" in capsys.readouterr().out
+
+
+def test_markout_c_filters_by_book_and_legacy_rows_are_shadow():
+    epoch = NOW - timedelta(days=1)
+    base = {"sport": "NFL", "game": "g", "fill_ts": NOW.isoformat()}
+    rows = [dict(base, arm="treatment", h30=-0.1), dict(base, arm="control", h30=0.0),          # legacy: no book
+            dict(base, arm="treatment", h30=0.5, book="paper"), dict(base, arm="control", h30=0.5, book="paper")]
+    assert rpt.markout_c(rows, "NFL", epoch)["treatment_n"] == 1            # default book = shadow
+    assert rpt.markout_c(rows, "NFL", epoch, "paper")["treatment_n"] == 1
+    assert rpt.markout_c(rows, "NFL", epoch, "shadow")["diff"] == rpt.markout_c(rows[:2], "NFL", epoch)["diff"]

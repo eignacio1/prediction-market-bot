@@ -81,7 +81,12 @@ def maybe_place(
     if why:
         pol.append_log({"event": "shadow_skip", "reason": why, "row_id": rid})
         return None
-    treatment = pol.assigned(rid)
+    hash_treatment = pol.assigned(rid)
+    # W102.2: OFF (default) -> exactly today's behaviour. ON for (shadow, this sport) -> treatment-style
+    # placement for every order; non-hash-assigned orders are labelled "adopt" so the forward test's
+    # arm labels stay pre-registered (the report only reads "treatment"/"control").
+    adopt = (not hash_treatment) and pol.adopt_on("shadow", pol.sport_of_ticker(ticker))
+    treatment = hash_treatment or adopt
     if treatment:
         dec = pol.decide(client, ticker, direction, float(mid), rid)
         if dec.action != "SUBMIT":
@@ -99,7 +104,7 @@ def maybe_place(
                                 client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
     pol.append_log({"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
                     "stake_usd": stake, "price_yes": price_yes, "side": direction,
-                    "ticker": ticker, "error": order.error, "arm": "treatment" if treatment else "control"})
+                    "ticker": ticker, "error": order.error, "arm": "treatment" if hash_treatment else ("adopt" if adopt else "control")})
     if treatment and order.ok and order.order_id:
         pol.schedule_cancel(client, order.order_id, rid, ticker)
     feed_exposure_gate()

@@ -242,11 +242,13 @@ def load_markouts(path: Path) -> list[dict]:
     return rows
 
 
-def markout_c(rows: list[dict], sport: str, epoch: Optional[datetime]) -> dict:
-    """Criterion (c): treatment-minus-control 30-minute held-side markout, post-collection fills only."""
+def markout_c(rows: list[dict], sport: str, epoch: Optional[datetime], book: str = "shadow") -> dict:
+    """Criterion (c): treatment-minus-control 30-minute held-side markout, post-collection fills only.
+    W102.2: filtered by (book, sport). Rows written before the book key existed have no 'book'; the collector only
+    ever read `shadow_order` events, so they are all shadow and default to it."""
     by: dict[str, dict] = {"control": defaultdict(list), "treatment": defaultdict(list)}
     for r in rows:
-        if r.get("sport") != sport or r.get("arm") not in by or r.get("h30") is None:
+        if r.get("sport") != sport or r.get("book", "shadow") != book or r.get("arm") not in by or r.get("h30") is None:
             continue
         ft = _ts({"ts": r.get("fill_ts")}) if r.get("fill_ts") else None
         if epoch is not None and (ft is None or ft < epoch):
@@ -458,7 +460,7 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         epoch = _ts({"ts": json.loads((markout_dir / "EPOCH.json").read_text())["collection_start"]})
     except (OSError, ValueError, KeyError):
         pass
-    mk = {sp: markout_c(mrows, sp, epoch) for _, sp in SPORTS}
+    mk = {sp: markout_c(mrows, sp, epoch, "shadow") for _, sp in SPORTS}
     mk_tripped = [sp for sp, m in mk.items() if m["judged"] and m["holds"] is False]
     checks["treatment_markout_30m_worse_than_control"] = {
         "tripped": bool(mk_tripped), "tripped_sports": mk_tripped,
