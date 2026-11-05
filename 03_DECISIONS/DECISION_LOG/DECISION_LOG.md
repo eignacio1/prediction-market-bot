@@ -3285,3 +3285,9 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 - Operator, verbatim: "Don't treat 5 as the operating procedure moving forward - it'll still be a standing 3, unless I request so. I want the next wave to be all Quant + 1 red alert for whatever needs attention immediately. We've done a lot of engine work, I want to get the quant work moved up too"
 - Window's reading: Wave 102's five blocks were a one-off at his request (21:57 PT). Wave 103 = three blocks: two quant blocks (drawn from the quant tickets B-010, B-044..B-046, the remainder of the accepted 2026-10-22 rollout's Waves B and C) + one red-alert block for whatever is red at Wave 102's close. The lane rule (engine / proof / flex) is suspended for Wave 103 only. Told to the operator so he can correct the count.
 - Correction, operator 2026-11-04 22:03 PT, verbatim: "I want 3 quant plus a red alert". Wave 103 = FOUR blocks: three quant (B-044 tails, B-045 overreaction / regimes, B-046 in-play score math; B-010 rides in one of them) + one red-alert block. A one-off at his request; three stays standing.
+
+## 2026-11-05 — W102.2: NFL ADOPT package built OFF; look-day question registered (GG-1750); EXP-038 second-look DRAFT
+- Built `DEMO_FILL_ADOPT_BOOK_SPORT` (default unset = OFF), PR #424 merged green. ON with `shadow:NFL` places NFL shadow orders treatment-style; no other book/sport changes; OFF is byte-for-byte today's behaviour (tests).
+- Markout rows now carry `book`; report filters (book, sport); legacy rows are shadow by construction (collector reads only `shadow_order`).
+- ADR-0072 addendum written PROPOSED; EXP-038 second-look definition DRAFT, not frozen. Nothing accepted by the terminal. Look day unpinned (GG-1750). P2 unchanged by design (execution-rule verdict).
+- Premise note: the block called ADR-0072 a DRAFT; it is ACCEPTED.

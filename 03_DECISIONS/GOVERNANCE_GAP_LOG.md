@@ -3811,7 +3811,7 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 **Status:** OPEN · **Severity:** MEDIUM
 
-**Current state (2026-10-08, W60.2):** EXP-038 says the second look is at judged n=400 or 2027-01-31, whichever is first, but defines neither the games scored nor the n at the date, and sec. 1 'judged on whatever n they reach' conflicts with sec. 4 (no scoring before judged n). The engine releases only n=150 and n=400, lists the item in each NBA cell's `undefined_rules`, and emits no verdict for it. **Next:** Operator/DS to define the date-triggered look by superseding document before 2027-01-31.
+**Current state (2026-10-08, W60.2):** EXP-038 says the second look is at judged n=400 or 2027-01-31, whichever is first, but defines neither the games scored nor the n at the date, and sec. 1 'judged on whatever n they reach' conflicts with sec. 4 (no scoring before judged n). The engine releases only n=150 and n=400, lists the item in each NBA cell's `undefined_rules`, and emits no verdict for it. **Next:** Operator/DS to define the date-triggered look by superseding document before 2027-01-31. **Update 2026-11-05 (W102.2):** DRAFT definition written (PROPOSED, not frozen): `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`. Second-look state: draft definition pending operator.
 
 <details>
 
@@ -3824,6 +3824,12 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 | Resolution | Not fixed in-session (register-and-stop). |
 
 </details>
+
+### GG-1750 — ADR-0072 forward test: "the look is taken once" (10-21 addendum) vs a report that recomputes daily; which day was the look is unpinned
+
+**Status:** OPEN · **Severity:** MEDIUM
+
+**Current state (2026-11-05, W102.2):** the 10-21 addendum says the look is taken once, but `demo_fill_forward_report.py` recomputes every day. shadow/NFL printed ADOPT on 11-02, 11-03 and 11-04 (a +0.190, lo95 +0.088 each time at essentially the same n). The terminal did not pin a day. Candidate pins: the first daily report after the 550th treatment markout fill (2026-11-02T11:25Z), or the latest. **Next:** operator decides; question is also in `03_DECISIONS/ADR-0072_ADDENDUM_2026-11-05_nfl-adopt-application.md`. Daily recomputation is a multiplicity exposure (see `12_EXPLORATORY/quant_w102/MULTIPLICITY_LEDGER.md`).
 
 ### GG-536 — T1 MLB paper book: 17.5% of closed positions were filled on demo; the 83 settled fills lose $1.50/bet while the unfilled remainder is flat
 
