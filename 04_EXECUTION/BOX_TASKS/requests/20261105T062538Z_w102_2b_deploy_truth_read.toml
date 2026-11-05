@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W102.2 re-check after #424 pull"
