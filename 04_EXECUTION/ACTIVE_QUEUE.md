@@ -401,11 +401,12 @@ Rows moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04).
 
 ---
 
-## ⬛ OPERATOR DIRECTIVE, 2026-11-04 22:01 PT — THREE BLOCKS STAYS STANDING; WAVE 103 = ALL QUANT + ONE RED ALERT
+## ⬛ OPERATOR DIRECTIVE, 2026-11-04 22:01 / 22:03 PT — THREE BLOCKS STAYS STANDING; WAVE 103 = THREE QUANT + ONE RED ALERT
 "Don't treat 5 as the operating procedure moving forward - it'll still be a standing 3, unless I request so. I want the next wave to be
 all Quant + 1 red alert for whatever needs attention immediately. We've done a lot of engine work, I want to get the quant work moved up too"
-Wave 102's five blocks were a one-off. Wave 103 = two quant blocks (backlog B-010, B-044, B-045, B-046) + one red-alert block for
-whatever is red at Wave 102's close; the lane rule is suspended for Wave 103 only (DECISION_LOG 2026-11-04 22:01 PT).
+Corrected 22:03 PT: "I want 3 quant plus a red alert". Wave 102's five blocks were a one-off. Wave 103 = FOUR blocks: three quant
+(backlog B-044, B-045, B-046; B-010 rides in one) + one red-alert block for whatever is red at Wave 102's close; the lane rule is
+suspended for Wave 103 only (DECISION_LOG 2026-11-04 22:01 / 22:03 PT).
 
 ## ⬛ OPERATOR DIRECTIVE, 2026-10-08 23:16–23:20 PT — EXPANSION ("we're trying to win"); supersedes calibration-only mode
 
