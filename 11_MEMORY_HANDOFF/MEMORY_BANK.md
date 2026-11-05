@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-05T01:55:00Z (T-1670 — W100.2: EXP-042 cell 10 retired; NFL totals loss read on 72 games (noise in disagreement); calendar regen blocked, GG-1720) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T0150Z_W100_2.md` for full session detail.
+**Last reviewed:** 2026-11-05T05:35:00Z (W101.1 — W101.1: NBA v3 coverage writer + read task merged; NHL totals shrink challenger held-out = NO; box night read and v1/v2/v3 scoring pending) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T0535Z_W101_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

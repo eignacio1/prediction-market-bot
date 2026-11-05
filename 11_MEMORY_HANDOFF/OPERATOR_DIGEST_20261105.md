@@ -10,3 +10,8 @@ Pillar: DEPTH and PROOF. The hockey model's low goal totals were partly a bookke
 - Nothing needs your decision.
 ## W100.3 — box memory + picks sheet (plumbing)
 The box kills fewer runners than two days ago (142 → 39 a day) but not zero. The cause: the early-day shadow runners could pile up on top of each other. I wrote and merged a guard for them; it is not on the box yet, and it goes on only when you approve `t3_lock_stagger_install` by name. The picks sheet works (134 games, 2614 picks, reasons on 90%), but one bet can show as two picks (GG-1690), and yesterday's results can't show until games settle. Two leftover bugs are fixed. No real money, no model or stake changes.
+
+## W101.1 (NBA coverage / NHL totals)
+- The NBA v3 arm now records every game it misses and why; the tool to read that from the box is merged. Box numbers are not read yet (they wait until after 07:30Z).
+- NHL totals: a fix for the model's habit of predicting too-extreme totals helped a little on paper but did not clear the bar we set in advance. Result: NO. Nothing changes in the live bot.
+- Still zero real money at risk. Pillar: DEPTH (partly plumbing).
