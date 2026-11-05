@@ -15,6 +15,7 @@
 | Surface (ADR-0074) | **88 live components** · budget **GREEN** · healthcheck HEALTHY · no silent arm · box HEAD = main (05:48Z) · **0 OOM kills since the T1/T2 lock (02:11Z), 375 MB available** (was 45 / 24 h, 223 MB) - memory still the constraint. Map: `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` |
 | Capital | **$0 real.** `kelly_fraction = 0.0` everywhere; flat demo stakes only (ADR-0050/0072). Kill switch ENFORCING on every order path (89.1) |
 | Deploy | the box pulls main every 5 minutes (vps_deploy.sh, :03/:08/...). Installs run by the window only on the operator's named approval in chat (11-03) |
+| W102.1 | **Part A DONE** (PR #425, 76b5e3d): root cause = OOM burst + no in-window retry; fix merged, cron install awaits operator approval of `nba_engine_catchup_install`. Parts B (NHL) / C (store lag) not started. |
 | Silent arms | none (05:48Z); but **NBA v2 / v3 still miss without OOM**: 11-04 slate v1 56/56, v2 44/56, v3 38/56 markets, every miss "window_closed_without_a_successful_run" (nba_engine_coverage_read) - 102.1 |
 | Open PRs | #149 (stale, holds unlanded GG-279 work) · **#422** GG-1690 (conflicting, no CI - 102.3) |
 
