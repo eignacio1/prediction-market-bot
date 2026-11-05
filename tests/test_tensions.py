@@ -1,6 +1,11 @@
 """W75.3 Part B: tension registers have the required fields, seeds are present, evidence names real files, renders are current."""
-import re, sys, tomllib
+import re, sys
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11 (the box runs 3.9)
+    import tomli as tomllib  # type: ignore
 
 ROOT = Path(__file__).resolve().parent.parent
 T = ROOT / "02_ARCHITECTURE_DESIGN" / "TENSIONS"

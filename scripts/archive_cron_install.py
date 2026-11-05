@@ -42,6 +42,13 @@ def _rr():
     return rr
 
 
+def marker_in(line: str, marker: str) -> bool:
+    """True if `marker` occurs in `line` as a whole token, not as the prefix of a longer name (W100.3 / B-040:
+    "nba_engine.live" is a plain-substring prefix of "nba_engine.live_v3", so a bare `in` made one installer claim
+    another installer's line). The character after the marker must not continue an identifier."""
+    return re.search(re.escape(marker) + r"(?![A-Za-z0-9_])", line) is not None
+
+
 def wanted_lines(conf_text: str, reg: list) -> list[tuple[str, str]]:
     """[(registry key, exact cron line)] for every archiver line in cron.conf whose registry entry is live."""
     rr = _rr()
@@ -49,7 +56,7 @@ def wanted_lines(conf_text: str, reg: list) -> list[tuple[str, str]]:
     out = []
     for raw in conf_text.splitlines():
         line = raw.strip()
-        if not line or line.startswith("#") or ARCHIVER not in line or len(line.split()) < 6:
+        if not line or line.startswith("#") or not marker_in(line, ARCHIVER) or len(line.split()) < 6:
             continue
         key, _ = rr._cron_key(line)
         if key in live:

@@ -1,6 +1,11 @@
 """W75.3 Part A: seat files cover every registered cell of NFL/NBA and cite only evidence that exists."""
-import sys, tomllib
+import sys
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11 (the box runs 3.9)
+    import tomli as tomllib  # type: ignore
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))

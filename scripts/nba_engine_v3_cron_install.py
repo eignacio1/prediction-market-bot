@@ -35,7 +35,7 @@ def wanted_lines(conf_text: str, reg: list) -> list[tuple[str, str]]:
     out = []
     for raw in conf_text.splitlines():
         line = raw.strip()
-        if not line or line.startswith("#") or len(line.split()) < 6 or not any(m in line for m in MARKERS):
+        if not line or line.startswith("#") or len(line.split()) < 6 or not any(aci.marker_in(line, m) for m in MARKERS):
             continue
         key, _ = rr._cron_key(line)
         if key in live:
