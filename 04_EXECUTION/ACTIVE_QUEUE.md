@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 102 READY TO PASTE - three blocks in NOW (102.1 engine, 102.2 proof, 102.3 flex).** Written 2026-11-05 ~06:10 UTC. Every part runs on data that exists now. **Waiting on you: the branch-deletion list (see "Needs your decision"); the NFL ADOPT call comes with 102.2.**
+> **▶ WAVE 102 READY TO PASTE - three blocks in NOW (102.1 engine, 102.2 proof, 102.3 flex).** Written 2026-11-05 ~06:10 UTC. Every part runs on data that exists now. **One addendum: 102.3 branch cleanup (authorized 21:54 PT). Waiting on you: w83-3 keep/delete; the NFL ADOPT call comes with 102.2.**
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -215,6 +215,25 @@ Operator decisions: none expected.
 END OF BLOCK 102.3
 ```
 
+
+### 102.3 ADDENDUM - BRANCH CLEANUP (paste into the 102.3 terminal; any terminal may run it if 102.3 is closed)
+
+```
+ADDENDUM TO BLOCK 102.3 - BRANCH CLEANUP (B-043), operator-authorized 2026-11-04 21:54 PT (blockquote in ACTIVE_QUEUE.md "Needs your decision")
+
+PURPOSE: PLUMBING - stray branches on origin 35 -> 4 (2 data branches, #149's branch, w83-3 pending the operator).
+Do this between parts; ~10 minutes. Delete NOTHING not named below.
+
+1. Source: the two DELETE tables in 12_EXPLORATORY/branch_cleanup_w101/LIST.md (31 rows: branch name + 10-char tip SHA).
+2. `git ls-remote --heads origin`. For each of the 31: delete ONLY if the remote tip starts with the recorded SHA
+   (`git push origin --delete <branch>`, one branch per push). If a tip differs, do not delete it; list it.
+3. Never touch: main, data/nba-injury-reports, data/nhl-goalie-probe, session/20260924T045227Z-resolved-filter (#149),
+   session/20261021T235008Z-w83-3-nhl-data-layer, w101-3-gg1690-dedupe (#422), or any branch created after 2026-11-05T02:00Z.
+4. Append to LIST.md a "DONE <UTC>" section: deleted (count + names), skipped (with reason), and the `git ls-remote --heads origin`
+   output after. Docs-only push. Record it in your handoff (pattern_sweep: n/a).
+END OF ADDENDUM 102.3
+```
+
 ---
 
 ## Sequencing track
@@ -404,10 +423,13 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
-**OPEN - waiting on you (not authorizations until you answer):**
-1. **Branch cleanup (B-043):** delete the 31 stray branches in `12_EXPLORATORY/branch_cleanup_w101/LIST.md` (29 merged PRs + 2 with nothing
-   unlanded; every tip SHA recorded so any can be restored). Keep `data/nba-injury-reports`, `data/nhl-goalie-probe` and #149 (holds unlanded
-   GG-279 work). One is your call: `w83-3-nhl-data-layer` (#314 closed as superseded by #315, but two of its files differ from main).
+> **AUTHORIZATION - BRANCH CLEANUP (operator, 2026-11-04 21:54 PT: "Yes proceed with the branch cleanup").** Delete the 31 branches in
+> `12_EXPLORATORY/branch_cleanup_w101/LIST.md` "DELETE" tables (29 merged-PR + 2 with nothing unlanded), each only if its remote tip still
+> equals the recorded SHA. KEEP `data/nba-injury-reports`, `data/nhl-goalie-probe`, #149's branch, and `w83-3-nhl-data-layer` (operator did
+> not decide it). The window's attempt was refused by its session proxy (HTTP 403 on ref deletion, 11-05 05:56Z); run by a terminal (102.3 addendum).
+
+**OPEN - waiting on you (not an authorization until you answer):**
+1. **w83-3-nhl-data-layer:** keep or delete (#314 closed as superseded by #315; two of its files differ from main).
 2. **NFL ADOPT (ADR-0072):** comes with 102.2's PROPOSED addendum and an OFF switch - yes / no then.
 
 > **AUTHORIZATION - T1/T2 SHADOW-LINE LOCK (operator, 2026-11-04 18:10 PT: "I approve the box-task request that runs
