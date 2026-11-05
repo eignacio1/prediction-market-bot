@@ -208,7 +208,7 @@ def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Op
     done = set()
     if f_out.exists():
         done = {json.loads(l)["event_ticker"] for l in f_out.read_text().splitlines() if l.strip()}
-    logged, skipped = 0, []
+    logged, skipped, seen = 0, [], {}
     for day in sorted({(now + timedelta(days=d)).strftime("%Y-%m-%d") for d in (0, 1)}):
         arch = L.read_archive(day, archive_dir) + L.read_archive((now - timedelta(days=1)).strftime("%Y-%m-%d"), archive_dir)
         by_event = {}
@@ -217,6 +217,7 @@ def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Op
             if pr:
                 by_event.setdefault(pr["event_ticker"], {})[r["ticker"]] = pr
         for ev, parsed in by_event.items():
+            seen.setdefault(ev, next(iter(parsed.values())))
             if ev in done:
                 continue
             p0 = next(iter(parsed.values()))
@@ -234,8 +235,10 @@ def run(raw: str, espn_schedule: pd.DataFrame, current_tg: pd.DataFrame, now: Op
                     fh.write(json.dumps(r) + "\n")
             done.add(ev)
             logged += len(rows)
+    misses = L.coverage_misses(seen, tips, done, now)   # W101.1 / B-030: same accounting as v1 / v2; own path, never touches rows
+    L.write_coverage(out_dir, misses, now)
     status = dict(as_of=now.isoformat(), rows_logged_this_run=logged, events_logged_total=len(done), skipped=skipped,
-                  params_hash=pid, snapshots_logged=len(snaps), new_snapshot=new_snap)
+                  params_hash=pid, snapshots_logged=len(snaps), new_snapshot=new_snap, unlogged_past_tip=len(misses))
     (out_dir / "status.json").write_text(json.dumps(status, indent=2) + "\n")
     return status
 
