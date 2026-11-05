@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 103 READY TO PASTE - FOUR blocks in NOW (103.1-103.3 quant, 103.4 RED ALERT).** Written 2026-11-05 ~06:50 UTC. Every part runs on data that exists now. **Waiting on you (see "Needs your decision"): the NBA catch-up install; the NFL ADOPT addendum; the NFL look day; the EXP-038 second-look draft.**
+> **▶ WAVE 103 READY TO PASTE - FOUR blocks in NOW (103.1-103.3 quant, 103.4 RED ALERT).** Written 2026-11-05 ~06:50 UTC. Every part runs on data that exists now. **Waiting on you (see "Needs your decision"): the NFL ADOPT addendum; the NFL look day; the EXP-038 second-look draft.**
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -437,15 +437,15 @@ What should reorder this, and what should stop it:
 > 2026-11-04 21:59 PT, "just input whats recommended" -> the list's recommendation: check the dropped lines, register a GG if wanted, then delete
 > (tip 8219b53bec recorded). The window's attempt was refused by its session proxy (HTTP 403 on ref deletion, 11-05 05:56Z); run by a terminal (block 102.5).
 
+> **AUTHORIZATION - NBA ENGINE CATCH-UP INSTALL (operator, 2026-11-04 22:39 PT: "yes I approve the box-task request that runs
+> nba_engine_catchup_install, which adds a crontab line on the paper box.").** Run by the window with its readback and a budget read.
+
 **OPEN - waiting on you (not an authorization until you answer):**
-1. **NBA engine catch-up install (102.1, #425):** fixes NBA v2 / v3 missing games after the box kills a run. Clears the box's only red
-   (budget RED = merged but not installed). To approve, say: "I approve the box-task request that runs nba_engine_catchup_install, which
-   adds a crontab line on the paper box."
-2. **NFL ADOPT (ADR-0072 addendum, PROPOSED by 102.2):** window recommends **hold**. 102.4 found ~18 of the 19 cents is which orders fill,
+1. **NFL ADOPT (ADR-0072 addendum, PROPOSED by 102.2):** window recommends **hold**. 102.4 found ~18 of the 19 cents is which orders fill,
    not the posting rule, and GG-1771 means every NO-side fill in that data was mirror-priced. 103.4 re-reads it on clean fills; decide then.
-3. **NFL look day (GG-1750):** treat 11-02 (the first ADOPT report) as the look, or the latest report? Window recommends 11-02 - the
+2. **NFL look day (GG-1750):** treat 11-02 (the first ADOPT report) as the look, or the latest report? Window recommends 11-02 - the
    addendum says the look is taken once.
-4. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
+3. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
    due before January. Accept, or tell me what to change.
 
 > **AUTHORIZATION - T1/T2 SHADOW-LINE LOCK (operator, 2026-11-04 18:10 PT: "I approve the box-task request that runs
