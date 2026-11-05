@@ -122,6 +122,11 @@ TASKS: dict[str, str] = {
         "echo '--- os'; grep PRETTY_NAME /etc/os-release"
     ),
     # 2026-10-21: the dashboards as the operator's tunnel sees them (status, bytes; the web section present on /visual).
+    # 2026-11-05 (window): READ-ONLY. Is /visual serving the compact picks panel (#428)? Counts new vs old panel markers.
+    "dashboard_visual_markers_read": (
+        "printf 'compact panel markers (pk-tabs): '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'pk-tabs' | wc -l; "
+        "printf 'old panel markers (Yesterday, with results<small>): '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'with results<small>' | wc -l"
+    ),
     "dashboard_pages_read": (
         "for u in / /api/data /visual /project; do printf '%-10s ' \"$u\"; "
         "curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 60 \"http://127.0.0.1:8050$u\"; echo; done; "
