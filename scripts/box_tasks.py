@@ -82,6 +82,7 @@ TASKS: dict[str, str] = {
     "install_batch_w99_readback": f"{PY} scripts/install_batch_w99.py readback",
     "install_batch_w99_uninstall": f"{PY} scripts/install_batch_w99.py uninstall",
     "box_memory_read": f"{PY} scripts/box_memory_read.py --since '24 hours ago'",
+    "picks_sheet_read": f"{PY} scripts/picks_sheet_read.py",
     # W94.Q: read-only JSON for scripts/proof_calendar.py --input (engine cells + settle dates + archive game counts)
     "proof_calendar_read": f"{PY} scripts/proof_calendar.py --emit",
     # W98.2 Part A: READ-ONLY. Prints the released first-look verdicts from the latest saved calibration-engine JSON (no re-scoring).
