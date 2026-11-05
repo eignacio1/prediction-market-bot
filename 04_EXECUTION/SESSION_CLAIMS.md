@@ -1167,3 +1167,4 @@
 | 2026-11-05T06:29:55Z | W102.3 | CLOSED — merge confirmed, HEAD (d0a985e) is ancestor of origin/main — docs on main; #426 pending CI auto-merge |
 | 2026-11-05T06:28:48Z | B-030 | CLOSED — W102.1: NBA v2/v3 misses root-caused to OOM burst; catch-up cron + attempt trace merged, install awaits approval (commit `d432a7e`) |
 | 2026-11-05T06:31:03Z | W102.2 | CLOSED — NFL ADOPT built behind an OFF switch; markout rows carry book; ADR-0072 NFL addendum PROPOSED; EXP-038 second-look DRAFT; look-day GG-1750 registered. (commit `bf9d918`) |
+| 2026-11-05T06:31:17Z | W102.2 | CLOSED — merge confirmed, HEAD (faae397) is ancestor of origin/main — NFL ADOPT built OFF (#424), addenda PROPOSED/DRAFT, GG-1750; forward re-run unconfirmed |
