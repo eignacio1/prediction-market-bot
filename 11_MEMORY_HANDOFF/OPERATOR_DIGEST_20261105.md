@@ -8,3 +8,5 @@ Pillar: DEPTH and PROOF. The hockey model's low goal totals were partly a bookke
 - Weather could not be checked: 61 of 72 games had no weather data. That gap is worth fixing before the next NFL model.
 - The proof calendar now has second-look logic, but I could not regenerate it because the box connection dropped (GG-1720).
 - Nothing needs your decision.
+## W100.3 — box memory + picks sheet (plumbing)
+The box kills fewer runners than two days ago (142 → 39 a day) but not zero. The cause: the early-day shadow runners could pile up on top of each other. I wrote and merged a guard for them; it is not on the box yet, and it goes on only when you approve `t3_lock_stagger_install` by name. The picks sheet works (134 games, 2614 picks, reasons on 90%), but one bet can show as two picks (GG-1690), and yesterday's results can't show until games settle. Two leftover bugs are fixed. No real money, no model or stake changes.

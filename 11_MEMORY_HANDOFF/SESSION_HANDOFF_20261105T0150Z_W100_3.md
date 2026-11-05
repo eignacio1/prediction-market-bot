@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: T-1690
+tier: STANDARD
+timestamp: 2026-11-05T01:50:00Z
+commit: 81d3a4d
+one_line_summary: W100.3: installer MARKERS + Py3.9 fixed (B-040); T1/T2 lock merged not installed (OOM 142->39); picks night 1 read
+gg_touched: GG-1690, GG-1650
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: surface budget; OOM kills per 24h; picks-sheet panel nights read
+gap_delta: OOM kills 142 -> 24 -> 39 (box_memory_read 00:57Z 11-05); surface budget GREEN; picks nights read 0 -> 1 of 2; leftovers closed 2 of 2
+pattern_sweep: tomllib import swept across tests/ and scripts/ (2 tests + 2 renderers fixed); installer MARKERS swept across all four *_cron_install.py (3 fixed, shared marker_in helper); lock-wrapper sweep across deploy/cron* (10 T1/T2 shadow lines wrapped)
+surface_delta: 0 (no new cron, service or workflow; one read-only script + box task)
+-->
+
 # SESSION HANDOFF — W100.3 (flex lane: B-026 + B-027 + B-040)
 
 ```
