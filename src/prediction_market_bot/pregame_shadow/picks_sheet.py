@@ -195,6 +195,46 @@ def attach_results(picks: list, settled_rows: Iterable[dict]) -> None:
                        "pnl_per_contract": round(gross - fee_rate(p["ticker"], q), 4), "basis": "logged price, not the fill"}
 
 
+def _split(ticker: str):
+    head, _, tail = ticker.rpartition("-")
+    return head, tail
+
+
+def _canon(p: dict, mirrors: dict):
+    """Key of the underlying bet. In a two-team moneyline event (letters-only suffixes, both seen), YES on A and NO on B
+    are the same bet, so both key to ('prefix', 'A wins'). Anything else keys to (ticker, side)."""
+    head, tail = _split(p["ticker"])
+    other = mirrors.get(head, {}).get(tail)
+    if other is None:
+        return (p["ticker"], p["side"])
+    return (head, tail if p["side"] == "yes" else other)
+
+
+def dedupe(picks: list) -> list:
+    """GG-1690: one pick per distinct opinion. Arms (T1/T2/...) holding the same bet merge into one pick listing every
+    arm; the two mirror sides of one moneyline bet merge too (kept as the YES-side ticker, mirror noted). The merged pick
+    keeps the largest-edge member's numbers; `arms` and `also_seen_as` say who and what was folded in."""
+    suffixes: dict = {}
+    for p in picks:
+        head, tail = _split(p["ticker"])
+        if tail.isalpha():
+            suffixes.setdefault(head, set()).add(tail)
+    mirrors = {h: {a: b, b: a} for h, v in suffixes.items() if len(v) == 2 for a, b in [sorted(v)]}
+    groups: dict = {}
+    for p in picks:
+        key = _canon(p, mirrors)
+        groups.setdefault(key, []).append(p)
+    out = []
+    for members in groups.values():
+        members = sorted(members, key=lambda x: (-(x["side"] == "yes"), -x["edge_after_fee"], x["arm"]))
+        best = dict(members[0])
+        best["arms"] = sorted({m["arm"] for m in members})
+        best["also_seen_as"] = sorted({f"{m['ticker'].rpartition('-')[2]} {m['side'].upper()}" for m in members[1:]}
+                                      - {f"{best['ticker'].rpartition('-')[2]} {best['side'].upper()}"})
+        out.append(best)
+    return out
+
+
 def group_by_game(picks: list) -> list:
     """One entry per game; arms that disagree on the same game (different sides on one ticker) are flagged."""
     games: dict = {}
@@ -211,5 +251,7 @@ def group_by_game(picks: list) -> list:
 
 
 def build(sheet_date: str, picks: list, notes: Optional[list] = None) -> dict:
+    raw = len(picks)
+    picks = dedupe(picks)
     return {"schema": SCHEMA, "date": sheet_date, "built_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
-            "n_picks": len(picks), "games": group_by_game(picks), "notes": notes or []}
+            "n_picks": len(picks), "n_rows_before_dedupe": raw, "games": group_by_game(picks), "notes": notes or []}
