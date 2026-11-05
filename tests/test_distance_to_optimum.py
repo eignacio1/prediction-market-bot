@@ -263,3 +263,10 @@ def test_p3_modal_regex_parses_the_registered_expectations_file():
     mm = d.MODAL_RE.search((REPO / d.EXPECT_REL).read_text())
     assert mm and mm.group(1).strip() == "KEEP ACCRUING" and mm.group(2) == "91"
     assert d.MODAL_RE.search("**Vs market, every cell:** RULED OUT ≈ 9%")  # the older bold-closing form still parses
+
+
+def test_b1_counts_ruled_out_but_logging_arms(tmp_path):
+    cells = [("A_ML", "T1", "ruled_out"), ("A_ML", "T2", "shadow"), ("A_ML", "T3", "blocked")]
+    m = by_id(d.breadth(tmp_path, (cells, {"A_ML"})))
+    assert m["B1"]["value"] == "2 / 3" and "1 of the logging cells are RULED_OUT" in m["B1"]["note"]
+    assert m["B3"]["value"].startswith("2 of 5")

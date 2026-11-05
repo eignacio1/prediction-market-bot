@@ -46,6 +46,12 @@ MODAL_BY_SPORT = {
     "NHL": "not stated in EXP-036",
 }
 
+# W100.2 (B-039): hypotheses closed WITHOUT a scored look. id -> why. A closed row has no projected look.
+CLOSED_STATIC = {
+    "EXP-042 cell 10": "RETIRED before its look (operator 2026-11-03; addendum EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04): "
+                       "re-run net .0383 lo -.0301 vs frozen .089 / .047; ~370 judged games needed, 19 frozen. Never scored.",
+}
+
 # Frozen hypotheses that are not engine cells. need = judged units for the call that can PASS.
 STATIC = [
     {"id": "EXP-041", "tests": "NFL market-anchored pooled paired dBrier, 12 cells (4 families), one test", "sport": "NFL",
@@ -66,7 +72,8 @@ STATIC = [
     {"id": f"EXP-042 cell {i}", "tests": "W89.2 ride cell %d, forward (price archive after the 2026-10-28 freeze)" % i, "sport": "NFL" if i == 6 else "MLB",
      "freeze": "2026-10-28", "need": n, "unit": "games", "family": "KXNFL" if i == 6 else "KXMLB",
      "modal": "regress to zero; <= 2 of 11 hold; zero PASS before 2027-06",
-     "note": "counts every game with a snapshot in the sport (upper bound on the cell's subset)"}
+     "note": "counts every game with a snapshot in the sport (upper bound on the cell's subset)",
+     **({"closed": CLOSED_STATIC[f"EXP-042 cell {i}"]} if f"EXP-042 cell {i}" in CLOSED_STATIC else {})}
     for i, n in zip(range(1, 12), (1367, 823, 158, 307, 196, 408, 855, 214, 224, 75, 557))
 ]
 
@@ -137,8 +144,10 @@ def emit(repo: Path, now: datetime | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
     res = ce.run(repo, now, persist=False)
     dates: dict[str, dict[str, int]] = {}
+    looks_by_cell: dict[str, list[int]] = {}
     for c in ce.discover_cells(repo):
         pol = ce.policy_for(c.get("policy", c["sport"]))
+        looks_by_cell[c["cell"]] = list(pol.looks)
         rows = [r for r in ce.first_row_per_unit(ce.load_settled(c)) if ce.eligible(pol, r)]
         cut = (now - timedelta(days=WINDOW_DAYS + 7)).date().isoformat()  # bridge output is capped at 30KB: ship per-day counts, recent only
         counts: dict[str, int] = {}
@@ -150,8 +159,11 @@ def emit(repo: Path, now: datetime | None = None) -> dict:
                 counts[d] = counts.get(d, 0) + 1
         dates[c["cell"]] = counts
     cells = [{k: c.get(k) for k in ("cell", "sport", "band", "market_type", "rows", "judged_n", "settled_games",
-                                    "first_look_n", "status_text", "projection")} | {"settle_dates": dates.get(c["cell"], {})}
+                                    "first_look_n", "status_text", "projection", "verdict")} | {"settle_dates": dates.get(c["cell"], {}), "looks": looks_by_cell.get(c["cell"], [])}
              for c in res["cells"]]
+    for c in cells:
+        v = c.get("verdict")
+        c["verdict"] = v.get("verdict") if isinstance(v, dict) else v
     arch: dict[str, dict[str, int]] = {}
     for p in sorted((repo / "exp_output/PRICE_ARCHIVE").glob("prices_*.jsonl")):
         day = p.stem.split("_", 1)[1]
@@ -183,6 +195,10 @@ def archive_series(arch: dict[str, dict[str, int]], family: str, since: str, unt
 def static_rows(arch: dict, today: date) -> list[dict]:
     rows = []
     for h in STATIC:
+        if h.get("closed"):
+            rows.append({"id": h["id"], "tests": h["tests"], "rows": "closed", "rate": "closed", "judged_n": "closed",
+                         "second": "closed", "proj": "CLOSED (no look)", "modal": "none: never scored", "note": h["closed"]})
+            continue
         per_day = archive_series(arch, h["family"], h["freeze"], today)
         total = sum(per_day.values())
         # a game is seen on several archive days (ladders open ahead); the day-count is an upper bound on accrual.
@@ -191,13 +207,20 @@ def static_rows(arch: dict, today: date) -> list[dict]:
         pr = project(h["need"] - total, k, active, h["sport"], today)
         rows.append({"id": h["id"], "tests": h["tests"], "rows": f"{total} game-days seen since {h['freeze']}",
                      "rate": f"{k} in {active} active days" if active else "season paused",
-                     "judged_n": f"{h['need']} {h['unit']}", "proj": fmt_proj(pr), "modal": h["modal"], "note": h["note"]})
+                     "judged_n": f"{h['need']} {h['unit']}", "second": h.get("second", "none pre-registered"), "proj": fmt_proj(pr), "modal": h["modal"], "note": h["note"]})
     return rows
 
 
 def engine_rows(blob: dict, today: date, modal_nfl: str) -> list[dict]:
     out = []
     for c in blob["cells"]:
+        if c.get("verdict") == "RULED_OUT" or str(c.get("status_text", "")).upper().startswith("RULED_OUT"):
+            out.append({"id": c["cell"], "tests": f"{c['sport']} {c['market_type']} {c['band']} vs market",
+                        "rows": f"{c['rows']} rows / {c['judged_n']} judged", "rate": "closed", "judged_n": "closed",
+                        "second": "closed", "proj": "CLOSED (RULED_OUT)", "modal": "verdict issued",
+                        "note": "arm may keep logging (registry); not scored again"})
+            continue
+        looks = c.get("looks") or []
         need = (c.get("first_look_n") or 0) - (c.get("judged_n") or 0)
         sd = c.get("settle_dates", {})
         sd = [d for d, n in sd.items() for _ in range(n)] if isinstance(sd, dict) else sd
@@ -205,8 +228,13 @@ def engine_rows(blob: dict, today: date, modal_nfl: str) -> list[dict]:
         pr = project(need, k, active, c["sport"], today) if c.get("first_look_n") else {"point": None, "note": "no look pre-registered"}
         eng = (c.get("projection") or {}).get("date") or (c.get("projection") or {}).get("note") or "-"
         modal = modal_nfl if c["sport"].startswith("NFL") else MODAL_BY_SPORT.get(c["sport"], "see prereg")
+        second = "none pre-registered"
+        if len(looks) > 1:
+            left = looks[1] - (c.get("judged_n") or 0)
+            p2 = project(left, k, active, c["sport"], today) if left > 0 else {"point": today.isoformat(), "lo": None, "hi": None}
+            second = f"n={looks[1]} ({max(left, 0)} left): {fmt_proj(p2)}"
         out.append({"id": c["cell"], "tests": f"{c['sport']} {c['market_type']} {c['band']} vs market",
-                    "rows": f"{c['rows']} rows / {c['judged_n']} judged",
+                    "second": second, "rows": f"{c['rows']} rows / {c['judged_n']} judged",
                     "rate": f"{k} in {active} active days" if active else "season paused",
                     "judged_n": str(c.get("first_look_n") or "-"), "proj": fmt_proj(pr),
                     "modal": modal, "note": f"engine: {eng}"})
@@ -227,13 +255,13 @@ def render(blob: dict, repo: Path, today: date | None = None) -> str:
          "windows (zero accrual outside them); interval = 10th-90th percentile of a Gamma(k+0.5, active_days) posterior "
          "on that rate. Applies when the last 14 days are representative of the season; does not for lumpy schedules "
          "(NFL byes) or a ramp-up window. " + SEASON_NOTE, "",
-         f"**{len(blob['cells'])} calibration-engine cells + {len(STATIC)} frozen hypotheses = {len(rows)} rows.** "
+         f"**{len(blob['cells'])} calibration-engine cells + {len(STATIC)} frozen hypotheses = {len(rows)} rows, {sum(1 for r in rows if str(r['proj']).startswith('CLOSED'))} closed (RULED_OUT or retired; shown, never projected).** "
          "A projected date is when to LOOK, not a prediction of the verdict; no score is read below the judged n.", "",
-         "| Hypothesis | What it tests | Rows to date | 14-day accrual | Judged n | Projected look (80% interval) | Pre-registered modal outcome | Note |",
-         "|---|---|---|---|---|---|---|---|"]
+         "| Hypothesis | What it tests | Rows to date | 14-day accrual | Judged n | Second look (n, left, date) | Projected look (80% interval) | Pre-registered modal outcome | Note |",
+         "|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         L.append("| " + " | ".join(str(r[k]).replace("|", "/") for k in
-                                   ("id", "tests", "rows", "rate", "judged_n", "proj", "modal", "note")) + " |")
+                                   ("id", "tests", "rows", "rate", "judged_n", "second", "proj", "modal", "note")) + " |")
     return "\n".join(L) + "\n"
 
 

@@ -59,3 +59,31 @@ def test_render_counts_form_matches_list_form():
     a = pc.render(mk(["2026-10-30"] * 9 + ["2026-10-29"] * 5), Path(pc.REPO))
     b = pc.render(mk({"2026-10-30": 9, "2026-10-29": 5}), Path(pc.REPO))
     assert a == b
+
+
+def _cell(**kw):
+    base = {"cell": "NFL.x.T1", "sport": "NFL", "band": "T1", "market_type": "TOTAL", "rows": 100, "judged_n": 60,
+            "first_look_n": 60, "status_text": "JUDGED", "projection": {}, "settle_dates": {"2026-10-30": 14}, "verdict": None}
+    return base | kw
+
+
+def test_ruled_out_cell_is_closed_and_not_projected():
+    rows = pc.engine_rows({"cells": [_cell(verdict="RULED_OUT", looks=[60, 150])]}, date(2026, 11, 3), "m")
+    assert rows[0]["proj"].startswith("CLOSED") and rows[0]["second"] == "closed"
+
+
+def test_second_look_state_and_judged_left():
+    rows = pc.engine_rows({"cells": [_cell(verdict="SHADOW", looks=[60, 150])]}, date(2026, 11, 3), "m")
+    assert rows[0]["second"].startswith("n=150 (90 left):")
+
+
+def test_single_look_cell_says_none_pre_registered():
+    rows = pc.engine_rows({"cells": [_cell(looks=[60])]}, date(2026, 11, 3), "m")
+    assert rows[0]["second"] == "none pre-registered"
+
+
+def test_retired_cell10_closed_in_static_rows_and_render():
+    rows = {r["id"]: r for r in pc.static_rows({}, date(2026, 11, 3))}
+    assert rows["EXP-042 cell 10"]["proj"].startswith("CLOSED") and "RETIRED" in rows["EXP-042 cell 10"]["note"]
+    assert not rows["EXP-042 cell 9"]["proj"].startswith("CLOSED") and not rows["EXP-042 cell 11"]["proj"].startswith("CLOSED")
+    assert all("second" in r for r in rows.values())
