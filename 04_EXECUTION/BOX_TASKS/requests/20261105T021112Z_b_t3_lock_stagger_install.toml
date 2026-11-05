@@ -1,0 +1,2 @@
+task = "t3_lock_stagger_install"
+note = "T1/T2 shadow-line lock (#416); operator approved by name 2026-11-04 18:10 PT"

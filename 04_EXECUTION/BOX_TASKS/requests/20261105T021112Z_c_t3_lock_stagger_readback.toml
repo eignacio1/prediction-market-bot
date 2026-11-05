@@ -1,0 +1,2 @@
+task = "t3_lock_stagger_readback"
+note = "readback after the T1/T2 lock install"
