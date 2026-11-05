@@ -117,14 +117,14 @@ The engine reads its own injury-report fetcher, not the archive. Found by the wi
 ## Pattern tags, W31-W43 (added at the 2026-11-04 handoff; the sections above had none)
 W31 LITERAL (a curiosity question taken as a directive) · W32 UNVERIFIED · W33 PROCESS · W34 PROCESS · W35 PROCESS · W36 FOREST (composition by newest directive, not the ranking) · W37 UNVERIFIED (shrank blocks without checking why parts stalled) · W38 UNVERIFIED · W39 UNVERIFIED · W40 UNVERIFIED · W41 UNVERIFIED · W42 PROCESS · W43 UNVERIFIED. (W30 was tagged REPEAT in its row but not counted in the tally; counted now.)
 
-## W44 · 2026-11-03 → 11-04 · the forward test's NFL "ADOPT" went unread for two days (found by the Waves 101 -> window, 11-05)
+## W44 (SW-9 found; SW-8 error) · 2026-11-03 → 11-04 · the forward test's NFL "ADOPT" went unread for two days (found by the Waves 101 -> window, 11-05)
 From 2026-11-03T11:25Z the daily ADR-0072 report (distance_read tail) printed "shadow|NFL: ADOPT" - the word the 10-21 addendum
 makes final for NFL. The window read distance_read at every close and the carry-forward and queue still said "INCONCLUSIVE,
 keep running" / "(a)/(b) hold, pending (c)" (sitrep row sourced from the 10-27 report). The operator was never told. Pattern:
 UNVERIFIED (a sitrep row carried from an old report instead of re-read). Rule: at every close, read the forward-test VERDICT line
 of the newest report and update the sitrep's forward-test row from it; a change in any verdict word goes to the operator that close.
 
-## W45 · 2026-11-05 (Wave 101) · blocks written with parts that could not start until a future clock time
+## W45 (SW-9) · 2026-11-05 (Wave 101) · blocks written with parts that could not start until a future clock time
 Wave 101's 101.1 Part A step 4 and 101.3 Part A were gated "after 2026-11-05T07:30Z" (a full NBA + NHL night) while the terminals were
 pasted at ~02:20Z. Result: 101.1 closed with D4 NOT MEASURED and Part B not run; 101.3 left no handoff, its memory read and picks night 2
 undone, and PR #422 open (conflicting, no CI). Operator, 11-04 21:45 PT: "please ensure you're not give me an active block that requires
@@ -132,7 +132,7 @@ some sort of future time to hit - that makes no sense". Pattern: PROCESS (schedu
 Rule: every part of a block must be runnable on data that exists at paste time. Anything that needs a future night, game or settle is
 WINDOW work through the box bridge (scheduled with send_later), or waits for the next wave.
 
-## W46 · 2026-11-05 · "Deleting exactly the 31 branches" - claimed before testing that this session could delete a ref
+## W46 (SW-9) · 2026-11-05 · "Deleting exactly the 31 branches" - claimed before testing that this session could delete a ref
 The operator approved the branch cleanup (21:54 PT); the window replied that it was deleting them, then found the session proxy refuses
 ref deletion (git push --delete -> HTTP 403; REST DELETE git/refs -> 403). Nothing was deleted; the work went back to a terminal.
 Operator, 21:57 PT: "You should've known that you couldn't do it from here before claiming it". Pattern: UNVERIFIED - the very pattern this

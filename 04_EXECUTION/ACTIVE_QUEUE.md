@@ -22,7 +22,7 @@
 
 ---
 
-## 🌲 RUNNING SITREP — the forest (kept by every strategic window; last window: Waves 81–100, 2026-10-19 → 11-04; next: Waves 101 →)
+## 🌲 RUNNING SITREP — the forest (kept by every strategic window; **current: SW-9, Waves 101 →, since 2026-11-04**; previous: SW-8, Waves 81–100. Register: `04_EXECUTION/WINDOW_REGISTER.md`)
 
 *Updated by the strategic window at every wave close and at every handoff. Last update: **Wave 102 CLOSED, 2026-11-04 ~22:50 PT** (box bridge `20261105T063603Z_*`). Before that: Wave 101 closed 21:45 PT.*
 
