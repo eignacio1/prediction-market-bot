@@ -1199,3 +1199,4 @@
 | 2026-11-06T05:47:57Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (2dfe7ef) is ancestor of origin/main — W105.5 B-054: duplicate of merged #442; branch session/20261106T052413Z-w105-5-ride-board unmerged, PR #445 closed, delta port pending operator choice |
 | 2026-11-06T05:58:50Z | W105.4-B-053 | CLOSED — W105.4 ride/fade board B-053: net-of-cost measurement, 0 cells HELD_OUT, 5 inert IN_SAMPLE MOVE rows, pre-reg Part 1+2 and RESULT (PR #446) (commit `3e58045`) |
 | 2026-11-06T05:59:08Z | W105.4-B-053 | CLOSED — merge confirmed, HEAD (68ca446) is ancestor of origin/main — ride/fade board merged (PR #446) + handoff on main |
+| 2026-11-06T06:02:56Z | W105.2-B-052 | CLOSED — W105.2 B-052: order-context fields logged (PR #440), GG-1793/1794/1810 resolved, placement study merged (PR #443). (commit `52638e3`) |

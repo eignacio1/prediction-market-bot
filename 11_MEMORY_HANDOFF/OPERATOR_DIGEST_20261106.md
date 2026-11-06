@@ -35,3 +35,6 @@ We now hold every 2024 and 2025 MLB pitch (1.42 million) on the laptop, free, wi
 ## W105.4 ride/fade board
 We tested whether riding or fading big sudden price moves makes money after spreads and fees. It does not, yet: no cell passed on held-out games, so nothing is promoted and no orders can fire from it. Five long-shot candidates are logged as untested forward watches and cannot trade. NBA, NHL and NFL showed no edge at all. Still demo only, zero real money at risk. Next data arrives at MLB opening day, around 2027-03-25.
 Moved: BREADTH (ride/fade cells), no new cells earned.
+
+## W105.2 — order data and placement study (EXECUTION)
+The bot now records the context of each demo order (the side, book sizes, timing), so we can finally explain why fills lose. We tested placement rules on 65,217 past orders: no rule makes fills win. Fills lose more as the price rises, from half a cent under 20c to four cents above 80c. Skipping resting orders at 50c or higher trims the loss slightly but does not change final profit. Resting at the bid gains about half a cent per order but fills 29 points less often. I recommend, but have not applied, a pre-registered shadow arm for "no resting at 50c or higher". Still zero real money at risk. Not yet confirmed: a real order row carrying the new fields (none placed since the merge).

@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W105.2-B-052
+tier: STANDARD
+timestamp: 2026-11-06T06:10:00Z
+commit: 52638e3
+one_line_summary: W105.2 B-052: order-context fields logged (PR #440), GG-1793/1794/1810 resolved, placement study merged (PR #443).
+gg_touched: GG-1793, GG-1794, GG-1810
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E3
+gap_delta: order fields logged on new orders 0 -> 6 (code merged, first real row not yet seen); E3 counterfactual per rule done, pre-epoch YES-only n=65,217 orders (result.json @ 263f7d4+#443)
+pattern_sweep: wire-side intended-side defect swept in scripts/demo_fill_forward_report.py (fixed #440); other order-GET readers NOT exhaustively swept - open item
+surface_delta: 0
+-->
+
 # SESSION_HANDOFF 2026-11-06 — W105.2 (B-052) order data + counterfactual placement
 
 ```
@@ -24,3 +40,9 @@ pattern_sweep: wire-side/intended-side defect (GG-1770 pattern) swept in scripts
 - Recommend (not applied): pre-register "do not rest >= 0.50 on held side" as a shadow arm. Needs post-#440 rows plus post-epoch NO fills.
 - Box install task: none needed (fields ride the existing runner). Service restart on next deploy picks up #440; confirm with deploy_truth_read.
 - Open: GG archive move for 1793/1794/1810 (status set to RESOLVED in place); ACTIVE_QUEUE row 105.2 update; post-merge row check.
+
+## POST-MERGE ADDENDUM (supersedes any "CI pending / queue row open" text above)
+- PR #440 and #443 both MERGED (#443 on green run 42171050764). ACTIVE_QUEUE row 105.2 DONE (52638e3).
+- GG-1793/1794/1810 set RESOLVED in place; archive move NOT done (operator sign-off per retire_resolved_gaps).
+- Open: confirm a real post-merge shadow_order row carries the new fields (none yet; box newest row predates merge); verify book size fields vs live payload; wider sweep of order-side readers; rescored cache not on box.
+- Recommended (not applied): pre-register "do not rest >=0.50 on held side" as a shadow arm.
