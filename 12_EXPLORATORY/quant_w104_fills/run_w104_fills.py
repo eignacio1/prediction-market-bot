@@ -1,6 +1,6 @@
 """W104.1 Part B runner: why demo fills lose. READ-ONLY on every input; writes only result.json.
 
-Usage: python3 run_w104_fills.py <FORWARD_TEST dir> <orders_ok.jsonl> <out result.json>
+Usage: python3 run_w104_fills.py <FORWARD_TEST dir> <orders_ok.jsonl> <out path relative to 12_EXPLORATORY, e.g. quant_w104_fills/result.json>
   FORWARD_TEST dir holds demo_fill_forward_cache.json and markouts/markouts.jsonl (pulled read-only from the box);
   orders_ok.jsonl = policy-log shadow_order ok=true rows: [order_id, ts, row_id, price_yes, stake].
 
@@ -14,7 +14,10 @@ from datetime import datetime
 
 import numpy as np
 
-from prediction_market_bot.quant import fills
+sys.path.insert(0, "src")
+sys.path.insert(0, "12_EXPLORATORY")
+from _fence import safe_out  # noqa: E402
+from prediction_market_bot.quant import fills  # noqa: E402
 
 EPOCH = "2026-11-06T01:03:42"
 
@@ -27,7 +30,7 @@ def sport_of(ticker):
 
 
 def parse_ts(s):
-    return datetime.fromisoformat(s.replace("Z", "+00:00")[:26].split("+")[0])
+    return datetime.fromisoformat(s.rstrip("Z")[:26].split("+")[0])
 
 
 def days_ahead(ticker, ots):
@@ -154,7 +157,7 @@ def main(ft, ordf, out):
         ix = [i for i, r in enumerate(te) if r["sport"] == s]
         if len(ix) >= 400 and ft_[ix].sum() >= 50 and (~ft_[ix]).sum() >= 50:
             res["e3"][s] = fills.gap_explained(wt[ix], ft_[ix], ptr_all[ix], clusters=[te[i]["game"] for i in ix], reps=300)
-    json.dump(res, open(out, "w"), indent=1, default=float)
+    json.dump(res, open(safe_out(out), "w"), indent=1, default=float)
     print(json.dumps({k: res[k] for k in ("n_total", "n_train", "n_test", "split_day", "sport_counts")}))
 
 
