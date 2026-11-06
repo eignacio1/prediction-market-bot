@@ -1,14 +1,17 @@
 """W103.2 (B-045) analysis runner. Reads the compact TSV (epoch, series, event, ticker, yes_mid, half_spread)
 extracted read-only from exp_output/PRICE_ARCHIVE. Parameters are the frozen pre-registration in RESULT.md.
-Usage: python3 analyze.py compact.tsv.gz out.json
+Usage: python3 analyze.py compact.tsv.gz out.json   (out.json must lie inside 12_EXPLORATORY/, enforced by safe_out)
 """
 import collections
 import gzip
 import json
 import re
 import sys
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402  (sanctioned write path, CHARTER rule 3)
 from prediction_market_bot.quant.multiplicity import benjamini_hochberg, holm
 from prediction_market_bot.quant.price_dynamics import (
     big_move_events, hourly_regimes, lagged_regime, move_sigma, moves, reversion_fraction)
@@ -114,7 +117,7 @@ def main(src, dst):
             out["series"][f]["primary"] = {"p": h["p"], "p_holm": h["p_adj"], "holm_reject": h["reject"],
                                           "q_bh": b["q"], "bh_reject": b["reject"]}
     out["primary_families"] = fams
-    json.dump(out, open(dst, "w"), indent=1, default=str)
+    json.dump(out, open(safe_out(dst), "w"), indent=1, default=str)
 
 
 if __name__ == "__main__":
