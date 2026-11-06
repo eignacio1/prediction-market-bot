@@ -1,7 +1,7 @@
 """W104.2 Part B (NBA engines): descriptive market-anchored blend weight per engine x family.
 
 READ-ONLY inputs: box rows copied to a scratch dir (NBA_ENGINE_LIVE{,_V2,_V3}/rows.jsonl) and ESPN finals JSON.
-usage: run_blend_nba.py <rows_dir> <finals.json> <out.json>
+usage: run_blend_nba.py <rows_dir> <finals.json> <out.json relative to 12_EXPLORATORY/>
 Descriptive only - not a verdict on any sealed cell."""
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import json
 import sys
 from pathlib import Path
 
+from _fence import safe_out
 from prediction_market_bot.nba_engine.live_scoring import outcome
 from prediction_market_bot.quant import blend
 from prediction_market_bot.quant.multiplicity import benjamini_hochberg, holm
@@ -67,7 +68,7 @@ def main(rows_dir, finals_path, out_path):
             for i, hh, bb, p in zip(idx, h, bh, ps):
                 cells[i].update(p_one_sided=p, p_holm=hh["p_adj"], holm_reject=hh["reject"], bh_reject=bb["reject"])
     json.dump({"cells": cells, "unmatched_rows": unmatched, "note": "descriptive; NBA engine arms only"},
-              open(out_path, "w"), indent=1, default=list)
+              open(safe_out(out_path), "w"), indent=1, default=list)
     for c in cells:
         if c["form"] == "linear":
             print(c["engine"], c["family"], c["n_games"], c["n_rows"], c.get("w_hat"), c.get("w_boot_ci"),
