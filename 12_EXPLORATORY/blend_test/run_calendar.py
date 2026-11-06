@@ -40,7 +40,7 @@ def main(src, out):
                      f"{pw['w0.25']:.2f} | {pw['w0.5']:.2f} | {' / '.join(x[5:] for x in dates)} |")
     open(safe_out(out), "w").write("\n".join(lines) + "\n\nboundaries (z, one-sided, 4 looks OBF): "
                                    + ", ".join(f"{b:.3f}" for b in bnd) + "\n")
-    json.dump(plan, open(safe_out(out.replace(".md", ".json")), "w"), indent=1)
+    json.dump(plan, open(safe_out(out[:-3] + ".json"), "w"), indent=1)
     print("\n".join(lines))
 
 
