@@ -1169,3 +1169,4 @@
 | 2026-11-05T06:31:03Z | W102.2 | CLOSED — NFL ADOPT built behind an OFF switch; markout rows carry book; ADR-0072 NFL addendum PROPOSED; EXP-038 second-look DRAFT; look-day GG-1750 registered. (commit `bf9d918`) |
 | 2026-11-05T06:31:17Z | W102.2 | CLOSED — merge confirmed, HEAD (faae397) is ancestor of origin/main — NFL ADOPT built OFF (#424), addenda PROPOSED/DRAFT, GG-1750; forward re-run unconfirmed |
 | 2026-11-06T00:47:12Z | GG-1775..GG-1777; B-044 | W103.1 STANDARD quant: tails (GPD/ES/drawdown resampling) + breach odds per (book,sport) for ADR-0076 sec4 limit table inputs. FOR PROOF/EXECUTION: books with a tested tail model X of N (B-044) |
+| 2026-11-06T00:47:17Z | GG-1780..GG-1782 | W103.3 quant B-046: in-play NBA diffusion + NHL Poisson jump models, held-out + vs-market — FOR PROOF/DEPTH (D5 applied: in-play models built and held-out-tested 0 -> 2) — STANDARD, deliverable: quant/inplay_nba.py + inplay_nhl.py + RESULT.md |
