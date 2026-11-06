@@ -1,4 +1,4 @@
-"""W103.3 Part A: NBA diffusion held-out test. Run: /usr/bin/python3 nba_heldout.py <pbp_dir> <out_json>
+"""W103.3 Part A: NBA diffusion held-out test. Run: /usr/bin/python3 nba_heldout.py <pbp_dir> <out_json, relative to 12_EXPLORATORY/>
 
 Train 2023-2025 (season label = ending year; 2025 = 2024-25), test 2026 (2025-26 regular season, game_id '002...').
 No historical pre-game lines exist, so the pre-game margin M is a walk-forward Elo-style team rating (home edge
@@ -12,6 +12,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, __file__.rsplit("/12_EXPLORATORY", 1)[0] + "/src")
+sys.path.insert(0, __file__.rsplit("/quant_w103_inplay", 1)[0])
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant import inplay_nba as q  # noqa: E402
 
 pbp_dir, out = sys.argv[1], sys.argv[2]
@@ -87,7 +89,7 @@ for name, (_, t) in CK.items():
     mean, lo, hi = q.bootstrap_ci((p - y) ** 2)
     cov[name] = dict(n=int(len(te)), brier=mean, brier_ci95=[lo, hi], mean_p=float(p.mean()), rate=float(y.mean()))
 res["cover_vs_pregame_line"] = cov
-json.dump(res, open(out, "w"), indent=1, default=float)
+json.dump(res, open(safe_out(out), "w"), indent=1, default=float)
 print(json.dumps({k: v for k, v in res.items() if k != "checkpoints"}, indent=1, default=float))
 for k, v in res["checkpoints"].items():
     print(k, {a: v[a] for a in ("n", "brier", "brier_ci95", "naive_leader_brier", "mean_p", "home_win_rate")})

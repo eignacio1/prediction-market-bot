@@ -1,4 +1,4 @@
-"""W103.3 Part B: NHL jump-process held-out test. Run: /usr/bin/python3 nhl_heldout.py <NHL_EVENTS dir> <out_json>
+"""W103.3 Part B: NHL jump-process held-out test. Run: /usr/bin/python3 nhl_heldout.py <NHL_EVENTS dir> <out_json, relative to 12_EXPLORATORY/>
 
 Train 2021-2024 (season label = STARTING year, 2025 = 2025-26), test 2025 (full 2025-26 regular season).
 Pre-game rates are a walk-forward team attack/defence rating (no historical lines exist), a stated proxy.
@@ -12,6 +12,8 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, __file__.rsplit("/12_EXPLORATORY", 1)[0] + "/src")
+sys.path.insert(0, __file__.rsplit("/quant_w103_inplay", 1)[0])
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant import inplay_nhl as q  # noqa: E402
 
 root, out = sys.argv[1], sys.argv[2]
@@ -56,7 +58,8 @@ fit = {s: dict(exposure_min=exp[s], goals_home=gh[s], goals_away=ga[s], mult_hom
 
 # ---- game table: regulation goals, final, ratings proxy ----
 REGG = E[E.type == "goal"].groupby(["game_id", "owner_is_home"]).size().unstack(fill_value=0)
-G = G.join(REGG.rename(columns={True: "reg_h", False: "reg_a"}), on="game_id")
+REGG.columns = ["reg_a" if c is False or c == 0 else "reg_h" for c in REGG.columns]
+G = G.join(REGG, on="game_id")
 G[["reg_h", "reg_a"]] = G[["reg_h", "reg_a"]].fillna(0).astype(int)
 G["home_won"] = (G.home_score > G.away_score).astype(int)
 trg = G[G.season < 2025]
@@ -148,5 +151,5 @@ for gid, d in E[E.game_id.isin(train_ids)].groupby("game_id"):
                 sh += int(bool(oh[i])); sa += int(not bool(oh[i]))
 res["score_effects_ev_train"] = {k: dict(min=v[0], home_goals=v[1], away_goals=v[2], home_rate60=60 * v[1] / v[0], away_rate60=60 * v[2] / v[0])
                                  for k, v in sc.items()}
-json.dump(res, open(out, "w"), indent=1, default=float)
+json.dump(res, open(safe_out(out), "w"), indent=1, default=float)
 print(json.dumps(res, indent=1, default=float))
