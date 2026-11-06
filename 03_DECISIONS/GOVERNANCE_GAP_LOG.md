@@ -4657,3 +4657,8 @@ W102.1, 2026-11-05. Each ~500 MB runner pays full load even when no event is in 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W102.1, 2026-11-05. v3's wait-then-silent-exit lost games with no log line. Same pattern may exist in other cron lines in `deploy/cron.conf`; audit and add a timeout log line.
+
+### GG-1775 — Shadow-arm fill rows show win rates far above the fill price (NHL 71.7% at 48.1%): selection or settlement mapping defect suspected
+**Status:** OPEN · **Severity:** MEDIUM
+
+W103.1, 2026-11-05. Joining `demo_fill_policy.jsonl` to the fill-status cache (YES side, filled and settled rows only; 121 fill rows still unsettled), the shadow books show: NHL 4,309 fills, win 71.7% at mean price 0.481 (mean daily return +101% of stake over 23 days); NFL 9,775 fills, 45.7% at 0.342 (+94%); NBA 24,429 fills, 43.0% at 0.408 (+11%); MLB 85 fills, 40.0% at 0.422. A 24-point gap on 4,309 fills is not sampling noise. Candidates: which orders fill is correlated with the outcome (the GG-1771 mirror pricing fills orders only after a move), settlement mapping on the cache, or a stake/price field mismatch. Consequence: shadow tail/breach numbers in `12_EXPLORATORY/quant_w103_tails/RESULT.md` (NHL, NFL especially) are optimistic and not to be read as safe; shadow fills are not execution evidence anyway (GG-527). Registered, not investigated (Hard Rule 11).
