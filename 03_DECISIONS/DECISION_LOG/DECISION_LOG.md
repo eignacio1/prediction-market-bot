@@ -3302,3 +3302,8 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 
 ### 2026-11-06 — W103.4 operator decision: "Restart" the NFL ADR-0072 forward-test clock from the GG-1771 epoch
 Operator answered "Restart" to the W103.4 recommendation. ADR-0072 cells score only rows >= 2026-11-06T01:03:42Z (box deploy of #431). Implemented in PR #435 (GG-1784, RESOLVED). The logged NFL ADOPT is retained as pre-epoch / superseded; no pre-registered parameter or verdict word changed. Judged n stays 550 per arm, counted from the epoch. GG-1783 (timing audit action=sell blind spot) remains registered, unfixed.
+
+## 2026-11-05 17:48 PT — Ranking reordered: quant above the engines (operator)
+- Operator 17:48 PT: "Personally - I think we should be piping out the Quant THEN the engine not the other way around but I'm always open to recommendations"; window (SW-9) recommended quant-first with the engines kept logging (maintenance lane) and the MLB engine start protected (~January); operator: "Yes".
+- NEW RANKING (supersedes 2026-10-27's for composing waves): 1 market-anchored pricing · 2 quant · 3 one engine per sport · 4 granularity index · 5 betting architecture · 6 PAM · 7 Muse · 8 expansion.
+- NEW LANE RULE from Wave 105: one quant block + one quant-or-proof block + one flex block that carries engine maintenance (coverage, misses, logging). Engine building returns where the quant (B-049 blend weights) shows an engine adds value over the market, aimed only at those sport / family cells. Protected date: MLB engine (B-018) starts by ~January.
