@@ -23,3 +23,6 @@ We measured how much weight NBA's models deserve against the market's own price.
 - **Limits:** NFL/NBA/NHL demo only, YES-side pre-epoch only (post-epoch n=0), MLB headline E3 not reproduced. Non-fill side is unreliable (GG-1793); intended side, mid, depth and fill time are not logged (GG-1794).
 - **No placement change; no decisions needed.** Candidate rules are named in RESULT.md but not pre-registered.
 - Merged: PR #439 (CI green). Read `12_EXPLORATORY/quant_w104_fills/RESULT.md`.
+
+## W105.1 — blend-weight test (plain English)
+We asked: does our engine's view actually nudge Kalshi's price in a useful direction? Earlier data (about 30 games) could not say. We worked out how many games it takes to tell: roughly 100 to 2,000 per market type, and a few types (NBA totals, v3) will probably never get enough this season. The test plan, with four scheduled peeks at 100/200/300/400 games, is now written down and frozen before looking at any new data. Expect "can't tell yet" most likely. A read-only check was added that shows only game counts until a peek date arrives. No money, no live changes.

@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W105.1-B-051
+tier: STANDARD
+timestamp: 2026-11-06T05:45:00Z
+commit: 74729df
+one_line_summary: W105.1 B-051 blend-weight test: power module, frozen NBA pre-registration with 4 planned looks, gated read task (PR #441)
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P3
+gap_delta: NBA 12 cells scheduled, final-look dates 2026-12-29..2027-02-15 (plan_calendar.md @ 74729df); NFL/NHL/MLB not yet scheduled
+pattern_sweep: n/a (no defect fixed; CI isolation lint .replace() in run_calendar fixed, sibling blend_test files clean)
+surface_delta: 0 (one allowlisted read-only box task, no cron/service/workflow)
+-->
+
 # SESSION HANDOFF - W105.1 B-051 blend-weight test (2026-11-06)
 
 ```
