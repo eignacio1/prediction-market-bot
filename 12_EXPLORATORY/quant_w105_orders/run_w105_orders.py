@@ -13,6 +13,7 @@ from collections import Counter
 
 sys.path.insert(0, "src")
 sys.path.insert(0, "12_EXPLORATORY")
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant import placement as pl  # noqa: E402
 
 EPOCH = "2026-11-06T01:03:42"
@@ -92,7 +93,7 @@ def main(ft, out):
     res["not_testable"] = ["cancel_after_t: fill/cancel times in the pulled cache are collector-observed (hours late), not exchange times",
                            "post_at_mid_minus_k_ticks: a recorded order has no outcome at a price it did not rest at; read via arm_contrast",
                            "distance_from_mid / book depth: first logged by PR #440 (W105.2); n(orders with the fields) = 0 until they accrue"]
-    json.dump(res, open(out, "w"), indent=1, default=float)
+    json.dump(res, open(safe_out(out), "w"), indent=1, default=float)
     print(json.dumps({k: res[k] for k in ("n_pre_yes", "n_pre_no_excluded_mirror_priced", "n_post_epoch_all_sides", "yes_fills", "yes_fills_with_h1", "games", "arms", "n_analysis", "dropped")}, indent=1))
 
 
