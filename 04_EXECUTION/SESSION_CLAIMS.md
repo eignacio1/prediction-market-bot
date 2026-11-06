@@ -1176,3 +1176,4 @@
 | 2026-11-06T01:11:18Z | W103.1 | CLOSED — merge confirmed, HEAD (c750d75) is ancestor of origin/main — B-044 tails built and measured; GG-1775 opened |
 | 2026-11-06T01:24:30Z | W103.4 | CLOSED — W103.4 fixed NO-side order mirror-pricing (GG-1771) and backwards NO fill scoring (GG-1770) in PR #431, then on the operator's Restart restarted the ADR-0072 forward-test clock at the 2026-11-06T01:03:42Z epoch (GG-1784, PR #435); the logged NFL ADOPT is kept as pre-epoch, superseded. (commit `5ed2d83`) |
 | 2026-11-06T01:24:45Z | W103.4 | CLOSED — merge confirmed, HEAD (c953882) is ancestor of origin/main — GG-1771/GG-1770 fixed (#431), forward-test restarted at epoch (#435), docs closed |
+| 2026-11-06T01:48:10Z | GG-1793..GG-1795 | STANDARD — W104.1 (B-048) QUANT: fill-probability + post-fill markout model (quant/fills.py, known-answer tests, held-out 70/30 on our orders) — FOR EXECUTION E3 (fills-vs-nonfills gap explained X% held-out; fill-model calibration) |
