@@ -12,3 +12,6 @@ Pillar moved: execution (fills are now measured correctly). Still open: one smal
 
 ## W104.3 — landing Wave 103's stranded work
 Pillar: EXECUTION / PLUMBING. Three finished research pieces that were stuck unmerged (price give-back, NBA/NHL in-play math, a CI speed-up) are now in the project, each only after its automatic tests passed. The puzzle of why paper fills seemed to win less often than their price implied turned out to be a bookkeeping bug (buy-NO orders were scored backwards), not a real trading problem; once rescored, fills still win a bit below price, so no edge is shown. The after-the-fix check cannot be done yet — there are no newer fills to look at. A small reader-script bug was fixed too. No real money at risk; nothing needed from you.
+
+## W104.2 - how far to follow the model off Kalshi's price
+We measured how much weight NBA's models deserve against the market's own price. The answer is about zero on every bet type: the models did not beat Kalshi's line once tested on games they had not seen. Samples are small (about 30 games per type), so this is "no evidence yet", not "proven useless". NFL, NHL and MLB were not measured because their test cells are sealed. No real money touched; north-star pillar: PROOF.

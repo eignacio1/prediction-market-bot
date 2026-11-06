@@ -1,5 +1,22 @@
 # SESSION_HANDOFF 20261106T0213Z - W104.2 (B-049 market-anchored blend weight)
 
+<!-- session-meta
+task_id: W104.2
+tier: STANDARD
+timestamp: 2026-11-06T02:13:00Z
+commit: 2e60e3f
+one_line_summary: W104.2 B-049 blend weight: NBA w~0 on all 12 engine x family cells, 0 beat Kalshi; NFL/NHL/MLB open (sealed).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P1/D5 engine x family cells with a fitted out-of-sample blend weight
+gap_delta: 0 -> 12 of 12 NBA cells fitted, 0 with w>0 beating market (nba_blend_result.json, 2026-11-06)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
+
 ```
 vision_pillar: PROOF (descriptive instrument; D5 stage "interpreted")
 gap_measure: P1/D5 - engine x family cells with a fitted out-of-sample blend weight w
