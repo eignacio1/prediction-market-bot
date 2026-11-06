@@ -16,6 +16,12 @@ from prediction_market_bot.quant import longshot_bias as L  # noqa: E402
 
 TIGHT = 0.01
 MIN_GAMES_HELD = 20
+MIN_FIT_N = 30
+MIN_MINORITY = 5  # held-out outcomes of the rarer kind: a zero-loss sample has zero variance and a meaningless interval
+
+
+def minority(e):
+    return min(e["settled"], 1 - e["settled"]) * e["n"] if e.get("n") else 0
 SPORTS = ("NHL", "NBA", "NFL", "MLB")
 
 
@@ -105,14 +111,17 @@ def main():
             results.append({"sport": sp, "family": fam, "tier": t, "bucket": b, "book": book, "route": route, "side": side,
                             "fit": ef, "held": eh, "all": ea})
     # Holm across hold-out cells that were positive in fit and have enough games
-    cand = [r for r in results if r["fit"].get("net_mean", -1) > 0 and r["held"].get("games", 0) >= MIN_GAMES_HELD]
+    cand = [r for r in results if r["fit"].get("net_mean", -1) > 0 and r["fit"].get("n", 0) >= MIN_FIT_N
+            and r["held"].get("games", 0) >= MIN_GAMES_HELD and minority(r["held"]) >= MIN_MINORITY]
     rej = L.holm_one_sided([r["held"]["p_one"] for r in cand]) if cand else []
     holm = {id(r): rj for r, rj in zip(cand, rej)}
     for r in results:
         f, h = r["fit"], r["held"]
-        if f.get("n", 0) == 0 or f.get("net_mean", -1) <= 0:
-            st = "UNTESTED" if f.get("n", 0) < 30 else "FAILED"
-        elif h.get("games", 0) < MIN_GAMES_HELD:
+        if f.get("n", 0) < MIN_FIT_N:
+            st = "UNTESTED"
+        elif f.get("net_mean", -1) <= 0:
+            st = "FAILED"
+        elif h.get("games", 0) < MIN_GAMES_HELD or minority(h) < MIN_MINORITY:
             st = "IN_SAMPLE"
         elif holm.get(id(r)) and h["net_lo"] > 0:
             st = "HELD_OUT"

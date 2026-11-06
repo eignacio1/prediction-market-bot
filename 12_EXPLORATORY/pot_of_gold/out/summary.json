@@ -9,30 +9,28 @@
   "NFL": 371,
   "MLB": 5325
  },
- "holm_candidates": 94,
- "holm_rejected": 6,
+ "holm_candidates": 40,
+ "holm_rejected": 0,
  "status_by_sport": {
   "MLB": {
-   "UNTESTED": 156,
-   "FAILED": 277,
-   "IN_SAMPLE": 137,
-   "HELD_OUT": 4
+   "UNTESTED": 246,
+   "FAILED": 259,
+   "IN_SAMPLE": 69
   },
   "NBA": {
-   "UNTESTED": 36,
-   "IN_SAMPLE": 31,
-   "FAILED": 35
+   "UNTESTED": 62,
+   "FAILED": 35,
+   "IN_SAMPLE": 5
   },
   "NFL": {
-   "UNTESTED": 46,
-   "IN_SAMPLE": 47,
-   "FAILED": 113,
-   "HELD_OUT": 2
+   "UNTESTED": 86,
+   "IN_SAMPLE": 19,
+   "FAILED": 103
   },
   "NHL": {
-   "UNTESTED": 37,
-   "IN_SAMPLE": 23,
-   "FAILED": 12
+   "UNTESTED": 60,
+   "FAILED": 10,
+   "IN_SAMPLE": 2
   }
  }
 }
