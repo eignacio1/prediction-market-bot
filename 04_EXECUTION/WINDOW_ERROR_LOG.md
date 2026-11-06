@@ -138,3 +138,9 @@ ref deletion (git push --delete -> HTTP 403; REST DELETE git/refs -> 403). Nothi
 Operator, 21:57 PT: "You should've known that you couldn't do it from here before claiming it". Pattern: UNVERIFIED - the very pattern this
 window named as its biggest risk in its first message. Rule: before telling the operator the window will do something on GitHub or the box,
 test the exact operation once on something harmless (or read the proxy rules); if it is untested, say "a terminal does this".
+
+## W47 (SW-9) · 2026-11-05 21:05 PT · repeated "EXP-042 ride looks ~12-21" in a sitrep without checking
+The carry-forward said the ride cells' looks were ~12-21; SW-9 repeated it in the "forest" sitrep. The proof calendar (101.2) says: only
+cell 6 (KXNFLTOTAL ride) reaches its judged n, ~2026-11-19; the nine MLB ride cells need 158-1,367 games and accrue nothing until the
+2027 season (cell 10 retired). Pattern: UNVERIFIED (carried a date from a handoff instead of the calendar). Rule: every date in a sitrep
+comes from PROOF_CALENDAR.md or a box read, never from a carry-forward.
