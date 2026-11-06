@@ -144,3 +144,10 @@ The carry-forward said the ride cells' looks were ~12-21; SW-9 repeated it in th
 cell 6 (KXNFLTOTAL ride) reaches its judged n, ~2026-11-19; the nine MLB ride cells need 158-1,367 games and accrue nothing until the
 2027 season (cell 10 retired). Pattern: UNVERIFIED (carried a date from a handoff instead of the calendar). Rule: every date in a sitrep
 comes from PROOF_CALENDAR.md or a box read, never from a carry-forward.
+
+## W48 (SW-9, and every window before it) · 2026-08 → 11-05 · nobody challenged "the bot must beat the market"
+Operator, 2026-11-05 21:25 PT: "nobody nudged me saying hey you mentioned talking about the pot of gold or idk maybe the fact that we've spent
+this entire yr working on JUST beating the market maaaaaybe you should think about seeing the other side? NOT ONCE????". Every window had the
+material: the operator's 09-25 pot-of-gold sequencing, 10-16 "beating buddy off his phone placing parlays, that's the first step", the
+decision-tree router (W90), the W89 longshot bias, CLAUDE.md's own efficiency-gradient section. Each wave's Pushback line challenged the
+wave, never the premise. Pattern: FOREST (strategy oversight that never audited the thesis). Rule: the DOCTRINE CHECK below, every wave close.

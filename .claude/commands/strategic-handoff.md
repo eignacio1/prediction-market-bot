@@ -59,3 +59,6 @@ A window hands off only after its last wave is **verified**, never when the wave
 
 ## Window number (operator 2026-11-04 22:53 PT)
 Every strategic window is numbered SW-n (`04_EXECUTION/WINDOW_REGISTER.md`). At handoff: fill your row (waves, dates, carry-forward path), add the next row (SW-n+1, "current"), and put the number in the carry-forward title, the paste-in and the RUNNING SITREP header. The incoming window states its number in its first message.
+
+## Doctrine check (SW-9, after W48)
+The carry-forward states the project's biggest running premise and the strongest evidence against it, and lists what the operator has said he wants that no wave is building. The incoming window repeats both in its first message.

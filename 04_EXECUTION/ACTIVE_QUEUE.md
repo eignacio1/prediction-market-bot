@@ -448,6 +448,14 @@ Rows moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04).
 
 ---
 
+## ⬛ STANDING WINDOW CHECK (SW-9, 2026-11-05, after W48) — THE DOCTRINE CHECK, EVERY WAVE CLOSE
+At every wave close the window writes, in the RUNNING SITREP, two lines before the next wave: **(1) Premise** - the biggest assumption the
+project is currently running on, and the strongest evidence against it; **(2) Said but not built** - one thing the operator has said he wants
+(his words, dated) that no wave is building, and why not. If either line would be the same three closes running, the window raises it with
+the operator unprompted. First entries: Premise - "edge must come from out-predicting the market" (against: 0 cells beat it; W89 longshot
+bias; 103.2 fades) -> now being addressed by 105.4-105.6. Said but not built - parlays / big-hitter combos (09-25), waiting on the engines'
+joint distributions.
+
 ## ⬛ OPERATOR DIRECTIVE, 2026-11-05 17:51 PT — RANKING UNCHANGED; NEXT WAVES QUANT-WEIGHTED; COMPOSITION IS THE WINDOW'S CALL
 "We can go back to engine - but I agree with you that the subsequent waves should probably still primarily be quant. But again I'll let you
 assess the full state of the project and decide from here - I'm hands off and not directing anymore." The 10-27 ranking stands (engine 2,
