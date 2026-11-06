@@ -1185,3 +1185,4 @@
 | 2026-11-06T02:16:57Z | W104.2 | CLOSED — merge confirmed, HEAD (8b4818c) is ancestor of origin/main — B-049 blend weight: NBA w~0, 0 beat market; NFL/NHL/MLB open |
 | 2026-11-06T02:16:19Z | W104.1 | CLOSED — W104.1 B-048 fills quant merged (PR #439, CI green); E3 gap not explained by observed covariates; fills carry -1.2c 1m markout, worse at high price (commit `a147151`) |
 | 2026-11-06T02:17:35Z | W104.1 | MERGED: NO — branch `w104-1-handoff` awaiting merge — W104.1 B-048 fills quant merged (PR #439, CI green); E3 gap not explained by observed covariates; fills carry -1.2c 1m markout, worse at high price (commit `a147151`) |
+| 2026-11-06T02:17:54Z | W104.1 | CLOSED — merge confirmed, HEAD (b5ed878) is ancestor of origin/main — B-048 fills quant merged PR #439; handoff pushed b5ed878 |
