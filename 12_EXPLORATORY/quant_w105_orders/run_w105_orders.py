@@ -1,6 +1,6 @@
 """W105.2 Part B runner: counterfactual placement rules on recorded demo shadow orders. READ-ONLY on inputs; writes result.json.
 
-Usage: python3 run_w105_orders.py <FT dir> <out json>
+Usage: python3 run_w105_orders.py <FT dir> quant_w105_orders/result.json   (out path is relative to 12_EXPLORATORY via safe_out)
   FT dir holds demo_fill_forward_cache_rescored.json (GG-1810 derived file), markouts/markouts.jsonl,
   orders_ok.jsonl ([order_id, ts, row_id, price_yes, stake]) and shadow_orders.jsonl (policy-log shadow_order rows).
 Population: demo shadow orders (NFL/NBA/NHL), intended side YES, ordered before the GG-1771 epoch 2026-11-06T01:03:42Z.
