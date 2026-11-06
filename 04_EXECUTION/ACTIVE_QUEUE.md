@@ -83,6 +83,19 @@ mirror price (a NO meant to cost 0.605 is placed at 0.395), plus GG-1770 (NO fil
 | 103.3 | quant · 4 | In-play score math: NBA diffusion, NHL jump process, scored against Kalshi's live lines | ⏳ pasted? | — |
 | 103.4 | RED ALERT | NO orders mirror-priced (GG-1771) + NO fills scored backwards (GG-1770): fix, sweep every caller, cut every number before / after | ✅ DONE 2026-11-06: #431 `da7849d`, epoch 01:03:42Z; NFL ADOPT -> INCONCLUSIVE on clean data (operator question) | 12_EXPLORATORY/gg1771_no_pricing/RESULT.md |
 
+### 103.4 ADDENDUM - MAIN IS RED (paste into the 103.4 terminal now)
+
+```
+ADDENDUM TO BLOCK 103.4 - MAIN IS RED FROM YOUR "DOCS-ONLY" PUSH aae5e6c
+tests/test_exploratory_isolation.py fails on main for 12_EXPLORATORY/gg1771_no_pricing/recompute.py:35
+(json.dump(res, open(out, "w")) - a write not routed through safe_out()). It holds #433, #434, #435, #436 red.
+1. Fix it first, before anything else: route that write through safe_out() exactly as the other 12_EXPLORATORY scripts do.
+2. Run `python3 -m pytest -q tests/test_exploratory_isolation.py` locally: all pass. Put the fix in your open PR #435 or a
+   one-file PR; merge only on green CI. Say the main-green time in your handoff.
+3. Rule from now on (COMMON_RULES_W103): a push labelled docs-only contains NO .py file. Code goes through a PR.
+END OF ADDENDUM 103.4
+```
+
 ### 103.1 - QUANT (TAILS)
 
 ```
