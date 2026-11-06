@@ -79,7 +79,7 @@ order data that can explain fills + a counterfactual placement study · 105.3 **
 |---|---|---|---|---|
 | 105.1 | quant · 1/4 | Pre-register the blend-weight test (does any engine move Kalshi's line usefully?) with power and planned looks per sport | ⏳ pasted? | — |
 | 105.2 | quant · EXECUTION | Log what the fill model needs on every order (GG-1794), fix the side bugs (GG-1793, GG-1810), and simulate placement rules on the markouts | ⏳ pasted? | — |
-| 105.3 | engine · 2 | MLB engine starts: pitch-level data layer from free sources, point-in-time pitcher / batter tables, one season held out | ⏳ pasted? | — |
+| 105.3 | engine · 2 | MLB engine starts: pitch-level data layer from free sources, point-in-time pitcher / batter tables, one season held out | ✅ DONE | PR #444 merged 92a0365; 2024+2025 stored (1.42M pitches), PIT tables, held-out Brier +0.0008 / +0.0005 vs naive, CIs span 0 |
 | 105.4 | ride · 1 (operator 21:11 PT) | Ride / fade cells for NBA / NHL / NFL from 103.2's fades, net of costs, held out, pre-registered | ⏳ pasted? | — |
 | 105.5 | ride · 1 (operator 21:11 PT) | The router wired to live markets and demo orders; install task prepared (your named approval) | ✅ MERGED PR #442 (fa0643c); `ride_board_install` NOT run - awaiting operator named approval; orders OFF until RIDE_BOARD_ORDERS=on | — |
 | 105.6 | pot of gold · 1 (operator 21:22 PT) | Define the longshot tree (fade longshots / take favourites / buy cheap longshots), measure on 4 sports, build the module (paper) | ⏳ pasted? | — |
