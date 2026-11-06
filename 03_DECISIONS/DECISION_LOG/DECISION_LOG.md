@@ -3293,3 +3293,5 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 - Premise note: the block called ADR-0072 a DRAFT; it is ACCEPTED.
 
 | 2026-11-05 | W102.1 | NBA engine v2/v3 misses root-caused to the OOM burst (961 MB box, ~500 MB runners) plus no in-window retry/trace. Fix is additive: stdlib catch-up cron + attempt trace (PR #425). Cron line is NOT installed; install awaits the operator's named approval of `nba_engine_catchup_install`. Parts B (NHL goalie/rest) and C (NBA store lag) not started. GG-1772..1774 registered. |
+
+| 2026-11-06 | W103.4 | GG-1771/GG-1770 fixed (PR #431 `da7849d`, merged 00:58:09Z, deployed 01:03:42Z with t4-mlb + dashboard restarted: new epoch at 01:03:42Z). ~46% of shadow orders were NO-side. ADR-0072 re-cut (RESULT.md): NFL ADOPT as logged becomes INCONCLUSIVE ((a) CI spans 0) on YES-only and on NO-outcome-corrected data; NBA/NHL (a) holds / (b) fails unchanged in kind. NO re-priced not computable. No verdict relabelled; question for operator: restart NFL clock from the epoch? GG-1783/GG-1784 registered. |
