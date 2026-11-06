@@ -80,7 +80,7 @@ mirror price (a NO meant to cost 0.605 is placed at 0.395), plus GG-1770 (NO fil
 |---|---|---|---|---|
 | 103.1 | quant · 4 | Tails for the G6 limit table (extreme-value fit; breach odds of the 20% kill switch at a given Kelly) | ⏳ pasted? | — |
 | 103.2 | quant · 4 | Does Kalshi's line overshoot and snap back; regimes per sport and family | ⏳ pasted? | — |
-| 103.3 | quant · 4 | In-play score math: NBA diffusion, NHL jump process, scored against Kalshi's live lines | ⏳ pasted? | — |
+| 103.3 | quant · 4 | In-play score math: NBA diffusion, NHL jump process, scored against Kalshi's live lines | ✅ built + held out (NBA n=1229, NHL n=1312); vs-market n=0 (no aligned score feed); code PR #433 | RESULT.md |
 | 103.4 | RED ALERT | NO orders mirror-priced (GG-1771) + NO fills scored backwards (GG-1770): fix, sweep every caller, cut every number before / after | ⏳ pasted? | — |
 
 ### 103.1 - QUANT (TAILS)
