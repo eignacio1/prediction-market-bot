@@ -42,6 +42,25 @@ def quote_fields(m: dict, now_utc: datetime) -> dict:
             "quote_ts_source": "kalshi_response_date" if ts else None}
 
 
+_SIZE_KEYS = {"yes_bid": ("yes_bid_size_fp", "yes_bid_size"), "yes_ask": ("yes_ask_size_fp", "yes_ask_size")}
+
+
+def book_fields(m: dict) -> dict:
+    """W105.2 / GG-1794: top-of-book size on both sides, read from the market dict the runner already fetched
+    (no new API call). None when the response carries no size, so an absent depth is visible, never a zero.
+    YES bid size is the queue a YES buyer joins; YES ask size is the queue a NO buyer joins (NO bid = 1 - YES ask)."""
+    out: dict = {}
+    for name, keys in _SIZE_KEYS.items():
+        val = None
+        for k in keys:
+            v = _f(m.get(k))
+            if v is not None:
+                val = v
+                break
+        out[f"book_{name}_size"] = val
+    return out
+
+
 def run_once(*, forecaster, cells: list[tuple[str, str]],
              list_markets: Callable[[str], tuple[bool, list[dict]]],
              kickoff_for: Callable[[str], Optional[tuple[datetime, str]]],
@@ -103,11 +122,11 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
             # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
             why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
                    else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
-            if led.append(row, {**quote_fields(m, now_utc), **why, **(row_extra_for(tkr) if row_extra_for else {})}):
+            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {})}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:
-                        on_row(dict(row))
+                        on_row({**row, **book_fields(m)})
                     except Exception:  # noqa: BLE001 - observer failure never affects the shadow run
                         pass
             else:

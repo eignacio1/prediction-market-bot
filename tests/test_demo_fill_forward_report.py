@@ -470,3 +470,56 @@ def test_order_price_side_still_flips_after_refactor():
     side, _ = rpt.order_price_side({"side": "yes", "action": "sell", "fill_count_fp": "1",
                                     "taker_fill_cost_dollars": "0.60"})
     assert side == "no"
+
+
+# ---- W105.2: GG-1793 intended side in the cache, GG-1810 rescore --------------------------------------------
+def _order_get(side, action, fills):
+    return {"order": {"status": "executed" if fills else "canceled", "side": side, "action": action,
+                      "fill_count": fills, "taker_fill_cost_dollars": 0.3 * fills if fills else 0,
+                      "no_price": 30, "yes_price": 70, "last_update_time": "2026-11-06T02:00:00Z"}}
+
+
+class _Client:
+    def __init__(self, order, result): self.order, self.result = order, result
+    def _get(self, path, authenticated=False):
+        return True, (self.order if path.startswith("/portfolio") else {"market": {"result": self.result, "status": "finalized"}})
+
+
+def test_lookup_fill_scores_the_intended_side_even_when_the_wire_says_yes():
+    # wire reading of a NO buy that lost its action (the GG-1793 shape): side="yes" -> would score a NO as a YES
+    c = _Client(_order_get("yes", None, 1), "no")
+    wrong = rpt.lookup_fill(c, "o1", "T", {})
+    right = rpt.lookup_fill(c, "o2", "T", {}, "no")
+    assert wrong["won"] is False and right["won"] is True
+    assert right["side"] == "no" and right["intended_side"] == "no" and right["wire_side"] == "yes"
+    assert right["terminal_ts"] == "2026-11-06T02:00:00Z"
+
+
+def test_lookup_fill_nonfill_gets_intended_side_for_nf_won():
+    c = _Client(_order_get("yes", None, 0), "no")
+    assert rpt.lookup_fill(c, "o3", "T", {}, "no")["nf_won"] is True
+
+
+def test_intended_sides_from_shadow_orders():
+    evs = [{"event": "shadow_order", "order_id": "a", "side": "no"},
+           {"event": "shadow_order", "order_id": "b", "side": "yes", "intended_side": "yes"},
+           {"event": "shadow_order", "order_id": "c"}, {"event": "cancel_ok", "order_id": "a"}]
+    assert rpt.intended_sides(evs) == {"a": "no", "b": "yes"}
+
+
+def test_rescore_cache_flips_wrong_side_leaves_raw_untouched():
+    raw = {"a": {"side": "yes", "settled": True, "won": False, "fills": 1},       # intended NO, scored as YES
+           "b": {"side": "yes", "settled": True, "nf_won": True, "fills": 0},     # non-fill, intended NO
+           "c": {"side": "yes", "settled": True, "won": True, "fills": 1},        # intended YES, already right
+           "d": {"side": "yes", "settled": True, "won": True, "fills": 1},        # paper: no intended side
+           "e": {"side": "yes", "settled": False, "fills": 0}}
+    snap = json.loads(json.dumps(raw))
+    new, st = rpt.rescore_cache(raw, {"a": "no", "b": "no", "c": "yes", "e": "no"})
+    assert raw == snap                                                            # raw cache never overwritten
+    assert new["a"]["won"] is True and new["a"]["side"] == "no" and new["a"]["rescored"]
+    assert new["b"]["nf_won"] is False
+    assert new["c"] == raw["c"] and new["d"] == raw["d"]
+    assert new["e"]["side"] == "no" and "rescored" in new["e"]
+    assert st == {"entries": 5, "flipped": 2, "already_right": 1, "no_intended": 1, "flipped_unsettled": 1}
+    again, st2 = rpt.rescore_cache(new, {"a": "no", "b": "no", "c": "yes", "e": "no"})
+    assert st2["flipped"] == 0 and again["a"]["won"] is True                      # idempotent
