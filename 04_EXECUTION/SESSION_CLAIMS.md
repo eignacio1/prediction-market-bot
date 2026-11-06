@@ -1189,3 +1189,4 @@
 | 2026-11-06T05:08:21Z | T-TBD GG-reserve-3 | STANDARD — W105.1 B-051 blend-weight test pre-registered with planned looks (power fns, prereg, gated read task) — FOR P3 (blend-test looks scheduled per sport) — quant |
 | 2026-11-06T05:08:58Z | TBD | W105.2 EXECUTION E3: order-data fields (GG-1794) + side fixes (GG-1793/1810) + counterfactual placement study (B-052). STANDARD |
 | 2026-11-06T05:10:08Z | TBD | W105.3 MLB engine data layer (B-018) STANDARD; PURPOSE D4 MLB data layer 0->started (pitch store + PIT tables) |
+| 2026-11-06T05:17:11Z | GG-reserve-3 (no T-) | W105.4 B-053 ride/fade cells in-season board prereg. STANDARD. PURPOSE: BREADTH B1/EXECUTION ride-fade cells NBA/NHL/NFL 1->N (status each) |
