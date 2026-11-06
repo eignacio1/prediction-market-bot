@@ -300,11 +300,11 @@ Rows moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04).
 
 ---
 
-## ⬛ OPERATOR DIRECTIVE, 2026-11-05 17:48 PT — QUANT BEFORE ENGINES (new ranking, standing from Wave 105)
-"I think we should be piping out the Quant THEN the engine not the other way around" -> window's recommendation -> "Yes".
-**Ranking:** 1 market-anchored · 2 quant · 3 one engine per sport · 4 granularity · 5 architecture · 6 PAM · 7 Muse · 8 expansion.
-**Lanes:** quant block + quant-or-proof block + flex block carrying engine maintenance. Engine building returns only where B-049's blend
-weights show an engine beats the market. Protected: MLB engine (B-018) starts by ~January. (DECISION_LOG 2026-11-05 17:48 PT)
+## ⬛ OPERATOR DIRECTIVE, 2026-11-05 17:51 PT — RANKING UNCHANGED; NEXT WAVES QUANT-WEIGHTED; COMPOSITION IS THE WINDOW'S CALL
+"We can go back to engine - but I agree with you that the subsequent waves should probably still primarily be quant. But again I'll let you
+assess the full state of the project and decide from here - I'm hands off and not directing anymore." The 10-27 ranking stands (engine 2,
+quant 4). SW-9 plan: Waves 105-106 = two quant blocks + one engine block (carrying maintenance); then the normal lane rule. Exit test by
+Wave 107: quant (B-049 blend weights) has pointed engine work at named sport / family cells, or the window flags it. (DECISION_LOG 11-05 17:48 / 17:51 PT)
 
 ## ⬛ OPERATOR DIRECTIVE, 2026-11-04 22:01 / 22:03 PT — THREE BLOCKS STAYS STANDING; WAVE 103 = THREE QUANT + ONE RED ALERT
 "Don't treat 5 as the operating procedure moving forward - it'll still be a standing 3, unless I request so. I want the next wave to be
