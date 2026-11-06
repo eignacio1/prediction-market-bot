@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-05T07:30:00Z (W102.2 — NFL ADOPT built behind an OFF switch; markout rows carry book; ADR-0072 NFL addendum PROPOSED; EXP-038 second-look DRAFT; look-day GG-1750 registered.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T061939Z_W102_2.md` for full session detail.
+**Last reviewed:** 2026-11-05T22:10:00Z (W103.1 — W103.1 (B-044) built tails.py (GPD, VaR/ES, shape CI, drawdown breach; 13 known-answer tests, PR #432) and measured 6 of 8 (book, sport, side) series; T4M-PROJ MLB YES breaches the 20% kill at every Kelly tested.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T2210Z_W103_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

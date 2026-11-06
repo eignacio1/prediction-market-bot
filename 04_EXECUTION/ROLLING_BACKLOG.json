@@ -221,14 +221,14 @@
   },
   {
    "id": "B-044",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "4",
    "title": "Tails for the G6 limit table: extreme-value (peaks-over-threshold) fit of per-book daily P&L and drawdown on the demo / shadow books; what the 20% kill switch and per-event caps imply at a given Kelly",
    "measure": "tail model per book with a tested fit; limit table rows with a stated breach probability",
    "why": "Accepted quant rollout 2026-10-22, Wave B (tails/EVT for the G6 limits) - not built (no EVT code in src/quant). ADR-0076 sec. 4 blanks stay blank until a positive Kelly is proposed; this makes them computable.",
    "source": "DECISION_LOG 2026-10-22 16:58 / 17:06 PT; operator 2026-11-04 22:01 PT",
-   "wave": "103.1",
+   "wave": "103.1: tails.py + 13 tests (#432); results + limit-table inputs in 12_EXPLORATORY/quant_w103_tails/ (T4M-PROJ MLB YES breaches the 20% kill at every Kelly tested; shadow NHL/NFL fills suspect, GG-1775); window closes at wave close",
    "order": 17
   },
   {

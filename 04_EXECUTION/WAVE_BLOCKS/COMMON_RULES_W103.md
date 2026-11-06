@@ -10,6 +10,9 @@ COMMON RULES - WAVE 103 (THE QUANT WAVE: TAILS, PRICE BEHAVIOUR, IN-PLAY MATH; R
   103.4 RED ALERT = GG-1771 (NO orders mirror-priced) + GG-1770. Do not edit ROLLING_BACKLOG.json; report each ticket's state in your
   handoff. KNOWN DATA DEFECT (GG-1771): every NO-side demo / shadow fill price since the v2 migration is mirror-priced; any block that
   reads fills or P&L reports YES-side and NO-side separately, or excludes NO-side, and says which.
+- DOCS-ONLY MEANS NO CODE (SW-9, 2026-11-05, after aae5e6c turned main red): a push labelled docs-only contains no .py file;
+  any .py - including under 12_EXPLORATORY/ - goes through a PR and merges on green CI. Before opening a PR, run
+  `python3 scripts/precheck_changed.py` (#436) once it is on main.
 - NO FUTURE DATA (operator 2026-11-04 21:45 PT: "please ensure you're not give me an active block that requires some sort of future time
   to hit - that makes no sense"): every part of this block runs on data that exists at paste time. Never wait for a game, a night, a
   settle or a clock time. If something you need does not exist yet, write that in the handoff for the window and move on.
