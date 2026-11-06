@@ -78,6 +78,9 @@ TASKS: dict[str, str] = {
     "picks_sheet_cron_readback": f"{PY} scripts/picks_sheet_cron_install.py readback",
     "picks_sheet_cron_uninstall": f"{PY} scripts/picks_sheet_cron_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
+    "ride_board_install": f"{PY} scripts/ride_board_cron_install.py install",  # W105.5/B-054: operator-approved only; backup + readback
+    "ride_board_readback": f"{PY} scripts/ride_board_cron_install.py readback",
+    "ride_board_uninstall": f"{PY} scripts/ride_board_cron_install.py uninstall",
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",
     "t3_lock_stagger_uninstall": f"{PY} scripts/t3_lock_stagger.py uninstall",

@@ -42,7 +42,7 @@ def test_only_capture_install_can_change_the_box():
                        "archive_cron_install", "archive_cron_uninstall",
                        "nba_engine_cron_install", "nba_engine_cron_uninstall",
                        "nba_engine_v3_cron_install", "nba_engine_v3_cron_uninstall", "nba_engine_catchup_install", "nba_engine_catchup_uninstall", "picks_sheet_cron_install", "picks_sheet_cron_uninstall",
-                       "t3_lock_stagger_install", "t3_lock_stagger_uninstall",
+                       "t3_lock_stagger_install", "t3_lock_stagger_uninstall", "ride_board_install", "ride_board_uninstall",
                        "install_batch_w99_install", "install_batch_w99_uninstall"}
     import re
     for name, c in bt.TASKS.items():      # the only redirections allowed are stderr ones; nothing writes a file

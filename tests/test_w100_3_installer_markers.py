@@ -11,9 +11,10 @@ import archive_cron_install as aci  # noqa: E402
 import nba_engine_cron_install as v1  # noqa: E402
 import nba_engine_v3_cron_install as v3  # noqa: E402
 import picks_sheet_cron_install as picks  # noqa: E402
+import ride_board_cron_install as ride_board  # noqa: E402
 import runtime_registry as rr  # noqa: E402
 
-INSTALLERS = {"archive": aci, "nba_engine_v1v2": v1, "nba_engine_v3": v3, "picks_sheet": picks}
+INSTALLERS = {"archive": aci, "nba_engine_v1v2": v1, "nba_engine_v3": v3, "picks_sheet": picks, "ride_board": ride_board}
 
 
 def _all_live(text):
@@ -38,7 +39,7 @@ def test_v1_does_not_select_v3_line_and_vice_versa():
 
 
 def test_real_conf_every_cron_line_has_at_most_one_installer():
-    text = "\n".join((ROOT / "deploy" / n).read_text() for n in ("cron.conf", "cron.picks_sheet"))
+    text = "\n".join((ROOT / "deploy" / n).read_text() for n in ("cron.conf", "cron.picks_sheet", "cron.ride_board"))
     reg = _all_live(text)
     owners = {}
     for name, mod in INSTALLERS.items():

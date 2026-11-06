@@ -45,6 +45,7 @@ BOOKS: dict[str, dict[str, Any]] = {
     "MLB_T4": {"band": "t4_mlb", "portfolio": "paper_portfolio_mlb_t4.json", "frozen": False},
     "NBA_T1": {"band": "t1_nba", "portfolio": "paper_portfolio.json", "frozen": True},
     "SHADOW": {"band": "shadow", "portfolio": None, "frozen": False, "advisory": True},
+    "RIDE_BOARD": {"band": "ride_board", "portfolio": None, "frozen": False, "advisory": True},  # W105.5/B-054: ledger-less demo book
 }
 # GG-1240: an ``advisory`` book is reported and must have a live writer, but it is excluded from breach
 # and system sums. SHADOW stakes are hypothetical (no ledger, never resolve), so against the $1,000

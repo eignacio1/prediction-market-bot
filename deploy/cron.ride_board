@@ -1,0 +1,9 @@
+# BEGIN W105.5 RIDE BOARD
+# Ride / fade router on live NBA / NHL / NFL books (B-054). Every run logs EVERY router decision (NO_BET included) to
+# logs/ride_board/decisions.jsonl and places a DEMO order (flat stake, kelly 0, book RIDE_BOARD) ONLY when the route is RIDE and
+# the ride_cells.toml cell is HELD_OUT / FORWARD_PASSED; kill switch, exposure gate, per-event cap and daily breaker apply.
+# Demo host only (production Kalshi refused). One short-lived process under /tmp/ride_board.lock (a held lock logs SKIP_LOCKED
+# to logs/t3_skips.jsonl and exits). Game windows only: 17:00-02:59 UTC covers NBA/NHL evening slates and NFL Sunday/Monday.
+# Minutes 9,29,49 are used by no other job. `%` is escaped for cron.
+9,29,49 17-23,0-2 * * * ( flock -n 9 || { printf '{"ts":"\%s","runner":"ride_board","event":"SKIP_LOCKED","reason":"previous run still holding /tmp/ride_board.lock"}\n' "$(date -u +\%FT\%TZ)" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_ride_board.py >> logs/ride_board_cron.log 2>&1 ) 9>/tmp/ride_board.lock
+# END W105.5 RIDE BOARD

@@ -1361,3 +1361,17 @@ alarm = "exp_output/NBA_EVENTS/current/status.json last game date more than 1 da
 schedule = "46 15 * * *"
 mirrors = ["deploy/cron.conf"]
 command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.c1_signal_ingestion.nba_current_season >> logs/nba_engine_live_cron.log 2>&1"
+[[component]]
+key = "cron|9,29,49 17-23,0-2 * * *|scripts/run_ride_board.py"
+kind = "cron"
+source = "deploy/cron.ride_board"
+status = "live"
+reviewed = true
+purpose = "B-054 ride/fade router on live NBA/NHL/NFL books: logs every router decision (NO_BET included); places a DEMO order (flat stake, kelly 0, book RIDE_BOARD) only on a HELD_OUT/FORWARD_PASSED ride_cells.toml cell, behind kill switch, exposure gate, per-event cap and daily breaker"
+pillar = "EXECUTION"
+writes = ["logs/ride_board/decisions.jsonl", "logs/ride_board/orders.jsonl", "logs/ride_board_cron.log"]
+alarm = "logs/ride_board/decisions.jsonl has no run_summary row in the last 2h during a game window (17:00-02:59Z) while NBA/NHL/NFL had games; SKIP_LOCKED rows for ride_board in logs/t3_skips.jsonl on consecutive runs; any ride_order row with ok=false and an error"
+max_age_h = "26"
+schedule = "9,29,49 17-23,0-2 * * *"
+mirrors = ["deploy/cron.ride_board"]
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"ride_board\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/ride_board.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PYTHONPATH=/opt/predicti"
