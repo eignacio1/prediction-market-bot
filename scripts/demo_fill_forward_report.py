@@ -122,13 +122,33 @@ def ticker_of(r: dict) -> str:
     return str(r.get("row_id") or "").rsplit("|", 1)[-1] if "|" in str(r.get("row_id") or "") else ""
 
 
+def effective_side(side: Any, action: Any) -> Any:
+    """GG-1770/GG-1783: a NO buy comes back from the order GET as action="sell", side="yes" (v2 book_side
+    "ask" sells YES == buys NO). Read it as the NO side it is, or won/lost inverts for every NO fill."""
+    if str(action or "").lower() == "sell" and side in ("yes", "no"):
+        return "no" if side == "yes" else "yes"
+    return side
+
+
+def normalize_timing_rows(rows: list) -> int:
+    """GG-1783: put timing-audit rows on the side actually bought. Rows from the fixed collector carry
+    side_normalized and are left alone; legacy rows with the wire `action` are flipped; legacy rows without
+    it cannot be repaired and are counted (returned) so the caller can warn."""
+    unknown = 0
+    for r in rows:
+        if r.get("side_normalized"):
+            continue
+        if "action" in r:
+            r["side"] = effective_side(r.get("side"), r.get("action"))
+            r["side_normalized"] = True
+        else:
+            unknown += 1
+    return unknown
+
+
 def order_price_side(order: dict) -> tuple[Optional[str], Optional[float]]:
     """(side, per-contract price paid in dollars) from an order GET, defensive about cents/dollars."""
-    side = order.get("side")
-    # GG-1770/W103.4: a NO buy comes back from the order GET as action="sell", side="yes" (v2 book_side
-    # "ask" sells YES == buys NO). Read it as the NO side it is, or won/lost inverts for every NO fill.
-    if str(order.get("action") or "").lower() == "sell" and side in ("yes", "no"):
-        side = "no" if side == "yes" else "yes"
+    side = effective_side(order.get("side"), order.get("action"))
     try:
         fc = float(order.get("fill_count_fp") or order.get("fill_count") or 0)
         cost = sum(float(order.get(k) or 0) for k in ("taker_fill_cost_dollars", "maker_fill_cost_dollars"))

@@ -439,3 +439,34 @@ def test_gg1771_epoch_floor_excludes_pre_epoch_rows_and_default_is_unchanged():
     assert orders(rpt.build_report([pre, post], now, f)) == 2
     assert orders(rpt.build_report([pre, post], now, f, epoch_floor=ep)) == 1
     assert orders(rpt.build_report([pre], now, f, epoch_floor=ep)) == 0
+
+
+# ---- GG-1783: NO-side rows in the timing-audit scripts ----
+def test_effective_side_flips_sell_only():
+    assert rpt.effective_side("yes", "sell") == "no"
+    assert rpt.effective_side("no", "sell") == "yes"
+    assert rpt.effective_side("yes", "buy") == "yes"
+    assert rpt.effective_side("no", None) == "no"
+    assert rpt.effective_side(None, "sell") is None
+
+
+def test_normalize_timing_rows_legacy_no_buy_scores_as_no():
+    rows = [
+        {"side": "yes", "action": "sell", "result": "no", "yes_price": "0.30", "no_price": "0.70"},   # NO buy, NO won
+        {"side": "yes", "action": "buy", "result": "yes"},                                           # plain YES
+        {"side": "yes", "result": "yes"},                                                            # legacy, no action
+        {"side": "no", "action": "sell", "side_normalized": True, "result": "no"},                   # already normalized
+    ]
+    unknown = rpt.normalize_timing_rows(rows)
+    assert unknown == 1
+    assert rows[0]["side"] == "no" and rows[0]["result"] == rows[0]["side"]  # won, not lost
+    assert rows[1]["side"] == "yes"
+    assert rows[2]["side"] == "yes"
+    assert rows[3]["side"] == "no"  # not flipped twice
+    assert rpt.normalize_timing_rows(rows) == 1  # idempotent
+
+
+def test_order_price_side_still_flips_after_refactor():
+    side, _ = rpt.order_price_side({"side": "yes", "action": "sell", "fill_count_fp": "1",
+                                    "taker_fill_cost_dollars": "0.60"})
+    assert side == "no"
