@@ -39,3 +39,14 @@ def test_move_1h_uses_only_past_snapshot():
 
 def test_sport_of():
     assert rr.sport_of("KXNHLGAME") == "nhl" and rr.sport_of("KXFOO") == "other"
+
+
+def test_ride_board_install_wanted_line_is_registry_live():
+    import ride_board_install as inst
+    import runtime_registry as rr
+    lines = inst.wanted_lines(inst.CRON_CONF.read_text(), rr.load())
+    assert len(lines) == 1 and "scripts/run_ride_board.py" in lines[0][1]
+    assert "flock -n /tmp/ride_board.lock" in lines[0][1] and "RIDE_BOARD_ORDERS" not in lines[0][1]
+    cur = "0 * * * * x\n"
+    merged = inst.merged_crontab(cur, lines)
+    assert inst.without_block(merged)[0] == cur

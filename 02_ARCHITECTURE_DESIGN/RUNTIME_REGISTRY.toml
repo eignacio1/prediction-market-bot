@@ -1361,3 +1361,17 @@ alarm = "exp_output/NBA_EVENTS/current/status.json last game date more than 1 da
 schedule = "46 15 * * *"
 mirrors = ["deploy/cron.conf"]
 command = "cd /opt/prediction-market-bot && flock -n /tmp/nba_engine_live.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python -m prediction_market_bot.c1_signal_ingestion.nba_current_season >> logs/nba_engine_live_cron.log 2>&1"
+[[component]]
+key = "cron|3-58/5 0-5,17-23 * * *|scripts/run_ride_board.py"
+kind = "cron"
+source = "deploy/cron.ride_board"
+status = "live"
+reviewed = true
+purpose = "Ride/fade board (W105.5 / B-054): every 5 min through the NBA/NHL/NFL game windows reads the live book, asks the router (FADE / RIDE / MOMENTUM / NO_BET) and logs every decision. Demo orders (book RIDE_BOARD, flat stake, kelly 0) only on a HELD_OUT / FORWARD_PASSED cell and only with RIDE_BOARD_ORDERS=on (OFF by default); IN_SAMPLE cells are paper rows. Demo only, never production Kalshi."
+pillar = "EXECUTION"
+writes = ["logs/ride_board_cron.log", "logs/ride_board/decisions.jsonl", "logs/ride_board/orders.jsonl"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/ride_board_cron.log is older than 14h (longest scheduled gap is 11h); orders: KalshiMarketClient refusals land in logs/ride_board/orders.jsonl as ride_order ok=false"
+max_age_h = "14"
+schedule = "3-58/5 0-5,17-23 * * *"
+mirrors = ["deploy/cron.ride_board"]
+command = "cd /opt/prediction-market-bot && flock -n /tmp/ride_board.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_ride_board.py >> logs/ride_board_cron.log 2>&1"
