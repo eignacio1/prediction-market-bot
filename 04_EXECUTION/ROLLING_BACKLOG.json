@@ -221,7 +221,7 @@
   },
   {
    "id": "B-044",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "4",
    "title": "Tails for the G6 limit table: extreme-value (peaks-over-threshold) fit of per-book daily P&L and drawdown on the demo / shadow books; what the 20% kill switch and per-event caps imply at a given Kelly",

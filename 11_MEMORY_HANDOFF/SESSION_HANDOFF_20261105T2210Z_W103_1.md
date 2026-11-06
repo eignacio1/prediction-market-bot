@@ -2,7 +2,7 @@
 task_id: W103.1
 tier: STANDARD
 timestamp: 2026-11-05T22:10:00Z
-commit: see PR
+commit: 5ec7241 (direct to main, docs-only; tails.py via PR #432)
 one_line_summary: W103.1 (B-044) built tails.py (GPD, VaR/ES, shape CI, drawdown breach; 13 known-answer tests, PR #432) and measured 6 of 8 (book, sport, side) series; T4M-PROJ MLB YES breaches the 20% kill at every Kelly tested.
 gg_touched: GG-1775
 adr_touched: none
