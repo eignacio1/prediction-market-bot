@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-06T01:25:00Z (W103.4 — W103.4 fixed NO-side order mirror-pricing (GG-1771) and backwards NO fill scoring (GG-1770) in PR #431, then on the operator's Restart restarted the ADR-0072 forward-test clock at the 2026-11-06T01:03:42Z epoch (GG-1784, PR #435); the logged NFL ADOPT is kept as pre-epoch, superseded.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T0115Z_W103_4.md` for full session detail.
+**Last reviewed:** 2026-11-06T02:04:00Z (W104.3 — W104.3 landed all three stranded Wave 103 PRs green, closed GG-1783 by PR, and closed GG-1775 (a scoring defect, not selection) with a rescore; post-epoch half has n=0.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T0204Z_W104_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
