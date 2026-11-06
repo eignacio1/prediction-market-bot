@@ -1195,3 +1195,4 @@
 | 2026-11-06T05:43:48Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (00b7743) is ancestor of origin/main — W105.5 B-054 ride/fade board merged PR #442; install awaiting approval |
 | 2026-11-06T05:45:13Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (90f0c4f) is ancestor of origin/main — W105.5 B-054 ride/fade board merged PR #442; install awaiting approval |
 | 2026-11-06T05:46:38Z | W105.3-B-018 | CLOSED — W105.3 MLB engine data layer started: 2 seasons of Savant pitches, PIT tables, held-out Brier vs naive spans zero (PR #444). (commit `3114865`) |
+| 2026-11-06T05:46:58Z | W105.3-B-018 | CLOSED — merge confirmed, HEAD (96d4689) is ancestor of origin/main — MLB engine data layer started (PR #444 merged) |
