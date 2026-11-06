@@ -31,3 +31,12 @@ v2 missed 12 and v3 missed 18 games on 11-04. Cause: a kernel out-of-memory burs
 
 ## W102.2 - the NFL ADOPT decision, ready for you
 The test says posting-and-waiting beats the old way on NFL practice orders. Most of that gain is which orders happen to fill, not a smarter price, so it is not proof of edge. The change is built and tested but switched OFF; nothing about any bet changed. Three yes/no questions are waiting: accept the NFL addendum, pick which day counted as the look, and accept the draft second-look rule for EXP-038. Still no real money at risk. One check did not finish (a report re-run timed out), so the 11-04 wording is not re-confirmed.
+
+## W103.1 (B-044) — tails for the G6 limit table (plain English)
+- Built and tested the tail/drawdown tool (PR #432, CI green). Measured 6 of 8 (book, sport, side) series; the other 3 say "too few" data.
+- Biggest single game loss is capped at the stake, so rare giant losses are not the risk.
+- The 20% kill switch is the risk: it trips from ordinary day-to-day swings. T4M-PROJ YES hits it 98% of the time within a year, even at Kelly 0.01.
+- Shadow books are governed by the 60% deployment cap, not Kelly.
+- Shadow NHL/NFL look safer only because their fills show returns too good to trust (new GG-1775).
+- No limit set, no Kelly proposed. Check code-bearing push 5ec7241 went straight to main without CI.
+- Decisions needed from you: none.
