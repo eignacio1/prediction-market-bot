@@ -58,6 +58,9 @@ on:
       - '07_TEST_VALIDATION_EVIDENCE/**'
       - '08_MODEL_RISK_GOVERNANCE/**'
       - '01_SPEC/**'
+      - '12_EXPLORATORY/**/*.md'    # 2026-11-05 (CI-trim): exploratory RESULTS files cannot execute; .py stays tested
+      - '12_EXPLORATORY/**/*.json'
+      - '12_EXPLORATORY/**/*.csv'
   pull_request:
     branches: [main]
     paths-ignore:
@@ -70,6 +73,9 @@ on:
       - '07_TEST_VALIDATION_EVIDENCE/**'
       - '08_MODEL_RISK_GOVERNANCE/**'
       - '01_SPEC/**'
+      - '12_EXPLORATORY/**/*.md'    # 2026-11-05 (CI-trim): exploratory RESULTS files cannot execute; .py stays tested
+      - '12_EXPLORATORY/**/*.json'
+      - '12_EXPLORATORY/**/*.csv'
   workflow_dispatch:
 
 # 2026-10-10 (strategic window, Actions-minutes budget): Test Suite was 78% of October's minutes (1,494 of ~1,926 in
