@@ -3299,3 +3299,6 @@ times, anything the scheduler would not do. Push. Stop; work no chunk or ticket 
 ## 2026-11-05 17:15 PT — CI is the gate for code, not for everything (operator)
 - Operator, verbatim: "yeah just noticed a pattern around the last ~30-40 terminals kept running CI's on literally eevvvvverythhingg when a lot of the work probably could've been done manually or checked on a local diff or literally just written themselves - nothing groundbreaking just wanted to optimize a few minor code operations"
 - Applied (SW-9): CI trim #436 (results files in 12_EXPLORATORY skip the suite; .py never skipped) + scripts/precheck_changed.py (local check before a PR). Window carries into every COMMON_RULES from W104: check locally first; open a PR only for code; never wait on or re-run CI for docs, results or queue edits; docs-only pushes carry no .py.
+
+### 2026-11-06 — W103.4 operator decision: "Restart" the NFL ADR-0072 forward-test clock from the GG-1771 epoch
+Operator answered "Restart" to the W103.4 recommendation. ADR-0072 cells score only rows >= 2026-11-06T01:03:42Z (box deploy of #431). Implemented in PR #435 (GG-1784, RESOLVED). The logged NFL ADOPT is retained as pre-epoch / superseded; no pre-registered parameter or verdict word changed. Judged n stays 550 per arm, counted from the epoch. GG-1783 (timing audit action=sell blind spot) remains registered, unfixed.
