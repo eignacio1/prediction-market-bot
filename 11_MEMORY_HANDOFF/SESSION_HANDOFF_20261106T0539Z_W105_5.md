@@ -28,3 +28,7 @@ surface_delta: +1 cron line after install (deploy/cron.ride_board, registered, p
 
 ## Verification
 - 39 new/updated tests in `tests/test_w105_5_ride_board.py` (HELD_OUT fires one demo order with NO price; IN_SAMPLE logs only; kill switch, exposure gate, cap, daily breaker, production host each block; `--no-orders`; sweep) and `tests/test_w105_5_ride_board_install.py`; broader `-k registry/exposure/box_tasks/cron/ride/deploy` run: 387 passed, 1 skipped; installer-marker and picks-sheet tests pass with the new installer.
+
+## CLOSE-OUT NOTE (TRUNCATED AT SCOPE, not budget)
+Main already had a parallel W105.5/B-054 implementation (#442, fa0643c: same filenames, orders OFF by default, 5-min cron). This branch conflicts on 7 files and was NOT merged; PR #445 closed as superseded. Branch kept for a possible port of what #442 lacks: `sweep_cancels` (cancel timer dies with short-lived process), `RIDE_BOARD` exposure_gate BOOKS entry, install tests, registry entry. Not verified whether #442 already covers these. Dry run: demo API HTTP 401 with local creds; no order placed. `ride_board_install` NOT run.
+one-thing-pending: operator picks drop / port-delta / replace for this branch.
