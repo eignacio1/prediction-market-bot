@@ -1,0 +1,38 @@
+{
+ "settled_tickers": 388035,
+ "snapshots_in_buckets": 41521,
+ "joined": 40520,
+ "unsettled": 1001,
+ "games_by_sport": {
+  "NHL": 155,
+  "NBA": 155,
+  "NFL": 371,
+  "MLB": 5325
+ },
+ "holm_candidates": 94,
+ "holm_rejected": 6,
+ "status_by_sport": {
+  "MLB": {
+   "UNTESTED": 156,
+   "FAILED": 277,
+   "IN_SAMPLE": 137,
+   "HELD_OUT": 4
+  },
+  "NBA": {
+   "UNTESTED": 36,
+   "IN_SAMPLE": 31,
+   "FAILED": 35
+  },
+  "NFL": {
+   "UNTESTED": 46,
+   "IN_SAMPLE": 47,
+   "FAILED": 113,
+   "HELD_OUT": 2
+  },
+  "NHL": {
+   "UNTESTED": 37,
+   "IN_SAMPLE": 23,
+   "FAILED": 12
+  }
+ }
+}
