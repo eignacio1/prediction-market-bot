@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-06T05:54:00Z (GG-1830..GG-1832 (W105.5 / B-054) — W105.5 B-054 ride/fade board runner + demo order step merged (PR #442), orders OFF, install awaiting approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T054043Z_W105_5.md` for full session detail.
+**Last reviewed:** 2026-11-06T05:44:21Z (W105.3-B-018 — W105.3 MLB engine data layer started: 2 seasons of Savant pitches, PIT tables, held-out Brier vs naive spans zero (PR #444).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T054421Z_W105_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

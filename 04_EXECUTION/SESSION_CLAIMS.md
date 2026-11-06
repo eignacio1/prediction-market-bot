@@ -1194,3 +1194,4 @@
 | 2026-11-06T05:42:22Z | W105.1-B-051 | CLOSED — merge confirmed, HEAD (04d20bf) is ancestor of origin/main — blend-weight test pre-registered, power module + gated read task merged (PR #441) |
 | 2026-11-06T05:43:48Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (00b7743) is ancestor of origin/main — W105.5 B-054 ride/fade board merged PR #442; install awaiting approval |
 | 2026-11-06T05:45:13Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (90f0c4f) is ancestor of origin/main — W105.5 B-054 ride/fade board merged PR #442; install awaiting approval |
+| 2026-11-06T05:46:38Z | W105.3-B-018 | CLOSED — W105.3 MLB engine data layer started: 2 seasons of Savant pitches, PIT tables, held-out Brier vs naive spans zero (PR #444). (commit `3114865`) |
