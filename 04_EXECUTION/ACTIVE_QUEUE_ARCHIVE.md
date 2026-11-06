@@ -22837,3 +22837,263 @@ END OF BLOCK 104.3
 
 ---
 
+---
+
+## (archived 2026-11-06) WAVE 105 · WRITTEN 2026-11-06 ~02:40 UTC (11-05 18:40 PT) · SW-9 · six blocks (two quant + one engine + two ride-the-market 21:11 PT + one pot-of-gold 21:22 PT, at the operator's ask) · paste each block into its own terminal
+
+**Every part runs on data that exists now. CI is the gate for code only** (check locally first; no CI for docs or results).
+
+105.1 **quant** (rank 1 / 4) = B-051 the market-anchored blend test pre-registered with planned looks · 105.2 **quant** (EXECUTION) = B-052
+order data that can explain fills + a counterfactual placement study · 105.3 **engine** (rank 2) = B-018 the MLB engine's data layer starts.
+
+- **Pushback:** 104.2's NBA blend weights are ~0 on ~30 games with intervals of 0-1 - unreadable, not "no edge". 105.1 turns that into a
+  proper planned test instead of more peeking; the risk is a quant wave that only schedules future reads. The MLB engine is months from
+  pricing a game; starting it now protects the January date at the cost of NBA engine depth this wave.
+- **Surface:** box 2026-11-06 02:27Z: budget GREEN, healthcheck HEALTHY, no silent arm, box HEAD = main, main CI green. Delta this wave:
+  +0 running components (105.2 adds fields to an existing order log; no order or price change).
+- **Dependencies:** none between blocks.
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 105.1 | quant · 1/4 | Pre-register the blend-weight test (does any engine move Kalshi's line usefully?) with power and planned looks per sport | ⏳ pasted? | — |
+| 105.2 | quant · EXECUTION | Log what the fill model needs on every order (GG-1794), fix the side bugs (GG-1793, GG-1810), and simulate placement rules on the markouts | ✅ DONE 2026-11-06 (PRs #440, #443 merged). Fields coded; GG-1793/1794/1810 resolved; placement study: no rule makes fills win, cap ≥0.50 halves loss/fill; first real post-merge row NOT yet seen | `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T0600Z_W105_2.md` |
+| 105.3 | engine · 2 | MLB engine starts: pitch-level data layer from free sources, point-in-time pitcher / batter tables, one season held out | ✅ DONE | PR #444 merged 92a0365; 2024+2025 stored (1.42M pitches), PIT tables, held-out Brier +0.0008 / +0.0005 vs naive, CIs span 0 |
+| 105.4 | ride · 1 (operator 21:11 PT) | Ride / fade cells for NBA / NHL / NFL from 103.2's fades, net of costs, held out, pre-registered | ⏳ pasted? | — |
+| 105.5 | ride · 1 (operator 21:11 PT) | The router wired to live markets and demo orders; install task prepared (your named approval) | ✅ MERGED PR #442 (fa0643c); `ride_board_install` NOT run - awaiting operator named approval; orders OFF until RIDE_BOARD_ORDERS=on | — |
+| 105.6 | pot of gold · 1 (operator 21:22 PT) | Define the longshot tree (fade longshots / take favourites / buy cheap longshots), measure on 4 sports, build the module (paper) | ⏳ pasted? | — |
+
+### 105.1 - QUANT (THE BLEND TEST)
+
+```
+WAVE 105 - BLOCK 105.1 - QUANT (rank 1 market-anchored / 4 quant) - THE BLEND-WEIGHT TEST, PRE-REGISTERED WITH PLANNED LOOKS (B-051)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_1.md. Every part runs on data that exists now.
+
+PURPOSE: rank 1. 104.2 (quant/blend.py, 12_EXPLORATORY/quant_w104_blend/RESULT.md) fitted NBA w ~ 0 on 12 of 12 cells with intervals of
+0-1 on ~30 games: descriptive and unreadable. Make the question "does an engine's view move Kalshi's line usefully?" a proper test:
+how many games resolve it, when the looks happen, what alpha each look spends, so future reads are verdicts, not peeks.
+
+PART A (~45 min) - power
+1. From 104.2's per-row variance (NBA, read-only), compute per engine x family the games needed to detect w = 0.25 / 0.5 at 80% power
+   (cluster bootstrap on the observed rows; known-answer test on a simulated set). NEW functions in quant/ (+ tests); reuse quant/blend.py.
+2. Translate to calendar dates from each arm's games per night (NBA ~ 7-12 games / night). Plain table.
+
+PART B (~55 min) - the pre-registration (committed BEFORE any new read)
+1. 12_EXPLORATORY/blend_test/BLEND_TEST_PREREGISTRATION_<date>.md: the hypothesis (w > 0 improves OOS log loss vs the market alone),
+   cells (NBA v1 / v2 / v3 x 4 families; NFL / NHL / MLB engine cells named but read only at their own existing judged n - do not open
+   sealed cells now), the metric, the planned looks (dates or game counts) with an alpha-spending rule (O'Brien-Fleming or Pocock - pick
+   and justify), Holm across cells, the decision words (MOVE / NO MOVE / INCONCLUSIVE) and what each would mean for engine work.
+2. It must not conflict with any frozen pre-registration (EXP-041 / 044 / 044b / 044c / 045): check each and say so.
+
+PART C (~30 min, switch here whenever A or B waits) - the read path
+1. ONE read-only bridge task (scripts/box_tasks.py) that prints the cell table at a look (aggregated, under ~60 KB), gated so it prints
+   NOTHING before a cell's planned look (only "n so far / look at"). PR with tests; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: P3 - blend-test looks scheduled per sport (dates); D3 unchanged. Operator decisions: none
+(a new pre-registration of a descriptive question is window-approved; if it touches a frozen test, stop and say so).
+END OF BLOCK 105.1
+```
+
+### 105.2 - QUANT (ORDER DATA AND PLACEMENT)
+
+```
+WAVE 105 - BLOCK 105.2 - QUANT (EXECUTION) - ORDER DATA THAT CAN EXPLAIN FILLS; A COUNTERFACTUAL PLACEMENT STUDY (B-052)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_2.md. Every part runs on data that exists now.
+
+PURPOSE: EXECUTION E3. 104.1 (quant/fills.py) could not explain why fills lose because the orders do not record what it needs
+(GG-1794: intended side, pre-order mid, book depth, fill time), and two caches still store sides wrong (GG-1793, GG-1810). Fix the data
+so every new order can be explained, then use the markouts that exist (fills -1.2c at 1 minute, worse at high prices) to simulate
+placement rules - a candidate for a later pre-registration, not a change.
+
+PART A (~50 min) - log what is needed (GG-1794), fix the sides (GG-1793, GG-1810)
+1. Add to every shadow / forward-test order record: intended side, the pre-order mid and spread, top-of-book depth on both sides (from the
+   snapshot the runner already fetched - no new API calls), submit time, fill time (or cancel time). Fields only: no order, price or
+   placement change. Test on a fixture order; PR; merge on green; read deploy_truth_read and confirm one real post-merge row has them.
+2. GG-1793: the forward cache stores side from the order, not 'yes'. GG-1810: re-score the cache's pre-#431 NO fills by the corrected
+   rule (a new derived file; never overwrite the raw cache). Tests; PR; merge on green; close both GGs with the PR.
+
+PART B (~50 min) - counterfactual placement (existing data)
+1. From the markouts that exist (pre-epoch YES-only; post-epoch all sides, say n): by price bucket and distance from mid, the expected
+   markout of a fill. Simulate 3-4 rules (e.g. do not rest above price X; post at mid minus k ticks; cancel after t seconds) on the
+   recorded quotes: fill rate, expected markout, and net per order, with game-clustered intervals. NEW functions in quant/ + tests.
+2. Known-answer test: a simulated book with planted adverse selection above a price recovers that threshold.
+
+PART C (~30 min, switch here whenever A or B waits on CI) - what it means
+1. 12_EXPLORATORY/quant_w105_orders/RESULT.md + one plain-English line for the operator: which rule, if any, would stop fills losing, and
+   how much data until it could be tested. Recommend (not apply) a pre-registration.
+
+Report: per COMMON RULES. MEASURE MOVED: order fields logged 0 -> 6 on new orders; GG-1793 / 1794 / 1810 closed; E3 counterfactual per rule.
+Operator decisions: none.
+END OF BLOCK 105.2
+```
+
+### 105.3 - ENGINE (MLB STARTS)
+
+```
+WAVE 105 - BLOCK 105.3 - ENGINE (rank 2: one engine per sport) - THE MLB ENGINE'S DATA LAYER STARTS (B-018)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_3.md. Every part runs on data that exists now.
+
+PURPOSE: D4 MLB: event-level data layer 0 -> started (ADR-0073: one deep engine per sport; MLB = pitches). The MLB engine must price
+spring games; the protected start is now. Free sources only ($0). Built off the box (961 MB, memory is the binding constraint): the
+store is built and tested in the terminal / CI; nothing is installed or scheduled on the box this wave.
+
+PART A (~40 min) - sources and design
+1. Inventory free pitch-level sources and test one request each: Baseball Savant / Statcast search CSV, the MLB Stats API (note: it 406s
+   the VPS - say whether that matters if the store is built off-box), Retrosheet, Chadwick register (ids). Licence / rate limits / size per
+   season. Write 12_EXPLORATORY/mlb_engine/DATA_LAYER_DESIGN.md: the store's schema (pitch, PA, game, player ids), point-in-time rule,
+   storage size per season, how the box would read it later (compact derived tables, not the raw store).
+
+PART B (~60 min) - one season in, point-in-time tables
+1. NEW package src/prediction_market_bot/mlb_engine/ (store, loader, checks) + tests: ingest one full season (2025) into the store;
+   checks (pitch counts per game vs box scores on a sample, no duplicate pitches, ids resolve).
+2. Point-in-time tables built from it: pitcher (pitch mix, velocity, whiff / chase, platoon splits, rolling as of each game date) and
+   batter (contact / power / platoon, rolling). A test that no row uses a later game's data.
+
+PART C (~30 min, switch here whenever B waits on a download) - the first engine read
+1. With 2024 as training (if time allows a second season) or the first half of 2025, a minimal team-level game model from those tables
+   (run expectancy from starter + lineup), held out on the rest of 2025: Brier on moneyline / total vs a naive baseline. Descriptive,
+   not a cell, no pre-registration needed yet. Write 12_EXPLORATORY/mlb_engine/RESULT_W105_3.md with the next three steps.
+
+Report: per COMMON RULES. MEASURE MOVED: D4 MLB - data layer 0 -> one season stored + PIT tables; held-out Brier vs baseline. Operator
+decisions: none.
+END OF BLOCK 105.3
+```
+
+### 105.4 - RIDE / FADE THE MARKET: THE IN-SEASON CELLS (added at the operator's ask, 2026-11-05 21:11 PT)
+
+```
+WAVE 105 - BLOCK 105.4 - RIDE / FADE THE MARKET (rank 1) - PRE-REGISTERED CELLS FOR THE IN-SEASON BOARD (B-053)
+Operator 2026-11-05 21:11 PT: "Wire it in right now I want 2 extra terminal blocks to send right now for riding the market builds".
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_4.md. Every part runs on data that exists now.
+
+PURPOSE: the market's own line is the base (operator 21:09 PT: "the market is pretty fucking smart in the aggregate"); the bot finds where
+it is measurably wrong or slow. Today ride / fade covers 13 cells (12 MLB, idle; 1 NFL), none in NBA / NHL. 103.2 (12_EXPLORATORY/
+quant_w103_prices/RESULT.md) measured big-move give-back on 22 families: Holm-significant FADE on KXNFLTEAMTOTAL and KXNHLTOTAL, BH-only
+on KXNHLTEAMTOTAL; NBA none; no family drifts. Turn those into pre-registered cells the router can use, net of spread and fees.
+
+OWNS: src/prediction_market_bot/decision_trees/ride_cells.toml (ADD rows only), a NEW pre-registration under 12_EXPLORATORY/ride_board/,
+NEW functions in quant/ + tests. Does NOT touch the runner or the order path (105.5).
+
+PART A (~50 min) - net of costs, out of sample
+1. For KXNFLTEAMTOTAL, KXNHLTOTAL, KXNHLTEAMTOTAL (and every other in-season family, so the table is complete): on the price archive,
+   split by time (earlier 70% fit, later 30% held out). Define the trade exactly (after a > k-sigma move, take the side against it at
+   the quote, exit at 60 min or settlement); net P&L per contract AFTER the spread actually quoted and Kalshi's exact fee
+   (quant/money.py). Tight-book subset separately (103.2: KXMLBHIT's effect was mostly bid-ask bounce - check the same here).
+2. Per family: net per contract with game-clustered interval, n events / games, held-out vs fit.
+
+PART B (~45 min) - pre-register, then add the cells
+1. 12_EXPLORATORY/ride_board/RIDE_BOARD_PREREGISTRATION_<date>.md, committed BEFORE any forward row: the cells (family x trade rule),
+   the judged n (power from Part A), the forward look dates, the decision words, the expected (modal) outcome. Check it does not conflict
+   with EXP-042 / EXP-043 or any frozen test.
+2. Add the cells to ride_cells.toml with the status the evidence earns (held-out net lower bound > 0 -> HELD_OUT; else IN_SAMPLE). The
+   router fires RIDE / FADE orders only for HELD_OUT or FORWARD_PASSED cells (operator 10-27: out-of-sample evidence) - keep that rule.
+
+PART C (~30 min, switch here whenever A waits) - one line for the operator
+1. 12_EXPLORATORY/ride_board/RESULT.md: per sport, in plain English, where the market overshoots after a big move, whether it survives
+   costs, and how many cells are live for the router. No cell is promoted beyond what its numbers earn.
+
+Report: per COMMON RULES. MEASURE MOVED: ride / fade cells in NBA / NHL / NFL 1 -> N (status each); held-out net per cell. Operator
+decisions: none (cells are pre-registered on demo, kelly 0).
+END OF BLOCK 105.4
+```
+
+### 105.5 - RIDE / FADE THE MARKET: WIRED TO DEMO ORDERS (added at the operator's ask, 2026-11-05 21:11 PT)
+
+```
+WAVE 105 - BLOCK 105.5 - RIDE / FADE THE MARKET (rank 1) - THE ROUTER WIRED TO LIVE MARKETS AND DEMO ORDERS (B-054)
+Operator 2026-11-05 21:11 PT: "Wire it in right now".
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_5.md. Every part runs on data that exists now.
+
+PURPOSE: the router (src/prediction_market_bot/decision_trees/router.py: FADE / RIDE / MOMENTUM_FOLLOW / MOMENTUM_FADE / NO_BET) has never
+run on a live market or placed an order. Build the runner that, through each NBA / NHL / NFL game window, reads the live book, asks the
+router, logs every decision, and places a DEMO order (flat demo stake, kelly 0) when the route is RIDE / FADE / MOMENTUM_* on a cell whose
+status in ride_cells.toml is HELD_OUT or FORWARD_PASSED. It reads ride_cells.toml at run time, so 105.4's new cells appear on their own.
+
+OWNS: a NEW runner scripts/run_ride_board.py + NEW module src/prediction_market_bot/decision_trees/ride_orders.py + tests; a NEW
+RUNTIME_REGISTRY.toml entry; ONE allowlisted `ride_board_install` task in scripts/box_tasks.py (backup + readback, wrapped in the T1/T2/T3
+lock like t3_lock_stagger). Calls the EXISTING order path (KalshiMarketClient.submit_order, fixed for NO by #431) - does not edit it
+(105.2 owns the order log fields). Does NOT edit ride_cells.toml (105.4).
+
+PART A (~55 min) - the decision loop
+1. Situation from the live book (mid, spread, depth, last big move from the price archive's recent snapshots), Evidence from ride_cells.toml
+   and the skill record; route(); log EVERY decision (route, cell, why, book state) to logs/ride_board/decisions.jsonl - NO_BET included.
+2. Memory: the box is 961 MB and memory is the binding constraint. One process, short-lived, under the shared lock; measure peak RSS on a
+   fixture night and keep it under the smallest existing shadow runner. Say the number.
+
+PART B (~45 min) - the order step
+1. ride_orders.py: Route -> demo order only if the cell is HELD_OUT / FORWARD_PASSED, the kill switch is clear (kill switch ENFORCING,
+   W89), the per-event cap and the daily breaker pass (c4 risk engine), kelly 0 -> flat demo stake. Its own book name (RIDE_BOARD) so its
+   fills never mix with any other book. Paper-only rows for IN_SAMPLE cells (logged, no order). Production Kalshi or real funds: never.
+2. Tests: a fixture night where a HELD_OUT cell fires (one demo order, correct NO price), an IN_SAMPLE cell logs only, the kill switch
+   blocks, the cap blocks. Dry run against the demo API with one real order on the demo account, cancelled after; show it in the handoff.
+
+PART C (~30 min, switch here whenever A or B waits on CI) - ready to install
+1. Register it in RUNTIME_REGISTRY.toml (purpose, pillar, what it writes, the alarm if it stops). PR with tests; merge on green.
+2. The `ride_board_install` task: adds ONE cron line (game windows only, under the lock), backup, readback, first-run exemption. Do NOT run
+   it - name it in the handoff; the window runs it on the operator's named approval.
+
+Report: per COMMON RULES. MEASURE MOVED: ride / fade decisions logged on live markets 0 -> N on a fixture night; demo-order path built and
+tested; surface +1 after the install. Operator decisions: one - the named approval of ride_board_install.
+END OF BLOCK 105.5
+```
+
+### 105.6 - POT OF GOLD: DEFINE AND BUILD THE LONGSHOT TREE (added at the operator's ask, 2026-11-05 21:22 PT)
+
+```
+WAVE 105 - BLOCK 105.6 - POT OF GOLD (rank 1) - DEFINE THE LONGSHOT TREE, MEASURE IT, BUILD IT (B-055)
+Operator 2026-11-05 21:19 / 21:22 PT: "we should have the pot of gold decision trees routed in too" / "We need to define it better -
+give me one more block to kick off that build".
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_6.md. Every part runs on data that exists now.
+
+PURPOSE: the "pot of gold" classes are in the vision (operator 09-25: big hitters, low-probability parlays, sharp-money low-win-rate lines,
+lottery tickets) and the first opponent is retail flow (10-16: "beating buddy off his phone placing parlays, that's the first step").
+W89 (12_EXPLORATORY/longshot_bias/results_W89.md) measured a favourite-longshot bias on Kalshi: 5-15c longshots settle BELOW price,
+85-95c favourites ABOVE. So the tree's first job is to define when to take the other side of lottery-ticket buyers and when a longshot
+is genuinely cheap. Define it, measure it on all four sports, build it as a decision module. Paper only this wave.
+
+OWNS: NEW 12_EXPLORATORY/pot_of_gold/ (definition, pre-registration, results); NEW src/prediction_market_bot/decision_trees/longshot.py
++ NEW decision_trees/longshot_cells.toml + tests; NEW functions in quant/ + tests. Does NOT edit router.py, ride.py, ride_cells.toml
+(105.4) or the runner / order path (105.5) - wiring into the router is Wave 106.
+
+PART A (~35 min) - the definition, in writing
+1. 12_EXPLORATORY/pot_of_gold/POT_OF_GOLD_DEFINITION.md, plain English first, then exact: (i) the classes - single-line longshots
+   (price <= 15c), their mirror (the favourite side >= 85c), big-hitter props, multi-leg combos (check on the live API whether Kalshi
+   lists multi-leg / parlay markets today and in which sports; say what exists); (ii) the three routes - FADE_LONGSHOT (take NO on an
+   overpriced longshot), TAKE_FAVOURITE (buy the underpriced favourite), BUY_LONGSHOT (only where a cell shows the longshot cheap);
+   (iii) the bar each route must clear: net of Kalshi's exact fee (quant/money.py) and the quoted spread, held out, with fills (GG-1771
+   epoch rule); (iv) what stays later per the operator's 09-25 sequencing (parlay pricing that needs the engines' joint distributions).
+
+PART B (~55 min) - measure it on every sport
+1. Price archive (box, read-only, an aggregate bridge task if needed, under ~60 KB): settlement rate vs price by bucket (1-5, 5-10, 10-15,
+   85-90, 90-95, 95-99c) per sport x family x time-to-start, NBA / NHL / NFL / MLB. Earlier 70% fit, later 30% held out. Net per contract
+   after fee and spread for each route; game-clustered intervals; Holm / BH across cells (quant/inference.py).
+2. Known-answer test first: a simulated market with a planted longshot bias recovers its size and sign.
+3. Where the archive allows, split by liquidity (thin vs deep books) - retail-heavy thin markets are where the bias should be largest.
+
+PART C (~40 min, switch here whenever B waits on the box) - pre-register and build the module
+1. 12_EXPLORATORY/pot_of_gold/POT_OF_GOLD_PREREGISTRATION_<date>.md, committed BEFORE any forward row: the cells Part B supports (route x
+   family x price bucket x time-to-start), judged n, look dates, decision words, modal outcome. No conflict with EXP-042 / 043 / frozen tests.
+2. decision_trees/longshot.py: given a market situation (price, side, family, time to start, book depth), return FADE_LONGSHOT /
+   TAKE_FAVOURITE / BUY_LONGSHOT / NO_BET with the cell and its status from longshot_cells.toml; same status gate as ride (orders only for
+   HELD_OUT / FORWARD_PASSED, operator 10-27). Tests. PR; merge on green. No runner, no cron, no orders this wave.
+3. 12_EXPLORATORY/pot_of_gold/RESULT.md: one plain-English paragraph per sport for the operator - where the lottery-ticket buyers overpay,
+   by how much after costs, and how many cells are ready for the router.
+
+Report: per COMMON RULES. MEASURE MOVED: pot-of-gold routes defined 0 -> 3; cells pre-registered N (status each); held-out net per cell.
+Operator decisions: none (the definition is for him to read; wiring is Wave 106).
+END OF BLOCK 105.6
+```
+
+---
+
