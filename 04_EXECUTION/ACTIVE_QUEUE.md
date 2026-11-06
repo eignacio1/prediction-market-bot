@@ -51,11 +51,10 @@ close: Waves 101-103 moved measurement and execution correctness (GG-1771), not 
 | | P2 verdicts | **12, read (98.2): NFL game total T1 + T2 RULED_OUT (model ~0.016 Brier worse than the market); 10 KEEP ACCRUING (all slightly behind the market, slightly ahead of a naive baseline, none proven); 0 CANDIDATE** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-13** (NFL QB moneyline); modal outcome **KEEP ACCRUING ~91%** | — | 0 |
 
-**Surface (box, 2026-11-06 02:27Z):** budget GREEN, healthcheck HEALTHY, no silent arm, box HEAD = main; main CI green. **Quant (W103-104):** tails,
-price dynamics (22 / 22 families, 3 fades), in-play NBA / NHL math, fill model and blend weights all on main. **NBA engines add nothing over Kalshi
-yet** (w ~ 0 on 12 / 12 cells; ~30 games, wide intervals - 105.1 schedules the real test). **Fills** lose ~1.2c in the first minute and the logs
-cannot yet say why (105.2). NFL ADOPT INCONCLUSIVE on clean fills; ADR-0072 clock restarted 11-06 01:03Z. Next cell look 11-13 (NFL QB moneyline).
-**Muse:** B-041 / B-042 setup paste due before 11-09 20:50 PT.
+**Surface (box, 2026-11-06 06:09Z):** healthcheck HEALTHY, no silent arm, box HEAD = main, main CI green. **Budget RED only because the ride board's
+cron (#442) is merged but not installed** - your named approval of `ride_board_install` clears it (orders stay OFF; it logs decisions). **Wave 105:
+nothing measured survives costs yet** (ride / fade 0 cells, pot of gold 0 of 17, no placement rule wins); NBA / NHL samples are still thin. NBA
+blend test looks 12-29 .. 02-15. Next cell look 11-13 (NFL QB moneyline). **Muse:** queue runs dry ~11-07 / 11-08; setup paste ready for 11-09 20:50 PT.
 
 *Older window notes, the 10-08 scoreboard, the build history and the 10-19 calendar moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04, operator: "edit the Active Queue cus it's too large right now").*
 
