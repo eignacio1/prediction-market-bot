@@ -1184,3 +1184,4 @@
 | 2026-11-06T02:10:37Z | W104.3 | CLOSED — W104.3 landed all three stranded Wave 103 PRs green, closed GG-1783 by PR, and closed GG-1775 (a scoring defect, not selection) with a rescore; post-epoch half has n=0. (commit `PRs #436 dd10a8a, #434 c15b980, #433 4dc01cf, #438 e37ff29 + docs-only results push`) |
 | 2026-11-06T02:16:57Z | W104.2 | CLOSED — merge confirmed, HEAD (8b4818c) is ancestor of origin/main — B-049 blend weight: NBA w~0, 0 beat market; NFL/NHL/MLB open |
 | 2026-11-06T02:16:19Z | W104.1 | CLOSED — W104.1 B-048 fills quant merged (PR #439, CI green); E3 gap not explained by observed covariates; fills carry -1.2c 1m markout, worse at high price (commit `a147151`) |
+| 2026-11-06T02:17:35Z | W104.1 | MERGED: NO — branch `w104-1-handoff` awaiting merge — W104.1 B-048 fills quant merged (PR #439, CI green); E3 gap not explained by observed covariates; fills carry -1.2c 1m markout, worse at high price (commit `a147151`) |
