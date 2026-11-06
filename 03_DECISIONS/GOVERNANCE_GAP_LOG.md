@@ -4674,6 +4674,8 @@ W103.1, 2026-11-05. Joining `demo_fill_policy.jsonl` to the fill-status cache (Y
 W103.4 sweep, 2026-11-06. W70.1 scratch audit reads `side`/`yes_price`/`no_price` from collector JSON and sets `won = result == side`; same defect class as GG-1770 for a v2 NO order. One-off analysis script, not a live path; fix when it is next run (apply `order_price_side`). Registered, not fixed (Hard Rule 11).
 
 ### GG-1784 — Forward-test report has no epoch constant for the GG-1771 cut
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 W103.4, 2026-11-06. `demo_fill_forward_report.py` keeps no GG-1771 epoch (2026-11-06T01:03:42Z), so it would mix mispriced pre-epoch NO rows with correct post-epoch ones. Needs an operator call first (restart NFL clock vs YES-only vs split-by-epoch) because it changes how ADR-0072 verdicts are computed; RESULT.md gives all three views. No pre-registered parameter changed.
+
+**Resolved 2026-11-06 (operator "Restart" 2026-11-05 PT):** PR #435 (merge 53662ea) adds `GG1771_EPOCH` and an `epoch_floor` in `build_report`, applied by `main()`; `--since` and the turn-off switches are untouched. ADR-0072 cells (NFL, NBA, NHL) now score only rows at/after 2026-11-06T01:03:42Z. The logged NFL ADOPT is kept as pre-epoch, superseded; no verdict word relabelled.
