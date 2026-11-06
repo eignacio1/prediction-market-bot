@@ -61,7 +61,7 @@ cannot yet say why (105.2). NFL ADOPT INCONCLUSIVE on clean fills; ADR-0072 cloc
 
 ---
 
-## ▶ NOW — WAVE 105 · WRITTEN 2026-11-06 ~02:40 UTC (11-05 18:40 PT) · SW-9 · five blocks (two quant + one engine + two ride-the-market added at the operator's ask 21:11 PT) · paste each block into its own terminal
+## ▶ NOW — WAVE 105 · WRITTEN 2026-11-06 ~02:40 UTC (11-05 18:40 PT) · SW-9 · six blocks (two quant + one engine + two ride-the-market 21:11 PT + one pot-of-gold 21:22 PT, at the operator's ask) · paste each block into its own terminal
 
 **Every part runs on data that exists now. CI is the gate for code only** (check locally first; no CI for docs or results).
 
@@ -82,6 +82,7 @@ order data that can explain fills + a counterfactual placement study · 105.3 **
 | 105.3 | engine · 2 | MLB engine starts: pitch-level data layer from free sources, point-in-time pitcher / batter tables, one season held out | ⏳ pasted? | — |
 | 105.4 | ride · 1 (operator 21:11 PT) | Ride / fade cells for NBA / NHL / NFL from 103.2's fades, net of costs, held out, pre-registered | ⏳ pasted? | — |
 | 105.5 | ride · 1 (operator 21:11 PT) | The router wired to live markets and demo orders; install task prepared (your named approval) | ⏳ pasted? | — |
+| 105.6 | pot of gold · 1 (operator 21:22 PT) | Define the longshot tree (fade longshots / take favourites / buy cheap longshots), measure on 4 sports, build the module (paper) | ⏳ pasted? | — |
 
 ### 105.1 - QUANT (THE BLEND TEST)
 
@@ -265,6 +266,55 @@ PART C (~30 min, switch here whenever A or B waits on CI) - ready to install
 Report: per COMMON RULES. MEASURE MOVED: ride / fade decisions logged on live markets 0 -> N on a fixture night; demo-order path built and
 tested; surface +1 after the install. Operator decisions: one - the named approval of ride_board_install.
 END OF BLOCK 105.5
+```
+
+### 105.6 - POT OF GOLD: DEFINE AND BUILD THE LONGSHOT TREE (added at the operator's ask, 2026-11-05 21:22 PT)
+
+```
+WAVE 105 - BLOCK 105.6 - POT OF GOLD (rank 1) - DEFINE THE LONGSHOT TREE, MEASURE IT, BUILD IT (B-055)
+Operator 2026-11-05 21:19 / 21:22 PT: "we should have the pot of gold decision trees routed in too" / "We need to define it better -
+give me one more block to kick off that build".
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W105.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W105_6.md. Every part runs on data that exists now.
+
+PURPOSE: the "pot of gold" classes are in the vision (operator 09-25: big hitters, low-probability parlays, sharp-money low-win-rate lines,
+lottery tickets) and the first opponent is retail flow (10-16: "beating buddy off his phone placing parlays, that's the first step").
+W89 (12_EXPLORATORY/longshot_bias/results_W89.md) measured a favourite-longshot bias on Kalshi: 5-15c longshots settle BELOW price,
+85-95c favourites ABOVE. So the tree's first job is to define when to take the other side of lottery-ticket buyers and when a longshot
+is genuinely cheap. Define it, measure it on all four sports, build it as a decision module. Paper only this wave.
+
+OWNS: NEW 12_EXPLORATORY/pot_of_gold/ (definition, pre-registration, results); NEW src/prediction_market_bot/decision_trees/longshot.py
++ NEW decision_trees/longshot_cells.toml + tests; NEW functions in quant/ + tests. Does NOT edit router.py, ride.py, ride_cells.toml
+(105.4) or the runner / order path (105.5) - wiring into the router is Wave 106.
+
+PART A (~35 min) - the definition, in writing
+1. 12_EXPLORATORY/pot_of_gold/POT_OF_GOLD_DEFINITION.md, plain English first, then exact: (i) the classes - single-line longshots
+   (price <= 15c), their mirror (the favourite side >= 85c), big-hitter props, multi-leg combos (check on the live API whether Kalshi
+   lists multi-leg / parlay markets today and in which sports; say what exists); (ii) the three routes - FADE_LONGSHOT (take NO on an
+   overpriced longshot), TAKE_FAVOURITE (buy the underpriced favourite), BUY_LONGSHOT (only where a cell shows the longshot cheap);
+   (iii) the bar each route must clear: net of Kalshi's exact fee (quant/money.py) and the quoted spread, held out, with fills (GG-1771
+   epoch rule); (iv) what stays later per the operator's 09-25 sequencing (parlay pricing that needs the engines' joint distributions).
+
+PART B (~55 min) - measure it on every sport
+1. Price archive (box, read-only, an aggregate bridge task if needed, under ~60 KB): settlement rate vs price by bucket (1-5, 5-10, 10-15,
+   85-90, 90-95, 95-99c) per sport x family x time-to-start, NBA / NHL / NFL / MLB. Earlier 70% fit, later 30% held out. Net per contract
+   after fee and spread for each route; game-clustered intervals; Holm / BH across cells (quant/inference.py).
+2. Known-answer test first: a simulated market with a planted longshot bias recovers its size and sign.
+3. Where the archive allows, split by liquidity (thin vs deep books) - retail-heavy thin markets are where the bias should be largest.
+
+PART C (~40 min, switch here whenever B waits on the box) - pre-register and build the module
+1. 12_EXPLORATORY/pot_of_gold/POT_OF_GOLD_PREREGISTRATION_<date>.md, committed BEFORE any forward row: the cells Part B supports (route x
+   family x price bucket x time-to-start), judged n, look dates, decision words, modal outcome. No conflict with EXP-042 / 043 / frozen tests.
+2. decision_trees/longshot.py: given a market situation (price, side, family, time to start, book depth), return FADE_LONGSHOT /
+   TAKE_FAVOURITE / BUY_LONGSHOT / NO_BET with the cell and its status from longshot_cells.toml; same status gate as ride (orders only for
+   HELD_OUT / FORWARD_PASSED, operator 10-27). Tests. PR; merge on green. No runner, no cron, no orders this wave.
+3. 12_EXPLORATORY/pot_of_gold/RESULT.md: one plain-English paragraph per sport for the operator - where the lottery-ticket buyers overpay,
+   by how much after costs, and how many cells are ready for the router.
+
+Report: per COMMON RULES. MEASURE MOVED: pot-of-gold routes defined 0 -> 3; cells pre-registered N (status each); held-out net per cell.
+Operator decisions: none (the definition is for him to read; wiring is Wave 106).
+END OF BLOCK 105.6
 ```
 
 ---

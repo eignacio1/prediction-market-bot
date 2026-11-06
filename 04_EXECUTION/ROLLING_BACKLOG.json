@@ -53,14 +53,14 @@
   },
   {
    "id": "B-055",
-   "status": "NEXT",
+   "status": "NOW",
    "lane": "quant",
    "rank": "1",
    "title": "Pot-of-gold route in the router: a LONGSHOT tree - fade overpriced longshots / take underpriced favourites where measured (W89 longshot bias: 5-15c settle below price, 85-95c above), buy a longshot only where a pre-registered cell shows it underpriced; parlays later",
    "measure": "longshot cells pre-registered + routed; decisions logged",
    "why": "Operator 2026-11-05 21:19 PT: 'we should have the pot of gold decision trees routed in too'. Sequencing (09-25): the data-heavy parlay pricing stays after the standard board.",
    "source": "Operator 2026-11-05 21:19 PT; 12_EXPLORATORY/longshot_bias/results_W89.md",
-   "wave": "Wave 106 (first block)",
+   "wave": "105.6 (define, measure, build the module; wiring Wave 106)",
    "order": 3
   },
   {

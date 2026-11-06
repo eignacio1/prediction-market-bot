@@ -24,6 +24,13 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 - **why:** The router has never run live or placed an order
 - **source:** Operator 2026-11-05 21:11 PT
 
+### B-055 · Pot-of-gold route in the router: a LONGSHOT tree - fade overpriced longshots / take underpriced favourites where measured (W89 longshot bias: 5-15c settle below price, 85-95c above), buy a longshot only where a pre-registered cell shows it underpriced; parlays later
+
+- order 3 · lane: quant · rank: 1 · wave: 105.6 (define, measure, build the module; wiring Wave 106)
+- **measure:** longshot cells pre-registered + routed; decisions logged
+- **why:** Operator 2026-11-05 21:19 PT: 'we should have the pot of gold decision trees routed in too'. Sequencing (09-25): the data-heavy parlay pricing stays after the standard board.
+- **source:** Operator 2026-11-05 21:19 PT; 12_EXPLORATORY/longshot_bias/results_W89.md
+
 ### B-051 · Blend-weight test pre-registered: power per engine x family, planned looks with alpha spending, a gated read task
 
 - order 4 · lane: quant · rank: 1 · wave: 105.1
@@ -46,13 +53,6 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 - **source:** ADR-0073; Muse R-082 / R-083
 
 ## NEXT — drawn into the next wave or two
-
-### B-055 · Pot-of-gold route in the router: a LONGSHOT tree - fade overpriced longshots / take underpriced favourites where measured (W89 longshot bias: 5-15c settle below price, 85-95c above), buy a longshot only where a pre-registered cell shows it underpriced; parlays later
-
-- order 3 · lane: quant · rank: 1 · wave: Wave 106 (first block)
-- **measure:** longshot cells pre-registered + routed; decisions logged
-- **why:** Operator 2026-11-05 21:19 PT: 'we should have the pot of gold decision trees routed in too'. Sequencing (09-25): the data-heavy parlay pricing stays after the standard board.
-- **source:** Operator 2026-11-05 21:19 PT; 12_EXPLORATORY/longshot_bias/results_W89.md
 
 ### B-030 · Every NBA game logged: v1 / v2 / v3 coverage since the memory fix (11-04 01:55Z)
 

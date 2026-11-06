@@ -8,7 +8,8 @@ COMMON RULES - WAVE 105 (QUANT: THE BLEND TEST MADE PROPER; ORDER DATA THAT CAN 
   engine): 105.1 quant = B-051 the market-anchored blend test pre-registered with planned looks; 105.2 quant = B-052 order data that can
   explain fills (GG-1794, GG-1793, GG-1810) + a counterfactual placement study; 105.3 engine = B-018 the MLB engine's data layer starts; added at the operator's ask (2026-11-05 21:11 PT, "Wire it in right now I want 2 extra
   terminal blocks"): 105.4 = B-053 ride / fade cells for the in-season board (owns ride_cells.toml rows + a new pre-registration),
-  105.5 = B-054 the router wired to live markets and demo orders (owns a new runner + ride_orders.py + the ride_board_install task).
+  105.5 = B-054 the router wired to live markets and demo orders (owns a new runner + ride_orders.py + the ride_board_install task); 105.6 (21:22 PT) = B-055 the pot-of-gold longshot
+  tree (owns 12_EXPLORATORY/pot_of_gold/, decision_trees/longshot.py, decision_trees/longshot_cells.toml).
   Do not edit ROLLING_BACKLOG.json; report each ticket's state in your handoff.
 - CI IS THE GATE FOR CODE ONLY (operator 2026-11-05 17:15 PT, DECISION_LOG): check locally first (run the tests that touch what you
   changed; `python3 scripts/precheck_changed.py` once #436 is on main). Open a PR only for code. Never wait on, re-run or dispatch CI for
