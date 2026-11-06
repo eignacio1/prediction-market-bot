@@ -1,7 +1,7 @@
 """W105.3 driver: build store, run checks, build PIT tables, fit/evaluate the Part C model. Off-box only.
 
 Usage: PYTHONPATH=src python3 12_EXPLORATORY/mlb_engine/run_w105_3.py STORE [--skip-build] [--skip-box]
-Writes <STORE>/tables/{pit_pitcher,pit_batter}.parquet and prints a JSON report.
+The package writes <STORE>/tables/*.parquet; this driver only prints a JSON report.
 """
 import json
 import sys
@@ -40,10 +40,7 @@ def main() -> None:
                       "exact_pitch_match": int((bx["pitch_diff"] == 0).sum()),
                       "score_match": int(bx["score_match"].sum())}
 
-    pp = pit.pitcher_pit(p, pa)
-    bp = pit.batter_pit(p, pa)
-    pp.to_parquet(tdir / "pit_pitcher.parquet", index=False)
-    bp.to_parquet(tdir / "pit_batter.parquet", index=False)
+    pp, bp = pit.build_pit_tables(root, p, pa)
     rep["pit_rows"] = {"pitcher": len(pp), "batter": len(bp)}
 
     # Part C: train 2024, hold out 2025

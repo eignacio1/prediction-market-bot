@@ -119,3 +119,14 @@ def batter_pit(p: pd.DataFrame, pa: pd.DataFrame) -> pd.DataFrame:
     out["woba_den"] = m["woba_den"]
     out["woba_num"] = m["woba_num"]
     return out.replace([np.inf, -np.inf], np.nan).reset_index(drop=True)
+
+
+def build_pit_tables(store, pitches: pd.DataFrame, pa: pd.DataFrame):
+    """Compute both PIT tables and write them to <store>/tables/. Returns (pitcher_pit, batter_pit)."""
+    from pathlib import Path
+    out = Path(store) / "tables"
+    out.mkdir(parents=True, exist_ok=True)
+    pp, bp = pitcher_pit(pitches, pa), batter_pit(pitches, pa)
+    pp.to_parquet(out / "pit_pitcher.parquet", index=False)
+    bp.to_parquet(out / "pit_batter.parquet", index=False)
+    return pp, bp
