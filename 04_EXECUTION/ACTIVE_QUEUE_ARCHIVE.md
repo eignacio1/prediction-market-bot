@@ -22535,3 +22535,184 @@ END OF BLOCK 102.5
 
 ---
 
+---
+
+## (archived 2026-11-06) WAVE 103 · WRITTEN 2026-11-05 ~06:50 UTC (11-04 22:50 PT) · FOUR blocks (three quant + one red alert, operator 22:03 PT) · paste each block into its own terminal
+
+**Every part runs on data that exists now.** Three blocks stays the standard after this wave.
+
+103.1 **quant** = B-044 tails for the G6 limits · 103.2 **quant** = B-045 overreaction and regimes in Kalshi prices · 103.3 **quant** =
+B-046 in-play score math (NBA / NHL) · 103.4 **RED ALERT** = GG-1771 (HIGH): every NO-side demo order since the v2 migration is sent at the
+mirror price (a NO meant to cost 0.605 is placed at 0.395), plus GG-1770 (NO fills scored won/lost backwards in the fill report).
+
+- **Pushback:** GG-1771 taints every NO-side fill statistic (E1-E3, the forward test, the ADOPT read). The quant blocks that touch fills
+  (103.1) must split YES / NO or exclude NO until 103.4's before/after cut lands - the rule is in COMMON_RULES_W103. The strongest reason
+  not to run three quant blocks now: none moves a board cell. They make the numbers trustworthy, which is the ask.
+- **Surface:** box close reads `20261105T063603Z_*` (see the sitrep). Delta this wave: **+0 running components**; 103.4 changes order
+  pricing on DEMO only (kelly 0, no real capital) and marks an epoch so before / after never mix.
+- **Dependencies:** none between blocks. 103.1 does not wait for 103.4's fix: it uses YES-side fills (or flags NO-side) as they stand.
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 103.1 | quant · 4 | Tails for the G6 limit table (extreme-value fit; breach odds of the 20% kill switch at a given Kelly) | ⏳ pasted? | — |
+| 103.2 | quant · 4 | Does Kalshi's line overshoot and snap back; regimes per sport and family | ⏳ pasted? | — |
+| 103.3 | quant · 4 | In-play score math: NBA diffusion, NHL jump process, scored against Kalshi's live lines | ⏳ pasted? | — |
+| 103.4 | RED ALERT | NO orders mirror-priced (GG-1771) + NO fills scored backwards (GG-1770): fix, sweep every caller, cut every number before / after | ✅ DONE 2026-11-06: #431 `da7849d`, epoch 01:03:42Z; NFL ADOPT -> INCONCLUSIVE on clean data (operator question) | 12_EXPLORATORY/gg1771_no_pricing/RESULT.md |
+
+### 103.4 ADDENDUM - MAIN IS RED (paste into the 103.4 terminal now)
+
+```
+ADDENDUM TO BLOCK 103.4 - MAIN IS RED FROM YOUR "DOCS-ONLY" PUSH aae5e6c
+tests/test_exploratory_isolation.py fails on main for 12_EXPLORATORY/gg1771_no_pricing/recompute.py:35
+(json.dump(res, open(out, "w")) - a write not routed through safe_out()). It holds #433, #434, #435, #436 red.
+1. Fix it first, before anything else: route that write through safe_out() exactly as the other 12_EXPLORATORY scripts do.
+2. Run `python3 -m pytest -q tests/test_exploratory_isolation.py` locally: all pass. Put the fix in your open PR #435 or a
+   one-file PR; merge only on green CI. Say the main-green time in your handoff.
+3. Rule from now on (COMMON_RULES_W103): a push labelled docs-only contains NO .py file. Code goes through a PR.
+END OF ADDENDUM 103.4
+```
+
+### 103.1 - QUANT (TAILS)
+
+```
+WAVE 103 - BLOCK 103.1 - QUANT (rank 4) - TAILS FOR THE G6 LIMIT TABLE (B-044)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W103.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W103_1.md. Every part runs on data that exists now.
+
+PURPOSE: make ADR-0076 sec. 4's blank limits computable: for each (book, sport) with fills, a tested tail model of daily P&L and
+drawdown, and what the 20% max-drawdown kill switch, the 15% daily breaker and the $500 per-event cap imply at a given Kelly. No limit
+is set and no Kelly proposed - the table gets numbers the operator can read; blanks stay blank (ADR-0076).
+
+PART A (~45 min) - the method, tested
+1. NEW functions in src/prediction_market_bot/quant/ (e.g. quant/tails.py): peaks-over-threshold (generalized Pareto) fit with threshold
+   choice by mean-excess / stability, tail quantiles (VaR / expected shortfall), and a resampling path for max drawdown. Known-answer
+   tests: data drawn from a known GPD / Student-t recovers the shape and quantiles within tolerance; a light-tailed case is told apart.
+2. Reuse quant/money.py's P&L path (do not re-implement money math).
+
+PART B (~55 min) - our books
+1. Per (book, sport) with fills - T4M-PROJ MLB, T1 MLB, the shadow books per sport - daily P&L per contract and per $1 stake, from the
+   ledgers / demo_fill_policy.jsonl (read-only). GG-1771: report YES-side and NO-side separately and the YES-only fit as the headline.
+2. Fit, with game- or day-clustered resampling intervals. Where n is too small for a tail fit, say "too few" - no fit is forced.
+3. For each book: probability of tripping the 20% drawdown kill switch within 1 / 6 / 12 months at Kelly 0.01, 0.025, 0.05 (flat
+   cadence as measured). Write 12_EXPLORATORY/quant_w103_tails/RESULT.md.
+
+PART C (~30 min, switch here whenever A or B waits) - the limit table rows
+1. Draft, beside ADR-0076 sec. 4 (a NEW file 12_EXPLORATORY/quant_w103_tails/LIMIT_TABLE_INPUTS.md - not the ADR), per (book, sport):
+   the numbers a limit would be read from. One plain-English line for the operator: what the tails say about the kill switch.
+
+Report: per COMMON RULES. MEASURE MOVED: books with a tested tail model X of N; breach odds per book. Operator decisions: none.
+END OF BLOCK 103.1
+```
+
+### 103.2 - QUANT (PRICE BEHAVIOUR)
+
+```
+WAVE 103 - BLOCK 103.2 - QUANT (rank 4) - OVERREACTION AND REGIMES IN KALSHI PRICES (B-045)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W103.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W103_2.md. Every part runs on data that exists now.
+
+PURPOSE: rank 1 / 4 - the market-anchored price moves the market's own line; this measures how that line itself behaves. Does Kalshi's
+price overshoot after big moves and revert (a fade), drift (a follow), or neither - per sport and family - and are there regimes (quiet
+pre-game drift vs in-play jumps) an engine could use as an input. Descriptive and held-out; no new cell, no order.
+
+PART A (~40 min) - what the archive holds
+1. Inventory exp_output/PRICE_ARCHIVE (box, read-only; a READ-ONLY aggregate bridge task if needed - outputs stay under ~60 KB):
+   sports, families, snapshot cadence, pre-game vs in-play coverage, settled outcomes joinable. Say plainly what cannot be measured.
+
+PART B (~60 min) - overshoot and reversion
+1. NEW functions in quant/ (+ known-answer tests on a simulated series with planted reversion, momentum and none): define a "big move"
+   (> k standard deviations of the family's own move distribution, k fixed BEFORE looking at outcomes, written in the results file
+   first), then the next-horizon return (5 / 15 / 60 min and to settlement) conditional on it.
+2. Per sport and family: mean reversion fraction with game-clustered intervals, n stated; a split by pre-game vs in-play where coverage
+   allows. Multiplicity: use quant/inference.py's Holm / BH across the families (MULTIPLICITY_LEDGER.md's method).
+
+PART C (~30 min, switch here whenever A or B waits) - regimes
+1. A two-state regime label (calm / jumpy) per market-hour from volatility and jump counts (simple, tested); show its stability and
+   whether reversion differs by regime. Write 12_EXPLORATORY/quant_w103_prices/RESULT.md with one plain-English paragraph: "when the
+   line jumps, it usually ..." per sport.
+
+Report: per COMMON RULES. MEASURE MOVED: families with a measured overshoot / reversion estimate X of N; regime label available.
+Operator decisions: none.
+END OF BLOCK 103.2
+```
+
+### 103.3 - QUANT (IN-PLAY MATH)
+
+```
+WAVE 103 - BLOCK 103.3 - QUANT (rank 4) - IN-PLAY SCORE MATH: NBA DIFFUSION, NHL JUMP PROCESS (B-046)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W103.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W103_3.md. Every part runs on data that exists now.
+
+PURPOSE: the accepted quant rollout's Wave C (DECISION_LOG 2026-10-22): game-state math for the in-play bands. Given the score, time
+left and the pre-game line, the probability of each outcome for the rest of the game - NBA as a drifting random walk (diffusion), NHL as
+a Poisson / jump process - tested on the event stores and priced against Kalshi's in-play line where the archive has it.
+Markov chains already exist (quant/dtmc.py, absorbing.py): reuse, do not duplicate.
+
+PART A (~50 min) - NBA diffusion
+1. NEW module quant/inplay_nba.py: score margin as Brownian motion with drift set from the pre-game spread and variance per minute
+   estimated point-in-time from the event store (training seasons only). Win / cover / total probabilities at any (margin, time left).
+   Known-answer tests: closed-form cases (zero drift, symmetric), and a simulation check.
+2. Held-out (most recent full season): calibration and Brier at fixed checkpoints (end of each quarter), n games stated.
+
+PART B (~45 min) - NHL jump process
+1. NEW module quant/inplay_nhl.py: goals as Poisson arrivals with rates from the pre-game line and state (strength, empty net late,
+   score effects if the shot store supports them - say which). Regulation vs OT / SO settlement handled exactly (99.1: settlement is exact).
+2. Held-out the same way, by period.
+
+PART C (~35 min, switch here whenever A or B waits) - against the market
+1. Where PRICE_ARCHIVE has in-play snapshots for NBA / NHL games (read-only), score the model vs Kalshi's line at the same instant
+   (descriptive, n stated). If the archive has none in-play, say so and stop this part. Write 12_EXPLORATORY/quant_w103_inplay/RESULT.md
+   with one plain-English line per sport.
+
+Report: per COMMON RULES. MEASURE MOVED: in-play models built and held-out-tested 0 -> 2; vs-market comparison n per sport.
+Operator decisions: none.
+END OF BLOCK 103.3
+```
+
+### 103.4 - RED ALERT
+
+```
+WAVE 103 - BLOCK 103.4 - RED ALERT - NO ORDERS MIRROR-PRICED (GG-1771, HIGH) + NO FILLS SCORED BACKWARDS (GG-1770)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W103.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W103_4.md. Every part runs on data that exists now.
+
+PURPOSE: EXECUTION E1-E3 and every number built on fills. GG-1771 (03_DECISIONS/GOVERNANCE_GAP_LOG.md): for side="no",
+KalshiMarketClient.submit_order posts 1 - mid as the v2 YES-frame price, so NO orders are mirror-priced; on the 11-03 slate all 185 filled
+NO orders cost ~price_yes (mean 0.715 vs 0.44 on YES). Candidate cause of "fills lose, non-fills win" (E3) and possibly part of the NFL
+ADOPT read. GG-1770: lookup_fill ignores action=sell, inverting won / lost for NO fills in the fill report. Demo only; no real capital.
+
+PERMISSIONS: per COMMON_RULES_W103 103.4 ownership. Fixing a demo pricing defect is in scope; it changes the price every arm sends, so it
+starts a NEW EPOCH: record the merge time as the cut in exp_output/FORWARD_TEST/ and the ledgers' readers; never mix rows across it.
+No pre-registered parameter or verdict word changes - consequences for verdicts go to the window as a question for the operator.
+
+PART A (~45 min) - fix, everywhere
+1. Reproduce first: a test that sends side="no" at mid_yes 0.395 and asserts the v2 request carries the YES-frame price that makes the
+   NO cost 0.605. It must fail on main. Then the one-line fix; the test passes.
+2. Pattern sweep (Hard Rule 13): every caller of submit_order and every other place a NO price is converted (T1 / T4 MLB, NBA, NHL,
+   NFL shadow, the forward-test placement switch from 102.2, the cancel sweeper). Fix or prove correct each; list them in the handoff.
+3. GG-1770: lookup_fill honours action=sell; test on a fixture NO fill (won and lost). PR(s) with tests; merge on green; read
+   deploy_truth_read after the merge and record the epoch time.
+
+PART B (~50 min) - the before / after cut (existing data, read-only)
+1. Since the v2 migration (GG-063 / T-217): NO-side orders and fills per (book, sport); how much each headline number moves when NO
+   fills are re-priced correctly or excluded: E1 fill rate, E2 P&L per filled bet, E3 fills vs non-fills win rate (T4 MLB 25.4% vs
+   48.3%), and the ADR-0072 forward test (a), (b), (c) per book-sport - especially NFL's ADOPT. Report "as logged" vs "YES-only" vs
+   "NO re-priced" side by side; never overwrite the ledgers.
+2. Write 12_EXPLORATORY/gg1771_no_pricing/RESULT.md and ONE plain-English operator line: what changed, and whether the NFL ADOPT read
+   still stands on YES-side fills alone. Do not relabel any verdict.
+
+PART C (~30 min, switch here whenever A waits on CI or the box) - stop it recurring
+1. A guard test that every order path's NO price round-trips (intended NO cost == 1 - posted YES-frame price) for each client. Close or
+   update GG-1771 / GG-1770 with the PRs and the epoch.
+
+Report: per COMMON RULES. MEASURE MOVED: E3 fills vs non-fills, as logged -> corrected; NO-side paths fixed X of N. Operator decisions:
+one line - does the NFL ADOPT still stand on clean fills.
+END OF BLOCK 103.4
+```
+
+---
+

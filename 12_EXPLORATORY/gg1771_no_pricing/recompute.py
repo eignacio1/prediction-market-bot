@@ -10,6 +10,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "scripts")); sys.path.insert(0, str(REPO / "src"))
 import demo_fill_forward_report as R  # noqa: E402
+sys.path.insert(0, str(REPO / "12_EXPLORATORY"))
+from _fence import safe_out  # noqa: E402
 
 log, cache_p, mdir, out = sys.argv[1:5]
 events = R.load_events(Path(log)); cache = json.load(open(cache_p))
@@ -32,7 +34,7 @@ for e in events:
         sp = R.sport_of(R.ticker_of(e)); s = e.get("side") or "unknown"; r = cache.get(e["order_id"], {})
         counts[(sp, s, "orders")] += 1; counts[(sp, s, "fills")] += 1 if (r.get("fills") or 0) > 0 else 0
 res["no_side_counts"] = {f"{a}|{b}|{c}": n for (a, b, c), n in sorted(counts.items())}
-json.dump(res, open(out, "w"), indent=1, default=str)
+json.dump(res, open(safe_out(out), "w"), indent=1, default=str)
 for v in ("as_logged", "yes_only", "no_outcome_corrected"):
     print("==", v)
     for k, x in res[v]["verdicts"].items():
