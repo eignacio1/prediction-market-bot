@@ -1,0 +1,7 @@
+# BEGIN W105.5 RIDE BOARD
+# Ride/fade board (B-054): every 5 min through the NBA/NHL evening (17-23Z) and late window (00-05Z; NFL Sun/Thu/Mon rides the same window).
+# One short process (~70 MB peak RSS), non-blocking flock: a run that finds its predecessor still going exits without running.
+# Logs EVERY routing decision to logs/ride_board/decisions.jsonl. Orders are OFF unless RIDE_BOARD_ORDERS=on is set for the cron
+# environment (it is not, by this line): until then the board logs decisions and paper rows only, and places nothing.
+3-58/5 0-5,17-23 * * * cd /opt/prediction-market-bot && flock -n /tmp/ride_board.lock env PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_ride_board.py >> logs/ride_board_cron.log 2>&1
+# END W105.5 RIDE BOARD

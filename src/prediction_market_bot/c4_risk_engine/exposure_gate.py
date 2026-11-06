@@ -45,6 +45,8 @@ BOOKS: dict[str, dict[str, Any]] = {
     "MLB_T4": {"band": "t4_mlb", "portfolio": "paper_portfolio_mlb_t4.json", "frozen": False},
     "NBA_T1": {"band": "t1_nba", "portfolio": "paper_portfolio.json", "frozen": True},
     "SHADOW": {"band": "shadow", "portfolio": None, "frozen": False, "advisory": True},
+    # W105.5 / B-054: the ride/fade board's own demo book. Ledger-less and advisory, exactly like SHADOW.
+    "RIDE_BOARD": {"band": "ride_board", "portfolio": None, "frozen": False, "advisory": True},
 }
 # GG-1240: an ``advisory`` book is reported and must have a live writer, but it is excluded from breach
 # and system sums. SHADOW stakes are hypothetical (no ledger, never resolve), so against the $1,000
@@ -254,7 +256,7 @@ def mark_feed_failed(name: str, why: str, logs_dir: Optional[Path] = None) -> No
         _persist(_recompute(books, gate_mode(), logs_dir), gate_mode(), logs_dir)
 
 
-def shadow_state(log_path: Path, notional: float = SHADOW_NOTIONAL_USD) -> dict:
+def shadow_state(log_path: Path, notional: float = SHADOW_NOTIONAL_USD, order_event: str = "shadow_order") -> dict:
     """Portfolio-shaped state for the ledger-less SHADOW book: every placed shadow order whose
     market has not settled counts as open stake. Realized P&L is not tracked here (GG-1175)."""
     pos = []
@@ -264,7 +266,7 @@ def shadow_state(log_path: Path, notional: float = SHADOW_NOTIONAL_USD) -> dict:
                 e = json.loads(line)
             except ValueError:
                 continue
-            if e.get("event") == "shadow_order" and e.get("ok") and e.get("order_id"):
+            if e.get("event") == order_event and e.get("ok") and e.get("order_id"):
                 pos.append({"kalshi_ticker": e.get("ticker"), "size_usd": float(e.get("stake_usd") or 0.0),
                             "status": "OPEN"})
     except FileNotFoundError:
