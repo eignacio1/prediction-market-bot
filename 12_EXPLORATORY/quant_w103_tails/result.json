@@ -1,0 +1,1034 @@
+{
+ "proxy_fbar_T4M_PROJ_YES": 0.20545911956957236,
+ "skipped_unsettled_fill_rows": 121,
+ "books": {
+  "T1|MLB|NO": {
+   "n_bets": 435,
+   "kelly_map": "own ledger",
+   "tail": {
+    "n_games": 162,
+    "worst_game_loss_per_dollar": 1.0,
+    "status": "OK",
+    "stable": false,
+    "q": 0.6,
+    "n_exc": 65,
+    "xi": -2.3976577814117537,
+    "sigma": 1.6601988083762964,
+    "xi_ci": [
+     -3.3729468516589507,
+     -1.3994904975207607
+    ],
+    "tail_class": "light",
+    "var99": 0.9999009231044642,
+    "es99": 0.9999708396483962,
+    "empirical_var99": 1.0,
+    "var99_ci": [
+     0.9963354358594669,
+     0.9999988186075331
+    ],
+    "var99_at_event_cap_usd": 499.9504615522321,
+    "es99_at_event_cap_usd": 499.98541982419806
+   },
+   "breach": {
+    "n_days": 23,
+    "calendar_span_days": 29,
+    "n_bets": 435,
+    "status": "OK",
+    "active_days_per_month": 24.110344827586207,
+    "bets_per_active_day": 18.91304347826087,
+    "worst_day_per_dollar": -0.41382458424449525,
+    "kelly_map_fbar": 0.18974918894849974,
+    "worst_day_equity_pct_at_cap": -24.829475054669714,
+    "breach": {
+     "0.01": {
+      "stake_frac": 0.0018974918894849974,
+      "cap_binds_share": 0.0,
+      "1m": {
+       "horizon_days": 24,
+       "kill": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 145,
+       "kill": {
+        "p": 0.21289999999999998,
+        "lo": 0.0,
+        "hi": 0.9902500000000001
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 289,
+       "kill": {
+        "p": 0.33585,
+        "lo": 0.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.025": {
+      "stake_frac": 0.004743729723712494,
+      "cap_binds_share": 0.0,
+      "1m": {
+       "horizon_days": 24,
+       "kill": {
+        "p": 0.0785,
+        "lo": 0.0,
+        "hi": 0.41
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 145,
+       "kill": {
+        "p": 0.5682,
+        "lo": 0.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 289,
+       "kill": {
+        "p": 0.61375,
+        "lo": 0.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.05": {
+      "stake_frac": 0.009487459447424988,
+      "cap_binds_share": 0.0,
+      "1m": {
+       "horizon_days": 24,
+       "kill": {
+        "p": 0.42719999999999997,
+        "lo": 0.02,
+        "hi": 0.8702500000000001
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 145,
+       "kill": {
+        "p": 0.8689,
+        "lo": 0.1395,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 289,
+       "kill": {
+        "p": 0.9163,
+        "lo": 0.22975,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     }
+    }
+   }
+  },
+  "T1|MLB|YES": {
+   "n_bets": 34,
+   "kelly_map": "own ledger",
+   "tail": {
+    "n_games": 19,
+    "status": "too few"
+   },
+   "breach": {
+    "n_days": 14,
+    "calendar_span_days": 30,
+    "n_bets": 34,
+    "status": "too few"
+   }
+  },
+  "T4M-PROJ|MLB|NO": {
+   "n_bets": 2583,
+   "kelly_map": "own ledger",
+   "tail": {
+    "n_games": 334,
+    "worst_game_loss_per_dollar": 1.0,
+    "status": "OK",
+    "stable": false,
+    "q": 0.8,
+    "n_exc": 67,
+    "xi": -2.454316962326042,
+    "sigma": 1.1474567745290134,
+    "xi_ci": [
+     -4.9835099766813675,
+     -1.2868408865065546
+    ],
+    "tail_class": "light",
+    "var99": 0.9997025053498827,
+    "es99": 0.9999138774312372,
+    "empirical_var99": 1.0,
+    "var99_ci": [
+     0.9891124981288212,
+     0.9999998392705105
+    ],
+    "var99_at_event_cap_usd": 499.85125267494135,
+    "es99_at_event_cap_usd": 499.9569387156186
+   },
+   "breach": {
+    "n_days": 50,
+    "calendar_span_days": 102,
+    "n_bets": 2583,
+    "status": "OK",
+    "active_days_per_month": 14.901960784313724,
+    "bets_per_active_day": 51.66,
+    "worst_day_per_dollar": -1.0,
+    "kelly_map_fbar": 0.305671044791417,
+    "worst_day_equity_pct_at_cap": -60.0,
+    "breach": {
+     "0.01": {
+      "stake_frac": 0.00305671044791417,
+      "cap_binds_share": 0.0,
+      "1m": {
+       "horizon_days": 15,
+       "kill": {
+        "p": 0.12335000000000002,
+        "lo": 0.0,
+        "hi": 0.37
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 89,
+       "kill": {
+        "p": 0.8361000000000002,
+        "lo": 0.18900000000000003,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 179,
+       "kill": {
+        "p": 0.95,
+        "lo": 0.6687500000000001,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.025": {
+      "stake_frac": 0.007641776119785425,
+      "cap_binds_share": 0.24,
+      "1m": {
+       "horizon_days": 15,
+       "kill": {
+        "p": 0.5335500000000001,
+        "lo": 0.14975,
+        "hi": 0.8607500000000001
+       },
+       "breaker": {
+        "p": 0.38480000000000003,
+        "lo": 0.0,
+        "hi": 0.7907500000000002
+       }
+      },
+      "6m": {
+       "horizon_days": 89,
+       "kill": {
+        "p": 0.9800999999999999,
+        "lo": 0.8392499999999999,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.8325,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 179,
+       "kill": {
+        "p": 0.9925,
+        "lo": 0.97,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.8557999999999999,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      }
+     },
+     "0.05": {
+      "stake_frac": 0.01528355223957085,
+      "cap_binds_share": 0.46,
+      "1m": {
+       "horizon_days": 15,
+       "kill": {
+        "p": 0.73575,
+        "lo": 0.31,
+        "hi": 0.9702500000000001
+       },
+       "breaker": {
+        "p": 0.633,
+        "lo": 0.1852500000000001,
+        "hi": 0.94025
+       }
+      },
+      "6m": {
+       "horizon_days": 89,
+       "kill": {
+        "p": 0.9978,
+        "lo": 0.97975,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.9682000000000001,
+        "lo": 0.8097500000000001,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 179,
+       "kill": {
+        "p": 0.9973000000000001,
+        "lo": 1.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.9833000000000002,
+        "lo": 0.96975,
+        "hi": 1.0
+       }
+      }
+     }
+    }
+   }
+  },
+  "T4M-PROJ|MLB|YES": {
+   "n_bets": 1733,
+   "kelly_map": "own ledger",
+   "tail": {
+    "n_games": 295,
+    "worst_game_loss_per_dollar": 1.0,
+    "status": "OK",
+    "stable": false,
+    "q": 0.7,
+    "n_exc": 89,
+    "xi": -1.6899167164232556,
+    "sigma": 0.24893601800830312,
+    "xi_ci": [
+     -7.843713989016255,
+     -1.1705788022231416
+    ],
+    "tail_class": "light",
+    "var99": 0.999534547083615,
+    "es99": 0.9998269638187892,
+    "empirical_var99": 1.0,
+    "var99_ci": [
+     0.9966639179429273,
+     0.9999999999996438
+    ],
+    "var99_at_event_cap_usd": 499.7672735418075,
+    "es99_at_event_cap_usd": 499.9134819093946
+   },
+   "breach": {
+    "n_days": 56,
+    "calendar_span_days": 107,
+    "n_bets": 1733,
+    "status": "OK",
+    "active_days_per_month": 15.910280373831773,
+    "bets_per_active_day": 30.946428571428573,
+    "worst_day_per_dollar": -1.0,
+    "kelly_map_fbar": 0.20545911956957236,
+    "worst_day_equity_pct_at_cap": -60.0,
+    "breach": {
+     "0.01": {
+      "stake_frac": 0.0020545911956957237,
+      "cap_binds_share": 0.0,
+      "1m": {
+       "horizon_days": 16,
+       "kill": {
+        "p": 0.19755000000000003,
+        "lo": 0.0,
+        "hi": 0.47025000000000006
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 95,
+       "kill": {
+        "p": 0.91125,
+        "lo": 0.5182500000000001,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 191,
+       "kill": {
+        "p": 0.97815,
+        "lo": 0.7782500000000001,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.025": {
+      "stake_frac": 0.005136477989239309,
+      "cap_binds_share": 0.017857142857142856,
+      "1m": {
+       "horizon_days": 16,
+       "kill": {
+        "p": 0.75595,
+        "lo": 0.4295,
+        "hi": 0.95
+       },
+       "breaker": {
+        "p": 0.41369999999999996,
+        "lo": 0.0,
+        "hi": 0.8
+       }
+      },
+      "6m": {
+       "horizon_days": 95,
+       "kill": {
+        "p": 0.99785,
+        "lo": 0.98975,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.7842999999999999,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 191,
+       "kill": {
+        "p": 1.0,
+        "lo": 1.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.9207500000000002,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      }
+     },
+     "0.05": {
+      "stake_frac": 0.010272955978478618,
+      "cap_binds_share": 0.17857142857142858,
+      "1m": {
+       "horizon_days": 16,
+       "kill": {
+        "p": 0.9295,
+        "lo": 0.75975,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.8068000000000001,
+        "lo": 0.44,
+        "hi": 0.98
+       }
+      },
+      "6m": {
+       "horizon_days": 95,
+       "kill": {
+        "p": 1.0,
+        "lo": 1.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.99395,
+        "lo": 0.9495,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 191,
+       "kill": {
+        "p": 1.0,
+        "lo": 1.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.99995,
+        "lo": 1.0,
+        "hi": 1.0
+       }
+      }
+     }
+    }
+   }
+  },
+  "shadow|MLB|YES": {
+   "n_bets": 85,
+   "kelly_map": "T4M-PROJ YES proxy",
+   "tail": {
+    "n_games": 5,
+    "status": "too few"
+   },
+   "breach": {
+    "n_days": 4,
+    "calendar_span_days": 5,
+    "n_bets": 85,
+    "status": "too few"
+   }
+  },
+  "shadow|NBA|YES": {
+   "n_bets": 24429,
+   "kelly_map": "T4M-PROJ YES proxy",
+   "tail": {
+    "n_games": 121,
+    "worst_game_loss_per_dollar": 1.0,
+    "status": "OK",
+    "stable": true,
+    "q": 0.5,
+    "n_exc": 60,
+    "xi": -0.618542651390341,
+    "sigma": 0.6339654571029774,
+    "xi_ci": [
+     -1.289625129539375,
+     -0.4781028545794868
+    ],
+    "tail_class": "light",
+    "var99": 0.9333036485420371,
+    "es99": 0.9683211649064163,
+    "empirical_var99": 0.8483121819549163,
+    "var99_ci": [
+     0.7677399754236321,
+     0.9804723936942006
+    ],
+    "var99_at_event_cap_usd": 466.65182427101854,
+    "es99_at_event_cap_usd": 484.1605824532081
+   },
+   "breach": {
+    "n_days": 19,
+    "calendar_span_days": 19,
+    "n_bets": 24429,
+    "status": "OK",
+    "active_days_per_month": 30.4,
+    "bets_per_active_day": 1285.7368421052631,
+    "worst_day_per_dollar": -0.42710301174811205,
+    "kelly_map_fbar": 0.20545911956957236,
+    "worst_day_equity_pct_at_cap": -25.62618070488672,
+    "breach": {
+     "0.01": {
+      "stake_frac": 0.0020545911956957237,
+      "cap_binds_share": 0.8947368421052632,
+      "1m": {
+       "horizon_days": 30,
+       "kill": {
+        "p": 0.6800999999999999,
+        "lo": 0.009750000000000005,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.5619000000000001,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "6m": {
+       "horizon_days": 182,
+       "kill": {
+        "p": 0.86035,
+        "lo": 0.04,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.62995,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 365,
+       "kill": {
+        "p": 0.8894500000000001,
+        "lo": 0.01,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.63,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      }
+     },
+     "0.025": {
+      "stake_frac": 0.005136477989239309,
+      "cap_binds_share": 0.9473684210526315,
+      "1m": {
+       "horizon_days": 30,
+       "kill": {
+        "p": 0.7442500000000001,
+        "lo": 0.02,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.5619000000000001,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "6m": {
+       "horizon_days": 182,
+       "kill": {
+        "p": 0.912,
+        "lo": 0.15925000000000003,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.62995,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 365,
+       "kill": {
+        "p": 0.93745,
+        "lo": 0.23800000000000004,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.63,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      }
+     },
+     "0.05": {
+      "stake_frac": 0.010272955978478618,
+      "cap_binds_share": 0.9473684210526315,
+      "1m": {
+       "horizon_days": 30,
+       "kill": {
+        "p": 0.7476499999999998,
+        "lo": 0.02,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.5619000000000001,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "6m": {
+       "horizon_days": 182,
+       "kill": {
+        "p": 0.9139499999999999,
+        "lo": 0.16925000000000004,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.62995,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 365,
+       "kill": {
+        "p": 0.9392500000000001,
+        "lo": 0.25750000000000006,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.63,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      }
+     }
+    }
+   }
+  },
+  "shadow|NFL|YES": {
+   "n_bets": 9775,
+   "kelly_map": "T4M-PROJ YES proxy",
+   "tail": {
+    "n_games": 47,
+    "status": "too few"
+   },
+   "breach": {
+    "n_days": 21,
+    "calendar_span_days": 24,
+    "n_bets": 9775,
+    "status": "OK",
+    "active_days_per_month": 26.599999999999998,
+    "bets_per_active_day": 465.4761904761905,
+    "worst_day_per_dollar": -0.7846419024640745,
+    "kelly_map_fbar": 0.20545911956957236,
+    "worst_day_equity_pct_at_cap": -47.078514147844466,
+    "breach": {
+     "0.01": {
+      "stake_frac": 0.0020545911956957237,
+      "cap_binds_share": 0.38095238095238093,
+      "1m": {
+       "horizon_days": 27,
+       "kill": {
+        "p": 0.00255,
+        "lo": 0.0,
+        "hi": 0.030250000000000055
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 160,
+       "kill": {
+        "p": 0.01085,
+        "lo": 0.0,
+        "hi": 0.10025000000000006
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 319,
+       "kill": {
+        "p": 0.01925,
+        "lo": 0.0,
+        "hi": 0.17
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.025": {
+      "stake_frac": 0.005136477989239309,
+      "cap_binds_share": 0.6666666666666666,
+      "1m": {
+       "horizon_days": 27,
+       "kill": {
+        "p": 0.11545000000000001,
+        "lo": 0.0,
+        "hi": 0.4905000000000001
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 160,
+       "kill": {
+        "p": 0.34450000000000003,
+        "lo": 0.0,
+        "hi": 0.99
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 319,
+       "kill": {
+        "p": 0.51225,
+        "lo": 0.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.05": {
+      "stake_frac": 0.010272955978478618,
+      "cap_binds_share": 0.8571428571428571,
+      "1m": {
+       "horizon_days": 27,
+       "kill": {
+        "p": 0.5712999999999999,
+        "lo": 0.0,
+        "hi": 0.99
+       },
+       "breaker": {
+        "p": 0.57055,
+        "lo": 0.0,
+        "hi": 0.99
+       }
+      },
+      "6m": {
+       "horizon_days": 160,
+       "kill": {
+        "p": 0.6454,
+        "lo": 0.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.63975,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      },
+      "12m": {
+       "horizon_days": 319,
+       "kill": {
+        "p": 0.6950999999999999,
+        "lo": 0.0,
+        "hi": 1.0
+       },
+       "breaker": {
+        "p": 0.69,
+        "lo": 0.0,
+        "hi": 1.0
+       }
+      }
+     }
+    }
+   }
+  },
+  "shadow|NHL|YES": {
+   "n_bets": 4309,
+   "kelly_map": "T4M-PROJ YES proxy",
+   "tail": {
+    "n_games": 147,
+    "worst_game_loss_per_dollar": 1.0,
+    "status": "OK",
+    "stable": true,
+    "q": 0.5,
+    "n_exc": 29,
+    "xi": -1.3809693537070413,
+    "sigma": 1.3809693537070415,
+    "xi_ci": [
+     -2.5714410341130205,
+     0.4747848045481201
+    ],
+    "tail_class": "undetermined",
+    "var99": 0.9837245391922709,
+    "es99": 0.9931643551890373,
+    "empirical_var99": 1.0,
+    "var99_ci": [
+     0.9390490006915717,
+     1.3923802745963672
+    ],
+    "var99_at_event_cap_usd": 491.86226959613543,
+    "es99_at_event_cap_usd": 496.58217759451867
+   },
+   "breach": {
+    "n_days": 23,
+    "calendar_span_days": 23,
+    "n_bets": 4309,
+    "status": "OK",
+    "active_days_per_month": 30.4,
+    "bets_per_active_day": 187.34782608695653,
+    "worst_day_per_dollar": -0.12808498462491338,
+    "kelly_map_fbar": 0.20545911956957236,
+    "worst_day_equity_pct_at_cap": -7.685099077494803,
+    "breach": {
+     "0.01": {
+      "stake_frac": 0.0020545911956957237,
+      "cap_binds_share": 0.17391304347826086,
+      "1m": {
+       "horizon_days": 30,
+       "kill": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 182,
+       "kill": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 365,
+       "kill": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.025": {
+      "stake_frac": 0.005136477989239309,
+      "cap_binds_share": 0.7391304347826086,
+      "1m": {
+       "horizon_days": 30,
+       "kill": {
+        "p": 0.0024000000000000002,
+        "lo": 0.0,
+        "hi": 0.03
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 182,
+       "kill": {
+        "p": 0.0070999999999999995,
+        "lo": 0.0,
+        "hi": 0.060250000000000054
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 365,
+       "kill": {
+        "p": 0.018650000000000003,
+        "lo": 0.0,
+        "hi": 0.17
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     },
+     "0.05": {
+      "stake_frac": 0.010272955978478618,
+      "cap_binds_share": 0.8260869565217391,
+      "1m": {
+       "horizon_days": 30,
+       "kill": {
+        "p": 0.01375,
+        "lo": 0.0,
+        "hi": 0.09025000000000005
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "6m": {
+       "horizon_days": 182,
+       "kill": {
+        "p": 0.047700000000000006,
+        "lo": 0.0,
+        "hi": 0.37
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      },
+      "12m": {
+       "horizon_days": 365,
+       "kill": {
+        "p": 0.09709999999999999,
+        "lo": 0.0,
+        "hi": 0.5717500000000003
+       },
+       "breaker": {
+        "p": 0.0,
+        "lo": 0.0,
+        "hi": 0.0
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

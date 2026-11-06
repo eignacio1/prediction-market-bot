@@ -422,3 +422,20 @@ def test_markout_c_filters_by_book_and_legacy_rows_are_shadow():
     assert rpt.markout_c(rows, "NFL", epoch)["treatment_n"] == 1            # default book = shadow
     assert rpt.markout_c(rows, "NFL", epoch, "paper")["treatment_n"] == 1
     assert rpt.markout_c(rows, "NFL", epoch, "shadow")["diff"] == rpt.markout_c(rows[:2], "NFL", epoch)["diff"]
+
+
+def test_gg1771_epoch_floor_excludes_pre_epoch_rows_and_default_is_unchanged():
+    """GG-1784: rows before the GG-1771 epoch never enter the scored cells; no floor = old behaviour."""
+    ep = rpt.GG1771_EPOCH
+    now = ep + timedelta(hours=2)
+    tk = "KXNFLGAME-26NOV06-X"
+    pre = {"ts": (ep - timedelta(minutes=5)).isoformat(), "event": "shadow_order", "row_id": f"r|{tk}", "ok": True, "order_id": "pre", "ticker": tk}
+    post = {"ts": (ep + timedelta(minutes=5)).isoformat(), "event": "shadow_order", "row_id": f"r|{tk}", "ok": True, "order_id": "post", "ticker": tk}
+    f = lambda oid, t: {"fills": 1.0, "settled": True, "won": True, "price": 0.4}  # noqa: E731
+
+    def orders(rep):
+        return sum(c["orders"] for c in rep["cells"] if c["arm"] != "control")
+
+    assert orders(rpt.build_report([pre, post], now, f)) == 2
+    assert orders(rpt.build_report([pre, post], now, f, epoch_floor=ep)) == 1
+    assert orders(rpt.build_report([pre], now, f, epoch_floor=ep)) == 0
