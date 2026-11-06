@@ -1,0 +1,635 @@
+{
+ "cells": [
+  {
+   "n_rows": 68,
+   "n_games": 34,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.63
+   ],
+   "w_se": 0.1565516490453513,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": 0.0,
+   "oos_gain_ci": [
+    0.0,
+    0.0
+   ],
+   "ll_market": 0.584926734852432,
+   "beats_market": false,
+   "p_w_gt0": 0.081,
+   "engine": "v1",
+   "family": "NBA_MONEYLINE",
+   "p_one_sided": 0.919,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 68,
+   "n_games": 34,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.63
+   ],
+   "w_se": 0.15649571882326377,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": -1.0612425970681643e-17,
+   "oos_gain_ci": [
+    -2.6122894697062506e-17,
+    1.6326809185664067e-18
+   ],
+   "ll_market": 0.584926734852432,
+   "beats_market": false,
+   "p_w_gt0": 0.099,
+   "engine": "v1",
+   "family": "NBA_MONEYLINE",
+   "p_one_sided": 0.901,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 1089,
+   "n_games": 33,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3220508101593981,
+   "w_shrunk": 0.0,
+   "w_cv": 0.13399999999999998,
+   "oos_gain": -0.005732754647930038,
+   "oos_gain_ci": [
+    -0.01083519170343747,
+    -0.0007531775471896988
+   ],
+   "ll_market": 0.4253528170825774,
+   "beats_market": false,
+   "p_w_gt0": 0.47,
+   "engine": "v1",
+   "family": "NBA_SPREAD",
+   "p_one_sided": 0.53,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 1089,
+   "n_games": 33,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.31367008675250396,
+   "w_shrunk": 0.0,
+   "w_cv": 0.158,
+   "oos_gain": -0.006452341437623893,
+   "oos_gain_ci": [
+    -0.012224037720134629,
+    -0.0007226994662316785
+   ],
+   "ll_market": 0.4253528170825774,
+   "beats_market": false,
+   "p_w_gt0": 0.531,
+   "engine": "v1",
+   "family": "NBA_SPREAD",
+   "p_one_sided": 0.469,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 928,
+   "n_games": 32,
+   "form": "linear",
+   "w_hat": 0.05,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3341456504515901,
+   "w_shrunk": 0.0,
+   "w_cv": 0.20600000000000002,
+   "oos_gain": -0.015961050848848645,
+   "oos_gain_ci": [
+    -0.038415049393259244,
+    -0.001586699863056626
+   ],
+   "ll_market": 0.49510776951610563,
+   "beats_market": false,
+   "p_w_gt0": 0.526,
+   "engine": "v1",
+   "family": "NBA_GAME_TOTAL",
+   "p_one_sided": 0.474,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 928,
+   "n_games": 32,
+   "form": "logit",
+   "w_hat": 0.03,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3368731325104571,
+   "w_shrunk": 0.0,
+   "w_cv": 0.188,
+   "oos_gain": -0.015365883964219285,
+   "oos_gain_ci": [
+    -0.0385127184159849,
+    -0.0005741047648043517
+   ],
+   "ll_market": 0.49510776951610563,
+   "beats_market": false,
+   "p_w_gt0": 0.523,
+   "engine": "v1",
+   "family": "NBA_GAME_TOTAL",
+   "p_one_sided": 0.477,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 988,
+   "n_games": 26,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.27974876115788183,
+   "w_shrunk": 0.0,
+   "w_cv": 0.016,
+   "oos_gain": -0.0005138074403619405,
+   "oos_gain_ci": [
+    -0.0014341318003144937,
+    0.00022789270810625857
+   ],
+   "ll_market": 0.4670743785736228,
+   "beats_market": false,
+   "p_w_gt0": 0.387,
+   "engine": "v1",
+   "family": "NBA_TEAM_TOTAL",
+   "p_one_sided": 0.613,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 988,
+   "n_games": 26,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.98
+   ],
+   "w_se": 0.27238141554727213,
+   "w_shrunk": 0.0,
+   "w_cv": 0.05,
+   "oos_gain": -0.0017731411055480523,
+   "oos_gain_ci": [
+    -0.006152140213862773,
+    0.001481163213639829
+   ],
+   "ll_market": 0.4670743785736228,
+   "beats_market": false,
+   "p_w_gt0": 0.423,
+   "engine": "v1",
+   "family": "NBA_TEAM_TOTAL",
+   "p_one_sided": 0.577,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 74,
+   "n_games": 37,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.27
+   ],
+   "w_se": 0.10348146700745024,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": 0.0,
+   "oos_gain_ci": [
+    0.0,
+    0.0
+   ],
+   "ll_market": 0.6013122281969943,
+   "beats_market": false,
+   "p_w_gt0": 0.045,
+   "engine": "v2",
+   "family": "NBA_MONEYLINE",
+   "p_one_sided": 0.955,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 74,
+   "n_games": 37,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.24
+   ],
+   "w_se": 0.10209154021064912,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": -6.751356230828655e-18,
+   "oos_gain_ci": [
+    -2.1754370077114553e-17,
+    6.751356230828655e-18
+   ],
+   "ll_market": 0.6013122281969943,
+   "beats_market": false,
+   "p_w_gt0": 0.053,
+   "engine": "v2",
+   "family": "NBA_MONEYLINE",
+   "p_one_sided": 0.947,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 1056,
+   "n_games": 32,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3092095316034651,
+   "w_shrunk": 0.0,
+   "w_cv": 0.084,
+   "oos_gain": -0.003169812552036423,
+   "oos_gain_ci": [
+    -0.007358236581464576,
+    0.00027426533587824226
+   ],
+   "ll_market": 0.4528240834440597,
+   "beats_market": false,
+   "p_w_gt0": 0.456,
+   "engine": "v2",
+   "family": "NBA_SPREAD",
+   "p_one_sided": 0.544,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 1056,
+   "n_games": 32,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.2954781522184652,
+   "w_shrunk": 0.0,
+   "w_cv": 0.10600000000000001,
+   "oos_gain": -0.0034300226028069138,
+   "oos_gain_ci": [
+    -0.008601604865920138,
+    0.0010502621354222155
+   ],
+   "ll_market": 0.4528240834440597,
+   "beats_market": false,
+   "p_w_gt0": 0.533,
+   "engine": "v2",
+   "family": "NBA_SPREAD",
+   "p_one_sided": 0.46699999999999997,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 841,
+   "n_games": 29,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3346277831460707,
+   "w_shrunk": 0.0,
+   "w_cv": 0.094,
+   "oos_gain": -0.004367725401414645,
+   "oos_gain_ci": [
+    -0.013052077733711753,
+    0.0021312529492637966
+   ],
+   "ll_market": 0.5576068355047634,
+   "beats_market": false,
+   "p_w_gt0": 0.45,
+   "engine": "v2",
+   "family": "NBA_GAME_TOTAL",
+   "p_one_sided": 0.55,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 841,
+   "n_games": 29,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3396242625899093,
+   "w_shrunk": 0.0,
+   "w_cv": 0.094,
+   "oos_gain": -0.004307281299155302,
+   "oos_gain_ci": [
+    -0.014015891525622664,
+    0.002794713371654104
+   ],
+   "ll_market": 0.5576068355047634,
+   "beats_market": false,
+   "p_w_gt0": 0.447,
+   "engine": "v2",
+   "family": "NBA_GAME_TOTAL",
+   "p_one_sided": 0.5529999999999999,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 1064,
+   "n_games": 28,
+   "form": "linear",
+   "w_hat": 0.22,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.33479999123974724,
+   "w_shrunk": 0.0,
+   "w_cv": 0.22400000000000003,
+   "oos_gain": -0.0040707206735743915,
+   "oos_gain_ci": [
+    -0.014421790364557652,
+    0.004146390322406502
+   ],
+   "ll_market": 0.5046945975859916,
+   "beats_market": false,
+   "p_w_gt0": 0.695,
+   "engine": "v2",
+   "family": "NBA_TEAM_TOTAL",
+   "p_one_sided": 0.30500000000000005,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 1064,
+   "n_games": 28,
+   "form": "logit",
+   "w_hat": 0.22,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3350686946435468,
+   "w_shrunk": 0.0,
+   "w_cv": 0.22200000000000003,
+   "oos_gain": -0.004000322991551497,
+   "oos_gain_ci": [
+    -0.014753956416645798,
+    0.004289925834635839
+   ],
+   "ll_market": 0.5046945975859916,
+   "beats_market": false,
+   "p_w_gt0": 0.715,
+   "engine": "v2",
+   "family": "NBA_TEAM_TOTAL",
+   "p_one_sided": 0.28500000000000003,
+   "p_holm": 1.0,
+   "holm_reject": false,
+   "bh_reject": false
+  },
+  {
+   "n_rows": 22,
+   "n_games": 11,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.25745034915937137,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": 0.0,
+   "oos_gain_ci": [
+    0.0,
+    0.0
+   ],
+   "ll_market": 0.5696208501424034,
+   "beats_market": false,
+   "p_w_gt0": 0.096,
+   "engine": "v3",
+   "family": "NBA_MONEYLINE"
+  },
+  {
+   "n_rows": 22,
+   "n_games": 11,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.2550204559107621,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": -1.5139404881252134e-17,
+   "oos_gain_ci": [
+    -4.0371746350005693e-17,
+    0.0
+   ],
+   "ll_market": 0.5696208501424034,
+   "beats_market": false,
+   "p_w_gt0": 0.098,
+   "engine": "v3",
+   "family": "NBA_MONEYLINE"
+  },
+  {
+   "n_rows": 297,
+   "n_games": 9,
+   "form": "linear",
+   "w_hat": 0.11,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.4624913043578287,
+   "w_shrunk": 0.0,
+   "w_cv": 0.304,
+   "oos_gain": -0.012905856700319874,
+   "oos_gain_ci": [
+    -0.040602700843407585,
+    0.005309910961584675
+   ],
+   "ll_market": 0.3912273640378232,
+   "beats_market": false,
+   "p_w_gt0": 0.518,
+   "engine": "v3",
+   "family": "NBA_SPREAD"
+  },
+  {
+   "n_rows": 297,
+   "n_games": 9,
+   "form": "logit",
+   "w_hat": 0.19,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.45233846573952236,
+   "w_shrunk": 0.0,
+   "w_cv": 0.304,
+   "oos_gain": -0.012809659258929181,
+   "oos_gain_ci": [
+    -0.04040835057918104,
+    0.005306977889416951
+   ],
+   "ll_market": 0.3912273640378232,
+   "beats_market": false,
+   "p_w_gt0": 0.54,
+   "engine": "v3",
+   "family": "NBA_SPREAD"
+  },
+  {
+   "n_rows": 261,
+   "n_games": 9,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.92
+   ],
+   "w_se": 0.19325099209563187,
+   "w_shrunk": 0.0,
+   "w_cv": 0.0,
+   "oos_gain": 0.0,
+   "oos_gain_ci": [
+    0.0,
+    0.0
+   ],
+   "ll_market": 0.3998430266408664,
+   "beats_market": false,
+   "p_w_gt0": 0.101,
+   "engine": "v3",
+   "family": "NBA_GAME_TOTAL"
+  },
+  {
+   "n_rows": 261,
+   "n_games": 9,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    0.73
+   ],
+   "w_se": 0.18876318905321957,
+   "w_shrunk": 0.0,
+   "w_cv": 0.018,
+   "oos_gain": -0.0011518168951009026,
+   "oos_gain_ci": [
+    -0.0032754215654789694,
+    1.5685622234886071e-18
+   ],
+   "ll_market": 0.3998430266408664,
+   "beats_market": false,
+   "p_w_gt0": 0.193,
+   "engine": "v3",
+   "family": "NBA_GAME_TOTAL"
+  },
+  {
+   "n_rows": 342,
+   "n_games": 9,
+   "form": "linear",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.36691757508588524,
+   "w_shrunk": 0.0,
+   "w_cv": 0.152,
+   "oos_gain": -0.005307718461156421,
+   "oos_gain_ci": [
+    -0.015645815387449285,
+    0.000733089582820763
+   ],
+   "ll_market": 0.4044151542643154,
+   "beats_market": false,
+   "p_w_gt0": 0.433,
+   "engine": "v3",
+   "family": "NBA_TEAM_TOTAL"
+  },
+  {
+   "n_rows": 342,
+   "n_games": 9,
+   "form": "logit",
+   "w_hat": 0.0,
+   "w_boot_ci": [
+    0.0,
+    1.0
+   ],
+   "w_se": 0.3464246088395137,
+   "w_shrunk": 0.0,
+   "w_cv": 0.16599999999999998,
+   "oos_gain": -0.005454276992672701,
+   "oos_gain_ci": [
+    -0.015467438503334444,
+    0.0008045916888407833
+   ],
+   "ll_market": 0.4044151542643154,
+   "beats_market": false,
+   "p_w_gt0": 0.486,
+   "engine": "v3",
+   "family": "NBA_TEAM_TOTAL"
+  }
+ ],
+ "unmatched_rows": {
+  "v1/NBA_MONEYLINE": 2,
+  "v1/NBA_SPREAD": 33,
+  "v1/NBA_GAME_TOTAL": 29,
+  "v1/NBA_TEAM_TOTAL": 38,
+  "v2/NBA_MONEYLINE": 2,
+  "v2/NBA_SPREAD": 33,
+  "v2/NBA_GAME_TOTAL": 29,
+  "v2/NBA_TEAM_TOTAL": 38,
+  "v3/NBA_MONEYLINE": 2,
+  "v3/NBA_SPREAD": 33,
+  "v3/NBA_GAME_TOTAL": 29,
+  "v3/NBA_TEAM_TOTAL": 38
+ },
+ "note": "descriptive; NBA engine arms only"
+}
