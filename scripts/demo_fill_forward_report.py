@@ -146,9 +146,10 @@ def normalize_timing_rows(rows: list) -> int:
     return unknown
 
 
-def order_price_side(order: dict) -> tuple[Optional[str], Optional[float]]:
-    """(side, per-contract price paid in dollars) from an order GET, defensive about cents/dollars."""
-    side = effective_side(order.get("side"), order.get("action"))
+def order_price_side(order: dict, intended_side: Optional[str] = None) -> tuple[Optional[str], Optional[float]]:
+    """(side, per-contract price paid in dollars) from an order GET, defensive about cents/dollars.
+    GG-1793: ``intended_side`` (logged at submit) wins over the wire reading when it is yes/no."""
+    side = intended_side if intended_side in ("yes", "no") else effective_side(order.get("side"), order.get("action"))
     try:
         fc = float(order.get("fill_count_fp") or order.get("fill_count") or 0)
         cost = sum(float(order.get(k) or 0) for k in ("taker_fill_cost_dollars", "maker_fill_cost_dollars"))
@@ -163,8 +164,10 @@ def order_price_side(order: dict) -> tuple[Optional[str], Optional[float]]:
         return side, None
 
 
-def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
-    """Terminal results are cached so a settled order is never re-fetched."""
+def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict, intended_side: Optional[str] = None) -> dict:
+    """Terminal results are cached so a settled order is never re-fetched.
+    GG-1793: the side stored and scored is the INTENDED side logged at submit when known (the wire side is
+    kept beside it as ``wire_side``); ``terminal_ts`` is the order's last update once it is terminal."""
     hit = cache.get(order_id)
     if hit and hit.get("settled"):
         return hit
@@ -172,13 +175,17 @@ def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
     if not ok or not isinstance(data, dict):
         return {"status": "unretrievable"}
     order = data.get("order", data)
-    side, price = order_price_side(order)
+    side, price = order_price_side(order, intended_side)
     try:
         fills = float(order.get("fill_count_fp") or order.get("fill_count") or 0)
     except (TypeError, ValueError):
         fills = 0.0
     rec: dict[str, Any] = {"status": order.get("status"), "fills": fills, "side": side, "price": price, "settled": False,
-                           "last_update": order.get("last_update_time")}
+                           "last_update": order.get("last_update_time"),
+                           "wire_side": effective_side(order.get("side"), order.get("action")),
+                           "intended_side": intended_side if intended_side in ("yes", "no") else None}
+    if str(order.get("status")).lower() in TERMINAL_STATUSES:
+        rec["terminal_ts"] = order.get("last_update_time")
     if fills > 0:
         mok, mdata = client._get(f"/markets/{ticker}")
         m = (mdata.get("market", mdata) if mok and isinstance(mdata, dict) else {}) or {}
@@ -201,6 +208,45 @@ def lookup_fill(client: Any, order_id: str, ticker: str, cache: dict) -> dict:
 
 
 TERMINAL_STATUSES = ("executed", "filled", "canceled", "cancelled", "expired")
+
+
+def intended_sides(events: list[dict]) -> dict[str, str]:
+    """order_id -> the side the order was placed on, from the shadow_order rows (the submit-time record)."""
+    out: dict[str, str] = {}
+    for r in events:
+        if r.get("event") == "shadow_order" and r.get("order_id"):
+            sd = r.get("intended_side") or r.get("side")
+            if sd in ("yes", "no"):
+                out[r["order_id"]] = sd
+    return out
+
+
+def rescore_cache(cache: dict, intended: dict[str, str]) -> tuple[dict, dict]:
+    """GG-1810: a NEW cache with every settled entry scored by its intended side. An entry stored under the
+    wrong side has won / nf_won inverted (binary market: result == side flips with the side). The input is
+    never mutated. Entries with no logged intended side, or already on it, are copied as-is."""
+    out: dict = {}
+    st = {"entries": len(cache), "flipped": 0, "already_right": 0, "no_intended": 0, "flipped_unsettled": 0}
+    for oid, rec in cache.items():
+        want = intended.get(oid)
+        rec = dict(rec) if isinstance(rec, dict) else rec
+        if not isinstance(rec, dict) or want is None:
+            st["no_intended"] += 1
+        elif rec.get("side") == want:
+            st["already_right"] += 1
+        else:
+            rec["wire_side"] = rec.get("side")
+            rec["side"] = rec["intended_side"] = want
+            rec["rescored"] = True
+            if rec.get("settled"):
+                for k in ("won", "nf_won"):
+                    if k in rec:
+                        rec[k] = not rec[k]
+                st["flipped"] += 1
+            else:
+                st["flipped_unsettled"] += 1
+        out[oid] = rec
+    return out, st
 
 
 TERMINAL_SLACK_S = 30
@@ -603,6 +649,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--no-fills", action="store_true", help="skip demo API reads (log-only counts)")
     ap.add_argument("--since", default=None, help="ISO ts; read-back window (e.g. the cancel-path re-arm epoch)")
     ap.add_argument("--no-act", action="store_true", help="report only; never edit the switch config")
+    ap.add_argument("--rescore-cache", action="store_true",
+                    help="GG-1810: write demo_fill_forward_cache_rescored.json (intended-side scoring); never touches the raw cache")
     ap.add_argument("--print-json", default=None, help="print an already-written report JSON and exit (no fetch, no act)")
     a = ap.parse_args(argv)
     if a.print_json:
@@ -618,6 +666,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         cache = json.loads(cache_p.read_text())
     except (OSError, ValueError):
         pass
+    sides = intended_sides(events)
+    if a.rescore_cache:
+        new, st = rescore_cache(cache, sides)
+        atomic_write_text(cache_p.with_name("demo_fill_forward_cache_rescored.json"), json.dumps(new))
+        print(json.dumps(st))
+        return 0
     fills_for = None
     note = ""
     if not a.no_fills:
@@ -633,7 +687,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             elif not client.has_signing_key():
                 note = "fills skipped: no signing key"
             else:
-                fills_for = lambda oid, tk: lookup_fill(client, oid, tk, cache)  # noqa: E731
+                fills_for = lambda oid, tk: lookup_fill(client, oid, tk, cache, sides.get(oid))  # noqa: E731
         except Exception as e:  # noqa: BLE001 - report must still be written from the log
             note = f"fills skipped: {type(e).__name__}"
     since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else None

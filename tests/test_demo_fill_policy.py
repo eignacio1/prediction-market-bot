@@ -547,8 +547,8 @@ def test_adopt_off_is_todays_behaviour_byte_for_byte(monkeypatch, tmp_path):
     for off in ("", "shadow:nhl", "mlb:NFL", "garbage"):          # unset / other sport / other book / junk
         c, ev = _run_control_share0(monkeypatch, tmp_path, _nfl_row(), adopt=off)
         assert c.submit_order.call_args.kwargs == base_c.submit_order.call_args.kwargs
-        assert [{k: v for k, v in e.items() if k != "ts"} for e in ev] == \
-               [{k: v for k, v in e.items() if k != "ts"} for e in base_ev]
+        assert [{k: v for k, v in e.items() if k not in ("ts", "submit_ts_utc")} for e in ev] == \
+               [{k: v for k, v in e.items() if k not in ("ts", "submit_ts_utc")} for e in base_ev]   # submit time is wall-clock
         assert ev[0]["arm"] == "control" and not any(e["event"] == "cancel_scheduled" for e in ev)
         (tmp_path / "pol.jsonl").unlink()
 
@@ -617,3 +617,31 @@ def test_shadow_success_row_has_no_balance_fields_and_no_extra_read(monkeypatch,
     sfs.maybe_place(_row(), c, lambda e: 1.0)
     ev = [e for e in _events(tmp_path) if e["event"] == "shadow_order"][0]
     assert "demo_balance_usd" not in ev
+
+
+def test_shadow_order_row_carries_the_six_explanatory_fields(monkeypatch, tmp_path):
+    """W105.2 / GG-1794: intended side, pre-order mid and spread, depth on both sides, submit time. Fields only:
+    the order the client receives is the one it received before."""
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.CANCEL_AFTER_ENV, "3600")
+    c = _client(bid=0.40, ask=0.44)
+    row = {**_row(), "yes_bid": 0.40, "yes_ask": 0.44, "book_yes_bid_size": 90.0, "book_yes_ask_size": 12.0}
+    assert sfs.maybe_place(row, c, lambda e: 1.0)["ok"]
+    o = next(e for e in _events(tmp_path) if e["event"] == "shadow_order")
+    assert o["intended_side"] == "yes" and o["side"] == "yes"
+    assert o["pre_order_mid"] == 0.42 and abs(o["pre_order_spread"] - 0.04) < 1e-9
+    assert o["book_yes_bid_size"] == 90.0 and o["book_yes_ask_size"] == 12.0
+    assert o["submit_ts_utc"] and o["submit_ts_utc"] <= pol._utcnow()
+    kw = c.submit_order.call_args.kwargs
+    assert kw["side"] == "yes" and kw["mid_price"] == 0.40 and kw["size_usd"] == 1.0   # order unchanged
+
+
+def test_shadow_order_row_intended_no_and_missing_book_is_none(monkeypatch, tmp_path):
+    monkeypatch.setenv(sfs.SWITCH_ENV, "on")
+    monkeypatch.setenv(pol.SWITCH_ENV, pol.SWITCH_ON_VALUE)
+    monkeypatch.setenv(pol.CANCEL_AFTER_ENV, "3600")
+    c = _client(bid=0.40, ask=0.44)
+    assert sfs.maybe_place(_row(ey=-0.05, en=0.06), c, lambda e: 1.0)["ok"]
+    o = next(e for e in _events(tmp_path) if e["event"] == "shadow_order")
+    assert o["intended_side"] == "no" and o["pre_order_spread"] is None and o["book_yes_bid_size"] is None

@@ -40,6 +40,18 @@ def demo_host_ok() -> bool:
 SHADOW_KILL_BAND = "shadow"  # GG-745: kill_switch_shadow.flag halts only the shadow staker
 
 
+def order_context(row: dict[str, Any], direction: str, submit_ts: str) -> dict[str, Any]:
+    """W105.2 / GG-1794: what a later analysis needs to explain a fill, taken from the row the runner
+    already holds (no API call, no effect on the order). All YES-frame except ``intended_side``;
+    book sizes are None when the market response carried none. Fill / cancel time is read back from
+    the order GET (``terminal_ts`` in the forward cache), not logged here."""
+    bid, ask = row.get("yes_bid"), row.get("yes_ask")
+    spread = (float(ask) - float(bid)) if bid is not None and ask is not None else None
+    return {"intended_side": direction, "pre_order_mid": row.get("mid"), "pre_order_spread": spread,
+            "book_yes_bid_size": row.get("book_yes_bid_size"), "book_yes_ask_size": row.get("book_yes_ask_size"),
+            "submit_ts_utc": submit_ts}
+
+
 def maybe_place(
     row: dict[str, Any],
     client: Any,
@@ -99,12 +111,14 @@ def maybe_place(
         price_yes = float(mid)
     entry = price_yes if direction == "yes" else 1.0 - price_yes
     stake = float(stake_fn(entry))
+    submit_ts = pol._utcnow()
     order = client.submit_order(ticker=ticker, side=direction, size_usd=stake,
                                 mid_price=price_yes, band=SHADOW_KILL_BAND,
                                 client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"shadow-flat-stake/{rid}")))
     entry_row = {"event": "shadow_order", "row_id": rid, "ok": order.ok, "order_id": order.order_id,
                  "stake_usd": stake, "price_yes": price_yes, "side": direction,
                  "ticker": ticker, "error": order.error, "arm": "treatment" if hash_treatment else ("adopt" if adopt else "control")}
+    entry_row.update(order_context(row, direction, submit_ts))  # W105.2/GG-1794: fields only
     if not order.ok:  # W102.3/GG-1481: every refusal carries the demo balance read beside it (logging only; never raises)
         entry_row.update(pol.refusal_context(client, None))
     pol.append_log(entry_row)
