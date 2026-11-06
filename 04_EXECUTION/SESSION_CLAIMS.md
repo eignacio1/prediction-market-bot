@@ -1190,3 +1190,4 @@
 | 2026-11-06T05:08:58Z | TBD | W105.2 EXECUTION E3: order-data fields (GG-1794) + side fixes (GG-1793/1810) + counterfactual placement study (B-052). STANDARD |
 | 2026-11-06T05:10:08Z | TBD | W105.3 MLB engine data layer (B-018) STANDARD; PURPOSE D4 MLB data layer 0->started (pitch store + PIT tables) |
 | 2026-11-06T05:17:11Z | GG-reserve-3 (no T-) | W105.4 B-053 ride/fade cells in-season board prereg. STANDARD. PURPOSE: BREADTH B1/EXECUTION ride-fade cells NBA/NHL/NFL 1->N (status each) |
+| 2026-11-06T05:20:37Z | GG-1830..GG-1832 | W105.5 B-054 STANDARD - ride/fade router wired to live markets + demo orders (run_ride_board.py, ride_orders.py, ride_board_install task). PURPOSE: EXECUTION E1 / BREADTH - ride/fade decisions logged on live markets 0->N, demo-order path built+tested |
