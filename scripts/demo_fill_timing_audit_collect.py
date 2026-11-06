@@ -12,6 +12,8 @@ tf._load_dotenv_if_needed(REPO / ".env")
 os.environ["BOT_ENV"] = "paper"
 from prediction_market_bot.c5_execution.kalshi_client import KalshiMarketClient  # noqa: E402
 from prediction_market_bot.c5_execution.shadow_flat_stake import demo_host_ok  # noqa: E402
+sys.path.insert(0, str(REPO / "scripts"))
+from demo_fill_forward_report import effective_side  # noqa: E402  GG-1783
 
 
 def main() -> int:
@@ -31,7 +33,11 @@ def main() -> int:
         o = (d.get("order", d) if ok and isinstance(d, dict) else {}) or {}
         rec = {"order_id": r["order_id"], "ticker": o.get("ticker") or tk, "arm": r.get("arm", "treatment"),
                "logged_ts": r["ts"], "created": o.get("created_time"), "last_update": o.get("last_update_time"),
-               "status": o.get("status"), "fills": o.get("fill_count_fp"), "side": o.get("side"),
+               "status": o.get("status"), "fills": o.get("fill_count_fp"),
+               # GG-1783: "side" is the side actually bought (NO buy = action sell/side yes on the wire);
+               # raw_side/action kept for audit. side_normalized marks rows the reader must not flip again.
+               "side": effective_side(o.get("side"), o.get("action")), "raw_side": o.get("side"),
+               "action": o.get("action"), "side_normalized": True,
                "yes_price": o.get("yes_price_dollars"), "no_price": o.get("no_price_dollars"),
                "fill_cost": float(o.get("taker_fill_cost_dollars") or 0) + float(o.get("maker_fill_cost_dollars") or 0)}
         if float(rec["fills"] or 0) > 0:

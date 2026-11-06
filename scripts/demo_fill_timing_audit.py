@@ -3,7 +3,12 @@
 import json,re,urllib.request
 from datetime import datetime,timezone
 from collections import Counter,defaultdict
-d=json.load(open(__import__("sys").argv[1]))
+import sys,os
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+from demo_fill_forward_report import normalize_timing_rows as normalize
+d=json.load(open(sys.argv[1]))
+_unk=normalize(d)
+if _unk: print(f"WARNING GG-1783: {_unk} legacy rows lack `action`; NO-side fills may be mis-scored")
 def P(s):
     s=s.replace("Z","+00:00")
     m=re.match(r"(.*?\.)(\d+)(.*)",s)
