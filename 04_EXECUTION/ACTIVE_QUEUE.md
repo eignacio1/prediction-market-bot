@@ -78,7 +78,7 @@ Wave 103's stranded work (#433 in-play math, #434 price dynamics, #436 CI trim) 
 |---|---|---|---|---|
 | 104.1 | quant · 4 / EXECUTION | Why fills lose: a fill-probability and price-impact model (distance from mid, depth, time to start, side) | ⏳ pasted? | — |
 | 104.2 | quant · 1 | How far to move off Kalshi's line: the out-of-sample blend weight of each engine vs the market, per sport and family | ⏳ pasted? | — |
-| 104.3 | URGENT | Land #433 / #434 / #436 green and merged, write 103.2 / 103.3's missing handoffs; GG-1775; GG-1783 | ⏳ pasted? | — |
+| 104.3 | URGENT | Land #433 / #434 / #436 green and merged, write 103.2 / 103.3's missing handoffs; GG-1775; GG-1783 | ✅ DONE 2026-11-06 | #436, #434, #433, #438 merged green; GG-1775 = scoring defect (post-epoch n=0), GG-1783 closed, GG-1810 registered; handoff W104_3 |
 
 ### 104.1 - QUANT (FILLS AND IMPACT)
 

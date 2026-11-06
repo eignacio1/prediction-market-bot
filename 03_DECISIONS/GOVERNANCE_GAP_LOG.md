@@ -4663,15 +4663,18 @@ W102.1, 2026-11-05. Each ~500 MB runner pays full load even when no event is in 
 W102.1, 2026-11-05. v3's wait-then-silent-exit lost games with no log line. Same pattern may exist in other cron lines in `deploy/cron.conf`; audit and add a timeout log line.
 
 ### GG-1775 — Shadow-arm fill rows show win rates far above the fill price (NHL 71.7% at 48.1%): selection or settlement mapping defect suspected
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
 
 W103.1, 2026-11-05. Joining `demo_fill_policy.jsonl` to the fill-status cache (YES side, filled and settled rows only; 121 fill rows still unsettled), the shadow books show: NHL 4,309 fills, win 71.7% at mean price 0.481 (mean daily return +101% of stake over 23 days); NFL 9,775 fills, 45.7% at 0.342 (+94%); NBA 24,429 fills, 43.0% at 0.408 (+11%); MLB 85 fills, 40.0% at 0.422. A 24-point gap on 4,309 fills is not sampling noise. Candidates: which orders fill is correlated with the outcome (the GG-1771 mirror pricing fills orders only after a move), settlement mapping on the cache, or a stake/price field mismatch. Consequence: shadow tail/breach numbers in `12_EXPLORATORY/quant_w103_tails/RESULT.md` (NHL, NFL especially) are optimistic and not to be read as safe; shadow fills are not execution evidence anyway (GG-527). Registered, not investigated (Hard Rule 11).
 
+**Resolved 2026-11-06 (W104.3):** cause is scoring, not selection. The forward-report cache stored every NO buy as `side=yes` (pre-#431 `order_price_side`) and scored it backwards; 17,312 of 38,719 filled entries are intended-NO. Rescored by intended side, pre-epoch fills win BELOW their price in every sport (YES-only NHL -0.015, NFL -0.047, NBA -0.073, MLB -0.082; all-sides NHL -0.211). Post-epoch fills: n = 0 in the cache, so that half is waiting on the next report run. ADR-0072 verdicts unaffected (epoch floor, #435). Numbers and method: `12_EXPLORATORY/w104_landing/GG1775_REMEASURE.md`. Remainder: stale pre-fix cache entries kept as-is, registered GG-1810; `quant_w103_tails` shadow tails need recomputing on rescored fills.
 
 ### GG-1783 — `demo_fill_timing_audit.py` scores NO fills with the raw order side (action=sell blind spot)
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 W103.4 sweep, 2026-11-06. W70.1 scratch audit reads `side`/`yes_price`/`no_price` from collector JSON and sets `won = result == side`; same defect class as GG-1770 for a v2 NO order. One-off analysis script, not a live path; fix when it is next run (apply `order_price_side`). Registered, not fixed (Hard Rule 11).
+
+**Resolved 2026-11-06 (W104.3):** PR #438 (merge e37ff29). `effective_side` and `normalize_timing_rows` in `demo_fill_forward_report.py`; the collector now records `action`, the side actually bought and `side_normalized`; the reader normalizes legacy rows and warns on rows with no `action` (cannot be repaired). 3 new tests, 39 pass; CI green on head. `collect_night.py:31` copies the log's side and was left alone (a log field, not an order GET).
 
 ### GG-1784 — Forward-test report has no epoch constant for the GG-1771 cut
 **Status:** RESOLVED · **Severity:** MEDIUM
@@ -4679,3 +4682,8 @@ W103.4 sweep, 2026-11-06. W70.1 scratch audit reads `side`/`yes_price`/`no_price
 W103.4, 2026-11-06. `demo_fill_forward_report.py` keeps no GG-1771 epoch (2026-11-06T01:03:42Z), so it would mix mispriced pre-epoch NO rows with correct post-epoch ones. Needs an operator call first (restart NFL clock vs YES-only vs split-by-epoch) because it changes how ADR-0072 verdicts are computed; RESULT.md gives all three views. No pre-registered parameter changed.
 
 **Resolved 2026-11-06 (operator "Restart" 2026-11-05 PT):** PR #435 (merge 53662ea) adds `GG1771_EPOCH` and an `epoch_floor` in `build_report`, applied by `main()`; `--since` and the turn-off switches are untouched. ADR-0072 cells (NFL, NBA, NHL) now score only rows at/after 2026-11-06T01:03:42Z. The logged NFL ADOPT is kept as pre-epoch, superseded; no verdict word relabelled.
+
+### GG-1810 — Forward-report cache keeps pre-#431 NO fills stored as YES (scored backwards)
+**Status:** OPEN · **Severity:** LOW
+
+W104.3, 2026-11-06. `exp_output/FORWARD_TEST/demo_fill_forward_cache.json` holds 17,312 intended-NO filled entries stored `side=yes`, `won` inverted; settled entries are never re-read. All are pre-epoch and excluded from ADR-0072 verdicts (#435), so only pre-epoch analysis reading the cache is affected. Fix options: re-read ~38k orders once, or rescore from the policy log's `side` (method in `12_EXPLORATORY/w104_landing/GG1775_REMEASURE.md`). Registered, not fixed (cost, and nothing live depends on it).
