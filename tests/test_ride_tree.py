@@ -67,7 +67,10 @@ def test_shipped_table_routes_nothing_today():
     t = ride.load()
     cal = [c for c in t.c.values() if c.kind == "CALIBRATION"]
     lad = [c for c in t.c.values() if c.kind == LADDER]
-    assert len(t) == 13 and len(cal) == 11 and all(c.status == ("RETIRED" if (c.family, c.tier, c.bucket, c.book) == ("KXMLBTOTAL", "T0-2h", "85-90c", "wide") else IN_SAMPLE) for c in cal)  # W100.2: cell 10 retired
+    mov = [c for c in t.c.values() if c.kind == "MOVE"]
+    # W105.4: 5 MOVE cells added, all IN_SAMPLE (inert: not RIDEABLE, and the default lookup cannot reach MOVE)
+    assert len(mov) == 5 and all(c.status == IN_SAMPLE for c in mov)
+    assert len(t) - len(mov) == 13 and len(cal) == 11 and all(c.status == ("RETIRED" if (c.family, c.tier, c.bucket, c.book) == ("KXMLBTOTAL", "T0-2h", "85-90c", "wide") else IN_SAMPLE) for c in cal)  # W100.2: cell 10 retired
     # W92.2: the two W91.2 ladder cells are HELD_OUT, keyed on the gap bin, which no price bucket can reach
     assert len(lad) == 2 and all(c.status == HELD_OUT and c.family == "KXMLBTOTAL" for c in lad)
     for c in cal:
