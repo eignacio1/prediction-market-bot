@@ -211,3 +211,82 @@ net_lo = 0.0951
 net_hi = 0.3411
 max_half_spread = 0.01
 source = "W91.2"
+
+# --- W105.4 (B-053): MOVE cells. Trigger = 3-sigma one-step yes_mid move; bucket = trade rule against/with it.
+# net_* = HELD-OUT net per contract after quoted spread + exact fee (12_EXPLORATORY/ride_board/results.json).
+# All IN_SAMPLE: no primary-view cell has a positive held-out lower bound; see RIDE_BOARD_PREREGISTRATION_2026-11-06.md Part 2.
+
+[[cell]]
+kind = "MOVE"
+family = "KXMLBTEAMTOTAL"
+tier = "MOVE-3sig-60m"
+bucket = "fade"
+book = "tight"
+side = "by_trigger"
+status = "IN_SAMPLE"
+n = 90
+games = 49
+net_mean = 0.0622
+net_lo = 0.0041
+net_hi = 0.1175
+source = "W105.4"
+
+[[cell]]
+kind = "MOVE"
+family = "KXMLBTEAMTOTAL"
+tier = "MOVE-3sig-settle"
+bucket = "follow"
+book = "tight"
+side = "by_trigger"
+status = "IN_SAMPLE"
+n = 226
+games = 101
+net_mean = 0.0754
+net_lo = 0.0137
+net_hi = 0.1334
+source = "W105.4"
+
+[[cell]]
+kind = "MOVE"
+family = "KXMLBTOTAL"
+tier = "MOVE-3sig-settle"
+bucket = "follow"
+book = "tight"
+side = "by_trigger"
+status = "IN_SAMPLE"
+n = 245
+games = 95
+net_mean = 0.0850
+net_lo = 0.0283
+net_hi = 0.1403
+source = "W105.4"
+
+[[cell]]
+kind = "MOVE"
+family = "KXMLBHIT"
+tier = "MOVE-3sig-settle"
+bucket = "follow"
+book = "tight"
+side = "by_trigger"
+status = "IN_SAMPLE"
+n = 24
+games = 19
+net_mean = 0.0799
+net_lo = 0.0152
+net_hi = 0.1716
+source = "W105.4"
+
+[[cell]]
+kind = "MOVE"
+family = "KXMLBTOTAL"
+tier = "MOVE-3sig-60m"
+bucket = "fade"
+book = "all"
+side = "by_trigger"
+status = "IN_SAMPLE"
+n = 228
+games = 74
+net_mean = 0.0359
+net_lo = -0.0083
+net_hi = 0.0811
+source = "W105.4"
