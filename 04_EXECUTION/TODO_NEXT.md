@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-05T07:30:00Z (W102.2 — NFL ADOPT built behind an OFF switch; markout rows carry book; ADR-0072 NFL addendum PROPOSED; EXP-038 second-look DRAFT; look-day GG-1750 registered.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261105T061939Z_W102_2.md` for full session detail.
+**Last reviewed:** 2026-11-06T01:01:33Z (W103.3 — W103.3 quant lane - NBA diffusion and NHL Poisson jump-process in-play models built with known-answer tests and held out on 2025-26; vs-market comparison not possible (n=0).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T0101Z_W103_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

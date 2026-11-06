@@ -31,3 +31,5 @@ v2 missed 12 and v3 missed 18 games on 11-04. Cause: a kernel out-of-memory burs
 
 ## W102.2 - the NFL ADOPT decision, ready for you
 The test says posting-and-waiting beats the old way on NFL practice orders. Most of that gain is which orders happen to fill, not a smarter price, so it is not proof of edge. The change is built and tested but switched OFF; nothing about any bet changed. Three yes/no questions are waiting: accept the NFL addendum, pick which day counted as the look, and accept the draft second-look rule for EXP-038. Still no real money at risk. One check did not finish (a report re-run timed out), so the 11-04 wording is not re-confirmed.
+
+**W103.3 (in-play math):** Built two models that price a live game from the score and time left, one for basketball, one for hockey. Both beat "pre-game only" at every checkpoint on last season's games (1,229 NBA, 1,312 NHL). They were not compared with Kalshi's live prices, because the archive can't tell us what the score was at each price snapshot. The code is in PR #433, which is not merged: its automated checks never started. No money or orders touched. Moves: PROOF/DEPTH.

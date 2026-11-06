@@ -30,3 +30,8 @@ Common rules first line: "# Wave 103 common rules". Results: `12_EXPLORATORY/qua
 **Not done / honest gaps:** the brief session-start protocol (Steps 1-4, Q-checks) was not run in this block. PR CI green not yet confirmed.
 
 **Recommendation to the window (operator decides nothing):** to unblock Part C, log wall-clock-stamped in-play scores (NBA and NHL) alongside the archive snapshots; then the comparison is one script.
+
+## Close-out addendum (session-end)
+- Isolation test (`tests/test_exploratory_isolation.py`) failed CI on efbb782; fixed in 398b8de (held-out scripts write via `_fence.safe_out`). Local: isolation 150 passed, quant 19 passed.
+- **PR #433 NOT merged, CI NOT confirmed green:** no workflow run started for head 398b8de (or the empty retrigger commit) after ~15 min; other terminals' runs contended. Push path: local `w103-3-results` -> remote `session/20261106T004640Z-w103-3-inplay-math` (force-push was denied; used cherry-pick + fast-forward).
+- One-thing-pending: get CI to run on PR #433 head, then merge. Part C (vs-market) remains n=0.
