@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-06T02:00Z",
+ "as_of": "2026-11-06T02:40Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -28,32 +28,56 @@
  },
  "tickets": [
   {
-   "id": "B-048",
+   "id": "B-051",
    "status": "NOW",
+   "lane": "quant",
+   "rank": "1",
+   "title": "Blend-weight test pre-registered: power per engine x family, planned looks with alpha spending, a gated read task",
+   "measure": "looks scheduled per sport",
+   "why": "104.2: NBA w ~ 0 on ~30 games with 0-1 intervals - unreadable; make it a planned test",
+   "source": "SW-9 W104 close",
+   "wave": "105.1",
+   "order": 1
+  },
+  {
+   "id": "B-052",
+   "status": "NOW",
+   "lane": "quant",
+   "rank": "4",
+   "title": "Order data that can explain fills (GG-1794 fields, GG-1793 / GG-1810 sides) + counterfactual placement study on the markouts",
+   "measure": "order fields logged 0 -> 6; E3 counterfactual per rule",
+   "why": "104.1 could not explain E3: the orders lack side / mid / depth / fill time",
+   "source": "SW-9 W104 close",
+   "wave": "105.2",
+   "order": 2
+  },
+  {
+   "id": "B-048",
+   "status": "DONE",
    "lane": "quant",
    "rank": "4",
    "title": "Why fills lose: fill-probability and price-impact model (distance from mid, depth, time to start, side, sport), held-out",
    "measure": "E3 gap explained X% held-out",
    "why": "E3: T4 MLB fills 25.4% vs non-fills 48.3%; 102.4: ~18 of 19 cents of the forward-test gain is which orders fill",
    "source": "SW-9; operator 2026-11-05 17:43 PT (all-quant wave)",
-   "wave": "104.1",
-   "order": 1
+   "wave": "104.1 (#439)",
+   "order": 3
   },
   {
    "id": "B-049",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "1",
    "title": "Market-anchored blend weight: out-of-sample w per engine x sport x family (p = market + w(model - market)), does any w > 0 beat the market",
    "measure": "cells with a fitted w X of N; cells where w > 0 beats the market",
    "why": "Rank 1 (market-anchored pricing, operator 10-21): how far the model should move Kalshi's line, measured",
    "source": "SW-9; operator 2026-11-05 17:43 PT",
-   "wave": "104.2",
-   "order": 2
+   "wave": "104.2 (#437): NBA w ~ 0, 12 / 12",
+   "order": 4
   },
   {
    "id": "B-050",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "flex",
    "rank": "URGENT",
    "title": "Land Wave 103's stranded PRs #433 / #434 / #436 (conflicts, CI, missing handoffs); GG-1775; GG-1783",
@@ -61,7 +85,7 @@
    "why": "103.2 / 103.3 ended with conflicting PRs and no handoff; #436 red from main's red",
    "source": "SW-9 W103 close",
    "wave": "104.3",
-   "order": 3
+   "order": 5
   },
   {
    "id": "B-047",
@@ -73,7 +97,7 @@
    "why": "W102.3: all 185 filled NO orders on 11-03 cost ~price_yes (mean 0.715 vs 0.44 YES). Demo only.",
    "source": "GG-1771 / GG-1770, operator 2026-11-04 22:35 PT (red alert)",
    "wave": "103.4 (#431, #435)",
-   "order": 4
+   "order": 6
   },
   {
    "id": "B-027",
@@ -85,7 +109,7 @@
    "why": "45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.",
    "source": "97.3 / GG-1581",
    "wave": "0 OOM kills over the full 11-04 slate after the T1/T2 lock; 652 MB available (box 11-05 14:0xZ)",
-   "order": 5
+   "order": 7
   },
   {
    "id": "B-030",
@@ -97,11 +121,11 @@
    "why": "100.1: v1 11/11, v2 5/11, v3 6/11 on 11-04; cause box OOM. Re-read after B-027; then a v3 coverage.jsonl PR.",
    "source": "98.1 / 99",
    "wave": "catch-up installed 06:40Z 11-05; 11-05 slate is the first test (window reads coverage)",
-   "order": 6
+   "order": 8
   },
   {
    "id": "B-001",
-   "order": 7,
+   "order": 9,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -121,11 +145,11 @@
    "why": "B1 fixed (52/108); PROOF_CALENDAR.md regeneration on the box blocked (GG-1720).",
    "source": "99.2",
    "wave": "101.2: #420 aggregate mode, 65 rows with second-look state",
-   "order": 8
+   "order": 10
   },
   {
    "id": "B-026",
-   "order": 9,
+   "order": 11,
    "status": "DONE",
    "lane": "flex",
    "rank": "1 (operator 10-30)",
@@ -145,7 +169,7 @@
    "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "next window",
-   "order": 10
+   "order": 12
   },
   {
    "id": "B-042",
@@ -157,7 +181,7 @@
    "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
    "source": "operator 2026-11-04",
    "wave": "next window",
-   "order": 11
+   "order": 13
   },
   {
    "id": "B-029",
@@ -169,7 +193,7 @@
    "why": "#414: stale denominator was ~a quarter of the bias (-0.080 -> -0.059, Brier flat); the rest is season drift / early-season level and over-spread predictions (slope 0.4-0.5) - a challenger candidate; Kalshi comparison not run.",
    "source": "97.4",
    "wave": "101.1: challenger pre-registered, held-out NO (#421)",
-   "order": 12
+   "order": 14
   },
   {
    "id": "B-043",
@@ -181,11 +205,11 @@
    "why": "Operator 11-04 17:36 PT: \"Do we need to do anything w stray branches?\"; 17:38 PT: \"Yes pls\" to registering it. A terminal's sweep listed branches that do not exist on origin (w89-* .. w91-*); the window's git ls-remote is the source. For each unmerged branch check whether its GG / T is resolved on main, then give the operator one exact list to approve for deletion (deletes name exact items).",
    "source": "operator 2026-11-04",
    "wave": "102.5: 35 -> 3",
-   "order": 13
+   "order": 15
   },
   {
    "id": "B-017",
-   "order": 14,
+   "order": 16,
    "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
@@ -197,7 +221,7 @@
   },
   {
    "id": "B-008",
-   "order": 15,
+   "order": 17,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -209,7 +233,7 @@
   },
   {
    "id": "B-012",
-   "order": 16,
+   "order": 18,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -221,7 +245,7 @@
   },
   {
    "id": "B-004",
-   "order": 17,
+   "order": 19,
    "status": "DONE",
    "lane": "flex",
    "rank": "EXECUTION",
@@ -233,7 +257,7 @@
   },
   {
    "id": "B-013",
-   "order": 18,
+   "order": 20,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -245,7 +269,7 @@
   },
   {
    "id": "B-010",
-   "order": 19,
+   "order": 21,
    "status": "DONE",
    "lane": "quant",
    "rank": "4",
@@ -265,35 +289,35 @@
    "why": "Accepted quant rollout 2026-10-22, Wave B (tails/EVT for the G6 limits) - not built (no EVT code in src/quant). ADR-0076 sec. 4 blanks stay blank until a positive Kelly is proposed; this makes them computable.",
    "source": "DECISION_LOG 2026-10-22 16:58 / 17:06 PT; operator 2026-11-04 22:01 PT",
    "wave": "103.1 (#432)",
-   "order": 20
+   "order": 22
   },
   {
    "id": "B-045",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "4",
    "title": "Overreaction and regimes in Kalshi prices: from the price archive, does the line overshoot after big in-game events and revert; regime switches (pre-game drift, in-play jumps) per sport and family",
    "measure": "per sport / family: overshoot-reversion estimate with intervals; a regime label usable as an input",
    "why": "Accepted quant rollout Wave B (longshot bias done in 89.2; overreaction / regimes not built).",
    "source": "DECISION_LOG 2026-10-22; operator 2026-11-04 22:01 PT",
-   "wave": "103.2 #434 unmerged -> 104.3 lands it",
-   "order": 21
+   "wave": "103.2 (#434)",
+   "order": 23
   },
   {
    "id": "B-046",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "4",
    "title": "In-play score math for NBA / NHL: score diffusion (NBA) and jump / Poisson-process (NHL) models of the remaining game, tested on the event stores, priced against the archive's in-play lines",
    "measure": "held-out Brier of the in-play model vs Kalshi's in-play price, per sport",
    "why": "Accepted quant rollout Wave C (game-state Markov chains exist: quant/dtmc.py, absorbing.py; diffusion / jumps not built).",
    "source": "DECISION_LOG 2026-10-22; operator 2026-11-04 22:01 PT",
-   "wave": "103.3 #433 unmerged -> 104.3 lands it",
-   "order": 22
+   "wave": "103.3 (#433)",
+   "order": 24
   },
   {
    "id": "B-014",
-   "order": 23,
+   "order": 25,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -305,7 +329,7 @@
   },
   {
    "id": "B-015",
-   "order": 24,
+   "order": 26,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -317,7 +341,7 @@
   },
   {
    "id": "B-016",
-   "order": 25,
+   "order": 27,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -329,19 +353,19 @@
   },
   {
    "id": "B-018",
-   "order": 26,
-   "status": "LATER",
+   "order": 28,
+   "status": "NOW",
    "lane": "engine",
    "rank": "2",
    "title": "MLB engine (pitch-level store) before spring",
    "measure": "D4 MLB none -> data layer",
    "why": "MLB has no engine; spring training starts in February.",
    "source": "ADR-0073; Muse R-082 / R-083",
-   "wave": "from January"
+   "wave": "105.3: data layer starts"
   },
   {
    "id": "B-019",
-   "order": 27,
+   "order": 29,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -353,7 +377,7 @@
   },
   {
    "id": "B-020",
-   "order": 28,
+   "order": 30,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -365,7 +389,7 @@
   },
   {
    "id": "B-021",
-   "order": 29,
+   "order": 31,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -385,7 +409,7 @@
    "why": "Retired by addendum 05_RESEARCH_EXPERIMENTS/EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04.md (#413); cells 9 and 11 untouched.",
    "source": "operator 2026-11-03",
    "wave": "100.2 Part A",
-   "order": 30
+   "order": 32
   },
   {
    "id": "B-035",
@@ -397,7 +421,7 @@
    "why": "72 games: worse than the market in every band from noise in disagreement, not bias; weather untestable (61 of 72 blank).",
    "source": "98.2",
    "wave": "100.2 Part B",
-   "order": 31
+   "order": 33
   },
   {
    "id": "B-040",
@@ -409,11 +433,11 @@
    "why": "#415: boundary-safe installer markers; Py3.9 collection fixed (GG-1650 resolved).",
    "source": "99.3",
    "wave": "100.3 Part C",
-   "order": 32
+   "order": 34
   },
   {
    "id": "B-022",
-   "order": 33,
+   "order": 35,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -425,7 +449,7 @@
   },
   {
    "id": "B-023",
-   "order": 34,
+   "order": 36,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -437,7 +461,7 @@
   },
   {
    "id": "B-024",
-   "order": 35,
+   "order": 37,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -449,7 +473,7 @@
   },
   {
    "id": "B-025",
-   "order": 36,
+   "order": 38,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",

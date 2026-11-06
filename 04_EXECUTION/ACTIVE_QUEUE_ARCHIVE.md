@@ -22716,3 +22716,124 @@ END OF BLOCK 103.4
 
 ---
 
+---
+
+## (archived 2026-11-06) WAVE 104 · WRITTEN 2026-11-06 ~02:00 UTC (11-05 18:00 PT) · SW-9 · three blocks (two quant + one urgent) · paste each block into its own terminal
+
+**Every part runs on data that exists now. CI is the gate for code only** (check locally first; no CI for docs or results).
+After this wave the lane rule resumes (operator 17:43 PT: "After this upcoming wave we can proceed with regular programming").
+
+104.1 **quant** (DONE PR #439: E3 gap not explained by covariates, fills -1.2c at 1m; GG-1793/1794 open) = B-048 fills and price impact · 104.2 **quant** (rank 1, DONE PR #437 b78cc2b; NBA w~0, NFL/NHL/MLB open) = B-049 market-anchored blend weight · 104.3 **URGENT** = land
+Wave 103's stranded work (#433 in-play math, #434 price dynamics, #436 CI trim) + GG-1775 + GG-1783.
+
+- **Pushback:** 104.1 and 104.2 read fills / rows that the GG-1771 epoch splits; post-epoch data is ~1 night old, so most estimates stand on
+  pre-epoch YES-side rows (stated in each result). If 104.3 cannot land #433 / #434 cleanly, the quant from Wave 103 stays unmerged another wave.
+- **Surface:** box 2026-11-06 01:44Z: 89 live, budget GREEN, healthcheck HEALTHY, no silent arm, box HEAD = main, main CI green (53662ea).
+  Delta this wave: +0 running components.
+- **Dependencies:** none between blocks. 104.1 / 104.2 do not need #433 / #434 (they add their own functions).
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 104.1 | quant · 4 / EXECUTION | Why fills lose: a fill-probability and price-impact model (distance from mid, depth, time to start, side) | ⏳ pasted? | — |
+| 104.2 | quant · 1 | How far to move off Kalshi's line: the out-of-sample blend weight of each engine vs the market, per sport and family | ⏳ pasted? | — |
+| 104.3 | URGENT | Land #433 / #434 / #436 green and merged, write 103.2 / 103.3's missing handoffs; GG-1775; GG-1783 | ✅ DONE 2026-11-06 | #436, #434, #433, #438 merged green; GG-1775 = scoring defect (post-epoch n=0), GG-1783 closed, GG-1810 registered; handoff W104_3 |
+
+### 104.1 - QUANT (FILLS AND IMPACT)
+
+```
+WAVE 104 - BLOCK 104.1 - QUANT (rank 4 / EXECUTION) - WHY FILLS LOSE: FILL PROBABILITY AND PRICE IMPACT (B-048)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W104.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W104_1.md. Every part runs on data that exists now.
+
+PURPOSE: EXECUTION E3 - fills win less than non-fills (box 11-06 01:44Z: T4 MLB 25.4% vs 48.3%; T1 MLB 28.9% vs 52.1%) and 102.4 found
+~18 of the forward test's 19 cents is WHICH orders fill. Model it: the probability a resting order fills and the price move after it,
+as functions of distance from mid, book depth, time to start, side and sport, so the bot can tell a fill that is information from one
+that is noise. Descriptive + held-out; no placement change.
+
+PART A (~45 min) - the method, tested
+1. NEW functions in src/prediction_market_bot/quant/ (e.g. quant/fills.py): (i) fill probability as a function of features (logistic /
+   survival on time-to-fill, with cancellation as censoring); (ii) adverse selection: post-fill markout conditional on the same features.
+   Known-answer tests: simulated order flow with planted informed / uninformed traders recovers which features drive fills and markouts.
+
+PART B (~55 min) - our orders
+1. Data (box, read-only): logs/demo_fill_policy.jsonl, the markout collector's rows, the T4 / T1 MLB ledgers, exp_output/PRICE_ARCHIVE depth
+   samples where joinable. Epoch rule: pre-01:03:42Z 11-06 YES-side only; post-epoch all sides; say n for each.
+2. Fit on the earlier 70% of days, test on the later 30%. Report per book / sport: fill-probability calibration, the features that
+   matter (with intervals), markout by feature bucket, and how much of E3's gap the model explains.
+
+PART C (~30 min, switch here whenever A or B waits) - what it means
+1. Write 12_EXPLORATORY/quant_w104_fills/RESULT.md with one plain-English paragraph for the operator: "fills lose because ..., and the
+   orders that fill AND win look like ...". Name any candidate rule for a later pre-registration; do not pre-register or apply it.
+
+Report: per COMMON RULES. MEASURE MOVED: E3 gap explained X% (held-out); fill-model calibration. Operator decisions: none.
+END OF BLOCK 104.1
+```
+
+### 104.2 - QUANT (THE MARKET-ANCHORED WEIGHT)
+
+```
+WAVE 104 - BLOCK 104.2 - QUANT (rank 1: market-anchored pricing) - HOW FAR TO MOVE OFF KALSHI'S LINE (B-049)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W104.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W104_2.md. Every part runs on data that exists now.
+
+PURPOSE: rank 1. Market-anchored pricing (operator 10-21) prices from the market's own line and lets the model move it. How far? For each
+engine (NFL, NBA v1 / v2 / v3, NHL v2, MLB arms with rows), sport and family: the blend p = market + w * (model - market) (and its
+log-odds form) with w fitted out-of-sample, its interval, and whether any w > 0 beats w = 0 (the market alone). A w at 0 is a result.
+Descriptive; no frozen test, pre-registration or verdict changes - EXP-041 (NFL market-anchored) stays as frozen.
+
+PART A (~40 min) - the method, tested
+1. NEW functions in quant/ (e.g. quant/blend.py): fit w by log loss with game-clustered cross-validation; shrinkage toward 0; interval by
+   cluster bootstrap. Known-answer tests: a model with planted skill recovers w > 0; a pure-noise model recovers w ~ 0.
+
+PART B (~60 min) - every engine with settled rows
+1. Rows (box, read-only): the shadow arms' logged forecasts with the Kalshi price at the same snapshot and the settlement. Per engine x
+   sport x family: n games, w, interval, log-loss gain vs market alone. Multiplicity: quant/inference.py's Holm / BH across the cells
+   (MULTIPLICITY_LEDGER.md's method). Never score a frozen cell below its judged n as a verdict - this is a descriptive weight, label it so.
+
+PART C (~30 min, switch here whenever A or B waits) - what it means
+1. Write 12_EXPLORATORY/quant_w104_blend/RESULT.md: a table of w per engine / family and one plain-English line per sport for the operator
+   ("NBA v2's view is worth about X% of a move off Kalshi's line on totals; on spreads, nothing"). Recommend (not apply) where a future
+   pre-registration should use a fitted w.
+
+Report: per COMMON RULES. MEASURE MOVED: engine x family cells with a fitted out-of-sample w X of N; cells where w > 0 beats the market.
+Operator decisions: none.
+END OF BLOCK 104.2
+```
+
+### 104.3 - URGENT
+
+```
+WAVE 104 - BLOCK 104.3 - URGENT - LAND WAVE 103'S STRANDED WORK; GG-1775; GG-1783
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W104.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W104_3.md. Every part runs on data that exists now.
+
+PURPOSE: Wave 103's quant is unmerged: #433 (103.3 in-play NBA diffusion + NHL jump math) and #434 (103.2 price dynamics: big-move
+reversion, calm / jumpy regimes) are CONFLICTING with no CI run and no handoff; #436 (CI trim + precheck_changed.py) is red only because
+main was red when it ran. Get all three green and merged, record what 103.2 / 103.3 found, and close two measurement gaps.
+
+PART A (~60 min) - land the three PRs, one at a time
+1. For each of #436, #434, #433 (that order): check out its branch, merge main into it, resolve conflicts (keep both sides' intent;
+   ask the window in your handoff if a conflict changes logic), run the tests that touch it locally, push, and merge only on a green CI
+   run of the new head. Do not rewrite another block's history (merge, not force-push).
+2. From each PR's own files (12_EXPLORATORY/quant_w103_prices/, quant_w103_inplay/), write the missing handoffs
+   11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W103_2.md and _W103_3.md: what was built, the measured results with n and intervals, what was
+   not done. State they were written by 104.3 from the PRs, not by the original sessions.
+
+PART B (~40 min) - GG-1775 (shadow fill win rate far above price)
+1. Re-measure after the GG-1770 fix (#431): per book / sport, fill win rate vs average fill price, pre-epoch YES-only and post-epoch.
+   If the gap is gone, say so and close it with the numbers; if not, find the cause (settlement join, side, double count) and fix by PR
+   with tests, or register what remains.
+
+PART C (~30 min, switch here whenever A waits on CI) - GG-1783 (two reader scripts)
+1. Fix the two reader scripts GG-1783 names so NO-side rows read correctly (the pattern #431 fixed in lookup_fill). Tests; PR; merge on
+   green. Close GG-1783 with the PR.
+
+Report: per COMMON RULES. MEASURE MOVED: Wave 103 PRs merged X of 3; GG-1775 / GG-1783 closed or narrowed. Operator decisions: none.
+END OF BLOCK 104.3
+```
+
+---
+
