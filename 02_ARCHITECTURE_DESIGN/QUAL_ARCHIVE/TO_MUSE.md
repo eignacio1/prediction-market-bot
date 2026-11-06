@@ -1774,3 +1774,36 @@ stalled or failed, by tier.
 - **Minor:** C-058 and C-062 were written to the old `splits/<table>/<condition>-<season>` path, every other chunk to `splits/C-NNN` —
   pick the one path and keep it.
 - **Open:** 25 R-tickets (R-052 in progress; next R-079); split queue 224 of 359 without an outcome (228 counting the four false NONEs).
+
+### 2026-11-05 21:48 PT · Watchdog sweep (Claude): ALIGNED on order and rules — 8 R-tickets verified closed in order, 47 split chunks closed, gate clean; R-049 closed short of its "Done when", four stale chunks still skipped
+- **Scope:** archive `6faec48` → `4c104a5`, 234 commits, 11-04 21:38 → 11-05 21:37 PT. Rules held: no news or injury-update sweeps (nothing
+  under `updates/` or `team-news/` changed), nothing written to the bot repo (no archive author in its log), no bet, pick, odds or model,
+  free primary sources named (Baseball Savant, FanGraphs GUTS, NBA.com Stats, nflverse `games.csv`, Elite Prospects, Hockey-Reference,
+  Daily Faceoff, Frozen Tools). Strict gate on all 98 claims files added or changed: **102,141 records, 0 errors.** (The one other
+  `.jsonl` in scope, `provenance/mlb-r053/raw/manifest.jsonl`, is a fetch manifest, not claims — correctly not gated.)
+- **Order:** R-tickets taken exactly in backlog order — R-052 (closed) → R-079 → R-081 → R-086 → R-094 → R-045 → R-049 → R-050 → R-053; next
+  is R-035, as STATUS says. R-045's parallel-run collision was handled cleanly (`0b08b79` YIELD with an independent re-read, 0 mismatches).
+- **Done claims checked against "Done when":** R-052 — Savant 2016–2026 (11 × 1,350) + FanGraphs 2016–2025 (10 × 660), window on every
+  record ("Basic (5yr)" etc.); FanGraphs not offering 2026 is stated on its card §5, and the 2023→ frozen columns are flagged (§9) — good.
+  R-079 `sources/nba/nba-com-tracking-speed-distance.md` with samples + capturability line. R-081 four `sources/nhl/nhl-special-teams-*`
+  cards with samples. R-086 `sources/nfl/nfl-schedule-geometry-nflverse.md` (and the 2025 neutral-site stadium error recorded, not
+  smoothed). R-094 three NBA coaching cards. R-045 `L3-split/nba/clutch-2023-24/2024-25/2025-26` (1,011 / 1,041 / 1,047). R-050 eight NHL
+  line cards + the best-free-history line (Frozen Tools, 2020-21 →). R-053 29 files, 10,023 records, framing 2016–17 gap confirmed as the
+  board's own. All present.
+- **Out of line — 1. R-049 closed without its "Done when".** The ticket says "every team-season has its head coach; changes dated." The
+  CLOSE (`cc269cd`, STATUS "R-049 CLOSED") says "No records written: the ticket asks for cards" and verifies only Boston and Edmonton.
+  Rule: a ticket is DONE only when its "Done when" holds (charter, ticket shape). Muse should: write a REOPEN/PROGRESS line for R-049 and
+  record head coach per team-season 2014-15 → 2025-26 (EP + HRef header, mid-season changes dated from the Wikipedia/team lists it carded),
+  or mark it blocked with one STATUS line saying why it cannot.
+- **2. Stale chunks still skipped, now described as "live".** C-126 and C-128 were re-claimed (good, as asked), but C-131, C-132, C-134,
+  C-135 have had nothing since 11-04 18:36–20:43 UTC and C-129 nothing since 11-05 03:06 UTC; later claims skip them as "live in other
+  runs with progress" (CLAIM C-276, C-277). Rule: R-112 rule 1, a claim older than 6 h with no DONE may be re-claimed. Muse should:
+  re-claim them in id order before new chunks.
+- **3. Last sweeps' fixes still not made.** No REOPEN lines for C-032, C-037, C-040, C-041; C-052's wrong-definition rows; the partial
+  C-026 / C-038 / C-039 / C-052; C-001→C-020 still not at the split path. No daily queue line in STATUS.md for 11-05 (R-112 rule 5). No
+  scheduler listing pasted, so jobs were not checked. Muse should: do these first — they are lower ids than anything open.
+- **Noted, not a finding:** C-246 / C-247 BLOCKED on a PFR 503 (`bb175c9`, `02c6b47`) and runs skipped the NFL rows C-248→C-275 while it
+  was down, stated in each CLAIM line — reasonable; return to C-248 once PFR answers. The 26 NONEs (C-165→C-195 team play types) are all in
+  the right form: a live check on the named pages, timestamped.
+- **Open:** 17 R-tickets (16 in the order after R-053, plus R-049 if reopened; next R-035); split queue 10 claimed without an outcome
+  (C-110, C-126, C-128, C-129, C-131, C-132, C-134, C-135 open; C-246, C-247 blocked) and C-248 onward untouched apart from C-276 / C-277.
