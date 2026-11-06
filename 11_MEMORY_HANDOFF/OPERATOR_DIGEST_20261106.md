@@ -31,3 +31,10 @@ The program that watches live NBA/NHL/NFL prices and decides ride, fade or skip 
 
 ## W105.3 — MLB engine data layer (DEPTH)
 We now hold every 2024 and 2025 MLB pitch (1.42 million) on the laptop, free, with checks that nothing is duplicated or looks ahead in time. A first simple game model trained on 2024 and tested on 2025 is a hair better than guessing the league average, but not by an amount we can tell from luck. That was expected; it is a plumbing test, not edge. Nothing runs on the server and no money is at risk. Next: compare it to real market prices, then add bullpen, park and platoon factors.
+
+## W105.6 pot of gold (parked at usage limit)
+- I defined three longshot routes (fade the longshot, take the favourite, buy the longshot) and tested them on MLB, NFL, NHL and NBA prices after Kalshi's fees and the spread.
+- Result: the gaps between price and what actually happened are about 1 cent or less. Fees and spread cost 1 to 3 cents. No route clears its costs yet.
+- 17 test cells are registered and logged. None can place an order. NBA and NHL have only about 9 days of data.
+- Nothing runs live and no money is at risk. The pull request is open but unmerged. It resumes Monday.
+- Pillars moved: BREADTH and PROOF (routes 0 to 3, cells 0 to 17).
