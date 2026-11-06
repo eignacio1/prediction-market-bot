@@ -26,3 +26,5 @@ We measured how much weight NBA's models deserve against the market's own price.
 
 ## W105.1 — blend-weight test (plain English)
 We asked: does our engine's view actually nudge Kalshi's price in a useful direction? Earlier data (about 30 games) could not say. We worked out how many games it takes to tell: roughly 100 to 2,000 per market type, and a few types (NBA totals, v3) will probably never get enough this season. The test plan, with four scheduled peeks at 100/200/300/400 games, is now written down and frozen before looking at any new data. Expect "can't tell yet" most likely. A read-only check was added that shows only game counts until a peek date arrives. No money, no live changes.
+## W105.5 — ride/fade board wired to live markets
+The program that watches live NBA/NHL/NFL prices and decides ride, fade or skip is built and merged. It logs every decision and can place a small practice-account order. It is not running yet and places nothing: it needs your OK to install, and a separate switch for orders. No real money is involved. Moves EXECUTION (the order path now exists; zero fills so far). Needs from you: approve installing `ride_board_install`.
