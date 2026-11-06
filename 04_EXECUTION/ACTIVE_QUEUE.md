@@ -65,7 +65,7 @@ GG-1775, GG-1783. Next cell look 11-13 (NFL QB moneyline). **Muse:** B-041 / B-0
 **Every part runs on data that exists now. CI is the gate for code only** (check locally first; no CI for docs or results).
 After this wave the lane rule resumes (operator 17:43 PT: "After this upcoming wave we can proceed with regular programming").
 
-104.1 **quant** = B-048 fills and price impact · 104.2 **quant** (rank 1, DONE PR #437 b78cc2b; NBA w~0, NFL/NHL/MLB open) = B-049 market-anchored blend weight · 104.3 **URGENT** = land
+104.1 **quant** (DONE PR #439: E3 gap not explained by covariates, fills -1.2c at 1m; GG-1793/1794 open) = B-048 fills and price impact · 104.2 **quant** (rank 1, DONE PR #437 b78cc2b; NBA w~0, NFL/NHL/MLB open) = B-049 market-anchored blend weight · 104.3 **URGENT** = land
 Wave 103's stranded work (#433 in-play math, #434 price dynamics, #436 CI trim) + GG-1775 + GG-1783.
 
 - **Pushback:** 104.1 and 104.2 read fills / rows that the GG-1771 epoch splits; post-epoch data is ~1 night old, so most estimates stand on
