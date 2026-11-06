@@ -19,3 +19,31 @@ Data: `exp_output/PRICE_ARCHIVE/prices_*.jsonl` (quote snapshots, ~20 min cadenc
 9. **Multiplicity honesty.** 22 families x 2 rules x 2 exits x 2 book views are examined; the primary table is **60-min exit, all-books, both rules**; everything else is secondary and unadjusted.
 10. **Power** (for Part 2): judged n in held-out-equivalent games = (z_{0.95}+z_{0.80})^2 * sd_game^2 / effect^2 using the fit effect and the per-game sd of net P&L, via `quant.inference`.
 11. This block reads the archive only. It places no order and changes no model, runner, ledger or frozen file. Not conflicting with EXP-042 (price-bucket calibration cells, no move trigger) or EXP-043 (ladder cells): different triggers, different families of rule; no EXP-042/043 cell is edited.
+
+## Part 2 — cells, judged n, looks, decision words, modal outcome (appended after Part A; Part 1 above is unedited)
+
+Part A was run once with the Part 1 rules (`analyze.py` -> `results.json`, 22 families, 28 primary held-out tests with >= 15 held-out games). Nothing in Part 1 was changed after seeing it.
+
+**Status under rule 8, read against rule 9 (primary table = 60-min exit, all books).** No primary cell has a positive held-out lower bound; every Holm-adjusted p is ~1.0. **Zero cells are HELD_OUT.** Only KXMLBTOTAL FADE (all books, 60-min) has fit net > 0 on the primary view, so it is the only cell rule 8 lets us write from the primary table. NBA, NHL, NFL: no primary cell has fit net > 0, so **no cell is written for them** (the 103.2 FADE signals on KXNFLTEAMTOTAL / KXNHLTOTAL are gross of spread and fee and do not survive them: fit net -0.09 / -0.37 per contract).
+
+**Secondary candidates (unadjusted; disclosed, not promoted).** 160 held-out tests were examined; 4 satisfy rule 8's three conditions on a secondary view. At a one-sided 2.5% the expected number of false passes among 160 is 4. These 4 are therefore chance-level as a group and are written as **IN_SAMPLE forward candidates**, never HELD_OUT.
+
+| # | Family | Rule | View | Fit net | Held net [95% CI lo] | Held games | Judged n (event-bearing games) |
+|---|---|---|---|---|---|---|---|
+| 1 | KXMLBTEAMTOTAL | FADE | tight, 60-min | +0.062 | +0.062 [+0.004] | 49 | 263 |
+| 2 | KXMLBTEAMTOTAL | FOLLOW | tight, settle | +0.072 | +0.075 [+0.014] | 101 | 410 |
+| 3 | KXMLBTOTAL | FOLLOW | tight, settle | +0.057 | +0.085 [+0.028] | 95 | 266 |
+| 4 | KXMLBHIT | FOLLOW | tight, settle | +0.203 | +0.080 [+0.015] | 19 | 118 |
+| 5 | KXMLBTOTAL | FADE | all, 60-min (primary) | +0.022 | +0.036 [-0.008] | 74 | 740 |
+
+**Judged n** = games with >= 1 qualifying event needed for 80% power, one-sided alpha 0.05, to detect half the observed held-out net (winner's-curse shrink), using the per-game SD implied by the held-out clustered interval: n = ((1.645 + 0.842) * SD / (net/2))^2.
+
+**Forward rows** = archive snapshots after this file's commit, same rules, sigma frozen at the fit-games value. MLB has no regular games until ~2027-03-25. **Looks:** one scored look per cell, when its judged n is reached (earliest estimated mid-2027 for cell 4, later for the rest; the date is a consequence of accrual, not chosen). Interim reports of n only, no verdict, on 2027-06-01 and 2027-07-15.
+
+**Decision words.** FORWARD_PASSED iff forward net > 0, clustered 95% lower bound > 0 at judged n, same trade rule. FAILED iff the point estimate <= 0 at judged n. Anything else at judged n: INCONCLUSIVE, no router use. Below judged n: no verdict. Holm across the 5 cells is reported beside each.
+
+**Modal outcome (stated in advance).** Most likely (~70%) all five end FAILED or INCONCLUSIVE: the group-level pass count equals chance. If one passes, it will most likely be cell 4 or 1 and carry a smaller net than the held-out figure.
+
+**Non-conflict.** EXP-042 tests price-bucket calibration cells (W89.2) and EXP-043 tests the ladder trigger; neither uses a move-trigger, and neither is a frozen test of these cells. Same archive, different hypotheses. No frozen test is edited.
+
+**Guardrails.** Demo, kelly_fraction 0, router rows are inert until 105.5 wires a MOVE lookup and the status is HELD_OUT / FORWARD_PASSED.
