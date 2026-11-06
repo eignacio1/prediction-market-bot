@@ -21,3 +21,7 @@ Result: every fitted game tail is bounded at the stake (xi < 0). Kill-switch bre
 Flag: GG-1775 (shadow fill win rate >> price; NHL/NFL breach odds optimistic). GG-1770/1771 caveat on NO sides (GG-1771 fix landed in da7849d after this data was taken).
 Operator decisions: none.
 Resume: read 12_EXPLORATORY/quant_w103_tails/RESULT.md; re-run with `PYTHONPATH=src python3 run_tails_w103.py <fills> <ledger> <t1> <outdir>`.
+
+Strategic Decisions: | none | - |
+G6 bets: not re-checked this close-out (30 needed, APR-0016); see live governance scan.
+One thing pending: triage GG-1775 (shadow fill win rate vs price) before shadow NHL/NFL tails are trusted.
