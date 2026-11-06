@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-06T05:44:21Z (W105.3-B-018 — W105.3 MLB engine data layer started: 2 seasons of Savant pitches, PIT tables, held-out Brier vs naive spans zero (PR #444).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T054421Z_W105_3.md` for full session detail.
+**Last reviewed:** 2026-11-06T06:00:00Z (W105.4-B-053 — W105.4 ride/fade board B-053: net-of-cost measurement, 0 cells HELD_OUT, 5 inert IN_SAMPLE MOVE rows, pre-reg Part 1+2 and RESULT (PR #446)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261106T0600Z_W105_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

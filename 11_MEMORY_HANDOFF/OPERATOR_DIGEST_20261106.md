@@ -31,3 +31,7 @@ The program that watches live NBA/NHL/NFL prices and decides ride, fade or skip 
 
 ## W105.3 — MLB engine data layer (DEPTH)
 We now hold every 2024 and 2025 MLB pitch (1.42 million) on the laptop, free, with checks that nothing is duplicated or looks ahead in time. A first simple game model trained on 2024 and tested on 2025 is a hair better than guessing the league average, but not by an amount we can tell from luck. That was expected; it is a plumbing test, not edge. Nothing runs on the server and no money is at risk. Next: compare it to real market prices, then add bullpen, park and platoon factors.
+
+## W105.4 ride/fade board
+We tested whether riding or fading big sudden price moves makes money after spreads and fees. It does not, yet: no cell passed on held-out games, so nothing is promoted and no orders can fire from it. Five long-shot candidates are logged as untested forward watches and cannot trade. NBA, NHL and NFL showed no edge at all. Still demo only, zero real money at risk. Next data arrives at MLB opening day, around 2027-03-25.
+Moved: BREADTH (ride/fade cells), no new cells earned.
