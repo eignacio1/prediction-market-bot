@@ -1198,3 +1198,4 @@
 | 2026-11-06T05:46:58Z | W105.3-B-018 | CLOSED — merge confirmed, HEAD (96d4689) is ancestor of origin/main — MLB engine data layer started (PR #444 merged) |
 | 2026-11-06T05:47:57Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (2dfe7ef) is ancestor of origin/main — W105.5 B-054: duplicate of merged #442; branch session/20261106T052413Z-w105-5-ride-board unmerged, PR #445 closed, delta port pending operator choice |
 | 2026-11-06T05:58:50Z | W105.4-B-053 | CLOSED — W105.4 ride/fade board B-053: net-of-cost measurement, 0 cells HELD_OUT, 5 inert IN_SAMPLE MOVE rows, pre-reg Part 1+2 and RESULT (PR #446) (commit `3e58045`) |
+| 2026-11-06T05:59:08Z | W105.4-B-053 | CLOSED — merge confirmed, HEAD (68ca446) is ancestor of origin/main — ride/fade board merged (PR #446) + handoff on main |
