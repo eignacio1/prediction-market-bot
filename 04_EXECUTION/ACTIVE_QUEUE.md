@@ -79,7 +79,7 @@ mirror price (a NO meant to cost 0.605 is placed at 0.395), plus GG-1770 (NO fil
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
 | 103.1 | quant · 4 | Tails for the G6 limit table (extreme-value fit; breach odds of the 20% kill switch at a given Kelly) | ⏳ pasted? | — |
-| 103.2 | quant · 4 | Does Kalshi's line overshoot and snap back; regimes per sport and family | ⏳ pasted? | — |
+| 103.2 | quant · 4 | Does Kalshi's line overshoot and snap back; regimes per sport and family | ✅ result on main; PR #434 awaiting green CI (main red from recompute.py, 103.4 addendum) | 22/22 families R_60 |
 | 103.3 | quant · 4 | In-play score math: NBA diffusion, NHL jump process, scored against Kalshi's live lines | ⏳ pasted? | — |
 | 103.4 | RED ALERT | NO orders mirror-priced (GG-1771) + NO fills scored backwards (GG-1770): fix, sweep every caller, cut every number before / after | ✅ DONE 2026-11-06: #431 `da7849d`, epoch 01:03:42Z; NFL ADOPT -> INCONCLUSIVE on clean data (operator question) | 12_EXPLORATORY/gg1771_no_pricing/RESULT.md |
 
