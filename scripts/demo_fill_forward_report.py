@@ -45,6 +45,9 @@ SKIP_RATE_MAX = 0.90
 # 2026-10-14T11:25Z on 10-13's 8/8 pre-fix failures. The ">10% in a day" rule is unchanged, evaluated on post-fix attempts.
 CANCEL_PATH_FIX_EPOCH = datetime(2026, 10, 13, 23, 58, tzinfo=timezone.utc)
 TOPUP_TS = datetime(2026, 10, 16, 5, 40, tzinfo=timezone.utc)  # W81.1: demo cash top-up (GG-840); descriptive split only
+# GG-1771/GG-1770 (W103.4, operator "Restart" 2026-11-05 PT): NO orders before this instant were mirror-priced and scored
+# backwards. ADR-0072 is scored only on rows at/after it (the box deploy of #431); nothing mixes across the cut.
+GG1771_EPOCH = datetime(2026, 11, 6, 1, 3, 42, tzinfo=timezone.utc)
 UNASSIGNED = "unassigned_pre_test"
 LISTING_SKIP_REASONS = frozenset({"not_listed_on_demo"})
 NO_OUTCOME_S = 15 * 60
@@ -308,7 +311,10 @@ def verdict_for(arms: dict, markout: dict) -> dict:
 
 def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable[[str, str], dict]],
                  window_note: str = "", since: Optional[datetime] = None,
-                 assign: Optional[tuple[str, float]] = None, markout_dir: Path = MARKOUT_DIR) -> dict:
+                 assign: Optional[tuple[str, float]] = None, markout_dir: Path = MARKOUT_DIR,
+                 epoch_floor: Optional[datetime] = None) -> dict:
+    if epoch_floor is not None:
+        events = [r for r in events if _ts(r) >= epoch_floor]
     if since is not None:
         events = [r for r in events if _ts(r) >= since]
     cells: dict[tuple[str, str, str], dict[str, Any]] = defaultdict(lambda: {
@@ -611,7 +617,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         except Exception as e:  # noqa: BLE001 - report must still be written from the log
             note = f"fills skipped: {type(e).__name__}"
     since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else None
-    rep = build_report(events, now, fills_for, note, since, _assign_params(Path(a.env_file)))
+    rep = build_report(events, now, fills_for, note, since, _assign_params(Path(a.env_file)), epoch_floor=GG1771_EPOCH)
+    rep["gg1771_epoch"] = GG1771_EPOCH.isoformat()
     if since is not None:
         a.no_act = True  # a windowed read-back never edits the switch config
     if not a.no_act and turn_off(rep["tripped"], now, Path(a.env_file), pol.append_log):
