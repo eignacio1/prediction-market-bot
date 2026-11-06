@@ -1,5 +1,21 @@
 # SESSION HANDOFF - W103.2 (B-045) overreaction and regimes in Kalshi prices
 
+<!-- session-meta
+task_id: W103.2
+tier: STANDARD
+timestamp: 2026-11-06T03:00:00Z
+commit: 97a80f6
+one_line_summary: W103.2 B-045 price-dynamics result on main (22/22 series R_60; 3 Holm fades); code PR #434 and CI-trim PR #436 await green main
+gg_touched: GG-1790, GG-1791, GG-1792
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF, DEPTH
+gap_measure: P2 (measurement quality), D3 context; no cell logging added
+gap_delta: 22 of 22 families with a measured reversion estimate; 0 verdicts issued (RESULT.md)
+pattern_sweep: fence violation (unrouted json.dump in 12_EXPLORATORY) -> grep open( in 12_EXPLORATORY scripts; only W103.4 recompute.py:35 found, registered not fixed (Rule 11)
+surface_delta: 0
+-->
+
 Status: DONE (result on main); code PR #434 open, CI held red by main (see below). Operator decisions: none.
 B-045 state: DONE-pending-merge.
 Branch@SHA: pr/w103-2-price-dynamics@7a9c5e0 (PR #434). Companion CI-trim change: pr/ci-trim-w103 (PR #436, operator-approved, PLUMBING).
@@ -13,15 +29,3 @@ Stage reached: aggregated + interpreted. NOT applied (no cell, no orders).
 ## CI state
 - #434 failed run 42141847069 on (a) 12_EXPLORATORY/gg1771_no_pricing/recompute.py:35 (W103.4, on main, fix assigned to 103.4 owner in PR #435 per SW-9 addendum) and (b) stale ROLLING_BACKLOG.md (regenerated, commit 7a9c5e0). My own earlier fence violation (analyze.py) was fixed in bb2596b.
 - Merge #434 and #436 only after main is green.
-
-## Session meta
-vision_pillar: PROOF (measurement quality) / DEPTH
-gap_measure: P2 / D3 context - B2-adjacent descriptive measurement; no cell logging added
-gap_delta: 22 of 22 families with a measured overshoot/reversion estimate; 0 verdicts issued
-pattern_sweep: isolation fence checked across all of 12_EXPLORATORY by test; only analyze.py (mine, fixed) and recompute.py (not mine, registered via SW-9) violated. Ran full isolation test locally before every later push.
-surface_delta: 0 live components (new module quant/price_dynamics.py imported by no service; CI-trim adds 1 script, 1 test, 3 workflow lines)
-
-## Findings to register (GG range 1790-1792)
-- Price archive has no result field and no in-play/game-start flag; settlement is a proxy (last quote near 0/1).
-- Archive `status` is always `active`.
-- Lesson: run tests/test_exploratory_isolation.py locally before pushing any 12_EXPLORATORY .py.
