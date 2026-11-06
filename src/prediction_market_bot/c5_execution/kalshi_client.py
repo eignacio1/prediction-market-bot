@@ -1133,6 +1133,11 @@ class KalshiMarketClient:
             price = 1.0 - mid_price
 
         price_cents = max(1, min(99, round(price * 100)))
+        # GG-1771/W103.4: the v2 ``price`` is ALWAYS the YES-frame price. side="ask" sells YES at
+        # ``price`` == buys NO at ``1 - price``. ``price_cents`` above is the OWN-side cost (what this
+        # order should cost per contract), so a NO order must post ``100 - price_cents``, not
+        # ``price_cents`` (posting the NO cost as the YES price made every NO order cost ``mid_yes``).
+        yes_frame_cents = price_cents if side == "yes" else 100 - price_cents
         contracts = max(1, math.floor(size_usd / (price_cents / 100.0)))
         actual_cost = round(contracts * price_cents / 100.0, 4)
 
@@ -1147,7 +1152,7 @@ class KalshiMarketClient:
             "client_order_id": client_order_id,
             "side": "bid" if side == "yes" else "ask",
             "count": f"{contracts}.00",
-            "price": f"{price_cents / 100.0:.2f}",
+            "price": f"{yes_frame_cents / 100.0:.2f}",
             "time_in_force": "good_till_canceled",
             "self_trade_prevention_type": "taker_at_cross",
         }

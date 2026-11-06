@@ -122,6 +122,10 @@ def ticker_of(r: dict) -> str:
 def order_price_side(order: dict) -> tuple[Optional[str], Optional[float]]:
     """(side, per-contract price paid in dollars) from an order GET, defensive about cents/dollars."""
     side = order.get("side")
+    # GG-1770/W103.4: a NO buy comes back from the order GET as action="sell", side="yes" (v2 book_side
+    # "ask" sells YES == buys NO). Read it as the NO side it is, or won/lost inverts for every NO fill.
+    if str(order.get("action") or "").lower() == "sell" and side in ("yes", "no"):
+        side = "no" if side == "yes" else "yes"
     try:
         fc = float(order.get("fill_count_fp") or order.get("fill_count") or 0)
         cost = sum(float(order.get(k) or 0) for k in ("taker_fill_cost_dollars", "maker_fill_cost_dollars"))
