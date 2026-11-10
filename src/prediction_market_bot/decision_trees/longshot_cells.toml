@@ -1,0 +1,260 @@
+# Pot-of-gold cells (W105.6, B-055). Generated from 12_EXPLORATORY/pot_of_gold/out/cells.csv (hold-out: later 30% of games).
+# status: IN_SAMPLE | HELD_OUT | FORWARD_PASSED | FAILED | UNTESTED. longshot.py returns a route only for HELD_OUT or
+# FORWARD_PASSED with net_lo > 0. Every cell below is IN_SAMPLE: positive in fit AND hold-out, but the hold-out interval
+# includes zero or has too few rarer-outcome events (guards: >=20 hold-out games, >=5 rarer outcomes, Holm). So NONE of them
+# routes today. A cell not listed is NONE. net_* are per contract after the exact fee, entry at the quote (hold-out numbers).
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF5"
+tier = "T2-6h"
+bucket = "10-15c"
+book = "all"
+route = "FADE_LONGSHOT"
+side = "no"
+status = "IN_SAMPLE"
+n = 18
+games = 18
+net_mean = 0.071
+net_lo = -0.0412
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF5SPREAD"
+tier = "T0-2h"
+bucket = "5-10c"
+book = "all"
+route = "FADE_LONGSHOT"
+side = "no"
+status = "IN_SAMPLE"
+n = 18
+games = 18
+net_mean = 0.0224
+net_lo = -0.1378
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF5SPREAD"
+tier = "T2-6h"
+bucket = "10-15c"
+book = "all"
+route = "BUY_LONGSHOT"
+side = "yes"
+status = "IN_SAMPLE"
+n = 21
+games = 21
+net_mean = 0.0507
+net_lo = -0.0941
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF5TOTAL"
+tier = "T0-2h"
+bucket = "90-95c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 93
+games = 91
+net_mean = 0.0041
+net_lo = -0.0484
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF5TOTAL"
+tier = "T2-6h"
+bucket = "85-90c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 39
+games = 39
+net_mean = 0.0177
+net_lo = -0.0841
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF5TOTAL"
+tier = "T2-6h"
+bucket = "90-95c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 34
+games = 32
+net_mean = 0.0546
+net_lo = 0.051
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBF7"
+tier = "T6-24h"
+bucket = "10-15c"
+book = "all"
+route = "FADE_LONGSHOT"
+side = "no"
+status = "IN_SAMPLE"
+n = 197
+games = 197
+net_mean = 0.007
+net_lo = -0.034
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBSPREAD"
+tier = "T0-2h"
+bucket = "10-15c"
+book = "all"
+route = "BUY_LONGSHOT"
+side = "yes"
+status = "IN_SAMPLE"
+n = 94
+games = 93
+net_mean = 0.0303
+net_lo = -0.0432
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBSPREAD"
+tier = "T2-6h"
+bucket = "10-15c"
+book = "all"
+route = "BUY_LONGSHOT"
+side = "yes"
+status = "IN_SAMPLE"
+n = 35
+games = 35
+net_mean = 0.0045
+net_lo = -0.1115
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBTEAMTOTAL"
+tier = "T0-2h"
+bucket = "5-10c"
+book = "all"
+route = "BUY_LONGSHOT"
+side = "yes"
+status = "IN_SAMPLE"
+n = 97
+games = 68
+net_mean = 0.0154
+net_lo = -0.0374
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBTEAMTOTAL"
+tier = "T0-2h"
+bucket = "85-90c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 76
+games = 63
+net_mean = 0.0297
+net_lo = -0.0482
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBTEAMTOTAL"
+tier = "T0-2h"
+bucket = "90-95c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 18
+games = 18
+net_mean = 0.0181
+net_lo = -0.0936
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBTOTAL"
+tier = "T2-6h"
+bucket = "85-90c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 54
+games = 52
+net_mean = 0.0595
+net_lo = -0.0176
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBTOTAL"
+tier = "T2-6h"
+bucket = "90-95c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 40
+games = 36
+net_mean = 0.0379
+net_lo = -0.0162
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "MLB"
+family = "KXMLBTOTAL"
+tier = "T6-24h"
+bucket = "10-15c"
+book = "all"
+route = "FADE_LONGSHOT"
+side = "no"
+status = "IN_SAMPLE"
+n = 28
+games = 28
+net_mean = 0.0809
+net_lo = 0.0071
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "NFL"
+family = "KXNFLSPREAD"
+tier = "D1"
+bucket = "1-5c"
+book = "all"
+route = "FADE_LONGSHOT"
+side = "no"
+status = "IN_SAMPLE"
+n = 25
+games = 10
+net_mean = 0.028
+net_lo = 0.0256
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
+
+[[cell]]
+sport = "NFL"
+family = "KXNFLTOTAL"
+tier = "D1"
+bucket = "95-99c"
+book = "all"
+route = "TAKE_FAVOURITE"
+side = "yes"
+status = "IN_SAMPLE"
+n = 37
+games = 34
+net_mean = 0.0045
+net_lo = -0.0523
+source = "12_EXPLORATORY/pot_of_gold/out/cells.csv"
