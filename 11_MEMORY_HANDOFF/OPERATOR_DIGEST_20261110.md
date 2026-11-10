@@ -8,3 +8,4 @@ We measured what a trade costs before any edge. Buying and selling on game lines
 
 ## W107.2 - does Kalshi lag the news? (plain English)
 We checked whether Kalshi's NBA game prices are slow to react when a player's injury status changes. They are not slow enough to trade: the price moves less than half a cent to three-quarters of a cent, while a trade costs one and a half to two and a third cents. Anything faster than 20 minutes can't be seen in our data. A short price recorder is built and tested but NOT turned on; it needs your OK by name (news_burst_capture_install). No money at risk, nothing live changed. Moved: PROOF - one more edge family measured (answer: no).
+- W108.5 (auto): W108.5 partial: dashboard read tasks merged (#455); HEAD-keyed /visual rebuild + footer in PR #458, unmerged, box reads and Part C not run.

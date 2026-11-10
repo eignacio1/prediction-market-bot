@@ -1221,3 +1221,4 @@
 | 2026-11-10T05:17:10Z | W108.3 / GG reserve 3 / T none | W108.3 B-064 QUANT - NBA/NFL/NHL props net of costs. PURPOSE: PROOF P1/P2 (prop families measured net) |
 | 2026-11-10T05:19:04Z | GG-1850..GG-1852 | STANDARD — Kalshi weather vs free NWS/NOAA forecast scoping memo (B-065, research only) — FOR none on the board (scoping; PLUMBING-adjacent doctrine check) — W108.4 |
 | 2026-11-10T05:43:08Z | TBD | W108.5 dashboard stale /visual + memory cap (PLUMBING, STANDARD) |
+| 2026-11-10T06:04:01Z | W108.5 | MERGED: NO — branch `session/20261110T054159Z-w108-5-dashboard-stale` awaiting merge — W108.5 partial: dashboard read tasks merged (#455); HEAD-keyed /visual rebuild + footer in PR #458, unmerged, box reads and Part C not run. (commit `05c5522`) |
