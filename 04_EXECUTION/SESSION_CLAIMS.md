@@ -1209,3 +1209,4 @@
 | 2026-11-10T01:30:57Z | W106.2-B-057 | CLOSED — merge confirmed, HEAD (ba335a2) is ancestor of origin/main — cost wall measured; demo-fee check blocked |
 | 2026-11-10T01:35:42Z | GG-1833 | CLOSED — merge confirmed, HEAD (7cbaf32) is ancestor of origin/main — W106.3 B-058 props net-of-cost: PR #450 merged, 0/49 held-out cells net positive |
 | 2026-11-10T01:48:32Z | W106.1-B-056 | CLOSED — W106.1 B-056: #447 landed, POT_OF_GOLD branch grafted into router (#451); branches 4->5, 17 pot cells routed (paper) (commit `d2e36fc`) |
+| 2026-11-10T01:48:49Z | W106.1-B-056 | CLOSED — merge confirmed, HEAD (d6bbda2) is ancestor of origin/main — pot-of-gold graft landed (#447, #451) |
