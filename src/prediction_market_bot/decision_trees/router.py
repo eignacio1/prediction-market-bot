@@ -1,8 +1,9 @@
-"""W90.2 router: sends one market situation to FADE, RIDE, MOMENTUM_FOLLOW, MOMENTUM_FADE or NO_BET.
+"""W90.2 router: sends one market situation to FADE, RIDE, POT_OF_GOLD, MOMENTUM_FOLLOW, MOMENTUM_FADE or NO_BET.
 
 Pure function of (situation, evidence). A tree gets traffic only when measured evidence supplied by the caller
 says it should: no skill record -> no FADE; no ride-table cell with a positive net lower bound -> no RIDE; no
-transition table -> no MOMENTUM. Everything else is NO_BET with reason codes. Nothing here sizes, places or logs.
+transition table -> no MOMENTUM; no HELD_OUT/FORWARD_PASSED longshot cell -> no POT_OF_GOLD (W106.1; precedence
+pre-registered in 12_EXPLORATORY/pot_of_gold/ROUTER_PRECEDENCE.md). Everything else is NO_BET with reason codes. Nothing here sizes, places or logs.
 
 When it applies: a pre-game, two-sided, priced market whose family has an evidence record. When it doesn't: in-play
 markets, one-sided books, date-only tickers on game day (NFL D0) -- those are NO_BET by construction.
@@ -12,14 +13,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Mapping, Optional, Protocol, Sequence
 
-from prediction_market_bot.decision_trees import ride
+from prediction_market_bot.decision_trees import longshot, ride
 from prediction_market_bot.decision_trees.ride import RideCell, RideTable  # noqa: F401  (re-exported)
 from prediction_market_bot.quant.money import net_edge
 
 FADE, RIDE = "FADE", "RIDE"
 MOMENTUM_FOLLOW, MOMENTUM_FADE = "MOMENTUM_FOLLOW", "MOMENTUM_FADE"
+POT_OF_GOLD = "POT_OF_GOLD"
 NO_BET = "NO_BET"
-TREES = (FADE, RIDE, MOMENTUM_FOLLOW, MOMENTUM_FADE, NO_BET)
+TREES = (FADE, RIDE, POT_OF_GOLD, MOMENTUM_FOLLOW, MOMENTUM_FADE, NO_BET)
 
 PRICE_MIN, PRICE_MAX = 0.01, 0.99
 TIGHT_HALF_SPREAD = 0.01  # W89.2 book-class definition: tight = half-spread <= 1c
@@ -67,6 +69,7 @@ class Evidence:
     skill: Mapping[tuple, Skill] = field(default_factory=dict)  # (sport, family) -> Skill
     ride: Optional[RideTable] = None
     momentum: Sequence[MomentumCell] = ()
+    longshot: Optional[longshot.Table] = None  # None -> the shipped longshot_cells.toml (all IN_SAMPLE today)
 
 
 @dataclass(frozen=True)
@@ -75,6 +78,7 @@ class Route:
     side: Optional[str]
     reasons: tuple
     agreed: bool = False
+    cell: Optional[object] = None  # the measured cell behind a POT_OF_GOLD route (carries its status for the order gate)
 
 
 def book_classes(s: Situation) -> tuple:
@@ -113,6 +117,23 @@ def _ride(s: Situation, ev: Evidence):
     return d.side, d.reason
 
 
+_DEFAULT_LONGSHOT: Optional[longshot.Table] = None
+
+
+def _pot(s: Situation, ev: Evidence):
+    global _DEFAULT_LONGSHOT
+    t = ev.longshot
+    if t is None:
+        if _DEFAULT_LONGSHOT is None:
+            _DEFAULT_LONGSHOT = longshot.load()
+        t = _DEFAULT_LONGSHOT
+    hs = s.half_spread if s.half_spread is not None else (s.yes_ask - s.yes_bid) / 2.0
+    d = longshot.decide(s.family, s.tier, s.mid, hs, t)
+    if d.action == longshot.NO_BET:
+        return None, f"longshot:{d.reason}", d.cell
+    return d.side, f"longshot:{d.action}", d.cell
+
+
 def _momentum(s: Situation, ev: Evidence):
     if not ev.momentum or s.move_1h is None:
         return None, None, "momentum:no_table"
@@ -131,17 +152,18 @@ def route(s: Situation, ev: Evidence) -> Route:
         return Route(NO_BET, None, (dq,))
     fside, fwhy = _fade(s, ev)
     rside, rwhy = _ride(s, ev)
+    pside, pwhy, pcell = _pot(s, ev)
     if fside and s.t3 == "FADE":  # ADR-0014 overlay: price moved against the model -> HOLD
         fside, fwhy = None, "t3_hold"
-    if fside and rside:
-        if fside != rside:
-            return Route(NO_BET, None, ("conflict", fwhy, rwhy))
-        return Route(RIDE, rside, (rwhy, "fade_agrees"), agreed=True)
-    if rside:
-        return Route(RIDE, rside, (rwhy,))
-    if fside:
-        return Route(FADE, fside, (fwhy,))
+    # ROUTER_PRECEDENCE.md: opposite sides -> NO_BET; same side -> named RIDE, then POT_OF_GOLD, then FADE.
+    claims = [(t, sd, why) for t, sd, why in ((RIDE, rside, rwhy), (POT_OF_GOLD, pside, pwhy), (FADE, fside, fwhy)) if sd]
+    if len({c[1] for c in claims}) > 1:
+        return Route(NO_BET, None, ("conflict", fwhy, rwhy, pwhy))
+    if claims:
+        tree, side, why = claims[0]
+        others = tuple(f"{t.lower()}_agrees" for t, _, _ in claims[1:])
+        return Route(tree, side, (why,) + others, agreed=bool(others), cell=pcell if tree == POT_OF_GOLD else None)
     mtree, mside, mwhy = _momentum(s, ev)
     if mtree:
         return Route(mtree, mside, (mwhy,))
-    return Route(NO_BET, None, ("no_tree_claims", fwhy, rwhy, mwhy))
+    return Route(NO_BET, None, ("no_tree_claims", fwhy, rwhy, pwhy, mwhy))
