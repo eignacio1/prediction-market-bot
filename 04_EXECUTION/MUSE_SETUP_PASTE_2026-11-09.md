@@ -9,11 +9,16 @@ Stat Trick, Cloudflare-blocked). Outcomes per day fell from ~70 (11-04 to 11-06)
 the daily queue lines written. **Waiting on the window (decided below):** the NST chunks, C-268 (Pro-Football-Reference Cloudflare 403),
 C-249 (DONE line, no file under its true label), R-049 (NHL coaches, reopened but not placed).
 
+**Operator, 2026-11-09 17:33 PT:** "the autos DO take up the usage limit BUT they continue to run after it ran out anyway. Since we're
+sending 200 per - it'll be used up completely by today ... I won't have it until next Monday. This will be a weekly issue." So this
+message is the ONLY instruction Muse gets for 7 days: it carries standing rules for every edge case and a reserve queue.
+
 **Sizing for 200 runs / day:** about 150 queue runs a day (at ~1 chunk per run) needs about 150 new chunks a day. The block below asks
 Muse to build about 1,400 pre-checked chunks (about 9 days), plus 25 snapshot runs and 25 ticket runs a day.
 
 ```
-Muse - from Earl, 2026-11-09. The split queue is empty and the next stretch runs at 200 scheduled runs a day. Do these in order; report
+Muse - from Earl, 2026-11-09. The split queue is empty and the next stretch runs at 200 scheduled runs a day. This is my only message
+until next Monday: everything you need for the week is in it. Do these in order; report
 each in STATUS.md.
 
 1) DECISIONS ON THE OPEN ITEMS.
@@ -47,7 +52,26 @@ each in STATUS.md.
    11-03). Stagger them so no two runs claim the same chunk. Stop probing any source after 3 consecutive blocks in a family; mark the
    family BLOCKED in STATUS and move on.
 
-5) Keep the gate, the spot-checks and the provenance rule exactly as they are (commit the builder and raw pages for every chunk, as
+5) STANDING RULES FOR THE WEEK - I cannot message you again until next Monday, so handle these yourself without waiting:
+   a) Queue low: when fewer than 150 unclaimed chunks remain, open the RESERVE below, pre-check each family the same way and append it.
+      Reserve, in this order: NBA team stats by month and vs conference / division (2020-21 to 2025-26); NBA team opponent shot dashboard
+      by quarter; NBA 5-man lineups per team, current season, one chunk per team; MoneyPuck game-level team files, one chunk per team-season
+      (2014-15 to 2025-26).
+   b) Queue truly empty (reserve used up too): spend runs on, in order, (i) re-verifying DONE chunks older than 7 days by re-reading one
+      page each, (ii) committing missing provenance for older chunks, (iii) only then a QUEUE EMPTY line. Never invent a new kind of table
+      outside this message.
+   c) Source blocked: after 3 consecutive blocks in a family, mark the family BLOCKED in STATUS with the reason and move on; re-probe it
+      once a day at most, not every run.
+   d) Source changed: if a table's columns or definitions change, record the new shape as its own chunk version and say so in STATUS -
+      never map new columns onto old names.
+   e) Stale claim (no outcome after 6 hours): release and reclaim as now. Gate failure: one retry, then BLOCKED with the reason.
+   f) Duplicate work: before claiming, check CLAIMS.md for an open claim on that chunk; never two runs on one chunk.
+   g) Snapshots: if a snapshot source is down at its time, try once more within the hour, then record MISSED with the reason - never
+      back-fill a snapshot later from a different source.
+   h) Anything that needs a decision you are not sure of: write it under "For Earl's Monday message" at the top of STATUS.md and carry on
+      with the rest of the queue.
+
+6) Keep the gate, the spot-checks and the provenance rule exactly as they are (commit the builder and raw pages for every chunk, as
    C-131 did). Each day in STATUS.md: runs, DONE / NONE / BLOCKED / FAILED / RETIRED, chunks left in the queue, reclaims, and snapshot
    coverage per sport.
 ```

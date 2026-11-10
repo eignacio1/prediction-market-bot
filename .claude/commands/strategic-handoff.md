@@ -62,3 +62,6 @@ Every strategic window is numbered SW-n (`04_EXECUTION/WINDOW_REGISTER.md`). At 
 
 ## Doctrine check (SW-9, after W48)
 The carry-forward states the project's biggest running premise and the strongest evidence against it, and lists what the operator has said he wants that no wave is building. The incoming window repeats both in its first message.
+
+## Muse weekly cycle (operator 2026-11-09)
+Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the archive and prepares one self-sufficient weekly message (04_EXECUTION/MUSE_SETUP_PASTE_<date>.md): 7+ days of pre-checked queue, a reserve, and standing edge-case rules. Read "For Earl's Monday message" at the top of Muse's STATUS.md first.
