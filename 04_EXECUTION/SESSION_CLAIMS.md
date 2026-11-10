@@ -1223,3 +1223,4 @@
 | 2026-11-10T05:43:08Z | TBD | W108.5 dashboard stale /visual + memory cap (PLUMBING, STANDARD) |
 | 2026-11-10T06:04:53Z | W108.4 | CLOSED — merge confirmed, HEAD (2af7295) is ancestor of origin/main — weather scoping NYC+CHI; no build recommended |
 | 2026-11-10T06:05:10Z | W108.1 | CLOSED — W108.1 edge map: L03+R09 NO EFFECT NET, stale line fixed, prop archive merged (#456) but install refused by HR14 (budget red) (commit `2af7295`) |
+| 2026-11-10T06:11:20Z | W108.5 | CLOSED — merge confirmed, HEAD (32fe1a0) is ancestor of origin/main — partial; PR #458 open, box reads and Part C not run |
