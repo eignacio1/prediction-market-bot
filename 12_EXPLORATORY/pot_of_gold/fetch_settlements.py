@@ -9,10 +9,14 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from _fence import safe_out  # noqa: E402
 
 BASE = "https://api.elections.kalshi.com/trade-api/v2"
 
@@ -53,7 +57,7 @@ def main() -> None:
     ap.add_argument("--series", required=True)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    os.makedirs(a.out, exist_ok=True)
+    out_dir = safe_out(os.path.abspath(os.path.join(a.out, ".keep"))).parent  # every write goes through the fence
     for s in a.series.split(","):
         res = pull("/markets", s, {"status": "settled"})
         n_live = len(res)
@@ -61,7 +65,8 @@ def main() -> None:
             res.update({k: v for k, v in pull("/historical/markets", s, {}).items() if k not in res})
         except Exception as e:  # historical may not list a series; the live count stands
             print(s, "historical:", type(e).__name__, e)
-        json.dump(res, open(os.path.join(a.out, s + ".json"), "w"))
+        with open(safe_out(out_dir / (s + ".json")), "w") as fh:
+            json.dump(res, fh)
         print(s, "live", n_live, "total", len(res), flush=True)
 
 

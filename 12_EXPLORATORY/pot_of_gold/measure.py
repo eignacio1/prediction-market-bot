@@ -12,6 +12,8 @@ from collections import defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "longshot_bias"))
 import calib as C  # noqa: E402
+sys.path.insert(0, os.path.dirname(HERE))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant import longshot_bias as L  # noqa: E402
 
 TIGHT = 0.01
@@ -130,7 +132,7 @@ def main():
         else:
             st = "IN_SAMPLE"
         r["status"] = st
-    with open(os.path.join(out, "cells.csv"), "w", newline="") as fh:
+    with open(safe_out(os.path.abspath(os.path.join(out, "cells.csv"))), "w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["sport", "family", "tier", "bucket", "book", "route", "side", "status", "fit_n", "fit_games", "fit_net",
                     "held_n", "held_games", "held_net", "held_lo", "held_hi", "held_p", "all_n", "all_games", "all_gap", "all_net", "all_lo"])
@@ -147,7 +149,8 @@ def main():
     summ = {"settled_tickers": len(settle), "snapshots_in_buckets": len(snaps), "joined": len(rows), "unsettled": skipped,
             "games_by_sport": {sp: len({r['game'] for r in rows if r['sport'] == sp}) for sp in SPORTS},
             "holm_candidates": len(cand), "holm_rejected": sum(rej), "status_by_sport": {k: dict(v) for k, v in by.items()}}
-    json.dump(summ, open(os.path.join(out, "summary.json"), "w"), indent=1)
+    with open(safe_out(os.path.abspath(os.path.join(out, "summary.json"))), "w") as fh:
+        json.dump(summ, fh, indent=1)
     print(json.dumps(summ, indent=1))
 
 
