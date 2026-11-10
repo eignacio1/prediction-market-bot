@@ -141,6 +141,7 @@ TASKS: dict[str, str] = {
         "printf '/visual footer build: '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'dash-build[^<]*' | head -1; "
         "systemctl show pmbot-web-dashboard.service -p ActiveEnterTimestamp,NRestarts"
     ),
+    "dashboard_build_peak_read": f"{PY} scripts/dashboard_build_peak.py",  # W108.5: peak RSS of one build per page, fresh subprocess each
     "dashboard_journal_read": (
         "journalctl -u pmbot-web-dashboard.service --since '-1 hour' --no-pager 2>&1 | tail -n 60; "
         "echo '--- error-ish lines, last hour'; journalctl -u pmbot-web-dashboard.service --since '-1 hour' --no-pager 2>&1 "
