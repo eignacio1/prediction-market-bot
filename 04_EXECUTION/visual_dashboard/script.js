@@ -458,21 +458,32 @@ function picksSheet(){
 function edgeMap(){
   const D=EDGEMAP, host=$('#emHost');
   if(!D||!D.ok){ host.innerHTML=`<div class="card em-err"><b>The edge map's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong picture.</div></div>`; $('#emHead').textContent='source invalid'; $('#nvEdge').textContent='!'; return; }
-  const CLS={'RULED_OUT':'crit','NO EFFECT NET':'','ACCRUING':'warn','UNTESTED':''};
-  const cnt={}; D.rows.forEach(r=>cnt[r.status]=(cnt[r.status]||0)+1);
-  $('#emHead').textContent=D.rows.length+' hypotheses · '+Object.entries(cnt).map(([k,v])=>v+' '+k.toLowerCase()).join(' · ');
-  $('#nvEdge').textContent=D.rows.length;
-  const fams=[]; D.rows.forEach(r=>{ if(!fams.includes(r.family)) fams.push(r.family); });
-  let h='';
-  for(const f of fams){
-    h+=`<h3 class="em-fam">${esc(f)}</h3><div class="em-wrap"><table><thead><tr><th>Hypothesis</th><th>Sport</th><th>Gross</th><th>Cost</th><th>Net</th><th>n</th><th>Interval</th><th>Status</th><th>Next look</th></tr></thead><tbody>`;
-    for(const r of D.rows.filter(x=>x.family===f)){
-      const green=r.held_out_net_positive===true, c=green?'good':(CLS[r.status]||'');
-      h+=`<tr><td>${esc(r.hypothesis)}</td><td>${esc(r.sport)}</td><td>${esc(r.gross)}</td><td>${esc(r.cost)}</td><td>${esc(r.net)}</td><td>${esc(r.n)}</td><td>${esc(r.interval)}</td><td><span class="em-st ${c}">${esc(r.status)}${green?' · net&gt;0 held out':''}</span></td><td>${esc(r.next_look)}</td></tr>`;
+  const ORDER=['NET POSITIVE','ACCRUING','UNTESTED','NO EFFECT NET','RULED_OUT'];
+  const NAME={'NET POSITIVE':'Net positive held out','ACCRUING':'Accruing','UNTESTED':'Untested','NO EFFECT NET':'No effect net','RULED_OUT':'Ruled out'};
+  const key=r=>r.held_out_net_positive===true?'NET POSITIVE':r.status;
+  const cls=k=>({'NET POSITIVE':'pos','ACCRUING':'acc','UNTESTED':'unt','NO EFFECT NET':'nil','RULED_OUT':'out'}[k]||'nil');
+  const rows=D.rows, cnt={}; rows.forEach(r=>{const k=key(r); cnt[k]=(cnt[k]||0)+1;});
+  $('#emHead').textContent=`${rows.length} ideas · ${cnt['NET POSITIVE']||0} net positive`; $('#nvEdge').textContent=rows.length;
+  const fams=[]; rows.forEach(r=>{ if(!fams.includes(r.family)) fams.push(r.family); });
+  let filt='ALL';
+  const chips=`<div class="em-filters" role="group" aria-label="Filter by status"><button class="em-f on" data-f="ALL">All <b>${rows.length}</b></button>`+
+    ORDER.map(k=>`<button class="em-f" data-f="${k}"><i class="em-dot ${cls(k)}"></i>${NAME[k]} <b>${cnt[k]||0}</b></button>`).join('')+`</div>`;
+  const bar=list=>`<div class="em-bar" aria-hidden="true">${ORDER.map(k=>{const n=list.filter(r=>key(r)===k).length; return n?`<span class="${cls(k)}" style="flex:${n}" title="${NAME[k]}: ${n}"></span>`:'';}).join('')}</div>`;
+  const draw=()=>{
+    let h=chips.replace(/class="em-f( on)?" data-f="([^"]+)"/g,(m,o,f)=>`class="em-f${f===filt?' on':''}" data-f="${f}"`)+'<div class="em-fams">';
+    for(const f of fams){
+      const all=rows.filter(r=>r.family===f), list=all.filter(r=>filt==='ALL'||key(r)===filt); if(!list.length) continue;
+      const pos=all.filter(r=>key(r)==='NET POSITIVE').length;
+      h+=`<details class="em-fam"${filt!=='ALL'?' open':''}><summary><span class="em-fn">${esc(f)}</span>${bar(all)}<span class="em-fc">${all.length} ideas · ${pos} net positive</span></summary><ul class="em-list">`;
+      for(const r of list){ const k=key(r);
+        h+=`<li><details class="em-row"><summary><i class="em-dot ${cls(k)}" title="${NAME[k]}"></i><span class="em-h">${esc(r.hypothesis)}</span><span class="em-sp">${esc(r.sport)}</span><span class="em-net">${esc(r.net)}</span><span class="em-nx">${esc(r.next_look)}</span></summary>`+
+           `<dl class="em-d"><dt>Status</dt><dd>${NAME[k]}</dd><dt>Gross</dt><dd>${esc(r.gross)}</dd><dt>Cost</dt><dd>${esc(r.cost)}</dd><dt>n</dt><dd>${esc(r.n)}</dd><dt>Interval</dt><dd>${esc(r.interval)}</dd>${r.note?`<dt>Note</dt><dd>${esc(r.note)}</dd>`:''}<dt>Source</dt><dd class="mono">${esc(r.source)}</dd></dl></details></li>`; }
+      h+='</ul></details>';
     }
-    h+='</tbody></table></div>';
-  }
-  host.innerHTML=h;
+    host.innerHTML=h+'</div>';
+    $$('#emHost .em-f').forEach(b=>b.addEventListener('click',()=>{ filt=b.dataset.f; draw(); }));
+  };
+  draw();
 }
 
 /* ---------- ROLLING BACKLOG ---------- */
@@ -485,21 +496,16 @@ function calendarAge(){
 function backlog(){
   const D=BACKLOG, host=$('#blHost');
   if(!D||!D.ok){ host.innerHTML=`<div class="card bl-err"><b>The backlog's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong list.</div></div>`; $('#blHead').textContent='source invalid'; $('#nvBacklog').textContent='!'; return; }
-  const n=D.tickets.length, open=D.tickets.filter(t=>t.status!=='DONE').length;
-  $('#blHead').textContent=open+' open · '+n+' tickets'; $('#nvBacklog').textContent=open;
-  let h=`<div class="bl-top"><div class="bl-asof">as of ${esc(D.as_of)}</div><ol class="bl-rank">${D.ranking.map(r=>`<li>${esc(r)}</li>`).join('')}</ol></div>`;
-  for(const [g,ts] of D.groups){
-    if(!ts.length) continue;
-    h+=`<h3 class="bl-grp">${esc(g)}<small>${esc((D.statuses&&D.statuses[g])||'')} · ${ts.length}</small></h3><div class="bl-list">`;
-    for(const t of ts){
-      const tags=['lane','rank','wave'].filter(k=>t[k]).map(k=>`<span>${k} ${esc(t[k])}</span>`).join('');
-      const row=(k,l)=>t[k]?`<dt>${l}</dt><dd>${esc(t[k])}</dd>`:'';
-      h+=`<div class="card bl-t${g==='DONE'?' done':''}"><div class="bl-h"><span class="bl-id">${esc(t.id)}</span><span class="bl-title">${esc(t.title)}</span></div>`+
-         `<div class="bl-tags"><span>#${esc(t.order)}</span>${tags}</div><dl>${row('measure','measure')}${row('why','why')}${row('source','source')}</dl></div>`;
-    }
-    h+='</div>';
-  }
-  host.innerHTML=h;
+  const G=Object.fromEntries(D.groups), open=['NOW','NEXT','LATER'].reduce((n,g)=>n+(G[g]||[]).length,0);
+  $('#blHead').textContent=`${open} open · ${(G.NOW||[]).length} in this wave`; $('#nvBacklog').textContent=open;
+  const card=t=>{ const row=(k,l)=>t[k]?`<dt>${l}</dt><dd>${esc(t[k])}</dd>`:'';
+    return `<details class="bl-c"><summary><span class="bl-id">${esc(t.id)}</span><span class="bl-tt">${esc(t.title)}</span><span class="bl-m"><span class="bl-lane ${esc(t.lane||'')}">${esc(t.lane||'')}</span>${t.rank?`<span>rank ${esc(t.rank)}</span>`:''}</span></summary>`+
+      `<dl>${row('measure','Moves')}${row('why','Why')}${row('wave','Wave')}${row('source','Source')}</dl></details>`; };
+  const col=g=>{ const ts=G[g]||[]; return `<div class="bl-col"><div class="bl-ch"><b>${g==='NOW'?'This wave':g==='NEXT'?'Next':'Later'}</b><span>${ts.length}</span></div><div class="bl-cards">${ts.map(card).join('')||'<div class="bl-empty">Nothing here.</div>'}</div></div>`; };
+  const closed=[...(G.DONE||[]),...(G.PARKED||[])];
+  host.innerHTML=`<div class="bl-board">${col('NOW')}${col('NEXT')}${col('LATER')}</div>`+
+    `<div class="bl-foot"><details class="bl-more"><summary>Done and parked <span>${closed.length}</span></summary><div class="bl-closed">${closed.map(t=>`<div><span class="bl-id">${esc(t.id)}</span><span class="bl-st">${esc(t.status.toLowerCase())}</span><span>${esc(t.title)}</span></div>`).join('')}</div></details>`+
+    `<details class="bl-more"><summary>Ranking the window works to</summary><ol class="bl-rank">${D.ranking.map(r=>`<li>${esc(r)}</li>`).join('')}</ol></details><span class="bl-asof">as of ${esc(D.as_of)}</span></div>`;
 }
 
 /* ---------- AGGREGATION WEB (Muse) — expandable graph ---------- */
@@ -742,7 +748,7 @@ function museWeb(){
   $('#mwReset').addEventListener('click',()=>{ open.clear(); open.add('hub'); D.sports.forEach(sp=>open.add('s:'+sp)); sel='hub'; N.forEach(n=>{ n.seen=false; n.fx=n.fy=null; }); seed(); sync(); panel(); settle(220,0.9); draw(); fit(); });
   $('#mwOpenAll').addEventListener('click',()=>{ N.forEach(n=>{ if(n.children.length) open.add(n.id); }); sync(); panel(); settle(160,0.9); draw(); fit(); });
   // ---- tiles + open-now list
-  const tile=(k,v,acc,n)=>`<div class="tile" style="--accent:${acc}"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n}</div></div>`;
+  const tile=(k,v,acc,n)=>`<div class="mw-stat" title="${n}"><b style="color:${acc}">${v}</b><span>${k.toLowerCase()}</span></div>`;
   const openT=[...N.values()].filter(n=>n.kind==='ticket'&&n.state==='p').length;
   $('#mwTiles').innerHTML=tile('Built',T.b,'var(--s1)','steps delivered')+tile('Pending',T.p,'var(--warn)','steps with a ticket or block open')+tile('Future',T.f,'var(--axis)','planned, no ticket yet')+tile('Tickets open',openT,'var(--ink-3)','Muse tickets feeding pending steps');
   const pend=[...N.values()].filter(n=>n.kind==='ws'&&n.steps.includes('p'));
