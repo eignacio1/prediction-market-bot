@@ -1207,3 +1207,4 @@
 | 2026-11-10T01:15:20Z | GG-reserve-3 (no T-) | W106.4 B-018 STANDARD - MLB engine step 2: lineup-aware game model (starter+bullpen+lineup+park, PIT), held out vs naive and vs market. PURPOSE: DEPTH D4 MLB - factor classes PIT 0->4, held-out Brier vs naive/market |
 | 2026-11-10T01:30:42Z | W106.2-B-057 | CLOSED — W106.2 B-057 cost wall measured (taker 1.5-2.3c/side, maker net negative in every bucket); demo-fee check blocked (commit `6a387d5`) |
 | 2026-11-10T01:30:57Z | W106.2-B-057 | CLOSED — merge confirmed, HEAD (ba335a2) is ancestor of origin/main — cost wall measured; demo-fee check blocked |
+| 2026-11-10T01:35:42Z | GG-1833 | CLOSED — merge confirmed, HEAD (7cbaf32) is ancestor of origin/main — W106.3 B-058 props net-of-cost: PR #450 merged, 0/49 held-out cells net positive |
