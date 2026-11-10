@@ -1224,3 +1224,4 @@
 | 2026-11-10T06:04:53Z | W108.4 | CLOSED — merge confirmed, HEAD (2af7295) is ancestor of origin/main — weather scoping NYC+CHI; no build recommended |
 | 2026-11-10T06:05:10Z | W108.1 | CLOSED — W108.1 edge map: L03+R09 NO EFFECT NET, stale line fixed, prop archive merged (#456) but install refused by HR14 (budget red) (commit `2af7295`) |
 | 2026-11-10T06:11:20Z | W108.5 | CLOSED — merge confirmed, HEAD (32fe1a0) is ancestor of origin/main — partial; PR #458 open, box reads and Part C not run |
+| 2026-11-10T06:11:35Z | W108.5 | CORRECTION: prior CLOSED row was checked against main's own HEAD. Work is PARTIAL: PR #458 (branch session/20261110T054159Z-w108-5-dashboard-stale) is OPEN and UNMERGED; box reads and Part C not run. See SESSION_HANDOFF_20261110T0610Z_W108_5.md. |
