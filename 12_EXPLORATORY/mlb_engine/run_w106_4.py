@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pandas as pd
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.mlb_engine import lineup_aware as la
 from prediction_market_bot.mlb_engine import model_lineup as ml
 
@@ -45,7 +47,7 @@ def main():
         print(f"{name:14s} n={r['moneyline']['n']} k={m.k:.1f} " + " | ".join(
             f"{mk}: B {r[mk]['brier']:.5f} (naive {r[mk]['brier_naive']:.5f}) gain {r[mk]['gain_brier'][0]:+.5f} "
             f"[{r[mk]['gain_brier'][1]:+.5f},{r[mk]['gain_brier'][2]:+.5f}]" for mk in ("moneyline", "total", "runline")))
-    (Path(__file__).parent / "RESULTS_W106_4.json").write_text(json.dumps(out, indent=1, default=float))
+    safe_out(Path(__file__).parent / "RESULTS_W106_4.json").write_text(json.dumps(out, indent=1, default=float))
 
 
 if __name__ == "__main__":
