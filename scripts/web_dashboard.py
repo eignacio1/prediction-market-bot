@@ -1319,14 +1319,14 @@ def _build_project_page() -> str:
 
 def _project_page() -> str:
     """/project: analytical page regenerated from this checkout, refreshed off-thread every 60 s."""
-    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page, key=_checkout_head())
+    _expire_on_new_head(_PROJECT_CACHE)
+    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page)
 
 
 
 def _checkout_head() -> str | None:
-    """The checkout's HEAD sha, read from .git without a subprocess. /visual and /project key their caches on it, so a
-    pull (docs-only pushes do not restart this service) rebuilds them on the next request instead of serving the
-    pre-pull page until the timer refresh lands (SW-9, 2026-11-10)."""
+    """The checkout's HEAD sha, read from .git without a subprocess. /visual and /project expire their caches when it
+    moves, so a pull (docs-only pushes do not restart this service) refreshes them in the background (SW-9, 2026-11-10)."""
     try:
         git = _REPO_ROOT / ".git"
         head = (git / "HEAD").read_text().strip()
@@ -1342,6 +1342,16 @@ def _checkout_head() -> str | None:
     except OSError:
         return None
     return None
+
+
+def _expire_on_new_head(cache: dict) -> None:
+    """When the checkout has moved since the cached build, mark the cache expired so this request serves the cached page
+    and refreshes it in the background (a synchronous rebuild on every pull made /visual take ~40 s, 2026-11-10)."""
+    head = _checkout_head()
+    if head and cache.get("head") != head:
+        if cache.get("head") is not None:
+            cache["t"] = 0.0
+        cache["head"] = head
 
 def _build_visual_page() -> str:
     try:
@@ -1360,7 +1370,8 @@ def _visual_page() -> str:
     """/visual: the Visual Dashboard (scripts/build_visual_dashboard_html.py) rendered from this checkout, refreshed
     off-thread every 300 s. The box's checkout follows origin/main, so this is never a stale copy (operator 2026-10-21:
     one dashboard)."""
-    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page, key=_checkout_head())
+    _expire_on_new_head(_VISUAL_CACHE)
+    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page)
 
 
 def _build_data_body() -> bytes:
