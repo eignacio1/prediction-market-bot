@@ -84,7 +84,7 @@ strategy decision to the operator at the Wave 107 close, not another measurement
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
-| 107.1 | proof | The edge map: every edge idea tested, gross / cost / net / n / status / next look, on one page and a /visual panel | 🔄 Part A pushed (6ad62c8): 39 hypotheses; Parts B, C-check in progress | — |
+| 107.1 | proof | The edge map: every edge idea tested, gross / cost / net / n / status / next look, on one page and a /visual panel | ✅ A+B+C done: 39 hypotheses; panel merged #452 (9b7ad43); handoff written | — |
 | 107.2 | flex · quant | Information speed: after injury / lineup / goalie news, how long until Kalshi's line moves, and is the window worth anything net | ⏳ pasted? | — |
 | 107.3 | engine · 2 | NBA availability lead: on games with late availability news, does v3's price move before Kalshi's | ✅ A+B+C pushed (be5c217): 1,553 moved tickers / 42 games; market drift toward v3 -0.06c CI [-0.27,+0.14]; no evidence of lead, cannot rule out; coverage 3 of 3 confirmed | — |
 
