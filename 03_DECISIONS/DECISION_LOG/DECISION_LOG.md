@@ -3343,3 +3343,8 @@ Effect: the window's W107-close strategy recommendation ("stop new edge-hunting 
 lane keeps building (ADR-0073 depth lane every wave; ADR-0075 architecture). Pre-registered tests judge cells; they do not gate whether the
 project builds. Waves stay at the standing three blocks of real build work. Backlog gains the build tickets (engine architecture per sport,
 factors applied, missing factor classes, full bet suite from one engine, multi-arm decision trees, quant core, scaffolding, governance).
+
+## 2026-11-09 22:00 PT — Muse: nightly sweep fixes become mid-week instructions; sweep checks snapshots (operator)
+- Operator approved (live, after the 21:48 PT sweep): Muse's 25 daily ticket runs read TO_MUSE.md fresh, so the nightly watchdog sweep's "Muse should:" lines are a working mid-week channel. Earl sends Muse a one-time addendum tonight (ticket runs take the newest sweep's "Muse should:" items first; C-401/C-402 re-record at the page's 15 columns; a snapshot type MISSED twice in a row is flagged at the top of STATUS).
+- Supersedes, for the sweep only, the 17:33 PT line "daily watchdog sweeps ... can never instruct Muse mid-week". Sweep fixes may never change the charter, Muse's jobs, the backlog order or Earl's weekly message.
+- Scheduled task "Muse daily sweep" prompt updated to match: checks the five snapshot types daily, notifies only on drift or a dark snapshot type. Charter §1b rule 3 / §4 text still to be brought in line with the 11-09 snapshot runs at wave close.
