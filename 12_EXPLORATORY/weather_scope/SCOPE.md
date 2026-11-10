@@ -20,6 +20,10 @@ Net per contract trading toward the model after exact Kalshi fee plus a spread p
 
 **Read:** pricing here is sharp relative to a single free global model. This is a result for NYC only, one forecast model (GFS), one snapshot time. It is not a verdict on weather.
 
+## Update: two cities (NYC + Chicago, daily high)
+
+Pooled held-out (cut 2026-08-06), 1,038 strike-markets over 174 city-days: Brier market **0.098** vs model **0.137**; log loss 0.305 vs 0.427. Market-minus-model Brier gain **-0.038, 95% city-day-clustered [-0.047, -0.029]**. Net per contract trading toward the model after fee and spread proxy: edge>0 **-3.1¢** [-5.0, -1.1] n=914; >3¢ -4.3¢ [-7.0, -1.3]; >6¢ -4.2¢ [-7.2, -0.8]; >10¢ -6.0¢ [-9.8, -2.5] n=382. Same answer as NYC alone: the price is sharper than one free model, and the bigger the disagreement the worse the trade. Miami, Austin, Denver, LA, lows, rain, a second model and a second snapshot time were NOT run (operator ended the session); they remain the open list in the recommendation below.
+
 ## What exists (Part A)
 
 - **Kalshi weather**: 501 series in Climate & Weather (144 daily). Daily families: highest/lowest temperature (about 45 US and international cities each), rain yes/no (about 15 US cities). Quadratic fee, multiplier 1.

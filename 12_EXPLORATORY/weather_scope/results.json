@@ -1,60 +1,65 @@
 {
- "cut_date": "2026-08-09",
- "days_total": 284,
+ "cut_date": "2026-08-06",
+ "days_total": 557,
  "fits": {
   "KXHIGHNY": {
-   "bias": 0.242,
-   "sd": 4.127,
-   "n_train_days": 198
+   "bias": 0.286,
+   "sd": 4.142,
+   "n_train_days": 195
+  },
+  "KXHIGHCHI": {
+   "bias": 0.714,
+   "sd": 3.6,
+   "n_train_days": 188
   }
  },
- "n_test_markets": 513,
- "n_test_cityDays": 86,
- "brier_model_global_fit": 0.13088737309625184,
- "logloss_model_global_fit": 0.41341821947789026,
- "brier_model": 0.12290344109986,
- "logloss_model": 0.3846683784374931,
+ "n_test_markets": 1038,
+ "n_test_cityDays": 174,
+ "brier_model_global_fit": 0.13826651900673298,
+ "logloss_model_global_fit": 0.4341671633369846,
+ "brier_model": 0.13656904854957988,
+ "logloss_model": 0.42694403590768576,
  "note": "brier_model/logloss_model and net_per_contract use the causal trailing-30d bias/sd; *_global_fit uses the 70% train-split fit",
- "brier_market": 0.0905023391812868,
- "logloss_market": 0.2807596388093668,
+ "brier_market": 0.09817389210019331,
+ "logloss_market": 0.30466514881824075,
  "brier_gain_market_minus_model": {
-  "mean": -0.032401101918573386,
-  "lo": -0.045455921072685625,
-  "hi": -0.018658339071649734
+  "mean": -0.038395156449387825,
+  "lo": -0.04746271776177092,
+  "hi": -0.029318232547208632
  },
  "half_spread_proxy": {
-  "n_with_proxy": 275,
-  "mean": 0.007189997455693254,
+  "n_with_proxy": 549,
+  "mean": 0.006603864527460646,
   "default_used_otherwise": 0.02
  },
  "net_per_contract": {
   "edge>0.0": {
-   "n_trades": 447,
-   "n_cityDays": 86,
-   "mean": -0.03338699354553296,
-   "lo": -0.060561732331525064,
-   "hi": -0.0018867813633120134
+   "n_trades": 914,
+   "n_cityDays": 174,
+   "mean": -0.030619262470284687,
+   "lo": -0.0497685994469281,
+   "hi": -0.010594098196172913
   },
   "edge>0.03": {
-   "n_trades": 267,
-   "n_cityDays": 83,
-   "mean": -0.06187470356891998,
-   "lo": -0.11093195285345112,
-   "hi": -0.010296819228687363
+   "n_trades": 611,
+   "n_cityDays": 170,
+   "mean": -0.04291539209187357,
+   "lo": -0.07016152098457225,
+   "hi": -0.013418258721881057
   },
   "edge>0.06": {
-   "n_trades": 214,
-   "n_cityDays": 83,
-   "mean": -0.06453129638779202,
-   "lo": -0.12167338264714954,
-   "hi": -0.0073465833316882475
+   "n_trades": 497,
+   "n_cityDays": 167,
+   "mean": -0.04190603165157141,
+   "lo": -0.07240959315675811,
+   "hi": -0.007888311678645466
   },
   "edge>0.1": {
-   "n_trades": 162,
-   "n_cityDays": 77,
-   "mean": -0.07357417540062855,
-   "lo": -0.13627838092440028,
-   "hi": -0.0029711260602435776
+   "n_trades": 382,
+   "n_cityDays": 157,
+   "mean": -0.060402969204021204,
+   "lo": -0.09770793565661282,
+   "hi": -0.025300440504202642
   }
  }
 }
