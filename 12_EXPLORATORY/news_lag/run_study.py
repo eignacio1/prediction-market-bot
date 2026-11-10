@@ -1,9 +1,10 @@
 """W107.2 Part A/B: NBA injury-report news -> Kalshi KXNBAGAME price event study.  Read-only on all inputs.
-usage: run_study.py PDF_DIR PRICE_ARCHIVE_DIR OUT_JSON"""
+usage: PYTHONPATH=12_EXPLORATORY run_study.py PDF_DIR PRICE_ARCHIVE_DIR OUT_JSON"""
 import glob, json, re, sys, collections
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 sys.path.insert(0, "src")
+from _fence import safe_out
 from pypdf import PdfReader
 from prediction_market_bot.quant import news_lag as nl
 
@@ -38,7 +39,7 @@ for f in sorted(glob.glob(arch_dir + "/prices_2026-1*.jsonl")):
         r = json.loads(line)
         m = re.match(r"KXNBAGAME-26([A-Z]{3})(\d\d)([A-Z]+)-([A-Z]+)$", r["ticker"])
         if not m or r["status"] != "active": continue
-        ts = datetime.strptime(r["run_ts"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+        ts = datetime.fromisoformat(r["run_ts"][:-1] + "+00:00")
         key = (f"2026-{MON[m.group(1)]:02d}-{m.group(2)}", m.group(3), m.group(4))
         if float(r["half_spread"]) > 0.10: continue          # unquoted / empty book
         px[key].append((ts, float(r["yes_mid"])))
@@ -69,6 +70,6 @@ for k in KINDS + ["ALL"]:
     prof["increment_20_60"] = nl.increment(series_for, ev, 20, 60)
     res["by_kind"][k] = prof
 res["unmatched_matchups_top"] = unmatched.most_common(8)
-json.dump(res, open(out, "w"), indent=1, default=str)
+json.dump(res, open(safe_out(out), "w"), indent=1, default=str)
 print(json.dumps({k: {h: (v["n"], round(v.get("mean_signed", 0), 4)) for h, v in p["horizons"].items()} | {"pre": (p["pre"]["n"], round(p["pre"].get("mean_signed", 0), 4))} for k, p in res["by_kind"].items()}, indent=0))
 print(res["reports"], res["events"], res["games_priced"], res["unmatched_matchups_top"])
