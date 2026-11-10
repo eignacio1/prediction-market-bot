@@ -23097,3 +23097,161 @@ END OF BLOCK 105.6
 
 ---
 
+---
+
+## (archived 2026-11-10) WAVE 106 · WRITTEN 2026-11-06 ~06:20 UTC (11-05 22:20 PT) for the Monday reset · SW-9 · four blocks (operator's ask) · paste each block into its own terminal
+
+**Every part runs on data that exists when you paste it. CI is the gate for code only.**
+
+106.1 **land + graft** (rank 1) = B-056 105.6's pot-of-gold PR landed and the stem grafted into the router · 106.2 **quant** = B-057 the cost
+wall · 106.3 **quant** = B-058 retail flow: props and thin markets · 106.4 **engine** = B-018 the MLB engine's second step.
+
+- **Pushback:** Wave 105 found that nothing measured so far survives costs (105.4: fades lose net; 105.6: 0 of 17 cells; 105.2: every price
+  bucket loses at 1 minute). Two more measurement blocks could just confirm that. They are aimed at the two places it could differ: the
+  cost side itself (maker vs taker, where resting is cheap) and retail-heavy markets (props, thin books) - the operator's 10-16 "beating
+  buddy off his phone placing parlays, that's the first step". If both come back negative, Wave 107's doctrine check says so plainly.
+- **Surface:** see the sitrep (box close reads `20261106T060941Z_*`). Delta: +0 running components (ride_board_install still awaits approval;
+  the router graft stays paper).
+- **Dependencies:** none between blocks.
+
+**DOCTRINE CHECK (W48), Wave 105 close:** *Premise* - "a measured mispricing exists on Kalshi that survives fees, spread and our fills".
+Against it: 105.4 (0 ride / fade cells net), 105.6 (0 of 17 longshot cells), 105.2 (no placement rule wins), 104.2 (NBA engines w ~ 0).
+For it: NBA / NHL samples are 9 days to 3 weeks; props and thin markets not yet measured net; costs not yet measured exactly. *Said but
+not built* - parlays / big-hitter combos (09-25): waiting on joint pricing from the engines.
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 106.1 | rank 1 | Land #447 (pot of gold) cleanly; graft the stem into the router with a precedence rule; paper only | ✅ A #447 `c2b883d7`, B #451 `81939d87`, C ROUTER_TREE.md; router branches 4→5, pot cells routed 0→17 (paper, 0 orderable) | handoff W106_1 |
+| 106.2 | quant | The cost wall: exact fee, maker vs taker, realized spread per family; which gross effects clear it | PARTIAL 2026-11-10 | Taker ~1.5-2.3c each way (props 4-8c), maker -0.6 to -4.3c per fill; only 11 in-sample 89.2 hold-to-settle cells clear. Demo-fee check blocked. PR #448 merged. 12_EXPLORATORY/quant_w106_costs/RESULT.md |
+| 106.3 | quant | Retail flow: player props and thin markets - calibration by price, favourite-longshot, net of costs, held out | 🟡 PARTIAL (PR #450 merged, CI green) | MLB: 0 of 49 held-out cells net positive; KXMLBHIT −1.4c net. NBA/NFL/NHL props not archived (gap). |
+| 106.4 | engine · 2 | MLB engine step 2: lineup-aware game model, both seasons, held out vs naive and vs the closing line where archived | ✅ DONE (PR #449 merged) | Lineup awareness helps vs naive (total +0.0024, RL +0.0028 Brier), but loses to the Kalshi closing line on moneyline (−0.0075 [−0.0121,−0.0029], n=753) and blend w=0. See RESULT_W106_4.md. |
+
+### 106.1 - LAND THE POT OF GOLD AND GRAFT THE STEM
+
+```
+WAVE 106 - BLOCK 106.1 - RANK 1 - LAND 105.6 (PR #447) AND GRAFT THE POT-OF-GOLD STEM INTO THE ROUTER (B-056)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W106.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W106_1.md. Every part runs on data that exists now.
+
+PURPOSE: 105.6 defined the pot-of-gold tree (3 routes, 17 pre-registered cells, 0 orderable) but its PR #447 is open with no CI run, and it
+carries shared navigation files (MEMORY_BANK, PLAN, TODO_NEXT, DECISION_LOG, SESSION_CLAIMS, .last_session_checkpoint) inside a code PR.
+Land it cleanly, then graft the stem into the router so one tree routes FADE / RIDE / MOMENTUM / POT OF GOLD / NO_BET.
+
+PART A (~40 min) - land #447
+1. On #447's branch: merge main in; move every shared navigation-file change OUT of the PR (re-apply them later as an append-only
+   docs-only commit to main if they still apply); keep only 12_EXPLORATORY/pot_of_gold/, decision_trees/longshot.py,
+   longshot_cells.toml and tests. fetch_settlements.py routes every write through safe_out(). Local tests, then CI green, then merge.
+2. Write 105.6's missing queue / decision-log lines as the window would: in the handoff, not in the queue.
+
+PART B (~50 min) - graft the stem
+1. router.py: add the POT_OF_GOLD branch that calls longshot.py, and a PRECEDENCE rule for when two branches want the same market
+   (e.g. a FADE and a TAKE_FAVOURITE on opposite sides): pre-registered in 12_EXPLORATORY/pot_of_gold/ROUTER_PRECEDENCE.md before the code.
+   Same status gate everywhere: orders only for HELD_OUT / FORWARD_PASSED cells.
+2. Tests: each branch fires on a fixture; precedence resolves conflicts; IN_SAMPLE cells never produce an order; the ride board runner
+   (scripts/run_ride_board.py) logs POT_OF_GOLD decisions with no code change on its side (it calls route()). PR; merge on green.
+
+PART C (~30 min, switch here whenever A or B waits on CI) - one picture for the operator
+1. 12_EXPLORATORY/pot_of_gold/ROUTER_TREE.md: the whole decision tree as it now stands - every branch, its cells, each cell's status and
+   held-out net - in plain English with a small ASCII diagram. This is the page the operator reads to see "where the bot can bet".
+
+Report: per COMMON RULES. MEASURE MOVED: router branches live 4 -> 5; pot-of-gold cells routed 0 -> 17 (paper). Operator decisions: none.
+END OF BLOCK 106.1
+```
+
+### 106.2 - QUANT (THE COST WALL)
+
+```
+WAVE 106 - BLOCK 106.2 - QUANT - THE COST WALL: WHAT EXACTLY DOES A TRADE COST, AND WHAT CLEARS IT (B-057)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W106.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W106_2.md. Every part runs on data that exists now.
+
+PURPOSE: every measured effect so far dies on costs (105.4, 105.6, 105.2). Measure the wall exactly instead of assuming it: Kalshi's fee
+for takers AND makers as it applies today (read the fee schedule; confirm on our own demo fills), the realized spread per family and price
+bucket, and the adverse-selection cost of resting (105.2's markouts). Then put every gross effect we have (103.2 overshoots, W89 / 105.6
+longshot gaps, 104.1 markouts) against it: which, if any, clear the wall as a maker, as a taker, or only in thin books.
+
+PART A (~45 min) - the fee and spread, exactly
+1. Kalshi fee schedule for taker and maker orders (source and date), checked against our demo fills' charged fees (read-only). Extend
+   quant/money.py's view with NEW functions only (no edits). Known-answer tests on published examples.
+2. Realized half-spread per family x price bucket x time-to-start from the price archive (aggregate bridge task, under ~60 KB).
+
+PART B (~55 min) - the wall vs every effect
+1. One table: effect (source block), gross size per contract, cost as taker, cost as maker (fee + markout from 104.1 / 105.2), net each way,
+   n and interval. Mark any cell where net > 0 as a maker with its interval above 0.
+2. The maker economics specifically: 105.2's price-cap rule (do not rest at >= 0.50) plus maker fees - does resting ever become positive in
+   any bucket? Held out, post-epoch rows where they exist (say n).
+
+PART C (~30 min, switch here whenever A or B waits) - plain English
+1. 12_EXPLORATORY/quant_w106_costs/RESULT.md: "a Kalshi trade costs about X as a taker and Y as a maker; the only effects that clear it
+   are ..." Recommend (not apply) any pre-registration.
+
+Report: per COMMON RULES. MEASURE MOVED: effects with a measured net-of-cost figure N; cells net-positive as maker / taker. Operator decisions: none.
+END OF BLOCK 106.2
+```
+
+### 106.3 - QUANT (RETAIL FLOW)
+
+```
+WAVE 106 - BLOCK 106.3 - QUANT - RETAIL FLOW: PLAYER PROPS AND THIN MARKETS, NET OF COSTS (B-058)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W106.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W106_3.md. Every part runs on data that exists now.
+
+PURPOSE: operator 10-16: "Beating Kalshi or institutions is a tall task - beating buddy off his phone placing parlays, that's the first
+step." Everything measured so far was mostly game lines. Measure where retail money is: player props (KXNBAPTS, KXNFLPASSYDS, KXMLBHIT and
+any other prop family Kalshi lists today) and the thinnest books in every family - calibration by price, favourite-longshot shape, and net
+of costs (106.2 measures the wall; use quant/money.py's exact fee and the archive's quoted spread here, do not wait for 106.2).
+
+PART A (~40 min) - what exists
+1. Inventory prop families on Kalshi today (live API, read-only) and what the price archive holds for each (snapshots, settlements, depth).
+   Liquidity tiers per family from archived depth (thin / mid / deep).
+
+PART B (~55 min) - calibration and the bias, net
+1. Settled-rate vs price per prop family x price bucket x liquidity tier x time-to-start; earlier 70% fit, later 30% held out; net per
+   contract after fee and quoted spread; game-clustered intervals; Holm / BH across cells (quant/inference.py).
+2. Compare props with game lines on the same night: is the mispricing larger where retail trades? Known-answer test on a simulated market.
+
+PART C (~30 min, switch here whenever B waits on the box) - plain English + pre-registration
+1. 12_EXPLORATORY/quant_w106_props/RESULT.md: per sport, "props are / are not mispriced after costs, mostly in ...". If any cell is net
+   positive held out, pre-register it (12_EXPLORATORY/quant_w106_props/PROPS_PREREGISTRATION_<date>.md) before any forward row, for the
+   router's ride / pot-of-gold tables in Wave 107.
+
+Report: per COMMON RULES. MEASURE MOVED: prop families measured net X of N; net-positive held-out cells. Operator decisions: none.
+END OF BLOCK 106.3
+```
+
+### 106.4 - ENGINE (MLB STEP 2)
+
+```
+WAVE 106 - BLOCK 106.4 - ENGINE (rank 2) - THE MLB ENGINE'S SECOND STEP: A LINEUP-AWARE GAME MODEL (B-018)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W106.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W106_4.md. Every part runs on data that exists now.
+
+PURPOSE: D4 MLB. 105.3 stored two seasons (1.42M Savant pitches, PIT tables; PR #444) and a first game model whose held-out Brier vs a
+naive baseline spans 0. Step 2: a lineup-aware model (starter + bullpen + the actual nine, point-in-time), scored held out vs naive AND
+vs Kalshi's / the market's closing line where the price archive has MLB games - the market is the real bar (operator 21:09 PT).
+
+PART A (~50 min) - lineup-aware inputs
+1. From the store, point-in-time: starter projection (pitch mix, whiff, platoon vs the actual lineup), bullpen fatigue (pitches thrown in
+   the previous 3 days), lineup quality vs handedness, park. Tests that no row uses a later game. Read 12_EXPLORATORY/mlb_engine/
+   RESULT_W105_3.md's next steps first.
+
+PART B (~50 min) - the model, held out
+1. Run expectancy per team from those inputs -> moneyline / total / run line probabilities; train on season 1, test on season 2.
+   Brier and log loss vs naive and vs the market's line at the same point (archive, MLB 2025 games where present; say n).
+2. Blend view (quant/blend.py): the w of this model vs the market, out of sample. A w ~ 0 is a result.
+
+PART C (~30 min, switch here whenever B waits) - where it is going
+1. 12_EXPLORATORY/mlb_engine/RESULT_W106_4.md: plain English (does lineup awareness move it?), the next three steps, and the date the MLB
+   engine could start logging in spring (pre-registration before its first row, then).
+
+Report: per COMMON RULES. MEASURE MOVED: D4 MLB data layer -> factor classes PIT (starter, bullpen, lineup, park); held-out vs naive / vs
+market. Operator decisions: none.
+END OF BLOCK 106.4
+```
+
+---
+
