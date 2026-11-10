@@ -150,14 +150,12 @@ const WAVES = [
   {w:"104–106", k:"neg", t:"The cost wall.",
    d:"Pot of gold grafted (router 5 branches). <b>Trading cost 1.5–2.3¢ on game lines, 4–8¢ on props; maker loses everywhere</b>. Ride / fade 0 cells net, pot of gold 0 of 17, MLB props 0 of 50, NBA blend w ≈ 0, MLB engine loses to the market."},
   {w:"107", k:"neg", t:"The whole record on one page.",
-   d:"<b>Edge map: 39 hypotheses, none survives costs forward</b>. News speed: injury news moves the line ~0.3¢ in 20 min — below cost. NBA v3 does not lead Kalshi. Strategy recommendation sent."},
+   d:"<b>Edge map: 39 hypotheses, none survives costs forward</b>. News speed: injury news moves the line ~0.3¢ in 20 min — below cost. NBA v3 does not lead Kalshi. You: the build continues on every lane — negative results are expected for a while."},
   {w:"108", k:"now", t:"Close the last sports gaps; scope weather.",
    d:"Untested edge rows on the NBA / NHL archive · news lag at trade-print resolution · NBA / NFL / NHL props net of costs · Kalshi weather vs NOAA (research only)."},
 ];
 
 const DESK = [
-  {a:"var(--serious)", t:"Strategy: where to look for edge", c:"Recommended 11-10",
-   d:"39 edge ideas tested, none survives costs. Recommendation: stop new edge-hunting builds on liquid sports lines; let the 14 accruing tests read; close the last sports gaps (W108); scope one market class with strong free data (weather). <b>Accept, change, or keep building sports depth?</b>"},
   {a:"var(--warn)", t:"Ride board install", c:"The box's only red",
    d:"<span class='mono'>ride_board_install</span> adds one crontab line (paper, orders OFF). Needed for the ride cells' looks."},
   {a:"var(--warn)", t:"NBA second look (GG-529)", c:"Before January",
