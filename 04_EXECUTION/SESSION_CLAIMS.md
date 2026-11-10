@@ -1201,3 +1201,4 @@
 | 2026-11-06T05:59:08Z | W105.4-B-053 | CLOSED — merge confirmed, HEAD (68ca446) is ancestor of origin/main — ride/fade board merged (PR #446) + handoff on main |
 | 2026-11-06T06:02:56Z | W105.2-B-052 | CLOSED — W105.2 B-052: order-context fields logged (PR #440), GG-1793/1794/1810 resolved, placement study merged (PR #443). (commit `52638e3`) |
 | 2026-11-06T06:03:14Z | W105.2-B-052 | CLOSED — merge confirmed, HEAD (dd63e6a) is ancestor of origin/main — W105.2 order data + placement study merged (PRs #440, #443), handoff on main |
+| 2026-11-10T01:14:32Z | TBD | W106.1 B-056 STANDARD - land #447 (strip nav files) + graft POT_OF_GOLD into router.py + ROUTER_TREE.md. PURPOSE: BREADTH B1 pot-of-gold cells routed 0->17 (paper), router branches 4->5 |
