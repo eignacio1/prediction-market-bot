@@ -20,6 +20,7 @@
     <div class="lbl">Position</div>
     <a class="nv" href="#state"><span class="ic">◉</span>State of the system</a>
     <a class="nv" href="#picks"><span class="ic">✓</span>Tonight's picks<span class="ct" id="nvPicks"></span></a>
+    <a class="nv" href="#edgemap"><span class="ic">▦</span>Edge map<span class="ct" id="nvEdge"></span></a>
     <a class="nv" href="#backlog"><span class="ic">☰</span>Rolling backlog<span class="ct" id="nvBacklog"></span></a>
     <a class="nv" href="#distance"><span class="ic">◎</span>Distance to optimum<span class="ct">13</span></a>
     <a class="nv" href="#verdicts"><span class="ic">⊢</span>Verdict board<span class="ct" id="nvVerd"></span></a>
@@ -142,6 +143,13 @@
   fees. Click a game to open its picks (side, probability, Kalshi price, edge, order, why). Switch to Yesterday for results.
   Source: <span class="mono">exp_output/PICKS_SHEET/</span>.</p>
   <div id="pkHost"></div>
+</section>
+
+<section id="edgemap">
+  <div class="sechead"><h2>Edge map</h2><span class="num" id="emHead"></span></div>
+  <p class="lede">Every edge idea tested so far, grouped by family. Green only when net is above zero held out (operator 2026-10-19:
+  &ldquo;green means it wins&rdquo;); a green row still carries its caveat. Source: <span class="mono">12_EXPLORATORY/edge_map/edge_map.json</span>.</p>
+  <div id="emHost"></div>
 </section>
 
 <section id="backlog">

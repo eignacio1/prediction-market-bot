@@ -219,6 +219,24 @@ def backlog() -> dict:
     return rolling_backlog.load(ROOT)
 
 
+def edge_map() -> dict:
+    """The edge map (W107.1, B-059): 12_EXPLORATORY/edge_map/edge_map.json. Missing, unparseable or malformed returns ok=False
+    with the reason so the panel says so instead of drawing a wrong picture."""
+    path = ROOT / "12_EXPLORATORY" / "edge_map" / "edge_map.json"
+    try:
+        doc = json.loads(path.read_text())
+    except (OSError, ValueError) as e:
+        return {"ok": False, "error": f"edge_map.json: {type(e).__name__}"}
+    need = ("id", "family", "hypothesis", "sport", "gross", "cost", "net", "n", "interval", "status", "next_look", "held_out_net_positive")
+    rows = doc.get("rows") if isinstance(doc, dict) else None
+    if not isinstance(rows, list) or not rows:
+        return {"ok": False, "error": "edge_map.json: no rows"}
+    for r in rows:
+        if not isinstance(r, dict) or any(k not in r for k in need):
+            return {"ok": False, "error": "edge_map.json: a row is missing required fields"}
+    return {"ok": True, "built": doc.get("built", ""), "green_rule": doc.get("green_rule", ""), "rows": rows}
+
+
 def calendar_age() -> dict:
     """Generated-at time and age of PROOF_CALENDAR.md (W102.4 Part C); red when older than one day."""
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
@@ -270,7 +288,7 @@ def render() -> tuple[str, str]:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())).replace("__CALAGE__", js(calendar_age())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())).replace("__CALAGE__", js(calendar_age())).replace("__EDGEMAP__", js(edge_map())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     return html, sha
 
