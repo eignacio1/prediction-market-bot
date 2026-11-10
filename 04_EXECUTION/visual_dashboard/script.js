@@ -163,6 +163,7 @@ const WINERR = __WINERR__;
 const GAGENT = __GAGENT__;
 const MUSEWEB = __MUSEWEB__;
 const BACKLOG = __BACKLOG__;
+const EDGEMAP = __EDGEMAP__;
 const PICKS = __PICKS__;
 const CALAGE = __CALAGE__;
 const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
@@ -436,6 +437,27 @@ function picksSheet(){
   host.querySelectorAll('.pk-fil').forEach(f=>f.querySelectorAll('button').forEach(b=>b.onclick=()=>{ f.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
     const sp=b.dataset.sp, box=f.nextElementSibling; box.querySelectorAll('.pk-g').forEach(r=>{ const show=!sp||r.dataset.sp===sp; r.hidden=!show; if(!show){ const d=document.getElementById('pkd'+r.dataset.k); if(d) d.hidden=true; } }); }));
   host.querySelectorAll('.pk-more').forEach(b=>b.onclick=e=>{ e.stopPropagation(); document.getElementById('pkm'+b.dataset.k).hidden=false; b.remove(); });
+}
+
+/* ---------- EDGE MAP ---------- */
+function edgeMap(){
+  const D=EDGEMAP, host=$('#emHost');
+  if(!D||!D.ok){ host.innerHTML=`<div class="card em-err"><b>The edge map's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong picture.</div></div>`; $('#emHead').textContent='source invalid'; $('#nvEdge').textContent='!'; return; }
+  const CLS={'RULED_OUT':'crit','NO EFFECT NET':'','ACCRUING':'warn','UNTESTED':''};
+  const cnt={}; D.rows.forEach(r=>cnt[r.status]=(cnt[r.status]||0)+1);
+  $('#emHead').textContent=D.rows.length+' hypotheses · '+Object.entries(cnt).map(([k,v])=>v+' '+k.toLowerCase()).join(' · ');
+  $('#nvEdge').textContent=D.rows.length;
+  const fams=[]; D.rows.forEach(r=>{ if(!fams.includes(r.family)) fams.push(r.family); });
+  let h='';
+  for(const f of fams){
+    h+=`<h3 class="em-fam">${esc(f)}</h3><div class="em-wrap"><table><thead><tr><th>Hypothesis</th><th>Sport</th><th>Gross</th><th>Cost</th><th>Net</th><th>n</th><th>Interval</th><th>Status</th><th>Next look</th></tr></thead><tbody>`;
+    for(const r of D.rows.filter(x=>x.family===f)){
+      const green=r.held_out_net_positive===true, c=green?'good':(CLS[r.status]||'');
+      h+=`<tr><td>${esc(r.hypothesis)}</td><td>${esc(r.sport)}</td><td>${esc(r.gross)}</td><td>${esc(r.cost)}</td><td>${esc(r.net)}</td><td>${esc(r.n)}</td><td>${esc(r.interval)}</td><td><span class="em-st ${c}">${esc(r.status)}${green?' · net&gt;0 held out':''}</span></td><td>${esc(r.next_look)}</td></tr>`;
+    }
+    h+='</tbody></table></div>';
+  }
+  host.innerHTML=h;
 }
 
 /* ---------- ROLLING BACKLOG ---------- */
@@ -721,7 +743,7 @@ function museWeb(){
   const ro=new ResizeObserver(()=>fit()); ro.observe(host); fit();
 }
 
-distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); backlog(); picksSheet(); calendarAge();
+distance(); forest(); bars('#funnel',FUNNEL); matrix(); arms(); timeline(); desk(); integrity(); govCounts(); museWeb(); edgeMap(); backlog(); picksSheet(); calendarAge();
 bars('#sevBars',SEV); bars('#asymBars',ASYM);
 $('#tblBtn').addEventListener('click',()=>{
   const t=$('#forestTable'); t.classList.toggle('hidden');
