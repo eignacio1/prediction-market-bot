@@ -149,16 +149,15 @@
 
 <section id="edgemap">
   <div class="sechead"><h2>Edge map</h2><span class="num" id="emHead"></span></div>
-  <p class="lede">Every edge idea tested so far, grouped by family. Green only when net is above zero held out (operator 2026-10-19:
-  &ldquo;green means it wins&rdquo;); a green row still carries its caveat. Source: <span class="mono">12_EXPLORATORY/edge_map/edge_map.json</span>.</p>
+  <p class="lede">Every edge idea tested so far. Each family's bar shows where its ideas stand; open a family to see them, open an idea
+  for its numbers. Green only when net is above zero held out (operator 10-19: &ldquo;green means it wins&rdquo;).</p>
   <div id="emHost"></div>
 </section>
 
 <section id="backlog">
   <div class="sechead"><h2>Rolling backlog</h2><span class="num" id="blHead"></span></div>
-  <p class="lede">Every piece of work in scope, in one ordered list, so all blocks are in view at once (operator 2026-10-30). Grouped
-  NOW / NEXT / LATER / PARKED in the file's order; the strategic window moves tickets when you say so or the project needs it.
-  Source: <span class="mono">04_EXECUTION/ROLLING_BACKLOG.json</span>.</p>
+  <p class="lede">All work in scope, in order (operator 10-30). Open a ticket for what it moves and why; finished and parked work is
+  folded away at the bottom.</p>
   <div id="blHost"></div>
   <div id="caHost"></div>
 </section>
@@ -314,7 +313,7 @@
   verified, applied) and the tickets feeding it → for the PAM workstreams, the taxonomy groups and every archetype.
   <span class="mw-k b"></span>built · <span class="mw-k p"></span>pending (a ticket or block is open) · <span class="mw-k f"></span>future (no ticket yet).
   Muse scouts and records; the bot verifies and applies.</p>
-  <div class="grid g4 mw-tiles" id="mwTiles"></div>
+  <div class="mw-stats" id="mwTiles"></div>
   <div class="card mw-stage">
     <div class="toolbar mw-tools" id="mwFilters"></div>
     <div class="mw-canvas">
@@ -323,7 +322,7 @@
       <aside class="mw-panel" id="mwPanel"></aside>
     </div>
   </div>
-  <div class="card mw-opencard"><h3>Open now</h3><div class="cap">Every workstream with a pending step and what that step waits on. Click to find it in the graph.</div><div class="mw-open" id="mwOpen"></div></div>
+  <details class="card mw-opencard"><summary><h3>Open now</h3><span class="cap">Workstreams with a pending step and what each waits on. Click one to find it in the graph.</span></summary><div class="mw-open" id="mwOpen"></div></details>
   <div class="cap mw-src" id="mwSrc"></div>
 </section>
 

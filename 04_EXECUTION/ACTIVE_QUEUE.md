@@ -211,6 +211,8 @@ END OF BLOCK 108.4
 
 ### 108.5 - RED ALERT (DASHBOARD STALE + MEMORY CAP) - added 2026-11-10 ~05:45 UTC at the window's finding
 
+**UPDATE 06:15Z (window):** the stale-page half is fixed by the window (scripts/web_dashboard.py: /visual and /project caches keyed on the checkout HEAD, so every pull rebuilds them; PR below). Operator 21:42 PT: "It's not like it's live anyway." **Paste 108.5 only for the memory cap** (Parts A.1 memory reads, B.2, C memory read); skip B.1. Otherwise it folds into Wave 109.
+
 ```
 WAVE 108 - BLOCK 108.5 - RED ALERT - THE VISUAL DASHBOARD SERVES A STALE PAGE; ITS SERVICE SITS AT ITS MEMORY CAP
 

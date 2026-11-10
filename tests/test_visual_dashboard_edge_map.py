@@ -47,12 +47,12 @@ def test_malformed_row_is_an_error(tmp_path, monkeypatch):
 
 def test_green_only_when_net_positive_held_out():
     fn = _fn()
-    # green comes solely from the held-out flag, never from a status
-    assert "green=r.held_out_net_positive===true" in fn
-    assert "'good'" in fn and fn.count("good") == 1
+    # green comes solely from the held-out flag, never from a status (redesign SW-9 2026-11-10: family bars + folded rows)
+    assert "r.held_out_net_positive===true?'NET POSITIVE':r.status" in fn
+    assert "'NET POSITIVE':'pos'" in fn and fn.count("'pos'") == 1
     css = (VD / "head.html").read_text()
-    pcss = css[css.index("EDGE MAP"):css.index("@media print{")]
-    assert "--good" in pcss
+    assert ".em-dot.pos,.em-bar .pos{background:var(--good)}" in css
+    assert css.count("var(--good)}") >= 1 and ".em-dot.acc" in css
 
 
 def test_every_green_row_is_flagged_in_the_data():

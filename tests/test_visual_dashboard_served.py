@@ -35,3 +35,12 @@ def test_visual_route_serves_200():
 def test_launcher_opens_the_live_page_not_a_file():
     cmd = (ROOT / "Open Visual Dashboard.command").read_text()
     assert "/visual" in cmd and ".html" not in cmd
+
+
+def test_page_caches_key_on_checkout_head():
+    """/visual and /project rebuild when the checkout moves (docs-only pulls do not restart the service)."""
+    import re
+    src = (pathlib.Path(__file__).resolve().parent.parent / "scripts" / "web_dashboard.py").read_text()
+    assert src.count("key=_checkout_head()") == 2
+    head = wd._checkout_head()
+    assert head is None or re.fullmatch(r"[0-9a-f]{40}", head)
