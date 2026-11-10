@@ -1,0 +1,3 @@
+
+## W106.2 — the cost wall (2026-11-10)
+We measured what a trade costs before any edge. Buying and selling on game lines costs about 1.5–2.3¢ per contract each way; player props and team totals cost 4–8¢. Resting orders instead of crossing the spread still lose money in every price bucket. Put against that wall, the fades we found earlier all lose; the only things that clear it are the 11 longshot cells held to settlement, which are in-sample so far. One check is not done: confirming Kalshi's fees against our own demo fills, because the safety classifier blocked the read. No real money at risk, nothing live changed.

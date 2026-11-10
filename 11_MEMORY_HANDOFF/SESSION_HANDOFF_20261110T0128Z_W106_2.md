@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W106.2-B-057
+tier: STANDARD
+timestamp: 2026-11-10T01:28:00Z
+commit: 6a387d5
+one_line_summary: W106.2 B-057 cost wall measured (taker 1.5-2.3c/side, maker net negative in every bucket); demo-fee check blocked
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E2 / P2
+gap_delta: net-of-cost rows 0->8; maker-positive cells 0 (12_EXPLORATORY/quant_w106_costs/RESULT.md @ 0e612b8)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION HANDOFF - W106.2 B-057 The cost wall
 Status: PARTIAL | B-057: partial (wall measured; demo-fee confirmation blocked) | branch session/20261110T011344Z-w106-2-cost-wall | PR #448 merged (squash 1f2db70), CI test pass 4m57s read before merge
 One line: a trade costs ~1.5-2.3c each way as taker (props 4-8c), maker nets -0.6 to -4.3c per fill in every bucket; only the 11 in-sample 89.2 hold-to-settle cells clear it.
