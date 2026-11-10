@@ -1212,3 +1212,4 @@
 | 2026-11-10T01:48:49Z | W106.1-B-056 | CLOSED — merge confirmed, HEAD (d6bbda2) is ancestor of origin/main — pot-of-gold graft landed (#447, #451) |
 | 2026-11-10T02:02:58Z | W106.4-B-018 | CLOSED — merge confirmed, HEAD (88ca142) is ancestor of origin/main — W106.4 B-018: lineup-aware MLB model; PR #449 merged (8bab993), results+handoff on main (88ca142); loses to Kalshi closing line, blend w=0 |
 | 2026-11-10T02:13:28Z | GG-reserve-3, no T- | W107.2 B-060 STANDARD - news-lag event study (NBA injury reports vs Kalshi snapshots) + prepared news_burst_capture_install. PURPOSE: BREADTH/EXECUTION - information-speed edge family measured for N news types (0->N), net window vs 106.2 cost wall |
+| 2026-11-10T02:13:56Z | TBD | W107.3 B-061 ENGINE - NBA availability lead v3 vs Kalshi (analysis-only). PURPOSE: DEPTH D4 NBA |
