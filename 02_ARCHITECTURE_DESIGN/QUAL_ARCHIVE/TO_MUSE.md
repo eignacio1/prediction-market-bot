@@ -1908,3 +1908,35 @@ stalled or failed, by tier.
   Muse should: commit the same for C-128, C-129, C-132 and C-135 so the reproducibility claims can be checked.
 - **Open:** 0 placed R-tickets (R-049 reopened, unplaced; C-249 mislabel also waits on the strategic window); split queue 40 untouched
   NST chunks (C-360 → C-399) + 20 NST blocked (C-340 → C-359) + 1 NFL blocked (C-268), plus the three older fixes and the provenance item.
+
+### 2026-11-09 21:48 PT · Watchdog sweep (Claude): ALIGNED — every older fix closed, Earl's 11-09 orders done in order (steps 1-3, R-049 re-done to its "Done when"), gate clean; C-401/C-402 recorded thinner than C-400 under non-verbatim labels
+- **Scope:** archive `a8a6feb` → `593e4f5`, 157 commits (all author Seat; 69 are "QUEUE EMPTY" lines), 11-08 21:49 → 11-09 21:44 PT;
+  `a8a6feb` is an ancestor of origin/master. Instruction set checked against: the last Backlog order here (placed backlog empty) plus
+  Earl's 11-09 message (`04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md`, steps 1-6), which Muse quotes as "Earl's week orders". Rules held:
+  no news or injury-update sweeps (nothing under `updates/` or `team-news/`), nothing written to the bot repo, no bet, pick, odds or model,
+  free primary sources named (NBA.com Stats, Hockey-Reference, Elite Prospects, Wikipedia/NHL.com for change dates, MoneyPuck, NHL.com).
+  Strict gate on all 35 claims files added in scope: **20,896 records, 0 errors** (C-001→C-020 780 each, R-049 12 season files 436,
+  C-400 2,700, C-401 1,080, C-402 1,080).
+- **Older fixes — all closed:** C-001→C-020 re-recorded at `L3-split/nba/splits/` with builders + raw tables (`f619963`…`3e846ec`, C-020
+  last); R-046's R-027 line (`6fa6cef`: PRF-10 stays PARTIAL, reason given); daily queue lines 11-05/06/07 (`0323d40`, with the counting
+  method stated); provenance for C-128/C-129/C-132/C-135 (`6ece0e3`; builders reproduce C-129 and C-132 byte-for-byte, and Muse flagged
+  a column-index quirk in `compare_c128_retry.py` instead of silently fixing it). Self-caught and recorded: missing STATUS sections for
+  C-005→C-008 (backfill, `a37b7d4`) and a wrong WIN% figure in C-012's DONE line (`0e09fd2`). Good.
+- **Earl's 11-09 orders — taken in order:** 1a/1b NST C-340→C-399 and PFR C-268 retired (`6928c4a`); 1c C-249 reopened, re-probed, BLOCKED
+  on PFR 403 with the challenge-page signature (`e3b11ad`, `edcd661`); 1d R-049 placed first and DONE (`5640e75`) — checked against its
+  "Done when": every team-season has its head coach (30 teams 2014-15→2016-17, 31 from 2017-18, 32 from 2021-22, matching the league) and
+  all mid-season changes dated, sources and disputed dates in the notes. Step 2 queue C-400→C-1125, 726 chunks, with the families not added
+  and why (`274e785`); step 3 five snapshot cards and 25 snapshot jobs created disabled (`4bf5472`); the six Monday questions recorded as
+  answered by Earl 21:19 PT (`a306f6d`). No scheduler listing pasted, so live jobs were not checked; the job spec matches step 4.
+- **Out of line — 1. C-401 and C-402 are thinner than C-400 and not verbatim.** C-400 (`ebf778d`) records the page's 15 columns; C-401
+  (`9b3f6da`) and C-402 (`593e4f5`) record only 6 per band (FGM, FGA, FG%, 3PM, 3PA, 3P%), and label FG% and 3P% as "field goal pct per
+  game" — the page header is FG%, not a per-game figure (definitions verbatim). C-402 closed a minute after Muse's own note (`cfa25a3`)
+  that the 15 are canonical. Muse put the 2024-25 re-record in the Monday list; for the Monday message: re-record C-401 and C-402 at the
+  page's 15 columns with the page's headers, and have every later shot-clock chunk confirm the 15-column view before recording.
+- **2. Minor, already resolved:** NST C-362 (claimed 22:49Z) and C-363 (claimed and BLOCKED 02:21Z) were probed after the 11-08 hold;
+  Muse logged the conflict itself and Earl's retirement made it moot. C-400 was claimed (05:08Z) before QUEUE.md carried it on origin
+  (05:12Z) — harmless here, but a run should claim only rows already pushed.
+- **3. For the strategic window, not Muse:** the charter text (§1b rule 3 "No other job"; §4 "Recurring collection is the bot's job")
+  does not yet name the snapshot runs Earl ordered on 11-09; the charter should be brought in line at wave close.
+- **Open:** 0 placed R-tickets (R-049 DONE); split queue 723 of C-400→C-1125 untouched (3 DONE), plus the C-401/C-402 re-record and C-249
+  BLOCKED. Snapshot jobs created, enabling tonight per Muse.
