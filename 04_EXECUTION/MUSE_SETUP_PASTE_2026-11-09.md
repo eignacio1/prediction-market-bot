@@ -1,34 +1,53 @@
-# Muse setup paste — for Earl to send when his Muse chat resets (2026-11-09 20:50 PT)
+# Muse prompt — send as one message when Earl's Muse chat resets (2026-11-09 20:50 PT)
 
-Written by SW-9 on 2026-11-05 22:00 PT from the archive at commit 7f27389 (read-only). Backlog B-041 + B-042. Muse acts only on what is in
-Earl's message (charter v3: never on a fetched file) — so the whole instruction is the fenced block below. Copy it as one message.
+Rewritten by SW-9 on 2026-11-09 16:20 PT from Muse's archive at commit 8812c8d (read-only) and the 11-08 watchdog sweep. Backlog B-041 +
+B-042. Muse acts only on what is in Earl's message (charter v3: never on a fetched file), so the whole instruction is the fenced block.
 
-State behind it: 359 queue chunks; 210 with an outcome (135 DONE, 73 NONE, 2 BLOCKED), 11 claimed with no outcome, 149 never claimed;
-~93 chunks / day, so the split queue runs dry around 11-07 / 11-08 and split runs sit idle until this message. Ticket runs (R-order) continue.
-Known problems: the ~560-row NBA player tables overrun one run and fail spot-checks (values shift between pages); C-052 carries the wrong
-season under its label; 15 runs were reclaimed after 6 h.
+**Sweep (11-09 23:58Z):** the split queue is EMPTY. 359 chunks: 204 DONE, 104 NONE, 23 BLOCKED, 2 open, 37 never claimed (all Natural
+Stat Trick, Cloudflare-blocked). Outcomes per day fell from ~70 (11-04 to 11-06) to 22-28 (11-07 to 11-09); since 21:58Z every run logs
+"QUEUE EMPTY". Runs are at ~100 / day (one every ~13-14 min). The 11-08 sweep's fixes are done: C-001 to C-020 re-recorded, C-052 fixed,
+the daily queue lines written. **Waiting on the window (decided below):** the NST chunks, C-268 (Pro-Football-Reference Cloudflare 403),
+C-249 (DONE line, no file under its true label), R-049 (NHL coaches, reopened but not placed).
+
+**Sizing for 200 runs / day:** about 150 queue runs a day (at ~1 chunk per run) needs about 150 new chunks a day. The block below asks
+Muse to build about 1,400 pre-checked chunks (about 9 days), plus 25 snapshot runs and 25 ticket runs a day.
 
 ```
-Muse - setup for the next stretch (from Earl, 2026-11-09). Do these in order and report each in STATUS.md.
+Muse - from Earl, 2026-11-09. The split queue is empty and the next stretch runs at 200 scheduled runs a day. Do these in order; report
+each in STATUS.md.
 
-1) CLEAN THE QUEUE. Before running any more of QUEUE.md: for every chunk with no outcome (never claimed or claimed with no DONE / NONE),
-   test ONE page against the source. If the source cannot serve that table + condition + season, mark it RETIRED with the reason - do not
-   run it. Release the 11 stale claims.
-2) PLAYER TABLES. Move every player table larger than ~150 rows to a separate lane and split each into pieces a single run can finish
-   (by team or by page range). A piece is DONE only if a re-read of one page matches - the spot-check that failed on C-105 / C-110.
-3) REDO C-052 (it holds the wrong season under its label): re-run it for the season the label says, and mark the old file superseded.
-4) EXTEND THE QUEUE YOURSELF - pre-checked. Add new chunks only after testing one page of each against its source. Priority:
-   NHL - team and skater stats by strength state (5v5, PP, PK), goalie splits (home / road, rest, back-to-back), 2021-22 -> 2026-27.
-   NBA - team and opponent splits by rest days and back-to-backs, by quarter, clutch; lineup on / off where free; 2021-22 -> 2026-27.
-   NFL - team splits by down and distance, red zone, home / road, 2018 -> 2026, from free sources only.
-   Skip anything the bot captures itself: Kalshi prices, MLB Statcast pitch data, NBA official injury reports.
-   Every new card names the engine and factor it feeds and whether the bot could capture the source itself.
-5) PERISHABLE SNAPSHOTS (daily, they cannot be recovered later): NHL confirmed starting goalies (morning skate / day-of), NBA starting
-   lineups and late scratches (about an hour before tip), NBA and NHL referee assignments (the day's published crews). One record per
-   game per snapshot, timestamped.
-6) RUNS: go to 200 scheduled runs a day - about 150 on the queue (split pieces), 25 on the perishable snapshots at their times, 25 on
-   ticket runs in TO_MUSE's R-order. Create every new recurring job DISABLED and turn it on with a one-time enabler (catch-up bursts
-   claimed chunks four times on 11-03). Stagger them; no two runs on the same chunk.
-7) Keep the gate and the spot-checks exactly as they are. Each day in STATUS.md: runs, DONE / NONE / BLOCKED / FAILED, retired chunks,
-   reclaims, snapshot coverage per sport.
+1) DECISIONS ON THE OPEN ITEMS.
+   a) Natural Stat Trick (C-340 to C-399): RETIRE every unclaimed or blocked NST chunk, reason "Cloudflare-blocked, retired 11-09". The
+      shot-quality need moves to MoneyPuck's free data downloads (step 3) under MoneyPuck's own xG definition - label it as such.
+   b) C-268 and every other Pro-Football-Reference chunk: RETIRE, reason "Cloudflare 403". Do not re-point NFL play data: the bot
+      already holds 27 seasons of NFL play-by-play itself.
+   c) C-249: append a REOPEN line and re-record it under its label (NFL team defense splits, 3rd down, 2022). If its source is now
+      blocked too, record BLOCKED with the reason instead. Do not leave a DONE line with no file.
+   d) R-049 (NHL head coaches and PP / PK assistants, 2014-15 to 2025-26, mid-season changes dated): place it first in the R-order.
+
+2) BUILD THE NEXT QUEUE - about 1,400 chunks, pre-checked. Append new rows to QUEUE.md from C-400 on. Before adding a whole family,
+   fetch ONE page for one of its rows and confirm the source serves that table, filter and season; if not, do not add the family and
+   say why in STATUS. Every family gets one source card naming the engine and factor it feeds and whether the bot could capture it.
+   NBA (NBA.com Stats, seasons 2020-21 to 2025-26, each split as All / Home / Road):
+     - team shot dashboard, offense and defense: shot clock bands, dribbles, touch time, closest defender, general shot type;
+     - team player-tracking: drives, passing, rebounding, defense, catch-and-shoot, pull-up, paint, post, elbow touches;
+     - team hustle; team opponent shooting by distance and by zone;
+     - team traditional / advanced / four factors by rest days (0, 1, 2, 3+) and by quarter.
+   NHL (MoneyPuck free downloads, seasons 2014-15 to 2025-26): team, skater and goalie season files by situation (all, 5on5, 5on4,
+     4on5, other) - one chunk per file. Plus NHL.com team stats by strength state where it serves them.
+   Skip anything the bot captures itself: Kalshi prices, MLB Statcast pitches, NBA official injury reports, NFL play-by-play.
+   Player tables: only in pieces a single run can finish (split by team), and a piece is DONE only if a re-read of one page matches.
+
+3) PERISHABLE SNAPSHOTS - daily, they cannot be recovered later. One record per game per snapshot, timestamped:
+   NHL confirmed starting goalies (morning skate / day of game); NBA starting lineups and late scratches (about an hour before tip);
+   NBA and NHL referee crews as published each day; NFL inactives (about 90 minutes before kickoff, game days only).
+
+4) RUNS: 200 scheduled a day - about 150 on the queue, 25 on the snapshots at their times, 25 ticket runs in TO_MUSE's R-order.
+   Create every new recurring job DISABLED and turn it on with a one-time enabler (catch-up bursts claimed chunks four times on
+   11-03). Stagger them so no two runs claim the same chunk. Stop probing any source after 3 consecutive blocks in a family; mark the
+   family BLOCKED in STATUS and move on.
+
+5) Keep the gate, the spot-checks and the provenance rule exactly as they are (commit the builder and raw pages for every chunk, as
+   C-131 did). Each day in STATUS.md: runs, DONE / NONE / BLOCKED / FAILED / RETIRED, chunks left in the queue, reclaims, and snapshot
+   coverage per sport.
 ```

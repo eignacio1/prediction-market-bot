@@ -63,14 +63,14 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ### B-041 · Fix Muse's split queue: prune unservable chunks, take ~560-row player tables off single runs unless a full-table source exists, redo C-052 (wrong season)
 
-- order 18 · lane: muse · rank: 7 · wave: setup paste ready: 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md (Earl sends 11-09 20:50 PT)
+- order 18 · lane: muse · rank: 7 · wave: Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT
 - **measure:** hard tickets as single-run chunks
 - **why:** Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.
 - **source:** window, stress test 11-03
 
 ### B-042 · Muse to 200 daily runs: a pre-checked queue of thousands of chunks across all four sports, ~25 runs a day on perishable snapshots (injury reports, lineups / starting goalies, referee assignments, Kalshi lines), one setup paste for the operator on 2026-11-09
 
-- order 19 · lane: muse · rank: 7 · wave: setup paste ready: 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md (Earl sends 11-09 20:50 PT)
+- order 19 · lane: muse · rank: 7 · wave: Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT
 - **measure:** daily runs 100 -> 200; perishable snapshots captured daily 0 -> 4 kinds
 - **why:** Operator 11-04 16:29 PT: "I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back"; 16:31 PT: "Sit on it for now - the next window upon handoff will need to operate on it". Operator's Muse chat is out of usage until 11-09 20:50 PT.
 - **source:** operator 2026-11-04
