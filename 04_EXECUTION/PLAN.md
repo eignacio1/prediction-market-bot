@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-10T02:28:00Z (W107.3 — W107.3 B-061 NBA availability lead: no evidence v3 leads Kalshi (42 games, descriptive); coverage 3 of 3 confirmed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261110T0224Z_W107_3.md` for full session detail.
+**Last reviewed:** 2026-11-10T02:26:00Z (W107.1 — W107.1 B-059 edge map delivered: 39-hypothesis EDGE_MAP.md/json plus /visual panel (#452), no verdicts changed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261110T0226Z_W107_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

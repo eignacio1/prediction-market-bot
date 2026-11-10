@@ -4,3 +4,4 @@ We measured what a trade costs before any edge. Buying and selling on game lines
 
 **W106.1 — pot-of-gold graft.** The bot's single decision tree now has a fifth branch for long-shot bets, so it can route fade, ride, momentum, long-shot or no-bet. All of it is paper only: the 17 long-shot cells have only been tested on past data, so none can place an order yet. Still zero real money at risk. Next step is testing them on settled markets they haven't seen.
 - W107.3 (auto): W107.3 B-061 NBA availability lead: no evidence v3 leads Kalshi (42 games, descriptive); coverage 3 of 3 confirmed.
+- W107.1 (auto): W107.1 B-059 edge map delivered: 39-hypothesis EDGE_MAP.md/json plus /visual panel (#452), no verdicts changed.
