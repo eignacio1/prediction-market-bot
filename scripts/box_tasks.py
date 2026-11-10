@@ -134,6 +134,26 @@ TASKS: dict[str, str] = {
         "printf 'compact picks panel markers on /visual (0 = old panel still served): '; "
         "curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'pk-tabs' | wc -l"
     ),
+    # W108.5 (READ-ONLY, no redirection): why /visual does not follow main, and how close the unit sits to its memory cap.
+    "dashboard_visual_headline_read": (
+        "printf 'box HEAD: '; git log -1 --format='%h %cI'; printf '/visual headline: '; "
+        "curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'State of the system . [0-9-]* . Wave [0-9]*' | head -1; "
+        "printf '/visual footer build: '; curl -s --max-time 60 http://127.0.0.1:8050/visual | grep -o 'dash-build[^<]*' | head -1; "
+        "systemctl show pmbot-web-dashboard.service -p ActiveEnterTimestamp,NRestarts"
+    ),
+    "dashboard_build_peak_read": f"{PY} scripts/dashboard_build_peak.py",  # W108.5: peak RSS of one build per page, fresh subprocess each
+    "dashboard_journal_read": (
+        "journalctl -u pmbot-web-dashboard.service --since '-1 hour' --no-pager 2>&1 | tail -n 60; "
+        "echo '--- error-ish lines, last hour'; journalctl -u pmbot-web-dashboard.service --since '-1 hour' --no-pager 2>&1 "
+        "| grep -c -i -E 'error|traceback|memoryerror|oom|killed|slow build'"
+    ),
+    "dashboard_cgroup_read": (
+        "cg=/sys/fs/cgroup/system.slice/pmbot-web-dashboard.service; echo '--- memory.events'; cat $cg/memory.events; "
+        "echo '--- memory.peak'; cat $cg/memory.peak 2>&1; echo '--- memory.current / max'; cat $cg/memory.current $cg/memory.max; "
+        "echo '--- memory.stat (anon, file, slab)'; grep -E '^(anon|file|slab|shmem) ' $cg/memory.stat; "
+        "echo '--- cpu.stat'; cat $cg/cpu.stat; "
+        "echo '--- process RSS'; ps -o pid,rss,etime,cmd -C python3 | grep web_dashboard"
+    ),
     "dashboard_pages_read": (
         "for u in / /api/data /visual /project; do printf '%-10s ' \"$u\"; "
         "curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 60 \"http://127.0.0.1:8050$u\"; echo; done; "
