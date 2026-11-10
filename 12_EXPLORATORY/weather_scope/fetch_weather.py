@@ -2,8 +2,10 @@
 Public unauthenticated GETs only. Read-only. Resumable (cache json). Python 3.9.
 Snapshot = 23:00Z on D-1 (day before the target local date D). Forecast = Open-Meteo previous_day1 hourly (the value issued
 24h before each hour); only hours valid by D 23:00Z enter the daily max, so every forecast value was issued by the snapshot."""
-import json, sys, time, urllib.request, urllib.error, datetime as dt, os
+import json, sys, os, time, urllib.request, urllib.error, datetime as dt, os
 from concurrent.futures import ThreadPoolExecutor
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from _fence import safe_out
 
 B = "https://api.elections.kalshi.com/trade-api/v2"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -51,7 +53,7 @@ def markets(ev):
 
 def snap_ts(date_str):
     d = dt.datetime.strptime(date_str, "%Y-%m-%d") - dt.timedelta(days=1)
-    return int(d.replace(hour=23, tzinfo=dt.timezone.utc).timestamp())
+    return int(dt.datetime(d.year, d.month, d.day, 23, tzinfo=dt.timezone.utc).timestamp())
 
 
 def trades_before(ticker, ts):
@@ -69,24 +71,22 @@ def trades_before(ticker, ts):
 
 
 def forecast_max(lat, lon, tz, date_str):
-    u = (f"https://previous-runs-api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&start_date={date_str}"
-         f"&end_date={date_str}&hourly=temperature_2m_previous_day1&temperature_unit=fahrenheit&timezone=UTC&models=gfs_seamless")
-    # request whole UTC window D-1..D+1 so local-day hours are present
     d0 = dt.datetime.strptime(date_str, "%Y-%m-%d")
     s, e = (d0 - dt.timedelta(days=1)).strftime("%Y-%m-%d"), (d0 + dt.timedelta(days=1)).strftime("%Y-%m-%d")
-    u = u.replace(f"start_date={date_str}", f"start_date={s}").replace(f"end_date={date_str}", f"end_date={e}")
+    u = (f"https://previous-runs-api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&start_date={s}"
+         f"&end_date={e}&hourly=temperature_2m_previous_day1&temperature_unit=fahrenheit&timezone=UTC&models=gfs_seamless")
     d = get(u)
     h = d.get("hourly")
     if not h:
         return None
     from zoneinfo import ZoneInfo
     z = ZoneInfo(tz)
-    cut = dt.datetime.strptime(date_str, "%Y-%m-%d").replace(hour=23, tzinfo=dt.timezone.utc)
+    cut = dt.datetime(d0.year, d0.month, d0.day, 23, tzinfo=dt.timezone.utc)
     vals = []
     for t, v in zip(h["time"], h["temperature_2m_previous_day1"]):
         if v is None:
             continue
-        u_ = dt.datetime.strptime(t, "%Y-%m-%dT%H:%M").replace(tzinfo=dt.timezone.utc)
+        u_ = dt.datetime.strptime(t + "+0000", "%Y-%m-%dT%H:%M%z")
         if u_.astimezone(z).strftime("%Y-%m-%d") == date_str and u_ <= cut:
             vals.append(v)
     return max(vals) if len(vals) >= 12 else None
@@ -129,7 +129,7 @@ def main(series_list):
         with ThreadPoolExecutor(8) as ex:
             for r in ex.map(lambda e: day(s, e), todo):
                 done[r["date"]] = r
-        json.dump(sorted(done.values(), key=lambda r: r["date"]), open(path, "w"))
+        json.dump(sorted(done.values(), key=lambda r: r["date"]), open(safe_out(path), "w"))
         print(s, "saved", len(done), flush=True)
 
 

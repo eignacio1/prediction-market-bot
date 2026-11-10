@@ -3,6 +3,8 @@ Per market: model p (Gaussian around forecast max, bias/sigma fit per city on ea
 at the 23:00Z D-1 snapshot. Scores on the later 30%. Trade-toward-model net/contract after exact fee + half-spread proxy."""
 import glob, json, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from _fence import safe_out
 from prediction_market_bot.quant import weather_calib as W
 from prediction_market_bot.quant.scoring import brier_mean, log_loss_mean
 from prediction_market_bot.quant.inference import cluster_bootstrap
@@ -119,7 +121,7 @@ def main():
         if n:
             mean, lo, hi = cluster_bootstrap(d)
             out["net_per_contract"][f"edge>{th}"] = {"n_trades": n, "n_cityDays": len(d), "mean": mean, "lo": lo, "hi": hi}
-    json.dump(out, open(os.path.join(HERE, "results.json"), "w"), indent=1)
+    json.dump(out, open(safe_out(os.path.join(HERE, "results.json")), "w"), indent=1)
     print(json.dumps(out, indent=1))
 
 
