@@ -1206,3 +1206,4 @@
 | 2026-11-10T01:14:53Z | GG-1833..GG-1835 | W106.3 B-058 STANDARD - quant: retail flow, player props + thin markets net of costs (calibration by price x liquidity tier, held-out, Holm/BH). PURPOSE: PROOF/DEPTH - prop families measured net of costs 0->N, net-positive held-out cells |
 | 2026-11-10T01:15:20Z | GG-reserve-3 (no T-) | W106.4 B-018 STANDARD - MLB engine step 2: lineup-aware game model (starter+bullpen+lineup+park, PIT), held out vs naive and vs market. PURPOSE: DEPTH D4 MLB - factor classes PIT 0->4, held-out Brier vs naive/market |
 | 2026-11-10T01:30:42Z | W106.2-B-057 | CLOSED — W106.2 B-057 cost wall measured (taker 1.5-2.3c/side, maker net negative in every bucket); demo-fee check blocked (commit `6a387d5`) |
+| 2026-11-10T01:30:57Z | W106.2-B-057 | CLOSED — merge confirmed, HEAD (ba335a2) is ancestor of origin/main — cost wall measured; demo-fee check blocked |
