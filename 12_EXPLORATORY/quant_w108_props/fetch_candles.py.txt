@@ -1,0 +1,41 @@
+"""W108.3 scratch: sample events per series, batch-fetch hourly candles ending at close_time. Public GET only."""
+import json, sys, time, random, urllib.request, urllib.error, datetime, collections
+B = "https://api.elections.kalshi.com/trade-api/v2"
+random.seed(108)
+def ts(s):
+    return int(datetime.datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=datetime.timezone.utc).timestamp())
+def get(p):
+    for a in range(5):
+        try:
+            return json.load(urllib.request.urlopen(urllib.request.Request(B + p, headers={"User-Agent": "research-client"}), timeout=60))
+        except urllib.error.HTTPError as e:
+            if e.code == 429: time.sleep(2 + 3 * a); continue
+            return None
+        except Exception:
+            time.sleep(2)
+    return None
+EV_CAP, MK_CAP = int(sys.argv[1]), int(sys.argv[2])
+by = collections.defaultdict(lambda: collections.defaultdict(list))
+for l in open("markets.jsonl"):
+    r = json.loads(l)
+    if r.get("result") in ("yes", "no") and float(r.get("volume_fp") or 0) > 0 and r.get("close_time"):
+        by[r["s"]][r["event_ticker"]].append(r)
+out = open("candles.jsonl", "a")
+for s, evs in sorted(by.items()):
+    keys = sorted(evs)
+    pick = random.sample(keys, min(EV_CAP, len(keys)))
+    for ev in pick:
+        ms = random.sample(evs[ev], min(MK_CAP, len(evs[ev])))
+        ct = ts(ms[0]["close_time"])
+        for i in range(0, len(ms), 50):
+            ch = ms[i:i + 50]
+            mx = max(ts(m["close_time"]) for m in ch)
+            d = get("/markets/candlesticks?market_tickers=%s&start_ts=%d&end_ts=%d&period_interval=60" % (",".join(m["ticker"] for m in ch), mx - 2 * 86400, mx + 3600))
+            time.sleep(0.7)
+            if not d: continue
+            meta = {m["ticker"]: m for m in ch}
+            for mk in d["markets"]:
+                m = meta[mk["market_ticker"]]
+                out.write(json.dumps({"s": s, "ev": ev, "t": m["ticker"], "res": m["result"], "open": m["open_time"], "close": m["close_time"], "occ": m.get("occurrence_datetime"), "vol": m.get("volume_fp"), "c": mk["candlesticks"]}) + "\n")
+        out.flush()
+    print(s, len(pick), flush=True)

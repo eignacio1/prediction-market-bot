@@ -85,7 +85,7 @@ structural option and is yours to reopen - nothing is built for it. *Said but no
 |---|---|---|---|---|
 | 108.1 | proof | Close the edge map's untested rows the data can answer; fix its stale archive line; add prop series to the archive | ✅ DONE (install pending) | Edge map 40 rows, UNTESTED 5->4: L03 and new R09 (NBA/NHL ride board, 14d) NO EFFECT NET, Holm 0 of 12 and 0 of 4; stale GG-1330 line fixed; Part C: #456 merged (CI green), 22 prop series (NBA 8, NHL 2, NFL 10) in 3 registered cron lines; archived 0 of 22 until the operator approves `archive_cron_install` by name |
 | 108.2 | quant | News lag at trade-print resolution (Kalshi public trades): is there a minutes-long window the 20-min archive missed | ⏳ pasted? | — |
-| 108.3 | quant | NBA / NFL / NHL props net of costs from Kalshi's public history (MLB was 0 of 50) | ⏳ pasted? | — |
+| 108.3 | quant | NBA / NFL / NHL props net of costs from Kalshi's public history (MLB was 0 of 50) | PARTIAL | data found (public candlesticks), Part B not run; see 12_EXPLORATORY/quant_w108_props/RESULT.md |
 | 108.4 | scoping · 8 | Kalshi weather markets vs free NOAA / NWS forecasts: calibration and net of costs - research only, your decision | DONE (NYC+CHI): PR #454 merged | Two cities: Kalshi beats free GFS forecast (Brier .098 vs .137); trading toward forecast -3.1c/contract net. Not recommending a build; more cities/lows/rain/2nd model not run. SCOPE.md on main. |
 | 108.5 | RED · flex | The visual dashboard serves a stale page and its service sits at its memory cap | ⏳ pasted? | — |
 
