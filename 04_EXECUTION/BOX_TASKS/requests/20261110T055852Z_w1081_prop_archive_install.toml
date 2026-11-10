@@ -1,0 +1,2 @@
+task = "archive_cron_install"
+note = "W108.1 install NBA/NHL/NFL prop archive lines (operator approved by name in chat)"
