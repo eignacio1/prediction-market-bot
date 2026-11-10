@@ -1215,3 +1215,4 @@
 | 2026-11-10T02:13:56Z | TBD | W107.3 B-061 ENGINE - NBA availability lead v3 vs Kalshi (analysis-only). PURPOSE: DEPTH D4 NBA |
 | 2026-11-10T02:15:11Z | TBD | W107.1 B-059 STANDARD - edge map (EDGE_MAP.md + edge_map.json + /visual panel). PURPOSE: PROOF P1/P2 consolidated |
 | 2026-11-10T02:28:03Z | W107.3 | CLOSED — W107.3 B-061 NBA availability lead: no evidence v3 leads Kalshi (42 games, descriptive); coverage 3 of 3 confirmed. (commit `8bdb240`) |
+| 2026-11-10T02:36:14Z | W107.1 | CLOSED — merge confirmed, HEAD (8f1d69a) is ancestor of origin/main — B-059 edge map delivered; panel #452 merged; handoff on main |
