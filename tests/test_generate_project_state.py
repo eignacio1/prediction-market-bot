@@ -127,7 +127,8 @@ class TestProjectRoute:
         monkeypatch.setattr(wd, "_PROJECT_TTL_S", 60.0)
         orig = wd._PROJECT_CACHE["html"]
         st2, body2 = self._get(server, "/project")
-        assert body2 == orig == body  # served from the <=60 s cache
+        # served from the <=60 s cache; the W108.5 build footer is appended per request, so compare the served bytes
+        assert body2 == body and orig and body.startswith(orig.split("</body>")[0]) and 'id="dash-build"' in body
 
     def test_terminal_links_to_project(self):
         assert 'href="/project"' in wd._HTML

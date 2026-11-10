@@ -56,6 +56,7 @@ import json
 import os
 import re
 import gc
+import io
 import subprocess
 import sys
 import threading
@@ -1262,28 +1263,81 @@ _PROJECT_CACHE: dict = {"t": 0.0, "html": ""}
 _PROJECT_TTL_S = 60.0
 _VISUAL_CACHE: dict = {"t": 0.0, "html": ""}
 _VISUAL_TTL_S = 300.0
+_HEAD_WAIT_S = 4.0   # how long a request waits for the rebuild a HEAD change triggers before serving the stale copy
 # 0 disables caching (tests read-after-write); the service default is 20 s.
 _DATA_TTL_S = float(os.environ.get("DASHBOARD_DATA_TTL_S", "20"))
 _DATA_CACHE: dict = {"t": 0.0, "key": "", "body": b""}
 
 
+_RETRY_AFTER_FAIL_S = 15.0   # a failed rebuild is retried this soon (not after a full TTL)
+_REFRESH_DONE: dict[str, threading.Event] = {}
+_HEAD_MEMO: dict = {"t": 0.0, "sha": "unknown"}
+
+
+def _checkout_head() -> str:
+    """Full sha of this checkout's HEAD, re-read at most every 5 s. Unlike _RUNNING_SHA (captured at import, what the process
+    LOADED) this is what is on disk now: a docs-only deploy moves it without restarting the service (W108.5)."""
+    now = time.time()
+    if now - _HEAD_MEMO["t"] < 5.0:
+        return _HEAD_MEMO["sha"]
+    sha = "unknown"
+    try:
+        out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=str(_REPO_ROOT), capture_output=True, text=True, timeout=5)
+        cand = out.stdout.strip()
+        if out.returncode == 0 and re.fullmatch(r"[0-9a-f]{40}", cand):
+            sha = cand
+    except Exception:
+        pass
+    _HEAD_MEMO.update(t=now, sha=sha)
+    return sha
+
+
+def _store(name: str, cache: dict, field: str, ttl: float, build: Callable[[], Any], key: str | None,
+           fallback: Callable[[Exception], Any] | None) -> None:
+    """Run one build (caller holds _BUILD_LOCK) and store it. A failure is LOGGED and recorded on the cache (cache['err'],
+    shown in the page footer); the last good copy is kept and the rebuild retried in _RETRY_AFTER_FAIL_S."""
+    try:
+        value = build()
+    except Exception as exc:
+        msg = f"{type(exc).__name__}: {str(exc)[:160]}"
+        print(f"[dashboard] rebuild of {name} FAILED: {msg}", file=sys.stderr, flush=True)
+        cache.update(err=msg, err_t=time.time())
+        if cache.get(field):                      # keep the last good copy
+            cache["t"] = time.time() - max(ttl, _RETRY_AFTER_FAIL_S) + _RETRY_AFTER_FAIL_S
+            return
+        if fallback is None:
+            raise
+        cache.update(**{field: fallback(exc)}, t=time.time() - max(ttl, _RETRY_AFTER_FAIL_S) + _RETRY_AFTER_FAIL_S)
+        return
+    cache.update(t=time.time(), built_head=_checkout_head(), err="", **{field: value})
+    if key is not None:
+        cache["key"] = key
+
+
 def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callable[[], Any],
-                  key: str | None = None) -> Any:
+                  key: str | None = None, fallback: Callable[[Exception], Any] | None = None,
+                  key_async_wait_s: float | None = None) -> Any:
     """Return cache[field]; build synchronously only when there is none (first request after
-    a start), otherwise serve the stale copy and refresh in the background."""
-    def rebuild() -> None:
+    a start), otherwise serve the stale copy and refresh in the background.
+
+    `key` invalidates the cache when it changes. Default: the next request rebuilds synchronously. With `key_async_wait_s`
+    set, a changed key instead refreshes in the background and the request waits at most that long for it, then serves the
+    stale copy (W108.5: /visual and /project follow the checkout HEAD without ever blocking behind a long build)."""
+    key_changed = key is not None and cache.get("key") != key
+
+    def rebuild(done: threading.Event) -> None:
         try:
             with _BUILD_LOCK:
-                value = build()
-                cache.update(t=time.time(), **{field: value})
-                if key is not None:
-                    cache["key"] = key
+                _store(name, cache, field, ttl, build, key, fallback)
+        except Exception:
+            pass                                   # already logged in _store; the old copy stays served
         finally:
             _release_heap()
             with _REFRESH_GUARD:
                 _REFRESHING.discard(name)
+            done.set()
 
-    have = cache[field] and (key is None or cache.get("key") == key)
+    have = bool(cache[field]) and (not key_changed or key_async_wait_s is not None)
     if not have or ttl <= 0:
         with _REFRESH_GUARD:
             _REFRESHING.discard(name)
@@ -1291,62 +1345,102 @@ def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callabl
         with _BUILD_LOCK:
             if ttl > 0 and cache[field] and cache["t"] >= t_wait and (key is None or cache.get("key") == key):
                 return cache[field]   # another thread built it while we waited for the lock
-            value = build()
-            cache.update(t=time.time(), **{field: value})
-            if key is not None:
-                cache["key"] = key
+            _store(name, cache, field, ttl, build, key, fallback)
         _release_heap()
         return cache[field]
-    if time.time() - cache["t"] >= ttl:
+    if key_changed or time.time() - cache["t"] >= ttl:
+        done = None
         with _REFRESH_GUARD:
             if name not in _REFRESHING:
                 _REFRESHING.add(name)
-                threading.Thread(target=rebuild, name=f"dash-refresh-{name}", daemon=True).start()
+                done = _REFRESH_DONE[name] = threading.Event()
+                threading.Thread(target=rebuild, args=(done,), name=f"dash-refresh-{name}", daemon=True).start()
+            else:
+                done = _REFRESH_DONE.get(name)
+        if key_changed and key_async_wait_s and done is not None:
+            done.wait(key_async_wait_s)
     return cache[field]
 
 
 def _build_project_page() -> str:
-    try:
-        if str(_REPO_ROOT / "scripts") not in sys.path:
-            sys.path.insert(0, str(_REPO_ROOT / "scripts"))
-        import generate_project_state as gps
-        return gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
-    except Exception as e:  # never 500: say what is missing
-        return ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
-                f"<body style='font:14px sans-serif;padding:20px'><p>awaiting generate_project_state ({type(e).__name__})</p>"
-                "<p><a href='/'>Live Terminal</a></p>")
+    if str(_REPO_ROOT / "scripts") not in sys.path:
+        sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+    import generate_project_state as gps
+    return gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
+
+
+def _project_fallback(e: Exception) -> str:  # never 500: say what is missing
+    return ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
+            f"<body style='font:14px sans-serif;padding:20px'><p>awaiting generate_project_state ({type(e).__name__})</p>"
+            "<p><a href='/'>Live Terminal</a></p></body>")
 
 
 def _project_page() -> str:
-    """/project: analytical page regenerated from this checkout, refreshed off-thread every 60 s."""
-    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page)
+    """/project: analytical page regenerated from this checkout, refreshed off-thread every 60 s and whenever the
+    checkout HEAD changes (W108.5)."""
+    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page,
+                         key=_checkout_head(), fallback=_project_fallback, key_async_wait_s=_HEAD_WAIT_S)
 
 
 def _build_visual_page() -> str:
-    try:
-        if str(_REPO_ROOT / "scripts") not in sys.path:
-            sys.path.insert(0, str(_REPO_ROOT / "scripts"))
-        import build_visual_dashboard_html as bvd
-        html, _sha = bvd.render()
-        return html
-    except Exception as e:  # never 500: say what is missing
-        return ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
-                f"<body style='font:14px sans-serif;padding:20px'><p>The Visual Dashboard could not be built ({type(e).__name__}: "
-                f"{str(e)[:200]}).</p><p><a href='/'>Live Terminal</a></p>")
+    if str(_REPO_ROOT / "scripts") not in sys.path:
+        sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+    import build_visual_dashboard_html as bvd
+    html, _sha = bvd.render()
+    return html
+
+
+def _visual_fallback(e: Exception) -> str:  # never 500: say what is missing
+    return ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
+            f"<body style='font:14px sans-serif;padding:20px'><p>The Visual Dashboard could not be built ({type(e).__name__}: "
+            f"{str(e)[:200]}).</p><p><a href='/'>Live Terminal</a></p></body>")
 
 
 def _visual_page() -> str:
     """/visual: the Visual Dashboard (scripts/build_visual_dashboard_html.py) rendered from this checkout, refreshed
-    off-thread every 300 s. The box's checkout follows origin/main, so this is never a stale copy (operator 2026-10-21:
-    one dashboard)."""
-    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page)
+    off-thread every 300 s and whenever the checkout HEAD changes: a docs-only deploy moves HEAD without restarting this
+    service, and the TTL alone left the page up to 5 min behind main (W108.5). The request waits up to _HEAD_WAIT_S for
+    that rebuild so the first load after a deploy is already current."""
+    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page,
+                         key=_checkout_head(), fallback=_visual_fallback, key_async_wait_s=_HEAD_WAIT_S)
+
+
+def _build_footer(cache: dict) -> bytes:
+    """The served-build stamp appended to /visual and /project: which commit the page was built at, when, the checkout HEAD
+    now, and any failed rebuild. Deterministic per request (the age is computed in the browser)."""
+    built = cache.get("t") or 0.0
+    bh = (cache.get("built_head") or "unknown")[:7]
+    head = _checkout_head()[:7]
+    iso = datetime.fromtimestamp(built, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") if built else "never"
+    behind = bool(cache.get("built_head")) and cache.get("built_head") != _checkout_head() and head != "unknown"
+    err = cache.get("err") or ""
+    flag = ""
+    if behind:
+        flag += f" | BEHIND checkout {head}: rebuild pending"
+    if err:
+        err_iso = datetime.fromtimestamp(cache.get("err_t") or 0.0, tz=timezone.utc).strftime("%H:%M:%SZ")
+        flag += f" | LAST REBUILD FAILED {err_iso}: {_html_escape(err)}"
+    color = "#e5a50a" if (behind or err) else "#888"
+    return (f'<div id="dash-build" data-built="{int(built)}" style="font:11px monospace;color:{color};padding:6px 12px">'
+            f'dash-build served page built at {bh} on {iso}, checkout HEAD {head}{flag} '
+            f'<span id="dash-build-age"></span></div>'
+            '<script>(function(){var e=document.getElementById("dash-build"),a=document.getElementById("dash-build-age");'
+            'if(!e||!a)return;var b=+e.dataset.built;function u(){if(b)a.textContent="(age "+Math.max(0,Math.round((Date.now()/1000-b)/60))+" min)"}u();setInterval(u,30000)})()</script>'
+            ).encode("utf-8")
+
+
+def _html_escape(t: str) -> str:
+    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def _build_data_body() -> bytes:
+    """Compact JSON bytes, encoded chunk by chunk so the ~8 MB payload never exists as a str AND a bytes copy (W108.5)."""
     data = _load_all_data()
-    body = json.dumps(data, default=str, separators=(",", ":")).encode("utf-8")
+    buf = io.BytesIO()
+    for chunk in json.JSONEncoder(default=str, separators=(",", ":")).iterencode(data):
+        buf.write(chunk.encode("utf-8"))
     del data
-    return body
+    return buf.getvalue()
 
 
 def _data_body() -> bytes:
@@ -1382,22 +1476,25 @@ class DashboardHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _serve_project(self) -> None:
-        body = _project_page().encode("utf-8")
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store, no-cache")
-        self.end_headers()
-        self.wfile.write(body)
+        self._send_page(_project_page().encode("utf-8"), _PROJECT_CACHE)
 
     def _serve_visual(self) -> None:
-        body = _visual_page().encode("utf-8")
+        self._send_page(_visual_page().encode("utf-8"), _VISUAL_CACHE)
+
+    def _send_page(self, body: bytes, cache: dict) -> None:
+        """Body + served-build footer, spliced before </body> without copying the body (W108.5)."""
+        footer = _build_footer(cache)
+        i = body.rfind(b"</body>")
+        i = len(body) if i < 0 else i
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Length", str(len(body) + len(footer)))
         self.send_header("Cache-Control", "no-store, no-cache")
         self.end_headers()
-        self.wfile.write(body)
+        mv = memoryview(body)
+        self.wfile.write(mv[:i])
+        self.wfile.write(footer)
+        self.wfile.write(mv[i:])
 
     def _serve_data(self) -> None:
         try:
