@@ -91,7 +91,9 @@ def decide_market(m: dict, series: str, now_ts: float, ev: Evidence, hist: list,
         s = Situation(**{**s.__dict__, "move_1h": move_1h(hist, now_ts, mid)})
     r = route(s, ev)
     cell = None
-    if r.tree != NO_BET and mid is not None:
+    if r.cell is not None:  # POT_OF_GOLD carries its own longshot cell, so the order gate sees its real status
+        cell = r.cell
+    elif r.tree != NO_BET and mid is not None:
         cell = ride.decide(series, tier, mid, hs, ev.ride, book_classes(s)).cell
     depth = {k: m.get(k) for k in ("volume_fp", "open_interest_fp", "liquidity_dollars") if k in m}
     return {"decision_id": f"{m.get('ticker')}|{int(now_ts)}", "ts": datetime.fromtimestamp(now_ts, timezone.utc)
@@ -99,7 +101,7 @@ def decide_market(m: dict, series: str, now_ts: float, ev: Evidence, hist: list,
             "sport": s.sport, "tier": tier, "route": r.tree, "side": r.side, "why": list(r.reasons),
             "agreed": r.agreed, "cell_status": getattr(cell, "status", None),
             "cell": None if cell is None else {"tier": cell.tier, "bucket": cell.bucket, "book": cell.book,
-                                               "kind": cell.kind, "net_lo": cell.net_lo},
+                                               "kind": getattr(cell, "kind", "LONGSHOT"), "net_lo": cell.net_lo},
             "yes_bid": yb, "yes_ask": ya, "mid": mid, "half_spread": hs, "move_1h": s.move_1h, "book": depth}
 
 
