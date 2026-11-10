@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 108 READY TO PASTE - four blocks in NOW (108.1 untested rows, 108.2 news lag at trade resolution, 108.3 NBA / NFL / NHL props, 108.4 weather scoping - research only).** Written 2026-11-10 ~03:40 UTC by SW-9. **Waiting on you:** `ride_board_install`; the EXP-038 second-look draft.
+> **▶ WAVE 108 IN FLIGHT - four blocks sent; 108.5 RED ALERT added 05:45Z (stale /visual, dashboard at its memory cap) - paste it into a fifth terminal. NOW (108.1 untested rows, 108.2 news lag at trade resolution, 108.3 NBA / NFL / NHL props, 108.4 weather scoping - research only).** Written 2026-11-10 ~03:40 UTC by SW-9. **Waiting on you:** `ride_board_install`; the EXP-038 second-look draft.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -87,6 +87,7 @@ structural option and is yours to reopen - nothing is built for it. *Said but no
 | 108.2 | quant | News lag at trade-print resolution (Kalshi public trades): is there a minutes-long window the 20-min archive missed | ⏳ pasted? | — |
 | 108.3 | quant | NBA / NFL / NHL props net of costs from Kalshi's public history (MLB was 0 of 50) | ⏳ pasted? | — |
 | 108.4 | scoping · 8 | Kalshi weather markets vs free NOAA / NWS forecasts: calibration and net of costs - research only, your decision | ⏳ pasted? | — |
+| 108.5 | RED · flex | The visual dashboard serves a stale page and its service sits at its memory cap | ⏳ pasted? | — |
 
 ### 108.1 - PROOF (CLOSE THE UNTESTED ROWS)
 
@@ -206,6 +207,45 @@ PART C (~30 min, switch here whenever A or B waits) - the scoping memo
 
 Report: per COMMON RULES. MEASURE MOVED: none on the board (scoping). Operator decisions: whether weather becomes a direction - his alone.
 END OF BLOCK 108.4
+```
+
+### 108.5 - RED ALERT (DASHBOARD STALE + MEMORY CAP) - added 2026-11-10 ~05:45 UTC at the window's finding
+
+```
+WAVE 108 - BLOCK 108.5 - RED ALERT - THE VISUAL DASHBOARD SERVES A STALE PAGE; ITS SERVICE SITS AT ITS MEMORY CAP
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W108.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W108_5.md. Every part runs on data that exists now.
+File ownership (no other 108 block touches these): scripts/web_dashboard.py, scripts/ops/vps_deploy.sh, scripts/box_tasks.py (new READ
+tasks only), the dashboard's systemd unit file in deploy/ (prepared, not installed), their tests.
+
+PURPOSE: PLUMBING (red). The operator reviews the project on /visual. The window updated 04_EXECUTION/visual_dashboard/body.html at
+38d0fb1 (state of the system dated 2026-11-10 · Wave 108). The box pulled it (deploy status docs_only, box HEAD e187e8cc, 05:38Z), but
+four box reads 05:37-05:40Z served the same /visual (4,466,696 B) and pmbot-web-dashboard sat at MemoryCurrent 134,066,176 of
+MemoryMax 134,217,728 (results 04_EXECUTION/BOX_TASKS/results/20261110T05*_dashboard_pages_read.md). Two defects: (1) a docs-only push
+never restarts the dashboard, so /visual depends on the 300 s background refresh, which is not landing; (2) the service has no memory
+headroom (GG-118 was an OOM crash-loop on this same service).
+
+PART A (~25 min) - why the refresh does not land (read-only on the box)
+1. Add READ-only box tasks (no '>' character - the allowlist guard rejects it): the /visual headline marker
+   (curl /visual | grep -o 'State of the system · [0-9-]* · Wave [0-9]*'), the dashboard's journal for the last hour (refresh thread
+   errors, MemoryError, slow builds), and the cgroup memory.events / memory.stat for the unit. Run them; quote the output.
+2. State the cause in one sentence: refresh thread stuck, build lock starved by /api/data, memory throttling, or other.
+
+PART B (~45 min) - the fix
+1. web_dashboard.py: /visual (and /project) rebuild when the checkout HEAD changes, not only on the timer (key the cache on the HEAD
+   sha), and a failed or stuck rebuild is logged and visible on the page footer (age of the served build).
+2. Memory: measure the peak of one /visual build and one /api/data build; cut what is cheap (do not keep two copies of the 8 MB body;
+   release after build). If headroom still needs MemoryMax raised, PREPARE the unit change as ONE allowlisted install task and name it -
+   the operator approves it by name; do not run it.
+3. Tests; PR; merge on green.
+
+PART C (~15 min) - proof
+1. After the deploy: the headline marker read returns "State of the system · 2026-11-10 · Wave 108"; memory read with headroom; quote both.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - /visual served build age (minutes behind main) before -> after; dashboard memory
+peak before -> after. Operator decisions: an install task by name, only if MemoryMax must change.
+END OF BLOCK 108.5
 ```
 
 ---
