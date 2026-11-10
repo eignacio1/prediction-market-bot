@@ -151,3 +151,11 @@ this entire yr working on JUST beating the market maaaaaybe you should think abo
 material: the operator's 09-25 pot-of-gold sequencing, 10-16 "beating buddy off his phone placing parlays, that's the first step", the
 decision-tree router (W90), the W89 longshot bias, CLAUDE.md's own efficiency-gradient section. Each wave's Pushback line challenged the
 wave, never the premise. Pattern: FOREST (strategy oversight that never audited the thesis). Rule: the DOCTRINE CHECK below, every wave close.
+
+### W49 - SW-9, 2026-11-10 05:20Z - the Muse week prompt put the perishable work last and left the ticket runs with nothing to do
+The 11-09 weekly prompt ordered: decisions, the ~1,400-chunk queue build, THEN the perishable snapshots and the 200-run schedule. At 05:20Z
+Muse had done steps 1-2 and not reported 3-4, with its interactive usage running out - the only work that cannot be recovered later was the
+work most likely to be cut. It also placed R-049 first in the R-order and nothing after it, so the 25 daily ticket runs had no ticket after
+R-049 closed (03:03Z). Caught by the operator's hygiene ask, not by the window. Pattern: SEQUENCING (unrecoverable work queued behind
+recoverable work). Rule: a weekly Muse prompt orders perishable or schedule-creating steps FIRST, and every run type it sizes has a named
+fallback when its own list empties.
