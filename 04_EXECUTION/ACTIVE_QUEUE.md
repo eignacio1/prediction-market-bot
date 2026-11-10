@@ -86,7 +86,7 @@ structural option and is yours to reopen - nothing is built for it. *Said but no
 | 108.1 | proof | Close the edge map's untested rows the data can answer; fix its stale archive line; add prop series to the archive | 🔄 Parts A+B pushed | Edge map 40 rows, UNTESTED 5->4: L03 and new R09 (NBA/NHL ride board, 14d) NO EFFECT NET, Holm 0 of 12 and 0 of 4; stale GG-1330 line fixed; Part C (prop series) in progress |
 | 108.2 | quant | News lag at trade-print resolution (Kalshi public trades): is there a minutes-long window the 20-min archive missed | ⏳ pasted? | — |
 | 108.3 | quant | NBA / NFL / NHL props net of costs from Kalshi's public history (MLB was 0 of 50) | ⏳ pasted? | — |
-| 108.4 | scoping · 8 | Kalshi weather markets vs free NOAA / NWS forecasts: calibration and net of costs - research only, your decision | ⏳ pasted? | — |
+| 108.4 | scoping · 8 | Kalshi weather markets vs free NOAA / NWS forecasts: calibration and net of costs - research only, your decision | PARTIAL: NYC done, PR #454 (CI pending) | NYC: Kalshi beats free GFS forecast (Brier .091 vs .123); trading toward forecast -3.3c/contract net. 5 cities fetching. SCOPE.md on branch; not recommending a build. |
 | 108.5 | RED · flex | The visual dashboard serves a stale page and its service sits at its memory cap | ⏳ pasted? | — |
 
 ### 108.1 - PROOF (CLOSE THE UNTESTED ROWS)
