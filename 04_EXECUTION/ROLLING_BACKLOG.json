@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-10T02:20Z",
+ "as_of": "2026-11-10T03:40Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -28,212 +28,92 @@
  },
  "tickets": [
   {
-   "id": "B-059",
+   "id": "B-062",
    "status": "NOW",
+   "lane": "proof",
+   "rank": "1",
+   "title": "Close the edge map untested rows existing data can answer (ride-board backward test / candle scan on the NBA/NHL archive, NBA/NHL pot of gold); fix the stale GG-1330 line; prop series into the archive",
+   "measure": "UNTESTED rows 5 -> N; prop series archived X of Y",
+   "why": "The strategy decision needs no open cheap gaps",
+   "source": "SW-9 W107 close",
+   "wave": "108.1",
+   "order": 1
+  },
+  {
+   "id": "B-063",
+   "status": "NOW",
+   "lane": "quant",
+   "rank": "4",
+   "title": "News lag at trade-print resolution (Kalshi public trades) - is there a minutes-long window the 20-min archive missed",
+   "measure": "lag to half / full adjustment and net per news type",
+   "why": "107.2 could not see under 20 minutes",
+   "source": "SW-9 W107 close",
+   "wave": "108.2",
+   "order": 2
+  },
+  {
+   "id": "B-064",
+   "status": "NOW",
+   "lane": "quant",
+   "rank": "4",
+   "title": "NBA / NFL / NHL props net of costs from Kalshi public history",
+   "measure": "prop families measured net; net-positive held-out cells",
+   "why": "MLB props 0 of 50; the in-season sports untested",
+   "source": "SW-9 W107 close",
+   "wave": "108.3",
+   "order": 3
+  },
+  {
+   "id": "B-065",
+   "status": "NOW",
+   "lane": "quant",
+   "rank": "8",
+   "title": "SCOPING, research only: Kalshi weather markets vs free NOAA / NWS forecasts, net of costs",
+   "measure": "none on the board (memo); operator decides",
+   "why": "Doctrine check: sports lines priced by institutions; methodology transfer test",
+   "source": "SW-9 W107 close",
+   "wave": "108.4",
+   "order": 4
+  },
+  {
+   "id": "B-059",
+   "status": "DONE",
    "lane": "proof",
    "rank": "1",
    "title": "The edge map: every edge hypothesis tested - gross / cost / net / n / status / next look - one page + /visual panel",
    "measure": "hypotheses on the map by status",
    "why": "Exit test: quant has pointed engine work at no cell; the strategy decision needs the whole record",
    "source": "SW-9 W106 close",
-   "wave": "107.1",
-   "order": 1
+   "wave": "107.1 - #452: 39 hypotheses, 0 survive costs forward",
+   "order": 5
   },
   {
    "id": "B-060",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "1",
    "title": "Information speed: news-to-price lag on Kalshi (injury reports, scratches, goalies), net of costs; burst capture prepared",
    "measure": "news types measured; net window per type",
    "why": "The one edge family never measured",
    "source": "SW-9 W106 close",
-   "wave": "107.2",
-   "order": 2
+   "wave": "107.2 - #453: injury news +0.3c @20min = NO net",
+   "order": 6
   },
   {
    "id": "B-061",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "engine",
    "rank": "2",
    "title": "NBA availability lead: on late-availability games, does v3's price move before Kalshi's",
    "measure": "lead-time and net per contract on those games (descriptive)",
    "why": "v3's edge, if any, is on availability-change games",
    "source": "SW-9 W106 close",
-   "wave": "107.3",
-   "order": 3
-  },
-  {
-   "id": "B-056",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "1",
-   "title": "Land 105.6 (#447) cleanly and graft the pot-of-gold stem into the router with a pre-registered precedence rule (paper)",
-   "measure": "router branches 4 -> 5",
-   "why": "105.6 parked",
-   "source": "SW-9 W105 close",
-   "wave": "106.1 (#451)",
-   "order": 4
-  },
-  {
-   "id": "B-057",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "The cost wall: exact taker / maker fee, realized spread, resting markouts; which gross effects clear it",
-   "measure": "effects with net-of-cost figures; net-positive cells",
-   "why": "105.4 / 105.6 / 105.2: everything dies on costs",
-   "source": "SW-9 W105 close",
-   "wave": "106.2 (#448)",
-   "order": 5
-  },
-  {
-   "id": "B-058",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "1",
-   "title": "Retail flow: player props and thin markets - calibration, favourite-longshot, net of costs, held out",
-   "measure": "prop families measured net; net-positive cells",
-   "why": "Operator 10-16: beat retail flow first",
-   "source": "SW-9 W105 close",
-   "wave": "106.3 (#450)",
-   "order": 6
-  },
-  {
-   "id": "B-053",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "1",
-   "title": "Ride / fade cells for NBA / NHL / NFL from 103.2's measured fades (KXNFLTEAMTOTAL, KXNHLTOTAL, KXNHLTEAMTOTAL), net of spread and fees, held out, pre-registered",
-   "measure": "ride / fade cells in-season 1 -> N",
-   "why": "Operator 2026-11-05 21:09 / 21:11 PT: ride the market, it is smart in the aggregate",
-   "source": "DECISION_LOG 2026-11-05 21:09 PT",
-   "wave": "105.4 (#446): 0 cells earned net of costs",
+   "wave": "107.3 - be5c217: no v3 lead (-0.06c)",
    "order": 7
   },
   {
-   "id": "B-054",
-   "status": "DONE",
-   "lane": "engine",
-   "rank": "1",
-   "title": "Router wired to live markets and demo orders: runner + ride_orders.py, RIDE_BOARD book, kill switch / caps, install task prepared",
-   "measure": "decisions logged on live markets; demo-order path tested",
-   "why": "The router has never run live or placed an order",
-   "source": "Operator 2026-11-05 21:11 PT",
-   "wave": "105.5 (#442); install awaits operator",
-   "order": 8
-  },
-  {
-   "id": "B-055",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "1",
-   "title": "Pot-of-gold route in the router: a LONGSHOT tree - fade overpriced longshots / take underpriced favourites where measured (W89 longshot bias: 5-15c settle below price, 85-95c above), buy a longshot only where a pre-registered cell shows it underpriced; parlays later",
-   "measure": "longshot cells pre-registered + routed; decisions logged",
-   "why": "Operator 2026-11-05 21:19 PT: 'we should have the pot of gold decision trees routed in too'. Sequencing (09-25): the data-heavy parlay pricing stays after the standard board.",
-   "source": "Operator 2026-11-05 21:19 PT; 12_EXPLORATORY/longshot_bias/results_W89.md",
-   "wave": "105.6 + 106.1 (#447, #451)",
-   "order": 9
-  },
-  {
-   "id": "B-051",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "1",
-   "title": "Blend-weight test pre-registered: power per engine x family, planned looks with alpha spending, a gated read task",
-   "measure": "looks scheduled per sport",
-   "why": "104.2: NBA w ~ 0 on ~30 games with 0-1 intervals - unreadable; make it a planned test",
-   "source": "SW-9 W104 close",
-   "wave": "105.1 (#441)",
-   "order": 10
-  },
-  {
-   "id": "B-052",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "Order data that can explain fills (GG-1794 fields, GG-1793 / GG-1810 sides) + counterfactual placement study on the markouts",
-   "measure": "order fields logged 0 -> 6; E3 counterfactual per rule",
-   "why": "104.1 could not explain E3: the orders lack side / mid / depth / fill time",
-   "source": "SW-9 W104 close",
-   "wave": "105.2 (#440, #443)",
-   "order": 11
-  },
-  {
-   "id": "B-048",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "Why fills lose: fill-probability and price-impact model (distance from mid, depth, time to start, side, sport), held-out",
-   "measure": "E3 gap explained X% held-out",
-   "why": "E3: T4 MLB fills 25.4% vs non-fills 48.3%; 102.4: ~18 of 19 cents of the forward-test gain is which orders fill",
-   "source": "SW-9; operator 2026-11-05 17:43 PT (all-quant wave)",
-   "wave": "104.1 (#439)",
-   "order": 12
-  },
-  {
-   "id": "B-049",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "1",
-   "title": "Market-anchored blend weight: out-of-sample w per engine x sport x family (p = market + w(model - market)), does any w > 0 beat the market",
-   "measure": "cells with a fitted w X of N; cells where w > 0 beats the market",
-   "why": "Rank 1 (market-anchored pricing, operator 10-21): how far the model should move Kalshi's line, measured",
-   "source": "SW-9; operator 2026-11-05 17:43 PT",
-   "wave": "104.2 (#437): NBA w ~ 0, 12 / 12",
-   "order": 13
-  },
-  {
-   "id": "B-050",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "URGENT",
-   "title": "Land Wave 103's stranded PRs #433 / #434 / #436 (conflicts, CI, missing handoffs); GG-1775; GG-1783",
-   "measure": "W103 PRs merged X of 3",
-   "why": "103.2 / 103.3 ended with conflicting PRs and no handoff; #436 red from main's red",
-   "source": "SW-9 W103 close",
-   "wave": "104.3",
-   "order": 14
-  },
-  {
-   "id": "B-047",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "RED ALERT",
-   "title": "GG-1771 NO orders mirror-priced + GG-1770 NO fills scored backwards: fix every order path, epoch cut, before / after on E1-E3 and the forward test",
-   "measure": "NO-side paths fixed X of N; E3 as logged -> corrected",
-   "why": "W102.3: all 185 filled NO orders on 11-03 cost ~price_yes (mean 0.715 vs 0.44 YES). Demo only.",
-   "source": "GG-1771 / GG-1770, operator 2026-11-04 22:35 PT (red alert)",
-   "wave": "103.4 (#431, #435)",
-   "order": 15
-  },
-  {
-   "id": "B-027",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "Box memory: T1/T2 shadow-line lock INSTALLED 11-05 02:11Z (17 of 17 lines); measure a full NBA + NHL night; if kills continue, serialise / cap long jobs",
-   "measure": "OOM kills per night 20 / 90 min -> 0",
-   "why": "45 OOM kills / 24 h and 223 MB free at 11-05 02:00Z; NBA v2 / v3 missed 5 of 11 games on 11-04.",
-   "source": "97.3 / GG-1581",
-   "wave": "0 OOM kills over the full 11-04 slate after the T1/T2 lock; 652 MB available (box 11-05 14:0xZ)",
-   "order": 16
-  },
-  {
-   "id": "B-030",
-   "status": "DONE",
-   "lane": "engine",
-   "rank": "2",
-   "title": "Every NBA game logged: v1 / v2 / v3 coverage since the memory fix (11-04 01:55Z)",
-   "measure": "games past tip unlogged per arm -> 0 new",
-   "why": "100.1: v1 11/11, v2 5/11, v3 6/11 on 11-04; cause box OOM. Re-read after B-027; then a v3 coverage.jsonl PR.",
-   "source": "98.1 / 99",
-   "wave": "coverage 3 of 3 since 11-05 (catch-up install)",
-   "order": 17
-  },
-  {
    "id": "B-001",
-   "order": 18,
+   "order": 8,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -242,30 +122,6 @@
    "why": "v3 logging since 11-04 03:30Z (412 rows) but silent for 5 games (OOM).",
    "source": "95.1 handoff, GG-1450",
    "wave": "v3 first read once it has settled games (window checks; next wave)"
-  },
-  {
-   "id": "B-039",
-   "status": "DONE",
-   "lane": "proof",
-   "rank": "1",
-   "title": "Proof calendar second-look state; B1 counts RULED_OUT-but-logging arms",
-   "measure": "calendar rows with second looks 0 -> all; B1 corrected",
-   "why": "B1 fixed (52/108); PROOF_CALENDAR.md regeneration on the box blocked (GG-1720).",
-   "source": "99.2",
-   "wave": "101.2: #420 aggregate mode, 65 rows with second-look state",
-   "order": 19
-  },
-  {
-   "id": "B-026",
-   "order": 20,
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "1 (operator 10-30)",
-   "title": "The picks sheet: every game the bot looks at, one line - its side, its %, Kalshi's price, the edge, the top reasons, and whether a fake-money bet was placed; nightly on the Visual Dashboard",
-   "measure": "picks visible per game per night 0 -> every evaluated game",
-   "why": "Night 1: 134 games, 2,614 picks, reasons 90%; results not filled (built mid-games); GG-1690 duplicate presentation. Read the next 05:37Z sheet; plain-English summary for the operator.",
-   "source": "operator 2026-10-30",
-   "wave": "102.3 + #428: deduped, compact panel"
   },
   {
    "id": "B-041",
@@ -277,7 +133,7 @@
    "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 21
+   "order": 9
   },
   {
    "id": "B-042",
@@ -289,35 +145,11 @@
    "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
    "source": "operator 2026-11-04",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 22
-  },
-  {
-   "id": "B-029",
-   "status": "DONE",
-   "lane": "engine",
-   "rank": "2",
-   "title": "NHL engine totals: the remaining regulation-scoring bias (season drift, early-season level, over-spread predictions) - a challenger, then Kalshi descriptive",
-   "measure": "held-out total-goals bias -> within noise; Brier per family vs v1 and the market",
-   "why": "#414: stale denominator was ~a quarter of the bias (-0.080 -> -0.059, Brier flat); the rest is season drift / early-season level and over-spread predictions (slope 0.4-0.5) - a challenger candidate; Kalshi comparison not run.",
-   "source": "97.4",
-   "wave": "101.1: challenger pre-registered, held-out NO (#421)",
-   "order": 23
-  },
-  {
-   "id": "B-043",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "Branch cleanup: 27 merged-PR branches to delete; 5 unmerged to check first (#149 open since 09-24; #314 w83-3 NHL data layer closed unmerged; b74a-s1 hygiene audit, w81-3 partb, w897 - no PR); keep data/nba-injury-reports and data/nhl-goalie-probe",
-   "measure": "stray branches on origin 35 -> 2 (the data branches) after one operator-approved list",
-   "why": "Operator 11-04 17:36 PT: \"Do we need to do anything w stray branches?\"; 17:38 PT: \"Yes pls\" to registering it. A terminal's sweep listed branches that do not exist on origin (w89-* .. w91-*); the window's git ls-remote is the source. For each unmerged branch check whether its GG / T is resolved on main, then give the operator one exact list to approve for deletion (deletes name exact items).",
-   "source": "operator 2026-11-04",
-   "wave": "102.5: 35 -> 3",
-   "order": 24
+   "order": 10
   },
   {
    "id": "B-017",
-   "order": 25,
+   "order": 11,
    "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
@@ -329,7 +161,7 @@
   },
   {
    "id": "B-008",
-   "order": 26,
+   "order": 12,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -341,7 +173,7 @@
   },
   {
    "id": "B-012",
-   "order": 27,
+   "order": 13,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -352,20 +184,8 @@
    "wave": "102.1 Part B not started"
   },
   {
-   "id": "B-004",
-   "order": 28,
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "EXECUTION",
-   "title": "Demo orders refused for insufficient balance: log the balance on every rejection, find the cause, fix it",
-   "measure": "refused demo orders n -> 0; fills per day per book restored",
-   "why": "Demo fills are the bot's only execution evidence; the cause is still a hypothesis (95.3).",
-   "source": "94.3, 95.3, GG-1481",
-   "wave": "102.3: refusals all 10-16..10-29; balance logged (#426)"
-  },
-  {
    "id": "B-013",
-   "order": 29,
+   "order": 14,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -376,56 +196,8 @@
    "wave": ""
   },
   {
-   "id": "B-010",
-   "order": 30,
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "The proof calendar regenerated on a schedule and shown on the dashboard",
-   "measure": "calendar age <= 1 day",
-   "why": "It is generated by hand today (94.Q); stale dates mislead.",
-   "source": "94.Q",
-   "wave": "102.4: calendar-age panel (#427); window regenerates at each close"
-  },
-  {
-   "id": "B-044",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "Tails for the G6 limit table: extreme-value (peaks-over-threshold) fit of per-book daily P&L and drawdown on the demo / shadow books; what the 20% kill switch and per-event caps imply at a given Kelly",
-   "measure": "tail model per book with a tested fit; limit table rows with a stated breach probability",
-   "why": "Accepted quant rollout 2026-10-22, Wave B (tails/EVT for the G6 limits) - not built (no EVT code in src/quant). ADR-0076 sec. 4 blanks stay blank until a positive Kelly is proposed; this makes them computable.",
-   "source": "DECISION_LOG 2026-10-22 16:58 / 17:06 PT; operator 2026-11-04 22:01 PT",
-   "wave": "103.1 (#432)",
-   "order": 31
-  },
-  {
-   "id": "B-045",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "Overreaction and regimes in Kalshi prices: from the price archive, does the line overshoot after big in-game events and revert; regime switches (pre-game drift, in-play jumps) per sport and family",
-   "measure": "per sport / family: overshoot-reversion estimate with intervals; a regime label usable as an input",
-   "why": "Accepted quant rollout Wave B (longshot bias done in 89.2; overreaction / regimes not built).",
-   "source": "DECISION_LOG 2026-10-22; operator 2026-11-04 22:01 PT",
-   "wave": "103.2 (#434)",
-   "order": 32
-  },
-  {
-   "id": "B-046",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "4",
-   "title": "In-play score math for NBA / NHL: score diffusion (NBA) and jump / Poisson-process (NHL) models of the remaining game, tested on the event stores, priced against the archive's in-play lines",
-   "measure": "held-out Brier of the in-play model vs Kalshi's in-play price, per sport",
-   "why": "Accepted quant rollout Wave C (game-state Markov chains exist: quant/dtmc.py, absorbing.py; diffusion / jumps not built).",
-   "source": "DECISION_LOG 2026-10-22; operator 2026-11-04 22:01 PT",
-   "wave": "103.3 (#433)",
-   "order": 33
-  },
-  {
    "id": "B-014",
-   "order": 34,
+   "order": 15,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -437,7 +209,7 @@
   },
   {
    "id": "B-015",
-   "order": 35,
+   "order": 16,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -449,7 +221,7 @@
   },
   {
    "id": "B-016",
-   "order": 36,
+   "order": 17,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -461,7 +233,7 @@
   },
   {
    "id": "B-018",
-   "order": 37,
+   "order": 18,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -473,7 +245,7 @@
   },
   {
    "id": "B-019",
-   "order": 38,
+   "order": 19,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -485,7 +257,7 @@
   },
   {
    "id": "B-020",
-   "order": 39,
+   "order": 20,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -497,7 +269,7 @@
   },
   {
    "id": "B-021",
-   "order": 40,
+   "order": 21,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -508,44 +280,8 @@
    "wave": "after a pass"
   },
   {
-   "id": "B-038",
-   "status": "DONE",
-   "lane": "proof",
-   "rank": "1",
-   "title": "Retire EXP-042 cell 10 by superseding addendum (operator \"Yes\", 11-03 19:16 PT)",
-   "measure": "cell retired 0 -> 1",
-   "why": "Retired by addendum 05_RESEARCH_EXPERIMENTS/EXP042_ADDENDUM_CELL10_RETIRED_2026-11-04.md (#413); cells 9 and 11 untouched.",
-   "source": "operator 2026-11-03",
-   "wave": "100.2 Part A",
-   "order": 41
-  },
-  {
-   "id": "B-035",
-   "status": "DONE",
-   "lane": "proof",
-   "rank": "1 + 2",
-   "title": "Why the NFL game-total model lost to the market (descriptive, 60 games)",
-   "measure": "loss decomposed 0 -> 1; a note for the NFL engine",
-   "why": "72 games: worse than the market in every band from noise in disagreement, not bias; weather untestable (61 of 72 blank).",
-   "source": "98.2",
-   "wave": "100.2 Part B",
-   "order": 42
-  },
-  {
-   "id": "B-040",
-   "status": "DONE",
-   "lane": "flex",
-   "rank": "plumbing",
-   "title": "Leftovers: installer MARKERS overlap sweep; two tests that fail to collect on Python 3.9",
-   "measure": "registered leftovers closed",
-   "why": "#415: boundary-safe installer markers; Py3.9 collection fixed (GG-1650 resolved).",
-   "source": "99.3",
-   "wave": "100.3 Part C",
-   "order": 43
-  },
-  {
    "id": "B-022",
-   "order": 44,
+   "order": 22,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -557,7 +293,7 @@
   },
   {
    "id": "B-023",
-   "order": 45,
+   "order": 23,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -569,7 +305,7 @@
   },
   {
    "id": "B-024",
-   "order": 46,
+   "order": 24,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -581,7 +317,7 @@
   },
   {
    "id": "B-025",
-   "order": 47,
+   "order": 25,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
