@@ -59,22 +59,23 @@
 <!-- ============================================================ STATE -->
 <section id="state">
   <div class="hero">
-    <div class="eyebrow">State of the system · 2026-10-14</div>
-    <h2>The foundation is fixed, the NFL engine has started, and the first verdict is still about 2 Nov.</h2>
-    <p><strong>40 of 107 cells</strong> log pre-registered shadow forecasts across MLB, NFL, NHL and NBA (NBA from 10-20).
-    Wave 72 made the base trustworthy: ledgers survive a crash, deploys prove the running code is current, and the order path
-    itself refuses real money. The fill-fix forward test is live with both arms and <strong>0 cancel failures</strong>; nothing
-    since the re-arm has settled enough to judge. Depth now has a doctrine — <strong>one deep engine per sport</strong>
-    (ADR-0073): the NFL engine's first simulation prices moneyline, spread, total and team totals from one draw set, as good as
-    the old per-family models but not better yet, while its play-level data layer is being built. Wave 70–71 drift led to
-    ADR-0074: every running piece is now owned, and every window mistake is on the record (Process integrity, below).
-    <strong>No cell has a verdict yet.</strong></p>
+    <div class="eyebrow">State of the system · 2026-11-10 · Wave 108</div>
+    <h2>Three sports logging, three engines pricing, the first verdicts read — nothing beats the market after costs yet, and the build continues.</h2>
+    <p><strong>52 of 108 cells</strong> log pre-registered shadow forecasts across NFL, NBA and NHL (MLB idle until the 2027 season).
+    <strong>One engine per sport</strong> (ADR-0073): the NFL board engine prices moneyline, spread and total from one simulation and runs
+    a frozen forward test (EXP-045, reads 01-12); the NBA engine (v1 / v2 / v3) prices every game, <strong>3 of 3 arms every night since 11-05</strong>;
+    the NHL board engine is on v2; MLB has a 1.42 M-pitch store and a first model that loses to the market. The decision-tree router has
+    five branches — ride, fade, momentum, pot of gold, no-bet — on paper. The <strong>first scored look (11-02)</strong> ruled out the NFL game
+    total T1 + T2 and kept 10 cells accruing. The forward test <strong>restarted 11-06</strong> after NO-side orders were found mirror-priced
+    (GG-1771); on clean fills NFL is INCONCLUSIVE. The edge map holds 39 ideas tested; <strong>none survives trading costs yet</strong>
+    (1.5–2.3¢ a side on game lines, 4–8¢ on props). That is expected while the architecture is built: frozen tests judge cells, they do not
+    gate the build (operator, 11-09). Box healthy, 89 live components, <strong>$0 real capital</strong>.</p>
     <div class="meta">
-      <span class="chip good"><i></i>40 / 107 cells logging</span>
-      <span class="chip info"><i></i>Forward test live · both arms</span>
-      <span class="chip warn"><i></i>0 cells at a scored look</span>
-      <span class="chip info"><i></i>NFL engine · stage 1</span>
-      <span class="chip crit"><i></i>21 running pieces with no alarm</span>
+      <span class="chip good"><i></i>52 / 108 cells logging</span>
+      <span class="chip info"><i></i>3 engines pricing · NFL · NBA · NHL</span>
+      <span class="chip warn"><i></i>12 cells scored · 0 candidate</span>
+      <span class="chip crit"><i></i>0 of 39 edge ideas net of costs</span>
+      <span class="chip info"><i></i>Forward test restarted 11-06</span>
       <span class="chip mute"><i></i>$0 real capital · kelly 0.0</span>
     </div>
   </div>
@@ -82,23 +83,23 @@
   <div class="grid g4">
     <div class="tile" style="--accent:var(--s1)">
       <div class="k">Breadth · cells logging</div>
-      <div class="v">40<small> / 107</small></div>
-      <div class="n">13 of 18 market families, 4 of 5 bands (no T5). +3 in Wave 67 (NBA player points).</div>
+      <div class="v">52<small> / 108</small></div>
+      <div class="n">17 of 19 market families, 4 of 5 bands (no T5). Props families 2, parlays 0.</div>
     </div>
     <div class="tile" style="--accent:var(--warn)">
-      <div class="k">Depth · deepest pre-game model</div>
-      <div class="v">18<small> features</small></div>
-      <div class="n">MLB player hits, <b>0 qualitative</b>. No live model uses matchup, weather or qualitative inputs. 1 challenger ready (NFL QB).</div>
+      <div class="k">Depth · engine architecture</div>
+      <div class="v">8/8<small> NFL</small></div>
+      <div class="n">NBA 4/8 · NHL 2/8 · MLB 3/8. Factors applied to a price: NFL 10/21, NBA 5/17, NHL 3/12. No live model uses matchup, weather or qualitative yet.</div>
     </div>
     <div class="tile" style="--accent:var(--crit)">
       <div class="k">Execution · orders filled</div>
-      <div class="v">251<small> / 4,722</small></div>
-      <div class="n">T4 3.9% · T1 17.5%. Fills lose −$0.26 (T4) and −$1.50 (T1) a bet. Adverse selection, measured (63.3).</div>
+      <div class="v">262<small> / 4,801</small></div>
+      <div class="n">MLB books (idle since 10-20): T4 4.1% · T1 17.5%; fills lose −$0.21 / −$1.50 a bet. Cost wall measured: maker loses in every bucket.</div>
     </div>
     <div class="tile" style="--accent:var(--ink-3)">
       <div class="k">Proof · cells at a scored look</div>
-      <div class="v">0<small> / 45</small></div>
-      <div class="n">Engine sealed below each cell's judged n. Next look: NFL 12 cells, ~2026-11-02, modal "keep accruing" (~91%).</div>
+      <div class="v">12<small> / 49</small></div>
+      <div class="n">NFL first look 11-02: 2 RULED_OUT, 10 keep accruing. Next: 11-13 NFL QB moneyline; NBA engine first looks 11-13 .. 11-25.</div>
     </div>
   </div>
 
@@ -109,7 +110,8 @@
       <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
         <li>The MLB pre-game tree beats <b>climatology</b> by ΔBrier +0.0052 over 1,414 games (EXP-028).</li>
         <li>The NFL <b>QB-shrunk challenger beats the frozen model</b> in backtest: +0.0027, 1,852 games, 6 of 7 seasons (64.1).</li>
-        <li><b>Fills are adversely selected</b> on both demo books: settle − price −0.25 (T4) / −0.39 (T1) on fills vs +0.10 / +0.07 on non-fills.</li>
+        <li><b>Fills are adversely selected</b>: resting orders get picked off (63.3); taking at the quote costs 1.5–2.3¢ a side on game lines, 4–8¢ on props (106.2).</li>
+        <li>The <b>NBA engine runs every game</b>: 3 of 3 arms nightly since the 11-05 memory fix.</li>
         <li>Kalshi settlement books every resolved bet: <b>1,229 / 1,229</b> agree with the cross-check (59.2).</li>
       </ul>
     </div>
@@ -117,21 +119,21 @@
       <h3>What is disproven</h3>
       <div class="cap">Claims a pre-registered test or measurement killed.</div>
       <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
-        <li><b>MLB pre-game model vs market</b> — HARMFUL, CI excludes zero (EXP-029).</li>
+        <li><b>MLB pre-game model vs market</b> — HARMFUL (EXP-029); the 106.4 lineup model also loses (blend weight 0).</li>
+        <li><b>NFL game total T1 + T2</b> — RULED_OUT at the first look (~0.016 Brier behind the market).</li>
+        <li><b>The NFL forward-test ADOPT</b> — it came from mirror-priced NO fills (GG-1771); clean fills are INCONCLUSIVE.</li>
+        <li><b>Ride / fade, pot of gold, MLB props, placement, news speed</b> — no cell net positive after costs (W105–107, edge map).</li>
         <li><b>T4 latency thesis</b> — NOT SUPPORTED at the current feature set (T-569).</li>
-        <li><b>T4M-PROJ paper P&amp;L as trading evidence</b> — 94.5% of rows never filled; real fills lose (GG-527).</li>
-        <li><b>NFL recalibration and early-season shrinkage</b> — no improvement over frozen (61.3, 64.1).</li>
-        <li><b>"Player hits dark since 9-27"</b> — a window premise; the logs said otherwise (63.1).</li>
       </ul>
     </div>
     <div class="card">
       <h3>What is unknown</h3>
       <div class="cap">Not yet measured — not assumed either way.</div>
       <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
-        <li>Whether <b>any shadow cell beats its market</b> — 0 of 45 engine cells at judged n.</li>
-        <li>Whether <b>cancel-after-60 s + book pricing</b> stops the picking-off — needs ~550 fills per arm in 8 weeks.</li>
-        <li>Whether <b>props are looser than game markets</b> — NBA player points logs from 10-20 (65.1).</li>
-        <li>Whether <b>injury-report QB data</b> moves the NFL model — needs point-in-time snapshots never captured.</li>
+        <li>Whether <b>any cell beats its market at judged n</b> — 10 NFL cells and the NBA / NHL arms still accruing.</li>
+        <li>Whether <b>NBA engine v3 adds over the market</b> — the frozen blend test reads 12-29 .. 02-15.</li>
+        <li>Whether the <b>factors not yet applied</b> (matchup, weather, qualitative) move any price.</li>
+        <li>Whether <b>NBA / NFL / NHL props</b> are mispriced after costs (108.3), and whether news moves Kalshi within minutes (108.2).</li>
       </ul>
     </div>
   </div>
@@ -169,11 +171,11 @@
   progress without moving one. <strong>Two waves in a row that move nothing is drift.</strong></p>
   <div class="card">
     <div class="tscroll"><table class="dtab">
-      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved in Wave 72</th></tr></thead>
+      <thead><tr><th>Pillar</th><th>Measure</th><th>Now</th><th>At optimum</th><th>Moved, recent waves</th></tr></thead>
       <tbody id="distBody"></tbody>
     </table></div>
   </div>
-  <div class="note warn" style="margin-top:14px"><b>Wave 72 fixed the foundation and ended the drift</b> (E1 per-arm counts recorded; nothing settled yet). Wave 73 starts the NFL engine — the template for every sport (ADR-0073, D4).</div>
+  <div class="note warn" style="margin-top:14px"><b>Waves 101–107 moved measurement and execution correctness</b> (the GG-1771 restart, the cost wall, the edge map), not table rows. From Wave 109 every wave carries three build blocks: engine architecture per sport, the bet suite and decision trees, and quant / architecture (operator 11-09).</div>
 </section>
 
 <!-- ============================================================ VERDICTS -->
@@ -196,7 +198,7 @@
 
   <div class="grid g2" style="margin-top:14px">
     <div class="card">
-      <h3>EXP-029 — still the only scored market verdict</h3>
+      <h3>EXP-029 — the first market verdict</h3>
       <div class="cap">Frozen EXP-028 model vs the Kalshi KXMLBHIT market. Pre-registered, scored once behind a lock file.</div>
       <dl class="kv">
         <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">HARMFUL</dd>
@@ -210,21 +212,18 @@
     </div>
 
     <div class="card">
-      <h3>NFL — where the next verdict comes from</h3>
+      <h3>NFL — the first look, read 11-02</h3>
       <div class="cap">EXP-037: 12 shadow cells (moneyline, spread, total, team total × T1–T3), frozen team-rate model.</div>
       <dl class="kv">
-        <dt>First scored look</dt><dd>~2026-11-02 &nbsp;(~11-09 if a game slips)</dd>
-        <dt>Games per cell then</dt><dd>60</dd>
-        <dt>Detectable at n=60</dt><dd>~0.038 Brier</dd>
-        <dt>Plausible edge</dt><dd>~0.008 Brier</dd>
-        <dt>Modal outcome</dt><dd style="color:var(--warn); font-weight:650">"keep accruing" (~91%)</dd>
-        <dt>2025, frozen vs mid</dt><dd>0.2182 vs <b>0.2115</b> (182 games)</dd>
-        <dt>2025, QB challenger vs mid</dt><dd>0.2221 vs <b>0.2115</b></dd>
+        <dt>Cells scored</dt><dd>12</dd>
+        <dt>RULED_OUT</dt><dd style="color:var(--crit); font-weight:650">2 — game total T1 + T2 (~0.016 Brier behind the market)</dd>
+        <dt>Keep accruing</dt><dd style="color:var(--warn); font-weight:650">10 — slightly behind the market, ahead of a naive baseline</dd>
+        <dt>Candidate</dt><dd>0</dd>
+        <dt>Next looks</dt><dd>11-13 (QB moneyline) · second looks 12-14 .. 01-09</dd>
+        <dt>NFL engine</dt><dd>frozen forward test EXP-045, reads 01-12</dd>
       </dl>
-      <div class="note warn" style="margin-top:14px"><b>Read it straight.</b> The first look is real but cannot see an
-      edge of the size we could plausibly have. The challenger improves the model mostly in weeks 1–4 and when the
-      starter changes; it does not beat the market. A verdict-sized change needs a bigger model upgrade — injury reports
-      are next — not more games.</div>
+      <div class="note warn" style="margin-top:14px"><b>Read it straight.</b> The first look could only see large edges, and the
+      model trails the market everywhere so far. The lever is depth — factors applied to the price, in the engine — not more games.</div>
     </div>
   </div>
 </section>
@@ -243,32 +242,33 @@
       <div id="funnel"></div>
       <div class="note" style="margin-top:15px"><b>Every paper P&amp;L figure in the project's history is calibration
       evidence at best.</b> T4M-PROJ's all-rows result was −$0.053 a bet with a CI spanning zero; restricted to real
-      fills it is −$0.26 with a CI that excludes zero.</div>
+      fills it is −$0.21 (n 177).</div>
     </div>
 
     <div class="card">
       <h3>Why fills lose (63.3)</h3>
       <div class="cap">Read-only demo-venue order history; game-clustered 95% intervals.</div>
       <dl class="kv">
-        <dt>Win rate, fills vs non-fills</dt><dd>T4 24.1% vs 48.7% · T1 28.9% vs 52.1%</dd>
+        <dt>Win rate, fills vs non-fills</dt><dd>T4 25.4% vs 48.3% · T1 28.9% vs 52.1%</dd>
         <dt>Settle − price, fills</dt><dd>T4 −0.25 [−0.37, −0.11] · T1 −0.39 [−0.49, −0.28]</dd>
         <dt>Settle − price, non-fills</dt><dd>T4 +0.10 · T1 +0.07</dd>
         <dt>Median rest before fill</dt><dd>T4 2,276 s · T1 5,873 s</dd>
         <dt>Fills within 60 s (T4)</dt><dd>win 35%, n=51 — the benign subset</dd>
-        <dt>P&amp;L per fill</dt><dd>T4 −$0.26 [−0.45, −0.07] · T1 −$1.50 [−3.67, +0.63]</dd>
+        <dt>P&amp;L per fill</dt><dd>T4 −$0.21 (n 177) · T1 −$1.50 [−3.67, +0.63]</dd>
+        <dt>Cost to trade (106.2)</dt><dd>taker 1.5–2.3¢ a side, game lines · 4–8¢ props · maker net negative everywhere</dd>
       </dl>
-      <div class="note warn" style="margin-top:15px"><b>The fix is live.</b> Forward test ON since 10-11 (demo only, half the eligible orders). Orders on tickers the demo venue does not list are being removed (GG-564, 67.2). R1 cancels unfilled
-      orders after 60 s; R2 prices off the live book and skips one-sided books. Half of eligible orders get it (seeded),
-      half don't. Judged at ~550 fills per arm; declared underpowered if that is not reached in 8 weeks. The cancel call
-      is verified on a 1-contract demo canary first (65.2).</div>
+      <div class="note warn" style="margin-top:15px"><b>The forward test restarted 2026-11-06 01:03Z.</b> NO-side orders had been
+      priced as mirrors of YES (GG-1771); data before the restart counts YES-only. On clean fills NFL is INCONCLUSIVE (a = +0.006
+      [−0.10, +0.11]). R1 cancels unfilled orders after 60 s; R2 prices off the live book. Judged at ~550 markout-bearing fills per arm, per
+      (book, sport), from the restart.</div>
     </div>
   </div>
 
   <div class="grid g4" style="margin-top:14px">
-    <div class="tile" style="--accent:var(--warn)"><div class="k">T1 MLB drawdown</div><div class="v">12.4%<small> / 20%</small></div><div class="n">Permanent kill line at 20% realized drawdown. Live Terminal, 10-09 18:05 UTC.</div></div>
-    <div class="tile" style="--accent:var(--warn)"><div class="k">T4M-PROJ drawdown</div><div class="v">11.5%<small> / 20%</small></div><div class="n">Flat demo measurement stakes; no stake for any game after the 2026 World Series (GG-527 c).</div></div>
-    <div class="tile" style="--accent:var(--s1)"><div class="k">Shadow cells with stakes</div><div class="v">0<small> → on</small></div><div class="n">Flat demo stakes on SHADOW cells (NFL, NHL, MLB, NBA) switch on with ADR-0072 — the forward test's volume source over winter.</div></div>
-    <div class="tile" style="--accent:var(--crit)"><div class="k">Old NFL paper book</div><div class="v">archived</div><div class="n">GG-490 retired it; the Live Terminal still showed 4 open STUB positions at p 0.0000 on 10-09 — 65.3 traces them.</div></div>
+    <div class="tile" style="--accent:var(--good)"><div class="k">Kill switch</div><div class="v">ENFORCING</div><div class="n">On every order path since Wave 89; the order path itself refuses real money.</div></div>
+    <div class="tile" style="--accent:var(--warn)"><div class="k">MLB demo books</div><div class="v">idle</div><div class="n">No games since the World Series (10-29); figures above are frozen until 2027.</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="k">Shadow cells with stakes</div><div class="v">on</div><div class="n">Flat demo stakes on shadow cells (NFL, NBA, NHL) under ADR-0072 — the forward test's volume.</div></div>
+    <div class="tile" style="--accent:var(--crit)"><div class="k">Ride board</div><div class="v">off</div><div class="n">Built (W105), orders OFF; its cron install waits on your approval — the box's only red.</div></div>
   </div>
 </section>
 
@@ -344,13 +344,12 @@
       <div class="tscroll"><table><tbody id="calBody"></tbody></table></div>
     </div>
     <div class="card">
-      <h3>The efficiency gradient — still undecided</h3>
-      <div class="cap">CLAUDE.md § Market efficiency gradient; COVERAGE_TARGET_MATRIX.md.</div>
-      <div class="note" style="margin:0"><b>Breadth is moving toward the most-watched markets on the board</b> —
-      moneylines, spreads and totals — the opposite end of the gradient this strategy was designed to exploit.
-      Every game-market pre-registration writes "thinner edge expected" so the result is falsifiable. Whether to
-      accept thinner edge as the price of generality, or hold expansion to looser markets, is <b>your open call</b>.
-      Props (NBA points) is the first step back down the gradient.</div>
+      <h3>The efficiency gradient — decided: EDGE</h3>
+      <div class="cap">Operator 2026-10-14 (ADR-0075) · 10-21 (market-anchored pricing) · 11-09.</div>
+      <div class="note" style="margin:0"><b>Edge means the full betting architecture</b> at play-level granularity —
+      aggregation, interpretation, application — not a retreat from game markets. Since 10-21 prices are re-based on the market's
+      own line. <b>11-09: the build continues on every lane</b>; negative results are expected for a while, and the frozen tests
+      judge cells, not whether we build.</div>
     </div>
   </div>
 </section>
@@ -392,14 +391,14 @@
       <div class="pnode"><div class="pc">C1</div><div class="pn">Ingest</div><div class="ps">Kalshi, nflverse, NHL, NBA; MLB built on GitHub Actions, off statsapi. Pre-2026 Kalshi history secured (GG-538).</div></div>
       <div class="pnode hot"><div class="pc">C2 / C3</div><div class="pn">Features → Forecast</div><div class="ps">Shadow models for four sports. Deepest: 18 features, 0 qualitative. No matchup, weather or qualitative input anywhere.</div></div>
       <div class="pnode"><div class="pc">C4</div><div class="pn">Risk</div><div class="ps"><span class="mono">kelly_fraction 0.0</span> on every band; flat demo stakes; stand-down after the World Series.</div></div>
-      <div class="pnode hot"><div class="pc">C5</div><div class="pn">Execution</div><div class="ps">Fills adversely selected; fix accepted 10-10 and live 10-11. 404s were unlisted demo tickers (GG-564).</div></div>
+      <div class="pnode hot"><div class="pc">C5</div><div class="pn">Execution</div><div class="ps">Fills adversely selected; cost to trade measured (106.2); forward test restarted 11-06 after the NO-pricing fix (GG-1771).</div></div>
       <div class="pnode"><div class="pc">C6</div><div class="pn">Audit</div><div class="ps">Kalshi settlement is the resolution source (ADR-0071). Fill sidecars classify every order.</div></div>
       <div class="pnode"><div class="pc">C7</div><div class="pn">Monitoring</div><div class="ps">Calibration engine sealed below judged n; silent-arm alarm; distance table every session.</div></div>
       <div class="pnode"><div class="pc">C8</div><div class="pn">Dashboards</div><div class="ps">Live Terminal (what it places now) and this page (where the project stands).</div></div>
     </div>
     <div class="note bad" style="margin-top:6px"><b>Two thin links now, not one.</b> C2/C3 is still shallow — the
     granularity bar (matchup, personnel, venue, weather, qualitative) is met nowhere. And C5 is measured broken:
-    the orders that fill are the ones about to lose. Wave 67 reads the forward test's first day and puts stakes on shadow cells.</div>
+    the orders that fill are the ones about to lose. The forward test, restarted 11-06, judges the fix per (book, sport).</div>
   </div>
 </section>
 
@@ -427,12 +426,11 @@
     </div>
     <div class="card">
       <h3>The ones that bite</h3>
-      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch what Wave 71 does.</div>
+      <div class="cap">OPEN CRITICAL and the HIGH gaps that touch the build now.</div>
       <div class="tscroll"><table class="gg"><tbody>
         <tr><td class="k">GG-166</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB resolver consumed a corrupted <span class="mono">game_date</span> (pre-Kalshi-settlement era).</td></tr>
         <tr><td class="k">GG-170</td><td><span class="chip crit"><i></i>CRITICAL</span></td><td>MLB Stats API date label unstable in near-real-time.</td></tr>
         <tr><td class="k">GG-320</td><td><span class="chip serious"><i></i>HIGH</span></td><td>T4M-PROJ fails C5 — shallow without being fast.</td></tr>
-        <tr><td class="k">GG-441</td><td><span class="chip serious"><i></i>HIGH</span></td><td>Kill switch counts realized loss only; settled-but-unresolved stake is invisible.</td></tr>
         <tr><td class="k">GG-046</td><td><span class="chip serious"><i></i>HIGH</span></td><td>T4 commercial validation never registered as its own hypothesis.</td></tr>
         <tr><td class="k">GG-038</td><td><span class="chip serious"><i></i>HIGH</span></td><td>60 s kill-switch SLA is 12× too slow for continuous T4.</td></tr>
       </tbody></table></div>
@@ -448,9 +446,9 @@
       <div class="tscroll"><table>
         <thead><tr><th>Record</th><th>Status</th><th class="num">Count</th><th>Note</th></tr></thead>
         <tbody>
-          <tr><td class="k">ADR</td><td><span class="chip good"><i></i>ACCEPTED</span></td><td class="num">55</td><td>Latest: ADR-0070 (shadow arms), ADR-0071 (Kalshi settlement).</td></tr>
-          <tr><td class="k">ADR</td><td><span class="chip warn"><i></i>PROPOSED</span></td><td class="num">9</td><td>Includes ADR-0067 (append-only log), ADR-0068 (band doctrine), ADR-0072 (fill fix — accepted 10-10, record updates in 65.2).</td></tr>
-          <tr><td class="k">ADR</td><td><span class="chip mute"><i></i>DRAFT / PLACEHOLDER</span></td><td class="num">2</td><td>—</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip good"><i></i>ACCEPTED</span></td><td class="num">62</td><td>Latest: ADR-0074 (process integrity), ADR-0075 (betting architecture), ADR-0076 (G6 per book and sport).</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip warn"><i></i>PROPOSED</span></td><td class="num">8</td><td>ADR-0063 – ADR-0069, including ADR-0067 (append-only log) and ADR-0068 (band doctrine).</td></tr>
+          <tr><td class="k">ADR</td><td><span class="chip mute"><i></i>DRAFT / PLACEHOLDER</span></td><td class="num">3</td><td>—</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -479,7 +477,7 @@
     <div class="tile" style="--accent:var(--crit)"><div class="k">No alarm if it stops</div><div class="v" id="surfNoAlarm"></div>
       <div class="n">Running pieces that could die silently (GG-743). The first debt to burn down.</div></div>
     <div class="tile" style="--accent:var(--warn)"><div class="k">Not yet reviewed</div><div class="v" id="surfUnrev"></div>
-      <div class="n">Auto-classified 10-14; a terminal checks each against the live box (block B74-A).</div></div>
+      <div class="n">Checked against the live box at every wave close (budget_read, box bridge).</div></div>
     <div class="tile" style="--accent:var(--ink-3)"><div class="k">Surface budget</div><div class="v" id="surfBudget" style="font-size:20px">no probe cached</div>
       <div class="n" id="surfBudgetN">Run <span class="mono">python3 scripts/runtime_registry.py live</span> before building to show the live budget.</div></div>
   </div>
@@ -538,37 +536,38 @@
 <!-- ============================================================ ASSETS -->
 <section id="assets">
   <div class="sechead"><h2>Data assets</h2><span class="num">what is on disk</span></div>
-  <p class="lede">The substrate. Two of these are clocks: data that can only be captured as it happens.</p>
+  <p class="lede">The substrate. Some of it can only be captured as it happens.</p>
   <div class="grid g3">
     <div class="card">
       <h3>Kalshi price history</h3>
-      <div class="cap">Depth snapshots plus the pre-2026 archive.</div>
+      <div class="cap">The archiver's ~20-minute snapshots plus the pre-2026 archive.</div>
       <dl class="kv">
-        <dt>Live archive</dt><dd>1.1 GB · ~1.82 M rows (last measured 09-30)</dd>
+        <dt>Sports archived</dt><dd>MLB · NFL · NBA · NHL game lines (NBA / NHL since 10-28)</dd>
+        <dt>Props</dt><dd style="color:var(--warn)">being added (108.1)</dd>
         <dt>Pre-2026 history</dt><dd style="color:var(--good)">on the VPS, sha-verified (GG-538)</dd>
-        <dt>Used by</dt><dd>EXP-029, NFL 2025 market comparisons, fill markouts</dd>
+        <dt>Used by</dt><dd>the verdicts, the cost wall, the edge map, fill markouts</dd>
       </dl>
     </div>
     <div class="card">
-      <h3>MLB features</h3>
-      <div class="cap">Built daily on GitHub Actions — no longer on the VPS or statsapi.</div>
+      <h3>Engine data layers</h3>
+      <div class="cap">Event-level stores, one per sport (ADR-0073).</div>
       <dl class="kv">
-        <dt>Builder</dt><dd>GitHub Actions (57.1)</dd>
-        <dt>Postseason</dt><dd style="color:var(--good)">included (63.1)</dd>
-        <dt>Players matched</dt><dd>every game day 09-29 → 10-08</dd>
-        <dt>Open issue</dt><dd style="color:var(--warn)">T1 contract violation 10-09 11:00Z (65.2 checks)</dd>
+        <dt>NFL</dt><dd>27 seasons of play-by-play; weekly source capture live</dd>
+        <dt>NBA</dt><dd>engine store; official injury reports reach the box</dd>
+        <dt>NHL</dt><dd>shot-level store</dd>
+        <dt>MLB</dt><dd>1.42 M pitches (Wave 105)</dd>
       </dl>
     </div>
     <div class="card">
-      <h3>NFL pre-kickoff capture</h3>
-      <div class="cap">QB, injuries, weather and referee state — obtainable only before kickoff.</div>
+      <h3>Muse archive</h3>
+      <div class="cap">The qualitative and split archive Muse builds; read-only to the bot.</div>
       <dl class="kv">
-        <dt>Capture cron</dt><dd style="color:var(--crit)">still a draft (T-601)</dd>
-        <dt>Needed for</dt><dd>the next NFL mechanism: injury reports, QB-only first</dd>
-        <dt>Scoped in</dt><dd>65.3 step 6</dd>
+        <dt>This week</dt><dd>726 split chunks queued (NBA tracking / shot dashboard / by quarter; MoneyPuck; NHL special teams) + reserve</dd>
+        <dt>Snapshots</dt><dd>NHL goalies, NBA lineups and scratches, refs, NFL inactives — daily from 11-10</dd>
+        <dt>Runs</dt><dd>200 a day; next message Mon 11-16</dd>
       </dl>
-      <div class="note bad" style="margin-top:12px; font-size:11.8px"><b>A weekly clock.</b> Every NFL week without a
-      capture permanently loses that week's pre-kickoff state.</div>
+      <div class="note bad" style="margin-top:12px; font-size:11.8px"><b>A daily clock.</b> A snapshot missed on game day
+      cannot be recovered later.</div>
     </div>
   </div>
 </section>
@@ -576,8 +575,8 @@
 <!-- ============================================================ DESK -->
 <section id="desk">
   <div class="sechead"><h2>Your desk</h2><span class="num" id="deskCount"></span></div>
-  <p class="lede">Decided 10-10: <span class="chip good"><i></i>ADR-0072 on</span> <span class="chip good"><i></i>NFL challenger ships</span>
-  <span class="chip good"><i></i>GG-536 fills-only</span>. Nothing in Wave 71 waits on what is left — but two carry dates.</p>
+  <p class="lede">Decided 11-09: <span class="chip good"><i></i>the build continues on every lane</span> — negative results are expected for a while.
+  Decided 11-05: <span class="chip good"><i></i>forward test restarted at the GG-1771 epoch</span>. What still waits on you:</p>
   <div class="dk" id="deskList"></div>
 </section>
 
@@ -623,7 +622,7 @@
   <footer>
     <b style="color:var(--ink-2)">Visual Dashboard</b> — built at <span class="mono">origin/main __SHA__</span>, __DATE__,
     by the strategic window. Registry, gap-log and ADR counts were derived by running code against the repository;
-    execution and verdict figures come from the cited wave results; drawdowns from the Live Terminal (10-09 18:05 UTC).
+    execution and verdict figures come from the cited wave results and the box bridge (2026-11-10 03:25Z).
     Anything not re-measured since an earlier wave says so. Static snapshot — rebuilt at each wave close.
   </footer>
 </div>
