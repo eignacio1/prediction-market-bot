@@ -37,10 +37,14 @@ def test_launcher_opens_the_live_page_not_a_file():
     assert "/visual" in cmd and ".html" not in cmd
 
 
-def test_page_caches_key_on_checkout_head():
-    """/visual and /project rebuild when the checkout moves (docs-only pulls do not restart the service)."""
-    import re
+def test_page_caches_expire_on_new_checkout_head(monkeypatch):
+    """/visual and /project refresh in the background when the checkout moves; the request itself never rebuilds."""
     src = (pathlib.Path(__file__).resolve().parent.parent / "scripts" / "web_dashboard.py").read_text()
-    assert src.count("key=_checkout_head()") == 2
-    head = wd._checkout_head()
-    assert head is None or re.fullmatch(r"[0-9a-f]{40}", head)
+    assert src.count("_expire_on_new_head(_") == 2
+    cache = {"t": 123.0, "html": "old"}
+    monkeypatch.setattr(wd, "_checkout_head", lambda: "a" * 40)
+    wd._expire_on_new_head(cache)
+    assert cache["t"] == 123.0 and cache["head"] == "a" * 40  # first sighting: no expiry
+    monkeypatch.setattr(wd, "_checkout_head", lambda: "b" * 40)
+    wd._expire_on_new_head(cache)
+    assert cache["t"] == 0.0 and cache["head"] == "b" * 40 and cache["html"] == "old"  # served stale, refreshed off-thread
