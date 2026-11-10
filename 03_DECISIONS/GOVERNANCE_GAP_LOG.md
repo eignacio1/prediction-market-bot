@@ -4684,16 +4684,22 @@ W103.4, 2026-11-06. `demo_fill_forward_report.py` keeps no GG-1771 epoch (2026-1
 **Resolved 2026-11-06 (operator "Restart" 2026-11-05 PT):** PR #435 (merge 53662ea) adds `GG1771_EPOCH` and an `epoch_floor` in `build_report`, applied by `main()`; `--since` and the turn-off switches are untouched. ADR-0072 cells (NFL, NBA, NHL) now score only rows at/after 2026-11-06T01:03:42Z. The logged NFL ADOPT is kept as pre-epoch, superseded; no verdict word relabelled.
 
 ### GG-1810 — Forward-report cache keeps pre-#431 NO fills stored as YES (scored backwards)
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolution (2026-11-06):** RESOLVED by PR #440 (W105.2): `rescore_cache` / `--rescore-cache` writes `demo_fill_forward_cache_rescored.json`, raw cache never overwritten; run on the box copy: 17,312 filled intended-NO entries re-scored (60,216 flipped incl. 1,292 unsettled).
 
 W104.3, 2026-11-06. `exp_output/FORWARD_TEST/demo_fill_forward_cache.json` holds 17,312 intended-NO filled entries stored `side=yes`, `won` inverted; settled entries are never re-read. All are pre-epoch and excluded from ADR-0072 verdicts (#435), so only pre-epoch analysis reading the cache is affected. Fix options: re-read ~38k orders once, or rescore from the policy log's `side` (method in `12_EXPLORATORY/w104_landing/GG1775_REMEASURE.md`). Registered, not fixed (cost, and nothing live depends on it).
 
 ### GG-1793 — Forward cache stores side='yes' for every order (GG-1770 pattern); non-fill side unrecoverable
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-11-06):** RESOLVED by PR #440 (W105.2): `lookup_fill` stores the intended side (+ wire_side, terminal_ts); `intended_sides()` recovers side for non-fills from `shadow_order` rows.
 
 W104.1, 2026-11-06. `demo_fill_forward_cache.json` holds `side='yes'` on all orders, so non-fills cannot be separated into intended-YES and intended-NO, and their outcomes are scored as YES contracts. W104.1 therefore restricted the E3 fills-vs-non-fills test to pre-epoch YES-side fills and treats the non-fill comparison as approximate. Related: GG-1810. Fix needs the intended side logged per order at submit time.
 
 ### GG-1794 — No per-order log of intended side, pre-order mid, book depth or fill time
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**Resolution (2026-11-06):** RESOLVED in code by PR #440 (W105.2): order records carry intended_side, pre_order_mid, pre_order_spread, book_yes_bid/ask_size, submit_ts_utc; fill/cancel time from cache terminal_ts. First real post-merge row NOT yet seen (newest box shadow_order predates the merge); book size fields unverified against the live Kalshi payload.
 
 W104.1, 2026-11-06. B-048 could model fill probability only from price, sport, days-ahead and hour (AUC 0.62). Pre-order mid, queue depth and time-to-fill are not logged, so a real information-vs-noise test of why fills lose (and a hazard fit with censoring) cannot run on live data. Needed before any MLB or post-epoch rerun. Descriptive only; no placement change implied.

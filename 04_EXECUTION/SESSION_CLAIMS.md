@@ -1196,4 +1196,10 @@
 | 2026-11-06T05:45:13Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (90f0c4f) is ancestor of origin/main — W105.5 B-054 ride/fade board merged PR #442; install awaiting approval |
 | 2026-11-06T05:46:38Z | W105.3-B-018 | CLOSED — W105.3 MLB engine data layer started: 2 seasons of Savant pitches, PIT tables, held-out Brier vs naive spans zero (PR #444). (commit `3114865`) |
 | 2026-11-06T05:46:58Z | W105.3-B-018 | CLOSED — merge confirmed, HEAD (96d4689) is ancestor of origin/main — MLB engine data layer started (PR #444 merged) |
-| 2026-11-06T06:06:44Z | W105.6-B-055 | MERGED: NO — branch `session/20261106T054706Z-w105-6-pot-of-gold` awaiting merge — W105.6 pot-of-gold: 3 routes defined, 17 cells pre-registered (all IN_SAMPLE, none orderable); PR #447 open, parked. (commit `effbe55`) |
+| 2026-11-06T05:47:57Z | GG-1830..GG-1832 | CLOSED — merge confirmed, HEAD (2dfe7ef) is ancestor of origin/main — W105.5 B-054: duplicate of merged #442; branch session/20261106T052413Z-w105-5-ride-board unmerged, PR #445 closed, delta port pending operator choice |
+| 2026-11-06T05:58:50Z | W105.4-B-053 | CLOSED — W105.4 ride/fade board B-053: net-of-cost measurement, 0 cells HELD_OUT, 5 inert IN_SAMPLE MOVE rows, pre-reg Part 1+2 and RESULT (PR #446) (commit `3e58045`) |
+| 2026-11-06T05:59:08Z | W105.4-B-053 | CLOSED — merge confirmed, HEAD (68ca446) is ancestor of origin/main — ride/fade board merged (PR #446) + handoff on main |
+| 2026-11-06T06:02:56Z | W105.2-B-052 | CLOSED — W105.2 B-052: order-context fields logged (PR #440), GG-1793/1794/1810 resolved, placement study merged (PR #443). (commit `52638e3`) |
+| 2026-11-06T06:03:14Z | W105.2-B-052 | CLOSED — merge confirmed, HEAD (dd63e6a) is ancestor of origin/main — W105.2 order data + placement study merged (PRs #440, #443), handoff on main |
+| 2026-11-10T01:14:32Z | TBD | W106.1 B-056 STANDARD - land #447 (strip nav files) + graft POT_OF_GOLD into router.py + ROUTER_TREE.md. PURPOSE: BREADTH B1 pot-of-gold cells routed 0->17 (paper), router branches 4->5 |
+| 2026-11-10T01:14:46Z | GG-reserve-3 (no T-) | W106.2 B-057 STANDARD quant cost wall. PURPOSE: EXECUTION E2 / PROOF - effects with measured net-of-cost figure (taker vs maker) |

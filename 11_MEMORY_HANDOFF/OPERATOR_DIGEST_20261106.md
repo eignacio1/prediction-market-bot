@@ -32,9 +32,9 @@ The program that watches live NBA/NHL/NFL prices and decides ride, fade or skip 
 ## W105.3 — MLB engine data layer (DEPTH)
 We now hold every 2024 and 2025 MLB pitch (1.42 million) on the laptop, free, with checks that nothing is duplicated or looks ahead in time. A first simple game model trained on 2024 and tested on 2025 is a hair better than guessing the league average, but not by an amount we can tell from luck. That was expected; it is a plumbing test, not edge. Nothing runs on the server and no money is at risk. Next: compare it to real market prices, then add bullpen, park and platoon factors.
 
-## W105.6 pot of gold (parked at usage limit)
-- I defined three longshot routes (fade the longshot, take the favourite, buy the longshot) and tested them on MLB, NFL, NHL and NBA prices after Kalshi's fees and the spread.
-- Result: the gaps between price and what actually happened are about 1 cent or less. Fees and spread cost 1 to 3 cents. No route clears its costs yet.
-- 17 test cells are registered and logged. None can place an order. NBA and NHL have only about 9 days of data.
-- Nothing runs live and no money is at risk. The pull request is open but unmerged. It resumes Monday.
-- Pillars moved: BREADTH and PROOF (routes 0 to 3, cells 0 to 17).
+## W105.4 ride/fade board
+We tested whether riding or fading big sudden price moves makes money after spreads and fees. It does not, yet: no cell passed on held-out games, so nothing is promoted and no orders can fire from it. Five long-shot candidates are logged as untested forward watches and cannot trade. NBA, NHL and NFL showed no edge at all. Still demo only, zero real money at risk. Next data arrives at MLB opening day, around 2027-03-25.
+Moved: BREADTH (ride/fade cells), no new cells earned.
+
+## W105.2 — order data and placement study (EXECUTION)
+The bot now records the context of each demo order (the side, book sizes, timing), so we can finally explain why fills lose. We tested placement rules on 65,217 past orders: no rule makes fills win. Fills lose more as the price rises, from half a cent under 20c to four cents above 80c. Skipping resting orders at 50c or higher trims the loss slightly but does not change final profit. Resting at the bid gains about half a cent per order but fills 29 points less often. I recommend, but have not applied, a pre-registered shadow arm for "no resting at 50c or higher". Still zero real money at risk. Not yet confirmed: a real order row carrying the new fields (none placed since the merge).

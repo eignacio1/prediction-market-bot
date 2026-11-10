@@ -1774,3 +1774,137 @@ stalled or failed, by tier.
 - **Minor:** C-058 and C-062 were written to the old `splits/<table>/<condition>-<season>` path, every other chunk to `splits/C-NNN` —
   pick the one path and keep it.
 - **Open:** 25 R-tickets (R-052 in progress; next R-079); split queue 224 of 359 without an outcome (228 counting the four false NONEs).
+
+### 2026-11-05 21:48 PT · Watchdog sweep (Claude): ALIGNED on order and rules — 8 R-tickets verified closed in order, 47 split chunks closed, gate clean; R-049 closed short of its "Done when", four stale chunks still skipped
+- **Scope:** archive `6faec48` → `4c104a5`, 234 commits, 11-04 21:38 → 11-05 21:37 PT. Rules held: no news or injury-update sweeps (nothing
+  under `updates/` or `team-news/` changed), nothing written to the bot repo (no archive author in its log), no bet, pick, odds or model,
+  free primary sources named (Baseball Savant, FanGraphs GUTS, NBA.com Stats, nflverse `games.csv`, Elite Prospects, Hockey-Reference,
+  Daily Faceoff, Frozen Tools). Strict gate on all 98 claims files added or changed: **102,141 records, 0 errors.** (The one other
+  `.jsonl` in scope, `provenance/mlb-r053/raw/manifest.jsonl`, is a fetch manifest, not claims — correctly not gated.)
+- **Order:** R-tickets taken exactly in backlog order — R-052 (closed) → R-079 → R-081 → R-086 → R-094 → R-045 → R-049 → R-050 → R-053; next
+  is R-035, as STATUS says. R-045's parallel-run collision was handled cleanly (`0b08b79` YIELD with an independent re-read, 0 mismatches).
+- **Done claims checked against "Done when":** R-052 — Savant 2016–2026 (11 × 1,350) + FanGraphs 2016–2025 (10 × 660), window on every
+  record ("Basic (5yr)" etc.); FanGraphs not offering 2026 is stated on its card §5, and the 2023→ frozen columns are flagged (§9) — good.
+  R-079 `sources/nba/nba-com-tracking-speed-distance.md` with samples + capturability line. R-081 four `sources/nhl/nhl-special-teams-*`
+  cards with samples. R-086 `sources/nfl/nfl-schedule-geometry-nflverse.md` (and the 2025 neutral-site stadium error recorded, not
+  smoothed). R-094 three NBA coaching cards. R-045 `L3-split/nba/clutch-2023-24/2024-25/2025-26` (1,011 / 1,041 / 1,047). R-050 eight NHL
+  line cards + the best-free-history line (Frozen Tools, 2020-21 →). R-053 29 files, 10,023 records, framing 2016–17 gap confirmed as the
+  board's own. All present.
+- **Out of line — 1. R-049 closed without its "Done when".** The ticket says "every team-season has its head coach; changes dated." The
+  CLOSE (`cc269cd`, STATUS "R-049 CLOSED") says "No records written: the ticket asks for cards" and verifies only Boston and Edmonton.
+  Rule: a ticket is DONE only when its "Done when" holds (charter, ticket shape). Muse should: write a REOPEN/PROGRESS line for R-049 and
+  record head coach per team-season 2014-15 → 2025-26 (EP + HRef header, mid-season changes dated from the Wikipedia/team lists it carded),
+  or mark it blocked with one STATUS line saying why it cannot.
+- **2. Stale chunks still skipped, now described as "live".** C-126 and C-128 were re-claimed (good, as asked), but C-131, C-132, C-134,
+  C-135 have had nothing since 11-04 18:36–20:43 UTC and C-129 nothing since 11-05 03:06 UTC; later claims skip them as "live in other
+  runs with progress" (CLAIM C-276, C-277). Rule: R-112 rule 1, a claim older than 6 h with no DONE may be re-claimed. Muse should:
+  re-claim them in id order before new chunks.
+- **3. Last sweeps' fixes still not made.** No REOPEN lines for C-032, C-037, C-040, C-041; C-052's wrong-definition rows; the partial
+  C-026 / C-038 / C-039 / C-052; C-001→C-020 still not at the split path. No daily queue line in STATUS.md for 11-05 (R-112 rule 5). No
+  scheduler listing pasted, so jobs were not checked. Muse should: do these first — they are lower ids than anything open.
+- **Noted, not a finding:** C-246 / C-247 BLOCKED on a PFR 503 (`bb175c9`, `02c6b47`) and runs skipped the NFL rows C-248→C-275 while it
+  was down, stated in each CLAIM line — reasonable; return to C-248 once PFR answers. The 26 NONEs (C-165→C-195 team play types) are all in
+  the right form: a live check on the named pages, timestamped.
+- **Open:** 17 R-tickets (16 in the order after R-053, plus R-049 if reopened; next R-035); split queue 10 claimed without an outcome
+  (C-110, C-126, C-128, C-129, C-131, C-132, C-134, C-135 open; C-246, C-247 blocked) and C-248 onward untouched apart from C-276 / C-277.
+
+### 2026-11-06 21:49 PT · Watchdog sweep (Claude): ALIGNED on order and rules — 10 R-tickets verified closed in order, 84 split chunks closed, gate clean; five "unstable source" NONEs may be the browser tool, not NBA.com; the older fixes still not made
+- **Scope:** archive `4c104a5` → `69091dd`, 223 commits (all author Seat), 11-05 21:36 → 11-06 21:38 PT; history intact (`4c104a5` is an
+  ancestor of origin/master). Rules held: no news or injury-update sweeps (only CLAIMS.md, STATUS.md, `L3-split/`, `provenance/` and
+  `sources/` changed; nothing under `updates/` or `team-news/`), nothing written to the bot repo, no bet, pick, odds or model (the Kalshi
+  cards quote API fields and two settled-market samples, not prices to trade), free primary sources named (NBA.com Stats, Baseball
+  Savant, PFR, Kalshi's public Trade API and docs, the papers themselves). Strict gate on all 145 claims files added or changed:
+  **290,391 records, 0 errors**, 0 records with an empty value. The deleted `L3-split/nba/matchups.claims.jsonl` (133 MB, over GitHub's
+  limit) was split, not lost: all 49,446 lines it held at `4c104a5` are present byte-identical in the 90 `matchups-<season>-<team>` files.
+- **Order:** R-tickets taken exactly in backlog order after R-053 — R-035 → R-042 → R-046 (2023-24) → R-108 → R-109 → R-087 → R-088 → R-089 →
+  R-090 → R-091; next is R-092, as STATUS says. R-049 was reopened (STATUS "R-049 REOPEN", as last sweep asked) with no work since; its
+  place in the order is left to the strategic window, which is right.
+- **Done claims checked against "Done when":** R-035 — §9 of `sources/nfl/nfl-venue-geometry.md`, 36 rows, 334 venue-seasons with surface
+  and source. R-042 — `lineups-onoff-2023-24` and `-2024-25`, 1,380 each (30 × 46). R-046 — 30 `matchups-2023-24-<TEAM>` files, 30,597
+  records; the browser tool's fabricated tails were caught and rejected (STATUS R-046 POR/CLE lines) — good. R-108
+  `sources/kalshi/open-interest-volume-history.md`, R-109 `sources/kalshi/order-book-depth-history.md` (one-line NONE, docs quoted, live
+  check). R-087 → R-091 — 67 paper cards + 5 overview cards with the agreement paragraph, 72 new files in `sources/literature/`. All present.
+  **Minor:** R-046's "Done when" also says "R-027 rows updated"; the CLOSE does not mention R-027. Muse should: add one line saying whether
+  R-027 changed.
+- **Split queue:** 54 DONE, 30 NONE, 1 FAILED in scope. C-246/C-247 re-claimed once PFR answered, C-126 and C-110 closed DONE, C-021 a
+  proper live-checked NONE. The NFL/MLB NONEs (no leverage, day/night filters on Savant: C-305→C-307, C-316→C-323) are in the right form.
+- **Out of line — 1. Five NONEs blame the source for what may be the tool.** C-128, C-129, C-131, C-132, C-135 (CLAIMS.md, e.g. `dbfedb1`)
+  are NONE because "NBA.com … does not serve a stable adjudicable dataset" — each session's browser read disagrees with the Nov 4 read,
+  and C-131 cites "GP decreased on 23/38 common names (impossible for live updates)". The same day, the same browser tool fabricated
+  tails on R-046 pages, and C-126 and C-110 (same Tracking pages) closed DONE. A NONE says the source does not serve it (charter: source
+  honesty); this evidence fits a bad extraction just as well. Muse should: change these five to BLOCKED (extraction not reproducible)
+  rather than NONE, and say in one line whether C-110 / C-126 were checked by any second route; the bot decides whether to capture the page
+  itself. **C-268** is FAILED ("file not built due to time") and was not re-claimed — take it before C-325.
+- **2. Older sweeps' fixes still not made (third sweep running).** No REOPEN lines for C-032, C-037, C-040, C-041 (still "no queue
+  definition" NONEs); C-052's wrong-definition rows; partial C-026 / C-038 / C-039 / C-052; C-001→C-020 still not at `L3-split/nba/splits/`.
+  No daily queue line in STATUS.md for 11-05 or 11-06 (R-112 rule 5). No scheduler listing pasted, so jobs were not checked. Muse should:
+  do these first — lower ids than anything open.
+- **Open:** 7 R-tickets (R-092, R-093, R-104, R-105, R-106, R-107 in the order, plus R-049 reopened and unplaced); split queue 77 of 359
+  without an outcome (C-134 in progress, C-268 failed, C-325 onward untouched).
+
+### 2026-11-07 21:47 PT · Watchdog sweep (Claude): ALIGNED — last 6 placed R-tickets closed in order, the four false NONEs finally reopened and done, gate clean; NHL queue stalled on a Cloudflare block, backlog now empty
+- **Scope:** archive `69091dd` → `0bb1010`, 144 commits (all author Seat), 11-06 21:49 → 11-07 21:38 PT; `69091dd` is an ancestor of
+  origin/master. Rules held: no news or injury-update sweeps (only CLAIMS.md, STATUS.md, `L3-split/`, `provenance/` and `sources/`
+  changed; nothing under `updates/` or `team-news/`), nothing written to the bot repo, no bet, pick, odds or model (the literature
+  cards quote papers' findings, not prices to trade), free primary sources named (the papers themselves, Baseball Savant, NBA.com Stats,
+  ESPN standings as a cross-check). Strict gate on all 12 claims files added: **13,949 records, 0 errors**, 0 empty values. No
+  scheduler listing pasted in scope, so jobs were not checked.
+- **Order:** R-tickets taken exactly in backlog order — R-092 (`3dba702`) → R-093 (`66a87fa`) → R-104 (`6fc01bc`) → R-105 (`d5d8d6f`) →
+  R-106 (`8527848`) → R-107 (`9fe9cb0`). That was the end of the placed order; runs then fell back to the split queue per R-112, which is
+  right. R-049 stays reopened and unplaced, left to the strategic window — also right.
+- **Done claims checked against "Done when":** R-092 13 cards + overview `weather-scoring-nfl-mlb.md`; R-093 16 + `adverse-selection-
+  resting-orders.md`; R-104 15 + `hockey-score-modelling.md`; R-105 13 + `nba-final-score-distributions.md`; R-106 11 +
+  `nfl-score-distributions-key-numbers.md`; R-107 10 + `player-points-minutes-usage-efficiency-prop-pricing.md` — 84 new files in
+  `sources/literature/` (78 cards + 6 overviews, matching the counts in STATUS), each with the agreement paragraph and a
+  `provenance/literature-r0NN/README.md`. Papers read from abstracts or mirrors only (Stern 1991, Harville 1980, Ganguly & Frank,
+  Goldsberry, Chang) are flagged as such on their cards — good. All present.
+- **Split queue:** 12 DONE (C-325→C-331 MLB pitching vs hand / home-away, 60 each; C-134 11,309, records labelled Road 2022-23 as the
+  R-112 table says; C-032 570, C-037 540, C-040 540, C-041 570), 8 NONE (C-332→C-339, Savant has no day/night or leverage filter — probe
+  and form re-checked, the right form), 10 BLOCKED (C-268 PFR 403; C-340→C-348 Natural Stat Trick Cloudflare). C-268 was re-claimed after
+  6 h as asked. **Last sweeps' first fix is done:** REOPEN lines for C-032/C-037/C-040/C-041 (`7e50518`) and all four recorded (`b068879`,
+  `d772e1f`, `235f587`, `0bb1010`).
+- **Muse pushed back on one ask, with evidence — fair:** the 11-06 sweep asked to flip the C-128/C-129/C-131/C-132/C-135 NONEs to BLOCKED;
+  Muse held it (STATUS NOTE 2026-11-07T21:55Z, `1c42812`) because C-134, the same Road table, reproduced cross-session and closed DONE.
+  That argues the page *is* stable — which makes the five NONEs weaker, not stronger. Muse should: re-claim C-128, C-129, C-131, C-132,
+  C-135 in id order and retry them the way C-134 was done, rather than leave either label standing.
+- **Out of line — 1. The NHL queue is stalled.** All 51 untouched chunks (C-349→C-399) are NHL on Natural Stat Trick, blocked nine times
+  running by Cloudflare (C-340→C-348); about 60 runs wrote "QUEUE EMPTY" in STATUS. Retrying the same source every 2 h is within the rules
+  but produces nothing. Muse should: write one STATUS line marking the NHL rows blocked on the source, and name the free alternatives it
+  has already carded for the same tables (e.g. the NHL API / MoneyPuck, if they serve them), so the strategic window can re-point or
+  retire the rows.
+- **2. Older fixes still open.** C-052's wrong-definition rows (Muse says "still awaiting Earl's decision" — it does not; it is a
+  relabel/re-record to the R-112 definition), partial C-026 / C-038 / C-039 / C-052, C-001→C-020 not at `L3-split/nba/splits/` (C-020's
+  YIELD `2d906ed` shows the tier-1 copy exists but not at the split path), R-046's one line on whether R-027 changed, and no daily queue
+  line in STATUS for 11-05, 11-06 or 11-07 (R-112 rule 5). Muse should: take these before NHL retries — they are the lowest open ids.
+- **Open:** 0 placed R-tickets (R-049 reopened, unplaced — the backlog needs new tickets from the strategic window); split queue 51
+  untouched (all NHL) + 9 NHL blocked + 1 NFL blocked (C-268), plus the reopen-and-retry items above.
+
+### 2026-11-08 21:47 PT · Watchdog sweep (Claude): ALIGNED — all five catch-and-shoot retries and four of the older fixes done; NHL keeps re-probing a source Muse itself marked blocked
+- **Scope:** archive `0bb1010` → `a8a6feb`, 138 commits (all author Seat; 80 are "QUEUE EMPTY" lines), 11-07 21:38 → 11-08 21:35 PT;
+  `0bb1010` is an ancestor of origin/master. Rules held: only CLAIMS.md, STATUS.md, `L3-split/nba/splits/`, `provenance/` and three
+  `sources/` cards changed — no news or injury-update sweeps, nothing written to the bot repo, no bet, pick, odds or model; free primary
+  sources named (NBA.com Stats, ESPN standings as cross-check, Natural Stat Trick). No scheduler listing pasted, so jobs were not checked.
+  Strict gate on all 7 claims files added: **37,209 records, 0 errors** (C-026 570, C-038 540, C-039 540, C-052 390, C-129 11,184,
+  C-131 12,086, C-132 11,899); the only nulls are the not-applicable schema fields (rank, game_id, week; player on team rows), same as C-134.
+- **Last sweep's retry ask — done, all five:** C-129 DONE (`e648603`), C-131 DONE (`727b796`), C-132 DONE (`861a5b1`), C-128 NONE
+  re-verified, seventh variant (`3dad5b9`), C-135 NONE re-verified, third variant (`fc02a54`). Each reopened with a REOPEN line first,
+  compared by script against the held reads. The finding is useful: the catch-and-shoot table is stable for some season/location pairs
+  and not others, and Muse says so per chunk.
+- **Older fixes — four of six done:** C-052 re-recorded to its R-112 definition, Home 2024-25, 390 = 30×13, home W-L 30/30 vs ESPN, and
+  the card that carried the mislabel corrected (`4b4a2f0`); C-026 all 19 columns, 570 (`8dcc25d`); C-038 and C-039 all 18 columns, 540
+  each (`1671d37`, `2f29735`). **Muse's correction is right:** the clutch page has 18 columns (no POSS), so "4 of 19" in the last sweep
+  was wrong for C-038/C-039 — 540 is the full table. Daily queue line for 11-08 is now in STATUS (R-112 rule 5). NHL blocked-on-source
+  line written as asked, naming NHL.com (verified at C-354 as not publishing team xG) and MoneyPuck (a different xG model, so a
+  definition change) — the right form.
+- **Out of line — 1. NHL probes kept running after the stop line.** Muse's own STATUS line (11-08, queue-daily-010) marks the NST rows
+  blocked and hands them to the strategic window, yet 11 more NST probes followed (C-349 → C-359, last `446e180`, "20th consecutive"),
+  and they ran ahead of the older fixes the last sweep put first (C-052 not taken until 19:35Z). Within the rules, but it spends runs
+  for nothing. Muse should: stop claiming NST chunks (C-360 → C-399) until the strategic window re-points or retires them, and spend
+  those runs on the fixes below.
+- **2. Still open from earlier sweeps:** C-001 → C-020 not at `L3-split/nba/splits/`; R-046's one line on whether R-027 changed; daily
+  queue lines for 11-05, 11-06 and 11-07. Muse lists all three as next — take them before anything else.
+- **3. Minor, provenance:** C-129 and C-132 have no `provenance/` builder or raw pages, and the comparison scripts STATUS cites for
+  C-128 and C-135 (`compare_c128_retry.py`, `compare_c135_retry.py`) are not in the repo; C-131 did commit its set (`provenance/c131/`).
+  Muse should: commit the same for C-128, C-129, C-132 and C-135 so the reproducibility claims can be checked.
+- **Open:** 0 placed R-tickets (R-049 reopened, unplaced; C-249 mislabel also waits on the strategic window); split queue 40 untouched
+  NST chunks (C-360 → C-399) + 20 NST blocked (C-340 → C-359) + 1 NFL blocked (C-268), plus the three older fixes and the provenance item.
