@@ -159,3 +159,11 @@ work most likely to be cut. It also placed R-049 first in the R-order and nothin
 R-049 closed (03:03Z). Caught by the operator's hygiene ask, not by the window. Pattern: SEQUENCING (unrecoverable work queued behind
 recoverable work). Rule: a weekly Muse prompt orders perishable or schedule-creating steps FIRST, and every run type it sizes has a named
 fallback when its own list empties.
+
+### W50 - SW-9, 2026-11-10 05:35Z - treated negative edge evidence as a reason to stop building
+At the W107 close the window recommended stopping new builds on liquid sports lines and said waves might shrink "if the evidence stays
+negative". That contradicts ADR-0073 ("Depth has a continuous lane in every wave until each live sport has its engine") and ADR-0075, and
+the operator's stated expectation that results stay negative while the architecture is built. The backlog had also thinned to measurement
+tickets. Operator, 11-09 21:29 PT: "it'll stay fkn negative for a while". Pattern: FOREST (read a measurement verdict as a build verdict).
+Rule: frozen tests judge cells; they never gate building. Every wave carries three blocks of build work drawn from the backlog's build
+tickets; negative results change which cell is targeted, not whether to build.

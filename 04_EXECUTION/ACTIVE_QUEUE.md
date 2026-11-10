@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 108 READY TO PASTE - four blocks in NOW (108.1 untested rows, 108.2 news lag at trade resolution, 108.3 NBA / NFL / NHL props, 108.4 weather scoping - research only).** Written 2026-11-10 ~03:40 UTC by SW-9. **Waiting on you:** the strategy recommendation (Needs your decision, item 2); `ride_board_install`; the EXP-038 second-look draft.
+> **▶ WAVE 108 READY TO PASTE - four blocks in NOW (108.1 untested rows, 108.2 news lag at trade resolution, 108.3 NBA / NFL / NHL props, 108.4 weather scoping - research only).** Written 2026-11-10 ~03:40 UTC by SW-9. **Waiting on you:** `ride_board_install`; the EXP-038 second-look draft.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -54,7 +54,7 @@ close: Waves 101-103 moved measurement and execution correctness (GG-1771), not 
 **Surface (box, 2026-11-10 03:25Z):** healthcheck HEALTHY, 89 live, no silent arm, main CI green; **budget RED only for two uninstalled
 crons** (ride board, news burst capture - your approval). NBA engine coverage 3 of 3 arms every night since 11-05. **Edge so far (EDGE_MAP,
 W107): 39 hypotheses, none survives costs forward** - engines, ride / fade, pot of gold, props, placement and news speed all NO net; 14 accruing,
-5 untested (W108). Strategy recommendation in "Needs your decision". **Muse:** week set 11-09 (queue C-400..C-1125, 726 chunks + reserve;
+5 untested (W108). Strategy recommendation withdrawn (operator 11-09 21:29 PT: build continues on every lane; negative evidence expected for a while). **Muse:** week set 11-09 (queue C-400..C-1125, 726 chunks + reserve;
 snapshots first; 200 runs a day; ticket runs work the queue when no ticket is placed). Next message Mon 11-16.
 
 *Older window notes, the 10-08 scoreboard, the build history and the 10-19 calendar moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04, operator: "edit the Active Queue cus it's too large right now").*
@@ -71,7 +71,7 @@ B-064 NBA / NFL / NHL props net of costs · 108.4 **scoping (rank 8, research on
 **DOCTRINE CHECK (W48), Wave 107 close.** *Premise:* "a measured mispricing in Kalshi sports markets survives fees, spread and our fills."
 The record (12_EXPLORATORY/edge_map/EDGE_MAP.md): 39 hypotheses, **0 survived costs forward**; 7 ruled out, 13 no effect net, 14 accruing
 (NBA engine first looks 11-13 .. 11-25, NFL second looks 12-14 .. 01-09, EXP-045 01-12, MLB 2027), 5 untested. Information speed (107.2 /
-107.3): NO at 20-minute resolution. **Window's recommendation (in "Needs your decision"):** stop new edge-hunting builds on liquid sports
+107.3): NO at 20-minute resolution. **Window's recommendation (WITHDRAWN 11-09 21:29 PT by the operator - the build continues on every lane):** stop new edge-hunting builds on liquid sports
 game lines; let the 14 accruing tests read on their own; close the last cheap sports gaps (this wave: 108.1-108.3); and scope ONE market
 class where free public data is strong and the methodology could transfer (108.4: weather). Cross-venue (Kalshi vs Polymarket) is the other
 structural option and is yours to reopen - nothing is built for it. *Said but not built:* parlays / big-hitter combos (09-25).
@@ -485,12 +485,7 @@ What should reorder this, and what should stop it:
 **OPEN - waiting on you (not an authorization until you answer):**
 1. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
    due before January. Accept, or tell me what to change.
-2. **STRATEGY (window recommendation, W107 exit test failed, 11-10):** 39 edge hypotheses tested, none survives costs forward; engines
-   lose to or tie the market, ride / fade / pot of gold / props / placement / news speed all NO net. Recommendation: (a) stop new
-   edge-hunting builds on liquid sports game lines; the 14 accruing frozen tests keep reading on their own (no build cost); (b) close the
-   last cheap sports gaps (Wave 108: untested rows, trade-print news lag, NBA / NFL / NHL props); (c) scope ONE market class where free
-   public data is strong (108.4: Kalshi weather vs NOAA) - research only. Cross-venue (Kalshi vs Polymarket) is the other structural
-   option; parked by you, nothing built. Your call: accept, change, or keep building sports depth (ranking 1-3).
+(Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
 
 > **AUTHORIZATION - T1/T2 SHADOW-LINE LOCK (operator, 2026-11-04 18:10 PT: "I approve the box-task request that runs

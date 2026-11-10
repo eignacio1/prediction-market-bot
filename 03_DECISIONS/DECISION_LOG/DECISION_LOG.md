@@ -3334,3 +3334,12 @@ Pillar EXECUTION E2 / PROOF. Taker ~1.5-2.3c each way (props 4-8c); maker nets -
 
 ### 2026-11-10 — W106.4 (B-018) MLB lineup-aware game model: market is the bar, w≈0
 Pillar DEPTH / D4 MLB. Built point-in-time starter, bullpen, lineup-vs-handedness, park factors and an NB run model pricing ML/total/RL (PR #449). Held out 2024→2025 vs naive: small gains (total +0.0024, RL +0.0028, ML +0.0016 borderline). 2026 vs Kalshi closing line (ML n=753): model loses by −0.0075 Brier [−0.0121,−0.0029]; quant/blend w=0. No order, stake, kelly or ledger change; descriptive, no pre-registration. Spring-2027 logging requires pre-registration before first row. Details: 12_EXPLORATORY/mlb_engine/RESULT_W106_4.md.
+
+## 2026-11-09 21:29 PT — Operator: the build continues; negative edge evidence is expected (SW-9)
+Verbatim: "What are we even doing here what are you talking about? We have quant, engine, scaffolding, governance, architecture, full bet
+suite, multi arm decision tree building - I can keep going and going what do you mean "if the evidence stays negative"? I'll put it plainly
+for you - it'll stay fkn negative for a while"
+Effect: the window's W107-close strategy recommendation ("stop new edge-hunting builds on liquid sports game lines") is WITHDRAWN. Every
+lane keeps building (ADR-0073 depth lane every wave; ADR-0075 architecture). Pre-registered tests judge cells; they do not gate whether the
+project builds. Waves stay at the standing three blocks of real build work. Backlog gains the build tickets (engine architecture per sport,
+factors applied, missing factor classes, full bet suite from one engine, multi-arm decision trees, quant core, scaffolding, governance).
