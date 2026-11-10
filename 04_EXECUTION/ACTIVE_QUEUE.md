@@ -84,7 +84,7 @@ not built* - parlays / big-hitter combos (09-25): waiting on joint pricing from 
 |---|---|---|---|---|
 | 106.1 | rank 1 | Land #447 (pot of gold) cleanly; graft the stem into the router with a precedence rule; paper only | ⏳ pasted? | — |
 | 106.2 | quant | The cost wall: exact fee, maker vs taker, realized spread per family; which gross effects clear it | PARTIAL 2026-11-10 | Taker ~1.5-2.3c each way (props 4-8c), maker -0.6 to -4.3c per fill; only 11 in-sample 89.2 hold-to-settle cells clear. Demo-fee check blocked. PR #448 merged. 12_EXPLORATORY/quant_w106_costs/RESULT.md |
-| 106.3 | quant | Retail flow: player props and thin markets - calibration by price, favourite-longshot, net of costs, held out | 🟡 PARTIAL (PR #450, CI pending) | MLB: 0 of 49 held-out cells net positive; KXMLBHIT −1.4c net. NBA/NFL/NHL props not archived (gap). |
+| 106.3 | quant | Retail flow: player props and thin markets - calibration by price, favourite-longshot, net of costs, held out | 🟡 PARTIAL (PR #450 merged, CI green) | MLB: 0 of 49 held-out cells net positive; KXMLBHIT −1.4c net. NBA/NFL/NHL props not archived (gap). |
 | 106.4 | engine · 2 | MLB engine step 2: lineup-aware game model, both seasons, held out vs naive and vs the closing line where archived | ⏳ pasted? | — |
 
 ### 106.1 - LAND THE POT OF GOLD AND GRAFT THE STEM

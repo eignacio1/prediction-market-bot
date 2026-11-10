@@ -3,7 +3,7 @@
 - Status: PARTIAL (MLB measured; NBA/NFL/NHL props not measurable — not archived)
 - B-058 state: MLB prop+line look DONE, no net-positive held-out cell; non-MLB props BLOCKED on a new archiver task (ROLLING_BACKLOG.json not edited)
 - Branch @ SHA: session/20261110T011417Z-w106-3-props-net @ bed41d9
-- PR + CI: #450, CI pending at write time (merge only on green head; do not merge on this note)
+- PR + CI: #450 MERGED (squash 21bc755), CI green on head bed41d9.
 - Result: KXMLBHIT held-out net −1.4c/contract [−2.7, +0.0] (214 games); MLB game lines −3.2c [−5.0, −1.4] (1,188 games); 0 of 49 held-out cells net positive after Holm (best raw +2.3c, Holm p 0.74). Thin-book cells lose 8–20c. Props-vs-lines raw gap +1.2c vs +1.1c: "larger where retail trades" NOT supported.
 - MEASURE MOVED: prop families measured net: 1 of ~40 listed (KXMLBHIT); net-positive held-out cells: 0 of 49.
 - Stage reached: interpreted (not applied).
