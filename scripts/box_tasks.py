@@ -59,6 +59,10 @@ TASKS: dict[str, str] = {
     "source_capture_run": f"{PY} scripts/source_capture_nfl.py --log logs/source_capture_cron.log",
     "source_capture_uninstall": f"{PY} scripts/source_capture_install.py uninstall",
     "capture_uninstall": f"{PY} scripts/thin_capture_install.py uninstall",
+    # W107.2 B-060: prepared news-lag burst capture. NOT RUN until the operator approves news_burst_capture_install by name.
+    "news_burst_capture_install": f"{PY} scripts/news_burst_capture_install.py install",
+    "news_burst_capture_readback": f"{PY} scripts/news_burst_capture_install.py readback",
+    "news_burst_capture_uninstall": f"{PY} scripts/news_burst_capture_install.py uninstall",
     # W92.1: NBA/NHL price-archiver cron lines (install is budget-gated, backs up the crontab first)
     "archive_cron_install": f"{PY} scripts/archive_cron_install.py install",
     "archive_cron_readback": f"{PY} scripts/archive_cron_install.py readback",

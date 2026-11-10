@@ -1,0 +1,7 @@
+# BEGIN W107.2 NEWS BURST CAPTURE
+# 30-min, ~20 s top-of-book bursts of the open NBA game-line markets around the official injury-report publish window
+# (events cluster 17:00-19:59 ET: 21:55, 22:55, 23:55 UTC = 16:55, 17:55, 18:55 EST; shifts +1 h of UTC drift during EDT).
+# Public unauthenticated GET only; ONE listing call per sweep; flock; 40 MB/day cap. Writes ONLY exp_output/KALSHI_HISTORY/news_burst/.
+# Minutes :55 only (no other job uses :55). Installed ONLY on the operator's named approval of news_burst_capture_install.
+55 21,22,23 * * * cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/news_burst_capture.py --minutes 30 --interval 20 >> logs/news_burst_cron.log 2>&1
+# END W107.2 NEWS BURST CAPTURE
