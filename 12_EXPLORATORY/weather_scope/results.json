@@ -1,0 +1,60 @@
+{
+ "cut_date": "2026-08-09",
+ "days_total": 284,
+ "fits": {
+  "KXHIGHNY": {
+   "bias": 0.242,
+   "sd": 4.127,
+   "n_train_days": 198
+  }
+ },
+ "n_test_markets": 513,
+ "n_test_cityDays": 86,
+ "brier_model_global_fit": 0.13088737309625184,
+ "logloss_model_global_fit": 0.41341821947789026,
+ "brier_model": 0.12290344109986,
+ "logloss_model": 0.3846683784374931,
+ "note": "brier_model/logloss_model and net_per_contract use the causal trailing-30d bias/sd; *_global_fit uses the 70% train-split fit",
+ "brier_market": 0.0905023391812868,
+ "logloss_market": 0.2807596388093668,
+ "brier_gain_market_minus_model": {
+  "mean": -0.032401101918573386,
+  "lo": -0.045455921072685625,
+  "hi": -0.018658339071649734
+ },
+ "half_spread_proxy": {
+  "n_with_proxy": 275,
+  "mean": 0.007189997455693254,
+  "default_used_otherwise": 0.02
+ },
+ "net_per_contract": {
+  "edge>0.0": {
+   "n_trades": 447,
+   "n_cityDays": 86,
+   "mean": -0.03338699354553296,
+   "lo": -0.060561732331525064,
+   "hi": -0.0018867813633120134
+  },
+  "edge>0.03": {
+   "n_trades": 267,
+   "n_cityDays": 83,
+   "mean": -0.06187470356891998,
+   "lo": -0.11093195285345112,
+   "hi": -0.010296819228687363
+  },
+  "edge>0.06": {
+   "n_trades": 214,
+   "n_cityDays": 83,
+   "mean": -0.06453129638779202,
+   "lo": -0.12167338264714954,
+   "hi": -0.0073465833316882475
+  },
+  "edge>0.1": {
+   "n_trades": 162,
+   "n_cityDays": 77,
+   "mean": -0.07357417540062855,
+   "lo": -0.13627838092440028,
+   "hi": -0.0029711260602435776
+  }
+ }
+}
