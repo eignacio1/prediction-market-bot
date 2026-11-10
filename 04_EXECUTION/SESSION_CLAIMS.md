@@ -1204,3 +1204,4 @@
 | 2026-11-10T01:14:32Z | TBD | W106.1 B-056 STANDARD - land #447 (strip nav files) + graft POT_OF_GOLD into router.py + ROUTER_TREE.md. PURPOSE: BREADTH B1 pot-of-gold cells routed 0->17 (paper), router branches 4->5 |
 | 2026-11-10T01:14:46Z | GG-reserve-3 (no T-) | W106.2 B-057 STANDARD quant cost wall. PURPOSE: EXECUTION E2 / PROOF - effects with measured net-of-cost figure (taker vs maker) |
 | 2026-11-10T01:14:53Z | GG-1833..GG-1835 | W106.3 B-058 STANDARD - quant: retail flow, player props + thin markets net of costs (calibration by price x liquidity tier, held-out, Holm/BH). PURPOSE: PROOF/DEPTH - prop families measured net of costs 0->N, net-positive held-out cells |
+| 2026-11-10T01:15:20Z | GG-reserve-3 (no T-) | W106.4 B-018 STANDARD - MLB engine step 2: lineup-aware game model (starter+bullpen+lineup+park, PIT), held out vs naive and vs market. PURPOSE: DEPTH D4 MLB - factor classes PIT 0->4, held-out Brier vs naive/market |
