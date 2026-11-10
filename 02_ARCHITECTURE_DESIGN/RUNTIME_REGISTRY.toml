@@ -1389,3 +1389,45 @@ alarm = "none: research capture, three short bursts a night; the readback task s
 schedule = "55 21,22,23 * * *"
 mirrors = ["deploy/cron.news_burst"]
 command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot /opt/prediction-market-bot/venv/bin/python scripts/news_burst_capture.py --minutes 30 --interval 20 >> logs/news_burst_cron.log 2>&1"
+
+[[component]]
+key = "cron|14,44 0-5,17-23 * * *|scripts/archive_market_prices.py --out exp_output/PRICE_ARCHIVE --series KXNBAPTS"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NBA player-prop price archive (W108.1, B-062/P04): 30-min bid/ask snapshots of the NBA prop series Kalshi lists, none of which were archived, so prop hypotheses can be tested forward. Read-only public GETs; no depth sampling."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NBA prop rows (series_ticker KXNBA*) in exp_output/PRICE_ARCHIVE for >36h while NBA had games; the archiver exits 2 with a WARNING on zero markets"
+schedule = "14,44 0-5,17-23 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNBAPTS KXNBAREB KXNBAAST KXNBA3PT KXNBASTL KXNBAPRA KXNBA2D KXNBA3D --out exp_output/PRICE_ARCHIVE >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|17,47 0-5,17-23 * * *|scripts/archive_market_prices.py --out exp_output/PRICE_ARCHIVE --series KXNHLGOAL"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NHL player-prop price archive (W108.1, B-062/P04): 30-min bid/ask snapshots of the NHL prop series Kalshi lists, none of which were archived, so prop hypotheses can be tested forward. Read-only public GETs; no depth sampling."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NHL prop rows (series_ticker KXNHL*) in exp_output/PRICE_ARCHIVE for >36h while NHL had games; the archiver exits 2 with a WARNING on zero markets"
+schedule = "17,47 0-5,17-23 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNHLGOAL KXNHLAST --out exp_output/PRICE_ARCHIVE >> logs/price_archive_cron.log 2>&1"
+
+[[component]]
+key = "cron|23,53 0-3,17-23 * * *|scripts/archive_market_prices.py --out exp_output/PRICE_ARCHIVE --series KXNFLPASSYDS"
+kind = "cron"
+source = "deploy/cron.conf"
+status = "live"
+reviewed = true
+purpose = "NFL player-prop price archive (W108.1, B-062/P04): 30-min bid/ask snapshots of the NFL prop series Kalshi lists, none of which were archived, so prop hypotheses can be tested forward. Read-only public GETs; no depth sampling."
+pillar = "PROOF"
+writes = ["logs/price_archive_cron.log"]
+alarm = "no new NFL prop rows (series_ticker KXNFL*) in exp_output/PRICE_ARCHIVE for >36h while NFL had games; the archiver exits 2 with a WARNING on zero markets"
+schedule = "23,53 0-3,17-23 * * *"
+mirrors = ["deploy/cron.conf"]
+command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNFLPASSYDS KXNFLRSHYDS KXNFLRECYDS KXNFLREC KXNFLTD KXNFLPASSTDS KXNFLPASSATT KXNFLPASSCOMP KXNFLRSHATT KXNFLRRYDS --out exp_output/PRICE_ARCHIVE >> logs/price_archive_cron.log 2>&1"
