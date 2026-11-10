@@ -1219,3 +1219,4 @@
 | 2026-11-10T02:58:02Z | W107.2-B-060 | CLOSED — W107.2 B-060 news-lag measured (NBA injury reports vs Kalshi moneyline, 276 events): moves under 1c vs 1.5-2.3c cost wall = NO; burst capture prepared, not run (commit `978172a`) |
 | 2026-11-10T05:17:08Z | GG-1811..1813 | W108.1 B-062 PROOF - close edge map UNTESTED rows, fix stale GG-1330 line, prop series in archive. PURPOSE: PROOF P1/P2 (UNTESTED 5->N; prop series archived X of Y) |
 | 2026-11-10T05:17:10Z | W108.3 / GG reserve 3 / T none | W108.3 B-064 QUANT - NBA/NFL/NHL props net of costs. PURPOSE: PROOF P1/P2 (prop families measured net) |
+| 2026-11-10T05:19:04Z | GG-1850..GG-1852 | STANDARD — Kalshi weather vs free NWS/NOAA forecast scoping memo (B-065, research only) — FOR none on the board (scoping; PLUMBING-adjacent doctrine check) — W108.4 |
