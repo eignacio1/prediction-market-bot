@@ -24,7 +24,7 @@
 
 ## 🌲 RUNNING SITREP — the forest (kept by every strategic window; **current: SW-9, Waves 101 →, since 2026-11-04**; previous: SW-8, Waves 81–100. Register: `04_EXECUTION/WINDOW_REGISTER.md`)
 
-*Updated by the strategic window at every wave close and at every handoff. Last update: **Wave 106 CLOSED, 2026-11-09 ~18:20 PT, SW-9** (box bridge `20261110T020717Z_*`).*
+*Updated by the strategic window at every wave close and at every handoff. Last update: **Wave 107 CLOSED, 2026-11-09 ~19:40 PT, SW-9** (box bridge `20261110T032445Z_*`).*
 
 ### 📏 DISTANCE TO OPTIMUM — read this first
 
@@ -51,10 +51,11 @@ close: Waves 101-103 moved measurement and execution correctness (GG-1771), not 
 | | P2 verdicts | **12, read (98.2): NFL game total T1 + T2 RULED_OUT (model ~0.016 Brier worse than the market); 10 KEEP ACCRUING (all slightly behind the market, slightly ahead of a naive baseline, none proven); 0 CANDIDATE** | a verdict per cell | 0 |
 | | P3 next look | **2026-11-13** (NFL QB moneyline); modal outcome **KEEP ACCRUING ~91%** | — | 0 |
 
-**Surface (box, 2026-11-10 02:07Z):** healthcheck HEALTHY, no silent arm, main CI green; **budget RED only for the ride board's uninstalled
-cron** (your approval). **NBA engine coverage 3 of 3 arms every night since 11-05.** **Edge so far: nothing measured survives costs** - engines
-(NBA w ~ 0, MLB loses to the market), ride / fade 0 cells, pot of gold 0 of 17, props 0 of 50, maker negative everywhere. Untested: speed to
-information (107.2 / 107.3). NBA blend test reads 12-29 .. 02-15. **Muse:** queue empty since 11-09 21:58Z; weekly message ready for tonight.
+**Surface (box, 2026-11-10 03:25Z):** healthcheck HEALTHY, 89 live, no silent arm, main CI green; **budget RED only for two uninstalled
+crons** (ride board, news burst capture - your approval). NBA engine coverage 3 of 3 arms every night since 11-05. **Edge so far (EDGE_MAP,
+W107): 39 hypotheses, none survives costs forward** - engines, ride / fade, pot of gold, props, placement and news speed all NO net; 14 accruing,
+5 untested (W108). Strategy recommendation in "Needs your decision". **Muse:** week set 11-09 (queue C-400..C-1125, 726 chunks + reserve;
+snapshots first; 200 runs a day; ticket runs work the queue when no ticket is placed). Next message Mon 11-16.
 
 *Older window notes, the 10-08 scoreboard, the build history and the 10-19 calendar moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04, operator: "edit the Active Queue cus it's too large right now").*
 

@@ -1,18 +1,21 @@
 /* ============================================================ DATA (edited by the strategic window at each wave close) */
 const DIST = [
-  ["Breadth","B1","Cells logging / registered","40 / 107","the whole board","0 — 10-21 flip rehearsed, frozen NBA book locked (71.2)"],
-  ["Breadth","B2","Families with a logging cell","13 / 18","18 / 18, props + parlays registered","0"],
+  ["Breadth","B1","Cells logging / registered","52 / 108","the whole board","0 since W100 (count fix 50 → 52)"],
+  ["Breadth","B2","Families with a logging cell","17 / 19","19 / 19 + parlays","0"],
   ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
   ["Breadth","B4","Props · parlay families logging","2 · 0","the board's props and parlays","0"],
-  ["Depth","D1","Factor classes per pre-game model","NFL team + personnel (QB challenger live); NBA points minutes + injury accepted, not yet logging; nobody uses matchup, weather, qualitative","every class at every arm","0 — availability on NBA games: NO (71.3)"],
+  ["Depth","D1","Factor classes per pre-game model","NFL team (+ QB challenger personnel) · NBA points personnel, team, venue · NHL personnel, team, venue · MLB personnel, team. No live model uses matchup, weather or qualitative","every class at every arm","0"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
-  ["Depth","D3","Pre-registered challengers ready","2 (NFL QB-shrunk, live · NBA points EXP-040, frozen)","≥ 1 per arm before its first look","0 — EXP-040 deployed, 0 rows until NBA points markets list"],
-  ["Execution","E1","Demo orders filled","T4 166 / 4,237 · T1 85 / 485","fills ≈ intended orders","since re-arm: 0 cancel failures; fills 0/1/3/1/1 per arm, none settled yet"],
-  ["Execution","E2","P&L per filled bet","T4 −$0.26 · T1 −$1.50","positive, net of fees","NFL +0.398 audited: before kickoff, but ~4 correlated games — not evidence"],
-  ["Execution","E3","Win rate, fills vs non-fills","T4 24.1% vs 48.7% · T1 28.9% vs 52.1%","fills at least as good","0 — first settled numbers in 73.1"],
-  ["Proof","P1","Cells at a scored look","0 / 45","every cell judged at its n","0"],
-  ["Proof","P2","Verdicts issued","0","a verdict per cell (a NO counts)","0"],
-  ["Proof","P3","Next look","NFL ~11-02 · ~91% \"keep accruing\"","—","—"],
+  ["Depth","D3","Pre-registered challengers ready","5 (NFL QB · EXP-041 · EXP-044b · EXP-044c NBA v3 · one by script)","≥ 1 per arm","0"],
+  ["Depth","D4","Engine stage per sport","NFL board engine + frozen forward test (EXP-045) · NBA board engine v1/v2/v3, 3 of 3 arms nightly · NHL board engine v2 · MLB pitch store, model loses to the market","each sport: data → factors → whole board","NBA coverage fixed 11-05 (3 of 3)"],
+  ["Depth","D5","Betting architecture (8 parts) · factors applied","NFL 8/8 · 10 of 21 · NBA 4/8 · 5 of 17 · NHL 2/8 · 3 of 12 · MLB 3/8 · none","8 of 8 per sport; factors applied","router 4 → 5 branches (pot of gold, W106)"],
+  ["Execution","E1","Demo orders filled","T4 MLB 177 / 4,316 (4.1%) · T1 MLB 85 / 485 (17.5%)","fills ≈ intended orders","0 (MLB idle since 10-20)"],
+  ["Execution","E2","P&L per filled bet","T4 −$0.21 · T1 −$1.50","positive, net of fees","0"],
+  ["Execution","E3","Win rate, fills vs non-fills","T4 25.4% vs 48.3% · T1 28.9% vs 52.1% · trading cost 1.5–2.3¢ game lines, 4–8¢ props; maker loses everywhere","fills at least as good","cost wall measured (W106)"],
+  ["Execution","FT","Forward test (ADR-0072)","Restarted 11-06 01:03Z (NO-side pricing fix, GG-1771). NFL on clean fills: INCONCLUSIVE","~550 fills per arm from the restart","NFL ADOPT → INCONCLUSIVE, clock restarted"],
+  ["Proof","P1","Cells at a scored look","12 / 49 (NFL first look, 11-02)","every cell judged at its n","0"],
+  ["Proof","P2","Verdicts issued","12: NFL total T1 + T2 RULED_OUT · 10 keep accruing · 0 candidate","a verdict per cell (a NO counts)","0"],
+  ["Proof","P3","Next look","11-13 (NFL QB moneyline) · ~91% \"keep accruing\"","—","—"],
 ];
 
 const F = [
@@ -65,30 +68,32 @@ const MARKETS = [
 const BANDS = ["T1","T2","T3","T4","T4M-PROJ","T4M-ARITH","T4M-FLOW","T4NFL-ARITH","T4NFL-FLOW","T4NHL-ARITH","T4NHL-FLOW","T5"];
 const CELLS = __CELLS__;
 const MXNOTE = {
-  "MLB_PLAYER_PROP_HITS|T4M-PROJ":"The only ACTIVE cell. Flat demo stakes; real fills −$0.26 a bet; stakes stop after the World Series (GG-527 c). Fails C5 (GG-320).",
-  "MLB_PLAYER_PROP_HITS|T1":"18-feature LR + Platt, daily 11:00 UTC. Paper rows are calibration only (GG-536).",
-  "NBA_PLAYER_POINTS|T4":"T4 is DARK (legacy NBA book, frozen). T1–T3 are SHADOW cells (EXP-039, frozen NB+Platt artifact), logging only.",
+  "MLB_PLAYER_PROP_HITS|T4M-PROJ":"The only ACTIVE cell, idle since the World Series. Real fills −$0.21 a bet (n 177).",
+  "MLB_PLAYER_PROP_HITS|T1":"18-feature LR + Platt. Idle until the 2027 season.",
+  "NBA_PLAYER_POINTS|T4":"T4 is DARK (legacy NBA book, frozen). T1–T3 SHADOW cells (EXP-039 / EXP-040), logging only.",
 };
 
 const ARMS = [
-  ["NFL game markets",12,"Logging","good","EXP-037","~2026-11-02","15 of 60 games per cell; first look most likely \"keep accruing\""],
-  ["NFL QB-shrunk challenger",2,"Logging","good","accepted 10-10","with EXP-037 vs the market","Moneyline; first live NFL model that knows who plays (since 10-11)"],
-  ["MLB postseason game markets",12,"Logging","good","EXP-037 MLB","2027 regular season","Postseason rows logged, not scored"],
-  ["MLB player hits T1–T3",3,"Logging","good","—","—","Stops with the World Series"],
-  ["MLB player hits T4M-PROJ",1,"Active · demo stakes","good","ADR-0050","—","Stakes stop for every game after the World Series"],
-  ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Judged sample not reachable this season (GG-514)"],
-  ["NBA game markets",12,"Preseason","warn","EXP-038","150 games per cell","Regular season from 10-20; cells flip ~10-21"],
-  ["NBA player points T1–T3",3,"Logging","good","EXP-039","after opening night","Live since 10-11 (67.1); regular-season rows from 10-20"],
-  ["NBA player points ≥15 + minutes/injury",1,"Logging","good","EXP-040","n=300 player-games","Wired 70.2: shadow, beside EXP-039; rows from first KXNBAPTS board; GG-610 caveat"],
+  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","First look 11-02: total T1 + T2 RULED_OUT, 10 keep accruing"],
+  ["NFL engine (board)","—","Frozen forward test","good","EXP-045","01-12","Prices moneyline / spread / total from one simulation"],
+  ["NFL QB-shrunk challenger",2,"Logging","good","accepted 10-10","11-13","Next scored look on the calendar"],
+  ["NBA game markets",12,"Logging","good","EXP-038","second look: definition due before January","Draft definition waiting on you (GG-529)"],
+  ["NBA engine v1 / v2 / v3",3,"Logging","good","EXP-044 / 044b / 044c","first looks 11-13 .. 11-25","3 of 3 arms every night since 11-05; blend weight w ≈ 0 so far"],
+  ["NBA player points",4,"Logging","good","EXP-039 / EXP-040","n = 300 player-games","Shadow only"],
+  ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Board engine v2; judged sample not reachable this season"],
+  ["Ride / pot-of-gold router",28,"Paper, orders OFF","warn","EXP-042 / EXP-043","NFL total ride ~11-19","Ride board built; install waits on you. Pot of gold 0 of 17 orderable"],
+  ["MLB (all arms)","—","Idle (off-season)","warn","EXP-037 MLB","2027 season","Engine loses to the market (w = 0); pitch store 1.42M pitches"],
 ];
 const CAL = [
-  ["10-12 00:00Z","First fill-fix forward-test orders (MLB game); 67.2 reads day one"],
-  ["Mon 10-12","Weekly T4 ledger rebuild — first live test of the overwrite guard"],
-  ["Thu 10-15","First NFL slate the QB challenger logs; first NFL injury snapshot due (66.3)"],
-  ["Tue 10-20","NBA opening night — NBA game and player-points arms must be logging"],
-  ["~11-02","NFL first scored look, 12 cells — the project's first pre-registered market verdict"],
-  ["World Series end","T4M-PROJ stakes stop; MLB player hits stops producing rows; MLB winter posture is your call"],
-  ["before 2027-01-31","Define what EXP-038's date-triggered NBA second look scores (GG-529)"],
+  ["Tonight → week","Wave 108 running: untested edge rows · news lag at trade resolution · NBA / NFL / NHL props · weather scoping"],
+  ["Thu 11-13","Next scored look: NFL QB moneyline (modal: keep accruing). NBA engine first looks begin (11-13 .. 11-25)"],
+  ["~11-19","NFL game-total ride cell look (if the ride board is installed)"],
+  ["Mon 11-16","Muse weekly reset — the one message of the week"],
+  ["12-14 .. 01-09","NFL second looks"],
+  ["before 2027-01","Define what EXP-038's NBA second look scores (GG-529, draft ready)"],
+  ["01-12","NFL engine forward test (EXP-045) reads"],
+  ["12-29 .. 02-15","NBA blend test (frozen) reads"],
+  ["2027 season","MLB ride cells and MLB engine resume"],
 ];
 
 const WAVES = [
@@ -128,27 +133,39 @@ const WAVES = [
    d:"Cancels were going to the wrong exchange shard — fixed, <b>forward test ON</b>. NBA 10-20 rehearsed; frozen book locked. Who-is-out on NBA games: <b>NO</b>. Hygiene audit: <b>SOUND WITH ISSUES</b> (18 gaps; /vps dangerous; paper ledger not crash-safe). <b>No measure moved — two waves running.</b>"},
   {w:"72", k:"hit", t:"The foundation, fixed.",
    d:"Crash-safe ledgers; deploys prove the running code; the order path itself refuses real money; /vps retired; box secrets locked. Forward test live with both arms, <b>0 cancel failures</b>. No look-ahead found. You amended the turn-off and staked NBA."},
-  {w:"73", k:"now", t:"The NFL engine starts.",
+  {w:"73", k:"hit", t:"The NFL engine starts.",
    d:"Syndicate32's factor list rebuilt from free data into an event-level store; one game simulation pricing moneyline, spread and total (<b>D4</b>). First settled forward-test numbers; NBA staked from opening night (E)."},
+  {w:"74–80", k:"hit", t:"Engines get their architecture.",
+   d:"<b>D5(a) NFL ~1 → 5, NBA 0 → 3</b>; factor classes point-in-time; crash-safe ledgers bypassing atomic_io 4 → 0; the runtime registry reviewed 76 / 76. The Waves 61–80 window hands off."},
+  {w:"81–85", k:"hit", t:"NBA opening night; the board widens.",
+   d:"NBA cells flip on schedule: <b>B1 40 → 48, B2 13 → 17</b>. NHL data layer (D4). Surface RED → GREEN. NBA PAM ~1,723 player-seasons. NFL market-anchored price adds nothing measurable."},
+  {w:"86–89", k:"neg", t:"Scored against the market: none beat it.",
+   d:"Quant core live; <b>5 of 6 models scored vs the market, none beats it</b>. Kill switch ENFORCING on every order path. First sign the market is wrong toward its favourite (in-sample). Draft ADR-0076 (G6)."},
+  {w:"90–94", k:"hit", t:"The router and the frozen forward tests.",
+   d:"Decision-tree router (ride / fade / momentum). <b>11 ride cells pre-registered</b> (EXP-042); ADR-0076 accepted; price archive 2 → 4 sports; NBA and NFL engines on frozen forward tests (EXP-044 / 045)."},
+  {w:"95–100", k:"neg", t:"NBA engine prices real games; the first verdicts.",
+   d:"NBA engine v1/v2/v3 live. <b>NFL first look 11-02: 2 RULED_OUT, 10 keep accruing</b>. OOM kills 142 / day → 0 after the lock. Muse archive tested in an engine: null."},
+  {w:"101–103", k:"neg", t:"ADOPT, then not.",
+   d:"NFL forward test printed ADOPT — then <b>NO-side orders were found mirror-priced (GG-1771)</b>; on clean fills INCONCLUSIVE, clock restarted 11-06. NBA misses root-caused (memory) and fixed."},
+  {w:"104–106", k:"neg", t:"The cost wall.",
+   d:"Pot of gold grafted (router 5 branches). <b>Trading cost 1.5–2.3¢ on game lines, 4–8¢ on props; maker loses everywhere</b>. Ride / fade 0 cells net, pot of gold 0 of 17, MLB props 0 of 50, NBA blend w ≈ 0, MLB engine loses to the market."},
+  {w:"107", k:"neg", t:"The whole record on one page.",
+   d:"<b>Edge map: 39 hypotheses, none survives costs forward</b>. News speed: injury news moves the line ~0.3¢ in 20 min — below cost. NBA v3 does not lead Kalshi. Strategy recommendation sent."},
+  {w:"108", k:"now", t:"Close the last sports gaps; scope weather.",
+   d:"Untested edge rows on the NBA / NHL archive · news lag at trade-print resolution · NBA / NFL / NHL props net of costs · Kalshi weather vs NOAA (research only)."},
 ];
 
 const DESK = [
-  {a:"var(--serious)", t:"MLB winter posture", c:"After the World Series",
-   d:"T4M-PROJ's stakes already stop by your GG-527 decision. <b>T1 MLB: stand down or idle all winter?</b> Until decided, Step 4 raises daily false alarms once games end."},
-  {a:"var(--warn)", t:"NBA second look (GG-529)", c:"Before 2027-01-31",
-   d:"EXP-038 says \"n = 400 or 31 Jan, whichever first\" but never says what is scored on the date. Needs a definition before January."},
-  {a:"var(--warn)", t:"The efficiency-gradient call", c:"Open since 08-12",
-   d:"Expand into efficient game markets accepting thinner edge as the price of generality, or hold expansion to looser markets? Every pre-registration already writes \"thinner edge expected\"."},
-  {a:"var(--s1)", t:"ADR-0068 band doctrine · ADR-0067 append-only log", c:"PROPOSED",
-   d:"The doctrine is enforced by a criterion not yet accepted. ADR-0067 changes what the evidence pool <i>is</i>; it matters only once order volume rises."},
-  {a:"var(--s1)", t:"NBA model class (EXP-038 / EXP-039)", c:"Not blocking",
-   d:"Both NBA arms run frozen models with no ADR for their model class. They log as shadow either way."},
-  {a:"var(--ink-3)", t:"T1 MLB postseason flag", c:"Edits an existing cron line",
-   d:"Adds <span class='mono'>--include-postseason</span> to the T1 MLB line. The shadow authorization does not cover editing a line."},
-  {a:"var(--ink-3)", t:"GG-347 — the SSH poller", c:"Unexplained actor",
-   d:"Something at 73.231.159.158 polls the VPS over SSH. Yours?"},
-  {a:"var(--ink-3)", t:"EXP-034 · detached VPS jobs", c:"Park recommended",
-   d:"EXP-034's ≥2.5-hour sampler: run it as a detached read-only VPS job, or park it."},
+  {a:"var(--serious)", t:"Strategy: where to look for edge", c:"Recommended 11-10",
+   d:"39 edge ideas tested, none survives costs. Recommendation: stop new edge-hunting builds on liquid sports lines; let the 14 accruing tests read; close the last sports gaps (W108); scope one market class with strong free data (weather). <b>Accept, change, or keep building sports depth?</b>"},
+  {a:"var(--warn)", t:"Ride board install", c:"The box's only red",
+   d:"<span class='mono'>ride_board_install</span> adds one crontab line (paper, orders OFF). Needed for the ride cells' looks."},
+  {a:"var(--warn)", t:"NBA second look (GG-529)", c:"Before January",
+   d:"EXP-038's date-triggered second look needs a definition. Draft ready: accept or change."},
+  {a:"var(--s1)", t:"News burst capture install", c:"Wait for 108.2",
+   d:"Captures prices every 20 s around news times. 108.2 reads trade prints first and says whether it is still worth installing."},
+  {a:"var(--ink-3)", t:"Cross-venue (Kalshi vs Polymarket)", c:"Parked by you",
+   d:"The other structural option for edge. Nothing built; reopening it is your call."},
 ];
 
 const GOV = __GOV__;
@@ -166,7 +183,7 @@ const BACKLOG = __BACKLOG__;
 const EDGEMAP = __EDGEMAP__;
 const PICKS = __PICKS__;
 const CALAGE = __CALAGE__;
-const FUNNEL = [["T4 · closed",4237,"var(--seq-250)"],["T4 · filled",166,"var(--crit)"],
+const FUNNEL = [["T4 · closed",4316,"var(--seq-250)"],["T4 · filled",177,"var(--crit)"],
                 ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
 
 /* ============================================================ RENDER */
