@@ -1222,3 +1222,4 @@
 | 2026-11-10T05:19:04Z | GG-1850..GG-1852 | STANDARD — Kalshi weather vs free NWS/NOAA forecast scoping memo (B-065, research only) — FOR none on the board (scoping; PLUMBING-adjacent doctrine check) — W108.4 |
 | 2026-11-10T05:43:08Z | TBD | W108.5 dashboard stale /visual + memory cap (PLUMBING, STANDARD) |
 | 2026-11-10T06:04:53Z | W108.4 | CLOSED — merge confirmed, HEAD (2af7295) is ancestor of origin/main — weather scoping NYC+CHI; no build recommended |
+| 2026-11-10T06:05:10Z | W108.1 | CLOSED — W108.1 edge map: L03+R09 NO EFFECT NET, stale line fixed, prop archive merged (#456) but install refused by HR14 (budget red) (commit `2af7295`) |
