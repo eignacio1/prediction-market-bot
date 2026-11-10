@@ -15,6 +15,7 @@ from scipy.stats import nbinom
 from sklearn.linear_model import PoissonRegressor
 
 KMAX = 30
+PGE_MIN, PGE_MAX = 3, 16
 
 
 class RunModel:
@@ -62,6 +63,8 @@ def price(model: RunModel, d: pd.DataFrame, total_line: float = 8.5) -> pd.DataF
                         "p_over": (joint * (tot > total_line)).sum((1, 2)),
                         "p_home_rl": (joint * (margin >= 2)).sum((1, 2)),
                         "home_runs": h.loc[ix, "runs"].to_numpy(), "away_runs": a.loc[ix, "runs"].to_numpy()})
+    for k in range(PGE_MIN, PGE_MAX + 1):  # P(total >= k): the Kalshi total ladder is in these units
+        out[f"pge{k}"] = (joint * (tot >= k)).sum((1, 2))
     out["home_win"] = (out.home_runs > out.away_runs).astype(float)
     out["over"] = ((out.home_runs + out.away_runs) > total_line).astype(float)
     out["home_rl"] = ((out.home_runs - out.away_runs) >= 2).astype(float)
