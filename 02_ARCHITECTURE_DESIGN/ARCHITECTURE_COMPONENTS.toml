@@ -63,14 +63,14 @@ sport = "nba"
 component = "decision_trees"
 scaffold = "none"
 test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NBA: no price archive (GG-1330); not counted"
+note = "W90.2 router is sport-agnostic but not replayed for NBA (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
 
 [[component]]
 sport = "nba"
 component = "filtering_mechanisms"
 scaffold = "none"
 test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NBA: no price archive (GG-1330); not counted"
+note = "W90.2 router is sport-agnostic but not replayed for NBA (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
 
 [[component]]
 sport = "nba"
@@ -175,14 +175,14 @@ sport = "nhl"
 component = "decision_trees"
 scaffold = "none"
 test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NHL: no price archive (GG-1330); not counted"
+note = "W90.2 router is sport-agnostic but not replayed for NHL (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
 
 [[component]]
 sport = "nhl"
 component = "filtering_mechanisms"
 scaffold = "none"
 test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NHL: no price archive (GG-1330); not counted"
+note = "W90.2 router is sport-agnostic but not replayed for NHL (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
 
 [[component]]
 sport = "nhl"

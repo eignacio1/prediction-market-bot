@@ -1,14 +1,14 @@
 # Edge map — where the project has looked (W107.1, B-059)
 
-Built 2026-11-09 from committed result files only; every row cites `path @ commit`. Machine-readable twin: `edge_map.json` (same rows). 39 hypotheses: 14 ACCRUING, 13 NO EFFECT NET, 7 RULED_OUT, 5 UNTESTED.
+Built 2026-11-09 from committed result files only; every row cites `path @ commit`. Machine-readable twin: `edge_map.json` (same rows). 40 hypotheses: 14 ACCRUING, 15 NO EFFECT NET, 7 RULED_OUT, 4 UNTESTED (W108.1 update 2026-11-10).
 
 ## In five sentences
 
-1. The project has looked at 39 hypotheses across engines (NFL, NBA, NHL, MLB), ride/fade, momentum, longshot and pot-of-gold, props and retail, execution and fills, and live-market latency.
+1. The project has looked at 40 hypotheses across engines (NFL, NBA, NHL, MLB), ride/fade, momentum, longshot and pot-of-gold, props and retail, execution and fills, and live-market latency.
 2. Nothing has survived costs in a forward test; the only cells with net above zero held out are two MLB total-line ride cells (117 and 30 games), measured once on a time split of the same archive with fills assumed at bid/ask, and both are still waiting on forward rows.
-3. 7 hypotheses are ruled out and 13 show no effect net of cost, including every maker, taker-entry, momentum and retail-prop result so far.
+3. 7 hypotheses are ruled out and 15 show no effect net of cost, including every maker, taker-entry, momentum and retail-prop result so far.
 4. 14 are still accruing: the NFL first-look cells reach their second look (n=150) between 2026-12-14 and 2027-01-09, the NBA engine cells have first looks from 2026-11-13 to 2026-11-25, NFL EXP-045 reads 2027-01-12, and MLB cells wait on judged games from 2027-03-01 and forward rows from about 2027-03-25.
-5. 5 have never been tested: NBA, NFL and NHL props, multi-leg combos, the ride board's backward test and candle scan, and NBA/NHL pot-of-gold beyond 9 days; post-epoch fills sit at n=0, the NBA/NHL price archive does not exist (GG-1330), and the fee rule against demo fills is unconfirmed.
+5. 4 have never been tested: NBA, NFL and NHL props (the archive held only KXMLBHIT), multi-leg combos, the MLB backward test (void), and the candle scan for NFL; W108.1 ran the NBA/NHL ride board and pot of gold on 14 days of archive (the archive exists since 2026-10-28, GG-1330 resolved) and neither shows an effect net of cost; post-epoch fills sit at n=0 and the fee rule against demo fills is unconfirmed.
 
 **Data epoch:** NO-side demo fills before 2026-11-06T01:03:42Z are mirror-priced (GG-1771/GG-1784); pre-epoch results are YES-only and never mixed with post-epoch. **Green rule:** green only if net > 0 held out (operator 2026-10-19); the two cells above qualify on the table but carry the caveats shown.
 
@@ -41,9 +41,10 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 | R03 | MLB | Ladder ride: KXMLBTOTAL T0-2h, tight book, 2-5c gap (EXP-043 H-A) | net after spread and fee; held out once on a time split | spread and fees; fill at bid/ask assumed | +0.087 per contract | 117 games (second half) | [+0.034, +0.142] | ACCRUING (net>0 held out once) | forward rows from ~2027-03-25 |
 | R04 | MLB | Ladder ride: KXMLBTOTAL T0-2h, tight book, 5c+ gap (EXP-043 H-B) | net after spread and fee; held out once | spread + fee included; fill at bid/ask assumed | +0.217 per contract | 30 games (second half) | [+0.095, +0.341] | ACCRUING (net>0 held out once) | forward rows from ~2027-03-25 |
 | R05 | MLB | Ladder ride, the 5 other selected cells (36 testable, 7 selected) | not stated | spread and fees | FAILED held out | not stated | not stated | NO EFFECT NET | none |
-| R06 | MLB, NFL (archive); NBA/NHL not covered | Ladder ride, whole sample, taking the strike (W91.2) | gross: strike moves toward ladder +0.0133 at +1h | spread and fees | +0.007 per bet | 108,279 triggers / 2,191 games | [-0.002, +0.017] | NO EFFECT NET | none |
-| R07 | NBA, NHL, NFL | Hold-out scan on candle data (W90.1) | underpowered | n/a | 0 candidates | 1 testable cell | n/a | UNTESTED | re-run at ~150 games per family |
+| R06 | MLB, NFL (archive); NBA/NHL see R09 | Ladder ride, whole sample, taking the strike (W91.2) | gross: strike moves toward ladder +0.0133 at +1h | spread and fees | +0.007 per bet | 108,279 triggers / 2,191 games | [-0.002, +0.017] | NO EFFECT NET | none |
+| R07 | NFL (NBA/NHL answered by R09) | Hold-out scan on candle data (W90.1) | underpowered | n/a | 0 candidates | 1 testable cell | n/a | UNTESTED | re-run at ~150 games per family |
 | R08 | all | Fade, totals and team totals (cost-wall table, 106.2) | NFL team total -0.09 fit/-0.08 held-out; NFL total -0.12/-0.25; NHL total -0.37/-0.52; NBA -0.20/-0.18; MLB total +0.022 fit / +0.036 held-out | taker 1.5-2.3c each way; 4-8c props/team totals | MLB total interval [-0.008, ...] includes 0; the rest negative | NBA 23 games; others not stated | MLB total includes 0; the rest negative | NO EFFECT NET | none |
+| R09 | NBA, NHL | Ride and fade board backward test, 14 days of archive (W108.1) | n/a | spread and fees (frozen ride_net) | 0 of 12 primary tests pass; best primary -0.003 per contract | 8 families; 30-41 held-out games each | best primary [-0.122, +0.106]; Holm rejected 0 of 12 | NO EFFECT NET | re-run at ~150 games per family |
 
 ### Momentum
 
@@ -57,7 +58,7 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 |---|---|---|---|---|---|---|---|---|---|
 | L01 | MLB, NFL | Longshot bias, 11 cells that survive cost in-sample (W89.2; re-run W98.2) | sign held in every re-run cell; net smaller than first reported | included | positive in-sample, smaller in all 11 | differs from the original run in every cell | several intervals include 0 | ACCRUING | forward rows from ~2027-03-25 (MLB); NFL KXNFLTOTAL during the season |
 | L02 | MLB | Pot of gold, 17 pre-registered cells (105.6) | best KXMLBF5TOTAL 2-6h 90-95c fit +3.7c, held-out +5.5c on 32 games | 1-3c | 0 held-out ready | 40,520 settled first snapshots; 32 games in best cell | not stated | ACCRUING | MLB from ~2027-03-25 |
-| L03 | NBA, NHL | Pot of gold in NBA and NHL | 9 days of data | 1-3c | not measurable | 9 days | n/a | UNTESTED | not yet |
+| L03 | NBA, NHL | Pot of gold in NBA and NHL (W108.1) | 14 days of archive, 4 Holm candidates | 1-3c | 0 routes held-out positive net | 3,794 joined snapshots; 243 NBA / 213 NHL games | Holm rejected 0 of 4 | NO EFFECT NET | re-read at ~150 games per sport |
 | L04 | all | Multi-leg combos / parlays | cannot be measured yet | n/a | n/a | 0 | n/a | UNTESTED | not yet |
 
 ### Props / retail
@@ -108,13 +109,14 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 - **R03** 12_EXPLORATORY/ride_ladder/results_W91_2.md @ e8d2187 ; 12_EXPLORATORY/frozen_evidence_check/results_W98_2.md @ 805d4ca — Out-of-sample once, on a time split of the same archive; not a forward pass. Fills unmeasured. Carried as frozen EXP-043 H-A; the W98.2 frozen-evidence check did not re-run it
 - **R04** 12_EXPLORATORY/ride_ladder/results_W91_2.md @ e8d2187 — 30 games; do not read the point estimate as size. Same caveats as R03
 - **R05** 12_EXPLORATORY/ride_ladder/results_W91_2.md @ e8d2187 — 5 of 7 selected cells FAILED the held-out half
-- **R06** 12_EXPLORATORY/ride_ladder/results_W91_2.md @ e8d2187 — NFL selected nothing; NBA/NHL have no price archive (GG-1330)
+- **R06** 12_EXPLORATORY/ride_ladder/results_W91_2.md @ e8d2187 — NFL selected nothing; the NBA/NHL archive exists since 2026-10-28 and is tested in R09
 - **R07** 12_EXPLORATORY/ride_market_scan/results_W90_1.md @ be44377
 - **R08** 12_EXPLORATORY/quant_w106_costs/RESULT.md @ 0e612b8 — KXMLBHIT fade gross +0.008 on tight books, below cost
+- **R09** 12_EXPLORATORY/edge_map/w108_1/RESULT_W108_1.md — Two non-primary tight-book FOLLOW-SPREAD cells have a positive held-out lower bound among 58 examined; not promoted
 - **M01** 12_EXPLORATORY/momentum_j/results_W90.md @ f1d24f4
 - **L01** 12_EXPLORATORY/longshot_bias/results_W89.md @ f50f49c ; 12_EXPLORATORY/frozen_evidence_check/results_W98_2.md @ 805d4ca — IN-SAMPLE, hold-to-settle. 66 BH-flagged cells, 53 erased by cost, 11 survive. W98.2: 11 of 13 frozen cells re-run, all DIFFER
 - **L02** 12_EXPLORATORY/pot_of_gold/RESULT.md @ c2b883d — All 17 IN_SAMPLE; lottery-ticket overpay under 1c
-- **L03** 12_EXPLORATORY/pot_of_gold/RESULT.md @ c2b883d
+- **L03** 12_EXPLORATORY/edge_map/w108_1/RESULT_W108_1.md — 62 NBA / 44 NHL routes still too thin to test; 40 / 26 failed held-out
 - **L04** 12_EXPLORATORY/pot_of_gold/RESULT.md @ c2b883d
 - **P01** 12_EXPLORATORY/quant_w106_props/RESULT.md @ 21bc755
 - **P02** 12_EXPLORATORY/quant_w106_props/RESULT.md @ 21bc755 — Thin books lose 8-20c

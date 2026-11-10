@@ -6,10 +6,10 @@
  "counts": {
   "RULED_OUT": 7,
   "ACCRUING": 14,
-  "NO EFFECT NET": 13,
-  "UNTESTED": 5
+  "NO EFFECT NET": 15,
+  "UNTESTED": 4
  },
- "total": 39,
+ "total": 40,
  "rows": [
   {
    "id": "E01",
@@ -334,7 +334,7 @@
   {
    "id": "R06",
    "family": "Ride / fade",
-   "sport": "MLB, NFL (archive); NBA/NHL not covered",
+   "sport": "MLB, NFL (archive); NBA/NHL see R09",
    "hypothesis": "Ladder ride, whole sample, taking the strike (W91.2)",
    "gross": "gross: strike moves toward ladder +0.0133 at +1h",
    "cost": "spread and fees",
@@ -345,13 +345,13 @@
    "next_look": "none",
    "source": "12_EXPLORATORY/ride_ladder/results_W91_2.md @ e8d2187",
    "held_out_net_positive": false,
-   "note": "NFL selected nothing; NBA/NHL have no price archive (GG-1330)"
+   "note": "NFL selected nothing; the NBA/NHL archive exists since 2026-10-28 (GG-1330 resolved W92.1) and is tested in R09"
   },
   {
    "id": "R07",
    "family": "Ride / fade",
-   "sport": "NBA, NHL, NFL",
-   "hypothesis": "Hold-out scan on candle data (W90.1)",
+   "sport": "NFL (NBA/NHL answered by R09)",
+   "hypothesis": "Hold-out scan on candle data (W90.1); NBA/NHL part replaced by the archive ride board (R09)",
    "gross": "underpowered",
    "cost": "n/a",
    "net": "0 candidates",
@@ -378,6 +378,22 @@
    "source": "12_EXPLORATORY/quant_w106_costs/RESULT.md @ 0e612b8",
    "held_out_net_positive": false,
    "note": "KXMLBHIT fade gross +0.008 on tight books, below cost"
+  },
+  {
+   "id": "R09",
+   "family": "Ride / fade",
+   "sport": "NBA, NHL",
+   "hypothesis": "Ride and fade board backward test on 14 days of NBA/NHL archive (W108.1)",
+   "gross": "n/a",
+   "cost": "spread and fees (frozen ride_net)",
+   "net": "0 of 12 primary tests pass; best primary -0.003 per contract",
+   "n": "8 families; 30-41 held-out games each",
+   "interval": "best primary [-0.122, +0.106]; Holm rejected 0 of 12",
+   "status": "NO EFFECT NET",
+   "next_look": "re-run at ~150 games per family",
+   "source": "12_EXPLORATORY/edge_map/w108_1/RESULT_W108_1.md",
+   "held_out_net_positive": false,
+   "note": "Two non-primary tight-book FOLLOW-SPREAD cells have a positive held-out lower bound among 58 examined; not promoted"
   },
   {
    "id": "M01",
@@ -432,16 +448,16 @@
    "family": "Longshot / pot of gold",
    "sport": "NBA, NHL",
    "hypothesis": "Pot of gold in NBA and NHL",
-   "gross": "9 days of data",
+   "gross": "14 days of archive, 4 Holm candidates",
    "cost": "1-3c",
-   "net": "not measurable",
-   "n": "9 days",
-   "interval": "n/a",
-   "status": "UNTESTED",
-   "next_look": "not yet",
-   "source": "12_EXPLORATORY/pot_of_gold/RESULT.md @ c2b883d",
+   "net": "0 routes held-out positive net",
+   "n": "3,794 joined snapshots; 243 NBA / 213 NHL games",
+   "interval": "Holm rejected 0 of 4",
+   "status": "NO EFFECT NET",
+   "next_look": "re-read at ~150 games per sport",
+   "source": "12_EXPLORATORY/edge_map/w108_1/RESULT_W108_1.md",
    "held_out_net_positive": false,
-   "note": ""
+   "note": "W108.1: 62 NBA / 44 NHL routes still too thin to test; 40 / 26 FAILED held-out"
   },
   {
    "id": "L04",
