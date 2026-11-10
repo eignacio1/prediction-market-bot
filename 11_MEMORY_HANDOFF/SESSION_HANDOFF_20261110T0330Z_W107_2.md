@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W107.2-B-060
+tier: STANDARD
+timestamp: 2026-11-10T03:30:00Z
+commit: 978172a
+one_line_summary: W107.2 B-060 news-lag measured (NBA injury reports vs Kalshi moneyline, 276 events): moves under 1c vs 1.5-2.3c cost wall = NO; burst capture prepared, not run
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: P2 / B4-adjacent
+gap_delta: news-lag edge family unmeasured -> measured (moneyline, 20-min resolution; 12_EXPLORATORY/news_lag/RESULT.md @ 65b532c)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: +1 prepared cron (news_burst), not installed
+-->
+
 # Session handoff - W107.2 (B-060 information speed) - 2026-11-10T03:30Z
 
 vision_pillar: BREADTH / EXECUTION
@@ -39,4 +55,4 @@ Granularity index parts: split = status transition (no star/rotation split); his
 - tip_utc assumes evening-ET games (12-hour clock, no AM/PM): matinee games would be mis-stamped. quant/news_lag.py has dead code in _kind.
 - Existing stub src/prediction_market_bot/quant/inplay_nhl.py:37 (session-start scan) untouched, out of scope.
 - ROLLING_BACKLOG.json not edited. B-060 state: measured; suggest "closed NO at 20-min resolution; burst capture optional".
-- Session-start protocol run in brief form per block text; hook output showed 256 open GGs, no duplicate IDs.
+- Session-start protocol run in brief form per block text; hook output showed 253 open GGs at close-out, no duplicate IDs.
