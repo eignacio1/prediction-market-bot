@@ -109,7 +109,6 @@ def main(root, pam_path, out):
     pf["team_id"] = pf["team_id"].astype(str)
     pm = FA.home_away_columns(pf, home_team, ["pam_creator", "pam_mod"])
     F = geo.join(ofc, how="outer").join(usg, how="outer").join(pm, how="outer")
-    F = F.rename(columns={"d_usage_missing": "d_usage_missing", "s_usage_missing": "s_usage_missing"})
     F["season"] = F.index.map(gm["season"])
     F.index.name = "game_id"
     F.to_parquet(safe_out(HERE.parent / out))
