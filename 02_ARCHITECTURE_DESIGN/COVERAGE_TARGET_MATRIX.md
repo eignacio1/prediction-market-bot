@@ -1,5 +1,10 @@
 # Coverage target — standard betting mechanisms × all five bands
 
+> **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
+
+**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added)
+
+
 **Status:** OPERATOR DIRECTIVE, 2026-08-12. This is the target the phase plan exists to reach. Everything in `MARKET_EXPANSION_ACTION_PLAN.md` should be read against it.
 **Verified against** `origin/main` = `44e845b`. Band inventory read from `execution_bands.py`, not asserted.
 

@@ -65,3 +65,15 @@ The carry-forward states the project's biggest running premise and the strongest
 
 ## Muse weekly cycle (operator 2026-11-09)
 Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the archive and prepares one self-sufficient weekly message (04_EXECUTION/MUSE_SETUP_PASTE_<date>.md): 7+ days of pre-checked queue, a reserve, and standing edge-case rules. Read "For Earl's Monday message" at the top of Muse's STATUS.md first.
+
+
+## Doctrine freshness (operator 2026-11-10 21:45 PT: "This CANNOT keep fucking happening") - added 2026-11-11, SW-9
+**Last reviewed:** 2026-11-11
+1. The incoming window reads `02_ARCHITECTURE_DESIGN/DOCTRINE.md` right after CLAUDE.md and before writing anything; the outgoing window
+   names in its handoff the doctrine changes it made and the DOCTRINE.md date.
+2. At every wave close: re-read DOCTRINE.md against what the operator said this wave; anything he stated as doctrine is written into it
+   (and CLAUDE.md if it changes rules) in the same turn. Bump its "Last reviewed".
+3. Before sending any block: check it against DOCTRINE.md §1 - every factor or cell is scored as a split / leaf of the multi-arm tree, per
+   arm, net after costs. A block that scores only "model vs market" is rewritten before it is sent.
+4. `scripts/doctrine_freshness.py` (run by the session-start scan) prints stack files older than 14 days as RED; a red line is fixed in
+   the same wave.

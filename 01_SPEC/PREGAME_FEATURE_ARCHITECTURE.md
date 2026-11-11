@@ -1,5 +1,10 @@
 # Pre-Game Feature Architecture — Inventory, Target by Factor Class, Build Order
 
+> **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
+
+**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added)
+
+
 **Status:** SPEC — PROPOSES, does not authorize. Nothing here builds, trains, wires, schedules or sizes anything.
 **Date:** 2026-09-30 · **Task:** T-591 (wave 40.x) · **Decisions logged:** n/a (no strategic decision made; findings for later registration are in `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T591_pregame_feature_architecture.md`)
 **Why this horizon first:** ADR-0068 (PROPOSED; landed on main as `ae49434`) D1/D5 — the longer the decision horizon, the deeper the tree may be; the widest horizon (pre-game, T1, 12–48h) is where matchup/sport/player/team/external/qualitative structure can actually be piped in and where evidence accrues at a countable rate (one resolved row per game, roughly independent across games). Build the deep tree here, then carry granularity inward. ADR-0068 is PROPOSED, so that authority is itself pending DS sign-off.

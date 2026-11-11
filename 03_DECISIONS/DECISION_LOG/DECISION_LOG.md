@@ -3376,3 +3376,16 @@ Effect: CLAUDE.md gains § "The architecture — every route optimized by layere
 session); the edge condition is re-scoped to the fade arm's entry rule. Root cause of the recurrence (W48 / W50 / W52): CLAUDE.md's
 strategy section stated `model_p > market + vig` as THE strategy and every session inherited it; the trees doctrine lived only in ADRs
 and the decision log.
+
+## 2026-11-10 21:45 PT — Operator: stop stale doctrine; D6 added; one dated doctrine file (SW-9)
+Verbatim: "Yes go add it - and do me a favor - I don't want this to be another fucking issue bc every strategy window for the last what, 10
+waves and more importantly for this entire project has been reading a stale file. Go update Claude.md to ensure we're all on the same page
+- and then update our doctrine files so that they're not stale anymore. This CANNOT keep fucking happening. I don't want to keep building
+blocks that I'll need to fix eventually bc of some shit you/another window reads thats 20 waves stale"
+Effect: ADR-0077 (multi-arm routing) ACCEPTED; 02_ARCHITECTURE_DESIGN/DOCTRINE.md = the binding one-page doctrine, wins over any other file;
+CLAUDE.md: pointer to DOCTRINE.md, measure D6 (cells wired end to end, seven layers), Hard Rule 16 (doctrine freshness; stale = RED),
+stale state claims corrected (MLB "active pool", 10-09 cell inventory); doctrine-notice banners + "Last reviewed" on STRATEGY_OVERVIEW,
+ARCHITECTURE_OVERVIEW, DECISION_ROUTING, COVERAGE_TARGET_MATRIX, EXECUTION_BANDS, GRANULARITY_INDEX, PREGAME_FEATURE_ARCHITECTURE,
+00_ADMIN/README; status.md and strategic-handoff.md updated; scripts/doctrine_freshness.py in the session-start scan.
+Not done in this pass (registered): the BODIES of STRATEGY_OVERVIEW (1,132 lines) and ARCHITECTURE_OVERVIEW are not rewritten - the banner
+makes DOCTRINE.md win; a terminal block rewrites them (backlog).

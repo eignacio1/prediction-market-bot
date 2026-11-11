@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-11T05:30Z",
+ "as_of": "2026-11-11T06:10Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -374,6 +374,18 @@
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
    "order": 29
+  },
+  {
+   "id": "B-075",
+   "status": "NEXT",
+   "lane": "window",
+   "rank": "plumbing",
+   "title": "Rewrite the bodies of STRATEGY_OVERVIEW.md and ARCHITECTURE_OVERVIEW.md to DOCTRINE.md (multi-arm routing, ADR-0077); today they carry a banner only",
+   "measure": "doctrine stack bodies current",
+   "why": "Operator 11-10 21:45 PT: \"This CANNOT keep fucking happening\" - stale doctrine read by every window",
+   "source": "SW-9 2026-11-11",
+   "wave": "111 ->",
+   "order": 30
   }
  ]
 }

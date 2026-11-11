@@ -1,9 +1,12 @@
 # Architecture Overview — Prediction Market Trading Bot
 
+> **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
+
+
 **Purpose:** Define the system's component architecture, their responsibilities, and how they interact. The authoritative map of what was built and why.  
 **Owner (role):** Architecture Owner (AO)  
 **Status:** **CANONICAL — G2 Architecture Gate 2026-05-22** — Changes require ADR or formal Change Class A/B record  
-**Last reviewed:** 2026-07-02 (documentation-remediation pass — corrected the Phase 6 Idle Build section's T4/T5 status, stale since 2026-05-29; C1–C8 component definitions above were checked and remain accurate — they're sport-agnostic by design and hold for MLB without modification). Prior substantive review: 2026-05-28 (C8 Visual Dashboard registered; SCOPE_IN_OUT.md + INTERFACES_CONTRACTS.md updated; T-046/047 context)  
+**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added; body predates DOCTRINE.md - DOCTRINE.md wins). Previously: 2026-07-02 (documentation-remediation pass — corrected the Phase 6 Idle Build section's T4/T5 status, stale since 2026-05-29; C1–C8 component definitions above were checked and remain accurate — they're sport-agnostic by design and hold for MLB without modification). Prior substantive review: 2026-05-28 (C8 Visual Dashboard registered; SCOPE_IN_OUT.md + INTERFACES_CONTRACTS.md updated; T-046/047 context)  
 **Next review:** On staleness trigger only  
 **Staleness triggers:** New component added; component removed; interface contract changed (ADR required); venue confirmed (affects execution layer); strategy class change  
 **Upstream links:** 01_SPEC/REQUIREMENTS.md, 01_SPEC/NON_FUNCTIONAL_REQUIREMENTS.md, 01_SPEC/SCOPE_IN_OUT.md  
