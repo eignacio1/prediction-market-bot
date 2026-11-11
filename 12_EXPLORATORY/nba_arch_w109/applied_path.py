@@ -174,7 +174,7 @@ def main(raw, kdir, out):
         f"{scope}/{col}@{thr}": net(J if scope == "all" else J[J.gated], col, thr)
         for scope in ("all", "gated") for col in ("p_t3", "p_t1") for thr in THRESHOLDS}
     safe_out(EX / out).write_text(json.dumps(res, indent=1, default=float))
-    J.drop(columns=["tip"]).to_csv(safe_out(EX / out.replace(".json", "_rows.csv.gz")), index=False)
+    J.drop(columns=["tip"]).to_csv(safe_out(EX / out[: -len(".json")] + "_rows.csv.gz"), index=False)
     print(json.dumps(res, indent=1, default=float))
 
 
