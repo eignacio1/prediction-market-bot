@@ -9,6 +9,11 @@ COMMON RULES - WAVE 110 (BUILD: FACTORS APPLIED, THE MISSING CLASSES, EVERY CELL
   factors interpreted -> applied, through 109.1's decision tree (B-068); 110.3 trees = every registered cell routed by the multi-arm router
   with horizon depth (B-071); 110.4 quant = same-game correlation from one engine (NBA game lines + 109.3 props), the parlay groundwork
   (B-072). Do not edit ROLLING_BACKLOG.json.
+- THE ARCHITECTURE (operator 2026-11-10 21:35 PT, binding): depth does not exist to out-price the market. Factors feed LAYERED decision
+  trees and filters that choose the ARM per market - ride the market, fade it, momentum, pot of gold, or no bet. Layer 1 market state (price,
+  move, ladder gap, book, time to start); layer 2 filters built from the factors (matchup, lineup / usage, rest / travel, refs, weather, PAM);
+  layer 3 a tree per cell that picks the arm. A factor is APPLIED when it is a tested split in that tree, scored per leaf: net after costs,
+  held out ("where filter F holds, riding wins / fading wins / no bet"). The engine's own price is one input to the tree, never the bet.
 - CI IS THE GATE FOR CODE ONLY (operator 2026-11-05 17:15 PT, DECISION_LOG): check locally first (run the tests that touch what you
   changed; `python3 scripts/precheck_changed.py` once #436 is on main). Open a PR only for code. Never wait on, re-run or dispatch CI for
   docs, results or queue edits. Merge code only on a green CI run of its current head.

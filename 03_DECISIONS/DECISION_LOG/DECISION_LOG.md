@@ -3356,3 +3356,12 @@ D5(a) NBA 4→8 (PR #463). Applied KXNBAGAME ml path scored held-out vs Kalshi t
 Props priced from NBA engine draws (nba_engine/props.py). Backtest on 15,364 settled props / 96 games: engine Brier worse than market mid in all four families (pts +0.0156, reb +0.0103, ast +0.0072, 3pt +0.0068; clustered CIs exclude 0). Null does not stop the cells (block rule). Pre-reg id EXP-047 (EXP-041 already taken). 9 cells (rebounds/assists/threes x T1-T3) SHADOW, kelly 0, no orders; modal outcome pre-registered = engine worse than market. Runner + cron (minute 39; 37 collided with nba_player_points_shadow_preseason, caught by CI) registered paused. Install task `nba_engine_props_shadow_install` prepared, NOT run — needs operator approval by name. Lesson: precheck_changed.py missed 3 CI failures (cron-minute, shadow-count, seat-file coupling); run related suites before PR.
 
 | 2026-11-11 | W109.6 | Demo-fill forward test stalled 11-06..11-10 because the markout turn-off used the collector epoch, not the GG-1771 floor, and the append-only store re-tripped daily. Fixed: markout epoch = later of EPOCH.json and epoch_floor (#469), zero-orders healthcheck WARN (#469/#470). Override file NOT cleared; re-arm prepared as allowlisted bridge tasks `demo_fill_rearm_check`/`demo_fill_rearm` (#471), awaiting operator approval by name. Clean post-epoch markout data is ~nil (5 fills, all YES), so the test restarts at n~0. No sizing, order or kelly change. |
+
+## 2026-11-10 21:35 PT — Operator: depth enhances the decision trees, which may mean riding the market (SW-9)
+Verbatim: "What the fuck do you mean the depth worth is meant to change that - no it's meant to ENHANCE OUR DECISION TREES WHICH COULD VERY
+WELL MEAN RIDE THE WAVE ....... Am I losing my mind here good lord how many times do I have to talk about layered decision trees/filtering
+mechanisms/complex architecture for this to be implemented the right way??????"
+Context: the window said depth work was "meant to change" the record of our models losing to the market, i.e. treated depth as a better
+competing price. Effect: binding architecture - factors feed layered decision trees and filters that choose the arm per market (ride /
+fade / momentum / pot of gold / no bet); a factor is applied when it is a tested split in that tree, scored per leaf on held-out net
+after costs; the engine's price is one input, never the bet. Wave 110 blocks 110.1-110.3 amended (queue addendum, COMMON_RULES_W110).

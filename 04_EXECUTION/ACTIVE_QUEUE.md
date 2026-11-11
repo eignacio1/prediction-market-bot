@@ -86,6 +86,25 @@ architecture is built, the applied factors so far are ones the market already pr
 | 110.3 | trees · 5 | Every registered cell routed (ride / fade / momentum / pot of gold / no-bet), horizon depth, orders OFF | ⏳ pasted? | — |
 | 110.4 | quant · 4 | Same-game correlation from the NBA engine (game lines + props), checked on settled games | ⏳ pasted? | — |
 
+
+**ADDENDUM 2026-11-11 ~05:45 UTC (operator 21:35 PT) - applies to 110.1, 110.2, 110.3. If you already pasted them, paste this into those three
+terminals; if not, the blocks below already carry it:**
+
+```
+WAVE 110 ADDENDUM (110.1 / 110.2 / 110.3) - THE ARCHITECTURE, OPERATOR 2026-11-10 21:35 PT
+THE ARCHITECTURE (operator 2026-11-10 21:35 PT, binding): depth does not exist to out-price the market. Factors feed LAYERED decision
+trees and filters that choose the ARM per market - ride the market, fade it, momentum, pot of gold, or no bet. Layer 1 market state (price,
+move, ladder gap, book, time to start); layer 2 filters built from the factors (matchup, lineup / usage, rest / travel, refs, weather, PAM);
+layer 3 a tree per cell that picks the arm. A factor is APPLIED when it is a tested split in that tree, scored per leaf: net after costs,
+held out ("where filter F holds, riding wins / fading wins / no bet"). The engine's own price is one input to the tree, never the bet.
+What changes in your block: score every factor you build as a SPLIT in the multi-arm tree, not as a competing price. Part C becomes:
+per leaf (factor condition x market state), net after costs held out for each arm - RIDE (back the market's side at its price), FADE,
+MOMENTUM, NO BET - with intervals and n, and which leaves earn which arm. A Brier "model vs market" number may be reported but is not the
+verdict. 110.3: the router's arm choice must take these filters as inputs (decision_trees/router.py), so 110.1 / 110.2 export their
+factors as filter functions the router can call; agree the interface in your handoffs (110.3 owns router.py).
+END OF ADDENDUM
+```
+
 ### 110.1 - ENGINE (NFL: WEATHER + MATCHUP)
 
 ```
@@ -108,8 +127,9 @@ PART B (~45 min) - matchup crosses
    protection), shrunk, ranked vs history at the same week. NEW module + tests on known answers.
 
 PART C (~40 min) - applied, scored
-1. Both classes through the engine to totals and spread for held-out seasons and for 2026 vs the market where Kalshi history exists:
-   Brier and net, intervals, n; which crosses moved the price. Update nfl rows of SEATS/nfl.toml (stage per factor). PR; merge on green.
+1. Both classes as SPLITS in the multi-arm tree (see the addendum): per leaf (factor condition x market state), held-out net after costs
+   for RIDE / FADE / MOMENTUM / NO BET on totals and spread where Kalshi history exists; intervals, n; export each factor as a filter
+   function the router can call. Update nfl rows of SEATS/nfl.toml (stage per factor). PR; merge on green.
 
 Report: per COMMON RULES. MEASURE MOVED: D1 NFL classes +weather +matchup; D5(b) NFL applied 10 -> N. Operator decisions: none.
 END OF BLOCK 110.1
@@ -136,8 +156,8 @@ PART B (~40 min) - officials + PAM
 1. Officials crew tendencies (shrunk, prior games only) on totals; PAM archetype / modifier flags as tree splits. Tests.
 
 PART C (~40 min) - scored, per factor
-1. Each factor's applied path, held-out 2025-26 vs Kalshi mid (study_v3 protocol): Brier and net per family, intervals, n, and the
-   ablation (what each factor adds). Promote a factor to "applied" only with a tested path to a price (ADR-0075), whatever its result.
+1. Each factor as a SPLIT in the multi-arm tree (see the addendum): per leaf, held-out 2025-26 net after costs for RIDE / FADE / MOMENTUM /
+   NO BET per family, intervals, n; export each as a filter function the router can call. "Applied" = a tested split in the tree.
    Update nba rows of SEATS/nba.toml. PR; merge on green.
 
 Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA applied 5 -> N; per-factor deltas. Operator decisions: none.
@@ -162,8 +182,9 @@ PART A (~40 min) - coverage
    (ADR-0068), and which inputs exist. Tests. State today's count routed vs registered.
 
 PART B (~50 min) - route the rest
-1. Give every unrouted logging cell a branch set and a tree, paper only, orders OFF: the shadow runners log the router's decision per
-   row (branch, depth, reason), so each cell's arms accumulate evidence. Tests; no change to order gating.
+1. Give every unrouted logging cell a branch set and a tree, paper only, orders OFF, whose arm choice TAKES THE FACTOR FILTERS as inputs
+   (110.1 / 110.2 export them; stub the interface first so they can plug in): the shadow runners log the router's decision per row
+   (arm, leaf, depth, reason), so each leaf's arms accumulate evidence. Tests; no change to order gating.
 
 PART C (~40 min) - a replay
 1. Replay the router over the last 14 days of archived books for NBA / NHL / NFL cells: branch counts, gross and net per branch (106.2

@@ -175,3 +175,11 @@ newest NBA demo order is 11-05 10:23Z. The window repeated a restart claim from 
 had a task for (distance_read prints it). Found only because the operator asked about empty space on the new NBA desk. Pattern: ASSERTED
 NOT CHECKED (merge != deploy != activation, again). Rule: a running claim in the sitrep carries its last-checked read and date; an arm or
 test with zero orders in 24 h while games ran is red, and block 109.6 makes that an alarm.
+
+### W52 - SW-9, 2026-11-11 05:45Z - framed depth as "beat the market" again, after the operator's layered-tree doctrine
+Told the operator depth work is what would "change" our record of losing to the market, and wrote 109.1 / 110.1 / 110.2 to score factors
+as a competing price (Brier vs market). The operator's doctrine (ADR-0075 decision trees / filtering mechanisms, the router, 11-05 "ride /
+fade the market", 11-09) is that factors feed layered trees that choose the arm per market - which can be riding the market. The scoring
+the window wrote answers the wrong question, so a null tells nothing about the trees. Same root as W48 (the "must beat the market"
+ultimatum). Rule: every factor block scores the factor as a split in the multi-arm tree, per leaf, net after costs per arm; Brier vs the
+market is never the verdict.
