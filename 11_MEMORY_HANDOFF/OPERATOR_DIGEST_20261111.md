@@ -7,3 +7,4 @@
 - The count of NBA factors "applied" did not move, since nothing showed an edge.
 ## W109.2 - NHL architecture
 Hockey now has five more of the eight building blocks in place and tested, so the architecture score for NHL went from 2 to 7 (the eighth needs player-type data hockey doesn't have). We also ran one real test: does a team playing on back-to-back nights change how many goals get scored? On three held-out seasons the answer was no usable signal, and the safety check correctly refused to bet on it. Still zero real money at risk; nothing changed in live trading.
+- W109.5 (auto): W109.5 dashboard memory (#464) and MLB Features Sync off-season skip (#462) merged; MemoryMax 384M install (#468) prepared, awaits operator approval by name.
