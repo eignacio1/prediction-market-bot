@@ -5,11 +5,14 @@ Engine: engine_v2 with FIXED league constants (hca/tbias/sd are not fitted on an
 dated strictly before the game; player means from the player's prior games only. Player availability is NOT known.
 Usage: PYTHONPATH=src python3 backtest.py markets.jsonl candles.jsonl box.json out.json
 """
-import collections, datetime as dt, json, re, sys
+import calendar, collections, datetime as dt, json, re, sys, time
 import numpy as np
 from prediction_market_bot.c1_signal_ingestion.nba_ingest import kalshi_code
 from prediction_market_bot.nba_engine import engine_v2 as E2
 from prediction_market_bot.nba_engine import props as P
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), ".."))
+from _fence import safe_out  # noqa: E402
 
 FAM = {"KXNBAPTS": "points", "KXNBAREB": "rebounds", "KXNBAAST": "assists", "KXNBA3PT": "threes"}
 LEAGUE = 114.0
@@ -18,7 +21,7 @@ MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT N
 
 
 def ts(s):
-    return int(dt.datetime.strptime(s.replace("Z", "")[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=dt.timezone.utc).timestamp())
+    return int(calendar.timegm(time.strptime(s[:19], "%Y-%m-%dT%H:%M:%S")))
 
 
 def load_box(path):
@@ -130,7 +133,7 @@ def main(mp, cp, bp, out):
         n = int(round(float(m["floor_strike"]) + 0.5))
         p = P.strike_probs(dd_[:, names2.index(name)], [n])[n]
         rows.append(dict(t=m["ticker"], ev=gid, fam=stat, n=n, y=int(m["result"] == "yes"), p=p, mid=(ep[1] + ep[2]) / 2, spread=ep[2] - ep[1]))
-    json.dump(dict(skipped=dict(skipped), rows=rows), open(out, "w"))
+    json.dump(dict(skipped=dict(skipped), rows=rows), open(safe_out(out), "w"))
     print(len(rows), dict(skipped))
 
 

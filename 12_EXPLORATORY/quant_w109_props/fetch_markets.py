@@ -1,13 +1,15 @@
 """W109.3 Part B step 1: settled NBA prop markets since 2026-10-20 + hourly candles (public GETs only). Cached JSONL."""
-import json, sys, time, urllib.request, urllib.error, datetime
+import calendar, json, sys, time, urllib.request, urllib.error, datetime
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), ".."))
+from _fence import safe_out  # noqa: E402
 B = "https://api.elections.kalshi.com/trade-api/v2"
 SERIES = ["KXNBAPTS", "KXNBAREB", "KXNBAAST", "KXNBA3PT"]
 FROM = "2026-10-20T00:00:00Z"
 
 
 def ts(s):
-    s = s.replace("Z", "")
-    return int(datetime.datetime.strptime(s[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=datetime.timezone.utc).timestamp())
+    return int(calendar.timegm(time.strptime(s[:19], "%Y-%m-%dT%H:%M:%S")))
 
 
 def get(p):
@@ -38,12 +40,12 @@ def main(out_m, out_c):
             if not cur or not rows or min(m.get("close_time") or "9" for m in rows) < FROM:
                 break
         print(s, len([m for m in mk if m["s"] == s]), flush=True)
-    with open(out_m, "w") as f:
+    with open(safe_out(out_m), "w") as f:
         for m in mk:
             f.write(json.dumps({k: m.get(k) for k in ("ticker", "s", "event_ticker", "floor_strike", "result", "close_time", "title", "volume_fp", "open_time")}) + "\n")
     mk = [m for m in mk if float(m.get("volume_fp") or 0) > 0]
     print("with volume", len(mk), flush=True)
-    with open(out_c, "w") as f:
+    with open(safe_out(out_c), "w") as f:
         for i in range(0, len(mk), 100):
             ch = mk[i:i + 100]
             mx = max(ts(m["close_time"]) for m in ch)
