@@ -1235,3 +1235,4 @@
 | 2026-11-11T01:14:11Z | W109.2 | CLOSED — merge confirmed, HEAD (b6583d5) is ancestor of origin/main — NHL architecture 2->7/8, PR #465 merged |
 | 2026-11-11T01:16:15Z | T-TBD GG-reserve 3 | W109.6 EXECUTION E1/E2: demo-fill forward test stalled since 11-05 - find cause, epoch-gate markout turn-off if artifact, add zero-orders alarm |
 | 2026-11-11T01:50:46Z | W109.5 | CLOSED — W109.5 dashboard memory (#464) and MLB Features Sync off-season skip (#462) merged; MemoryMax 384M install (#468) prepared, awaits operator approval by name. (commit `052ac34`) |
+| 2026-11-11T01:51:39Z | W109.6 | CLOSED — merge confirmed, HEAD (b3a3e2b) is ancestor of origin/main — demo-fill stall: epoch-gated markout turn-off, zero-orders alarm, re-arm prepared (PRs 469-471) |
