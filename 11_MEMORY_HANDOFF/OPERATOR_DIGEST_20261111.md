@@ -23,3 +23,6 @@ I did NOT turn the test back on. One decision for you: approve the re-arm task `
 
 ## W110.4 — same-game parlays (research only)
 We tested whether the NBA game simulator prices "several things happen together" bets correctly, using 1,075 finished games. It does well when linking a team result (win, total points) to a player's points. It does badly for one player's points and threes or rebounds together, and for two teammates' points. Kalshi has a same-game NBA combo product, but none is open right now, so there was no live price to compare against. No orders, no money, nothing running changed. Next step for the parlay idea is giving players a shared minutes/pace factor.
+
+## W110.5 retro-route (PROOF)
+We replayed every settled paper row (about 106,000 across NFL, NBA, NHL and MLB postseason) through the betting routes: ride the market, fade it, follow the move, or sit out. Each situation was sent to its best route using the earlier 70% of games, then checked on the later 30%. Most situations have too little data yet and default to sitting out. Riding the market beat fading it in every market family with data. One NHL moneyline situation looks strong, but it rests on only 11 games, so it is a lead and not a result. No pre-registrations were drafted, nothing went live, and no real money is involved.

@@ -1245,3 +1245,4 @@
 | 2026-11-11T06:04:01Z | B-069 | CLOSED — W110.1 B-069: NFL weather (forecast, PIT) and matchup crosses applied as router filters (PR #473); D5(b) NFL applied 10->12; per-leaf routing result 0/82 leaves earn an arm, momentum unscorable. (commit `567477f`) |
 | 2026-11-11T06:10:22Z | B-071 | CLOSED — merge confirmed, HEAD (c8e2610) is ancestor of origin/main — W110.3 B-071: every registered cell routed; 27 of 117 routed, shadow rows log router decision, 14d replay null (PR #476). (commit c57a496) |
 | 2026-11-11T06:12:57Z | W110.4 | CLOSED — W110.4 SGP correlation: engine joint good for game x points legs, misses same-player cross-stat; no open Kalshi NBA combo (commit `cc9818f`) |
+| 2026-11-11T06:21:52Z | W110.5 | CLOSED — W110.5 retro-route: 365 leaves scored by arm held out; 113 routed, 1 BH lead (11 games), 0 prereg drafts (PR #479) (commit `3f0845e`) |
