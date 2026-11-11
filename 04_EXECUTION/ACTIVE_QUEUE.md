@@ -82,7 +82,7 @@ architecture is built, the applied factors so far are ones the market already pr
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
 | 110.1 | engine · 3 | NFL: weather + matchup classes applied in the engine (D1, D5b) | ⏳ pasted? | — |
-| 110.2 | engine · 3 | NBA: the 9 "interpreted" factors → applied through the tree (D5b NBA 5 → ?) | ⏳ pasted? | — |
+| 110.2 | engine · 3 | NBA: the 9 "interpreted" factors → applied through the tree (D5b NBA 5 → ?) | 🔄 Parts A+B module + 11 known-answer tests pushed on branch session/20261111T052932Z-w110-2-nba-applied @1ff8145 (no PR yet); Part C (held-out 2025-26 scoring, ablation) next | — |
 | 110.3 | trees · 5 | Every registered cell routed (ride / fade / momentum / pot of gold / no-bet), horizon depth, orders OFF | ⏳ pasted? | — |
 | 110.4 | quant · 4 | Same-game correlation from the NBA engine (game lines + props), checked on settled games | ⏳ pasted? | — |
 
