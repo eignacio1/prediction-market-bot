@@ -82,7 +82,7 @@ combos (09-25) - the prop suite (109.3) is their prerequisite: a parlay is price
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
-| 109.1 | engine · 2 | NBA architecture 4/8 → 8/8: decision trees, filtering, cross-reference, temporal evolution | ⏳ pasted? | — |
+| 109.1 | engine · 2 | NBA architecture 4/8 → 8/8: decision trees, filtering, cross-reference, temporal evolution | 🔧 Parts A+B pushed (branch session/20261111T003845Z-w109-1-nba-arch, 4 modules + 19 tests); Part C applied path next | — |
 | 109.2 | engine · 2 | NHL architecture 2/8 → ≥ 6/8: decision trees, filtering, temporal evolution, tensions, seats | ⏳ pasted? | — |
 | 109.3 | suite · 2 | NBA player props priced from the NBA engine; shadow cells pre-registered; runner prepared | ⏳ pasted? | — |
 | 109.4 | quant · 4 | NBA / NFL / NHL props net of costs (finish B-064 with 108.3's public candlesticks) | ⏳ pasted? | — |
