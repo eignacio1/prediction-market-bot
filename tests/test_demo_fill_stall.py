@@ -18,7 +18,7 @@ def _rig(tmp_path, order_age_h=None, arm_age_h=None, override=False):
         rows.append({"ts": (NOW - timedelta(hours=order_age_h)).isoformat(), "event": "shadow_order"})
     pol.write_text("\n".join(json.dumps(r) for r in rows))
     if arm_age_h is not None:
-        (led / "NBA_MONEYLINE_T1.jsonl").write_text(json.dumps({"ts_utc": (NOW - timedelta(hours=arm_age_h)).isoformat()}))
+        (led / "NBA_NBA_MONEYLINE_T1.jsonl").write_text(json.dumps({"ts_utc": (NOW - timedelta(hours=arm_age_h)).isoformat()}))
     if override:
         (tmp_path / "deploy" / "demo_fill.override.env").write_text(
             "# TURNED OFF by demo_fill_forward_report (treatment_markout_30m_worse_than_control). Delete this file.\n"

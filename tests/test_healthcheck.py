@@ -170,7 +170,7 @@ def test_demo_fill_stall_warns_not_fails(rig):
         '{"ts": "%s", "event": "shadow_order"}\n' % (now - timedelta(days=6)).isoformat())
     led = proj / "exp_output/PREGAME_SHADOW"
     led.mkdir(parents=True, exist_ok=True)
-    (led / "NBA_MONEYLINE_T1.jsonl").write_text('{"ts_utc": "%s"}\n' % (now - timedelta(hours=1)).isoformat())
+    (led / "NBA_NBA_MONEYLINE_T1.jsonl").write_text('{"ts_utc": "%s"}\n' % (now - timedelta(hours=1)).isoformat())
     (proj / "deploy/demo_fill.override.env").write_text(
         "# TURNED OFF by demo_fill_forward_report (treatment_markout_30m_worse_than_control).\n"
         "DEMO_FILL_PLACEMENT_RULE=off\n")
