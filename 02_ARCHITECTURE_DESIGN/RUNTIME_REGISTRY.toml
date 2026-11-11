@@ -1394,7 +1394,7 @@ command = "cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bo
 key = "cron|14,44 0-5,17-23 * * *|scripts/archive_market_prices.py --out exp_output/PRICE_ARCHIVE --series KXNBAPTS"
 kind = "cron"
 source = "deploy/cron.conf"
-status = "paused"
+status = "live"
 reviewed = true
 purpose = "NBA player-prop price archive (W108.1, B-062/P04): 30-min bid/ask snapshots of the NBA prop series Kalshi lists, none of which were archived, so prop hypotheses can be tested forward. Read-only public GETs; no depth sampling."
 pillar = "PROOF"
@@ -1408,7 +1408,7 @@ command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHON
 key = "cron|17,47 0-5,17-23 * * *|scripts/archive_market_prices.py --out exp_output/PRICE_ARCHIVE --series KXNHLGOAL"
 kind = "cron"
 source = "deploy/cron.conf"
-status = "paused"
+status = "live"
 reviewed = true
 purpose = "NHL player-prop price archive (W108.1, B-062/P04): 30-min bid/ask snapshots of the NHL prop series Kalshi lists, none of which were archived, so prop hypotheses can be tested forward. Read-only public GETs; no depth sampling."
 pillar = "PROOF"
@@ -1422,7 +1422,7 @@ command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHON
 key = "cron|23,53 0-3,17-23 * * *|scripts/archive_market_prices.py --out exp_output/PRICE_ARCHIVE --series KXNFLPASSYDS"
 kind = "cron"
 source = "deploy/cron.conf"
-status = "paused"
+status = "live"
 reviewed = true
 purpose = "NFL player-prop price archive (W108.1, B-062/P04): 30-min bid/ask snapshots of the NFL prop series Kalshi lists, none of which were archived, so prop hypotheses can be tested forward. Read-only public GETs; no depth sampling."
 pillar = "PROOF"

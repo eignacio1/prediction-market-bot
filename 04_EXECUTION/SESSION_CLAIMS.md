@@ -1227,3 +1227,6 @@
 | 2026-11-10T06:11:35Z | W108.5 | CORRECTION: prior CLOSED row was checked against main's own HEAD. Work is PARTIAL: PR #458 (branch session/20261110T054159Z-w108-5-dashboard-stale) is OPEN and UNMERGED; box reads and Part C not run. See SESSION_HANDOFF_20261110T0610Z_W108_5.md. |
 | 2026-11-11T00:39:01Z | TBD | W109.1 NBA betting architecture 4/8->8/8 (B-066); pillar DEPTH D5(a)/(b) NBA; deliverable: 4 NBA modules + one applied path |
 | 2026-11-11T00:39:22Z | GG-TBD | STANDARD — NBA player props priced from the NBA engine + shadow cells + pre-reg + runner (B-070) — FOR B4 props families logging / B1 — W109.3 |
+| 2026-11-11T00:39:27Z | TBD | W109.5 flex: dashboard memory #458, MLB Features Sync off-season, surface budget — PLUMBING |
+| 2026-11-11T00:39:30Z | B-064; GG reserve 3 TBD-from-log | W109.4 quant props net of costs (NBA/NFL/NHL) - PURPOSE: P1/P2 prop families measured net X of N; B-064 |
+| 2026-11-11T00:39:48Z | GG-1870..GG-1872 | W109.2 NHL betting architecture D5(a) 2->=6 (B-067); pillar DEPTH D5(a)/(b) NHL; deliverable: NHL tensions+trees+filter+temporal modules + one applied totals path, STANDARD |
