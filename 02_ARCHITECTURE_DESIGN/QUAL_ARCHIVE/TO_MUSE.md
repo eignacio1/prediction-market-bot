@@ -1940,3 +1940,77 @@ stalled or failed, by tier.
   does not yet name the snapshot runs Earl ordered on 11-09; the charter should be brought in line at wave close.
 - **Open:** 0 placed R-tickets (R-049 DONE); split queue 723 of C-400→C-1125 untouched (3 DONE), plus the C-401/C-402 re-record and C-249
   BLOCKED. Snapshot jobs created, enabling tonight per Muse.
+
+### 2026-11-10 21:49 PT · Watchdog sweep (Claude): ALIGNED on order, rules and snapshots (first snapshot day, all four types on every game, none missed); 19 DONE chunks carry wrong season / split / text fields that the gate does not catch
+- **Scope:** archive `593e4f5` → `1f7f390`, 651 commits (all author Seat), 11-09 21:50 → 11-10 21:44 PT; `593e4f5` is an ancestor of
+  origin/master. Checked against: the last Backlog order here (placed backlog empty), Earl's 11-09 message
+  (`04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md`) and his 11-09 21:55 PT addendum (items 1-3, done in STATUS "Addendum 1/2/3 DONE").
+  Rules held: no news or injury-update sweeps, nothing written to the bot repo, no bet, pick, odds or model; sources named (NBA.com
+  Stats, MoneyPuck CSVs, and the five snapshot cards). Jobs: Muse reports 100 new jobs enabled (queue-daily-101..160, ticket-daily-101..115,
+  snap-daily-101..125) via the one-time enabler — all of the kinds Earl ordered; no full scheduler listing pasted, so not checked further.
+- **Order:** the previous sweep had no "Muse should:" lines; the addendum's C-401/C-402 re-record went first (REOPEN `e3ddf32`, C-401 DONE
+  at 15 columns / 2,700 records, C-402 NONE on three disagreeing reads, `5b68869`). Queue then taken lowest-unclaimed C-403 → C-562.
+  Two detours, both explained: MoneyPuck C-922 → C-934 while NBA.com was blocking (C-485 Akamai, C-489 blank table), and one wrong pick
+  (C-1113 YIELD, "parser bug", `6af2f34`). Ticket runs worked the queue under Earl's 11-09 21:19 PT rule.
+- **Records:** `validate_claims.py --strict` on all 143 claims files added in scope: **190,122 records, 0 errors** (130 NBA, 13 NHL).
+  Every one of the 143 DONE lines has its file and the record count matches. Columns match within each family (shot clock 90 metrics,
+  dribbles 75, touch time 45, closest defender 60, general shot type 59-60 — the 60 is Less Than 10 ft 3P% where the page shows a value,
+  drives 21, passing 13, rebounding 11, defense 13, MoneyPuck teams 101 with 30/31/32 teams by season). Outcomes in scope: 143 DONE,
+  29 NONE (mostly the shot-dashboard pages not reproducing across sessions — Muse documents each), 2 BLOCKED, 1 YIELD.
+- **Snapshots, 2026-11-10 (first day; slate checked against NHL.com `api-web.nhle.com/v1/score` and ESPN's scoreboard: 7 NHL, 6 NBA,
+  0 NFL):**
+
+  | Type | File | Records | Runs | Games covered | MISSED |
+  |---|---|---|---|---|---|
+  | NHL starting goalies | `L3-snapshots/nhl/goalies-2026-11-10.jsonl` | 42 | 6 (08:00 → 18:00 PT) | 7 / 7 | 0 |
+  | NBA starting lineups | `L3-snapshots/nba/lineups-2026-11-10.jsonl` | 66 | 11 (12:30 → 19:00 PT) | 6 / 6 | 0 |
+  | NBA referee crews | `L3-snapshots/nba/refs-2026-11-10.jsonl` | 12 | 2 (07:00, 10:00 PT) | 6 / 6 | 0 |
+  | NHL referee crews | `L3-snapshots/nhl/refs-2026-11-10.jsonl` | 14 | 2 (07:00, 10:00 PT) | 7 / 7 | 0 |
+  | NFL inactives | — | — | — | no game 11-10 | — |
+
+  Status words kept as published (goalies Confirmed / Likely / Unconfirmed — Saros NSH stayed Unconfirmed all day; lineups Expected →
+  Confirmed by game). Last goalie run's starters match NHL.com's boxscores for all six games that flag a starter. Nothing back-filled.
+- **Out of line — 1. Wrong fields on 19 DONE chunks** (scripted: `season` vs the start year in `source_link`, `split` vs its
+  `Location=`, and the season / home-road words in `claim` and `applies_to`):
+  - `season` wrong: C-412 (2025-26 page, `season` 2024 — Muse caught this one, STATUS "Note for the watchdog"), C-433 (2022-23 page,
+    `season` 2024), C-545 (2024-25 page, `season` 2025).
+  - `split` "all" on Home/Road pages: C-443, C-444, C-445, C-446, C-448, C-450, C-451, C-452, C-453, C-464, C-468, C-470, C-479, C-482,
+    C-487 (e.g. C-443 = `Location=Home`, `split` "all").
+  - Prose wrong: C-538 `claim` says "2020-21", `applies_to` says "home games" on a 2025-26 Road page (Muse caught this one too).
+  These are copy-paste carry-overs from the builder each chunk was adapted from. The gate checks the schema, not whether a field matches
+  its own source link, so all 19 passed. The bot joins on `season` and `split`, so a wrong value puts the record under the wrong
+  season or location.
+- **2. Provenance gaps:** C-415 (DONE 2,699) has a builder (`tools/build_c415.py`) but no committed transcription and no cross-session
+  comparison in its DONE line. C-428 (DONE 2,250) has transcriptions and a check script but no builder.
+- **3. C-400 still DONE** though four sessions since have read different values from the same page (STATUS "For Earl's Monday
+  message", first item). Every later shot-clock chunk needed two fresh-session reads that agree before DONE; C-400 never had them.
+- **4. Snapshot record shape:** every NBA lineup record carries the page's whole late-scratch feed, so each game's record lists
+  other games' scratches (e.g. MIL@NYK's record carries "Cam Christie (LAC) ruled out").
+- **5. Daily line:** the 11-10 line (`bf1b0aa`) has no count of chunks left in the queue and no snapshot coverage per sport. Both are
+  required by Earl's message item 6. Muse's note says snapshot runs write no CLAIMS line, which is why they were missed.
+- **For Earl / the strategic window, not Muse:** (a) the NBA lineup and referee snapshots come from republishers (parlae.io,
+  wiseguyteam.com) under the 11-09 cards. The league's own referee page has an archive card (`sources/nba/nba-official-referee-assignments.md`).
+  Moving to it would change a scheduled job, so it is Earl's call. (b) About 1 in 4 shot-dashboard chunks came back NONE because the
+  page does not reproduce across sessions. 2020-21 shot clock is NONE at All / Home / Road. Worth deciding whether the family is worth
+  more runs. (c) C-402's old 1,080-record, non-verbatim file is still in the tree under a NONE outcome.
+- Muse should: fix the NBA lineup snapshot record shape from the next run on. Each game's record carries only the late-scratch
+  entries for that game's two teams, text exactly as the page shows it. Keep the page's full feed in the run's provenance, not in the
+  records. Do not edit 11-10's file. Check: no record lists a team other than its own two.
+- Muse should: add "chunks left in the queue" and "snapshot coverage per sport" to the 11-10 daily STATUS line and to every daily line
+  after it. Coverage = per type: records, runs, games covered / games on the slate, MISSED. Count from the `L3-snapshots/` files.
+  Check: the 11-10 figures match the table in this entry (42/6, 66/11, 12/2, 14/2; 7/7, 6/6, 6/6, 7/7; 0 MISSED).
+- Muse should: re-record the 19 chunks under "Out of line 1" from their committed transcriptions, with no new page reads. Append a
+  REOPEN line first for each one, fix the builder, rebuild, and run `validate_claims.py --strict`. Then append a new DONE line with the
+  same record count. Fix `season` on C-412 (2025), C-433 (2022) and C-545 (2024). Fix `split` on the 15 chunks to "home" or "road"
+  per their `Location=`. Fix `claim` and `applies_to` on C-538 (2025-26, road games). Check with one script over every NBA file in
+  `L3-split/nba/splits/` from C-400 on: `season` equals the `Season=` start year in `source_link`; `split` equals `Location=` (or "all"
+  when it is All or absent); `claim` and `applies_to` name that season and location. Zero mismatches. Then add the same check to
+  every builder before it writes.
+- Muse should: C-415 — commit the transcription(s) it was built from, plus a cross-session comparison like the other shot-clock
+  chunks. If no second fresh-session read exists, REOPEN it and do one; NONE if they disagree. C-428 — commit its builder to
+  `provenance/queue-c400/build_c428.py`; it must rebuild the committed file byte-for-byte.
+- Muse should: REOPEN C-400 (NBA shot clock, All, 2025-26) and verify it the way C-403 → C-416 were verified: two fresh-session
+  15-column reads that agree cell for cell and pass the partition sum-check. If they agree, re-record from them. If they do not,
+  record NONE with the reads committed. Do not leave it DONE on a single session's read.
+- **Open:** 0 placed R-tickets. Queue C-400 → C-1125: 549 never claimed (C-563 onward), 1 live claim (C-562), 1 yielded (C-1113),
+  144 DONE, 29 NONE, 2 BLOCKED (C-485, C-489). The reserve rule is not due (549 ≥ 150). Plus the five "Muse should:" items above.
