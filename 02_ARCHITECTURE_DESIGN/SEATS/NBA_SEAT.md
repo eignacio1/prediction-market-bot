@@ -46,3 +46,12 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | nba_player_points | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_player_points_model.py | B3, B4, B2 |
 | nba_player_points | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_player_points_model.py | B3, B4, B2 |
 | nba_player_points | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_player_points_model.py | B3, B4, B2 |
+| nba_player_rebounds | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_rebounds | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_rebounds | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_assists | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_assists | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_assists | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_threes | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_threes | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_player_threes | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |

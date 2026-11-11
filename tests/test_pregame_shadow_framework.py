@@ -266,9 +266,9 @@ def test_mlb_game_market_cells_shadow_and_inplay_untouched():
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
 
 
-def test_registry_shadow_total_is_37_plus_2_ruled_out():
-    """3 MLB player-hits + 10 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1) + 3 NBA player-points (W65.1)
-    = 37 SHADOW; the 2 NFL game-total cells ruled out at the EXP-037 first look (W99.2) make the earlier 39."""
+def test_registry_shadow_total_is_46_plus_2_ruled_out():
+    """3 MLB player-hits + 10 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1) + 3 NBA player-points (W65.1) + 9 NBA engine props (W109.3)
+    = 46 SHADOW; the 2 NFL game-total cells ruled out at the EXP-037 first look (W99.2) make the earlier 39."""
     from prediction_market_bot.c5_execution.market_type_registry import CellStatus, cells_by_status
-    assert len(cells_by_status(CellStatus.SHADOW)) == 37
+    assert len(cells_by_status(CellStatus.SHADOW)) == 46
     assert len(cells_by_status(CellStatus.RULED_OUT)) == 2

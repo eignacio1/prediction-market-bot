@@ -304,3 +304,75 @@ source = "NBA event store"
 engine_slot = "player role (PAM layer 3)"
 stage = "aggregated"
 evidence = "qualitative_data/pam/nba/mass_tier_pit_2026.csv"
+
+[[cell]]
+market = "nba_player_rebounds"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_rebounds"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_rebounds"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_assists"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_assists"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_assists"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_threes"
+band = "T1"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_threes"
+band = "T2"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_player_threes"
+band = "T3"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
+factors = ["B3"]
+evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"

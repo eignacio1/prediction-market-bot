@@ -76,6 +76,10 @@ class MarketType(Enum):
     MLB_TEAM_TOTAL = "mlb_team_total"
     MLB_PARTIAL_GAME = "mlb_partial_game"  # F3/F5/F7 derivatives (Phase 0 ticker-confirmed)
     NBA_PLAYER_POINTS = "nba_player_points"  # legacy; dark/frozen, not an MLB coverage-target row
+    # W109.3 (B-070, EXP-047): NBA player props priced from the NBA engine's own game draws (pre-game SHADOW only).
+    NBA_PLAYER_REBOUNDS = "nba_player_rebounds"
+    NBA_PLAYER_ASSISTS = "nba_player_assists"
+    NBA_PLAYER_THREES = "nba_player_threes"
 
     # T-474 (NFL skeleton spike, ADR-0056 §2/D1, GG-198): the four standard
     # game-level mechanisms. Series tickers confirmed live against Kalshi's
@@ -128,6 +132,9 @@ _SERIES_TICKER_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.MLB_TEAM_TOTAL: "KXMLBTEAMTOTAL",
     MarketType.MLB_PARTIAL_GAME: "KXMLBF3",  # F3 as the representative partial-game ticker
     MarketType.NBA_PLAYER_POINTS: "KXNBAPTS",
+    MarketType.NBA_PLAYER_REBOUNDS: "KXNBAREB",
+    MarketType.NBA_PLAYER_ASSISTS: "KXNBAAST",
+    MarketType.NBA_PLAYER_THREES: "KXNBA3PT",
     # T-474: confirmed live 2026-08-21 via curl against
     # https://external-api.kalshi.com/trade-api/v2/series?category=Sports and
     # per-series /events lookups -- each returned open/scheduled NFL preseason
@@ -174,6 +181,9 @@ _SPORT_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.MLB_TEAM_TOTAL: "mlb",
     MarketType.MLB_PARTIAL_GAME: "mlb",
     MarketType.NBA_PLAYER_POINTS: "nba",
+    MarketType.NBA_PLAYER_REBOUNDS: "nba",
+    MarketType.NBA_PLAYER_ASSISTS: "nba",
+    MarketType.NBA_PLAYER_THREES: "nba",
     MarketType.NFL_MONEYLINE: "nfl",
     MarketType.NFL_SPREAD: "nfl",
     MarketType.NFL_GAME_TOTAL: "nfl",
@@ -379,6 +389,9 @@ _TICKER_GRAMMAR_BY_MARKET_TYPE: dict[MarketType, TickerGrammar] = {
     MarketType.MLB_TEAM_TOTAL: _MLB_GRAMMAR,
     MarketType.MLB_PARTIAL_GAME: _MLB_GRAMMAR,
     MarketType.NBA_PLAYER_POINTS: _NBA_GRAMMAR,
+    MarketType.NBA_PLAYER_REBOUNDS: _NBA_GRAMMAR,
+    MarketType.NBA_PLAYER_ASSISTS: _NBA_GRAMMAR,
+    MarketType.NBA_PLAYER_THREES: _NBA_GRAMMAR,
     MarketType.NFL_MONEYLINE: _NFL_GRAMMAR,
     MarketType.NFL_SPREAD: _NFL_GRAMMAR,
     MarketType.NFL_GAME_TOTAL: _NFL_GRAMMAR,
@@ -817,6 +830,12 @@ for _market_type in _NBA_GAME_FAMILIES:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 
+# --- NBA engine-priced player props (W109.3, B-070, EXP-047): T1/T2/T3 seeded NOT_IMPLEMENTED, flipped to SHADOW below ---
+_NBA_ENGINE_PROP_TYPES = (MarketType.NBA_PLAYER_REBOUNDS, MarketType.NBA_PLAYER_ASSISTS, MarketType.NBA_PLAYER_THREES)
+for _mt in _NBA_ENGINE_PROP_TYPES:
+    for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+        _cells.append(MarketTypeCell(_mt, _band, CellStatus.NOT_IMPLEMENTED))
+
 # --- NBA player points (W65.1, EXP-039): T1/T2/T3 seeded NOT_IMPLEMENTED, flipped to SHADOW below ---
 # KXNBAPTS pre-game shadow only (evaluate-and-log). The pre-existing T4_IN_PLAY cell above stays DARK and untouched.
 for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
@@ -980,6 +999,14 @@ for _mt, _bd in _EXP037_MLB_SHADOW_CELLS:
 # Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP039_NBA_PLAYER_POINTS_SHADOW_PREREGISTRATION_2026-10-09.md.
 for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
     promote_cell_status(MarketType.NBA_PLAYER_POINTS, _bd, CellStatus.SHADOW, superseding_reference="EXP-039")
+
+# --- EXP-047 / W109.3 (B-070): NBA rebounds / assists / threes pre-game SHADOW cells, engine-priced ---
+# SHADOW is evaluate-and-log: no order, position, fill, stake or kelly_fraction. Runner (prepared, paused):
+# scripts/run_nba_engine_props_shadow.py (rows -> exp_output/PREGAME_SHADOW_EXP047/NBAENG_<MARKET_TYPE>_T[123].jsonl).
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md.
+for _mt in _NBA_ENGINE_PROP_TYPES:
+    for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+        promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-047")
 
 
 # --- EXP-038 / W69.2: NBA game cells, flipped to SHADOW by evidence, not by hand ---
