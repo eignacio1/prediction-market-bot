@@ -86,6 +86,10 @@ TASKS: dict[str, str] = {
     "ride_board_install": f"{PY} scripts/ride_board_install.py install",
     # W109.5: dashboard MemoryMax 128M -> 384M via systemd drop-in (cgroup hit its cap 5082x; /api/data build peaks ~260 MB). NOT run without the operator's named approval.
     "dashboard_memmax_install": f"{PY} scripts/dashboard_memmax_install.py install",
+    # W109.3 / B-070 (EXP-047): NBA engine props SHADOW cron line (evaluate-and-log only). Budget-gated, backs up the crontab first. NOT run without the operator's named approval.
+    "nba_engine_props_shadow_install": f"{PY} scripts/nba_engine_props_shadow_install.py install",
+    "nba_engine_props_shadow_readback": f"{PY} scripts/nba_engine_props_shadow_install.py readback",
+    "nba_engine_props_shadow_uninstall": f"{PY} scripts/nba_engine_props_shadow_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",

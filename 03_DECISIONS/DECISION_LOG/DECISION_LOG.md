@@ -3351,3 +3351,6 @@ factors applied, missing factor classes, full bet suite from one engine, multi-a
 
 ## 2026-11-11 W109.1 — NBA architecture 8/8; applied ml path null
 D5(a) NBA 4→8 (PR #463). Applied KXNBAGAME ml path scored held-out vs Kalshi tip−1h: tree worse than market (Brier +0.0215 [+0.012,+0.031], n=397); net before fees negative. Null recorded, no pre-registration change, kelly_fraction untouched. Detail: 12_EXPLORATORY/nba_arch_w109/RESULT_W109_1.md.
+
+## 2026-11-11 W109.3 — NBA engine player props: null backtest, 9 shadow cells registered, install prepared not run
+Props priced from NBA engine draws (nba_engine/props.py). Backtest on 15,364 settled props / 96 games: engine Brier worse than market mid in all four families (pts +0.0156, reb +0.0103, ast +0.0072, 3pt +0.0068; clustered CIs exclude 0). Null does not stop the cells (block rule). Pre-reg id EXP-047 (EXP-041 already taken). 9 cells (rebounds/assists/threes x T1-T3) SHADOW, kelly 0, no orders; modal outcome pre-registered = engine worse than market. Runner + cron (minute 39; 37 collided with nba_player_points_shadow_preseason, caught by CI) registered paused. Install task `nba_engine_props_shadow_install` prepared, NOT run — needs operator approval by name. Lesson: precheck_changed.py missed 3 CI failures (cron-minute, shadow-count, seat-file coupling); run related suites before PR.
