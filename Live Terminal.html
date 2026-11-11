@@ -636,8 +636,8 @@ function viewDesk(sport){return `<div class="grid g-7-5">
     ${P_(sport+' — Shadow cells','dkCellN',`<div class="pb flush"><div id="dkCells"></div></div>`,`<span class="n">evaluate and log · no sizing</span>`)}
   </div>
   <div class="col">
-    ${P_(sport+' — Forecast tape','dkTapeN',SCROLL('dkTape',330),`<span class="n">newest first · this sport only</span>`)}
-    ${P_(sport+' — Demo orders (forward test)','dkOrdN',SCROLL('dkOrders',260),`<span class="n">flat demo stakes · no real capital</span>`)}
+    ${P_(sport+' — Forecast tape','dkTapeN',SCROLL('dkTape',440),`<span class="n">newest first · this sport only</span>`)}
+    ${P_(sport+' — Demo orders (forward test)','dkOrdN',SCROLL('dkOrders',470),`<span class="n" id="dkOrdNote">flat demo stakes · no real capital</span>`)}
   </div></div>`;}
 function fillDesk(d){
   if(!$('#dkCells')) return; const sport=S.mod;
@@ -662,7 +662,9 @@ function fillDesk(d){
     `<text x="${W/2}" y="${H-6+0}" fill="var(--faint)" font-size="0"></text></svg><div class="dim" style="font-size:11px">x = market mid · y = model probability</div>`;
   const o=((d.demo_orders&&d.demo_orders.rows)||[]).filter(r=>String(r.ticker||'').toUpperCase().startsWith('KX'+sport));
   const ok=o.filter(r=>r.ok).length;
+  const lastO=o.length?String(o[o.length-1].ts||''):'', ageH=lastO?Math.round((Date.now()-Date.parse(lastO))/3600000):null;
   $('#dkOrdN').textContent=o.length?`${ok} placed · ${o.length-ok} refused`:'—';
+  if($('#dkOrdNote')) $('#dkOrdNote').innerHTML=ageH!=null&&ageH>24?`<span class="warn">last order ${ageH} h ago</span>`:'flat demo stakes · no real capital';
   $('#dkOrders').innerHTML=!o.length?AW(sport+' demo orders (logs/demo_fill_policy.jsonl)'):`<table><thead><tr><th>TIME</th><th>TICKER</th><th>SIDE</th><th>PRICE</th><th>STAKE</th><th>ARM</th><th>RESULT</th></tr></thead><tbody>`+
     o.slice().reverse().slice(0,150).map(r=>`<tr><td>${esc(String(r.ts||'').slice(5,16).replace('T',' '))}</td><td class="dim">${esc(r.ticker)}</td><td>${esc(r.side)}</td><td class="r">${f4(r.price_yes)}</td><td class="r">${r.stake_usd==null?'—':'$'+(+r.stake_usd).toFixed(2)}</td><td>${esc(r.arm)}</td>`+
       `<td class="${r.ok?'pos':'neg'}">${r.ok?'placed':esc(String(r.error||'refused').slice(0,40))}</td></tr>`).join('')+`</tbody></table>`;

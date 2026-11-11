@@ -1,3 +1,22 @@
+<!-- session-meta
+task_id: W109.2
+tier: STANDARD
+timestamp: 2026-11-11T01:02:00Z
+commit: 38c85dc
+one_line_summary: W109.2 NHL architecture D5(a) 2->7/8 (PR #465); applied totals path abstains, gate fails 3/3 seasons
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(a) NHL; D5(b) NHL
+gap_delta: D5(a) NHL 2/8 -> 7/8; D5(b) NHL applied 3 -> 3 (scripts/distance_to_optimum.py d5() on merged checkout)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
+## Strategic Decisions This Session
+None - implementation-only session.
+
 # SESSION HANDOFF W109.2 - NHL betting architecture
 
 **Status:** DONE | **B-067:** done for the scaffold half (7/8, clusters capped); the applied half is open | **PR:** #465 merged as 9d0aaaf, CI green on head 1cab573 | branch session/20261111T003858Z-w109-2-nhl-arch

@@ -1230,3 +1230,7 @@
 | 2026-11-11T00:39:27Z | TBD | W109.5 flex: dashboard memory #458, MLB Features Sync off-season, surface budget — PLUMBING |
 | 2026-11-11T00:39:30Z | B-064; GG reserve 3 TBD-from-log | W109.4 quant props net of costs (NBA/NFL/NHL) - PURPOSE: P1/P2 prop families measured net X of N; B-064 |
 | 2026-11-11T00:39:48Z | GG-1870..GG-1872 | W109.2 NHL betting architecture D5(a) 2->=6 (B-067); pillar DEPTH D5(a)/(b) NHL; deliverable: NHL tensions+trees+filter+temporal modules + one applied totals path, STANDARD |
+| 2026-11-11T01:13:34Z | W109.1 | CLOSED — merge confirmed, HEAD (bc945ed) is ancestor of origin/main — NBA betting architecture 8/8 merged (#463); applied ml path NULL |
+| 2026-11-11T01:12:49Z | W109.2 | CLOSED — W109.2 NHL architecture D5(a) 2->7/8 (PR #465); applied totals path abstains, gate fails 3/3 seasons (commit `38c85dc`) |
+| 2026-11-11T01:14:11Z | W109.2 | CLOSED — merge confirmed, HEAD (b6583d5) is ancestor of origin/main — NHL architecture 2->7/8, PR #465 merged |
+| 2026-11-11T01:16:15Z | T-TBD GG-reserve 3 | W109.6 EXECUTION E1/E2: demo-fill forward test stalled since 11-05 - find cause, epoch-gate markout turn-off if artifact, add zero-orders alarm |

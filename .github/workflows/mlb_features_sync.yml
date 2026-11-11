@@ -61,10 +61,14 @@ jobs:
       - name: Generate features (regular season + postseason)
         run: python scripts/generate_mlb_features.py --seasons 2026 --include-postseason
 
+      # W109.5: off-season is an explicit clean skip (zero games in the staleness window, staleness the only HALT,
+      # schedule fetched OK). Any doubt or any game in the window keeps the unchanged fail-closed gate.
       - name: Gate on the unchanged data contract (fail-closed)
-        run: python scripts/verify_mlb_feature_csv.py exp_output/MLB/mlb_feature_matrix.csv --meta-out exp_output/MLB/mlb_feature_matrix.meta.json
+        id: gate
+        run: python scripts/verify_mlb_feature_csv.py exp_output/MLB/mlb_feature_matrix.csv --meta-out exp_output/MLB/mlb_feature_matrix.meta.json --skip-off-season
 
       - name: Set up SSH
+        if: steps.gate.outputs.skip != 'true'
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
@@ -72,6 +76,7 @@ jobs:
           ssh-keyscan -H 157.230.91.33 >> ~/.ssh/known_hosts
 
       - name: Push to the VPS (tmp + atomic mv)
+        if: steps.gate.outputs.skip != 'true'
         run: |
           set -euo pipefail
           scp -i ~/.ssh/vps_key exp_output/MLB/mlb_feature_matrix.csv "$VPS:$REMOTE/mlb_feature_matrix.csv.tmp"

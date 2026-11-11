@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W109.1
+tier: STANDARD
+timestamp: 2026-11-11T01:45:00Z
+commit: 21d9d63
+one_line_summary: W109.1 NBA betting architecture 4/8 to 8/8 merged (#463); applied ml path NULL, Kalshi beats the tree.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(a)/D5(b) NBA
+gap_delta: D5(a) NBA 4->8 (ARCHITECTURE_COMPONENTS.toml @ e077db2); D5(b) NBA applied 5->5 (no positive-edge verdict)
+pattern_sweep: n/a (no defect fixed); in-block fixes: FACTOR_CLASS lineup names registered + test; isolation-fence str.replace in 12_EXPLORATORY script replaced by slicing
+surface_delta: 0
+-->
+
 # SESSION HANDOFF — W109.1 NBA betting architecture 4/8 → 8/8 (B-066)
 
 ```
