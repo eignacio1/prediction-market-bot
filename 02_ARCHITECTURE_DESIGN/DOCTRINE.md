@@ -31,7 +31,10 @@ gold, or no bet.**
 > defensive rating but #22 in perimeter shooting + #16 in clutch defensive rating. WE ARE SO FAR AWAY."
 - The project is at the start of the depth it needs. A cell, pattern or factor that loses to the market today is reported as a ROUTING
   result ("routed to ride / no bet in these leaves"), never as "no edge", "blocked", "ruled out" or a reason to stop.
-- RULED_OUT is reserved for a market that cannot be traded at all (no book, no liquidity, no data). It never means "our model lost".
+- In words, RULED_OUT is reserved for a market that cannot be traded at all (no book, no liquidity, no data); it never means "our model
+  lost". In the registry code, `CellStatus.RULED_OUT` on a frozen-test cell is that test's state machine and reads "the fade arm is closed
+  for this cell; ride / no bet stay open" (operator 2026-11-10 21:59 PT; NFL game total T1 / T2, EXP-037 first look). Human-facing text
+  says "fade arm closed (routed)", never "ruled out".
 - Reports lead with what was built and which arm each leaf goes to; a model-vs-market number, if given at all, comes last.
 
 ## 2. The scale (ADR-0073, operator 10-13)
