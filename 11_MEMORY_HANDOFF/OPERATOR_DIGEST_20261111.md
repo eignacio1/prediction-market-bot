@@ -18,3 +18,5 @@ I did NOT turn the test back on. One decision for you: approve the re-arm task `
 - Tested on last season's games: knowing who is out helps predict point spreads and team totals. Travel and referees add nothing. Nothing helps picking the winner.
 - Caveat: we have no last-season market prices for spreads and totals, so this shows the factors predict outcomes, not that they beat the market.
 - Still zero real money at risk; no orders or sizing touched.
+
+**W110.1 (NFL weather + matchup).** Moved DEPTH: NFL weather (forecast only, never realised) and matchup crosses are now built, tested and exported as filters for the router. Scored per leaf, net after costs, none of 82 leaves earned an arm (about 2 expected by chance). Momentum can't be scored yet: we have no opening-line history. Still zero real money at risk. No decisions needed from you.

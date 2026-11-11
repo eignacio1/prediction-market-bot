@@ -1242,3 +1242,4 @@
 | 2026-11-11T05:30:51Z | B-071, GG-NEW x3 reserved at need | W110.3 B-071 STANDARD: route every registered cell via multi-arm router (coverage report, per-row router decision in shadow runners, 14d replay). PURPOSE: D5(a) decision trees per sport; cells routed X->N of registered |
 | 2026-11-11T06:00:17Z | TBD | W110.5 retro-route STANDARD: score every shadow row/archived price by arm (ride/fade/momentum/no bet) per leaf. PURPOSE: PROOF D6 layers 1-5 per cell; 12_EXPLORATORY/retro_route/ROUTING.md |
 | 2026-11-11T06:00:34Z | B-068 | CLOSED — W110.2 B-068: NBA usage, geometry, officials and PAM factors applied via the 109.1 tree; D5(b) NBA 5->10 of 17. (commit `58c1cb1`) |
+| 2026-11-11T06:04:01Z | B-069 | CLOSED — W110.1 B-069: NFL weather (forecast, PIT) and matchup crosses applied as router filters (PR #473); D5(b) NFL applied 10->12; per-leaf routing result 0/82 leaves earn an arm, momentum unscorable. (commit `567477f`) |

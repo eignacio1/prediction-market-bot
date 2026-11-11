@@ -1,4 +1,20 @@
 # SESSION HANDOFF - W110.1 NFL weather + matchup (2026-11-10)
+
+<!-- session-meta
+task_id: B-069
+tier: STANDARD
+timestamp: 2026-11-11T06:05:00Z
+commit: 567477f
+one_line_summary: W110.1 B-069: NFL weather (forecast, PIT) and matchup crosses applied as router filters (PR #473); D5(b) NFL applied 10->12; per-leaf routing result 0/82 leaves earn an arm, momentum unscorable.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D1, D5(b) NFL applied
+gap_delta: 10 -> 12 (02_ARCHITECTURE_DESIGN/SEATS/nfl.toml @ 567477f)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
 COMMON_RULES_W110 first line quoted: `# Wave 110 common rules`.
 
 ```
@@ -24,3 +40,8 @@ surface_delta: 0 live components (library modules + exploratory study only)
 
 ## PR
 #473. Merge only on green CI for current head; after merge read the box deploy and record the t4-mlb decision (none expected: no imported file changed).
+
+## Strategic Decisions This Session
+None - implementation-only. Merged PR #473 (567477f); box deploy: t4-mlb not_needed. Stray/unrelated: none observed.
+## Resume
+110.3 router.py consumes nfl_filters; momentum needs a line-history archive.
