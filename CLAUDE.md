@@ -37,9 +37,10 @@ Generated 2026-11-11 by `scripts/claude_md_now.py --write` from the code at that
 - **Last wave closed:** 110 (2026-11-11; #473 #475 #476 #478 #479; main CI green). It wired NFL weather / matchup and NBA factors in as
   tree splits, logged the router's arm on every shadow row (27 of 117 cells routed), built same-game parlay correlation from the NBA
   engine, and scored every settled shadow row by arm per leaf (`12_EXPLORATORY/retro_route/ROUTING.md`).
-- **Next:** before Wave 111 the window builds `04_EXECUTION/OPERATOR_DIRECTIVES.md` (every directive given more than once, and whether
-  code carries it). W111 opens with the engine fix: a losing look closes only the fade arm, and NFL game total T1 / T2 reopen. Until it
-  lands, **no new RULED_OUT is applied to the registry**.
+- **In flight:** Wave 111 (written 2026-11-11 15:59 PT, four blocks). It opens with the two directives the code contradicts
+  (`04_EXECUTION/OPERATOR_DIRECTIVES.md` D-02, D-03): 111.1 a losing look closes only the fade arm and NFL game total T1 / T2 reopen;
+  111.2 audits every decision point in code against DOCTRINE.md; 111.3 wires cells end to end (D6); 111.4 builds the granularity index
+  as tree splits, NBA first. Until 111.1 lands, **no new RULED_OUT is applied to the registry**.
 - **Live numbers** (pillars, distance table, forward test, fills) are in the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`;
   **what is in scope, in order,** is `04_EXECUTION/ROLLING_BACKLOG.json`. Waiting on the operator: the "Needs your decision" section of
   the queue.

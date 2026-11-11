@@ -3429,7 +3429,6 @@ Effect: strategic-handoff step 6 - a repeated-directives ledger (04_EXECUTION/OP
 opens with the oldest not-built / contradicted directive and the block that moves it; a third raise of the same thing is a logged window
 error. The window builds the ledger before writing W111 (backlog).
 
-<<<<<<< HEAD
 ## 2026-11-10 22:28 PT — Operator: CLAUDE.md lean, and accurate at the moment it is read (SW-9)
 Verbatim (excerpt): "Claude.md is way too bloated - and there are still multiple things that are stale across the file ... if this file
 gets touched first ... then yes it needs to be fucking accurate to the exact state of the project AT THAT EXACT MOMENT. Does that mean it
@@ -3444,7 +3443,7 @@ pending); MEMORY_BANK's state snapshot (10-09) is no longer cited as live state;
 build work" (10-27); C3 "LR + Platt" replaced by per-sport engines + per-cell models. Section names other files cite are kept ("What
 winning looks like", "Distance to optimum", Steps 0-4, Q1-Q7, Hard Rules 1-16). Strategic-handoff step 7: the window regenerates the
 block at every wave close. Wave 110 verified closed (#473 #475 #476 #478 #479, main CI green); W111 not written, per the operator.
-=======
+
 ## 2026-11-11 15:52 PT — Wave 111 issued (four blocks, operator's ask); the repeated-directives ledger built (SW-9)
 Operator: "give me the next wave, 4 blocks." Wave 110 verified closed (#473 #475 #476 #478 #479, main CI green). Before writing it the
 window built 04_EXECUTION/OPERATOR_DIRECTIVES.md (strategic-handoff step 6): 23 directives the operator has given more than once, two of
@@ -3452,4 +3451,3 @@ them CONTRADICTED in code (D-02 losing looks stop cells; D-03 closed cells). Wav
 registry (a losing look closes only the fade arm; NFL game total T1 / T2 back to SHADOW); 111.2 the doctrine-conformance audit of the
 code; 111.3 D6 (router reads the W110.5 leaf map; pot of gold and momentum scored as arms; forward test frozen); 111.4 the granularity
 index as tree splits, NBA first. Backlog: B-024 (pot of gold) moved from PARKED to NOW - stale since 11-05.
->>>>>>> origin/main
