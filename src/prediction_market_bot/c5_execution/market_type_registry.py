@@ -76,7 +76,7 @@ class MarketType(Enum):
     MLB_TEAM_TOTAL = "mlb_team_total"
     MLB_PARTIAL_GAME = "mlb_partial_game"  # F3/F5/F7 derivatives (Phase 0 ticker-confirmed)
     NBA_PLAYER_POINTS = "nba_player_points"  # legacy; dark/frozen, not an MLB coverage-target row
-    # W109.3 (B-070, EXP-041): NBA player props priced from the NBA engine's own game draws (pre-game SHADOW only).
+    # W109.3 (B-070, EXP-047): NBA player props priced from the NBA engine's own game draws (pre-game SHADOW only).
     NBA_PLAYER_REBOUNDS = "nba_player_rebounds"
     NBA_PLAYER_ASSISTS = "nba_player_assists"
     NBA_PLAYER_THREES = "nba_player_threes"
@@ -830,7 +830,7 @@ for _market_type in _NBA_GAME_FAMILIES:
         _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 
-# --- NBA engine-priced player props (W109.3, B-070, EXP-041): T1/T2/T3 seeded NOT_IMPLEMENTED, flipped to SHADOW below ---
+# --- NBA engine-priced player props (W109.3, B-070, EXP-047): T1/T2/T3 seeded NOT_IMPLEMENTED, flipped to SHADOW below ---
 _NBA_ENGINE_PROP_TYPES = (MarketType.NBA_PLAYER_REBOUNDS, MarketType.NBA_PLAYER_ASSISTS, MarketType.NBA_PLAYER_THREES)
 for _mt in _NBA_ENGINE_PROP_TYPES:
     for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
@@ -1000,13 +1000,13 @@ for _mt, _bd in _EXP037_MLB_SHADOW_CELLS:
 for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
     promote_cell_status(MarketType.NBA_PLAYER_POINTS, _bd, CellStatus.SHADOW, superseding_reference="EXP-039")
 
-# --- EXP-041 / W109.3 (B-070): NBA rebounds / assists / threes pre-game SHADOW cells, engine-priced ---
+# --- EXP-047 / W109.3 (B-070): NBA rebounds / assists / threes pre-game SHADOW cells, engine-priced ---
 # SHADOW is evaluate-and-log: no order, position, fill, stake or kelly_fraction. Runner (prepared, paused):
-# scripts/run_nba_engine_props_shadow.py (rows -> exp_output/PREGAME_SHADOW_EXP041/NBAENG_<MARKET_TYPE>_T[123].jsonl).
-# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP041_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md.
+# scripts/run_nba_engine_props_shadow.py (rows -> exp_output/PREGAME_SHADOW_EXP047/NBAENG_<MARKET_TYPE>_T[123].jsonl).
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md.
 for _mt in _NBA_ENGINE_PROP_TYPES:
     for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
-        promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-041")
+        promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-047")
 
 
 # --- EXP-038 / W69.2: NBA game cells, flipped to SHADOW by evidence, not by hand ---
