@@ -84,7 +84,7 @@ combos (09-25) - the prop suite (109.3) is their prerequisite: a parlay is price
 |---|---|---|---|---|
 | 109.1 | engine · 2 | NBA architecture 4/8 → 8/8: decision trees, filtering, cross-reference, temporal evolution | 🔧 Parts A+B pushed (branch session/20261111T003845Z-w109-1-nba-arch, 4 modules + 19 tests); Part C applied path next | — |
 | 109.2 | engine · 2 | NHL architecture 2/8 → ≥ 6/8: decision trees, filtering, temporal evolution, tensions, seats | ⏳ pasted? | — |
-| 109.3 | suite · 2 | NBA player props priced from the NBA engine; shadow cells pre-registered; runner prepared | ⏳ pasted? | — |
+| 109.3 | suite · 2 | NBA player props priced from the NBA engine; shadow cells pre-registered; runner prepared | 🔄 A+B pushed (session/20261111T003828Z-w109-3-nba-props) | Part A props module + 7 tests; Part B null: engine Brier worse than market mid in all 4 families (pts +0.016, reb +0.010, ast +0.007, 3pt +0.007; CIs exclude 0, n=15,364, 96 games). Part C next. |
 | 109.4 | quant · 4 | NBA / NFL / NHL props net of costs (finish B-064 with 108.3's public candlesticks) | ⏳ pasted? | — |
 | 109.5 | flex · red | Dashboard memory (#458 onto main), MLB Features Sync off-season, surface budget | ⏳ pasted? | — |
 
