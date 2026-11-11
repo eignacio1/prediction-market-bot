@@ -24,6 +24,16 @@ gold, or no bet.**
 - Worked example (operator 11-10): simulations say the favourite wins 39 of 40; at 90c ride (+7.5c, small fee); at 97c no bet (+0.5c,
   one upset costs ~32 wins). The tree checks the simulation AND the price.
 
+## 1b. Where we are, and the words we use (operator 2026-11-10 21:56 PT)
+> "I literally do not want a single fucking chance of you or any window coming up to me talking about "no edge" bc we can't beat the
+> fucking market we are SO FAR AWAY from anything that will be ready to beat the market - for fucks sake we can't even tell which PG's
+> shoot better in the mid range with 2 minutes left when their lineup is filled with defensive players against a team ranked #4 in
+> defensive rating but #22 in perimeter shooting + #16 in clutch defensive rating. WE ARE SO FAR AWAY."
+- The project is at the start of the depth it needs. A cell, pattern or factor that loses to the market today is reported as a ROUTING
+  result ("routed to ride / no bet in these leaves"), never as "no edge", "blocked", "ruled out" or a reason to stop.
+- RULED_OUT is reserved for a market that cannot be traded at all (no book, no liquidity, no data). It never means "our model lost".
+- Reports lead with what was built and which arm each leaf goes to; a model-vs-market number, if given at all, comes last.
+
 ## 2. The scale (ADR-0073, operator 10-13)
 One deep engine per sport at Syndicate32-level granularity or deeper, every factor class built once point-in-time, one joint simulation
 pricing the whole board (moneyline, spread, totals, team totals, props, parlays). Free data first; a paid-only factor is a registered gap.

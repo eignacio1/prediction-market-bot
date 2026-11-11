@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 110 READY TO PASTE - four blocks in NOW (110.1 NFL weather + matchup, 110.2 NBA factors applied, 110.3 every cell routed, 110.4 same-game correlation).** Written 2026-11-11 ~05:30 UTC by SW-9. **Waiting on you:** `nba_engine_props_shadow_install` (109.3) and `dashboard_memmax_install` (109.5) by name; the EXP-038 second-look draft.
+> **▶ WAVE 110 READY TO PASTE - five blocks in NOW (110.1 NFL weather + matchup, 110.2 NBA factors as tree splits, 110.3 every cell routed, 110.4 same-game correlation, 110.5 RETRO-ROUTE every logged row through the multi-arm tree).** Addendum at the top of 110.1 applies to 110.1-110.3. Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -42,7 +42,8 @@ close: Waves 101-103 moved measurement and execution correctness (GG-1771), not 
 | | D2 largest pre-game feature set | **18** (MLB player hits, 0 qualitative) | coverage, not a count | 0 |
 | | D3 challengers ready | **5** (NFL QB; EXP-041; EXP-044b; EXP-044c NBA engine v3, frozen not installed; one counted by the script) | ≥ 1 per arm | 0 |
 | | D4 engine stage (ADR-0073) | **NFL: data layer + board engine + test, frozen forward test (EXP-045) · NBA: data layer + board engine; v1 / v2 / v3 logging; 11-04 slate v1 56/56, v2 44/56, v3 38/56 markets (no OOM - runs never succeed before the window closes, 102.1); v3 has no settled game yet · NHL: board engine v2 (late-game state; totals still low)** · MLB: none | each sport: data → factors → whole board | 0 |
-| | D5 betting architecture (ADR-0075) | **(a) NFL 8/8, NBA 4/8, NHL 2/8+, MLB 3/8** · **(b) aggregated / interpreted / applied: NFL 5 / 5 / 10 of 21; NBA 2 / 9 / 5 of 17** (v3 availability + lineups fully indexed, no lift) **; NHL 2 / 2 / 3 of 12**; MLB none | 8 of 8 per sport; factors applied | 0 |
+| | D5 betting architecture (ADR-0075) | **(a) NFL 8/8, NBA 8/8, NHL 7/8, MLB 3/8** (W109) · **(b) applied NFL 10 / 21, NBA 5 / 17, NHL 3 / 12, MLB 0 - all scored as competing prices; 0 as tree splits** | 8 / 8 per sport; every factor a tested split | NBA 4 → 8, NHL 2 → 7 (W109) |
+| | **D6 cells wired end to end (ADR-0077, added 2026-11-11)** | **0** (layers: simulated prob · market state · factor filters as splits · tree choosing the arm · per-leaf net per arm · risk / sizing · execution) | every registered cell | new |
 | **EXECUTION** | E1 demo orders filled | **T4 MLB 177 / 4,316 = 4.1% · T1 MLB 85 / 485 = 17.5%** (MLB books idle since 10-20) | fills ≈ intended orders | 0 |
 | | E2 P&L per filled bet | **T4 −$0.21** (n 177) · **T1 −$1.50** (n 83) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 25.4% vs 48.3% · T1 28.9% vs 52.1%** · resting fills picked off; **entry cost measured (98.2): taking at the quote loses ~0.10 / contract in NBA and NFL - keep the frozen rule**; NHL unclear | fills ≥ non-fills | 0 |
@@ -53,8 +54,7 @@ close: Waves 101-103 moved measurement and execution correctness (GG-1771), not 
 
 **Surface (box, 2026-11-10 06:05Z + 11-11 window checks):** dashboard redesigned and refreshing on pull (#457 / #459), memory near its cap
 (134.07 of 134.2 MB at 05:37Z, then 111.6 MB after the restart) - 109.5; **budget GREEN since 11-11 00:45Z: ride board and the 22-series prop archive installed (operator-approved 11-10 16:27 PT)**; the never-approved news burst entry paused by the window 11-10. MLB Features Sync fails closed daily off-season
-(109.5). **Edge so far (EDGE_MAP, W108): 40 hypotheses, 2 held-out positive (old frozen MLB ladder ride, EXP-043), none survives costs forward;
-UNTESTED 4. Operator 11-09 21:29 PT: the build continues on every lane.** **Muse:** 11-10 ~92 chunks DONE / 24 NONE (NBA.com tables that do not
+(109.5). **Routing inputs so far (EDGE_MAP, W108):** 40 single patterns tested on their own - each is now an input to the multi-arm tree, not a verdict; 2 held-out positive as stand-alone bets (MLB ladder ride, EXP-043, 2027). The tree that routes them (D6) is at 0 cells - that is the build. **Operator 11-10: "WE ARE SO FAR AWAY" - no "no edge" talk; losing to the market is a routing result (DOCTRINE.md §1b).** **Muse:** 11-10 ~92 chunks DONE / 24 NONE (NBA.com tables that do not
 reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2 BLOCKED (Akamai), snapshots running (goalies 4x, lineups, refs).
 
 *Older window notes, the 10-08 scoreboard, the build history and the 10-19 calendar moved to `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md` (2026-11-04, operator: "edit the Active Queue cus it's too large right now").*
@@ -85,6 +85,7 @@ architecture is built, the applied factors so far are ones the market already pr
 | 110.2 | engine · 3 | NBA: the 9 "interpreted" factors → applied through the tree (D5b NBA 5 → ?) | 🔄 Parts A+B module + 11 known-answer tests pushed on branch session/20261111T052932Z-w110-2-nba-applied @1ff8145 (no PR yet); Part C (held-out 2025-26 scoring, ablation) next | — |
 | 110.3 | trees · 5 | Every registered cell routed (ride / fade / momentum / pot of gold / no-bet), horizon depth, orders OFF | ⏳ pasted? | — |
 | 110.4 | quant · 4 | Same-game correlation from the NBA engine (game lines + props), checked on settled games | ⏳ pasted? | — |
+| 110.5 | proof + trees | RETRO-ROUTE: every logged shadow row + archived price through ride / fade / momentum / no bet, per leaf, held out | ⏳ pasted? | — |
 
 
 **ADDENDUM 2026-11-11 ~05:45 UTC (operator 21:35 PT) - applies to 110.1, 110.2, 110.3. If you already pasted them, paste this into those three
@@ -220,6 +221,43 @@ PART C (~30 min) - the market
 
 Report: per COMMON RULES. MEASURE MOVED: B4 parlay families - groundwork only; joint calibration per leg-pair type. Operator decisions: none.
 END OF BLOCK 110.4
+```
+
+### 110.5 - PROOF + TREES (RETRO-ROUTE: EVERY LOGGED ROW THROUGH THE MULTI-ARM TREE) - added 2026-11-11 ~06:15 UTC (operator 21:56 PT "Yes give me the next block")
+
+```
+WAVE 110 - BLOCK 110.5 - PROOF + TREES - RETRO-ROUTE: EVERY SHADOW ROW AND ARCHIVED PRICE THROUGH RIDE / FADE / MOMENTUM / NO BET
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line, then read
+02_ARCHITECTURE_DESIGN/DOCTRINE.md (sections 1 and 1b) - they bind this block. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_5.md.
+Every part runs on data that exists now. File ownership: NEW 12_EXPLORATORY/retro_route/ + NEW quant/ functions + tests. READ-ONLY:
+decision_trees/, the shadow ledgers, the price archive, 110.1 / 110.2 filter functions (use them if merged; stub if not).
+
+PURPOSE: D6 / PROOF. Operator 2026-11-10: "the amount of substantive pooling data we could've had if we just had the CONCEPT of ride the
+wave from the beginning". Every shadow arm has logged, per row, our probability, the market's bid / ask, time to start and the cell, and
+the archive holds the prices; outcomes have settled. None of it was ever scored by ARM. Score it now: for every logged row, what riding
+the market's side, fading it, following the move, or skipping would have netted after costs - per leaf. Language: a leaf that loses on an
+arm is ROUTED away from that arm, never "no edge" (DOCTRINE.md 1b).
+
+PART A (~45 min) - the pooled table
+1. One table: every shadow row (NFL, NBA, NHL, MLB incl. postseason) and archived snapshot with settlement joined: cell, band, time to
+   start, market mid / bid / ask, move since open and last hour, ladder gap, our p, outcome. Dedupe so each (market, decision time) counts
+   once; cluster ids per game. Inventory: rows, games, date range per sport and family.
+
+PART B (~55 min) - every arm, every leaf
+1. Arms per row at the taker price (exact fee, quant/money.py; 106.2 spread): RIDE = buy the market's favoured side; FADE = buy the other
+   side (and the model-disagreement fade, model_p > price + cost); MOMENTUM = follow the last move; NO BET = 0.
+2. Leaves = market state (price band, time to start, move, book) x the factor filters available (110.1 / 110.2 if merged; rest, pace,
+   availability, refs from the existing stores). Fit on earlier 70% by date, held-out 30%; game-clustered intervals; Holm / BH across
+   leaves; minimum n per leaf stated before looking.
+
+PART C (~30 min) - the routing table
+1. 12_EXPLORATORY/retro_route/ROUTING.md: plain English first - for each family, which leaves go to ride, fade, momentum or no bet, with
+   held-out net per contract, interval and n. Leaves that hold up held out are written as pre-registration DRAFTS (forward test, judged n)
+   for the window - nothing goes live, no cell status changes. Feed D6: which cells now have layers 1-5.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 layers 1-5 per cell; leaves routed per family; pre-registration drafts N. Operator decisions: none.
+END OF BLOCK 110.5
 ```
 
 ---

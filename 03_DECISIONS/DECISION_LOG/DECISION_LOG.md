@@ -3389,3 +3389,13 @@ ARCHITECTURE_OVERVIEW, DECISION_ROUTING, COVERAGE_TARGET_MATRIX, EXECUTION_BANDS
 00_ADMIN/README; status.md and strategic-handoff.md updated; scripts/doctrine_freshness.py in the session-start scan.
 Not done in this pass (registered): the BODIES of STRATEGY_OVERVIEW (1,132 lines) and ARCHITECTURE_OVERVIEW are not rewritten - the banner
 makes DOCTRINE.md win; a terminal block rewrites them (backlog).
+
+## 2026-11-10 21:56 PT — Operator: no "no edge" talk; we are far from beating the market (SW-9)
+Verbatim: "Yes give me the next block - and fix any body texts on our doctrine files that are stale and could be harmful. I literally do not
+want a single fucking chance of you or any window coming up to me talking about "no edge" bc we can't beat the fucking market we are SO FAR
+AWAY from anything that will be ready to beat the market - for fucks sake we can't even tell which PG's shoot better in the mid range with
+2 minutes left when their lineup is filled with defensive players against a team ranked #4 in defensive rating but #22 in perimeter
+shooting + #16 in clutch defensive rating. WE ARE SO FAR AWAY."
+Effect: DOCTRINE.md §1b (words we use: routing result, never "no edge" / blocked / ruled out; RULED_OUT only for untradeable markets);
+body fixes in CLAUDE.md (north star line, edge condition, efficiency gradient), STRATEGY_OVERVIEW (Strategy 0 governs A-J; A = fade arm),
+COVERAGE_TARGET_MATRIX, PREGAME_FEATURE_ARCHITECTURE; visual dashboard wording; sitrep edge line and D6 row. Block 110.5 (retro-route).

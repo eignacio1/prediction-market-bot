@@ -29,6 +29,16 @@ Everything else below (edge taxonomy, PDTP analysis, Strategy B–K designs, ris
 
 ---
 
+## Strategy 0 — the multi-arm router governs Strategies A–J (2026-11-11, ADR-0077 — read before any strategy below)
+
+The strategies below were written as separate ways to beat the market. Under the operator's doctrine they are **arms and inputs of one
+layered tree** that routes every market: **ride the market** (back its side at its price where the tree says the favourite is underpriced),
+**fade** (Strategy A's `model_p > market + vig` is this arm's entry rule), **momentum** (Strategy J), **pot of gold** (Strategy F's
+longshots and parlays), or **no bet**. Strategies B (data aggregation), D (mean reversion), E (line shopping) and G (Kelly sizing) are
+layers the tree uses (filters, entry timing, execution, sizing). A strategy that does not beat the market is not abandoned: its leaves are
+routed to the arm that wins there. Confidence scores below are pre-2026-11 and score each strategy as a stand-alone beat-the-market bet;
+read them as history. Binding text: `DOCTRINE.md`.
+
 ## Band Assignment Registry
 
 **Source of truth:** `src/prediction_market_bot/execution_bands.py` — `BAND_REGISTRY`. This table is machine-generated from `BAND_REGISTRY.all_specs()` and must stay in sync with the code. Any band status change requires a DECISION_LOG entry (see CHANGE_CONTROL.md — Band Assignment Changes).
@@ -211,7 +221,7 @@ Each activated strategy needs a leading indicator tracked by C7:
 
 ---
 
-## Strategy A — Machine Learning +EV (Price Discrepancy)
+## Strategy A — Machine Learning +EV (Price Discrepancy) — the FADE arm of the router (Strategy 0)
 
 **Classification:** Type 1 — Model Edge
 **Status:** ✅ ACTIVE (paper trading; BOT_C4_ACTIVE blocked until G6)

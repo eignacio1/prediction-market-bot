@@ -59,7 +59,7 @@ Rows are market families confirmed to exist on Kalshi by Phase 0 (ticker-verifie
 - **Player props hold liquidity in-play** — which is why the one live cell is T4, and it is the right cell for that family.
 - **GAME_TOTAL and RUN_LINE failed the depth gate 3/3 pre-slate.** Provisional, not settled, but a real signal.
 
-**So the deliverable is not "25 cells." It is: enumerate the matrix, mark each cell plausible / implausible / unknown on liquidity and model grounds, and drive coverage against the plausible set.** A cell ruled out on measured depth is a completed cell, not a gap.
+**So the deliverable is not "25 cells." It is: enumerate the matrix, mark each cell plausible / implausible / unknown on liquidity and model grounds, and drive coverage against the plausible set.** A cell ruled out on measured depth (the market cannot be traded at all) is a completed cell, not a gap. A cell whose model does not beat the market is NOT ruled out: it is routed to its best arm (ride / no bet) under ADR-0077.
 
 ## The strategic tension nobody has adjudicated
 
