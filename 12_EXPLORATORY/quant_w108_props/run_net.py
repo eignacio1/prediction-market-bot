@@ -6,6 +6,8 @@ from collections import defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "src"))
 from prediction_market_bot.quant import props_candles as P  # noqa: E402
+sys.path.insert(0, os.path.dirname(HERE))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant.props_calib import time_split, MIN_GAMES  # noqa: E402
 from prediction_market_bot.quant.money import fee_rate  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
@@ -106,7 +108,7 @@ def main():
             c[name + "_adj"] = rr.get("p_adj", rr.get("q"))
     out.update(cells=cells, cost=cost, n_rows=len(rows), n_tested=len(tested),
                holm_wins=[c for c in tested if c.get("holm")], bh_wins=[c for c in tested if c.get("bh")])
-    json.dump(out, open(sys.argv[2], "w"), indent=1)
+    json.dump(out, open(safe_out(sys.argv[2]), "w"), indent=1)
     print("rows", len(rows), "cells", len(cells), "tested", len(tested), "holm", len(out["holm_wins"]), "bh", len(out["bh_wins"]))
 
 main()
