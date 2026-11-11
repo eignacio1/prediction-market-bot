@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W110.2 post-merge PR 475 (58c1cb1): confirm box deploy; no service imports changed"
