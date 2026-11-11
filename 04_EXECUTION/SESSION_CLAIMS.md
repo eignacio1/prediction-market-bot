@@ -1226,3 +1226,4 @@
 | 2026-11-10T06:11:20Z | W108.5 | CLOSED — merge confirmed, HEAD (32fe1a0) is ancestor of origin/main — partial; PR #458 open, box reads and Part C not run |
 | 2026-11-10T06:11:35Z | W108.5 | CORRECTION: prior CLOSED row was checked against main's own HEAD. Work is PARTIAL: PR #458 (branch session/20261110T054159Z-w108-5-dashboard-stale) is OPEN and UNMERGED; box reads and Part C not run. See SESSION_HANDOFF_20261110T0610Z_W108_5.md. |
 | 2026-11-11T00:39:01Z | TBD | W109.1 NBA betting architecture 4/8->8/8 (B-066); pillar DEPTH D5(a)/(b) NBA; deliverable: 4 NBA modules + one applied path |
+| 2026-11-11T00:39:22Z | GG-TBD | STANDARD — NBA player props priced from the NBA engine + shadow cells + pre-reg + runner (B-070) — FOR B4 props families logging / B1 — W109.3 |
