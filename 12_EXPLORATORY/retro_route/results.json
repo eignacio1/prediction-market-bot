@@ -1,0 +1,10252 @@
+{
+ "route": {
+  "leaves": [
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 64,
+    "fit_games": 22,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.011732812500000014,
+      64
+     ],
+     "FADE": [
+      -0.05186718750000001,
+      64
+     ],
+     "MODEL_FADE": [
+      -0.023971186440677972,
+      59
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 73,
+    "fit_games": 22,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.09105479452054792,
+      73
+     ],
+     "FADE": [
+      0.04710821917808219,
+      73
+     ],
+     "MODEL_FADE": [
+      0.027272727272727282,
+      66
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 98,
+    "fit_games": 22,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.04353163265306124,
+      98
+     ],
+     "FADE": [
+      -0.0839908163265306,
+      98
+     ],
+     "MODEL_FADE": [
+      -0.06919733333333333,
+      75
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 15,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 15,
+    "fit_games": 11,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 29,
+    "fit_games": 14,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 18,
+    "fit_games": 11,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 16,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 30,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 16,
+    "fit_games": 11,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 27,
+    "fit_games": 15,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 8,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 47,
+    "fit_games": 19,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 20,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 19,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 26,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 20,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 19,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 33,
+    "fit_games": 13,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 29,
+    "fit_games": 15,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 35,
+    "fit_games": 18,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_GAME_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 32,
+    "fit_games": 20,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 22,
+    "fit_games": 22,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 9,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 7,
+    "fit_games": 7,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 6,
+    "fit_games": 6,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 14,
+    "fit_games": 14,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_MONEYLINE",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 17,
+    "fit_games": 17,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 66,
+    "fit_games": 22,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.05900000000000003,
+      66
+     ],
+     "FADE": [
+      -0.08883636363636363,
+      66
+     ],
+     "MODEL_FADE": [
+      -0.11717272727272729,
+      55
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 49,
+    "fit_games": 22,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 6,
+    "fit_games": 6,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 8,
+    "fit_games": 8,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 19,
+    "fit_games": 15,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 19,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 4,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 24,
+    "fit_games": 18,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 19,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 11,
+    "fit_games": 8,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 11,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 13,
+    "fit_games": 13,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 9,
+    "fit_games": 6,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 35,
+    "fit_games": 21,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 22,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 5,
+    "fit_games": 5,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 32,
+    "fit_games": 20,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_RUN_LINE",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 10,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 88,
+    "fit_games": 22,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.001009090909090899,
+      88
+     ],
+     "FADE": [
+      -0.05440795454545453,
+      88
+     ],
+     "MODEL_FADE": [
+      -0.03590119047619049,
+      84
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 109,
+    "fit_games": 22,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.015042201834862398,
+      109
+     ],
+     "FADE": [
+      -0.09099174311926608,
+      109
+     ],
+     "MODEL_FADE": [
+      -0.022997802197802206,
+      91
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 111,
+    "fit_games": 22,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02843513513513512,
+      111
+     ],
+     "FADE": [
+      -0.05991621621621619,
+      111
+     ],
+     "MODEL_FADE": [
+      -0.05590963855421688,
+      83
+     ]
+    },
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 19,
+    "fit_games": 11,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 18,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 8,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 42,
+    "fit_games": 20,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 26,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 19,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 9,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 50,
+    "fit_games": 19,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 39,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 26,
+    "fit_games": 14,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 11,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 41,
+    "fit_games": 17,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 19,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 29,
+    "fit_games": 15,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 39,
+    "fit_games": 17,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 39,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 24,
+    "fit_games": 14,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 38,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 49,
+    "fit_games": 18,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 41,
+    "fit_games": 20,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "MLB",
+     "MLB_TEAM_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 30,
+    "fit_games": 15,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 628,
+    "fit_games": 86,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.10976703821656049,
+      628
+     ],
+     "FADE": [
+      -0.12489203821656036,
+      628
+     ],
+     "MODEL_FADE": [
+      -0.03130969529085866,
+      361
+     ]
+    },
+    "test_rows": 488,
+    "test_games": 67,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 1085,
+    "fit_games": 83,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.11489382488479352,
+      1085
+     ],
+     "FADE": [
+      -0.1470837788018435,
+      1085
+     ],
+     "MODEL_FADE": [
+      -0.030571542553191475,
+      376
+     ]
+    },
+    "test_rows": 707,
+    "test_games": 67,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 781,
+    "fit_games": 71,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.044286555697823186,
+      781
+     ],
+     "FADE": [
+      -0.04250332906530098,
+      781
+     ],
+     "MODEL_FADE": [
+      0.0016353080568720809,
+      422
+     ]
+    },
+    "test_rows": 748,
+    "test_games": 64,
+    "test_mean": -0.004548259860788865,
+    "test_lo": -0.05469354838709677,
+    "test_hi": 0.05023198198198196,
+    "test_p": 0.5627186406796602,
+    "test_n": 431,
+    "test_n_games": 52,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 309,
+    "fit_games": 61,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.004216181229773477,
+      309
+     ],
+     "FADE": [
+      -0.04457669902912619,
+      309
+     ],
+     "MODEL_FADE": [
+      -0.014908791208791166,
+      273
+     ],
+     "MOMENTUM": [
+      0.05482491909385116,
+      309
+     ]
+    },
+    "test_rows": 184,
+    "test_games": 37,
+    "test_mean": 0.08996902173913042,
+    "test_lo": -0.049117837837837866,
+    "test_hi": 0.2158426966292135,
+    "test_p": 0.14442778610694654,
+    "test_n": 184,
+    "test_n_games": 37,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 36,
+    "fit_games": 20,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 18,
+    "test_games": 12,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 7,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 223,
+    "fit_games": 51,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.018702690582959564,
+      223
+     ],
+     "FADE": [
+      -0.030808071748878913,
+      223
+     ],
+     "MODEL_FADE": [
+      -0.10527159763313601,
+      169
+     ],
+     "MOMENTUM": [
+      -0.06095515695067259,
+      223
+     ]
+    },
+    "test_rows": 145,
+    "test_games": 33,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 360,
+    "fit_games": 67,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.009297499999999986,
+      360
+     ],
+     "FADE": [
+      -0.0377602777777778,
+      360
+     ],
+     "MODEL_FADE": [
+      -0.031098275862069008,
+      290
+     ],
+     "MOMENTUM": [
+      0.010481944444444445,
+      360
+     ]
+    },
+    "test_rows": 188,
+    "test_games": 37,
+    "test_mean": 0.008412234042553176,
+    "test_lo": -0.1099418367346939,
+    "test_hi": 0.12612459016393443,
+    "test_p": 0.4472763618190905,
+    "test_n": 188,
+    "test_n_games": 37,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 57,
+    "fit_games": 38,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 42,
+    "test_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 8,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 266,
+    "fit_games": 63,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0680233082706767,
+      266
+     ],
+     "FADE": [
+      0.021714285714285696,
+      266
+     ],
+     "MODEL_FADE": [
+      -0.05294360189573461,
+      211
+     ],
+     "MOMENTUM": [
+      -0.1072372180451127,
+      266
+     ]
+    },
+    "test_rows": 193,
+    "test_games": 34,
+    "test_mean": -0.009316062176165802,
+    "test_lo": -0.08242146892655368,
+    "test_hi": 0.06483350515463918,
+    "test_p": 0.5812093953023488,
+    "test_n": 193,
+    "test_n_games": 34,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 559,
+    "fit_games": 74,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.017755098389982113,
+      559
+     ],
+     "FADE": [
+      -0.056842397137746206,
+      559
+     ],
+     "MODEL_FADE": [
+      -0.05849742268041241,
+      388
+     ],
+     "MOMENTUM": [
+      0.011258855098390001,
+      559
+     ]
+    },
+    "test_rows": 274,
+    "test_games": 41,
+    "test_mean": -0.051344525547445244,
+    "test_lo": -0.13120787671232875,
+    "test_hi": 0.021030711610486898,
+    "test_p": 0.8555722138930535,
+    "test_n": 274,
+    "test_n_games": 41,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 116,
+    "fit_games": 43,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.04596120689655169,
+      116
+     ],
+     "FADE": [
+      0.009237068965517249,
+      116
+     ],
+     "MODEL_FADE": [
+      0.06915733333333333,
+      75
+     ]
+    },
+    "test_rows": 101,
+    "test_games": 33,
+    "test_mean": -0.01183492063492063,
+    "test_lo": -0.044026315789473684,
+    "test_hi": 0.030913461538461532,
+    "test_p": 0.7171414292853573,
+    "test_n": 63,
+    "test_n_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 14,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 494,
+    "fit_games": 66,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07994959514170043,
+      494
+     ],
+     "FADE": [
+      0.04430829959514169,
+      494
+     ],
+     "MODEL_FADE": [
+      0.00470562500000001,
+      320
+     ],
+     "MOMENTUM": [
+      -0.0749188259109311,
+      494
+     ]
+    },
+    "test_rows": 354,
+    "test_games": 43,
+    "test_mean": -0.03957062146892653,
+    "test_lo": -0.08660087976539589,
+    "test_hi": 0.010157103825136618,
+    "test_p": 0.9110444777611194,
+    "test_n": 354,
+    "test_n_games": 43,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 249,
+    "fit_games": 56,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.01287831325301206,
+      249
+     ],
+     "FADE": [
+      -0.03341244979919679,
+      249
+     ],
+     "MODEL_FADE": [
+      -0.09616888888888893,
+      225
+     ],
+     "MOMENTUM": [
+      0.04870763052208838,
+      249
+     ]
+    },
+    "test_rows": 173,
+    "test_games": 36,
+    "test_mean": 0.006308670520231207,
+    "test_lo": -0.13572452830188683,
+    "test_hi": 0.1428243093922652,
+    "test_p": 0.48225887056471767,
+    "test_n": 173,
+    "test_n_games": 36,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 82,
+    "fit_games": 35,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.014454878048780463,
+      82
+     ],
+     "FADE": [
+      -0.06017926829268292,
+      82
+     ],
+     "MODEL_FADE": [
+      0.0021529411764705754,
+      51
+     ]
+    },
+    "test_rows": 36,
+    "test_games": 17,
+    "test_mean": 0.03943888888888885,
+    "test_lo": -0.10291578947368421,
+    "test_hi": 0.19054848484848486,
+    "test_p": 0.33183408295852074,
+    "test_n": 36,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 4,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 163,
+    "fit_games": 40,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.009528834355828223,
+      163
+     ],
+     "FADE": [
+      -0.036585276073619624,
+      163
+     ],
+     "MODEL_FADE": [
+      0.08379624060150379,
+      133
+     ],
+     "MOMENTUM": [
+      -0.0469546012269938,
+      163
+     ]
+    },
+    "test_rows": 94,
+    "test_games": 25,
+    "test_mean": -0.13577882352941173,
+    "test_lo": -0.3144773333333334,
+    "test_hi": 0.04735476190476191,
+    "test_p": 0.8985507246376812,
+    "test_n": 85,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 304,
+    "fit_games": 61,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07336875000000002,
+      304
+     ],
+     "FADE": [
+      0.03243059210526312,
+      304
+     ],
+     "MODEL_FADE": [
+      -0.02837822878228786,
+      271
+     ],
+     "MOMENTUM": [
+      0.04251184210526313,
+      304
+     ]
+    },
+    "test_rows": 208,
+    "test_games": 37,
+    "test_mean": -0.07368028846153843,
+    "test_lo": -0.1765398104265402,
+    "test_hi": 0.03245841121495329,
+    "test_p": 0.8810594702648675,
+    "test_n": 208,
+    "test_n_games": 37,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 127,
+    "fit_games": 44,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.010985826771653565,
+      127
+     ],
+     "FADE": [
+      -0.05147165354330719,
+      127
+     ],
+     "MODEL_FADE": [
+      -0.0006699999999999906,
+      100
+     ]
+    },
+    "test_rows": 45,
+    "test_games": 17,
+    "test_mean": -0.01016888888888888,
+    "test_lo": -0.1352369565217391,
+    "test_hi": 0.10988979591836738,
+    "test_p": 0.5582208895552224,
+    "test_n": 45,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     3,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 180,
+    "fit_games": 43,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.074993888888889,
+      180
+     ],
+     "FADE": [
+      0.03403666666666663,
+      180
+     ],
+     "MODEL_FADE": [
+      0.031772519083969476,
+      131
+     ],
+     "MOMENTUM": [
+      -0.07281833333333332,
+      180
+     ]
+    },
+    "test_rows": 119,
+    "test_games": 26,
+    "test_mean": 0.029448739495798324,
+    "test_lo": -0.05744666666666667,
+    "test_hi": 0.10395193798449613,
+    "test_p": 0.2783608195902049,
+    "test_n": 119,
+    "test_n_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 546,
+    "fit_games": 71,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.007294871794871797,
+      546
+     ],
+     "FADE": [
+      -0.03673040293040298,
+      546
+     ],
+     "MODEL_FADE": [
+      -0.01500470852017939,
+      446
+     ],
+     "MOMENTUM": [
+      0.03450512820512821,
+      546
+     ]
+    },
+    "test_rows": 349,
+    "test_games": 43,
+    "test_mean": -0.08430143266475644,
+    "test_lo": -0.14795136476426804,
+    "test_hi": -0.02569917582417581,
+    "test_p": 0.9940029985007496,
+    "test_n": 349,
+    "test_n_games": 43,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 292,
+    "fit_games": 60,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.027343493150684916,
+      292
+     ],
+     "FADE": [
+      -0.0016369863013698594,
+      292
+     ],
+     "MODEL_FADE": [
+      0.026927567567567572,
+      185
+     ]
+    },
+    "test_rows": 138,
+    "test_games": 31,
+    "test_mean": 0.04645221238938054,
+    "test_lo": -0.02165789473684209,
+    "test_hi": 0.1224,
+    "test_p": 0.17191404297851073,
+    "test_n": 113,
+    "test_n_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     4,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_GAME_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 234,
+    "fit_games": 50,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.026885897435897442,
+      234
+     ],
+     "FADE": [
+      -0.000762820512820517,
+      234
+     ],
+     "MODEL_FADE": [
+      -0.02920350877192981,
+      171
+     ],
+     "MOMENTUM": [
+      -0.030390598290598307,
+      234
+     ]
+    },
+    "test_rows": 201,
+    "test_games": 30,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 45,
+    "fit_games": 45,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 30,
+    "test_games": 30,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 32,
+    "fit_games": 32,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 25,
+    "test_games": 25,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 10,
+    "fit_games": 10,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 12,
+    "test_games": 12,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 16,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 12,
+    "test_games": 12,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 11,
+    "fit_games": 11,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 15,
+    "fit_games": 15,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 11,
+    "test_games": 11,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 9,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 8,
+    "test_games": 8,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 21,
+    "fit_games": 21,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 19,
+    "test_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 9,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 9,
+    "test_games": 9,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 12,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 8,
+    "test_games": 8,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 17,
+    "fit_games": 17,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 10,
+    "test_games": 10,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 16,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 10,
+    "test_games": 10,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 10,
+    "fit_games": 10,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 7,
+    "test_games": 7,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 14,
+    "fit_games": 14,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 5,
+    "test_games": 5,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     3,
+     "na"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 5,
+    "fit_games": 5,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 8,
+    "test_games": 8,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 6,
+    "fit_games": 6,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_MONEYLINE",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 800,
+    "fit_games": 86,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07477074999999983,
+      800
+     ],
+     "FADE": [
+      -0.0736071250000001,
+      800
+     ],
+     "MODEL_FADE": [
+      -0.08628051948051943,
+      616
+     ]
+    },
+    "test_rows": 589,
+    "test_games": 67,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 696,
+    "fit_games": 86,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07045229885057455,
+      696
+     ],
+     "FADE": [
+      -0.08267931034482777,
+      696
+     ],
+     "MODEL_FADE": [
+      -0.0880082627118644,
+      472
+     ]
+    },
+    "test_rows": 537,
+    "test_games": 67,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 1339,
+    "fit_games": 84,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.04861986557132181,
+      1339
+     ],
+     "FADE": [
+      -0.04702247946228524,
+      1339
+     ],
+     "MODEL_FADE": [
+      -0.05295160427807486,
+      748
+     ]
+    },
+    "test_rows": 992,
+    "test_games": 67,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 255,
+    "fit_games": 63,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.027709411764705906,
+      255
+     ],
+     "FADE": [
+      -0.019865098039215694,
+      255
+     ],
+     "MODEL_FADE": [
+      -0.18212863436123355,
+      227
+     ],
+     "MOMENTUM": [
+      -0.0025227450980391196,
+      255
+     ]
+    },
+    "test_rows": 174,
+    "test_games": 42,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 84,
+    "fit_games": 39,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07293214285714289,
+      84
+     ],
+     "FADE": [
+      0.024182142857142867,
+      84
+     ],
+     "MODEL_FADE": [
+      -0.12156323529411767,
+      68
+     ]
+    },
+    "test_rows": 35,
+    "test_games": 23,
+    "test_mean": 0.09142857142857143,
+    "test_lo": -0.045628205128205104,
+    "test_hi": 0.23315,
+    "test_p": 0.1344327836081959,
+    "test_n": 35,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 8,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 418,
+    "fit_games": 78,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.007197129186602834,
+      418
+     ],
+     "FADE": [
+      -0.03992870813397125,
+      418
+     ],
+     "MODEL_FADE": [
+      -0.04184654255319136,
+      376
+     ],
+     "MOMENTUM": [
+      0.03842966507177041,
+      418
+     ]
+    },
+    "test_rows": 344,
+    "test_games": 59,
+    "test_mean": 0.04541598837209303,
+    "test_lo": -0.050640992167101814,
+    "test_hi": 0.13594337349397592,
+    "test_p": 0.2128935532233883,
+    "test_n": 344,
+    "test_n_games": 59,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 268,
+    "fit_games": 75,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.06614925373134328,
+      268
+     ],
+     "FADE": [
+      0.02252910447761192,
+      268
+     ],
+     "MODEL_FADE": [
+      -0.10508663793103447,
+      232
+     ],
+     "MOMENTUM": [
+      -0.028432835820895515,
+      268
+     ]
+    },
+    "test_rows": 181,
+    "test_games": 49,
+    "test_mean": 0.050801104972375694,
+    "test_lo": -0.0457841584158416,
+    "test_hi": 0.14605301204819282,
+    "test_p": 0.18690654672663667,
+    "test_n": 181,
+    "test_n_games": 49,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 84,
+    "fit_games": 40,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0179488095238095,
+      84
+     ],
+     "FADE": [
+      -0.025700000000000008,
+      84
+     ],
+     "MODEL_FADE": [
+      -0.10187464788732395,
+      71
+     ]
+    },
+    "test_rows": 38,
+    "test_games": 25,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 8,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 319,
+    "fit_games": 81,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.004203761755485917,
+      319
+     ],
+     "FADE": [
+      -0.046984639498432616,
+      319
+     ],
+     "MODEL_FADE": [
+      -0.06371543624161073,
+      298
+     ],
+     "MOMENTUM": [
+      0.03495736677115984,
+      319
+     ]
+    },
+    "test_rows": 275,
+    "test_games": 62,
+    "test_mean": 0.004069090909090928,
+    "test_lo": -0.062269858156028375,
+    "test_hi": 0.06886833976833975,
+    "test_p": 0.46276861569215394,
+    "test_n": 275,
+    "test_n_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 801,
+    "fit_games": 81,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.03685892634207255,
+      801
+     ],
+     "FADE": [
+      0.0047787765293383294,
+      801
+     ],
+     "MODEL_FADE": [
+      -0.03002654109589042,
+      584
+     ],
+     "MOMENTUM": [
+      -0.03528813982521862,
+      801
+     ]
+    },
+    "test_rows": 430,
+    "test_games": 56,
+    "test_mean": -0.01883953488372093,
+    "test_lo": -0.05553251833740834,
+    "test_hi": 0.022543697478991594,
+    "test_p": 0.7811094452773614,
+    "test_n": 430,
+    "test_n_games": 56,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 277,
+    "fit_games": 63,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0056447653429602665,
+      277
+     ],
+     "FADE": [
+      -0.025489169675090247,
+      277
+     ],
+     "MODEL_FADE": [
+      -0.03421137440758293,
+      211
+     ]
+    },
+    "test_rows": 224,
+    "test_games": 55,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 17,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 43,
+    "test_games": 33,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 326,
+    "fit_games": 69,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.028292944785276098,
+      326
+     ],
+     "FADE": [
+      -0.004767791411042954,
+      326
+     ],
+     "MODEL_FADE": [
+      -0.03924907063197026,
+      269
+     ],
+     "MOMENTUM": [
+      0.006123312883435579,
+      326
+     ]
+    },
+    "test_rows": 334,
+    "test_games": 56,
+    "test_mean": -0.014160778443113763,
+    "test_lo": -0.056937391304347815,
+    "test_hi": 0.03699579831932774,
+    "test_p": 0.7021489255372314,
+    "test_n": 334,
+    "test_n_games": 56,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 299,
+    "fit_games": 70,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.01884046822742477,
+      299
+     ],
+     "FADE": [
+      -0.02699966555183948,
+      299
+     ],
+     "MODEL_FADE": [
+      -0.1743548387096774,
+      279
+     ],
+     "MOMENTUM": [
+      -0.03845016722408024,
+      299
+     ]
+    },
+    "test_rows": 143,
+    "test_games": 34,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 153,
+    "fit_games": 52,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.036115686274509826,
+      153
+     ],
+     "FADE": [
+      -0.009301960784313716,
+      153
+     ],
+     "MODEL_FADE": [
+      0.009773571428571454,
+      140
+     ]
+    },
+    "test_rows": 57,
+    "test_games": 27,
+    "test_mean": 0.041573913043478246,
+    "test_lo": -0.15003999999999995,
+    "test_hi": 0.2182403846153846,
+    "test_p": 0.3468265867066467,
+    "test_n": 46,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 282,
+    "fit_games": 64,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.018031914893617045,
+      282
+     ],
+     "FADE": [
+      -0.028634397163120558,
+      282
+     ],
+     "MODEL_FADE": [
+      -0.025049790794979005,
+      239
+     ],
+     "MOMENTUM": [
+      -0.033099290780141795,
+      282
+     ]
+    },
+    "test_rows": 244,
+    "test_games": 44,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 216,
+    "fit_games": 68,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05275648148148147,
+      216
+     ],
+     "FADE": [
+      0.011197222222222213,
+      216
+     ],
+     "MODEL_FADE": [
+      -0.12631599999999998,
+      200
+     ],
+     "MOMENTUM": [
+      -0.058366666666666636,
+      216
+     ]
+    },
+    "test_rows": 120,
+    "test_games": 43,
+    "test_mean": 0.059227499999999995,
+    "test_lo": -0.06303680000000002,
+    "test_hi": 0.18845793650793655,
+    "test_p": 0.22988505747126436,
+    "test_n": 120,
+    "test_n_games": 43,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 171,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.016320467836257298,
+      171
+     ],
+     "FADE": [
+      -0.023321637426900615,
+      171
+     ],
+     "MODEL_FADE": [
+      -0.025783536585365863,
+      164
+     ]
+    },
+    "test_rows": 72,
+    "test_games": 31,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 252,
+    "fit_games": 78,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.04414642857142858,
+      252
+     ],
+     "FADE": [
+      0.0031011904761904675,
+      252
+     ],
+     "MODEL_FADE": [
+      -0.0699977578475336,
+      223
+     ],
+     "MOMENTUM": [
+      0.016558333333333296,
+      252
+     ]
+    },
+    "test_rows": 199,
+    "test_games": 52,
+    "test_mean": 0.005290452261306542,
+    "test_lo": -0.08122880434782606,
+    "test_hi": 0.09057015706806285,
+    "test_p": 0.4682658670664668,
+    "test_n": 199,
+    "test_n_games": 52,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 340,
+    "fit_games": 79,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.023828823529411763,
+      340
+     ],
+     "FADE": [
+      -0.004466470588235269,
+      340
+     ],
+     "MODEL_FADE": [
+      -0.08661865671641791,
+      268
+     ],
+     "MOMENTUM": [
+      -0.027069411764705866,
+      340
+     ]
+    },
+    "test_rows": 306,
+    "test_games": 52,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 614,
+    "fit_games": 83,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.03391384364820855,
+      614
+     ],
+     "FADE": [
+      0.0069729641693811115,
+      614
+     ],
+     "MODEL_FADE": [
+      -0.015579713114754104,
+      488
+     ]
+    },
+    "test_rows": 274,
+    "test_games": 48,
+    "test_mean": 0.00248759124087591,
+    "test_lo": -0.0441282142857143,
+    "test_hi": 0.05466796874999998,
+    "test_p": 0.4942528735632184,
+    "test_n": 274,
+    "test_n_games": 48,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     4,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 20,
+    "test_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_SPREAD",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 391,
+    "fit_games": 78,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.01464424552429669,
+      391
+     ],
+     "FADE": [
+      -0.014600255754475714,
+      391
+     ],
+     "MODEL_FADE": [
+      -0.04263593750000001,
+      320
+     ],
+     "MOMENTUM": [
+      -0.00843631713554989,
+      391
+     ]
+    },
+    "test_rows": 253,
+    "test_games": 51,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 893,
+    "fit_games": 85,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.11800011198208255,
+      893
+     ],
+     "FADE": [
+      -0.16956069428891393,
+      893
+     ],
+     "MODEL_FADE": [
+      -0.029711089108910856,
+      505
+     ]
+    },
+    "test_rows": 685,
+    "test_games": 67,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 1322,
+    "fit_games": 83,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.1327049167927373,
+      1322
+     ],
+     "FADE": [
+      -0.13578139183056023,
+      1322
+     ],
+     "MODEL_FADE": [
+      -0.06877073170731701,
+      492
+     ]
+    },
+    "test_rows": 841,
+    "test_games": 66,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 961,
+    "fit_games": 75,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05020239334027074,
+      961
+     ],
+     "FADE": [
+      -0.12259365244536977,
+      961
+     ],
+     "MODEL_FADE": [
+      -0.029606923076923076,
+      260
+     ]
+    },
+    "test_rows": 1020,
+    "test_games": 66,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 338,
+    "fit_games": 58,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.038744970414201094,
+      338
+     ],
+     "FADE": [
+      -0.01666656804733725,
+      338
+     ],
+     "MODEL_FADE": [
+      -0.061536059479553866,
+      269
+     ],
+     "MOMENTUM": [
+      0.02057810650887577,
+      338
+     ]
+    },
+    "test_rows": 166,
+    "test_games": 30,
+    "test_mean": -0.07164638554216866,
+    "test_lo": -0.1933644578313253,
+    "test_hi": 0.04637191780821919,
+    "test_p": 0.8570714642678661,
+    "test_n": 166,
+    "test_n_games": 30,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 51,
+    "fit_games": 24,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 36,
+    "test_games": 20,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 20,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 292,
+    "fit_games": 56,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.00028938356164384844,
+      292
+     ],
+     "FADE": [
+      -0.05347910958904115,
+      292
+     ],
+     "MODEL_FADE": [
+      -0.049824999999999994,
+      252
+     ],
+     "MOMENTUM": [
+      -0.02653047945205475,
+      292
+     ]
+    },
+    "test_rows": 183,
+    "test_games": 31,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 348,
+    "fit_games": 66,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.029519252873563204,
+      348
+     ],
+     "FADE": [
+      -0.026706034482758614,
+      348
+     ],
+     "MODEL_FADE": [
+      -0.042757915057915076,
+      259
+     ],
+     "MOMENTUM": [
+      9.080459770114436e-05,
+      348
+     ]
+    },
+    "test_rows": 192,
+    "test_games": 34,
+    "test_mean": -0.008325520833333327,
+    "test_lo": -0.1090248888888889,
+    "test_hi": 0.08665105263157895,
+    "test_p": 0.545727136431784,
+    "test_n": 192,
+    "test_n_games": 34,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 97,
+    "fit_games": 49,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05325979381443304,
+      97
+     ],
+     "FADE": [
+      -0.006250515463917518,
+      97
+     ],
+     "MODEL_FADE": [
+      -0.08625774647887326,
+      71
+     ]
+    },
+    "test_rows": 43,
+    "test_games": 25,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 23,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 369,
+    "fit_games": 63,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.04279593495934962,
+      369
+     ],
+     "FADE": [
+      -0.016024390243902457,
+      369
+     ],
+     "MODEL_FADE": [
+      -0.022557377049180354,
+      305
+     ],
+     "MOMENTUM": [
+      -0.042079403794037934,
+      369
+     ]
+    },
+    "test_rows": 201,
+    "test_games": 33,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 539,
+    "fit_games": 74,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.02491855287569566,
+      539
+     ],
+     "FADE": [
+      -0.08084267161409991,
+      539
+     ],
+     "MODEL_FADE": [
+      -0.041441736694677864,
+      357
+     ],
+     "MOMENTUM": [
+      0.01101558441558437,
+      539
+     ]
+    },
+    "test_rows": 299,
+    "test_games": 40,
+    "test_mean": -0.05876187290969901,
+    "test_lo": -0.11679657142857144,
+    "test_hi": 0.0029287671232876896,
+    "test_p": 0.9435282358820589,
+    "test_n": 299,
+    "test_n_games": 40,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 103,
+    "fit_games": 38,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.03826116504854366,
+      103
+     ],
+     "FADE": [
+      -0.02555631067961171,
+      103
+     ],
+     "MODEL_FADE": [
+      -0.0172706896551724,
+      58
+     ]
+    },
+    "test_rows": 117,
+    "test_games": 33,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 76,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 663,
+    "fit_games": 74,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0763273001508296,
+      663
+     ],
+     "FADE": [
+      0.020208898944193,
+      663
+     ],
+     "MODEL_FADE": [
+      -0.018630266343825676,
+      413
+     ],
+     "MOMENTUM": [
+      -0.06801538461538464,
+      663
+     ]
+    },
+    "test_rows": 349,
+    "test_games": 36,
+    "test_mean": -0.08484641833810887,
+    "test_lo": -0.1249303225806451,
+    "test_hi": -0.04150461095100864,
+    "test_p": 0.9995002498750625,
+    "test_n": 349,
+    "test_n_games": 36,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 296,
+    "fit_games": 63,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.03323581081081074,
+      296
+     ],
+     "FADE": [
+      -0.022179729729729716,
+      296
+     ],
+     "MODEL_FADE": [
+      -0.05062366412213741,
+      262
+     ],
+     "MOMENTUM": [
+      0.0037749999999999984,
+      296
+     ]
+    },
+    "test_rows": 183,
+    "test_games": 38,
+    "test_mean": -0.06366775956284151,
+    "test_lo": -0.19060691489361706,
+    "test_hi": 0.06199127906976745,
+    "test_p": 0.783608195902049,
+    "test_n": 183,
+    "test_n_games": 38,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 110,
+    "fit_games": 47,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.050735454545454514,
+      110
+     ],
+     "FADE": [
+      -0.09959272727272729,
+      110
+     ],
+     "MODEL_FADE": [
+      -0.032852688172042996,
+      93
+     ]
+    },
+    "test_rows": 46,
+    "test_games": 21,
+    "test_mean": -0.08073043478260869,
+    "test_lo": -0.19392264150943397,
+    "test_hi": 0.04382115384615384,
+    "test_p": 0.8615692153923038,
+    "test_n": 46,
+    "test_n_games": 21,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 200,
+    "fit_games": 53,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02257700000000001,
+      200
+     ],
+     "FADE": [
+      -0.039678,
+      200
+     ],
+     "MODEL_FADE": [
+      -0.12874534161490678,
+      161
+     ],
+     "MOMENTUM": [
+      0.007121000000000015,
+      200
+     ]
+    },
+    "test_rows": 156,
+    "test_games": 35,
+    "test_mean": 0.038353205128205135,
+    "test_lo": -0.07112897727272728,
+    "test_hi": 0.1507138364779874,
+    "test_p": 0.30684657671164417,
+    "test_n": 156,
+    "test_n_games": 35,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 336,
+    "fit_games": 60,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0020782738095238254,
+      336
+     ],
+     "FADE": [
+      -0.0504735119047619,
+      336
+     ],
+     "MODEL_FADE": [
+      -0.043113087248322156,
+      298
+     ],
+     "MOMENTUM": [
+      -0.03887499999999998,
+      336
+     ]
+    },
+    "test_rows": 235,
+    "test_games": 42,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 144,
+    "fit_games": 50,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.028942361111111155,
+      144
+     ],
+     "FADE": [
+      -0.01819652777777778,
+      144
+     ],
+     "MODEL_FADE": [
+      0.04940916666666665,
+      120
+     ]
+    },
+    "test_rows": 75,
+    "test_games": 29,
+    "test_mean": -0.004229508196721315,
+    "test_lo": -0.13007166666666667,
+    "test_hi": 0.13855932203389834,
+    "test_p": 0.5017491254372813,
+    "test_n": 61,
+    "test_n_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     3,
+     "na"
+    ],
+    "fit_rows": 5,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 260,
+    "fit_games": 55,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.04115153846153853,
+      260
+     ],
+     "FADE": [
+      -0.015418846153846142,
+      260
+     ],
+     "MODEL_FADE": [
+      -0.06946551724137935,
+      203
+     ],
+     "MOMENTUM": [
+      -0.04250730769230773,
+      260
+     ]
+    },
+    "test_rows": 145,
+    "test_games": 37,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 560,
+    "fit_games": 66,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.029678214285714353,
+      560
+     ],
+     "FADE": [
+      -0.012499107142857152,
+      560
+     ],
+     "MODEL_FADE": [
+      -0.04199675174013923,
+      431
+     ],
+     "MOMENTUM": [
+      -0.0019235714285714312,
+      560
+     ]
+    },
+    "test_rows": 372,
+    "test_games": 44,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 302,
+    "fit_games": 62,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.008443708609271504,
+      302
+     ],
+     "FADE": [
+      -0.02936589403973512,
+      302
+     ],
+     "MODEL_FADE": [
+      -0.017260444444444436,
+      225
+     ]
+    },
+    "test_rows": 181,
+    "test_games": 37,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     4,
+     "na"
+    ],
+    "fit_rows": 9,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NBA",
+     "NBA_TEAM_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 425,
+    "fit_games": 58,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.022408705882352952,
+      425
+     ],
+     "FADE": [
+      -0.025453647058823532,
+      425
+     ],
+     "MODEL_FADE": [
+      -0.03394527027027026,
+      296
+     ],
+     "MOMENTUM": [
+      -0.0845564705882353,
+      425
+     ]
+    },
+    "test_rows": 270,
+    "test_games": 42,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 421,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.017086935866983184,
+      421
+     ],
+     "FADE": [
+      -0.02828408551068883,
+      421
+     ],
+     "MODEL_FADE": [
+      -0.09057698863636356,
+      352
+     ]
+    },
+    "test_rows": 195,
+    "test_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 241,
+    "fit_games": 59,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05031369294605809,
+      241
+     ],
+     "FADE": [
+      0.010153112033195008,
+      241
+     ],
+     "MODEL_FADE": [
+      -0.0723990049751244,
+      201
+     ]
+    },
+    "test_rows": 114,
+    "test_games": 28,
+    "test_mean": -0.05774122807017543,
+    "test_lo": -0.12857094017094012,
+    "test_hi": 0.016433928571428575,
+    "test_p": 0.9035482258870565,
+    "test_n": 114,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 459,
+    "fit_games": 59,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.009062309368191716,
+      459
+     ],
+     "FADE": [
+      -0.03584793028322453,
+      459
+     ],
+     "MODEL_FADE": [
+      -0.017367441860465082,
+      344
+     ]
+    },
+    "test_rows": 223,
+    "test_games": 28,
+    "test_mean": -0.058816143497757836,
+    "test_lo": -0.13243167420814475,
+    "test_hi": 0.006088646288209621,
+    "test_p": 0.9270364817591205,
+    "test_n": 223,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 129,
+    "fit_games": 36,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.02954961240310077,
+      129
+     ],
+     "FADE": [
+      -0.07411705426356584,
+      129
+     ],
+     "MODEL_FADE": [
+      0.014139252336448603,
+      107
+     ],
+     "MOMENTUM": [
+      0.0009829457364340889,
+      129
+     ]
+    },
+    "test_rows": 70,
+    "test_games": 23,
+    "test_mean": 0.011528571428571416,
+    "test_lo": -0.08442602739726028,
+    "test_hi": 0.09173488372093024,
+    "test_p": 0.4197901049475262,
+    "test_n": 70,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 163,
+    "fit_games": 48,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05268711656441723,
+      163
+     ],
+     "FADE": [
+      0.00820490797546014,
+      163
+     ],
+     "MODEL_FADE": [
+      -0.1473082089552238,
+      134
+     ]
+    },
+    "test_rows": 59,
+    "test_games": 20,
+    "test_mean": 0.002505084745762716,
+    "test_lo": -0.08661111111111112,
+    "test_hi": 0.08549692307692307,
+    "test_p": 0.4867566216891554,
+    "test_n": 59,
+    "test_n_games": 20,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 123,
+    "fit_games": 42,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.03254227642276423,
+      123
+     ],
+     "FADE": [
+      -0.012322764227642278,
+      123
+     ],
+     "MODEL_FADE": [
+      -0.1181749999999999,
+      108
+     ],
+     "MOMENTUM": [
+      -0.05298861788617883,
+      123
+     ]
+    },
+    "test_rows": 67,
+    "test_games": 21,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 86,
+    "fit_games": 38,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02310930232558139,
+      86
+     ],
+     "FADE": [
+      -0.015674418604651165,
+      86
+     ],
+     "MODEL_FADE": [
+      -0.06371857142857143,
+      70
+     ],
+     "MOMENTUM": [
+      -0.042697674418604656,
+      86
+     ]
+    },
+    "test_rows": 43,
+    "test_games": 20,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 83,
+    "fit_games": 40,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0541722891566265,
+      83
+     ],
+     "FADE": [
+      0.015856626506024082,
+      83
+     ],
+     "MODEL_FADE": [
+      -0.06936666666666667,
+      66
+     ]
+    },
+    "test_rows": 37,
+    "test_games": 22,
+    "test_mean": -0.1068135135135135,
+    "test_lo": -0.21184324324324327,
+    "test_hi": 0.0012953488372092912,
+    "test_p": 0.9470264867566217,
+    "test_n": 37,
+    "test_n_games": 22,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 75,
+    "fit_games": 34,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.041059999999999985,
+      75
+     ],
+     "FADE": [
+      0.001488000000000005,
+      75
+     ],
+     "MODEL_FADE": [
+      -0.058820289855072455,
+      69
+     ],
+     "MOMENTUM": [
+      -0.08699599999999999,
+      75
+     ]
+    },
+    "test_rows": 31,
+    "test_games": 17,
+    "test_mean": -0.0619290322580645,
+    "test_lo": -0.18813636363636366,
+    "test_hi": 0.04612727272727273,
+    "test_p": 0.8310844577711144,
+    "test_n": 31,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 117,
+    "fit_games": 45,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.004777777777777763,
+      117
+     ],
+     "FADE": [
+      -0.021845299145299143,
+      117
+     ],
+     "MODEL_FADE": [
+      -0.09728837209302323,
+      86
+     ],
+     "MOMENTUM": [
+      -0.007641025641025628,
+      117
+     ]
+    },
+    "test_rows": 85,
+    "test_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 227,
+    "fit_games": 55,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.02039823788546255,
+      227
+     ],
+     "FADE": [
+      -0.04380704845814979,
+      227
+     ],
+     "MODEL_FADE": [
+      -0.012078409090909091,
+      176
+     ]
+    },
+    "test_rows": 83,
+    "test_games": 25,
+    "test_mean": -0.09348313253012046,
+    "test_lo": -0.19085749999999993,
+    "test_hi": -0.004359090909090904,
+    "test_p": 0.9575212393803099,
+    "test_n": 83,
+    "test_n_games": 25,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 118,
+    "fit_games": 44,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.019554237288135615,
+      118
+     ],
+     "FADE": [
+      -0.005244067796610159,
+      118
+     ],
+     "MODEL_FADE": [
+      0.038192391304347824,
+      92
+     ],
+     "MOMENTUM": [
+      -0.06512118644067796,
+      118
+     ]
+    },
+    "test_rows": 57,
+    "test_games": 25,
+    "test_mean": -0.05557959183673468,
+    "test_lo": -0.1486609756097561,
+    "test_hi": 0.029003278688524595,
+    "test_p": 0.8505747126436781,
+    "test_n": 49,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 106,
+    "fit_games": 30,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.045502830188679115,
+      106
+     ],
+     "FADE": [
+      0.0011858490566038263,
+      106
+     ],
+     "MODEL_FADE": [
+      -0.06588172043010748,
+      93
+     ],
+     "MOMENTUM": [
+      -0.13167641509433956,
+      106
+     ]
+    },
+    "test_rows": 36,
+    "test_games": 9,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 186,
+    "fit_games": 46,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.02479623655913975,
+      186
+     ],
+     "FADE": [
+      -0.06911021505376348,
+      186
+     ],
+     "MODEL_FADE": [
+      -0.05515987261146491,
+      157
+     ]
+    },
+    "test_rows": 40,
+    "test_games": 14,
+    "test_mean": -0.04277750000000001,
+    "test_lo": -0.18014827586206897,
+    "test_hi": 0.10115897435897434,
+    "test_p": 0.6976511744127936,
+    "test_n": 40,
+    "test_n_games": 14,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 124,
+    "fit_games": 36,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0586491935483871,
+      124
+     ],
+     "FADE": [
+      0.014246774193548391,
+      124
+     ],
+     "MODEL_FADE": [
+      -0.16725294117647052,
+      119
+     ],
+     "MOMENTUM": [
+      0.09510403225806464,
+      124
+     ]
+    },
+    "test_rows": 42,
+    "test_games": 13,
+    "test_mean": -0.03450952380952382,
+    "test_lo": -0.2464377777777777,
+    "test_hi": 0.18389999999999995,
+    "test_p": 0.5897051474262869,
+    "test_n": 42,
+    "test_n_games": 13,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 62,
+    "fit_games": 34,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.021967741935483853,
+      62
+     ],
+     "FADE": [
+      -0.01635645161290323,
+      62
+     ],
+     "MODEL_FADE": [
+      -0.051467999999999986,
+      50
+     ],
+     "MOMENTUM": [
+      -0.07273870967741936,
+      62
+     ]
+    },
+    "test_rows": 24,
+    "test_games": 11,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 115,
+    "fit_games": 50,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.029158260869565206,
+      115
+     ],
+     "FADE": [
+      -0.008788695652173911,
+      115
+     ],
+     "MODEL_FADE": [
+      -0.037245000000000104,
+      100
+     ]
+    },
+    "test_rows": 26,
+    "test_games": 12,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 67,
+    "fit_games": 31,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07551194029850744,
+      67
+     ],
+     "FADE": [
+      0.03710895522388061,
+      67
+     ],
+     "MODEL_FADE": [
+      -0.07821803278688524,
+      61
+     ],
+     "MOMENTUM": [
+      0.012982089552238799,
+      67
+     ]
+    },
+    "test_rows": 28,
+    "test_games": 11,
+    "test_mean": -0.11402857142857144,
+    "test_lo": -0.2501869565217391,
+    "test_hi": 0.03495416666666668,
+    "test_p": 0.896551724137931,
+    "test_n": 28,
+    "test_n_games": 11,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 96,
+    "fit_games": 32,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      5.833333333333385e-05,
+      96
+     ],
+     "FADE": [
+      -0.02510312499999999,
+      96
+     ],
+     "MODEL_FADE": [
+      0.008241791044776127,
+      67
+     ],
+     "MOMENTUM": [
+      0.021220833333333338,
+      96
+     ]
+    },
+    "test_rows": 47,
+    "test_games": 15,
+    "test_mean": -0.0071829787234042606,
+    "test_lo": -0.08995000000000002,
+    "test_hi": 0.09351052631578949,
+    "test_p": 0.55872063968016,
+    "test_n": 47,
+    "test_n_games": 15,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 280,
+    "fit_games": 59,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.001486785714285708,
+      280
+     ],
+     "FADE": [
+      -0.021068214285714294,
+      280
+     ],
+     "MODEL_FADE": [
+      0.003453636363636366,
+      220
+     ]
+    },
+    "test_rows": 56,
+    "test_games": 16,
+    "test_mean": -0.10859400000000001,
+    "test_lo": -0.22171724137931037,
+    "test_hi": 0.02664749999999999,
+    "test_p": 0.9005497251374313,
+    "test_n": 50,
+    "test_n_games": 16,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_GAME_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 85,
+    "fit_games": 34,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.021910588235294102,
+      85
+     ],
+     "FADE": [
+      -0.04689058823529414,
+      85
+     ],
+     "MODEL_FADE": [
+      -0.08516619718309859,
+      71
+     ],
+     "MOMENTUM": [
+      -0.05548117647058823,
+      85
+     ]
+    },
+    "test_rows": 60,
+    "test_games": 17,
+    "test_mean": -0.03917166666666665,
+    "test_lo": -0.1454,
+    "test_hi": 0.05125882352941177,
+    "test_p": 0.7256371814092953,
+    "test_n": 60,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 37,
+    "fit_games": 37,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 13,
+    "test_games": 13,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 18,
+    "fit_games": 18,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 11,
+    "test_games": 11,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 7,
+    "fit_games": 7,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 25,
+    "fit_games": 25,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 6,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 14,
+    "fit_games": 14,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 6,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 27,
+    "fit_games": 27,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 5,
+    "test_games": 5,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 6,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 9,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 7,
+    "test_games": 7,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 5,
+    "fit_games": 5,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_MONEYLINE",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 399,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.011324310776942377,
+      399
+     ],
+     "FADE": [
+      -0.0332952380952381,
+      399
+     ],
+     "MODEL_FADE": [
+      -0.08923983286908074,
+      359
+     ]
+    },
+    "test_rows": 187,
+    "test_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 474,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.01976645569620253,
+      474
+     ],
+     "FADE": [
+      -0.01909957805907173,
+      474
+     ],
+     "MODEL_FADE": [
+      -0.05889776674937969,
+      403
+     ]
+    },
+    "test_rows": 215,
+    "test_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 624,
+    "fit_games": 59,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.02284182692307688,
+      624
+     ],
+     "FADE": [
+      -0.05078205128205141,
+      624
+     ],
+     "MODEL_FADE": [
+      -0.032206704980842916,
+      522
+     ]
+    },
+    "test_rows": 314,
+    "test_games": 28,
+    "test_mean": -0.003944267515923554,
+    "test_lo": -0.05514402730375425,
+    "test_hi": 0.04227629179331308,
+    "test_p": 0.5482258870564718,
+    "test_n": 314,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 127,
+    "fit_games": 45,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.06802283464566929,
+      127
+     ],
+     "FADE": [
+      0.023672440944881894,
+      127
+     ],
+     "MODEL_FADE": [
+      -0.08645137614678902,
+      109
+     ],
+     "MOMENTUM": [
+      -0.05120629921259845,
+      127
+     ]
+    },
+    "test_rows": 70,
+    "test_games": 24,
+    "test_mean": -0.05989428571428571,
+    "test_lo": -0.15310740740740741,
+    "test_hi": 0.03188301886792454,
+    "test_p": 0.8565717141429285,
+    "test_n": 70,
+    "test_n_games": 24,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 172,
+    "fit_games": 48,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.00025697674418603724,
+      172
+     ],
+     "FADE": [
+      -0.044327325581395335,
+      172
+     ],
+     "MODEL_FADE": [
+      -0.08521500000000001,
+      160
+     ]
+    },
+    "test_rows": 57,
+    "test_games": 23,
+    "test_mean": -0.12383684210526316,
+    "test_lo": -0.2360796875,
+    "test_hi": -0.019028571428571447,
+    "test_p": 0.9760119940029985,
+    "test_n": 57,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 106,
+    "fit_games": 39,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0001849056603773706,
+      106
+     ],
+     "FADE": [
+      -0.04397735849056601,
+      106
+     ],
+     "MODEL_FADE": [
+      -0.11516847826086954,
+      92
+     ],
+     "MOMENTUM": [
+      -0.04677075471698106,
+      106
+     ]
+    },
+    "test_rows": 62,
+    "test_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 136,
+    "fit_games": 49,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07016544117647061,
+      136
+     ],
+     "FADE": [
+      0.03214191176470585,
+      136
+     ],
+     "MODEL_FADE": [
+      -0.02350089285714285,
+      112
+     ],
+     "MOMENTUM": [
+      -0.020131617647058838,
+      136
+     ]
+    },
+    "test_rows": 65,
+    "test_games": 26,
+    "test_mean": 0.0373169230769231,
+    "test_lo": -0.0821843137254902,
+    "test_hi": 0.15272727272727274,
+    "test_p": 0.2958520739630185,
+    "test_n": 65,
+    "test_n_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 208,
+    "fit_games": 55,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.027172596153846155,
+      208
+     ],
+     "FADE": [
+      -0.06455865384615388,
+      208
+     ],
+     "MODEL_FADE": [
+      -0.05207322404371589,
+      183
+     ]
+    },
+    "test_rows": 71,
+    "test_games": 25,
+    "test_mean": -0.012145070422535206,
+    "test_lo": -0.0949939393939394,
+    "test_hi": 0.07872739726027397,
+    "test_p": 0.5822088955522239,
+    "test_n": 71,
+    "test_n_games": 25,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 129,
+    "fit_games": 49,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02637596899224804,
+      129
+     ],
+     "FADE": [
+      -0.01192248062015508,
+      129
+     ],
+     "MODEL_FADE": [
+      -0.11611944444444441,
+      108
+     ],
+     "MOMENTUM": [
+      -0.033986821705426384,
+      129
+     ]
+    },
+    "test_rows": 82,
+    "test_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 181,
+    "fit_games": 51,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.040966298342541424,
+      181
+     ],
+     "FADE": [
+      -0.06600055248618782,
+      181
+     ],
+     "MODEL_FADE": [
+      -0.055306849315068504,
+      146
+     ],
+     "MOMENTUM": [
+      0.03902983425414363,
+      181
+     ]
+    },
+    "test_rows": 91,
+    "test_games": 27,
+    "test_mean": -0.055135164835164834,
+    "test_lo": -0.17547977528089886,
+    "test_hi": 0.04131960784313727,
+    "test_p": 0.7851074462768616,
+    "test_n": 91,
+    "test_n_games": 27,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 310,
+    "fit_games": 56,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.03469677419354838,
+      310
+     ],
+     "FADE": [
+      -0.05988935483870971,
+      310
+     ],
+     "MODEL_FADE": [
+      -0.03045940959409596,
+      271
+     ]
+    },
+    "test_rows": 126,
+    "test_games": 28,
+    "test_mean": -0.017743650793650777,
+    "test_lo": -0.08090281690140845,
+    "test_hi": 0.03875000000000001,
+    "test_p": 0.6626686656671664,
+    "test_n": 126,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 128,
+    "fit_games": 47,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02051953124999999,
+      128
+     ],
+     "FADE": [
+      -0.005460156250000001,
+      128
+     ],
+     "MODEL_FADE": [
+      -0.04749519230769233,
+      104
+     ],
+     "MOMENTUM": [
+      -0.005460156250000001,
+      128
+     ]
+    },
+    "test_rows": 92,
+    "test_games": 27,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 108,
+    "fit_games": 38,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.07821296296296322,
+      108
+     ],
+     "FADE": [
+      -0.12245277777777783,
+      108
+     ],
+     "MODEL_FADE": [
+      -0.09237666666666668,
+      90
+     ],
+     "MOMENTUM": [
+      0.02521111111111112,
+      108
+     ]
+    },
+    "test_rows": 43,
+    "test_games": 15,
+    "test_mean": -0.07265348837209304,
+    "test_lo": -0.1952534482758621,
+    "test_hi": 0.06802903225806446,
+    "test_p": 0.8135932033983009,
+    "test_n": 43,
+    "test_n_games": 15,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 229,
+    "fit_games": 49,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.060450655021833846,
+      229
+     ],
+     "FADE": [
+      0.01655196506550221,
+      229
+     ],
+     "MODEL_FADE": [
+      -0.13707303921568625,
+      204
+     ]
+    },
+    "test_rows": 67,
+    "test_games": 22,
+    "test_mean": -0.013186567164179088,
+    "test_lo": -0.09119538461538461,
+    "test_hi": 0.062231578947368436,
+    "test_p": 0.6331834082958521,
+    "test_n": 67,
+    "test_n_games": 22,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 70,
+    "fit_games": 35,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.038975714285714315,
+      70
+     ],
+     "FADE": [
+      -0.005218571428571413,
+      70
+     ],
+     "MODEL_FADE": [
+      -0.042431147540983594,
+      61
+     ],
+     "MOMENTUM": [
+      -0.07032571428571431,
+      70
+     ]
+    },
+    "test_rows": 60,
+    "test_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 103,
+    "fit_games": 43,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.032878640776699046,
+      103
+     ],
+     "FADE": [
+      -0.0711388349514564,
+      103
+     ],
+     "MODEL_FADE": [
+      -0.11048735632183913,
+      87
+     ],
+     "MOMENTUM": [
+      0.028091262135922366,
+      103
+     ]
+    },
+    "test_rows": 45,
+    "test_games": 17,
+    "test_mean": 0.033213333333333345,
+    "test_lo": -0.0915742857142857,
+    "test_hi": 0.15021250000000003,
+    "test_p": 0.2898550724637681,
+    "test_n": 45,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 293,
+    "fit_games": 57,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.027336177474402756,
+      293
+     ],
+     "FADE": [
+      -0.010024232081911296,
+      293
+     ],
+     "MODEL_FADE": [
+      -0.06706337448559674,
+      243
+     ]
+    },
+    "test_rows": 107,
+    "test_games": 25,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 68,
+    "fit_games": 36,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0720882352941176,
+      68
+     ],
+     "FADE": [
+      0.03434705882352941,
+      68
+     ],
+     "MODEL_FADE": [
+      0.0405983870967742,
+      62
+     ],
+     "MOMENTUM": [
+      -0.07765000000000001,
+      68
+     ]
+    },
+    "test_rows": 54,
+    "test_games": 22,
+    "test_mean": -0.053708695652173906,
+    "test_lo": -0.17287749999999996,
+    "test_hi": 0.08586938775510204,
+    "test_p": 0.7666166916541729,
+    "test_n": 46,
+    "test_n_games": 20,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 117,
+    "fit_games": 44,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.033335042735042716,
+      117
+     ],
+     "FADE": [
+      -0.058750427350427355,
+      117
+     ],
+     "MODEL_FADE": [
+      -0.03887300000000002,
+      100
+     ],
+     "MOMENTUM": [
+      0.033335042735042716,
+      117
+     ]
+    },
+    "test_rows": 69,
+    "test_games": 24,
+    "test_mean": 0.029655072463768126,
+    "test_lo": -0.07821014492753625,
+    "test_hi": 0.10583333333333333,
+    "test_p": 0.2703648175912044,
+    "test_n": 69,
+    "test_n_games": 24,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 440,
+    "fit_games": 59,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.027951136363636338,
+      440
+     ],
+     "FADE": [
+      -0.052679090909091036,
+      440
+     ],
+     "MODEL_FADE": [
+      -0.04696937669376693,
+      369
+     ]
+    },
+    "test_rows": 157,
+    "test_games": 26,
+    "test_mean": 0.0012936305732484123,
+    "test_lo": -0.06387612903225807,
+    "test_hi": 0.054519108280254774,
+    "test_p": 0.4782608695652174,
+    "test_n": 157,
+    "test_n_games": 26,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_SPREAD",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 69,
+    "fit_games": 34,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.009513043478260864,
+      69
+     ],
+     "FADE": [
+      -0.016840579710144923,
+      69
+     ],
+     "MODEL_FADE": [
+      -0.05671379310344827,
+      58
+     ],
+     "MOMENTUM": [
+      -0.012052173913043474,
+      69
+     ]
+    },
+    "test_rows": 57,
+    "test_games": 21,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 376,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.001768085106382878,
+      376
+     ],
+     "FADE": [
+      -0.0484851063829786,
+      376
+     ],
+     "MODEL_FADE": [
+      -0.058509584664536714,
+      313
+     ]
+    },
+    "test_rows": 169,
+    "test_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 319,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.021260501567398126,
+      319
+     ],
+     "FADE": [
+      -0.024803761755485904,
+      319
+     ],
+     "MODEL_FADE": [
+      -0.034873540856031136,
+      257
+     ]
+    },
+    "test_rows": 151,
+    "test_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 866,
+    "fit_games": 59,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.007141108545034601,
+      866
+     ],
+     "FADE": [
+      -0.04489018475750584,
+      866
+     ],
+     "MODEL_FADE": [
+      -0.030799427480916016,
+      524
+     ]
+    },
+    "test_rows": 435,
+    "test_games": 28,
+    "test_mean": -0.024647356321839068,
+    "test_lo": -0.05844208144796379,
+    "test_hi": 0.006800681818181829,
+    "test_p": 0.8950524737631185,
+    "test_n": 435,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 131,
+    "fit_games": 42,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.008796946564885473,
+      131
+     ],
+     "FADE": [
+      -0.05497099236641217,
+      131
+     ],
+     "MODEL_FADE": [
+      -0.1091550458715596,
+      109
+     ],
+     "MOMENTUM": [
+      0.029970992366412215,
+      131
+     ]
+    },
+    "test_rows": 78,
+    "test_games": 27,
+    "test_mean": -0.05970256410256413,
+    "test_lo": -0.20732758620689656,
+    "test_hi": 0.0795647058823529,
+    "test_p": 0.769615192403798,
+    "test_n": 78,
+    "test_n_games": 27,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 112,
+    "fit_games": 45,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.0008044642857142666,
+      112
+     ],
+     "FADE": [
+      -0.04599285714285712,
+      112
+     ],
+     "MODEL_FADE": [
+      -0.027639603960396032,
+      101
+     ]
+    },
+    "test_rows": 32,
+    "test_games": 20,
+    "test_mean": -0.012484374999999995,
+    "test_lo": -0.1598111111111111,
+    "test_hi": 0.11509722222222224,
+    "test_p": 0.5822088955522239,
+    "test_n": 32,
+    "test_n_games": 20,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 126,
+    "fit_games": 43,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.022239682539682563,
+      126
+     ],
+     "FADE": [
+      -0.023544444444444423,
+      126
+     ],
+     "MODEL_FADE": [
+      -0.06064220183486239,
+      109
+     ],
+     "MOMENTUM": [
+      0.012640476190476197,
+      126
+     ]
+    },
+    "test_rows": 54,
+    "test_games": 20,
+    "test_mean": 0.04829074074074075,
+    "test_lo": -0.10968367346938775,
+    "test_hi": 0.18736551724137931,
+    "test_p": 0.31334332833583206,
+    "test_n": 54,
+    "test_n_games": 20,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 107,
+    "fit_games": 46,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.021819626168224297,
+      107
+     ],
+     "FADE": [
+      -0.020495327102803742,
+      107
+     ],
+     "MODEL_FADE": [
+      -0.00813414634146341,
+      82
+     ],
+     "MOMENTUM": [
+      0.002839252336448597,
+      107
+     ]
+    },
+    "test_rows": 68,
+    "test_games": 24,
+    "test_mean": 0.034497058823529436,
+    "test_lo": -0.08845232558139532,
+    "test_hi": 0.17170923076923078,
+    "test_p": 0.3213393303348326,
+    "test_n": 68,
+    "test_n_games": 24,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 104,
+    "fit_games": 46,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.027696153846153822,
+      104
+     ],
+     "FADE": [
+      -0.06723076923076926,
+      104
+     ],
+     "MODEL_FADE": [
+      -0.09792333333333332,
+      90
+     ]
+    },
+    "test_rows": 50,
+    "test_games": 23,
+    "test_mean": -0.06656999999999999,
+    "test_lo": -0.14252608695652175,
+    "test_hi": 0.01753142857142856,
+    "test_p": 0.9015492253873063,
+    "test_n": 50,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 110,
+    "fit_games": 41,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.059628181818181795,
+      110
+     ],
+     "FADE": [
+      0.019167272727272717,
+      110
+     ],
+     "MODEL_FADE": [
+      -0.06416923076923077,
+      91
+     ],
+     "MOMENTUM": [
+      0.004318181818181819,
+      110
+     ]
+    },
+    "test_rows": 43,
+    "test_games": 23,
+    "test_mean": -0.01972790697674418,
+    "test_lo": -0.14721086956521737,
+    "test_hi": 0.1556820512820513,
+    "test_p": 0.5757121439280359,
+    "test_n": 43,
+    "test_n_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 269,
+    "fit_games": 54,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.0031591078066914692,
+      269
+     ],
+     "FADE": [
+      -0.03496728624535316,
+      269
+     ],
+     "MODEL_FADE": [
+      -0.03207650273224045,
+      183
+     ],
+     "MOMENTUM": [
+      -0.024208921933085544,
+      269
+     ]
+    },
+    "test_rows": 139,
+    "test_games": 27,
+    "test_mean": -0.007341007194244593,
+    "test_lo": -0.05156482758620688,
+    "test_hi": 0.030381132075471707,
+    "test_p": 0.600199900049975,
+    "test_n": 139,
+    "test_n_games": 27,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 342,
+    "fit_games": 59,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.02595175438596489,
+      342
+     ],
+     "FADE": [
+      -0.05328216374269007,
+      342
+     ],
+     "MODEL_FADE": [
+      -0.04400723404255321,
+      235
+     ]
+    },
+    "test_rows": 189,
+    "test_games": 28,
+    "test_mean": -0.02632962962962962,
+    "test_lo": -0.0658570731707317,
+    "test_hi": 0.010460804020100514,
+    "test_p": 0.8690654672663668,
+    "test_n": 189,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 28,
+    "fit_games": 16,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 255,
+    "fit_games": 57,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.006589411764705865,
+      255
+     ],
+     "FADE": [
+      -0.02094235294117647,
+      255
+     ],
+     "MODEL_FADE": [
+      -0.013657303370786552,
+      178
+     ],
+     "MOMENTUM": [
+      -0.022779215686274532,
+      255
+     ]
+    },
+    "test_rows": 97,
+    "test_games": 27,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 106,
+    "fit_games": 37,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.00670377358490567,
+      106
+     ],
+     "FADE": [
+      -0.052455660377358444,
+      106
+     ],
+     "MODEL_FADE": [
+      -0.08238076923076923,
+      78
+     ],
+     "MOMENTUM": [
+      -0.030416981132075457,
+      106
+     ]
+    },
+    "test_rows": 32,
+    "test_games": 12,
+    "test_mean": 0.03575312499999995,
+    "test_lo": -0.1308769230769231,
+    "test_hi": 0.17979696969696965,
+    "test_p": 0.3373313343328336,
+    "test_n": 32,
+    "test_n_games": 12,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 179,
+    "fit_games": 56,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.024359217877095003,
+      179
+     ],
+     "FADE": [
+      -0.06863966480446936,
+      179
+     ],
+     "MODEL_FADE": [
+      -0.09540662650602409,
+      166
+     ]
+    },
+    "test_rows": 36,
+    "test_games": 14,
+    "test_mean": -0.03181666666666669,
+    "test_lo": -0.17956756756756756,
+    "test_hi": 0.10484285714285713,
+    "test_p": 0.6411794102948526,
+    "test_n": 36,
+    "test_n_games": 14,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 84,
+    "fit_games": 38,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.08012023809523813,
+      84
+     ],
+     "FADE": [
+      0.03465238095238096,
+      84
+     ],
+     "MODEL_FADE": [
+      -0.014453947368421044,
+      76
+     ],
+     "MOMENTUM": [
+      0.01709880952380952,
+      84
+     ]
+    },
+    "test_rows": 35,
+    "test_games": 14,
+    "test_mean": -0.18874,
+    "test_lo": -0.28959487179487176,
+    "test_hi": -0.07864375000000004,
+    "test_p": 0.9900049975012494,
+    "test_n": 35,
+    "test_n_games": 14,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 105,
+    "fit_games": 44,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.01851523809523808,
+      105
+     ],
+     "FADE": [
+      -0.020488571428571425,
+      105
+     ],
+     "MODEL_FADE": [
+      -0.1383333333333334,
+      84
+     ],
+     "MOMENTUM": [
+      -0.03585333333333334,
+      105
+     ]
+    },
+    "test_rows": 39,
+    "test_games": 16,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 143,
+    "fit_games": 51,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.018279720279720264,
+      143
+     ],
+     "FADE": [
+      -0.020236363636363688,
+      143
+     ],
+     "MODEL_FADE": [
+      -0.07954590163934423,
+      122
+     ]
+    },
+    "test_rows": 29,
+    "test_games": 15,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 74,
+    "fit_games": 39,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.03810405405405402,
+      74
+     ],
+     "FADE": [
+      -0.07684594594594599,
+      74
+     ],
+     "MODEL_FADE": [
+      0.04812142857142857,
+      70
+     ],
+     "MOMENTUM": [
+      -0.06027162162162163,
+      74
+     ]
+    },
+    "test_rows": 39,
+    "test_games": 16,
+    "test_mean": -0.1328235294117647,
+    "test_lo": -0.25499166666666667,
+    "test_hi": 0.00565172413793104,
+    "test_p": 0.9440279860069966,
+    "test_n": 34,
+    "test_n_games": 16,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 228,
+    "fit_games": 55,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.0068149122807017615,
+      228
+     ],
+     "FADE": [
+      -0.031909210526315776,
+      228
+     ],
+     "MODEL_FADE": [
+      -0.0657211428571429,
+      175
+     ],
+     "MOMENTUM": [
+      -0.03693947368421057,
+      228
+     ]
+    },
+    "test_rows": 80,
+    "test_games": 19,
+    "test_mean": 0.012312500000000002,
+    "test_lo": -0.05688536585365854,
+    "test_hi": 0.06577019230769232,
+    "test_p": 0.3403298350824588,
+    "test_n": 80,
+    "test_n_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 423,
+    "fit_games": 59,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.015146099290780137,
+      423
+     ],
+     "FADE": [
+      -0.03799007092198581,
+      423
+     ],
+     "MODEL_FADE": [
+      -0.025263725490196096,
+      306
+     ]
+    },
+    "test_rows": 82,
+    "test_games": 17,
+    "test_mean": -0.012741463414634129,
+    "test_lo": -0.06983333333333334,
+    "test_hi": 0.03398437500000002,
+    "test_p": 0.6441779110444777,
+    "test_n": 82,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     4,
+     "na"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NFL",
+     "NFL_TEAM_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 215,
+    "fit_games": 55,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0009311627906976641,
+      215
+     ],
+     "FADE": [
+      -0.02178558139534883,
+      215
+     ],
+     "MODEL_FADE": [
+      0.0183312101910828,
+      157
+     ],
+     "MOMENTUM": [
+      -0.009506511627906973,
+      215
+     ]
+    },
+    "test_rows": 108,
+    "test_games": 19,
+    "test_mean": -0.029434666666666668,
+    "test_lo": -0.0659734375,
+    "test_hi": 0.008694871794871792,
+    "test_p": 0.904047976011994,
+    "test_n": 75,
+    "test_n_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     2,
+     "down"
+    ],
+    "fit_rows": 2,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 5,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     2,
+     "flat"
+    ],
+    "fit_rows": 3,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 570,
+    "fit_games": 189,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.07381596491228067,
+      570
+     ],
+     "FADE": [
+      -0.3590349122807024,
+      570
+     ],
+     "MODEL_FADE": [
+      -0.055619354838709695,
+      155
+     ]
+    },
+    "test_rows": 346,
+    "test_games": 66,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     2,
+     "up"
+    ],
+    "fit_rows": 3,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 7,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     3,
+     "down"
+    ],
+    "fit_rows": 3,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 6,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     3,
+     "flat"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 526,
+    "fit_games": 186,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.09402319391634976,
+      526
+     ],
+     "FADE": [
+      -0.21492794676806065,
+      526
+     ],
+     "MODEL_FADE": [
+      -0.018181818181818177,
+      110
+     ]
+    },
+    "test_rows": 221,
+    "test_games": 66,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     3,
+     "up"
+    ],
+    "fit_rows": 4,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     4,
+     "down"
+    ],
+    "fit_rows": 8,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 11,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 605,
+    "fit_games": 179,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.043713884297520766,
+      605
+     ],
+     "FADE": [
+      -0.16758595041322355,
+      605
+     ],
+     "MODEL_FADE": [
+      0.006593037974683562,
+      158
+     ]
+    },
+    "test_rows": 27,
+    "test_games": 14,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T1",
+     4,
+     "up"
+    ],
+    "fit_rows": 12,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 19,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 305,
+    "fit_games": 147,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02166524590163932,
+      305
+     ],
+     "FADE": [
+      -0.024585573770491777,
+      305
+     ],
+     "MODEL_FADE": [
+      -0.0026959514170039477,
+      247
+     ],
+     "MOMENTUM": [
+      0.00932852459016403,
+      305
+     ]
+    },
+    "test_rows": 57,
+    "test_games": 39,
+    "test_mean": -0.0855578947368421,
+    "test_lo": -0.22282641509433965,
+    "test_hi": 0.05690357142857142,
+    "test_p": 0.8320839580209896,
+    "test_n": 57,
+    "test_n_games": 39,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 2159,
+    "fit_games": 190,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.0020722556739231892,
+      2159
+     ],
+     "FADE": [
+      -0.047241639647984994,
+      2159
+     ],
+     "MODEL_FADE": [
+      -0.046789048672566474,
+      1808
+     ]
+    },
+    "test_rows": 728,
+    "test_games": 62,
+    "test_mean": -0.06270439560439561,
+    "test_lo": -0.11461632373113857,
+    "test_hi": -0.010256657608695657,
+    "test_p": 0.9770114942528736,
+    "test_n": 728,
+    "test_n_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 24,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 359,
+    "fit_games": 156,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.029023955431754875,
+      359
+     ],
+     "FADE": [
+      -0.07553119777158772,
+      359
+     ],
+     "MODEL_FADE": [
+      -0.09394514106583074,
+      319
+     ],
+     "MOMENTUM": [
+      0.037798885793871924,
+      359
+     ]
+    },
+    "test_rows": 137,
+    "test_games": 57,
+    "test_mean": -0.05095255474452553,
+    "test_lo": -0.16656689655172413,
+    "test_hi": 0.06752522522522528,
+    "test_p": 0.7591204397801099,
+    "test_n": 137,
+    "test_n_games": 57,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 298,
+    "fit_games": 150,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.010566107382550333,
+      298
+     ],
+     "FADE": [
+      -0.029877852348993345,
+      298
+     ],
+     "MODEL_FADE": [
+      -0.03923514644351463,
+      239
+     ],
+     "MOMENTUM": [
+      -0.033749664429530195,
+      298
+     ]
+    },
+    "test_rows": 88,
+    "test_games": 48,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 2054,
+    "fit_games": 188,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.044669474196689166,
+      2054
+     ],
+     "FADE": [
+      0.006037585199610638,
+      2054
+     ],
+     "MODEL_FADE": [
+      -0.01950557863501477,
+      1685
+     ]
+    },
+    "test_rows": 656,
+    "test_games": 62,
+    "test_mean": -0.004049237804878036,
+    "test_lo": -0.06936054628224582,
+    "test_hi": 0.06107585185185186,
+    "test_p": 0.5637181409295352,
+    "test_n": 656,
+    "test_n_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 23,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 360,
+    "fit_games": 160,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.015855833333333257,
+      360
+     ],
+     "FADE": [
+      -0.055680555555555435,
+      360
+     ],
+     "MODEL_FADE": [
+      -0.01756045751633985,
+      306
+     ],
+     "MOMENTUM": [
+      0.0030822222222221898,
+      360
+     ]
+    },
+    "test_rows": 130,
+    "test_games": 58,
+    "test_mean": 0.011867692307692301,
+    "test_lo": -0.06751774193548384,
+    "test_hi": 0.08528167938931294,
+    "test_p": 0.37681159420289856,
+    "test_n": 130,
+    "test_n_games": 58,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 737,
+    "fit_games": 189,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.004171641791044773,
+      737
+     ],
+     "FADE": [
+      -0.03561723202170973,
+      737
+     ],
+     "MODEL_FADE": [
+      0.003439644970414205,
+      507
+     ],
+     "MOMENTUM": [
+      -0.0028272727272727243,
+      737
+     ]
+    },
+    "test_rows": 205,
+    "test_games": 62,
+    "test_mean": -0.006480487804878047,
+    "test_lo": -0.058942666666666685,
+    "test_hi": 0.0416825,
+    "test_p": 0.5397301349325337,
+    "test_n": 205,
+    "test_n_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 5757,
+    "fit_games": 188,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.014099009900989811,
+      5757
+     ],
+     "FADE": [
+      -0.03862978982108755,
+      5757
+     ],
+     "MODEL_FADE": [
+      -0.017719743837602782,
+      4138
+     ]
+    },
+    "test_rows": 1899,
+    "test_games": 62,
+    "test_mean": 0.010133280674038979,
+    "test_lo": -0.013776756471209708,
+    "test_hi": 0.034348057259713724,
+    "test_p": 0.23138430784607697,
+    "test_n": 1899,
+    "test_n_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 61,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 941,
+    "fit_games": 191,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.00974431455897972,
+      941
+     ],
+     "FADE": [
+      -0.034291285866099905,
+      941
+     ],
+     "MODEL_FADE": [
+      -0.025159971098265867,
+      692
+     ],
+     "MOMENTUM": [
+      0.0021888416578108257,
+      941
+     ]
+    },
+    "test_rows": 328,
+    "test_games": 62,
+    "test_mean": 0.002318292682926834,
+    "test_lo": -0.03267724358974361,
+    "test_hi": 0.03533993710691824,
+    "test_p": 0.41829085457271364,
+    "test_n": 328,
+    "test_n_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 103,
+    "fit_games": 76,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.008638834951456328,
+      103
+     ],
+     "FADE": [
+      -0.03649417475728153,
+      103
+     ],
+     "MODEL_FADE": [
+      -0.08807469879518072,
+      83
+     ],
+     "MOMENTUM": [
+      -0.03926893203883497,
+      103
+     ]
+    },
+    "test_rows": 29,
+    "test_games": 24,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 1249,
+    "fit_games": 196,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.0068289031224979535,
+      1249
+     ],
+     "FADE": [
+      -0.037721216973578796,
+      1249
+     ],
+     "MODEL_FADE": [
+      -0.03735140913508259,
+      1029
+     ]
+    },
+    "test_rows": 355,
+    "test_games": 64,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 132,
+    "fit_games": 99,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.01883409090909093,
+      132
+     ],
+     "FADE": [
+      -0.026352272727272728,
+      132
+     ],
+     "MODEL_FADE": [
+      -0.03448083333333333,
+      120
+     ],
+     "MOMENTUM": [
+      -0.0400666666666667,
+      132
+     ]
+    },
+    "test_rows": 78,
+    "test_games": 45,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 105,
+    "fit_games": 87,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.09878000000000002,
+      105
+     ],
+     "FADE": [
+      0.059601904761904766,
+      105
+     ],
+     "MODEL_FADE": [
+      -0.06726091954022993,
+      87
+     ],
+     "MOMENTUM": [
+      -0.07442761904761912,
+      105
+     ]
+    },
+    "test_rows": 38,
+    "test_games": 27,
+    "test_mean": -0.1602921052631579,
+    "test_lo": -0.23748648648648651,
+    "test_hi": -0.07778947368421052,
+    "test_p": 0.9980009995002499,
+    "test_n": 38,
+    "test_n_games": 27,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 1179,
+    "fit_games": 196,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.00924045801526722,
+      1179
+     ],
+     "FADE": [
+      -0.027826547921967808,
+      1179
+     ],
+     "MODEL_FADE": [
+      -0.016066802860061305,
+      979
+     ]
+    },
+    "test_rows": 329,
+    "test_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     3,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 163,
+    "fit_games": 109,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05318834355828221,
+      163
+     ],
+     "FADE": [
+      0.01500858895705523,
+      163
+     ],
+     "MODEL_FADE": [
+      -0.09026330935251795,
+      139
+     ],
+     "MOMENTUM": [
+      0.04093680981595086,
+      163
+     ]
+    },
+    "test_rows": 62,
+    "test_games": 42,
+    "test_mean": 0.03221451612903225,
+    "test_lo": -0.09113384615384616,
+    "test_hi": 0.15282222222222214,
+    "test_p": 0.33483258370814595,
+    "test_n": 62,
+    "test_n_games": 42,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 231,
+    "fit_games": 129,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.017336363636363632,
+      231
+     ],
+     "FADE": [
+      -0.04673160173160169,
+      231
+     ],
+     "MODEL_FADE": [
+      -0.02829451219512196,
+      164
+     ],
+     "MOMENTUM": [
+      -0.0191917748917749,
+      231
+     ]
+    },
+    "test_rows": 84,
+    "test_games": 47,
+    "test_mean": 0.014551190476190483,
+    "test_lo": -0.02765,
+    "test_hi": 0.052447058823529395,
+    "test_p": 0.2613693153423288,
+    "test_n": 84,
+    "test_n_games": 47,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 3333,
+    "fit_games": 196,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.012195559555955967,
+      3333
+     ],
+     "FADE": [
+      -0.03533627362736281,
+      3333
+     ],
+     "MODEL_FADE": [
+      -0.023829293344289293,
+      2434
+     ]
+    },
+    "test_rows": 971,
+    "test_games": 64,
+    "test_mean": 0.02076663233779609,
+    "test_lo": -0.003754807692307688,
+    "test_hi": 0.04119031216361681,
+    "test_p": 0.0769615192403798,
+    "test_n": 971,
+    "test_n_games": 64,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     4,
+     "na"
+    ],
+    "fit_rows": 15,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_GAME_TOTAL",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 294,
+    "fit_games": 156,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      1.7006802721086562e-06,
+      294
+     ],
+     "FADE": [
+      -0.024925510204081597,
+      294
+     ],
+     "MODEL_FADE": [
+      0.001578861788617882,
+      246
+     ],
+     "MOMENTUM": [
+      -0.026409863945578264,
+      294
+     ]
+    },
+    "test_rows": 144,
+    "test_games": 58,
+    "test_mean": 0.056115044247787606,
+    "test_lo": -0.01721130434782609,
+    "test_hi": 0.14188852459016393,
+    "test_p": 0.10844577711144428,
+    "test_n": 113,
+    "test_n_games": 54,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     2,
+     "down"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     2,
+     "flat"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 163,
+    "fit_games": 162,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.008084662576687128,
+      163
+     ],
+     "FADE": [
+      -0.0459220858895705,
+      163
+     ],
+     "MODEL_FADE": [
+      -0.03712857142857142,
+      98
+     ]
+    },
+    "test_rows": 52,
+    "test_games": 52,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     2,
+     "up"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     3,
+     "flat"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 27,
+    "fit_games": 27,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 14,
+    "test_games": 14,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T1",
+     3,
+     "up"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 109,
+    "fit_games": 85,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.02734954128440368,
+      109
+     ],
+     "FADE": [
+      -0.017510091743119228,
+      109
+     ],
+     "MODEL_FADE": [
+      0.04072352941176473,
+      68
+     ],
+     "MOMENTUM": [
+      -0.03604220183486235,
+      109
+     ]
+    },
+    "test_rows": 29,
+    "test_games": 24,
+    "test_mean": -0.06063636363636363,
+    "test_lo": -0.29063478260869563,
+    "test_hi": 0.2170315789473684,
+    "test_p": 0.624687656171914,
+    "test_n": 22,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 992,
+    "fit_games": 157,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.01522893145161318,
+      992
+     ],
+     "FADE": [
+      -0.05952822580645168,
+      992
+     ],
+     "MODEL_FADE": [
+      -0.004122154779969622,
+      659
+     ]
+    },
+    "test_rows": 320,
+    "test_games": 50,
+    "test_mean": -0.0476559375,
+    "test_lo": -0.16411693290734825,
+    "test_hi": 0.07221249999999999,
+    "test_p": 0.7396301849075462,
+    "test_n": 320,
+    "test_n_games": 50,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 22,
+    "fit_games": 22,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 93,
+    "fit_games": 79,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.005809677419354835,
+      93
+     ],
+     "FADE": [
+      -0.05020752688172043,
+      93
+     ],
+     "MODEL_FADE": [
+      0.05011846153846157,
+      65
+     ],
+     "MOMENTUM": [
+      0.005809677419354835,
+      93
+     ]
+    },
+    "test_rows": 32,
+    "test_games": 28,
+    "test_mean": 0.17234117647058825,
+    "test_lo": -0.01780625000000001,
+    "test_hi": 0.3405411764705883,
+    "test_p": 0.06646676661669165,
+    "test_n": 17,
+    "test_n_games": 15,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 12,
+    "fit_games": 11,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 5,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 198,
+    "fit_games": 33,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.053695959595959644,
+      198
+     ],
+     "FADE": [
+      -0.0942161616161615,
+      198
+     ],
+     "MODEL_FADE": [
+      0.003771604938271557,
+      162
+     ]
+    },
+    "test_rows": 70,
+    "test_games": 11,
+    "test_mean": 0.26818714285714285,
+    "test_lo": 0.2463358208955224,
+    "test_hi": 0.28902131147540977,
+    "test_p": 0.0004997501249375312,
+    "test_n": 70,
+    "test_n_games": 11,
+    "bh": true,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 31,
+    "fit_games": 26,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 10,
+    "test_games": 8,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 10,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 38,
+    "fit_games": 34,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 7,
+    "test_games": 7,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 556,
+    "fit_games": 161,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.018233812949640358,
+      556
+     ],
+     "FADE": [
+      -0.062427697841726554,
+      556
+     ],
+     "MODEL_FADE": [
+      0.023739473684210602,
+      380
+     ]
+    },
+    "test_rows": 170,
+    "test_games": 52,
+    "test_mean": 0.04618981481481483,
+    "test_lo": -0.09272566371681416,
+    "test_hi": 0.18933402061855673,
+    "test_p": 0.29185407296351823,
+    "test_n": 108,
+    "test_n_games": 35,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 9,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 3,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 59,
+    "fit_games": 51,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 21,
+    "test_games": 19,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 1,
+    "test_games": 1,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 133,
+    "fit_games": 35,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.015254887218045105,
+      133
+     ],
+     "FADE": [
+      -0.05549849624060152,
+      133
+     ],
+     "MODEL_FADE": [
+      0.058177064220183476,
+      109
+     ]
+    },
+    "test_rows": 37,
+    "test_games": 12,
+    "test_mean": 0.05043666666666666,
+    "test_lo": -0.12559285714285717,
+    "test_hi": 0.193440625,
+    "test_p": 0.30484757621189407,
+    "test_n": 30,
+    "test_n_games": 10,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     3,
+     "na"
+    ],
+    "fit_rows": 1,
+    "fit_games": 1,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 9,
+    "fit_games": 9,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 5,
+    "test_games": 5,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_MONEYLINE",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 8,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     2,
+     "na"
+    ],
+    "fit_rows": 92,
+    "fit_games": 87,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.1702608695652173,
+      92
+     ],
+     "FADE": [
+      -0.04731847826086955,
+      92
+     ],
+     "MODEL_FADE": [
+      -0.024624137931034483,
+      29
+     ]
+    },
+    "test_rows": 43,
+    "test_games": 35,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     2,
+     "up"
+    ],
+    "fit_rows": 0,
+    "fit_games": 0,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 3,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     3,
+     "down"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 4,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     3,
+     "flat"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 2,
+    "test_games": 2,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     3,
+     "na"
+    ],
+    "fit_rows": 366,
+    "fit_games": 184,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.11031393442622932,
+      366
+     ],
+     "FADE": [
+      -0.11677677595628409,
+      366
+     ],
+     "MODEL_FADE": [
+      -0.036881896551724136,
+      116
+     ]
+    },
+    "test_rows": 131,
+    "test_games": 59,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     3,
+     "up"
+    ],
+    "fit_rows": 4,
+    "fit_games": 4,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 6,
+    "test_games": 4,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     4,
+     "down"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 8,
+    "test_games": 6,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     4,
+     "na"
+    ],
+    "fit_rows": 297,
+    "fit_games": 188,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.09413535353535374,
+      297
+     ],
+     "FADE": [
+      -0.06476632996632997,
+      297
+     ],
+     "MODEL_FADE": [
+      0.0005452991452991479,
+      117
+     ]
+    },
+    "test_rows": 90,
+    "test_games": 63,
+    "test_mean": 0.009583333333333348,
+    "test_lo": -0.0664353846153846,
+    "test_hi": 0.07367213114754098,
+    "test_p": 0.392303848075962,
+    "test_n": 60,
+    "test_n_games": 45,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T1",
+     4,
+     "up"
+    ],
+    "fit_rows": 3,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     2,
+     "down"
+    ],
+    "fit_rows": 65,
+    "fit_games": 50,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.1129892307692308,
+      65
+     ],
+     "FADE": [
+      0.06871538461538461,
+      65
+     ],
+     "MODEL_FADE": [
+      -0.07323529411764707,
+      51
+     ],
+     "MOMENTUM": [
+      -0.12745076923076923,
+      65
+     ]
+    },
+    "test_rows": 36,
+    "test_games": 21,
+    "test_mean": -0.09521944444444443,
+    "test_lo": -0.24215263157894737,
+    "test_hi": 0.06904375000000001,
+    "test_p": 0.8450774612693653,
+    "test_n": 36,
+    "test_n_games": 21,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     2,
+     "flat"
+    ],
+    "fit_rows": 623,
+    "fit_games": 95,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.06266243980738351,
+      623
+     ],
+     "FADE": [
+      0.018921348314606717,
+      623
+     ],
+     "MODEL_FADE": [
+      -0.028674894514767884,
+      474
+     ]
+    },
+    "test_rows": 242,
+    "test_games": 35,
+    "test_mean": 0.05834710743801653,
+    "test_lo": -0.05686233766233768,
+    "test_hi": 0.1822854077253219,
+    "test_p": 0.2098950524737631,
+    "test_n": 242,
+    "test_n_games": 35,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     2,
+     "na"
+    ],
+    "fit_rows": 7,
+    "fit_games": 6,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     2,
+     "up"
+    ],
+    "fit_rows": 88,
+    "fit_games": 59,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.014140909090909143,
+      88
+     ],
+     "FADE": [
+      -0.03062045454545453,
+      88
+     ],
+     "MODEL_FADE": [
+      -0.04300434782608697,
+      69
+     ],
+     "MOMENTUM": [
+      -0.001981818181818192,
+      88
+     ]
+    },
+    "test_rows": 41,
+    "test_games": 22,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     3,
+     "down"
+    ],
+    "fit_rows": 185,
+    "fit_games": 117,
+    "arm": "RIDE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.047956756756756744,
+      185
+     ],
+     "FADE": [
+      -0.08658216216216219,
+      185
+     ],
+     "MODEL_FADE": [
+      0.02706013513513516,
+      148
+     ],
+     "MOMENTUM": [
+      0.047956756756756744,
+      185
+     ]
+    },
+    "test_rows": 96,
+    "test_games": 47,
+    "test_mean": 0.07631562500000001,
+    "test_lo": -0.006428749999999985,
+    "test_hi": 0.14332660550458717,
+    "test_p": 0.05997001499250375,
+    "test_n": 96,
+    "test_n_games": 47,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     3,
+     "flat"
+    ],
+    "fit_rows": 2371,
+    "fit_games": 180,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.022092366090256964,
+      2371
+     ],
+     "FADE": [
+      -0.01579814424293538,
+      2371
+     ],
+     "MODEL_FADE": [
+      -0.04862514285714281,
+      1925
+     ]
+    },
+    "test_rows": 720,
+    "test_games": 55,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     3,
+     "na"
+    ],
+    "fit_rows": 21,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     3,
+     "up"
+    ],
+    "fit_rows": 313,
+    "fit_games": 158,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.049832907348242785,
+      313
+     ],
+     "FADE": [
+      0.010846325878594212,
+      313
+     ],
+     "MODEL_FADE": [
+      -0.0712562015503876,
+      258
+     ],
+     "MOMENTUM": [
+      0.010846325878594212,
+      313
+     ]
+    },
+    "test_rows": 80,
+    "test_games": 43,
+    "test_mean": -0.04998000000000002,
+    "test_lo": -0.1364287671232877,
+    "test_hi": 0.05646025641025641,
+    "test_p": 0.7801099450274862,
+    "test_n": 80,
+    "test_n_games": 43,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     4,
+     "down"
+    ],
+    "fit_rows": 189,
+    "fit_games": 123,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      0.030616931216931192,
+      189
+     ],
+     "FADE": [
+      -0.06071269841269833,
+      189
+     ],
+     "MODEL_FADE": [
+      0.04949161290322579,
+      155
+     ],
+     "MOMENTUM": [
+      0.030616931216931192,
+      189
+     ]
+    },
+    "test_rows": 80,
+    "test_games": 48,
+    "test_mean": 0.027637313432835816,
+    "test_lo": -0.04614864864864865,
+    "test_hi": 0.09290937499999999,
+    "test_p": 0.25087456271864067,
+    "test_n": 67,
+    "test_n_games": 42,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     4,
+     "flat"
+    ],
+    "fit_rows": 1771,
+    "fit_games": 187,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.015150536420101597,
+      1771
+     ],
+     "FADE": [
+      -0.013909429700734145,
+      1771
+     ],
+     "MODEL_FADE": [
+      -0.005054986876640478,
+      1524
+     ]
+    },
+    "test_rows": 569,
+    "test_games": 62,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     4,
+     "na"
+    ],
+    "fit_rows": 21,
+    "fit_games": 12,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T2",
+     4,
+     "up"
+    ],
+    "fit_rows": 175,
+    "fit_games": 126,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.028244000000000016,
+      175
+     ],
+     "FADE": [
+      -0.0016222857142857085,
+      175
+     ],
+     "MODEL_FADE": [
+      -0.02906025641025643,
+      156
+     ],
+     "MOMENTUM": [
+      -0.0016222857142857085,
+      175
+     ]
+    },
+    "test_rows": 37,
+    "test_games": 31,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     2,
+     "down"
+    ],
+    "fit_rows": 14,
+    "fit_games": 13,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 12,
+    "test_games": 9,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     2,
+     "flat"
+    ],
+    "fit_rows": 406,
+    "fit_games": 103,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.04613842364532007,
+      406
+     ],
+     "FADE": [
+      0.00240418719211826,
+      406
+     ],
+     "MODEL_FADE": [
+      -0.0437785942492012,
+      313
+     ]
+    },
+    "test_rows": 130,
+    "test_games": 33,
+    "test_mean": -0.013016923076923068,
+    "test_lo": -0.13293461538461535,
+    "test_hi": 0.11710000000000004,
+    "test_p": 0.5567216391804098,
+    "test_n": 130,
+    "test_n_games": 33,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     2,
+     "na"
+    ],
+    "fit_rows": 2,
+    "fit_games": 2,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     2,
+     "up"
+    ],
+    "fit_rows": 37,
+    "fit_games": 34,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 21,
+    "test_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     3,
+     "down"
+    ],
+    "fit_rows": 70,
+    "fit_games": 56,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.009019999999999978,
+      70
+     ],
+     "FADE": [
+      -0.02924428571428572,
+      70
+     ],
+     "MODEL_FADE": [
+      -0.026230769230769203,
+      52
+     ],
+     "MOMENTUM": [
+      -0.009019999999999978,
+      70
+     ]
+    },
+    "test_rows": 30,
+    "test_games": 23,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     3,
+     "flat"
+    ],
+    "fit_rows": 1344,
+    "fit_games": 187,
+    "arm": "NO_BET",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.013878720238095263,
+      1344
+     ],
+     "FADE": [
+      -0.023709226190476183,
+      1344
+     ],
+     "MODEL_FADE": [
+      -0.05298034420289818,
+      1104
+     ]
+    },
+    "test_rows": 392,
+    "test_games": 57,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     3,
+     "na"
+    ],
+    "fit_rows": 4,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     3,
+     "up"
+    ],
+    "fit_rows": 82,
+    "fit_games": 74,
+    "arm": "MOMENTUM",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.06317195121951219,
+      82
+     ],
+     "FADE": [
+      0.024529268292682926,
+      82
+     ],
+     "MODEL_FADE": [
+      -0.056604545454545435,
+      66
+     ],
+     "MOMENTUM": [
+      0.024529268292682926,
+      82
+     ]
+    },
+    "test_rows": 38,
+    "test_games": 28,
+    "test_mean": -0.1820026315789474,
+    "test_lo": -0.26888837209302324,
+    "test_hi": -0.07755681818181821,
+    "test_p": 0.9940029985007496,
+    "test_n": 38,
+    "test_n_games": 28,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     4,
+     "down"
+    ],
+    "fit_rows": 74,
+    "fit_games": 60,
+    "arm": "FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.05139864864864867,
+      74
+     ],
+     "FADE": [
+      0.021122972972972977,
+      74
+     ],
+     "MODEL_FADE": [
+      -0.039203571428571414,
+      56
+     ],
+     "MOMENTUM": [
+      -0.05139864864864867,
+      74
+     ]
+    },
+    "test_rows": 22,
+    "test_games": 17,
+    "test_mean": -0.0603,
+    "test_lo": -0.1465173913043478,
+    "test_hi": 0.05774210526315789,
+    "test_p": 0.824087956021989,
+    "test_n": 22,
+    "test_n_games": 17,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     4,
+     "flat"
+    ],
+    "fit_rows": 1080,
+    "fit_games": 196,
+    "arm": "MODEL_FADE",
+    "thin": false,
+    "fit": {
+     "RIDE": [
+      -0.00846240740740749,
+      1080
+     ],
+     "FADE": [
+      -0.01980722222222238,
+      1080
+     ],
+     "MODEL_FADE": [
+      0.00289128586609985,
+      941
+     ]
+    },
+    "test_rows": 300,
+    "test_games": 64,
+    "test_mean": 0.0016251937984496157,
+    "test_lo": -0.07276518518518517,
+    "test_hi": 0.06751637010676156,
+    "test_p": 0.4542728635682159,
+    "test_n": 258,
+    "test_n_games": 56,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     4,
+     "na"
+    ],
+    "fit_rows": 6,
+    "fit_games": 3,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 0,
+    "test_games": 0,
+    "bh": false,
+    "draft": false
+   },
+   {
+    "leaf": [
+     "NHL",
+     "NHL_PUCK_LINE",
+     "T3",
+     4,
+     "up"
+    ],
+    "fit_rows": 43,
+    "fit_games": 35,
+    "arm": "NO_BET",
+    "thin": true,
+    "fit": {},
+    "test_rows": 25,
+    "test_games": 19,
+    "bh": false,
+    "draft": false
+   }
+  ],
+  "fit_games": 375,
+  "test_games": 161
+ },
+ "reference_heldout_all_rows": {
+  "NBA|NBA_GAME_TOTAL": {
+   "RIDE": {
+    "mean": -0.034217786561264806,
+    "lo": -0.06480286956521737,
+    "hi": -0.002897828335056862,
+    "p": 0.9655172413793104,
+    "n": 4807,
+    "games": 67
+   },
+   "FADE": {
+    "mean": -0.05929640108175579,
+    "lo": -0.09019920597851475,
+    "hi": -0.028159623295085524,
+    "p": 0.9995002498750625,
+    "n": 4807,
+    "games": 67
+   },
+   "MODEL_FADE": {
+    "mean": -0.04321433556266355,
+    "lo": -0.10770147523709163,
+    "hi": 0.02239617609254501,
+    "p": 0.8595702148925537,
+    "n": 3439,
+    "games": 66
+   },
+   "MOMENTUM": {
+    "mean": -0.04469315068493151,
+    "lo": -0.09095001981767738,
+    "hi": 0.0019923108384458112,
+    "p": 0.9395302348825587,
+    "n": 2482,
+    "games": 60
+   }
+  },
+  "NBA|NBA_MONEYLINE": {
+   "RIDE": {
+    "mean": 0.04290666666666666,
+    "lo": -0.037477040816326516,
+    "hi": 0.1203707692307692,
+    "p": 0.18290854572713644,
+    "n": 195,
+    "games": 67
+   },
+   "FADE": {
+    "mean": -0.08763794871794872,
+    "lo": -0.16583705583756342,
+    "hi": -0.0065937823834196834,
+    "p": 0.9635182408795602,
+    "n": 195,
+    "games": 67
+   },
+   "MODEL_FADE": {
+    "mean": -0.026738690476190492,
+    "lo": -0.11256946107784431,
+    "hi": 0.06217167630057806,
+    "p": 0.6896551724137931,
+    "n": 168,
+    "games": 64
+   },
+   "MOMENTUM": {
+    "mean": -0.0011137254901960809,
+    "lo": -0.0675990384615385,
+    "hi": 0.06660490196078432,
+    "p": 0.5067466266866567,
+    "n": 102,
+    "games": 65
+   }
+  },
+  "NBA|NBA_SPREAD": {
+   "RIDE": {
+    "mean": -0.03058978585995922,
+    "lo": -0.06004200621546959,
+    "hi": -0.0012039754308138513,
+    "p": 0.9555222388805598,
+    "n": 5884,
+    "games": 67
+   },
+   "FADE": {
+    "mean": -0.03788628484024473,
+    "lo": -0.06835945435827046,
+    "hi": -0.007968989726027394,
+    "p": 0.9785107446276862,
+    "n": 5884,
+    "games": 67
+   },
+   "MODEL_FADE": {
+    "mean": -0.03207631578947372,
+    "lo": -0.09858326857697917,
+    "hi": 0.033767732240437144,
+    "p": 0.7941029485257372,
+    "n": 4180,
+    "games": 67
+   },
+   "MOMENTUM": {
+    "mean": -0.022359607059607062,
+    "lo": -0.06012120603015077,
+    "hi": 0.0177818487394958,
+    "p": 0.8280859570214892,
+    "n": 3003,
+    "games": 66
+   }
+  },
+  "NBA|NBA_TEAM_TOTAL": {
+   "RIDE": {
+    "mean": -0.0635549732804689,
+    "lo": -0.08946916802610108,
+    "hi": -0.03803044500419814,
+    "p": 1.0,
+    "n": 5801,
+    "games": 67
+   },
+   "FADE": {
+    "mean": -0.07185349077745216,
+    "lo": -0.09946392395200249,
+    "hi": -0.04426569446914459,
+    "p": 1.0,
+    "n": 5801,
+    "games": 67
+   },
+   "MODEL_FADE": {
+    "mean": -0.04591099940863393,
+    "lo": -0.10005780830098532,
+    "hi": 0.011631904090267984,
+    "p": 0.9140429785107447,
+    "n": 3382,
+    "games": 64
+   },
+   "MOMENTUM": {
+    "mean": -0.04439298436932024,
+    "lo": -0.08374487179487175,
+    "hi": -0.006203640951694309,
+    "p": 0.975512243878061,
+    "n": 2751,
+    "games": 50
+   }
+  },
+  "NFL|NFL_GAME_TOTAL": {
+   "RIDE": {
+    "mean": -0.013665003513703436,
+    "lo": -0.06906723498888061,
+    "hi": 0.03928332221480989,
+    "p": 0.6491754122938531,
+    "n": 1423,
+    "games": 28
+   },
+   "FADE": {
+    "mean": -0.02350449754040759,
+    "lo": -0.07641715277777777,
+    "hi": 0.032050472972972976,
+    "p": 0.7556221889055472,
+    "n": 1423,
+    "games": 28
+   },
+   "MODEL_FADE": {
+    "mean": -0.031658381502890166,
+    "lo": -0.1217918416801292,
+    "hi": 0.05766798029556652,
+    "p": 0.7086456771614192,
+    "n": 1211,
+    "games": 28
+   },
+   "MOMENTUM": {
+    "mean": -0.02477084745762712,
+    "lo": -0.08476236559139784,
+    "hi": 0.03925887999999999,
+    "p": 0.7261369315342329,
+    "n": 590,
+    "games": 28
+   }
+  },
+  "NFL|NFL_MONEYLINE": {
+   "RIDE": {
+    "mean": 0.13365714285714286,
+    "lo": 0.01702023809523809,
+    "hi": 0.2358869047619048,
+    "p": 0.031984007996002,
+    "n": 84,
+    "games": 28
+   },
+   "FADE": {
+    "mean": -0.17302499999999998,
+    "lo": -0.27484761904761906,
+    "hi": -0.05640476190476191,
+    "p": 0.991504247876062,
+    "n": 84,
+    "games": 28
+   },
+   "MODEL_FADE": {
+    "mean": -0.004692307692307695,
+    "lo": -0.12920379746835445,
+    "hi": 0.12786999999999998,
+    "p": 0.5382308845577212,
+    "n": 78,
+    "games": 27
+   },
+   "MOMENTUM": {
+    "mean": -0.07011785714285713,
+    "lo": -0.21369655172413796,
+    "hi": 0.06521785714285717,
+    "p": 0.7966016991504248,
+    "n": 28,
+    "games": 19
+   }
+  },
+  "NFL|NFL_SPREAD": {
+   "RIDE": {
+    "mean": -0.006998469631755121,
+    "lo": -0.05300033783783782,
+    "hi": 0.03743435260391783,
+    "p": 0.5957021489255372,
+    "n": 2091,
+    "games": 28
+   },
+   "FADE": {
+    "mean": -0.02796437111429939,
+    "lo": -0.07170485714285714,
+    "hi": 0.01825474756831866,
+    "p": 0.8295852073963018,
+    "n": 2091,
+    "games": 28
+   },
+   "MODEL_FADE": {
+    "mean": 0.002238403041825088,
+    "lo": -0.08052496749024705,
+    "hi": 0.09841813013265951,
+    "p": 0.47626186906546725,
+    "n": 1578,
+    "games": 28
+   },
+   "MOMENTUM": {
+    "mean": -0.09350151898734178,
+    "lo": -0.1468702836004932,
+    "hi": -0.03530379901960784,
+    "p": 0.9955022488755623,
+    "n": 790,
+    "games": 28
+   }
+  },
+  "NFL|NFL_TEAM_TOTAL": {
+   "RIDE": {
+    "mean": -0.01066478589420655,
+    "lo": -0.04415453613531521,
+    "hi": 0.021307013118062566,
+    "p": 0.7051474262868566,
+    "n": 1985,
+    "games": 28
+   },
+   "FADE": {
+    "mean": -0.030065239294710323,
+    "lo": -0.061693888888888895,
+    "hi": 0.0033787671232876717,
+    "p": 0.9315342328835582,
+    "n": 1985,
+    "games": 28
+   },
+   "MODEL_FADE": {
+    "mean": -0.013711322248614407,
+    "lo": -0.06723610832497491,
+    "hi": 0.04490800000000002,
+    "p": 0.6441779110444777,
+    "n": 1263,
+    "games": 28
+   },
+   "MOMENTUM": {
+    "mean": -0.02991231527093596,
+    "lo": -0.05780466200466201,
+    "hi": -0.00015411471321695282,
+    "p": 0.952023988005997,
+    "n": 812,
+    "games": 28
+   }
+  },
+  "NHL|NHL_GAME_TOTAL": {
+   "RIDE": {
+    "mean": -0.022731993107409545,
+    "lo": -0.0449168019815605,
+    "hi": 0.0010001042442293255,
+    "p": 0.9425287356321839,
+    "n": 6964,
+    "games": 66
+   },
+   "FADE": {
+    "mean": -0.059429954049396876,
+    "lo": -0.08371642127403844,
+    "hi": -0.03745426897321425,
+    "p": 1.0,
+    "n": 6964,
+    "games": 66
+   },
+   "MODEL_FADE": {
+    "mean": -0.022615452396303443,
+    "lo": -0.07999146800501881,
+    "hi": 0.03567917981072558,
+    "p": 0.7406296851574213,
+    "n": 4653,
+    "games": 66
+   },
+   "MOMENTUM": {
+    "mean": -0.015128002793296097,
+    "lo": -0.04416219676549867,
+    "hi": 0.012350108459869853,
+    "p": 0.8130934532733634,
+    "n": 1432,
+    "games": 66
+   }
+  },
+  "NHL|NHL_MONEYLINE": {
+   "RIDE": {
+    "mean": 0.010046766169154195,
+    "lo": -0.08105591531755918,
+    "hi": 0.1063977864583333,
+    "p": 0.4257871064467766,
+    "n": 804,
+    "games": 66
+   },
+   "FADE": {
+    "mean": -0.05348470149253727,
+    "lo": -0.1487838582677165,
+    "hi": 0.038215169902912655,
+    "p": 0.8195902048975512,
+    "n": 804,
+    "games": 66
+   },
+   "MODEL_FADE": {
+    "mean": 0.06233234750462109,
+    "lo": -0.05948000000000002,
+    "hi": 0.16950035398230093,
+    "p": 0.1969015492253873,
+    "n": 541,
+    "games": 49
+   },
+   "MOMENTUM": {
+    "mean": 0.0743956896551724,
+    "lo": 0.015288288288288297,
+    "hi": 0.13279823008849556,
+    "p": 0.022988505747126436,
+    "n": 116,
+    "games": 59
+   }
+  },
+  "NHL|NHL_PUCK_LINE": {
+   "RIDE": {
+    "mean": 0.01514897119341562,
+    "lo": -0.027630527599878045,
+    "hi": 0.05476683988307889,
+    "p": 0.2848575712143928,
+    "n": 3159,
+    "games": 66
+   },
+   "FADE": {
+    "mean": -0.05707040202595758,
+    "lo": -0.09659438021836864,
+    "hi": -0.014712406015037595,
+    "p": 0.9880059970014993,
+    "n": 3159,
+    "games": 66
+   },
+   "MODEL_FADE": {
+    "mean": 0.08839541547277935,
+    "lo": 0.03713823401478902,
+    "hi": 0.13587613317288408,
+    "p": 0.0024987506246876563,
+    "n": 2443,
+    "games": 66
+   },
+   "MOMENTUM": {
+    "mean": 0.006750185185185186,
+    "lo": -0.019477956989247317,
+    "hi": 0.03389452830188677,
+    "p": 0.3493253373313343,
+    "n": 540,
+    "games": 66
+   }
+  }
+ }
+}

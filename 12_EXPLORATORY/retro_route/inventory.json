@@ -1,0 +1,96 @@
+{
+ "raw_scored_rows": 110470,
+ "deduped_rows": 106430,
+ "inventory": {
+  "MLB|MLB_GAME_TOTAL": {
+   "rows": 701,
+   "games": 24,
+   "first": "2026-10-05",
+   "last": "2026-10-29"
+  },
+  "MLB|MLB_MONEYLINE": {
+   "rows": 66,
+   "games": 24,
+   "first": "2026-10-05",
+   "last": "2026-10-29"
+  },
+  "MLB|MLB_RUN_LINE": {
+   "rows": 396,
+   "games": 24,
+   "first": "2026-10-05",
+   "last": "2026-10-29"
+  },
+  "MLB|MLB_TEAM_TOTAL": {
+   "rows": 924,
+   "games": 24,
+   "first": "2026-10-05",
+   "last": "2026-10-29"
+  },
+  "NBA|NBA_GAME_TOTAL": {
+   "rows": 11939,
+   "games": 154,
+   "first": "2026-10-20",
+   "last": "2026-11-10"
+  },
+  "NBA|NBA_MONEYLINE": {
+   "rows": 456,
+   "games": 154,
+   "first": "2026-10-20",
+   "last": "2026-11-10"
+  },
+  "NBA|NBA_SPREAD": {
+   "rows": 14304,
+   "games": 154,
+   "first": "2026-10-20",
+   "last": "2026-11-10"
+  },
+  "NBA|NBA_TEAM_TOTAL": {
+   "rows": 14544,
+   "games": 154,
+   "first": "2026-10-20",
+   "last": "2026-11-10"
+  },
+  "NFL|NFL_GAME_TOTAL": {
+   "rows": 4786,
+   "games": 87,
+   "first": "2026-10-04",
+   "last": "2026-11-10"
+  },
+  "NFL|NFL_MONEYLINE": {
+   "rows": 261,
+   "games": 87,
+   "first": "2026-10-04",
+   "last": "2026-11-10"
+  },
+  "NFL|NFL_SPREAD": {
+   "rows": 6582,
+   "games": 87,
+   "first": "2026-10-04",
+   "last": "2026-11-10"
+  },
+  "NFL|NFL_TEAM_TOTAL": {
+   "rows": 6688,
+   "games": 87,
+   "first": "2026-10-04",
+   "last": "2026-11-10"
+  },
+  "NHL|NHL_GAME_TOTAL": {
+   "rows": 28595,
+   "games": 270,
+   "first": "2026-10-03",
+   "last": "2026-11-11"
+  },
+  "NHL|NHL_MONEYLINE": {
+   "rows": 3267,
+   "games": 270,
+   "first": "2026-10-03",
+   "last": "2026-11-11"
+  },
+  "NHL|NHL_PUCK_LINE": {
+   "rows": 12921,
+   "games": 270,
+   "first": "2026-10-03",
+   "last": "2026-11-11"
+  }
+ }
+}
