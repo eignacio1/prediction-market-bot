@@ -61,16 +61,16 @@ note = "W75.3"
 [[component]]
 sport = "nba"
 component = "decision_trees"
-scaffold = "none"
-test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NBA (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
+scaffold = "src/prediction_market_bot/nba_engine/decision_tree.py"
+test = "tests/test_nba_decision_tree.py"
+note = "W109.1: horizon-banded tree (T1/T2/T3/in-play, ADR-0068) ported from NFL; lineup factors admitted only <=1.5h to tip. Stage: applied. W109.1 applied path (KXNBAGAME ml, test season 2025-26, n=397 vs Kalshi mid at tip-1h): tree Brier 0.1745 (T3) / 0.1775 (T1) vs market 0.1529; T3 minus market +0.0215 [+0.012,+0.031] = market better; flat net before fees negative. See 12_EXPLORATORY/nba_arch_w109/RESULT_W109_1.md"
 
 [[component]]
 sport = "nba"
 component = "filtering_mechanisms"
-scaffold = "none"
-test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NBA (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
+scaffold = "src/prediction_market_bot/nba_engine/granularity_filter.py"
+test = "tests/test_nba_granularity_filter.py"
+note = "W109.1: granularity-index filter over NBA game splits (rest bucket, market tags) plus the lineup-shift gate (train p90) in applied_path.py. Stage: applied (gated n=52, not scored as a win). See RESULT_W109_1.md"
 
 [[component]]
 sport = "nba"
@@ -82,9 +82,9 @@ note = "W75.1 PAM core + lossless NBA v4 port (window, wave close)"
 [[component]]
 sport = "nba"
 component = "cross_reference_compatibility"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/nba_engine/cross_reference.py"
+test = "tests/test_nba_cross_reference.py"
+note = "W109.1: one joint game distribution prices ml/spread/total/team totals; identities, monotonicity, closed form vs simulation checked. Stage: interpreted (board consistency built; only ml applied against the market)"
 
 [[component]]
 sport = "nba"
@@ -96,9 +96,9 @@ note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross contin
 [[component]]
 sport = "nba"
 component = "temporal_evolution"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/nba_engine/temporal_evolution.py"
+test = "tests/test_nba_temporal_evolution.py"
+note = "W109.1: game-number buckets and blend weights adapted from NFL. Stage: interpreted (not yet applied to a price)"
 
 [[component]]
 sport = "nba"
