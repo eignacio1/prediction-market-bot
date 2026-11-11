@@ -14,7 +14,7 @@ const DIST = [
   ["Execution","E3","Win rate, fills vs non-fills","T4 25.4% vs 48.3% · T1 28.9% vs 52.1% · trading cost 1.5–2.3¢ game lines, 4–8¢ props; maker loses everywhere","fills at least as good","cost wall measured (W106)"],
   ["Execution","FT","Forward test (ADR-0072)","Restarted 11-06 01:03Z (NO-side pricing fix, GG-1771). NFL on clean fills: INCONCLUSIVE","~550 fills per arm from the restart","NFL ADOPT → INCONCLUSIVE, clock restarted"],
   ["Proof","P1","Cells at a scored look","12 / 49 (NFL first look, 11-02)","every cell judged at its n","0"],
-  ["Proof","P2","Verdicts issued","12: NFL total T1 + T2 RULED_OUT · 10 keep accruing · 0 candidate","a verdict per cell (a NO counts)","0"],
+  ["Proof","P2","Verdicts issued","12: NFL total T1 + T2 fade arm closed, routed to ride / no bet · 10 keep accruing · 0 candidate","a verdict per cell (a NO counts)","0"],
   ["Proof","P3","Next look","11-13 (NFL QB moneyline) · ~91% \"keep accruing\"","—","—"],
 ];
 
@@ -74,7 +74,7 @@ const MXNOTE = {
 };
 
 const ARMS = [
-  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","First look 11-02: total T1 + T2 RULED_OUT, 10 keep accruing"],
+  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","First look 11-02: total T1 + T2 fade arm closed (routed to ride / no bet), 10 keep accruing"],
   ["NFL engine (board)","—","Frozen forward test","good","EXP-045","01-12","Prices moneyline / spread / total from one simulation"],
   ["NFL QB-shrunk challenger",2,"Logging","good","accepted 10-10","11-13","Next scored look on the calendar"],
   ["NBA game markets",12,"Logging","good","EXP-038","second look: definition due before January","Draft definition waiting on you (GG-529)"],
@@ -144,7 +144,7 @@ const WAVES = [
   {w:"90–94", k:"hit", t:"The router and the frozen forward tests.",
    d:"Decision-tree router (ride / fade / momentum). <b>11 ride cells pre-registered</b> (EXP-042); ADR-0076 accepted; price archive 2 → 4 sports; NBA and NFL engines on frozen forward tests (EXP-044 / 045)."},
   {w:"95–100", k:"neg", t:"NBA engine prices real games; the first verdicts.",
-   d:"NBA engine v1/v2/v3 live. <b>NFL first look 11-02: 2 RULED_OUT, 10 keep accruing</b>. OOM kills 142 / day → 0 after the lock. Muse archive tested in an engine: null."},
+   d:"NBA engine v1/v2/v3 live. <b>NFL first look 11-02: 2 cells' fade arm closed (routed), 10 keep accruing</b>. OOM kills 142 / day → 0 after the lock. Muse archive tested in an engine: null."},
   {w:"101–103", k:"neg", t:"ADOPT, then not.",
    d:"NFL forward test printed ADOPT — then <b>NO-side orders were found mirror-priced (GG-1771)</b>; on clean fills INCONCLUSIVE, clock restarted 11-06. NBA misses root-caused (memory) and fixed."},
   {w:"104–106", k:"neg", t:"The cost wall.",
@@ -459,7 +459,7 @@ function edgeMap(){
   const D=EDGEMAP, host=$('#emHost');
   if(!D||!D.ok){ host.innerHTML=`<div class="card em-err"><b>The edge map's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong picture.</div></div>`; $('#emHead').textContent='source invalid'; $('#nvEdge').textContent='!'; return; }
   const ORDER=['NET POSITIVE','ACCRUING','UNTESTED','NO EFFECT NET','RULED_OUT'];
-  const NAME={'NET POSITIVE':'Net positive held out','ACCRUING':'Accruing','UNTESTED':'Untested','NO EFFECT NET':'No effect net','RULED_OUT':'Ruled out'};
+  const NAME={'NET POSITIVE':'Net positive held out','ACCRUING':'Accruing','UNTESTED':'Untested','NO EFFECT NET':'Routing input (not a bet alone)','RULED_OUT':'Fade arm closed (routed)'};
   const key=r=>r.held_out_net_positive===true?'NET POSITIVE':r.status;
   const cls=k=>({'NET POSITIVE':'pos','ACCRUING':'acc','UNTESTED':'unt','NO EFFECT NET':'nil','RULED_OUT':'out'}[k]||'nil');
   const rows=D.rows, cnt={}; rows.forEach(r=>{const k=key(r); cnt[k]=(cnt[k]||0)+1;});

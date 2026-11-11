@@ -3399,3 +3399,8 @@ shooting + #16 in clutch defensive rating. WE ARE SO FAR AWAY."
 Effect: DOCTRINE.md §1b (words we use: routing result, never "no edge" / blocked / ruled out; RULED_OUT only for untradeable markets);
 body fixes in CLAUDE.md (north star line, edge condition, efficiency gradient), STRATEGY_OVERVIEW (Strategy 0 governs A-J; A = fade arm),
 COVERAGE_TARGET_MATRIX, PREGAME_FEATURE_ARCHITECTURE; visual dashboard wording; sitrep edge line and D6 row. Block 110.5 (retro-route).
+
+## 2026-11-10 21:59 PT — Operator: relabel the NFL total "RULED_OUT" cells as routed ("Just make it") (SW-9)
+EXP-037's two NFL game-total cells (T1, T2), ruled out at the 11-02 first look because the model lost to the market, are read under
+ADR-0077 as a routing result: the fade arm is closed for those cells; ride / no-bet stay open. Label only: the frozen test's state
+(CellStatus.RULED_OUT, not re-scored) is unchanged; the registry reason text, DOCTRINE.md 1b and the visual dashboard wording change.
