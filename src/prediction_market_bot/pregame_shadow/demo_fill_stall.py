@@ -58,7 +58,11 @@ def stall(repo: Path, now: Optional[datetime] = None) -> dict:
     led = repo / "exp_output" / "PREGAME_SHADOW"
     logging = []
     for sport in GAME_CELLS:
-        last = last_ts_in_files(cell_files(led, sport), until=now)
+        # Real ledger names are {SPORT}_{CELL}_{band}.jsonl (silent_arms passes the same prefix); NHL lives
+        # under data/shadow/nhl with no prefix. The first cut omitted the prefix and read 0 files on the box.
+        files = (cell_files(repo / "data" / "shadow" / "nhl", sport) if sport == "NHL"
+                 else cell_files(led, sport, f"{sport}_"))
+        last = last_ts_in_files(files, until=now)
         if last and last >= since:
             logging.append(sport)
     if orders is None:
