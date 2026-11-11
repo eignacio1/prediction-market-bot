@@ -40,3 +40,8 @@ def test_inplay_converges_to_the_score():
 def test_pregame_price_refuses_in_play():
     with pytest.raises(ValueError):
         D.price(P, "ml", 112, 110, {}, -1)
+
+
+def test_v3_lineup_factor_names_are_registered_as_lineup_at_1p5h():
+    for n in ("d_exp_missing", "s_exp_missing", "d_lineup_net", "s_lineup_net"):
+        assert D.FACTOR_CLASS[n] == ("lineup", 1.5)

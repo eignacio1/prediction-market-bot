@@ -26,6 +26,8 @@ BANDS: Tuple[Tuple[str, float, Tuple[str, ...]], ...] = (
 ALWAYS = 1e9
 FACTOR_CLASS: Dict[str, Tuple[str, float]] = {
     "exp_missing": ("lineup", 1.5), "lineup_net": ("lineup", 1.5),
+    "d_exp_missing": ("lineup", 1.5), "s_exp_missing": ("lineup", 1.5),
+    "d_lineup_net": ("lineup", 1.5), "s_lineup_net": ("lineup", 1.5),
     "rest_diff": ("rest", ALWAYS), "b2b_home": ("rest", ALWAYS), "b2b_away": ("rest", ALWAYS),
     "matchup_cross": ("matchup", ALWAYS), "travel": ("venue", ALWAYS),
 }
