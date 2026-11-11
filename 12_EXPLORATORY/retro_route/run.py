@@ -1,6 +1,8 @@
 """W110.5 runner. usage: run.py <scratch_dir> -> writes results.json + inventory.json beside this file.
 scratch_dir holds shadow/ (+settled/ via ../settled), nhl/ and nhl_settled/ pulled read-only from the box."""
 import json, sys, glob, os, collections
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from _fence import safe_out
 from prediction_market_bot.quant import retro_route as rr
 
 S = sys.argv[1]
@@ -36,7 +38,7 @@ for r in rows:
     d = inv[k]; d["rows"] += 1; d["games"].add(rr.game_id(r))
     d["first"] = min(d["first"], r["start_time_utc"][:10]); d["last"] = max(d["last"], r["start_time_utc"][:10])
 inventory = {k: {"rows": v["rows"], "games": len(v["games"]), "first": v["first"], "last": v["last"]} for k, v in sorted(inv.items())}
-json.dump({"raw_settled_rows": n_raw, "deduped_rows": len(rows), "inventory": inventory}, open(f"{HERE}/inventory.json", "w"), indent=1)
+json.dump({"raw_scored_rows": n_raw, "deduped_rows": len(rows), "inventory": inventory}, open(safe_out(f"{HERE}/inventory.json"), "w"), indent=1)
 
 res = rr.route(rows)
 fit_g, test_g = rr.split_games(rows)
@@ -45,7 +47,7 @@ refout = {}
 for fam, arms in ref.items():
     refout["|".join(fam)] = {a: dict(zip(("mean", "lo", "hi", "p"), rr.boot_ci(by))) | {"n": sum(len(v) for v in by.values()), "games": len(by)}
                              for a, by in arms.items() if len(by) >= rr.MIN_TEST_GAMES}
-json.dump({"route": res, "reference_heldout_all_rows": refout}, open(f"{HERE}/results.json", "w"), indent=1, default=list)
+json.dump({"route": res, "reference_heldout_all_rows": refout}, open(safe_out(f"{HERE}/results.json"), "w"), indent=1, default=list)
 L = res["leaves"]
 print("rows", len(rows), "fit_games", res["fit_games"], "test_games", res["test_games"])
 print("leaves", len(L), "thin", sum(l["thin"] for l in L), "routed", sum(l["arm"] != "NO_BET" for l in L),

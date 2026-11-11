@@ -1,5 +1,7 @@
 """Render ROUTING.md from results.json + inventory.json (numbers come only from those files)."""
-import json, collections, os
+import json, collections, os, sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from _fence import safe_out
 H = os.path.dirname(os.path.abspath(__file__))
 R = json.load(open(f"{H}/results.json")); I = json.load(open(f"{H}/inventory.json"))
 L = R["route"]["leaves"]
@@ -18,7 +20,7 @@ o.append(f"- On the held-out 30% of games, **{nbh} leaf** survives Benjamini-Hoc
 o.append("- Every other routed leaf's held-out interval includes zero or sits below it: those leaves are **routed away from the arm they picked on the fit window** and default to no bet until a forward test says otherwise. That is a routing result, not a verdict on the market.")
 o.append("- The cleaner signal is at family level (table below, unrouted, every row of the held-out games): riding the market's favoured side beats fading it in nearly every family, and the model-disagreement fade holds up on NHL puck line (and, with a wide interval, NHL moneyline). Those are leads for the forward test, not drafts.\n")
 o.append("## Inventory (Part A): settled shadow rows after dedupe\n")
-o.append(f"Raw settled rows {I['raw_settled_rows']:,}; after dedupe (one per market ticker and run; one moneyline ticker per game and run) {I['deduped_rows']:,}.\n")
+o.append(f"Raw settled rows {I['raw_scored_rows']:,}; after dedupe (one per market ticker and run; one moneyline ticker per game and run) {I['deduped_rows']:,}.\n")
 o.append("| Sport | Family | Rows | Games | First | Last |\n|---|---|---|---|---|---|")
 for k, v in I["inventory"].items():
     s, f = k.split("|"); o.append(f"| {s} | {f} | {v['rows']:,} | {v['games']} | {v['first']} | {v['last']} |")
@@ -29,7 +31,7 @@ for k, a in R["reference_heldout_all_rows"].items():
     def c(x):
         v = a.get(x)
         return "-" if not v else f"{v['mean']:+.3f} [{v['lo']:+.3f}, {v['hi']:+.3f}] {v['n']}/{v['games']}"
-    o.append(f"| {k.replace('|', ' ')} | {c('RIDE')} | {c('FADE')} | {c('MOMENTUM')} | {c('MODEL_FADE')} |")
+    o.append(f"| {k.split('|')[0] + ' ' + k.split('|')[1]} | {c('RIDE')} | {c('FADE')} | {c('MOMENTUM')} | {c('MODEL_FADE')} |")
 o.append("\n## Routing by family (Part C)\n")
 for (s, f), ls in sorted(fam.items()):
     cnt = collections.Counter(l["arm"] for l in ls); rep = [l for l in ls if "test_mean" in l]
@@ -53,4 +55,4 @@ o.append("- **Archive join not done.** Move since open and last hour come from t
 o.append("- **Factor filters not joined.** 110.1 (NFL weather, matchup) and 110.2 (NBA via the 109.1 tree) are not per-row fields in the shadow ledgers, so leaves split on market state only. Feature rows are hashed (`feature_row_sha256`), not stored.")
 o.append("- **Small windows.** NFL 87 games, MLB postseason 24 games, NBA 154, NHL 270 since early October; the held-out 30% is 161 games across sports. The leaf count is large against that; BH is the guard and it leaves one name.")
 o.append("- Shadow data was pulled read-only from the box into a scratch directory; nothing was written to the box.\n")
-open(f"{H}/ROUTING.md", "w").write("\n".join(o))
+open(safe_out(f"{H}/ROUTING.md"), "w").write("\n".join(o))
