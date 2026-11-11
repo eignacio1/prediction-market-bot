@@ -1,9 +1,12 @@
 # Strategy Overview — Quantitative Trading Strategies
+
+> **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
+
 ## Prediction Market Trading Bot
 
 **Purpose:** Institutional reference document covering all quantitative strategies available to this system — mechanics, edge sources, risk profiles, Kalshi-specific constraints, implementation requirements, and activation gates. Includes Execution Band (T1–T5) time-horizon framework. Assessed via Princeton Deep Thinking Protocol (PDTP).
 **Owner (role):** Director/Sponsor (DS)
-**Last reviewed:** 2026-07-23 — GG-074 monthly staleness review: found and corrected one genuine drift (C5 "read-only" claim, see Scope Note item 3 below); everything else re-checked against current registries with no further drift found (see Scope Note for full method and caveats). Prior: 2026-05-29 (Phase 6 idle build — Execution Bands + VenueRouter + multi-venue registry added; 329/329 tests)
+**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added; body predates DOCTRINE.md - DOCTRINE.md wins). Previously: 2026-07-23 — GG-074 monthly staleness review: found and corrected one genuine drift (C5 "read-only" claim, see Scope Note item 3 below); everything else re-checked against current registries with no further drift found (see Scope Note for full method and caveats). Prior: 2026-05-29 (Phase 6 idle build — Execution Bands + VenueRouter + multi-venue registry added; 329/329 tests)
 **Next review:** On any new strategy activation; post-G6 live capital authorization; quarterly
 **Staleness triggers:** New venue added; new strategy activated; ADR changes; market structure changes
 **Upstream links:** METHODOLOGY.md (Section 4 Strategy Architecture A–H); ADR-0002 (forecast-only); ADR-0003 (Kalshi primary); EXECUTION_ARCHITECTURE.md; EXECUTION_BANDS.md; VENUE_REGISTRY.md

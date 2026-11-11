@@ -96,6 +96,9 @@ fi
 # x1, 2026-08-18/2026-08-21) with none caught by the check above. Checks the
 # live log AND the archive combined (a number could be reused against an
 # already-resolved/archived id too).
+echo ""
+python3 "scripts/doctrine_freshness.py" 2>/dev/null || true   # Hard Rule 16 (2026-11-11): stale doctrine is red
+echo ""
 python3 "scripts/lib/gg_id_uniqueness_check.py" \
     "03_DECISIONS/GOVERNANCE_GAP_LOG.md" "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md"
 

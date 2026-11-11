@@ -1,8 +1,11 @@
 # Prediction Market Trading Bot — Project Directory
 
+> **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
+
+
 **Purpose:** Navigation hub and canonical entry point for the Prediction Market Trading Bot project. Start here.
 **Owner (role):** Directory Steward (DS)
-**Last reviewed:** 2026-10-09 (strategic window "forest" pass — test: if somebody picked this up, would they know where we're at? Found this hub 82 days stale despite the 14-day staleness alert it describes below)
+**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added; body predates DOCTRINE.md - DOCTRINE.md wins). Previously: 2026-10-09 (strategic window "forest" pass — test: if somebody picked this up, would they know where we're at? Found this hub 82 days stale despite the 14-day staleness alert it describes below)
 **Last reviewed (prior):** 2026-07-19 (revival pass, Cowork session — see Compass Health section below for why this was needed)
 **Last reviewed (prior):** 2026-05-21 (baseline instantiation) — this file went **~7 weeks (2026-05-21 to 2026-07-19) without a single update**, despite the project moving from Phase 0 (all gates Not Started) to Phase 6/7 ACTIVE with MLB paper trading live and G6 in progress. See Compass Health below.
 **Next review:** Weekly (Directory Integrity Review cadence, per Update Cadence table below) — this cadence is aspirational until it is actually enforced; a staleness check was added to `.claude/hooks/governance_scan.sh` on 2026-07-19 (GG-127) so this file cannot silently drift unnoticed again.
