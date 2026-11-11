@@ -441,6 +441,28 @@ def test_gg1771_epoch_floor_excludes_pre_epoch_rows_and_default_is_unchanged():
     assert orders(rpt.build_report([pre], now, f, epoch_floor=ep)) == 0
 
 
+def test_markout_turn_off_ignores_pre_gg1771_epoch_fills(tmp_path, monkeypatch):
+    """W109.6: planted pre-epoch NO-side rows (treatment credibly worse, judged n) must not trip the markout turn-off
+    when the report runs with the GG-1771 floor; with no floor the same rows still trip (old behaviour)."""
+    monkeypatch.setattr(rpt, "JUDGED_N", 5)
+    ep = rpt.GG1771_EPOCH
+    (tmp_path / "EPOCH.json").write_text(json.dumps({"collection_start": (ep - timedelta(days=15)).isoformat()}))
+    pre = (ep - timedelta(hours=6)).isoformat()
+    rows = []
+    for i in range(12):
+        for arm, h in (("control", 0.0), ("treatment", -0.2)):
+            rows.append({"sport": "NBA", "arm": arm, "game": f"g{i % 4}", "side": "NO", "h30": h + 0.001 * i, "fill_ts": pre})
+    (tmp_path / "markouts.jsonl").write_text("\n".join(json.dumps(r) for r in rows))
+    now = ep + timedelta(days=1)
+    f = lambda oid, t: {}  # noqa: E731
+    old = rpt.build_report([], now, f, markout_dir=tmp_path)
+    assert old["turn_off_checks"]["treatment_markout_30m_worse_than_control"]["tripped"] is True
+    new = rpt.build_report([], now, f, markout_dir=tmp_path, epoch_floor=ep)
+    chk = new["turn_off_checks"]["treatment_markout_30m_worse_than_control"]
+    assert chk["tripped"] is False and chk["n_by_sport"]["NBA"] == {"control": 0, "treatment": 0, "judged": False}
+    assert not any(t["condition"] == "treatment_markout_30m_worse_than_control" for t in new["tripped"])
+
+
 # ---- GG-1783: NO-side rows in the timing-audit scripts ----
 def test_effective_side_flips_sell_only():
     assert rpt.effective_side("yes", "sell") == "no"

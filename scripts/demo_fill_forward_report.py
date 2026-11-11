@@ -536,6 +536,12 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
         epoch = _ts({"ts": json.loads((markout_dir / "EPOCH.json").read_text())["collection_start"]})
     except (OSError, ValueError, KeyError):
         pass
+    # W109.6: the markout check is epoch-gated like the cancel-failure / orphan checks (GG-754 pattern). Fills before the
+    # GG-1771 epoch had NO-side prices mirrored, so their held-side markouts are not evidence; the floor is the later of
+    # the collector's EPOCH.json and the report's epoch_floor. Without this a pre-epoch NO-side artifact tripped the
+    # turn-off on 2026-11-05 and kept it tripped (the store is append-only, so it re-tripped daily).
+    if epoch_floor is not None and (epoch is None or epoch_floor > epoch):
+        epoch = epoch_floor
     mk = {sp: markout_c(mrows, sp, epoch, "shadow") for _, sp in SPORTS}
     mk_tripped = [sp for sp, m in mk.items() if m["judged"] and m["holds"] is False]
     checks["treatment_markout_30m_worse_than_control"] = {

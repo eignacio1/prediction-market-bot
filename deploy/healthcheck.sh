@@ -19,6 +19,7 @@
 #   8  deploy truth (scripts/ops/deploy_truth.py): failed deploy / stale pending restart / stale service code
 #   9  Kalshi DEMO API reachable (read-only GET, 2 tries)
 #  10  logs/ writable, disk < 90%
+#  11  demo-fill stall (W109.6): WARN when 0 demo orders in 24h while shadow arms logged rows
 #
 # Env overrides exist for tests/test_healthcheck.py only:
 #   PMBOT_DIR PMBOT_PYTHON PMBOT_SYSTEMCTL PMBOT_CRONTAB_CMD PMBOT_SKIP_NET PMBOT_MIN_OPENSSL
@@ -170,6 +171,17 @@ if [ -w "$PROJ/logs" ]; then pass "logs/ writable"; else fail "logs/ not writabl
 USE="$(df -P "$PROJ" 2>/dev/null | awk 'NR==2{gsub("%","",$5); print $5}')"
 if [ -n "${USE:-}" ]; then
     if [ "$USE" -ge 90 ]; then fail "disk ${USE}% used"; elif [ "$USE" -ge 80 ]; then warn "disk ${USE}% used"; else pass "disk ${USE}% used"; fi
+fi
+
+# 11. demo-fill stall (W109.6): the forward test sat 5 days with every switch off and nothing alarmed
+if ST="$(cd "$PROJ" && PYTHONPATH="$PROJ/src" "$PYTHON" -m prediction_market_bot.pregame_shadow.demo_fill_stall "$PROJ" 2>&1)"; then
+    case "$ST" in
+        STALLED*) warn "demo-fill stall: ${ST#STALLED: }" ;;
+        UNKNOWN*) warn "demo-fill stall check: ${ST#UNKNOWN: }" ;;
+        *) pass "demo-fill: ${ST#OK: }" ;;
+    esac
+else
+    warn "demo-fill stall check errored: $(echo "$ST" | tail -1)"
 fi
 
 echo ""
