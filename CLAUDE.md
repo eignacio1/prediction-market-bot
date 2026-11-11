@@ -26,7 +26,7 @@ Prediction markets are the laboratory. They are the only widely available instru
 
 If the methodology works — if a systematically calibrated probabilistic model can be shown to generate consistent edge over market-implied prices in environments where those prices are not maximally efficient — it generalizes. New sport: new C1 data module, new C2 feature set, same methodology. New venue: new VenueAdapter, same methodology. The trading bot is the calibration regime. The transferable value is the framework for building, testing, and proving that kind of edge rigorously.
 
-**Every session should hold this framing.** The pipeline is the instrument. The markets are the laboratory. The resolved binary outcomes are the data. The question being answered is: does the model know something the market doesn't?
+**Every session should hold this framing.** The pipeline is the instrument. The markets are the laboratory. The resolved binary outcomes are the data. The question being answered is: does the model know something the market doesn't? — and, binding since 2026-11-10 (§ "The architecture" below), which arm each route should take given what the model and the market each know.
 
 ### What winning looks like — the operator's north star (four pillars)
 
@@ -79,6 +79,25 @@ How this binds work (Hard Rule 12):
 ## What This Project Is
 
 **A prediction market trading bot** — not an NBA bot. NBA is the first sport implemented. The system is designed to eventually cover any sport where regulated prediction markets exist and reliable statistics data can be sourced.
+
+### The architecture — every route optimized by layered multi-arm trees (operator, binding; read before "The strategy" below)
+
+*Operator 2026-11-10 21:41 PT: "my vision from DAY 1 was to build out the decision trees so we optimize every single route while using tried
+and true math scaffolding and betting architecture. Does a quant - that finds through rigorous testing and scaffolding that a certain betting
+pattern doesn't beat the "market" keep going? no he fucking routes it to the correct path so that loss still WINS." And 21:35 PT: depth is
+"meant to ENHANCE OUR DECISION TREES WHICH COULD VERY WELL MEAN RIDE THE WAVE". Full record: DECISION_LOG 2026-11-10 21:35 / 21:41 PT.*
+
+- **The bot is not a model that tries to out-price the market.** It is layered decision trees that pick the ARM for every market: ride the
+  market, fade it, momentum, pot of gold, or no bet. Layer 1 market state (price, move, ladder gap, book, time to start); layer 2 filters
+  built from the depth factors (matchup, lineup / usage, rest / travel, refs, weather, PAM, qualitative); layer 3 a tree per cell that
+  chooses the arm. The engine's own price is one input to the tree, never the bet by itself.
+- **A test that says "this pattern does not beat the market" is a ROUTING result, not a stop.** It tells the tree which arm that leaf gets
+  (often: ride the market's side). Frozen tests judge cells and leaves; they never gate building.
+- **A factor is APPLIED when it is a tested split in that tree**, scored per leaf: net after costs, held out, for each arm. A Brier score
+  of "our model vs the market" may be reported; it is never the verdict on a factor, a cell or the strategy.
+- The edge condition below (`model_p > market_implied_probability + vig`) is the FADE arm's entry rule only. It is not the strategy.
+- Every block, review and window that scores a factor or a cell states the arm and the leaf it scored. Scoring a factor only as a competing
+  price is the failure this section exists to stop (window error log W48 / W50 / W52).
 
 ### The strategy
 

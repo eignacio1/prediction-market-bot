@@ -3365,3 +3365,14 @@ Context: the window said depth work was "meant to change" the record of our mode
 competing price. Effect: binding architecture - factors feed layered decision trees and filters that choose the arm per market (ride /
 fade / momentum / pot of gold / no bet); a factor is applied when it is a tested split in that tree, scored per leaf on held-out net
 after costs; the engine's price is one input, never the bet. Wave 110 blocks 110.1-110.3 amended (queue addendum, COMMON_RULES_W110).
+
+## 2026-11-10 21:41 PT — Operator: optimize every route; a pattern that loses to the market is routed, not abandoned (SW-9)
+Verbatim: "How does this keeeeep happening - my vision from DAY 1 was to build out the decision trees so we optimize every single route while
+using tried and true math scaffolding and betting architecture. Does a quant - that finds through rigorous testing and scaffolding that a
+certain betting pattern doesn't beat the "market" keep going? no he fucking routes it to the correct path so that loss still WINS. How many
+times will the reigning NBA Champion Knicks lose to the Milwaukee Bucks in a regular season Tuesday game in November - maybe 1 out of every
+40 simulations - RIDE THE FUCKING WAVE ON THAT MONEYLINE IT SHOULDN'T BE FOR THAT SCENARIO."
+Effect: CLAUDE.md gains § "The architecture — every route optimized by layered multi-arm trees" above "The strategy" (read first by every
+session); the edge condition is re-scoped to the fade arm's entry rule. Root cause of the recurrence (W48 / W50 / W52): CLAUDE.md's
+strategy section stated `model_p > market + vig` as THE strategy and every session inherited it; the trees doctrine lived only in ADRs
+and the decision log.
