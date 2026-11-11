@@ -67,6 +67,10 @@ flow (props, parlays, thin markets) before institutionally priced headline lines
 No real capital; Kelly 0; pre-registration before a cell's first row; no score read below judged n; installs only on the operator's
 named approval; demo / paper actions are plumbing.
 
+**Every closed cell is provisional (operator 2026-11-10 22:03 PT):** "every single "closed" cell will get reopened once I feel the project
+is at a suitable state. We're clearly not even close to that yet lol". A RULED_OUT / closed-arm cell keeps logging where it can, is never
+deleted or treated as final, and is reopened when the operator says the project is ready - his call, not a window's.
+
 ## Doctrine stack — every file below carries a "Last reviewed" line and defers to this file
 | File | What it holds | Last reviewed |
 |---|---|---|

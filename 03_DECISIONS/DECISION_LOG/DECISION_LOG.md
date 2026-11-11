@@ -3404,3 +3404,9 @@ COVERAGE_TARGET_MATRIX, PREGAME_FEATURE_ARCHITECTURE; visual dashboard wording; 
 EXP-037's two NFL game-total cells (T1, T2), ruled out at the 11-02 first look because the model lost to the market, are read under
 ADR-0077 as a routing result: the fade arm is closed for those cells; ride / no-bet stay open. Label only: the frozen test's state
 (CellStatus.RULED_OUT, not re-scored) is unchanged; the registry reason text, DOCTRINE.md 1b and the visual dashboard wording change.
+
+## 2026-11-10 22:03 PT — Operator: every closed cell will be reopened later (SW-9)
+Verbatim: "Just letting you know - I've been holding this in for a while - but every single "closed" cell will get reopened once I feel
+the project is at a suitable state. We're clearly not even close to that yet lol"
+Effect: DOCTRINE.md §8 - closed / RULED_OUT cells are provisional: keep logging, never deleted or treated as final, reopened on the
+operator's word.
