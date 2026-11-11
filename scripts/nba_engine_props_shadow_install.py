@@ -26,7 +26,7 @@ CRON_CONF = ROOT / "deploy" / "cron.nba_engine_props_shadow"
 BEGIN = "# BEGIN W109.3 NBA ENGINE PROPS SHADOW LINE"
 END = "# END W109.3 NBA ENGINE PROPS SHADOW LINE"
 MARKERS = ("scripts/run_nba_engine_props_shadow.py",)
-OWN_KEY = "cron|37 * * * *|scripts/run_nba_engine_props_shadow.py"
+OWN_KEY = "cron|39 * * * *|scripts/run_nba_engine_props_shadow.py"
 LOG = ROOT / "logs" / "nba_engine_props_shadow.log"
 LEDGERS = ROOT / "exp_output" / "PREGAME_SHADOW_EXP047"
 

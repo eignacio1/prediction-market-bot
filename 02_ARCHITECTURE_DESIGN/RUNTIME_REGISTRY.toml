@@ -1432,7 +1432,7 @@ schedule = "23,53 0-3,17-23 * * *"
 mirrors = ["deploy/cron.conf"]
 command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHONPATH $PYTHON scripts/archive_market_prices.py --series KXNFLPASSYDS KXNFLRSHYDS KXNFLRECYDS KXNFLREC KXNFLTD KXNFLPASSTDS KXNFLPASSATT KXNFLPASSCOMP KXNFLRSHATT KXNFLRRYDS --out exp_output/PRICE_ARCHIVE >> logs/price_archive_cron.log 2>&1"
 [[component]]
-key = "cron|37 * * * *|scripts/run_nba_engine_props_shadow.py"
+key = "cron|39 * * * *|scripts/run_nba_engine_props_shadow.py"
 kind = "cron"
 source = "deploy/cron.nba_engine_props_shadow"
 status = "paused"
@@ -1442,6 +1442,6 @@ pillar = "BREADTH"
 writes = ["logs/nba_engine_props_shadow.log", "data/raw/nba_props/box.json", "data/raw/nba_props/tips.json", "exp_output/PREGAME_SHADOW_EXP047/"]
 alarm = "staleness: SURFACE BUDGET goes RED if logs/nba_engine_props_shadow.log is older than 3h while NBA has games in window; silent-arms probe covers zero rows with games"
 max_age_h = "3"
-schedule = "37 * * * *"
+schedule = "39 * * * *"
 mirrors = ["deploy/cron.nba_engine_props_shadow"]
 command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nba_engine_props_shadow\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nba_engine_props_shadow.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
