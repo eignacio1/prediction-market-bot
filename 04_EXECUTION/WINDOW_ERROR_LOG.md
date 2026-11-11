@@ -192,3 +192,11 @@ premise as written; none audits CODE against the doctrine, so a wrong premise ba
 the operator asked why any cell is closed. Rule: every wave close maps each DOCTRINE.md rule to the code that implements or contradicts
 it (decision points: verdict rules, cell statuses, order gates, pre-registration templates); a contradiction is a red for the next wave's
 first block. Backlog: the doctrine-conformance audit (W111) and the engine fix (W111.1).
+
+### W54 - SW-9, 2026-11-11 06:30Z - the operator has been the one making the strategic catches, on directives he had already given
+Operator 11-10 22:16 PT: "ALL of the larger strategic decisions have been made by me ... most of the things I've presented in this window,
+and practically the entire project, are all things that have been talked about NUMEROUS times." Multi-arm routing (day-one vision),
+no-closed-cells, depth-enhances-trees and no-"no edge" were each raised by him, more than once, before any window acted on them. Windows
+read doctrine forward; none kept a ledger of what he had already said and checked whether it was built. Rule: strategic-handoff step 6 -
+04_EXECUTION/OPERATOR_DIRECTIVES.md read at every wave close; each wave opens with the oldest not-built / contradicted directive; a
+third raise of the same thing is logged here that turn. The ledger is built before W111.
