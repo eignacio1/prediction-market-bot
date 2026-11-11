@@ -98,6 +98,9 @@ TASKS: dict[str, str] = {
     "install_batch_w99_install": f"{PY} scripts/install_batch_w99.py install",
     "install_batch_w99_readback": f"{PY} scripts/install_batch_w99.py readback",
     "install_batch_w99_uninstall": f"{PY} scripts/install_batch_w99.py uninstall",
+    # W109.6: re-arm the demo-fill forward test (moves deploy/demo_fill.override.env aside; refuses if the epoch-gated report still trips)
+    "demo_fill_rearm_check": f"{PY} scripts/demo_fill_rearm.py check",
+    "demo_fill_rearm": f"{PY} scripts/demo_fill_rearm.py apply",
     "box_memory_read": f"{PY} scripts/box_memory_read.py --since '24 hours ago'",
     # W101.3 / B-027: READ-ONLY. Fixed window 11-03 20:00Z -> now = pre-lock night (11-03 PT slate) + the lock install (11-05 02:11Z) + the first locked night.
     "box_memory_read_w101": f"{PY} scripts/box_memory_read.py --since '2026-11-03 20:00'",
