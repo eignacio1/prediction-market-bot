@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 109 READY TO PASTE - five blocks in NOW (109.1 NBA architecture, 109.2 NHL architecture, 109.3 NBA props from the engine, 109.4 props net of costs, 109.5 the reds).** Written 2026-11-11 ~00:45 UTC by SW-9. **Waiting on you:** the EXP-038 second-look draft. Ride board + prop archive installs APPROVED 11-10 16:27 PT.
+> **▶ WAVE 109 IN FLIGHT - five blocks sent; 109.6 RED ALERT added 01:25Z: the forward test has placed no demo orders since 11-05 (its turn-off tripped; nothing alarmed). Paste 109.6 into a sixth terminal.** Written by SW-9. Installs done 11-11 00:45Z (budget GREEN).
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -87,6 +87,7 @@ combos (09-25) - the prop suite (109.3) is their prerequisite: a parlay is price
 | 109.3 | suite · 2 | NBA player props priced from the NBA engine; shadow cells pre-registered; runner prepared | 🔄 A+B pushed (session/20261111T003828Z-w109-3-nba-props) | Part A props module + 7 tests; Part B null: engine Brier worse than market mid in all 4 families (pts +0.016, reb +0.010, ast +0.007, 3pt +0.007; CIs exclude 0, n=15,364, 96 games). Part C next. |
 | 109.4 | quant · 4 | NBA / NFL / NHL props net of costs (finish B-064 with 108.3's public candlesticks) | ⏳ pasted? | — |
 | 109.5 | flex · red | Dashboard memory (#458 onto main), MLB Features Sync off-season, surface budget | ⏳ pasted? | — |
+| 109.6 | RED · execution | The forward test has placed no demo orders since 11-05 (turn-off tripped, nothing alarmed) | ⏳ pasted? | — |
 
 ### 109.1 - ENGINE (NBA ARCHITECTURE)
 
@@ -238,6 +239,43 @@ PART C (~25 min) - the budget
 Report: per COMMON RULES. MEASURE MOVED: PLUMBING - dashboard memory peak before -> after; MLB Features Sync red days -> 0; budget reds
 N -> M. Operator decisions: install tasks by name only.
 END OF BLOCK 109.5
+```
+
+### 109.6 - RED ALERT (THE FORWARD TEST HAS PLACED NO ORDERS SINCE 11-05) - added 2026-11-11 ~01:25 UTC at the window's finding
+
+```
+WAVE 109 - BLOCK 109.6 - RED ALERT - THE ADR-0072 FORWARD TEST HAS PLACED NO DEMO ORDERS SINCE 2026-11-05
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_6.md. Every part runs on data that exists now.
+File ownership (no other 109 block touches these): scripts/demo_fill_forward_report.py, src/prediction_market_bot/c5_execution/
+demo_fill_policy.py (read; edit only if Part B needs it), deploy/demo_fill*.env templates, the silent-arms / healthcheck alarm code, tests.
+
+PURPOSE: EXECUTION (E1 / E2 / FT). The box's forward-test log (logs/demo_fill_forward_report.log, read by distance_read at
+2026-11-11T01:13Z; result in 04_EXECUTION/BOX_TASKS/results/) reads every day 11-06 .. 11-10: "no events yet | turn-off: TRIPPED
+treatment_markout_30m_worse_than_control". The Live Terminal's NBA desk shows the newest NBA shadow_order at 2026-11-05 10:23Z. The
+report writes both switches `off` to the untracked deploy/demo_fill.override.env when a turn-off trips (GG-587), so every demo order
+stopped - the forward test "restarted at the GG-1771 epoch 11-06 01:03Z" has placed nothing since. Nothing alarmed for five days.
+
+PART A (~40 min) - what happened (read-only on the box)
+1. Quote: deploy/demo_fill.override.env (contents, mtime), the turn_off event(s) in logs/demo_fill_policy.jsonl, and the report JSON's
+   turn_off_checks: which rows, which dates, which arms fed treatment_markout_30m_worse_than_control. Is the trip computed on pre-epoch
+   data (before 2026-11-06T01:03:42Z, where NO-side fills were mirror-priced, GG-1771) or on clean post-epoch fills? Is it sticky?
+2. State it in one sentence: a valid result on clean data, or an artifact of the epoch / a sticky flag.
+
+PART B (~45 min) - the fix the evidence calls for
+1. If an artifact: epoch-gate the markout turn-off exactly as the cancel-failure and orphan checks already are (GG-754 pattern), with a
+   test on a planted pre-epoch row; PR, merge on green. Do NOT clear the override file yourself: name the exact step that re-arms
+   (an allowlisted task, PREPARED) - the window brings it to the operator.
+2. If a valid result on clean data: change nothing; write the verdict (n, markout difference, interval) for the operator.
+
+PART C (~30 min) - never silent again
+1. An alarm: demo orders = 0 in the last 24 h while any arm logged rows for games in that window -> healthcheck WARNING with the reason
+   (override file present, turn-off condition). Tests. PR; merge on green. Read healthcheck after the deploy.
+
+Report: per COMMON RULES. MEASURE MOVED: EXECUTION - days of forward test lost (5); cause found; alarm live. Operator decisions: re-arm,
+by name, only after Part A.
+END OF BLOCK 109.6
 ```
 
 ---

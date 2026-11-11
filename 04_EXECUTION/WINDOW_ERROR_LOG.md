@@ -167,3 +167,11 @@ the operator's stated expectation that results stay negative while the architect
 tickets. Operator, 11-09 21:29 PT: "it'll stay fkn negative for a while". Pattern: FOREST (read a measurement verdict as a build verdict).
 Rule: frozen tests judge cells; they never gate building. Every wave carries three blocks of build work drawn from the backlog's build
 tickets; negative results change which cell is targeted, not whether to build.
+
+### W51 - SW-9, 2026-11-11 01:25Z - reported "forward test restarted 11-06" for five days without checking it placed an order
+Every sitrep, the distance table and the dashboard said the ADR-0072 forward test restarted at the GG-1771 epoch (11-06 01:03Z). The box's
+own forward-test log has read "no events yet | turn-off: TRIPPED treatment_markout_30m_worse_than_control" every day since 11-06, and the
+newest NBA demo order is 11-05 10:23Z. The window repeated a restart claim from a handoff instead of reading the report line it already
+had a task for (distance_read prints it). Found only because the operator asked about empty space on the new NBA desk. Pattern: ASSERTED
+NOT CHECKED (merge != deploy != activation, again). Rule: a running claim in the sitrep carries its last-checked read and date; an arm or
+test with zero orders in 24 h while games ran is red, and block 109.6 makes that an alarm.
