@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 110 READY TO PASTE - five blocks in NOW (110.1 NFL weather + matchup, 110.2 NBA factors as tree splits, 110.3 every cell routed, 110.4 same-game correlation, 110.5 RETRO-ROUTE every logged row through the multi-arm tree).** Addendum at the top of 110.1 applies to 110.1-110.3. Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft.
+> **■ WAVE 110 CLOSED 2026-11-11 (#473 #475 #476 #478 #479 merged, main CI green). Wave 111 not written yet - operator 11-10 22:28 PT: "don't make the next prompt block yet".** Before W111: `04_EXECUTION/OPERATOR_DIRECTIVES.md`, then W111.1 engine fix first. Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.

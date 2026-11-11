@@ -98,6 +98,7 @@ fi
 # already-resolved/archived id too).
 echo ""
 python3 "scripts/doctrine_freshness.py" 2>/dev/null || true   # Hard Rule 16 (2026-11-11): stale doctrine is red
+python3 "scripts/claude_md_now.py" 2>/dev/null || true   # Hard Rule 16: CLAUDE.md Right-now block vs the code (operator 11-10 22:28 PT)
 echo ""
 python3 "scripts/lib/gg_id_uniqueness_check.py" \
     "03_DECISIONS/GOVERNANCE_GAP_LOG.md" "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md"

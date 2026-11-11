@@ -2,7 +2,7 @@
 
 When the operator asks for the vision, the scale, the bar, or "what are we building" — or types /vision:
 
-1. Read `CLAUDE.md` § "What winning looks like" (north star, four pillars, distance measures) and § "The scale — one deep engine per sport", then `03_DECISIONS/ADR-0073_sport-engine-doctrine.md` and `03_DECISIONS/ADR-0075_betting-architecture-doctrine.md` (what edge means: aggregation > interpretation > application, the eight components).
+1. Read `CLAUDE.md` § "What winning looks like" (north star, four pillars, distance measures) and § "The scale and what edge means", then `03_DECISIONS/ADR-0073_sport-engine-doctrine.md` and `03_DECISIONS/ADR-0075_betting-architecture-doctrine.md` (what edge means: aggregation > interpretation > application, the eight components).
 2. Read the DISTANCE TO OPTIMUM table at the top of `04_EXECUTION/ACTIVE_QUEUE.md` for where the project stands now (dated values only).
 3. Answer in plain words, short, in this order:
    - **What winning looks like** — the bot at optimum: every live sport's whole board, every band, every cell's edge found or ruled out; accumulation ("picking up every damn cent that falls along the way").
