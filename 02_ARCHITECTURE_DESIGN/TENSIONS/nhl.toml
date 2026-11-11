@@ -1,0 +1,67 @@
+[meta]
+sport = "nhl"
+updated = "2026-11-11"
+banner = "v0 DRAFT opened by a model from files on main (W109.2). Each tension names a file or gap that exists. Status OPEN means unrelieved, not unexamined."
+
+[[tension]]
+id = "NHL-T1"
+title = "Totals: the engine under-predicts regulation goals in 2023-24 (sign flips by 2025) and the two fixes tried did not remove the bias or beat the baseline"
+status = "OPEN"
+where = "src/prediction_market_bot/nhl_engine/model.py price_games TOTAL lines 4.5/5.5/6.5"
+evidence = "12_EXPLORATORY/nhl_engine/results/w101_1_heldout.json; 12_EXPLORATORY/nhl_engine/results/w109_2_totals.json"
+pillar = "DEPTH (D5 applied) / PROOF"
+relief = "Mean regulation-goal bias (predicted minus actual) held out 2023-2025 is -0.15, -0.10 and +0.01 by season: it is not stable in sign. W101.1 shrink gave -0.0008 Brier (pre-registered NO). W109.2 rest-state shift is gated out (stability CI includes 0 in every season) and ungated is -0.00007 [-0.00022, +0.00009]. Relief needs a factor that passes the stability gate, not a re-tune of the level."
+
+[[tension]]
+id = "NHL-T2"
+title = "Deeper tree is not better for totals: full depth is worse than depth 2"
+status = "OPEN"
+where = "src/prediction_market_bot/nhl_engine/decision_tree.py depth 3 (goalie strength) vs depth 2"
+evidence = "12_EXPLORATORY/nhl_engine/results/w109_2_totals.json; src/prediction_market_bot/nhl_engine/decision_tree.py"
+pillar = "DEPTH (D5 decision_trees)"
+relief = "Held out n=3,936 games: depth 3 minus depth 2 = +0.00061 TOTAL Brier [+0.00001, +0.00125] (worse, CI just clear of 0). The goalie-strength proxy adds noise to totals. Fix the goalie source (NHL-T3) before routing totals to depth 3; moneyline and puck line need their own depth ladder."
+
+[[tension]]
+id = "NHL-T3"
+title = "Goalie quality is a game-score proxy, not the announced starter"
+status = "OPEN"
+where = "model.py FEATS gs_own/gs_opp; seat factor H2"
+evidence = "tests/test_nhl_goalie_source_probe.py; 02_ARCHITECTURE_DESIGN/SEATS/nhl.toml; GG-1010"
+pillar = "DEPTH (D5b interpreted vs applied)"
+relief = "A free, point-in-time starter-confirmation source (unconfirmed starters priced as a mixture) and a measured lift on held-out Brier before the seat factor is called applied."
+
+[[tension]]
+id = "NHL-T4"
+title = "Overtime and shootout credit: the engine prices regulation exactly but the tie split is a fitted constant"
+status = "OPEN"
+where = "model.py Fitted.p_home_ot / tie_odds; goals.py poisson_tie_prob"
+evidence = "12_EXPLORATORY/nhl_engine/results/w99_1_ot_diag.json; 12_EXPLORATORY/nhl_engine/results/w99_1_ot_tieodds.json"
+pillar = "PROOF"
+relief = "Settlement is exact (W99.1) but the home-in-OT share is one number. A pre-registered test of a rest/strength-conditioned OT split; the OT-credit arm stays unfrozen until then."
+
+[[tension]]
+id = "NHL-T5"
+title = "Against the market the engine trails by an interval that includes zero at n=33 games"
+status = "OPEN"
+where = "engine vs Kalshi from 2026-10-28"
+evidence = "12_EXPLORATORY/nhl_engine/results/w99_1_kalshi_2026.json"
+pillar = "PROOF (P1)"
+relief = "n=33 games, Brier advantage -0.0057 [-0.0126, +0.0013]: neither a win nor a proven loss. More games logged, scored at the pre-registered look; no earlier read."
+
+[[tension]]
+id = "NHL-T6"
+title = "No market price history for 2023-2025, so held-out wins are Brier-vs-results only and no net is computable"
+status = "OPEN"
+where = "held-out seasons 2023-2025"
+evidence = "12_EXPLORATORY/nhl_engine/results/heldout_w97_4.json; 12_EXPLORATORY/nhl_engine/results/w109_2_totals.json"
+pillar = "PROOF / EXECUTION"
+relief = "A free historical odds source or accumulating our own archive; until then every held-out claim says 'unavailable' for market comparison and net."
+
+[[tension]]
+id = "NHL-T7"
+title = "No cluster designs: NHL has no player archetypes (PAM absent), so clusters stay none"
+status = "OPEN"
+where = "ARCHITECTURE_COMPONENTS.toml nhl cluster_designs"
+evidence = "02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml"
+pillar = "DEPTH (D5a cap 7 of 8)"
+relief = "A Player Attribute Matrix for NHL skaters and goalies from the shot-level store; only then a cluster scaffold with a test."
