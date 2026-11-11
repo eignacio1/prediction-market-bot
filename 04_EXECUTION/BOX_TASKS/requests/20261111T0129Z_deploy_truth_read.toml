@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W109.5: post-#468 deploy read"
