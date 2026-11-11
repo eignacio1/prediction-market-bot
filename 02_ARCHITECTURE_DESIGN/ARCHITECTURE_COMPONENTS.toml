@@ -173,23 +173,23 @@ note = ""
 [[component]]
 sport = "nhl"
 component = "decision_trees"
-scaffold = "none"
-test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NHL (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
+scaffold = "src/prediction_market_bot/nhl_engine/decision_tree.py"
+test = "tests/test_nhl_decision_tree.py"
+note = "W109.2: horizon-routed depth 0-3 over the engine's own features (dropped levels replaced by training means). Held out TOTAL n=3,936: depth 3 is WORSE than depth 2 (+0.00061 [+0.00001,+0.00125]). Stage: interpreted. 12_EXPLORATORY/nhl_engine/results/w109_2_totals.json"
 
 [[component]]
 sport = "nhl"
 component = "filtering_mechanisms"
-scaffold = "none"
-test = "none"
-note = "W90.2 router is sport-agnostic but not replayed for NHL (archive exists since 2026-10-28, GG-1330 resolved; replay not yet run); not counted"
+scaffold = "src/prediction_market_bot/nhl_engine/granularity_index.py"
+test = "tests/test_nhl_granularity_index.py"
+note = "W109.2: split-half stability gate + min-n filter before any shift is applied. Rest-state factor fails the gate in 2023, 2024 and 2025 (abstains); ungated is -0.00007 [-0.00022,+0.00009]. Stage: applied path built, factor abstains (no usable totals signal)"
 
 [[component]]
 sport = "nhl"
 component = "cluster_designs"
 scaffold = "none"
 test = "none"
-note = ""
+note = "W109.2: stays none: NHL has no player archetypes (PAM absent); see NHL-T7"
 
 [[component]]
 sport = "nhl"
@@ -208,23 +208,23 @@ note = "W90.3: follow/fade after pre-game moves >=3c, net of costs: gross contin
 [[component]]
 sport = "nhl"
 component = "temporal_evolution"
-scaffold = "none"
-test = "none"
-note = "not counted (W84.3): rolling as-of features exist in 12_EXPLORATORY/nhl_engine/nhl_factors.py with a PIT test, but no stability test across seasons (see NFL entry for the bar)"
+scaffold = "src/prediction_market_bot/nhl_engine/temporal_evolution.py"
+test = "tests/test_nhl_temporal_evolution.py"
+note = "W109.2: NFL generics on game number. 2022-25 gf: within-season slope 0.0003/game [-0.0004,+0.0013] (flat); odd/even vs early/late reliability gap -0.05 [-0.17,+0.06]; blend weight on this season rises 0.18 (games 10-25) to 0.55 (51-82), prior season falls 0.47 to 0.10. Stage: interpreted"
 
 [[component]]
 sport = "nhl"
 component = "structural_tensions"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "02_ARCHITECTURE_DESIGN/TENSIONS/nhl.toml"
+test = "tests/test_tensions.py"
+note = "W109.2: 7 tensions, evidence-cited, rendered to NHL_TENSIONS.md"
 
 [[component]]
 sport = "nhl"
 component = "seat_interface"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "02_ARCHITECTURE_DESIGN/SEATS/nhl.toml"
+test = "tests/test_seat_interface.py"
+note = "SEATS/nhl.toml existed since W83.3/W84.3 (v0 DRAFT) but this row still said none; registered by W109.2"
 
 # D4 engine artifacts (ADR-0073): a sport's engine stage is read from these files existing on main.
 # data_layer = event-level store manifest; engine = simulation scaffold; engine_test = its invariants test.

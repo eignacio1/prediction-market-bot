@@ -17,7 +17,7 @@ def _reg(sport):
 
 
 def test_every_tension_has_all_fields_and_unique_ids():
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         ids = []
         for t in _reg(sport)["tension"]:
             for f in FIELDS:
@@ -27,7 +27,7 @@ def test_every_tension_has_all_fields_and_unique_ids():
 
 
 def test_evidence_cites_an_existing_file_or_gap():
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         for t in _reg(sport)["tension"]:
             paths = re.findall(r"[\w./-]+\.(?:md|toml|py|json)\b", t["evidence"])
             gaps = re.findall(r"GG-\d+", t["evidence"])
@@ -45,5 +45,5 @@ def test_nfl_seeds_present():
 def test_renders_current():
     sys.path.insert(0, str(ROOT / "scripts"))
     import render_tensions
-    for sport in ("nfl", "nba"):
+    for sport in ("nfl", "nba", "nhl"):
         assert (T / f"{sport.upper()}_TENSIONS.md").read_text() == render_tensions.render(T / f"{sport}.toml")
