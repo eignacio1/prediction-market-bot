@@ -158,3 +158,23 @@ def test_failed_deploy_status_is_red(rig, tmp_path):
 def test_old_openssl_is_red(rig):
     rc, out = run(rig, PMBOT_MIN_OPENSSL="99")
     assert rc == 1 and "OpenSSL < 3" in out
+
+
+def test_demo_fill_stall_warns_not_fails(rig):
+    """W109.6: 0 demo orders in 24h while an arm logged rows -> WARN naming the override file; never a fault."""
+    from datetime import datetime, timedelta, timezone
+    proj = rig[0]
+    now = datetime.now(timezone.utc)
+    (proj / "logs").mkdir(exist_ok=True)
+    (proj / "logs/demo_fill_policy.jsonl").write_text(
+        '{"ts": "%s", "event": "shadow_order"}\n' % (now - timedelta(days=6)).isoformat())
+    led = proj / "exp_output/PREGAME_SHADOW"
+    led.mkdir(parents=True, exist_ok=True)
+    (led / "NBA_MONEYLINE_T1.jsonl").write_text('{"ts_utc": "%s"}\n' % (now - timedelta(hours=1)).isoformat())
+    (proj / "deploy/demo_fill.override.env").write_text(
+        "# TURNED OFF by demo_fill_forward_report (treatment_markout_30m_worse_than_control).\n"
+        "DEMO_FILL_PLACEMENT_RULE=off\n")
+    rc, out = run(rig)
+    assert "[WARN] demo-fill stall: DEMO ORDERS = 0" in out
+    assert "demo_fill.override.env" in out and "treatment_markout_30m_worse_than_control" in out
+    assert "[FAIL] demo" not in out
