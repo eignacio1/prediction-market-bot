@@ -81,7 +81,7 @@ architecture is built, the applied factors so far are ones the market already pr
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
-| 110.1 | engine · 3 | NFL: weather + matchup classes applied in the engine (D1, D5b) | ⏳ pasted? | — |
+| 110.1 | engine · 3 | NFL: weather + matchup classes applied in the engine (D1, D5b) | ✅ MERGED PR #473 (567477f) | Weather PIT + matchup crosses exported as filters (`nfl_engine/filters.py`) for 110.3's router; D5(b) NFL applied 10→12. Per-leaf net after costs: 0/82 leaves earn an arm (~2 by chance); MOMENTUM unscorable (one closing line); no NFL Kalshi spread/totals history. Box deploy: t4-mlb not_needed. |
 | 110.2 | engine · 3 | NBA: the 9 "interpreted" factors → applied through the tree (D5b NBA 5 → ?) | ✅ DONE (PR #475 merged @58c1cb1, CI green): D5(b) NBA applied 5 → 10 of 17 (B10, B12, B13, P1, P2). Held-out n=2268 vs realized outcomes: usage improves spread −0.0041 [−0.0063,−0.0019] and team total −0.0017 [−0.0026,−0.0009] Brier; geometry, officials null; PAM hindsight-only; ml no gain. No 2025-26 Kalshi spread/total quotes → no market comparison beyond 109.1's ml NULL. 12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md | — |
 | 110.3 | trees · 5 | Every registered cell routed (ride / fade / momentum / pot of gold / no-bet), horizon depth, orders OFF | ⏳ pasted? | — |
 | 110.4 | quant · 4 | Same-game correlation from the NBA engine (game lines + props), checked on settled games | ⏳ pasted? | — |
