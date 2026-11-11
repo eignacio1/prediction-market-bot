@@ -23393,3 +23393,200 @@ END OF BLOCK 107.3
 
 ---
 
+
+
+---
+
+# WAVE 108 prompts (closed 2026-11-11 ~00:45 UTC, operator 11-10 16:14 PT) - moved verbatim from ACTIVE_QUEUE.md
+
+## ▶ NOW — WAVE 108 · WRITTEN 2026-11-10 ~03:40 UTC (11-09 19:40 PT) · SW-9 · four blocks (operator's ask) · paste each block into its own terminal
+
+**Every part runs on data that exists when you paste it. CI is the gate for code only.**
+
+108.1 **proof** = B-062 close the edge map's untested rows · 108.2 **quant** = B-063 news lag at trade-print resolution · 108.3 **quant** =
+B-064 NBA / NFL / NHL props net of costs · 108.4 **scoping (rank 8, research only)** = B-065 Kalshi weather markets vs free NOAA forecasts.
+
+**DOCTRINE CHECK (W48), Wave 107 close.** *Premise:* "a measured mispricing in Kalshi sports markets survives fees, spread and our fills."
+The record (12_EXPLORATORY/edge_map/EDGE_MAP.md): 39 hypotheses, **0 survived costs forward**; 7 ruled out, 13 no effect net, 14 accruing
+(NBA engine first looks 11-13 .. 11-25, NFL second looks 12-14 .. 01-09, EXP-045 01-12, MLB 2027), 5 untested. Information speed (107.2 /
+107.3): NO at 20-minute resolution. **Window's recommendation (WITHDRAWN 11-09 21:29 PT by the operator - the build continues on every lane):** stop new edge-hunting builds on liquid sports
+game lines; let the 14 accruing tests read on their own; close the last cheap sports gaps (this wave: 108.1-108.3); and scope ONE market
+class where free public data is strong and the methodology could transfer (108.4: weather). Cross-venue (Kalshi vs Polymarket) is the other
+structural option and is yours to reopen - nothing is built for it. *Said but not built:* parlays / big-hitter combos (09-25).
+
+- **Pushback:** 108.4 is expansion (rank 8) away from the four sports; it is research only and asks you to decide - if you want sports only,
+  skip pasting it. 108.2-108.3 may return NO again; that closes the sports question with evidence rather than more waiting.
+- **Surface:** box close reads `20261110T032445Z_*`. Delta: +0 running components (108.1 may prepare an archive install, not run).
+- **Dependencies:** none between blocks.
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 108.1 | proof | Close the edge map's untested rows the data can answer; fix its stale archive line; add prop series to the archive | ✅ DONE (install pending) | Edge map 40 rows, UNTESTED 5->4: L03 and new R09 (NBA/NHL ride board, 14d) NO EFFECT NET, Holm 0 of 12 and 0 of 4; stale GG-1330 line fixed; Part C: #456 merged (CI green), 22 prop series (NBA 8, NHL 2, NFL 10) in 3 registered cron lines; archived 0 of 22 until the operator approves `archive_cron_install` by name |
+| 108.2 | quant | News lag at trade-print resolution (Kalshi public trades): is there a minutes-long window the 20-min archive missed | ⏳ pasted? | — |
+| 108.3 | quant | NBA / NFL / NHL props net of costs from Kalshi's public history (MLB was 0 of 50) | PARTIAL | data found (public candlesticks), Part B not run; see 12_EXPLORATORY/quant_w108_props/RESULT.md |
+| 108.4 | scoping · 8 | Kalshi weather markets vs free NOAA / NWS forecasts: calibration and net of costs - research only, your decision | DONE (NYC+CHI): PR #454 merged | Two cities: Kalshi beats free GFS forecast (Brier .098 vs .137); trading toward forecast -3.1c/contract net. Not recommending a build; more cities/lows/rain/2nd model not run. SCOPE.md on main. |
+| 108.5 | RED · flex | The visual dashboard serves a stale page and its service sits at its memory cap | ⏳ pasted? | — |
+
+### 108.1 - PROOF (CLOSE THE UNTESTED ROWS)
+
+```
+WAVE 108 - BLOCK 108.1 - PROOF - CLOSE THE EDGE MAP'S UNTESTED ROWS; FIX ITS STALE LINE; PROP SERIES IN THE ARCHIVE (B-062)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W108.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W108_1.md. Every part runs on data that exists now.
+
+PURPOSE: P1 / P2. The edge map (#452) lists 5 UNTESTED rows and says "the NBA / NHL price archive does not exist (GG-1330)" - that line is
+stale: GG-1330 was RESOLVED in W92.1 (archive_cron_install, 2026-10-28) and NBA / NHL game-line series have archived since. Correct it,
+answer every untested row that existing data can answer, and make sure props are archived going forward.
+
+PART A (~20 min) - correct the map
+1. Verify on the box (read-only) which NBA / NHL series the archive holds and since when. Correct EDGE_MAP.md / edge_map.json and any result
+   file that repeated the stale line (pattern sweep, Hard Rule 13).
+
+PART B (~60 min) - the untested rows
+1. With ~2 weeks of NBA / NHL archive: the ride board's backward test and candle scan (the router replayed on archived books for every
+   in-season cell, net of 106.2's costs), and NBA / NHL pot of gold beyond 9 days (105.6's routes re-read). Held out by time, intervals, n.
+2. Update each row's status from the evidence. No cell is promoted beyond what its held-out net earns.
+
+PART C (~40 min) - props in the archive
+1. Which NBA / NFL / NHL prop series Kalshi lists today vs which the archiver captures. Add the missing ones to the archiver's series list
+   (no change to existing capture; memory measured). If a crontab change is needed, PREPARE one allowlisted install task and name it.
+   PR with tests; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: UNTESTED rows 5 -> N; prop series archived X of Y. Operator decisions: an install, if needed.
+END OF BLOCK 108.1
+```
+
+### 108.2 - QUANT (NEWS LAG AT TRADE RESOLUTION)
+
+```
+WAVE 108 - BLOCK 108.2 - QUANT - NEWS LAG AT TRADE-PRINT RESOLUTION (B-063)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W108.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W108_2.md. Every part runs on data that exists now.
+
+PURPOSE: 107.2 (12_EXPLORATORY/news_lag/RESULT.md) found NBA injury reports move the moneyline < 1c at 20-minute resolution - but a lag of
+a few minutes is invisible there. Kalshi's public trade prints (GET /markets/trades; Muse source card sources/kalshi-trades/trade-prints.md)
+carry per-trade timestamps for past markets: use them to see the minutes after each news item, without the burst-capture install.
+
+PART A (~45 min) - the trade path around the news
+1. For 107.2's 276 NBA injury-report events (and late scratches / starting-goalie news where timestamped): pull the affected games'
+   moneyline, spread and total trade prints from 30 minutes before to 30 minutes after (public endpoint, polite rate, cached). NEW functions
+   in quant/ + known-answer tests (a planted step after a timestamp is recovered with its lag).
+
+PART B (~45 min) - is there a window
+1. Per news type and market family: the price path by minute after the news, the lag to half and to full adjustment, and the move size.
+   Net of 106.2's taker cost for a trade placed at minute 1, 2, 5 after the news (price from the prints, not the mid). n, intervals.
+2. Also check the reverse: did the price move BEFORE the official report (the news was already out elsewhere)?
+
+PART C (~30 min, switch here whenever A waits on the API) - verdict for the window
+1. 12_EXPLORATORY/news_lag/RESULT_W108_2.md: one plain-English paragraph - is there a tradeable window after public news, how long, worth
+   how much net - and whether news_burst_capture_install is still worth installing.
+
+Report: per COMMON RULES. MEASURE MOVED: news lag measured at trade resolution for N events; net window per news type. Operator decisions:
+none (a recommendation on the install).
+END OF BLOCK 108.2
+```
+
+### 108.3 - QUANT (PROPS, ALL SPORTS)
+
+```
+WAVE 108 - BLOCK 108.3 - QUANT - NBA / NFL / NHL PROPS NET OF COSTS (B-064)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W108.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W108_3.md. Every part runs on data that exists now.
+
+PURPOSE: 106.3 (12_EXPLORATORY/quant_w106_props/RESULT.md) found MLB props not mispriced after costs (0 of 50 cells). NBA, NFL and NHL props
+are on the edge map as UNTESTED. Retail money is concentrated in props; this closes the retail-flow question for the in-season sports.
+
+PART A (~40 min) - the data
+1. Kalshi's public settled history and candlesticks / trades for every NBA / NFL / NHL prop series it lists (public endpoints; the archive
+   where it has them). Inventory per family: settled markets, date range, quote availability, liquidity tiers.
+
+PART B (~55 min) - calibration and net
+1. Same method as 106.3 (reuse its functions): settle-rate vs price by family x price band x liquidity tier x time-to-start; earlier 70%
+   fit, later 30% held out; net per contract after the exact fee (quant/money.py) and the quoted spread (106.2: 4-8c on props); Holm / BH.
+
+PART C (~30 min, switch here whenever A waits) - plain English
+1. 12_EXPLORATORY/quant_w108_props/RESULT.md: per sport, "props are / are not mispriced after costs, mostly in ...". If any cell is net
+   positive held out, pre-register it before any forward row (same folder).
+
+Report: per COMMON RULES. MEASURE MOVED: prop families measured net (NBA / NFL / NHL) X of N; net-positive held-out cells. Operator decisions: none.
+END OF BLOCK 108.3
+```
+
+### 108.4 - SCOPING (WEATHER, RESEARCH ONLY)
+
+```
+WAVE 108 - BLOCK 108.4 - SCOPING (rank 8 expansion, RESEARCH ONLY) - KALSHI WEATHER MARKETS VS FREE NOAA / NWS FORECASTS (B-065)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W108.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W108_4.md. Every part runs on data that exists now.
+
+PURPOSE: the doctrine check. CLAUDE.md: "This is a calibration engine for probabilistic reasoning ... New sport ... New venue: ... same
+methodology." Sports lines are priced by institutions; weather markets are settled on public measurements and free professional forecasts
+exist (Muse source cards: NOAA HRRR / GFS on AWS, NWS API and NOMADS, NDFD, IEM MOS, Open-Meteo). Scope whether Kalshi's weather markets
+are mispriced against those forecasts, net of costs. RESEARCH ONLY: no cell, no pre-registration, no order, no running component - the
+operator decides whether this becomes a direction.
+
+PART A (~35 min) - what exists
+1. Kalshi's weather series today (public API): which cities / quantities (daily high, low, rain), strike ladders, settlement source,
+   volume, spread. Which free forecasts were issued before each past market closed (historical forecast archives: Open-Meteo historical
+   forecast API, IEM MOS archive) - say what can be reconstructed point-in-time and what cannot.
+
+PART B (~60 min) - calibration vs the forecast
+1. For settled weather markets (as many months as public data allows): the forecast's probability for each strike vs Kalshi's price at a
+   fixed time before close; Brier / log loss of each; net per contract of trading toward the forecast after the exact fee and quoted spread;
+   earlier 70% / later 30% held out; city-day clustered intervals. NEW functions in quant/ + known-answer tests.
+
+PART C (~30 min, switch here whenever A or B waits) - the scoping memo
+1. 12_EXPLORATORY/weather_scope/SCOPE.md: plain English first - is there a gap, how big after costs, how much data, what a build would take,
+   and the risks (it is not sports; capacity and liquidity per market). A recommendation to the window, not a decision.
+
+Report: per COMMON RULES. MEASURE MOVED: none on the board (scoping). Operator decisions: whether weather becomes a direction - his alone.
+END OF BLOCK 108.4
+```
+
+### 108.5 - RED ALERT (DASHBOARD STALE + MEMORY CAP) - added 2026-11-10 ~05:45 UTC at the window's finding
+
+**UPDATE 06:15Z (window):** the stale-page half is fixed by the window (scripts/web_dashboard.py: /visual and /project caches keyed on the checkout HEAD, so every pull rebuilds them; PR below). Operator 21:42 PT: "It's not like it's live anyway." **Paste 108.5 only for the memory cap** (Parts A.1 memory reads, B.2, C memory read); skip B.1. Otherwise it folds into Wave 109.
+
+```
+WAVE 108 - BLOCK 108.5 - RED ALERT - THE VISUAL DASHBOARD SERVES A STALE PAGE; ITS SERVICE SITS AT ITS MEMORY CAP
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W108.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W108_5.md. Every part runs on data that exists now.
+File ownership (no other 108 block touches these): scripts/web_dashboard.py, scripts/ops/vps_deploy.sh, scripts/box_tasks.py (new READ
+tasks only), the dashboard's systemd unit file in deploy/ (prepared, not installed), their tests.
+
+PURPOSE: PLUMBING (red). The operator reviews the project on /visual. The window updated 04_EXECUTION/visual_dashboard/body.html at
+38d0fb1 (state of the system dated 2026-11-10 · Wave 108). The box pulled it (deploy status docs_only, box HEAD e187e8cc, 05:38Z), but
+four box reads 05:37-05:40Z served the same /visual (4,466,696 B) and pmbot-web-dashboard sat at MemoryCurrent 134,066,176 of
+MemoryMax 134,217,728 (results 04_EXECUTION/BOX_TASKS/results/20261110T05*_dashboard_pages_read.md). Two defects: (1) a docs-only push
+never restarts the dashboard, so /visual depends on the 300 s background refresh, which is not landing; (2) the service has no memory
+headroom (GG-118 was an OOM crash-loop on this same service).
+
+PART A (~25 min) - why the refresh does not land (read-only on the box)
+1. Add READ-only box tasks (no '>' character - the allowlist guard rejects it): the /visual headline marker
+   (curl /visual | grep -o 'State of the system · [0-9-]* · Wave [0-9]*'), the dashboard's journal for the last hour (refresh thread
+   errors, MemoryError, slow builds), and the cgroup memory.events / memory.stat for the unit. Run them; quote the output.
+2. State the cause in one sentence: refresh thread stuck, build lock starved by /api/data, memory throttling, or other.
+
+PART B (~45 min) - the fix
+1. web_dashboard.py: /visual (and /project) rebuild when the checkout HEAD changes, not only on the timer (key the cache on the HEAD
+   sha), and a failed or stuck rebuild is logged and visible on the page footer (age of the served build).
+2. Memory: measure the peak of one /visual build and one /api/data build; cut what is cheap (do not keep two copies of the 8 MB body;
+   release after build). If headroom still needs MemoryMax raised, PREPARE the unit change as ONE allowlisted install task and name it -
+   the operator approves it by name; do not run it.
+3. Tests; PR; merge on green.
+
+PART C (~15 min) - proof
+1. After the deploy: the headline marker read returns "State of the system · 2026-11-10 · Wave 108"; memory read with headroom; quote both.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - /visual served build age (minutes behind main) before -> after; dashboard memory
+peak before -> after. Operator decisions: an install task by name, only if MemoryMax must change.
+END OF BLOCK 108.5
+```
+
+---
+
