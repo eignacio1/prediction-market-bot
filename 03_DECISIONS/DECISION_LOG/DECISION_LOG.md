@@ -3410,3 +3410,12 @@ Verbatim: "Just letting you know - I've been holding this in for a while - but e
 the project is at a suitable state. We're clearly not even close to that yet lol"
 Effect: DOCTRINE.md §8 - closed / RULED_OUT cells are provisional: keep logging, never deleted or treated as final, reopened on the
 operator's word.
+
+## 2026-11-10 22:10 PT — Operator: the scoring engine closing cells is a huge problem; strategy windows must catch this (SW-9)
+Verbatim (excerpt): "Well that's a fucking problem lol - cmon brother how much logic scaffolding do we have in this oroject and that wasn't
+mentioned .... once? ... I've tried my best to build an adversarial critique + complex logic methodology processes in our project to ADDRESS
+LITERALLY THIS. I talked for how many fucking waves about "forest beyond the trees" to address LITERALLY THIS ... I can't do it all myself I
+NEED better help from you and every other strategy window"
+Effect: no session left tonight - the engine fix goes FIRST in the next wave (W111.1, backlog); a doctrine-conformance audit of every
+decision point in code (W111); the strategic handoff gains a code-conformance step at every wave close (W53). Until W111.1 lands, no
+window or block applies a new RULED_OUT to the registry (the engine prints verdicts; closing a cell is a code change a block makes).

@@ -69,7 +69,8 @@ named approval; demo / paper actions are plumbing.
 
 **Every closed cell is provisional (operator 2026-11-10 22:03 PT):** "every single "closed" cell will get reopened once I feel the project
 is at a suitable state. We're clearly not even close to that yet lol". A RULED_OUT / closed-arm cell keeps logging where it can, is never
-deleted or treated as final, and is reopened when the operator says the project is ready - his call, not a window's.
+deleted or treated as final, and is reopened when the operator says the project is ready - his call, not a window's. Until the W111.1
+engine fix lands, no window or block applies a new RULED_OUT to the registry (operator 2026-11-10 22:10 PT).
 
 ## Doctrine stack — every file below carries a "Last reviewed" line and defers to this file
 | File | What it holds | Last reviewed |

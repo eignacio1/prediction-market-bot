@@ -77,3 +77,8 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
    arm, net after costs. A block that scores only "model vs market" is rewritten before it is sent.
 4. `scripts/doctrine_freshness.py` (run by the session-start scan) prints stack files older than 14 days as RED; a red line is fixed in
    the same wave.
+5. CODE CONFORMANCE (W53, 2026-11-11): at every wave close, check the decision points in code - verdict rules
+   (pregame_shadow/calibration_engine.py), cell statuses (c5_execution/market_type_registry.py), order gates and router gating
+   (decision_trees/), pre-registration templates, edge-map statuses - against DOCTRINE.md. A contradiction is a red: it goes first in
+   the next wave and is named to the operator. The doctrine check (W48) asks whether the premise is right; this asks whether the code
+   still says the premise we chose.

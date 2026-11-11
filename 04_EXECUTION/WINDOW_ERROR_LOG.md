@@ -183,3 +183,12 @@ fade the market", 11-09) is that factors feed layered trees that choose the arm 
 the window wrote answers the wrong question, so a null tells nothing about the trees. Same root as W48 (the "must beat the market"
 ultimatum). Rule: every factor block scores the factor as a split in the multi-arm tree, per leaf, net after costs per arm; Brier vs the
 market is never the verdict.
+
+### W53 - SW-9, 2026-11-11 06:15Z - the beat-the-market rule lives in the scoring code and no window ever audited code against doctrine
+The calibration engine (src/prediction_market_bot/pregame_shadow/calibration_engine.py) issues RULED_OUT whenever delta vs market has
+its CI upper bound < 0, and the registry applies those verdicts as closed cells (EXP-037 NFL total T1 / T2, W99.2). That is the
+beat-the-market ultimatum in code. Every check the project has (doctrine check W48, Q6, the forest sitreps) audits work against the
+premise as written; none audits CODE against the doctrine, so a wrong premise baked into code is enforced, not caught. Found only because
+the operator asked why any cell is closed. Rule: every wave close maps each DOCTRINE.md rule to the code that implements or contradicts
+it (decision points: verdict rules, cell statuses, order gates, pre-registration templates); a contradiction is a red for the next wave's
+first block. Backlog: the doctrine-conformance audit (W111) and the engine fix (W111.1).
