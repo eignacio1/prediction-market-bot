@@ -104,8 +104,10 @@ factor_class = "NBA-10"
 name = "Lineup cross (usage redistribution when a rotation player is out, by role)"
 source = "NBA player box scores (sportsdataverse free store, 2016-2026); injury reports for timing"
 engine_slot = "player rating"
-stage = "interpreted"
-evidence = "12_EXPLORATORY/20261020_nba_lineup_cross/PREREG_lineup_window.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md"
+# W110.2: usage: tree path d_/s_usage_missing, d_/s_creator_out (class lineup). Held-out 2025+2026, n=2268 games, paired vs v2_core: spread Brier -0.00409 [-0.00634,-0.00190]; team_total -0.00173 [-0.00258,-0.00087]; ml +0.00066 [-0.00303,+0.00423]; total -0.00020 [-0.00078,+0.00035]. Scored against realized outcomes: Kalshi spread/total/team-total history has no 2025-26 rows (Oct 2026 only), so no market comparison. Applied = tested path to a price (ADR-0075); NOT a market edge claim. Full table: 12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md
+# Prior stage evidence retained: 12_EXPLORATORY/20261020_nba_lineup_cross/PREREG_lineup_window.md
 
 [[factor]]
 id = "B11"
@@ -122,8 +124,10 @@ factor_class = "NBA-12"
 name = "Travel, time zones, altitude, schedule density (point-in-time geometry)"
 source = "src/prediction_market_bot/c1_signal_ingestion/nba_schedule_geometry.py (ESPN venue city + tip instants; hand-built city table)"
 engine_slot = "schedule context"
-stage = "interpreted"
-evidence = "12_EXPLORATORY/nba_geometry/results_W93_2.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md"
+# W110.2: geometry: tree path d_miles,d_g_last4,d_road_run,alt_gain_a,d_late_body,venue_alt,s_late_body,s_g_last4 (class venue, T1 only per 109.1 bands). Held-out n=2268, paired vs v2_core: pooled ALL +0.00005 [-0.00063,+0.00078]; total -0.00023 [-0.00135,+0.00096]. Null. Applied = tested path, result null. Full table: 12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md
+# Prior stage evidence retained: 12_EXPLORATORY/nba_geometry/results_W93_2.md
 # W93.2 Part A: margin: no gain beyond B1/B9/B2 + prior-season carry (honest NO, pooled -0.28 [-0.85, 0.27] MSE). Total: venue altitude only +0.92 MSE [0.43, 1.44], n=2150 (one of 7 specs, not multiplicity-corrected).
 # Granularity index: split = altitude venue / zones by direction / miles / road-run; rank = altitude home edge by season (2025 -3.4, 2026 -1.7 vs +1.4..+9.5 before);
 # matchup cross = visitor altitude gain x back-to-back x road-run; market map = total (altitude term) only, no supported margin/spread/ML use;
@@ -135,8 +139,10 @@ factor_class = "NBA-13"
 name = "Officials: crew foul / FTA / pace tendencies (shrunk, prior games only)"
 source = "src/prediction_market_bot/c1_signal_ingestion/nba_officials.py (raw/officials crews 2016-2026, free; assignment time unpublished, GG-1390)"
 engine_slot = "game environment"
-stage = "interpreted"
-evidence = "12_EXPLORATORY/nba_geometry/results_W93_2.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md"
+# W110.2: officials: tree path s_crew_pace/fta/fouls (class officials, T2/T3 only, game-day-known; assignment time unpublished GG-1390 = upper bound). Held-out n=2268 paired vs v2_core: total -0.00024 [-0.00123,+0.00074]; team_total -0.00035 [-0.00090,+0.00021]. Null. Applied = tested path, result null. Full table: 12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md
+# Prior stage evidence retained: 12_EXPLORATORY/nba_geometry/results_W93_2.md
 # W93.2 Part B: total over baseline + prior, 3 crew deviations: pooled +0.51 MSE [-0.12, 1.14] (2025 moves, 2026 does not) - weak and unstable, not a verdict. Crew FTA deviation top vs bottom decile: FTA 46.7 vs 43.0, total 224.2 vs 223.2.
 # Granularity index: split = crew FTA/foul deviation decile; rank = shrunk crew rate vs league mean before that date; matchup cross = crew x team FT-drawing style (not built);
 # market map = total (FTA channel) only; application = none (live crew route unverified, GG-1390; Kalshi NBA rows underpowered).
@@ -275,8 +281,9 @@ factor_class = "NBA-PAM-1"
 name = "PAM archetypes: usage engine / shot profile (PRF-1,2,3,4,5,8,9,12,14,15), season-end flags"
 source = "NBA event store, taxonomy v4"
 engine_slot = "player role (PAM layer 3)"
-stage = "interpreted"
-evidence = "12_EXPLORATORY/nba_pam_mass_tier/results_W84.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md"
+# W110.2: tree path d_/s_pam_creator, d_/s_pam_mod (class qualitative, T1). HINDSIGHT ONLY: all 100 PAM records have recorded_at 2026-05-28, so every 2025-26 held-out flag is look-ahead (upper bound, not point-in-time); forward 2026-27 use is point-in-time valid. Held-out n=2268, spread Brier -0.00140 [-0.00276,-0.00000]; team_total -0.00043 [-0.00095,+0.00009]; ml +0.00244 [+0.00008,+0.00477] (worse). Prior evidence: 12_EXPLORATORY/nba_pam_mass_tier/results_W84.md
 
 [[factor]]
 id = "P2"
@@ -284,8 +291,9 @@ factor_class = "NBA-PAM-2"
 name = "PAM modifiers scored from the store (M-2,3,4,5,6,13,14,18,24,29)"
 source = "NBA event store, taxonomy v4"
 engine_slot = "player role modifier (PAM layer 3)"
-stage = "interpreted"
-evidence = "12_EXPLORATORY/nba_pam_mass_tier/results_W84.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md"
+# W110.2: tree path d_/s_pam_creator, d_/s_pam_mod (class qualitative, T1). HINDSIGHT ONLY: all 100 PAM records have recorded_at 2026-05-28, so every 2025-26 held-out flag is look-ahead (upper bound, not point-in-time); forward 2026-27 use is point-in-time valid. Held-out n=2268, spread Brier -0.00140 [-0.00276,-0.00000]; team_total -0.00043 [-0.00095,+0.00009]; ml +0.00244 [+0.00008,+0.00477] (worse). Prior evidence: 12_EXPLORATORY/nba_pam_mass_tier/results_W84.md
 
 [[factor]]
 id = "P3"
