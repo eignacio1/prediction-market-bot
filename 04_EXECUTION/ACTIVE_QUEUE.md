@@ -87,7 +87,7 @@ combos (09-25) - the prop suite (109.3) is their prerequisite: a parlay is price
 | 109.3 | suite · 2 | NBA player props priced from the NBA engine; shadow cells pre-registered; runner prepared | ✅ DONE — PR #466 merged (57fee5a), CI green | Part B null (engine Brier worse than market mid in all 4 families, n=15,364). Part C: 9 SHADOW cells (reb/ast/3pt × T1-T3, EXP-047), runner + paused registry entry. **Install PREPARED, NOT RUN: `nba_engine_props_shadow_install` — awaits operator approval by name.** No cell logs until then. |
 | 109.4 | quant · 4 | NBA / NFL / NHL props net of costs (finish B-064 with 108.3's public candlesticks) | ⏳ pasted? | — |
 | 109.5 | flex · red | Dashboard memory (#464), MLB Features Sync off-season (#462), surface budget | ✅ DONE · budget GREEN | #462 #464 #468 merged on green. MemoryMax 128M→384M install PREPARED (`dashboard_memmax_install`), awaits operator approval by name. Features Sync red→0 unconfirmed until the 10:17Z run. |
-| 109.6 | RED · execution | The forward test has placed no demo orders since 11-05 (turn-off tripped, nothing alarmed) | ⏳ pasted? | — |
+| 109.6 | RED · execution | The forward test has placed no demo orders since 11-05 (turn-off tripped, nothing alarmed) | ✅ DONE · re-arm awaits approval | Cause: markout turn-off tripped on pre-GG-1771 NO-side fills (not epoch-gated) - artifact. #469 #470 #471 merged on green, read back on box (c6d593bf/dc6f95e3): markout epoch-gated; healthcheck WARNs on 0 orders/24h (live now). Override file untouched; re-arm = `demo_fill_rearm` (PREPARED; `demo_fill_rearm_check` read-only). |
 
 ### 109.1 - ENGINE (NBA ARCHITECTURE)
 
