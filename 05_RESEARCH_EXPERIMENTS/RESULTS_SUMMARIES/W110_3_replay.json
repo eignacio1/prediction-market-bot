@@ -1,0 +1,38 @@
+{
+ "branch_counts": {
+  "NO_BET": 25263
+ },
+ "by_sport_branch": {
+  "NBA:NO_BET": 15169,
+  "NFL:NO_BET": 4746,
+  "NHL:NO_BET": 5348
+ },
+ "decisions": 25263,
+ "files": [
+  "prices_2026-10-29.jsonl",
+  "prices_2026-10-30.jsonl",
+  "prices_2026-10-31.jsonl",
+  "prices_2026-11-01.jsonl",
+  "prices_2026-11-02.jsonl",
+  "prices_2026-11-03.jsonl",
+  "prices_2026-11-04.jsonl",
+  "prices_2026-11-05.jsonl",
+  "prices_2026-11-06.jsonl",
+  "prices_2026-11-07.jsonl",
+  "prices_2026-11-08.jsonl",
+  "prices_2026-11-09.jsonl",
+  "prices_2026-11-10.jsonl",
+  "prices_2026-11-11.jsonl"
+ ],
+ "no_bet_reasons": {
+  "date_only_game_day": 10673,
+  "no_tree_claims;fade:no_skill_record_or_model_p;ride:no_cell;longshot:cell status IN_SAMPLE is not orderable;momentum:no_table": 59,
+  "no_tree_claims;fade:no_skill_record_or_model_p;ride:no_cell;longshot:no cell #": 1732,
+  "no_tree_claims;fade:no_skill_record_or_model_p;ride:no_cell;longshot:price # outside the pot-of-gold buckets;momentum:no_table": 9908,
+  "no_tree_claims;fade:no_skill_record_or_model_p;ride:status_IN_SAMPLE;longshot:no cell #": 48,
+  "no_two_sided_book": 1946,
+  "started_or_unparseable": 897
+ },
+ "scored": {},
+ "unsettled_by_branch": {}
+}
