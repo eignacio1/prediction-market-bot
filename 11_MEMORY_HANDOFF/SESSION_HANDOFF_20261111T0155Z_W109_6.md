@@ -1,4 +1,19 @@
 # SESSION HANDOFF — W109.6 RED ALERT (demo-fill forward test stalled since 2026-11-05)
+<!-- session-meta
+task_id: W109.6
+tier: STANDARD
+timestamp: 2026-11-11T01:55:00Z
+commit: 6ac4f54
+one_line_summary: W109.6: demo-fill stall was an un-epoch-gated markout turn-off; gated (#469-471), zero-orders alarm live, re-arm awaits approval.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E1 - days of forward test lost (5: 11-06..11-10); cause found; alarm live
+gap_delta: cause + alarm delivered; E1 stays 0 new fills until re-arm (box healthcheck 2026-11-11T01:48Z)
+pattern_sweep: markout_c called only in demo_fill_forward_report.py (grep scripts/ src/ tests/); no other un-gated markout turn-off found; other reports' epoch handling not swept.
+surface_delta: 0 (check 11 inside registered healthcheck cron; 2 allowlisted bridge tasks, no cron)
+-->
 
 Rules quoted: `# Wave 109 common rules`
 
