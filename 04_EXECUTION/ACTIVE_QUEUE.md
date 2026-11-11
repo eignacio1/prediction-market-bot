@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 109 IN FLIGHT - five blocks sent; 109.6 RED ALERT added 01:25Z: the forward test has placed no demo orders since 11-05 (its turn-off tripped; nothing alarmed). Paste 109.6 into a sixth terminal.** Written by SW-9. Installs done 11-11 00:45Z (budget GREEN).
+> **▶ WAVE 110 READY TO PASTE - four blocks in NOW (110.1 NFL weather + matchup, 110.2 NBA factors applied, 110.3 every cell routed, 110.4 same-game correlation).** Written 2026-11-11 ~05:30 UTC by SW-9. **Waiting on you:** `nba_engine_props_shadow_install` (109.3) and `dashboard_memmax_install` (109.5) by name; the EXP-038 second-look draft.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -61,221 +61,144 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 109 · WRITTEN 2026-11-11 ~00:45 UTC (11-10 16:45 PT) · SW-9 · five blocks (operator's ask) · paste each block into its own terminal
+## ▶ NOW — WAVE 110 · WRITTEN 2026-11-11 ~05:30 UTC (11-10 21:30 PT) · SW-9 · four blocks (operator's ask) · paste each block into its own terminal
 
 **Every part runs on data that exists when you paste it. CI is the gate for code only. The build continues on every lane (operator 11-09 21:29 PT).**
 
-109.1 **engine** = B-066 NBA architecture 4/8 → 8/8 · 109.2 **engine** = B-067 NHL architecture 2/8 → ≥ 6/8 · 109.3 **suite** = B-070 NBA
-player props from the NBA engine · 109.4 **quant** = B-064 props net of costs (NBA / NFL / NHL) · 109.5 **flex** = the reds (dashboard
-memory #458, MLB Features Sync failing closed off-season, the surface budget).
+110.1 **engine** = B-069 weather + matchup into the NFL engine · 110.2 **engine** = B-068 NBA factors interpreted → applied · 110.3 **trees** =
+B-071 every registered cell routed · 110.4 **quant** = B-072 same-game correlation from one engine (parlay groundwork).
 
-**DOCTRINE CHECK (W48), Wave 108 close.** *Premise:* "depth applied in the engine is what moves a cell toward the market" - the record
-so far is the first-order factors (team, venue, availability, refs) add nothing measurable over the market; nothing tests the higher-order
-crosses yet (the granularity index), and that is what this wave's architecture builds toward. *Said but not built:* parlays / big-hitter
-combos (09-25) - the prop suite (109.3) is their prerequisite: a parlay is priced from the same joint simulation.
+**DOCTRINE CHECK (W48), Wave 109 close.** *Premise:* "the engine's architecture turns facts into prices the market has not already got" -
+109.1's one applied NBA path lost to the market (Brier 0.1745 vs 0.1529, n 397) and 109.3's engine props lost on all four families; the
+architecture is built, the applied factors so far are ones the market already prices. This wave applies the classes no live model has used
+(matchup, weather) and the NBA crosses still at "interpreted". *Said but not built:* parlays (09-25) - 110.4 builds their pricing math.
 
-- **Pushback:** 109.1 and 109.2 build scaffolds that do not move a price until factors are APPLIED through them (D5b); the risk is 8/8 boxes
-  ticked with no tested path to a price. Each block must show one applied path end to end, not only the scaffold.
-- **Surface:** box budget RED = ride board not installed (your call) + the 22 prop-series archive lines (merged #456, refused by Hard Rule 14).
-  The window paused the never-approved news burst entry (11-10). Delta this wave: +1 prepared (109.3 shadow runner), nothing installed.
-- **Dependencies:** none between blocks (109.3 reads the engine's output; 109.4 reads Kalshi history; neither waits on the other).
+- **Pushback:** applying more factors through the same pipe can keep returning "the market is better"; each block must report which crosses
+  it applied, not only a Brier delta, so a null tells us what was tried.
+- **Surface:** box GREEN (ride board + prop archive installed 11-11). Forward test RE-ARMED 02:39Z (109.6 artifact). Waiting on you:
+  `nba_engine_props_shadow_install` (109.3), `dashboard_memmax_install` (109.5). Delta this wave: 0 installs.
+- **Dependencies:** none between blocks (110.4 reads 109.3's merged module; 110.2 reads 109.1's merged tree).
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
-| 109.1 | engine · 2 | NBA architecture 4/8 → 8/8: decision trees, filtering, cross-reference, temporal evolution | ✅ DONE — PR #463 merged (e077db2). D5(a) NBA 4→8. Applied ml path vs Kalshi: NULL (market better, T3−mkt Brier +0.0215 [+0.012,+0.031], n=397). Handoff SESSION_HANDOFF_20261111T0145Z_W109_1.md | — |
-| 109.2 | engine · 2 | NHL architecture 2/8 → ≥ 6/8: decision trees, filtering, temporal evolution, tensions, seats | ✅ DONE | D5(a) NHL 2→7 (PR #465, 9d0aaaf); applied totals path abstains (gate fails 3/3 seasons, ungated null); D5(b) unchanged 3 |
-| 109.3 | suite · 2 | NBA player props priced from the NBA engine; shadow cells pre-registered; runner prepared | ✅ DONE — PR #466 merged (57fee5a), CI green | Part B null (engine Brier worse than market mid in all 4 families, n=15,364). Part C: 9 SHADOW cells (reb/ast/3pt × T1-T3, EXP-047), runner + paused registry entry. **Install PREPARED, NOT RUN: `nba_engine_props_shadow_install` — awaits operator approval by name.** No cell logs until then. |
-| 109.4 | quant · 4 | NBA / NFL / NHL props net of costs (finish B-064 with 108.3's public candlesticks) | ✅ PARTIAL: #472 merged; 0 of 22 testable cells net-positive after Holm/BH; cost table in RESULT.md | #472 |
-| 109.5 | flex · red | Dashboard memory (#464), MLB Features Sync off-season (#462), surface budget | ✅ DONE · budget GREEN | #462 #464 #468 merged on green. MemoryMax 128M→384M install PREPARED (`dashboard_memmax_install`), awaits operator approval by name. Features Sync red→0 unconfirmed until the 10:17Z run. |
-| 109.6 | RED · execution | The forward test has placed no demo orders since 11-05 (turn-off tripped, nothing alarmed) | ✅ DONE · re-arm awaits approval | Cause: markout turn-off tripped on pre-GG-1771 NO-side fills (not epoch-gated) - artifact. #469 #470 #471 merged on green, read back on box (c6d593bf/dc6f95e3): markout epoch-gated; healthcheck WARNs on 0 orders/24h (live now). Override file untouched; re-arm = `demo_fill_rearm` (PREPARED; `demo_fill_rearm_check` read-only). |
+| 110.1 | engine · 3 | NFL: weather + matchup classes applied in the engine (D1, D5b) | ⏳ pasted? | — |
+| 110.2 | engine · 3 | NBA: the 9 "interpreted" factors → applied through the tree (D5b NBA 5 → ?) | ⏳ pasted? | — |
+| 110.3 | trees · 5 | Every registered cell routed (ride / fade / momentum / pot of gold / no-bet), horizon depth, orders OFF | ⏳ pasted? | — |
+| 110.4 | quant · 4 | Same-game correlation from the NBA engine (game lines + props), checked on settled games | ⏳ pasted? | — |
 
-### 109.1 - ENGINE (NBA ARCHITECTURE)
+### 110.1 - ENGINE (NFL: WEATHER + MATCHUP)
 
 ```
-WAVE 109 - BLOCK 109.1 - ENGINE - NBA BETTING ARCHITECTURE 4/8 -> 8/8 (B-066)
+WAVE 110 - BLOCK 110.1 - ENGINE - THE MISSING FACTOR CLASSES INTO THE NFL ENGINE: WEATHER AND MATCHUP, APPLIED (B-069)
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_1.md. Every part runs on data that exists now.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_1.md. Every part runs on data that exists now.
 
-PURPOSE: D5(a) NBA 4 -> 8 and D5(b) NBA applied 5 -> more. 02_ARCHITECTURE_DESIGN/ARCHITECTURE_COMPONENTS.toml lists NBA's missing
-components: decision_trees, filtering_mechanisms, cross_reference_compatibility, temporal_evolution (scaffold "none"). NFL has all eight;
-its rows name the files to port from (12_EXPLORATORY/nfl_engine/engine.py, src/.../nfl_engine/granularity_index.py,
-12_EXPLORATORY/nfl_engine/rate_layer.py, src/.../nfl_engine/temporal_evolution.py). ADR-0075 defines each component.
+PURPOSE: D1 (no live model uses matchup, weather or qualitative - distance_read 2026-11-11) and D5(b) NFL applied 10 of 21. The NFL
+engine has 27 seasons of play-by-play; nflverse rows carry roof, surface, temperature and wind per game. The granularity index
+(02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md) asks for the split, its rank vs history at the same point in a season, the matchup cross,
+the market map, and the application.
 
-PART A (~45 min) - decision trees + filtering
-1. NBA decision trees: the engine's per-market tree with depth by horizon (ADR-0068: T1 deepest, in-play shallow), wired to the NBA
-   engine's inputs; NBA filtering mechanisms: the granularity-index filter for NBA (split, rank vs history at the same point in a season,
-   matchup cross) on the engine's point-in-time store. NEW modules + tests on known answers.
+PART A (~45 min) - weather, point-in-time
+1. Wind / temperature / precipitation / roof as engine inputs (pass rate, efficiency, kicking), point-in-time (only what was known before
+   kickoff; forecast vs realised stated plainly - realised is a leak for pricing). NEW module + tests.
 
-PART B (~45 min) - cross-reference + temporal evolution
-1. Cross-reference compatibility (one player / team fact consistent across every market it touches) and temporal evolution (how a
-   factor's weight moves through a season, point-in-time) for NBA. NEW modules + tests.
+PART B (~45 min) - matchup crosses
+1. Unit-vs-unit crosses (e.g. offence pass rate x opponent pass-defence efficiency, rush success vs run-defence, pressure rate vs pass
+   protection), shrunk, ranked vs history at the same week. NEW module + tests on known answers.
 
-PART C (~40 min) - one applied path, and the record
-1. ONE path end to end: a factor -> filter -> tree -> a price for one NBA market family, scored held-out against the market (Brier and
-   net, intervals, n). A null is a result. Update the nba rows of ARCHITECTURE_COMPONENTS.toml. PR with tests; merge on green.
+PART C (~40 min) - applied, scored
+1. Both classes through the engine to totals and spread for held-out seasons and for 2026 vs the market where Kalshi history exists:
+   Brier and net, intervals, n; which crosses moved the price. Update nfl rows of SEATS/nfl.toml (stage per factor). PR; merge on green.
 
-Report: per COMMON RULES. MEASURE MOVED: D5(a) NBA 4 -> N; D5(b) NBA applied 5 -> M (the path's result). Operator decisions: none.
-END OF BLOCK 109.1
+Report: per COMMON RULES. MEASURE MOVED: D1 NFL classes +weather +matchup; D5(b) NFL applied 10 -> N. Operator decisions: none.
+END OF BLOCK 110.1
 ```
 
-### 109.2 - ENGINE (NHL ARCHITECTURE)
+### 110.2 - ENGINE (NBA: INTERPRETED → APPLIED)
 
 ```
-WAVE 109 - BLOCK 109.2 - ENGINE - NHL BETTING ARCHITECTURE 2/8 -> AT LEAST 6/8 (B-067)
+WAVE 110 - BLOCK 110.2 - ENGINE - NBA FACTORS INTERPRETED -> APPLIED, THROUGH THE NBA DECISION TREE (B-068)
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_2.md. Every part runs on data that exists now.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_2.md. Every part runs on data that exists now.
 
-PURPOSE: D5(a) NHL 2 -> >= 6. NHL has cross_reference_compatibility (12_EXPLORATORY/nhl_engine/nhl_factors.py) and momentum_looping;
-the NHL board engine (v2) prices moneyline / puck line / totals / team totals from one Poisson simulation on the shot-level store.
-Missing: decision_trees, filtering_mechanisms, cluster_designs, temporal_evolution, structural_tensions, seat_interface. Port the NFL /
-NBA patterns (ARCHITECTURE_COMPONENTS.toml names the files; TENSIONS/nba.toml and SEATS/nba.toml are the closest templates).
+PURPOSE: D5(b) NBA applied 5 of 17. 02_ARCHITECTURE_DESIGN/SEATS/nba.toml lists 9 factors at "interpreted": own injury / teammates out,
+game-level availability, lineup / on-off / play-type / matchup, lineup cross (usage redistribution), absorber play-type x usage
+absorption, travel / time zones / altitude / density, officials crew tendencies, PAM archetypes, PAM modifiers. 109.1 built the NBA
+decision tree, filter, cross-reference and temporal modules and scored one path (ml) NULL vs the market.
 
-PART A (~40 min) - tensions + seats (where the NHL architecture strains; sports-eyes mapped to cells)
-1. 02_ARCHITECTURE_DESIGN/TENSIONS/nhl.toml and SEATS/nhl.toml with their tests (tests/test_tensions.py, test_seat_interface.py patterns).
-   Tensions come from the NHL engine's measured weak spots (totals bias in REGULATION scoring, OT / shootout credit, goalie uncertainty).
+PART A (~50 min) - the crosses that move points
+1. Through 109.1's filter + tree: lineup cross / absorber x usage (who takes a missing creator's shots) and travel / density, point-in-time,
+   applied to totals, spread and team totals. Tests on known answers.
 
-PART B (~50 min) - decision trees + filtering + temporal evolution
-1. NHL decision trees with depth by horizon on the board engine; the NHL granularity filter (split, rank vs history at the same point
-   in a season, matchup cross) on the shot store; temporal evolution point-in-time. NEW modules + tests on known answers.
+PART B (~40 min) - officials + PAM
+1. Officials crew tendencies (shrunk, prior games only) on totals; PAM archetype / modifier flags as tree splits. Tests.
 
-PART C (~40 min) - one applied path, and the record
-1. ONE path end to end for an NHL family (totals is the one with a known bias): factor -> filter -> tree -> price, held-out vs the market
-   (Brier, net, intervals, n). Clusters stay "none" until NHL has player archetypes - say so. Update the nhl rows of the components
-   TOML. PR with tests; merge on green.
+PART C (~40 min) - scored, per factor
+1. Each factor's applied path, held-out 2025-26 vs Kalshi mid (study_v3 protocol): Brier and net per family, intervals, n, and the
+   ablation (what each factor adds). Promote a factor to "applied" only with a tested path to a price (ADR-0075), whatever its result.
+   Update nba rows of SEATS/nba.toml. PR; merge on green.
 
-Report: per COMMON RULES. MEASURE MOVED: D5(a) NHL 2 -> N; D5(b) NHL applied 3 -> M. Operator decisions: none.
-END OF BLOCK 109.2
+Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA applied 5 -> N; per-factor deltas. Operator decisions: none.
+END OF BLOCK 110.2
 ```
 
-### 109.3 - SUITE (NBA PLAYER PROPS FROM THE ENGINE)
+### 110.3 - TREES (EVERY CELL ROUTED)
 
 ```
-WAVE 109 - BLOCK 109.3 - SUITE - NBA PLAYER PROPS PRICED FROM THE NBA ENGINE; SHADOW CELLS PRE-REGISTERED (B-070)
+WAVE 110 - BLOCK 110.3 - TREES - EVERY REGISTERED CELL ROUTED BY THE MULTI-ARM ROUTER, DEPTH BY HORIZON (B-071)
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_3.md. Every part runs on data that exists now.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_3.md. Every part runs on data that exists now.
 
-PURPOSE: B4 props families logging 2 -> more, B1. ADR-0073: "One engine prices the whole board: a game simulation's joint distribution
-yields moneyline, spread, total, team totals, props and parlays consistently." The NBA engine (v1 / v2 / v3) prices game lines; player
-points exist only as separate shadow arms (EXP-039 / EXP-040). Price NBA player props from the engine's own simulation so props and game
-lines come from one joint distribution - the prerequisite for parlays (operator 09-25).
+PURPOSE: D5(a) decision trees per sport, the operator's multi-arm tree (ride / fade / momentum / pot of gold / no-bet). The router
+(decision_trees/router.py) routes the ride cells (ride_cells.toml) and the pot-of-gold cells (longshot_cells.toml); the other registered
+cells (c5_execution/market_type_registry.py: NFL, NBA, NHL game families x bands, 109.3's props) are not routed. Orders fire only for
+HELD_OUT / FORWARD_PASSED cells (operator 10-27) - that stays.
 
-PART A (~50 min) - the pricing module
-1. A NEW module that turns the NBA engine's simulated games into player stat distributions (points, rebounds, assists, threes - the
-   series 108.1 listed: check Kalshi's NBA prop series and strike ladders today) and a probability per strike. Do not edit the engine
-   core. Tests: totals of simulated player points match the team total in the same draw; known-answer cases.
+PART A (~40 min) - coverage
+1. A route coverage report: every registered (MarketType, band) cell -> which branches can apply, which tree depth its horizon allows
+   (ADR-0068), and which inputs exist. Tests. State today's count routed vs registered.
 
-PART B (~40 min) - backtest on settled props
-1. On settled NBA prop markets this season (Kalshi public history / candlesticks, 108.3's route): Brier of the engine-priced props vs
-   the market's pre-game price, by family; intervals, n. A null is a result; it does not stop the cells.
+PART B (~50 min) - route the rest
+1. Give every unrouted logging cell a branch set and a tree, paper only, orders OFF: the shadow runners log the router's decision per
+   row (branch, depth, reason), so each cell's arms accumulate evidence. Tests; no change to order gating.
 
-PART C (~40 min) - cells + pre-registration + runner (prepared)
-1. MarketType rows and (MarketType, band) cells in c5_execution/market_type_registry.py (SHADOW, kelly 0, evaluate-and-log, no orders),
-   a pre-registration committed BEFORE the first row (05_RESEARCH_EXPERIMENTS/, judged n, scoring rule, modal outcome), a shadow runner,
-   its RUNTIME_REGISTRY entry with status paused, and ONE allowlisted install task PREPARED - name it. PR with tests; merge on green.
+PART C (~40 min) - a replay
+1. Replay the router over the last 14 days of archived books for NBA / NHL / NFL cells: branch counts, gross and net per branch (106.2
+   costs), intervals, n. A null is a result. PR; merge on green.
 
-Report: per COMMON RULES. MEASURE MOVED: B4 props families with a cell N (logging after the install); backtest Brier per family.
-Operator decisions: the install task, by name.
-END OF BLOCK 109.3
+Report: per COMMON RULES. MEASURE MOVED: cells routed X -> N of registered; D5(a) decision trees per sport. Operator decisions: none.
+END OF BLOCK 110.3
 ```
 
-### 109.4 - QUANT (PROPS NET OF COSTS)
+### 110.4 - QUANT (SAME-GAME CORRELATION)
 
 ```
-WAVE 109 - BLOCK 109.4 - QUANT - NBA / NFL / NHL PROPS NET OF COSTS (FINISH B-064)
+WAVE 110 - BLOCK 110.4 - QUANT - SAME-GAME CORRELATION FROM ONE ENGINE: NBA GAME LINES + PROPS (B-072, PARLAY GROUNDWORK)
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_4.md. Every part runs on data that exists now.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_4.md. Every part runs on data that exists now.
 
-PURPOSE: P1 / P2 - prop families measured net. 108.3 (12_EXPLORATORY/quant_w108_props/RESULT.md, PART_A_INVENTORY.md) found that
-pre-game quotes for settled props ARE public through Kalshi's batch candlesticks; its fetcher is saved as fetch_candles.py.txt. Part B was
-not run. MLB props were 0 of 50 net (106.3). This gives 109.3's prop cells their cost bar.
+PURPOSE: ADR-0073 "a game simulation's joint distribution yields moneyline, spread, total, team totals, props and parlays consistently -
+parlay correlations included". 109.3 priced NBA props from the engine's simulation (EXP-047). Parlays are the operator's 09-25 ask; their
+price is the joint probability, so the correlation must be right first. RESEARCH: no cells, no orders.
 
-PART A (~40 min) - the data
-1. Turn 108.3's fetcher into a tested quant/ function (polite rate, cached); pull pre-game candlesticks for every settled NBA / NFL / NHL
-   prop market in the inventory. Coverage per family: markets, dates, quotes at T-60 / T-30 / T-5 min.
+PART A (~45 min) - the joint
+1. NEW quant/ functions: from one engine draw set per game, the joint probability of any pair / triple of legs (side + total, player
+   points + team total, two players' points), and the implied correlation. Tests: legs from the same draw reproduce their marginals.
 
-PART B (~55 min) - calibration and net
-1. 106.3's method (reuse its functions): settle-rate vs price by family x price band x liquidity tier x time-to-start; earlier 70% fit,
-   later 30% held out; net per contract after the exact fee (quant/money.py) and the quoted spread; Holm / BH.
+PART B (~50 min) - is it calibrated
+1. On settled 2025-26 / 2026-27 games: predicted joint vs realised co-occurrence by leg-pair type, binned; the naive independent product
+   vs the engine joint (log loss, Brier); clustered intervals, n.
 
-PART C (~30 min) - plain English
-1. 12_EXPLORATORY/quant_w108_props/RESULT.md updated: per sport, "props are / are not mispriced after costs, mostly in ...", and the cost
-   per family as a table 109.3's cells can cite. Any held-out net-positive cell is pre-registered before any forward row.
+PART C (~30 min) - the market
+1. Does Kalshi list multi-leg / combo NBA markets today (public API)? If yes: engine joint vs the combo price and net after the fee. If no:
+   say so and what a same-game parlay would need. 12_EXPLORATORY/sgp_correlation/RESULT.md, plain English first. PR; merge on green.
 
-Report: per COMMON RULES. MEASURE MOVED: prop families measured net X of N (NBA / NFL / NHL). Operator decisions: none.
-END OF BLOCK 109.4
-```
-
-### 109.5 - FLEX (THE REDS)
-
-```
-WAVE 109 - BLOCK 109.5 - FLEX - DASHBOARD MEMORY (#458), MLB FEATURES SYNC OFF-SEASON, THE SURFACE BUDGET
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_5.md. Every part runs on data that exists now.
-
-PURPOSE: PLUMBING (red). (1) pmbot-web-dashboard sat at 134.07 of 134.2 MB (box 11-10 05:37Z; GG-118 was an OOM crash-loop on the same
-service). 108.5's PR #458 (dashboard_build_peak.py, leaner /api, failed rebuild logged) is UNMERGED and now conflicts with #459, which
-already made /visual and /project refresh in the background when the checkout HEAD moves. (2) "MLB Features Sync" fails on main every day
-(11-08, 11-09, 11-10: step "Gate on the unchanged data contract (fail-closed)") - MLB is off-season. (3) The surface budget.
-
-PART A (~50 min) - memory
-1. Bring #458's memory parts onto main: merge origin/main into its branch, DROP its HEAD-keyed cache logic (#459's _expire_on_new_head
-   stays), keep the build-peak measurement, the leaner /api and the failed-rebuild log. Measure peak memory of one /visual and one
-   /api/data build before and after. If MemoryMax must change, PREPARE one allowlisted install task and name it. Merge on green; read
-   deploy_truth_read and the dashboard memory read after the deploy.
-
-PART B (~35 min) - MLB Features Sync
-1. Read the failing runs (gh api .../actions/runs, jobs, logs): why the contract gate fails off-season. Make the off-season state explicit
-   (no MLB games in window = a clean skip with a written reason), never by loosening the contract on game days. Tests. PR; merge on green.
-
-PART C (~25 min) - the budget
-1. budget_read after the window's 11-10 change (news burst paused): list every remaining red with its owner. Write which installs are
-   waiting on the operator by name (ride_board_install; the 22-series prop archive via archive_cron_install) - do not run them.
-
-Report: per COMMON RULES. MEASURE MOVED: PLUMBING - dashboard memory peak before -> after; MLB Features Sync red days -> 0; budget reds
-N -> M. Operator decisions: install tasks by name only.
-END OF BLOCK 109.5
-```
-
-### 109.6 - RED ALERT (THE FORWARD TEST HAS PLACED NO ORDERS SINCE 11-05) - added 2026-11-11 ~01:25 UTC at the window's finding
-
-```
-WAVE 109 - BLOCK 109.6 - RED ALERT - THE ADR-0072 FORWARD TEST HAS PLACED NO DEMO ORDERS SINCE 2026-11-05
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W109.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W109_6.md. Every part runs on data that exists now.
-File ownership (no other 109 block touches these): scripts/demo_fill_forward_report.py, src/prediction_market_bot/c5_execution/
-demo_fill_policy.py (read; edit only if Part B needs it), deploy/demo_fill*.env templates, the silent-arms / healthcheck alarm code, tests.
-
-PURPOSE: EXECUTION (E1 / E2 / FT). The box's forward-test log (logs/demo_fill_forward_report.log, read by distance_read at
-2026-11-11T01:13Z; result in 04_EXECUTION/BOX_TASKS/results/) reads every day 11-06 .. 11-10: "no events yet | turn-off: TRIPPED
-treatment_markout_30m_worse_than_control". The Live Terminal's NBA desk shows the newest NBA shadow_order at 2026-11-05 10:23Z. The
-report writes both switches `off` to the untracked deploy/demo_fill.override.env when a turn-off trips (GG-587), so every demo order
-stopped - the forward test "restarted at the GG-1771 epoch 11-06 01:03Z" has placed nothing since. Nothing alarmed for five days.
-
-PART A (~40 min) - what happened (read-only on the box)
-1. Quote: deploy/demo_fill.override.env (contents, mtime), the turn_off event(s) in logs/demo_fill_policy.jsonl, and the report JSON's
-   turn_off_checks: which rows, which dates, which arms fed treatment_markout_30m_worse_than_control. Is the trip computed on pre-epoch
-   data (before 2026-11-06T01:03:42Z, where NO-side fills were mirror-priced, GG-1771) or on clean post-epoch fills? Is it sticky?
-2. State it in one sentence: a valid result on clean data, or an artifact of the epoch / a sticky flag.
-
-PART B (~45 min) - the fix the evidence calls for
-1. If an artifact: epoch-gate the markout turn-off exactly as the cancel-failure and orphan checks already are (GG-754 pattern), with a
-   test on a planted pre-epoch row; PR, merge on green. Do NOT clear the override file yourself: name the exact step that re-arms
-   (an allowlisted task, PREPARED) - the window brings it to the operator.
-2. If a valid result on clean data: change nothing; write the verdict (n, markout difference, interval) for the operator.
-
-PART C (~30 min) - never silent again
-1. An alarm: demo orders = 0 in the last 24 h while any arm logged rows for games in that window -> healthcheck WARNING with the reason
-   (override file present, turn-off condition). Tests. PR; merge on green. Read healthcheck after the deploy.
-
-Report: per COMMON RULES. MEASURE MOVED: EXECUTION - days of forward test lost (5); cause found; alarm live. Operator decisions: re-arm,
-by name, only after Part A.
-END OF BLOCK 109.6
+Report: per COMMON RULES. MEASURE MOVED: B4 parlay families - groundwork only; joint calibration per leg-pair type. Operator decisions: none.
+END OF BLOCK 110.4
 ```
 
 ---
@@ -283,6 +206,17 @@ END OF BLOCK 109.6
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 109 — WRITTEN 2026-11-11 ~00:45 UTC · CLOSED 2026-11-11 ~05:30 UTC (operator 11-10 18:37 PT) · SW-9 · five blocks + 109.6 red · verified on GitHub (#462-#472 merged, main CI green 6a56768; handoffs W109_1..6) + box (re-arm check: epoch-gated trips none; RE-ARMED 02:39Z) · moved: **D5(a) NBA 4 → 8, NHL 2 → 7; +9 NBA prop SHADOW cells (EXP-047, install pending); props net of costs 3 of 3 sports measured, 0 of 22 net-positive; forward test stop found to be an artifact, gated, alarmed, re-armed**
+
+| # | Block | Status | Outcome |
+|---|---|---|---|
+| 109.1 | NBA architecture | ✅ DONE | #463 8/8; applied path (ml) NULL: market Brier 0.1529 vs tree 0.1745, n 397 |
+| 109.2 | NHL architecture | ✅ DONE | #465 7/8 (clusters wait for NHL archetypes); no 2023-25 market history |
+| 109.3 | NBA props from the engine | ✅ DONE (install pending) | #466 EXP-047, +9 SHADOW cells; backtest market better on points / reb / ast / 3s |
+| 109.4 | Props net of costs | ✅ DONE | #472 NBA / NFL not mispriced after costs, NHL underpowered; 0 of 22 net-positive |
+| 109.5 | The reds | ✅ DONE (install pending) | #464 memory, #462 MLB sync skip, #468 MemoryMax install prepared; budget GREEN |
+| 109.6 | Forward test silent | ✅ DONE | ARTIFACT (pre-GG-1771 markouts); #469-#471 gate + alarm; re-armed by window 02:39Z |
 
 ### ✅ WAVE 108 — WRITTEN 2026-11-10 ~03:40 UTC · CLOSED 2026-11-11 ~00:45 UTC (operator 11-10 16:14 PT) · SW-9 · four blocks + 108.5 red · verified on GitHub (#454 #455 #456 merged; #458 UNMERGED; window #457 #459 merged; handoffs W108_1 / 3 / 4 / 5) · moved: **edge map 40 rows, UNTESTED 5 → 4 (NBA / NHL ride board NO EFFECT NET); 22 prop series in the archive cron (not installed - Hard Rule 14); weather scoped: Kalshi beats a free forecast (Brier 0.098 vs 0.137), no build; /visual redesigned and refreshing on pull**
 
@@ -570,6 +504,10 @@ What should reorder this, and what should stop it:
 **OPEN - waiting on you (not an authorization until you answer):**
 1. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
    due before January. Accept, or tell me what to change.
+2. **`nba_engine_props_shadow_install`** (109.3, EXP-047: 9 NBA prop SHADOW cells - points, rebounds, assists, threes - one cron line,
+   evaluate-and-log, no orders). Approve with: "I approve the box-task request that runs nba_engine_props_shadow_install, which adds a crontab line on the paper box."
+3. **`dashboard_memmax_install`** (109.5: the dashboard service hit its 128 MB cap 5,082 times; raises it to 384 MB). Approve with:
+   "I approve the box-task request that runs dashboard_memmax_install, which changes the dashboard service's memory limit on the paper box."
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
 

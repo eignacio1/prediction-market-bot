@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-11T00:45Z",
+ "as_of": "2026-11-11T05:30Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -28,8 +28,56 @@
  },
  "tickets": [
   {
-   "id": "B-066",
+   "id": "B-069",
    "status": "NOW",
+   "lane": "engine",
+   "rank": "3",
+   "title": "The missing factor classes in live models: matchup, weather, qualitative (no live model uses them, D1)",
+   "measure": "D1 classes per model",
+   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
+   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
+   "wave": "110.1",
+   "order": 1
+  },
+  {
+   "id": "B-068",
+   "status": "NOW",
+   "lane": "engine",
+   "rank": "3",
+   "title": "Factors APPLIED per sport (aggregated -> interpreted -> applied): NFL 10 -> 21, NBA 5 -> 17, NHL 3 -> 12, each a tested path from fact to price vs the market",
+   "measure": "D5(b) applied per sport",
+   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
+   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
+   "wave": "110.2",
+   "order": 2
+  },
+  {
+   "id": "B-071",
+   "status": "NOW",
+   "lane": "engine",
+   "rank": "5",
+   "title": "Multi-arm decision trees: every registered cell routed (ride / fade / momentum / pot of gold / no-bet) with its own tree depth by horizon (ADR-0068); in-play branches where speed is measured",
+   "measure": "D5(a) decision trees per sport; cells routed",
+   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
+   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
+   "wave": "110.3",
+   "order": 3
+  },
+  {
+   "id": "B-072",
+   "status": "NOW",
+   "lane": "quant",
+   "rank": "4",
+   "title": "Quant core for the suite: cross-cell correlation (same-game exposure), sequential looks per cell, portfolio-level sizing math (kelly 0 until G6)",
+   "measure": "quant functions tested",
+   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
+   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
+   "wave": "110.4",
+   "order": 4
+  },
+  {
+   "id": "B-066",
+   "status": "DONE",
    "lane": "engine",
    "rank": "2",
    "title": "NBA architecture 4/8 -> 8/8: build and test the missing D5(a) components (filtering, clusters, momentum looping, temporal evolution, structural tensions, seat interface) on the NBA engine",
@@ -37,11 +85,11 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.1",
-   "order": 1
+   "order": 5
   },
   {
    "id": "B-067",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "engine",
    "rank": "2",
    "title": "NHL engine: factor classes point-in-time from the shot-level store, then D5(a) 2/8 -> 8/8",
@@ -49,11 +97,11 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.2",
-   "order": 2
+   "order": 6
   },
   {
    "id": "B-070",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "engine",
    "rank": "2",
    "title": "Full bet suite from one engine per sport: player props priced from each engine joint distribution (NBA, NFL, NHL), team totals and alt lines, as shadow cells pre-registered before their first row",
@@ -61,11 +109,11 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.3",
-   "order": 3
+   "order": 7
   },
   {
    "id": "B-064",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "quant",
    "rank": "4",
    "title": "NBA / NFL / NHL props net of costs from Kalshi public history",
@@ -73,19 +121,7 @@
    "why": "MLB props 0 of 50; the in-season sports untested",
    "source": "SW-9 W107 close",
    "wave": "109.4",
-   "order": 4
-  },
-  {
-   "id": "B-062",
-   "status": "DONE",
-   "lane": "proof",
-   "rank": "1",
-   "title": "Close the edge map untested rows existing data can answer (ride-board backward test / candle scan on the NBA/NHL archive, NBA/NHL pot of gold); fix the stale GG-1330 line; prop series into the archive",
-   "measure": "UNTESTED rows 5 -> N; prop series archived X of Y",
-   "why": "The strategy decision needs no open cheap gaps",
-   "source": "SW-9 W107 close",
-   "wave": "108.1 - UNTESTED 5->4; 22 prop series merged, install pending",
-   "order": 5
+   "order": 8
   },
   {
    "id": "B-063",
@@ -97,23 +133,11 @@
    "why": "107.2 could not see under 20 minutes",
    "source": "SW-9 W107 close",
    "wave": "108.2",
-   "order": 6
-  },
-  {
-   "id": "B-065",
-   "status": "DONE",
-   "lane": "quant",
-   "rank": "8",
-   "title": "SCOPING, research only: Kalshi weather markets vs free NOAA / NWS forecasts, net of costs",
-   "measure": "none on the board (memo); operator decides",
-   "why": "Doctrine check: sports lines priced by institutions; methodology transfer test",
-   "source": "SW-9 W107 close",
-   "wave": "108.4 - Kalshi beats free forecast; no build",
-   "order": 7
+   "order": 9
   },
   {
    "id": "B-001",
-   "order": 8,
+   "order": 10,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -133,7 +157,7 @@
    "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 9
+   "order": 11
   },
   {
    "id": "B-042",
@@ -145,11 +169,11 @@
    "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
    "source": "operator 2026-11-04",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 10
+   "order": 12
   },
   {
    "id": "B-017",
-   "order": 11,
+   "order": 13,
    "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
@@ -161,7 +185,7 @@
   },
   {
    "id": "B-008",
-   "order": 12,
+   "order": 14,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -173,7 +197,7 @@
   },
   {
    "id": "B-012",
-   "order": 13,
+   "order": 15,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -185,7 +209,7 @@
   },
   {
    "id": "B-013",
-   "order": 14,
+   "order": 16,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -197,7 +221,7 @@
   },
   {
    "id": "B-014",
-   "order": 15,
+   "order": 17,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -209,7 +233,7 @@
   },
   {
    "id": "B-015",
-   "order": 16,
+   "order": 18,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -221,7 +245,7 @@
   },
   {
    "id": "B-016",
-   "order": 17,
+   "order": 19,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -233,7 +257,7 @@
   },
   {
    "id": "B-018",
-   "order": 18,
+   "order": 20,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -245,7 +269,7 @@
   },
   {
    "id": "B-019",
-   "order": 19,
+   "order": 21,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -257,7 +281,7 @@
   },
   {
    "id": "B-020",
-   "order": 20,
+   "order": 22,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -269,7 +293,7 @@
   },
   {
    "id": "B-021",
-   "order": 21,
+   "order": 23,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -281,7 +305,7 @@
   },
   {
    "id": "B-022",
-   "order": 22,
+   "order": 24,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -293,7 +317,7 @@
   },
   {
    "id": "B-023",
-   "order": 23,
+   "order": 25,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -305,7 +329,7 @@
   },
   {
    "id": "B-024",
-   "order": 24,
+   "order": 26,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -317,7 +341,7 @@
   },
   {
    "id": "B-025",
-   "order": 25,
+   "order": 27,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -326,54 +350,6 @@
    "why": "Breadth outran proof; expansion ranks last.",
    "source": "ranking 10-27",
    "wave": ""
-  },
-  {
-   "id": "B-068",
-   "status": "NEXT",
-   "lane": "engine",
-   "rank": "3",
-   "title": "Factors APPLIED per sport (aggregated -> interpreted -> applied): NFL 10 -> 21, NBA 5 -> 17, NHL 3 -> 12, each a tested path from fact to price vs the market",
-   "measure": "D5(b) applied per sport",
-   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
-   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
-   "wave": "109 ->",
-   "order": 26
-  },
-  {
-   "id": "B-069",
-   "status": "NEXT",
-   "lane": "engine",
-   "rank": "3",
-   "title": "The missing factor classes in live models: matchup, weather, qualitative (no live model uses them, D1)",
-   "measure": "D1 classes per model",
-   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
-   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
-   "wave": "109 ->",
-   "order": 27
-  },
-  {
-   "id": "B-071",
-   "status": "NEXT",
-   "lane": "engine",
-   "rank": "5",
-   "title": "Multi-arm decision trees: every registered cell routed (ride / fade / momentum / pot of gold / no-bet) with its own tree depth by horizon (ADR-0068); in-play branches where speed is measured",
-   "measure": "D5(a) decision trees per sport; cells routed",
-   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
-   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
-   "wave": "109 ->",
-   "order": 28
-  },
-  {
-   "id": "B-072",
-   "status": "NEXT",
-   "lane": "quant",
-   "rank": "4",
-   "title": "Quant core for the suite: cross-cell correlation (same-game exposure), sequential looks per cell, portfolio-level sizing math (kelly 0 until G6)",
-   "measure": "quant functions tested",
-   "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
-   "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
-   "wave": "109 ->",
-   "order": 29
   },
   {
    "id": "B-073",
@@ -385,7 +361,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
-   "order": 30
+   "order": 28
   },
   {
    "id": "B-074",
@@ -397,7 +373,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
-   "order": 31
+   "order": 29
   }
  ]
 }
