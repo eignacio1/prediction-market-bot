@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-11T06:15Z",
+ "as_of": "2026-11-11T06:25Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -28,6 +28,18 @@
  },
  "tickets": [
   {
+   "id": "B-078",
+   "status": "NEXT",
+   "lane": "window",
+   "rank": "plumbing",
+   "title": "Build 04_EXECUTION/OPERATOR_DIRECTIVES.md: every directive the operator has given more than once (DECISION_LOG + project memory), with its DOCTRINE.md home, implementing code and status (built / partial / not built / contradicted). The window does this first in its next session, before writing W111",
+   "measure": "repeated directives tracked; not-built / contradicted count",
+   "why": "Operator 11-10 22:16 PT: the big decisions have all been his; most of what he raised had been talked about numerous times",
+   "source": "SW-9 2026-11-11",
+   "wave": "before 111",
+   "order": 1
+  },
+  {
    "id": "B-076",
    "status": "NEXT",
    "lane": "proof",
@@ -37,7 +49,7 @@
    "why": "Operator 11-10 22:05 / 22:10 PT: no cell should be closed; the engine encodes the beat-the-market rule (W53)",
    "source": "SW-9 2026-11-11",
    "wave": "111.1",
-   "order": 1
+   "order": 2
   },
   {
    "id": "B-077",
@@ -49,7 +61,7 @@
    "why": "Operator 11-10 22:10 PT: \"I NEED better help from you and every other strategy window\" - checks audited work against the premise, never code against doctrine (W53)",
    "source": "SW-9 2026-11-11",
    "wave": "111",
-   "order": 2
+   "order": 3
   },
   {
    "id": "B-069",
@@ -61,7 +73,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.1",
-   "order": 3
+   "order": 4
   },
   {
    "id": "B-068",
@@ -73,7 +85,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.2",
-   "order": 4
+   "order": 5
   },
   {
    "id": "B-071",
@@ -85,7 +97,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.3",
-   "order": 5
+   "order": 6
   },
   {
    "id": "B-072",
@@ -97,7 +109,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.4",
-   "order": 6
+   "order": 7
   },
   {
    "id": "B-066",
@@ -109,7 +121,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.1",
-   "order": 7
+   "order": 8
   },
   {
    "id": "B-067",
@@ -121,7 +133,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.2",
-   "order": 8
+   "order": 9
   },
   {
    "id": "B-070",
@@ -133,7 +145,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.3",
-   "order": 9
+   "order": 10
   },
   {
    "id": "B-064",
@@ -145,7 +157,7 @@
    "why": "MLB props 0 of 50; the in-season sports untested",
    "source": "SW-9 W107 close",
    "wave": "109.4",
-   "order": 10
+   "order": 11
   },
   {
    "id": "B-063",
@@ -157,11 +169,11 @@
    "why": "107.2 could not see under 20 minutes",
    "source": "SW-9 W107 close",
    "wave": "108.2",
-   "order": 11
+   "order": 12
   },
   {
    "id": "B-001",
-   "order": 12,
+   "order": 13,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -181,7 +193,7 @@
    "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 13
+   "order": 14
   },
   {
    "id": "B-042",
@@ -193,11 +205,11 @@
    "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
    "source": "operator 2026-11-04",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 14
+   "order": 15
   },
   {
    "id": "B-017",
-   "order": 15,
+   "order": 16,
    "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
@@ -209,7 +221,7 @@
   },
   {
    "id": "B-008",
-   "order": 16,
+   "order": 17,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -221,7 +233,7 @@
   },
   {
    "id": "B-012",
-   "order": 17,
+   "order": 18,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -233,7 +245,7 @@
   },
   {
    "id": "B-013",
-   "order": 18,
+   "order": 19,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -245,7 +257,7 @@
   },
   {
    "id": "B-014",
-   "order": 19,
+   "order": 20,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -257,7 +269,7 @@
   },
   {
    "id": "B-015",
-   "order": 20,
+   "order": 21,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -269,7 +281,7 @@
   },
   {
    "id": "B-016",
-   "order": 21,
+   "order": 22,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -281,7 +293,7 @@
   },
   {
    "id": "B-018",
-   "order": 22,
+   "order": 23,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -293,7 +305,7 @@
   },
   {
    "id": "B-019",
-   "order": 23,
+   "order": 24,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -305,7 +317,7 @@
   },
   {
    "id": "B-020",
-   "order": 24,
+   "order": 25,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -317,7 +329,7 @@
   },
   {
    "id": "B-021",
-   "order": 25,
+   "order": 26,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -329,7 +341,7 @@
   },
   {
    "id": "B-022",
-   "order": 26,
+   "order": 27,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -341,7 +353,7 @@
   },
   {
    "id": "B-023",
-   "order": 27,
+   "order": 28,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -353,7 +365,7 @@
   },
   {
    "id": "B-024",
-   "order": 28,
+   "order": 29,
    "status": "PARKED",
    "lane": "engine",
    "rank": "8",
@@ -365,7 +377,7 @@
   },
   {
    "id": "B-025",
-   "order": 29,
+   "order": 30,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -385,7 +397,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
-   "order": 30
+   "order": 31
   },
   {
    "id": "B-074",
@@ -397,7 +409,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
-   "order": 31
+   "order": 32
   },
   {
    "id": "B-075",
@@ -409,7 +421,7 @@
    "why": "Operator 11-10 21:45 PT: \"This CANNOT keep fucking happening\" - stale doctrine read by every window",
    "source": "SW-9 2026-11-11",
    "wave": "111 ->",
-   "order": 32
+   "order": 33
   }
  ]
 }

@@ -3419,3 +3419,12 @@ NEED better help from you and every other strategy window"
 Effect: no session left tonight - the engine fix goes FIRST in the next wave (W111.1, backlog); a doctrine-conformance audit of every
 decision point in code (W111); the strategic handoff gains a code-conformance step at every wave close (W53). Until W111.1 lands, no
 window or block applies a new RULED_OUT to the registry (the engine prints verdicts; closing a cell is a code change a block makes).
+
+## 2026-11-10 22:16 PT — Operator: the strategic windows must make the strategic catches (SW-9)
+Verbatim (excerpt): "the fact that ALL of the larger strategic decisions have been made by me - due to oversight by me - is not something
+I'm proud of at this scale anymore. There is a REASON I started using a Strategic Cowork Window paired with terminals for execution - and
+one of the smaller reasons is for you to create fucking terminal waves for me ... most of the things I've presented in this window, and
+practically the entire project, are all things that have been talked about NUMEROUS times."
+Effect: strategic-handoff step 6 - a repeated-directives ledger (04_EXECUTION/OPERATOR_DIRECTIVES.md) read at every wave close; each wave
+opens with the oldest not-built / contradicted directive and the block that moves it; a third raise of the same thing is a logged window
+error. The window builds the ledger before writing W111 (backlog).

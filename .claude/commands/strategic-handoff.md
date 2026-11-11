@@ -82,3 +82,10 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
    (decision_trees/), pre-registration templates, edge-map statuses - against DOCTRINE.md. A contradiction is a red: it goes first in
    the next wave and is named to the operator. The doctrine check (W48) asks whether the premise is right; this asks whether the code
    still says the premise we chose.
+6. REPEATED DIRECTIVES (operator 2026-11-10 22:16 PT: "most of the things I've presented in this window, and practically the entire
+   project, are all things that have been talked about NUMEROUS times"). The window keeps `04_EXECUTION/OPERATOR_DIRECTIVES.md`: every
+   directive the operator has given more than once (DECISION_LOG, project memory, his messages), each with where it lives in DOCTRINE.md,
+   the code that implements it, and its status (built / partial / not built / contradicted in code). At every wave close the window
+   reads it before writing the next wave, and the wave's first lines name the oldest "not built" or "contradicted" directive and the
+   block that moves it - or why not this wave. The operator should never have to raise the same thing a third time; if he does, that is
+   a window error logged that turn.
