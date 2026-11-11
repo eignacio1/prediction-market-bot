@@ -17,6 +17,7 @@ from prediction_market_bot.pregame_shadow.reasons import NO_REASONS_NOTE
 from prediction_market_bot.pregame_shadow.bands import band_for_horizon
 from prediction_market_bot.pregame_shadow.fees import e_net, fee_kmult, fee_k007
 from prediction_market_bot.pregame_shadow.ledger import CellLedger
+from prediction_market_bot.decision_trees.shadow_route import router_fields  # W110.3: logging only
 
 
 def _f(x) -> Optional[float]:
@@ -122,7 +123,7 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
             # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
             why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
                    else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
-            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {})}):
+            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **router_fields(row, series)}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:
