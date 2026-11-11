@@ -1,0 +1,1264 @@
+{
+ "n_games": 3543,
+ "leaves": [
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "calm",
+   "arm": "FAV",
+   "n": 788,
+   "net": -0.0680266570174865,
+   "lo": -0.13235020576007436,
+   "hi": -3.3198743359002476e-05,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.10260263372703636,
+    -0.04560290643179518
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "calm",
+   "arm": "DOG",
+   "n": 788,
+   "net": -0.0015011112038912104,
+   "lo": -0.06934180181934796,
+   "hi": 0.06346250284657677,
+   "earns": "no",
+   "held_out_halves": [
+    0.03786578528300814,
+    -0.02703194365355395
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "calm",
+   "arm": "OVER",
+   "n": 788,
+   "net": -0.08597441680844475,
+   "lo": -0.15239483594784434,
+   "hi": -0.016708100415236234,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.07272580448377168,
+    -0.0945666130859524
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "calm",
+   "arm": "UNDER",
+   "n": 788,
+   "net": 0.00966776246875957,
+   "lo": -0.06002085278511772,
+   "hi": 0.07577420270601629,
+   "earns": "no",
+   "held_out_halves": [
+    0.0006965675661743811,
+    0.015485901422319008
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "cold",
+   "arm": "FAV",
+   "n": 72,
+   "net": 0.0853299119117276,
+   "lo": -0.13238142333005856,
+   "hi": 0.3022702632890658,
+   "earns": "no",
+   "held_out_halves": [
+    0.22395987847604779,
+    -0.06960946248368911
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "cold",
+   "arm": "DOG",
+   "n": 72,
+   "net": -0.15129939773278606,
+   "lo": -0.3695786478214849,
+   "hi": 0.06819691916549427,
+   "earns": "no",
+   "held_out_halves": [
+    -0.27986787953686104,
+    -0.0076052121870551865
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "cold",
+   "arm": "OVER",
+   "n": 72,
+   "net": -0.08062542025060918,
+   "lo": -0.30290601644082155,
+   "hi": 0.14275381253346553,
+   "earns": "no",
+   "held_out_halves": [
+    -0.16726637917486037,
+    0.016208592664730348
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "cold",
+   "arm": "UNDER",
+   "n": 72,
+   "net": 0.0016424736604659313,
+   "lo": -0.22256524443843897,
+   "hi": 0.22249201804847696,
+   "earns": "no",
+   "held_out_halves": [
+    0.08734796696680742,
+    -0.09414601885838636
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "indoor",
+   "arm": "FAV",
+   "n": 430,
+   "net": -0.029223751679431864,
+   "lo": -0.11875605511124028,
+   "hi": 0.06472572379813997,
+   "earns": "no",
+   "held_out_halves": [
+    -0.012915363961978128,
+    -0.04074316840049044
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "indoor",
+   "arm": "DOG",
+   "n": 430,
+   "net": -0.04510726946810809,
+   "lo": -0.13815916717908677,
+   "hi": 0.04384124435621958,
+   "earns": "no",
+   "held_out_halves": [
+    -0.0582738000079206,
+    -0.035807101070938936
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "indoor",
+   "arm": "OVER",
+   "n": 430,
+   "net": -0.023551376740427336,
+   "lo": -0.10769457874136289,
+   "hi": 0.06599932045534807,
+   "earns": "no",
+   "held_out_halves": [
+    0.009644140803840254,
+    -0.04699900421217191
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "indoor",
+   "arm": "UNDER",
+   "n": 430,
+   "net": -0.050238392275055,
+   "lo": -0.13981656080698862,
+   "hi": 0.03364572423088571,
+   "earns": "no",
+   "held_out_halves": [
+    -0.08039183361387364,
+    -0.028939532916683115
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "unknown",
+   "arm": "FAV",
+   "n": 2211,
+   "net": -0.042999919981899,
+   "lo": -0.08574462940020497,
+   "hi": -0.003594041042311589,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.061692744509279154,
+    -0.022368448572040785
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "unknown",
+   "arm": "DOG",
+   "n": 2211,
+   "net": -0.004923631703292958,
+   "lo": -0.0440724279791086,
+   "hi": 0.03750480519050851,
+   "earns": "no",
+   "held_out_halves": [
+    0.011241263181611593,
+    -0.022764999987297984
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "unknown",
+   "arm": "OVER",
+   "n": 2211,
+   "net": -0.03546359553122657,
+   "lo": -0.0750953352085696,
+   "hi": 0.004265847634431746,
+   "earns": "no",
+   "held_out_halves": [
+    -0.0333303570241039,
+    -0.03781807380740381
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": null,
+   "leaf": "unknown",
+   "arm": "UNDER",
+   "n": 2211,
+   "net": -0.014894199594795009,
+   "lo": -0.05476216907401666,
+   "hi": 0.02476165060841061,
+   "earns": "no",
+   "held_out_halves": [
+    -0.01840051031286519,
+    -0.011024246756582427
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": null,
+   "leaf": "neutral",
+   "arm": "OVER",
+   "n": 908,
+   "net": -0.04870201618504986,
+   "lo": -0.11086752948238833,
+   "hi": 0.013488020781492744,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07117758865153438,
+    -0.028572536877906087
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": null,
+   "leaf": "neutral",
+   "arm": "UNDER",
+   "n": 908,
+   "net": -0.012579440411548445,
+   "lo": -0.07488680892510646,
+   "hi": 0.05020272828136771,
+   "earns": "no",
+   "held_out_halves": [
+    0.01416093441121513,
+    -0.03652854437598597
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": null,
+   "leaf": "pass_mismatch_high",
+   "arm": "OVER",
+   "n": 1298,
+   "net": -0.04571400336256395,
+   "lo": -0.09950510320415618,
+   "hi": 0.006222621924659118,
+   "earns": "no",
+   "held_out_halves": [
+    0.01825203142274327,
+    -0.10457032530999161
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": null,
+   "leaf": "pass_mismatch_high",
+   "arm": "UNDER",
+   "n": 1298,
+   "net": -0.014757195725795568,
+   "lo": -0.06664364960813303,
+   "hi": 0.038998788429317026,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07779888841853483,
+    0.0432486221068728
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": null,
+   "leaf": "pass_mismatch_low",
+   "arm": "OVER",
+   "n": 1337,
+   "net": -0.04951298232003121,
+   "lo": -0.09925310653682172,
+   "hi": 0.00022735978924317247,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07412668836238168,
+    -0.026085046057823167
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": null,
+   "leaf": "pass_mismatch_low",
+   "arm": "UNDER",
+   "n": 1337,
+   "net": -0.009372728029732845,
+   "lo": -0.06000447465015731,
+   "hi": 0.040610326374086465,
+   "earns": "no",
+   "held_out_halves": [
+    0.015911499241696932,
+    -0.033438883038451425
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": null,
+   "leaf": "away_edge",
+   "arm": "FAV",
+   "n": 1303,
+   "net": -0.04987812889463066,
+   "lo": -0.10315652689015531,
+   "hi": 0.0025795989484701768,
+   "earns": "no",
+   "held_out_halves": [
+    -0.06014629933120636,
+    -0.04055709570183867
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": null,
+   "leaf": "away_edge",
+   "arm": "DOG",
+   "n": 1303,
+   "net": -0.008760016915218279,
+   "lo": -0.060856606486639604,
+   "hi": 0.04456294837265412,
+   "earns": "no",
+   "held_out_halves": [
+    0.0009316878995299245,
+    -0.01755775774266174
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": null,
+   "leaf": "home_edge",
+   "arm": "FAV",
+   "n": 1308,
+   "net": -0.04567010185405392,
+   "lo": -0.09937294406247588,
+   "hi": 0.005011222818966158,
+   "earns": "no",
+   "held_out_halves": [
+    -0.062342974445762936,
+    -0.02998671724998343
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": null,
+   "leaf": "home_edge",
+   "arm": "DOG",
+   "n": 1308,
+   "net": -0.013251794456510976,
+   "lo": -0.06336794330226375,
+   "hi": 0.039756207431409916,
+   "earns": "no",
+   "held_out_halves": [
+    0.0034033280866032018,
+    -0.028918482427333508
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": null,
+   "leaf": "neutral",
+   "arm": "FAV",
+   "n": 932,
+   "net": -0.037174691784758816,
+   "lo": -0.10109222738049894,
+   "hi": 0.028256971860281078,
+   "earns": "no",
+   "held_out_halves": [
+    -0.04567672427244442,
+    -0.029271146056040736
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": null,
+   "leaf": "neutral",
+   "arm": "DOG",
+   "n": 932,
+   "net": -0.014193517422165106,
+   "lo": -0.07968723408153594,
+   "hi": 0.04918128952952499,
+   "earns": "no",
+   "held_out_halves": [
+    -0.0012584322452635168,
+    -0.026218058300899717
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "calm|high",
+   "arm": "OVER",
+   "n": 180,
+   "net": -0.10663439954954322,
+   "lo": -0.2497846657779841,
+   "hi": 0.031937928405467275,
+   "earns": "no",
+   "held_out_halves": [
+    -0.12783165017141057,
+    -0.09778830283333088
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "calm|high",
+   "arm": "UNDER",
+   "n": 180,
+   "net": 0.03392760147503268,
+   "lo": -0.1029187340031987,
+   "hi": 0.17642169727811446,
+   "earns": "no",
+   "held_out_halves": [
+    0.060533390927871585,
+    0.022824398002588068
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "calm|low",
+   "arm": "OVER",
+   "n": 221,
+   "net": -0.03846028530701358,
+   "lo": -0.1633077686763165,
+   "hi": 0.0876034661670206,
+   "earns": "no",
+   "held_out_halves": [
+    -0.13783736632315788,
+    0.04218177223887399
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "calm|low",
+   "arm": "UNDER",
+   "n": 221,
+   "net": -0.042869038690775046,
+   "lo": -0.16861037364445647,
+   "hi": 0.08389372795511958,
+   "earns": "no",
+   "held_out_halves": [
+    0.060177204795771676,
+    -0.12648853135608754
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "calm|mid",
+   "arm": "OVER",
+   "n": 387,
+   "net": -0.10349851543484931,
+   "lo": -0.19550193800553728,
+   "hi": -0.011553061110071896,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.013443181423365983,
+    -0.16563276335543603
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "calm|mid",
+   "arm": "UNDER",
+   "n": 387,
+   "net": 0.028385752223612254,
+   "lo": -0.06381082126185947,
+   "hi": 0.12104336804809863,
+   "earns": "no",
+   "held_out_halves": [
+    -0.05664479144585146,
+    0.08705311423136454
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "indoor|high",
+   "arm": "OVER",
+   "n": 170,
+   "net": -0.012071413394819566,
+   "lo": -0.15535465754742062,
+   "hi": 0.13016024618641595,
+   "earns": "no",
+   "held_out_halves": [
+    0.045932634014125034,
+    -0.04797868083845193
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "indoor|high",
+   "arm": "UNDER",
+   "n": 170,
+   "net": -0.05555222120139294,
+   "lo": -0.19737621947893352,
+   "hi": 0.0872460896148643,
+   "earns": "no",
+   "held_out_halves": [
+    -0.10633722444715807,
+    -0.02411388585877642
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "indoor|low",
+   "arm": "OVER",
+   "n": 86,
+   "net": 0.02611308466719837,
+   "lo": -0.17832356275177957,
+   "hi": 0.22605018403789512,
+   "earns": "no",
+   "held_out_halves": [
+    0.1963989662028842,
+    -0.10247013200260524
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "indoor|low",
+   "arm": "UNDER",
+   "n": 86,
+   "net": -0.10504882647396663,
+   "lo": -0.30579619954796916,
+   "hi": 0.10015490619027856,
+   "earns": "no",
+   "held_out_halves": [
+    -0.2718318967926988,
+    0.020889410297320898
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "indoor|mid",
+   "arm": "OVER",
+   "n": 174,
+   "net": -0.059314235647376395,
+   "lo": -0.20057471234915947,
+   "hi": 0.07722963561904228,
+   "earns": "no",
+   "held_out_halves": [
+    -0.11231218285975371,
+    -0.01821378678879807
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "indoor|mid",
+   "arm": "UNDER",
+   "n": 174,
+   "net": -0.017956505731469688,
+   "lo": -0.1531619882774659,
+   "hi": 0.12190845031993632,
+   "earns": "no",
+   "held_out_halves": [
+    0.0349993866727055,
+    -0.05902434065715652
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "unknown|high",
+   "arm": "OVER",
+   "n": 733,
+   "net": -0.016264594353792055,
+   "lo": -0.08705988745011022,
+   "hi": 0.05417616627400849,
+   "earns": "no",
+   "held_out_halves": [
+    0.026119350089411866,
+    -0.08685312728101896
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "unknown|high",
+   "arm": "UNDER",
+   "n": 733,
+   "net": -0.03453827762505616,
+   "lo": -0.10540770301787585,
+   "hi": 0.03575191147351156,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07738579871320542,
+    0.03682232113266152
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "unknown|low",
+   "arm": "OVER",
+   "n": 417,
+   "net": -0.0036781380677317335,
+   "lo": -0.09888421135471182,
+   "hi": 0.09275593006600534,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07034294208152334,
+    0.042204520565242244
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "unknown|low",
+   "arm": "UNDER",
+   "n": 417,
+   "net": -0.04714195110205617,
+   "lo": -0.14385478250272865,
+   "hi": 0.048909399012803445,
+   "earns": "no",
+   "held_out_halves": [
+    0.02017335305597165,
+    -0.09347232238490928
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "unknown|mid",
+   "arm": "OVER",
+   "n": 1061,
+   "net": -0.061219866620139715,
+   "lo": -0.11957724550467089,
+   "hi": -0.003938755163193861,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.07268341416363193,
+    -0.04969130841004923
+   ]
+  },
+  {
+   "filter": "weather",
+   "market_state": "total_bucket",
+   "leaf": "unknown|mid",
+   "arm": "UNDER",
+   "n": 1061,
+   "net": 0.011351249580237347,
+   "lo": -0.04673667725848192,
+   "hi": 0.06896628479849971,
+   "earns": "no",
+   "held_out_halves": [
+    0.02005382298535578,
+    0.0025993232068479196
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "neutral|high",
+   "arm": "OVER",
+   "n": 229,
+   "net": 0.048964117410757735,
+   "lo": -0.0742012839709806,
+   "hi": 0.17045225014370705,
+   "earns": "no",
+   "held_out_halves": [
+    0.046516555153874345,
+    0.05223585879495903
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "neutral|high",
+   "arm": "UNDER",
+   "n": 229,
+   "net": -0.10808968341939319,
+   "lo": -0.2316942923326968,
+   "hi": 0.015954519524597362,
+   "earns": "no",
+   "held_out_halves": [
+    -0.09872909627270506,
+    -0.12060230501343552
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "neutral|low",
+   "arm": "OVER",
+   "n": 152,
+   "net": -0.023098414194293093,
+   "lo": -0.17735771840517234,
+   "hi": 0.12819827127952252,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07175491840306326,
+    0.002202967994267363
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "neutral|low",
+   "arm": "UNDER",
+   "n": 152,
+   "net": -0.045750524419293365,
+   "lo": -0.19776534968044854,
+   "hi": 0.10860345669776252,
+   "earns": "no",
+   "held_out_halves": [
+    0.0006751964941557139,
+    -0.06989189929428691
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "neutral|mid",
+   "arm": "OVER",
+   "n": 527,
+   "net": -0.0985260998587405,
+   "lo": -0.1805359776792153,
+   "hi": -0.01615657871237575,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.13373007520205893,
+    -0.06770696130195639
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "neutral|mid",
+   "arm": "UNDER",
+   "n": 527,
+   "net": 0.03849048448024221,
+   "lo": -0.042497674536880095,
+   "hi": 0.1206217204959251,
+   "earns": "no",
+   "held_out_halves": [
+    0.07712781405056729,
+    0.004665633682021678
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_high|high",
+   "arm": "OVER",
+   "n": 768,
+   "net": -0.05298773651723815,
+   "lo": -0.11993650400294148,
+   "hi": 0.02079542328608879,
+   "earns": "no",
+   "held_out_halves": [
+    -0.0069758873716181165,
+    -0.10274038640640454
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_high|high",
+   "arm": "UNDER",
+   "n": 768,
+   "net": -0.004579968884948882,
+   "lo": -0.07750765923372677,
+   "hi": 0.061327869431332956,
+   "earns": "no",
+   "held_out_halves": [
+    -0.047758407799834986,
+    0.04210891221813936
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_high|low",
+   "arm": "OVER",
+   "n": 71,
+   "net": 0.05902688824332801,
+   "lo": -0.15703740816921588,
+   "hi": 0.27786761945937616,
+   "earns": "no",
+   "held_out_halves": [
+    0.07581555559389838,
+    0.04175854468274129
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_high|low",
+   "arm": "UNDER",
+   "n": 71,
+   "net": -0.1314420178458139,
+   "lo": -0.3493469440332878,
+   "hi": 0.08491527682779744,
+   "earns": "no",
+   "held_out_halves": [
+    -0.14369557690159718,
+    -0.11883835710272252
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_high|mid",
+   "arm": "OVER",
+   "n": 459,
+   "net": -0.049745324149554224,
+   "lo": -0.1400775978649119,
+   "hi": 0.03918391804571743,
+   "earns": "no",
+   "held_out_halves": [
+    0.06099883745904604,
+    -0.1258819352554669
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_high|mid",
+   "arm": "UNDER",
+   "n": 459,
+   "net": -0.013736472072743212,
+   "lo": -0.10225369127032033,
+   "hi": 0.07852689615423707,
+   "earns": "no",
+   "held_out_halves": [
+    -0.12920996318575934,
+    0.06565155306745543
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_low|high",
+   "arm": "OVER",
+   "n": 104,
+   "net": -0.11724059288538172,
+   "lo": -0.30352061507519745,
+   "hi": 0.06657269896506085,
+   "earns": "no",
+   "held_out_halves": [
+    -0.02274060485198147,
+    -0.21930057996145394
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_low|high",
+   "arm": "UNDER",
+   "n": 104,
+   "net": 0.06259204302672323,
+   "lo": -0.11913975062711721,
+   "hi": 0.24677702348937836,
+   "earns": "no",
+   "held_out_halves": [
+    -0.03284883066719448,
+    0.16566818661615434
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_low|low",
+   "arm": "OVER",
+   "n": 540,
+   "net": -0.027724281753814823,
+   "lo": -0.10632651757214602,
+   "hi": 0.051181426787694016,
+   "earns": "no",
+   "held_out_halves": [
+    -0.09287769441493791,
+    0.023621785177798747
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_low|low",
+   "arm": "UNDER",
+   "n": 540,
+   "net": -0.03451482427689883,
+   "lo": -0.11452843049454503,
+   "hi": 0.04390599368375481,
+   "earns": "no",
+   "held_out_halves": [
+    0.03131725757157037,
+    -0.08639573646211626
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_low|mid",
+   "arm": "OVER",
+   "n": 693,
+   "net": -0.05632716241665517,
+   "lo": -0.1283630120102011,
+   "hi": 0.013076490127017443,
+   "earns": "no",
+   "held_out_halves": [
+    -0.0694381024430851,
+    -0.04215317319889308
+   ]
+  },
+  {
+   "filter": "matchup_total",
+   "market_state": "total_bucket",
+   "leaf": "pass_mismatch_low|mid",
+   "arm": "UNDER",
+   "n": 693,
+   "net": -0.0005813921226647548,
+   "lo": -0.07020408993379751,
+   "hi": 0.07141125487295627,
+   "earns": "no",
+   "held_out_halves": [
+    0.013040630721058783,
+    -0.015307903305068583
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "away_edge|big",
+   "arm": "FAV",
+   "n": 203,
+   "net": -0.1253925934068813,
+   "lo": -0.25954279489585863,
+   "hi": 0.003197271466299621,
+   "earns": "no",
+   "held_out_halves": [
+    -0.1275787680922908,
+    -0.12365139233000647
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "away_edge|big",
+   "arm": "DOG",
+   "n": 203,
+   "net": 0.06066435594808159,
+   "lo": -0.06348999974503909,
+   "hi": 0.19105653993832777,
+   "earns": "no",
+   "held_out_halves": [
+    0.0654232267407973,
+    0.05687410487423724
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "away_edge|mid",
+   "arm": "FAV",
+   "n": 510,
+   "net": -0.043365641809284976,
+   "lo": -0.12873117786836202,
+   "hi": 0.04450450940383887,
+   "earns": "no",
+   "held_out_halves": [
+    -0.07292671897497517,
+    -0.016035589335344994
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "away_edge|mid",
+   "arm": "DOG",
+   "n": 510,
+   "net": -0.012518530378877787,
+   "lo": -0.0983757208921471,
+   "hi": 0.0718440126627818,
+   "earns": "no",
+   "held_out_halves": [
+    0.016362825466850507,
+    -0.03922016125511713
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "away_edge|pk",
+   "arm": "FAV",
+   "n": 590,
+   "net": -0.029525471466731384,
+   "lo": -0.10625562935887378,
+   "hi": 0.045808465521966386,
+   "earns": "no",
+   "held_out_halves": [
+    -0.02786515897604511,
+    -0.03107691100720872
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "away_edge|pk",
+   "arm": "DOG",
+   "n": 590,
+   "net": -0.029397823397902218,
+   "lo": -0.10679980913097543,
+   "hi": 0.04780953643808068,
+   "earns": "no",
+   "held_out_halves": [
+    -0.03269942508190027,
+    -0.026312720184986014
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "home_edge|big",
+   "arm": "FAV",
+   "n": 538,
+   "net": -0.012567608931332243,
+   "lo": -0.09588093626939033,
+   "hi": 0.06829884319934734,
+   "earns": "no",
+   "held_out_halves": [
+    -0.024765358098808227,
+    -0.002963401115080396
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "home_edge|big",
+   "arm": "DOG",
+   "n": 538,
+   "net": -0.04445234432424861,
+   "lo": -0.12382179398892346,
+   "hi": 0.036063650062339914,
+   "earns": "no",
+   "held_out_halves": [
+    -0.03399383591659561,
+    -0.0526871167249588
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "home_edge|mid",
+   "arm": "FAV",
+   "n": 515,
+   "net": -0.09004237533702886,
+   "lo": -0.1727327277253985,
+   "hi": -0.01063408903649751,
+   "earns": "loses",
+   "held_out_halves": [
+    -0.12361954599506901,
+    -0.052749698089779355
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "home_edge|mid",
+   "arm": "DOG",
+   "n": 515,
+   "net": 0.027780295858914384,
+   "lo": -0.05128687702780715,
+   "hi": 0.11045091931185753,
+   "earns": "no",
+   "held_out_halves": [
+    0.06389674911527851,
+    -0.012332650175817902
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "home_edge|pk",
+   "arm": "FAV",
+   "n": 255,
+   "net": -0.025895279692062453,
+   "lo": -0.13772679649061365,
+   "hi": 0.09387435682230036,
+   "earns": "no",
+   "held_out_halves": [
+    -0.00123142035343213,
+    -0.04998556090653857
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "home_edge|pk",
+   "arm": "DOG",
+   "n": 255,
+   "net": -0.030293483411809825,
+   "lo": -0.15274945978641413,
+   "hi": 0.08385541820544942,
+   "earns": "no",
+   "held_out_halves": [
+    -0.05636325310397533,
+    -0.004829987433415617
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "neutral|big",
+   "arm": "FAV",
+   "n": 66,
+   "net": -0.03419963521351848,
+   "lo": -0.27752049509442356,
+   "hi": 0.20343423103951366,
+   "earns": "no",
+   "held_out_halves": [
+    -0.17642680357358617,
+    0.11691673116905343
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "neutral|big",
+   "arm": "DOG",
+   "n": 66,
+   "net": -0.02445256231227255,
+   "lo": -0.2533808087938524,
+   "hi": 0.2074082881095078,
+   "earns": "no",
+   "held_out_halves": [
+    0.11056402046941534,
+    -0.16790768151781596
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "neutral|mid",
+   "arm": "FAV",
+   "n": 382,
+   "net": 0.005019544185830077,
+   "lo": -0.09271088279383788,
+   "hi": 0.10270946591164144,
+   "earns": "no",
+   "held_out_halves": [
+    0.005377599201235498,
+    0.004710394245699538
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "neutral|mid",
+   "arm": "DOG",
+   "n": 382,
+   "net": -0.060788393202969096,
+   "lo": -0.15816516825815252,
+   "hi": 0.03604292437802245,
+   "earns": "no",
+   "held_out_halves": [
+    -0.05702460019007983,
+    -0.06403810717019544
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "neutral|pk",
+   "arm": "FAV",
+   "n": 484,
+   "net": -0.07088244359150843,
+   "lo": -0.15575354540344716,
+   "hi": 0.017004783468400692,
+   "earns": "no",
+   "held_out_halves": [
+    -0.06496711317413568,
+    -0.07660540554002353
+   ]
+  },
+  {
+   "filter": "matchup_side",
+   "market_state": "spread_bucket",
+   "leaf": "neutral|pk",
+   "arm": "DOG",
+   "n": 484,
+   "net": 0.023980737765880798,
+   "lo": -0.06430428049140229,
+   "hi": 0.10996638051703145,
+   "earns": "no",
+   "held_out_halves": [
+    0.0242400901662214,
+    0.023729819589941543
+   ]
+  }
+ ],
+ "note": {
+  "baseline_FAV": {
+   "net": -0.04498292631052822,
+   "lo": -0.07687207112448502,
+   "hi": -0.012512069600470483,
+   "n": 3543
+  },
+  "baseline_DOG": {
+   "net": -0.011847588887130582,
+   "lo": -0.04404525974735756,
+   "hi": 0.019691554263013913,
+   "n": 3543
+  },
+  "baseline_OVER": {
+   "net": -0.04791336845117556,
+   "lo": -0.08025337562359647,
+   "hi": -0.017101739465697333,
+   "n": 3543
+  },
+  "baseline_UNDER": {
+   "net": -0.012167177341665667,
+   "lo": -0.043070008885678066,
+   "hi": 0.019634736470680356,
+   "n": 3543
+  },
+  "leaves_scored": 82,
+  "leaves_earning": 0,
+  "expected_by_chance_at_2.5pct": 2.1
+ }
+}

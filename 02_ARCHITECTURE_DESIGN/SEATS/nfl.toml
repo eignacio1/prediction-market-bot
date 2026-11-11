@@ -202,6 +202,26 @@ engine_slot = "granularity_index.cross (not wired to a serving model)"
 stage = "interpreted"
 evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/INDEX_ENTRY_COVERAGE_PRESSURE.md"
 
+[[factor]]
+id = "N22"
+factor_class = "G1"
+name = "Weather, point-in-time forecast (wind, cold, precipitation, roof) as a tree filter"
+source = "Open-Meteo forecast at kickoff (temp 2021-25; wind 2024-25 only; precip 2021-25), lead >= 12h; realised weather refused by weather_factor.assert_priceable"
+engine_slot = "nfl_engine.weather_factor + nfl_engine.filters.weather_leaf"
+stage = "applied"
+evidence = "12_EXPLORATORY/20261111_w110_1_nfl_weather_matchup/RESULTS.md"
+result = "W110.1: per-leaf net after costs, 0/82 leaves earn an arm (2.1 expected by chance); engine Brier arm W_fc vs market dBrier +0.00005 [-0.00009,+0.00021] n=1615 (MATCHES, null). Forecast wind missing 2021-23, so windy/cold leaves are thin (n<40 mostly). Null, stays a null."
+
+[[factor]]
+id = "N23"
+factor_class = "F2"
+name = "Unit-vs-unit crosses (offence pass EPA x pass defence, rush success x run defence, pressure x protection), shrunk, ranked vs same week"
+source = "nflverse pbp 2011-2025 via nfl_engine.matchup_cross.MatchupBook (prior weeks only; prior seasons 0.5**age)"
+engine_slot = "nfl_engine.matchup_cross.terms + nfl_engine.filters.matchup_total_leaf / matchup_side_leaf"
+stage = "applied"
+evidence = "12_EXPLORATORY/20261111_w110_1_nfl_weather_matchup/RESULTS.md"
+result = "W110.1: per-leaf net after costs, 0/82 leaves earn an arm; engine Brier arm X vs market dBrier +0.00008 [-0.00011,+0.00028] n=1615 (MATCHES, null). Pass cross moved mean price ~0.24 pts per game. Null, stays a null."
+
 [[cell]]
 market = "nfl_moneyline"
 band = "T1"
