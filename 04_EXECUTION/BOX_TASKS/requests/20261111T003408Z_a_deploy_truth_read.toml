@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "pre-install check (SW-9)"
