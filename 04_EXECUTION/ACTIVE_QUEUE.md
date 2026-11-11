@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 109 READY TO PASTE - five blocks in NOW (109.1 NBA architecture, 109.2 NHL architecture, 109.3 NBA props from the engine, 109.4 props net of costs, 109.5 the reds).** Written 2026-11-11 ~00:45 UTC by SW-9. **Waiting on you:** `ride_board_install` and `archive_cron_install` (the 22 prop series) by name; the EXP-038 second-look draft.
+> **▶ WAVE 109 READY TO PASTE - five blocks in NOW (109.1 NBA architecture, 109.2 NHL architecture, 109.3 NBA props from the engine, 109.4 props net of costs, 109.5 the reds).** Written 2026-11-11 ~00:45 UTC by SW-9. **Waiting on you:** the EXP-038 second-look draft. Ride board + prop archive installs APPROVED 11-10 16:27 PT.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -525,13 +525,14 @@ What should reorder this, and what should stop it:
 > **AUTHORIZATION - NBA ENGINE CATCH-UP INSTALL (operator, 2026-11-04 22:39 PT: "yes I approve the box-task request that runs
 > nba_engine_catchup_install, which adds a crontab line on the paper box.").** Run by the window with its readback and a budget read.
 
+> **AUTHORIZATION - RIDE BOARD + PROP ARCHIVE INSTALLS (operator, 2026-11-10 16:27 PT: "Yes approve for both", answering the window's two
+> approval sentences: ride_board_install, which adds a crontab line on the paper box; archive_cron_install, which adds crontab lines on the
+> paper box - the 22 NBA / NHL / NFL prop series of #456).** Run by the window, ride board first (it clears the budget red), then the archive,
+> each with its readback and a budget read.
+
 **OPEN - waiting on you (not an authorization until you answer):**
 1. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
    due before January. Accept, or tell me what to change.
-2. **`ride_board_install`** (W105; one crontab line, paper, orders OFF): the box's surface budget stays RED until it is installed, and Hard Rule 14
-   then refuses every other install. Approve with: "I approve the box-task request that runs ride_board_install, which adds a crontab line on the paper box."
-3. **`archive_cron_install` for the 22 NBA / NHL / NFL prop series** (#456, 108.1; read-only public price snapshots): refused on 11-10 by
-   Hard Rule 14 (budget red). Approve with: "I approve the box-task request that runs archive_cron_install, which adds crontab lines on the paper box."
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
 
