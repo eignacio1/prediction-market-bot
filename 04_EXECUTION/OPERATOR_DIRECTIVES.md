@@ -1,0 +1,44 @@
+# Operator directives given more than once — the repeated-directives ledger
+
+**Last reviewed:** 2026-11-11 (SW-9, first build; strategic-handoff step 6). **Read at every wave close, before writing the next wave.**
+Each wave opens with the oldest directive below whose status is NOT BUILT or CONTRADICTED, and names the block that moves it (or why not
+this wave). If the operator has to raise one of these a third time, that is a window error logged the same turn (W54).
+
+Sources: DECISION_LOG (operator entries, verbatim), WINDOW_ERROR_LOG W1–W54, project memory. Status is the window's reading at
+2026-11-11; **W111.2 (doctrine-conformance audit) verifies every "Code" cell against the code and corrects this table.**
+
+Status: **BUILT** (code carries it and a test or scan checks it) · **PARTIAL** · **NOT BUILT** · **CONTRADICTED** (code does the opposite).
+
+## The strategy itself
+
+| # | Directive (his words) | Raised | Home | Code | Status |
+|---|---|---|---|---|---|
+| D-01 | Layered decision trees route every market to an arm — ride / fade / momentum / pot of gold / no bet. "my vision from DAY 1 was to build out the decision trees so we optimize every single route" | day one; 10-26; 11-05; 11-10 21:35 / 21:41 | DOCTRINE §1, ADR-0077 | `decision_trees/router.py`, `shadow_route.py` (W110.3: 27 of 117 cells log an arm; replay all NO_BET); retro-route leaf map (W110.5) not read by the router | **PARTIAL** — D6 = 0 cells wired end to end → **W111.3** |
+| D-02 | "Loses to the market" is a routing result, never a stop; negative evidence is expected and the build continues. "he fucking routes it to the correct path so that loss still WINS" | 11-05 (W48); 11-09 21:29; 11-10 21:41 / 21:56 | DOCTRINE §1, §1b | `pregame_shadow/calibration_engine.py` emits RULED_OUT on "delta vs market CI < 0"; W99.2 applied it to the registry | **CONTRADICTED** → **W111.1** |
+| D-03 | No cell is closed for good; every closed cell is provisional and gets reopened. "I don't get why any cell should be closed" | 11-10 22:03; 22:10 | DOCTRINE §8 | registry: NFL game total T1 / T2 RULED_OUT; `promote_cell_status` guard | **CONTRADICTED** → **W111.1** |
+| D-04 | Depth enhances the trees; it is not a competing price. "meant to ENHANCE OUR DECISION TREES WHICH COULD VERY WELL MEAN RIDE THE WAVE" | 10-14 (ADR-0075); 11-10 21:35 | DOCTRINE §1, §3 | W110.1 / 110.2 exported factors as filters; most factor scoring in `12_EXPLORATORY/` is still Brier vs market | **PARTIAL** → W111.2 audit, W111.4 |
+| D-05 | Never say "no edge"; we are far from the depth that could beat the market. "WE ARE SO FAR AWAY" | 10-16 (W22); 11-10 21:56 | DOCTRINE §1b | dashboards relabelled (11-11); edge-map / proof-calendar statuses and handoff templates not audited | **PARTIAL** → **W111.2** |
+| D-06 | The granularity bar: Syndicate32 or deeper, every sport; subtle splits ranked vs history at the same point in a season, crossed with the opponent — "do we have mechanisms … to identify these opportunities AND FUCKING BLEED EM OUT?" | 09-25; 10-13; 10-14; 10-16; 11-10 21:56 (the PG mid-range example) | DOCTRINE §2–3, GRANULARITY_INDEX.md | index built for NBA availability / lineups (W98, no lift as a price); no index entry is a tested split in a router | **PARTIAL** → **W111.4** |
+| D-07 | One deep engine per sport pricing the whole board, parlay correlations included | 10-13; 10-14 | DOCTRINE §2, ADR-0073 | NFL, NBA, NHL engines; MLB pitch store only; NBA joint misses same-player cross-stat (W110.4) | **PARTIAL** |
+| D-08 | The pot of gold is part of the vision and is routed in the same tree | 09-25; 11-05 | DOCTRINE §6 | `decision_trees/longshot.py` (5 router branches, W106); not scored per leaf in W110.5; backlog B-024 still said PARKED | **PARTIAL** → **W111.3** |
+| D-09 | Retail-priced flow first: "beating buddy off his phone placing parlays, that's the first step" | 10-16; 10-19 | DOCTRINE §6 | props archive (22 series), props net of costs measured; no parlay cell | **PARTIAL** |
+| D-10 | Edge means the whole betting architecture (aggregation > interpretation > application, eight components), not a slogan | 10-14 21:30 / 21:38 (W16) | DOCTRINE §3, ADR-0075 | D5(a) NFL 8/8, NBA 8/8, NHL 7/8, MLB 3/8 | **PARTIAL** |
+| D-11 | Pre-game first, then carry the granularity inward; depth by horizon | 09-30; 10-13 | DOCTRINE §5, ADR-0068 | router depth by horizon (W110.3) | **BUILT** (depth), in-play arms PARTIAL |
+
+## How the work is run
+
+| # | Directive (his words) | Raised | Home | Code / mechanism | Status |
+|---|---|---|---|---|---|
+| D-20 | "I'm eyes and ears on the project not the plumbing" — never hand him commands; demo / paper is plumbing | 10-12 (W9); 10-15 (W20); many | CLAUDE.md "operator and guardrails" | window rule; W8 / W9 / W20 errors | **BUILT** (rule); keep watching — merges and installs still route to him because the classifier refuses them |
+| D-21 | Strategy windows make the strategic catches, not him | 11-10 22:10; 22:16 | strategic-handoff steps 5–6, this file | this ledger; code-conformance step | **BUILT 11-11** (first wave under it: 111) |
+| D-22 | Stale docs must not steer the work: "This CANNOT keep fucking happening"; CLAUDE.md "accurate to the exact state of the project AT THAT EXACT MOMENT" | 10-09; 11-10 21:45; 22:28 | Hard Rule 16 | `doctrine_freshness.py`; `claude_md_now.py` (PR #480, not merged yet) | **PARTIAL** until #480 merges |
+| D-23 | "If I ask for it to be updated it needs to be updated" — dashboards, queue file cards | 10-11 (W3, W5); 11-10 | dashboards memory file | `/visual` refreshes on pull (#457 / #459) | **BUILT** |
+| D-24 | Verify before you tell him: no state claims from memory or notes | W1, W18, W24, W30, W41, W47, W51 (15 UNVERIFIED errors) | Hard Rule 15 | habit only; no check | **PARTIAL** — the most repeated window error |
+| D-25 | Purpose before work; every block names the measure it moves | 10-09 | Hard Rule 12 | claim strings, handoff keys | **BUILT** |
+| D-26 | Search memory, project docs and the repo before asking him anything | 10-13 (W10 "Very typical"); 10-14 (W15 PAM) | Hard Rule 15 | habit | **PARTIAL** |
+| D-27 | His examples are illustrations, not specs; quote his words, never compress them | 10-14 (W16, W17); 10-19 (W25) | CLAUDE.md, /vision | habit | **PARTIAL** |
+| D-28 | No blocks that wait on future time; every part runs on data that exists at paste time | 11-04 21:45 (W45) | COMMON RULES | rule in every wave | **BUILT** |
+| D-29 | $0: "not bouta pay $20 for something that we can get without it" | 10-11 (W4); 10-13 | DOCTRINE §2 | rule | **BUILT** |
+| D-30 | No Polymarket build work | 10-27 | CLAUDE.md venues | rule | **BUILT** |
+| D-31 | The build continues on every lane — quant, engine, scaffolding, governance, architecture, bet suite, trees | 11-09 21:29; 11-10 | DOCTRINE §7 | wave composition | **BUILT** (habit) |
+| D-32 | Muse's perishable snapshots first; anything Muse must act on goes in his message, never a fetched file | 11-03 (W42); 11-10 (W49) | Muse charter v3 | Monday 11-16 notes | **PARTIAL** — next Muse message |

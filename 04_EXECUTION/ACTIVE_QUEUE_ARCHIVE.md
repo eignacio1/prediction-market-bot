@@ -23815,3 +23815,206 @@ END OF BLOCK 109.6
 
 ---
 
+
+---
+
+## (archived 2026-11-11) WAVE 110 · WRITTEN 2026-11-11 ~05:30 UTC (11-10 21:30 PT) · SW-9 · four blocks (operator's ask) · paste each block into its own terminal
+
+**Every part runs on data that exists when you paste it. CI is the gate for code only. The build continues on every lane (operator 11-09 21:29 PT).**
+
+110.1 **engine** = B-069 weather + matchup into the NFL engine · 110.2 **engine** = B-068 NBA factors interpreted → applied · 110.3 **trees** =
+B-071 every registered cell routed · 110.4 **quant** = B-072 same-game correlation from one engine (parlay groundwork).
+
+**DOCTRINE CHECK (W48), Wave 109 close.** *Premise:* "the engine's architecture turns facts into prices the market has not already got" -
+109.1's one applied NBA path lost to the market (Brier 0.1745 vs 0.1529, n 397) and 109.3's engine props lost on all four families; the
+architecture is built, the applied factors so far are ones the market already prices. This wave applies the classes no live model has used
+(matchup, weather) and the NBA crosses still at "interpreted". *Said but not built:* parlays (09-25) - 110.4 builds their pricing math.
+
+- **Pushback:** applying more factors through the same pipe can keep returning "the market is better"; each block must report which crosses
+  it applied, not only a Brier delta, so a null tells us what was tried.
+- **Surface:** box GREEN (ride board + prop archive installed 11-11). Forward test RE-ARMED 02:39Z (109.6 artifact). Waiting on you:
+  `nba_engine_props_shadow_install` (109.3), `dashboard_memmax_install` (109.5). Delta this wave: 0 installs.
+- **Dependencies:** none between blocks (110.4 reads 109.3's merged module; 110.2 reads 109.1's merged tree).
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 110.1 | engine · 3 | NFL: weather + matchup classes applied in the engine (D1, D5b) | ✅ MERGED PR #473 (567477f) | Weather PIT + matchup crosses exported as filters (`nfl_engine/filters.py`) for 110.3's router; D5(b) NFL applied 10→12. Per-leaf net after costs: 0/82 leaves earn an arm (~2 by chance); MOMENTUM unscorable (one closing line); no NFL Kalshi spread/totals history. Box deploy: t4-mlb not_needed. |
+| 110.2 | engine · 3 | NBA: the 9 "interpreted" factors → applied through the tree (D5b NBA 5 → ?) | ✅ DONE (PR #475 merged @58c1cb1, CI green): D5(b) NBA applied 5 → 10 of 17 (B10, B12, B13, P1, P2). Held-out n=2268 vs realized outcomes: usage improves spread −0.0041 [−0.0063,−0.0019] and team total −0.0017 [−0.0026,−0.0009] Brier; geometry, officials null; PAM hindsight-only; ml no gain. No 2025-26 Kalshi spread/total quotes → no market comparison beyond 109.1's ml NULL. 12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md | — |
+| 110.3 | trees · 5 | Every registered cell routed (ride / fade / momentum / pot of gold / no-bet), horizon depth, orders OFF | ✅ MERGED PR #476 (c57a496) | Coverage 27 of 117 registered cells routed (NHL 9/9, NFL 9/13, NBA 9/24, MLB 0/18). Shadow rows now log the router decision (branch, depth, reason; logging only). 14-day replay: 25,263 decisions, all NO_BET (null; n=0 scored) - bounded by date-only tickers and IN_SAMPLE cells, not by the router. |
+| 110.4 | quant · 4 | Same-game correlation from the NBA engine (game lines + props), checked on settled games | ✅ DONE (PR 478) | Engine joint good for game x team/player pts; misses same-player cross-stat and teammate pts sign; no open Kalshi NBA combo. RESULT.md in 12_EXPLORATORY/sgp_correlation |
+| 110.5 | proof + trees | RETRO-ROUTE: every logged shadow row + archived price through ride / fade / momentum / no bet, per leaf, held out | ✅ DONE (PR 479 merged) | 365 leaves: 189 thin, 113 routed, 1 BH lead (NHL ML T2, 11 games, below 15-game bar), 0 prereg drafts. ROUTING.md in 12_EXPLORATORY/retro_route/ |
+
+
+**ADDENDUM 2026-11-11 ~05:45 UTC (operator 21:35 PT) - applies to 110.1, 110.2, 110.3. If you already pasted them, paste this into those three
+terminals; if not, the blocks below already carry it:**
+
+```
+WAVE 110 ADDENDUM (110.1 / 110.2 / 110.3) - THE ARCHITECTURE, OPERATOR 2026-11-10 21:35 PT
+THE ARCHITECTURE (operator 2026-11-10 21:35 PT, binding): depth does not exist to out-price the market. Factors feed LAYERED decision
+trees and filters that choose the ARM per market - ride the market, fade it, momentum, pot of gold, or no bet. Layer 1 market state (price,
+move, ladder gap, book, time to start); layer 2 filters built from the factors (matchup, lineup / usage, rest / travel, refs, weather, PAM);
+layer 3 a tree per cell that picks the arm. A factor is APPLIED when it is a tested split in that tree, scored per leaf: net after costs,
+held out ("where filter F holds, riding wins / fading wins / no bet"). The engine's own price is one input to the tree, never the bet.
+What changes in your block: score every factor you build as a SPLIT in the multi-arm tree, not as a competing price. Part C becomes:
+per leaf (factor condition x market state), net after costs held out for each arm - RIDE (back the market's side at its price), FADE,
+MOMENTUM, NO BET - with intervals and n, and which leaves earn which arm. A Brier "model vs market" number may be reported but is not the
+verdict. 110.3: the router's arm choice must take these filters as inputs (decision_trees/router.py), so 110.1 / 110.2 export their
+factors as filter functions the router can call; agree the interface in your handoffs (110.3 owns router.py).
+END OF ADDENDUM
+```
+
+### 110.1 - ENGINE (NFL: WEATHER + MATCHUP)
+
+```
+WAVE 110 - BLOCK 110.1 - ENGINE - THE MISSING FACTOR CLASSES INTO THE NFL ENGINE: WEATHER AND MATCHUP, APPLIED (B-069)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_1.md. Every part runs on data that exists now.
+
+PURPOSE: D1 (no live model uses matchup, weather or qualitative - distance_read 2026-11-11) and D5(b) NFL applied 10 of 21. The NFL
+engine has 27 seasons of play-by-play; nflverse rows carry roof, surface, temperature and wind per game. The granularity index
+(02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md) asks for the split, its rank vs history at the same point in a season, the matchup cross,
+the market map, and the application.
+
+PART A (~45 min) - weather, point-in-time
+1. Wind / temperature / precipitation / roof as engine inputs (pass rate, efficiency, kicking), point-in-time (only what was known before
+   kickoff; forecast vs realised stated plainly - realised is a leak for pricing). NEW module + tests.
+
+PART B (~45 min) - matchup crosses
+1. Unit-vs-unit crosses (e.g. offence pass rate x opponent pass-defence efficiency, rush success vs run-defence, pressure rate vs pass
+   protection), shrunk, ranked vs history at the same week. NEW module + tests on known answers.
+
+PART C (~40 min) - applied, scored
+1. Both classes as SPLITS in the multi-arm tree (see the addendum): per leaf (factor condition x market state), held-out net after costs
+   for RIDE / FADE / MOMENTUM / NO BET on totals and spread where Kalshi history exists; intervals, n; export each factor as a filter
+   function the router can call. Update nfl rows of SEATS/nfl.toml (stage per factor). PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D1 NFL classes +weather +matchup; D5(b) NFL applied 10 -> N. Operator decisions: none.
+END OF BLOCK 110.1
+```
+
+### 110.2 - ENGINE (NBA: INTERPRETED → APPLIED)
+
+```
+WAVE 110 - BLOCK 110.2 - ENGINE - NBA FACTORS INTERPRETED -> APPLIED, THROUGH THE NBA DECISION TREE (B-068)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_2.md. Every part runs on data that exists now.
+
+PURPOSE: D5(b) NBA applied 5 of 17. 02_ARCHITECTURE_DESIGN/SEATS/nba.toml lists 9 factors at "interpreted": own injury / teammates out,
+game-level availability, lineup / on-off / play-type / matchup, lineup cross (usage redistribution), absorber play-type x usage
+absorption, travel / time zones / altitude / density, officials crew tendencies, PAM archetypes, PAM modifiers. 109.1 built the NBA
+decision tree, filter, cross-reference and temporal modules and scored one path (ml) NULL vs the market.
+
+PART A (~50 min) - the crosses that move points
+1. Through 109.1's filter + tree: lineup cross / absorber x usage (who takes a missing creator's shots) and travel / density, point-in-time,
+   applied to totals, spread and team totals. Tests on known answers.
+
+PART B (~40 min) - officials + PAM
+1. Officials crew tendencies (shrunk, prior games only) on totals; PAM archetype / modifier flags as tree splits. Tests.
+
+PART C (~40 min) - scored, per factor
+1. Each factor as a SPLIT in the multi-arm tree (see the addendum): per leaf, held-out 2025-26 net after costs for RIDE / FADE / MOMENTUM /
+   NO BET per family, intervals, n; export each as a filter function the router can call. "Applied" = a tested split in the tree.
+   Update nba rows of SEATS/nba.toml. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA applied 5 -> N; per-factor deltas. Operator decisions: none.
+END OF BLOCK 110.2
+```
+
+### 110.3 - TREES (EVERY CELL ROUTED)
+
+```
+WAVE 110 - BLOCK 110.3 - TREES - EVERY REGISTERED CELL ROUTED BY THE MULTI-ARM ROUTER, DEPTH BY HORIZON (B-071)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_3.md. Every part runs on data that exists now.
+
+PURPOSE: D5(a) decision trees per sport, the operator's multi-arm tree (ride / fade / momentum / pot of gold / no-bet). The router
+(decision_trees/router.py) routes the ride cells (ride_cells.toml) and the pot-of-gold cells (longshot_cells.toml); the other registered
+cells (c5_execution/market_type_registry.py: NFL, NBA, NHL game families x bands, 109.3's props) are not routed. Orders fire only for
+HELD_OUT / FORWARD_PASSED cells (operator 10-27) - that stays.
+
+PART A (~40 min) - coverage
+1. A route coverage report: every registered (MarketType, band) cell -> which branches can apply, which tree depth its horizon allows
+   (ADR-0068), and which inputs exist. Tests. State today's count routed vs registered.
+
+PART B (~50 min) - route the rest
+1. Give every unrouted logging cell a branch set and a tree, paper only, orders OFF, whose arm choice TAKES THE FACTOR FILTERS as inputs
+   (110.1 / 110.2 export them; stub the interface first so they can plug in): the shadow runners log the router's decision per row
+   (arm, leaf, depth, reason), so each leaf's arms accumulate evidence. Tests; no change to order gating.
+
+PART C (~40 min) - a replay
+1. Replay the router over the last 14 days of archived books for NBA / NHL / NFL cells: branch counts, gross and net per branch (106.2
+   costs), intervals, n. A null is a result. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: cells routed X -> N of registered; D5(a) decision trees per sport. Operator decisions: none.
+END OF BLOCK 110.3
+```
+
+### 110.4 - QUANT (SAME-GAME CORRELATION)
+
+```
+WAVE 110 - BLOCK 110.4 - QUANT - SAME-GAME CORRELATION FROM ONE ENGINE: NBA GAME LINES + PROPS (B-072, PARLAY GROUNDWORK)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_4.md. Every part runs on data that exists now.
+
+PURPOSE: ADR-0073 "a game simulation's joint distribution yields moneyline, spread, total, team totals, props and parlays consistently -
+parlay correlations included". 109.3 priced NBA props from the engine's simulation (EXP-047). Parlays are the operator's 09-25 ask; their
+price is the joint probability, so the correlation must be right first. RESEARCH: no cells, no orders.
+
+PART A (~45 min) - the joint
+1. NEW quant/ functions: from one engine draw set per game, the joint probability of any pair / triple of legs (side + total, player
+   points + team total, two players' points), and the implied correlation. Tests: legs from the same draw reproduce their marginals.
+
+PART B (~50 min) - is it calibrated
+1. On settled 2025-26 / 2026-27 games: predicted joint vs realised co-occurrence by leg-pair type, binned; the naive independent product
+   vs the engine joint (log loss, Brier); clustered intervals, n.
+
+PART C (~30 min) - the market
+1. Does Kalshi list multi-leg / combo NBA markets today (public API)? If yes: engine joint vs the combo price and net after the fee. If no:
+   say so and what a same-game parlay would need. 12_EXPLORATORY/sgp_correlation/RESULT.md, plain English first. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: B4 parlay families - groundwork only; joint calibration per leg-pair type. Operator decisions: none.
+END OF BLOCK 110.4
+```
+
+### 110.5 - PROOF + TREES (RETRO-ROUTE: EVERY LOGGED ROW THROUGH THE MULTI-ARM TREE) - added 2026-11-11 ~06:15 UTC (operator 21:56 PT "Yes give me the next block")
+
+```
+WAVE 110 - BLOCK 110.5 - PROOF + TREES - RETRO-ROUTE: EVERY SHADOW ROW AND ARCHIVED PRICE THROUGH RIDE / FADE / MOMENTUM / NO BET
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W110.md` and quote its first line, then read
+02_ARCHITECTURE_DESIGN/DOCTRINE.md (sections 1 and 1b) - they bind this block. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W110_5.md.
+Every part runs on data that exists now. File ownership: NEW 12_EXPLORATORY/retro_route/ + NEW quant/ functions + tests. READ-ONLY:
+decision_trees/, the shadow ledgers, the price archive, 110.1 / 110.2 filter functions (use them if merged; stub if not).
+
+PURPOSE: D6 / PROOF. Operator 2026-11-10: "the amount of substantive pooling data we could've had if we just had the CONCEPT of ride the
+wave from the beginning". Every shadow arm has logged, per row, our probability, the market's bid / ask, time to start and the cell, and
+the archive holds the prices; outcomes have settled. None of it was ever scored by ARM. Score it now: for every logged row, what riding
+the market's side, fading it, following the move, or skipping would have netted after costs - per leaf. Language: a leaf that loses on an
+arm is ROUTED away from that arm, never "no edge" (DOCTRINE.md 1b).
+
+PART A (~45 min) - the pooled table
+1. One table: every shadow row (NFL, NBA, NHL, MLB incl. postseason) and archived snapshot with settlement joined: cell, band, time to
+   start, market mid / bid / ask, move since open and last hour, ladder gap, our p, outcome. Dedupe so each (market, decision time) counts
+   once; cluster ids per game. Inventory: rows, games, date range per sport and family.
+
+PART B (~55 min) - every arm, every leaf
+1. Arms per row at the taker price (exact fee, quant/money.py; 106.2 spread): RIDE = buy the market's favoured side; FADE = buy the other
+   side (and the model-disagreement fade, model_p > price + cost); MOMENTUM = follow the last move; NO BET = 0.
+2. Leaves = market state (price band, time to start, move, book) x the factor filters available (110.1 / 110.2 if merged; rest, pace,
+   availability, refs from the existing stores). Fit on earlier 70% by date, held-out 30%; game-clustered intervals; Holm / BH across
+   leaves; minimum n per leaf stated before looking.
+
+PART C (~30 min) - the routing table
+1. 12_EXPLORATORY/retro_route/ROUTING.md: plain English first - for each family, which leaves go to ride, fade, momentum or no bet, with
+   held-out net per contract, interval and n. Leaves that hold up held out are written as pre-registration DRAFTS (forward test, judged n)
+   for the window - nothing goes live, no cell status changes. Feed D6: which cells now have layers 1-5.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 layers 1-5 per cell; leaves routed per family; pre-registration drafts N. Operator decisions: none.
+END OF BLOCK 110.5
+```
+
+---
