@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-11T01:55:00Z (W109.6 — W109.6: demo-fill stall was an un-epoch-gated markout turn-off; gated (#469-471), zero-orders alarm live, re-arm awaits approval.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261111T0155Z_W109_6.md` for full session detail.
+**Last reviewed:** 2026-11-11T06:00:00Z (B-068 — W110.2 B-068: NBA usage, geometry, officials and PAM factors applied via the 109.1 tree; D5(b) NBA 5->10 of 17.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261111T0600Z_W110_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

@@ -1,5 +1,21 @@
 # SESSION_HANDOFF — W110.2 / B-068 NBA factors interpreted → applied
 
+<!-- session-meta
+task_id: B-068
+tier: STANDARD
+timestamp: 2026-11-11T06:00:00Z
+commit: 58c1cb1
+one_line_summary: W110.2 B-068: NBA usage, geometry, officials and PAM factors applied via the 109.1 tree; D5(b) NBA 5->10 of 17.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NBA applied
+gap_delta: 5 -> 10 of 17 (02_ARCHITECTURE_DESIGN/SEATS/nba.toml @ 58c1cb1)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 ```
 session-meta:
   block: W110.2 (B-068), STANDARD, single deliverable

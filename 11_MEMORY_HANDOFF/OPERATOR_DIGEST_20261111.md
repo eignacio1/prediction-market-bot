@@ -12,3 +12,9 @@ Hockey now has five more of the eight building blocks in place and tested, so th
 ## W109.6 — demo-fill test stalled (2026-11-11)
 The practice-money test that places pretend orders had stopped on Nov 5 and nobody was told. Cause: a safety switch tripped on old, known-bad data, then stayed off by itself every day after. I fixed the check so it ignores that old data, and added a warning that now fires if orders stop for a day while the models are still running. The warning is already showing on the live system.
 I did NOT turn the test back on. One decision for you: approve the re-arm task `demo_fill_rearm` (I recommend yes). Heads-up: the test restarts with almost no clean data, so it needs time to build up. No real money was ever at risk.
+
+## W110.2 — NBA factors (plain English)
+- The NBA model can now use five more kinds of information when it prices games: who is missing from a lineup, travel and rest, referee crews, and our player-profile data.
+- Tested on last season's games: knowing who is out helps predict point spreads and team totals. Travel and referees add nothing. Nothing helps picking the winner.
+- Caveat: we have no last-season market prices for spreads and totals, so this shows the factors predict outcomes, not that they beat the market.
+- Still zero real money at risk; no orders or sizing touched.
