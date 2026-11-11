@@ -1,0 +1,2 @@
+task = "distance_read"
+note = "forward test: are NBA demo orders still placing after 11-05? (SW-9)"
