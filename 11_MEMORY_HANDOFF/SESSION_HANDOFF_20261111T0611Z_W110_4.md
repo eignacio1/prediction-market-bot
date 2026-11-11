@@ -1,3 +1,21 @@
+# Session Handoff — 2026-11-11T06:11Z
+
+<!-- session-meta
+task_id: W110.4
+tier: STANDARD
+timestamp: 2026-11-11T06:11:00Z
+commit: cc9818f
+one_line_summary: W110.4 SGP correlation: engine joint good for game x points legs, misses same-player cross-stat; no open Kalshi NBA combo
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: B4 parlay families (groundwork); joint calibration per leg-pair type
+gap_delta: B4 unchanged; 15 leg-pair types measured on 1075 games / 59014 pairs (12_EXPLORATORY/sgp_correlation/RESULT.md @ cc9818f)
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # SESSION_HANDOFF W110.4 — same-game correlation from one engine (docs-only)
 
 vision_pillar: PROOF (BREADTH groundwork)

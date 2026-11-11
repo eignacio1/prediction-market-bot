@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-11T06:05:00Z (B-069 — W110.1 B-069: NFL weather (forecast, PIT) and matchup crosses applied as router filters (PR #473); D5(b) NFL applied 10->12; per-leaf routing result 0/82 leaves earn an arm, momentum unscorable.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261111T0544Z_W110_1.md` for full session detail.
+**Last reviewed:** 2026-11-11T06:11:00Z (W110.4 — W110.4 SGP correlation: engine joint good for game x points legs, misses same-player cross-stat; no open Kalshi NBA combo) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261111T0611Z_W110_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

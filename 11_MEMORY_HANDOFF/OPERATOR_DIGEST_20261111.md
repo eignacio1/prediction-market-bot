@@ -20,3 +20,6 @@ I did NOT turn the test back on. One decision for you: approve the re-arm task `
 - Still zero real money at risk; no orders or sizing touched.
 
 **W110.1 (NFL weather + matchup).** Moved DEPTH: NFL weather (forecast only, never realised) and matchup crosses are now built, tested and exported as filters for the router. Scored per leaf, net after costs, none of 82 leaves earned an arm (about 2 expected by chance). Momentum can't be scored yet: we have no opening-line history. Still zero real money at risk. No decisions needed from you.
+
+## W110.4 — same-game parlays (research only)
+We tested whether the NBA game simulator prices "several things happen together" bets correctly, using 1,075 finished games. It does well when linking a team result (win, total points) to a player's points. It does badly for one player's points and threes or rebounds together, and for two teammates' points. Kalshi has a same-game NBA combo product, but none is open right now, so there was no live price to compare against. No orders, no money, nothing running changed. Next step for the parlay idea is giving players a shared minutes/pace factor.

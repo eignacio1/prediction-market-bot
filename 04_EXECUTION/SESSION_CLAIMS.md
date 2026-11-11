@@ -1244,3 +1244,4 @@
 | 2026-11-11T06:00:34Z | B-068 | CLOSED — W110.2 B-068: NBA usage, geometry, officials and PAM factors applied via the 109.1 tree; D5(b) NBA 5->10 of 17. (commit `58c1cb1`) |
 | 2026-11-11T06:04:01Z | B-069 | CLOSED — W110.1 B-069: NFL weather (forecast, PIT) and matchup crosses applied as router filters (PR #473); D5(b) NFL applied 10->12; per-leaf routing result 0/82 leaves earn an arm, momentum unscorable. (commit `567477f`) |
 | 2026-11-11T06:10:22Z | B-071 | CLOSED — merge confirmed, HEAD (c8e2610) is ancestor of origin/main — W110.3 B-071: every registered cell routed; 27 of 117 routed, shadow rows log router decision, 14d replay null (PR #476). (commit c57a496) |
+| 2026-11-11T06:12:57Z | W110.4 | CLOSED — W110.4 SGP correlation: engine joint good for game x points legs, misses same-player cross-stat; no open Kalshi NBA combo (commit `cc9818f`) |
