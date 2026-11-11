@@ -1228,3 +1228,4 @@
 | 2026-11-11T00:39:01Z | TBD | W109.1 NBA betting architecture 4/8->8/8 (B-066); pillar DEPTH D5(a)/(b) NBA; deliverable: 4 NBA modules + one applied path |
 | 2026-11-11T00:39:22Z | GG-TBD | STANDARD — NBA player props priced from the NBA engine + shadow cells + pre-reg + runner (B-070) — FOR B4 props families logging / B1 — W109.3 |
 | 2026-11-11T00:39:27Z | TBD | W109.5 flex: dashboard memory #458, MLB Features Sync off-season, surface budget — PLUMBING |
+| 2026-11-11T00:39:30Z | B-064; GG reserve 3 TBD-from-log | W109.4 quant props net of costs (NBA/NFL/NHL) - PURPOSE: P1/P2 prop families measured net X of N; B-064 |
