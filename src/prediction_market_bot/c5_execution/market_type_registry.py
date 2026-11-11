@@ -949,7 +949,8 @@ for _bd, _delta, _ci in (
         MarketType.NFL_GAME_TOTAL, _bd, CellStatus.RULED_OUT,
         superseding_reference="EXP-037 first look (W98.2)",
         reason=(f"EXP-037 first look, n=60 settled games: delta Brier vs market {_delta} {_ci} "
-                f"(game-cluster 95% CI upper bound < 0); rule 5.1"),
+                f"(game-cluster 95% CI upper bound < 0); rule 5.1. ADR-0077 reading: a routing result - "
+                f"the model-disagreement (fade) arm is closed for this cell; ride / no-bet arms stay open"),
         measured_date=_EXP037_NFL_FIRST_LOOK_MEASURED,
     )
 
