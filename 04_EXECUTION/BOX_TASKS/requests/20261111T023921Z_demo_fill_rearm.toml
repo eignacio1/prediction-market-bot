@@ -1,0 +1,2 @@
+task = "demo_fill_rearm"
+note = "109.6 verdict ARTIFACT (trip on pre-GG-1771 data); epoch-gated report trips none; demo-only plumbing per operator rule (SW-9)"
