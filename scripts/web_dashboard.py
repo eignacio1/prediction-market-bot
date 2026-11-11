@@ -56,6 +56,7 @@ import json
 import os
 import re
 import gc
+import io
 import subprocess
 import sys
 import threading
@@ -1267,17 +1268,43 @@ _DATA_TTL_S = float(os.environ.get("DASHBOARD_DATA_TTL_S", "20"))
 _DATA_CACHE: dict = {"t": 0.0, "key": "", "body": b""}
 
 
+_RETRY_AFTER_FAIL_S = 15.0   # a failed rebuild is retried this soon (not after a full TTL)
+
+
+def _store(name: str, cache: dict, field: str, ttl: float, build: Callable[[], Any], key: str | None,
+           fallback: Callable[[Exception], Any] | None) -> None:
+    """Run one build (caller holds _BUILD_LOCK) and store it. A failure is LOGGED to stderr and recorded on the cache
+    (cache['err']); the last good copy is kept, never replaced by an error page, and the rebuild is retried in
+    _RETRY_AFTER_FAIL_S. Only a first build with nothing to keep uses `fallback` (W108.5 / W109.5)."""
+    try:
+        value = build()
+    except Exception as exc:
+        msg = f"{type(exc).__name__}: {str(exc)[:160]}"
+        print(f"[dashboard] rebuild of {name} FAILED: {msg}", file=sys.stderr, flush=True)
+        cache.update(err=msg, err_t=time.time())
+        retry_t = time.time() - max(ttl, _RETRY_AFTER_FAIL_S) + _RETRY_AFTER_FAIL_S
+        if cache.get(field):
+            cache["t"] = retry_t
+            return
+        if fallback is None:
+            raise
+        cache.update(**{field: fallback(exc)}, t=retry_t)
+        return
+    cache.update(t=time.time(), err="", **{field: value})
+    if key is not None:
+        cache["key"] = key
+
+
 def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callable[[], Any],
-                  key: str | None = None) -> Any:
+                  key: str | None = None, fallback: Callable[[Exception], Any] | None = None) -> Any:
     """Return cache[field]; build synchronously only when there is none (first request after
     a start), otherwise serve the stale copy and refresh in the background."""
     def rebuild() -> None:
         try:
             with _BUILD_LOCK:
-                value = build()
-                cache.update(t=time.time(), **{field: value})
-                if key is not None:
-                    cache["key"] = key
+                _store(name, cache, field, ttl, build, key, fallback)
+        except Exception:
+            pass                                   # already logged in _store; the old copy stays served
         finally:
             _release_heap()
             with _REFRESH_GUARD:
@@ -1291,10 +1318,7 @@ def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callabl
         with _BUILD_LOCK:
             if ttl > 0 and cache[field] and cache["t"] >= t_wait and (key is None or cache.get("key") == key):
                 return cache[field]   # another thread built it while we waited for the lock
-            value = build()
-            cache.update(t=time.time(), **{field: value})
-            if key is not None:
-                cache["key"] = key
+            _store(name, cache, field, ttl, build, key, fallback)
         _release_heap()
         return cache[field]
     if time.time() - cache["t"] >= ttl:
@@ -1306,21 +1330,23 @@ def _serve_cached(name: str, cache: dict, field: str, ttl: float, build: Callabl
 
 
 def _build_project_page() -> str:
-    try:
-        if str(_REPO_ROOT / "scripts") not in sys.path:
-            sys.path.insert(0, str(_REPO_ROOT / "scripts"))
-        import generate_project_state as gps
-        return gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
-    except Exception as e:  # never 500: say what is missing
-        return ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
-                f"<body style='font:14px sans-serif;padding:20px'><p>awaiting generate_project_state ({type(e).__name__})</p>"
-                "<p><a href='/'>Live Terminal</a></p>")
+    if str(_REPO_ROOT / "scripts") not in sys.path:
+        sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+    import generate_project_state as gps
+    return gps.render_html(gps.build_state(_REPO_ROOT), live_nav="/", link_prefix=None)
+
+
+def _project_fallback(e: Exception) -> str:  # never 500: say what is missing
+    return ("<!doctype html><meta charset='utf-8'><title>Project State</title>"
+            f"<body style='font:14px sans-serif;padding:20px'><p>awaiting generate_project_state ({type(e).__name__})</p>"
+            "<p><a href='/'>Live Terminal</a></p></body>")
 
 
 def _project_page() -> str:
     """/project: analytical page regenerated from this checkout, refreshed off-thread every 60 s."""
     _expire_on_new_head(_PROJECT_CACHE)
-    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page)
+    return _serve_cached("project", _PROJECT_CACHE, "html", _PROJECT_TTL_S, _build_project_page,
+                         fallback=_project_fallback)
 
 
 
@@ -1354,16 +1380,17 @@ def _expire_on_new_head(cache: dict) -> None:
         cache["head"] = head
 
 def _build_visual_page() -> str:
-    try:
-        if str(_REPO_ROOT / "scripts") not in sys.path:
-            sys.path.insert(0, str(_REPO_ROOT / "scripts"))
-        import build_visual_dashboard_html as bvd
-        html, _sha = bvd.render()
-        return html
-    except Exception as e:  # never 500: say what is missing
-        return ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
-                f"<body style='font:14px sans-serif;padding:20px'><p>The Visual Dashboard could not be built ({type(e).__name__}: "
-                f"{str(e)[:200]}).</p><p><a href='/'>Live Terminal</a></p>")
+    if str(_REPO_ROOT / "scripts") not in sys.path:
+        sys.path.insert(0, str(_REPO_ROOT / "scripts"))
+    import build_visual_dashboard_html as bvd
+    html, _sha = bvd.render()
+    return html
+
+
+def _visual_fallback(e: Exception) -> str:  # never 500: say what is missing
+    return ("<!doctype html><meta charset='utf-8'><title>Visual Dashboard</title>"
+            f"<body style='font:14px sans-serif;padding:20px'><p>The Visual Dashboard could not be built ({type(e).__name__}: "
+            f"{str(e)[:200]}).</p><p><a href='/'>Live Terminal</a></p></body>")
 
 
 def _visual_page() -> str:
@@ -1371,14 +1398,18 @@ def _visual_page() -> str:
     off-thread every 300 s. The box's checkout follows origin/main, so this is never a stale copy (operator 2026-10-21:
     one dashboard)."""
     _expire_on_new_head(_VISUAL_CACHE)
-    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page)
+    return _serve_cached("visual", _VISUAL_CACHE, "html", _VISUAL_TTL_S, _build_visual_page,
+                         fallback=_visual_fallback)
 
 
 def _build_data_body() -> bytes:
+    """Compact JSON bytes, encoded chunk by chunk so the ~8 MB payload never exists as a str AND a bytes copy (W108.5)."""
     data = _load_all_data()
-    body = json.dumps(data, default=str, separators=(",", ":")).encode("utf-8")
+    buf = io.BytesIO()
+    for chunk in json.JSONEncoder(default=str, separators=(",", ":")).iterencode(data):
+        buf.write(chunk.encode("utf-8"))
     del data
-    return body
+    return buf.getvalue()
 
 
 def _data_body() -> bytes:

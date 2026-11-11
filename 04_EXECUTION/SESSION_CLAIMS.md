@@ -1228,3 +1228,4 @@
 | 2026-11-11T00:39:01Z | TBD | W109.1 NBA betting architecture 4/8->8/8 (B-066); pillar DEPTH D5(a)/(b) NBA; deliverable: 4 NBA modules + one applied path |
 | 2026-11-11T00:39:22Z | GG-TBD | STANDARD — NBA player props priced from the NBA engine + shadow cells + pre-reg + runner (B-070) — FOR B4 props families logging / B1 — W109.3 |
 | 2026-11-11T00:39:27Z | TBD | W109.5 flex: dashboard memory #458, MLB Features Sync off-season, surface budget — PLUMBING |
+| 2026-11-10T06:04:01Z | W108.5 | MERGED: NO — branch `session/20261110T054159Z-w108-5-dashboard-stale` awaiting merge — W108.5 partial: dashboard read tasks merged (#455); HEAD-keyed /visual rebuild + footer in PR #458, unmerged, box reads and Part C not run. (commit `05c5522`) |
