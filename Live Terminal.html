@@ -369,6 +369,8 @@ const MODULES=[
   {k:'OVERVIEW', label:'Overview'},
   {k:'MLB',      label:'MLB · T1/T4'},
   {k:'NFL',      label:'NFL · T1'},
+  {k:'NBA',      label:'NBA · shadow'},
+  {k:'NHL',      label:'NHL · shadow'},
   {k:'EVIDENCE', label:'Evidence'},
   {k:'PIPELINE', label:'Pipeline C1–C8'},
   {k:'FEEDS',    label:'Feeds & Health'},
@@ -377,6 +379,11 @@ const MODULES=[
   {k:'POSTSEASON',label:'MLB Postseason'},
   {k:'VERDICTS', label:'Verdicts'},
 ];
+/* MLB tabs only while MLB is in season or postseason (operator 2026-11-10: off-season they are dead weight) */
+function liveModules(){ const se=(LAST&&LAST.season)||{};
+  const on=k=>se[k]&&se[k].state==='in_season';
+  return MODULES.filter(m=>m.k==='MLB'?on('MLB'):m.k==='POSTSEASON'?on('MLB_POSTSEASON'):m.k==='NBA'?on('NBA')||S.mod==='NBA':m.k==='NHL'?on('NHL')||S.mod==='NHL':true); }
+function deskRows(sport){ const t=(LAST&&LAST.shadow&&LAST.shadow.tape)||[]; return t.filter(r=>String(r.sport||'').toUpperCase()===sport); }
 function modbar(D){
   const stub=D.open.concat(D.closed).filter(p=>evClass(p)==='STUB').length;
   const errs=D.events.filter(e=>e.severity==='ERROR'||e.severity==='CRITICAL').length;
@@ -386,6 +393,8 @@ function modbar(D){
     OVERVIEW:`${D.open.length} open`,
     MLB:`${D.open.filter(p=>p._sport==='MLB').length} open`,
     NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,
+    NBA:(()=>{const c=((LAST&&LAST.shadow&&LAST.shadow.cells)||[]).filter(x=>String(x.sport).toUpperCase()==='NBA'); return c.length?`${c.reduce((a,x)=>a+(x.rows_today||0),0)} today`:'';})(),
+    NHL:(()=>{const c=((LAST&&LAST.shadow&&LAST.shadow.cells)||[]).filter(x=>String(x.sport).toUpperCase()==='NHL'); return c.length?`${c.reduce((a,x)=>a+(x.rows_today||0),0)} today`:'';})(),
     EVIDENCE: stub? `<span class="warn">${stub} stub</span>` : 'clean',
     FEEDS: errs? `<span class="warn">${errs} err</span>` : 'ok',
     PIPELINE: LAST&&LAST.pipeline&&LAST.pipeline.tiles&&LAST.pipeline.tiles.length?(LAST.pipeline.gaps.length?`<span class="warn">${LAST.pipeline.gaps.length} gaps</span>`:'wired'):'awaiting',
@@ -393,7 +402,7 @@ function modbar(D){
     SHADOW: LAST&&LAST.shadow&&LAST.shadow.cells&&LAST.shadow.cells.length?`${LAST.shadow.cells.length} cells`:'awaiting',
     POSTSEASON: '', VERDICTS: '',
   };
-  $('#modbar').innerHTML=MODULES.map(m=>
+  $('#modbar').innerHTML=liveModules().map(m=>
     `<button class="mod ${S.mod===m.k?'on':''}" data-m="${m.k}">${esc(m.label)}<span class="badge">${badge[m.k]||''}</span></button>`).join('');
   $$('.mod').forEach(b=>b.addEventListener('click',()=>{S.mod=b.dataset.m; S.filt=''; render()}));
 }
@@ -412,6 +421,7 @@ function render(){
   else if(S.mod==='OVERVIEW') w.innerHTML=viewOverview();
   else if(S.mod==='MLB') w.innerHTML=viewSport('MLB');
   else if(S.mod==='NFL') w.innerHTML=viewSport('NFL');
+  else if(S.mod==='NBA'||S.mod==='NHL') w.innerHTML=viewDesk(S.mod);
   else if(S.mod==='EVIDENCE') w.innerHTML=viewEvidence();
   else if(S.mod==='COVERAGE') w.innerHTML=viewCoverage();
   else if(S.mod==='SHADOW') w.innerHTML=viewShadow();
@@ -620,6 +630,44 @@ function viewSport(sport){
     ${P_(sport+' — Pool',`poolN`,`<div class="pb"><div id="poolKv"></div></div>`)}
   </div></div>`;}
 
+function viewDesk(sport){return `<div class="grid g-7-5">
+  <div class="col">
+    ${P_(sport+' — Model vs Market (today)','dkScN',`<div class="pb"><div id="dkScatter"></div><div class="lg"><span><i style="background:var(--cyan)"></i>one shadow forecast</span><span>--- model = market</span></div></div>`)}
+    ${P_(sport+' — Shadow cells','dkCellN',`<div class="pb flush"><div id="dkCells"></div></div>`,`<span class="n">evaluate and log · no sizing</span>`)}
+  </div>
+  <div class="col">
+    ${P_(sport+' — Forecast tape','dkTapeN',SCROLL('dkTape',330),`<span class="n">newest first · this sport only</span>`)}
+    ${P_(sport+' — Demo orders (forward test)','dkOrdN',SCROLL('dkOrders',260),`<span class="n">flat demo stakes · no real capital</span>`)}
+  </div></div>`;}
+function fillDesk(d){
+  if(!$('#dkCells')) return; const sport=S.mod;
+  const cells=((d.shadow&&d.shadow.cells)||[]).filter(c=>String(c.sport).toUpperCase()===sport);
+  const tape=deskRows(sport).slice().sort((a,b)=>String(b.ts_utc).localeCompare(String(a.ts_utc)));
+  const day=new Date().toISOString().slice(0,10), today=tape.filter(r=>String(r.ts_utc).startsWith(day));
+  $('#dkCellN').textContent=cells.length+' cells';
+  $('#dkCells').innerHTML=!cells.length?AW(sport+' shadow ledgers'):`<table><thead><tr><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>ROWS TOTAL</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>LAST ROW</th></tr></thead><tbody>`+
+    cells.map(c=>`<tr${(c.registry_status||'')!=='shadow'?' class="dim"':''}><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td><td class="r">${c.rows_today}</td><td class="r">${c.rows_total==null?'—':c.rows_total}</td>`+
+      `<td class="r">${c.settled_n==null?'—':c.settled_n}</td><td class="r">${c.judged_n==null?'—':c.judged_n}</td><td class="r">${c.delta_brier_market==null?'—':f4(c.delta_brier_market)}</td><td>${esc(String(c.last_ts||'—').slice(5,16).replace('T',' '))}</td></tr>`).join('')+`</tbody></table>`;
+  $('#dkTapeN').textContent=tape.length+' rows';
+  $('#dkTape').innerHTML=!tape.length?AW(sport+' forecasts'):`<table><thead><tr><th>TIME</th><th>MARKET</th><th>BAND</th><th>TICKER</th><th>MODEL</th><th>MKT MID</th><th>E_NET YES</th></tr></thead><tbody>`+
+    tape.slice(0,200).map(r=>{const e=+r.e_net_yes_k007; return `<tr><td>${esc(String(r.ts_utc||'').slice(11,19))}</td><td>${esc(r.market_type)}</td><td>${esc(r.band)}</td><td class="dim">${esc(r.market_ticker)}</td>`+
+      `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td><td class="r ${e>0?'pos':e<0?'neg':''}">${f4(r.e_net_yes_k007)}</td></tr>`}).join('')+`</tbody></table>`;
+  const pts=today.filter(r=>Number.isFinite(+r.p_yes)&&Number.isFinite(+r.mid));
+  $('#dkScN').textContent=pts.length+' forecasts today';
+  const W=560,H=300,px=v=>30+v*(W-40),py=v=>H-24-v*(H-40);
+  $('#dkScatter').innerHTML=!pts.length?AW(sport+' forecasts today'):`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${sport} model probability against market price, today">`+
+    `<line x1="${px(0)}" y1="${py(0)}" x2="${px(1)}" y2="${py(1)}" stroke="var(--amber)" stroke-dasharray="4 4" opacity=".6"/>`+
+    [0,.25,.5,.75,1].map(v=>`<text x="${px(v)}" y="${H-6}" fill="var(--faint)" font-size="10" text-anchor="middle">${v}</text><text x="6" y="${py(v)+3}" fill="var(--faint)" font-size="10">${v}</text>`).join('')+
+    pts.slice(0,600).map(r=>`<circle cx="${px(+r.mid).toFixed(1)}" cy="${py(+r.p_yes).toFixed(1)}" r="2.6" fill="var(--cyan)" opacity=".55"><title>${esc(r.market_ticker)} model ${f4(r.p_yes)} · market ${f4(r.mid)}</title></circle>`).join('')+
+    `<text x="${W/2}" y="${H-6+0}" fill="var(--faint)" font-size="0"></text></svg><div class="dim" style="font-size:11px">x = market mid · y = model probability</div>`;
+  const o=((d.demo_orders&&d.demo_orders.rows)||[]).filter(r=>String(r.ticker||'').toUpperCase().startsWith('KX'+sport));
+  const ok=o.filter(r=>r.ok).length;
+  $('#dkOrdN').textContent=o.length?`${ok} placed · ${o.length-ok} refused`:'—';
+  $('#dkOrders').innerHTML=!o.length?AW(sport+' demo orders (logs/demo_fill_policy.jsonl)'):`<table><thead><tr><th>TIME</th><th>TICKER</th><th>SIDE</th><th>PRICE</th><th>STAKE</th><th>ARM</th><th>RESULT</th></tr></thead><tbody>`+
+    o.slice().reverse().slice(0,150).map(r=>`<tr><td>${esc(String(r.ts||'').slice(5,16).replace('T',' '))}</td><td class="dim">${esc(r.ticker)}</td><td>${esc(r.side)}</td><td class="r">${f4(r.price_yes)}</td><td class="r">${r.stake_usd==null?'—':'$'+(+r.stake_usd).toFixed(2)}</td><td>${esc(r.arm)}</td>`+
+      `<td class="${r.ok?'pos':'neg'}">${r.ok?'placed':esc(String(r.error||'refused').slice(0,40))}</td></tr>`).join('')+`</tbody></table>`;
+}
+
 function viewEvidence(){return `<div class="grid g-2">
   <div class="col">
     ${P_('Evidence Class — every row in every pool','evN',`<div class="pb flush"><div id="evTable"></div></div>`,
@@ -677,6 +725,7 @@ function fillPipeline(d){
 const f4=v=>v==null||isNaN(v)?'—':Number(v).toFixed(4);
 function fillV2(d){
   fillPipeline(d);
+  fillDesk(d);
   if($('#cov')){ const c=d.coverage;
     if(!c||!c.cells){ $('#cov').innerHTML=AW((c&&c.awaiting)||'/api/data coverage'); $('#covN').textContent='—'; }
     else { $('#covN').textContent=c.total+' cells'; $('#covRule').textContent='outlined = '+c.recent_rule;
