@@ -99,11 +99,33 @@ LAYERS = ("1 simulated probability", "2 market state", "3 factor filters as spli
 MIN_HELD_GAMES = 10
 
 
-def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = None) -> List[dict]:
+def filter_layer_sports() -> set:
+    """W112.1: sports whose shadow rows really carry per-row filters today (the default supply has data for them)."""
+    from prediction_market_bot.decision_trees import filter_supply as fsup
+
+    out = set()
+    try:
+        fsup.nba_table()
+        out.add("nba")
+    except (OSError, ValueError):
+        pass
+    if fsup.default_supply().nfl_providers is not None:
+        out.add("nfl")
+    try:
+        import importlib
+        if hasattr(importlib.import_module("prediction_market_bot.nhl_engine.filters"), "nhl_filters_for_row"):
+            out.add("nhl")
+    except ImportError:
+        pass
+    return out
+
+
+def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = None, splits_doc: Optional[dict] = None,
+              filter_sports: Optional[set] = None) -> List[dict]:
     """W111.3 Part C -- D6: for every registered cell, which of the seven layers are present AND evidenced.
     Evidence only, no credit for intent: layer 1 = the cell's leaves carry a logged model p (a MODEL_FADE fit entry);
-    2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (no runner
-    supplies them yet: False everywhere); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
+    2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (W112.1: the sport's
+    adapter has data AND the cell's series has a KEPT tested split, i.e. a split a tested leaf uses); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
     10+ held-out games; 6 = a sizing rule (kelly_fraction is 0 on every band: False); 7 = fills measured for the cell
     (shadow rows are not fills: False). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
     In-play bands score 0 layers by construction (router returns NO_BET)."""
@@ -112,6 +134,11 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
     if leaf_map_doc is None:
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_map.json")) as fh:
             leaf_map_doc = json.load(fh)
+    if splits_doc is None:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "filter_splits.json")) as fh:
+            splits_doc = json.load(fh)
+    fsports = filter_layer_sports() if filter_sports is None else filter_sports
+    kept = [x for x in splits_doc["splits"] if x["kept"]]
     by: Dict[Tuple[str, str], List[dict]] = {}
     for key, rec in leaf_map_doc["leaves"].items():
         sport, mt, band = key.split("|")[:3]
@@ -122,7 +149,8 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
         have = [
             any("MODEL_FADE" in x.get("fit", {}) for x in ls),
             bool(ls),
-            False,
+            bool(ls) and str(r["sport"]).lower() in fsports and any(
+                x["sport"].lower() == str(r["sport"]).lower() and x["series"] in (None, r.get("family")) for x in kept),
             any(not x["thin"] and x["arm"] != "NO_BET" for x in ls),
             any((x.get("test") or {}).get("test_n_games", 0) >= MIN_HELD_GAMES for x in ls),
             False,

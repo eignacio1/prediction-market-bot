@@ -1,0 +1,73 @@
+{
+ "after": {
+  "FADE": 443,
+  "NO_BET": 10454,
+  "RIDE": 1775
+ },
+ "before": {
+  "FADE": 443,
+  "NO_BET": 11080,
+  "RIDE": 1149
+ },
+ "by_sport": {
+  "NBA": {
+   "after": {
+    "NO_BET": 5764,
+    "RIDE": 626
+   },
+   "before": {
+    "NO_BET": 6390
+   },
+   "changed": 626,
+   "decisions": 6390
+  },
+  "NFL": {
+   "after": {
+    "FADE": 443,
+    "NO_BET": 1735,
+    "RIDE": 1149
+   },
+   "before": {
+    "FADE": 443,
+    "NO_BET": 1735,
+    "RIDE": 1149
+   },
+   "changed": 0,
+   "decisions": 3327
+  },
+  "NHL": {
+   "after": {
+    "NO_BET": 2955
+   },
+   "before": {
+    "NO_BET": 2955
+   },
+   "changed": 0,
+   "decisions": 2955
+  }
+ },
+ "changed": 626,
+ "decisions": 12672,
+ "files": [
+  "prices_2026-10-30.jsonl",
+  "prices_2026-10-31.jsonl",
+  "prices_2026-11-01.jsonl",
+  "prices_2026-11-02.jsonl",
+  "prices_2026-11-03.jsonl",
+  "prices_2026-11-04.jsonl",
+  "prices_2026-11-05.jsonl",
+  "prices_2026-11-06.jsonl",
+  "prices_2026-11-07.jsonl",
+  "prices_2026-11-08.jsonl",
+  "prices_2026-11-09.jsonl",
+  "prices_2026-11-10.jsonl",
+  "prices_2026-11-11.jsonl",
+  "prices_2026-11-12.jsonl"
+ ],
+ "filter_notes": {
+  "NBA:filters_supplied": 6390,
+  "NFL:nfl_weather_forecast_and_matchup_book_not_wired": 3327,
+  "NHL:filters_unavailable:nhl_engine.filters_not_merged": 2955
+ },
+ "kept_split_fired": 1926
+}

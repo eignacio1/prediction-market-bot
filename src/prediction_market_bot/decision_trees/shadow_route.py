@@ -72,11 +72,17 @@ def previous_mid(row: dict) -> tuple:
     return (m, "ledger_tail") if m is not None else (None, "unavailable")
 
 
-def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None) -> dict:
+_NEUTRAL = ("unknown", "neutral", "mid", "calm", "")
+
+
+def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None,
+                  filters_note: Optional[str] = None) -> dict:
     """{'router': {...}} for a shadow row; never raises (a failure is recorded as branch ERROR).
 
     filters: optional {filter_name: leaf_or_bool} from nfl_engine.filters / the NBA granularity filter, computed by a
-    caller that has the per-game context; absent -> filters_fired is [] and filters_note says no per-row input."""
+    caller that has the per-game context (W112.1: runner.run_once via filter_supply); absent -> filters_fired is [] and
+    filters_note says why (the supply's note, else "no per-row filter input"). Logs the split path: the market-state leaf, then
+    each tested filter condition that was kept (changed or agreed with the arm), logged only, or untested."""
     try:
         move_src = "caller"
         if prev_mid is None:
@@ -84,18 +90,24 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
         s = Situation(sport=row.get("sport", ""), family=series, ticker=row["market_ticker"], event=row["event_ticker"],
                       tier=tier_for_hours(row.get("horizon_hours_to_start")), yes_bid=row["yes_bid"],
                       yes_ask=row["yes_ask"], half_spread=row.get("half_spread"), model_p=row.get("p_yes"),
-                      market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid)
+                      market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid, filters=filters or None)
         r = route(s, _ev())
         d = r.leaf
         if s.mid is not None:
             _SEEN[row["market_ticker"]] = s.mid
-        fired = sorted(k for k, v in (filters or {}).items() if v)
+        fired = sorted(k for k, v in (filters or {}).items() if v is True or (v and str(v) not in _NEUTRAL))
+        sp = r.split
         out = {"branch": r.tree, "side": r.side, "depth": DEPTH.get(row.get("band"), "stripped"), "tier": s.tier,
                "reason": ";".join(map(str, r.reasons)), "orders": "off",
                "leaf_id": d.leaf_id if d else None, "arm": d.arm if d else None,
                "arm_source": lm.ARM_SOURCE if d else None, "thin": d.thin if d else None,
                "filters_fired": fired,
-               "filters_note": None if filters is not None else "no per-row filter input",
+               "filters_note": None if filters is not None else (filters_note or "no per-row filter input"),
+               "filters_n": len(filters) if filters else 0,
+               "split_kept": sp["kept"] if sp else [], "split_logged_only": sp["logged_only"] if sp else [],
+               "split_untested_n": len(sp["untested"]) if sp else 0, "split_conflict": bool(sp and sp["conflict"]),
+               "arm_pre_split": r.arm_pre_split,
+               "split_path": (d.leaf_id + (" > " + " > ".join(sp["kept"]) if sp and sp["kept"] else "")) if d else None,
                "move_source": move_src if prev_mid is not None else f"na:{move_src}"}
         return {"router": out}
     except Exception as e:  # noqa: BLE001

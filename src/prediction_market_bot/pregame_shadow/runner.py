@@ -18,6 +18,7 @@ from prediction_market_bot.pregame_shadow.bands import band_for_horizon
 from prediction_market_bot.pregame_shadow.fees import e_net, fee_kmult, fee_k007
 from prediction_market_bot.pregame_shadow.ledger import CellLedger
 from prediction_market_bot.decision_trees.shadow_route import router_fields  # W110.3: logging only
+from prediction_market_bot.decision_trees.filter_supply import default_supply  # W112.1: PIT filters for the router, logging only
 
 
 def _f(x) -> Optional[float]:
@@ -70,7 +71,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              only_bands: Optional[set] = None, ledger_extra: Optional[dict] = None,
              kickoff_miss_reason: Optional[Callable[[str], str]] = None,
              on_row: Optional[Callable[[dict], None]] = None,
-             row_extra_for: Optional[Callable[[str], dict]] = None) -> dict:
+             row_extra_for: Optional[Callable[[str], dict]] = None,
+             filter_supply=None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
     skipped: Counter = Counter()
@@ -119,11 +121,12 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 "model_sha256": fc.model_sha256, "feature_row_sha256": fc.feature_row_sha256,
                 "start_time_utc": start.isoformat(), "start_time_source": src, "code_sha": code_sha,
             }
+            flt, flt_note = (filter_supply or default_supply()).for_row(row)  # W112.1: known before this row's ts_utc
             led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
             # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
             why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
                    else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
-            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **router_fields(row, series)}):
+            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **router_fields(row, series, filters=flt, filters_note=flt_note)}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:
