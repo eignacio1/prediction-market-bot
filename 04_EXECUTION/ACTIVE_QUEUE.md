@@ -93,7 +93,7 @@ of gold scored as an arm (09-25, 11-05) → 111.3 Part B.
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
 | 111.1 | proof · 3 | A losing look closes only the fade arm; NFL game total T1 / T2 reopen as SHADOW (D-02, D-03) | ⬜ | |
-| 111.2 | window · 3 | Doctrine-conformance audit: every decision point in code vs DOCTRINE.md; fix what no block owns (D-04, D-05) | 🟡 | Parts A and C docs pushed (DOCTRINE_CONFORMANCE.md, OPERATOR_DIRECTIVES.md); Part B code in PR #481 awaiting CI |
+| 111.2 | window · 3 | Doctrine-conformance audit: every decision point in code vs DOCTRINE.md; fix what no block owns (D-04, D-05) | ✅ | A, B (PR #481 merged, CI green), C and edge-map wording done; 41 decision points audited; findings handed to 111.1 / 111.3 / backlog in the handoff |
 | 111.3 | trees · 3 | D6: router reads the per-leaf arm map; pot of gold + momentum scored as arms; D6 scorecard; forward test frozen | ⬜ | |
 | 111.4 | engine · 3 | The granularity index as tree splits, NBA: split · rank vs history · matchup cross · market map · application | ⬜ | |
 
