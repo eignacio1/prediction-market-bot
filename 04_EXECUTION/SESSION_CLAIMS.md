@@ -1248,3 +1248,4 @@
 | 2026-11-11T06:21:52Z | W110.5 | CLOSED — W110.5 retro-route: 365 leaves scored by arm held out; 113 routed, 1 BH lead (11 games), 0 prereg drafts (PR #479) (commit `3f0845e`) |
 | 2026-11-12T00:03:13Z | B-076 | W111.1 B-076 STANDARD: losing look closes only FADE arm; NFL game total T1/T2 reopen. PURPOSE: PROOF P2 verdicts routed; B1; D-02/D-03 BUILT |
 | 2026-11-12T00:03:48Z | GG reserve 3 (assigned at claim) | STANDARD — doctrine-conformance audit of code decision points (DOCTRINE_CONFORMANCE.md) + fixes in unowned files + OPERATOR_DIRECTIVES.md ledger — FOR PLUMBING (no pillar; protects PROOF verdict integrity) — W111.2 / B-077 |
+| 2026-11-12T00:04:34Z | GG-1890..GG-1892 | W111.3 / B-079 STANDARD: D6 router reads W110.5 per-leaf arm map; pot of gold + momentum scored as arms; D6 scorecard; leaf-map forward test frozen. PURPOSE: PROOF/DEPTH measure D6 0 -> N cells (D-01, D-08) |
