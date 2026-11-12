@@ -94,7 +94,7 @@ anticipated") → this wave.
 |---|---|---|---|---|
 | 112.1 | trees · 3 | Layer 3: every runner hands its factor filters to the router as tree splits; D6 counted | ⬜ | |
 | 112.2 | quant · 3 | Layer 6: a sizing rule per arm (Kelly 0, flat demo stakes, per-game and same-game correlation caps) + closed hypotheses, not closed arms | ⬜ | |
-| 112.3 | execution · 3 | Layer 7: the router's arm drives the demo forward test's orders; fills measured per arm (AUTHORIZED 16:51 PT) | ⬜ | |
+| 112.3 | execution · 3 | Layer 7: the router's arm drives the demo forward test's orders; fills measured per arm (AUTHORIZED 16:51 PT) | 🔶 Parts A+B pushed (PR #486, switch OFF; ADR-0072 addendum 2026-11-12; per-arm report). Part C (dry run, then ON) next | W112.3 session |
 | 112.4 | engine · 3 | NHL factor classes point-in-time from the shot store, applied as router filters | ⬜ | |
 
 ### 112.1 - TREES (LAYER 3: FACTOR FILTERS AS SPLITS)
