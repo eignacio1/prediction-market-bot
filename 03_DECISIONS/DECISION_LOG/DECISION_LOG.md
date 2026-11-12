@@ -3507,3 +3507,6 @@ continually jumping is more valuable that saving tokens (even with compaction) -
 Effect: from Wave 114 every block carries MODEL: Sonnet (default) or MODEL: Haiku (mechanical); never Opus / Fable in a terminal
 (strategic-handoff step 8). Block size unchanged (operator 2026-10-30: three parts, ~130 min). Window error W55 (re-proposed his own
 doctrine). The window does not suggest shorter strategy windows.
+
+## 2026-11-12 - W113.4 (B-087): the bot reads Muse's archive read-only and grades it
+Archive pinned at cc7bf8501c38; never written to. Grades: VERIFIED NBA opponent shooting by distance (540/540), NBA Traditional (mostly), NHL counts and shots/hits/faceoffs; MISMATCH NBA turnovers, neutral-site home/road, NHL penaltiesFor; the rest UNCHECKABLE, goalie snapshots included (GG-1931). 12 new NBA index entries (24 to 36); 54 leaves scored, 0 BH survivors, routed to NO_BET provisionally. Per-row archive values were kept out of the repo; fixtures are synthetic. PR #494 held: main's Test Suite is red on test_w109_3_props_shadow_install (registry status live vs paused, after the 11-12 install approvals), not on 113.4 files.
