@@ -1246,3 +1246,4 @@
 | 2026-11-11T06:10:22Z | B-071 | CLOSED — merge confirmed, HEAD (c8e2610) is ancestor of origin/main — W110.3 B-071: every registered cell routed; 27 of 117 routed, shadow rows log router decision, 14d replay null (PR #476). (commit c57a496) |
 | 2026-11-11T06:12:57Z | W110.4 | CLOSED — W110.4 SGP correlation: engine joint good for game x points legs, misses same-player cross-stat; no open Kalshi NBA combo (commit `cc9818f`) |
 | 2026-11-11T06:21:52Z | W110.5 | CLOSED — W110.5 retro-route: 365 leaves scored by arm held out; 113 routed, 1 BH lead (11 games), 0 prereg drafts (PR #479) (commit `3f0845e`) |
+| 2026-11-12T00:03:13Z | B-076 | W111.1 B-076 STANDARD: losing look closes only FADE arm; NFL game total T1/T2 reopen. PURPOSE: PROOF P2 verdicts routed; B1; D-02/D-03 BUILT |
