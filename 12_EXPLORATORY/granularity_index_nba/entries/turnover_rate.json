@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "turnover_rate",
+   "metric": "tovx",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    },
+    {
+     "family": "KXNBATEAMTOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.11850731215330308,
+   "n_plays": 1983,
+   "games": 20,
+   "rank_league": 2,
+   "of_league": 30,
+   "rank_history": 5,
+   "of_history": 270,
+   "percentile_history": 0.9851301115241635,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.483573941505069,
+    "r_spearman_brown": 0.6519040648752413,
+    "ci95": [
+     0.5616781457285133,
+     0.7248110843489138
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 1983,
+    "own_in_situation": 1983
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.15880198250201383,
+    "league": 0.14439294424406435,
+    "delta_vs_league": 0.01440903825794948,
+    "opp_value": 0.18958543983822043,
+    "opp_n": 1978
+   }
+  },
+  "40": {
+   "name": "turnover_rate",
+   "metric": "tovx",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    },
+    {
+     "family": "KXNBATEAMTOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.12072434607645875,
+   "n_plays": 3976,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 3,
+   "of_history": 270,
+   "percentile_history": 0.9925650557620818,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.5869563296424956,
+    "r_spearman_brown": 0.739725874844613,
+    "ci95": [
+     0.6704440757940066,
+     0.7969288268548956
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 3976,
+    "own_in_situation": 3976
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.16093574856099024,
+    "league": 0.14439294424406435,
+    "delta_vs_league": 0.016542804316925896,
+    "opp_value": 0.187941473259334,
+    "opp_n": 3964
+   }
+  },
+  "82": {
+   "name": "turnover_rate",
+   "metric": "tovx",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    },
+    {
+     "family": "KXNBATEAMTOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.11732321996574505,
+   "n_plays": 8174,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 3,
+   "of_history": 270,
+   "percentile_history": 0.9925650557620818,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.771084724594878,
+    "r_spearman_brown": 0.8707485462292129,
+    "ci95": [
+     0.8365468321879227,
+     0.8971466050546243
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 8174,
+    "own_in_situation": 8174
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.14365686614319695,
+    "league": 0.14439294424406435,
+    "delta_vs_league": -0.0007360781008673989,
+    "opp_value": 0.17062714355707986,
+    "opp_n": 8164
+   }
+  }
+ },
+ "name": "turnover_rate",
+ "season": 2025,
+ "unit_shown": 1610612760,
+ "opp_shown": 1610612760,
+ "frame": "poss",
+ "metric": "tovx",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "turnovers"
+  },
+  {
+   "family": "KXNBATEAMTOTAL",
+   "line": "under",
+   "direction": "turnovers"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

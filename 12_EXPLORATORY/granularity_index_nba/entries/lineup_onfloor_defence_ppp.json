@@ -1,0 +1,169 @@
+{
+ "points": {
+  "20": {
+   "name": "lineup_onfloor_defence_ppp",
+   "metric": "points",
+   "unit_kind": "lineup",
+   "side": "dfn",
+   "unit": "203924-1629014-1630166-1641739-1642270",
+   "markets": [
+    {
+     "family": "KXNBAGAME",
+     "line": "moneyline",
+     "direction": "lineup"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lineup"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.8451612903225807,
+   "n_plays": 155,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 143,
+   "rank_history": 3,
+   "of_history": 1395,
+   "percentile_history": 0.9985652797704447,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 14506,
+    "r_half": 0.03740182102330859,
+    "r_spearman_brown": 0.07210671943184922,
+    "ci95": [
+     0.037151897780969015,
+     0.10401977184909647
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 13,
+    "own_in_situation": 13
+   }
+  },
+  "40": {
+   "name": "lineup_onfloor_defence_ppp",
+   "metric": "points",
+   "unit_kind": "lineup",
+   "side": "dfn",
+   "unit": "203924-1629014-1630166-1641739-1642270",
+   "markets": [
+    {
+     "family": "KXNBAGAME",
+     "line": "moneyline",
+     "direction": "lineup"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lineup"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.8451612903225807,
+   "n_plays": 155,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 155,
+   "rank_history": 2,
+   "of_history": 1473,
+   "percentile_history": 0.9993206521739131,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 14506,
+    "r_half": 0.03721266777161119,
+    "r_spearman_brown": 0.07175513552405866,
+    "ci95": [
+     0.03691624217137092,
+     0.10390859302074039
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 13,
+    "own_in_situation": 13
+   }
+  },
+  "82": {
+   "name": "lineup_onfloor_defence_ppp",
+   "metric": "points",
+   "unit_kind": "lineup",
+   "side": "dfn",
+   "unit": "203924-1629014-1630166-1641739-1642270",
+   "markets": [
+    {
+     "family": "KXNBAGAME",
+     "line": "moneyline",
+     "direction": "lineup"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lineup"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.8451612903225807,
+   "n_plays": 155,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 155,
+   "rank_history": 2,
+   "of_history": 1473,
+   "percentile_history": 0.9993206521739131,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 14506,
+    "r_half": 0.037253859000659834,
+    "r_spearman_brown": 0.07183170961938283,
+    "ci95": [
+     0.03702489414825688,
+     0.10395491901062673
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 155,
+    "own_in_situation": 155
+   }
+  }
+ },
+ "name": "lineup_onfloor_defence_ppp",
+ "season": 2025,
+ "unit_shown": "203924-1629014-1630166-1641739-1642270",
+ "opp_shown": null,
+ "frame": "poss",
+ "metric": "points",
+ "side": "dfn",
+ "unit_kind": "lineup",
+ "markets": [
+  {
+   "family": "KXNBAGAME",
+   "line": "moneyline",
+   "direction": "lineup"
+  },
+  {
+   "family": "KXNBASPREAD",
+   "line": "cover",
+   "direction": "lineup"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

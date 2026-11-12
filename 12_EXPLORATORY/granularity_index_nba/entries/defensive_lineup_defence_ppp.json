@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "defensive_lineup_defence_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612756,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "lineup-type"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lineup-type"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.9897959183673469,
+   "n_plays": 196,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 18,
+   "rank_history": 8,
+   "of_history": 150,
+   "percentile_history": 0.9530201342281879,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 182,
+    "r_half": 0.2889269091404577,
+    "r_spearman_brown": 0.44832163420830967,
+    "ci95": [
+     0.041620248982828865,
+     0.6647310504585431
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.016243654822335026,
+    "league_share": 0.10676767676767676,
+    "own_possessions": 1970,
+    "own_in_situation": 32
+   },
+   "cross": {
+    "opp": 1610612739,
+    "expected": 1.1079455662862159,
+    "league": 1.1079455662862159,
+    "delta_vs_league": 0.0,
+    "opp_value": 1.233502538071066,
+    "opp_n": 591
+   }
+  },
+  "40": {
+   "name": "defensive_lineup_defence_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612756,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "lineup-type"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lineup-type"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.9897959183673469,
+   "n_plays": 196,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 18,
+   "rank_history": 5,
+   "of_history": 154,
+   "percentile_history": 0.9738562091503268,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 182,
+    "r_half": 0.2950260366510494,
+    "r_spearman_brown": 0.45562950597347024,
+    "ci95": [
+     0.003731994671494594,
+     0.6922150347173622
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.04897959183673469,
+    "league_share": 0.10862479892874287,
+    "own_possessions": 3920,
+    "own_in_situation": 192
+   },
+   "cross": {
+    "opp": 1610612739,
+    "expected": 1.1079455662862159,
+    "league": 1.1079455662862159,
+    "delta_vs_league": 0.0,
+    "opp_value": 1.2488755622188905,
+    "opp_n": 667
+   }
+  },
+  "82": {
+   "name": "defensive_lineup_defence_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612756,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "lineup-type"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lineup-type"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.9897959183673469,
+   "n_plays": 196,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 18,
+   "rank_history": 5,
+   "of_history": 154,
+   "percentile_history": 0.9738562091503268,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 182,
+    "r_half": 0.31082025012962117,
+    "r_spearman_brown": 0.47423779133544136,
+    "ci95": [
+     0.012863686339368468,
+     0.706914460323425
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.02442367601246106,
+    "league_share": 0.0936874097775438,
+    "own_possessions": 8025,
+    "own_in_situation": 196
+   },
+   "cross": {
+    "opp": 1610612739,
+    "expected": 1.1079455662862159,
+    "league": 1.1079455662862159,
+    "delta_vs_league": 0.0,
+    "opp_value": 1.2488755622188905,
+    "opp_n": 667
+   }
+  }
+ },
+ "name": "defensive_lineup_defence_ppp",
+ "season": 2025,
+ "unit_shown": 1610612756,
+ "opp_shown": 1610612739,
+ "frame": "poss",
+ "metric": "points",
+ "side": "dfn",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "lineup-type"
+  },
+  {
+   "family": "KXNBASPREAD",
+   "line": "cover",
+   "direction": "lineup-type"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "free_throw_rate",
+   "metric": "fta",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612753,
+   "markets": [
+    {
+     "family": "player_points_prop",
+     "line": "over",
+     "direction": "free-throws"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "stoppages"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.24650440186431902,
+   "n_plays": 1931,
+   "games": 20,
+   "rank_league": 3,
+   "of_league": 30,
+   "rank_history": 67,
+   "of_history": 270,
+   "percentile_history": 0.7546468401486989,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.45765698223962553,
+    "r_spearman_brown": 0.6279350873570486,
+    "ci95": [
+     0.5225217981339325,
+     0.7097353168460301
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 1931,
+    "own_in_situation": 1931
+   },
+   "cross": {
+    "opp": 1610612738,
+    "expected": 0.21699895079767212,
+    "league": 0.2180473701310719,
+    "delta_vs_league": -0.0010484193333997749,
+    "opp_value": 0.1861648016276704,
+    "opp_n": 1966
+   }
+  },
+  "40": {
+   "name": "free_throw_rate",
+   "metric": "fta",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612753,
+   "markets": [
+    {
+     "family": "player_points_prop",
+     "line": "over",
+     "direction": "free-throws"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "stoppages"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.23601672765290121,
+   "n_plays": 3826,
+   "games": 40,
+   "rank_league": 6,
+   "of_league": 30,
+   "rank_history": 86,
+   "of_history": 270,
+   "percentile_history": 0.6840148698884758,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.6052117901263918,
+    "r_spearman_brown": 0.7540584910340565,
+    "ci95": [
+     0.6878181891292396,
+     0.8055160825262343
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 3826,
+    "own_in_situation": 3826
+   },
+   "cross": {
+    "opp": 1610612738,
+    "expected": 0.20680491155388378,
+    "league": 0.2180473701310719,
+    "delta_vs_league": -0.011242458577188114,
+    "opp_value": 0.18116499871696176,
+    "opp_n": 3897
+   }
+  },
+  "82": {
+   "name": "free_throw_rate",
+   "metric": "fta",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612753,
+   "markets": [
+    {
+     "family": "player_points_prop",
+     "line": "over",
+     "direction": "free-throws"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "stoppages"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.2401429118285058,
+   "n_plays": 7837,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 56,
+   "of_history": 270,
+   "percentile_history": 0.7955390334572491,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.712315211887914,
+    "r_spearman_brown": 0.831990753738093,
+    "ci95": [
+     0.7914650920596749,
+     0.8658935562295011
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 7837,
+    "own_in_situation": 7837
+   },
+   "cross": {
+    "opp": 1610612738,
+    "expected": 0.20973212724884338,
+    "league": 0.2180473701310719,
+    "delta_vs_league": -0.008315242882228513,
+    "opp_value": 0.18337781166603126,
+    "opp_n": 7869
+   }
+  }
+ },
+ "name": "free_throw_rate",
+ "season": 2025,
+ "unit_shown": 1610612753,
+ "opp_shown": 1610612738,
+ "frame": "poss",
+ "metric": "fta",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "player_points_prop",
+   "line": "over",
+   "direction": "free-throws"
+  },
+  {
+   "family": "KXNBATOTAL",
+   "line": "over",
+   "direction": "stoppages"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}
