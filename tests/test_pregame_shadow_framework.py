@@ -248,8 +248,8 @@ def test_nfl_pregame_cells_shadow_and_inplay_untouched():
         for b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
             c = get_cell(mt, b)
             if mt is MarketType.NFL_GAME_TOTAL and b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
-                # W99.2: EXP-037 first look verdicts (rule 5.1); the arm itself keeps logging.
-                assert c.status is CellStatus.RULED_OUT and c.measured_date and c.reason, (mt, b)
+                # W111.1: EXP-037 first look (rule 5.1) read as routing: SHADOW, fade arm closed, still logging.
+                assert c.status is CellStatus.SHADOW and c.closed_arm_names == ("FADE",) and c.measured_date and c.reason, (mt, b)
                 continue
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
         assert get_cell(mt, ExecutionBand.T4NFL_ARITH).status is CellStatus.NOT_IMPLEMENTED
@@ -266,9 +266,9 @@ def test_mlb_game_market_cells_shadow_and_inplay_untouched():
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
 
 
-def test_registry_shadow_total_is_46_plus_2_ruled_out():
+def test_registry_shadow_total_is_48_with_two_fade_arms_closed():
     """3 MLB player-hits + 10 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1) + 3 NBA player-points (W65.1) + 9 NBA engine props (W109.3)
-    = 46 SHADOW; the 2 NFL game-total cells ruled out at the EXP-037 first look (W99.2) make the earlier 39."""
+    = 46 SHADOW, plus the 2 NFL game-total cells whose FADE arm closed at the EXP-037 first look = 48 (W111.1: SHADOW, not RULED_OUT)."""
     from prediction_market_bot.c5_execution.market_type_registry import CellStatus, cells_by_status
-    assert len(cells_by_status(CellStatus.SHADOW)) == 46
-    assert len(cells_by_status(CellStatus.RULED_OUT)) == 2
+    assert len(cells_by_status(CellStatus.SHADOW)) == 48
+    assert len(cells_by_status(CellStatus.RULED_OUT)) == 0

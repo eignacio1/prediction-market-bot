@@ -3452,6 +3452,9 @@ registry (a losing look closes only the fade arm; NFL game total T1 / T2 back to
 code; 111.3 D6 (router reads the W110.5 leaf map; pot of gold and momentum scored as arms; forward test frozen); 111.4 the granularity
 index as tree splits, NBA first. Backlog: B-024 (pot of gold) moved from PARKED to NOW - stale since 11-05.
 
+## 2026-11-12 W111.1 (B-076) - a losing look closes only the FADE arm
+Built per ADR-0077 and operator 2026-11-10 21:41 / 22:03 / 22:10 PT: calibration_engine.verdict() keeps the frozen label as verdict_preregistered and adds routing (losing look closes FADE only, winning look opens nothing); ADR-0078 adds MarketTypeCell.closed_arms; NFL_GAME_TOTAL T1/T2 reopened as SHADOW with FADE closed (supersedes W99.2 RULED_OUT); P2 reports verdicts routed, closed arms not closed cells. Frozen pre-registrations untouched; superseding addenda beside them. PR #482. Handoff: SESSION_HANDOFF_20261112T001539Z_W111_1.md.
+
 ### 2026-11-12 W111.2 (B-077) doctrine-conformance audit of code
 - 41 decision points audited against DOCTRINE.md: 20 CONTRADICTS, 1 MISSING (per-leaf arm scoring in the edge map), rest CONFORMS. Map: `04_EXECUTION/DOCTRINE_CONFORMANCE.md`.
 - Fixed in files no other block owns (PR #481): dashboard and /vision wording now "fade arm closed (routed)"; new test `tests/test_doctrine_label_words.py` fails on banned verdict words in dashboard/vision labels. Registry enum keys untouched.

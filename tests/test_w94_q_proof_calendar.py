@@ -67,9 +67,10 @@ def _cell(**kw):
     return base | kw
 
 
-def test_ruled_out_cell_is_closed_and_not_projected():
+def test_losing_look_closes_the_fade_arm_not_the_cell():
     rows = pc.engine_rows({"cells": [_cell(verdict="RULED_OUT", looks=[60, 150])]}, date(2026, 11, 3), "m")
-    assert rows[0]["proj"].startswith("CLOSED") and rows[0]["second"] == "closed"
+    assert rows[0]["proj"] == "FADE ARM CLOSED (routed)" and not rows[0]["proj"].startswith("CLOSED")
+    assert "stays SHADOW" in rows[0]["note"] and "routed" in rows[0]["second_state"]
 
 
 def test_second_look_state_and_judged_left():

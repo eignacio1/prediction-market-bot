@@ -150,7 +150,7 @@ def test_proof_from_fixture_engine(tmp_path):
     (tmp_path / "12_EXPLORATORY").mkdir()
     (tmp_path / d.EXPECT_REL).write_text("- **Vs market, every cell:** KEEP ACCRUING ≈ 91%. RULED_OUT ≈ 9%\n")
     m = by_id(d.proof(tmp_path))
-    assert m["P1"]["value"] == "1 / 3" and m["P2"]["value"] == "1"
+    assert m["P1"]["value"] == "1 / 3" and m["P2"]["value"].startswith("1 verdicts, routed")
     assert m["P3"]["value"].startswith("2026-11-02") and "KEEP ACCRUING ~91%" in m["P3"]["value"]
 
 
@@ -270,3 +270,19 @@ def test_b1_counts_ruled_out_but_logging_arms(tmp_path):
     m = by_id(d.breadth(tmp_path, (cells, {"A_ML"})))
     assert m["B1"]["value"] == "2 / 3" and "1 of the logging cells are RULED_OUT" in m["B1"]["note"]
     assert m["B3"]["value"].startswith("2 of 5")
+
+
+def test_p2_reads_verdicts_routed_with_closed_arms_not_closed_cells(tmp_path):
+    (tmp_path / "exp_output/CALIBRATION").mkdir(parents=True)
+    cells = [{"cell": "a", "release": True, "verdict": {"verdict": "RULED_OUT", "routing": {"closed_arms": ["FADE"]}},
+              "projection": {"date": "2026-11-02"}}]
+    (tmp_path / "exp_output/CALIBRATION/engine_1.json").write_text(json.dumps({"generated": "2026-11-12T00:00:00Z", "cells": cells}))
+    v = by_id(d.proof(tmp_path))["P2"]["value"]
+    assert v.startswith("1 verdicts, routed (1 closed arms")
+
+
+def test_b1_counts_the_two_nfl_game_total_cells_as_logging():
+    cells, fams = d.registry_cells(d.REPO)
+    nfl = [c for c in cells if c[0] == "NFL_GAME_TOTAL" and c[1] in ("T1", "T2")]
+    assert nfl and all(c[2] == "shadow" for c in nfl)
+    assert d.registry_closed_cells(d.REPO) == 0

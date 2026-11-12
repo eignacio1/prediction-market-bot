@@ -196,6 +196,23 @@ def eligible(policy: Policy, row: dict) -> bool:
     return policy.eligible_from is None or str(row.get("start_time_utc", ""))[:10] >= policy.eligible_from
 
 
+ARMS_ALL = ("RIDE", "FADE", "MOMENTUM", "POT_OF_GOLD", "NO_BET")
+
+
+def routing_for(label: str) -> dict:
+    """What a released look MEANS for the cell's arms (ADR-0077; DOCTRINE sections 1, 1b, 8; operator 2026-11-10 22:03 /
+    22:10 PT). The pre-registered label (`verdict` == `verdict_preregistered`) is reported unchanged; this is its reading.
+    A look that loses to the market closes the FADE arm (model-disagreement entry) only: RIDE, MOMENTUM, POT_OF_GOLD and
+    NO_BET stay open, the cell stays SHADOW and keeps logging. A winning look opens nothing by itself (capacity and the
+    operator decide). Nothing here changes a registry status; a scored look never means "market cannot be traded"."""
+    closed = ["FADE"] if label == "RULED_OUT" else []
+    reading = {"RULED_OUT": "fade arm closed (routed); ride / momentum / pot of gold / no bet stay open; cell stays SHADOW",
+               "CANDIDATE-PENDING-CAPACITY": "label only: opens nothing by itself (capacity and the operator decide)",
+               }.get(label, "no arm closed; cell stays SHADOW and keeps accruing")
+    return {"closed_arms": closed, "open_arms": [a for a in ARMS_ALL if a not in closed],
+            "cell_status": "SHADOW", "reading": reading}
+
+
 def verdict(policy: Policy, status: str, scores: dict, n_judged: int) -> dict:
     """The pre-registered decision, from the pre-registered fields only. Emitted only on a released look
     (status JUDGED); a PRELIMINARY or sealed cell has no verdict. Never changes a cell's registry status."""
@@ -229,7 +246,7 @@ def verdict(policy: Policy, status: str, scores: dict, n_judged: int) -> dict:
             v, why = "SHADOW", "delta vs market CI excludes zero but E_net <= 0 under a fee candidate"
         else:
             v, why = "SHADOW", "CI spans zero"
-    out.update({"verdict": v, "rule": why})
+    out.update({"verdict": v, "verdict_preregistered": v, "rule": why, "routing": routing_for(v)})
     if dc is not None and dc["mean"] <= 0:
         out["model_failure_vs_climatology"] = True         # reported separately; not a decision rule
     return out

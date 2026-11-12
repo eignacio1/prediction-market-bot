@@ -24,6 +24,7 @@ def _registry_cells(prefix):
     return {(c.market_type.value, c.band.value): c.status.value for c in cells if c.market_type.value.startswith(prefix)}
 
 
+# W111.1: SEATS/<sport>.toml mirrors registry status; a registry status change must update the toml and its rendered .md.
 def test_every_registered_cell_has_a_seat_entry_all_sports():
     for sport in ("nfl", "nba", "mlb", "nhl"):
         want = _registry_cells(sport + "_")

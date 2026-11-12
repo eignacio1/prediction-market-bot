@@ -46,8 +46,8 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | nfl_spread | T3 | shadow | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
 | nfl_spread | T4 | not_implemented | none | — |
 | nfl_spread | T5 | not_implemented | none | — |
-| nfl_game_total | T1 | ruled_out | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
-| nfl_game_total | T2 | ruled_out | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
+| nfl_game_total | T1 | shadow | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
+| nfl_game_total | T2 | shadow | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
 | nfl_game_total | T3 | shadow | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
 | nfl_game_total | T4 | not_implemented | none | — |
 | nfl_game_total | T5 | not_implemented | none | — |
