@@ -38,8 +38,8 @@ def grade_opp_shooting(arc, loc="all"):
         shots = shots[shots.opp_id == shots.away_team_id]
         games = sc.groupby("away_team_id").size()
     else:
-        games = pd.concat([sc[["game_id", "home_team_id"]].rename(columns={"home_team_id": "id"}),
-                           sc[["game_id", "away_team_id"]].rename(columns={"away_team_id": "id"})]).groupby("id").size()
+        games = pd.concat([sc[["game_id", "home_team_id"]].set_axis(["game_id", "id"], axis=1),
+                           sc[["game_id", "away_team_id"]].set_axis(["game_id", "id"], axis=1)]).groupby("id").size()
     arch = arc.split_frame("nba", family="NBA.com Teams Opponent Shooting", season=2025)
     arch = arch[arch.split == loc]
     out = []
@@ -81,7 +81,7 @@ def grade_traditional(arc, loc):
     opp = tb[["game_id", "side", "blocks", "fouls_personal"]].assign(side=lambda d: d.side.map({"home": "away", "away": "home"}))
     tb = tb.merge(opp, on=["game_id", "side"], suffixes=("", "_opp"))
     sub = tb[tb.side == ("home" if loc == "Home" else "away")]
-    name = (tb.team_city + " " + tb.team_name).str.replace("LA Clippers", "LA Clippers")
+    name = (tb.team_city + " " + tb.team_name)
     sub = sub.assign(team=(sub.team_city + " " + sub.team_name))
     g = sub.groupby("team")
     rec = {k: g[c].mean() for k, c in TRAD.items()}
@@ -96,7 +96,7 @@ def grade_traditional(arc, loc):
     for _, r in df.iterrows():
         k = r.metric.split(" (NBA.com")[0]
         if k in rec:
-            team = r.subject.replace("Los Angeles Clippers", "LA Clippers")
+            team = ("LA Clippers" if r.subject == "Los Angeles Clippers" else r.subject)
             if team in rec[k].index:
                 out.append(dict(table=f"traditional_{loc.lower()}", metric=k, team=r.subject, archive=r.value_num, recomputed=round(float(rec[k][team]), 3)))
     d = pd.DataFrame(out)
@@ -110,15 +110,15 @@ if __name__ == "__main__":
     for _loc in ("all", "home", "road"):
       d, gp, n = grade_opp_shooting(arc, _loc)
       print("OPP SHOOTING", _loc, "n", len(d), "within", round(d.ok.mean(), 3), "max diff", d["diff"].max())
-      d.to_csv(Path(__file__).with_name(f"opp_shooting_{_loc}_recompute.csv"), index=False)
+      d.to_csv(safe_out(Path(__file__).with_name(f"opp_shooting_{_loc}_recompute.csv")), index=False)
     d, gp, n = grade_opp_shooting(arc, "all")
     summ = d.groupby(["kind"]).agg(n=("ok", "size"), within=("ok", "mean"), mad=("diff", "mean"), max=("diff", "max")).round(3)
     print("games/team (regular season, store):", gp, "archive rows:", n)
     print(summ)
     print(d.groupby("bin").agg(within=("ok", "mean"), mad=("diff", "mean")).round(3))
-    d.to_csv(Path(__file__).with_name("opp_shooting_recompute.csv"), index=False)
+    d.to_csv(safe_out(Path(__file__).with_name("opp_shooting_recompute.csv")), index=False)
     for loc in ("Home", "Road"):
         td = grade_traditional(arc, loc)
         print(loc, "n", len(td), "within", round(td.ok.mean(), 3), "max diff", td["diff"].max())
         print(td[~td.ok].groupby("metric").agg(n=("ok", "size"), mx=("diff", "max")))
-        td.to_csv(Path(__file__).with_name(f"traditional_{loc.lower()}_recompute.csv"), index=False)
+        td.to_csv(safe_out(Path(__file__).with_name(f"traditional_{loc.lower()}_recompute.csv")), index=False)

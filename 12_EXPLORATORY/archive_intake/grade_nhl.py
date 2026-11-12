@@ -2,6 +2,9 @@
 from the bot's own NHL event store and compare with the archive claims (read-only).
 Usage: grade_nhl.py <archive_root> <nhl_events_dir> <out_csv>. Prints aggregate stats only."""
 import glob, json, sys
+import pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+from _fence import safe_out  # noqa: E402
 import pandas as pd
 
 arch, store, out = sys.argv[1:4]
@@ -39,7 +42,7 @@ rec = {
  "blockedShotsByOwner": blk,
 }
 pen = t[t.type == "penalty"]
-opp = pen.merge(pd.concat([reg[["game_id","home"]].rename(columns={"home":"team"}), reg[["game_id","away"]].rename(columns={"away":"team"})]), on="game_id", suffixes=("","_g"))
+opp = pen.merge(pd.concat([reg[["game_id","home"]].set_axis(["game_id","team"], axis=1), reg[["game_id","away"]].set_axis(["game_id","team"], axis=1)]), on="game_id", suffixes=("","_g"))
 opp = opp[opp.team != opp.team_g].groupby("team_g").size()
 rec["penaltiesFor_drawn"] = opp
 
@@ -55,12 +58,12 @@ inv = {v: k for k, v in names.items()}
 a["team"] = a.name.map(inv)
 res = []
 for m, s in rec.items():
-    base = m.replace("_alt", "").replace("_drawn", "")
+    base = m.split("_alt")[0].split("_drawn")[0]
     x = a[(a.metric == base) & a.team.notna()].drop_duplicates(["team"]).set_index("team").value
-    d = pd.concat([x, s.rename("mine")], axis=1).dropna()
+    d = pd.concat([x, s.to_frame("mine")], axis=1).dropna()
     d["diff"] = (d.value - d.mine).abs()
     res.append((m, len(d), float((d["diff"] == 0).mean()), float((d["diff"] <= 0.01 * d.value.abs().clip(lower=1)).mean()), float(d["diff"].max())))
 print("unmapped names:", sorted(set(a[a.team.isna()].name)))
 r = pd.DataFrame(res, columns=["metric", "n_teams", "exact_frac", "within_1pct_frac", "max_abs_diff"])
-r.to_csv(out, index=False)
+r.to_csv(safe_out(out), index=False)
 print(r.to_string())
