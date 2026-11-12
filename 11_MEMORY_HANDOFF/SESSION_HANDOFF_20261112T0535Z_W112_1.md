@@ -35,3 +35,4 @@ Merge #488 on green; NFL weather-forecast storage + MatchupBook provider (candid
 ## Resume
 `git fetch && gh pr checks 488`
 - Box deploy read 05:38Z: box at c2b3664d, #488 (d536a9c) not yet deployed; t4-mlb decision for #488 to be read next session.
+- Follow-up: 112.4 (74d0527) merged after #488; NHL adapter should call nhl_filters_for_row next (currently logs filters_unavailable).
