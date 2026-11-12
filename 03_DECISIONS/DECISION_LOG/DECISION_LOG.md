@@ -3498,3 +3498,12 @@ don't you give me 4 highly substantive blocks instead of the ones you chose - un
 Window's call: keep 113.1 (first cells wired end to end), 113.3 (NBA same-game joint) and 113.4 (the bot reads Muse); replace 113.2
 (doctrine leftovers - low live impact while MLB is idle; moved to W114, B-085) with NFL wired for Sunday's slate (B-089: weather forecast,
 MatchupBook, the NFL granularity index as tree splits). Every block runs to merge with no window or operator touch.
+
+## 2026-11-12 15:11 PT — Operator: model tag per block; block size already doctrine; long strategy windows by choice (SW-9)
+Verbatim: "yes lets do it. I naturally use sonnet as the max model anyway, I've found marginal value in using Opus or god forbid Fable in
+the terminals. The bigger blocks - yes, I thought we're already doing that, it was literally a doctrine that I made a few strategy windows
+ago. And lastly - regarding the shorter strategy windows - I find that having the full scope of the strategy window instead of
+continually jumping is more valuable that saving tokens (even with compaction) - so I will continue with my current process."
+Effect: from Wave 114 every block carries MODEL: Sonnet (default) or MODEL: Haiku (mechanical); never Opus / Fable in a terminal
+(strategic-handoff step 8). Block size unchanged (operator 2026-10-30: three parts, ~130 min). Window error W55 (re-proposed his own
+doctrine). The window does not suggest shorter strategy windows.
