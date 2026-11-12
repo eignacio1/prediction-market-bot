@@ -1264,3 +1264,4 @@
 | 2026-11-12T00:57:26Z | B-012; GG reserve 3 | W112.4 B-012 STANDARD: NHL factor classes point-in-time from shot store, applied as router filters. PURPOSE: DEPTH D5(b) NHL applied 3->N of 12; D1 NHL; filters for D6 layer 3 |
 | 2026-11-12T00:57:31Z | B-081; GG-1910..1912 | W112.1 B-081 STANDARD: every shadow runner hands its factor filters to the router as tree splits (D6 layer 3). PURPOSE: DEPTH D6 layer 3 cells 0 -> N, D5(a) decision trees; D-01/D-04 |
 | 2026-11-12T05:36:26Z | B-082 | CLOSED — W112.2 B-082: closed hypotheses replace closed arms; arm_sizing.size_for built (D6 layer 6); PR #487 merged, Kelly 0. (commit `237eb69`) |
+| 2026-11-12T05:40:30Z | B-081 | CLOSED — merge confirmed, HEAD (fb49fa8) is ancestor of origin/main — W112.1 filter splits as router leaves (D6 layer 3), PR #488 merged |
