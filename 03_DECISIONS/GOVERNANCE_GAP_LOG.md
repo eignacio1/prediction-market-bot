@@ -4716,3 +4716,18 @@ W104.1, 2026-11-06. `demo_fill_forward_cache.json` holds `side='yes'` on all ord
 **Resolution (2026-11-06):** RESOLVED in code by PR #440 (W105.2): order records carry intended_side, pre_order_mid, pre_order_spread, book_yes_bid/ask_size, submit_ts_utc; fill/cancel time from cache terminal_ts. First real post-merge row NOT yet seen (newest box shadow_order predates the merge); book size fields unverified against the live Kalshi payload.
 
 W104.1, 2026-11-06. B-048 could model fill probability only from price, sport, days-ahead and hour (AUC 0.62). Pre-order mid, queue depth and time-to-fill are not logged, so a real information-vs-noise test of why fills lose (and a hazard fit with censoring) cannot run on live data. Needed before any MLB or post-epoch rerun. Descriptive only; no placement change implied.
+
+### GG-1896 — Shadow rows cannot carry size_for: the pregame_shadow safety test forbids c4_risk_engine imports (W113.1)
+**Status:** OPEN · **Severity:** LOW
+
+W113.1, 2026-11-12. The brief asked for the size decision on every routed shadow row. `tests/test_pregame_shadow_safety.py::test_no_import_path_to_order_position_sizing_modules` forbids pregame_shadow from reaching c4_risk_engine (arm_sizing, risk); wiring `row_sizing` into `shadow_route.router_fields` failed it, the change was reverted, the test was not weakened. Layer-6 evidence now comes from the arm order log (order / would-order / skip events after the sizing point). Needs a decision: compute the row-level decision outside pregame_shadow (the writer), or amend the safety test by ADR.
+
+### GG-1897 — Same-game cap has no joint draws: only same market and side merge until 113.3 (W113.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W113.1, 2026-11-12. `row_sizing.leg_draws` builds draws from identity (same ticker+side = one event, opposite side = complement, other market = independent). A home moneyline and a home spread in one game are correlated but are NOT merged. Closes when 113.3's joint is set as `row_sizing.DRAWS_PROVIDER`. Also: arm_orders and arm_sizing use different arm vocabularies (MOMENTUM / MODEL_FADE vs MOMENTUM_FOLLOW / MOMENTUM_FADE / no MODEL_FADE); mapped in `row_sizing.sizing_arm`, `size_arm` logged.
+
+### GG-1898 — NHL event store has no box job; NHL layer 3 counts only where the store exists (W113.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W113.1, 2026-11-12. `filter_supply.nhl_filters_for_row` reads `exp_output/NHL_EVENTS` (parquet; games, events, shifts). It is not in RUNTIME_REGISTRY, so on the box every NHL row will note `filters_unavailable:nhl_game_not_in_store` and the 20 kept NHL splits never fire live. `coverage.filter_layer_sports` counts NHL only when the store is present (local: layer 3 NHL 0 to 9). Also: `nhl_filters_for_row` named in the brief did not exist (#489 shipped `nhl_filters(home, away)`); this block built the per-row function. Needs a store refresh job (a surface add, Hard Rule 14) before NHL layer 3 is real on the box. Separately, main CI is red on `tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted` (registry entry now live after the 11-12 install approval; test expects paused), so PR 493 cannot merge on green.
