@@ -1993,7 +1993,7 @@ function railSpec(D,d){
     if(!c.total) return [['COVERAGE','awaiting',null,'']];
     return [['CELLS',String(c.total),c.total,''],['ACTIVE',String(k.active||0),k.active||0,''],
       ['SHADOW',String(k.shadow||0),k.shadow||0,'cy'],['BLOCKED',String(k.blocked||0),k.blocked||0,'warnv'],
-      ['DARK',String(k.dark||0),k.dark||0,''],['RULED OUT',String(k.ruled_out||0),k.ruled_out||0,''],
+      ['DARK',String(k.dark||0),k.dark||0,''],['FADE CLOSED',String(k.ruled_out||0),k.ruled_out||0,''],
       ['NOT IMPL.',String(k.not_implemented||0),k.not_implemented||0,'']]; }
   if(S.mod==='SHADOW'){ const sh=d.shadow||{}, cs=sh.cells||[];
     if(!cs.length) return [['SHADOW','awaiting',null,'']];
@@ -2237,7 +2237,7 @@ function fillV2(d){
           return x?`<td class="c s-${x.status}${x.recent?' recent':''}" title="${esc(t+' / '+b+' — '+x.status+(x.reason?' — '+x.reason:''))}">${L[x.status]||'?'}</td>`
                   :`<td class="c s-none">·</td>`}).join('')+`</tr>`).join('')+`</tbody></table>`+
         `<div class="lg">`+[['active','var(--green)'],['shadow','var(--cyan)'],['blocked','var(--amber)'],['dark','#555'],
-          ['ruled out','var(--red)'],['not implemented','#141414']].map(([n,col])=>`<span><i style="background:${col}"></i>${n}</span>`).join('')+
+          ['fade arm closed (routed)','var(--red)'],['not implemented','#141414']].map(([n,col])=>`<span><i style="background:${col}"></i>${n}</span>`).join('')+
         `<span>blank = unseeded</span></div>`; } }
   if($('#shCells')){ const sh=d.shadow;
     if(!sh||!sh.cells||!sh.cells.length){ $('#shCells').innerHTML=AW((sh&&sh.awaiting)||'shadow ledgers'); $('#shN').textContent='—'; $('#shTape').innerHTML=AW('shadow rows'); }
