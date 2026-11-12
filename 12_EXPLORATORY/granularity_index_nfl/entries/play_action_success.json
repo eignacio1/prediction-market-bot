@@ -1,0 +1,117 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<60 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 125,
+    "r_half": 0.04438043610630696,
+    "r_spearman_brown": 0.08498902233704711,
+    "ci95": [
+     -0.25995237445001196,
+     0.3473666238450369
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 6.0,
+   "cross": {
+    "unit": "BUF",
+    "opponent": "DEN",
+    "expected": 0.5102928797294468,
+    "league": 0.48400272294077606,
+    "frequency_per_game": 6.0
+   }
+  },
+  "10": {
+   "split": {
+    "ok": false,
+    "reason": "n<60 or unit absent",
+    "games": 10
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.26838180399947786,
+    "r_spearman_brown": 0.4231877233703809,
+    "ci95": [
+     0.1818517764462559,
+     0.6023927213897122
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 5.4,
+   "cross": {
+    "unit": "BUF",
+    "opponent": "DEN",
+    "expected": 0.5218016082592756,
+    "league": 0.48450244698205547,
+    "frequency_per_game": 5.4
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "BUF",
+    "bucket": 1,
+    "value": 0.5970149253731343,
+    "n_plays": 134,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 4,
+    "of_history": 128,
+    "percentile_history": 0.9763779527559056
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.2514557596012243,
+    "r_spearman_brown": 0.40186120471625864,
+    "ci95": [
+     0.14219818385587688,
+     0.5866819410361189
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 7.882352941176471,
+   "cross": {
+    "unit": "BUF",
+    "opponent": "DEN",
+    "expected": 0.48821870953945506,
+    "league": 0.4806201550387597,
+    "frequency_per_game": 7.882352941176471
+   }
+  }
+ },
+ "name": "play_action_success",
+ "season": 2025,
+ "unit_shown": "BUF",
+ "opp_shown": "DEN",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "ftn",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "over",
+   "direction": "play-action"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "play-action"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

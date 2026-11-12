@@ -1,0 +1,133 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": true,
+    "unit": "NE",
+    "bucket": 1,
+    "value": 0.10101010101010101,
+    "n_plays": 198,
+    "games": 6,
+    "rank_league": 7,
+    "of_league": 32,
+    "rank_history": 27,
+    "of_history": 127,
+    "percentile_history": 0.7936507936507937
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.2321512298820691,
+    "r_spearman_brown": 0.3768226241259177,
+    "ci95": [
+     0.10902743044836852,
+     0.5659301388944004
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 33.0,
+   "cross": {
+    "unit": "NE",
+    "opponent": "DEN",
+    "expected": 0.08000772141599037,
+    "league": 0.08125466766243465,
+    "frequency_per_game": 33.0
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "NE",
+    "bucket": 1,
+    "value": 0.10835913312693499,
+    "n_plays": 323,
+    "games": 10,
+    "rank_league": 5,
+    "of_league": 32,
+    "rank_history": 19,
+    "of_history": 128,
+    "percentile_history": 0.8582677165354331
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.32648779382300064,
+    "r_spearman_brown": 0.4922590246866085,
+    "ci95": [
+     0.30092437444614545,
+     0.632742546588692
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 32.3,
+   "cross": {
+    "unit": "NE",
+    "opponent": "DEN",
+    "expected": 0.08397241965838931,
+    "league": 0.08258029882795026,
+    "frequency_per_game": 32.3
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "NE",
+    "bucket": 1,
+    "value": 0.12522686025408347,
+    "n_plays": 551,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 2,
+    "of_history": 128,
+    "percentile_history": 0.9921259842519685
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.42993363346485025,
+    "r_spearman_brown": 0.6013336890651136,
+    "ci95": [
+     0.42651503340554325,
+     0.7195861401882354
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 32.411764705882355,
+   "cross": {
+    "unit": "NE",
+    "opponent": "DEN",
+    "expected": 0.09431098615935443,
+    "league": 0.08302651939597673,
+    "frequency_per_game": 32.411764705882355
+   }
+  }
+ },
+ "name": "explosive_pass_rate",
+ "season": 2025,
+ "unit_shown": "NE",
+ "opp_shown": "DEN",
+ "metric": "explosive",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "pbp",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "over",
+   "direction": "explosive"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "over",
+   "direction": "explosive"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

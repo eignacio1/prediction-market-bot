@@ -1,0 +1,138 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.5490196078431373,
+    "n_plays": 102,
+    "games": 6,
+    "rank_league": 1,
+    "of_league": 25,
+    "rank_history": 1,
+    "of_history": 73,
+    "percentile_history": 1.0
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 127,
+    "r_half": 0.001041418640188075,
+    "r_spearman_brown": 0.0020806704314047966,
+    "ci95": [
+     -0.4012922369383338,
+     0.2884061999969871
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 17.0,
+   "cross": {
+    "unit": "LA",
+    "opponent": "SEA",
+    "expected": 0.43974562113890503,
+    "league": 0.4395069737268894,
+    "frequency_per_game": 17.0
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.5328947368421053,
+    "n_plays": 152,
+    "games": 10,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 7,
+    "of_history": 125,
+    "percentile_history": 0.9516129032258065
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.1359631935055458,
+    "r_spearman_brown": 0.23937957547016603,
+    "ci95": [
+     -0.11422752103917556,
+     0.46722478720873295
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 15.2,
+   "cross": {
+    "unit": "LA",
+    "opponent": "SEA",
+    "expected": 0.4490817699972943,
+    "league": 0.44774590163934425,
+    "frequency_per_game": 15.2
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.5307017543859649,
+    "n_plays": 228,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 3,
+    "of_history": 128,
+    "percentile_history": 0.984251968503937
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.2798512173075397,
+    "r_spearman_brown": 0.4373183593891028,
+    "ci95": [
+     0.230867714410219,
+     0.5959750352002979
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 13.411764705882353,
+   "cross": {
+    "unit": "LA",
+    "opponent": "SEA",
+    "expected": 0.43956657801913696,
+    "league": 0.4403153153153153,
+    "frequency_per_game": 13.411764705882353
+   }
+  }
+ },
+ "name": "rush_success_vs_light_box",
+ "season": 2025,
+ "unit_shown": "LA",
+ "opp_shown": "SEA",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "part",
+ "markets": [
+  {
+   "family": "KXNFLRSHYDS",
+   "line": "over",
+   "direction": "box"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "run"
+  },
+  {
+   "family": "KXNFLSPREAD",
+   "line": "cover",
+   "direction": "run"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

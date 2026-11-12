@@ -1,0 +1,130 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<150 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.06492082871699156,
+    "r_spearman_brown": 0.12192611312750391,
+    "ci95": [
+     -0.2997264113790683,
+     0.38656300777249814
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 23.5,
+   "cross": {
+    "unit": "TB",
+    "opponent": "LV",
+    "expected": 0.17721923436053064,
+    "league": 0.1732460625894866,
+    "frequency_per_game": 23.5
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "TB",
+    "bucket": 1,
+    "value": 0.21518987341772153,
+    "n_plays": 237,
+    "games": 10,
+    "rank_league": 2,
+    "of_league": 32,
+    "rank_history": 12,
+    "of_history": 128,
+    "percentile_history": 0.9133858267716536
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.1731134326720978,
+    "r_spearman_brown": 0.295135027612433,
+    "ci95": [
+     -0.03766128187487885,
+     0.5080454205585043
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 23.7,
+   "cross": {
+    "unit": "TB",
+    "opponent": "LV",
+    "expected": 0.23915459618867527,
+    "league": 0.17018421373673295,
+    "frequency_per_game": 23.7
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "TB",
+    "bucket": 1,
+    "value": 0.20984455958549222,
+    "n_plays": 386,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 10,
+    "of_history": 128,
+    "percentile_history": 0.9291338582677166
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.3617817424799671,
+    "r_spearman_brown": 0.53133586858217,
+    "ci95": [
+     0.3217953956959107,
+     0.6774567709200955
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 22.705882352941178,
+   "cross": {
+    "unit": "TB",
+    "opponent": "LV",
+    "expected": 0.22371449757461512,
+    "league": 0.16612676056338027,
+    "frequency_per_game": 22.705882352941178
+   }
+  }
+ },
+ "name": "rush_stuff_rate_defence",
+ "season": 2025,
+ "unit_shown": "TB",
+ "opp_shown": "LV",
+ "metric": "stuffed",
+ "side": "dfn",
+ "higher_is_better": true,
+ "source": "pbp",
+ "markets": [
+  {
+   "family": "KXNFLRSHYDS",
+   "line": "under",
+   "direction": "stuff"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "under",
+   "direction": "stuff"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "under",
+   "direction": "stuff"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

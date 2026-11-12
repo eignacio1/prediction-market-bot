@@ -1,0 +1,125 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<80 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 109,
+    "r_half": 0.21220828712928033,
+    "r_spearman_brown": 0.35011852234045754,
+    "ci95": [
+     0.13948242194903887,
+     0.527705890282303
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 7.833333333333333,
+   "cross": {
+    "unit": "NE",
+    "opponent": "SEA",
+    "expected": 0.4760064597740338,
+    "league": 0.47671568627450983,
+    "frequency_per_game": 7.833333333333333
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "NE",
+    "bucket": 1,
+    "value": 0.6129032258064516,
+    "n_plays": 93,
+    "games": 10,
+    "rank_league": 1,
+    "of_league": 28,
+    "rank_history": 2,
+    "of_history": 63,
+    "percentile_history": 0.9838709677419355
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.1812287020332824,
+    "r_spearman_brown": 0.30684777930188845,
+    "ci95": [
+     0.04301942565495531,
+     0.4998087354648306
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 9.3,
+   "cross": {
+    "unit": "NE",
+    "opponent": "SEA",
+    "expected": 0.48543434483455905,
+    "league": 0.47344110854503463,
+    "frequency_per_game": 9.3
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "NE",
+    "bucket": 1,
+    "value": 0.6274509803921569,
+    "n_plays": 153,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 2,
+    "of_history": 125,
+    "percentile_history": 0.9919354838709677
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.25367927916713984,
+    "r_spearman_brown": 0.40469565603041197,
+    "ci95": [
+     0.1776647465308745,
+     0.5681755355946374
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 9.0,
+   "cross": {
+    "unit": "NE",
+    "opponent": "SEA",
+    "expected": 0.4850023734639606,
+    "league": 0.4743219849971148,
+    "frequency_per_game": 9.0
+   }
+  }
+ },
+ "name": "pass_success_vs_cover3",
+ "season": 2025,
+ "unit_shown": "NE",
+ "opp_shown": "SEA",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "part",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "over",
+   "direction": "coverage"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "coverage"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

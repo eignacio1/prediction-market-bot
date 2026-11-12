@@ -32,6 +32,8 @@ class NflProviders:
         self.sched = pd.read_csv(data_dir / "nfl_schedule.csv")
         self.tg = pd.read_csv(data_dir / "nfl_team_games.csv")
         self.meta = json.loads((data_dir / "nfl_snapshot_meta.json").read_text())
+        pf = data_dir / "nfl_team_percentiles.json"
+        self.pct = json.loads(pf.read_text()) if pf.exists() else {"entries": {}, "data_through_utc": "1970-01-01T00:00:00Z"}
         self.book = MatchupBook(self.tg)
         self.forecaster = forecaster if forecaster is not None else (wf.CachedForecaster() if live else None)
 
@@ -72,6 +74,13 @@ class NflProviders:
         th = self.book.terms(season, week, g["home"], g["away"])
         ta = self.book.terms(season, week, g["away"], g["home"])
         return th, ta, through.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    def splits(self, row: dict) -> Tuple[dict, dict, str]:
+        """Prior-season team percentiles for the tested index entries: (home, away, data_through_utc)."""
+        g = self.game(row)
+        tp = self.pct["entries"]
+        pick = lambda team: {n: v[team]["pct"] for n, v in tp.items() if team in v}   # noqa: E731
+        return pick(g["home"]), pick(g["away"]), self.pct["data_through_utc"]
 
     def lines(self, row: dict) -> Tuple[Optional[float], Optional[float]]:
         g = self.game(row)

@@ -1,0 +1,125 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<250 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.5769974760622139,
+    "r_spearman_brown": 0.7317671522252339,
+    "ci95": [
+     0.6025596085937679,
+     0.8166021863285254
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 29.333333333333332,
+   "cross": {
+    "unit": "MIN",
+    "opponent": "BAL",
+    "expected": 0.4991975801550958,
+    "league": 0.29815895823978444,
+    "frequency_per_game": 29.333333333333332
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "MIN",
+    "bucket": 1,
+    "value": 0.5129032258064516,
+    "n_plays": 310,
+    "games": 10,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 1,
+    "of_history": 128,
+    "percentile_history": 1.0
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.610628516268972,
+    "r_spearman_brown": 0.758248733461513,
+    "ci95": [
+     0.6483770039307298,
+     0.8322896339260363
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 31.0,
+   "cross": {
+    "unit": "MIN",
+    "opponent": "BAL",
+    "expected": 0.5623299607693742,
+    "league": 0.3020758768790265,
+    "frequency_per_game": 31.0
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "MIN",
+    "bucket": 1,
+    "value": 0.5161290322580645,
+    "n_plays": 496,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 2,
+    "of_history": 128,
+    "percentile_history": 0.9921259842519685
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.748013284033059,
+    "r_spearman_brown": 0.8558439353586884,
+    "ci95": [
+     0.7824638823769642,
+     0.899973294165074
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 29.176470588235293,
+   "cross": {
+    "unit": "MIN",
+    "opponent": "BAL",
+    "expected": 0.5739421329011349,
+    "league": 0.29598207139426924,
+    "frequency_per_game": 29.176470588235293
+   }
+  }
+ },
+ "name": "blitz_rate_defence",
+ "season": 2025,
+ "unit_shown": "MIN",
+ "opp_shown": "BAL",
+ "metric": "blitz",
+ "side": "dfn",
+ "higher_is_better": true,
+ "source": "ftn",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "under",
+   "direction": "pressure"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "over",
+   "direction": "variance"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

@@ -70,7 +70,7 @@ def nba_adapter(row: dict, table: Optional[dict] = None) -> Tuple[Optional[dict]
 def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str]]:
     """110.1 weather + matchup + market-state leaves. ``providers`` has weather(row)->(WeatherContext, issued_utc),
     terms(row)->(Terms_home, Terms_away, data_through_utc) and lines(row)->(spread, total). None -> unavailable."""
-    from prediction_market_bot.nfl_engine.filters import nfl_filters
+    from prediction_market_bot.nfl_engine.filters import TESTED_SPLITS, nfl_filters, nfl_split_filters
     from prediction_market_bot.nfl_engine.providers import default_nfl_providers
 
     providers = providers if providers is not None else default_nfl_providers()   # W113.2: snapshots + live forecast
@@ -82,7 +82,12 @@ def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str
     assert_pit(issued, row["ts_utc"], "NFL weather forecast")
     assert_pit(through, row["ts_utc"], "NFL matchup book")
     spread, total = providers.lines(row)
-    return nfl_filters(ctx, th, ta, spread, total, min_lead_h=0.0), None   # the row timestamp is the PIT bound
+    out = nfl_filters(ctx, th, ta, spread, total, min_lead_h=0.0)   # the row timestamp is the PIT bound
+    if hasattr(providers, "splits"):   # W113.2 Part B/C: granularity-index split leaves (prior-season percentiles)
+        ph, pa, pthrough = providers.splits(row)
+        assert_pit(pthrough, row["ts_utc"], "NFL split percentiles")
+        out.update(nfl_split_filters(ph, pa, keep=TESTED_SPLITS))
+    return out, None
 
 
 def nhl_adapter(row: dict) -> Tuple[Optional[dict], Optional[str]]:

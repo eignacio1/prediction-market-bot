@@ -45,3 +45,17 @@ def test_forecast_lookup_is_point_in_time():
             {"stadium_id": "X", "kickoff_utc": "2026-11-15T18:00:00+00:00", "issued_utc": "2026-11-14T00:00:00+00:00", "v": 2}]
     assert wf.latest_before(caps, "X", "2026-11-15T18:00:00Z", "2026-11-12T00:00:00Z")["v"] == 1
     assert wf.latest_before(caps, "X", "2026-11-15T18:00:00Z", "2026-11-09T00:00:00Z") is None
+
+
+def test_split_leaves_ride_the_adapter_for_tested_entries_only():
+    from prediction_market_bot.nfl_engine.filters import TESTED_SPLITS, nfl_split_filters, split_side_leaf, split_total_leaf
+    f, note = fsup.FilterSupply(nfl_providers=_prov(None)).for_row(ROW)
+    assert note is None
+    for n in TESTED_SPLITS:
+        assert f[n + "@total"] in ("high", "mid", "low", "unknown") and f[n + "@side"] in ("home_edge", "away_edge", "neutral", "unknown")
+    assert "three_wr_rate@total" not in f                                   # thin entry: not exported
+    assert split_total_leaf(0.9, 0.8) == "high" and split_total_leaf(None, 0.5) == "unknown"
+    assert split_side_leaf("rush_stuff_rate_defence", 0.9, 0.1) == "home_edge"       # higher is better for the unit
+    assert split_side_leaf("rush_stuffed_rate_offence", 0.9, 0.1) == "away_edge"     # lower is better for the unit
+    assert nfl_split_filters({}, {}, keep={"third_down_success"}) == {"third_down_success@total": "unknown",
+                                                                      "third_down_success@side": "unknown"}
