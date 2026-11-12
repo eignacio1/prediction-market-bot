@@ -8,14 +8,14 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nhl.toml`. This file is generated
 
 | id | class | factor | free source / field | engine slot | stage | evidence |
 |---|---|---|---|---|---|---|
-| H1 | NHL-1 | Skater quality (shot location/type, shooter, box) | events: shooter_id, shot_type, x, y; box_players | player rating | interpreted | `12_EXPLORATORY/nhl_engine/nhl_factors.py` |
+| H1 | NHL-1 | Skater quality (shot location/type, shooter, box) | events: shooter_id, shot_type, x, y; box_players | player rating | applied | `src/prediction_market_bot/nhl_engine/filters.py` |
 | H2 | NHL-2 | Goalie quality (saves, workload, starter post-game) | box_players goalies: shots_against, saves, starter | player rating | applied | `12_EXPLORATORY/nhl_engine/nhl_factors.py` |
-| H3 | NHL-3 | Line / pair deployment from shifts | shifts: player_id, period, start_s, end_s | none | aggregated | `src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py` |
+| H3 | NHL-3 | Line / pair deployment from shifts | shifts: player_id, period, start_s, end_s | none | applied | `src/prediction_market_bot/nhl_engine/filters.py` |
 | H4 | NHL-4 | Special teams (strength state, penalties) | events: situationCode fields, penalty_* | none | applied | `12_EXPLORATORY/nhl_engine/nhl_factors.py` |
 | H5 | NHL-5 | Pace / shot volume and quality | events: shot attempts by strength state and location | team rating | applied | `12_EXPLORATORY/nhl_engine/nhl_factors.py` |
-| H6 | NHL-6 | Rest / schedule density | games: start_time_utc, teams | schedule context | interpreted | `12_EXPLORATORY/nhl_engine/nhl_factors.py` |
-| H7 | NHL-7 | Venue / home ice / neutral site | games: venue, neutral_site | schedule context | aggregated | `src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py` |
-| H8 | NHL-8 | Travel distance / time zone | none built (GAP-2, GG-1011) | none | none | `` |
+| H6 | NHL-6 | Rest / schedule density | games: start_time_utc, teams | schedule context | applied | `src/prediction_market_bot/nhl_engine/filters.py` |
+| H7 | NHL-7 | Venue / home ice / neutral site | games: venue, neutral_site | schedule context | applied | `src/prediction_market_bot/nhl_engine/filters.py` |
+| H8 | NHL-8 | Travel distance / time zone | games schedule (venue, start) + hand-built 37-arena coordinate / time-zone table (free); GAP-2 closed for listed venues | router filter travel@side | applied | `src/prediction_market_bot/nhl_engine/filters.py` |
 | H9 | NHL-9 | Officials (crew) | free right-rail endpoint, not in store (GAP-3, GG-1012) | none | none | `` |
 | H10 | NHL-10 | Head coaches and scratches | free right-rail endpoint, not in store (GAP-3, GG-1012) | none | none | `` |
 | H11 | NHL-11 | Injuries / availability history | none free (GAP-4, GG-1013) | none | none | `` |
