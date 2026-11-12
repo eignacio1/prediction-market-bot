@@ -24219,3 +24219,188 @@ Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA applied 10 -> N of 17; index 
 directive D-06 PARTIAL -> (state). Operator decisions: none.
 END OF BLOCK 111.4
 ```
+
+---
+
+## (archived 2026-11-12) WAVE 112 · WRITTEN 2026-11-12 ~01:15 UTC (11-11 17:15 PT) · SW-9 · four blocks (operator's ask) · paste each block into its own terminal
+
+**Every part runs on data that exists when you paste it. CI is the gate for code only. The build continues on every lane (operator 11-09 21:29 PT).**
+
+**THE SCOPE, RE-CUT (operator 11-11 16:51 PT: "good reframing for the scope").** The unit of progress is a cell wired through all seven
+layers (D6). Today: **0 of 117** wired; layer 5 (per-leaf held-out net per arm) exists on 23 cells (NFL 9, NBA 7, NHL 7); **layers 3
+(factor filters as splits), 6 (sizing per arm) and 7 (execution by arm) are zero in every sport.** This wave builds exactly those three
+layers, plus one depth block. 112.1 **trees** = B-081 layer 3 · 112.2 **quant / risk** = B-082 layer 6 + closed hypotheses ·
+112.3 **execution** = B-083 layer 7 (operator-AUTHORIZED 16:51 PT) · 112.4 **engine** = B-012 NHL factor classes point-in-time.
+
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-03, PARTIAL since 111.1 recorded a closed ARM — the operator 16:51 PT: "a cell being closed isn't
+just closing the "fade arm" - it's closing THAT SPECIFIC HYPOTHESIS" → **112.2 Part A**. Then D-01 (the multi-arm tree, D6 = 0) → 112.1 /
+112.2 / 112.3.
+
+**DOCTRINE CHECK (W48), Wave 111 close.** *Premise:* "a cell earns an arm per leaf from logged evidence". 111.3 built the leaf map and
+froze its forward test, but no runner hands the router its factor filters (layer 3), no arm has a sizing rule (6) and no arm places an
+order (7) — so the tree chooses arms on paper and nothing downstream acts on the choice. *Said but not built:* "wired execution"
+(operator 16:51 PT: "we haven't come close to building out the bot in the substantive fashion (regarding wired execution) that I had
+anticipated") → this wave.
+
+- **Pushback:** turning on arm-driven demo orders (112.3) before the sizing rule (112.2) is wired means the first arm orders use today's
+  flat demo stake and caps, not a per-arm rule; and 0 of the leaf map's leaves has earned an arm on held-out evidence, so most routed rows
+  will be NO BET and the order count will be small. That is the honest start of layer 7, not a result.
+- **Surface:** box GREEN at the last read (11-11); deploy_truth_read and distance_read requested at the W111 close. Waiting on you:
+  `nba_engine_props_shadow_install`, `dashboard_memmax_install`. Delta this wave: 0 installs, 0 new crons; 112.3 changes the existing
+  demo order path behind a switch (operator-authorized).
+- **Dependencies:** none blocking. 112.3 sizes through a `size_for(arm, cell, context)` hook defaulting to today's flat stake; 112.2
+  builds its rule behind that signature; the window wires the two next wave. 112.1 calls 112.4's NHL filters only if merged first.
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 112.1 | trees · 3 | Layer 3: every runner hands its factor filters to the router as tree splits; D6 counted | ✅ PARTIAL | #488 merged d536a9c, CI green. NBA wired (layer 3 cells 0→9); NFL/NHL log why not wired. D6 wired still 0/117. |
+| 112.2 | quant · 3 | Layer 6: a sizing rule per arm (Kelly 0, flat demo stakes, per-game and same-game correlation caps) + closed hypotheses, not closed arms | 🟡 PR open | Parts A+B+C code done (closed hypotheses 2; `arm_sizing.size_for`; replay script). 14-day replay NOT run on real rows (rows are on the box; needs a read task). Wiring into 112.3 is the window's. Handoff `SESSION_HANDOFF_20261112T0130Z_W112_2.md` |
+| 112.3 | execution · 3 | Layer 7: the router's arm drives the demo forward test's orders; fills measured per arm (AUTHORIZED 16:51 PT) | 🔶 Parts A+B merged (#486); Part C: ARM_ORDERS=on merged (#492), but the box is still DRY (untracked override file forces dry; ssh delete refused, awaiting operator). No arm_order rows yet | W112.3 session |
+| 112.4 | engine · 3 | NHL factor classes point-in-time from the shot store, applied as router filters | 🟡 Parts A+C merged (PR #489); Part B (goalie timing, Muse snapshots) open | D5(b) NHL applied 3 -> 8 of 12 |
+
+### 112.1 - TREES (LAYER 3: FACTOR FILTERS AS SPLITS)
+
+```
+WAVE 112 - BLOCK 112.1 - TREES - D6 LAYER 3: EVERY RUNNER HANDS ITS FACTOR FILTERS TO THE ROUTER AS TREE SPLITS (B-081)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W112.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W112_1.md. Every part runs on data that exists now.
+
+PURPOSE: D6 layer 3 is zero in every sport. The filters exist - NFL weather + matchup (nfl_engine/filters.py, 110.1), NBA usage /
+crosses (110.2) and the granularity index (`nba_filters(home_profile, away_profile)`, 111.4) - but no runner passes them per row, so the
+router's leaves split only on market state (the frozen leaf-map pre-registration says so: "not supplied per row by any runner yet").
+OPERATOR_DIRECTIVES D-01 and D-04 ("meant to ENHANCE OUR DECISION TREES WHICH COULD VERY WELL MEAN RIDE THE WAVE").
+
+PART A (~50 min) - supply the filters, point-in-time
+1. In the shadow writers that log the router decision (the six 110.3 touched): compute each sport's filters for the game from data known
+   before the row's timestamp and pass them to router.py with the row. One adapter per sport; NHL calls 112.4's filters only if merged,
+   else logs `filters_unavailable`. Tests: a filter computed from a later game fails the test.
+
+PART B (~45 min) - the router splits on them
+1. router.py / leaf_map.py: a leaf = market-state leaf x filter condition. A filter split is kept only where it was tested per leaf
+   (held out, net after costs per arm, from 110.1 / 110.2 / 111.4's results); an untested filter is logged, not split on. Every shadow row
+   logs the split path. Orders untouched here (112.3 owns the order path). Replay the last 14 days: decisions per arm before vs after.
+
+PART C (~35 min) - D6, counted
+1. coverage.py: layer 3 evidenced per cell when its rows carry a filter split that a tested leaf uses. Report D6 per sport (wired /
+   registered) and cells per layer, before -> after, and name the cells closest to wired (which layers each still lacks). PR; merge on
+   green; read the box deploy.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 layer 3 cells 0 -> N; D6 wired 0 -> N (with 112.2 / 112.3); D5(a) decision trees.
+Operator decisions: none.
+END OF BLOCK 112.1
+```
+
+### 112.2 - QUANT / RISK (LAYER 6: SIZING PER ARM + CLOSED HYPOTHESES)
+
+```
+WAVE 112 - BLOCK 112.2 - QUANT / RISK - D6 LAYER 6: A SIZING RULE PER ARM; A LOSING LOOK CLOSES A HYPOTHESIS, NOT AN ARM (B-082)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W112.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W112_2.md. Every part runs on data that exists now.
+
+PURPOSE: D6 layer 6 is zero; and OPERATOR_DIRECTIVES D-03 is PARTIAL. Operator 2026-11-11 16:51 PT: "a cell being closed isn't just
+closing the "fade arm" - it's closing THAT SPECIFIC HYPOTHESIS, for future research and development that we'll circle back ... a cell
+closing shouldn't mean anything is being closed but a test." W111.1 (#482) recorded `closed_arms = (FADE,)` on NFL game total T1 / T2.
+Read DOCTRINE.md 1b and 8 first.
+
+PART A (~45 min) - closed hypotheses, not closed arms
+1. market_type_registry.py: replace per-arm closure with closed HYPOTHESES on the cell - each with the pre-registration id (EXP-037), the
+   model and comparison it tested, the look, the frozen label, measured_date, citing decision, and `revisit: R&D (operator call)`. No arm
+   is closed by a losing look; every arm stays open to a NEW hypothesis. Keep the public API backward compatible (the router and
+   coverage.py read status as today). calibration_engine.py: `routing` reports "hypothesis closed (<EXP-id>, parked for R&D)" and closes
+   no arm. proof_calendar.py / distance_to_optimum.py: report closed hypotheses. Migrate NFL game total T1 / T2. Tests, including: a
+   losing look leaves every arm open; the frozen label is unchanged.
+
+PART B (~50 min) - the sizing rule per arm (layer 6)
+1. NEW c4_risk_engine/arm_sizing.py: `size_for(arm, cell, context)` -> stake and the reason. Live rule today: Kelly 0 (no real capital),
+   the flat demo stake, plus caps that exist per arm - per event, per day, per arm budget, and a SAME-GAME correlation cap using 110.4's
+   joint (legs that move together count as one exposure). A Kelly-shaped stake is computed and LOGGED next to the flat one (what it would
+   be, never placed) so layer 6 has evidence when the operator later sets a Kelly. Tests on known answers (two perfectly correlated legs
+   sized as one; a cap binding).
+
+PART C (~35 min) - evidence and hand-off
+1. Replay the last 14 days of routed shadow rows through size_for: stake per arm, caps that bound, correlated exposure merged. coverage.py
+   is 112.1's - hand it the layer-6 evidence rule in your handoff (a cell has layer 6 when its arm's rows carry a size_for decision).
+   Name the wiring step for the window: 112.3's `size_for` hook -> this module. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 layer 6 cells 0 -> N (evidence rule); directive D-03 PARTIAL -> BUILT; closed hypotheses
+recorded 2. Operator decisions: none (Kelly stays 0; setting it is his, at G6).
+END OF BLOCK 112.2
+```
+
+### 112.3 - EXECUTION (LAYER 7: THE ROUTER'S ARM DRIVES THE DEMO ORDERS)
+
+```
+WAVE 112 - BLOCK 112.3 - EXECUTION - D6 LAYER 7: THE ROUTER'S ARM DRIVES THE DEMO FORWARD TEST'S ORDERS; FILLS MEASURED PER ARM (B-083)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W112.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W112_3.md. Every part runs on data that exists now.
+
+AUTHORIZATION (operator, 2026-11-11 16:51 PT, "yes I approve"; blockquote in 04_EXECUTION/ACTIVE_QUEUE.md "Needs your decision"): the
+router's arm drives the ADR-0072 demo forward test's orders - DEMO money only, flat demo stakes, kelly_fraction 0, kill switch and the
+zero-orders alarm unchanged - recorded as a superseding addendum; the frozen ADR-0072 file is not edited.
+
+PURPOSE: D6 layer 7 is zero; operator 16:51 PT: "we haven't come close to building out the bot in the substantive fashion (regarding
+wired execution) that I had anticipated." Today the demo orders come from the ADR-0072 policy (c5_execution/demo_fill_policy.py, placement
+rule book_anchor_cancel, assignment share 0.5) and decision_trees/ride_orders.py (ride board, orders OFF); the router's arm is logged on
+every shadow row (111.3) and acted on by nothing.
+
+PART A (~50 min) - the arm -> order path
+1. NEW decision_trees/arm_orders.py: for a routed row, RIDE = back the market's favoured side at its price; FADE = the other side; POT OF
+   GOLD = the longshot branch's side; MOMENTUM = the move's side; NO BET = nothing. Price and placement through the existing ADR-0072
+   policy (book_anchor_cancel, cancel after 60 s, max mid gap). Stake through a `size_for(arm, cell, context)` hook that defaults to
+   today's flat demo stake and caps (112.2 builds the rule behind the same signature). Every order tagged: arm, leaf_id, split path, the
+   ADR-0072 assignment it would have had. Switch `ARM_ORDERS` default OFF. Tests: each arm picks the right side; NO BET places nothing;
+   the kill switch stops it; demo only (no live endpoint reachable from this path).
+
+PART B (~40 min) - keep both tests readable, write the addendum
+1. Write the superseding addendum next to the frozen ADR-0072 file: what changes (the arm, not the old rule, picks the side on routed
+   rows), what stays (placement rule, stakes, kill switch, epoch rules GG-1771), and how the two remain separable (tags; the placement
+   comparison still read on its own rows). demo_fill_forward_report.py: fills, fill rate, P&L per filled bet and markout PER ARM; fills vs
+   non-fills per arm (E3).
+
+PART C (~40 min) - dry run, then on
+1. Dry run on the box's current routed rows (log the orders it WOULD place, place none) and check: sides, stakes, caps, tags. If the dry
+   run is clean and CI is green, set ARM_ORDERS on in deploy/demo_fill.env in its own PR (citing the authorization), merge on green, read
+   the box deploy, and confirm the first arm-tagged demo order (or that every routed row was NO BET, with counts). If anything is off,
+   leave it OFF and say why in the handoff.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 layer 7 cells 0 -> N; E1 / E2 / E3 per arm (first rows, epoch stated). Operator decisions:
+none (authorized 16:51 PT).
+END OF BLOCK 112.3
+```
+
+### 112.4 - ENGINE (NHL FACTOR CLASSES, POINT-IN-TIME, AS FILTERS)
+
+```
+WAVE 112 - BLOCK 112.4 - ENGINE - NHL FACTOR CLASSES POINT-IN-TIME FROM THE SHOT STORE, APPLIED AS ROUTER FILTERS (B-012)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W112.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W112_4.md. Every part runs on data that exists now.
+
+PURPOSE: NHL has the most routed cells (9 of 9 in 110.3) and two of the three held-out family leads (W110.5: MODEL FADE puck line +0.088
+[+0.037, +0.136], FOLLOW MOVE moneyline +0.074 [+0.015, +0.133]), but SEATS/nhl.toml has 3 of 12 factor classes applied, 2 interpreted, 2
+aggregated and 5 at none (travel, officials, coaches and scratches, injuries / availability, qualitative). D5(b) NHL applied 3 of 12; D1
+NHL. Muse's NHL starting-goalie snapshots (4 a day) and referee snapshot exist in the archive (read-only, REPORTED until recomputed).
+
+PART A (~45 min) - the missing classes, point-in-time
+1. Check the NHL shot / shift store first: what it can cut by. Build point-in-time: skater quality (shot location / type, shooter, the
+   'interpreted' class) and line / pair deployment from shifts to applied; rest / schedule density and venue to applied; travel distance /
+   time zones (free schedule data). Each a feature known before puck drop. Tests on known answers.
+
+PART B (~45 min) - goalie confirmation and availability
+1. Starting goalie known before the price (the biggest NHL pre-game fact): the free league feed's confirmation timing vs Kalshi's price
+   moves; where Muse's snapshots add timing the bot's own capture lacks, recompute a sample and grade them (VERIFIED / REPORTED). Officials
+   and injuries: what free sources serve point-in-time; anything only a paid source has is a registered gap.
+
+PART C (~40 min) - applied: splits in the tree
+1. Export each class as a filter function for the router (112.1 owns router.py; agree the interface in handoffs, as 110.1 / 111.4 did).
+   Score per leaf against the 2026-27 NHL shadow rows' Kalshi prices (270 games in W110.5's inventory), held out, net after costs per arm
+   (RIDE / FADE / MOMENTUM / POT OF GOLD / NO BET), intervals and n - especially inside the puck-line model-fade and moneyline follow-move
+   leads. Update SEATS/nhl.toml stages. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D5(b) NHL applied 3 -> N of 12; D1 NHL classes; filters exported for D6 layer 3. Operator
+decisions: none.
+END OF BLOCK 112.4
+```

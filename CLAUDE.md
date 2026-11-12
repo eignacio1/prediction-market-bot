@@ -34,13 +34,12 @@ Generated 2026-11-12 by `scripts/claude_md_now.py --write` from the code at that
   (flat demo stakes, real fills; re-armed 2026-11-11 02:39Z after a turn-off tripped on pre-GG-1771 data). **MLB is idle** until the 2027
   season; its 2026 rows are the look-back corpus. NBA player props (9 cells, Wave 109.3) are built but not logging: the box install
   `nba_engine_props_shadow_install` waits on the operator's approval.
-- **Last wave closed:** 111 (2026-11-12; #481 #482 #483 #484 #485, main CI green). A losing look no longer closes a cell; NFL game
-  total T1 / T2 are SHADOW again (W112.2 records it as a closed hypothesis, not a closed arm). The code was audited against DOCTRINE.md (41 decision points,
-  `04_EXECUTION/DOCTRINE_CONFORMANCE.md`). The router reads the per-leaf arm map and logs leaf / arm / filters on every shadow row; pot of
-  gold and momentum are scored as arms; the leaf map's forward test is frozen. NBA's granularity index: 24 entries, 18 scored per leaf as
-  router filters. **D6 (cells wired through all seven layers) is 0 of 117** — layers 3 (factor filters as splits), 6 (sizing rule per
-  arm) and 7 (execution by arm, fills measured) are open.
-- **Next:** Wave 112 is not written yet (operator 2026-11-11 16:46 PT: the wave plan is being agreed first).
+- **Last wave closed:** 112 (2026-11-12; #486 #487 #488 #489 #492). A losing look closes only that hypothesis (registry records
+  closed hypotheses, NFL game total T1 / T2). D6 layers built: 3 (factor filters as splits, NBA 9 cells), 6 (`arm_sizing.size_for`, Kelly
+  0), 7 (`decision_trees/arm_orders.py`: the router's arm drives the demo orders, operator-authorized 11-11 16:51 PT). **Wired end to end:
+  0 of 117** — the pieces are not joined yet.
+- **In flight:** Wave 113 — 113.1 the first cells wired end to end; 113.2 the orchestrator and old scorers brought in line with the
+  doctrine; 113.3 the NBA joint for same-game legs (pot of gold); 113.4 the bot reads Muse's archive and grades it.
 - **Live numbers** (pillars, distance table, forward test, fills) are in the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`;
   **what is in scope, in order,** is `04_EXECUTION/ROLLING_BACKLOG.json`. Waiting on the operator: the "Needs your decision" section of
   the queue.
