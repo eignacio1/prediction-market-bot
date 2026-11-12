@@ -58,7 +58,7 @@ def test_stale_arm_reports_age_and_negative_edge_does_not_fire():
 @pytest.mark.unit
 def test_page_has_now_module_and_truthful_labels():
     h = (ROOT / "Live Terminal.html").read_text(encoding="utf-8")
-    for needle in ("STAKE", "$0 SHADOW", "WOULD-FIRE", "kill switch", "Real capital", "NOT LIVE", "no data"):
+    for needle in ("STAKE", "$0 SHADOW", "FADE ENTRY", "Router — arm chosen per row", "Wired end to end — D6", "TEST ARM", "kill switch", "Real capital", "NOT LIVE", "no data"):
         assert needle in h, needle
     assert "--bg:#000" in h.replace(" ", "")
     assert "NOT CONNECTED" not in h
