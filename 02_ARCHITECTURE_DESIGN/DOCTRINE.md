@@ -1,6 +1,6 @@
 # DOCTRINE — the binding strategy, in one place
 
-**Last reviewed:** 2026-11-11 (SW-9, Wave 110) · **Owner:** the strategic window · **Review rule:** every wave close; a file in the
+**Last reviewed:** 2026-11-12 (SW-9, Wave 112) · **Owner:** the strategic window · **Review rule:** every wave close; a file in the
 Doctrine stack below whose "Last reviewed" is older than 14 days is RED in the session-start scan (`scripts/doctrine_freshness.py`).
 
 *Operator 2026-11-10 21:45 PT: "This CANNOT keep fucking happening. I don't want to keep building blocks that I'll need to fix eventually
@@ -32,9 +32,14 @@ gold, or no bet.**
 - The project is at the start of the depth it needs. A cell, pattern or factor that loses to the market today is reported as a ROUTING
   result ("routed to ride / no bet in these leaves"), never as "no edge", "blocked", "ruled out" or a reason to stop.
 - In words, RULED_OUT is reserved for a market that cannot be traded at all (no book, no liquidity, no data); it never means "our model
-  lost". In the registry code, `CellStatus.RULED_OUT` on a frozen-test cell is that test's state machine and reads "the fade arm is closed
-  for this cell; ride / no bet stay open" (operator 2026-11-10 21:59 PT; NFL game total T1 / T2, EXP-037 first look). Human-facing text
-  says "fade arm closed (routed)", never "ruled out".
+  lost".
+- **What a losing look closes (operator 2026-11-11 16:51 PT):** "a cell being closed isn't just closing the "fade arm" - it's closing THAT SPECIFIC HYPOTHESIS, for future research and development that we'll circle back. ... a cell closing shouldn't mean anything is being closed but a test." A pre-registered look that loses closes THAT TEST - this
+  hypothesis (this model, this cell, this comparison, this look) - and parks it for future research and development we will circle back
+  to. It closes no cell, no market and no arm: the cell keeps logging, and every arm (fade included) stays open to a new hypothesis - a
+  different model, filter, leaf or horizon. Human-facing text says "hypothesis closed (<EXP-id>, parked for R&D)", never "ruled out",
+  "fade arm closed" or "cell closed". (Supersedes the 11-10 21:59 PT reading "fade arm closed (routed)"; W112.2 moves the code from
+  closed arms to closed hypotheses.) The operator: "This isn't a cop out - this is a complete understanding that despite the 8+ months of
+  work - we haven't come close to building out the bot in the substantive fashion (regarding wired execution) that I had anticipated."
 - Reports lead with what was built and which arm each leaf goes to; a model-vs-market number, if given at all, comes last.
 
 ## 2. The scale (ADR-0073, operator 10-13)
@@ -71,9 +76,10 @@ No real capital; Kelly 0; pre-registration before a cell's first row; no score r
 named approval; demo / paper actions are plumbing.
 
 **Every closed cell is provisional (operator 2026-11-10 22:03 PT):** "every single "closed" cell will get reopened once I feel the project
-is at a suitable state. We're clearly not even close to that yet lol". A RULED_OUT / closed-arm cell keeps logging where it can, is never
-deleted or treated as final, and is reopened when the operator says the project is ready - his call, not a window's. Until the W111.1
-engine fix lands, no window or block applies a new RULED_OUT to the registry (operator 2026-11-10 22:10 PT).
+is at a suitable state. We're clearly not even close to that yet lol". A cell whose test lost keeps logging, is never
+deleted or treated as final, and its closed hypothesis is revisited when the operator says the project is ready - his call, not a
+window's. No window or block applies a new RULED_OUT to the registry for a model that lost (operator 2026-11-10 22:10 PT; 11-11 16:51 PT:
+only the test closes).
 
 ## Doctrine stack — every file below carries a "Last reviewed" line and defers to this file
 | File | What it holds | Last reviewed |

@@ -3464,3 +3464,15 @@ Built per ADR-0077 and operator 2026-11-10 21:41 / 22:03 / 22:10 PT: calibration
 ## 2026-11-11 — W111.4 granularity index as tree splits, NBA (B-080)
 Built the situation-split machinery, 24 NBA index entries and `nba_filters(home_profile, away_profile)` (router interface; 111.3 owns router.py). 18 entries scored per leaf, held out, net after costs per arm: 85 leaves, 0 BH survivors; fit-picked arms did not hold out so leaves route NO_BET provisionally (routing result, not a verdict). Seat B7 -> applied (D5(b) NBA 11 of 17). D-06 stays PARTIAL (NBA built). Data limits: GG-1895. PR #485.
 | 2026-11-12 | B-079 | W111.3: shadow router now reads the per-leaf arm map (PR #483). Pot of gold and open-momentum scored per leaf as arms (PR #484): pot of gold negative in NBA/NHL totals; NHL moneyline momentum +0.130 [+0.033, +0.227] is a lead outside the frozen test. Forward test of 116 leaf/family tests frozen with map sha256 before any forward row. D6 stays 0/117 (filters, sizing, fills open). Losses routed to arms, nothing ruled out. |
+
+## 2026-11-11 16:51 PT — Operator: a losing look closes THAT SPECIFIC HYPOTHESIS, not an arm; layer 7 approved; Wave 112 (SW-9)
+Verbatim: "Okay good reframing for the scope - yes I approve. I want it to be clear tho - a cell being closed isn't just closing the
+"fade arm" - it's closing THAT SPECIFIC HYPOTHESIS, for future research and development that we'll circle back. This isn't a cop out -
+this is a complete understanding that despite the 8+ months of work - we haven't come close to building out the bot in the substantive
+fashion (regarding wired execution) that I had anticipated. That's not an indictment - we've built many aspects that allow us to move with
+more agility now. But a cell closing shouldn't mean anything is being closed but a test. Does that make sense? Give me 4 to send."
+Effect: (1) DOCTRINE §1b / §8, CLAUDE.md and OPERATOR_DIRECTIVES D-03 rewritten: a losing look closes the pre-registered test only,
+parked for R&D; no cell, market or arm closes. Supersedes the 11-10 21:59 PT "fade arm closed (routed)" reading; W111.1's `closed_arms`
+becomes closed hypotheses in W112.2. (2) AUTHORIZED: the router's arm drives the ADR-0072 demo forward test's orders (demo only, flat
+stakes, Kelly 0) - superseding addendum, frozen file untouched; switched on by W112.3 after tests and a dry run. (3) The scope is re-cut
+around D6 (cells wired through all seven layers); Wave 112 = layers 3 / 6 / 7 + NHL depth.

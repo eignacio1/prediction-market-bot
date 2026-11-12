@@ -34,8 +34,8 @@ Generated 2026-11-12 by `scripts/claude_md_now.py --write` from the code at that
   (flat demo stakes, real fills; re-armed 2026-11-11 02:39Z after a turn-off tripped on pre-GG-1771 data). **MLB is idle** until the 2027
   season; its 2026 rows are the look-back corpus. NBA player props (9 cells, Wave 109.3) are built but not logging: the box install
   `nba_engine_props_shadow_install` waits on the operator's approval.
-- **Last wave closed:** 111 (2026-11-12; #481 #482 #483 #484 #485, main CI green). A losing look now closes only the fade arm; NFL game
-  total T1 / T2 are SHADOW again (no cell is closed). The code was audited against DOCTRINE.md (41 decision points,
+- **Last wave closed:** 111 (2026-11-12; #481 #482 #483 #484 #485, main CI green). A losing look no longer closes a cell; NFL game
+  total T1 / T2 are SHADOW again (W112.2 records it as a closed hypothesis, not a closed arm). The code was audited against DOCTRINE.md (41 decision points,
   `04_EXECUTION/DOCTRINE_CONFORMANCE.md`). The router reads the per-leaf arm map and logs leaf / arm / filters on every shadow row; pot of
   gold and momentum are scored as arms; the leaf map's forward test is frozen. NBA's granularity index: 24 entries, 18 scored per leaf as
   router filters. **D6 (cells wired through all seven layers) is 0 of 117** — layers 3 (factor filters as splits), 6 (sizing rule per
@@ -70,8 +70,9 @@ asset.** Kalshi is the venue; MLB, NFL, NBA and NHL are the sports. Operator: **
   may be reported last; it is never the verdict.
 - `model_p > market + vig` is the **fade arm's entry rule**, nothing more.
 - **Words:** never "no edge" (operator 21:56 PT: "WE ARE SO FAR AWAY"). A losing pattern is "routed to ride / no bet in these leaves".
-  `CellStatus.RULED_OUT` reads "fade arm closed (routed)". **Every closed cell is provisional** and is reopened when the operator says the
-  project is ready (22:03 PT).
+  **A losing look closes only that test** — "THAT SPECIFIC HYPOTHESIS, for future research and development that we'll circle back. ... a
+  cell closing shouldn't mean anything is being closed but a test" (11-11 16:51 PT). No cell, market or arm closes; text says
+  "hypothesis closed (EXP-id, parked for R&D)".
 
 ### What winning looks like — the operator's north star (four pillars)
 
