@@ -1,0 +1,191 @@
+{
+ "points": {
+  "20": {
+   "name": "opp_fg_pct_25plus",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612743,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "25plusft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "25plusft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.31718061674008813,
+   "n_plays": 454,
+   "games": 20,
+   "rank_league": 4,
+   "of_league": 30,
+   "rank_history": 33,
+   "of_history": 270,
+   "percentile_history": 0.8810408921933086,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": -0.014946738876972683,
+    "r_spearman_brown": -0.030347067446753875,
+    "ci95": [
+     -0.30047998598134756,
+     0.18265316630004408
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.24904004388370818,
+    "league_share": 0.2722927557879014,
+    "own_possessions": 1823,
+    "own_in_situation": 454
+   },
+   "cross": {
+    "opp": 1610612743,
+    "expected": 0.3489450340234883,
+    "league": 0.34671270812677357,
+    "delta_vs_league": 0.0022323258967147375,
+    "opp_value": 0.3874709976798144,
+    "opp_n": 431
+   }
+  },
+  "40": {
+   "name": "opp_fg_pct_25plus",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612743,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "25plusft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "25plusft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.3351409978308026,
+   "n_plays": 922,
+   "games": 40,
+   "rank_league": 7,
+   "of_league": 30,
+   "rank_history": 70,
+   "of_history": 270,
+   "percentile_history": 0.7434944237918215,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.10494859819638531,
+    "r_spearman_brown": 0.18996105043744765,
+    "ci95": [
+     -0.028410949132587366,
+     0.3708162861590208
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.25343595382078066,
+    "league_share": 0.26680460798568395,
+    "own_possessions": 3638,
+    "own_in_situation": 922
+   },
+   "cross": {
+    "opp": 1610612743,
+    "expected": 0.34780011263273725,
+    "league": 0.34671270812677357,
+    "delta_vs_league": 0.0010874045059636739,
+    "opp_value": 0.39732142857142855,
+    "opp_n": 896
+   }
+  },
+  "82": {
+   "name": "opp_fg_pct_25plus",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612743,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "25plusft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "25plusft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.3267228557263262,
+   "n_plays": 2017,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 14,
+   "of_history": 270,
+   "percentile_history": 0.9516728624535316,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.1646898241830626,
+    "r_spearman_brown": 0.2828046073100698,
+    "ci95": [
+     0.10768481599992978,
+     0.42222362288750415
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.26961636144900414,
+    "league_share": 0.26692036375416933,
+    "own_possessions": 7481,
+    "own_in_situation": 2017
+   },
+   "cross": {
+    "opp": 1610612743,
+    "expected": 0.346849851126435,
+    "league": 0.34671270812677357,
+    "delta_vs_league": 0.00013714299966144372,
+    "opp_value": 0.36918138041733545,
+    "opp_n": 1869
+   }
+  }
+ },
+ "name": "opp_fg_pct_25plus",
+ "season": 2026,
+ "unit_shown": 1610612743,
+ "opp_shown": 1610612743,
+ "metric": "make",
+ "side": "dfn",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "25plusft"
+  },
+  {
+   "family": "KXNBASPREAD",
+   "line": "cover",
+   "direction": "25plusft"
+  }
+ ],
+ "source_family_grade": "VERIFIED (GRADES.md)"
+}
