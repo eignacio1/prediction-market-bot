@@ -1262,3 +1262,4 @@
 | 2026-11-12T00:56:34Z | T-TBD GG-reserve | W112.2 B-082 STANDARD: arm_sizing.py (D6 layer 6) + closed hypotheses replace closed arms. PURPOSE: D6 layer 6 cells 0->N; directive D-03 PARTIAL->BUILT |
 | 2026-11-12T00:57:22Z | TBD | W112.3 B-083 STANDARD: arm_orders.py — router arm drives ADR-0072 demo orders (D6 layer 7). PURPOSE: D6 layer 7 cells 0->N; E1/E2/E3 per arm |
 | 2026-11-12T00:57:26Z | B-012; GG reserve 3 | W112.4 B-012 STANDARD: NHL factor classes point-in-time from shot store, applied as router filters. PURPOSE: DEPTH D5(b) NHL applied 3->N of 12; D1 NHL; filters for D6 layer 3 |
+| 2026-11-12T00:57:31Z | B-081; GG-1910..1912 | W112.1 B-081 STANDARD: every shadow runner hands its factor filters to the router as tree splits (D6 layer 3). PURPOSE: DEPTH D6 layer 3 cells 0 -> N, D5(a) decision trees; D-01/D-04 |
