@@ -6,3 +6,9 @@
 ## W111.4 — NBA granularity index (DEPTH)
 Built the NBA "situation" index: 24 entries, each with the split, how the team ranks against history, the matchup cross and the market map. 18 were scored per leaf, by arm, on games the fit never saw. None survived the multiple-comparison correction, so those leaves are routed to NO_BET for now, which is a routing result and not a verdict on any cell. NBA depth moved 10 to 11 of 17. Still zero real money at risk. NFL, NHL and MLB entries are not built yet.
 **W111.3 (trees).** The bot's routing step now picks, for each kind of bet, which of its strategies to use, instead of leaving most bets unrouted. We also tested two more strategies (the long-shot side and following early price moves). Early price moves look promising for NHL moneylines, but that is a lead, not a result. A forward test is locked in. Still zero real money at risk and no orders placed. The full "wired end to end" count stays at 0 of 117 because filters, sizing and real fills are not built yet.
+
+## W112.2 — a losing test no longer closes an arm; sizing rule built
+- The two NFL game-total cells that lost their test are now recorded as "test closed, parked for research." Every betting route stays open for them, as you ruled.
+- Built the rule that decides how much each route bets: the flat demo stake, cut by per-game, per-day and per-route limits, and correlated same-game bets count as one. It is not connected to orders yet.
+- Still zero real money at risk. Kelly stays 0.
+- Next: the window connects the sizing rule to the demo-order hook. Two things need a decision from the window, not you: the demo limits ($5 per game, $50 per day, $25 per route) are my placeholders, and the box needs a read-only task to run the 14-day replay on real rows.

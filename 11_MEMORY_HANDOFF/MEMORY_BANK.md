@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-12T00:50:00Z (B-080 — W111.4 B-080 granularity index as tree splits, NBA: 24 entries, nba_filters router interface, 85 leaves scored by arm held out (0 BH survivors), D5(b) NBA 10 -> 11 of 17 (PR #485)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T0041Z_W111_4.md` for full session detail.
+**Last reviewed:** 2026-11-12T05:40:00Z (B-082 — W112.2 B-082: closed hypotheses replace closed arms; arm_sizing.size_for built (D6 layer 6); PR #487 merged, Kelly 0.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T0130Z_W112_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

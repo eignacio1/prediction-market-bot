@@ -1,5 +1,21 @@
 # Session handoff - W112.2 (B-082) - sizing rule per arm; a losing look closes a hypothesis, not an arm
 
+<!-- session-meta
+task_id: B-082
+tier: STANDARD
+timestamp: 2026-11-12T05:40:00Z
+commit: 237eb69
+one_line_summary: W112.2 B-082: closed hypotheses replace closed arms; arm_sizing.size_for built (D6 layer 6); PR #487 merged, Kelly 0.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH (D6 layer 6) + PROOF wording (P2)
+gap_measure: D6 layer 6 cells; directive D-03
+gap_delta: layer 6 code BUILT; D6 cell count still 0/117 until the 112.3 hook is wired to size_for; D-03 PARTIAL -> BUILT in code (source: this handoff)
+pattern_sweep: grep closed_arm|ClosedArm|arm_is_closed|fade arm closed over src/ scripts/ tests/ .claude/ -> fixed 4 modules + 5 tests; 3 unowned strings left (see directive_conflicts)
+surface_delta: 0
+-->
+
 vision_pillar: DEPTH (D6 layer 6) + PROOF wording (P2)
 gap_measure: D6 layer 6 cells; directive D-03
 gap_delta: layer 6 code BUILT (arm_sizing.size_for); layer-6 cell count 0 -> N is counted by 112.1's coverage.py once the wiring step below lands (no routed row carries a size_for decision until then, so today's evidence count is still 0). D-03 PARTIAL -> BUILT in code (closed hypotheses recorded: 2, NFL game total T1 and T2). OPERATOR_DIRECTIVES.md not edited (not in this block's file list): window flips the D-03 row.
