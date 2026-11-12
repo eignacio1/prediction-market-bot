@@ -248,8 +248,8 @@ def test_nfl_pregame_cells_shadow_and_inplay_untouched():
         for b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
             c = get_cell(mt, b)
             if mt is MarketType.NFL_GAME_TOTAL and b in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
-                # W111.1: EXP-037 first look (rule 5.1) read as routing: SHADOW, fade arm closed, still logging.
-                assert c.status is CellStatus.SHADOW and c.closed_arm_names == ("FADE",) and c.measured_date and c.reason, (mt, b)
+                # W112.2: EXP-037 first look (rule 5.1): SHADOW, hypothesis closed (no arm), still logging.
+                assert c.status is CellStatus.SHADOW and c.closed_hypothesis_ids == ("EXP-037",) and not c.closed_arm_names and c.measured_date and c.reason, (mt, b)
                 continue
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
         assert get_cell(mt, ExecutionBand.T4NFL_ARITH).status is CellStatus.NOT_IMPLEMENTED

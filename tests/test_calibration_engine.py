@@ -354,12 +354,13 @@ def _sc(lo, hi, e7, ek):
             "e_net_entry_expected_k007": {"mean": e7}, "e_net_entry_expected_kmult": {"mean": ek}}
 
 
-def test_losing_look_closes_only_fade_cell_stays_shadow():
+def test_losing_look_closes_a_hypothesis_no_arm_cell_stays_shadow():
     v = ce.verdict(ce.PREREG["NFL"], "JUDGED", _sc(-0.03, -0.01, 0.0, 0.0), 60)
     assert v["verdict"] == v["verdict_preregistered"] == "RULED_OUT"          # frozen label reported unchanged
     r = v["routing"]
-    assert r["closed_arms"] == ["FADE"] and r["cell_status"] == "SHADOW"
-    assert set(r["open_arms"]) == {"RIDE", "MOMENTUM", "POT_OF_GOLD", "NO_BET"}
+    assert r["closed_arms"] == [] and r["closed_hypotheses"] == ["EXP-037"] and r["cell_status"] == "SHADOW"
+    assert set(r["open_arms"]) == {"RIDE", "FADE", "MOMENTUM", "POT_OF_GOLD", "NO_BET"}
+    assert r["reading"].startswith("hypothesis closed (EXP-037, parked for R&D)")
 
 
 def test_winning_look_is_a_label_only_and_changes_no_status():

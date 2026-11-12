@@ -71,36 +71,48 @@ class TestRegistryStartingState:
         assert cell.market_type is MarketType.MLB_PLAYER_PROP_HITS
         assert cell.band is ExecutionBand.T4M_PROJ
 
-    def test_no_cell_is_ruled_out_and_two_have_the_fade_arm_closed(self):
-        """W111.1 (ADR-0077/0078): a losing look closes an ARM, not a cell. No cell is RULED_OUT (that is reserved for a
-        market that cannot be traded); the two EXP-037 first-look cells are SHADOW with FADE closed."""
+    def test_no_cell_is_ruled_out_and_two_have_a_closed_hypothesis_and_no_closed_arm(self):
+        """W112.2 (ADR-0077/0078; operator 2026-11-11 16:51 PT): a losing look closes a HYPOTHESIS, not an arm or a cell.
+        The two EXP-037 first-look cells are SHADOW with EXP-037 parked for R&D; every arm stays open."""
         assert cells_by_status(CellStatus.RULED_OUT) == []
-        closed = {(c.market_type, c.band) for c in MARKET_TYPE_REGISTRY.values() if c.closed_arms}
+        assert not [c for c in MARKET_TYPE_REGISTRY.values() if c.closed_arms]
+        closed = {(c.market_type, c.band) for c in MARKET_TYPE_REGISTRY.values() if c.closed_hypotheses}
         assert closed == {
             (MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY),
             (MarketType.NFL_GAME_TOTAL, ExecutionBand.T2_SAME_DAY),
         }
 
-    def test_exp037_closed_fade_arm_carries_reason_date_and_citation(self):
+    def test_a_losing_look_leaves_every_arm_open(self):
+        from prediction_market_bot.c5_execution.market_type_registry import KNOWN_ARMS
+        for band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
+            cell = get_cell(MarketType.NFL_GAME_TOTAL, band)
+            assert cell.closed_hypotheses and cell.closed_arm_names == ()
+            assert not any(cell.arm_is_closed(a) for a in KNOWN_ARMS)
+
+    def test_exp037_closed_hypothesis_carries_model_comparison_look_label_date_and_citation(self):
         from datetime import date
         for band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
             cell = get_cell(MarketType.NFL_GAME_TOTAL, band)
-            assert cell.status is CellStatus.SHADOW and cell.closed_arm_names == ("FADE",)
-            assert cell.arm_is_closed("FADE") and not cell.arm_is_closed("RIDE")
+            assert cell.status is CellStatus.SHADOW and cell.closed_hypothesis_ids == ("EXP-037",)
             assert cell.measured_date == date(2026, 11, 2)
-            assert "n=60" in cell.reason and "rule 5.1" in cell.reason
-            arm = cell.closed_arms[0]
-            assert arm.measured_date == date(2026, 11, 2) and "ADR-0077" in arm.citing_decision and "22:03" in arm.citing_decision
+            assert "n=60" in cell.reason and "rule 5.1" in cell.reason and "parked for R&D" in cell.reason
+            h = cell.closed_hypotheses[0]
+            assert h.measured_date == date(2026, 11, 2) and "ADR-0077" in h.citing_decision and "16:51" in h.citing_decision
+            assert h.frozen_label == "RULED_OUT"                      # the pre-registered label is unchanged
+            assert h.revisit == "R&D (operator call)" and h.model and h.comparison and h.look
+            assert h.text == "hypothesis closed (EXP-037, parked for R&D)"
 
-    def test_closed_arm_requires_known_arm_reason_and_citation(self):
+    def test_closed_hypothesis_requires_every_field(self):
         from datetime import date
         import pytest as _pt
-        from prediction_market_bot.c5_execution.market_type_registry import ClosedArm
-        with _pt.raises(ValueError):
-            ClosedArm("NOPE", "r", date(2026, 11, 2), "c")
-        with _pt.raises(ValueError):
-            ClosedArm("FADE", "", date(2026, 11, 2), "c")
-        assert MarketTypeCell(MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY, CellStatus.SHADOW).closed_arms == ()
+        from prediction_market_bot.c5_execution.market_type_registry import ClosedHypothesis
+        ok = dict(exp_id="EXP-037", model="m", comparison="c", look="l", frozen_label="RULED_OUT",
+                  measured_date=date(2026, 11, 2), citing_decision="d")
+        ClosedHypothesis(**ok)
+        for k in ("exp_id", "model", "comparison", "look", "frozen_label", "citing_decision"):
+            with _pt.raises(ValueError):
+                ClosedHypothesis(**{**ok, k: ""})
+        assert MarketTypeCell(MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY, CellStatus.SHADOW).closed_hypotheses == ()
 
     def test_exp037_keep_accruing_nfl_cells_stay_shadow(self):
         """The other ten NFL cells (incl. game total T3) are KEEP ACCRUING = SHADOW."""
