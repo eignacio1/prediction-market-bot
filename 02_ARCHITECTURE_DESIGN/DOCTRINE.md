@@ -54,8 +54,11 @@ Tree depth is governed by decision horizon: the longer the horizon the deeper th
 Pre-game first, then carry the granularity inward.
 
 ## 6. Market classes (operator 09-25, 10-16, 11-05)
-Standard board first; the pot of gold (big hitters, longshots, parlays) is part of the vision and is routed in the same tree. Retail-priced
-flow (props, parlays, thin markets) before institutionally priced headline lines. Accumulation, "every damn cent", not one pot.
+The pot of gold (big hitters, longshots, parlays) is an ARM of the same tree now, not a phase after the standard board: "we should have
+the pot of gold decision trees routed in too" (11-05). It is built alongside the standard board (W110.4 built the same-game correlation
+it needs). Retail-priced flow (props, parlays, thin markets) before institutionally priced headline lines: "beating buddy off his phone
+placing parlays, that's the first step" (10-16). Accumulation across every arm, "every damn cent", with the pot of gold one of the arms.
+*(Superseded 2026-11-11: "Standard board first" / pot of gold "after the standard board is built", operator 09-25 - stale since 11-05.)*
 
 ## 7. How work is chosen
 - Four pillars and the distance table (CLAUDE.md § "What winning looks like"); every block names the measure it moves.
@@ -75,7 +78,7 @@ engine fix lands, no window or block applies a new RULED_OUT to the registry (op
 ## Doctrine stack — every file below carries a "Last reviewed" line and defers to this file
 | File | What it holds | Last reviewed |
 |---|---|---|
-| `CLAUDE.md` | session rules, north star, distance table, § "The architecture" | 2026-11-11 |
+| `CLAUDE.md` | read first by every session: Right now (generated block checked against code, `scripts/claude_md_now.py`), architecture, north star, rules | 2026-11-11 (lean rewrite) |
 | `02_ARCHITECTURE_DESIGN/DOCTRINE.md` | this file | 2026-11-11 |
 | `03_DECISIONS/ADR-0077_multi-arm-routing-doctrine.md` | the multi-arm routing rule | 2026-11-11 |
 | `02_ARCHITECTURE_DESIGN/STRATEGY_OVERVIEW.md` | strategy history and the strategies A-J | 2026-11-11 (banner; body pre-dates §1) |

@@ -89,3 +89,9 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
    reads it before writing the next wave, and the wave's first lines name the oldest "not built" or "contradicted" directive and the
    block that moves it - or why not this wave. The operator should never have to raise the same thing a third time; if he does, that is
    a window error logged that turn.
+7. CLAUDE.md RIGHT NOW (operator 2026-11-10 22:28 PT: CLAUDE.md is read first, so "it needs to be fucking accurate to the exact state of
+   the project AT THAT EXACT MOMENT"). At every wave close, and whenever the state it names changes (a sport's season, an install, a
+   wave closing, a doctrine change): run `python3 scripts/claude_md_now.py --write` (the generated part, from code) and rewrite the
+   "Window-maintained" lines below the block with today's date. The session scan prints RED when the generated part disagrees with the
+   code or either part is over 7 days old. Keep CLAUDE.md lean: history goes to the archive (`00_ADMIN/CLAUDE_MD_ARCHIVE_*.md`) or its own
+   file, never back into CLAUDE.md.
