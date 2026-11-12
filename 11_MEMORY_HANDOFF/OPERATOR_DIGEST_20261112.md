@@ -12,3 +12,6 @@ Built the NBA "situation" index: 24 entries, each with the split, how the team r
 - Built the rule that decides how much each route bets: the flat demo stake, cut by per-game, per-day and per-route limits, and correlated same-game bets count as one. It is not connected to orders yet.
 - Still zero real money at risk. Kelly stays 0.
 - Next: the window connects the sizing rule to the demo-order hook. Two things need a decision from the window, not you: the demo limits ($5 per game, $50 per day, $25 per route) are my placeholders, and the box needs a read-only task to run the 14-day replay on real rows.
+
+## W112.1 (trees)
+The bot's decision trees can now take the matchup-style filters as part of the decision, for NBA. Seven NBA filter rules passed our test, but none survives the stricter multiple-comparison check, so treat them as possibly luck; they only change paper (shadow) decisions, no orders. NFL and NHL are not wired yet (NFL lacks stored weather/matchup data; NHL waits on its own build). Still zero real money at risk. Nothing needed from you.

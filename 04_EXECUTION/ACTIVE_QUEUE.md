@@ -92,7 +92,7 @@ anticipated") → this wave.
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
-| 112.1 | trees · 3 | Layer 3: every runner hands its factor filters to the router as tree splits; D6 counted | ⬜ | |
+| 112.1 | trees · 3 | Layer 3: every runner hands its factor filters to the router as tree splits; D6 counted | ✅ PARTIAL | #488 merged d536a9c, CI green. NBA wired (layer 3 cells 0→9); NFL/NHL log why not wired. D6 wired still 0/117. |
 | 112.2 | quant · 3 | Layer 6: a sizing rule per arm (Kelly 0, flat demo stakes, per-game and same-game correlation caps) + closed hypotheses, not closed arms | 🟡 PR open | Parts A+B+C code done (closed hypotheses 2; `arm_sizing.size_for`; replay script). 14-day replay NOT run on real rows (rows are on the box; needs a read task). Wiring into 112.3 is the window's. Handoff `SESSION_HANDOFF_20261112T0130Z_W112_2.md` |
 | 112.3 | execution · 3 | Layer 7: the router's arm drives the demo forward test's orders; fills measured per arm (AUTHORIZED 16:51 PT) | 🔶 Parts A+B pushed (PR #486, switch OFF; ADR-0072 addendum 2026-11-12; per-arm report). Part C (dry run, then ON) next | W112.3 session |
 | 112.4 | engine · 3 | NHL factor classes point-in-time from the shot store, applied as router filters | ⬜ | |

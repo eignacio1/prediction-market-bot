@@ -3487,3 +3487,5 @@ context)`: pure, flat demo stake (Kelly 0 read from the band), caps per event / 
 placeholders awaiting window confirmation. Not wired to the order path (112.3 hook is the window's next step). (3) 14-day replay script
 written; NOT run on real rows (shadow rows are on the box; needs a read-only box task). No stake, Kelly, order-path or ledger change.
 Open: `claude_md_now.py:36,42` and `web_dashboard.py:2240` still say "fade arm closed (routed)"; D-03 PARTIAL -> BUILT is the window's flip.
+
+| 2026-11-12 | B-081 | W112.1: filter splits enter the router as leaves; kept-split rule fixed a priori (not thin, arm != NO_BET, held-out games >= 10, held-out net > 0). 7 of 113 tested splits kept, all NBA, none BH-surviving: reported as likely chance-level, shadow arms only, orders untouched. NFL (no stored weather forecast/matchup book) and NHL (112.4 unmerged) log why filters are unavailable. PR #488 d536a9c. |
