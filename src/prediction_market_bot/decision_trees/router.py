@@ -40,6 +40,9 @@ class Situation:
     model_p: Optional[float] = None
     move_1h: Optional[float] = None  # 1h change in yes mid
     t3: Optional[str] = None  # ADR-0014 overlay: CONFIRM | FADE | NEUTRAL
+    market_type: Optional[str] = None  # W111.3: leaf-map coordinates (with band and prev_mid)
+    band: Optional[str] = None
+    prev_mid: Optional[float] = None  # the same ticker's previous logged mid, for the leaf's move bin
 
     @property
     def mid(self) -> Optional[float]:
@@ -70,6 +73,7 @@ class Evidence:
     ride: Optional[RideTable] = None
     momentum: Sequence[MomentumCell] = ()
     longshot: Optional[longshot.Table] = None  # None -> the shipped longshot_cells.toml (all IN_SAMPLE today)
+    leaf_map: Optional[object] = None  # W111.3: a leaf_map.LeafMap; when set and the situation has a band, it decides
 
 
 @dataclass(frozen=True)
@@ -79,6 +83,7 @@ class Route:
     reasons: tuple
     agreed: bool = False
     cell: Optional[object] = None  # the measured cell behind a POT_OF_GOLD route (carries its status for the order gate)
+    leaf: Optional[object] = None  # W111.3: the leaf_map.LeafDecision behind the route (leaf_id, verbatim arm, held-out stats)
 
 
 def book_classes(s: Situation) -> tuple:
@@ -146,7 +151,27 @@ def _momentum(s: Situation, ev: Evidence):
     return None, None, "momentum:no_cell"
 
 
+def _route_leaf(s: Situation, ev: Evidence) -> Route:
+    """The per-leaf arm map decides (W111.3). Only the book and price-extreme checks apply: the band comes from the
+    row, so the date-only (D0) ticker bound does not; the arm is read from the map's fit window, so the order gate's
+    IN_SAMPLE status does not block the LOGGED arm (orders stay off in the caller). The legacy router result is kept
+    in the reasons when it disagrees."""
+    if s.yes_bid is None or s.yes_ask is None or s.yes_bid <= 0 or s.yes_ask >= 1 or s.yes_ask < s.yes_bid:
+        return Route(NO_BET, None, ("no_two_sided_book",))
+    if s.mid < PRICE_MIN or s.mid > PRICE_MAX:
+        return Route(NO_BET, None, ("price_extreme",))
+    from prediction_market_bot.decision_trees import leaf_map as lm
+
+    row = lm.LeafMap.row_for(s.sport, s.market_type or "", s.band, s.mid, s.prev_mid)
+    d = ev.leaf_map.decide(row, s.model_p)
+    if d.arm == "NO_BET":
+        return Route(NO_BET, None, (d.reason,), leaf=d)
+    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d)
+
+
 def route(s: Situation, ev: Evidence) -> Route:
+    if ev.leaf_map is not None and s.band:
+        return _route_leaf(s, ev)
     dq = _disqualify(s)
     if dq:
         return Route(NO_BET, None, (dq,))
