@@ -64,9 +64,9 @@
     <p><strong>52 of 108 cells</strong> log pre-registered shadow forecasts across NFL, NBA and NHL (MLB idle until the 2027 season).
     <strong>One engine per sport</strong> (ADR-0073): the NFL board engine prices moneyline, spread and total from one simulation and runs
     a frozen forward test (EXP-045, reads 01-12); the NBA engine (v1 / v2 / v3) prices every game, <strong>3 of 3 arms every night since 11-05</strong>;
-    the NHL board engine is on v2; MLB has a 1.42 M-pitch store and a first model that loses to the market. The decision-tree router has
-    five branches — ride, fade, momentum, pot of gold, no-bet — on paper. The <strong>first scored look (11-02)</strong> ruled out the NFL game
-    total T1 + T2 and kept 10 cells accruing. The forward test <strong>restarted 11-06</strong> after NO-side orders were found mirror-priced
+    the NHL board engine is on v2; MLB has a 1.42 M-pitch store and a first pre-game model the market priced better (routed: ride the market there). The decision-tree router has
+    five branches — ride, fade, momentum, pot of gold, no-bet — on paper. The <strong>first scored look (11-02)</strong> closed the fade arm on the NFL game
+    total T1 + T2 (routed, provisional) and kept 10 cells accruing. The forward test <strong>restarted 11-06</strong> after NO-side orders were found mirror-priced
     (GG-1771); on clean fills NFL is INCONCLUSIVE. The edge map holds 39 single patterns tested on their own; <strong>none is a bet by itself after costs - each is now a routing input to the tree</strong>
     (1.5–2.3¢ a side on game lines, 4–8¢ on props). That is expected while the architecture is built: frozen tests judge cells, they do not
     gate the build (operator, 11-09). Box healthy, 89 live components, <strong>$0 real capital</strong>.</p>
@@ -99,7 +99,7 @@
     <div class="tile" style="--accent:var(--ink-3)">
       <div class="k">Proof · cells at a scored look</div>
       <div class="v">12<small> / 49</small></div>
-      <div class="n">NFL first look 11-02: 2 RULED_OUT, 10 keep accruing. Next: 11-13 NFL QB moneyline; NBA engine first looks 11-13 .. 11-25.</div>
+      <div class="n">NFL first look 11-02: 2 fade arm closed (routed), 10 keep accruing. Next: 11-13 NFL QB moneyline; NBA engine first looks 11-13 .. 11-25.</div>
     </div>
   </div>
 
@@ -117,10 +117,10 @@
     </div>
     <div class="card">
       <h3>What does not work on its own</h3>
-      <div class="cap">Claims a pre-registered test or measurement killed.</div>
+      <div class="cap">Claims a pre-registered test or measurement routed away from the fade arm.</div>
       <ul style="margin:0; padding-left:17px; font-size:12.6px; color:var(--ink-2); line-height:1.75">
-        <li><b>MLB pre-game model vs market</b> — HARMFUL (EXP-029); the 106.4 lineup model also loses (blend weight 0).</li>
-        <li><b>NFL game total T1 + T2</b> — RULED_OUT at the first look (~0.016 Brier behind the market).</li>
+        <li><b>MLB pre-game model vs market</b> — fade arm closed, routed to ride (EXP-029); the 106.4 lineup model also priced behind the market (blend weight 0).</li>
+        <li><b>NFL game total T1 + T2</b> — fade arm closed (routed) at the first look (~0.016 Brier behind the market).</li>
         <li><b>The NFL forward-test ADOPT</b> — it came from mirror-priced NO fills (GG-1771); clean fills are INCONCLUSIVE.</li>
         <li><b>Ride / fade, pot of gold, MLB props, placement, news speed</b> — no cell net positive after costs (W105–107, edge map).</li>
         <li><b>T4 latency thesis</b> — NOT SUPPORTED at the current feature set (T-569).</li>
@@ -166,7 +166,7 @@
 <section id="distance">
   <div class="sechead"><h2>Distance to optimum</h2><span class="num">four pillars · 13 measures</span></div>
   <p class="lede">The gap between the project and <strong>the bot at optimum</strong> — every live sport covering its
-  whole board, every band, each cell's edge found or ruled out — kept as numbers so a wave cannot call itself
+  whole board, every band, each cell routed to its best arm per leaf — kept as numbers so a wave cannot call itself
   progress without moving one. <strong>Two waves in a row that move nothing is drift.</strong></p>
   <div class="card">
     <div class="tscroll"><table class="dtab">
@@ -200,7 +200,7 @@
       <h3>EXP-029 — the first market verdict</h3>
       <div class="cap">Frozen EXP-028 model vs the Kalshi KXMLBHIT market. Pre-registered, scored once behind a lock file.</div>
       <dl class="kv">
-        <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">HARMFUL</dd>
+        <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">Fade arm closed (routed)</dd>
         <dt>ΔBrier (market − model)</dt><dd>−0.00393 &nbsp;[−0.00629, −0.00152]</dd>
         <dt>Brier — market / model</dt><dd>0.2238 / 0.2277</dd>
         <dt>Test set</dt><dd>1,316 rows · 215 games</dd>
@@ -215,7 +215,7 @@
       <div class="cap">EXP-037: 12 shadow cells (moneyline, spread, total, team total × T1–T3), frozen team-rate model.</div>
       <dl class="kv">
         <dt>Cells scored</dt><dd>12</dd>
-        <dt>RULED_OUT</dt><dd style="color:var(--crit); font-weight:650">2 — game total T1 + T2 (~0.016 Brier behind the market)</dd>
+        <dt>Fade arm closed (routed)</dt><dd style="color:var(--crit); font-weight:650">2 — game total T1 + T2 (~0.016 Brier behind the market)</dd>
         <dt>Keep accruing</dt><dd style="color:var(--warn); font-weight:650">10 — slightly behind the market, ahead of a naive baseline</dd>
         <dt>Candidate</dt><dd>0</dd>
         <dt>Next looks</dt><dd>11-13 (QB moneyline) · second looks 12-14 .. 01-09</dd>
@@ -295,7 +295,7 @@
       <span><b style="background:color-mix(in srgb,var(--s1) 17%,var(--surface-2))"></b>Defined, not implemented</span>
       <span><b style="background:var(--crit)"></b>BLOCKED</span>
       <span><b style="background:var(--surface-3); border:1px solid var(--axis)"></b>DARK / frozen</span>
-      <span><b style="background:repeating-linear-gradient(135deg,var(--crit) 0 3px,var(--surface-3) 3px 6px)"></b>RULED OUT</span>
+      <span><b style="background:repeating-linear-gradient(135deg,var(--crit) 0 3px,var(--surface-3) 3px 6px)"></b>FADE ARM CLOSED (ROUTED)</span>
       <span><b style="border:1px dashed var(--hair-2); background:transparent"></b>Not in registry</span>
     </div>
   </div>

@@ -7,7 +7,7 @@ const DIST = [
   ["Depth","D1","Factor classes per pre-game model","NFL team (+ QB challenger personnel) · NBA points personnel, team, venue · NHL personnel, team, venue · MLB personnel, team. No live model uses matchup, weather or qualitative","every class at every arm","0"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
   ["Depth","D3","Pre-registered challengers ready","5 (NFL QB · EXP-041 · EXP-044b · EXP-044c NBA v3 · one by script)","≥ 1 per arm","0"],
-  ["Depth","D4","Engine stage per sport","NFL board engine + frozen forward test (EXP-045) · NBA board engine v1/v2/v3, 3 of 3 arms nightly · NHL board engine v2 · MLB pitch store, model loses to the market","each sport: data → factors → whole board","NBA coverage fixed 11-05 (3 of 3)"],
+  ["Depth","D4","Engine stage per sport","NFL board engine + frozen forward test (EXP-045) · NBA board engine v1/v2/v3, 3 of 3 arms nightly · NHL board engine v2 · MLB pitch store, model priced behind the market (routed to ride)","each sport: data → factors → whole board","NBA coverage fixed 11-05 (3 of 3)"],
   ["Depth","D5","Betting architecture (8 parts) · factors applied","NFL 8/8 · 10 of 21 · NBA 4/8 · 5 of 17 · NHL 2/8 · 3 of 12 · MLB 3/8 · none","8 of 8 per sport; factors applied","router 4 → 5 branches (pot of gold, W106)"],
   ["Execution","E1","Demo orders filled","T4 MLB 177 / 4,316 (4.1%) · T1 MLB 85 / 485 (17.5%)","fills ≈ intended orders","0 (MLB idle since 10-20)"],
   ["Execution","E2","P&L per filled bet","T4 −$0.21 · T1 −$1.50","positive, net of fees","0"],
@@ -19,10 +19,10 @@ const DIST = [
 ];
 
 const F = [
-  {g:"vs the market — the question that matters",
+  {g:"vs the market — a routing input, not the verdict",
    rows:[
     {l:"EXP-029 · MLB pre-game model vs Kalshi KXMLBHIT", s:"215 games · 1,316 rows · frozen model, scored once",
-     m:-0.00393, lo:-0.00629, hi:-0.00152, v:"HARMFUL", c:"crit"},
+     m:-0.00393, lo:-0.00629, hi:-0.00152, v:"FADE ARM CLOSED", c:"crit"},
     {l:"W61.3 · NFL frozen model vs Kalshi mid, 2025", s:"182 games · exploratory, not a pre-registered verdict",
      m:-0.0068, lo:-0.0227, hi:0.0094, v:"NO DETECTABLE DIFF", c:"warn"},
    ]},
@@ -82,7 +82,7 @@ const ARMS = [
   ["NBA player points",4,"Logging","good","EXP-039 / EXP-040","n = 300 player-games","Shadow only"],
   ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Board engine v2; judged sample not reachable this season"],
   ["Ride / pot-of-gold router",28,"Paper, orders OFF","warn","EXP-042 / EXP-043","NFL total ride ~11-19","Ride board built; install waits on you. Pot of gold 0 of 17 orderable"],
-  ["MLB (all arms)","—","Idle (off-season)","warn","EXP-037 MLB","2027 season","Engine loses to the market (w = 0); pitch store 1.42M pitches"],
+  ["MLB (all arms)","—","Idle (off-season)","warn","EXP-037 MLB","2027 season","Engine priced behind the market (w = 0); routed to ride; pitch store 1.42M pitches"],
 ];
 const CAL = [
   ["Tonight → week","Wave 108 running: untested edge rows · news lag at trade resolution · NBA / NFL / NHL props · weather scoping"],
@@ -98,7 +98,7 @@ const CAL = [
 
 const WAVES = [
   {w:"29–42", k:"neg", t:"Instruments built; both standing hypotheses negative.",
-   d:"Pre-registration, a game-clustered A/B harness and a fail-closed evidence predicate. Then the tests: <b>EXP-029 HARMFUL</b> — the MLB pre-game model loses to the market — and <b>EXP-030</b>: a deeper in-play tree is indistinguishable from the 3-scalar one."},
+   d:"Pre-registration, a game-clustered A/B harness and a fail-closed evidence predicate. Then the tests: <b>EXP-029</b> — the MLB pre-game model priced behind the market (fade arm closed, routed) — and <b>EXP-030</b>: a deeper in-play tree is indistinguishable from the 3-scalar one."},
   {w:"43–48", k:"hit", t:"From one cell to a board.",
    d:"The NHL arm becomes the first new arm flying (47.3). NFL and MLB postseason game markets — 24 cells — built and pre-registered (47.2). Candle reconstruction passes Gate 2 7/7 on KXMLBTOTAL. Blocks ran ~2 h, so block-size rules were introduced."},
   {w:"49–52", k:"", t:"Landing, and the kill-switch truth.",
@@ -148,7 +148,7 @@ const WAVES = [
   {w:"101–103", k:"neg", t:"ADOPT, then not.",
    d:"NFL forward test printed ADOPT — then <b>NO-side orders were found mirror-priced (GG-1771)</b>; on clean fills INCONCLUSIVE, clock restarted 11-06. NBA misses root-caused (memory) and fixed."},
   {w:"104–106", k:"neg", t:"The cost wall.",
-   d:"Pot of gold grafted (router 5 branches). <b>Trading cost 1.5–2.3¢ on game lines, 4–8¢ on props; maker loses everywhere</b>. Ride / fade 0 cells net, pot of gold 0 of 17, MLB props 0 of 50, NBA blend w ≈ 0, MLB engine loses to the market."},
+   d:"Pot of gold grafted (router 5 branches). <b>Trading cost 1.5–2.3¢ on game lines, 4–8¢ on props; maker loses everywhere</b>. Ride / fade 0 cells net, pot of gold 0 of 17, MLB props 0 of 50, NBA blend w ≈ 0, MLB engine priced behind the market."},
   {w:"107", k:"neg", t:"The whole record on one page.",
    d:"<b>Edge map: 39 hypotheses, none survives costs forward</b>. News speed: injury news moves the line ~0.3¢ in 20 min — below cost. NBA v3 does not lead Kalshi. You: the build continues on every lane — negative results are expected for a while."},
   {w:"108", k:"now", t:"Close the last sports gaps; scope weather.",
@@ -274,7 +274,7 @@ function bars(host,data){
     `<div class="bv">${v.toLocaleString()}</div></div>`).join('');
 }
 
-const SLABEL={wins:"WINS — pre-registered positive verdict at judged n",active:"ACTIVE — staked, no winning verdict",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen",ruled_out:"RULED OUT",unmapped:"UNMAPPED status"};
+const SLABEL={wins:"WINS — pre-registered positive verdict at judged n",active:"ACTIVE — staked, no winning verdict",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen",ruled_out:"FADE ARM CLOSED (ROUTED)",unmapped:"UNMAPPED status"};
 const SCLASS={wins:"win",active:"act",shadow:"shd",not_implemented:"ni",blocked:"blk",dark:"dark",ruled_out:"ro",unmapped:"unm"};
 // Green means one thing: the cell's own pre-registered verdict at judged n is positive (builder: scripts/cell_display_state.py).
 // Never derive it from the registry status alone; an absent `d` falls back to the registry status, which is never "wins".
@@ -384,7 +384,7 @@ function govCounts(){
   const n=Object.keys(CELLS).length, logging=(st.shadow||0)+(st.active||0)+(st.wins||0);
   $$('.cellN').forEach(e=>e.textContent=n); $('#mxLogging').textContent=logging;
   $('#mxBreak').textContent=`${st.wins||0} WINS, ${st.active||0} ACTIVE, ${st.shadow||0} SHADOW`;
-  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK ${st.ruled_out?`, ${st.ruled_out} RULED OUT`:""}${st.unmapped?`, ${st.unmapped} UNMAPPED`:""} and ${st.not_implemented||0} defined but not built`;
+  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK ${st.ruled_out?`, ${st.ruled_out} FADE ARM CLOSED (ROUTED)`:""}${st.unmapped?`, ${st.unmapped} UNMAPPED`:""} and ${st.not_implemented||0} defined but not built`;
 }
 
 /* ---- WIRE ---- */
