@@ -79,3 +79,23 @@ def test_bad_book_is_no_bet_and_never_raises():
 def test_filters_fired_are_logged():
     f = router_fields(_row("NBA_GAME_TOTAL", "T3", 0.70), "KXNBATOTAL", prev_mid=0.7, filters={"rest": True, "x": False})
     assert f["router"]["filters_fired"] == ["rest"]
+
+
+def test_d6_layers_6_and_7_are_evidence_only_w113_1():
+    from prediction_market_bot.decision_trees import coverage as cov
+    base = cov.d6_layers()
+    assert not any(c["layers"][5] or c["layers"][6] for c in base)  # no orders -> no credit
+    c0 = base[0]
+    key = (c0["market_type"], c0["band"])
+    orders = [{"event": "arm_order", "ok": True, "order_id": "o1", "ticker": "T", "market_type": key[0], "band": key[1],
+               "ts": "2026-11-12T10:00:00Z", "size_for": {"stake_usd": 1.0}},
+              {"event": "arm_order", "ok": True, "order_id": "old", "ticker": "T", "market_type": "X", "band": "T1",
+               "ts": "2026-11-01T10:00:00Z"}]
+    seen = []
+    ff = lambda oid, t: (seen.append(oid) or {"fills": 0})  # no-fill recorded still counts as measured
+    l6, l7 = cov.order_evidence(orders, ff)
+    assert key in l6 and key in l7 and ("X", "T1") not in l7 and seen == ["o1"]  # pre-epoch order not evidence
+    assert cov.order_evidence(orders, None)[1] == set()  # no fill source -> layer 7 unevidenced
+    got = {(c["market_type"], c["band"]): c for c in cov.d6_layers(orders=orders, fills_for=ff)}[key]
+    assert got["layers"][5] and got["layers"][6]
+    assert all("missing" in m for m in cov.missing_one_layer(base))
