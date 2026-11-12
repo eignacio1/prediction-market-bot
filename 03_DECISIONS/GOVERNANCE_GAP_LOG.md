@@ -2215,6 +2215,19 @@ W89.3, 2026-10-27. The unpriced-share screen (`12_EXPLORATORY/unpriced_screen/re
 
 W89.3, 2026-10-27. `20261011_nfl_totals_venue_weather` tests fixed league strikes, not a per-game term against the line. A rolling-origin ridge contribution in points, from schedule roof/surface/temp/wind, would let the screen run. Free data.
 
+### GG-1895 — NBA granularity index: data limits on lineup, position, tracking and props splits (W111.4)
+**Status:** OPEN · **Severity:** MEDIUM
+
+Registered by W111.4 (B-080). Limits that cap how deep the NBA index entries and their tree splits can go today:
+- Lineups come from `lineup_source=quarter_box`, so they are not exact after mid-quarter substitutions.
+- `player_box.position` is blank on about 56% of rows, so position-based splits (e.g. PG vs wing) cannot be built point-in-time.
+- No tracking data (defender distance, contested shots) and no coverage or scheme data.
+- Lineup type labels are derived point-in-time (prior-season top-tercile 3PA/36 and (stl+blk)/36), a proxy for role.
+- No 2026-27 event data (GG-1420), so router leaves use prior-season percentiles.
+- NBA shadow families carry no props rows, so four props-only entries (above-break three, corner three, midrange make rate, three attempt rate allowed) and any player-prop split cannot be scored per leaf.
+- The two lineup-on-floor entries are excluded from router filters because tonight's lineup is not known at pricing time.
+Not a verdict on any cell; these are inputs missing for deeper splits.
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

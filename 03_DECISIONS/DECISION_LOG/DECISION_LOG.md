@@ -3460,3 +3460,6 @@ Built per ADR-0077 and operator 2026-11-10 21:41 / 22:03 / 22:10 PT: calibration
 - Fixed in files no other block owns (PR #481): dashboard and /vision wording now "fade arm closed (routed)"; new test `tests/test_doctrine_label_words.py` fails on banned verdict words in dashboard/vision labels. Registry enum keys untouched.
 - Handed to owners, not edited: W111.1 (engine RULED_OUT, registry enum and guard, proof_calendar, B1 count); W111.3 (orchestrator T1 edge gate, router); backlog (order gates are fade-arm-only, factor scorers that use Brier vs market).
 - OPERATOR_DIRECTIVES.md: D-02..D-05 Code cells corrected, D-33 added. CONTRADICTED 2 -> 2, NOT BUILT 0 -> 0, PARTIAL 14 -> 15.
+
+## 2026-11-11 — W111.4 granularity index as tree splits, NBA (B-080)
+Built the situation-split machinery, 24 NBA index entries and `nba_filters(home_profile, away_profile)` (router interface; 111.3 owns router.py). 18 entries scored per leaf, held out, net after costs per arm: 85 leaves, 0 BH survivors; fit-picked arms did not hold out so leaves route NO_BET provisionally (routing result, not a verdict). Seat B7 -> applied (D5(b) NBA 11 of 17). D-06 stays PARTIAL (NBA built). Data limits: GG-1895. PR #485.
