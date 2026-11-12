@@ -1,0 +1,2 @@
+task = "demo_fill_rearm"
+note = "SW-9: remove the override (ARM_ORDERS=dry only; epoch-gated report trips none) so the tracked ARM_ORDERS=on applies - operator-authorized 2026-11-11 16:51 PT, and \"yes switch it\" 2026-11-12 (W112.3). Demo only, Kelly 0."
