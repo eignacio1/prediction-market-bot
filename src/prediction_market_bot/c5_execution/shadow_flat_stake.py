@@ -67,6 +67,16 @@ def maybe_place(
         pol.append_log({"event": "shadow_skip", "reason": "production_host_refused",
                         "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
         return None
+    from prediction_market_bot.decision_trees import arm_orders as ao  # W112.3: lazy (ao imports this module)
+    am = ao.mode()
+    if am != ao.OFF:
+        try:
+            ao.act(row, client)  # ON: the arm owns routed rows; DRY: logs the would-be order only
+        except Exception as e:  # noqa: BLE001 - a failure here must not disturb the ADR-0072 path
+            pol.append_log({"event": "shadow_skip", "reason": "arm_orders_error:" + type(e).__name__,
+                            "row_id": f"{row.get('run_id')}|{row.get('market_ticker')}"})
+        if am == ao.ON and ao.is_routed(row):
+            return None  # routed row handled by the arm path (NO BET places nothing)
     halted = ksw.halt_reason(band_name=SHADOW_KILL_BAND)  # GG-667: same NFR-03 flag state the C4/T4 paths honour
     if halted:
         pol.append_log({"event": "shadow_skip", "reason": "kill_switch_halted", "meta": halted,
