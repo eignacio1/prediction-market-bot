@@ -1,0 +1,3274 @@
+{
+ "summary": {
+  "rows": 18317,
+  "fit_games": 60,
+  "test_games": 27,
+  "entries": 25,
+  "leaves": 130,
+  "thin": 88,
+  "routed": 21,
+  "reportable": 21,
+  "bh": 0,
+  "drafts": 0,
+  "moneyline_ride_heldout_family": {
+   "mean": 0.16699259259259258,
+   "lo": 0.07300370370370372,
+   "hi": 0.258183950617284,
+   "p": 0.004997501249375313,
+   "n": 81,
+   "games": 27
+  },
+  "per_entry": {
+   "blitz_rate_defence": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "explosive_pass_rate": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "explosive_pass_rate_allowed": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "loaded_box_rate_faced": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_3wr_sets": {
+    "scored_leaves": 2,
+    "routed": 2,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_allowed_cover6_vs_3wr": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_allowed_vs_3wr": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_allowed_vs_man": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_vs_blitz": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_vs_cover3": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_vs_man": {
+    "scored_leaves": 3,
+    "routed": 3,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_vs_zone": {
+    "scored_leaves": 2,
+    "routed": 2,
+    "bh": 0,
+    "draft": 0
+   },
+   "pass_success_with_motion": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "play_action_success": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "red_zone_td_rate": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "red_zone_td_rate_allowed": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "rush_stuff_rate_defence": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "rush_stuffed_rate_offence": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "rush_success_allowed_loaded_box": {
+    "scored_leaves": 2,
+    "routed": 2,
+    "bh": 0,
+    "draft": 0
+   },
+   "rush_success_vs_light_box": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "rush_success_vs_loaded_box": {
+    "scored_leaves": 3,
+    "routed": 3,
+    "bh": 0,
+    "draft": 0
+   },
+   "rush_success_with_motion": {
+    "scored_leaves": 1,
+    "routed": 1,
+    "bh": 0,
+    "draft": 0
+   },
+   "third_down_success": {
+    "scored_leaves": 2,
+    "routed": 2,
+    "bh": 0,
+    "draft": 0
+   },
+   "third_down_success_allowed": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   },
+   "three_wr_rate": {
+    "scored_leaves": 0,
+    "routed": 0,
+    "bh": 0,
+    "draft": 0
+   }
+  }
+ },
+ "leaves": [
+  {
+   "entry": "blitz_rate_defence",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 741,
+   "fit_games": 13,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 435,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "blitz_rate_defence",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 722,
+   "fit_games": 13,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 380,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "blitz_rate_defence",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1938,
+   "fit_games": 34,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 570,
+   "test_games": 11,
+   "fit": {
+    "RIDE": -0.001022549019607847,
+    "FADE": -0.03425010319917433,
+    "MODEL_FADE": -0.06703070439494287,
+    "MOMENTUM": -0.02163109756097559
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.07666464646464646,
+     "lo": -0.09877772727272728,
+     "hi": -0.0325022346368715,
+     "n": 198,
+     "games": 11
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.020731521739130423,
+     "lo": -0.04162218430034129,
+     "hi": 0.09834012944983817,
+     "n": 276,
+     "games": 11
+    },
+    "RIDE": {
+     "mean": 0.0880182456140351,
+     "lo": 0.04024605263157897,
+     "hi": 0.12419711375212228,
+     "n": 570,
+     "games": 11
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "explosive_pass_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 418,
+   "test_games": 8,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "explosive_pass_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 228,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "explosive_pass_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2033,
+   "fit_games": 36,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 739,
+   "test_games": 14,
+   "fit": {
+    "RIDE": -0.010745351696999488,
+    "FADE": -0.024678750614854857,
+    "MODEL_FADE": -0.04474835164835169,
+    "MOMENTUM": -0.01046197387518139
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.009841832669322712,
+     "lo": -0.07175106382978723,
+     "hi": 0.10094750000000001,
+     "n": 251,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.010469230769230774,
+     "lo": -0.11314866310160429,
+     "hi": 0.09038954802259887,
+     "n": 351,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": 0.00725872801082545,
+     "lo": -0.06229891745602163,
+     "hi": 0.06971534391534392,
+     "n": 739,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "explosive_pass_rate_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 836,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 418,
+   "test_games": 8,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "explosive_pass_rate_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 855,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 340,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "explosive_pass_rate_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1710,
+   "fit_games": 30,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 627,
+   "test_games": 13,
+   "fit": {
+    "RIDE": -0.03227526315789469,
+    "FADE": -0.0031852046783625706,
+    "MODEL_FADE": -0.00843243647234678,
+    "MOMENTUM": -0.05311538461538448
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.04914587155963302,
+     "lo": -0.09526192660550459,
+     "hi": 0.0024264573991031485,
+     "n": 218,
+     "games": 13
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.012627659574468098,
+     "lo": -0.08400481481481481,
+     "hi": 0.07031647940074905,
+     "n": 282,
+     "games": 13
+    },
+    "RIDE": {
+     "mean": 0.02602775119617225,
+     "lo": -0.01644800637958532,
+     "hi": 0.068324893314367,
+     "n": 627,
+     "games": 13
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "loaded_box_rate_faced",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 855,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 361,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "loaded_box_rate_faced",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 779,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 321,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "loaded_box_rate_faced",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1767,
+   "fit_games": 31,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 703,
+   "test_games": 13,
+   "fit": {
+    "RIDE": -0.024702207130730056,
+    "FADE": -0.010716411997736253,
+    "MODEL_FADE": -0.01355048543689312,
+    "MOMENTUM": -0.05693801261829642
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.05701666666666665,
+     "lo": -0.03557736625514404,
+     "hi": 0.16428841201716737,
+     "n": 240,
+     "games": 13
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.04998013029315961,
+     "lo": -0.13498175895765469,
+     "hi": 0.03675904436860068,
+     "n": 307,
+     "games": 13
+    },
+    "RIDE": {
+     "mean": -0.014935277382645796,
+     "lo": -0.10814030470914127,
+     "hi": 0.06847977839335179,
+     "n": 703,
+     "games": 13
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_3wr_sets",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 836,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 228,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_3wr_sets",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 304,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_3wr_sets",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1881,
+   "fit_games": 33,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 853,
+   "test_games": 17,
+   "fit": {
+    "RIDE": 0.00636358320042531,
+    "FADE": -0.04183450292397651,
+    "MODEL_FADE": -0.09770373443983393,
+    "MOMENTUM": -0.0250267441860465
+   },
+   "test_mean": -0.009117467760844072,
+   "test_lo": -0.08357015418502199,
+   "test_hi": 0.055048800959232626,
+   "test_p": 0.5782108945527237,
+   "test_n": 853,
+   "test_n_games": 17,
+   "family_same_arm_mean": -0.015873790613718405,
+   "family_same_arm_lo": -0.07492924187725629,
+   "family_same_arm_hi": 0.036355628654970766,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.028152264808362373,
+     "lo": -0.049670481927710855,
+     "hi": 0.12024208860759493,
+     "n": 287,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.04914281984334204,
+     "lo": -0.13560344036697247,
+     "hi": 0.03692668539325843,
+     "n": 383,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.009117467760844072,
+     "lo": -0.08357015418502199,
+     "hi": 0.055048800959232626,
+     "n": 853,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_3wr_sets",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1176,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 312,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_3wr_sets",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 926,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 426,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_3wr_sets",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2657,
+   "fit_games": 33,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1191,
+   "test_games": 17,
+   "fit": {
+    "RIDE": 0.01752167858487021,
+    "FADE": -0.053883816334211514,
+    "MODEL_FADE": -0.10139069400630937,
+    "MOMENTUM": -0.01695783730158733
+   },
+   "test_mean": -0.023328295549958022,
+   "test_lo": -0.0685908421913328,
+   "test_hi": 0.0190782154340836,
+   "test_p": 0.816591704147926,
+   "test_n": 1191,
+   "test_n_games": 17,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.00998184873949579,
+     "lo": -0.04464231433506043,
+     "hi": 0.029760583941605856,
+     "n": 595,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.0007418786692759274,
+     "lo": -0.04127564102564103,
+     "hi": 0.04297368421052633,
+     "n": 511,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.023328295549958022,
+     "lo": -0.0685908421913328,
+     "hi": 0.0190782154340836,
+     "n": 1191,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_cover6_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 456,
+   "fit_games": 8,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 114,
+   "test_games": 2,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_cover6_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 171,
+   "fit_games": 3,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 114,
+   "test_games": 2,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_cover6_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 950,
+   "fit_games": 17,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 304,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_cover6_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "unknown",
+   "fit_rows": 1824,
+   "fit_games": 32,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 853,
+   "test_games": 17,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.02074083044982698,
+     "lo": -0.05599793103448277,
+     "hi": 0.11512509090909091,
+     "n": 289,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.034763101604278084,
+     "lo": -0.1267244498777506,
+     "hi": 0.061771933962264144,
+     "n": 374,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.006042438452520506,
+     "lo": -0.08287657657657656,
+     "hi": 0.06523950617283952,
+     "n": 853,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 893,
+   "fit_games": 16,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 190,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 321,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_vs_3wr",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1824,
+   "fit_games": 32,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 874,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.028873355263157822,
+    "FADE": -0.00657664473684211,
+    "MODEL_FADE": -0.1139660481099655,
+    "MOMENTUM": -0.014739296636085602
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.017724496644295297,
+     "lo": -0.05865867158671586,
+     "hi": 0.10790361842105262,
+     "n": 298,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.009601612903225809,
+     "lo": -0.05946130952380952,
+     "hi": 0.05097052023121387,
+     "n": 372,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": 0.006643821510297477,
+     "lo": -0.06763585526315789,
+     "hi": 0.07250194508009151,
+     "n": 874,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_vs_man",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1007,
+   "fit_games": 18,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 361,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_vs_man",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 627,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 302,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_allowed_vs_man",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1767,
+   "fit_games": 31,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 722,
+   "test_games": 14,
+   "fit": {
+    "RIDE": -0.02903089983022067,
+    "FADE": -0.006386700622524059,
+    "MODEL_FADE": -0.053670122783083196,
+    "MOMENTUM": -0.027487499999999946
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.04888333333333333,
+     "lo": -0.04174597701149427,
+     "hi": 0.15824484304932737,
+     "n": 246,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.03959873015873017,
+     "lo": -0.13579373040752352,
+     "hi": 0.054033108108108095,
+     "n": 315,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": -0.006104570637119113,
+     "lo": -0.09436094182825483,
+     "hi": 0.07023859649122807,
+     "n": 722,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_blitz",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1424,
+   "fit_games": 18,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 574,
+   "test_games": 8,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_blitz",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 961,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 482,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_blitz",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2374,
+   "fit_games": 30,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 873,
+   "test_games": 12,
+   "fit": {
+    "RIDE": 0.01246819713563601,
+    "FADE": -0.048526579612468375,
+    "MODEL_FADE": -0.05534768976897684,
+    "MOMENTUM": -0.006350662251655645
+   },
+   "test_mean": -0.018906872852233678,
+   "test_lo": -0.07359988649262204,
+   "test_hi": 0.033292361927144534,
+   "test_p": 0.7156421789105447,
+   "test_n": 873,
+   "test_n_games": 12,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.010303472222222214,
+     "lo": -0.052905673758865235,
+     "hi": 0.03654278959810876,
+     "n": 432,
+     "games": 12
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.020141315789473684,
+     "lo": -0.03200860465116279,
+     "hi": 0.07280989010989013,
+     "n": 380,
+     "games": 12
+    },
+    "RIDE": {
+     "mean": -0.018906872852233678,
+     "lo": -0.07359988649262204,
+     "hi": 0.033292361927144534,
+     "n": 873,
+     "games": 12
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_cover3",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 887,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 469,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_cover3",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 1020,
+   "fit_games": 13,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 374,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_cover3",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2852,
+   "fit_games": 36,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1086,
+   "test_games": 16,
+   "fit": {
+    "RIDE": 0.00855575035063107,
+    "FADE": -0.04470543478260854,
+    "MODEL_FADE": -0.04575845004668528,
+    "MOMENTUM": -0.03204756911344142
+   },
+   "test_mean": -0.036617863720073675,
+   "test_lo": -0.07668164794007493,
+   "test_hi": 0.008577050610820239,
+   "test_p": 0.9130434782608695,
+   "test_n": 1086,
+   "test_n_games": 16,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.010051486988847582,
+     "lo": -0.04685869191049914,
+     "hi": 0.031447843137254905,
+     "n": 538,
+     "games": 16
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.007771929824561408,
+     "lo": -0.044247506561679806,
+     "hi": 0.061715021459227484,
+     "n": 456,
+     "games": 16
+    },
+    "RIDE": {
+     "mean": -0.036617863720073675,
+     "lo": -0.07668164794007493,
+     "hi": 0.008577050610820239,
+     "n": 1086,
+     "games": 16
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "MONEYLINE",
+   "leaf": "away_edge",
+   "fit_rows": 42,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 18,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "MONEYLINE",
+   "leaf": "home_edge",
+   "fit_rows": 33,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 18,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "MONEYLINE",
+   "leaf": "neutral",
+   "fit_rows": 105,
+   "fit_games": 35,
+   "arm": "FADE",
+   "thin": false,
+   "test_rows": 45,
+   "test_games": 15,
+   "fit": {
+    "RIDE": -0.04918095238095239,
+    "FADE": 0.007676190476190483,
+    "MODEL_FADE": -0.13560843373493975
+   },
+   "test_mean": -0.20056222222222223,
+   "test_lo": -0.32842888888888894,
+   "test_hi": -0.06452444444444447,
+   "test_p": 0.9880059970014993,
+   "test_n": 45,
+   "test_n_games": 15,
+   "family_same_arm_mean": -0.2064679012345679,
+   "family_same_arm_lo": -0.29802962962962964,
+   "family_same_arm_hi": -0.11195185185185187,
+   "held_out_all_applicable": {
+    "MOMENTUM_OPEN": {
+     "mean": -0.16729999999999998,
+     "lo": -0.3336210526315789,
+     "hi": 0.0318714285714286,
+     "n": 17,
+     "games": 11
+    },
+    "RIDE": {
+     "mean": 0.16125333333333336,
+     "lo": 0.02560888888888889,
+     "hi": 0.2893977777777778,
+     "n": 45,
+     "games": 15
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "SPREAD",
+   "leaf": "away_edge",
+   "fit_rows": 1068,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 447,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "SPREAD",
+   "leaf": "home_edge",
+   "fit_rows": 855,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 468,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "SPREAD",
+   "leaf": "neutral",
+   "fit_rows": 2622,
+   "fit_games": 35,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1122,
+   "test_games": 15,
+   "fit": {
+    "RIDE": 0.008059610983981674,
+    "FADE": -0.04315839054157151,
+    "MODEL_FADE": -0.09251123042505606,
+    "MOMENTUM": -0.005304545454545451
+   },
+   "test_mean": -0.06162700534759357,
+   "test_lo": -0.12025195381882767,
+   "test_hi": 0.0028337359792925073,
+   "test_p": 0.9410294852573713,
+   "test_n": 1122,
+   "test_n_games": 15,
+   "family_same_arm_mean": -0.004989690721649471,
+   "family_same_arm_lo": -0.05425351906158354,
+   "family_same_arm_hi": 0.041387011718750005,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.02397594202898551,
+     "lo": -0.04757368421052632,
+     "hi": 0.10432283950617283,
+     "n": 345,
+     "games": 15
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.19802689243027888,
+     "lo": -0.2542137634408603,
+     "hi": -0.14078228571428572,
+     "n": 502,
+     "games": 15
+    },
+    "RIDE": {
+     "mean": -0.06162700534759357,
+     "lo": -0.12025195381882767,
+     "hi": 0.0028337359792925073,
+     "n": 1122,
+     "games": 15
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1346,
+   "fit_games": 17,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 452,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 959,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 454,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_man",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2454,
+   "fit_games": 31,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1023,
+   "test_games": 14,
+   "fit": {
+    "RIDE": 0.01706837815810924,
+    "FADE": -0.05382155664221676,
+    "MODEL_FADE": -0.025085443390964888,
+    "MOMENTUM": -0.004337397540983612
+   },
+   "test_mean": 0.015490224828934506,
+   "test_lo": -0.03493968253968254,
+   "test_hi": 0.0627244529019981,
+   "test_p": 0.28585707146426786,
+   "test_n": 1023,
+   "test_n_games": 14,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.045887007874015735,
+     "lo": -0.07411592592592592,
+     "hi": -0.00889980158730158,
+     "n": 508,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.04460470588235295,
+     "lo": 0.0005650000000000044,
+     "hi": 0.08836142506142505,
+     "n": 425,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": 0.015490224828934506,
+     "lo": -0.03493968253968254,
+     "hi": 0.0627244529019981,
+     "n": 1023,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "MONEYLINE",
+   "leaf": "away_edge",
+   "fit_rows": 42,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 15,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "MONEYLINE",
+   "leaf": "home_edge",
+   "fit_rows": 36,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 30,
+   "test_games": 10,
+   "held_out_all_applicable": {
+    "RIDE": {
+     "mean": 0.16381333333333328,
+     "lo": 0.0003666666666666855,
+     "hi": 0.28031,
+     "n": 30,
+     "games": 10
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "MONEYLINE",
+   "leaf": "neutral",
+   "fit_rows": 102,
+   "fit_games": 34,
+   "arm": "FADE",
+   "thin": false,
+   "test_rows": 36,
+   "test_games": 12,
+   "fit": {
+    "RIDE": -0.07311764705882354,
+    "FADE": 0.031971568627450986,
+    "MODEL_FADE": -0.09203793103448277
+   },
+   "test_mean": -0.19232499999999997,
+   "test_lo": -0.34321111111111113,
+   "test_hi": -0.018372222222222203,
+   "test_p": 0.95952023988006,
+   "test_n": 36,
+   "test_n_games": 12,
+   "family_same_arm_mean": -0.2064679012345679,
+   "family_same_arm_lo": -0.29802962962962964,
+   "family_same_arm_hi": -0.11195185185185187,
+   "held_out_all_applicable": {
+    "RIDE": {
+     "mean": 0.15178333333333333,
+     "lo": -0.021466666666666658,
+     "hi": 0.3033027777777778,
+     "n": 36,
+     "games": 12
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "SPREAD",
+   "leaf": "away_edge",
+   "fit_rows": 1071,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 381,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "SPREAD",
+   "leaf": "home_edge",
+   "fit_rows": 930,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 748,
+   "test_games": 10,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.002715767634854772,
+     "lo": -0.07325081300813005,
+     "hi": 0.09440897435897436,
+     "n": 241,
+     "games": 10
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.20751837349397592,
+     "lo": -0.2683040697674419,
+     "hi": -0.14898894878706198,
+     "n": 332,
+     "games": 10
+    },
+    "RIDE": {
+     "mean": -0.04634398395721925,
+     "lo": -0.11918181818181817,
+     "hi": 0.020472788203753346,
+     "n": 748,
+     "games": 10
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "SPREAD",
+   "leaf": "neutral",
+   "fit_rows": 2544,
+   "fit_games": 34,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 908,
+   "test_games": 12,
+   "fit": {
+    "RIDE": -0.003822838050314463,
+    "FADE": -0.031147720125786187,
+    "MODEL_FADE": -0.07857625464684007,
+    "MOMENTUM": -0.025477523553162858
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.028313483146067412,
+     "lo": -0.0836908396946565,
+     "hi": 0.04272784810126583,
+     "n": 267,
+     "games": 12
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.10073358585858587,
+     "lo": -0.19304107579462107,
+     "hi": -0.008002544529262091,
+     "n": 396,
+     "games": 12
+    },
+    "RIDE": {
+     "mean": 0.02102874449339209,
+     "lo": -0.05303752759381897,
+     "hi": 0.09245141612200437,
+     "n": 908,
+     "games": 12
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 957,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 532,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 931,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 429,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_vs_zone",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2871,
+   "fit_games": 36,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 968,
+   "test_games": 14,
+   "fit": {
+    "RIDE": 0.010094531522117676,
+    "FADE": -0.046381469871125,
+    "MODEL_FADE": -0.0457998096144693,
+    "MOMENTUM": -0.013199551971326188
+   },
+   "test_mean": -0.05189421487603307,
+   "test_lo": -0.09232735949098622,
+   "test_hi": -0.01194885057471265,
+   "test_p": 0.9820089955022488,
+   "test_n": 968,
+   "test_n_games": 14,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.003345679012345685,
+     "lo": -0.03834214876033058,
+     "hi": 0.04696960556844548,
+     "n": 486,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.02028957345971565,
+     "lo": -0.07093002364066193,
+     "hi": 0.03645011933174225,
+     "n": 422,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": -0.05189421487603307,
+     "lo": -0.09232735949098622,
+     "hi": -0.01194885057471265,
+     "n": 968,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_with_motion",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1453,
+   "fit_games": 18,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 448,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_with_motion",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 1084,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 407,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "pass_success_with_motion",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2222,
+   "fit_games": 28,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1074,
+   "test_games": 15,
+   "fit": {
+    "RIDE": 0.006335013501350133,
+    "FADE": -0.04256966696669666,
+    "MODEL_FADE": -0.07879748774509797,
+    "MOMENTUM": -0.04320678571428573
+   },
+   "test_mean": -0.02104162011173185,
+   "test_lo": -0.06121913827655311,
+   "test_hi": 0.01590389725420726,
+   "test_p": 0.8075962018990505,
+   "test_n": 1074,
+   "test_n_games": 15,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.020016141001855284,
+     "lo": -0.05143736462093863,
+     "hi": 0.016622562141491402,
+     "n": 539,
+     "games": 15
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.015862447257383967,
+     "lo": -0.05874359504132234,
+     "hi": 0.032810978043912184,
+     "n": 474,
+     "games": 15
+    },
+    "RIDE": {
+     "mean": -0.02104162011173185,
+     "lo": -0.06121913827655311,
+     "hi": 0.01590389725420726,
+     "n": 1074,
+     "games": 15
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "play_action_success",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1526,
+   "fit_games": 19,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 365,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "play_action_success",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 882,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 322,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "play_action_success",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2351,
+   "fit_games": 30,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1242,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.008984687367077863,
+    "FADE": -0.028033730327520236,
+    "MODEL_FADE": -0.08470468749999993,
+    "MOMENTUM": -0.018930853391684887
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.028834719999999994,
+     "lo": -0.056013312693498456,
+     "hi": 0.004013731825525041,
+     "n": 625,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.02510578358208955,
+     "lo": -0.016555579399141648,
+     "hi": 0.07280243407707912,
+     "n": 536,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.0017414653784219027,
+     "lo": -0.04095929853181077,
+     "hi": 0.03704752883031303,
+     "n": 1242,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 855,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 456,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 247,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1862,
+   "fit_games": 33,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 682,
+   "test_games": 13,
+   "fit": {
+    "RIDE": -0.0017294844253490699,
+    "FADE": -0.03361455424274968,
+    "MODEL_FADE": -0.025470733333333308,
+    "MOMENTUM": -0.08012592047128121
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.007460504201680673,
+     "lo": -0.07242284644194757,
+     "hi": 0.08187149321266968,
+     "n": 238,
+     "games": 13
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.03109650145772595,
+     "lo": -0.04433062827225133,
+     "hi": 0.11353576158940401,
+     "n": 343,
+     "games": 13
+    },
+    "RIDE": {
+     "mean": 0.0039436950146627585,
+     "lo": -0.057354093567251456,
+     "hi": 0.059122396576319534,
+     "n": 682,
+     "games": 13
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1197,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 642,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 938,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 347,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2624,
+   "fit_games": 33,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 940,
+   "test_games": 13,
+   "fit": {
+    "RIDE": 0.011847599085365779,
+    "FADE": -0.04837061737804864,
+    "MODEL_FADE": -0.05696050333846944,
+    "MOMENTUM": -0.04605596421471168
+   },
+   "test_mean": 0.008734893617021273,
+   "test_lo": -0.036167543859649126,
+   "test_hi": 0.051796357615894066,
+   "test_p": 0.38130934532733635,
+   "test_n": 940,
+   "test_n_games": 13,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.04109173728813559,
+     "lo": -0.0640564681724846,
+     "hi": -0.011890596330275225,
+     "n": 472,
+     "games": 13
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.004942452830188676,
+     "lo": -0.04636019656019654,
+     "hi": 0.04399183673469389,
+     "n": 424,
+     "games": 13
+    },
+    "RIDE": {
+     "mean": 0.008734893617021273,
+     "lo": -0.036167543859649126,
+     "hi": 0.051796357615894066,
+     "n": 940,
+     "games": 13
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1064,
+   "fit_games": 19,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 209,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 302,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1653,
+   "fit_games": 29,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 874,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.012958923169993933,
+    "FADE": -0.02254918330308525,
+    "MODEL_FADE": -0.03197661179698216,
+    "MOMENTUM": -0.030889999999999952
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.08155563139931742,
+     "lo": -0.007293406593406595,
+     "hi": 0.1834600649350649,
+     "n": 293,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.028970080862533693,
+     "lo": -0.040552209944751394,
+     "hi": 0.1019976811594203,
+     "n": 371,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.03148009153318077,
+     "lo": -0.10981773455377572,
+     "hi": 0.042492000000000016,
+     "n": 874,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate_allowed",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1511,
+   "fit_games": 19,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 289,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate_allowed",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 954,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 405,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "red_zone_td_rate_allowed",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2294,
+   "fit_games": 29,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1235,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.010517916303400238,
+    "FADE": -0.025759241499564156,
+    "MODEL_FADE": -0.06589116647791617,
+    "MOMENTUM": -0.0183516891891892
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.009487582781456956,
+     "lo": -0.04419507154213036,
+     "hi": 0.03444256756756755,
+     "n": 604,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.017349325626204243,
+     "lo": -0.029713754646840142,
+     "hi": 0.0657865731462926,
+     "n": 519,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.02464453441295547,
+     "lo": -0.06528425391591099,
+     "hi": 0.017592351505288848,
+     "n": 1235,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuff_rate_defence",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 912,
+   "fit_games": 16,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 323,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuff_rate_defence",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 798,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 171,
+   "test_games": 3,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuff_rate_defence",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1691,
+   "fit_games": 30,
+   "arm": "FADE",
+   "thin": false,
+   "test_rows": 891,
+   "test_games": 18,
+   "fit": {
+    "RIDE": -0.03571224127735064,
+    "FADE": 0.00024429331756356553,
+    "MODEL_FADE": -0.03832349042709864,
+    "MOMENTUM": -0.050272176759410814
+   },
+   "test_mean": -0.01043827160493827,
+   "test_lo": -0.07921651376146789,
+   "test_hi": 0.05908036677454153,
+   "test_p": 0.6376811594202898,
+   "test_n": 891,
+   "test_n_games": 18,
+   "family_same_arm_mean": -0.02126310469314079,
+   "family_same_arm_lo": -0.07368605604921392,
+   "family_same_arm_hi": 0.03813619909502262,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.03054870129870129,
+     "lo": -0.05272865853658537,
+     "hi": 0.12005359477124179,
+     "n": 308,
+     "games": 18
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.016385166240409206,
+     "lo": -0.08928341463414632,
+     "hi": 0.05896106870229008,
+     "n": 391,
+     "games": 18
+    },
+    "RIDE": {
+     "mean": -0.026774074074074068,
+     "lo": -0.09648968850698172,
+     "hi": 0.042281263157894745,
+     "n": 891,
+     "games": 18
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuff_rate_defence",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1243,
+   "fit_games": 16,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 449,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuff_rate_defence",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 1123,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 245,
+   "test_games": 3,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuff_rate_defence",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2393,
+   "fit_games": 30,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1235,
+   "test_games": 18,
+   "fit": {
+    "RIDE": -0.0012367739239448573,
+    "FADE": -0.03529920601755116,
+    "MODEL_FADE": -0.05135586436909388,
+    "MOMENTUM": -0.02224994511525797
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.008073095623987031,
+     "lo": -0.04351283582089553,
+     "hi": 0.030957260726072598,
+     "n": 617,
+     "games": 18
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.03276423220973782,
+     "lo": -0.0757767716535433,
+     "hi": 0.014392791127541597,
+     "n": 534,
+     "games": 18
+    },
+    "RIDE": {
+     "mean": -0.018189878542510116,
+     "lo": -0.05978254514187448,
+     "hi": 0.022732396565183475,
+     "n": 1235,
+     "games": 18
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuffed_rate_offence",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 794,
+   "fit_games": 10,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 665,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuffed_rate_offence",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 647,
+   "fit_games": 8,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 496,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_stuffed_rate_offence",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 3318,
+   "fit_games": 42,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 768,
+   "test_games": 11,
+   "fit": {
+    "RIDE": 0.009357203134418348,
+    "FADE": -0.04594385171790242,
+    "MODEL_FADE": -0.04154036885245894,
+    "MOMENTUM": -0.023060126582278524
+   },
+   "test_mean": 0.002885156250000009,
+   "test_lo": -0.04994185351270554,
+   "test_hi": 0.054431980319803196,
+   "test_p": 0.45827086456771615,
+   "test_n": 768,
+   "test_n_games": 11,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.015611345646437996,
+     "lo": -0.06281130653266333,
+     "hi": 0.040466863905325445,
+     "n": 379,
+     "games": 11
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.016133333333333336,
+     "lo": -0.06540659340659342,
+     "hi": 0.038122147651006716,
+     "n": 315,
+     "games": 11
+    },
+    "RIDE": {
+     "mean": 0.002885156250000009,
+     "lo": -0.04994185351270554,
+     "hi": 0.054431980319803196,
+     "n": 768,
+     "games": 11
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_allowed_loaded_box",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1026,
+   "fit_games": 18,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 152,
+   "test_games": 3,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_allowed_loaded_box",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 245,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_allowed_loaded_box",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1691,
+   "fit_games": 30,
+   "arm": "MOMENTUM",
+   "thin": false,
+   "test_rows": 988,
+   "test_games": 19,
+   "fit": {
+    "RIDE": -0.007740331164991083,
+    "FADE": -0.027729272619751534,
+    "MODEL_FADE": -0.1014984615384613,
+    "MOMENTUM": 0.006315479876160997
+   },
+   "test_mean": -0.0571014742014742,
+   "test_lo": -0.13835654596100277,
+   "test_hi": 0.019959472422062356,
+   "test_p": 0.8885557221389305,
+   "test_n": 407,
+   "test_n_games": 19,
+   "family_same_arm_mean": -0.024153806228373702,
+   "family_same_arm_lo": -0.08699923518164436,
+   "family_same_arm_hi": 0.038991161178509516,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.029038416422287393,
+     "lo": -0.041751311953352764,
+     "hi": 0.11005442622950823,
+     "n": 341,
+     "games": 19
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.03628130630630632,
+     "lo": -0.11874339250493099,
+     "hi": 0.040595538057742776,
+     "n": 444,
+     "games": 19
+    },
+    "RIDE": {
+     "mean": -0.004895850202429136,
+     "lo": -0.07372813765182182,
+     "hi": 0.05652442899702085,
+     "n": 988,
+     "games": 19
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_allowed_loaded_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1439,
+   "fit_games": 18,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 213,
+   "test_games": 3,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_allowed_loaded_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 973,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 335,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_allowed_loaded_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2347,
+   "fit_games": 30,
+   "arm": "MOMENTUM",
+   "thin": false,
+   "test_rows": 1381,
+   "test_games": 19,
+   "fit": {
+    "RIDE": 0.0033143587558585423,
+    "FADE": -0.04017852577758836,
+    "MODEL_FADE": -0.03339779536461263,
+    "MOMENTUM": 0.01210648535564848
+   },
+   "test_mean": -0.023804270462633455,
+   "test_lo": -0.0553715953307393,
+   "test_hi": 0.011631203007518801,
+   "test_p": 0.8695652173913043,
+   "test_n": 562,
+   "test_n_games": 19,
+   "family_same_arm_mean": -0.027769887076537013,
+   "family_same_arm_lo": -0.056576325524044395,
+   "family_same_arm_hi": 0.0012132075471698147,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.026090322580645163,
+     "lo": -0.05609062049062048,
+     "hi": 0.009130688622754487,
+     "n": 682,
+     "games": 19
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.0033319185059422756,
+     "lo": -0.04789058084772371,
+     "hi": 0.04618613013698631,
+     "n": 589,
+     "games": 19
+    },
+    "RIDE": {
+     "mean": -0.011048732802317166,
+     "lo": -0.050631036983321255,
+     "hi": 0.025042783882783894,
+     "n": 1381,
+     "games": 19
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "MONEYLINE",
+   "leaf": "away_edge",
+   "fit_rows": 51,
+   "fit_games": 17,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 9,
+   "test_games": 3,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "MONEYLINE",
+   "leaf": "home_edge",
+   "fit_rows": 42,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 12,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "MONEYLINE",
+   "leaf": "neutral",
+   "fit_rows": 87,
+   "fit_games": 29,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 60,
+   "test_games": 20,
+   "fit": {
+    "RIDE": -0.00567011494252874,
+    "FADE": -0.03586206896551726,
+    "MODEL_FADE": -0.21499859154929576
+   },
+   "held_out_all_applicable": {
+    "MOMENTUM_OPEN": {
+     "mean": 0.03847142857142857,
+     "lo": -0.12274500000000002,
+     "hi": 0.21499600000000005,
+     "n": 21,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": 0.22195000000000004,
+     "lo": 0.12941666666666668,
+     "hi": 0.29995666666666665,
+     "n": 60,
+     "games": 20
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "SPREAD",
+   "leaf": "away_edge",
+   "fit_rows": 1314,
+   "fit_games": 17,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 230,
+   "test_games": 3,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "SPREAD",
+   "leaf": "home_edge",
+   "fit_rows": 1038,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 303,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "SPREAD",
+   "leaf": "neutral",
+   "fit_rows": 2193,
+   "fit_games": 29,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1504,
+   "test_games": 20,
+   "fit": {
+    "RIDE": -0.008312722298221612,
+    "FADE": -0.026601367989056008,
+    "MODEL_FADE": -0.14053734281027894,
+    "MOMENTUM": -0.0033955657492354624
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.028145652173913033,
+     "lo": -0.07142832244008714,
+     "hi": 0.024229496402877703,
+     "n": 460,
+     "games": 20
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.10697503671071952,
+     "lo": -0.1827096960926194,
+     "hi": -0.0257955764075067,
+     "n": 681,
+     "games": 20
+    },
+    "RIDE": {
+     "mean": -0.016525465425531894,
+     "lo": -0.07163636363636361,
+     "hi": 0.03530583606557378,
+     "n": 1504,
+     "games": 20
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1048,
+   "fit_games": 13,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 524,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 734,
+   "fit_games": 9,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 427,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_light_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2977,
+   "fit_games": 38,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 978,
+   "test_games": 14,
+   "fit": {
+    "RIDE": -0.00692804837084315,
+    "FADE": -0.029720322472287435,
+    "MODEL_FADE": -0.04011639344262288,
+    "MOMENTUM": -0.005814248251748259
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.01933022774327121,
+     "lo": -0.06025722772277227,
+     "hi": 0.02904606481481482,
+     "n": 483,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.002528743961352659,
+     "lo": -0.0439648068669528,
+     "hi": 0.05026257309941521,
+     "n": 414,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": 0.008272801635991815,
+     "lo": -0.047634898612593395,
+     "hi": 0.058840155945419095,
+     "n": 978,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 416,
+   "test_games": 8,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 627,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 247,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2090,
+   "fit_games": 37,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 722,
+   "test_games": 14,
+   "fit": {
+    "RIDE": 0.021384928229665107,
+    "FADE": -0.05670755980861246,
+    "MODEL_FADE": -0.08594855524079306,
+    "MOMENTUM": -0.008727074829931975
+   },
+   "test_mean": -0.008415789473684206,
+   "test_lo": -0.09702562326869807,
+   "test_hi": 0.06485407894736843,
+   "test_p": 0.5787106446776612,
+   "test_n": 722,
+   "test_n_games": 14,
+   "family_same_arm_mean": -0.015873790613718405,
+   "family_same_arm_lo": -0.07492924187725629,
+   "family_same_arm_hi": 0.036355628654970766,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.036703984063745004,
+     "lo": -0.05057248062015506,
+     "hi": 0.15207385892116174,
+     "n": 251,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.0052423780487805,
+     "lo": -0.07370838926174499,
+     "hi": 0.07627993197278911,
+     "n": 328,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": -0.008415789473684206,
+     "lo": -0.09702562326869807,
+     "hi": 0.06485407894736843,
+     "n": 722,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "MONEYLINE",
+   "leaf": "away_edge",
+   "fit_rows": 42,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 12,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "MONEYLINE",
+   "leaf": "home_edge",
+   "fit_rows": 36,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 27,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "MONEYLINE",
+   "leaf": "neutral",
+   "fit_rows": 102,
+   "fit_games": 34,
+   "arm": "FADE",
+   "thin": false,
+   "test_rows": 42,
+   "test_games": 14,
+   "fit": {
+    "RIDE": -0.07332352941176473,
+    "FADE": 0.03216568627450981,
+    "MODEL_FADE": -0.014913953488372078
+   },
+   "test_mean": -0.23205000000000003,
+   "test_lo": -0.3404690476190476,
+   "test_hi": -0.11,
+   "test_p": 0.9965017491254373,
+   "test_n": 42,
+   "test_n_games": 14,
+   "family_same_arm_mean": -0.2064679012345679,
+   "family_same_arm_lo": -0.29802962962962964,
+   "family_same_arm_hi": -0.11195185185185187,
+   "held_out_all_applicable": {
+    "RIDE": {
+     "mean": 0.19199761904761906,
+     "lo": 0.07029523809523809,
+     "hi": 0.30055,
+     "n": 42,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "SPREAD",
+   "leaf": "away_edge",
+   "fit_rows": 1056,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 306,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "SPREAD",
+   "leaf": "home_edge",
+   "fit_rows": 939,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 692,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "SPREAD",
+   "leaf": "neutral",
+   "fit_rows": 2550,
+   "fit_games": 34,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1039,
+   "test_games": 14,
+   "fit": {
+    "RIDE": -0.017635764705882254,
+    "FADE": -0.017353019607843106,
+    "MODEL_FADE": -0.0723566324251898,
+    "MOMENTUM": -0.05379603960396032
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.03116831683168317,
+     "lo": -0.08787751677852348,
+     "hi": 0.04104166666666666,
+     "n": 303,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.11262370689655174,
+     "lo": -0.18211400437636763,
+     "hi": -0.03314989473684211,
+     "n": 464,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": 0.017705389797882592,
+     "lo": -0.045510848126232725,
+     "hi": 0.07708751210067766,
+     "n": 1039,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 957,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 572,
+   "test_games": 8,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 888,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 353,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_vs_loaded_box",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2914,
+   "fit_games": 37,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1004,
+   "test_games": 14,
+   "fit": {
+    "RIDE": 0.013876904598490097,
+    "FADE": -0.050676424159231404,
+    "MODEL_FADE": -0.025636625514403225,
+    "MOMENTUM": -0.00478033072236728
+   },
+   "test_mean": -0.015195617529880473,
+   "test_lo": -0.05555622406639004,
+   "test_hi": 0.023495265151515152,
+   "test_p": 0.7426286856571714,
+   "test_n": 1004,
+   "test_n_games": 14,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.015464015904572566,
+     "lo": -0.05196228239845261,
+     "hi": 0.029726641651031872,
+     "n": 503,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.03410501138952165,
+     "lo": -0.0786792576419214,
+     "hi": 0.017588888888888893,
+     "n": 439,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": -0.015195617529880473,
+     "lo": -0.05555622406639004,
+     "hi": 0.023495265151515152,
+     "n": 1004,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_with_motion",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 854,
+   "fit_games": 11,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 652,
+   "test_games": 9,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_with_motion",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 760,
+   "fit_games": 10,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 506,
+   "test_games": 7,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "rush_success_with_motion",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 3145,
+   "fit_games": 39,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 771,
+   "test_games": 11,
+   "fit": {
+    "RIDE": 0.0026644197138314513,
+    "FADE": -0.03915011128775821,
+    "MODEL_FADE": -0.036030078465562276,
+    "MOMENTUM": -0.009251990251827782
+   },
+   "test_mean": -0.030667574578469525,
+   "test_lo": -0.07742379032258066,
+   "test_hi": 0.016068498168498167,
+   "test_p": 0.8610694652673663,
+   "test_n": 771,
+   "test_n_games": 11,
+   "family_same_arm_mean": -0.012127630896837738,
+   "family_same_arm_lo": -0.04612749003984065,
+   "family_same_arm_hi": 0.022416614583333334,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.02022309711286089,
+     "lo": -0.05847581863979849,
+     "hi": 0.02560720720720721,
+     "n": 381,
+     "games": 11
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.01748711656441718,
+     "lo": -0.047064375,
+     "hi": 0.07997000000000001,
+     "n": 326,
+     "games": 11
+    },
+    "RIDE": {
+     "mean": -0.030667574578469525,
+     "lo": -0.07742379032258066,
+     "hi": 0.016068498168498167,
+     "n": 771,
+     "games": 11
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 855,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 304,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 684,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 190,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1862,
+   "fit_games": 33,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 891,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.02259436090225564,
+    "FADE": -0.013097475832438255,
+    "MODEL_FADE": -0.07620375088464272,
+    "MOMENTUM": -0.044582065997130535
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.002208852459016397,
+     "lo": -0.06536930693069307,
+     "hi": 0.07913986928104574,
+     "n": 305,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.009615801886792456,
+     "lo": -0.09651038374717831,
+     "hi": 0.07897599067599068,
+     "n": 424,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": 0.01830841750841752,
+     "lo": -0.042841139240506296,
+     "hi": 0.07600337552742617,
+     "n": 891,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "MONEYLINE",
+   "leaf": "away_edge",
+   "fit_rows": 36,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 15,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "MONEYLINE",
+   "leaf": "home_edge",
+   "fit_rows": 39,
+   "fit_games": 13,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 18,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "MONEYLINE",
+   "leaf": "neutral",
+   "fit_rows": 105,
+   "fit_games": 35,
+   "arm": "FADE",
+   "thin": false,
+   "test_rows": 48,
+   "test_games": 16,
+   "fit": {
+    "RIDE": -0.1258161904761904,
+    "FADE": 0.08473904761904763,
+    "MODEL_FADE": -0.014573333333333308
+   },
+   "test_mean": -0.14751875,
+   "test_lo": -0.27201250000000005,
+   "test_hi": 0.016116666666666682,
+   "test_p": 0.935032483758121,
+   "test_n": 48,
+   "test_n_games": 16,
+   "family_same_arm_mean": -0.2064679012345679,
+   "family_same_arm_lo": -0.29802962962962964,
+   "family_same_arm_hi": -0.11195185185185187,
+   "held_out_all_applicable": {
+    "MOMENTUM_OPEN": {
+     "mean": -0.18867647058823533,
+     "lo": -0.3564842105263157,
+     "hi": 0.026671428571428592,
+     "n": 17,
+     "games": 10
+    },
+    "RIDE": {
+     "mean": 0.10814791666666664,
+     "lo": -0.05643124999999998,
+     "hi": 0.23280208333333338,
+     "n": 48,
+     "games": 16
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "SPREAD",
+   "leaf": "away_edge",
+   "fit_rows": 933,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 387,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "SPREAD",
+   "leaf": "home_edge",
+   "fit_rows": 990,
+   "fit_games": 13,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 428,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "SPREAD",
+   "leaf": "neutral",
+   "fit_rows": 2622,
+   "fit_games": 35,
+   "arm": "RIDE",
+   "thin": false,
+   "test_rows": 1222,
+   "test_games": 16,
+   "fit": {
+    "RIDE": 0.010287452326468355,
+    "FADE": -0.04527566742944336,
+    "MODEL_FADE": -0.040278156565656496,
+    "MOMENTUM": -0.03613803363518754
+   },
+   "test_mean": 0.009126759410801983,
+   "test_lo": -0.05558292282430211,
+   "test_hi": 0.0682955918367347,
+   "test_p": 0.3968015992003998,
+   "test_n": 1222,
+   "test_n_games": 16,
+   "family_same_arm_mean": -0.004989690721649471,
+   "family_same_arm_lo": -0.05425351906158354,
+   "family_same_arm_hi": 0.041387011718750005,
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.01642934782608695,
+     "lo": -0.07477955182072829,
+     "hi": 0.0618520661157025,
+     "n": 368,
+     "games": 16
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.19073688073394496,
+     "lo": -0.24531520572450807,
+     "hi": -0.14090438756855575,
+     "n": 545,
+     "games": 16
+    },
+    "RIDE": {
+     "mean": 0.009126759410801983,
+     "lo": -0.05558292282430211,
+     "hi": 0.0682955918367347,
+     "n": 1222,
+     "games": 16
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1205,
+   "fit_games": 15,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 417,
+   "test_games": 6,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 957,
+   "fit_games": 12,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 266,
+   "test_games": 4,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2597,
+   "fit_games": 33,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1246,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.007654062379668858,
+    "FADE": -0.02963169041201388,
+    "MODEL_FADE": -0.06878823839662443,
+    "MOMENTUM": -0.026074625374625415
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.022039804241435552,
+     "lo": -0.056203301886792456,
+     "hi": 0.017010362694300528,
+     "n": 613,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.0075406998158379385,
+     "lo": -0.0352115234375,
+     "hi": 0.05040778985507246,
+     "n": 543,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": 0.004630417335473514,
+     "lo": -0.03772067610062893,
+     "hi": 0.047874552529182886,
+     "n": 1246,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 950,
+   "fit_games": 17,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 247,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 513,
+   "fit_games": 9,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 247,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success_allowed",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 1938,
+   "fit_games": 34,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 891,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.01198864809081524,
+    "FADE": -0.02367879256965939,
+    "MODEL_FADE": -0.045836688902365086,
+    "MOMENTUM": -0.006085396383866442
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": 0.04291618122977346,
+     "lo": -0.03231784511784512,
+     "hi": 0.13311677215189874,
+     "n": 309,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.007176960784313735,
+     "lo": -0.07949484029484027,
+     "hi": 0.09892047413793105,
+     "n": 408,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.02281111111111111,
+     "lo": -0.09773738532110092,
+     "hi": 0.04257502691065662,
+     "n": 891,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success_allowed",
+   "family": "TEAM_TOTAL",
+   "leaf": "high",
+   "fit_rows": 1337,
+   "fit_games": 17,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 350,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success_allowed",
+   "family": "TEAM_TOTAL",
+   "leaf": "low",
+   "fit_rows": 680,
+   "fit_games": 9,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 337,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "third_down_success_allowed",
+   "family": "TEAM_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2742,
+   "fit_games": 34,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 1242,
+   "test_games": 17,
+   "fit": {
+    "RIDE": -0.006050875273522971,
+    "FADE": -0.030777789934354427,
+    "MODEL_FADE": -0.036285444610034634,
+    "MOMENTUM": -0.01345957446808514
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.018342508143322476,
+     "lo": -0.050414442700156985,
+     "hi": 0.02093741830065359,
+     "n": 614,
+     "games": 17
+    },
+    "MOMENTUM_OPEN": {
+     "mean": -0.02429358288770054,
+     "lo": -0.06479492481203009,
+     "hi": 0.020227224199288275,
+     "n": 561,
+     "games": 17
+    },
+    "RIDE": {
+     "mean": -0.004937037037037037,
+     "lo": -0.04543984375,
+     "hi": 0.03292046332046331,
+     "n": 1242,
+     "games": 17
+    }
+   },
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "three_wr_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "high",
+   "fit_rows": 798,
+   "fit_games": 14,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 247,
+   "test_games": 5,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "three_wr_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "low",
+   "fit_rows": 513,
+   "fit_games": 9,
+   "arm": "NO_BET",
+   "thin": true,
+   "test_rows": 399,
+   "test_games": 8,
+   "bh": false,
+   "draft": false
+  },
+  {
+   "entry": "three_wr_rate",
+   "family": "GAME_TOTAL",
+   "leaf": "mid",
+   "fit_rows": 2090,
+   "fit_games": 37,
+   "arm": "NO_BET",
+   "thin": false,
+   "test_rows": 739,
+   "test_games": 14,
+   "fit": {
+    "RIDE": -0.01133224880382773,
+    "FADE": -0.02411354066985638,
+    "MODEL_FADE": -0.07953774680603945,
+    "MOMENTUM": -0.027529875518672187
+   },
+   "held_out_all_applicable": {
+    "POT_OF_GOLD": {
+     "mean": -0.03350118577075099,
+     "lo": -0.0766977186311787,
+     "hi": 0.026213924050632914,
+     "n": 253,
+     "games": 14
+    },
+    "MOMENTUM_OPEN": {
+     "mean": 0.03886796657381616,
+     "lo": -0.05797552083333334,
+     "hi": 0.13987416879795397,
+     "n": 359,
+     "games": 14
+    },
+    "RIDE": {
+     "mean": 0.030795669824086606,
+     "lo": -0.02282460658082976,
+     "hi": 0.08502239382239382,
+     "n": 739,
+     "games": 14
+    }
+   },
+   "bh": false,
+   "draft": false
+  }
+ ]
+}

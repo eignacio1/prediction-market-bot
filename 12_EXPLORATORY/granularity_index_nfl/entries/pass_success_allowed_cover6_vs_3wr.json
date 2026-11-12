@@ -1,0 +1,125 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<20 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 73,
+    "r_half": 0.08295029662337287,
+    "r_spearman_brown": 0.1531931740210257,
+    "ci95": [
+     -0.36994907111574626,
+     0.4977172672987783
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 2.0,
+   "cross": {
+    "unit": "WAS",
+    "opponent": "LA",
+    "expected": 0.49939148961545493,
+    "league": 0.45305164319248825,
+    "frequency_per_game": 2.0
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "WAS",
+    "bucket": 1,
+    "value": 0.23809523809523808,
+    "n_plays": 21,
+    "games": 10,
+    "rank_league": 2,
+    "of_league": 17,
+    "rank_history": 2,
+    "of_history": 67,
+    "percentile_history": 0.9848484848484849
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 106,
+    "r_half": 0.17335741078407937,
+    "r_spearman_brown": 0.29548952295487824,
+    "ci95": [
+     0.003595098737596022,
+     0.5120588317639155
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 2.1,
+   "cross": {
+    "unit": "WAS",
+    "opponent": "LA",
+    "expected": 0.4538083500487797,
+    "league": 0.43601895734597157,
+    "frequency_per_game": 2.1
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "WAS",
+    "bucket": 1,
+    "value": 0.21739130434782608,
+    "n_plays": 23,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 20,
+    "rank_history": 1,
+    "of_history": 74,
+    "percentile_history": 1.0
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 106,
+    "r_half": 0.159789322907903,
+    "r_spearman_brown": 0.2755488772862097,
+    "ci95": [
+     -0.06441683990233413,
+     0.5149868901084268
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 1.3529411764705883,
+   "cross": {
+    "unit": "WAS",
+    "opponent": "LA",
+    "expected": 0.4370813196805701,
+    "league": 0.43175487465181056,
+    "frequency_per_game": 1.3529411764705883
+   }
+  }
+ },
+ "name": "pass_success_allowed_cover6_vs_3wr",
+ "season": 2025,
+ "unit_shown": "WAS",
+ "opp_shown": "LA",
+ "metric": "success",
+ "side": "dfn",
+ "higher_is_better": false,
+ "source": "part",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "under",
+   "direction": "cover6"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "under",
+   "direction": "cover6"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

@@ -1,0 +1,130 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<100 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.0822949896275753,
+    "r_spearman_brown": 0.15207497108693727,
+    "ci95": [
+     -0.23693766153855378,
+     0.4208403972248947
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 14.166666666666666,
+   "cross": {
+    "unit": "SF",
+    "opponent": "DEN",
+    "expected": 0.4272497897392767,
+    "league": 0.4272497897392767,
+    "frequency_per_game": 14.166666666666666
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "SF",
+    "bucket": 1,
+    "value": 0.4881889763779528,
+    "n_plays": 127,
+    "games": 10,
+    "rank_league": 3,
+    "of_league": 32,
+    "rank_history": 15,
+    "of_history": 128,
+    "percentile_history": 0.889763779527559
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.2902112357877335,
+    "r_spearman_brown": 0.4498662354471687,
+    "ci95": [
+     0.2094453342431097,
+     0.6126586626139661
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 12.7,
+   "cross": {
+    "unit": "SF",
+    "opponent": "DEN",
+    "expected": 0.4019408418389961,
+    "league": 0.4224962254655259,
+    "frequency_per_game": 12.7
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "SF",
+    "bucket": 1,
+    "value": 0.5263157894736842,
+    "n_plays": 209,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 3,
+    "of_history": 128,
+    "percentile_history": 0.984251968503937
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.4739749121370891,
+    "r_spearman_brown": 0.6431248025108943,
+    "ci95": [
+     0.5016299295770246,
+     0.7449788177304193
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 12.294117647058824,
+   "cross": {
+    "unit": "SF",
+    "opponent": "DEN",
+    "expected": 0.42834682394033785,
+    "league": 0.42537862079106015,
+    "frequency_per_game": 12.294117647058824
+   }
+  }
+ },
+ "name": "third_down_success",
+ "season": 2025,
+ "unit_shown": "SF",
+ "opp_shown": "DEN",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "pbp",
+ "markets": [
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "third-down"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "over",
+   "direction": "third-down"
+  },
+  {
+   "family": "KXNFLSPREAD",
+   "line": "cover",
+   "direction": "third-down"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}
