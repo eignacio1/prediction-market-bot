@@ -44,6 +44,22 @@ for (s, f), ls in sorted(fam.items()):
             _, _, b, p, m = l["leaf"]
             o.append(f"| {b}, {p}, {m} | {NAME[l['arm']]} | {l['test_mean']:+.3f} | [{l['test_lo']:+.3f}, {l['test_hi']:+.3f}] | {l['test_n']}/{l['test_n_games']} | {'yes' if l['bh'] else ''} |")
         o.append("")
+XP = os.path.join(H, "results_extra.json")
+if os.path.exists(XP):
+    X = json.load(open(XP))["extra_arms"]
+    o.append("## W111.3 Part B: pot of gold and open-based momentum, scored per leaf (not used to pick the routed arm)\n")
+    o.append("POT_OF_GOLD = buy the lottery-ticket side where the YES mid is 1-15c or 85-99c (fading the longshot is RIDE in those leaves). MOMENTUM_OPEN = follow the move since the ticker's first shadow row. Same 70/30 game split, same taker price and exact fee, same game-clustered 90% interval. Held-out games only.\n")
+    o.append("| Family | Pot of gold | Follow move since open |\n|---|---|---|")
+    for k, a in X["family"].items():
+        def c(x):
+            v = a.get(x)
+            return "-" if not v else f"{v['mean']:+.3f} [{v['lo']:+.3f}, {v['hi']:+.3f}] {v['n']}/{v['games']}"
+        o.append(f"| {k.split('|')[0]} {k.split('|')[1]} | {c('POT_OF_GOLD')} | {c('MOMENTUM_OPEN')} |")
+    lead = [(l, a, v) for l in X["leaves"] for a, v in l["arms"].items() if v["lo"] > 0]
+    o.append(f"\nLeaf level: {len(X['leaves'])} leaves have an arm with 10+ held-out games; {len(lead)} have a lower bound above zero (no multiplicity correction applied, so these are leads for the forward test, not results).")
+    for l, a, v in sorted(lead, key=lambda t: -t[2]["mean"])[:6]:
+        o.append(f"- {' / '.join(map(str, l['leaf']))}: {a} {v['mean']:+.3f} [{v['lo']:+.3f}, {v['hi']:+.3f}] {v['n']}/{v['games']}")
+    o.append("\nWhere momentum cannot be scored: NFL and MLB ledgers hold one or two pre-start prices per ticker, so the move-since-open is mostly undefined (NFL moneyline 27 rows). The 20-minute `PRICE_ARCHIVE` join (2 GB) was not done; NBA / NHL archive-only tickers have no settlement cache, so they cannot be scored at all. Pot of gold needs a two-sided quote in a pot bucket, so moneylines (a favourite or an underdog near 50c) barely reach it.\n")
 o.append("## D6 layers 1-5 per cell (what this pass supplies)\n")
 o.append("Layer 1 simulated probability: the logged `p_yes`. Layer 2 market state: bid / ask / mid, band, price bin, last move (from the ticker's own earlier shadow rows). Layer 3 factor filters: **price, band and move only**; the 110.1 / 110.2 factor filters are not joined per row (gap below). Layer 4 a tree choosing the arm: this leaf router (fit on 70% of games). Layer 5 per-leaf held-out net after costs per arm: reported where a leaf has 10+ held-out games.\n")
 o.append("| Cell | Leaves with held-out result | Layers present |\n|---|---|---|")

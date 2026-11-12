@@ -94,6 +94,57 @@ def render_md(rows: List[dict]) -> str:
     return "\n".join(out) + "\n"
 
 
+LAYERS = ("1 simulated probability", "2 market state", "3 factor filters as splits", "4 tree chooses the arm",
+          "5 per-leaf held-out net per arm", "6 risk and sizing rule", "7 execution with fills measured")
+MIN_HELD_GAMES = 10
+
+
+def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = None) -> List[dict]:
+    """W111.3 Part C -- D6: for every registered cell, which of the seven layers are present AND evidenced.
+    Evidence only, no credit for intent: layer 1 = the cell's leaves carry a logged model p (a MODEL_FADE fit entry);
+    2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (no runner
+    supplies them yet: False everywhere); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
+    10+ held-out games; 6 = a sizing rule (kelly_fraction is 0 on every band: False); 7 = fills measured for the cell
+    (shadow rows are not fills: False). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
+    In-play bands score 0 layers by construction (router returns NO_BET)."""
+    import json
+    import os
+    if leaf_map_doc is None:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_map.json")) as fh:
+            leaf_map_doc = json.load(fh)
+    by: Dict[Tuple[str, str], List[dict]] = {}
+    for key, rec in leaf_map_doc["leaves"].items():
+        sport, mt, band = key.split("|")[:3]
+        by.setdefault((mt, band), []).append(rec)
+    out = []
+    for r in (rows if rows is not None else cell_rows()):
+        ls = by.get((r["market_type"], r["band"]), [])
+        have = [
+            any("MODEL_FADE" in x.get("fit", {}) for x in ls),
+            bool(ls),
+            False,
+            any(not x["thin"] and x["arm"] != "NO_BET" for x in ls),
+            any((x.get("test") or {}).get("test_n_games", 0) >= MIN_HELD_GAMES for x in ls),
+            False,
+            False,
+        ]
+        out.append({"market_type": r["market_type"], "band": r["band"], "sport": r["sport"], "layers": have,
+                    "n_layers": sum(have), "wired": all(have)})
+    return out
+
+
+def d6_summary(cells: List[dict]) -> dict:
+    """Per sport: cells wired end to end / registered, and cells per layer. The number scripts/distance_to_optimum reads."""
+    sports: Dict[str, dict] = {}
+    for c in cells:
+        d = sports.setdefault(c["sport"], {"registered": 0, "wired": 0, "per_layer": [0] * 7})
+        d["registered"] += 1
+        d["wired"] += c["wired"]
+        for i, h in enumerate(c["layers"]):
+            d["per_layer"][i] += h
+    return {"wired": sum(d["wired"] for d in sports.values()), "registered": len(cells), "by_sport": sports}
+
+
 if __name__ == "__main__":  # pragma: no cover
     import json
     import sys
