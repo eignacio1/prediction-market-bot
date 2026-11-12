@@ -1267,3 +1267,4 @@
 | 2026-11-12T05:40:30Z | B-081 | CLOSED — merge confirmed, HEAD (fb49fa8) is ancestor of origin/main — W112.1 filter splits as router leaves (D6 layer 3), PR #488 merged |
 | 2026-11-12T05:46:32Z | B-012 | CLOSED — merge confirmed, HEAD (c2b3664) is ancestor of origin/main — W112.4 B-012 PARTIAL: NHL factor classes point-in-time as router filters (nhl_filters), D5(b) NHL applied 3 -> 8 of 12; PR #489 merged 74d0527, Part B open; Kelly 0 |
 | 2026-11-12T06:09:57Z | B-083 | CLOSED — W112.3 arm-driven demo orders merged (#486, ON via #492); box still DRY until override file is deleted (commit `454ea29`) |
+| 2026-11-12T06:10:22Z | B-083 | CLOSED — merge confirmed, HEAD (1d7d775) is ancestor of origin/main — W112.3 merged; box DRY pending override delete |
