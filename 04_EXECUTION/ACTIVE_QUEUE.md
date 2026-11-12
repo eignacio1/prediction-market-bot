@@ -72,6 +72,7 @@ sized by it · layer 7 built and ON in the repo, the box DRY on an untracked ove
 `demo_fill_rearm` task under the 16:51 PT authorization) · **wired 0 of 117.** 113.1 **trees / execution** = B-084 the first cells wired
 end to end · 113.2 **NFL** = B-089 NFL wired for Sunday: weather forecast, MatchupBook and the NFL granularity index as tree splits · 113.3 **engine** = B-086 the NBA joint for same-game legs (the
 pot-of-gold arm) · 113.4 **data** = B-087 the bot reads Muse, read-only, grades it.
+**113.1 status (2026-11-12 23:40Z):** PARTIAL. PR #493 open (sizing via `size_for`, NHL filters, D6 layer 6/7 rules); CI red only on a stale test (`test_w109_3_props_shadow_install`, also red on main). Layer 3 NHL 0 to 9 local; D6 wired still 0 (no box arm-order read exists). Handoff `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T2340Z_W113_1.md`; GG-1896..1898.
 
 **OPENS WITH (OPERATOR_DIRECTIVES):** D-04 is still CONTRADICTED in three code paths (the orchestrator's arm choice; two Brier-only scorers)
 - deferred to **W114** with the reason above (low live impact while MLB is idle). Then D-01 (the multi-arm tree end to end, D6 = 0) → **113.1**; D-08 (pot of gold routed in) → **113.3**; D-06 (granularity, and the
