@@ -1255,3 +1255,6 @@
 | 2026-11-12T00:42:23Z | B-077 | CLOSED — W111.2 B-077 doctrine-conformance audit: 41 code decision points, label fixes + banned-word test merged (#481), #480 merged (commit `c592dda`) |
 | 2026-11-12T00:43:06Z | B-080 | CLOSED — W111.4 B-080 granularity index as tree splits, NBA: 24 entries, nba_filters router interface, 85 leaves scored by arm held out (0 BH survivors), D5(b) NBA 10 -> 11 of 17 (PR #485) (commit `3d59e57`) |
 | 2026-11-12T00:43:22Z | B-080 | CLOSED — merge confirmed, HEAD (96ac8d4) is ancestor of origin/main — W111.4 granularity index NBA merged PR #485 3d59e57; close-out landed |
+| 2026-11-12T00:41:38Z | B-079 | CLOSED — W111.3 B-079: router reads per-leaf arm map, pot of gold and momentum scored per leaf, D6 scorecard (0/117), forward test frozen (commit `7846dec`) |
+| 2026-11-12T00:41:55Z | B-079 | CLOSED — merge confirmed, HEAD (0f06fc1) is ancestor of origin/main — W111.3 trees: router reads leaf map, arms scored, D6 scorecard, forward test frozen |
+| 2026-11-12T00:43:06Z | B-079 | CLOSED — merge confirmed, HEAD (e30adfe) is ancestor of origin/main — W111.3 trees: router reads leaf map, arms scored, D6 scorecard, forward test frozen |

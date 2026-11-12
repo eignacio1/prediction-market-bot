@@ -1,13 +1,21 @@
 # Session handoff: W111.3 / B-079 (TREES - D6)
 
-```
+
+<!-- session-meta
+task_id: B-079
+tier: STANDARD
+timestamp: 2026-11-12T00:45:00Z
+commit: 7846dec
+one_line_summary: W111.3 B-079: router reads per-leaf arm map, pot of gold and momentum scored per leaf, D6 scorecard (0/117), forward test frozen
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
 vision_pillar: DEPTH
-gap_measure: D6 (and D5a decision trees), PROOF P1 groundwork
-gap_delta: D6 wired end to end 0 -> 0 of 117 (honest: layers 3, 6, 7 absent everywhere). Layers present now, by sport (1/2/3/4/5/6/7): MLB 3/12/0/3/0/0/0; NBA 9/12/0/7/7/0/0; NFL 9/12/0/9/9/0/0; NHL 9/9/0/8/7/0/0. Router now logs the leaf arm (was 27 of 117 cells with a logged arm, 25,263 NO_BET in replay). Arms scored per leaf 4 -> 6.
+gap_measure: D6 (cells wired end to end), D5a decision trees
+gap_delta: D6 0/117 -> 0/117 (layers 1,2,4,5 measured per sport; 3,6,7 open); arms scored per leaf 4 -> 6 (scripts/distance_to_optimum.py @ 7846dec)
 pattern_sweep: n/a (no defect fixed)
-surface_delta: none (no cron, service or workflow added; router fields are log-only)
-directive_conflicts: none
-```
+surface_delta: 0
+-->
 
 **Status:** Parts A, B, C done | B-079 | PR #483 merged (de8b003, CI green); PR #484 (Parts B+C) merged 7846dec, CI green; box deploy rc=0 at 7846dec1.
 
