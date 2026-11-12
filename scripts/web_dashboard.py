@@ -454,6 +454,70 @@ def _demo_orders(d: Path) -> dict:
             if r.get("event") == "shadow_order"]
     return {"rows": rows[-800:]}
 
+
+ARM_NAMES = {"RIDE": "Ride", "FADE": "Fade", "MODEL_FADE": "Fade", "MOMENTUM": "Momentum", "FOLLOW_MOVE": "Momentum",
+             "POT_OF_GOLD": "Pot of gold", "LONGSHOT": "Pot of gold", "NO_BET": "No bet"}
+
+
+def _router_arm(r: dict) -> str | None:
+    """The router's arm on a shadow row (W111.3: nested under 'router'); None on rows written before the router logged."""
+    rt = r.get("router") or {}
+    a = rt.get("arm") or rt.get("branch")
+    return str(a).upper() if a else None
+
+
+def _arm_orders(d: Path) -> dict:
+    """D6 layer 7 (W112.3): the router's arm driving demo orders - logs/arm_orders/orders.jsonl. The switch state comes
+    from the code that reads it (off / dry / on); every row is kept so a skip is as visible as an order."""
+    keep = ("ts", "event", "reason", "sport", "ticker", "market_type", "band", "arm", "leaf_id", "side", "price_yes",
+            "stake_usd", "ok", "error", "adr0072_assignment", "mode")
+    rows = [{k: r.get(k) for k in keep} for r in _load_jsonl(d / "arm_orders" / "orders.jsonl", tail=3000)]
+    for r in rows:
+        r["arm"] = ARM_NAMES.get(str(r.get("arm") or "").upper(), r.get("arm"))
+    mode = None
+    try:
+        sys.path.insert(0, str(_REPO_ROOT / "src"))
+        from prediction_market_bot.decision_trees import arm_orders as ao
+        mode = ao.mode()
+    except Exception:
+        mode = None
+    per: dict = {}
+    for r in rows:
+        a = str(r.get("arm") or "?")
+        x = per.setdefault(a, {"orders": 0, "would": 0, "skips": 0, "refused": 0})
+        ev = r.get("event")
+        if ev == "arm_order":
+            x["orders" if r.get("ok") else "refused"] += 1
+        elif ev == "arm_would_order":
+            x["would"] += 1
+        else:
+            x["skips"] += 1
+    return {"mode": mode, "rows": rows[-600:], "per_arm": per}
+
+
+def _d6() -> dict:
+    """D6 (2026-11-11): cells wired end to end through all seven layers, per sport - the scope's headline measure.
+    Read from decision_trees/coverage.py, the same function scripts/distance_to_optimum.py reads."""
+    sys.path.insert(0, str(_REPO_ROOT / "src"))
+    from prediction_market_bot.decision_trees import coverage as cov
+    s = cov.d6_summary(cov.d6_layers())
+    s["layers"] = ["simulated probability", "market state", "factor filters as splits", "tree chooses the arm",
+                   "per-leaf net per arm", "sizing rule", "execution, fills measured"]
+    return s
+
+
+def _closed_hypotheses() -> dict:
+    """{(MarketType name, band name): [EXP ids]} - tests parked for R&D (operator 2026-11-11 16:51 PT: a losing look closes
+    THAT SPECIFIC HYPOTHESIS, never a cell or an arm)."""
+    try:
+        sys.path.insert(0, str(_REPO_ROOT / "src"))
+        from prediction_market_bot.c5_execution import market_type_registry as R
+        cells = R.MARKET_TYPE_REGISTRY.values() if isinstance(R.MARKET_TYPE_REGISTRY, dict) else R.MARKET_TYPE_REGISTRY
+        return {(c.market_type.name, c.band.name): [h.exp_id for h in getattr(c, "closed_hypotheses", ()) or ()]
+                for c in cells if getattr(c, "closed_hypotheses", ())}
+    except Exception:
+        return {}
+
 def _season_state(now: datetime) -> dict:
     """Coarse season calendar per sport -> expected cadence (amber/red seconds).
 
@@ -691,6 +755,7 @@ def _shadow(now: datetime) -> dict:
     day = now.strftime("%Y-%m-%d")
     cells: dict = {}
     tape: list = []
+    router_today: dict = {}
     settled_files = [f for f in files if "settled" in f.relative_to(_REPO_ROOT).parts[:-1]]
     files = [f for f in files if f not in settled_files]
     for f in files:
@@ -703,9 +768,17 @@ def _shadow(now: datetime) -> dict:
                                        "band": r.get("band"), "rows_today": 0, "rows_total": 0,
                                        "last_ts": None,
                                        "latest_e_net": None, "settled_n": None, "judged_n": None,
-                                       "delta_brier_market": None, "delta_brier_climo": None})
+                                       "delta_brier_market": None, "delta_brier_climo": None,
+                                       "arms_today": {}})
             ts = str(r.get("ts_utc") or "")
-            if ts.startswith(day): c["rows_today"] += 1
+            arm = _router_arm(r)
+            if ts.startswith(day):
+                c["rows_today"] += 1
+                a = ARM_NAMES.get(arm or "", arm or "not routed")
+                c["arms_today"][a] = c["arms_today"].get(a, 0) + 1
+                sp = str(r.get("sport") or "").upper()
+                router_today.setdefault(sp, {})
+                router_today[sp][a] = router_today[sp].get(a, 0) + 1
             if c["last_ts"] is None or ts > c["last_ts"]:
                 c["last_ts"] = ts
                 c["latest_e_net"] = r.get("e_net_yes_k007")
@@ -731,24 +804,34 @@ def _shadow(now: datetime) -> dict:
             if c is not None and _settled_y(r) is not None:     # `y` (NFL/MLB) or `outcome` (NHL): GG-499
                 c["settled_n"] = (c["settled_n"] or 0) + 1
     seen = set()
+    hyps = _closed_hypotheses()
     for c in cells.values():
         full = _SHADOW_BAND_NAMES.get(str(c["band"]), str(c["band"]))
         seen.add((c["market_type"], full))
         st = (reg or {}).get((c["market_type"], full))
         c["registry_status"] = st[0] if st else ("unregistered" if reg is not None else "unknown")
+        c["closed_hypotheses"] = hyps.get((c["market_type"], full), [])
     for (mt, bd), (st, sport) in sorted((reg or {}).items()):
         if st == "shadow" and (mt, bd) not in seen:
             cells[f"{sport}|{mt}|{bd}"] = {
                 "sport": sport, "market_type": mt, "band": bd, "rows_today": 0, "rows_total": 0,
                 "last_ts": None, "latest_e_net": None, "settled_n": None, "judged_n": None,
                 "delta_brier_market": None, "delta_brier_climo": None, "registry_status": "shadow",
-                "ledger": "no ledger rows found"}
+                "ledger": "no ledger rows found", "arms_today": {}, "closed_hypotheses": hyps.get((mt, bd), [])}
     tape.sort(key=lambda r: str(r.get("ts_utc") or ""), reverse=True)
     keep = ("ts_utc", "sport", "market_type", "band", "market_ticker", "p_yes", "mid",
             "e_net_yes_k007", "e_net_no_k007")
     stream_keep = keep + ("event_ticker", "run_id")
-    return {"cells": list(cells.values()), "tape": [{k: r.get(k) for k in keep} for r in tape[:60]],
-            "stream": [{k: r.get(k) for k in stream_keep} for r in tape[:DECISION_ROWS]]}
+    def slim(r: dict, ks) -> dict:
+        o = {k: r.get(k) for k in ks}
+        rt = r.get("router") or {}
+        a = _router_arm(r)
+        o["arm"] = ARM_NAMES.get(a or "", a)
+        o["leaf_id"] = rt.get("leaf_id")
+        o["filters_fired"] = rt.get("filters_fired") or []
+        return o
+    return {"cells": list(cells.values()), "tape": [slim(r, keep) for r in tape[:400]],
+            "stream": [slim(r, stream_keep) for r in tape[:DECISION_ROWS]], "router_today": router_today}
 
 
 # W56.2: decision stream. One row per EVALUATION, never per order. WOULD-FIRE is a shadow
@@ -766,7 +849,8 @@ def _decision_from_shadow(r: dict) -> dict:
     return {"ts": r.get("ts_utc"), "sport": r.get("sport"), "market": r.get("market_ticker"),
             "market_type": r.get("market_type"), "band": r.get("band"), "p": p,
             "price": r.get("mid"), "edge": best, "side": side,
-            "would_fire": bool(best is not None and best > 0), "src": "shadow"}
+            "would_fire": bool(best is not None and best > 0), "src": "shadow",
+            "arm": r.get("arm"), "leaf_id": r.get("leaf_id")}
 
 
 def _decision_from_cycle(r: dict) -> dict:
@@ -873,7 +957,7 @@ def _decisions(now: datetime, shadow: dict, cycle_tail: list, t1p: dict, t4p: di
             "arms": sorted(arms.values(), key=lambda a: a["arm"]),
             "books": [_book(t1p, now, "T1"), _book(t4p, now, "T4M-PROJ")],
             "kelly": kel, "sizing_live": (None if kel is None else any(v for v in kel.values())),
-            "fire_rule": "WOULD-FIRE = fee-adjusted net edge > 0 (shadow computation; this stream places nothing — T4M-PROJ placements are the panel above)"}
+            "fire_rule": "ARM = the router’s choice per row (ride / fade / momentum / pot of gold / no bet). FADE ENTRY = fee-adjusted net edge > 0: the fade arm’s entry rule, one input to the router. This stream places nothing."}
 
 
 def _verdicts() -> dict:
@@ -1213,6 +1297,9 @@ def _load_all_data() -> dict:
         # Operator terminal v2 (47.1 D6) — additive.
         "season":          safe(lambda: _season_state(datetime.now(tz=timezone.utc)), {}),
         "demo_orders":     safe(lambda: _demo_orders(d), {}),
+        # SW-9 2026-11-12: multi-arm routing (ADR-0077) - the arm on every row, arm-driven orders (D6 layer 7), D6.
+        "arm_orders":      safe(lambda: _arm_orders(d), {"rows": [], "per_arm": {}, "mode": None}),
+        "d6":              safe(_d6, {"awaiting": "decision_trees/coverage.py"}),
         "freshness":       safe(lambda: _freshness(d, datetime.now(tz=timezone.utc)), {}),
         "silent_arms":     safe(lambda: _silent_arms(d, datetime.now(tz=timezone.utc)), {}),
         "runtime":         safe(_runtime_strip, {"awaiting": "runtime map"}),
@@ -1574,7 +1661,7 @@ body.demo .panel::after{content:"DEMO"; position:absolute; right:14px; top:36px;
 .cg td.c.recent{outline:2px solid var(--amber); outline-offset:1px}
 .cg td.c.s-active{background:var(--green)} .cg td.c.s-shadow{background:var(--cyan)}
 .cg td.c.s-blocked{background:var(--amber)} .cg td.c.s-dark{background:#555; color:var(--ink)}
-.cg td.c.s-ruled_out{background:var(--red)} .cg td.c.s-not_implemented{background:#141414; color:var(--faint)}
+.cg td.c.s-ruled_out{background:#3a2a4a} .cg td.c.s-not_implemented{background:#141414; color:var(--faint)}
 .cg td.c.s-none{background:transparent; border-color:var(--hair-2); color:#222}
 .lg{display:flex; gap:12px; flex-wrap:wrap; padding:8px 12px; color:var(--dim); font-size:10.5px}
 .lg i{display:inline-block; width:10px; height:10px; margin-right:5px; vertical-align:-1px}
@@ -1734,6 +1821,13 @@ td.tk{max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowr
   .status .sep{margin:0 5px} .status .sp{flex-basis:100%; height:0}
   .status .hidem{display:none}}
 footer{padding:9px 12px; color:var(--faint); font-size:10.2px; border-top:1px solid var(--hair)}
+.armc-Ride{color:var(--green)} .armc-Fade{color:var(--violet)} .armc-Momentum{color:var(--amber)}
+.armc-Pot_of_gold{color:#ffd76a} .armc-No_bet{color:var(--faint)}
+.armchips{display:flex; gap:4px 10px; flex-wrap:wrap; font-size:11px} .armchips span{white-space:nowrap}
+.d6row{display:grid; grid-template-columns:52px 70px repeat(7,1fr); gap:4px; align-items:center; font-size:11px; margin:3px 0}
+.d6row .lb{color:var(--faint)} .d6cell{height:14px; background:#141414; position:relative}
+.d6cell i{position:absolute; left:0; top:0; bottom:0; background:var(--cyan); opacity:.75}
+.d6cell.zero{outline:1px solid #4d1717} .d6hd{font-size:10px; color:var(--faint); line-height:1.15}
 </style>
 </head>
 <body>
@@ -1867,7 +1961,7 @@ const MODULES=[
   {k:'NOW',      label:'Now'},
   {k:'OVERVIEW', label:'Overview'},
   {k:'MLB',      label:'MLB · T1/T4'},
-  {k:'NFL',      label:'NFL · T1'},
+  {k:'NFL',      label:'NFL · shadow'},
   {k:'NBA',      label:'NBA · shadow'},
   {k:'NHL',      label:'NHL · shadow'},
   {k:'EVIDENCE', label:'Evidence'},
@@ -1891,7 +1985,7 @@ function modbar(D){
     NOW: LAST&&LAST.decisions&&(LAST.decisions.rows||[]).length?`${LAST.decisions.rows.length} evals`:'awaiting',
     OVERVIEW:`${D.open.length} open`,
     MLB:`${D.open.filter(p=>p._sport==='MLB').length} open`,
-    NFL:`${D.open.filter(p=>p._sport==='NFL').length} open`,
+    NFL:(()=>{const c=((LAST&&LAST.shadow&&LAST.shadow.cells)||[]).filter(x=>String(x.sport).toUpperCase()==='NFL'); return c.length?`${c.reduce((a,x)=>a+(x.rows_today||0),0)} today`:'';})(),
     NBA:(()=>{const c=((LAST&&LAST.shadow&&LAST.shadow.cells)||[]).filter(x=>String(x.sport).toUpperCase()==='NBA'); return c.length?`${c.reduce((a,x)=>a+(x.rows_today||0),0)} today`:'';})(),
     NHL:(()=>{const c=((LAST&&LAST.shadow&&LAST.shadow.cells)||[]).filter(x=>String(x.sport).toUpperCase()==='NHL'); return c.length?`${c.reduce((a,x)=>a+(x.rows_today||0),0)} today`:'';})(),
     EVIDENCE: stub? `<span class="warn">${stub} stub</span>` : 'clean',
@@ -1919,8 +2013,7 @@ function render(){
   if(S.mod==='NOW') w.innerHTML=viewNow();
   else if(S.mod==='OVERVIEW') w.innerHTML=viewOverview();
   else if(S.mod==='MLB') w.innerHTML=viewSport('MLB');
-  else if(S.mod==='NFL') w.innerHTML=viewSport('NFL');
-  else if(S.mod==='NBA'||S.mod==='NHL') w.innerHTML=viewDesk(S.mod);
+  else if(S.mod==='NFL'||S.mod==='NBA'||S.mod==='NHL') w.innerHTML=viewDesk(S.mod);
   else if(S.mod==='EVIDENCE') w.innerHTML=viewEvidence();
   else if(S.mod==='COVERAGE') w.innerHTML=viewCoverage();
   else if(S.mod==='SHADOW') w.innerHTML=viewShadow();
@@ -1988,12 +2081,12 @@ function railSpec(D,d){
     const today=(x.arms||[]).reduce((n,a)=>n+(a.rows_today||0),0);
     const wf=rows.filter(r=>r.would_fire).length;
     return [['IN STREAM',String(rows.length),rows.length,''],
-      ['WOULD-FIRE',String(wf),wf,''],['ARMS',String((x.arms||[]).length),(x.arms||[]).length,'']]; }
+      ['FADE ENTRY',String(wf),wf,''],['WRITERS',String((x.arms||[]).length),(x.arms||[]).length,'']]; }
   if(S.mod==='COVERAGE'){ const c=d.coverage||{}, k=c.counts||{};
     if(!c.total) return [['COVERAGE','awaiting',null,'']];
     return [['CELLS',String(c.total),c.total,''],['ACTIVE',String(k.active||0),k.active||0,''],
       ['SHADOW',String(k.shadow||0),k.shadow||0,'cy'],['BLOCKED',String(k.blocked||0),k.blocked||0,'warnv'],
-      ['DARK',String(k.dark||0),k.dark||0,''],['FADE CLOSED',String(k.ruled_out||0),k.ruled_out||0,''],
+      ['DARK',String(k.dark||0),k.dark||0,''],['UNTRADEABLE',String(k.ruled_out||0),k.ruled_out||0,''],
       ['NOT IMPL.',String(k.not_implemented||0),k.not_implemented||0,'']]; }
   if(S.mod==='SHADOW'){ const sh=d.shadow||{}, cs=sh.cells||[];
     if(!cs.length) return [['SHADOW','awaiting',null,'']];
@@ -2009,7 +2102,20 @@ function railSpec(D,d){
     return [['TILES',String(t.length),t.length,''],['OK',String(n('ok')),n('ok'),''],['WARN',String(n('warn')),n('warn'),'warnv'],
       ['BAD',String(n('bad')),n('bad'),n('bad')>0?'bad':''],['NOT INSTR.',String(n('ni')),n('ni'),n('ni')>0?'warnv':'']]; }
   if(S.mod==='VERDICTS') return [['VERDICTS',String(Object.keys(d.verdicts||{}).length),null,'']];
-  if(S.mod==='NFL'){
+  if(S.mod==='NFL'||S.mod==='NBA'||S.mod==='NHL'){ const sp=S.mod;
+    const cs=((d.shadow&&d.shadow.cells)||[]).filter(c=>String(c.sport).toUpperCase()===sp);
+    const rt=((d.shadow&&d.shadow.router_today)||{})[sp]||{}, routed=Object.entries(rt).filter(([k])=>k!=='not routed').reduce((a,[,v])=>a+v,0);
+    const ao=((d.arm_orders&&d.arm_orders.rows)||[]).filter(r=>String(r.sport||'').toUpperCase()===sp);
+    const dm=((d.demo_orders&&d.demo_orders.rows)||[]).filter(r=>String(r.ticker||'').toUpperCase().startsWith('KX'+sp)&&r.ok);
+    const tests=cs.reduce((a,c)=>a+((c.closed_hypotheses||[]).length),0), today=cs.reduce((a,c)=>a+(c.rows_today||0),0);
+    const v6=((d.d6&&d.d6.by_sport)||{})[sp.toLowerCase()]||{};
+    return [['ROWS TODAY',String(today),today,''],['ROUTED',String(routed),routed,'cy'],
+      ['RIDE',String(rt['Ride']||0),rt['Ride']||0,''],['FADE',String(rt['Fade']||0),rt['Fade']||0,''],
+      ['MOMENTUM',String(rt['Momentum']||0),rt['Momentum']||0,''],['POT OF GOLD',String(rt['Pot of gold']||0),rt['Pot of gold']||0,''],
+      ['NO BET',String(rt['No bet']||0),rt['No bet']||0,''],
+      ['ARM ORDERS',String(ao.filter(r=>r.event==='arm_order'&&r.ok).length),null,''],['DEMO ORDERS',String(dm.length),null,''],
+      ['WIRED (D6)',v6.registered!=null?`${v6.wired}/${v6.registered}`:'—',null,v6.wired?'':'warnv'],['TESTS CLOSED',String(tests),null,'']]; }
+  if(S.mod==='NFL_OLD'){
     const o=D.open.filter(p=>p._sport==='NFL'), c=D.closed.filter(p=>p._sport==='NFL');
     const all=[...o,...c];
     const stub=all.filter(p=>evClass(p)==='STUB').length;
@@ -2097,13 +2203,17 @@ const P_=(t,n,body,extra='',fr='')=>`<div class="panel"><div class="ph"><span cl
 const frKey=()=>S.mod==='NFL'?'nfl':'t1_mlb';
 const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}px" id="${id}"></div></div>`;
 
-function viewNow(){return `<div id="strip" class="strip"></div><div id="arms" class="arms"></div><div class="grid g-1">
-  ${P_('T4M-PROJ placements (paper orders)','plN',SCROLL('plWrap',260),`<span class="n" id="plRule"></span>`)}
-  ${P_('Decision stream','dsN',SCROLL('dsWrap',640),`<span class="n" id="dsRule"></span><button class="tbtn" id="wfBtn">WOULD-FIRE ONLY</button>`)}</div>`;}
+function viewNow(){return `<div id="strip" class="strip"></div><div id="arms" class="arms"></div><div class="grid g-2">
+  ${P_('Router — arm chosen per row, today','rtN',`<div class="pb flush"><div id="rtWrap"></div></div>`,`<span class="n">ride · fade · momentum · pot of gold · no bet (ADR-0077)</span>`)}
+  ${P_('Wired end to end — D6','d6N',`<div class="pb"><div id="d6Wrap"></div></div>`,`<span class="n">a cell counts only with all seven layers</span>`)}</div>
+  <div class="grid g-1">${P_('Arm orders — the router\'s arm places demo orders (layer 7)','aoN',SCROLL('aoWrap',260),`<span class="n" id="aoNote"></span>`)}</div>
+  <div class="grid g-1">
+  ${(((LAST&&LAST.season)||{}).MLB||{}).state==='in_season'?P_('T4M-PROJ placements (paper orders)','plN',SCROLL('plWrap',260),`<span class="n" id="plRule"></span>`):''}
+  ${P_('Decision stream','dsN',SCROLL('dsWrap',640),`<span class="n" id="dsRule"></span><button class="tbtn" id="wfBtn">FADE ENTRY ONLY</button>`)}</div>`;}
 function viewOverview(){return `<div class="grid g-7-5">
   <div class="col">
     ${P_('Model vs Market','scatN',`<div class="pb"><div id="scatter"></div>${LEGEND}</div>`,
-      `<span class="n">off-diagonal = edge · above the line = model says cheaper than market</span>`,'t1_mlb')}
+      `<span class="n">distance from the line = model–market disagreement: the fade arm's input, one input to the router</span>`,'t1_mlb')}
     ${P_('Open Positions','openN',SCROLL('posWrap',300),FILTERBAR,'t1_mlb')}
     ${P_('Recently Resolved','resN',SCROLL('resWrap',220),`<span class="n" id="resPnl"></span>`)}
   </div>
@@ -2131,8 +2241,9 @@ function viewSport(sport){
 
 function viewDesk(sport){return `<div class="grid g-7-5">
   <div class="col">
-    ${P_(sport+' — Model vs Market (today)','dkScN',`<div class="pb"><div id="dkScatter"></div><div class="lg"><span><i style="background:var(--cyan)"></i>one shadow forecast</span><span>--- model = market</span></div></div>`)}
-    ${P_(sport+' — Shadow cells','dkCellN',`<div class="pb flush"><div id="dkCells"></div></div>`,`<span class="n">evaluate and log · no sizing</span>`)}
+    ${P_(sport+' — Model vs Market (today), coloured by the router\'s arm','dkScN',`<div class="pb"><div id="dkScatter"></div><div class="lg">${ARMLEG}<span>--- model = market</span></div></div>`)}
+    ${P_(sport+' — Shadow cells','dkCellN',`<div class="pb flush"><div id="dkCells"></div></div>`,`<span class="n">evaluate, route, log · a losing look closes only its test</span>`)}
+    ${P_(sport+' — Arm orders (layer 7)','dkAoN',SCROLL('dkAo',220),`<span class="n" id="dkAoNote"></span>`)}
   </div>
   <div class="col">
     ${P_(sport+' — Forecast tape','dkTapeN',SCROLL('dkTape',440),`<span class="n">newest first · this sport only</span>`)}
@@ -2144,27 +2255,29 @@ function fillDesk(d){
   const tape=deskRows(sport).slice().sort((a,b)=>String(b.ts_utc).localeCompare(String(a.ts_utc)));
   const day=new Date().toISOString().slice(0,10), today=tape.filter(r=>String(r.ts_utc).startsWith(day));
   $('#dkCellN').textContent=cells.length+' cells';
-  $('#dkCells').innerHTML=!cells.length?AW(sport+' shadow ledgers'):`<table><thead><tr><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>ROWS TOTAL</th><th>SETTLED n</th><th>JUDGED n</th><th>ΔBRIER vs MKT</th><th>LAST ROW</th></tr></thead><tbody>`+
+  $('#dkCells').innerHTML=!cells.length?AW(sport+' shadow ledgers'):`<table><thead><tr><th>MARKET</th><th>BAND</th><th>ROWS TODAY</th><th>ROWS TOTAL</th><th>SETTLED n</th><th>JUDGED n</th><th>ARMS TODAY</th><th>TESTS CLOSED</th><th>LAST ROW</th></tr></thead><tbody>`+
     cells.map(c=>`<tr${(c.registry_status||'')!=='shadow'?' class="dim"':''}><td>${esc(c.market_type)}</td><td>${esc(c.band)}</td><td class="r">${c.rows_today}</td><td class="r">${c.rows_total==null?'—':c.rows_total}</td>`+
-      `<td class="r">${c.settled_n==null?'—':c.settled_n}</td><td class="r">${c.judged_n==null?'—':c.judged_n}</td><td class="r">${c.delta_brier_market==null?'—':f4(c.delta_brier_market)}</td><td>${esc(String(c.last_ts||'—').slice(5,16).replace('T',' '))}</td></tr>`).join('')+`</tbody></table>`;
+      `<td class="r">${c.settled_n==null?'—':c.settled_n}</td><td class="r">${c.judged_n==null?'—':c.judged_n}</td><td>${armChips(c.arms_today)}</td><td class="dim" title="hypotheses parked for R&D (operator 2026-11-11 16:51 PT)">${(c.closed_hypotheses||[]).length?esc(c.closed_hypotheses.join(', ')):'—'}</td><td>${esc(String(c.last_ts||'—').slice(5,16).replace('T',' '))}</td></tr>`).join('')+`</tbody></table>`;
   $('#dkTapeN').textContent=tape.length+' rows';
-  $('#dkTape').innerHTML=!tape.length?AW(sport+' forecasts'):`<table><thead><tr><th>TIME</th><th>MARKET</th><th>BAND</th><th>TICKER</th><th>MODEL</th><th>MKT MID</th><th>E_NET YES</th></tr></thead><tbody>`+
-    tape.slice(0,200).map(r=>{const e=+r.e_net_yes_k007; return `<tr><td>${esc(String(r.ts_utc||'').slice(11,19))}</td><td>${esc(r.market_type)}</td><td>${esc(r.band)}</td><td class="dim">${esc(r.market_ticker)}</td>`+
-      `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td><td class="r ${e>0?'pos':e<0?'neg':''}">${f4(r.e_net_yes_k007)}</td></tr>`}).join('')+`</tbody></table>`;
+  $('#dkTape').innerHTML=!tape.length?AW(sport+' forecasts'):`<table><thead><tr><th>TIME</th><th>MARKET</th><th>BAND</th><th>MODEL</th><th>MKT MID</th><th>ARM</th><th>LEAF</th><th>FILTERS</th></tr></thead><tbody>`+
+    tape.slice(0,200).map(r=>{return `<tr><td>${esc(String(r.ts_utc||'').slice(11,19))}</td><td title="${esc(r.market_ticker)}">${esc(r.market_type)}</td><td>${esc(r.band)}</td>`+
+      `<td class="r">${f4(r.p_yes)}</td><td class="r">${f4(r.mid)}</td>`+
+      `<td class="${armCls(r.arm||'')}">${esc(r.arm||'—')}</td><td class="dim">${esc(String(r.leaf_id||'—').slice(0,28))}</td><td class="dim">${(r.filters_fired||[]).length?esc(r.filters_fired.join(' ')):'—'}</td></tr>`}).join('')+`</tbody></table>`;
   const pts=today.filter(r=>Number.isFinite(+r.p_yes)&&Number.isFinite(+r.mid));
   $('#dkScN').textContent=pts.length+' forecasts today';
   const W=560,H=300,px=v=>30+v*(W-40),py=v=>H-24-v*(H-40);
   $('#dkScatter').innerHTML=!pts.length?AW(sport+' forecasts today'):`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${sport} model probability against market price, today">`+
     `<line x1="${px(0)}" y1="${py(0)}" x2="${px(1)}" y2="${py(1)}" stroke="var(--amber)" stroke-dasharray="4 4" opacity=".6"/>`+
     [0,.25,.5,.75,1].map(v=>`<text x="${px(v)}" y="${H-6}" fill="var(--faint)" font-size="10" text-anchor="middle">${v}</text><text x="6" y="${py(v)+3}" fill="var(--faint)" font-size="10">${v}</text>`).join('')+
-    pts.slice(0,600).map(r=>`<circle cx="${px(+r.mid).toFixed(1)}" cy="${py(+r.p_yes).toFixed(1)}" r="2.6" fill="var(--cyan)" opacity=".55"><title>${esc(r.market_ticker)} model ${f4(r.p_yes)} · market ${f4(r.mid)}</title></circle>`).join('')+
+    pts.slice(0,600).map(r=>`<circle cx="${px(+r.mid).toFixed(1)}" cy="${py(+r.p_yes).toFixed(1)}" r="2.8" fill="${ARMCOL[r.arm]||'#666'}" opacity=".7"><title>${esc(r.market_ticker)} · arm ${esc(r.arm||'not routed')} · model ${f4(r.p_yes)} · market ${f4(r.mid)}</title></circle>`).join('')+
     `<text x="${W/2}" y="${H-6+0}" fill="var(--faint)" font-size="0"></text></svg><div class="dim" style="font-size:11px">x = market mid · y = model probability</div>`;
   const o=((d.demo_orders&&d.demo_orders.rows)||[]).filter(r=>String(r.ticker||'').toUpperCase().startsWith('KX'+sport));
   const ok=o.filter(r=>r.ok).length;
   const lastO=o.length?String(o[o.length-1].ts||''):'', ageH=lastO?Math.round((Date.now()-Date.parse(lastO))/3600000):null;
   $('#dkOrdN').textContent=o.length?`${ok} placed · ${o.length-ok} refused`:'—';
   if($('#dkOrdNote')) $('#dkOrdNote').innerHTML=ageH!=null&&ageH>24?`<span class="warn">last order ${ageH} h ago</span>`:'flat demo stakes · no real capital';
-  $('#dkOrders').innerHTML=!o.length?AW(sport+' demo orders (logs/demo_fill_policy.jsonl)'):`<table><thead><tr><th>TIME</th><th>TICKER</th><th>SIDE</th><th>PRICE</th><th>STAKE</th><th>ARM</th><th>RESULT</th></tr></thead><tbody>`+
+  fillArmOrders(d,sport,'#dkAo','#dkAoN','#dkAoNote');
+  $('#dkOrders').innerHTML=!o.length?AW(sport+' demo orders (logs/demo_fill_policy.jsonl)'):`<table><thead><tr><th>TIME</th><th>TICKER</th><th>SIDE</th><th>PRICE</th><th>STAKE</th><th title="ADR-0072 placement test: control or treatment">TEST ARM</th><th>RESULT</th></tr></thead><tbody>`+
     o.slice().reverse().slice(0,150).map(r=>`<tr><td>${esc(String(r.ts||'').slice(5,16).replace('T',' '))}</td><td class="dim">${esc(r.ticker)}</td><td>${esc(r.side)}</td><td class="r">${f4(r.price_yes)}</td><td class="r">${r.stake_usd==null?'—':'$'+(+r.stake_usd).toFixed(2)}</td><td>${esc(r.arm)}</td>`+
       `<td class="${r.ok?'pos':'neg'}">${r.ok?'placed':esc(String(r.error||'refused').slice(0,40))}</td></tr>`).join('')+`</tbody></table>`;
 }
@@ -2237,7 +2350,7 @@ function fillV2(d){
           return x?`<td class="c s-${x.status}${x.recent?' recent':''}" title="${esc(t+' / '+b+' — '+x.status+(x.reason?' — '+x.reason:''))}">${L[x.status]||'?'}</td>`
                   :`<td class="c s-none">·</td>`}).join('')+`</tr>`).join('')+`</tbody></table>`+
         `<div class="lg">`+[['active','var(--green)'],['shadow','var(--cyan)'],['blocked','var(--amber)'],['dark','#555'],
-          ['fade arm closed (routed)','var(--red)'],['not implemented','#141414']].map(([n,col])=>`<span><i style="background:${col}"></i>${n}</span>`).join('')+
+          ['untradeable (no book / data)','#3a2a4a'],['not implemented','#141414']].map(([n,col])=>`<span><i style="background:${col}"></i>${n}</span>`).join('')+
         `<span>blank = unseeded</span></div>`; } }
   if($('#shCells')){ const sh=d.shadow;
     if(!sh||!sh.cells||!sh.cells.length){ $('#shCells').innerHTML=AW((sh&&sh.awaiting)||'shadow ledgers'); $('#shN').textContent='—'; $('#shTape').innerHTML=AW('shadow rows'); }
@@ -2267,8 +2380,42 @@ function fillV2(d){
         return `<tr><td>${esc(k)}</td><td class="${c}">${esc(x.verdict||'unscored')}</td><td>${esc(x.written_at)}</td><td class="dim">${esc(x.file)}</td></tr>`}).join('')+`</tbody></table>`; }
 }
 function ageTxt(ts){const t=Date.parse(ts); return Number.isFinite(t)?Math.max(0,Math.round((Date.now()-t)/1000)):null}
+const armCls=a=>'armc-'+String(a||'').replace(/[^A-Za-z]+/g,'_');
+const ARMS_ORDER=['Ride','Fade','Momentum','Pot of gold','No bet'];
+const ARMCOL={'Ride':'var(--green)','Fade':'var(--violet)','Momentum':'var(--amber)','Pot of gold':'#ffd76a','No bet':'#555'};
+const ARMLEG=ARMS_ORDER.map(a=>`<span><i style="background:${ARMCOL[a]}"></i>${a}</span>`).join('')+`<span><i style="background:#666"></i>not routed</span>`;
+function armChips(m){ m=m||{}; const ks=Object.keys(m); if(!ks.length) return '<span class="dim">—</span>';
+  ks.sort((a,b)=>(ARMS_ORDER.indexOf(a)+99*(ARMS_ORDER.indexOf(a)<0))-(ARMS_ORDER.indexOf(b)+99*(ARMS_ORDER.indexOf(b)<0)));
+  return `<span class="armchips">`+ks.map(k=>`<span class="${armCls(k)}">${esc(k)} ${m[k]}</span>`).join('')+`</span>`; }
+function fillArmOrders(d,sport,wrap,nEl,noteEl){
+  const w=$(wrap); if(!w) return; const ao=d.arm_orders||{}, mode=ao.mode;
+  const rows=(ao.rows||[]).filter(r=>!sport||String(r.sport||'').toUpperCase()===sport).slice().reverse();
+  const md=mode==='on'?'<span class="pos">switch ON</span>':mode==='dry'?'<span class="amb">DRY RUN (logs, places nothing)</span>':mode==='off'?'<span class="dim">switch OFF</span>':'<span class="dim">switch unknown</span>';
+  if($(noteEl)) $(noteEl).innerHTML=md+' · demo only · kelly 0';
+  const placed=rows.filter(r=>r.event==='arm_order'&&r.ok).length, would=rows.filter(r=>r.event==='arm_would_order').length;
+  if($(nEl)) $(nEl).textContent=rows.length?`${placed} placed · ${would} would · ${rows.length-placed-would} skipped`:'—';
+  w.innerHTML=!rows.length?AW((sport?sport+' ':'')+'arm orders (logs/arm_orders/orders.jsonl) — none yet'):`<table><thead><tr><th>TIME</th>${sport?'':'<th>SPORT</th>'}<th>TICKER</th><th>ARM</th><th>LEAF</th><th>SIDE</th><th>PRICE</th><th>STAKE</th><th>RESULT</th></tr></thead><tbody>`+
+    rows.slice(0,150).map(r=>{const res=r.event==='arm_order'?(r.ok?'<span class="pos">placed</span>':'<span class="neg">'+esc(String(r.error||'refused').slice(0,36))+'</span>'):r.event==='arm_would_order'?'<span class="amb">would place</span>':'<span class="dim">'+esc(String(r.reason||'skip').slice(0,36))+'</span>';
+      return `<tr><td>${esc(String(r.ts||'').slice(5,16).replace('T',' '))}</td>${sport?'':`<td>${esc(r.sport||'—')}</td>`}<td class="dim">${esc(r.ticker||'—')}</td><td class="${armCls(r.arm||'')}">${esc(r.arm||'—')}</td><td class="dim">${esc(String(r.leaf_id||'—').slice(0,24))}</td>`+
+        `<td>${esc(r.side||'—')}</td><td class="r">${r.price_yes==null?'—':f4(r.price_yes)}</td><td class="r">${r.stake_usd==null?'—':'$'+(+r.stake_usd).toFixed(2)}</td><td>${res}</td></tr>`}).join('')+`</tbody></table>`; }
+function fillRouter(d){
+  const rw=$('#rtWrap'); if(rw){ const rt=(d.shadow&&d.shadow.router_today)||{}, sp=Object.keys(rt).sort();
+    const tot=sp.reduce((n,k)=>n+Object.values(rt[k]).reduce((a,b)=>a+b,0),0);
+    $('#rtN').textContent=tot?tot+' rows routed today':'—';
+    const cols=ARMS_ORDER.concat(['not routed']);
+    rw.innerHTML=!sp.length?AW('router decisions today (shadow rows)'):`<table><thead><tr><th>SPORT</th>${cols.map(c=>`<th class="r ${armCls(c)}">${esc(c.toUpperCase())}</th>`).join('')}</tr></thead><tbody>`+
+      sp.map(k=>`<tr><td>${esc(k)}</td>`+cols.map(c=>`<td class="r">${rt[k][c]||'<span class="dim">0</span>'}</td>`).join('')+`</tr>`).join('')+`</tbody></table>`; }
+  const dw=$('#d6Wrap'); if(dw){ const x=d.d6||{};
+    if(!x.by_sport){ dw.innerHTML=AW(x.awaiting||'D6 scorecard'); $('#d6N').textContent='—'; }
+    else { $('#d6N').textContent=`${x.wired} of ${x.registered} cells wired`; const L=x.layers||[];
+      dw.innerHTML=`<div class="d6row"><span></span><span class="d6hd">wired / cells</span>`+L.map((l,i)=>`<span class="d6hd">${i+1} ${esc(l)}</span>`).join('')+`</div>`+
+        Object.entries(x.by_sport).sort().map(([s,v])=>`<div class="d6row"><span class="lb">${esc(s.toUpperCase())}</span><span class="${v.wired?'pos':'neg'}">${v.wired} / ${v.registered}</span>`+
+          (v.per_layer||[]).map((n,i)=>`<span class="d6cell ${n?'':'zero'}" title="${esc(s.toUpperCase())} · layer ${i+1} ${esc(L[i]||'')}: ${n} of ${v.registered} cells"><i style="width:${(v.registered?100*n/v.registered:0).toFixed(1)}%"></i></span>`).join('')+`</div>`).join('')+
+        `<div class="dim" style="font-size:11px;margin-top:6px">bar = share of the sport's registered cells with that layer evidenced · red outline = no cell has it yet · source: decision_trees/coverage.py</div>`; } }
+  fillArmOrders(d,null,'#aoWrap','#aoN','#aoNote'); }
 function fillNow(d){
   const st=$('#strip'); if(!st) return;
+  fillRouter(d);
   const x=d.decisions, rows=(x&&x.rows)||[];
   if(S.notlive||!x||(!rows.length&&!(x.books||[]).some(b=>b.drawdown!=null))){
     st.innerHTML=`<div class="sb"><div class="k">MODE</div><div class="v neg">${S.notlive?'NOT LIVE':'NO DATA'}</div><div class="s">${S.notlive?'terminal cannot reach /api/data':'awaiting '+esc((x&&x.awaiting)||'decision sources')}</div></div>`;
@@ -2290,7 +2437,7 @@ function fillNow(d){
   const day=new Date().toISOString().slice(0,10);
   const f4n=v=>v==null||!Number.isFinite(Number(v))?'—':Number(v).toFixed(4);
   const evals=(x.arms||[]).reduce((n,a)=>n+(a.rows_today||0),0), wf=rows.filter(r=>r.would_fire).length;
-  const ev=`<div class="sb"><div class="k">Evaluations today</div><div class="v cy">${evals}</div><div class="s">${wf} of last ${rows.length} would fire · $0 each</div><div class="src">source: shadow ledgers + t4 cycle log</div></div>`;
+  const ev=`<div class="sb"><div class="k">Evaluations today</div><div class="v cy">${evals}</div><div class="s">${wf} of last ${rows.length} meet the fade entry rule · $0 each</div><div class="src">source: shadow ledgers + t4 cycle log</div></div>`;
   st.innerHTML=mode+cap+books+ev;
   $('#arms').innerHTML=(x.arms||[]).length?(x.arms||[]).map(a=>{
     const age=ageTxt(a.last_ts), cls=age==null?'old':age<=1800?'fresh':age>6*3600?'old':'';
@@ -2307,14 +2454,14 @@ function fillNow(d){
   $('#dsRule').textContent=x.fire_rule||'';
   const wb=$('#wfBtn'); if(wb){ wb.classList.toggle('on',S.wfOnly); wb.onclick=()=>{S.wfOnly=!S.wfOnly; fillNow(LAST)}; }
   const shown=S.wfOnly?rows.filter(r=>r.would_fire):rows;
-  $('#dsWrap').innerHTML=shown.length?`<table><thead><tr><th>TIME (UTC)</th><th>SPORT</th><th>MARKET</th><th>BAND</th><th class="r">MODEL P</th><th class="r">MKT PRICE</th><th class="r">EDGE (NET)</th><th>WOULD-FIRE</th><th>STAKE</th></tr></thead><tbody>`+
+  $('#dsWrap').innerHTML=shown.length?`<table><thead><tr><th>TIME (UTC)</th><th>SPORT</th><th>MARKET</th><th>BAND</th><th class="r">MODEL P</th><th class="r">MKT PRICE</th><th class="r">EDGE (NET)</th><th>ARM</th><th>FADE ENTRY</th><th>STAKE</th></tr></thead><tbody>`+
     shown.map(r=>{ const a=ageTxt(r.ts), stale=a!=null&&a>6*3600, t=String(r.ts||'');
       const tm=t.slice(0,10)===day?t.slice(11,19):t.slice(5,10)+' '+t.slice(11,16);
       const e=Number(r.edge);
       return `<tr class="${stale?'stale':''}"><td title="${esc(t)} · ${fmtAge(a)} ago">${esc(tm)}</td><td>${esc(r.sport||'—')}</td>`+
         `<td class="tk" title="${esc(r.market||'')}">${esc(r.market||'—')}</td><td>${esc(r.band||'—')}</td>`+
         `<td class="r">${f4n(r.p)}</td><td class="r">${f4n(r.price)}</td><td class="r ${Number.isFinite(e)&&e>0?'pos':'dim'}">${Number.isFinite(e)?(e>0?'+':'')+e.toFixed(4):'—'}</td>`+
-        `<td class="wf">${r.would_fire?'WOULD FIRE ('+esc(r.side||'?')+')':'<span class="dim">no</span>'}</td><td class="stk">$0 SHADOW</td></tr>`}).join('')+`</tbody></table>`
+        `<td class="${armCls(r.arm||'')}">${esc(r.arm||'—')}</td><td class="wf">${r.would_fire?'yes ('+esc(r.side||'?')+')':'<span class="dim">no</span>'}</td><td class="stk">$0 SHADOW</td></tr>`}).join('')+`</tbody></table>`
     :`<div class="aw">${S.wfOnly?'no would-fire rows in the window':'no evaluations in the window'}</div>`;
 }
 function paintFresh(){
@@ -2806,7 +2953,7 @@ const DEMO={
    books:[{book:'T1',initial:1000,realized_pnl:-124.44,drawdown:0.1244,limit:0.2,tripped:false,age_s:2700},
           {book:'T4M-PROJ',initial:1000,realized_pnl:-134.47,drawdown:0.1345,limit:0.2,tripped:false,age_s:60}],
    kelly:{T1:0,'T4M-PROJ':0},sizing_live:false,
-   fire_rule:'WOULD-FIRE = fee-adjusted net edge > 0 (shadow computation; this stream places nothing — T4M-PROJ placements are the panel above)'},
+   fire_rule:'ARM = the router’s choice per row (ride / fade / momentum / pot of gold / no bet). FADE ENTRY = fee-adjusted net edge > 0: the fade arm’s entry rule, one input to the router. This stream places nothing.'},
   pipe_mtimes:{'PIPE-05  (23:30Z)':_iso(3600*7),'PIPE-05R (06:30Z)':_iso(3600*2),
     'PIPE-05FX(22:30Z)':_iso(3600*8),'PIPE-05C (Mon14Z)':_iso(3600*60)},
 };
