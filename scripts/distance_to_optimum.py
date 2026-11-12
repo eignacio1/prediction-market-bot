@@ -411,11 +411,25 @@ def proof(repo: Path) -> list[dict]:
     return [p1, p2, m_ok("P3", f"{nxt} ({n_same} cell(s), e.g. {dates[0][1]}){modal}", s, as_of)]
 
 
+# --------------------------------------------------------------------------- DEPTH D6 (ADR-0077)
+def d6(repo: Path) -> list[dict]:
+    """Registered cells wired end to end (all seven layers present and evidenced), per sport, from decision_trees.coverage."""
+    src = "src/prediction_market_bot/decision_trees/coverage.py d6_layers + leaf_map.json"
+    sys.path.insert(0, str(repo / "src"))
+    try:
+        from prediction_market_bot.decision_trees import coverage
+        sm = coverage.d6_summary(coverage.d6_layers())
+    except Exception as e:
+        return [m_na("D6", f"cannot compute ({type(e).__name__}: {e})", src)]
+    parts = [f"{s} {d['wired']}/{d['registered']} (layers 1-7: {'/'.join(map(str, d['per_layer']))})" for s, d in sorted(sm["by_sport"].items())]
+    return [m_ok("D6", f"{sm['wired']} / {sm['registered']} cells wired · " + " · ".join(parts), src, _mtime(repo / "src/prediction_market_bot/decision_trees/leaf_map.json"))]
+
+
 # --------------------------------------------------------------------------- assemble/render
 def compute(repo: Path | str = REPO) -> dict:
     repo = Path(repo)
     ms: list[dict] = []
-    for fn in (breadth, depth, d4, d5, execution, proof):
+    for fn in (breadth, depth, d4, d5, d6, execution, proof):
         try:
             ms.extend(fn(repo))
         except Exception as e:  # one broken source never blanks the table

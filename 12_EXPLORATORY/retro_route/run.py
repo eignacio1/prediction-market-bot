@@ -47,6 +47,12 @@ refout = {}
 for fam, arms in ref.items():
     refout["|".join(fam)] = {a: dict(zip(("mean", "lo", "hi", "p"), rr.boot_ci(by))) | {"n": sum(len(v) for v in by.values()), "games": len(by)}
                              for a, by in arms.items() if len(by) >= rr.MIN_TEST_GAMES}
+xf = rr.extra_family_table(rows, test_g)
+extra_fam = {"|".join(f): {a: dict(zip(("mean", "lo", "hi", "p"), rr.boot_ci(by))) | {"n": sum(len(v) for v in by.values()), "games": len(by)}
+                          for a, by in arms.items() if len(by) >= rr.MIN_TEST_GAMES} for f, arms in xf.items()}
+xl = rr.extra_leaf_table(rows, test_g)
+extra_leaves = [{"leaf": list(k), **{"arms": v}} for k, v in sorted(xl.items())]
+json.dump({"extra_arms": {"family": extra_fam, "leaves": extra_leaves}}, open(safe_out(f"{HERE}/results_extra.json"), "w"), indent=1)
 json.dump({"route": res, "reference_heldout_all_rows": refout}, open(safe_out(f"{HERE}/results.json"), "w"), indent=1, default=list)
 L = res["leaves"]
 print("rows", len(rows), "fit_games", res["fit_games"], "test_games", res["test_games"])
