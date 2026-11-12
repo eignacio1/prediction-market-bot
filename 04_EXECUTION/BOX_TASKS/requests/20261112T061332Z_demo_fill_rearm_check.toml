@@ -1,0 +1,2 @@
+task = "demo_fill_rearm_check"
+note = "SW-9 W112 close: what is in the box override file (W112.3 says ARM_ORDERS=dry keeps the box DRY); read-only"
