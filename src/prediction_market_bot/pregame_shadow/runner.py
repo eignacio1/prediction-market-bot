@@ -126,11 +126,12 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
             # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
             why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
                    else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
-            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **router_fields(row, series, filters=flt, filters_note=flt_note)}):
+            rf = router_fields(row, series, filters=flt, filters_note=flt_note)
+            if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **rf}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
                     try:
-                        on_row({**row, **book_fields(m)})
+                        on_row({**row, **book_fields(m), **rf})  # W112.3: the router decision rides along for the arm path
                     except Exception:  # noqa: BLE001 - observer failure never affects the shadow run
                         pass
             else:

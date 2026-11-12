@@ -545,3 +545,27 @@ def test_rescore_cache_flips_wrong_side_leaves_raw_untouched():
     assert st == {"entries": 5, "flipped": 2, "already_right": 1, "no_intended": 1, "flipped_unsettled": 1}
     again, st2 = rpt.rescore_cache(new, {"a": "no", "b": "no", "c": "yes", "e": "no"})
     assert st2["flipped"] == 0 and again["a"]["won"] is True                      # idempotent
+
+
+def test_arm_orders_report_per_arm_epoch_split():
+    """W112.3: arm orders reported per arm, on their own rows; pre-epoch NO side dropped; fills vs non-fills split."""
+    import importlib.util, sys
+    from datetime import datetime, timezone
+    spec = importlib.util.spec_from_file_location("dffr_arm", "scripts/demo_fill_forward_report.py")
+    m = importlib.util.module_from_spec(spec); sys.modules["dffr_arm"] = m; spec.loader.exec_module(m)
+    post, pre = "2026-11-10T12:00:00+00:00", "2026-11-01T12:00:00+00:00"
+    rows = [
+        {"event": "arm_order", "ok": True, "order_id": "a", "ticker": "T", "side": "yes", "arm": "RIDE", "ts": post, "entry_price": 0.6, "adr0072_assignment": "treatment"},
+        {"event": "arm_order", "ok": True, "order_id": "b", "ticker": "T", "side": "no", "arm": "RIDE", "ts": post, "entry_price": 0.4, "adr0072_assignment": "control"},
+        {"event": "arm_order", "ok": True, "order_id": "c", "ticker": "T", "side": "no", "arm": "RIDE", "ts": pre, "entry_price": 0.4},
+        {"event": "arm_skip", "reason": "no_bet", "arm": "NO_BET", "ts": post},
+    ]
+    res = {"a": {"fills": 1, "settled": True, "won": True, "price": 0.6},
+           "b": {"fills": 0, "settled": True, "nf_won": False}}
+    rep = m.arm_orders_report(rows, lambda oid, tk: res.get(oid))
+    k = rep["by_arm"]["RIDE|post_epoch_all_sides"]
+    assert k["orders"] == 2 and k["fills"] == 1 and k["fill_rate"] == 0.5
+    assert abs(k["pnl_per_filled_contract_before_fees"] - 0.4) < 1e-9
+    assert k["win_rate_fills"] == 1.0 and k["win_rate_nonfills_counterfactual"] == 0.0
+    assert "RIDE|pre_epoch_yes_only" not in rep["by_arm"]  # the only pre-epoch row was NO side
+    assert rep["skips_by_arm_reason"] == {"NO_BET|no_bet": 1}
