@@ -3476,3 +3476,14 @@ parked for R&D; no cell, market or arm closes. Supersedes the 11-10 21:59 PT "fa
 becomes closed hypotheses in W112.2. (2) AUTHORIZED: the router's arm drives the ADR-0072 demo forward test's orders (demo only, flat
 stakes, Kelly 0) - superseding addendum, frozen file untouched; switched on by W112.3 after tests and a dry run. (3) The scope is re-cut
 around D6 (cells wired through all seven layers); Wave 112 = layers 3 / 6 / 7 + NHL depth.
+
+## 2026-11-12 — W112.2 (B-082): closed hypotheses replace closed arms; sizing rule per arm built (D6 layer 6) (PR #487, 38b0767)
+Implements the 2026-11-11 16:51 PT operator ruling. (1) `MarketTypeCell.closed_hypotheses` (`ClosedHypothesis`) replaces `closed_arms`
+(kept for import compatibility only; no cell sets it). NFL game total T1 / T2 carry EXP-037 as a closed hypothesis, parked for R&D, every
+arm open; frozen label RULED_OUT unchanged. `routing_for` reads "hypothesis closed (EXP-xxx, parked for R&D)"; proof_calendar and
+distance_to_optimum P2 report closed hypotheses / 0 closed arms / closed cells. (2) `c4_risk_engine/arm_sizing.size_for(arm, cell,
+context)`: pure, flat demo stake (Kelly 0 read from the band), caps per event / day / arm budget, same-game cluster merge via
+`quant/sgp.phi` >= 0.90, Kelly-shaped stake logged and never placed. Cap defaults ($5 event, $50 day, $25 arm) are demo-scale
+placeholders awaiting window confirmation. Not wired to the order path (112.3 hook is the window's next step). (3) 14-day replay script
+written; NOT run on real rows (shadow rows are on the box; needs a read-only box task). No stake, Kelly, order-path or ledger change.
+Open: `claude_md_now.py:36,42` and `web_dashboard.py:2240` still say "fade arm closed (routed)"; D-03 PARTIAL -> BUILT is the window's flip.
