@@ -565,6 +565,56 @@ def build_report(events: list[dict], now: datetime, fills_for: Optional[Callable
             "assignment_check": assignment_check(events, *assign) if assign else None}
 
 
+def arm_orders_report(rows: list[dict], fills_for: Optional[Callable[[str, str], dict]],
+                      markouts: Optional[list[dict]] = None, epoch: datetime = GG1771_EPOCH) -> dict:
+    """W112.3 (ADR-0072 addendum 2026-11-12): router-arm orders, reported PER ARM and on their own rows, never folded into
+    treatment / control. Rows are the arm-order log (logs/arm_orders/orders.jsonl: arm_order, arm_skip, arm_would_order).
+    Split by data epoch (GG-1771): `pre_epoch_yes_only` (NO-side fills before the epoch were mirror-priced and are dropped)
+    and `post_epoch_all_sides`. Per arm: orders, fills, fill rate, P&L per filled contract before fees (settle minus price),
+    win rate on fills vs the counterfactual win rate of unfilled orders (E3, adverse selection), 30-minute markout where the
+    markout collector wrote one for that order_id (it does not yet read arm orders: n_markout 0 says so)."""
+    mk = {m["order_id"]: m for m in (markouts or []) if m.get("order_id") and m.get("h30") is not None}
+    out: dict[str, Any] = {}
+    for r in rows:
+        if r.get("event") != "arm_order" or not r.get("ok") or not r.get("order_id"):
+            continue
+        ts = _ts(r)
+        post = ts >= epoch
+        if not post and r.get("side") != "yes":
+            continue  # pre-epoch NO side: mirror-priced, not evidence
+        key = f"{r.get('arm')}|{'post_epoch_all_sides' if post else 'pre_epoch_yes_only'}"
+        c = out.setdefault(key, {"arm": r.get("arm"), "epoch": "post_epoch_all_sides" if post else "pre_epoch_yes_only",
+                                 "orders": 0, "fills": 0, "pnl": [], "won": [], "nf_won": [], "markout": [],
+                                 "assignment": Counter()})
+        c["orders"] += 1
+        c["assignment"][r.get("adr0072_assignment")] += 1
+        f = fills_for(r["order_id"], r.get("ticker")) if fills_for else None
+        if f and (f.get("fills") or 0) > 0:
+            c["fills"] += 1
+            if f.get("settled") and f.get("won") is not None:
+                c["won"].append(1.0 if f["won"] else 0.0)
+                price = float(f.get("price") if f.get("price") is not None else r.get("entry_price"))
+                c["pnl"].append((1.0 - price) if f["won"] else -price)
+            if r["order_id"] in mk:
+                c["markout"].append(float(mk[r["order_id"]]["h30"]))
+        elif f and f.get("nf_won") is not None:
+            c["nf_won"].append(1.0 if f["nf_won"] else 0.0)
+    mean = lambda v: (sum(v) / len(v)) if v else None  # noqa: E731
+    res = {}
+    for k, c in sorted(out.items()):
+        res[k] = {"arm": c["arm"], "epoch": c["epoch"], "orders": c["orders"], "fills": c["fills"],
+                  "fill_rate": (c["fills"] / c["orders"]) if c["orders"] else None,
+                  "pnl_per_filled_contract_before_fees": mean(c["pnl"]), "n_settled_fills": len(c["pnl"]),
+                  "win_rate_fills": mean(c["won"]), "win_rate_nonfills_counterfactual": mean(c["nf_won"]),
+                  "n_nonfills_resolved": len(c["nf_won"]), "markout_30m_mean": mean(c["markout"]),
+                  "n_markout": len(c["markout"]), "assignment_it_would_have_had": dict(c["assignment"])}
+    skips = Counter((r.get("arm"), r.get("reason")) for r in rows if r.get("event") == "arm_skip" and _ts(r) >= epoch)
+    would = Counter(r.get("arm") for r in rows if r.get("event") == "arm_would_order" and _ts(r) >= epoch)
+    return {"by_arm": res, "dry_run_would_orders_by_arm": dict(would),
+            "skips_by_arm_reason": {f"{a}|{b}": n for (a, b), n in sorted(skips.items(), key=str)},
+            "note": "own rows; the treatment/control placement comparison is read on shadow_order rows only (ADR-0072 addendum 2026-11-12)"}
+
+
 def _override_for(env_path: Path) -> Path:
     return env_path.with_name("demo_fill.override.env")
 
@@ -699,6 +749,12 @@ def main(argv: Optional[list[str]] = None) -> int:
     since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else None
     rep = build_report(events, now, fills_for, note, since, _assign_params(Path(a.env_file)), epoch_floor=GG1771_EPOCH)
     rep["gg1771_epoch"] = GG1771_EPOCH.isoformat()
+    try:  # W112.3: per-arm E1/E2/E3 + markout on the arm-order log; a failure never blocks the main report
+        arm_rows = load_events(REPO / "logs" / "arm_orders" / "orders.jsonl") if not a.log else load_events(Path(a.log).parent / "arm_orders" / "orders.jsonl")
+        sides.update({r["order_id"]: r["side"] for r in arm_rows if r.get("event") == "arm_order" and r.get("order_id") and r.get("side")})  # intended side, read by fills_for
+        rep["arm_orders"] = arm_orders_report(arm_rows, fills_for, load_markouts(MARKOUT_DIR / "markouts.jsonl"))
+    except Exception as e:  # noqa: BLE001
+        rep["arm_orders"] = {"error": type(e).__name__}
     if since is not None:
         a.no_act = True  # a windowed read-back never edits the switch config
     if not a.no_act and turn_off(rep["tripped"], now, Path(a.env_file), pol.append_log):
