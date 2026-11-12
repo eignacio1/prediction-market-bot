@@ -1252,3 +1252,4 @@
 | 2026-11-12T00:05:41Z | GG reserve 1 (assigned at claim) | W111.4 B-080 STANDARD: granularity index as tree splits, NBA first (situation-split machinery, ~20 entries, filters scored per leaf by arm). PURPOSE: DEPTH D5(b) NBA applied 10 -> N of 17, D1 NBA; directive D-06 (index entries with all five parts 0 -> N) |
 | 2026-11-12T00:41:26Z | B-076 | MERGED: NO — branch `session/20261112T004013Z-w111-1-close` awaiting merge — W111.1 B-076: a losing look closes only the FADE arm; NFL game total T1/T2 reopened as SHADOW (PR #482, c592dda). (commit `92da829`) |
 | 2026-11-12T00:42:06Z | B-076 | CLOSED — merge confirmed, HEAD (3a43722) is ancestor of origin/main — W111.1 merged PR #482 c592dda; close-out landed 3a43722 |
+| 2026-11-12T00:42:23Z | B-077 | CLOSED — W111.2 B-077 doctrine-conformance audit: 41 code decision points, label fixes + banned-word test merged (#481), #480 merged (commit `c592dda`) |
