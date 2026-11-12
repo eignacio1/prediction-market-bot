@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Optional
 
 from .matchup_cross import Terms
-from .weather_factor import WeatherContext, assert_priceable, exposure, is_indoor
+from .weather_factor import MIN_LEAD_H, WeatherContext, assert_priceable, exposure, is_indoor
 
 WIND_HIGH_MPH = 15.0
 COLD_F = 35.0
@@ -18,8 +18,8 @@ PASS_MISMATCH_PTS = 1.5   # summed home+away pass-cross terms (EPA points) beyon
 SIDE_EDGE_PTS = 2.0       # home-minus-away summed pass+rush cross beyond +/- this = a side edge
 
 
-def weather_leaf(ctx: WeatherContext) -> str:
-    assert_priceable(ctx) if ctx.source != "none" else None
+def weather_leaf(ctx: WeatherContext, min_lead_h: float = MIN_LEAD_H) -> str:
+    assert_priceable(ctx, min_lead_h) if ctx.source != "none" else None
     if ctx.source == "none":
         return "unknown"
     if is_indoor(ctx.roof):
@@ -44,12 +44,15 @@ def matchup_side_leaf(h: Terms, a: Terms) -> str:
     return "home_edge" if d > SIDE_EDGE_PTS else "away_edge" if d < -SIDE_EDGE_PTS else "neutral"
 
 
-def market_state_leaf(spread_line: float, total_line: float) -> dict:
+def market_state_leaf(spread_line: Optional[float], total_line: Optional[float]) -> dict:
+    if spread_line is None or total_line is None or spread_line != spread_line or total_line != total_line:
+        return {"spread_bucket": "unknown", "total_bucket": "unknown"}   # no line published yet: say so, never guess
     s = abs(spread_line)
     return {"spread_bucket": "pk" if s < 3.5 else "mid" if s <= 7 else "big",
             "total_bucket": "low" if total_line < 42 else "high" if total_line > 47 else "mid"}
 
 
-def nfl_filters(ctx: WeatherContext, terms_home: Terms, terms_away: Terms, spread_line: float, total_line: float) -> dict:
-    return {"weather": weather_leaf(ctx), "matchup_total": matchup_total_leaf(terms_home, terms_away),
+def nfl_filters(ctx: WeatherContext, terms_home: Terms, terms_away: Terms, spread_line: float, total_line: float,
+                min_lead_h: float = MIN_LEAD_H) -> dict:
+    return {"weather": weather_leaf(ctx, min_lead_h), "matchup_total": matchup_total_leaf(terms_home, terms_away),
             "matchup_side": matchup_side_leaf(terms_home, terms_away), **market_state_leaf(spread_line, total_line)}
