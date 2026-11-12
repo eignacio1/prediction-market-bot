@@ -73,8 +73,9 @@ factor_class = "NBA-7"
 name = "Lineup / on-off, play-type, matchup"
 source = "src/prediction_market_bot/c1_signal_ingestion/nba_lineups.py (stints from sportsdataverse PBP + lineups, point-in-time)"
 engine_slot = "player rating"
-stage = "interpreted"
-evidence = "12_EXPLORATORY/nba_lineups/results_W92_3.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/granularity_index_nba/leaf_scores.json"
+# W111.4 (applied): lineup-type splits (shooting_lineup_offence_ppp, defensive_lineup_defence_ppp, shooters_vs_defenders_offence_ppp) plus situation splits (clutch, pace-by-start-type, turnover/foul rates) are exported as nba_engine/filters.py leaves and scored per leaf, held out, net after costs per arm, on the 2026-27 shadow rows. 0 leaves cleared BH + CI>0, so every leaf is routed NO_BET provisionally (a routing result, not a verdict). Lineups are quarter-box granular (GG-1895).
 # W92.3: interpreted on the TOTAL (held-out gain 4.04 MSE, CI 1.92-6.10, n=2008, survives prior-season carry); margin: no gain beyond prior-season carry (honest NO).
 # Granularity index: split = on/off + rotation-weighted rel rating per 100 poss; rank = shrunk rating vs same point in prior seasons (not yet a column);
 # matchup cross = home-away lineup diff, availability delta (played minus expected); market map = total via rotation pace/ptot, margin/spread only via availability delta;

@@ -17,6 +17,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import sys
+from pathlib import Path as _P
+sys.path.insert(0, str(_P(__file__).resolve().parent.parent))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nba_engine import situation_splits as ss
 
 ROOT = Path(os.environ.get("NBA_EVENTS_ROOT", "/Users/earlignacio/Documents/Claude/Projects/PM-worktrees/"
@@ -175,12 +179,12 @@ def main():
                   "metric": sit.metric, "side": sit.side, "unit_kind": sit.unit,
                   "markets": [{"family": f, "line": l, "direction": d} for f, l, d in sit.markets],
                   "application": "pending Part C (filters.py + per-leaf scoring)"})
-        (OUT / "entries" / f"{sit.name}.json").write_text(json.dumps(e, indent=1, default=jsonable))
+        safe_out(OUT / "entries" / f"{sit.name}.json").write_text(json.dumps(e, indent=1, default=jsonable))
         p82 = e["points"]["82"]
         rows.append({"name": sit.name, "ok": p82.get("ok", False), "unit": best, "value": p82.get("value"), "rank_history": p82.get("rank_history"),
                      "of_history": p82.get("of_history"), "trait": (p82.get("stability") or {}).get("trait"),
                      "split_half_r": (p82.get("stability") or {}).get("r_spearman_brown"), "markets": len(sit.markets)})
-    (OUT / "index.json").write_text(json.dumps(rows, indent=1, default=jsonable))
+    safe_out(OUT / "index.json").write_text(json.dumps(rows, indent=1, default=jsonable))
     print(json.dumps(rows, indent=1, default=jsonable))
 
 
