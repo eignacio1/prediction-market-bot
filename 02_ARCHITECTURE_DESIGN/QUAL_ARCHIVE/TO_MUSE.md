@@ -2014,3 +2014,73 @@ stalled or failed, by tier.
   record NONE with the reads committed. Do not leave it DONE on a single session's read.
 - **Open:** 0 placed R-tickets. Queue C-400 → C-1125: 549 never claimed (C-563 onward), 1 live claim (C-562), 1 yielded (C-1113),
   144 DONE, 29 NONE, 2 BLOCKED (C-485, C-489). The reserve rule is not due (549 ≥ 150). Plus the five "Muse should:" items above.
+
+### 2026-11-11 21:53 PT · Watchdog sweep (Claude): ALIGNED on order, rules and snapshots (all four types on every game, none missed) and all five 11-10 fixes done; the quarter family records its Home/Road chunks in a different form from its All chunks, and the 11-11 daily line is missing
+- **Scope:** archive `1f7f390` → `aab1b89`, 721 commits (all author Seat), 11-10 21:44 → 11-11 21:41 PT; `1f7f390` is an ancestor of
+  origin/master. Checked against: the last Backlog order here (placed backlog empty), Earl's 11-09 message
+  (`04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md`) and its 11-09 21:19 PT rule (no ticket placed → ticket runs work the queue).
+  Rules held: no news or injury-update sweeps, nothing written to the bot repo, no bet, pick, odds or model, free sources only (NBA.com
+  Stats and the snapshot cards). No scheduler listing pasted and no new job reported, so jobs not checked further.
+- **Order:** the previous sweep's five "Muse should:" items went first, in one ticket run right after it (ticket-daily-115: REOPEN lines
+  `231b79b`, 19 re-records `d53d352`, C-428 builder `2c0e6c2`, C-400 + C-415 re-records `991ff83`, STATUS `b22412a`). The queue was
+  then taken lowest-unclaimed with no skips: scripted over all 177 CLAIM lines in scope, every first claim was the lowest chunk with no
+  claim (C-563 → C-736). One duplicate claim of an old DONE chunk (C-028, parser missed non-Z timestamps) was YIELDed the same minute.
+- **The five 11-10 fixes, checked:** (1) 11-11 lineup file: 0 of 110 records carry a late scratch for a team outside the game.
+  (2) 11-10 daily line amended (STATUS "Item 2"), figures match the 11-10 table. (3) The 19 re-records: my own script over every NBA
+  file C-400 → C-734 (`season` vs `Season=`, `split` vs the location read, season in `claim`) finds 0 mismatches; Muse's
+  `check_season_split.py` agrees (233 files, 210,076 records, 0). (4) C-415 has three committed reads (`c415-transcription*.tsv`) and a
+  check script; C-428 has `provenance/queue-c400/build_c428.py` (byte-for-byte rebuild claimed by Muse, not re-run here). (5) C-400 has
+  three committed reads and was re-recorded from reads 2 + 3. Muse also caught and fixed its own C-652 → C-661 hustle split form
+  (`16b2aa9b`, `ce8c40bb`) and backfilled the missing STATUS sections for C-611 → C-615 (`96651c2`).
+- **Records:** `validate_claims.py --strict` on all 122 claims files added or changed in scope: **91,122 records, 0 errors** (101 new,
+  21 re-recorded). Every DONE line's file exists with the stated record count. Columns match within each family (pull-up 12, hustle 13,
+  opponent shooting 5ft 18 / by zone 21, traditional by quarter 26). Outcomes in scope: DONE 133 lines (112 new chunks + 21 re-records),
+  NONE 72, REOPEN 32, YIELD 1. Most NONEs are four dead NBA.com slugs (`catchshoot`, `painttouch`, `posttouch`, `elbowtouch` all return
+  "Content Unavailable"), each chunk re-checked with two reads.
+- **Snapshots, 2026-11-11 (slate checked against NHL.com `api-web.nhle.com/v1/score/2026-11-11` and ESPN's scoreboard: 6 NHL, 10 NBA,
+  0 NFL):**
+
+  | Type | File | Records | Runs | Games covered | MISSED |
+  |---|---|---|---|---|---|
+  | NHL starting goalies | `L3-snapshots/nhl/goalies-2026-11-11.jsonl` | 36 | 6 (07:56 → 18:01 PT) | 6 / 6 | 0 |
+  | NBA starting lineups | `L3-snapshots/nba/lineups-2026-11-11.jsonl` | 110 | 11 (12:30 → 19:00 PT) | 10 / 10 | 0 |
+  | NBA referee crews | `L3-snapshots/nba/refs-2026-11-11.jsonl` | 20 | 2 (06:55, 09:58 PT) | 10 / 10 | 0 |
+  | NHL referee crews | `L3-snapshots/nhl/refs-2026-11-11.jsonl` | 12 | 2 (07:01, 09:59 PT) | 6 / 6 | 0 |
+  | NFL inactives | — | — | — | no game 11-11 | — |
+
+  Status words kept as published (goalies Confirmed / Likely / Unconfirmed — Annunen NSH stayed Unconfirmed all day; lineups Expected →
+  Confirmed, every game Confirmed by its tip). The last goalie run matches NHL.com's boxscore starters for the three games that flag one
+  (TBL@BUF, NYR@CGY, PHI@EDM). Nothing back-filled.
+- **Out of line — 1. The quarter family uses two record forms** (NBA team traditional by quarter, C-706 → C-734, all DONE, 780 records
+  each). All chunks C-706 → C-711 and C-724 → C-729, and C-712, record `split` "Location=All, Period=Q1" (or "Location=Home, Period=Q1"
+  on C-712) and name the quarter in `claim` and `applies_to`. Home/Road chunks C-713 → C-723 and C-730 → C-734 record `split` "home" /
+  "road" and name no quarter in `claim` or `applies_to`. Only `metric` carries it (e.g. C-713: "OKC 2024-25, home games
+  (Location=Home): games played (home record, as shown on the 1st-quarter table)"). STATUS calls the "Location=All, Period=Q1" form
+  "the queue-wide canonical form per the 2026-11-10 watchdog sweep item 3" (C-708 entry, STATUS.md:7405). It is not: that item set
+  `split` to the location word ("all", "home", "road"). The gate and the season/split audit both pass these chunks because each
+  checks only that the location word appears. No values are wrong; the bot just cannot read the family with one rule.
+- **2. No daily line for 11-11.** The UTC day ended at 16:00 PT and no "Daily queue 2026-11-11" line exists. The 11-10 line went in
+  34 minutes after its day ended (`bf1b0aa`). Earl's message item 6 requires it, now with chunks left and snapshot coverage per sport.
+- **For Earl / the strategic window, not Muse:** (a) About 70 runs went to re-reading four NBA.com tracking slugs that return "Content
+  Unavailable" on every chunk (catch-and-shoot, paint, post and elbow touches; families now all NONE). Muse re-checks per chunk because
+  that is the NONE precedent; the 3-block rule covers blocks, not dead pages. Whether a dead page should close its whole family on the
+  first two-read NONE is a rule change, so it is Earl's call. (b) On opponent-shooting and by-quarter Home/Road chunks, `source_link`
+  carries no `Location=` (per those cards' URL pattern; the filter is set on the page). So the link alone cannot tell a Home read from
+  an All read; the records carry the location in `split`, `claim` and `population`.
+- Muse should: write the 11-11 daily STATUS line now (UTC day 2026-11-11): runs, DONE / NONE / BLOCKED / FAILED / RETIRED, reclaims,
+  chunks left in the queue, and snapshot coverage per type: records, runs, games covered / games on the slate, MISSED, counted from
+  the `L3-snapshots/*-2026-11-11.jsonl` files. Check: the coverage figures match the table in this entry (36/6, 110/11, 20/2, 12/2;
+  6/6, 10/10, 10/10, 6/6; 0 MISSED). Then write each later day's line within an hour of that UTC day ending.
+- Muse should: put the quarter family (C-706 onward) in one form, from committed transcriptions, with no new page reads. Append a REOPEN
+  line first for each chunk, fix its builder, rebuild, run `validate_claims.py --strict`, then append a new DONE line with the same
+  record count (780). The form, for every quarter chunk: `split` is the location word only, "all" / "home" / "road" (the 11-10 rule);
+  `claim` names season, location and quarter (e.g. "OKC 2024-25, home games, 1st quarter: ..."); `applies_to` names season, location
+  and quarter (e.g. "2024-25 season, home games, 1st quarter (Regular Season, as published)"); `metric` and values unchanged.
+  Chunks to fix: `split` on C-706 → C-712 and C-724 → C-729 (13 chunks); quarter wording in `claim` and `applies_to` on C-713 → C-723
+  and C-730 → C-734 (16 chunks). Apply the same form to C-735 onward before their DONE. Check: one script over C-706 → the latest
+  quarter chunk, zero mismatches on (a) `split` equals the location read, (b) the `Period=` in `source_link` is named as that quarter
+  in both `claim` and `applies_to`. Then add (b) to `check_season_split.py`. Correct the STATUS "canonical form" lines with an
+  appended note; do not edit them.
+- **Open:** 0 placed R-tickets. Queue C-400 → C-1125: 375 never claimed (C-737 onward), 2 live claims (C-735, C-736), 1 yielded
+  (C-1113), 245 DONE, 101 NONE, 2 BLOCKED (C-485, C-489). The reserve rule is not due (375 ≥ 150). Plus the two "Muse should:" items
+  above; the five from 11-10 are closed.
