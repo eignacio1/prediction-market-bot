@@ -94,7 +94,7 @@ of gold scored as an arm (09-25, 11-05) → 111.3 Part B.
 |---|---|---|---|---|
 | 111.1 | proof · 3 | A losing look closes only the fade arm; NFL game total T1 / T2 reopen as SHADOW (D-02, D-03) | 🟡 | PR #482 (CI pending); handoff SESSION_HANDOFF_20261112T001539Z_W111_1.md |
 | 111.2 | window · 3 | Doctrine-conformance audit: every decision point in code vs DOCTRINE.md; fix what no block owns (D-04, D-05) | ✅ | A, B (PR #481 merged, CI green), C and edge-map wording done; 41 decision points audited; findings handed to 111.1 / 111.3 / backlog in the handoff |
-| 111.3 | trees · 3 | D6: router reads the per-leaf arm map; pot of gold + momentum scored as arms; D6 scorecard; forward test frozen | ⬜ | |
+| 111.3 | trees · 3 | D6: router reads the per-leaf arm map; pot of gold + momentum scored as arms; D6 scorecard; forward test frozen | ✅ | PR #483 de8b003, #484 7846dec, CI green, box at 7846dec1. D6 0/117 wired (layers 3,6,7 open); arms scored per leaf 4→6; forward pre-reg frozen (116 tests) |
 | 111.4 | engine · 3 | The granularity index as tree splits, NBA: split · rank vs history · matchup cross · market map · application | ⬜ | |
 
 ### 111.1 - PROOF (A LOSING LOOK CLOSES ONLY THE FADE ARM)

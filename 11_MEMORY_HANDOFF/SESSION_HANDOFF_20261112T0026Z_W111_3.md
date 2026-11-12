@@ -9,7 +9,7 @@ surface_delta: none (no cron, service or workflow added; router fields are log-o
 directive_conflicts: none
 ```
 
-**Status:** Parts A, B, C done | B-079 | PR #483 merged (de8b003, CI green); PR #484 (Parts B+C) open, CI pending at write time.
+**Status:** Parts A, B, C done | B-079 | PR #483 merged (de8b003, CI green); PR #484 (Parts B+C) merged 7846dec, CI green; box deploy rc=0 at 7846dec1.
 
 ## What changed
 - **A (merged):** router reads `decision_trees/leaf_map.json` (110.5 fit-window arm per leaf); shadow rows log `leaf_id`, `arm`, `arm_source`, `thin`, `move_source`, `orders:"off"`. Replay script uses the map.
@@ -23,7 +23,7 @@ directive_conflicts: none
 - D0 tickers have no resolvable band in the archive replay and stay NO_BET.
 - `leaf_map.json` is not in package-data (loads from the source tree, like `longshot_cells.toml`).
 - Re-running run.py on current scratch gives fit_games 380 / test 163 vs committed 375 / 161 (box has more rows); committed results.json untouched.
-- Scratch: `PM-scratch/w111_3/`. Box deploy read-back for #483 and #484 not done at write time.
+- Scratch: `PM-scratch/w111_3/`. Box deploy read back: HEAD 7846dec1, rc=0.
 
 ## Operator decisions
 None (a new pre-registration, not a change to a frozen one).
