@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: B-080
+tier: STANDARD
+timestamp: 2026-11-12T00:50:00Z
+commit: 3d59e57
+one_line_summary: W111.4 B-080 granularity index as tree splits, NBA: 24 entries, nba_filters router interface, 85 leaves scored by arm held out (0 BH survivors), D5(b) NBA 10 -> 11 of 17 (PR #485)
+gg_touched: GG-1895
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NBA applied; index entries with all five parts; D-06
+gap_delta: D5(b) NBA 10 -> 11 of 17; entries with all five parts 0 -> 18 (source: leaf_scores.json, 2026-11-12)
+pattern_sweep: n/a (no defect fixed); exploratory-isolation writes routed via safe_out in both new scripts
+surface_delta: none
+-->
+
 # Session handoff — W111.4 (B-080) granularity index as tree splits, NBA
 
 vision_pillar: DEPTH
