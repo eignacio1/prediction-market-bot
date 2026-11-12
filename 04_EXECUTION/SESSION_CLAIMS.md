@@ -1269,3 +1269,4 @@
 | 2026-11-12T06:09:57Z | B-083 | CLOSED — W112.3 arm-driven demo orders merged (#486, ON via #492); box still DRY until override file is deleted (commit `454ea29`) |
 | 2026-11-12T06:10:22Z | B-083 | CLOSED — merge confirmed, HEAD (1d7d775) is ancestor of origin/main — W112.3 merged; box DRY pending override delete |
 | 2026-11-12T23:05:01Z | B-089 | W113.2 NFL wired for Sunday - PURPOSE: D6 layer 3 NFL 0->N cells, NFL index entries, D5(b) NFL applied |
+| 2026-11-12T23:05:01Z | B-086; GG reserve 3 | W113.3 B-086 ENGINE: NBA joint shared latent for same-player/teammate legs + SGP parlay branch. PURPOSE: D4 NBA (whole board one engine, parlays included); same-game joint error by pair class |
