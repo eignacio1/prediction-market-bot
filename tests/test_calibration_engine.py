@@ -344,3 +344,32 @@ def test_nba_pts_policy_matches_exp039():
 def test_nba_pts_sealed_below_300_player_games():
     out = ce.compute_scores(ce.PREREG["NBA_PTS"], "T1", _rows(299), {})
     assert out["status"] == "SEALED" and out["status_text"] == "SEALED (299 of 300)"
+
+
+# ── W111.1: a losing look closes only the FADE arm (ADR-0077, operator 2026-11-10 22:03 / 22:10 PT) ──
+
+def _sc(lo, hi, e7, ek):
+    return {"delta_brier_vs_market": {"mean": (lo + hi) / 2, "ci95": [lo, hi]},
+            "delta_brier_vs_climatology": {"mean": 0.01, "ci95": [0.0, 0.02]},
+            "e_net_entry_expected_k007": {"mean": e7}, "e_net_entry_expected_kmult": {"mean": ek}}
+
+
+def test_losing_look_closes_only_fade_cell_stays_shadow():
+    v = ce.verdict(ce.PREREG["NFL"], "JUDGED", _sc(-0.03, -0.01, 0.0, 0.0), 60)
+    assert v["verdict"] == v["verdict_preregistered"] == "RULED_OUT"          # frozen label reported unchanged
+    r = v["routing"]
+    assert r["closed_arms"] == ["FADE"] and r["cell_status"] == "SHADOW"
+    assert set(r["open_arms"]) == {"RIDE", "MOMENTUM", "POT_OF_GOLD", "NO_BET"}
+
+
+def test_winning_look_is_a_label_only_and_changes_no_status():
+    v = ce.verdict(ce.PREREG["NFL"], "JUDGED", _sc(0.01, 0.03, 0.02, 0.03), 60)
+    assert v["verdict"] == v["verdict_preregistered"] == "CANDIDATE-PENDING-CAPACITY"
+    assert v["routing"]["closed_arms"] == [] and v["routing"]["cell_status"] == "SHADOW"
+    assert "opens nothing" in v["routing"]["reading"]
+
+
+def test_shadow_label_closes_no_arm_and_unreleased_look_has_no_routing():
+    v = ce.verdict(ce.PREREG["NFL"], "JUDGED", _sc(-0.01, 0.01, 0.0, 0.0), 60)
+    assert v["verdict"] == v["verdict_preregistered"] and v["routing"]["closed_arms"] == []
+    assert ce.verdict(ce.PREREG["NFL"], "PRELIMINARY", _sc(0.01, 0.03, 1, 1), 60) == {}
