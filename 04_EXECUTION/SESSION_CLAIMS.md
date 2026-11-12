@@ -1260,3 +1260,4 @@
 | 2026-11-12T00:43:06Z | B-079 | CLOSED — merge confirmed, HEAD (e30adfe) is ancestor of origin/main — W111.3 trees: router reads leaf map, arms scored, D6 scorecard, forward test frozen |
 | 2026-11-12T00:43:32Z | B-079 | CLOSED — merge confirmed, HEAD (7fd38e3) is ancestor of origin/main — W111.3 trees: router reads leaf map, arms scored, D6 scorecard, forward test frozen |
 | 2026-11-12T00:56:34Z | T-TBD GG-reserve | W112.2 B-082 STANDARD: arm_sizing.py (D6 layer 6) + closed hypotheses replace closed arms. PURPOSE: D6 layer 6 cells 0->N; directive D-03 PARTIAL->BUILT |
+| 2026-11-12T00:57:22Z | TBD | W112.3 B-083 STANDARD: arm_orders.py — router arm drives ADR-0072 demo orders (D6 layer 7). PURPOSE: D6 layer 7 cells 0->N; E1/E2/E3 per arm |
