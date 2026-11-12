@@ -10,7 +10,7 @@ markets, one-sided books, date-only tickers on game day (NFL D0) -- those are NO
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Mapping, Optional, Protocol, Sequence
 
 from prediction_market_bot.decision_trees import longshot, ride
@@ -43,6 +43,7 @@ class Situation:
     market_type: Optional[str] = None  # W111.3: leaf-map coordinates (with band and prev_mid)
     band: Optional[str] = None
     prev_mid: Optional[float] = None  # the same ticker's previous logged mid, for the leaf's move bin
+    filters: Optional[Mapping] = None  # W112.1: {filter_name: leaf_label} from the sport's adapter (None = none supplied)
 
     @property
     def mid(self) -> Optional[float]:
@@ -74,6 +75,7 @@ class Evidence:
     momentum: Sequence[MomentumCell] = ()
     longshot: Optional[longshot.Table] = None  # None -> the shipped longshot_cells.toml (all IN_SAMPLE today)
     leaf_map: Optional[object] = None  # W111.3: a leaf_map.LeafMap; when set and the situation has a band, it decides
+    filter_splits: Optional[object] = None  # W112.1: a leaf_map.FilterSplits; None -> the shipped filter_splits.json
 
 
 @dataclass(frozen=True)
@@ -84,6 +86,8 @@ class Route:
     agreed: bool = False
     cell: Optional[object] = None  # the measured cell behind a POT_OF_GOLD route (carries its status for the order gate)
     leaf: Optional[object] = None  # W111.3: the leaf_map.LeafDecision behind the route (leaf_id, verbatim arm, held-out stats)
+    split: Optional[dict] = None  # W112.1: the filter-split lookup (kept / logged_only / untested / arm / conflict) when filters came in
+    arm_pre_split: Optional[str] = None  # the market-state leaf's own arm before a kept split replaced it
 
 
 def book_classes(s: Situation) -> tuple:
@@ -164,9 +168,17 @@ def _route_leaf(s: Situation, ev: Evidence) -> Route:
 
     row = lm.LeafMap.row_for(s.sport, s.market_type or "", s.band, s.mid, s.prev_mid)
     d = ev.leaf_map.decide(row, s.model_p)
+    split, pre = None, None
+    if s.filters:  # W112.1: leaf = market-state leaf x filter condition; only KEPT (tested per leaf) splits change the arm
+        fs = ev.filter_splits if ev.filter_splits is not None else lm.default_splits()
+        split = fs.lookup(s.sport.upper(), s.family, dict(s.filters))
+        if split["arm"] and not d.thin and d.known and split["arm"] != d.arm:
+            pre = d.arm
+            d = ev.leaf_map.decide(row, s.model_p, arm_override=split["arm"])
+            d = replace(d, reason=f"split_arm:{split['arm']};{d.reason}")
     if d.arm == "NO_BET":
-        return Route(NO_BET, None, (d.reason,), leaf=d)
-    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d)
+        return Route(NO_BET, None, (d.reason,), leaf=d, split=split, arm_pre_split=pre)
+    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d, split=split, arm_pre_split=pre)
 
 
 def route(s: Situation, ev: Evidence) -> Route:

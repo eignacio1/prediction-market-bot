@@ -55,7 +55,9 @@ class LeafMap:
     def leaf_id(self, r: dict) -> str:
         return "|".join(str(x) for x in rr.leaf_key(r))
 
-    def decide(self, r: dict, p_yes: Optional[float] = None) -> LeafDecision:
+    def decide(self, r: dict, p_yes: Optional[float] = None, arm_override: Optional[str] = None) -> LeafDecision:
+        """arm_override (W112.1): a KEPT filter split's arm replaces the market-state leaf's arm; the leaf's own thin /
+        unknown checks still apply, and the arm's side rules (momentum needs a move, model fade needs model p) are unchanged."""
         lid = self.leaf_id(r)
         rec = self.leaves.get(lid)
         if rec is None:
@@ -64,7 +66,7 @@ class LeafMap:
         base = dict(thin=rec["thin"], known=True, fit=rec["fit"], heldout=ho, bh=rec["bh"])
         if rec["thin"]:
             return LeafDecision(lid, "NO_BET", None, "leaf_thin", **base)
-        arm = rec["arm"]
+        arm = arm_override or rec["arm"]
         if arm == "NO_BET":
             return LeafDecision(lid, "NO_BET", None, "leaf_no_arm_positive_in_fit", **base)
         fs = rr.fav_side(r).lower()
@@ -89,6 +91,52 @@ class LeafMap:
         else:
             return LeafDecision(lid, "NO_BET", None, f"unknown_arm:{arm}", **base)
         return LeafDecision(lid, arm, side, f"leaf_arm:{arm}", **base)
+
+
+DEFAULT_SPLITS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "filter_splits.json")
+
+
+class FilterSplits:
+    """W112.1 Part B -- the tested filter splits (filter_splits.json, built by scripts/build_filter_splits_w112.py).
+
+    A leaf = market-state leaf x filter condition. A split is KEPT (may change the logged arm) only where its leaf was tested
+    per leaf: not thin, arm != NO_BET, held-out games >= 10 and held-out net after fee > 0. An untested filter value, or a tested
+    one that failed that rule, is logged and never split on. Several kept splits that disagree on the arm change nothing
+    (``split_conflict``): the market-state leaf's arm stands."""
+
+    def __init__(self, doc: dict):
+        self.doc = doc
+        self.index = {(s["sport"], s["series"], s["filter"], s["leaf"]): s for s in doc["splits"] if s["series"]}
+        self.index_any = {(s["sport"], s["filter"], s["leaf"]): s for s in doc["splits"] if not s["series"]}
+
+    @classmethod
+    def load(cls, path: str = DEFAULT_SPLITS) -> "FilterSplits":
+        with open(path) as fh:
+            return cls(json.load(fh))
+
+    def lookup(self, sport: str, series: str, filters: dict) -> dict:
+        """-> {'kept': [...], 'logged_only': [...], 'untested': [...], 'arm': arm|None, 'conflict': bool}; entries are 'filter=leaf'."""
+        kept, logged, untested = [], [], []
+        for name in sorted(filters):
+            leaf = filters[name]
+            if leaf in (None, False, "unknown"):
+                continue
+            s = self.index.get((sport, series, name, leaf)) or self.index_any.get((sport, name, leaf))
+            tag = f"{name}={leaf}"
+            if s is None:
+                untested.append(tag)
+            elif s["kept"]:
+                kept.append((tag, s["arm"]))
+            else:
+                logged.append(f"{tag}[{s['why']}]")
+        arms = {a for _, a in kept}
+        return {"kept": [f"{t}->{a}" for t, a in kept], "logged_only": logged, "untested": untested,
+                "arm": next(iter(arms)) if len(arms) == 1 else None, "conflict": len(arms) > 1}
+
+
+@lru_cache(maxsize=1)
+def default_splits() -> FilterSplits:
+    return FilterSplits.load()
 
 
 @lru_cache(maxsize=1)
