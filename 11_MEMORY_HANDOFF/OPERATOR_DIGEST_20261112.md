@@ -15,3 +15,13 @@ Built the NBA "situation" index: 24 entries, each with the split, how the team r
 
 ## W112.1 (trees)
 The bot's decision trees can now take the matchup-style filters as part of the decision, for NBA. Seven NBA filter rules passed our test, but none survives the stricter multiple-comparison check, so treat them as possibly luck; they only change paper (shadow) decisions, no orders. NFL and NHL are not wired yet (NFL lacks stored weather/matchup data; NHL waits on its own build). Still zero real money at risk. Nothing needed from you.
+
+## W112.3 — arm-driven demo orders (B-083), STANDARD
+- The router's arm now decides which side the demo orders take. Demo money only, flat stakes, Kelly 0. Merged (#486) and switched ON in the repo (#492), per your go.
+- The box is NOT yet placing arm orders. A leftover file on the box (`deploy/demo_fill.override.env`) still says dry-run and wins over the repo setting. My ssh delete was refused by the permission check, and I did not work around it.
+- To finish: allow that one remote delete, or run `! ssh prediction-market-vps 'cd /opt/prediction-market-bot && rm -f deploy/demo_fill.override.env'`.
+- Evidence so far: replaying 645 routed NBA rows gave 27 would-be orders and 607 NO BET, with no side violations. The real box dry run so far is all NO BET (NFL).
+- Caveats: routed rows no longer feed the placement test; markout ignores arm orders until extended.
+- Measure: D6 layer 7 code built; no E1/E2/E3 rows per arm yet.
+
+NEXT SESSION PRIMER: Remove the box override file, then read `logs/arm_orders/orders.jsonl` for the first `arm_order` row, or the NO BET counts with the epoch stated. Then register the markout GG.

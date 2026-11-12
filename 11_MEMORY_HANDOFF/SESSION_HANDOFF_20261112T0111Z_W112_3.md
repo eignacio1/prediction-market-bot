@@ -1,21 +1,37 @@
-# Session handoff — W112.3 (B-083), parked after Parts A+B
+# Session Handoff — 2026-11-12T06:20Z (W112.3 / B-083)
 
+<!-- session-meta
+task_id: B-083
+tier: STANDARD
+timestamp: 2026-11-12T06:20:00Z
+commit: 454ea29
+one_line_summary: W112.3 arm-driven demo orders merged (#486, ON via #492); box still DRY until override file is deleted
+gg_touched: none
+adr_touched: ADR-0072 addendum (2026-11-12)
+plan_deliverable_moved: no
 vision_pillar: EXECUTION
-gap_measure: D6 layer 7 cells (code built, switch OFF; not yet counted until ARM_ORDERS is on); E1/E2/E3 per arm (no rows yet)
-gap_delta: 0 -> 0 measured today; the path and the per-arm report exist
-pattern_sweep: the order paths that pick a side from the edge rule: shadow_flat_stake.maybe_place (hooked), ride_orders (own band, own rule, untouched), T4 paper path (not a shadow row, untouched). Runner on_row now passes the router decision.
-surface_delta: 0 crons, 0 services; one library module (arm_orders.py), one new log dir logs/arm_orders/, one new switch ARM_ORDERS (default off)
-directive_conflicts: none found (D-01, D-03, D-08, D-33 read)
+gap_measure: D6 layer 7 cells; E1/E2/E3 per arm
+gap_delta: none measured yet: code built and merged, switch ON in repo, box effectively DRY; no arm_order rows, so E1/E2/E3 per arm have no rows
+pattern_sweep: side-from-edge-rule order paths: shadow_flat_stake.maybe_place (hooked), ride_orders and T4 paper (untouched); tests pinning demo_fill.env (one, fixed #492)
+surface_delta: 0 crons, 0 services; one module arm_orders.py, log dir logs/arm_orders/, switch ARM_ORDERS (ON in deploy/demo_fill.env)
+-->
 
-## Done (all pushed)
-- Part A: `decision_trees/arm_orders.py` + hook in `shadow_flat_stake.maybe_place` + runner passes `router` to `on_row`. Merged as PR #486 (CI green, read). Switch `ARM_ORDERS` = off (default) / dry / on. Tests: `tests/test_arm_orders.py` (13).
-- Part B: `03_DECISIONS/ADR-0072_ADDENDUM_2026-11-12_arm-orders.md` (frozen ADR untouched); `arm_orders_report` in `scripts/demo_fill_forward_report.py` (per arm, epoch split pre YES-only / post all sides, fills, fill rate, P&L before fees, E3 fills vs non-fills, markout where a row exists).
-- Queue NOW row updated (docs-only push 73cf302).
+**Trigger:** operator-initiated (/session-end). **Last commit:** `454ea29` (main).
 
-## NOT done: Part C (parked on purpose)
-- Box deploy of #486 not yet confirmed: last box deploy log line read was `73cf302f` (docs-only), before the #486 merge commit `859ff1b`. Re-read `logs/vps_deploy.log` and record the t4-mlb restart decision first.
-- Then: set `ARM_ORDERS=dry` on the box (untracked `deploy/demo_fill.override.env`, read last), let one pregame run write `logs/arm_orders/orders.jsonl`, check sides / stakes / caps / tags / NO BET counts.
-- If clean: own PR adding `ARM_ORDERS=on` to `deploy/demo_fill.env`, citing the 11-11 16:51 PT authorization; merge on green; confirm the first `arm_order` row or that every routed row was NO BET (counts).
-- Caveat to report: with ON, routed rows stop producing `shadow_order` rows, so the placement test (a/b/c) accrues only on unrouted rows (stated in the addendum). `size_for` uses `SIZER` (None -> flat stake); 112.2's arm_sizing sets it.
-- Markout gap: the collector reads only `shadow_order`; arm orders show `n_markout` 0 until it is extended (register a GG if not already).
-- Worktree `PM-worktrees/20261112T005707Z-w112-3-arm-orders` still exists (branch merged); remove it when done.
+## Strategic Decisions This Session
+| Decision | Source |
+|---|---|
+| Arm drives demo orders; switch ON now; local replay (645 NBA rows) accepted in place of box dry run | operator 2026-11-11 16:51 PT "yes I approve"; 2026-11-12 "yes switch it" |
+
+## Done
+- #486: `arm_orders.py`, hook in `shadow_flat_stake.maybe_place`, runner passes router, 13 tests, ADR-0072 addendum, per-arm report. #492: `ARM_ORDERS=on` in `deploy/demo_fill.env` plus the pinned-test fix. Deploys read: no t4-mlb restart.
+
+## ONE THING PENDING
+The box is still DRY. Untracked `deploy/demo_fill.override.env` on the box holds `ARM_ORDERS=dry` and is read last. The ssh delete was refused by the classifier; not worked around. Operator: allow it, or run it with `!`. Then confirm the first `arm_order` row in `logs/arm_orders/orders.jsonl`, or that every routed row was NO BET (counts, epoch stated: GG-1771 split at 2026-11-06T01:03:42Z).
+
+## Caveats
+- ON: routed rows stop making `shadow_order` rows (addendum). Markout collector ignores arm orders (GG not yet registered). Sizing is flat until 112.2.
+- Stale "fade arm closed" text: `claude_md_now.py:36,42`, `web_dashboard.py:2240`.
+
+## Resume
+`cd /Users/earlignacio/Documents/Claude/Projects/Prediction\ Markets && ssh prediction-market-vps 'ls /opt/prediction-market-bot/deploy/demo_fill.override.env; tail -5 /opt/prediction-market-bot/logs/arm_orders/orders.jsonl'`
