@@ -13,7 +13,7 @@ name = "Skater quality (shot location/type, shooter, box)"
 source = "events: shooter_id, shot_type, x, y; box_players"
 engine_slot = "player rating"
 stage = "applied"
-evidence = "src/prediction_market_bot/nhl_engine/factors_w112.py + filters.py (W112.4); per-leaf held-out scores 12_EXPLORATORY/nhl_factors_w112/leaf_scores.json; filter exported, router call is 112.1"
+evidence = "src/prediction_market_bot/nhl_engine/filters.py"
 
 [[factor]]
 id = "H2"
@@ -31,7 +31,7 @@ name = "Line / pair deployment from shifts"
 source = "shifts: player_id, period, start_s, end_s"
 engine_slot = "none"
 stage = "applied"
-evidence = "src/prediction_market_bot/nhl_engine/factors_w112.py + filters.py (W112.4); per-leaf held-out scores 12_EXPLORATORY/nhl_factors_w112/leaf_scores.json; filter exported, router call is 112.1"
+evidence = "src/prediction_market_bot/nhl_engine/filters.py"
 
 [[factor]]
 id = "H4"
@@ -58,7 +58,7 @@ name = "Rest / schedule density"
 source = "games: start_time_utc, teams"
 engine_slot = "schedule context"
 stage = "applied"
-evidence = "src/prediction_market_bot/nhl_engine/factors_w112.py + filters.py (W112.4); per-leaf held-out scores 12_EXPLORATORY/nhl_factors_w112/leaf_scores.json; filter exported, router call is 112.1"
+evidence = "src/prediction_market_bot/nhl_engine/filters.py"
 
 [[factor]]
 id = "H7"
@@ -67,7 +67,7 @@ name = "Venue / home ice / neutral site"
 source = "games: venue, neutral_site"
 engine_slot = "schedule context"
 stage = "applied"
-evidence = "src/prediction_market_bot/nhl_engine/factors_w112.py + filters.py (W112.4); per-leaf held-out scores 12_EXPLORATORY/nhl_factors_w112/leaf_scores.json; filter exported, router call is 112.1"
+evidence = "src/prediction_market_bot/nhl_engine/filters.py"
 
 [[factor]]
 id = "H8"
@@ -76,7 +76,7 @@ name = "Travel distance / time zone"
 source = "games schedule (venue, start) + hand-built 37-arena coordinate / time-zone table (free); GAP-2 closed for listed venues"
 engine_slot = "router filter travel@side"
 stage = "applied"
-evidence = "src/prediction_market_bot/nhl_engine/factors_w112.py + filters.py (W112.4); per-leaf held-out scores 12_EXPLORATORY/nhl_factors_w112/leaf_scores.json; filter exported, router call is 112.1"
+evidence = "src/prediction_market_bot/nhl_engine/filters.py"
 
 [[factor]]
 id = "H9"
