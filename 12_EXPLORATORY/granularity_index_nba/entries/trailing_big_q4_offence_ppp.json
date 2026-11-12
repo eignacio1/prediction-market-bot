@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "trailing_big_q4_offence_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612739,
+   "markets": [
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "comeback"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "garbage-time"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.3597560975609757,
+   "n_plays": 164,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.0013121066081698911,
+    "r_spearman_brown": 0.002620774480824969,
+    "ci95": [
+     -0.27660304583194883,
+     0.216487703659335
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.014587525150905433,
+    "league_share": 0.06138563852176109,
+    "own_possessions": 1988,
+    "own_in_situation": 29
+   },
+   "cross": {
+    "opp": 1610612750,
+    "expected": 1.1139305068536818,
+    "league": 1.1139305068536818,
+    "delta_vs_league": 0.0,
+    "opp_value": 0.966996699669967,
+    "opp_n": 303
+   }
+  },
+  "40": {
+   "name": "trailing_big_q4_offence_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612739,
+   "markets": [
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "comeback"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "garbage-time"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.3597560975609757,
+   "n_plays": 164,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.018295758438449543,
+    "r_spearman_brown": 0.035934075708035904,
+    "ci95": [
+     -0.22631043392871011,
+     0.22920500389963405
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.02108433734939759,
+    "league_share": 0.06369110278327508,
+    "own_possessions": 3984,
+    "own_in_situation": 84
+   },
+   "cross": {
+    "opp": 1610612750,
+    "expected": 1.1139305068536818,
+    "league": 1.1139305068536818,
+    "delta_vs_league": 0.0,
+    "opp_value": 1.0390977443609022,
+    "opp_n": 665
+   }
+  },
+  "82": {
+   "name": "trailing_big_q4_offence_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612739,
+   "markets": [
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "comeback"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "garbage-time"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.3597560975609757,
+   "n_plays": 164,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.013474211795490474,
+    "r_spearman_brown": 0.026590142380868872,
+    "ci95": [
+     -0.24118068159651823,
+     0.22418367145310775
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.02009557652248499,
+    "league_share": 0.06450777095525789,
+    "own_possessions": 8161,
+    "own_in_situation": 164
+   },
+   "cross": {
+    "opp": 1610612750,
+    "expected": 1.1139305068536818,
+    "league": 1.1139305068536818,
+    "delta_vs_league": 0.0,
+    "opp_value": 1.0435413642960814,
+    "opp_n": 689
+   }
+  }
+ },
+ "name": "trailing_big_q4_offence_ppp",
+ "season": 2025,
+ "unit_shown": 1610612739,
+ "opp_shown": 1610612750,
+ "frame": "poss",
+ "metric": "points",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBASPREAD",
+   "line": "cover",
+   "direction": "comeback"
+  },
+  {
+   "family": "KXNBATOTAL",
+   "line": "over",
+   "direction": "garbage-time"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

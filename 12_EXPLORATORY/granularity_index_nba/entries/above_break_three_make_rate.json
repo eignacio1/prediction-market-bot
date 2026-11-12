@@ -1,0 +1,173 @@
+{
+ "points": {
+  "20": {
+   "name": "above_break_three_make_rate",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612739,
+   "markets": [
+    {
+     "family": "player_threes_prop",
+     "line": "over",
+     "direction": "above-break"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.3888888888888889,
+   "n_plays": 504,
+   "games": 20,
+   "rank_league": 3,
+   "of_league": 30,
+   "rank_history": 15,
+   "of_history": 270,
+   "percentile_history": 0.9479553903345725,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.08518629015776494,
+    "r_spearman_brown": 0.15699846363776032,
+    "ci95": [
+     -0.09488471244663606,
+     0.3539860271831227
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.28266965787997755,
+    "league_share": 0.30045854318574755,
+    "own_possessions": 1783,
+    "own_in_situation": 504
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.35486831187104734,
+    "league": 0.34985788074207647,
+    "delta_vs_league": 0.005010431128970871,
+    "opp_value": 0.3253968253968254,
+    "opp_n": 504
+   }
+  },
+  "40": {
+   "name": "above_break_three_make_rate",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612739,
+   "markets": [
+    {
+     "family": "player_threes_prop",
+     "line": "over",
+     "direction": "above-break"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.38227146814404434,
+   "n_plays": 1083,
+   "games": 40,
+   "rank_league": 2,
+   "of_league": 30,
+   "rank_history": 12,
+   "of_history": 270,
+   "percentile_history": 0.9591078066914498,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.24407135470285135,
+    "r_spearman_brown": 0.39237517009006,
+    "ci95": [
+     0.21668992110464147,
+     0.5349326015787842
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.3028523489932886,
+    "league_share": 0.29980017074612303,
+    "own_possessions": 3576,
+    "own_in_situation": 1083
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.34385926938896155,
+    "league": 0.34985788074207647,
+    "delta_vs_league": -0.005998611353114913,
+    "opp_value": 0.30409356725146197,
+    "opp_n": 1026
+   }
+  },
+  "82": {
+   "name": "above_break_three_make_rate",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612739,
+   "markets": [
+    {
+     "family": "player_threes_prop",
+     "line": "over",
+     "direction": "above-break"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.3719148936170213,
+   "n_plays": 2350,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 24,
+   "of_history": 270,
+   "percentile_history": 0.9144981412639406,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.3199327528137519,
+    "r_spearman_brown": 0.4847712917673098,
+    "ci95": [
+     0.35234117580830304,
+     0.5948990408962334
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.315690488984417,
+    "league_share": 0.2980863401768347,
+    "own_possessions": 7444,
+    "own_in_situation": 2350
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.34884825284490434,
+    "league": 0.34985788074207647,
+    "delta_vs_league": -0.0010096278971721273,
+    "opp_value": 0.3250817375058384,
+    "opp_n": 2141
+   }
+  }
+ },
+ "name": "above_break_three_make_rate",
+ "season": 2025,
+ "unit_shown": 1610612739,
+ "opp_shown": 1610612760,
+ "frame": "shot",
+ "metric": "make",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "player_threes_prop",
+   "line": "over",
+   "direction": "above-break"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

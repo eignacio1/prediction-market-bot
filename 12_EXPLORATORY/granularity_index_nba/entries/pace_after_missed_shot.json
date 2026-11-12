@@ -1,0 +1,173 @@
+{
+ "points": {
+  "20": {
+   "name": "pace_after_missed_shot",
+   "metric": "dur",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612749,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "pace"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 2.033236574746009,
+   "n_plays": 689,
+   "games": 20,
+   "rank_league": 4,
+   "of_league": 30,
+   "rank_history": 19,
+   "of_history": 270,
+   "percentile_history": 0.9330855018587361,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.390851672973636,
+    "r_spearman_brown": 0.562032142705766,
+    "ci95": [
+     0.42946368793228545,
+     0.6673777646254222
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.3483316481294237,
+    "league_share": 0.32339422510312316,
+    "own_possessions": 1978,
+    "own_in_situation": 689
+   },
+   "cross": {
+    "opp": 1610612764,
+    "expected": 2.1299220561096086,
+    "league": 2.1752345882801087,
+    "delta_vs_league": -0.04531253217050013,
+    "opp_value": 2.1572033898305083,
+    "opp_n": 708
+   }
+  },
+  "40": {
+   "name": "pace_after_missed_shot",
+   "metric": "dur",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612749,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "pace"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.9816881258941346,
+   "n_plays": 1398,
+   "games": 40,
+   "rank_league": 3,
+   "of_league": 30,
+   "rank_history": 12,
+   "of_history": 270,
+   "percentile_history": 0.9591078066914498,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.5113332908368017,
+    "r_spearman_brown": 0.6766651590843795,
+    "ci95": [
+     0.5990134331874211,
+     0.744420168480461
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.35196374622356497,
+    "league_share": 0.3244599772622005,
+    "own_possessions": 3972,
+    "own_in_situation": 1398
+   },
+   "cross": {
+    "opp": 1610612764,
+    "expected": 2.1532078622354476,
+    "league": 2.1752345882801087,
+    "delta_vs_league": -0.02202672604466116,
+    "opp_value": 2.3219354838709676,
+    "opp_n": 1395
+   }
+  },
+  "82": {
+   "name": "pace_after_missed_shot",
+   "metric": "dur",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612749,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "pace"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.9375044436544613,
+   "n_plays": 2813,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 4,
+   "of_history": 270,
+   "percentile_history": 0.9888475836431226,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.6591945700396682,
+    "r_spearman_brown": 0.7945958622850461,
+    "ci95": [
+     0.7420740672500551,
+     0.8376158645355435
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.34591736350221347,
+    "league_share": 0.32389604727965154,
+    "own_possessions": 8132,
+    "own_in_situation": 2813
+   },
+   "cross": {
+    "opp": 1610612764,
+    "expected": 2.129684179264629,
+    "league": 2.1752345882801087,
+    "delta_vs_league": -0.04555040901547969,
+    "opp_value": 2.3335069444444443,
+    "opp_n": 2880
+   }
+  }
+ },
+ "name": "pace_after_missed_shot",
+ "season": 2025,
+ "unit_shown": 1610612749,
+ "opp_shown": 1610612764,
+ "frame": "poss",
+ "metric": "dur",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "over",
+   "direction": "pace"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

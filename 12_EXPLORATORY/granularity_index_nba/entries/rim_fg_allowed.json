@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "rim_fg_allowed",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "player_points_prop",
+     "line": "under",
+     "direction": "rim"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "rim"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.5694716242661448,
+   "n_plays": 511,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 7,
+   "of_history": 270,
+   "percentile_history": 0.9776951672862454,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.4608781289997252,
+    "r_spearman_brown": 0.6309604064170529,
+    "ci95": [
+     0.5345015687084995,
+     0.710431271426605
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.2979591836734694,
+    "league_share": 0.31408498328136153,
+    "own_possessions": 1715,
+    "own_in_situation": 511
+   },
+   "cross": {
+    "opp": 1610612747,
+    "expected": 0.6199882035064579,
+    "league": 0.6501753316054276,
+    "delta_vs_league": -0.03018712809896973,
+    "opp_value": 0.6791808873720137,
+    "opp_n": 586
+   }
+  },
+  "40": {
+   "name": "rim_fg_allowed",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "player_points_prop",
+     "line": "under",
+     "direction": "rim"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "rim"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.615539858728557,
+   "n_plays": 991,
+   "games": 40,
+   "rank_league": 3,
+   "of_league": 30,
+   "rank_history": 70,
+   "of_history": 270,
+   "percentile_history": 0.7434944237918215,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.641300390901422,
+    "r_spearman_brown": 0.7814540159211344,
+    "ci95": [
+     0.7162413169512654,
+     0.8301854162529689
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.28925861062463515,
+    "league_share": 0.3031453616462757,
+    "own_possessions": 3426,
+    "own_in_situation": 991
+   },
+   "cross": {
+    "opp": 1610612747,
+    "expected": 0.6483974486413835,
+    "league": 0.6501753316054276,
+    "delta_vs_league": -0.0017778829640441307,
+    "opp_value": 0.6808712121212122,
+    "opp_n": 1056
+   }
+  },
+  "82": {
+   "name": "rim_fg_allowed",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "player_points_prop",
+     "line": "under",
+     "direction": "rim"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "rim"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.613660062565172,
+   "n_plays": 1918,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 47,
+   "of_history": 270,
+   "percentile_history": 0.828996282527881,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.7462327002225827,
+    "r_spearman_brown": 0.8546772719666337,
+    "ci95": [
+     0.8097489311619108,
+     0.8898388121905787
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.2690042075736325,
+    "league_share": 0.2987787379228979,
+    "own_possessions": 7130,
+    "own_in_situation": 1918
+   },
+   "cross": {
+    "opp": 1610612747,
+    "expected": 0.654569152192715,
+    "league": 0.6501753316054276,
+    "delta_vs_league": 0.004393820587287434,
+    "opp_value": 0.692344727973038,
+    "opp_n": 2077
+   }
+  }
+ },
+ "name": "rim_fg_allowed",
+ "season": 2025,
+ "unit_shown": 1610612760,
+ "opp_shown": 1610612747,
+ "frame": "shot",
+ "metric": "make",
+ "side": "dfn",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "player_points_prop",
+   "line": "under",
+   "direction": "rim"
+  },
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "rim"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

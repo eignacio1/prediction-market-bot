@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "turnovers_forced_rate",
+   "metric": "tovx",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    },
+    {
+     "family": "KXNBAGAME",
+     "line": "moneyline",
+     "direction": "defence"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.18958543983822043,
+   "n_plays": 1978,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 2,
+   "of_history": 270,
+   "percentile_history": 0.9962825278810409,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.5632050551460663,
+    "r_spearman_brown": 0.7205773206681964,
+    "ci95": [
+     0.6426104122462784,
+     0.7784635567239524
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 1978,
+    "own_in_situation": 1978
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.15878946454738088,
+    "league": 0.14439294424406435,
+    "delta_vs_league": 0.014396520303316535,
+    "opp_value": 0.11850731215330308,
+    "opp_n": 1983
+   }
+  },
+  "40": {
+   "name": "turnovers_forced_rate",
+   "metric": "tovx",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    },
+    {
+     "family": "KXNBAGAME",
+     "line": "moneyline",
+     "direction": "defence"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.187941473259334,
+   "n_plays": 3964,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.684699306481665,
+    "r_spearman_brown": 0.8128445282162484,
+    "ci95": [
+     0.7592167727109974,
+     0.8527110586998886
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 3964,
+    "own_in_situation": 3964
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.16136858266618787,
+    "league": 0.14439294424406435,
+    "delta_vs_league": 0.016975638422123518,
+    "opp_value": 0.12072434607645875,
+    "opp_n": 3976
+   }
+  },
+  "82": {
+   "name": "turnovers_forced_rate",
+   "metric": "tovx",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "turnovers"
+    },
+    {
+     "family": "KXNBAGAME",
+     "line": "moneyline",
+     "direction": "defence"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.17062714355707986,
+   "n_plays": 8164,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 3,
+   "of_history": 270,
+   "percentile_history": 0.9925650557620818,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.7934631686214187,
+    "r_spearman_brown": 0.8848391006895671,
+    "ci95": [
+     0.8562509242854096,
+     0.9079492085331208
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 8164,
+    "own_in_situation": 8164
+   },
+   "cross": {
+    "opp": 1610612760,
+    "expected": 0.14362675555864307,
+    "league": 0.14439294424406435,
+    "delta_vs_league": -0.0007661886854212763,
+    "opp_value": 0.11732321996574505,
+    "opp_n": 8174
+   }
+  }
+ },
+ "name": "turnovers_forced_rate",
+ "season": 2025,
+ "unit_shown": 1610612760,
+ "opp_shown": 1610612760,
+ "frame": "poss",
+ "metric": "tovx",
+ "side": "dfn",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "turnovers"
+  },
+  {
+   "family": "KXNBAGAME",
+   "line": "moneyline",
+   "direction": "defence"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

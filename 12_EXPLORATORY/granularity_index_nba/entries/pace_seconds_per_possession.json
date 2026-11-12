@@ -1,0 +1,173 @@
+{
+ "points": {
+  "20": {
+   "name": "pace_seconds_per_possession",
+   "metric": "dur",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612743,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "pace"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 3.9461767626613704,
+   "n_plays": 2014,
+   "games": 20,
+   "rank_league": 7,
+   "of_league": 30,
+   "rank_history": 55,
+   "of_history": 270,
+   "percentile_history": 0.7992565055762082,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.648959003500193,
+    "r_spearman_brown": 0.7871135693763983,
+    "ci95": [
+     0.7284276652302125,
+     0.8362597957548163
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 2014,
+    "own_in_situation": 2014
+   },
+   "cross": {
+    "opp": 1610612763,
+    "expected": 4.151140940250664,
+    "league": 4.058760677609203,
+    "delta_vs_league": 0.09238026264146093,
+    "opp_value": 4.323500731350561,
+    "opp_n": 2051
+   }
+  },
+  "40": {
+   "name": "pace_seconds_per_possession",
+   "metric": "dur",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612743,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "pace"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 3.828720238095238,
+   "n_plays": 4032,
+   "games": 40,
+   "rank_league": 2,
+   "of_league": 30,
+   "rank_history": 24,
+   "of_history": 270,
+   "percentile_history": 0.9144981412639406,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.7493620832194349,
+    "r_spearman_brown": 0.8567261065134645,
+    "ci95": [
+     0.8180559982711787,
+     0.890882887679357
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 4032,
+    "own_in_situation": 4032
+   },
+   "cross": {
+    "opp": 1610612763,
+    "expected": 4.039217568070937,
+    "league": 4.058760677609203,
+    "delta_vs_league": -0.0195431095382661,
+    "opp_value": 4.262391722810395,
+    "opp_n": 4156
+   }
+  },
+  "82": {
+   "name": "pace_seconds_per_possession",
+   "metric": "dur",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612743,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "pace"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 3.745116902094496,
+   "n_plays": 8212,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 12,
+   "of_history": 270,
+   "percentile_history": 0.9591078066914498,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.841227106438257,
+    "r_spearman_brown": 0.9137678926154419,
+    "ci95": [
+     0.8907228956347004,
+     0.933249304883927
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 8212,
+    "own_in_situation": 8212
+   },
+   "cross": {
+    "opp": 1610612763,
+    "expected": 3.915136258145884,
+    "league": 4.058760677609203,
+    "delta_vs_league": -0.14362441946331872,
+    "opp_value": 4.209652876842606,
+    "opp_n": 8412
+   }
+  }
+ },
+ "name": "pace_seconds_per_possession",
+ "season": 2025,
+ "unit_shown": 1610612743,
+ "opp_shown": 1610612763,
+ "frame": "poss",
+ "metric": "dur",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "over",
+   "direction": "pace"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

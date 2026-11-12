@@ -1,0 +1,173 @@
+{
+ "points": {
+  "20": {
+   "name": "second_chance_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612750,
+   "markets": [
+    {
+     "family": "KXNBATEAMTOTAL",
+     "line": "over",
+     "direction": "second-chance"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.3098591549295775,
+   "n_plays": 213,
+   "games": 20,
+   "rank_league": 6,
+   "of_league": 30,
+   "rank_history": 36,
+   "of_history": 270,
+   "percentile_history": 0.8698884758364313,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.18790437610234628,
+    "r_spearman_brown": 0.31636279802063294,
+    "ci95": [
+     0.10111572999140031,
+     0.48297131256489995
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.1091188524590164,
+    "league_share": 0.11979122821786346,
+    "own_possessions": 1952,
+    "own_in_situation": 213
+   },
+   "cross": {
+    "opp": 1610612752,
+    "expected": 1.2277626618771322,
+    "league": 1.2211812347712687,
+    "delta_vs_league": 0.006581427105863513,
+    "opp_value": 1.1875,
+    "opp_n": 224
+   }
+  },
+  "40": {
+   "name": "second_chance_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612750,
+   "markets": [
+    {
+     "family": "KXNBATEAMTOTAL",
+     "line": "over",
+     "direction": "second-chance"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.2456140350877194,
+   "n_plays": 456,
+   "games": 40,
+   "rank_league": 9,
+   "of_league": 30,
+   "rank_history": 90,
+   "of_history": 270,
+   "percentile_history": 0.6691449814126393,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.2882189719365206,
+    "r_spearman_brown": 0.4474689136168429,
+    "ci95": [
+     0.28043933176621255,
+     0.5793091133364985
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.11770779556014456,
+    "league_share": 0.11914606930818139,
+    "own_possessions": 3874,
+    "own_in_situation": 456
+   },
+   "cross": {
+    "opp": 1610612752,
+    "expected": 1.2039559657754701,
+    "league": 1.2211812347712687,
+    "delta_vs_league": -0.01722526899579857,
+    "opp_value": 1.1350114416475972,
+    "opp_n": 437
+   }
+  },
+  "82": {
+   "name": "second_chance_ppp",
+   "metric": "points",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612750,
+   "markets": [
+    {
+     "family": "KXNBATEAMTOTAL",
+     "line": "over",
+     "direction": "second-chance"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 1.3260416666666666,
+   "n_plays": 960,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 6,
+   "of_history": 270,
+   "percentile_history": 0.9814126394052045,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.25116161706759066,
+    "r_spearman_brown": 0.40148548939065215,
+    "ci95": [
+     0.23736250441692058,
+     0.529832775574976
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.11998500187476566,
+    "league_share": 0.1198400980468766,
+    "own_possessions": 8001,
+    "own_in_situation": 960
+   },
+   "cross": {
+    "opp": 1610612752,
+    "expected": 1.2338128291068262,
+    "league": 1.2211812347712687,
+    "delta_vs_league": 0.012631594335557494,
+    "opp_value": 1.1440860215053763,
+    "opp_n": 930
+   }
+  }
+ },
+ "name": "second_chance_ppp",
+ "season": 2025,
+ "unit_shown": 1610612750,
+ "opp_shown": 1610612752,
+ "frame": "poss",
+ "metric": "points",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "KXNBATEAMTOTAL",
+   "line": "over",
+   "direction": "second-chance"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}

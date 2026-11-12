@@ -1,0 +1,193 @@
+{
+ "points": {
+  "20": {
+   "name": "three_attempt_rate",
+   "metric": "fg3a",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612738,
+   "markets": [
+    {
+     "family": "player_threes_prop",
+     "line": "over",
+     "direction": "volume"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "variance"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.5129113924050633,
+   "n_plays": 1975,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.8713998956417872,
+    "r_spearman_brown": 0.9312813340121995,
+    "ci95": [
+     0.9141444093159085,
+     0.9455496762572533
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 1975,
+    "own_in_situation": 1975
+   },
+   "cross": {
+    "opp": 1610612753,
+    "expected": 0.4687426591290446,
+    "league": 0.3784922002558102,
+    "delta_vs_league": 0.09025045887323441,
+    "opp_value": 0.3418181818181818,
+    "opp_n": 1925
+   }
+  },
+  "40": {
+   "name": "three_attempt_rate",
+   "metric": "fg3a",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612738,
+   "markets": [
+    {
+     "family": "player_threes_prop",
+     "line": "over",
+     "direction": "volume"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "variance"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.5037055967288525,
+   "n_plays": 3913,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.9217105764566345,
+    "r_spearman_brown": 0.9592605543714495,
+    "ci95": [
+     0.9493174913398004,
+     0.9673787512992399
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 3913,
+    "own_in_situation": 3913
+   },
+   "cross": {
+    "opp": 1610612753,
+    "expected": 0.4428907637975971,
+    "league": 0.3784922002558102,
+    "delta_vs_league": 0.06439856354178691,
+    "opp_value": 0.32127882599580715,
+    "opp_n": 3816
+   }
+  },
+  "82": {
+   "name": "three_attempt_rate",
+   "metric": "fg3a",
+   "unit_kind": "team",
+   "side": "off",
+   "unit": 1610612738,
+   "markets": [
+    {
+     "family": "player_threes_prop",
+     "line": "over",
+     "direction": "volume"
+    },
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "variance"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.49955690593746044,
+   "n_plays": 7899,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.9524964683932535,
+    "r_spearman_brown": 0.9756703623408661,
+    "ci95": [
+     0.9692556717367845,
+     0.980747948583097
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 7899,
+    "own_in_situation": 7899
+   },
+   "cross": {
+    "opp": 1610612753,
+    "expected": 0.4461708362706683,
+    "league": 0.3784922002558102,
+    "delta_vs_league": 0.06767863601485807,
+    "opp_value": 0.3271960107403145,
+    "opp_n": 7821
+   }
+  }
+ },
+ "name": "three_attempt_rate",
+ "season": 2025,
+ "unit_shown": 1610612738,
+ "opp_shown": 1610612753,
+ "frame": "poss",
+ "metric": "fg3a",
+ "side": "off",
+ "unit_kind": "team",
+ "markets": [
+  {
+   "family": "player_threes_prop",
+   "line": "over",
+   "direction": "volume"
+  },
+  {
+   "family": "KXNBATOTAL",
+   "line": "over",
+   "direction": "variance"
+  }
+ ],
+ "application": "pending Part C (filters.py + per-leaf scoring)"
+}
