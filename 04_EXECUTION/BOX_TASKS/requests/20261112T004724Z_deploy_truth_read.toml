@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W111 close (SW-9): confirm box deploy of #482 #483 #484 #485 and service restarts"

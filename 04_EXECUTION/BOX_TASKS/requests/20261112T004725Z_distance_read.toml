@@ -1,0 +1,2 @@
+task = "distance_read"
+note = "W111 close (SW-9): recompute the distance table (D6 scorecard landed in #484)"

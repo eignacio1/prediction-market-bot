@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 111 READY TO PASTE - four blocks in NOW (111.1 a losing look closes only the fade arm, 111.2 doctrine-conformance audit of the code, 111.3 D6 cells wired end to end, 111.4 the granularity index as tree splits).** Opens with the directives the code contradicts (`04_EXECUTION/OPERATOR_DIRECTIVES.md`). Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft. PR #480 (CLAUDE.md) merged 11-12 00:15Z.
+> **■ WAVE 111 CLOSED 2026-11-12 (#481-#485 merged, main CI green). Wave 112 not written - the wave plan is being agreed with the operator first (11-11 16:46 PT).** Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -61,34 +61,13 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 111 · WRITTEN 2026-11-11 ~23:59 UTC (11-11 15:59 PT) · SW-9 · four blocks (operator's ask) · paste each block into its own terminal
+## ▶ NOW — no wave firing. Wave 112 not written yet (operator 2026-11-11 16:46 PT: agree the wave plan first).
 
-**Every part runs on data that exists when you paste it. CI is the gate for code only. The build continues on every lane (operator 11-09 21:29 PT).**
+## Sequencing track
 
-111.1 **proof** = B-076 a losing look closes only the fade arm; NFL game total T1 / T2 reopen · 111.2 **window lane** = B-077 the
-doctrine-conformance audit of the code · 111.3 **trees** = B-079 D6, cells wired end to end · 111.4 **engine** = B-080 the granularity
-index as tree splits, NBA first.
+Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-**OPENS WITH (strategic-handoff step 6, `04_EXECUTION/OPERATOR_DIRECTIVES.md`, first build 11-11):** the two directives the code
-**contradicts** — D-02 "loses to the market is a routing result, never a stop" and D-03 "no cell is closed for good" — both live in
-`calibration_engine.py` and the registry → **111.1**. Then the oldest **partial** ones: D-01 the multi-arm tree (D6 = 0) → **111.3**; D-06
-the granularity bar ("mechanisms … to identify these opportunities AND FUCKING BLEED EM OUT", raised five times since 09-25) → **111.4**;
-D-04 / D-05 (depth as a competing price; "no edge" wording) → **111.2** audits every decision point.
-
-**DOCTRINE CHECK (W48), Wave 110 close.** *Premise:* "the router can pick an arm per leaf from what is logged". 110.3's replay returned
-25,263 NO_BET decisions — bounded by date-only tickers and IN_SAMPLE gating, not by the evidence; 110.5 found arms per leaf on the fit
-window but the router does not read them. The tree exists and the leaf map exists; they are not connected. *Said but not built:* the pot
-of gold scored as an arm (09-25, 11-05) → 111.3 Part B.
-
-- **Pushback:** 111.3 wires the router to a leaf map fitted on 3–6 weeks of shadow rows; most leaves are thin and will route to no bet, and
-  the three family-level leads (NFL moneyline ride, NHL puck-line model fade, NHL moneyline follow-move) may not survive forward. That is
-  the point — the forward test it freezes is how a leaf earns an arm — but expect D6 to move by a handful of cells, not dozens.
-- **Surface:** box GREEN at the 11-11 checks (93 live, ride board + prop archive installed). Forward test RE-ARMED 11-11 02:39Z. Waiting
-  on you: `nba_engine_props_shadow_install` (109.3), `dashboard_memmax_install` (109.5). Delta this wave: 0 installs, 0 new crons (111.3
-  logs through the existing shadow writers).
-- **Dependencies:** none blocking. 111.1 keeps the registry's public API (status values, `promote_cell_status`) backward compatible, so
-  111.3 reads it unchanged; 111.4 exports filter functions and 111.3 consumes any that are merged before its Part A ends, else next wave.
-  111.2 never edits another block's files — it hands those findings to the owner.
+### ✅ WAVE 111 — WRITTEN 2026-11-11 ~23:59 UTC · CLOSED 2026-11-12 ~00:45 UTC (operator 11-11 16:46 PT) · SW-9 · four blocks · verified on GitHub (#481 #482 #483 #484 #485 merged, main CI green; handoffs W111_1..4); box deploy read requested · moved: **D-02 / D-03 CONTRADICTED → BUILT (a losing look closes only the fade arm; 0 closed cells); 41 code decision points audited; router reads the leaf map; arms scored per leaf 4 → 6; leaf-map forward test frozen; NBA index 24 entries, D5(b) NBA 10 → 11** · D6 0 / 117 (layers 3, 6, 7 open)
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
@@ -96,174 +75,6 @@ of gold scored as an arm (09-25, 11-05) → 111.3 Part B.
 | 111.2 | window · 3 | Doctrine-conformance audit: every decision point in code vs DOCTRINE.md; fix what no block owns (D-04, D-05) | ✅ | A, B (PR #481 merged, CI green), C and edge-map wording done; 41 decision points audited; findings handed to 111.1 / 111.3 / backlog in the handoff |
 | 111.3 | trees · 3 | D6: router reads the per-leaf arm map; pot of gold + momentum scored as arms; D6 scorecard; forward test frozen | ✅ | PR #483 de8b003, #484 7846dec, CI green, box at 7846dec1. D6 0/117 wired (layers 3,6,7 open); arms scored per leaf 4→6; forward pre-reg frozen (116 tests) |
 | 111.4 | engine · 3 | The granularity index as tree splits, NBA: split · rank vs history · matchup cross · market map · application | ✅ | PR #485 3d59e57, CI green. 24 entries; 18 scored per leaf (85 leaves, 0 BH survivors, fit-picked arms routed NO_BET provisionally); `nba_filters(home_profile, away_profile)` for the router; seat B7 applied, D5(b) NBA 10→11 of 17. GG-1895. |
-
-### 111.1 - PROOF (A LOSING LOOK CLOSES ONLY THE FADE ARM)
-
-```
-WAVE 111 - BLOCK 111.1 - PROOF - A LOSING LOOK CLOSES ONLY THE FADE ARM; NFL GAME TOTAL T1 / T2 REOPEN (B-076)
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W111.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W111_1.md. Every part runs on data that exists now.
-
-PURPOSE: OPERATOR_DIRECTIVES D-02 and D-03, both CONTRADICTED in code. Operator 2026-11-10 21:41 PT: "Does a quant - that finds through
-rigorous testing and scaffolding that a certain betting pattern doesn't beat the "market" keep going? no he fucking routes it to the
-correct path so that loss still WINS." 22:03 PT: "every single "closed" cell will get reopened once I feel the project is at a suitable
-state." 22:10 PT: the scoring engine closing cells is a problem the windows must catch. Today
-src/prediction_market_bot/pregame_shadow/calibration_engine.py (verdict function, ~lines 200-235) emits RULED_OUT when the delta vs
-market CI sits below zero, and W99.2 (#406) applied that to the registry: NFL_GAME_TOTAL T1 and T2 are RULED_OUT. DOCTRINE.md sections
-1, 1b and 8 are binding; read them first.
-
-PART A (~45 min) - the verdict keeps its pre-registered label and stops closing anything
-1. In the verdict function: keep the pre-registered label exactly as the frozen file defines it (as `verdict_preregistered`; frozen
-   pre-registration files are NOT edited), and add `routing`: which arms the look closes and which stay open. A look that loses to the
-   market closes the FADE arm (model-disagreement entry) for that cell; RIDE, MOMENTUM, POT OF GOLD and NO BET stay open; the cell stays
-   SHADOW and keeps logging. A look that wins opens nothing by itself (CANDIDATE still needs capacity and the operator). RULED_OUT in its
-   human meaning is reserved for a market that cannot be traded (no book, no liquidity, no data) - DOCTRINE 1b.
-2. Where a frozen pre-registration says RULED_OUT ends the cell, write a superseding addendum file next to it (cite ADR-0077 and the
-   operator's 22:03 / 22:10 PT words) - never edit the frozen file. Tests: a losing look -> fade closed, cell SHADOW; a winning look ->
-   CANDIDATE label, no status change; the frozen label always reported unchanged.
-
-PART B (~45 min) - the registry carries arm state, and the two cells reopen
-1. market_type_registry.py: per-arm state on MarketTypeCell (e.g. `closed_arms`, with reason, measured_date and citing decision per arm),
-   backward compatible (status values and promote_cell_status unchanged for every other caller). NFL_GAME_TOTAL T1 and T2 -> SHADOW with
-   closed_arms = {fade} and superseding_reference = ADR-0077 + DECISION_LOG 2026-11-10 22:03 / 22:10 PT. If changing what a registry
-   status means needs its own ADR, write ADR-0078 citing the operator's words (his directive is the acceptance) - Hard Rule 3.
-2. scripts/proof_calendar.py and the verdict lines of scripts/distance_to_optimum.py: report closed arms, not closed cells; P2 reads
-   "verdicts, routed"; B1 counts these two cells as logging. Tests.
-
-PART C (~40 min) - sweep, deploy, confirm
-1. Pattern sweep (Hard Rule 13): grep src/ scripts/ tests/ for RULED_OUT, "ruled out", "ruled_out" and any other place a losing comparison
-   with the market stops logging, gates a cell or drops it from a count. Fix what you own; files owned by 111.2 / 111.3 / 111.4 go in
-   your handoff under directive_conflicts: with file and line. Record pattern_sweep:.
-2. PR; merge on green. Read the box's deploy (deploy_truth_read) and confirm the NFL game total shadow writer still writes rows for T1 / T2
-   after the deploy (an allowlisted read; if none fits, say so in the handoff for the window).
-
-Report: per COMMON RULES. MEASURE MOVED: P2 verdicts read as routing (closed cells 2 -> 0, closed arms 0 -> 2); B1; directives
-D-02 / D-03 CONTRADICTED -> BUILT. Operator decisions: none (operator 2026-11-10 22:10 PT).
-END OF BLOCK 111.1
-```
-
-### 111.2 - WINDOW LANE (DOCTRINE-CONFORMANCE AUDIT)
-
-```
-WAVE 111 - BLOCK 111.2 - WINDOW LANE - DOCTRINE-CONFORMANCE AUDIT: EVERY DECISION POINT IN CODE AGAINST DOCTRINE.md (B-077)
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W111.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W111_2.md. Every part runs on data that exists now.
-
-PURPOSE: window error W53 - every check the project had audited documents against the premise; none audited CODE against the doctrine, so
-"the bot must beat the market" lived in the scoring engine for weeks. OPERATOR_DIRECTIVES D-04 ("depth ... meant to ENHANCE OUR DECISION
-TREES WHICH COULD VERY WELL MEAN RIDE THE WAVE") and D-05 ("I literally do not want a single fucking chance of you or any window coming
-up to me talking about "no edge""). Read 02_ARCHITECTURE_DESIGN/DOCTRINE.md and 04_EXECUTION/OPERATOR_DIRECTIVES.md first.
-
-PART A (~50 min) - the map
-1. Every decision point in code: verdict rules, cell statuses, order gates, router gating (IN_SAMPLE and the like), pre-registration
-   templates, edge-map / proof-calendar / distance statuses, factor scoring scripts in 12_EXPLORATORY that judge a factor by Brier vs the
-   market, dashboard labels, sitrep and handoff generators, .claude/commands that tell a terminal how to judge a result.
-2. Write 04_EXECUTION/DOCTRINE_CONFORMANCE.md: DOCTRINE rule -> file:line -> CONFORMS / CONTRADICTS / MISSING -> owner (this block, 111.1,
-   111.3, 111.4, or a backlog ticket). Plain English, one row each.
-
-PART B (~45 min) - fix what no other block owns
-1. Contradictions in files NO other Wave 111 block owns (see the ownership rule): wording ("no edge", "ruled out", "disproven", "not
-   mispriced" as a verdict on a pattern), statuses that drop a losing pattern from routing, templates that score a factor only as a
-   competing price. Code via PR on green; docs-only for docs. Each fix names the DOCTRINE rule it restores.
-2. Add a test that fails if a user-facing label in the dashboards or the edge map uses the banned verdict words (allowlist the registry
-   enum and frozen files).
-
-PART C (~35 min) - the ledger, verified
-1. Correct 04_EXECUTION/OPERATOR_DIRECTIVES.md's Code and Status cells from what you found (you own it this wave). Add any directive the
-   operator gave more than once that is missing (DECISION_LOG operator entries, WINDOW_ERROR_LOG). End with: count CONTRADICTED / NOT BUILT
-   / PARTIAL, and the owner of each.
-
-Report: per COMMON RULES. MEASURE MOVED: directives CONTRADICTED / NOT BUILT (count before -> after); decision points audited N.
-PLUMBING for the pillars. Operator decisions: none.
-END OF BLOCK 111.2
-```
-
-### 111.3 - TREES (D6: CELLS WIRED END TO END)
-
-```
-WAVE 111 - BLOCK 111.3 - TREES - D6: THE ROUTER READS THE PER-LEAF ARM MAP; POT OF GOLD AND MOMENTUM SCORED AS ARMS; FORWARD TEST FROZEN (B-079)
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W111.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W111_3.md. Every part runs on data that exists now.
-
-PURPOSE: D6 = 0 (cells wired end to end through all seven layers: simulated probability, market state, factor filters as splits, a tree
-choosing the arm, per-leaf held-out net per arm, risk / sizing, execution). OPERATOR_DIRECTIVES D-01 (operator 2026-11-10 21:41 PT: "my
-vision from DAY 1 was to build out the decision trees so we optimize every single route") and D-08 (the pot of gold "routed in too",
-11-05). Today: 110.3's router logs an arm on 27 of 117 cells but its 14-day replay returned 25,263 NO_BET (date-only tickers, IN_SAMPLE
-gating); 110.5 (12_EXPLORATORY/retro_route/) fitted an arm per leaf (cell x band x favoured-side price bin x last move) that the router
-never reads. Family-level held-out leads: RIDE NFL moneyline +0.134 [+0.017, +0.236] (28 games), MODEL FADE NHL puck line +0.088
-[+0.037, +0.136] (66), FOLLOW MOVE NHL moneyline +0.074 [+0.015, +0.133] (59).
-
-PART A (~50 min) - connect the leaf map to the router
-1. decision_trees/router.py + shadow_route.py: read the 110.5 leaf map (fit window only); every shadow row logs leaf_id, arm, arm_source
-   and the filters that fired (110.1's nfl_engine/filters.py, 111.4's NBA filters if merged). Thin leaves route to NO BET, logged as
-   such. Fix the two replay bounds 110.3 named (date-only tickers; IN_SAMPLE gating that blocks every arm) so a leaf the map routes to
-   RIDE / FADE / MOMENTUM is logged as that arm. Orders stay OFF - logging only. Tests, including a replay that is not all NO_BET where
-   the map says otherwise.
-
-PART B (~40 min) - the arms 110.5 did not score
-1. Extend 12_EXPLORATORY/retro_route/run.py: POT OF GOLD (decision_trees/longshot.py's branches - longshots and big-price sides) and
-   MOMENTUM wherever the 20-minute archive gives more than one price before start (NBA, NHL; say where it cannot be scored), per leaf,
-   same held-out method, same costs (exact Kalshi taker fee, taker price). Add both to ROUTING.md.
-
-PART C (~40 min) - the D6 scorecard and the frozen forward test
-1. coverage.py: per registered cell, which of the seven layers exist and are tested -> D6 per sport (a number the distance script can
-   read). Report D6 before -> after.
-2. Freeze a forward test of the leaf map BEFORE its first forward row (pre-registration file, judged n per leaf and pooled, the scoring
-   rule, BH across leaves): every routed leaf plus the three family leads, scored as SHADOW rows (no orders, no stakes - the ADR-0072
-   demo test is unchanged). PR; merge on green.
-
-Report: per COMMON RULES. MEASURE MOVED: D6 0 -> N cells; D5(a) decision trees; arms scored per leaf 4 -> 6; directives D-01 / D-08
-PARTIAL -> (state). Operator decisions: none (a new pre-registration, not a change to a frozen one).
-END OF BLOCK 111.3
-```
-
-### 111.4 - ENGINE (THE GRANULARITY INDEX AS TREE SPLITS, NBA)
-
-```
-WAVE 111 - BLOCK 111.4 - ENGINE - THE GRANULARITY INDEX AS TREE SPLITS, NBA FIRST (B-080)
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W111.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W111_4.md. Every part runs on data that exists now.
-
-PURPOSE: OPERATOR_DIRECTIVES D-06, raised five times since 09-25. Operator 2026-10-16: "Do we have mechanisms within the bot, spots within
-our decision tree, ranges within our architecture - to identify these opportunities AND FUCKING BLEED EM OUT?" and 2026-11-10 21:56 PT:
-"we can't even tell which PG's shoot better in the mid range with 2 minutes left when their lineup is filled with defensive players
-against a team ranked #4 in defensive rating but #22 in perimeter shooting + #16 in clutch defensive rating." His examples are
-illustrations, not specs (window error W17): build the MACHINERY that answers questions of that shape, not that one question.
-02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md defines an entry's five parts: the split, its rank vs history at the same point in a season
-(with stability at that sample), the matchup cross, the market map, the application (a tested split in the multi-arm tree). Measures:
-D5(b) NBA applied 10 of 17; D1 NBA.
-
-PART A (~50 min) - the machinery, once
-1. First check the NBA event store (the 2016-2026 point-in-time layer 110.2 used): which situations it can cut by - game clock and score
-   margin (clutch), lineups on the floor, shot zone / distance, opponent. Anything missing is a registered gap (GG), not a guess.
-2. A generic module (NEW files under src/prediction_market_bot/nba_engine/): a split = (metric, situation filter, unit: player / lineup /
-   team); computes the value point-in-time, its rank vs every team-season (or player-season) at the same point of the season, the
-   split-half stability at that sample, and the matchup cross (both sides' ranks, how often the situation occurs). Tests on known answers.
-
-PART B (~40 min) - a first set of entries
-1. About 20 entries chosen by the market they map to (game total, spread, team total, and the player points / threes props from 109.3):
-   e.g. clutch offence and defence, lineup-type (defensive / shooting) on-floor efficiency, shot-zone mix vs the opponent's zone defence,
-   pace by situation. Write each entry with all five parts filled except application into 12_EXPLORATORY/granularity_index_nba/.
-
-PART C (~40 min) - the application: splits in the tree
-1. Export each entry as a filter function the router can call (111.3 owns router.py; agree the interface in handoffs, as 110.1 did).
-   Score each per leaf against the 2026-27 Kalshi prices on the NBA shadow rows (154 games in W110.5's inventory), held out, net after costs per arm
-   (RIDE / FADE / MOMENTUM / NO BET), with intervals and n. A split whose leaves all route to no bet is APPLIED and reported as routed,
-   never as "no edge". Update SEATS/nba.toml stages. PR; merge on green.
-
-Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA applied 10 -> N of 17; index entries with all five parts 0 -> N; D1 NBA classes;
-directive D-06 PARTIAL -> (state). Operator decisions: none.
-END OF BLOCK 111.4
-```
-
-
-## Sequencing track
-
-Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
 ### ✅ WAVE 110 — WRITTEN 2026-11-11 ~05:30 UTC · CLOSED 2026-11-11 ~07:00 UTC · SW-9 · five blocks (four + 110.5 at the operator's ask) · verified on GitHub (#473 #475 #476 #478 #479 merged, main CI green; handoffs W110_1..5) · moved: **D5(b) NFL applied 10 → 12, NBA 5 → 10; 27 of 117 cells log a router arm; same-game correlation measured (right for game x points legs, wrong for same-player cross-stat); every settled shadow row scored by arm per leaf (365 leaves, 113 routed, 3 family-level leads)** · D6 still 0 (the router does not read the leaf map → 111.3)
 
