@@ -1435,7 +1435,7 @@ command = "cd $PROJ && export $(grep -v '^#' .env | xargs) && PYTHONPATH=$PYTHON
 key = "cron|39 * * * *|scripts/run_nba_engine_props_shadow.py"
 kind = "cron"
 source = "deploy/cron.nba_engine_props_shadow"
-status = "paused"
+status = "live"
 reviewed = true
 purpose = "EXP-047 / W109.3 (B-070): NBA engine player rebounds/assists/threes pregame SHADOW. Prices KXNBAREB/KXNBAAST/KXNBA3PT strikes from the NBA engine v2 draws split over players, logs evaluate-only rows. No order, position, fill, stake or kelly. PAUSED until the operator approves the named install task nba_engine_props_shadow_install."
 pillar = "BREADTH"

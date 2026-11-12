@@ -576,6 +576,8 @@ What should reorder this, and what should stop it:
 
 > **AUTHORIZATION - NBA PROPS SHADOW + DASHBOARD MEMORY (operator, 2026-11-12 15:04 PT: "Yes IO approve", answering the window's
 > message naming `nba_engine_props_shadow_install` and `dashboard_memmax_install`).** Run by the window with readbacks and a budget read.
+> **DONE 2026-11-12 23:05Z:** dashboard MemoryMax 384 MB (NRestarts 0, active); props-shadow cron line installed (backup crontab_20261112T230518Z.bak),
+> registry entry flipped to live; SURFACE BUDGET GREEN, 93 live, healthcheck HEALTHY. The 9 NBA prop shadow cells log from the next :39.
 
 **OPEN - waiting on you (not an authorization until you answer):**
 1. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
