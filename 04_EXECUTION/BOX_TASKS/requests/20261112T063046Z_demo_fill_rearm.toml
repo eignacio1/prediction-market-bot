@@ -1,0 +1,2 @@
+task = "demo_fill_rearm"
+note = "SW-9: clear ARM_ORDERS=dry override (report trips none); arm orders authorized by operator 2026-11-11 16:51 PT. Demo only."
