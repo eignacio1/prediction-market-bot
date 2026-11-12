@@ -3436,3 +3436,9 @@ them CONTRADICTED in code (D-02 losing looks stop cells; D-03 closed cells). Wav
 registry (a losing look closes only the fade arm; NFL game total T1 / T2 back to SHADOW); 111.2 the doctrine-conformance audit of the
 code; 111.3 D6 (router reads the W110.5 leaf map; pot of gold and momentum scored as arms; forward test frozen); 111.4 the granularity
 index as tree splits, NBA first. Backlog: B-024 (pot of gold) moved from PARKED to NOW - stale since 11-05.
+
+### 2026-11-12 W111.2 (B-077) doctrine-conformance audit of code
+- 41 decision points audited against DOCTRINE.md: 20 CONTRADICTS, 1 MISSING (per-leaf arm scoring in the edge map), rest CONFORMS. Map: `04_EXECUTION/DOCTRINE_CONFORMANCE.md`.
+- Fixed in files no other block owns (PR #481): dashboard and /vision wording now "fade arm closed (routed)"; new test `tests/test_doctrine_label_words.py` fails on banned verdict words in dashboard/vision labels. Registry enum keys untouched.
+- Handed to owners, not edited: W111.1 (engine RULED_OUT, registry enum and guard, proof_calendar, B1 count); W111.3 (orchestrator T1 edge gate, router); backlog (order gates are fade-arm-only, factor scorers that use Brier vs market).
+- OPERATOR_DIRECTIVES.md: D-02..D-05 Code cells corrected, D-33 added. CONTRADICTED 2 -> 2, NOT BUILT 0 -> 0, PARTIAL 14 -> 15.
