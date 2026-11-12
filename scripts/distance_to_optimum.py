@@ -26,6 +26,8 @@ REPO = Path(__file__).resolve().parent.parent
 MANIFEST_REL = "scripts/distance_to_optimum_d1_manifest.json"
 REGISTRY_SRC = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 LOGGING = {"active", "shadow"}
+# W111.1: the NFL game-total T1/T2 cells are now SHADOW with a closed FADE arm, so they count as logging on their own.
+# The RULED_OUT branch below remains only so a cell that really cannot be traded is not miscounted as a gap.
 # W100.2 (B-039): a RULED_OUT cell is a verdict, not a stop. The registry records that the ruled-out NFL game-total arms
 # keep evaluating and logging (market_type_registry.py, EXP-037 first look: "nothing in the registry gates the shadow cron"),
 # so B1/B2/B3 count them as logging. A ruled-out cell whose cron is actually stopped must be moved out of this set by a
@@ -78,6 +80,15 @@ def registry_cells(repo: Path) -> list[tuple[str, str, str]]:
     # families = every MarketType, including ones with no registered cell
     fams = {m.name for m in r.MarketType}
     return out, fams  # type: ignore[return-value]
+
+
+def registry_closed_cells(repo: Path) -> Optional[int]:
+    """Registry cells whose STATUS is ruled_out (a market that cannot be traded). None if the registry cannot be read."""
+    try:
+        cells, _ = registry_cells(repo)
+    except Exception:
+        return None
+    return sum(1 for c in cells if c[2] == RULED_OUT_STATUS)
 
 
 def breadth(repo: Path, cells_fams: Optional[tuple] = None) -> list[dict]:
@@ -378,7 +389,14 @@ def proof(repo: Path) -> list[dict]:
     scored = [c for c in cells if c.get("release") and c.get("verdict")]
     verdicts = [c for c in cells if c.get("verdict")]
     p1 = m_ok("P1", f"{len(scored)} / {len(cells)}", s, as_of, note="cells released at a scored look / cells the engine tracks")
-    p2 = m_ok("P2", f"{len(verdicts)}", s, as_of)
+    def _arms(v) -> int:   # engine files carry a dict; older/flattened ones a bare label string
+        label = v.get("verdict") if isinstance(v, dict) else v
+        routing = (v.get("routing") if isinstance(v, dict) else None) or {}
+        return len(routing.get("closed_arms", ["FADE"] if label == "RULED_OUT" else []))
+    closed_arms = sum(_arms(c["verdict"]) for c in verdicts)
+    closed_cells = registry_closed_cells(repo)
+    p2 = m_ok("P2", f"{len(verdicts)} verdicts, routed ({closed_arms} closed arms, {closed_cells if closed_cells is not None else '?'} closed cells)", s, as_of,
+              note="W111.1 (ADR-0077/0078): a losing look closes the FADE arm only; the cell stays SHADOW and keeps logging; the frozen label is unchanged")
     dates = sorted((c["projection"]["date"], c["cell"]) for c in cells if (c.get("projection") or {}).get("date"))
     if not dates:
         return [p1, p2, m_na("P3", "engine projects no first-look date", s)]

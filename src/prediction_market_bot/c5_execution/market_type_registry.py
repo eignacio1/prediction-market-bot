@@ -31,7 +31,10 @@ earlier 3-obs pre-slate sample giving the opposite read on GAME_TOTAL/
 RUN_LINE. The operator's standing instruction is that neither read has been
 promoted to a kill decision ("neither declared dead") — so no MLB cell below
 is seeded RULED_OUT. The status exists and is exercised by tests; it is
-simply unused by live data pending an explicit operator verdict.
+reserved for a market that truly cannot be traded. As of W111.1 (ADR-0078) a
+losing look against the market does NOT use it: the cell stays SHADOW and
+carries `closed_arms` (e.g. FADE), a routing result (ADR-0077). Registry
+seeds zero RULED_OUT cells.
 
 This module does not change ExecutionBand, BAND_CONFIGS, or any kelly_fraction
 — it imports ExecutionBand read-only from execution_bands.py as the band half
@@ -499,6 +502,28 @@ BANDS_WITH_FORMULA_ASSERTIONS: frozenset[ExecutionBand] = frozenset({
 })
 
 
+# W111.1 (ADR-0077; ADR-0078; operator 2026-11-10 22:03 / 22:10 PT): per-arm state. A losing look closes one ARM of a
+# cell (the FADE, model-disagreement entry), not the cell. Arm names are the decision_trees.router constants (kept as
+# literals here so c5_execution does not import the decision-tree package).
+ARM_FADE = "FADE"
+KNOWN_ARMS = frozenset({"RIDE", "FADE", "MOMENTUM_FOLLOW", "MOMENTUM_FADE", "POT_OF_GOLD", "NO_BET"})
+
+
+@dataclass(frozen=True)
+class ClosedArm:
+    """One arm closed on a cell. Provisional: the operator reopens it, never a window or a block."""
+    arm: str
+    reason: str
+    measured_date: date
+    citing_decision: str
+
+    def __post_init__(self) -> None:
+        if self.arm not in KNOWN_ARMS:
+            raise ValueError(f"unknown arm {self.arm!r}; expected one of {sorted(KNOWN_ARMS)}")
+        if not self.reason or not self.citing_decision:
+            raise ValueError("a closed arm requires a reason and a citing_decision")
+
+
 @dataclass(frozen=True)
 class MarketTypeCell:
     """
@@ -530,6 +555,7 @@ class MarketTypeCell:
     measured_date: Optional[date] = None
     notes: Optional[str] = None
     citing_decision: Optional[str] = None
+    closed_arms: tuple[ClosedArm, ...] = ()      # W111.1: per-arm state; default () keeps every existing caller unchanged
 
     def __post_init__(self) -> None:
         if self.status is CellStatus.RULED_OUT:
@@ -569,6 +595,13 @@ class MarketTypeCell:
     @property
     def series_ticker(self) -> str:
         return series_ticker_for(self.market_type)
+
+    def arm_is_closed(self, arm: str) -> bool:
+        return any(c.arm == arm for c in self.closed_arms)
+
+    @property
+    def closed_arm_names(self) -> tuple[str, ...]:
+        return tuple(c.arm for c in self.closed_arms)
 
 
 CellKey = tuple[MarketType, ExecutionBand]
@@ -876,6 +909,7 @@ def promote_cell_status(
     superseding_reference: Optional[str] = None,
     reason: Optional[str] = None,
     measured_date: Optional[date] = None,
+    closed_arms: Optional[tuple[ClosedArm, ...]] = None,
 ) -> MarketTypeCell:
     """
     Mutate MARKET_TYPE_REGISTRY in place, replacing the cell at (market_type,
@@ -910,6 +944,7 @@ def promote_cell_status(
         citing_decision=superseding_reference or current.citing_decision,
         reason=reason if reason is not None else current.reason,
         measured_date=measured_date if measured_date is not None else current.measured_date,
+        closed_arms=tuple(closed_arms) if closed_arms is not None else current.closed_arms,
     )
     MARKET_TYPE_REGISTRY[key] = new_cell
     return new_cell
@@ -934,24 +969,30 @@ _EXP037_NFL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
 for _mt, _bd in _EXP037_NFL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
 
-# --- EXP-037 first look (W99.2, B-034): the two RULED_OUT verdicts, applied as the pre-registration
-# says (section 5, rule 1) and nothing more. Source: 12_EXPLORATORY/nfl_first_look/results_W98_2.md
-# (engine file engine_20261102T135056Z.json, 60 settled games per cell). The other ten NFL cells are
-# KEEP ACCRUING: they stay SHADOW to the pre-stated second look (150 games or week 18).
-# EXP-037 is silent on stopping the arm; nothing in the registry gates the shadow cron, so the
-# RULED_OUT game-total T1/T2 arms keep logging (evaluate-and-log, kelly 0) and are not scored again.
+# --- EXP-037 first look (W99.2, B-034; re-read W111.1, B-076): the two losing looks, read as ROUTING (ADR-0077). ---
+# Source: 12_EXPLORATORY/nfl_first_look/results_W98_2.md (engine file engine_20261102T135056Z.json, 60 settled
+# games per cell). The pre-registered label stays RULED_OUT in the engine output (frozen). In this registry the
+# losing look closes ONE ARM, FADE (model-disagreement entry); the cell is SHADOW and keeps logging; ride /
+# momentum / pot of gold / no bet stay open (operator 2026-11-10 21:41, 22:03, 22:10 PT; ADR-0077; DOCTRINE 1b).
+# Provisional: the operator reopens it. The other ten NFL cells KEEP ACCRUING to the second look.
 _EXP037_NFL_FIRST_LOOK_MEASURED = date(2026, 11, 2)
+_W111_1_CITATION = "ADR-0077 + ADR-0078 + DECISION_LOG 2026-11-10 22:03 / 22:10 PT (supersedes W99.2 RULED_OUT)"
 for _bd, _delta, _ci in (
     (ExecutionBand.T1_MULTI_DAY, "-0.0161", "[-0.0294, -0.0027]"),
     (ExecutionBand.T2_SAME_DAY, "-0.0157", "[-0.0299, -0.0011]"),
 ):
     promote_cell_status(
-        MarketType.NFL_GAME_TOTAL, _bd, CellStatus.RULED_OUT,
-        superseding_reference="EXP-037 first look (W98.2)",
+        MarketType.NFL_GAME_TOTAL, _bd, CellStatus.SHADOW,
+        superseding_reference=_W111_1_CITATION,
         reason=(f"EXP-037 first look, n=60 settled games: delta Brier vs market {_delta} {_ci} "
-                f"(game-cluster 95% CI upper bound < 0); rule 5.1. ADR-0077 reading: a routing result - "
-                f"the model-disagreement (fade) arm is closed for this cell; ride / no-bet arms stay open"),
+                f"(game-cluster 95% CI upper bound < 0); rule 5.1. Routing result (ADR-0077): fade arm closed; "
+                f"ride / momentum / pot of gold / no bet stay open; cell keeps logging"),
         measured_date=_EXP037_NFL_FIRST_LOOK_MEASURED,
+        closed_arms=(ClosedArm(
+            arm=ARM_FADE,
+            reason=f"EXP-037 first look n=60: delta Brier vs market {_delta} {_ci}; model-disagreement entry loses to the market here",
+            measured_date=_EXP037_NFL_FIRST_LOOK_MEASURED,
+            citing_decision=_W111_1_CITATION),),
     )
 
 

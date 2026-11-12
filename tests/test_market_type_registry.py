@@ -71,23 +71,36 @@ class TestRegistryStartingState:
         assert cell.market_type is MarketType.MLB_PLAYER_PROP_HITS
         assert cell.band is ExecutionBand.T4M_PROJ
 
-    def test_only_the_exp037_first_look_cells_are_ruled_out(self):
-        """The registry must not invent a verdict. The only RULED_OUT cells are the
-        two EXP-037 first-look verdicts (W98.2 / W99.2): NFL game total T1 and T2."""
-        ruled = {(c.market_type, c.band) for c in cells_by_status(CellStatus.RULED_OUT)}
-        assert ruled == {
+    def test_no_cell_is_ruled_out_and_two_have_the_fade_arm_closed(self):
+        """W111.1 (ADR-0077/0078): a losing look closes an ARM, not a cell. No cell is RULED_OUT (that is reserved for a
+        market that cannot be traded); the two EXP-037 first-look cells are SHADOW with FADE closed."""
+        assert cells_by_status(CellStatus.RULED_OUT) == []
+        closed = {(c.market_type, c.band) for c in MARKET_TYPE_REGISTRY.values() if c.closed_arms}
+        assert closed == {
             (MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY),
             (MarketType.NFL_GAME_TOTAL, ExecutionBand.T2_SAME_DAY),
         }
 
-    def test_exp037_ruled_out_cells_carry_reason_date_and_citation(self):
+    def test_exp037_closed_fade_arm_carries_reason_date_and_citation(self):
         from datetime import date
         for band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY):
             cell = get_cell(MarketType.NFL_GAME_TOTAL, band)
-            assert cell.status is CellStatus.RULED_OUT
+            assert cell.status is CellStatus.SHADOW and cell.closed_arm_names == ("FADE",)
+            assert cell.arm_is_closed("FADE") and not cell.arm_is_closed("RIDE")
             assert cell.measured_date == date(2026, 11, 2)
             assert "n=60" in cell.reason and "rule 5.1" in cell.reason
-            assert cell.citing_decision == "EXP-037 first look (W98.2)"
+            arm = cell.closed_arms[0]
+            assert arm.measured_date == date(2026, 11, 2) and "ADR-0077" in arm.citing_decision and "22:03" in arm.citing_decision
+
+    def test_closed_arm_requires_known_arm_reason_and_citation(self):
+        from datetime import date
+        import pytest as _pt
+        from prediction_market_bot.c5_execution.market_type_registry import ClosedArm
+        with _pt.raises(ValueError):
+            ClosedArm("NOPE", "r", date(2026, 11, 2), "c")
+        with _pt.raises(ValueError):
+            ClosedArm("FADE", "", date(2026, 11, 2), "c")
+        assert MarketTypeCell(MarketType.NFL_GAME_TOTAL, ExecutionBand.T1_MULTI_DAY, CellStatus.SHADOW).closed_arms == ()
 
     def test_exp037_keep_accruing_nfl_cells_stay_shadow(self):
         """The other ten NFL cells (incl. game total T3) are KEEP ACCRUING = SHADOW."""
