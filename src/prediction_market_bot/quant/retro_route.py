@@ -14,6 +14,8 @@ MIN_TEST_GAMES, DRAFT_TEST_GAMES = 10, 15
 FLAT_BAND = 0.005
 BOOT_N, BOOT_SEED, ALPHA, BH_Q = 2000, 110, 0.10, 0.10
 FAV_BINS = (0.35, 0.5, 0.65, 0.8)
+# W111.3 Part B: arms scored per leaf but NOT used to pick the leaf's routed arm (the shipped leaf map stays the 110.5 fit).
+EXTRA_ARMS = ("POT_OF_GOLD", "MOMENTUM_OPEN")
 
 
 def _series(ticker: str) -> str:
@@ -110,6 +112,53 @@ def arm_nets(r: dict) -> dict:
     m = r.get("move")
     if m is not None and abs(m) >= FLAT_BAND:
         out["MOMENTUM"] = side_net(r, "YES" if m > 0 else "NO")
+    return out
+
+
+def extra_nets(r: dict) -> dict:
+    """POT_OF_GOLD: buy the lottery-ticket side (BUY_LONGSHOT, longshot_bias.route_side) when the YES mid is in a pot
+    bucket (1-15c / 85-99c); the fade-the-longshot direction is RIDE in those leaves. When it doesn't apply: mid in 15-85c.
+    MOMENTUM_OPEN: follow the move since the ticker's first shadow row (|move_open| >= FLAT_BAND); None on the first row."""
+    from prediction_market_bot.quant.longshot_bias import BUY_LONGSHOT, route_side
+    out = {"POT_OF_GOLD": None, "MOMENTUM_OPEN": None}
+    side = route_side(BUY_LONGSHOT, float(r["mid"]))
+    if side:
+        out["POT_OF_GOLD"] = side_net(r, side.upper())
+    m = r.get("move_open")
+    if m is not None and abs(m) >= FLAT_BAND:
+        out["MOMENTUM_OPEN"] = side_net(r, "YES" if m > 0 else "NO")
+    return out
+
+
+def extra_leaf_table(rows: list[dict], test_games: set) -> dict:
+    """Held-out net per leaf for each EXTRA_ARMS arm taken on every applicable row. {leaf: {arm: stats}}; arms with
+    fewer than MIN_TEST_GAMES held-out games are left out. Same bootstrap, same costs as the routed arms."""
+    by = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    for r in rows:
+        g = game_id(r)
+        if g not in test_games:
+            continue
+        for a, x in extra_nets(r).items():
+            if x is not None:
+                by[leaf_key(r)][a][g].append(x)
+    out = {}
+    for k, arms in by.items():
+        for a, gv in arms.items():
+            if len(gv) >= MIN_TEST_GAMES:
+                mean, lo, hi, p = boot_ci(gv)
+                out.setdefault(k, {})[a] = {"mean": mean, "lo": lo, "hi": hi, "p": p,
+                                            "n": sum(len(v) for v in gv.values()), "games": len(gv)}
+    return out
+
+
+def extra_family_table(rows: list[dict], test_games: set) -> dict:
+    out = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    for r in rows:
+        g = game_id(r)
+        if g in test_games:
+            for a, x in extra_nets(r).items():
+                if x is not None:
+                    out[(r["sport"], r["market_type"])][a][g].append(x)
     return out
 
 

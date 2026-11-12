@@ -210,6 +210,34 @@ Reportable leaves, best held-out first (band, favoured-price bin 0=<.35 ... 4=>=
 | T3, 4, flat | model-disagreement fade | +0.002 | [-0.073, +0.068] | 258/56 |  |
 | T3, 2, flat | fade the market | -0.013 | [-0.133, +0.117] | 130/33 |  |
 
+## W111.3 Part B: pot of gold and open-based momentum, scored per leaf (not used to pick the routed arm)
+
+POT_OF_GOLD = buy the lottery-ticket side where the YES mid is 1-15c or 85-99c (fading the longshot is RIDE in those leaves). MOMENTUM_OPEN = follow the move since the ticker's first shadow row. Same 70/30 game split, same taker price and exact fee, same game-clustered 90% interval. Held-out games only.
+
+| Family | Pot of gold | Follow move since open |
+|---|---|---|
+| NBA NBA_GAME_TOTAL | -0.045 [-0.077, -0.011] 1738/72 | -0.045 [-0.096, +0.005] 2891/65 |
+| NBA NBA_MONEYLINE | - | +0.034 [-0.047, +0.115] 127/70 |
+| NBA NBA_SPREAD | -0.014 [-0.045, +0.020] 2544/72 | -0.019 [-0.059, +0.019] 3503/71 |
+| NBA NBA_TEAM_TOTAL | -0.048 [-0.076, -0.019] 2058/72 | -0.042 [-0.082, -0.001] 3277/55 |
+| NFL NFL_GAME_TOTAL | +0.026 [-0.038, +0.099] 449/25 | -0.031 [-0.095, +0.035] 593/25 |
+| NFL NFL_MONEYLINE | - | -0.062 [-0.218, +0.102] 27/17 |
+| NFL NFL_SPREAD | -0.035 [-0.075, +0.013] 590/25 | -0.109 [-0.173, -0.045] 859/25 |
+| NFL NFL_TEAM_TOTAL | -0.022 [-0.051, +0.013] 899/25 | -0.009 [-0.045, +0.028] 795/25 |
+| NHL NHL_GAME_TOTAL | -0.046 [-0.062, -0.027] 2842/66 | -0.023 [-0.057, +0.012] 6211/66 |
+| NHL NHL_MONEYLINE | - | +0.130 [+0.033, +0.227] 574/59 |
+| NHL NHL_PUCK_LINE | -0.066 [-0.119, -0.000] 530/39 | +0.026 [-0.023, +0.073] 2462/66 |
+
+Leaf level: 148 leaves have an arm with 10+ held-out games; 8 have a lower bound above zero (no multiplicity correction applied, so these are leads for the forward test, not results).
+- NHL / NHL_MONEYLINE / T2 / 2 / down: MOMENTUM_OPEN +0.277 [+0.096, +0.422] 27/22
+- NHL / NHL_MONEYLINE / T3 / 2 / up: MOMENTUM_OPEN +0.224 [+0.042, +0.378] 19/17
+- NBA / NBA_MONEYLINE / T2 / 3 / up: MOMENTUM_OPEN +0.215 [+0.113, +0.277] 20/20
+- NHL / NHL_MONEYLINE / T3 / 2 / flat: MOMENTUM_OPEN +0.154 [+0.022, +0.274] 126/39
+- NBA / NBA_MONEYLINE / T2 / 4 / up: MOMENTUM_OPEN +0.127 [+0.110, +0.143] 10/10
+- NFL / NFL_TEAM_TOTAL / T3 / 3 / flat: MOMENTUM_OPEN +0.124 [+0.002, +0.242] 25/14
+
+Where momentum cannot be scored: NFL and MLB ledgers hold one or two pre-start prices per ticker, so the move-since-open is mostly undefined (NFL moneyline 27 rows). The 20-minute `PRICE_ARCHIVE` join (2 GB) was not done; NBA / NHL archive-only tickers have no settlement cache, so they cannot be scored at all. Pot of gold needs a two-sided quote in a pot bucket, so moneylines (a favourite or an underdog near 50c) barely reach it.
+
 ## D6 layers 1-5 per cell (what this pass supplies)
 
 Layer 1 simulated probability: the logged `p_yes`. Layer 2 market state: bid / ask / mid, band, price bin, last move (from the ticker's own earlier shadow rows). Layer 3 factor filters: **price, band and move only**; the 110.1 / 110.2 factor filters are not joined per row (gap below). Layer 4 a tree choosing the arm: this leaf router (fit on 70% of games). Layer 5 per-leaf held-out net after costs per arm: reported where a leaf has 10+ held-out games.
