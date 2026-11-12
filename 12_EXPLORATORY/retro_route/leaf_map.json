@@ -1,0 +1,6487 @@
+{
+"fit_games": 375,
+"key": "sport|market_type|band|favprice_bin|move_bin",
+"leaves": {
+"MLB|MLB_GAME_TOTAL|T1|2|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05187,
+64
+],
+"MODEL_FADE": [
+-0.02397,
+59
+],
+"RIDE": [
+0.01173,
+64
+]
+},
+"fit_games": 22,
+"fit_rows": 64,
+"test": null,
+"thin": false
+},
+"MLB|MLB_GAME_TOTAL|T1|3|na": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.04711,
+73
+],
+"MODEL_FADE": [
+0.02727,
+66
+],
+"RIDE": [
+-0.09105,
+73
+]
+},
+"fit_games": 22,
+"fit_rows": 73,
+"test": null,
+"thin": false
+},
+"MLB|MLB_GAME_TOTAL|T1|4|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.08399,
+98
+],
+"MODEL_FADE": [
+-0.0692,
+75
+],
+"RIDE": [
+0.04353,
+98
+]
+},
+"fit_games": 22,
+"fit_rows": 98,
+"test": null,
+"thin": false
+},
+"MLB|MLB_GAME_TOTAL|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 15,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 11,
+"fit_rows": 15,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 14,
+"fit_rows": 29,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 11,
+"fit_rows": 18,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 16,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 30,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 11,
+"fit_rows": 16,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 15,
+"fit_rows": 27,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 19,
+"fit_rows": 47,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 20,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 26,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 20,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 13,
+"fit_rows": 33,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 15,
+"fit_rows": 29,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 18,
+"fit_rows": 35,
+"test": null,
+"thin": true
+},
+"MLB|MLB_GAME_TOTAL|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 20,
+"fit_rows": 32,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 22,
+"fit_rows": 22,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 7,
+"fit_rows": 7,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 6,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 14,
+"fit_rows": 14,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"MLB|MLB_MONEYLINE|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 17,
+"fit_rows": 17,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T1|3|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.08884,
+66
+],
+"MODEL_FADE": [
+-0.11717,
+55
+],
+"RIDE": [
+0.059,
+66
+]
+},
+"fit_games": 22,
+"fit_rows": 66,
+"test": null,
+"thin": false
+},
+"MLB|MLB_RUN_LINE|T1|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 22,
+"fit_rows": 49,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 6,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 8,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 15,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 18,
+"fit_rows": 24,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 8,
+"fit_rows": 11,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 11,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 13,
+"fit_rows": 13,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 6,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 21,
+"fit_rows": 35,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 22,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 5,
+"fit_rows": 5,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 20,
+"fit_rows": 32,
+"test": null,
+"thin": true
+},
+"MLB|MLB_RUN_LINE|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 10,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T1|2|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05441,
+88
+],
+"MODEL_FADE": [
+-0.0359,
+84
+],
+"RIDE": [
+0.00101,
+88
+]
+},
+"fit_games": 22,
+"fit_rows": 88,
+"test": null,
+"thin": false
+},
+"MLB|MLB_TEAM_TOTAL|T1|3|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.09099,
+109
+],
+"MODEL_FADE": [
+-0.023,
+91
+],
+"RIDE": [
+0.01504,
+109
+]
+},
+"fit_games": 22,
+"fit_rows": 109,
+"test": null,
+"thin": false
+},
+"MLB|MLB_TEAM_TOTAL|T1|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05992,
+111
+],
+"MODEL_FADE": [
+-0.05591,
+83
+],
+"RIDE": [
+-0.02844,
+111
+]
+},
+"fit_games": 22,
+"fit_rows": 111,
+"test": null,
+"thin": false
+},
+"MLB|MLB_TEAM_TOTAL|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 11,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 18,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 20,
+"fit_rows": 42,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 26,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 19,
+"fit_rows": 50,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 39,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 14,
+"fit_rows": 26,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 11,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 17,
+"fit_rows": 41,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 19,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 15,
+"fit_rows": 29,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 17,
+"fit_rows": 39,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 39,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 14,
+"fit_rows": 24,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 38,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 18,
+"fit_rows": 49,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 20,
+"fit_rows": 41,
+"test": null,
+"thin": true
+},
+"MLB|MLB_TEAM_TOTAL|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 15,
+"fit_rows": 30,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.12489,
+628
+],
+"MODEL_FADE": [
+-0.03131,
+361
+],
+"RIDE": [
+-0.10977,
+628
+]
+},
+"fit_games": 86,
+"fit_rows": 628,
+"test": null,
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.14708,
+1085
+],
+"MODEL_FADE": [
+-0.03057,
+376
+],
+"RIDE": [
+-0.11489,
+1085
+]
+},
+"fit_games": 83,
+"fit_rows": 1085,
+"test": null,
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T1|4|na": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0425,
+781
+],
+"MODEL_FADE": [
+0.00164,
+422
+],
+"RIDE": [
+-0.04429,
+781
+]
+},
+"fit_games": 71,
+"fit_rows": 781,
+"test": {
+"test_hi": 0.05023198198198196,
+"test_lo": -0.05469354838709677,
+"test_mean": -0.004548259860788865,
+"test_n_games": 52
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|2|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04458,
+309
+],
+"MODEL_FADE": [
+-0.01491,
+273
+],
+"MOMENTUM": [
+0.05482,
+309
+],
+"RIDE": [
+-0.00422,
+309
+]
+},
+"fit_games": 61,
+"fit_rows": 309,
+"test": {
+"test_hi": 0.2158426966292135,
+"test_lo": -0.049117837837837866,
+"test_mean": 0.08996902173913042,
+"test_n_games": 37
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 20,
+"fit_rows": 36,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 7,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03081,
+223
+],
+"MODEL_FADE": [
+-0.10527,
+169
+],
+"MOMENTUM": [
+-0.06096,
+223
+],
+"RIDE": [
+-0.0187,
+223
+]
+},
+"fit_games": 51,
+"fit_rows": 223,
+"test": null,
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|3|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03776,
+360
+],
+"MODEL_FADE": [
+-0.0311,
+290
+],
+"MOMENTUM": [
+0.01048,
+360
+],
+"RIDE": [
+-0.0093,
+360
+]
+},
+"fit_games": 67,
+"fit_rows": 360,
+"test": {
+"test_hi": 0.12612459016393443,
+"test_lo": -0.1099418367346939,
+"test_mean": 0.008412234042553176,
+"test_n_games": 37
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 38,
+"fit_rows": 57,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T2|3|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.02171,
+266
+],
+"MODEL_FADE": [
+-0.05294,
+211
+],
+"MOMENTUM": [
+-0.10724,
+266
+],
+"RIDE": [
+-0.06802,
+266
+]
+},
+"fit_games": 63,
+"fit_rows": 266,
+"test": {
+"test_hi": 0.06483350515463918,
+"test_lo": -0.08242146892655368,
+"test_mean": -0.009316062176165802,
+"test_n_games": 34
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05684,
+559
+],
+"MODEL_FADE": [
+-0.0585,
+388
+],
+"MOMENTUM": [
+0.01126,
+559
+],
+"RIDE": [
+0.01776,
+559
+]
+},
+"fit_games": 74,
+"fit_rows": 559,
+"test": {
+"test_hi": 0.021030711610486898,
+"test_lo": -0.13120787671232875,
+"test_mean": -0.051344525547445244,
+"test_n_games": 41
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|4|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.00924,
+116
+],
+"MODEL_FADE": [
+0.06916,
+75
+],
+"RIDE": [
+-0.04596,
+116
+]
+},
+"fit_games": 43,
+"fit_rows": 116,
+"test": {
+"test_hi": 0.030913461538461532,
+"test_lo": -0.044026315789473684,
+"test_mean": -0.01183492063492063,
+"test_n_games": 26
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 14,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T2|4|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.04431,
+494
+],
+"MODEL_FADE": [
+0.00471,
+320
+],
+"MOMENTUM": [
+-0.07492,
+494
+],
+"RIDE": [
+-0.07995,
+494
+]
+},
+"fit_games": 66,
+"fit_rows": 494,
+"test": {
+"test_hi": 0.010157103825136618,
+"test_lo": -0.08660087976539589,
+"test_mean": -0.03957062146892653,
+"test_n_games": 43
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|2|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03341,
+249
+],
+"MODEL_FADE": [
+-0.09617,
+225
+],
+"MOMENTUM": [
+0.04871,
+249
+],
+"RIDE": [
+-0.01288,
+249
+]
+},
+"fit_games": 56,
+"fit_rows": 249,
+"test": {
+"test_hi": 0.1428243093922652,
+"test_lo": -0.13572452830188683,
+"test_mean": 0.006308670520231207,
+"test_n_games": 36
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06018,
+82
+],
+"MODEL_FADE": [
+0.00215,
+51
+],
+"RIDE": [
+0.01445,
+82
+]
+},
+"fit_games": 35,
+"fit_rows": 82,
+"test": {
+"test_hi": 0.19054848484848486,
+"test_lo": -0.10291578947368421,
+"test_mean": 0.03943888888888885,
+"test_n_games": 17
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T3|2|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03659,
+163
+],
+"MODEL_FADE": [
+0.0838,
+133
+],
+"MOMENTUM": [
+-0.04695,
+163
+],
+"RIDE": [
+-0.00953,
+163
+]
+},
+"fit_games": 40,
+"fit_rows": 163,
+"test": {
+"test_hi": 0.04735476190476191,
+"test_lo": -0.3144773333333334,
+"test_mean": -0.13577882352941173,
+"test_n_games": 23
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|3|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+0.03243,
+304
+],
+"MODEL_FADE": [
+-0.02838,
+271
+],
+"MOMENTUM": [
+0.04251,
+304
+],
+"RIDE": [
+-0.07337,
+304
+]
+},
+"fit_games": 61,
+"fit_rows": 304,
+"test": {
+"test_hi": 0.03245841121495329,
+"test_lo": -0.1765398104265402,
+"test_mean": -0.07368028846153843,
+"test_n_games": 37
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|3|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05147,
+127
+],
+"MODEL_FADE": [
+-0.00067,
+100
+],
+"RIDE": [
+0.01099,
+127
+]
+},
+"fit_games": 44,
+"fit_rows": 127,
+"test": {
+"test_hi": 0.10988979591836738,
+"test_lo": -0.1352369565217391,
+"test_mean": -0.01016888888888888,
+"test_n_games": 17
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T3|3|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.03404,
+180
+],
+"MODEL_FADE": [
+0.03177,
+131
+],
+"MOMENTUM": [
+-0.07282,
+180
+],
+"RIDE": [
+-0.07499,
+180
+]
+},
+"fit_games": 43,
+"fit_rows": 180,
+"test": {
+"test_hi": 0.10395193798449613,
+"test_lo": -0.05744666666666667,
+"test_mean": 0.029448739495798324,
+"test_n_games": 26
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|4|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03673,
+546
+],
+"MODEL_FADE": [
+-0.015,
+446
+],
+"MOMENTUM": [
+0.03451,
+546
+],
+"RIDE": [
+0.00729,
+546
+]
+},
+"fit_games": 71,
+"fit_rows": 546,
+"test": {
+"test_hi": -0.02569917582417581,
+"test_lo": -0.14795136476426804,
+"test_mean": -0.08430143266475644,
+"test_n_games": 43
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|4|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00164,
+292
+],
+"MODEL_FADE": [
+0.02693,
+185
+],
+"RIDE": [
+-0.02734,
+292
+]
+},
+"fit_games": 60,
+"fit_rows": 292,
+"test": {
+"test_hi": 0.1224,
+"test_lo": -0.02165789473684209,
+"test_mean": 0.04645221238938054,
+"test_n_games": 26
+},
+"thin": false
+},
+"NBA|NBA_GAME_TOTAL|T3|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NBA|NBA_GAME_TOTAL|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00076,
+234
+],
+"MODEL_FADE": [
+-0.0292,
+171
+],
+"MOMENTUM": [
+-0.03039,
+234
+],
+"RIDE": [
+-0.02689,
+234
+]
+},
+"fit_games": 50,
+"fit_rows": 234,
+"test": null,
+"thin": false
+},
+"NBA|NBA_MONEYLINE|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 45,
+"fit_rows": 45,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 32,
+"fit_rows": 32,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T1|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 10,
+"fit_rows": 10,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 16,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 11,
+"fit_rows": 11,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 15,
+"fit_rows": 15,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 21,
+"fit_rows": 21,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 12,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 17,
+"fit_rows": 17,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 16,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 10,
+"fit_rows": 10,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 14,
+"fit_rows": 14,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 5,
+"fit_rows": 5,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 6,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"NBA|NBA_MONEYLINE|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NBA|NBA_SPREAD|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.07361,
+800
+],
+"MODEL_FADE": [
+-0.08628,
+616
+],
+"RIDE": [
+-0.07477,
+800
+]
+},
+"fit_games": 86,
+"fit_rows": 800,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.08268,
+696
+],
+"MODEL_FADE": [
+-0.08801,
+472
+],
+"RIDE": [
+-0.07045,
+696
+]
+},
+"fit_games": 86,
+"fit_rows": 696,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T1|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04702,
+1339
+],
+"MODEL_FADE": [
+-0.05295,
+748
+],
+"RIDE": [
+-0.04862,
+1339
+]
+},
+"fit_games": 84,
+"fit_rows": 1339,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01987,
+255
+],
+"MODEL_FADE": [
+-0.18213,
+227
+],
+"MOMENTUM": [
+-0.00252,
+255
+],
+"RIDE": [
+-0.02771,
+255
+]
+},
+"fit_games": 63,
+"fit_rows": 255,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|2|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.02418,
+84
+],
+"MODEL_FADE": [
+-0.12156,
+68
+],
+"RIDE": [
+-0.07293,
+84
+]
+},
+"fit_games": 39,
+"fit_rows": 84,
+"test": {
+"test_hi": 0.23315,
+"test_lo": -0.045628205128205104,
+"test_mean": 0.09142857142857143,
+"test_n_games": 23
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"NBA|NBA_SPREAD|T2|2|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03993,
+418
+],
+"MODEL_FADE": [
+-0.04185,
+376
+],
+"MOMENTUM": [
+0.03843,
+418
+],
+"RIDE": [
+-0.0072,
+418
+]
+},
+"fit_games": 78,
+"fit_rows": 418,
+"test": {
+"test_hi": 0.13594337349397592,
+"test_lo": -0.050640992167101814,
+"test_mean": 0.04541598837209303,
+"test_n_games": 59
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|3|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.02253,
+268
+],
+"MODEL_FADE": [
+-0.10509,
+232
+],
+"MOMENTUM": [
+-0.02843,
+268
+],
+"RIDE": [
+-0.06615,
+268
+]
+},
+"fit_games": 75,
+"fit_rows": 268,
+"test": {
+"test_hi": 0.14605301204819282,
+"test_lo": -0.0457841584158416,
+"test_mean": 0.050801104972375694,
+"test_n_games": 49
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0257,
+84
+],
+"MODEL_FADE": [
+-0.10187,
+71
+],
+"RIDE": [
+-0.01795,
+84
+]
+},
+"fit_games": 40,
+"fit_rows": 84,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"NBA|NBA_SPREAD|T2|3|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04698,
+319
+],
+"MODEL_FADE": [
+-0.06372,
+298
+],
+"MOMENTUM": [
+0.03496,
+319
+],
+"RIDE": [
+0.0042,
+319
+]
+},
+"fit_games": 81,
+"fit_rows": 319,
+"test": {
+"test_hi": 0.06886833976833975,
+"test_lo": -0.062269858156028375,
+"test_mean": 0.004069090909090928,
+"test_n_games": 62
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|4|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.00478,
+801
+],
+"MODEL_FADE": [
+-0.03003,
+584
+],
+"MOMENTUM": [
+-0.03529,
+801
+],
+"RIDE": [
+-0.03686,
+801
+]
+},
+"fit_games": 81,
+"fit_rows": 801,
+"test": {
+"test_hi": 0.022543697478991594,
+"test_lo": -0.05553251833740834,
+"test_mean": -0.01883953488372093,
+"test_n_games": 56
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02549,
+277
+],
+"MODEL_FADE": [
+-0.03421,
+211
+],
+"RIDE": [
+-0.00564,
+277
+]
+},
+"fit_games": 63,
+"fit_rows": 277,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 17,
+"test": null,
+"thin": true
+},
+"NBA|NBA_SPREAD|T2|4|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00477,
+326
+],
+"MODEL_FADE": [
+-0.03925,
+269
+],
+"MOMENTUM": [
+0.00612,
+326
+],
+"RIDE": [
+-0.02829,
+326
+]
+},
+"fit_games": 69,
+"fit_rows": 326,
+"test": {
+"test_hi": 0.03699579831932774,
+"test_lo": -0.056937391304347815,
+"test_mean": -0.014160778443113763,
+"test_n_games": 56
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.027,
+299
+],
+"MODEL_FADE": [
+-0.17435,
+279
+],
+"MOMENTUM": [
+-0.03845,
+299
+],
+"RIDE": [
+-0.01884,
+299
+]
+},
+"fit_games": 70,
+"fit_rows": 299,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|2|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0093,
+153
+],
+"MODEL_FADE": [
+0.00977,
+140
+],
+"RIDE": [
+-0.03612,
+153
+]
+},
+"fit_games": 52,
+"fit_rows": 153,
+"test": {
+"test_hi": 0.2182403846153846,
+"test_lo": -0.15003999999999995,
+"test_mean": 0.041573913043478246,
+"test_n_games": 23
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02863,
+282
+],
+"MODEL_FADE": [
+-0.02505,
+239
+],
+"MOMENTUM": [
+-0.0331,
+282
+],
+"RIDE": [
+-0.01803,
+282
+]
+},
+"fit_games": 64,
+"fit_rows": 282,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|3|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.0112,
+216
+],
+"MODEL_FADE": [
+-0.12632,
+200
+],
+"MOMENTUM": [
+-0.05837,
+216
+],
+"RIDE": [
+-0.05276,
+216
+]
+},
+"fit_games": 68,
+"fit_rows": 216,
+"test": {
+"test_hi": 0.18845793650793655,
+"test_lo": -0.06303680000000002,
+"test_mean": 0.059227499999999995,
+"test_n_games": 43
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02332,
+171
+],
+"MODEL_FADE": [
+-0.02578,
+164
+],
+"RIDE": [
+-0.01632,
+171
+]
+},
+"fit_games": 59,
+"fit_rows": 171,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|3|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+0.0031,
+252
+],
+"MODEL_FADE": [
+-0.07,
+223
+],
+"MOMENTUM": [
+0.01656,
+252
+],
+"RIDE": [
+-0.04415,
+252
+]
+},
+"fit_games": 78,
+"fit_rows": 252,
+"test": {
+"test_hi": 0.09057015706806285,
+"test_lo": -0.08122880434782606,
+"test_mean": 0.005290452261306542,
+"test_n_games": 52
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00447,
+340
+],
+"MODEL_FADE": [
+-0.08662,
+268
+],
+"MOMENTUM": [
+-0.02707,
+340
+],
+"RIDE": [
+-0.02383,
+340
+]
+},
+"fit_games": 79,
+"fit_rows": 340,
+"test": null,
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|4|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.00697,
+614
+],
+"MODEL_FADE": [
+-0.01558,
+488
+],
+"RIDE": [
+-0.03391,
+614
+]
+},
+"fit_games": 83,
+"fit_rows": 614,
+"test": {
+"test_hi": 0.05466796874999998,
+"test_lo": -0.0441282142857143,
+"test_mean": 0.00248759124087591,
+"test_n_games": 48
+},
+"thin": false
+},
+"NBA|NBA_SPREAD|T3|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NBA|NBA_SPREAD|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0146,
+391
+],
+"MODEL_FADE": [
+-0.04264,
+320
+],
+"MOMENTUM": [
+-0.00844,
+391
+],
+"RIDE": [
+-0.01464,
+391
+]
+},
+"fit_games": 78,
+"fit_rows": 391,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.16956,
+893
+],
+"MODEL_FADE": [
+-0.02971,
+505
+],
+"RIDE": [
+-0.118,
+893
+]
+},
+"fit_games": 85,
+"fit_rows": 893,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.13578,
+1322
+],
+"MODEL_FADE": [
+-0.06877,
+492
+],
+"RIDE": [
+-0.1327,
+1322
+]
+},
+"fit_games": 83,
+"fit_rows": 1322,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T1|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.12259,
+961
+],
+"MODEL_FADE": [
+-0.02961,
+260
+],
+"RIDE": [
+-0.0502,
+961
+]
+},
+"fit_games": 75,
+"fit_rows": 961,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|2|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01667,
+338
+],
+"MODEL_FADE": [
+-0.06154,
+269
+],
+"MOMENTUM": [
+0.02058,
+338
+],
+"RIDE": [
+-0.03874,
+338
+]
+},
+"fit_games": 58,
+"fit_rows": 338,
+"test": {
+"test_hi": 0.04637191780821919,
+"test_lo": -0.1933644578313253,
+"test_mean": -0.07164638554216866,
+"test_n_games": 30
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 24,
+"fit_rows": 51,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 20,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05348,
+292
+],
+"MODEL_FADE": [
+-0.04982,
+252
+],
+"MOMENTUM": [
+-0.02653,
+292
+],
+"RIDE": [
+-0.00029,
+292
+]
+},
+"fit_games": 56,
+"fit_rows": 292,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|3|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02671,
+348
+],
+"MODEL_FADE": [
+-0.04276,
+259
+],
+"MOMENTUM": [
+9e-05,
+348
+],
+"RIDE": [
+-0.02952,
+348
+]
+},
+"fit_games": 66,
+"fit_rows": 348,
+"test": {
+"test_hi": 0.08665105263157895,
+"test_lo": -0.1090248888888889,
+"test_mean": -0.008325520833333327,
+"test_n_games": 34
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00625,
+97
+],
+"MODEL_FADE": [
+-0.08626,
+71
+],
+"RIDE": [
+-0.05326,
+97
+]
+},
+"fit_games": 49,
+"fit_rows": 97,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 23,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01602,
+369
+],
+"MODEL_FADE": [
+-0.02256,
+305
+],
+"MOMENTUM": [
+-0.04208,
+369
+],
+"RIDE": [
+-0.0428,
+369
+]
+},
+"fit_games": 63,
+"fit_rows": 369,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.08084,
+539
+],
+"MODEL_FADE": [
+-0.04144,
+357
+],
+"MOMENTUM": [
+0.01102,
+539
+],
+"RIDE": [
+0.02492,
+539
+]
+},
+"fit_games": 74,
+"fit_rows": 539,
+"test": {
+"test_hi": 0.0029287671232876896,
+"test_lo": -0.11679657142857144,
+"test_mean": -0.05876187290969901,
+"test_n_games": 40
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02556,
+103
+],
+"MODEL_FADE": [
+-0.01727,
+58
+],
+"RIDE": [
+-0.03826,
+103
+]
+},
+"fit_games": 38,
+"fit_rows": 103,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 76,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T2|4|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.02021,
+663
+],
+"MODEL_FADE": [
+-0.01863,
+413
+],
+"MOMENTUM": [
+-0.06802,
+663
+],
+"RIDE": [
+-0.07633,
+663
+]
+},
+"fit_games": 74,
+"fit_rows": 663,
+"test": {
+"test_hi": -0.04150461095100864,
+"test_lo": -0.1249303225806451,
+"test_mean": -0.08484641833810887,
+"test_n_games": 36
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|2|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02218,
+296
+],
+"MODEL_FADE": [
+-0.05062,
+262
+],
+"MOMENTUM": [
+0.00377,
+296
+],
+"RIDE": [
+-0.03324,
+296
+]
+},
+"fit_games": 63,
+"fit_rows": 296,
+"test": {
+"test_hi": 0.06199127906976745,
+"test_lo": -0.19060691489361706,
+"test_mean": -0.06366775956284151,
+"test_n_games": 38
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.09959,
+110
+],
+"MODEL_FADE": [
+-0.03285,
+93
+],
+"RIDE": [
+0.05074,
+110
+]
+},
+"fit_games": 47,
+"fit_rows": 110,
+"test": {
+"test_hi": 0.04382115384615384,
+"test_lo": -0.19392264150943397,
+"test_mean": -0.08073043478260869,
+"test_n_games": 21
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T3|2|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03968,
+200
+],
+"MODEL_FADE": [
+-0.12875,
+161
+],
+"MOMENTUM": [
+0.00712,
+200
+],
+"RIDE": [
+-0.02258,
+200
+]
+},
+"fit_games": 53,
+"fit_rows": 200,
+"test": {
+"test_hi": 0.1507138364779874,
+"test_lo": -0.07112897727272728,
+"test_mean": 0.038353205128205135,
+"test_n_games": 35
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05047,
+336
+],
+"MODEL_FADE": [
+-0.04311,
+298
+],
+"MOMENTUM": [
+-0.03887,
+336
+],
+"RIDE": [
+-0.00208,
+336
+]
+},
+"fit_games": 60,
+"fit_rows": 336,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|3|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0182,
+144
+],
+"MODEL_FADE": [
+0.04941,
+120
+],
+"RIDE": [
+-0.02894,
+144
+]
+},
+"fit_games": 50,
+"fit_rows": 144,
+"test": {
+"test_hi": 0.13855932203389834,
+"test_lo": -0.13007166666666667,
+"test_mean": -0.004229508196721315,
+"test_n_games": 26
+},
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 5,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01542,
+260
+],
+"MODEL_FADE": [
+-0.06947,
+203
+],
+"MOMENTUM": [
+-0.04251,
+260
+],
+"RIDE": [
+-0.04115,
+260
+]
+},
+"fit_games": 55,
+"fit_rows": 260,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0125,
+560
+],
+"MODEL_FADE": [
+-0.042,
+431
+],
+"MOMENTUM": [
+-0.00192,
+560
+],
+"RIDE": [
+-0.02968,
+560
+]
+},
+"fit_games": 66,
+"fit_rows": 560,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02937,
+302
+],
+"MODEL_FADE": [
+-0.01726,
+225
+],
+"RIDE": [
+-0.00844,
+302
+]
+},
+"fit_games": 62,
+"fit_rows": 302,
+"test": null,
+"thin": false
+},
+"NBA|NBA_TEAM_TOTAL|T3|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"NBA|NBA_TEAM_TOTAL|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02545,
+425
+],
+"MODEL_FADE": [
+-0.03395,
+296
+],
+"MOMENTUM": [
+-0.08456,
+425
+],
+"RIDE": [
+-0.02241,
+425
+]
+},
+"fit_games": 58,
+"fit_rows": 425,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02828,
+421
+],
+"MODEL_FADE": [
+-0.09058,
+352
+],
+"RIDE": [
+-0.01709,
+421
+]
+},
+"fit_games": 59,
+"fit_rows": 421,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T1|3|na": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.01015,
+241
+],
+"MODEL_FADE": [
+-0.0724,
+201
+],
+"RIDE": [
+-0.05031,
+241
+]
+},
+"fit_games": 59,
+"fit_rows": 241,
+"test": {
+"test_hi": 0.016433928571428575,
+"test_lo": -0.12857094017094012,
+"test_mean": -0.05774122807017543,
+"test_n_games": 28
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T1|4|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03585,
+459
+],
+"MODEL_FADE": [
+-0.01737,
+344
+],
+"RIDE": [
+0.00906,
+459
+]
+},
+"fit_games": 59,
+"fit_rows": 459,
+"test": {
+"test_hi": 0.006088646288209621,
+"test_lo": -0.13243167420814475,
+"test_mean": -0.058816143497757836,
+"test_n_games": 28
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|2|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.07412,
+129
+],
+"MODEL_FADE": [
+0.01414,
+107
+],
+"MOMENTUM": [
+0.00098,
+129
+],
+"RIDE": [
+0.02955,
+129
+]
+},
+"fit_games": 36,
+"fit_rows": 129,
+"test": {
+"test_hi": 0.09173488372093024,
+"test_lo": -0.08442602739726028,
+"test_mean": 0.011528571428571416,
+"test_n_games": 23
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|2|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.0082,
+163
+],
+"MODEL_FADE": [
+-0.14731,
+134
+],
+"RIDE": [
+-0.05269,
+163
+]
+},
+"fit_games": 48,
+"fit_rows": 163,
+"test": {
+"test_hi": 0.08549692307692307,
+"test_lo": -0.08661111111111112,
+"test_mean": 0.002505084745762716,
+"test_n_games": 20
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01232,
+123
+],
+"MODEL_FADE": [
+-0.11817,
+108
+],
+"MOMENTUM": [
+-0.05299,
+123
+],
+"RIDE": [
+-0.03254,
+123
+]
+},
+"fit_games": 42,
+"fit_rows": 123,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01567,
+86
+],
+"MODEL_FADE": [
+-0.06372,
+70
+],
+"MOMENTUM": [
+-0.0427,
+86
+],
+"RIDE": [
+-0.02311,
+86
+]
+},
+"fit_games": 38,
+"fit_rows": 86,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|3|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.01586,
+83
+],
+"MODEL_FADE": [
+-0.06937,
+66
+],
+"RIDE": [
+-0.05417,
+83
+]
+},
+"fit_games": 40,
+"fit_rows": 83,
+"test": {
+"test_hi": 0.0012953488372092912,
+"test_lo": -0.21184324324324327,
+"test_mean": -0.1068135135135135,
+"test_n_games": 22
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|3|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.00149,
+75
+],
+"MODEL_FADE": [
+-0.05882,
+69
+],
+"MOMENTUM": [
+-0.087,
+75
+],
+"RIDE": [
+-0.04106,
+75
+]
+},
+"fit_games": 34,
+"fit_rows": 75,
+"test": {
+"test_hi": 0.04612727272727273,
+"test_lo": -0.18813636363636366,
+"test_mean": -0.0619290322580645,
+"test_n_games": 17
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02185,
+117
+],
+"MODEL_FADE": [
+-0.09729,
+86
+],
+"MOMENTUM": [
+-0.00764,
+117
+],
+"RIDE": [
+-0.00478,
+117
+]
+},
+"fit_games": 45,
+"fit_rows": 117,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04381,
+227
+],
+"MODEL_FADE": [
+-0.01208,
+176
+],
+"RIDE": [
+0.0204,
+227
+]
+},
+"fit_games": 55,
+"fit_rows": 227,
+"test": {
+"test_hi": -0.004359090909090904,
+"test_lo": -0.19085749999999993,
+"test_mean": -0.09348313253012046,
+"test_n_games": 25
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T2|4|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00524,
+118
+],
+"MODEL_FADE": [
+0.03819,
+92
+],
+"MOMENTUM": [
+-0.06512,
+118
+],
+"RIDE": [
+-0.01955,
+118
+]
+},
+"fit_games": 44,
+"fit_rows": 118,
+"test": {
+"test_hi": 0.029003278688524595,
+"test_lo": -0.1486609756097561,
+"test_mean": -0.05557959183673468,
+"test_n_games": 23
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|2|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.00119,
+106
+],
+"MODEL_FADE": [
+-0.06588,
+93
+],
+"MOMENTUM": [
+-0.13168,
+106
+],
+"RIDE": [
+-0.0455,
+106
+]
+},
+"fit_games": 30,
+"fit_rows": 106,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06911,
+186
+],
+"MODEL_FADE": [
+-0.05516,
+157
+],
+"RIDE": [
+0.0248,
+186
+]
+},
+"fit_games": 46,
+"fit_rows": 186,
+"test": {
+"test_hi": 0.10115897435897434,
+"test_lo": -0.18014827586206897,
+"test_mean": -0.04277750000000001,
+"test_n_games": 14
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|2|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+0.01425,
+124
+],
+"MODEL_FADE": [
+-0.16725,
+119
+],
+"MOMENTUM": [
+0.0951,
+124
+],
+"RIDE": [
+-0.05865,
+124
+]
+},
+"fit_games": 36,
+"fit_rows": 124,
+"test": {
+"test_hi": 0.18389999999999995,
+"test_lo": -0.2464377777777777,
+"test_mean": -0.03450952380952382,
+"test_n_games": 13
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01636,
+62
+],
+"MODEL_FADE": [
+-0.05147,
+50
+],
+"MOMENTUM": [
+-0.07274,
+62
+],
+"RIDE": [
+-0.02197,
+62
+]
+},
+"fit_games": 34,
+"fit_rows": 62,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00879,
+115
+],
+"MODEL_FADE": [
+-0.03725,
+100
+],
+"RIDE": [
+-0.02916,
+115
+]
+},
+"fit_games": 50,
+"fit_rows": 115,
+"test": null,
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|3|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.03711,
+67
+],
+"MODEL_FADE": [
+-0.07822,
+61
+],
+"MOMENTUM": [
+0.01298,
+67
+],
+"RIDE": [
+-0.07551,
+67
+]
+},
+"fit_games": 31,
+"fit_rows": 67,
+"test": {
+"test_hi": 0.03495416666666668,
+"test_lo": -0.2501869565217391,
+"test_mean": -0.11402857142857144,
+"test_n_games": 11
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|4|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0251,
+96
+],
+"MODEL_FADE": [
+0.00824,
+67
+],
+"MOMENTUM": [
+0.02122,
+96
+],
+"RIDE": [
+6e-05,
+96
+]
+},
+"fit_games": 32,
+"fit_rows": 96,
+"test": {
+"test_hi": 0.09351052631578949,
+"test_lo": -0.08995000000000002,
+"test_mean": -0.0071829787234042606,
+"test_n_games": 15
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|4|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02107,
+280
+],
+"MODEL_FADE": [
+0.00345,
+220
+],
+"RIDE": [
+-0.00149,
+280
+]
+},
+"fit_games": 59,
+"fit_rows": 280,
+"test": {
+"test_hi": 0.02664749999999999,
+"test_lo": -0.22171724137931037,
+"test_mean": -0.10859400000000001,
+"test_n_games": 16
+},
+"thin": false
+},
+"NFL|NFL_GAME_TOTAL|T3|4|up": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04689,
+85
+],
+"MODEL_FADE": [
+-0.08517,
+71
+],
+"MOMENTUM": [
+-0.05548,
+85
+],
+"RIDE": [
+0.02191,
+85
+]
+},
+"fit_games": 34,
+"fit_rows": 85,
+"test": {
+"test_hi": 0.05125882352941177,
+"test_lo": -0.1454,
+"test_mean": -0.03917166666666665,
+"test_n_games": 17
+},
+"thin": false
+},
+"NFL|NFL_MONEYLINE|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 37,
+"fit_rows": 37,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 18,
+"fit_rows": 18,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T1|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 7,
+"fit_rows": 7,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 25,
+"fit_rows": 25,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 14,
+"fit_rows": 14,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 27,
+"fit_rows": 27,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 5,
+"fit_rows": 5,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NFL|NFL_MONEYLINE|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NFL|NFL_SPREAD|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0333,
+399
+],
+"MODEL_FADE": [
+-0.08924,
+359
+],
+"RIDE": [
+-0.01132,
+399
+]
+},
+"fit_games": 59,
+"fit_rows": 399,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0191,
+474
+],
+"MODEL_FADE": [
+-0.0589,
+403
+],
+"RIDE": [
+-0.01977,
+474
+]
+},
+"fit_games": 59,
+"fit_rows": 474,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T1|4|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05078,
+624
+],
+"MODEL_FADE": [
+-0.03221,
+522
+],
+"RIDE": [
+0.02284,
+624
+]
+},
+"fit_games": 59,
+"fit_rows": 624,
+"test": {
+"test_hi": 0.04227629179331308,
+"test_lo": -0.05514402730375425,
+"test_mean": -0.003944267515923554,
+"test_n_games": 28
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|2|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.02367,
+127
+],
+"MODEL_FADE": [
+-0.08645,
+109
+],
+"MOMENTUM": [
+-0.05121,
+127
+],
+"RIDE": [
+-0.06802,
+127
+]
+},
+"fit_games": 45,
+"fit_rows": 127,
+"test": {
+"test_hi": 0.03188301886792454,
+"test_lo": -0.15310740740740741,
+"test_mean": -0.05989428571428571,
+"test_n_games": 24
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04433,
+172
+],
+"MODEL_FADE": [
+-0.08522,
+160
+],
+"RIDE": [
+0.00026,
+172
+]
+},
+"fit_games": 48,
+"fit_rows": 172,
+"test": {
+"test_hi": -0.019028571428571447,
+"test_lo": -0.2360796875,
+"test_mean": -0.12383684210526316,
+"test_n_games": 23
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04398,
+106
+],
+"MODEL_FADE": [
+-0.11517,
+92
+],
+"MOMENTUM": [
+-0.04677,
+106
+],
+"RIDE": [
+-0.00018,
+106
+]
+},
+"fit_games": 39,
+"fit_rows": 106,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|3|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.03214,
+136
+],
+"MODEL_FADE": [
+-0.0235,
+112
+],
+"MOMENTUM": [
+-0.02013,
+136
+],
+"RIDE": [
+-0.07017,
+136
+]
+},
+"fit_games": 49,
+"fit_rows": 136,
+"test": {
+"test_hi": 0.15272727272727274,
+"test_lo": -0.0821843137254902,
+"test_mean": 0.0373169230769231,
+"test_n_games": 26
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|3|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06456,
+208
+],
+"MODEL_FADE": [
+-0.05207,
+183
+],
+"RIDE": [
+0.02717,
+208
+]
+},
+"fit_games": 55,
+"fit_rows": 208,
+"test": {
+"test_hi": 0.07872739726027397,
+"test_lo": -0.0949939393939394,
+"test_mean": -0.012145070422535206,
+"test_n_games": 25
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01192,
+129
+],
+"MODEL_FADE": [
+-0.11612,
+108
+],
+"MOMENTUM": [
+-0.03399,
+129
+],
+"RIDE": [
+-0.02638,
+129
+]
+},
+"fit_games": 49,
+"fit_rows": 129,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.066,
+181
+],
+"MODEL_FADE": [
+-0.05531,
+146
+],
+"MOMENTUM": [
+0.03903,
+181
+],
+"RIDE": [
+0.04097,
+181
+]
+},
+"fit_games": 51,
+"fit_rows": 181,
+"test": {
+"test_hi": 0.04131960784313727,
+"test_lo": -0.17547977528089886,
+"test_mean": -0.055135164835164834,
+"test_n_games": 27
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05989,
+310
+],
+"MODEL_FADE": [
+-0.03046,
+271
+],
+"RIDE": [
+0.0347,
+310
+]
+},
+"fit_games": 56,
+"fit_rows": 310,
+"test": {
+"test_hi": 0.03875000000000001,
+"test_lo": -0.08090281690140845,
+"test_mean": -0.017743650793650777,
+"test_n_games": 28
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00546,
+128
+],
+"MODEL_FADE": [
+-0.0475,
+104
+],
+"MOMENTUM": [
+-0.00546,
+128
+],
+"RIDE": [
+-0.02052,
+128
+]
+},
+"fit_games": 47,
+"fit_rows": 128,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|2|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.12245,
+108
+],
+"MODEL_FADE": [
+-0.09238,
+90
+],
+"MOMENTUM": [
+0.02521,
+108
+],
+"RIDE": [
+0.07821,
+108
+]
+},
+"fit_games": 38,
+"fit_rows": 108,
+"test": {
+"test_hi": 0.06802903225806446,
+"test_lo": -0.1952534482758621,
+"test_mean": -0.07265348837209304,
+"test_n_games": 15
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|2|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.01655,
+229
+],
+"MODEL_FADE": [
+-0.13707,
+204
+],
+"RIDE": [
+-0.06045,
+229
+]
+},
+"fit_games": 49,
+"fit_rows": 229,
+"test": {
+"test_hi": 0.062231578947368436,
+"test_lo": -0.09119538461538461,
+"test_mean": -0.013186567164179088,
+"test_n_games": 22
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00522,
+70
+],
+"MODEL_FADE": [
+-0.04243,
+61
+],
+"MOMENTUM": [
+-0.07033,
+70
+],
+"RIDE": [
+-0.03898,
+70
+]
+},
+"fit_games": 35,
+"fit_rows": 70,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|3|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.07114,
+103
+],
+"MODEL_FADE": [
+-0.11049,
+87
+],
+"MOMENTUM": [
+0.02809,
+103
+],
+"RIDE": [
+0.03288,
+103
+]
+},
+"fit_games": 43,
+"fit_rows": 103,
+"test": {
+"test_hi": 0.15021250000000003,
+"test_lo": -0.0915742857142857,
+"test_mean": 0.033213333333333345,
+"test_n_games": 17
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01002,
+293
+],
+"MODEL_FADE": [
+-0.06706,
+243
+],
+"RIDE": [
+-0.02734,
+293
+]
+},
+"fit_games": 57,
+"fit_rows": 293,
+"test": null,
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|3|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.03435,
+68
+],
+"MODEL_FADE": [
+0.0406,
+62
+],
+"MOMENTUM": [
+-0.07765,
+68
+],
+"RIDE": [
+-0.07209,
+68
+]
+},
+"fit_games": 36,
+"fit_rows": 68,
+"test": {
+"test_hi": 0.08586938775510204,
+"test_lo": -0.17287749999999996,
+"test_mean": -0.053708695652173906,
+"test_n_games": 20
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05875,
+117
+],
+"MODEL_FADE": [
+-0.03887,
+100
+],
+"MOMENTUM": [
+0.03334,
+117
+],
+"RIDE": [
+0.03334,
+117
+]
+},
+"fit_games": 44,
+"fit_rows": 117,
+"test": {
+"test_hi": 0.10583333333333333,
+"test_lo": -0.07821014492753625,
+"test_mean": 0.029655072463768126,
+"test_n_games": 24
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05268,
+440
+],
+"MODEL_FADE": [
+-0.04697,
+369
+],
+"RIDE": [
+0.02795,
+440
+]
+},
+"fit_games": 59,
+"fit_rows": 440,
+"test": {
+"test_hi": 0.054519108280254774,
+"test_lo": -0.06387612903225807,
+"test_mean": 0.0012936305732484123,
+"test_n_games": 26
+},
+"thin": false
+},
+"NFL|NFL_SPREAD|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01684,
+69
+],
+"MODEL_FADE": [
+-0.05671,
+58
+],
+"MOMENTUM": [
+-0.01205,
+69
+],
+"RIDE": [
+-0.00951,
+69
+]
+},
+"fit_games": 34,
+"fit_rows": 69,
+"test": null,
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04849,
+376
+],
+"MODEL_FADE": [
+-0.05851,
+313
+],
+"RIDE": [
+-0.00177,
+376
+]
+},
+"fit_games": 59,
+"fit_rows": 376,
+"test": null,
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0248,
+319
+],
+"MODEL_FADE": [
+-0.03487,
+257
+],
+"RIDE": [
+-0.02126,
+319
+]
+},
+"fit_games": 59,
+"fit_rows": 319,
+"test": null,
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T1|4|na": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04489,
+866
+],
+"MODEL_FADE": [
+-0.0308,
+524
+],
+"RIDE": [
+0.00714,
+866
+]
+},
+"fit_games": 59,
+"fit_rows": 866,
+"test": {
+"test_hi": 0.006800681818181829,
+"test_lo": -0.05844208144796379,
+"test_mean": -0.024647356321839068,
+"test_n_games": 28
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|2|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05497,
+131
+],
+"MODEL_FADE": [
+-0.10916,
+109
+],
+"MOMENTUM": [
+0.02997,
+131
+],
+"RIDE": [
+0.0088,
+131
+]
+},
+"fit_games": 42,
+"fit_rows": 131,
+"test": {
+"test_hi": 0.0795647058823529,
+"test_lo": -0.20732758620689656,
+"test_mean": -0.05970256410256413,
+"test_n_games": 27
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04599,
+112
+],
+"MODEL_FADE": [
+-0.02764,
+101
+],
+"RIDE": [
+0.0008,
+112
+]
+},
+"fit_games": 45,
+"fit_rows": 112,
+"test": {
+"test_hi": 0.11509722222222224,
+"test_lo": -0.1598111111111111,
+"test_mean": -0.012484374999999995,
+"test_n_games": 20
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|2|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02354,
+126
+],
+"MODEL_FADE": [
+-0.06064,
+109
+],
+"MOMENTUM": [
+0.01264,
+126
+],
+"RIDE": [
+-0.02224,
+126
+]
+},
+"fit_games": 43,
+"fit_rows": 126,
+"test": {
+"test_hi": 0.18736551724137931,
+"test_lo": -0.10968367346938775,
+"test_mean": 0.04829074074074075,
+"test_n_games": 20
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|3|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0205,
+107
+],
+"MODEL_FADE": [
+-0.00813,
+82
+],
+"MOMENTUM": [
+0.00284,
+107
+],
+"RIDE": [
+-0.02182,
+107
+]
+},
+"fit_games": 46,
+"fit_rows": 107,
+"test": {
+"test_hi": 0.17170923076923078,
+"test_lo": -0.08845232558139532,
+"test_mean": 0.034497058823529436,
+"test_n_games": 24
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|3|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06723,
+104
+],
+"MODEL_FADE": [
+-0.09792,
+90
+],
+"RIDE": [
+0.0277,
+104
+]
+},
+"fit_games": 46,
+"fit_rows": 104,
+"test": {
+"test_hi": 0.01753142857142856,
+"test_lo": -0.14252608695652175,
+"test_mean": -0.06656999999999999,
+"test_n_games": 23
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|3|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.01917,
+110
+],
+"MODEL_FADE": [
+-0.06417,
+91
+],
+"MOMENTUM": [
+0.00432,
+110
+],
+"RIDE": [
+-0.05963,
+110
+]
+},
+"fit_games": 41,
+"fit_rows": 110,
+"test": {
+"test_hi": 0.1556820512820513,
+"test_lo": -0.14721086956521737,
+"test_mean": -0.01972790697674418,
+"test_n_games": 23
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03497,
+269
+],
+"MODEL_FADE": [
+-0.03208,
+183
+],
+"MOMENTUM": [
+-0.02421,
+269
+],
+"RIDE": [
+0.00316,
+269
+]
+},
+"fit_games": 54,
+"fit_rows": 269,
+"test": {
+"test_hi": 0.030381132075471707,
+"test_lo": -0.05156482758620688,
+"test_mean": -0.007341007194244593,
+"test_n_games": 27
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05328,
+342
+],
+"MODEL_FADE": [
+-0.04401,
+235
+],
+"RIDE": [
+0.02595,
+342
+]
+},
+"fit_games": 59,
+"fit_rows": 342,
+"test": {
+"test_hi": 0.010460804020100514,
+"test_lo": -0.0658570731707317,
+"test_mean": -0.02632962962962962,
+"test_n_games": 28
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 16,
+"fit_rows": 28,
+"test": null,
+"thin": true
+},
+"NFL|NFL_TEAM_TOTAL|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02094,
+255
+],
+"MODEL_FADE": [
+-0.01366,
+178
+],
+"MOMENTUM": [
+-0.02278,
+255
+],
+"RIDE": [
+-0.00659,
+255
+]
+},
+"fit_games": 57,
+"fit_rows": 255,
+"test": null,
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|2|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05246,
+106
+],
+"MODEL_FADE": [
+-0.08238,
+78
+],
+"MOMENTUM": [
+-0.03042,
+106
+],
+"RIDE": [
+0.0067,
+106
+]
+},
+"fit_games": 37,
+"fit_rows": 106,
+"test": {
+"test_hi": 0.17979696969696965,
+"test_lo": -0.1308769230769231,
+"test_mean": 0.03575312499999995,
+"test_n_games": 12
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06864,
+179
+],
+"MODEL_FADE": [
+-0.09541,
+166
+],
+"RIDE": [
+0.02436,
+179
+]
+},
+"fit_games": 56,
+"fit_rows": 179,
+"test": {
+"test_hi": 0.10484285714285713,
+"test_lo": -0.17956756756756756,
+"test_mean": -0.03181666666666669,
+"test_n_games": 14
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|2|up": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.03465,
+84
+],
+"MODEL_FADE": [
+-0.01445,
+76
+],
+"MOMENTUM": [
+0.0171,
+84
+],
+"RIDE": [
+-0.08012,
+84
+]
+},
+"fit_games": 38,
+"fit_rows": 84,
+"test": {
+"test_hi": -0.07864375000000004,
+"test_lo": -0.28959487179487176,
+"test_mean": -0.18874,
+"test_n_games": 14
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02049,
+105
+],
+"MODEL_FADE": [
+-0.13833,
+84
+],
+"MOMENTUM": [
+-0.03585,
+105
+],
+"RIDE": [
+-0.01852,
+105
+]
+},
+"fit_games": 44,
+"fit_rows": 105,
+"test": null,
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02024,
+143
+],
+"MODEL_FADE": [
+-0.07955,
+122
+],
+"RIDE": [
+-0.01828,
+143
+]
+},
+"fit_games": 51,
+"fit_rows": 143,
+"test": null,
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|3|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.07685,
+74
+],
+"MODEL_FADE": [
+0.04812,
+70
+],
+"MOMENTUM": [
+-0.06027,
+74
+],
+"RIDE": [
+0.0381,
+74
+]
+},
+"fit_games": 39,
+"fit_rows": 74,
+"test": {
+"test_hi": 0.00565172413793104,
+"test_lo": -0.25499166666666667,
+"test_mean": -0.1328235294117647,
+"test_n_games": 16
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03191,
+228
+],
+"MODEL_FADE": [
+-0.06572,
+175
+],
+"MOMENTUM": [
+-0.03694,
+228
+],
+"RIDE": [
+0.00681,
+228
+]
+},
+"fit_games": 55,
+"fit_rows": 228,
+"test": {
+"test_hi": 0.06577019230769232,
+"test_lo": -0.05688536585365854,
+"test_mean": 0.012312500000000002,
+"test_n_games": 19
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03799,
+423
+],
+"MODEL_FADE": [
+-0.02526,
+306
+],
+"RIDE": [
+0.01515,
+423
+]
+},
+"fit_games": 59,
+"fit_rows": 423,
+"test": {
+"test_hi": 0.03398437500000002,
+"test_lo": -0.06983333333333334,
+"test_mean": -0.012741463414634129,
+"test_n_games": 17
+},
+"thin": false
+},
+"NFL|NFL_TEAM_TOTAL|T3|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NFL|NFL_TEAM_TOTAL|T3|4|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02179,
+215
+],
+"MODEL_FADE": [
+0.01833,
+157
+],
+"MOMENTUM": [
+-0.00951,
+215
+],
+"RIDE": [
+-0.00093,
+215
+]
+},
+"fit_games": 55,
+"fit_rows": 215,
+"test": {
+"test_hi": 0.008694871794871792,
+"test_lo": -0.0659734375,
+"test_mean": -0.029434666666666668,
+"test_n_games": 19
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T1|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.35903,
+570
+],
+"MODEL_FADE": [
+-0.05562,
+155
+],
+"RIDE": [
+-0.07382,
+570
+]
+},
+"fit_games": 189,
+"fit_rows": 570,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T1|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.21493,
+526
+],
+"MODEL_FADE": [
+-0.01818,
+110
+],
+"RIDE": [
+-0.09402,
+526
+]
+},
+"fit_games": 186,
+"fit_rows": 526,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T1|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 8,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T1|4|na": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.16759,
+605
+],
+"MODEL_FADE": [
+0.00659,
+158
+],
+"RIDE": [
+-0.04371,
+605
+]
+},
+"fit_games": 179,
+"fit_rows": 605,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T1|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 12,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T2|2|down": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02459,
+305
+],
+"MODEL_FADE": [
+-0.0027,
+247
+],
+"MOMENTUM": [
+0.00933,
+305
+],
+"RIDE": [
+-0.02167,
+305
+]
+},
+"fit_games": 147,
+"fit_rows": 305,
+"test": {
+"test_hi": 0.05690357142857142,
+"test_lo": -0.22282641509433965,
+"test_mean": -0.0855578947368421,
+"test_n_games": 39
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04724,
+2159
+],
+"MODEL_FADE": [
+-0.04679,
+1808
+],
+"RIDE": [
+0.00207,
+2159
+]
+},
+"fit_games": 190,
+"fit_rows": 2159,
+"test": {
+"test_hi": -0.010256657608695657,
+"test_lo": -0.11461632373113857,
+"test_mean": -0.06270439560439561,
+"test_n_games": 62
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 24,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T2|2|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+-0.07553,
+359
+],
+"MODEL_FADE": [
+-0.09395,
+319
+],
+"MOMENTUM": [
+0.0378,
+359
+],
+"RIDE": [
+0.02902,
+359
+]
+},
+"fit_games": 156,
+"fit_rows": 359,
+"test": {
+"test_hi": 0.06752522522522528,
+"test_lo": -0.16656689655172413,
+"test_mean": -0.05095255474452553,
+"test_n_games": 57
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02988,
+298
+],
+"MODEL_FADE": [
+-0.03924,
+239
+],
+"MOMENTUM": [
+-0.03375,
+298
+],
+"RIDE": [
+-0.01057,
+298
+]
+},
+"fit_games": 150,
+"fit_rows": 298,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|3|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.00604,
+2054
+],
+"MODEL_FADE": [
+-0.01951,
+1685
+],
+"RIDE": [
+-0.04467,
+2054
+]
+},
+"fit_games": 188,
+"fit_rows": 2054,
+"test": {
+"test_hi": 0.06107585185185186,
+"test_lo": -0.06936054628224582,
+"test_mean": -0.004049237804878036,
+"test_n_games": 62
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 23,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T2|3|up": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05568,
+360
+],
+"MODEL_FADE": [
+-0.01756,
+306
+],
+"MOMENTUM": [
+0.00308,
+360
+],
+"RIDE": [
+0.01586,
+360
+]
+},
+"fit_games": 160,
+"fit_rows": 360,
+"test": {
+"test_hi": 0.08528167938931294,
+"test_lo": -0.06751774193548384,
+"test_mean": 0.011867692307692301,
+"test_n_games": 58
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03562,
+737
+],
+"MODEL_FADE": [
+0.00344,
+507
+],
+"MOMENTUM": [
+-0.00283,
+737
+],
+"RIDE": [
+0.00417,
+737
+]
+},
+"fit_games": 189,
+"fit_rows": 737,
+"test": {
+"test_hi": 0.0416825,
+"test_lo": -0.058942666666666685,
+"test_mean": -0.006480487804878047,
+"test_n_games": 62
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03863,
+5757
+],
+"MODEL_FADE": [
+-0.01772,
+4138
+],
+"RIDE": [
+0.0141,
+5757
+]
+},
+"fit_games": 188,
+"fit_rows": 5757,
+"test": {
+"test_hi": 0.034348057259713724,
+"test_lo": -0.013776756471209708,
+"test_mean": 0.010133280674038979,
+"test_n_games": 62
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 61,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T2|4|up": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03429,
+941
+],
+"MODEL_FADE": [
+-0.02516,
+692
+],
+"MOMENTUM": [
+0.00219,
+941
+],
+"RIDE": [
+0.00974,
+941
+]
+},
+"fit_games": 191,
+"fit_rows": 941,
+"test": {
+"test_hi": 0.03533993710691824,
+"test_lo": -0.03267724358974361,
+"test_mean": 0.002318292682926834,
+"test_n_games": 62
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03649,
+103
+],
+"MODEL_FADE": [
+-0.08807,
+83
+],
+"MOMENTUM": [
+-0.03927,
+103
+],
+"RIDE": [
+-0.00864,
+103
+]
+},
+"fit_games": 76,
+"fit_rows": 103,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03772,
+1249
+],
+"MODEL_FADE": [
+-0.03735,
+1029
+],
+"RIDE": [
+-0.00683,
+1249
+]
+},
+"fit_games": 196,
+"fit_rows": 1249,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02635,
+132
+],
+"MODEL_FADE": [
+-0.03448,
+120
+],
+"MOMENTUM": [
+-0.04007,
+132
+],
+"RIDE": [
+-0.01883,
+132
+]
+},
+"fit_games": 99,
+"fit_rows": 132,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|3|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.0596,
+105
+],
+"MODEL_FADE": [
+-0.06726,
+87
+],
+"MOMENTUM": [
+-0.07443,
+105
+],
+"RIDE": [
+-0.09878,
+105
+]
+},
+"fit_games": 87,
+"fit_rows": 105,
+"test": {
+"test_hi": -0.07778947368421052,
+"test_lo": -0.23748648648648651,
+"test_mean": -0.1602921052631579,
+"test_n_games": 27
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02783,
+1179
+],
+"MODEL_FADE": [
+-0.01607,
+979
+],
+"RIDE": [
+-0.00924,
+1179
+]
+},
+"fit_games": 196,
+"fit_rows": 1179,
+"test": null,
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T3|3|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+0.01501,
+163
+],
+"MODEL_FADE": [
+-0.09026,
+139
+],
+"MOMENTUM": [
+0.04094,
+163
+],
+"RIDE": [
+-0.05319,
+163
+]
+},
+"fit_games": 109,
+"fit_rows": 163,
+"test": {
+"test_hi": 0.15282222222222214,
+"test_lo": -0.09113384615384616,
+"test_mean": 0.03221451612903225,
+"test_n_games": 42
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|4|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04673,
+231
+],
+"MODEL_FADE": [
+-0.02829,
+164
+],
+"MOMENTUM": [
+-0.01919,
+231
+],
+"RIDE": [
+0.01734,
+231
+]
+},
+"fit_games": 129,
+"fit_rows": 231,
+"test": {
+"test_hi": 0.052447058823529395,
+"test_lo": -0.02765,
+"test_mean": 0.014551190476190483,
+"test_n_games": 47
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|4|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03534,
+3333
+],
+"MODEL_FADE": [
+-0.02383,
+2434
+],
+"RIDE": [
+0.0122,
+3333
+]
+},
+"fit_games": 196,
+"fit_rows": 3333,
+"test": {
+"test_hi": 0.04119031216361681,
+"test_lo": -0.003754807692307688,
+"test_mean": 0.02076663233779609,
+"test_n_games": 64
+},
+"thin": false
+},
+"NHL|NHL_GAME_TOTAL|T3|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 15,
+"test": null,
+"thin": true
+},
+"NHL|NHL_GAME_TOTAL|T3|4|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02493,
+294
+],
+"MODEL_FADE": [
+0.00158,
+246
+],
+"MOMENTUM": [
+-0.02641,
+294
+],
+"RIDE": [
+0.0,
+294
+]
+},
+"fit_games": 156,
+"fit_rows": 294,
+"test": {
+"test_hi": 0.14188852459016393,
+"test_lo": -0.01721130434782609,
+"test_mean": 0.056115044247787606,
+"test_n_games": 54
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T1|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T1|2|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04592,
+163
+],
+"MODEL_FADE": [
+-0.03713,
+98
+],
+"RIDE": [
+-0.00808,
+163
+]
+},
+"fit_games": 162,
+"fit_rows": 163,
+"test": null,
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T1|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T1|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 27,
+"fit_rows": 27,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T1|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T2|2|down": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01751,
+109
+],
+"MODEL_FADE": [
+0.04072,
+68
+],
+"MOMENTUM": [
+-0.03604,
+109
+],
+"RIDE": [
+-0.02735,
+109
+]
+},
+"fit_games": 85,
+"fit_rows": 109,
+"test": {
+"test_hi": 0.2170315789473684,
+"test_lo": -0.29063478260869563,
+"test_mean": -0.06063636363636363,
+"test_n_games": 17
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T2|2|flat": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05953,
+992
+],
+"MODEL_FADE": [
+-0.00412,
+659
+],
+"RIDE": [
+0.01523,
+992
+]
+},
+"fit_games": 157,
+"fit_rows": 992,
+"test": {
+"test_hi": 0.07221249999999999,
+"test_lo": -0.16411693290734825,
+"test_mean": -0.0476559375,
+"test_n_games": 50
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 22,
+"fit_rows": 22,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T2|2|up": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.05021,
+93
+],
+"MODEL_FADE": [
+0.05012,
+65
+],
+"MOMENTUM": [
+0.00581,
+93
+],
+"RIDE": [
+0.00581,
+93
+]
+},
+"fit_games": 79,
+"fit_rows": 93,
+"test": {
+"test_hi": 0.3405411764705883,
+"test_lo": -0.01780625000000001,
+"test_mean": 0.17234117647058825,
+"test_n_games": 15
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T2|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 11,
+"fit_rows": 12,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T2|3|flat": {
+"arm": "RIDE",
+"bh": true,
+"fit": {
+"FADE": [
+-0.09422,
+198
+],
+"MODEL_FADE": [
+0.00377,
+162
+],
+"RIDE": [
+0.0537,
+198
+]
+},
+"fit_games": 33,
+"fit_rows": 198,
+"test": {
+"test_hi": 0.28902131147540977,
+"test_lo": 0.2463358208955224,
+"test_mean": 0.26818714285714285,
+"test_n_games": 11
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T2|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 26,
+"fit_rows": 31,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 34,
+"fit_rows": 38,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|2|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06243,
+556
+],
+"MODEL_FADE": [
+0.02374,
+380
+],
+"RIDE": [
+0.01823,
+556
+]
+},
+"fit_games": 161,
+"fit_rows": 556,
+"test": {
+"test_hi": 0.18933402061855673,
+"test_lo": -0.09272566371681416,
+"test_mean": 0.04618981481481483,
+"test_n_games": 35
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 51,
+"fit_rows": 59,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|3|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0555,
+133
+],
+"MODEL_FADE": [
+0.05818,
+109
+],
+"RIDE": [
+0.01525,
+133
+]
+},
+"fit_games": 35,
+"fit_rows": 133,
+"test": {
+"test_hi": 0.193440625,
+"test_lo": -0.12559285714285717,
+"test_mean": 0.05043666666666666,
+"test_n_games": 10
+},
+"thin": false
+},
+"NHL|NHL_MONEYLINE|T3|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 1,
+"fit_rows": 1,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 9,
+"fit_rows": 9,
+"test": null,
+"thin": true
+},
+"NHL|NHL_MONEYLINE|T3|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T1|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.04732,
+92
+],
+"MODEL_FADE": [
+-0.02462,
+29
+],
+"RIDE": [
+-0.17026,
+92
+]
+},
+"fit_games": 87,
+"fit_rows": 92,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T1|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 0,
+"fit_rows": 0,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T1|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T1|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T1|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.11678,
+366
+],
+"MODEL_FADE": [
+-0.03688,
+116
+],
+"RIDE": [
+-0.11031,
+366
+]
+},
+"fit_games": 184,
+"fit_rows": 366,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T1|3|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 4,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T1|4|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T1|4|na": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06477,
+297
+],
+"MODEL_FADE": [
+0.00055,
+117
+],
+"RIDE": [
+-0.09414,
+297
+]
+},
+"fit_games": 188,
+"fit_rows": 297,
+"test": {
+"test_hi": 0.07367213114754098,
+"test_lo": -0.0664353846153846,
+"test_mean": 0.009583333333333348,
+"test_n_games": 45
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T1|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 3,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T2|2|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.06872,
+65
+],
+"MODEL_FADE": [
+-0.07324,
+51
+],
+"MOMENTUM": [
+-0.12745,
+65
+],
+"RIDE": [
+-0.11299,
+65
+]
+},
+"fit_games": 50,
+"fit_rows": 65,
+"test": {
+"test_hi": 0.06904375000000001,
+"test_lo": -0.24215263157894737,
+"test_mean": -0.09521944444444443,
+"test_n_games": 21
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|2|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.01892,
+623
+],
+"MODEL_FADE": [
+-0.02867,
+474
+],
+"RIDE": [
+-0.06266,
+623
+]
+},
+"fit_games": 95,
+"fit_rows": 623,
+"test": {
+"test_hi": 0.1822854077253219,
+"test_lo": -0.05686233766233768,
+"test_mean": 0.05834710743801653,
+"test_n_games": 35
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 6,
+"fit_rows": 7,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T2|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.03062,
+88
+],
+"MODEL_FADE": [
+-0.043,
+69
+],
+"MOMENTUM": [
+-0.00198,
+88
+],
+"RIDE": [
+-0.01414,
+88
+]
+},
+"fit_games": 59,
+"fit_rows": 88,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|3|down": {
+"arm": "RIDE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.08658,
+185
+],
+"MODEL_FADE": [
+0.02706,
+148
+],
+"MOMENTUM": [
+0.04796,
+185
+],
+"RIDE": [
+0.04796,
+185
+]
+},
+"fit_games": 117,
+"fit_rows": 185,
+"test": {
+"test_hi": 0.14332660550458717,
+"test_lo": -0.006428749999999985,
+"test_mean": 0.07631562500000001,
+"test_n_games": 47
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.0158,
+2371
+],
+"MODEL_FADE": [
+-0.04863,
+1925
+],
+"RIDE": [
+-0.02209,
+2371
+]
+},
+"fit_games": 180,
+"fit_rows": 2371,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 21,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T2|3|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+0.01085,
+313
+],
+"MODEL_FADE": [
+-0.07126,
+258
+],
+"MOMENTUM": [
+0.01085,
+313
+],
+"RIDE": [
+-0.04983,
+313
+]
+},
+"fit_games": 158,
+"fit_rows": 313,
+"test": {
+"test_hi": 0.05646025641025641,
+"test_lo": -0.1364287671232877,
+"test_mean": -0.04998000000000002,
+"test_n_games": 43
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|4|down": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.06071,
+189
+],
+"MODEL_FADE": [
+0.04949,
+155
+],
+"MOMENTUM": [
+0.03062,
+189
+],
+"RIDE": [
+0.03062,
+189
+]
+},
+"fit_games": 123,
+"fit_rows": 189,
+"test": {
+"test_hi": 0.09290937499999999,
+"test_lo": -0.04614864864864865,
+"test_mean": 0.027637313432835816,
+"test_n_games": 42
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|4|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01391,
+1771
+],
+"MODEL_FADE": [
+-0.00505,
+1524
+],
+"RIDE": [
+-0.01515,
+1771
+]
+},
+"fit_games": 187,
+"fit_rows": 1771,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T2|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 12,
+"fit_rows": 21,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T2|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.00162,
+175
+],
+"MODEL_FADE": [
+-0.02906,
+156
+],
+"MOMENTUM": [
+-0.00162,
+175
+],
+"RIDE": [
+-0.02824,
+175
+]
+},
+"fit_games": 126,
+"fit_rows": 175,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|2|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 13,
+"fit_rows": 14,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T3|2|flat": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.0024,
+406
+],
+"MODEL_FADE": [
+-0.04378,
+313
+],
+"RIDE": [
+-0.04614,
+406
+]
+},
+"fit_games": 103,
+"fit_rows": 406,
+"test": {
+"test_hi": 0.11710000000000004,
+"test_lo": -0.13293461538461535,
+"test_mean": -0.013016923076923068,
+"test_n_games": 33
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|2|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 2,
+"fit_rows": 2,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T3|2|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 34,
+"fit_rows": 37,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T3|3|down": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02924,
+70
+],
+"MODEL_FADE": [
+-0.02623,
+52
+],
+"MOMENTUM": [
+-0.00902,
+70
+],
+"RIDE": [
+-0.00902,
+70
+]
+},
+"fit_games": 56,
+"fit_rows": 70,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|3|flat": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {
+"FADE": [
+-0.02371,
+1344
+],
+"MODEL_FADE": [
+-0.05298,
+1104
+],
+"RIDE": [
+-0.01388,
+1344
+]
+},
+"fit_games": 187,
+"fit_rows": 1344,
+"test": null,
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|3|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 4,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T3|3|up": {
+"arm": "MOMENTUM",
+"bh": false,
+"fit": {
+"FADE": [
+0.02453,
+82
+],
+"MODEL_FADE": [
+-0.0566,
+66
+],
+"MOMENTUM": [
+0.02453,
+82
+],
+"RIDE": [
+-0.06317,
+82
+]
+},
+"fit_games": 74,
+"fit_rows": 82,
+"test": {
+"test_hi": -0.07755681818181821,
+"test_lo": -0.26888837209302324,
+"test_mean": -0.1820026315789474,
+"test_n_games": 28
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|4|down": {
+"arm": "FADE",
+"bh": false,
+"fit": {
+"FADE": [
+0.02112,
+74
+],
+"MODEL_FADE": [
+-0.0392,
+56
+],
+"MOMENTUM": [
+-0.0514,
+74
+],
+"RIDE": [
+-0.0514,
+74
+]
+},
+"fit_games": 60,
+"fit_rows": 74,
+"test": {
+"test_hi": 0.05774210526315789,
+"test_lo": -0.1465173913043478,
+"test_mean": -0.0603,
+"test_n_games": 17
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|4|flat": {
+"arm": "MODEL_FADE",
+"bh": false,
+"fit": {
+"FADE": [
+-0.01981,
+1080
+],
+"MODEL_FADE": [
+0.00289,
+941
+],
+"RIDE": [
+-0.00846,
+1080
+]
+},
+"fit_games": 196,
+"fit_rows": 1080,
+"test": {
+"test_hi": 0.06751637010676156,
+"test_lo": -0.07276518518518517,
+"test_mean": 0.0016251937984496157,
+"test_n_games": 56
+},
+"thin": false
+},
+"NHL|NHL_PUCK_LINE|T3|4|na": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 3,
+"fit_rows": 6,
+"test": null,
+"thin": true
+},
+"NHL|NHL_PUCK_LINE|T3|4|up": {
+"arm": "NO_BET",
+"bh": false,
+"fit": {},
+"fit_games": 35,
+"fit_rows": 43,
+"test": null,
+"thin": true
+}
+},
+"note": "arm chosen on the fit window only; test fields are the held-out status carried for the log",
+"source": "12_EXPLORATORY/retro_route/results.json (W110.5)",
+"test_games": 161
+}

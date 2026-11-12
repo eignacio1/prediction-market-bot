@@ -3429,6 +3429,21 @@ Effect: strategic-handoff step 6 - a repeated-directives ledger (04_EXECUTION/OP
 opens with the oldest not-built / contradicted directive and the block that moves it; a third raise of the same thing is a logged window
 error. The window builds the ledger before writing W111 (backlog).
 
+## 2026-11-10 22:28 PT — Operator: CLAUDE.md lean, and accurate at the moment it is read (SW-9)
+Verbatim (excerpt): "Claude.md is way too bloated - and there are still multiple things that are stale across the file ... if this file
+gets touched first ... then yes it needs to be fucking accurate to the exact state of the project AT THAT EXACT MOMENT. Does that mean it
+can't have archival pieces? Obviously not - those archival pieces could be core. But I want to reduce the bloat, optimize efficacy, and use
+this file to actually be helpful for us, not just a system state record."
+Effect: CLAUDE.md rewritten 81 KB -> ~22 KB. The old text archived verbatim (00_ADMIN/CLAUDE_MD_ARCHIVE_2026-11-11.md); hand-run MLB
+health probes moved to 04_EXECUTION/HEALTH_PROBES.md. New "Right now" section: a block generated from code (scripts/claude_md_now.py:
+registry by sport and status, non-shadow cells, Kelly per band, open GG count) that the session scan prints RED when it disagrees with
+the code or is >7 days old, plus window-maintained lines with their own date. Stale claims fixed: pot of gold is an arm now, built
+alongside the standard board (11-05), not a phase after it - DOCTRINE §6 corrected too; NBA props are built but not logging (install
+pending); MEMORY_BANK's state snapshot (10-09) is no longer cited as live state; Polymarket "activation gated on KYC" replaced by "no
+build work" (10-27); C3 "LR + Platt" replaced by per-sport engines + per-cell models. Section names other files cite are kept ("What
+winning looks like", "Distance to optimum", Steps 0-4, Q1-Q7, Hard Rules 1-16). Strategic-handoff step 7: the window regenerates the
+block at every wave close. Wave 110 verified closed (#473 #475 #476 #478 #479, main CI green); W111 not written, per the operator.
+
 ## 2026-11-11 15:52 PT — Wave 111 issued (four blocks, operator's ask); the repeated-directives ledger built (SW-9)
 Operator: "give me the next wave, 4 blocks." Wave 110 verified closed (#473 #475 #476 #478 #479, main CI green). Before writing it the
 window built 04_EXECUTION/OPERATOR_DIRECTIVES.md (strategic-handoff step 6): 23 directives the operator has given more than once, two of
@@ -3439,3 +3454,9 @@ index as tree splits, NBA first. Backlog: B-024 (pot of gold) moved from PARKED 
 
 ## 2026-11-12 W111.1 (B-076) - a losing look closes only the FADE arm
 Built per ADR-0077 and operator 2026-11-10 21:41 / 22:03 / 22:10 PT: calibration_engine.verdict() keeps the frozen label as verdict_preregistered and adds routing (losing look closes FADE only, winning look opens nothing); ADR-0078 adds MarketTypeCell.closed_arms; NFL_GAME_TOTAL T1/T2 reopened as SHADOW with FADE closed (supersedes W99.2 RULED_OUT); P2 reports verdicts routed, closed arms not closed cells. Frozen pre-registrations untouched; superseding addenda beside them. PR #482. Handoff: SESSION_HANDOFF_20261112T001539Z_W111_1.md.
+
+### 2026-11-12 W111.2 (B-077) doctrine-conformance audit of code
+- 41 decision points audited against DOCTRINE.md: 20 CONTRADICTS, 1 MISSING (per-leaf arm scoring in the edge map), rest CONFORMS. Map: `04_EXECUTION/DOCTRINE_CONFORMANCE.md`.
+- Fixed in files no other block owns (PR #481): dashboard and /vision wording now "fade arm closed (routed)"; new test `tests/test_doctrine_label_words.py` fails on banned verdict words in dashboard/vision labels. Registry enum keys untouched.
+- Handed to owners, not edited: W111.1 (engine RULED_OUT, registry enum and guard, proof_calendar, B1 count); W111.3 (orchestrator T1 edge gate, router); backlog (order gates are fade-arm-only, factor scorers that use Brier vs market).
+- OPERATOR_DIRECTIVES.md: D-02..D-05 Code cells corrected, D-33 added. CONTRADICTED 2 -> 2, NOT BUILT 0 -> 0, PARTIAL 14 -> 15.

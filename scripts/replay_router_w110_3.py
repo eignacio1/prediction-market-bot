@@ -26,18 +26,34 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "12_EXPLORATORY" / "longshot_bias"))
 
 import calib  # noqa: E402
+from prediction_market_bot.decision_trees import leaf_map as lm  # noqa: E402
 from prediction_market_bot.decision_trees import ride  # noqa: E402
 from prediction_market_bot.decision_trees.router import NO_BET, Evidence, Situation, route  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 
 SERIES = ("KXNBAGAME", "KXNBASPREAD", "KXNBATOTAL", "KXNHLGAME", "KXNHLSPREAD", "KXNHLTOTAL",
           "KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL")
+# W111.3: the archive has no start_time, so the band comes from calib.tier. T6-24h straddles T1/T2 (BAND_TIERS); it is
+# assigned T2 here, declared. D0 (date-only ticker on game day) has no resolvable band and stays NO_BET -- the one
+# bound that remains for archive-only replay; shadow rows carry horizon_hours_to_start and do not have it.
+TIER_BAND = {"T>24h": "T1", "D2+": "T1", "D1": "T1", "T6-24h": "T2", "T2-6h": "T2", "T0-2h": "T3"}
+SUFFIX_MT = {"GAME": "MONEYLINE", "SPREAD": "SPREAD", "TOTAL": "GAME_TOTAL"}
+
+
+def market_type_for(series: str):
+    sport, kind = series[2:5], series[5:]
+    if sport == "NHL" and kind == "SPREAD":
+        return sport, "NHL_PUCK_LINE"
+    return sport, f"{sport}_{SUFFIX_MT[kind]}" if kind in SUFFIX_MT else None
+
+
 API = "https://api.elections.kalshi.com/trade-api/v2/markets/"
 
 
 def decisions(archive: str, days: int):
     files = sorted(glob.glob(os.path.join(archive, "prices_*.jsonl")))[-days:]
-    ev = Evidence(ride=ride.load())
+    ev = Evidence(ride=ride.load(), leaf_map=lm.default_map())
+    prev = {}
     seen, out = set(), []
     for f in files:
         for line in open(f):
@@ -54,9 +70,15 @@ def decisions(archive: str, days: int):
             if key in seen:
                 continue
             seen.add(key)
-            s = Situation(sport=r["series_ticker"][2:5].lower(), family=r["series_ticker"], ticker=r["ticker"],
-                          event=r["event_ticker"], tier=tier, yes_bid=bid, yes_ask=ask, half_spread=(ask - bid) / 2)
-            d = route(s, ev)
+            sport, mt = market_type_for(r["series_ticker"])
+            band = TIER_BAND.get(tier)
+            mid = (bid + ask) / 2
+            pm = prev.get(r["ticker"])
+            prev[r["ticker"]] = mid
+            s = Situation(sport=sport, family=r["series_ticker"], ticker=r["ticker"],
+                          event=r["event_ticker"], tier=tier, yes_bid=bid, yes_ask=ask, half_spread=(ask - bid) / 2,
+                          market_type=mt, band=band, prev_mid=pm)
+            d = route(s, ev) if band else route(Situation(**{**s.__dict__, "band": None}), Evidence(ride=ev.ride))
             out.append({"series": r["series_ticker"], "ticker": r["ticker"], "event": r["event_ticker"], "tier": tier,
                         "bid": bid, "ask": ask, "branch": d.tree, "side": d.side,
                         "reason": ";".join(map(str, d.reasons))})

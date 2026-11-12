@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 111 READY TO PASTE - four blocks in NOW (111.1 a losing look closes only the fade arm, 111.2 doctrine-conformance audit of the code, 111.3 D6 cells wired end to end, 111.4 the granularity index as tree splits).** Opens with the directives the code contradicts (`04_EXECUTION/OPERATOR_DIRECTIVES.md`). Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft; merge PR #480 (CLAUDE.md, via a terminal).
+> **▶ WAVE 111 READY TO PASTE - four blocks in NOW (111.1 a losing look closes only the fade arm, 111.2 doctrine-conformance audit of the code, 111.3 D6 cells wired end to end, 111.4 the granularity index as tree splits).** Opens with the directives the code contradicts (`04_EXECUTION/OPERATOR_DIRECTIVES.md`). Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft. PR #480 (CLAUDE.md) merged 11-12 00:15Z.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -93,7 +93,7 @@ of gold scored as an arm (09-25, 11-05) → 111.3 Part B.
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
 | 111.1 | proof · 3 | A losing look closes only the fade arm; NFL game total T1 / T2 reopen as SHADOW (D-02, D-03) | 🟡 | PR #482 (CI pending); handoff SESSION_HANDOFF_20261112T001539Z_W111_1.md |
-| 111.2 | window · 3 | Doctrine-conformance audit: every decision point in code vs DOCTRINE.md; fix what no block owns (D-04, D-05) | ⬜ | |
+| 111.2 | window · 3 | Doctrine-conformance audit: every decision point in code vs DOCTRINE.md; fix what no block owns (D-04, D-05) | 🟡 | Parts A and C docs pushed (DOCTRINE_CONFORMANCE.md, OPERATOR_DIRECTIVES.md); Part B code in PR #481 awaiting CI |
 | 111.3 | trees · 3 | D6: router reads the per-leaf arm map; pot of gold + momentum scored as arms; D6 scorecard; forward test frozen | ⬜ | |
 | 111.4 | engine · 3 | The granularity index as tree splits, NBA: split · rank vs history · matchup cross · market map · application | ⬜ | |
 
