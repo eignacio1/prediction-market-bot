@@ -83,9 +83,8 @@ def possession_frame(poss: pd.DataFrame, scores: pd.DataFrame, games: pd.DataFra
     p["off_week"] = wk.reindex(list(zip(p.game_id, p.off))).to_numpy()
     p["dfn_week"] = wk.reindex(list(zip(p.game_id, p.dfn))).to_numpy()
     for side, pre in (("off", "off_player_"), ("dfn", "def_player_")):
-        cols = [f"{pre}{i}" for i in range(1, 6)]
-        p[f"{side}_lineup"] = p[cols].astype("Int64").astype(str).agg(lambda r: "-".join(sorted(r)), axis=1) \
-            if len(p) else pd.Series(dtype=str)
+        a = np.sort(p[[f"{pre}{i}" for i in range(1, 6)]].to_numpy(dtype="int64"), axis=1).astype(str)
+        p[f"{side}_lineup"] = pd.Series(a[:, 0], index=p.index).str.cat([pd.Series(a[:, i], index=p.index) for i in range(1, 5)], sep="-")
     p["season"] = p["season"].astype(int)
     return p.drop(columns=["home_team_id", "away_team_id"])
 
@@ -154,3 +153,25 @@ def filter_entries(entries: Sequence[Mapping], tail: float = 0.10, min_n: int = 
     """Extremes and mismatches pass; the median fails loudly. Reads ``cross.delta_vs_league`` as the mismatch."""
     es = [{**e, "cross_delta": (e.get("cross") or {}).get("delta_vs_league", 0.0)} for e in entries]
     return gi.filter_entries(es, tail=tail, min_n=min_n, require_trait=require_trait, mismatch_min=mismatch_min)
+
+
+def shot_frame(shots: pd.DataFrame, games: pd.DataFrame) -> pd.DataFrame:
+    """Shots in the same contract as ``possession_frame`` (off = shooting team, dfn = opponent) so a ``Situation`` over zone
+    runs through the same machinery. Columns: make (0/1), pts, three (0/1), zone. Free throws and blanks are dropped."""
+    d = shots[shots.shot_value.isin([2, 3])].copy()
+    d["make"] = (d.shot_result.astype(str).str.lower() == "made").astype(float)
+    d["pts"] = d.make * d.shot_value
+    d["three"] = (d.shot_value == 3).astype(float)
+    d["zone"] = [shot_zone(a, int(v), x) for a, v, x in zip(d.shot_distance, d.shot_value, d.x_legacy)]
+    g = games[["game_id", "date", "home_team_id", "away_team_id"]]
+    d = d.merge(g, on="game_id", how="inner")
+    d["off"] = d.team_id
+    d["dfn"] = np.where(d.team_id == d.home_team_id, d.away_team_id, d.home_team_id)
+    long = pd.concat([games.assign(team=games.home_team_id), games.assign(team=games.away_team_id)])
+    long = long.sort_values(["season", "team", "date", "game_id"], kind="stable")
+    long["week"] = long.groupby(["season", "team"]).cumcount() + 1
+    wk = long.set_index(["game_id", "team"]).week
+    d["off_week"] = wk.reindex(list(zip(d.game_id, d.off))).to_numpy()
+    d["dfn_week"] = wk.reindex(list(zip(d.game_id, d.dfn))).to_numpy()
+    d["season"] = d["season"].astype(int)
+    return d.drop(columns=["home_team_id", "away_team_id"])
