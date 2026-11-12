@@ -1,0 +1,559 @@
+# CLAUDE.md as it stood before the 2026-11-11 lean rewrite - archived verbatim
+
+**Archived:** 2026-11-11 (SW-9, operator 2026-11-10 22:28 PT: "reduce the bloat, optimize efficacy"). Nothing below is current or binding;
+the live file is `CLAUDE.md`, the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`. Kept for the history and incident
+reasoning (GG-001, GG-072, GG-080, GG-085, GG-101, GG-108, GG-144, GG-163, GG-166, GG-199 and others) that the lean file cites by id.
+
+---
+
+# Prediction Market Trading Bot — Claude Code Session Rules
+
+**Last reviewed:** 2026-11-11
+
+**Last documentation-remediation pass:** 2026-11-11 (SW-9, operator-directed: "This CANNOT keep fucking happening" - every window had been reading stale strategy text). Added § "The architecture" (multi-arm routing, ADR-0077), the binding one-page doctrine `02_ARCHITECTURE_DESIGN/DOCTRINE.md` with a session-start freshness check (Hard Rule 16), measure D6, and corrected the stale state claims (MLB "active pool", the 10-09 cell inventory). DECISION_LOG 2026-11-10 21:35 / 21:41 / 21:45 PT.
+
+**Prior pass:** 2026-10-09 (strategic window, operator-directed "forest beyond the trees" pass — test: *if somebody picked this up, would they know where we're at?*). Added the canonical north star (§ "What winning looks like"); corrected stale claims in place: the bot's cell count, NBA's status, the T1 "78-feature" figure (measured 18, T-597), MLB player-hits T1/T2/T3 being SHADOW not ACTIVE, EXP-017 having run, Step 4's blindness to the shadow arms, and G6 counting fills only for T4M-PROJ (GG-527). Full list: DECISION_LOG 2026-10-09. **Where the project stands right now is never in this file** — it is the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`. **What is in scope, in order, is the rolling backlog** (`04_EXECUTION/ROLLING_BACKLOG.json`, operator 2026-10-30; maintained by the strategic window, shown on the Visual Dashboard).
+
+**Earlier pass:** 2026-07-19 (CLAUDE.md lean-up pass, Cowork session — no VPS/push access, see DECISION_LOG.md 2026-07-19 for full scope). This file had drifted back into the exact failure mode the 2026-07-02 pass warned about: two sections (band-status inventory, commercial-validation n-count history) had accumulated multi-paragraph decaying state — the kind of content this file should point to elsewhere, not embed, since it's read first regardless of session-start protocol. Moved to their proper homes: band status → `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry; commercial-validation history → `GOVERNANCE_GAP_LOG.md` GG-004 (already had a full-history split-out file). Also found `00_ADMIN/README.md` — this project's designated nav hub per ADR-0001 — undated since 2026-05-28, still showing Phase 0/G0 status against a Phase 6/7 ACTIVE reality; revived it and registered the underlying process gap as GG-127. **Vision, hard rules, and the mandatory session-start protocol below are unchanged by this pass** — the operator explicitly asked that this framing be preserved, not trimmed. If you find another stale factual claim in this file, fix it in place and note it in `DECISION_LOG.md` per Hard Rule 7 — do not let corrections wait for the next full remediation pass.
+
+**Prior pass:** 2026-07-02 (SESSION 113 follow-on) — had let the T4-MLB band description and a hardcoded bankroll figure go stale for several weeks despite the underlying system changing substantially (dual-ledger split, MLB-native T4 sub-bands).
+
+## Read this before doing anything else
+
+This system will be used by people who trust the person who built it. They are not engineers. They cannot audit what they have been given. The standard is: safe, correct, no corners cut. That is the intent behind every architectural decision in this project. Match it.
+
+**The binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md` (one page, dated). Read it after this file and before any block, review or wave; where any other document disagrees with it, DOCTRINE.md wins.**
+
+**Before you respond to any task, before you write any code, before you read any other file: run the session-start protocol below in full.** It is not optional. It is not skippable under conversational pressure. If the user asks you to do something before you finish the protocol, finish the protocol first, then do the thing.
+
+---
+
+## Principal Vision
+
+**This is a calibration engine for probabilistic reasoning, structured as a trading bot.**
+
+Prediction markets are the laboratory. They are the only widely available instrument that provides all three of the following simultaneously: binary-resolved outcomes (you are unambiguously right or wrong), short feedback loops (resolution in hours or days, not quarters), and market-implied probability as an explicit benchmark (you always know what the market said the probability was before you bet). That combination makes prediction markets uniquely rigorous for testing whether a probabilistic model generates consistent edge. There is no survivorship bias, no ambiguity about whether a trade "would have worked" — you know exactly what you bet, what the market said it was worth, and what happened.
+
+**The concrete form of this vision is a coverage target, and it lives in `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` — read it before `04_EXECUTION/MARKET_EXPANSION_ACTION_PLAN.md`, always.** Operator directive, 2026-08-12: cover the standard betting mechanisms (moneyline, spread/run line, totals, team totals) across all five execution bands. When that directive was written (2026-08-12) the bot occupied **one cell of ~25** (the coarse market-type × band figure; the registry is finer-grained, so read `MARKET_TYPE_REGISTRY` for the real cell count, GG-306) — player hits, `KXMLBHIT`, band T4M-PROJ; for the live count read `MARKET_TYPE_REGISTRY` or the BREADTH row of the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`, never this sentence. Coverage is the evidence that the methodology generalizes; a phase plan read without the target reads as a checklist to burn down rather than a path from one cell to twenty-five. That file also records the two things the plan does not: the **band dimension is unowned** (T2 `raw_n=2`, T3 `raw_n=0`, T5 never traded, T1 zeroed on ruin geometry), and **generality and edge may point in opposite directions** — the expansion is toward the most-attended markets on the board, which is the opposite end of the efficiency gradient this strategy targets.
+
+**P&L is the score. The methodology is the asset.**
+
+If the methodology works — if a systematically calibrated probabilistic model can be shown to generate consistent edge over market-implied prices in environments where those prices are not maximally efficient — it generalizes. New sport: new C1 data module, new C2 feature set, same methodology. New venue: new VenueAdapter, same methodology. The trading bot is the calibration regime. The transferable value is the framework for building, testing, and proving that kind of edge rigorously.
+
+**Every session should hold this framing.** The pipeline is the instrument. The markets are the laboratory. The resolved binary outcomes are the data. The question being answered is: does the model know something the market doesn't? — and, binding since 2026-11-10 (§ "The architecture" below), which arm each route should take given what the model and the market each know.
+
+### What winning looks like — the operator's north star (four pillars)
+
+*Operator, 2026-10-08: "We're trying to fucking win." This subsection is the **single canonical statement** of the operator's north star. Other files cross-reference it by this heading; they do not restate it. Distilled from operator directives 2026-08-12 (coverage target), 2026-08-27 (integrate every bucket forward), 2026-09-22 ("the bot running at optimum"), 2026-09-25/29 (market classes, granularity bar, pre-game first), 2026-09-30 (horizon doctrine, ADR-0068) and 2026-10-08 (expansion). Added 2026-10-09; see DECISION_LOG.*
+
+**The bot running at optimum:** every live sport (MLB, NFL, NHL, NBA) covering its whole open board — spreads/run lines, totals and team totals, moneylines, props and parlays — across all five bands, T4 with its sub-bands, each cell routed to its best arm per leaf (ride / fade / momentum / pot of gold / no bet), found by its own pre-registered measurement - a cell that does not beat the market is ROUTED, never ruled out or blocked (ADR-0077, DOCTRINE.md). The opportunity is **accumulation** — "picking up every damn cent that falls along the way" — not one pot of gold. The long-shot classes (big-hitter parlays, low-probability lines) are part of the vision but come **after** the standard board is built, because they need data aggregation the project has not reached.
+
+**Four pillars. Every wave, block and session is judged by which one it moved:**
+
+| Pillar | What it means | How it is measured |
+|---|---|---|
+| **BREADTH** | The whole board: every live sport, market family and band has an arm logging forecasts. | Cells logging (SHADOW + ACTIVE) vs registered cells; families and bands with a live arm. |
+| **DEPTH** | The granularity bar. At the pre-game horizon, deep decision trees conditioned on matchup, personnel, team, venue, weather and qualitative factors, with weighted metrics — the level of a serious team-analytics program (the operator's reference example is cited as a bar, not an endorsement). In-play trees are stripped only where measured speed pays for it (horizon doctrine, below). Pre-game first, then carry the granularity inward. | Per sport: what the pre-game model actually conditions on, against that bar; pre-registered challengers built (`12_EXPLORATORY/`). |
+| **EXECUTION** | Orders that actually fill, at prices that keep the edge — the loop forecast → order → fill → settle closes. Paper rows are not execution evidence (GG-527). | Fill rate; P&L per **filled** bet; adverse selection on fills. |
+| **PROOF** | "Grounded. Tested. Validated. Redone and tried again." Pre-registered verdicts per cell; a rigorous NO is a result, not a failure. | Cells at a scored look; verdicts issued. |
+
+**Distance to optimum — the measures (definitions here; values only in the RUNNING SITREP).** The gap between the project and the bot at optimum is kept as numbers, not narrative, so a wave cannot describe itself as progress without moving one (operator, 2026-10-09):
+
+| Pillar | Measures |
+|---|---|
+| BREADTH | **B1** registered cells logging (ACTIVE + SHADOW) / registered cells · **B2** market families with a logging cell / registered families · **B3** execution bands with a logging cell (of five, T4 sub-bands named) · **B4** props families and parlay families logging |
+| DEPTH | **D1** which granularity-bar factor classes (matchup, personnel/availability, team, venue, weather/conditions, qualitative) each live pre-game model conditions on · **D2** largest pre-game feature set and its qualitative count · **D3** pre-registered challengers ready, per arm · **D4** (added 2026-10-13, ADR-0073) per live sport, the engine's stage: event-level data layer · factor classes built point-in-time · whole board priced from one engine · **D5** (added 2026-10-14, ADR-0075) per live sport, (a) of the eight architecture components (decision trees, filtering mechanisms, cluster designs, cross-reference compatibility, momentum looping, temporal evolution, structural tensions, seat interface) how many have a built, tested scaffold, and (b) factor classes by stage — aggregated / interpreted / **applied** (a tested path from the fact to a price, against the market; since 2026-11-11, ADR-0077: a tested SPLIT in the multi-arm tree, scored per leaf on net after costs per arm) · **D6** (added 2026-11-11, ADR-0077) cells wired end to end, per sport: registered cells with all seven layers present and tested - (1) simulated probability, (2) market state, (3) factor filters as tree splits, (4) a tree choosing the arm (ride / fade / momentum / pot of gold / no bet), (5) per-leaf held-out net after costs per arm, (6) risk and sizing rule, (7) execution path with fills measured |
+| EXECUTION | **E1** demo orders actually filled / closed positions, per book · **E2** P&L per *filled* bet, per book · **E3** win rate on fills vs non-fills (adverse selection) |
+| PROOF | **P1** cells at a scored look / logging cells · **P2** verdicts issued · **P3** the next look and its pre-registered modal outcome |
+
+A measure is only ever reported with its source and date. Changing a definition is a dated edit to this table, logged in DECISION_LOG.
+
+**PLUMBING** — infrastructure, data feeds, governance, dashboards — is necessary and is not a pillar. A block that moves no pillar says "PLUMBING"; that is fine. **Two consecutive waves that move no pillar is drift**, and the strategic window flags it to the operator unprompted.
+
+How this binds work (Hard Rule 12):
+- **Purpose before work.** Before touching a task — a terminal block, a fresh strategic window's review, an outside model's audit, anything — state which measure above it is meant to move and how, or that it is PLUMBING. If you cannot say what the task is for, stop and ask; do not start.
+- Every block's report and every `SESSION_HANDOFF` names the pillar(s) and measure(s) it moved and by how much — the `vision_pillar:`, `gap_measure:` and `gap_delta:` keys in the session-meta block (`BREADTH` / `DEPTH` / `EXECUTION` / `PROOF` / `PLUMBING`).
+- Before proposing work, name the pillar it moves and whether a weaker pillar has a cheaper move available. The live pillar scoreboard is the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md` — this file does not track state.
+- No pillar loosens the guardrails: no real capital, `kelly_fraction` 0, a pre-registration committed before a cell's first row, no score read below judged n (expansion directive, 2026-10-08).
+- **Generality vs edge — DECIDED 2026-10-14: EDGE — and "edge" means the betting architecture, not a slogan.** Operator: "I don't just want to dilute it to something as simple as 'no more generality go edge' - it's not that simple and should never be treated as such." Edge = building a comprehensive betting architecture at the granularity of *"what teams run the most cover 6 against 3 wide out sets that's motioned to the boundary, matched with volume and success rate"* — and then being able to say what it means. The chain is **data aggregation > data interpretation > data application**; application ("cool info, so what?") is the hardest and a never-ending race. That granularity governs the whole architecture: decision trees, filtering mechanisms, cluster designs, cross-reference compatibility, momentum looping (STRATEGY_OVERVIEW.md Strategy J), temporal evolution, **structural tensions ("where the architecture strains")** and **seat interface ("deep mapping of sports-eyes to cells")**. Full text and component inventory: **ADR-0075 (ACCEPTED 2026-10-14 21:55 PT)** and DECISION_LOG 2026-10-14 21:38 / 21:47 / 21:55 PT. Measured by **D5**. Every block that adds a factor reports the stage it reached (aggregated / interpreted / applied). **The granularity index** (operator 2026-10-16, `02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md`) is the intent each factor is built with: the split, its rank against history at the same point in a season, the matchup cross, the market map, and the application — subtle crosses and tails, not headline averages.
+
+### The scale — one deep engine per sport (ADR-0073, operator 2026-10-13: "I had thought that was explicit early on in the project - but apparently not")
+
+*Read this aloud to the operator when he asks for the vision, the scale or the bar (`/vision`). Full record: ADR-0073.*
+
+- **The bar:** Syndicate32-level granularity (syndicate32.com, NFL — cited as a bar, not an endorsement) or deeper, for **every** sport the bot trades, automated, feeding a machine that prices every line. "There's a clear bar that we aren't even remotely close to getting to."
+- **The unit of depth is the sport, not the cell.** One deep engine per sport: finest event-level data (NFL plays, NBA possessions, NHL shots, MLB pitches) → every factor class built once, point-in-time (player, unit, scheme/coverage, matchup, availability, rest, venue, weather, officials, coaching, qualitative) → every market family and band reads from it. Thin cell-specific models are scaffolding until the engine beats them.
+- **One engine prices the whole board:** a game simulation's joint distribution yields moneyline, spread, total, team totals, props and parlays consistently — parlay correlations included.
+- **The data layer is the work.** Rebuild from free sources first ($0; "not bouta pay $20 for something that we can get without it"); a factor only a paid source has is a registered gap.
+- **Depth has a continuous lane** in every wave until each live sport has its engine. NFL first, as the template; NBA next; then NHL, MLB.
+- Measured by **D4** and **D5** below (D5: ADR-0075, the betting architecture each engine feeds). Guardrails unchanged. Generality vs edge: **edge** (operator, 2026-10-14). The Player Attribute Matrix (PAM, DS-01) is piped into the engines — NFL and NBA first, then MLB and NHL — as part of the Syndicate32 bridge (operator, 2026-10-14).
+
+---
+
+## What This Project Is
+
+**A prediction market trading bot** — not an NBA bot. NBA is the first sport implemented. The system is designed to eventually cover any sport where regulated prediction markets exist and reliable statistics data can be sourced.
+
+### The architecture — every route optimized by layered multi-arm trees (operator, binding; read before "The strategy" below)
+
+*Operator 2026-11-10 21:41 PT: "my vision from DAY 1 was to build out the decision trees so we optimize every single route while using tried
+and true math scaffolding and betting architecture. Does a quant - that finds through rigorous testing and scaffolding that a certain betting
+pattern doesn't beat the "market" keep going? no he fucking routes it to the correct path so that loss still WINS." And 21:35 PT: depth is
+"meant to ENHANCE OUR DECISION TREES WHICH COULD VERY WELL MEAN RIDE THE WAVE". Full record: DECISION_LOG 2026-11-10 21:35 / 21:41 PT.*
+
+- **The bot is not a model that tries to out-price the market.** It is layered decision trees that pick the ARM for every market: ride the
+  market, fade it, momentum, pot of gold, or no bet. Layer 1 market state (price, move, ladder gap, book, time to start); layer 2 filters
+  built from the depth factors (matchup, lineup / usage, rest / travel, refs, weather, PAM, qualitative); layer 3 a tree per cell that
+  chooses the arm. The engine's own price is one input to the tree, never the bet by itself.
+- **A test that says "this pattern does not beat the market" is a ROUTING result, not a stop.** It tells the tree which arm that leaf gets
+  (often: ride the market's side). Frozen tests judge cells and leaves; they never gate building.
+- **A factor is APPLIED when it is a tested split in that tree**, scored per leaf: net after costs, held out, for each arm. A Brier score
+  of "our model vs the market" may be reported; it is never the verdict on a factor, a cell or the strategy.
+- The edge condition below (`model_p > market_implied_probability + vig`) is the FADE arm's entry rule only. It is not the strategy.
+- Every block, review and window that scores a factor or a cell states the arm and the leaf it scored. Scoring a factor only as a competing
+  price is the failure this section exists to stop (window error log W48 / W50 / W52).
+
+### The strategy
+
+Prediction markets price outcomes. When a model's calibrated probability for an outcome is meaningfully higher than what the market implies, there is positive expected value in betting on that outcome. This bot automates that process: ingest data, generate a forecast, check for edge against the market price, size the position via Kelly criterion, place the bet.
+
+The edge condition (the FADE arm's entry rule only - see § "The architecture" above; it is not the strategy): `model_p > market_implied_probability + vig`. If the model is right more often than the market prices imply, it makes money over time. If it isn't, it doesn't. The commercial question is that simple — and that hard to answer rigorously.
+
+### Alpha taxonomy — two distinct theses, two independent proofs required
+
+**This is not one strategy. It is two separate alpha hypotheses that happen to share the same pipeline.**
+
+**T1 alpha — pregame calibration edge:**
+The thesis: a model calibrated on historical rolling statistics (ba_l10, rest, home/away, PRF qualitative factors — as designed; the MLB T1 player-hits model as built measured 18 features and 0 qualitative, T-597) generates probability estimates that are systematically better-calibrated than pregame market prices. When model_p > MIP + vig, there is edge. This is the classical sports forecasting thesis — historical data produces better pregame odds than the market.
+
+**T4 alpha — live market latency edge:**
+The thesis: prediction markets are slow to incorporate live in-game state. After each at-bat, after each pitch sequence, after each momentum shift, the market price lags behind the true updated probability. The bot evaluates every 45-90 seconds whether the current in-game batter state (h_so_far, ab_so_far, inning, batting_slot, score state) combined with the pregame calibrated model produces a model_p that has drifted above the current MIP + vig. When it has, the edge is structural: the market hasn't updated yet, the bot has.
+
+**These are independent.** T1 can prove edge while T4 has none. T4 can have structural latency edge in markets where T1 has none (because pregame prices were efficient). Each requires separate commercial validation. EXP-017 tests T1. T4 requires its own validation track (GG-046). Do not conflate a T1 verdict with a T4 verdict in any analysis or session discussion.
+
+**High per-game evaluation volume in T4 is a structural consequence of this thesis, not a target.**
+The prior "~240 cycles/game × 18 batters × 2 thresholds = ~8,600 slots/game" figure was a theoretical ceiling, not a measured quantity, and GG-080 (2026-07-04, T-235) found it doesn't have a clean empirical referent: `cycle_id` in `t4_mlb_cycle_log.jsonl` is a single counter shared across every concurrently-live game in the `t4-mlb` process, not a per-game counter, so "cycles per game" cannot be cleanly derived from it. Superseding it with a direct empirical measure — rows and bets per game-day, across the two full real game-days available post-T-225 (`run_t4_mlb_live.py`'s per-ticker re-entry fix, GG-076): 2026-07-02 = 3,697 rows / 4 games = 924 rows/game, 23 bets / 4 games = 5.75 bets/game (0.62% fire rate); 2026-07-03 = 1,393 rows / 3 games = 464 rows/game, 11 bets / 3 games = 3.67 bets/game (0.79% fire rate). Real throughput is running 9-19x below the old theoretical ceiling on rows, and ~9-14x below the old "~50-55 bets/game" figure — the fire-rate percentage itself is consistent across both framings (~0.6-0.8%), so the gap is entirely in the opportunity-volume (rows/cycles) term, not the fire rate. This is n=2 game-days, not a stable long-run estimate — re-derive as more days accumulate. The volume is still not an objective — it is what the math produces when you ask "does the current state update the edge signal?" every 45 seconds across every live market — but the architecture must be sized to hundreds of evaluations per game-day, not the prior ~8,600/game theoretical figure. See GG-080/T-235, DECISION_LOG.md 2026-07-04.
+
+### Market efficiency gradient — where the strategy is designed to work
+
+*Read with ADR-0077 (2026-11-11): this section is about where the FADE arm is likeliest to find mispricing. It is not a reason to stay out of efficient markets - riding an efficient market's own price where the tree says the favourite is underpriced, or routing to no bet, are arms of the same tree. "No edge" is never a verdict on a market; it is a routing result.*
+
+**Not all prediction markets are equally efficient. The strategy is designed to exploit markets where pricing is inefficient.**
+
+NBA Finals player props are priced by the sharpest money in sports — professional bettors, sports media, high public volume, enormous liquidity. This is near-maximally efficient territory. The anti-predictive finding from early NBA experiments (GG-037) was produced in the worst-case efficiency conditions for this strategy.
+
+MLB mid-week regular season markets are structurally different: lower public attention, thinner book depth, slower price discovery, fewer sharp participants. This is the environment the strategy is designed to exploit.
+
+**This is not a detail. It is a binding constraint on where the system should operate.** When considering adding a new sport or market type, the first question is not "do we have data?" — it is "is this market environment less efficient than what a calibrated model can produce?" Adding a maximally liquid, maximally watched market (Super Bowl props, NBA Finals Game 7) is not expansion — it is trading into hostile conditions.
+
+**Market depth is volatile, not a documentable constant — do not cite a depth figure from this file or any past session as current (GG-155/T-411, 2026-08-04).** An earlier version of this section stated a fixed dollar range for Kalshi MLB book depth; that range was a point estimate from three hand-sampled reads and did not survive scrutiny. Direct time-series measurement (T-411) found depth swinging on the order of 10-100x intraday: 14x within 14 minutes on a single KXMLBHIT series, and 67x between two consecutive TEAM_TOTAL reads. Depth is a time-varying quantity that must be measured live at decision time, not looked up in a document — any position-sizing or gate decision that treats a remembered depth number as current is working from a stale, possibly order-of-magnitude-wrong figure. Kelly criterion still assumes infinite depth, and at sufficient bankroll full Kelly sizing would still move the market against the bot regardless of the momentary reading — that mechanism is structural to the venue and unaffected by this correction. What changed is only this: there is no fixed number to cite. Consult a live measurement (`scripts/phase0_market_survey.py depth` / the archiver's `--depth-sample-per-family` output, `exp_output/PRICE_ARCHIVE/depth_*.jsonl`) before any sizing decision. (GG-045 — registered; GG-155 — CLOSED-AS-ARTIFACT, see `GOVERNANCE_GAP_LOG.md`.)
+
+**Open departure from this section, not yet resolved** (see `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` § "The strategic tension nobody has adjudicated"): the coverage target expands toward moneyline, run line, and totals — the most-attended, most-efficiently-priced markets on the board, the opposite end of the efficiency gradient this section argues for. Generality and edge may point in opposite directions here: generality is the asset — the methodology has to transfer beyond one player-prop cell or there is nothing to sell; edge is the score — a general framework that loses money on every market it generalizes to has proven the wrong thing. The honest framing is that game-market expansion is a test of *generality* and should be *expected* to produce thinner edge than props — if it does, that is informative, not failure, but only if predicted in advance rather than explained afterward, or the result is unfalsifiable. **DECIDED 2026-10-14 by the operator: EDGE** — meaning the comprehensive betting architecture described under § "What winning looks like" → "How this binds work" (aggregation > interpretation > application, at play-level granularity), not merely "stop building for generality". DECISION_LOG 2026-10-14 21:30 and 21:38 PT. The implementing doctrine is **ADR-0075 (accepted 2026-10-14)**.
+
+### The pipeline (C1–C8)
+
+The system runs as a daily cron pipeline on a VPS:
+
+- **C1 — Ingestion:** Pull game data from the sport's statistics source. Sport-specific layer — each new sport adds a C1 module.
+- **C2 — Feature Store:** Transform raw data into model-ready features. Quantitative (rolling performance, rest, home/away) + qualitative (PRF framework: player quality, role-fit, form). Per-sport feature sets live here.
+- **C3 — Forecasting:** Generate calibrated probability estimates for each market. Currently LR + Platt scaling, governed by ADR-0004. Model class applies across sports until superseded by ADR.
+- **C4 — Risk Engine:** Kelly position sizing, per-event exposure cap, drawdown kill switch. Sport-agnostic. Governs capital regardless of what C3 is forecasting.
+- **C5 — Execution Engine:** Route approved orders to the right venue. Venue-agnostic via VenueAdapter protocol — Kalshi, Polymarket, DFS pick'em all slot into the same interface.
+- **C6 — Audit Logger:** Append-only structured log of every system event. Always active.
+- **C7 — Monitoring + Kill Switch:** Drift detection, automated halt on limit breach. Kill switch ≤60s (NFR-03).
+- **C8 — Dashboard:** Human-readable view of system health and P&L.
+
+C4, C6, C7, C8 are sport-agnostic and do not change when new sports are added. C1 and C2 are the only sport-specific layers.
+
+### Execution timing (T1–T5 bands)
+
+**The bands are not pre-decided time-horizon thresholds. The model computation determines which decision-tree bucket a bet routes to.**
+
+*Reconciliation with `EXECUTION_BANDS.md` (2026-09-30).* That document defines each band by a horizon
+(T1 = 12–48h, and so on) and this one says horizons are not pre-decided. Both are correct once the terms are
+separated: **horizon is the property that determines how deep a tree may be; routing is the runtime decision
+about which tree a given bet is evaluated under.** A bet's routing is computed; a band's permitted depth is
+structural. See ADR-0068.
+
+A bet that fires during a live game does not automatically belong to T4. The model evaluates available information — time remaining, score state, player stats, market price — and that computation determines which decision tree applies and therefore which band the bet executes on. Multiple bands can fire on the same market in the same game window. A bet in the third quarter might resolve to T1 (stale pregame model still dominates), T4 (live Bayesian update carries the signal), or both (CONFIRM/FADE protocol applies). The math decides.
+
+This framing has a direct architectural implication: **if the bot works as designed, one game — not one night of games, one game — produces approximately 1,000 bet evaluations by itself.** And it produces those 1,000 evaluations within the capital constraint, whether that ceiling is $500, $1,000, or $1M. The architecture must fit this. Capital sizing, kill switches, and decision routing cannot assume a small, discrete set of pre-scheduled bet events. They must be dynamically agnostic — operating per bucket, approaching per bet.
+
+Kill switches follow the same logic: a band-level kill switch (e.g., T4 budget exhausted) halts only that band. The system-level kill switch halts everything. Both tiers must be active simultaneously, independently, and without coupling to each other or to static game-time thresholds.
+
+**Every session must hold this framing.** When you are sizing a bet, designing a kill switch, writing a decision tree, or reviewing risk limits — the correct mental model is: ~1,000 evaluations per game, capital-ceiling agnostic, dynamically routed by model computation. If your implementation only makes sense for 10–20 bets per game night, something is architecturally wrong.
+
+**Current band status (which sub-bands are ACTIVE/BLOCKED/dark, per sport) lives in `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry — not here.** That inventory changes often (activations, EXP results, ADR-gated promotions) and this file does not track state (see "Gate structure" below). Before touching any T4 code, read that section first — NBA's `t4_execution_engine.py` and MLB's `t4_mlb_execution_engine.py` are separate files with separate registries, separate ADRs, and separate activation status; conflating them is a recurring, logged failure mode (GG-061).
+
+**The horizon doctrine (operator, 2026-09-30 — restated and corrected; canonical text in ADR-0068).**
+The bands are organized the way a quant fund organizes strategies: **decision-tree depth is governed by
+decision horizon.** A short horizon buys less time to compute, so the tree is stripped and execution speed
+carries the edge; a long horizon buys time to condition on matchup, personnel, venue, weather and
+qualitative factors, so the tree is deep and estimation quality carries the edge.
+
+**The longer the horizon, the DEEPER the tree.** T1 (12–48h) is the deepest by design — the 78-feature figure was the NBA-era design (31 quant + 47 qual); the MLB T1 model as built measured **18 features, 0 qualitative** (T-597, `models/mlb_v1_model_meta.json`), and the game-market pre-game arms are thinner still. Closing that gap is the DEPTH pillar.
+T4/T5 (in-play) are the shallowest — a Bayesian update or two arithmetic operations. *An earlier version of
+this paragraph asserted the reverse and contradicted both `EXECUTION_BANDS.md` and the implementation; it is
+corrected here.*
+
+**The test that makes this checkable — a band's shallowness must be paid for in speed.** Stripping a decision
+tree is only licensed by a measured execution advantage at that horizon. **A cell that is shallow without
+being fast is misfiled, not optimized.** T4M-PROJ is the standing example: a ~60s polling cycle running a
+three-scalar binomial, i.e. a speed-band decision tree at a slow-band cadence. T-569 measured the latency
+thesis that licensed the stripping and returned **NOT SUPPORTED (current feature set)**.
+
+**Horizon is not throughput.** Evaluation rate says how often we look; horizon says how fast the underlying
+information changes. A cell firing thousands of evaluations per game against markets that move on discrete
+events minutes apart is a long-horizon cell with a high poll rate — and is entitled to a deep tree.
+
+**Build sequencing (operator directive, 2026-09-30): pre-game first.** The widest horizon is where the
+matchup/sport/player/team/external/qualitative architecture can actually be piped in, and where evidence
+accrues at a countable rate — pre-game markets resolve once per game and are roughly independent across
+games, whereas in-play rows are serially correlated within a game and inflate n without inflating
+information. Build the deep tree at the widest horizon first, then carry that granularity inward. The north
+star remains that level of granularity at **every** arm.
+
+### Venue architecture
+
+Venues are abstracted behind a `VenueAdapter` protocol. `VenueRouter` handles best-execution routing across venues. Adding a new venue is implementing a new VenueAdapter — no changes to C1–C4. Current venue map:
+
+- **Kalshi:** Primary; CFTC-DCM regulated; active
+- **Polymarket US:** Secondary; infrastructure built; activation gated on operator KYC
+- **DFS pick'em (PrizePicks, Underdog, Sleeper):** Future; separate ADR required before activation
+- **arb/ folder:** REFERENCE ONLY — do not incorporate until APR-0010 signed (ADR-0002)
+
+### Adding a new sport
+
+When the architecture is correct, adding NFL means: new C1 data module, new C2 feature set, new C3 model trained on football data, and a new `MarketType` seeded into the registry — `c5_execution/market_type_registry.py`, not `market_mapper.py` (that file only normalizes player names within the one market family already traded; it holds no concept of market type). Registering a market type is not a single-axis act: the registry keys cells on the pair `(MarketType, ExecutionBand)`, so a new market type arrives as a *set* of cells, one per band, each carrying its own `CellStatus` — and `RULED_OUT` is a first-class status requiring a `reason` and a `measured_date` (enforced in `MarketTypeCell.__post_init__`), not an absence. C4 through C8 require no changes. If adding a sport requires more than this, something is architecturally wrong and should be surfaced before building.
+
+### The commercial validation gap
+
+**The full history of this gap (n-count progression, tier crossings, sign-flips, raw-vs-clean distinctions, 2026-06-01 through 2026-07-12) lives in `GOVERNANCE_GAP_LOG.md` GG-004 and its split-out history file `05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/GG004_ev_validation_benchmark_history.md` — not here.** This section states only the current governing standard and where to check live status; do not re-embed n-counts or dated corrections in this file (that pattern is exactly what went stale twice already — see the remediation-pass note at the top of this file).
+
+**Current standard (APR-0024, ACCEPTED, superseding the earlier flat 30/150/500 ADR-0024 tier heuristic):** commercial-validation and G6 sample-adequacy are evaluated per active band against `clean_n ≥ n*`, where `n*` is the variance-derived sample size (95% power, alpha=0.05, one-sided) computed live from that band's own observed clean-epoch mean and stdev of P&L-per-bet via `scripts/run_power_calc.py`. This is not a fixed constant — it shifts with each band's own mean/variance and is re-derived on every governance scan (`.claude/hooks/governance_scan.sh`). This amendment does not retract any historical verdict recorded in GG-004, and does not supersede ADR-0024 (stop-pivot-criterion) itself, which remains in force per Hard Rule 3.
+
+This is GG-004 (OPEN — scoped to sample adequacy, not to whether EXP-017 has run). It is a G6 blocker. **For the live n-count / clean_n / n* status of every band, run the governance scan or check `GOVERNANCE_GAP_LOG.md` GG-004 directly — do not assume any figure quoted in a past session (including in this file's own git history) is still current.**
+
+### Gate structure
+
+The project gates from research to paper trading to live capital in stages. G0–G5 are closed. G6 is defined by ADR-0076 (ACCEPTED 2026-10-27 17:30 PT): qualified per (book, sport), the cell WINS at its judged n (commercial validation per APR-0024's variance-derived `n*`, see § "The commercial validation gap" above), the exposure gate enforcing, DS sign-off (ADR-0005) and the operator's acceptance of the limit table (ADR-0076 §4, blanks stay blank until a positive Kelly is proposed) before live capital is authorized. No book qualifies today. Gates G7–G9 govern multi-sport and multi-venue expansion post-live.
+
+For current gate progress, read the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md` (kept current at every wave close) and `MEMORY_BANK.md`'s Current State Snapshot (dated; refreshed at handoffs). CLAUDE.md does not track state. **For T4M-PROJ, G6 and every execution claim count real demo fills only; paper-only rows are calibration evidence (GG-527, operator 2026-10-08).**
+
+---
+
+## Who built this and why it matters
+
+**Operator:** Earl Ignacio  
+**Project:** Prediction market trading bot (Kalshi primary venue; NBA was the first sport implemented; in season now: NFL, NBA, NHL shadow arms plus the ADR-0072 forward test; MLB idle until the 2027 season - live state in the RUNNING SITREP, never here)  
+**Phase:** 6/7 ACTIVE — paper trading live on VPS 157.230.91.33  
+**Framework:** Compass OS (ADR-0001)  
+**Capital status:** NO live capital until G6 (ADR-0076: per (book, sport), the cell wins at its judged n, exposure gate enforcing, DS sign-off, operator-accepted limit table)
+
+**Dual-ledger state (current since ADR-0035/ADR-0037, confirmed GG-070 RESOLVED):** MLB and NBA run as two independent paper portfolios, not one. MLB was the ACTIVE pool the G6 gate was pursued against through the 2026 season (idle since the World Series, 10-29); G6 is now per (book, sport) under ADR-0076. The old NBA paper book is FROZEN — its 24.9% drawdown is historical/adjudicated (GG-034/GG-037), not a live risk signal. NBA itself is no longer tabled (corrected 2026-10-09): its pre-game arm (EXP-038, 12 cells, shadow — evaluate and log, no orders) logs from the 2026-27 regular season (opening night 2026-10-20); current status in `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` § Live Registry. Read `MEMORY_BANK.md`'s Current State Snapshot for both books' live figures — do not treat one ledger's numbers as if they describe the whole system.
+
+**Capability boundary you are operating within:** You can verify, hunt, surface findings, and execute fixes. You cannot replace the operator's architectural judgment. The count gate failure (GG-001) was caught by Earl, not by a model. Do not assume you will independently recognize a wrong architectural primitive. Surface your concerns and let the operator decide.
+
+---
+
+## MANDATORY SESSION-START PROTOCOL
+
+**Run Step 0, all four numbered steps, and all six watchdog questions before any other work. Show command outputs — do not summarize or assert clean without evidence.**
+
+---
+
+### Step 0 — Concurrent-session isolation + claim (GG-082, GG-101)
+
+**Why this exists:** two failure modes, both real and both observed. **(a) Narrative conflation** — on 2026-07-03 a concurrent session's real work was conflated with an unrelated session's local files across six spots in `MEMORY_BANK.md`/`PLAN.md`, including a fabricated task-renumbering narrative (GG-082). **(b) Working-tree collision** — on 2026-07-08, two sessions running in the *same physical working tree* meant one session's `git stash` swept the other's uncommitted edits; it recovered only because that session chose `stash` over a destructive op (GG-101). A `reset --hard` / `checkout --` / `clean -fd` would have caused permanent, unrecoverable loss. This step exists to make both modes structurally hard, not just visible.
+
+**0a — Launch isolated (the real fix for GG-101; DEFAULT, not conditional — T-335/E2).** Every session launches into its own isolated worktree unless a specific, statable reason rules it out (e.g. a one-line doc fix the operator has explicitly asked to happen directly on `main`). "I don't think another session is active right now" is not such a reason — GG-101's near-miss happened precisely because that assumption was wrong in the moment. Do not `cd` into the shared `main` tree by default. Launch an isolated worktree:
+
+```bash
+scripts/new_session_worktree.sh "<short-focus-slug>"    # e.g. gg095-brier-ladder
+# then cd into the printed worktree path — you now have your own branch + checkout
+```
+
+Sessions in separate worktrees cannot stash/reset/checkout/clean each other's files. This is the guarantee; everything below is belt-and-suspenders for when you are unavoidably in the shared tree. If you are on `main`, `.claude/hooks/session_guard.sh` (0b below) will say so explicitly and, when it detects a live GG-101 near-miss condition (another session claimed work in the last 6h while you're on shared `main`), will warn accordingly — treat that warning as a prompt to switch to a worktree before doing anything further, not just informational text.
+
+**0b — Run the guard and claim atomically.** Inside your session (worktree or shared tree):
+
+```bash
+bash .claude/hooks/session_guard.sh                     # branch/worktree, HEAD-vs-origin drift, other claims, foreign uncommitted state
+scripts/claim_session.sh "<one-line focus>" "<T-/GG-/ADR- range or TBD>"
+```
+
+`claim_session.sh` appends your row to `04_EXECUTION/SESSION_CLAIMS.md`, commits it *alone*, and pushes with rebase-retry so two concurrent sessions cannot silently grab the same T-/GG-/ADR- number (the 2026-07-07 T-247 race). `SESSION_CLAIMS.md` is `merge=union`, so simultaneous claim rows auto-merge. `.claude/commands/session-start.md` wires 0b into one command.
+
+**0c — Check for other live sessions.** Read the last ~24h of `SESSION_CLAIMS.md`. If another claim exists, another session may be active or hold local unpushed/uncommitted work — reconcile ID ranges now, before writing anything.
+
+**0d — Commit early, path-scoped, never blanket (the residual shared-tree rule).** If you are in the shared `main` tree despite 0a: commit your own work in small path-scoped commits (`git commit <file1> <file2> …`). **Never `git add -A`, `git commit -a`, unscoped `git stash`, `git reset --hard`, `git checkout -- <foreign-file>`, or `git clean -fd`** — any of these can destroy a concurrent session's uncommitted work. Do not let uncommitted state accumulate; the longer it sits in a shared tree, the larger the collision surface.
+
+**0e — Re-read before you trust (Hard Rule 10).** Before writing to any shared navigation file (`MEMORY_BANK.md`, `PLAN.md`, `03_DECISIONS/DECISION_LOG/DECISION_LOG.md`, `04_EXECUTION/TODO_NEXT.md`, `03_DECISIONS/GOVERNANCE_GAP_LOG.md`) at any point — not just at session start — diff it against `HEAD` or re-read it fresh. Do not trust a narrative already sitting in context/memory as necessarily current; another session may have changed the file since you last read it. These logs are deliberately *not* `merge=union` (they have in-place edits union merge would silently double), so isolation + path-scoped commits + this re-read are their only protection.
+
+---
+
+### Step 1 — Documentation debt
+
+```bash
+grep -rn "^\*\*Decisions logged:\*\* false" \
+  "02_ARCHITECTURE_DESIGN/" \
+  "08_MODEL_RISK_GOVERNANCE/" \
+  "01_SPEC/" 2>/dev/null
+```
+
+Each match is a document with unlogged strategic decisions. Note which tasks (T-NNN) are registered to address them.
+
+---
+
+### Step 2 — Code stub scan (paste full output)
+
+```python
+import os, re
+hits = []
+for root, dirs, files in os.walk('src'):
+    dirs[:] = [d for d in dirs if d != '__pycache__']
+    for f in files:
+        if f.endswith('.py'):
+            path = os.path.join(root, f)
+            with open(path) as fh:
+                for i, line in enumerate(fh, 1):
+                    if re.search(r'# stub|# placeholder|# TBD|# todo', line, re.IGNORECASE):
+                        hits.append(f'{path}:{i}: {line.rstrip()}')
+if hits:
+    for h in hits: print(h)
+else:
+    print('CLEAN — no stubs found')
+```
+
+**A model may not answer this step clean without pasting the actual output.** "No known stubs" is not an answer. The output is the answer.
+
+GG-001 had `# 10 concurrent open (stub)` in production source. It survived four gate clearances because this scan did not exist.
+
+---
+
+### Step 3 — Open governance gaps
+
+**GG-144 (2026-07-29):** the prior form of this command, `grep -n "| OPEN"`, is an unanchored substring match — it surfaced only 17 genuine `| Status | OPEN …` cells (plus 9 lines of unrelated narrative prose elsewhere in the log that happen to contain the same substring) and matched **zero** of the emphatic form, `| Status | **OPEN — …`, which the log uses for its most severe entries — the formatting that signals importance is exactly what removed the entry from the scan. True OPEN count (anchored, both forms, template placeholder row excluded): **28** — 17 plain + 12 bold (one line is a header-row template and does not count). Hidden set included GG-038, GG-046, GG-105, GG-140. The identical defect was found and fixed in `.claude/hooks/governance_scan.sh` on 2026-07-16 (GG-122) and flagged again 2026-07-15 (T-370) without ever propagating to this authoritative copy — do not let that recur: if this command is ever edited again, re-run the reconciliation assertion below in the same sitting.
+
+**2026-08-05 restructure (T-420):** the bold-vs-plain distinction above is now structurally impossible, not just fixed. `GOVERNANCE_GAP_LOG.md` was split by status — RESOLVED and CLOSED-AS-ARTIFACT entries moved **verbatim** to `GOVERNANCE_GAP_LOG_ARCHIVE.md` and no longer live here at all, so this file can no longer contain a RESOLVED entry masquerading as open. Every remaining entry now carries exactly one machine-uniform structured line immediately under its `### GG-NNN` header — `**Status:** TOKEN · **Severity:** LEVEL` — with the full original record preserved verbatim below it inside a `<details>` fold. There is no longer a bold/plain variant to reconcile: the render is single-source, produced by one script (`split_ggl.py` at restructure time; hand-added entries going forward must match the same `**Status:** ... · **Severity:** ...` line exactly). The plain/bold reconciliation assertion below is retired for that reason and replaced with a structural one — every gap header must have exactly one Status line, full stop. (Only the literal token `OPEN` counts as open for this count; other stay-tokens — `IN PROGRESS`, `PARTIALLY RESOLVED`, `PARTIAL RESOLVE`, `LIKELY RESOLVED`, `PLAN ACCEPTED`, `ACCEPTED UNCERTAINTY`, `WATCH ITEM` — are deliberately excluded, matching the old command's behavior exactly.) Pre/post-restructure reconciliation, at restructure time only: old-semantics count reproduced exactly at **35** against the preserved original file; the new format additionally and correctly captured **GG-004** (which had no canonical `| Status |` row at all — a separately pre-documented scan blind spot, not a new defect), one more than the old count. Both figures are 2026-08-05 snapshots, not a standing total — the log has gained and lost entries every session since (GG-163, registered 2026-08-06, is the most recent addition). **Do not cite a specific OPEN count from this file's own text as current** — run the command below and trust only its live output. See `DECISION_LOG.md` 2026-08-05 for the full reconciliation.
+
+```bash
+grep -nE "^\*\*Status:\*\* OPEN\b" "03_DECISIONS/GOVERNANCE_GAP_LOG.md"
+# Structural assertion — every real gap header in this file must carry exactly one
+# structured Status line. [0-9] anchor excludes the "### GG-NNN — [Short title]"
+# line inside the Gap Registration Template's example fence at the bottom of the
+# file (a real header-pattern match but not a real gap). If these two counts
+# differ, the render has drifted (a hand-added entry skipped the format, or a
+# header/status line got separated) — do not trust the OPEN count above until
+# they match.
+HEADERS=$(grep -cE "^### GG-[0-9]" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+STATUS_LINES=$(grep -cE "^\*\*Status:\*\*" "03_DECISIONS/GOVERNANCE_GAP_LOG.md")
+echo "gap headers=$HEADERS status lines=$STATUS_LINES (should be equal)"
+```
+
+**GG-199 (2026-08-21):** the parity check above CANNOT see a *duplicate* id — both counters increment together for a duplicate `### GG-NNN` row, so two gaps sharing one number pass this check cleanly. Three separate concurrent-claim collisions have hit exactly this defect and none were caught by the check above: GG-187 claimed by both T-465 and T-466 twelve seconds apart (2026-08-18), and GG-197 claimed concurrently by T-473 and T-479 (2026-08-21, commit `05ed07e`) — the latter inside a batch explicitly trying to pre-allocate numbers. This is GG-162 (no atomic reservation for GG-numbers, unlike T-numbers, which `scripts/claim_session.sh` does protect); the fix here is detection only — the uniqueness check below, mirrored into `.claude/hooks/governance_scan.sh`'s auto-injected scan (`scripts/lib/gg_id_uniqueness_check.py`) so it runs every session without being asked. Atomic GG-number reservation at claim time remains a separate, larger, unstaffed task.
+
+```bash
+python3 "scripts/lib/gg_id_uniqueness_check.py" \
+    "03_DECISIONS/GOVERNANCE_GAP_LOG.md" "03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md"
+```
+
+Any OPEN entry must be addressed or explicitly deferred (T-NNN registered) before implementation work. RESOLVED/CLOSED-AS-ARTIFACT history now lives in `03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md` — never hand-patch that file for content; entries only arrive there verbatim, from the live log, and never move back.
+
+---
+
+### Step 4 — Operational health check (paste output)
+
+**Coverage gap, stated plainly (2026-10-09):** every probe below covers MLB T1/T4 and the frozen NBA book only. The pre-registered shadow arms (NFL, NHL, NBA, MLB postseason) have no probe in this step — GG-532 (MLB postseason arm silent ~23h) was found by hand. Since W62.1 (#198, 2026-10-09) `.claude/hooks/governance_scan.sh` prints a **SILENT ARMS** block every session (`prediction_market_bot.pregame_shadow.silent_arms`: games in window, zero rows written; alarm-only) — read it as part of this step, and treat any silent arm while its sport had games as a Q6 concern.
+
+**Root cause of GG-049:** The prior three steps check code and documents but never check whether active cron pipelines are actually producing bets. T1 MLB ran 0 bets for 2+ game days (June 27–28) without the protocol detecting it. This step is mandatory — it is the only place where a dark pipeline becomes immediately visible.
+
+```bash
+ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'players in live MLB|Bets placed today|PIPE-05 (SUMMARY|COMPLETE|ERROR)' /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | tail -12 && echo '=== T4 MLB — systemd ===' && systemctl is-active t4-mlb && echo '=== T1 NBA — last run (off-season: expect 0 games) ===' && grep -E 'players in live|Bets placed|PIPE-0[3-7]|No .* markets available' /opt/prediction-market-bot/logs/paper_early_cron.log /opt/prediction-market-bot/logs/paper_late_cron.log 2>/dev/null | tail -6"
+```
+
+**What to look for:** Any run that shows `0 players in live MLB markets` during MLB season (March–October) is a signal failure — treat it as a Q6 concern and do not proceed without diagnosing it. Expected healthy output: ≥1 player matched per run when games are scheduled that day.
+
+**GG-108 correction (2026-07-11):** the NBA command above previously targeted `logs/paper_cron.log`, a filename that no longer exists on the VPS — NBA's single-window cron was split into two windows at some point (`paper_early_cron.log` at 18:00 UTC, `paper_late_cron.log` at 01:30 UTC) and the reference here was never updated. A grep against a nonexistent file returns empty output, which is visually indistinguishable from "0 games today" — so this check had been a silent no-op for NBA specifically, catching nothing, for an unknown number of sessions. Corrected to grep both real files and to also match `No .* markets available` (the actual off-season log line) so a healthy dark day is visibly confirmed rather than merely absent of output. If this file ever grows a third window, update this command again — do not let it drift a second time.
+
+**Semantic oracle checks (added Session 101):** These two lines surface silent pipeline failures immediately. Zero is healthy for both on a normal game day.
+
+```bash
+# T1 MLB: fires when games exist but 0 players matched → ticker/name pipeline dead
+tail -500 /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | grep -c "SemanticFloorViolation" || echo "0"
+# T4 MLB: fires per-evaluation when staleness detected → ESPN or Kalshi data is stale
+grep -c "CONTAMINATION_HALT" /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null || echo "0"
+# T4 MLB staleness, recency-windowed (see GG-085 below — do not threshold the raw payload.staleness_halts counter):
+tail -500 /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null | grep -c '"failed_checks": \["game_state_fresh"\]' || echo "0"
+```
+
+`SemanticFloorViolation` count > 0 in the last 500 log lines (recency-windowed like the staleness probe, GG-309; an all-time count reads a months-old hit as live) = T1 pipeline silence (investigate immediately). `CONTAMINATION_HALT` count > 0 in the audit JSONL is expected at game-end (market_active=False normal).
+
+**Dashboard OOM-restart-loop probe (T-356/GG-118, added 2026-07-21):** GG-118 found `pmbot-web-dashboard.service` can OOM-crash-loop (`Restart=always`/`RestartSec=5`) while `systemctl is-active` reports `active` throughout, since the service re-enters the active state within ~5s of each restart — a plain `is-active` check would not have caught the ~2-day dark-dashboard incident that prompted GG-118's fix. This step had no probe at all for this service before now.
+
+```bash
+ssh prediction-market-vps "systemctl show pmbot-web-dashboard.service -p NRestarts,ActiveState,SubState && echo '--- oom-kills, last 24h ---' && journalctl -u pmbot-web-dashboard.service --since '-24 hour' | grep -c oom-kill"
+```
+
+**What to look for:** `NRestarts` > 0 or any `oom-kill` count > 0 means the service has crash-looped recently — treat it as a Q6 concern even if `ActiveState=active`/`SubState=running` looks healthy, since that pair is exactly what a mid-loop snapshot shows. Healthy baseline: `NRestarts=0`, 0 oom-kills.
+
+**Alarm condition (corrected 2026-07-05, GG-085 — the prior wording here was itself wrong and never caught anything):** do not grep for `payload.staleness_halts > 0`. That field is a **per-`session_id` cumulative counter** (confirmed via direct inspection of `audit_mlb_t4.jsonl`: it appears only on `CONTAMINATION_HALT` events where `failed_checks` includes `game_state_fresh`, alongside a matching `total_halts`, and only resets when the `t4-mlb` process restarts and a new `session_id` begins) — it is not a per-cycle boolean and does not reset when data freshness recovers. A long-running session that hit even one transient staleness event hours ago will show `staleness_halts > 0` in every subsequent record for the rest of that session's life, even while currently healthy — the documented heuristic would have alarmed permanently after the first true positive and never told you anything new. The real signal is whether a `game_state_fresh` failure occurred **recently** (last few poll cycles), which the `tail -500` command above checks directly by counting fresh occurrences of the failed-check string rather than reading the cumulative counter. Non-zero on that recency-windowed count = ESPN or Kalshi data is stale right now; investigate immediately. A positive `payload.staleness_halts` value alone, with zero recent `game_state_fresh` occurrences, means the session merely has staleness history, not a live problem.
+
+**T4 MLB cycle-log write-recency probe (GG-163/T-429, added 2026-08-07):** every check above this line inspects `systemctl is-active`, T1's own log content, or `audit_mlb_t4.jsonl`'s staleness-halt signal — none of them ever check whether T4's own `t4_mlb_cycle_log.jsonl` is actually still being written. GG-163 was a live demonstration of exactly this blind spot: ESPN's edge began 403-ing T4's game-ID discovery request at 2026-08-04 23:41 UTC, the discovery failure meant the process never reached the evaluation code path that writes cycle-log rows, and `systemctl is-active t4-mlb` reported `active` continuously throughout — the outage ran 43.5h+, spanning a full game night with T1 confirming 21-35 players matched in live MLB markets that same day, before a session doing unrelated work happened to notice the stale file by hand. This probe makes that check structural instead of incidental:
+
+```bash
+ssh prediction-market-vps "LAST_TS=\$(tail -1 /opt/prediction-market-bot/logs/t4_mlb_cycle_log.jsonl 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"ts\",\"\"))' 2>/dev/null); if [ -z \"\$LAST_TS\" ]; then echo 'T4_CYCLE_LOG: NO ROWS FOUND'; else AGE_S=\$(( \$(date -u +%s) - \$(date -u -d \"\$LAST_TS\" +%s) )); echo \"T4_CYCLE_LOG: last_row=\$LAST_TS age_hours=\$(( AGE_S / 3600 ))\"; fi"
+```
+
+**What to look for:** cross-reference `age_hours` against the T1 command above (does today's date fall in MLB season, and did T1 report ≥1 player matched — i.e. were games actually live?). `age_hours` in the high single digits or more while games were live in that window is a signal failure — investigate immediately, and do not let `systemctl is-active`/`ActiveState=active` talk you out of it; GG-163 is direct proof that pairing can be healthy-looking and completely blind at the same time. Idle age spanning an off-day, off-season, or a pregame stretch with no live batter state is expected and not itself a concern — T4 only writes a cycle-log row when there is a live batter state to evaluate.
+
+---
+
+## ARE WE COMPROMISED? — Run after Steps 1–4, before any implementation
+
+### Adversarial mandate
+
+**Your job here is to find something wrong.** Not confirm the system is fine. Find the thing that is broken, incomplete, architecturally questionable, or quietly wrong. If you complete this section and surface zero concerns, you have failed the check. A system at this stage of development always has open questions, aged thresholds, undocumented assumptions, and interfaces that have evolved since their limits were calibrated. Find them.
+
+---
+
+**Q1 — Hard limits (paste output):**
+
+```bash
+grep -n "max_\|_HARD_LIMITS\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/c4_risk_engine/risk.py
+grep -n "kelly_fraction=" src/prediction_market_bot/execution_bands.py
+```
+
+**Path correction (GG-144 remediation pass, 2026-07-29):** the second command's target, `execution_bands.py`, is at `src/prediction_market_bot/execution_bands.py` — the top-level `prediction_market_bot` package, not under any `c5_execution/` subpath. A stray reference to `c5_execution/execution_bands.py` had been circulating this session (`STRATEGIC_ANALYSIS_2026-07-29.md`); that path does not exist in this repo and never has. This file is the one that actually governs live per-band Kelly sizing (see the ruin-risk caveat below) — `risk.py`'s `DEFAULT_KELLY_FRACTION` is a separate, largely inert constant — so Q1's command now greps both files rather than only the one that doesn't hold the load-bearing values.
+
+For each limit: was it calibrated to the current system (read the live inventory from `MARKET_TYPE_REGISTRY` and the RUNNING SITREP - as of 2026-11-11: MLB idle off-season; NFL, NBA, NHL game families and NBA props as SHADOW arms with flat demo stakes under the ADR-0072 forward test; Kelly 0 everywhere)? If any limit was set for a smaller or differently-shaped system, register in GOVERNANCE_GAP_LOG.md.
+
+**Do not hardcode a bankroll dollar figure in this file** — it decays within days and this exact mistake (a stale $958.99/2026-06-08 figure surviving three weeks of paper trading) was found and corrected in a documentation-remediation pass. Pull the live bankroll from `MEMORY_BANK.md`'s Current State Snapshot (or the session-start governance hook, which prints both the MLB and NBA books labeled separately per GG-070) before reasoning about kill-switch proximity. The mechanism itself is stable and worth stating here: `MAX_DAILY_LOSS_PCT = 0.15` (`risk.py`) fires the daily circuit breaker at 15% of session-start bankroll; `max_drawdown_pct = 0.20` in `_HARD_LIMITS` (`risk.py`) is the *permanent* kill switch on realized drawdown. `max_daily_loss_usd` was removed and replaced by `MAX_DAILY_LOSS_PCT` per ADR-0012. All hard limits (`_HARD_LIMITS` dict in `risk.py`: `max_single_event_exposure_usd=500.0`, `max_drawdown_pct=0.20`, `max_portfolio_deployment_pct` per ADR-0026) still require formal revision via ADR at G6 when live bankroll is set — that obligation, logged 2026-05-29, remains open and unchanged.
+
+**Ruin-risk caveat (GG-071, RESOLVED via ADR-0040, 2026-07-04; superseded by ADR-0048, 2026-07-29):** a forward-time compounding Monte Carlo found that T1 MLB's real, positive edge (53.06% win rate at time of study) produced a 17.05% / 43.5% / 46.45% probability (1mo/6mo/1yr) of permanently tripping the 20% max-drawdown kill switch under proportional-stake compounding at real bet cadence, using the pre-remediation `execution_bands.py` T1_MULTI_DAY.kelly_fraction of 0.10 (ADR-0010). ADR-0040 de-rated that value to 0.061, bringing the 1yr breach probability to ~5.6% (operator-selected target, 2026-07-04). **That 0.061 figure is no longer current.** ADR-0048 (2026-07-29) found GG-135's ruin geometry applies at *any* positive Kelly fraction on these books — MAIN's real variance alone, independent of edge sign, produces ~100%/yr kill-switch trip probability — and zeroed `kelly_fraction` to `0.0` for both T1_MULTI_DAY (superseding ADR-0040's 0.061) and T4M_PROJ (superseding ADR-0023's `KELLY_T4=0.10`), pending edge-conditional reactivation via an ADR-0048 lookup table. DS sign-off: operator, 2026-07-29. Evaluations continue to log for research; only sizing is zero. Verify current values directly in `execution_bands.py` before citing a figure — do not trust either the 0.061 or the 0.0 stated here as necessarily still current; both are supersedable by a future ADR. **`risk.py`'s `DEFAULT_KELLY_FRACTION` (still 0.25) is unrelated to this fix and inert for T1 MLB** — the live governing constant is `execution_bands.py`'s per-band `kelly_fraction` field, not `risk.py`'s default. Re-run `scripts/mc_empirical_bootstrap.py` (Window D, 2026-07-23 — the standard forward-risk gate, nonparametric resampling of the real resolved ledger, superseding `mc_forward_projection.py`'s parametric fixed-win-rate/fixed-payoff assumptions in this role; see ADR-0040's 2026-07-23 addendum) if T1's real win rate, cadence, or `kelly_fraction` materially shift again — this is a monitored risk, not a permanently closed one.
+
+---
+
+**Q2 — Stub survival (paste output from Step 2 above):**
+
+Historical stub list as of 2026-06-01 (superseded — verified CLEAN, zero `# stub|# placeholder|# TBD|# todo` hits, as of a documentation-remediation pass 2026-07-02; run Step 2 fresh every session, do not trust this note in place of the live scan):
+- `run_exp001.py:681` — experiment bankroll stub; EXP-001 complete; was LOW risk; no longer present.
+- `run_t2_sameday.py:112/130` — T2 injury overlay stub; no longer present (T2 MLB is cron-active; confirm NBA T2 separately if NBA work resumes — KI-011 injury-blindness risk applies to whichever T2 is live).
+- `venue_adapter.py:158` — design comment; was not a value stub.
+- `venue_adapter.py:251` — `"tag": "nba"` hardcoded; Polymarket NBA tag unconfirmed; **MEDIUM risk when T-077 (Polymarket KYC) activates** — wrong tag returns empty markets silently (KI-019). Not caught by the stub-comment scan since it isn't marked `# stub`; verify this specific line directly if Polymarket activation is ever picked up.
+
+Any new hits from the live scan must be assessed fresh: when was it written, does it predate current architecture, is the value still valid?
+
+**Standing concern baked into Q6:** The EV benchmark issue (KI-017/GG-004) — all prior EV figures used `mip=0.50`. EXP-017 has run (EXP-017B/C/D decomposition, 2026-07-07 — see ADR-0042); it did not close the commercial question, and GG-004 remains OPEN. No model should claim the EV case for this system is proven until a pre-registered cell reaches a verdict at its judged n.
+
+---
+
+**Q3 — Architecture coherence:**
+
+Three largest post-G4 builds: T1–T5 multi-band orchestrator, VenueRouter/market_mapper, PaperTrader/PIPE-03. All reviewed against G4 limits via ADR-0006. Remaining three limits are exposure-based and scale-agnostic.
+
+Ask for each hard limit: what is the underlying assumption, and does the current system still satisfy it? Do not assume — verify.
+
+---
+
+**Q4 — Interface evolution (paste output):**
+
+**Path correction (GG-144 remediation pass, 2026-07-29):** `def approve` and `def execute` do not exist anywhere in `src/` and never have in this repo's history — that half of the original grep was a structural no-op, silently matching nothing every session. The real interfaces this check is meant to catch drift in are the C4 risk-gate entrypoint (`evaluate_forecast`, `risk.py`) and the C5 execution entrypoints (`open_position`/`exit_position`, `paper_trader.py`; `submit_order`, `kalshi_client.py`, for live-venue routing).
+
+```bash
+grep -rn "def evaluate_forecast\|def open_position\|def exit_position\|def submit_order" src/
+```
+
+If any interface has evolved — more markets per run, new signal types, new execution paths — downstream risk controls may have been calibrated to the old interface.
+
+---
+
+**Q5 — Decision traceability:**
+
+```bash
+grep -n "max_\|MIN_EDGE\|DEFAULT_KELLY" src/prediction_market_bot/c4_risk_engine/risk.py
+grep -n "2026-05-29\|2026-06-01" "03_DECISIONS/DECISION_LOG/DECISION_LOG.md" | head -20
+```
+
+Every threshold in `_HARD_LIMITS` must trace to a DECISION_LOG entry with derivation methodology. "Confirmed at G4" is not a derivation. Note: the 2026-05-29 retroactive entry explicitly states these limits must be formally revised via ADR at G6. That obligation is live.
+
+---
+
+**Q6 — What are you actually worried about?**
+
+You have run the scans. You have seen the outputs. Set aside what the documents say is fine.
+
+**What would you tell Earl right now if you had 60 seconds and something was quietly wrong? What are you worried about that isn't in any document?**
+
+Present your top concerns. If you have none after a thorough read, state specifically what you checked and why each concern was ruled out. A non-answer is a failed check.
+
+---
+
+**Q7 — Field integrity: does the data mean what the label says? (T-432/BLOCK B, added 2026-08-11)**
+
+Q1-Q6 check code, thresholds, and pipeline liveness. None of them check whether a VALUE already written to the ledger is correct — only that a step ran. GG-166 corrupted ~44% of the epoch-12 clean cohort's outcomes/P&L, was baked into four analysis sessions, and was only caught when an independent decoupled-store data path disagreed with the ledger. This is what Q7 exists to catch structurally instead of by luck.
+
+```bash
+python3 scripts/assert_ledger_invariants.py
+```
+
+This is ALARM-ONLY (operator directive) — it exits 0 regardless of what it finds; violations go to stderr and a JSONL report, never to the exit code, unless `--strict` is passed explicitly (reserved, off by default, wired to nothing — see the script's own docstring for the promotion criterion). `.claude/hooks/governance_scan.sh` already runs this every session without `--strict` and discards its exit code (`|| true`) — reading its printed summary satisfies Q7 for a routine session; only re-run it directly if you need the full per-band output or the machine-readable report.
+
+**What to look for:** any assertion whose violations concentrate in the *current* logic epoch (not spread across old ones) is a live regression, not legacy residue — check `first_seen_epoch`/`last_seen_epoch` in the JSONL report. As of 2026-08-11, assertion A (ticker-embedded date vs. stored `game_date`) shows 69.9% violations within epoch 12 specifically — this is GG-170 (OPEN), not a new finding; do not re-register it. The cross-path agreement check (ledger `actual_hits`/`outcome` vs. T-421's decoupled outcome store) is expected to show real disagreement, not zero, until T-437 lands — do not treat a non-zero disagreement rate there as a new alarm on its own; check whether the rate has moved materially from the last recorded baseline before registering anything.
+
+---
+
+**Any unresolved concern → register in GOVERNANCE_GAP_LOG.md before proceeding.**
+
+---
+
+## After the protocol
+
+**Delta-first retrieval (ADR-0041, T-300/Window A):** check `04_EXECUTION/.last_session_checkpoint`. If it exists, run `scripts/session_delta.sh "$(cat 04_EXECUTION/.last_session_checkpoint)"` and read its output — a Tier 1 diff since that checkpoint against live `HEAD`, plus a dense state artifact (both ledgers' bankroll, open GGs, last 3 EXP-0xx deltas, GG-004 gate progress). This is the default retrieval path for a routine session start.
+
+**Fallback:** if the checkpoint file is missing, empty, or `session_delta.sh` errors, fall back to full reads — `11_MEMORY_HANDOFF/MEMORY_BANK.md` for full project state/portfolio/priority queue, and `04_EXECUTION/TODO_NEXT.md` for the current task list. Do not skip these when the delta path isn't available; the delta is an optimization over the full read, never a replacement for it when it can't run.
+
+**Hard Rule 10 still applies regardless of retrieval path** — the checkpoint delta is read-only context for starting the session; it does not exempt you from re-reading/diffing a shared nav file fresh immediately before you write to it later in the session.
+
+Then address what the user asked.
+
+---
+
+## Incident response — shared-contract HALT recovery (GG-072 / T-224)
+
+**When any data contract or shared validation module is patched in response to a HALT, the incident is not RESOLVED until every consumer of that contract has been enumerated and re-verified — not just the pipeline whose failure prompted the investigation.** Concretely, before writing RESOLVED anywhere:
+
+1. `grep -rn <ContractName> src/` (or equivalent for the patched module) — enumerate **every** pipeline that imports or enforces it.
+2. Check each consumer against that day's run log (`audit_*.jsonl`, cron logs). Any consumer that also HALTed on the same signature must be re-run same-day if its window is still recoverable.
+3. Record each consumer's disposition (re-ran clean / no HALT / window lost) in the incident's GG entry.
+
+This rule exists because skipping it permanently lost a betting day: `MLB_FEATURE_CSV_CONTRACT` gates both PIPE-06pre and PIPE-05/T1; GG-068's fix recovered only PIPE-06pre (the pipeline being debugged), PIPE-05's same-day HALT went unnoticed, and 2026-07-02's T1 MLB slate resolved with zero bets — irrecoverable (GG-072). A one-minute grep at fix time would have caught it.
+
+---
+
+## Hard rules (non-negotiable)
+
+1. `arb/` folder = REFERENCE ONLY. Do not incorporate until APR-0010.
+2. No real capital until G6 gate is formally cleared (ADR-0076 definition: per (book, sport) win at judged n, exposure gate enforcing, DS sign-off, operator-accepted limit table).
+3. ADRs are immutable once accepted. Changes require a superseding ADR.
+4. No automated retraining in production. Frozen model policy.
+5. Zero hardcoded secrets. Vault/env-var protocol only (NFR-05).
+6. Kill switch must halt all components within ≤60 seconds (NFR-03).
+7. Every strategic decision made in a session goes into DECISION_LOG.md immediately — not at session end.
+8. **When context reaches ~60%: stop implementation, run /session-end, produce SESSION_HANDOFF, commit and push.** Lowered from 80% on 2026-08-10 (T-434) — session-end is itself context-expensive, so an 80% trigger starts the close-out inside the compaction zone and produces a compact-every-two-minutes loop that can run an hour without finishing (observed on T-429, 2026-08-07). 60% leaves headroom for the protocol to complete in one pass. If you are past 60% when you read this, you are already late: stop and close out. **This rule governs WHEN close-out starts, not WHAT IT COSTS — those are separate variables (GG-182, 2026-08-15/T-452).** A 2026-08-14 session-end consumed 53% of context (40%→93%) and ran 52m41s by hand-rewriting multi-KB `DECISION_LOG.md` blocks via exact-match `Edit` instead of appending — the 60% trigger did not touch that failure mode because it isn't a timing problem. `.claude/commands/session-end.md` now states a hard budget (≤10% context, ≤10 minutes) at the top of the file, with a method ban on `Edit`-ing multi-KB blocks or `DECISION_LOG.md` (append-only via heredoc), a stop-not-retry rule on any failed exact-match `Edit`, and a truncation path for hitting budget mid-close-out. Read that file's budget section, not just this rule, before running `/session-end`.
+9. **Design throughput is hundreds of evaluation rows per game-day (MLB T4: 924 rows/game-day on 2026-07-02, 464 on 2026-07-03 — 5.75 and 3.67 bets/game respectively, GG-080/T-235, 2026-07-04, n=2 game-days), capital-ceiling agnostic, dynamically routed by model computation — not a small, discrete, pre-scheduled batch of bets per game night.** The prior "~8,600 slots/game" figure was a theoretical ceiling, superseded 2026-07-04 (GG-080) once real per-game-day data showed it has no clean empirical referent (`cycle_id` is a global counter shared across all concurrently-live games, not per-game) and that measured throughput runs 9-19x below it. Re-derive as more game-days accumulate — this is not yet a stable long-run estimate. The architectural point survives the correction: bet sizing, kill switches, and decision routing must still be designed per-cycle/per-bet, continuously evaluated as new state arrives, not as a batch of pre-scheduled discrete events — any implementation that only makes sense for a small, fixed count of bets decided once per game is architecturally wrong, even though the real count is far lower than the old theoretical figure. The model's computation determines which band a bet routes to — bands are not pre-decided time-horizon thresholds. Kill switches operate per bucket, approaching per bet.
+10. **Concurrent sessions must isolate, not just announce (GG-082 + GG-101).** For any work where another session may be active, launch an isolated `git worktree` via `scripts/new_session_worktree.sh` — a shared working tree lets one session's git op destroy another's uncommitted work, and SESSION_CLAIMS.md alone does not prevent that. Claim your task range atomically with `scripts/claim_session.sh` (Step 0). Before writing to any shared navigation file, diff it against `HEAD` or re-read it fresh — never trust a narrative already loaded in context as necessarily current. **In the shared `main` tree, commit only your own files path-scoped; never `git add -A` / `git commit -a` / unscoped `stash` / `reset --hard` / `checkout -- <foreign>` / `clean -fd`** — those can silently wipe a concurrent session's work.
+11. **One session = one deliverable, declared at claim time.** State the tier (MICRO/STANDARD) and the single deliverable in the claim row before starting work — not at close-out. **Register and stop on discovery:** a defect found outside the current task's scope gets a `GG-NNN`/`T-NNN` and nothing else. Do not fix it in-session. T-429 (2026-08-07) found and fixed 22 unrelated test failures mid-session — correct instinct, wrong session; it turned one task into three and produced an hour-long close-out. **If a task reads as bigger than one session, say so before starting and propose the split** — that is a valid and expected response to a task assignment, not a refusal.
+
+12. **Purpose before work; measured change after (operator, 2026-10-09: "If a terminal touches a task it better know what it's doing it for ... perfection isn't a dream, it's a protocol. I expect it.").** Every session, block, review and outside-model task names, before it starts, the distance-to-optimum measure (§ "What winning looks like") it is meant to move — or PLUMBING — and reports at close the measured change, with source. Claim strings carry it (`.claude/commands/session-start.md`), handoffs carry it (`gap_measure:` / `gap_delta:`), and the strategic window recomputes the distance table at every wave close.
+
+13. **Fix everywhere — the pattern sweep (ADR-0074, operator 2026-10-14).** A fix is not done when the reported instance is fixed. Search the repo for the same defect — `src/`, `scripts/`, `tests/`, `deploy/`, `.claude/`, and every doc that restates the command or rule (CLAUDE.md, commands, templates) — fix or register each other instance, and record it in the handoff's `pattern_sweep:` key (required after 2026-10-15T12:00Z; `n/a (no defect fixed)` when nothing was fixed). GG-122 → GG-144 (one broken grep fixed in the hook, left in Step 3 for 13 days) is why. GG-072's consumer rule is the special case of this one.
+14. **Every running piece is owned; surface grows only on green (ADR-0074).** Every cron line, service and workflow has an entry in `02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml` (purpose, pillar, what it writes, the alarm if it stops); CI fails otherwise (`scripts/runtime_registry.py add`, fill it in, `... render`). Every block reports `surface_delta:`. **No block adds a live component while the health signals are red** — healthcheck faults, a silent arm whose sport had games, a running-code SHA older than box HEAD for > 6 h on a file that service imports (W80P.1: one definition, `deploy_truth.unapplied_changes`, the restart policy's import set — an unrelated merge is not red) — unless the same wave fixes the red first. The map of what runs is `02_ARCHITECTURE_DESIGN/RUNTIME_MAP.md` (generated).
+15. **The strategic window is accountable (ADR-0074).** It logs its own mistakes in `04_EXECUTION/WINDOW_ERROR_LOG.md` the moment it learns of them, and every incoming window reads that log first. It searches memory, project docs and the repo before asking the operator anything. Every wave it writes carries a **Pushback** line (the strongest reason not to run it as planned), a **Surface** line (delta and current red signals) and a **Dependencies** line (no block's merge or input depends on another block of the same wave). It routes to the operator only pre-registration changes, frozen artifacts or books, real capital and open strategic questions — never plumbing, never a command to run.
+
+16. **Doctrine is one dated file, and stale doctrine is red (operator 2026-11-10 21:45 PT: "This CANNOT keep fucking happening").** The
+    binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`. Every file in its Doctrine stack carries a "Last reviewed" line; the session-
+    start scan (`scripts/doctrine_freshness.py`, run by `.claude/hooks/governance_scan.sh`) prints any older than 14 days as RED. The
+    strategic window reviews DOCTRINE.md at every wave close and before writing any block; a block that contradicts it is not sent. When
+    the operator states doctrine, the window writes it into DOCTRINE.md (and CLAUDE.md if it changes the rules) in the same turn - never
+    only into the decision log.

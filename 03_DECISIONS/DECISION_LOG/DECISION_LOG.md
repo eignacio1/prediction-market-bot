@@ -3429,6 +3429,21 @@ Effect: strategic-handoff step 6 - a repeated-directives ledger (04_EXECUTION/OP
 opens with the oldest not-built / contradicted directive and the block that moves it; a third raise of the same thing is a logged window
 error. The window builds the ledger before writing W111 (backlog).
 
+## 2026-11-10 22:28 PT — Operator: CLAUDE.md lean, and accurate at the moment it is read (SW-9)
+Verbatim (excerpt): "Claude.md is way too bloated - and there are still multiple things that are stale across the file ... if this file
+gets touched first ... then yes it needs to be fucking accurate to the exact state of the project AT THAT EXACT MOMENT. Does that mean it
+can't have archival pieces? Obviously not - those archival pieces could be core. But I want to reduce the bloat, optimize efficacy, and use
+this file to actually be helpful for us, not just a system state record."
+Effect: CLAUDE.md rewritten 81 KB -> ~22 KB. The old text archived verbatim (00_ADMIN/CLAUDE_MD_ARCHIVE_2026-11-11.md); hand-run MLB
+health probes moved to 04_EXECUTION/HEALTH_PROBES.md. New "Right now" section: a block generated from code (scripts/claude_md_now.py:
+registry by sport and status, non-shadow cells, Kelly per band, open GG count) that the session scan prints RED when it disagrees with
+the code or is >7 days old, plus window-maintained lines with their own date. Stale claims fixed: pot of gold is an arm now, built
+alongside the standard board (11-05), not a phase after it - DOCTRINE §6 corrected too; NBA props are built but not logging (install
+pending); MEMORY_BANK's state snapshot (10-09) is no longer cited as live state; Polymarket "activation gated on KYC" replaced by "no
+build work" (10-27); C3 "LR + Platt" replaced by per-sport engines + per-cell models. Section names other files cite are kept ("What
+winning looks like", "Distance to optimum", Steps 0-4, Q1-Q7, Hard Rules 1-16). Strategic-handoff step 7: the window regenerates the
+block at every wave close. Wave 110 verified closed (#473 #475 #476 #478 #479, main CI green); W111 not written, per the operator.
+
 ## 2026-11-11 15:52 PT — Wave 111 issued (four blocks, operator's ask); the repeated-directives ledger built (SW-9)
 Operator: "give me the next wave, 4 blocks." Wave 110 verified closed (#473 #475 #476 #478 #479, main CI green). Before writing it the
 window built 04_EXECUTION/OPERATOR_DIRECTIVES.md (strategic-handoff step 6): 23 directives the operator has given more than once, two of
