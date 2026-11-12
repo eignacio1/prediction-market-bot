@@ -90,17 +90,95 @@ def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str
     return out, None
 
 
+_NHL_ALIAS = {"LA": "LAK", "NJ": "NJD", "TB": "TBL", "SJ": "SJS"}  # Kalshi two-letter codes -> store abbreviations
+_NHL_MONTHS = {m: i for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split(), 1)}
+_NHL_STATE: dict = {}
+
+
+def nhl_store_dir() -> str:
+    import os
+    return os.environ.get("NHL_EVENT_STORE") or os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "exp_output", "NHL_EVENTS")
+
+
+def _nhl_state(store: str):
+    """Point-in-time state tables from the compiled NHL event store, built once per store directory (W113.1 Part B)."""
+    import glob
+    import os
+    import pandas as pd
+    from prediction_market_bot.nhl_engine import factors_w112 as fx
+    key = (os.path.abspath(store), max([os.path.getmtime(p) for p in glob.glob(store + "/*.parquet")] or [0]))
+    if _NHL_STATE.get("key") == key:
+        return _NHL_STATE["v"]
+
+    def load(kind):
+        ps = sorted(glob.glob(f"{store}/{kind}_202[56].parquet"))
+        return pd.concat([pd.read_parquet(p) for p in ps], ignore_index=True) if ps else None
+    g, ev, sh = load("games"), load("events"), load("shifts")
+    if g is None or ev is None or sh is None:
+        v = None
+    else:
+        g = g.drop_duplicates("game_id", keep="last")
+        look = {(r.game_date_et, r.away, r.home): int(r.game_id) for r in g.itertuples()}
+        v = {"fx": fx, "g": g.set_index("game_id"), "look": look, "sched": fx.schedule_context(g).set_index(["game_id", "team_id"]),
+             "q": fx.shot_quality_rolling(ev, g), "d": fx.deployment_rolling(sh, g)}
+    _NHL_STATE.clear()
+    _NHL_STATE.update(key=key, v=v)
+    return v
+
+
+def nhl_game_id(event_ticker: str, look: dict) -> Optional[int]:
+    import re
+    m = re.search(r"-(\d\d)([A-Z]{3})(\d\d)([A-Z]+)$", event_ticker or "")
+    if not m or m.group(2) not in _NHL_MONTHS:
+        return None
+    d, t = f"20{m.group(1)}-{_NHL_MONTHS[m.group(2)]:02d}-{m.group(3)}", m.group(4)
+    for k in range(2, len(t) - 1):
+        gid = look.get((d, _NHL_ALIAS.get(t[:k], t[:k]), _NHL_ALIAS.get(t[k:], t[k:])))
+        if gid:
+            return gid
+    return None
+
+
+def nhl_filters_for_row(row: dict, store: Optional[str] = None) -> Optional[dict]:
+    """The eight NHL filter leaves (nhl_engine.filters.nhl_filters) for a shadow row's game, from facts known before puck drop:
+    schedule context plus as-of rolling shot quality / deployment and league percentiles at the start time (factors_w112.asof
+    carries the point-in-time buffer). None when the game is not in the compiled store (the supply says why)."""
+    import pandas as pd
+    from prediction_market_bot.nhl_engine.filters import nhl_filters
+    st = _nhl_state(store or nhl_store_dir())
+    if st is None:
+        return None
+    gid = nhl_game_id(str(row.get("event_ticker") or ""), st["look"])
+    if gid is None:
+        return None
+    if gid in st.setdefault("memo", {}):  # one game, one answer: facts are fixed at puck drop
+        return st["memo"][gid]
+    fx, r = st["fx"], st["g"].loc[gid]
+    start = pd.Timestamp(r["start_time_utc"])
+
+    def pct(state, col):
+        vals = {t: fx.asof(state, int(t), start, (col,)).get(col) for t in state["team_id"].unique()}
+        ser = pd.Series({t: v for t, v in vals.items() if v is not None})
+        return ser.rank(pct=True, method="average").to_dict() if len(ser) >= 8 else {}
+    p = {"hd_for": pct(st["q"], "hd_for"), "hd_against": pct(st["q"], "hd_against"), "top_share": pct(st["d"], "top_share")}
+    sides = {}
+    for side, tid in (("home", r["home_team_id"]), ("away", r["away_team_id"])):
+        sd = st["sched"].loc[(gid, tid)].to_dict()
+        for k in ("hd_for", "hd_against", "top_share"):
+            sd[k] = p[k].get(tid)
+        sides[side] = sd
+    st["memo"][gid] = nhl_filters(sides["home"], sides["away"])
+    return st["memo"][gid]
+
+
 def nhl_adapter(row: dict) -> Tuple[Optional[dict], Optional[str]]:
-    """112.4's NHL filters, only if that module is merged; else the row says so."""
+    """NHL filters per row (W113.1 Part B): nhl_engine.filters.nhl_filters over the point-in-time store state."""
     try:
-        mod = importlib.import_module("prediction_market_bot.nhl_engine.filters")
+        out = nhl_filters_for_row(row)
     except ImportError:
-        return None, "filters_unavailable:nhl_engine.filters_not_merged"
-    fn = getattr(mod, "nhl_filters_for_row", None)
-    if fn is None:
-        return None, "filters_unavailable:nhl_filters_for_row_missing"
-    out = fn(row)
-    return (out, None) if out else (None, "filters_unavailable:nhl_no_inputs")
+        return None, "filters_unavailable:nhl_engine_not_importable"
+    return (out, None) if out else (None, "filters_unavailable:nhl_game_not_in_store")
 
 
 class FilterSupply:

@@ -112,8 +112,12 @@ def filter_layer_sports() -> set:
     if fsup.default_supply().nfl_providers is not None:
         out.add("nfl")
     try:
+        import glob
         import importlib
-        if hasattr(importlib.import_module("prediction_market_bot.nhl_engine.filters"), "nhl_filters_for_row"):
+        importlib.import_module("prediction_market_bot.nhl_engine.filters")
+        # W113.1: the per-row adapter is filter_supply.nhl_filters_for_row; it counts only where the compiled NHL event
+        # store is present (a box without the store supplies "nhl_game_not_in_store" and shows no layer-3 NHL).
+        if glob.glob(fsup.nhl_store_dir() + "/games_202[56].parquet"):
             out.add("nhl")
     except ImportError:
         pass
