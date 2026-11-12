@@ -95,3 +95,9 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
    "Window-maintained" lines below the block with today's date. The session scan prints RED when the generated part disagrees with the
    code or either part is over 7 days old. Keep CLAUDE.md lean: history goes to the archive (`00_ADMIN/CLAUDE_MD_ARCHIVE_*.md`) or its own
    file, never back into CLAUDE.md.
+8. MODEL TAG PER BLOCK (operator 2026-11-12 15:11 PT: "I naturally use sonnet as the max model anyway, I've found marginal value in
+   using Opus or god forbid Fable in the terminals"). Every block's row in the wave table and its first line carry `MODEL: Sonnet`
+   (the default - building, measuring, engines, trees) or `MODEL: Haiku` (mechanical: relabels, registry / ledger edits, merges, report
+   rewrites, box reads). Never Opus or Fable for a terminal block. Block size stays the operator's 2026-10-30 rule (three parts, ~130
+   minutes) - do not re-propose it as new. The operator keeps one long strategy window per scope, by choice (2026-11-12 15:11 PT):
+   do not suggest shorter windows to save tokens.

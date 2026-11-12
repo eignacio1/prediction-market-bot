@@ -200,3 +200,9 @@ no-closed-cells, depth-enhances-trees and no-"no edge" were each raised by him, 
 read doctrine forward; none kept a ledger of what he had already said and checked whether it was built. Rule: strategic-handoff step 6 -
 04_EXECUTION/OPERATOR_DIRECTIVES.md read at every wave close; each wave opens with the oldest not-built / contradicted directive; a
 third raise of the same thing is logged here that turn. The ledger is built before W111.
+
+### W55 - SW-9, 2026-11-12 15:11 PT - offered the operator's own block-size doctrine back to him as a new idea
+Asked how to stretch usage, the window suggested "fewer, bigger blocks" as if new; the operator set it on 2026-10-30 08:38 PT (three
+parts, ~130 minutes - quoted in every COMMON RULES since). Operator: "I thought we're already doing that, it was literally a doctrine
+that I made a few strategy windows ago." Same failure as W54 (repeated directives): check OPERATOR_DIRECTIVES / COMMON RULES before
+proposing. Fix: strategic-handoff step 8 names the rule; D-34 added to OPERATOR_DIRECTIVES.
