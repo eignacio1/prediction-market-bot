@@ -3491,3 +3491,10 @@ Open: `claude_md_now.py:36,42` and `web_dashboard.py:2240` still say "fade arm c
 | 2026-11-12 | B-081 | W112.1: filter splits enter the router as leaves; kept-split rule fixed a priori (not thin, arm != NO_BET, held-out games >= 10, held-out net > 0). 7 of 113 tested splits kept, all NBA, none BH-surviving: reported as likely chance-level, shadow arms only, orders untouched. NFL (no stored weather forecast/matchup book) and NHL (112.4 unmerged) log why filters are unavailable. PR #488 d536a9c. |
 
 | 2026-11-12 | B-083 | W112.3: operator authorized arm-driven demo orders (2026-11-11 16:51 PT "yes I approve"), then said "yes switch it" (2026-11-12) and accepted a local replay of 645 routed NBA rows in place of the box dry run. ARM_ORDERS=on merged as #492 (demo only, flat stake, kelly 0). The box is still DRY: untracked deploy/demo_fill.override.env (read last) holds ARM_ORDERS=dry; the delete over ssh was refused by the classifier and not worked around. No arm_order row exists yet. |
+
+## 2026-11-12 15:00 PT — Operator: last wave until Monday; "4 highly substantive blocks" (SW-9)
+Verbatim: "we're at 80% of my weekly limit, high chance this current session window is gonna be the last until it resets on Monday. Why
+don't you give me 4 highly substantive blocks instead of the ones you chose - unless you believe those are the most relevant now".
+Window's call: keep 113.1 (first cells wired end to end), 113.3 (NBA same-game joint) and 113.4 (the bot reads Muse); replace 113.2
+(doctrine leftovers - low live impact while MLB is idle; moved to W114, B-085) with NFL wired for Sunday's slate (B-089: weather forecast,
+MatchupBook, the NFL granularity index as tree splits). Every block runs to merge with no window or operator touch.

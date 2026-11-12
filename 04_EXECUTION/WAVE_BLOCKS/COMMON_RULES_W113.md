@@ -10,7 +10,7 @@ COMMON RULES - WAVE 113 (D6: FIRST CELLS WIRED END TO END; THE DOCTRINE LEFTOVER
   NBA cells (NFL and NHL 0), layer 5 on NFL 9 / NBA 7 / NHL 7, layer 6 BUILT (arm_sizing.size_for) but no routed row carries a size
   decision, layer 7 BUILT and switched ON in the repo (#492) while the box ran DRY on an untracked override (the window clears it with
   the allowlisted demo_fill_rearm task). D6 wired = 0 of 117. 113.1 trees / execution = the first cells wired end to end (B-084);
-  113.2 window lane = the doctrine leftovers in code - the orchestrator's arm choice, Brier-only scorers, edge-map rows (B-085); 113.3
+  113.2 NFL = wired for Sunday: weather forecast store, MatchupBook, the NFL granularity index as tree splits (B-089; revised 2026-11-12 15:00 PT, operator: "4 highly substantive blocks" - the doctrine leftovers B-085 move to W114); 113.3
   engine = the NBA joint priced right for same-player and teammate legs (same-game parlays, the pot-of-gold arm) (B-086); 113.4 data =
   the bot reads Muse's archive, read-only, and grades it VERIFIED by recompute (B-087). Do not edit ROLLING_BACKLOG.json.
 - A LOSING LOOK CLOSES ONLY THAT TEST (operator 2026-11-11 16:51 PT, binding; DOCTRINE 1b): "a cell being closed isn't just closing the
@@ -185,10 +185,10 @@ COMMON RULES - WAVE 113 (D6: FIRST CELLS WIRED END TO END; THE DOCTRINE LEFTOVER
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
 - Four blocks run in parallel. File ownership: 113.1 = src/prediction_market_bot/decision_trees/ (arm_orders.py, filter_supply.py,
-  coverage.py, router.py, shadow_route.py, leaf_map.py), src/prediction_market_bot/c5_execution/shadow_flat_stake.py, the NFL weather-
-  forecast store and MatchupBook provider (new files), scripts/claude_md_now.py (its RULED_OUT label). 113.2 = src/prediction_market_bot/
-  execution_bands_orchestrator.py, 12_EXPLORATORY/market_history/score_vs_market.py, src/prediction_market_bot/nhl_engine/run_w84_3.py,
-  scripts/edge_map* and their tests, 04_EXECUTION/DOCTRINE_CONFORMANCE.md, 04_EXECUTION/OPERATOR_DIRECTIVES.md. 113.3 = the NBA engine's
+  coverage.py, router.py, shadow_route.py, leaf_map.py), src/prediction_market_bot/c5_execution/shadow_flat_stake.py, scripts/claude_md_now.py (its RULED_OUT label). 113.2 = the NFL adapter function inside
+  decision_trees/filter_supply.py (113.1 owns the rest of that file and the other decision_trees files), NEW NFL weather-forecast store
+  and MatchupBook provider, NEW NFL granularity-index modules under the NFL engine package, 02_ARCHITECTURE_DESIGN/SEATS/nfl.toml,
+  12_EXPLORATORY/granularity_index_nfl/. 113.3 = the NBA engine's
   simulation / joint modules under src/prediction_market_bot/nba_engine/ (not the 111.4 index files), 12_EXPLORATORY/sgp_correlation/.
   113.4 = NEW src/prediction_market_bot/archive_intake/, 12_EXPLORATORY/archive_intake/, and NEW NBA index entries it adds through
   111.4's index API (no edits to the 111.4 modules). c4_risk_engine/arm_sizing.py is read by 113.1, edited by no one. WINDOW PRs: any PR

@@ -65,16 +65,17 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 **Every part runs on data that exists when you paste it. CI is the gate for code only. The build continues on every lane (operator 11-09 21:29 PT).**
 
+**REVISED 2026-11-12 15:00 PT (operator: "4 highly substantive blocks"; likely the last wave until his limit resets Monday 11-16).** 113.2 is now NFL wired for Sunday's slate (the granularity examples he gave - loaded vs light box - as tree splits); the doctrine leftovers move to W114: their live impact is low (the orchestrator's arm choice runs only on the idle MLB path; the two scorers are research scripts). Every block runs to merge with no window or operator touch.
+
 **THE SCOPE IS D6.** After Wave 112: layer 3 on 9 NBA cells (NFL, NHL 0) · layer 5 on NFL 9 / NBA 7 / NHL 7 · layer 6 built, no row
 sized by it · layer 7 built and ON in the repo, the box DRY on an untracked override (the window is clearing it with the allowlisted
 `demo_fill_rearm` task under the 16:51 PT authorization) · **wired 0 of 117.** 113.1 **trees / execution** = B-084 the first cells wired
-end to end · 113.2 **window lane** = B-085 the doctrine leftovers in code · 113.3 **engine** = B-086 the NBA joint for same-game legs (the
+end to end · 113.2 **NFL** = B-089 NFL wired for Sunday: weather forecast, MatchupBook and the NFL granularity index as tree splits · 113.3 **engine** = B-086 the NBA joint for same-game legs (the
 pot-of-gold arm) · 113.4 **data** = B-087 the bot reads Muse, read-only, grades it.
 
-**OPENS WITH (OPERATOR_DIRECTIVES):** D-04, still CONTRADICTED in three code paths found by the 111.2 audit — the orchestrator picks the
-arm from the model's edge (`execution_bands_orchestrator.py:108,180`) and two scorers judge factors only as Brier vs the market → **113.2**.
-Then D-01 (the multi-arm tree end to end, D6 = 0) → **113.1**; D-08 (pot of gold routed in) → **113.3**; D-06 (granularity, and the
-archive Muse fills every day that no code reads) → **113.4**.
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-04 is still CONTRADICTED in three code paths (the orchestrator's arm choice; two Brier-only scorers)
+- deferred to **W114** with the reason above (low live impact while MLB is idle). Then D-01 (the multi-arm tree end to end, D6 = 0) → **113.1**; D-08 (pot of gold routed in) → **113.3**; D-06 (granularity, and the
+archive Muse fills every day that no code reads) → **113.4**; D-06 for NFL ("what if a team ranks #2 in the league in success rate when using a loaded box ... but drop to #26 ... when using a light box", 10-16) → **113.2**.
 
 **DOCTRINE CHECK (W48), Wave 112 close.** *Premise:* "layers built separately add up to a wired cell". 112 built layers 3, 6 and 7 as
 separate pieces; none is joined to the next (the order path sizes itself, coverage.py counts no size decision, NFL / NHL hand the
@@ -90,8 +91,8 @@ router no filters), so D6 did not move. *Said but not built:* "wired execution" 
 
 | # | Lane | Block | Status | Outcome |
 |---|---|---|---|---|
-| 113.1 | trees · 3 | First cells wired end to end: size_for in the order path, NHL / NFL filters supplied, layers 6 / 7 counted, D6 recounted | ⬜ | |
-| 113.2 | window · 3 | Doctrine leftovers in code: orchestrator arm choice → router; Brier-only scorers → per-leaf per arm; edge-map rows | ⬜ | |
+| 113.1 | trees · 3 | First cells wired end to end (NBA, NHL): size_for in the order path, NHL filters supplied, layers 6 / 7 counted, D6 recounted | ⬜ | |
+| 113.2 | NFL · 3 | NFL wired for Sunday: weather forecast store, MatchupBook, the NFL granularity index (box count, personnel, coverage) as tree splits, per leaf per arm | ⬜ | |
 | 113.3 | engine · 3 | NBA joint: shared minutes / usage / pace latent so same-player and teammate legs price right; parlay pot-of-gold branch | ⬜ | |
 | 113.4 | data · 3 | The bot reads Muse's archive (pinned, read-only), grades it by recompute, turns VERIFIED tables into index entries | ⬜ | |
 
@@ -114,10 +115,9 @@ PART A (~45 min) - size every arm order through the sizing rule (layer 6 into la
    every arm order AND every routed shadow row, so layer 6 has evidence per row. Tests: a correlated second leg is capped; Kelly stays 0.
 2. scripts/claude_md_now.py: its RULED_OUT label reads "untradeable (no book / data)", not "fade arm closed" (112.2 directive_conflicts).
 
-PART B (~45 min) - filters for NHL and NFL (layer 3)
-1. filter_supply.py: NHL calls nhl_engine's nhl_filters_for_row (#489) point-in-time. NFL: the two gaps 112.1 logged - store the weather
-   FORECAST known before kickoff (free source, timestamped), and a MatchupBook provider from the 110.1 matchup crosses. Kept splits only
-   where tested per leaf; replay 14 days per sport: decisions per arm before vs after.
+PART B (~45 min) - filters for NHL (layer 3); NFL is 113.2's
+1. filter_supply.py: the NHL adapter calls nhl_engine's nhl_filters_for_row (#489) point-in-time. Kept splits only where tested per leaf;
+   replay 14 days for NBA and NHL: decisions per arm before vs after. Leave the NFL adapter function to 113.2 (it owns it this wave).
 
 PART C (~40 min) - count it
 1. coverage.py: layer 6 evidenced when a cell's routed rows carry a size_for decision; layer 7 when its arm orders placed in the current
@@ -130,37 +130,46 @@ Report: per COMMON RULES. MEASURE MOVED: D6 wired 0 -> N; layer 3 cells NFL / NH
 END OF BLOCK 113.1
 ```
 
-### 113.2 - WINDOW LANE (THE DOCTRINE LEFTOVERS IN CODE)
+### 113.2 - NFL (WIRED FOR SUNDAY; THE NFL GRANULARITY INDEX AS TREE SPLITS)
 
 ```
-WAVE 113 - BLOCK 113.2 - WINDOW LANE - THE DOCTRINE LEFTOVERS IN CODE: THE ROUTER, NOT THE MODEL'S EDGE, PICKS THE ARM (B-085)
+WAVE 113 - BLOCK 113.2 - NFL - NFL WIRED FOR SUNDAY: WEATHER FORECAST, MATCHUPBOOK AND THE NFL GRANULARITY INDEX AS TREE SPLITS (B-089)
 
 FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W113.md` and quote its first line. Those rules
 bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W113_2.md. Every part runs on data that exists now.
 
-PURPOSE: OPERATOR_DIRECTIVES D-04, CONTRADICTED in code. Operator 2026-11-10 21:35 PT: depth is "meant to ENHANCE OUR DECISION TREES WHICH
-COULD VERY WELL MEAN RIDE THE WAVE"; DOCTRINE section 1: the engine's price is one input to the tree, never the bet. The 111.2 audit
-(04_EXECUTION/DOCTRINE_CONFORMANCE.md) left these open: execution_bands_orchestrator.py:108 and :180 (the model's edge, not the tree,
-picks the arm), 12_EXPLORATORY/market_history/score_vs_market.py:69 and nhl_engine/run_w84_3.py:6 (a factor judged only by Brier vs the
-market), and edge-map rows E01 / E09 / E10 / E14 (no per-leaf arm scoring).
+PURPOSE: NFL has 13 routed cells and layer 5 on 9 of them, but layer 3 is 0: 112.1 logged `nfl_weather_forecast_and_matchup_book_not_wired`.
+Sunday 11-15 is a full slate, and arm orders are ON (since 2026-11-12 06:43Z), so every NFL row this weekend should carry its splits.
+OPERATOR_DIRECTIVES D-06, the operator 2026-10-16: "What if a team ranks #2 in the league in success rate when using a loaded box (8
+defenders or more) against the run but drop to #26 in the league when using a light box against the run - but their opponent ... #14
+in the league when faced with a light box BUT get tackled behind the line of scrimmage on 75% of their runs. How would bets get placed
+pre-game?" and 10-14: "what teams run the most cover 6 against 3 wide out sets that's motioned to the boundary, matched with volume and
+success rate". His examples are illustrations, not specs (W17): build the MACHINERY for questions of that shape. GRANULARITY_INDEX.md:
+the split, the rank vs history at the same point in a season (with stability), the matchup cross, the market map, the application.
 
-PART A (~45 min) - the orchestrator defers to the router
-1. execution_bands_orchestrator.py: where it chooses an arm or side from model_p vs price, take the router's decision (decision_trees/
-   router.py) and keep the model edge only as the FADE arm's entry input and as a logged field. Behaviour for paths with no router decision
-   (MLB T4M-PROJ, idle) is unchanged and says so. Tests: a routed RIDE row is not overridden by a negative model edge.
+PART A (~45 min) - the two missing feeds, point-in-time
+1. The weather FORECAST known before kickoff (free source, timestamped at capture; the 110.1 weather filter used realised weather): store
+   it per game, backfill what the free source keeps, and say how far back it goes. A MatchupBook provider built from 110.1's matchup
+   crosses so the router gets them per row. The NFL adapter function in decision_trees/filter_supply.py is yours this wave (113.1 owns the
+   NBA / NHL adapters in the same file - keep your edit inside the NFL function; whoever merges second rebases).
 
-PART B (~45 min) - the scorers score per leaf, per arm
-1. score_vs_market.py and nhl_engine/run_w84_3.py: report per leaf, held out, net after costs per arm (RIDE / FADE / MOMENTUM / POT OF GOLD /
-   NO BET) using retro_route's method; Brier vs the market only as a last, labelled line. Edge-map rows E01 / E09 / E10 / E14 re-scored the
-   same way (scripts/edge_map*). No pattern is written up as "no edge"; a leaf that routes to no bet says so.
+PART B (~50 min) - the NFL granularity index, the machinery once
+1. From nflverse play-by-play + its free participation fields (check what is free and for which seasons: defenders in the box, offence
+   personnel and formation, defence personnel, coverage type, motion; anything only a paid source has is a registered gap): a generic
+   split = (metric, situation filter, unit: team offence / defence / player), value point-in-time, rank vs every team-season at the same
+   week, split-half stability, and the matchup cross (both sides, how often the situation occurs). Reuse 111.4's NBA machinery's design.
+2. About 20 entries chosen by the market they map to (game total, spread, team total; pass / rush yards props where KXNFL series exist):
+   run success vs loaded and light boxes, run stuff rate, pass success vs coverage families, personnel-group tendencies, red-zone / third-
+   down splits. Write them into 12_EXPLORATORY/granularity_index_nfl/ with all five parts filled except application.
 
-PART C (~30 min) - the ledgers
-1. DOCTRINE_CONFORMANCE.md: mark each row fixed with the commit; re-run the audit's grep for new decision points since 111.2. Update
-   OPERATOR_DIRECTIVES.md (you own it this wave): D-03 BUILT (#487), D-22 BUILT (#480), D-04 to its new state; list what is still
-   CONTRADICTED / NOT BUILT and its owner. PR; merge on green.
+PART C (~45 min) - applied: splits in the tree, live by Sunday
+1. Export each as a filter through the NFL adapter; score per leaf against the 2026 NFL shadow rows' Kalshi prices (held out, net after
+   costs per arm: RIDE / FADE / MOMENTUM / POT OF GOLD / NO BET, intervals and n) - especially inside the RIDE NFL moneyline family lead
+   (W110.5: +0.134 [+0.017, +0.236]). Keep a split only where tested; update SEATS/nfl.toml stages. PR; merge on green; confirm on the
+   box (deploy_truth_read) that Sunday's NFL shadow rows will carry filters (a dry call of the adapter on this week's games).
 
-Report: per COMMON RULES. MEASURE MOVED: D-04 CONTRADICTED -> (state); decision points contradicting DOCTRINE N -> M. PLUMBING for the
-pillars. Operator decisions: none.
+Report: per COMMON RULES. MEASURE MOVED: D6 layer 3 NFL 0 -> N cells; NFL index entries 0 -> N with all five parts; D5(b) NFL applied
+12 -> N of 21; D1 NFL. Operator decisions: none.
 END OF BLOCK 113.2
 ```
 
