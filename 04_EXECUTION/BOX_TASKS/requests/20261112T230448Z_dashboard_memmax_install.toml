@@ -1,0 +1,2 @@
+task = "dashboard_memmax_install"
+note = "Operator approved 2026-11-12 15:04 PT (Yes I approve). Raise dashboard MemoryMax to 384M."

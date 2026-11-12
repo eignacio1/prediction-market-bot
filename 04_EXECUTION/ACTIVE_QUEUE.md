@@ -84,8 +84,7 @@ router no filters), so D6 did not move. *Said but not built:* "wired execution" 
 - **Pushback:** wiring the first NBA cells end to end will put real demo orders on leaves that have not earned an arm on held-out games
   (112.1's 7 kept splits are chance-level). The order count and the per-arm P&L will be small and noisy for weeks; the frozen leaf-map
   forward test, not this wave, says which leaves earn an arm.
-- **Surface:** box GREEN at 06:07Z (deploy truth OK, dashboard on box HEAD). Waiting on you: `nba_engine_props_shadow_install`,
-  `dashboard_memmax_install`. Delta: 0 installs, 0 crons; 113.4 adds no scheduled job (reads on demand).
+- **Surface:** box GREEN at 06:07Z (deploy truth OK, dashboard on box HEAD). Installs approved 11-12 15:04 PT (NBA props shadow, dashboard memory); run by the window. Delta: 0 installs, 0 crons; 113.4 adds no scheduled job (reads on demand).
 - **Dependencies:** none blocking. 113.1 reads `arm_sizing.size_for` as merged (#487); 113.3 and 113.4 write new modules only; 113.2
   owns its files alone.
 
@@ -575,12 +574,15 @@ What should reorder this, and what should stop it:
 > paper box - the 22 NBA / NHL / NFL prop series of #456).** Run by the window, ride board first (it clears the budget red), then the archive,
 > each with its readback and a budget read. **DONE:** ride board installed 2026-11-11 00:35Z (`20261111T003450Z_*`), prop archive 3 lines / 22 series installed 00:45Z (`20261111T004500Z_*`); SURFACE BUDGET GREEN, 93 live, healthcheck HEALTHY. (The two installs blocked each other under Hard Rule 14 - each exempts only its own reds - so the window paused the archive entries for the ride-board step and restored them for theirs.)
 
+> **AUTHORIZATION - NBA PROPS SHADOW + DASHBOARD MEMORY (operator, 2026-11-12 15:04 PT: "Yes IO approve", answering the window's
+> message naming `nba_engine_props_shadow_install` and `dashboard_memmax_install`).** Run by the window with readbacks and a budget read.
+
 **OPEN - waiting on you (not an authorization until you answer):**
 1. **EXP-038 second-look definition (GG-529, DRAFT by 102.2):** `03_DECISIONS/EXP038_ADDENDUM_2026-11-05_second-look-definition-DRAFT.md`;
    due before January. Accept, or tell me what to change.
-2. **`nba_engine_props_shadow_install`** (109.3, EXP-047: 9 NBA prop SHADOW cells - points, rebounds, assists, threes - one cron line,
+2. ~~**`nba_engine_props_shadow_install`**~~ APPROVED 11-12 15:04 PT (109.3, EXP-047: 9 NBA prop SHADOW cells - points, rebounds, assists, threes - one cron line,
    evaluate-and-log, no orders). Approve with: "I approve the box-task request that runs nba_engine_props_shadow_install, which adds a crontab line on the paper box."
-3. **`dashboard_memmax_install`** (109.5: the dashboard service hit its 128 MB cap 5,082 times; raises it to 384 MB). Approve with:
+3. ~~**`dashboard_memmax_install`**~~ APPROVED 11-12 15:04 PT (109.5: the dashboard service hit its 128 MB cap 5,082 times; raises it to 384 MB). Approve with:
    "I approve the box-task request that runs dashboard_memmax_install, which changes the dashboard service's memory limit on the paper box."
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
