@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "SW-9: confirm the dashboard restarted on #491 (Live Terminal arms / D6)"

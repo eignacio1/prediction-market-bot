@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 112 READY TO PASTE - four blocks in NOW: the three missing D6 layers (112.1 filters as splits, 112.2 sizing per arm + closed hypotheses, 112.3 the router's arm drives the demo orders - AUTHORIZED 11-11 16:51 PT) and 112.4 NHL depth.** Scope re-cut around D6 (cells wired through all seven layers). Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft. **Window PR to merge:** #491 (Live Terminal: router arms, D6, arm orders; CI green) - any terminal, or the first block of Wave 113.
+> **▶ WAVE 112 READY TO PASTE - four blocks in NOW: the three missing D6 layers (112.1 filters as splits, 112.2 sizing per arm + closed hypotheses, 112.3 the router's arm drives the demo orders - AUTHORIZED 11-11 16:51 PT) and 112.4 NHL depth.** Scope re-cut around D6 (cells wired through all seven layers). Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** `nba_engine_props_shadow_install`, `dashboard_memmax_install`; EXP-038 second-look draft. PR #491 (Live Terminal: router arms, D6, arm orders) merged 11-12 05:59Z.
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
