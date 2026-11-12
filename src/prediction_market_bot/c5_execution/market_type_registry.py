@@ -502,8 +502,8 @@ BANDS_WITH_FORMULA_ASSERTIONS: frozenset[ExecutionBand] = frozenset({
 })
 
 
-# W111.1 (ADR-0077; ADR-0078; operator 2026-11-10 22:03 / 22:10 PT): per-arm state. A losing look closes one ARM of a
-# cell (the FADE, model-disagreement entry), not the cell. Arm names are the decision_trees.router constants (kept as
+# W111.1 (ADR-0077; ADR-0078): per-arm names. W112.2 SUPERSEDES the per-arm closure: a losing look closes a HYPOTHESIS
+# (ClosedHypothesis below), never an arm; ClosedArm is kept only so old callers import. Arm names are the decision_trees.router constants (kept as
 # literals here so c5_execution does not import the decision-tree package).
 ARM_FADE = "FADE"
 KNOWN_ARMS = frozenset({"RIDE", "FADE", "MOMENTUM_FOLLOW", "MOMENTUM_FADE", "POT_OF_GOLD", "NO_BET"})
@@ -522,6 +522,30 @@ class ClosedArm:
             raise ValueError(f"unknown arm {self.arm!r}; expected one of {sorted(KNOWN_ARMS)}")
         if not self.reason or not self.citing_decision:
             raise ValueError("a closed arm requires a reason and a citing_decision")
+
+
+@dataclass(frozen=True)
+class ClosedHypothesis:
+    """One TEST that lost a look, parked for R&D (W112.2; operator 2026-11-11 16:51 PT: "a cell closing shouldn't mean
+    anything is being closed but a test"). It closes no arm, no cell and no market: every arm stays open to a NEW
+    hypothesis. `revisit` is the operator's call, never a window's or a block's."""
+    exp_id: str
+    model: str
+    comparison: str
+    look: str
+    frozen_label: str
+    measured_date: date
+    citing_decision: str
+    revisit: str = "R&D (operator call)"
+
+    def __post_init__(self) -> None:
+        for f in ("exp_id", "model", "comparison", "look", "frozen_label", "citing_decision", "revisit"):
+            if not getattr(self, f):
+                raise ValueError(f"a closed hypothesis requires {f}")
+
+    @property
+    def text(self) -> str:
+        return f"hypothesis closed ({self.exp_id}, parked for R&D)"
 
 
 @dataclass(frozen=True)
@@ -555,7 +579,8 @@ class MarketTypeCell:
     measured_date: Optional[date] = None
     notes: Optional[str] = None
     citing_decision: Optional[str] = None
-    closed_arms: tuple[ClosedArm, ...] = ()      # W111.1: per-arm state; default () keeps every existing caller unchanged
+    closed_arms: tuple[ClosedArm, ...] = ()      # W111.1 legacy field; W112.2: no registry cell sets it (a look closes a hypothesis)
+    closed_hypotheses: tuple[ClosedHypothesis, ...] = ()   # W112.2: tests parked for R&D; closes no arm
 
     def __post_init__(self) -> None:
         if self.status is CellStatus.RULED_OUT:
@@ -598,6 +623,10 @@ class MarketTypeCell:
 
     def arm_is_closed(self, arm: str) -> bool:
         return any(c.arm == arm for c in self.closed_arms)
+
+    @property
+    def closed_hypothesis_ids(self) -> tuple[str, ...]:
+        return tuple(h.exp_id for h in self.closed_hypotheses)
 
     @property
     def closed_arm_names(self) -> tuple[str, ...]:
@@ -910,6 +939,7 @@ def promote_cell_status(
     reason: Optional[str] = None,
     measured_date: Optional[date] = None,
     closed_arms: Optional[tuple[ClosedArm, ...]] = None,
+    closed_hypotheses: Optional[tuple[ClosedHypothesis, ...]] = None,
 ) -> MarketTypeCell:
     """
     Mutate MARKET_TYPE_REGISTRY in place, replacing the cell at (market_type,
@@ -945,6 +975,8 @@ def promote_cell_status(
         reason=reason if reason is not None else current.reason,
         measured_date=measured_date if measured_date is not None else current.measured_date,
         closed_arms=tuple(closed_arms) if closed_arms is not None else current.closed_arms,
+        closed_hypotheses=(tuple(closed_hypotheses) if closed_hypotheses is not None
+                           else current.closed_hypotheses),
     )
     MARKET_TYPE_REGISTRY[key] = new_cell
     return new_cell
@@ -969,30 +1001,36 @@ _EXP037_NFL_SHADOW_CELLS: tuple[tuple[MarketType, ExecutionBand], ...] = tuple(
 for _mt, _bd in _EXP037_NFL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-037")
 
-# --- EXP-037 first look (W99.2, B-034; re-read W111.1, B-076): the two losing looks, read as ROUTING (ADR-0077). ---
+# --- EXP-037 first look (W99.2, B-034; re-read W111.1, B-076; restated W112.2, B-082): two losing looks, read as ROUTING. ---
 # Source: 12_EXPLORATORY/nfl_first_look/results_W98_2.md (engine file engine_20261102T135056Z.json, 60 settled
-# games per cell). The pre-registered label stays RULED_OUT in the engine output (frozen). In this registry the
-# losing look closes ONE ARM, FADE (model-disagreement entry); the cell is SHADOW and keeps logging; ride /
-# momentum / pot of gold / no bet stay open (operator 2026-11-10 21:41, 22:03, 22:10 PT; ADR-0077; DOCTRINE 1b).
-# Provisional: the operator reopens it. The other ten NFL cells KEEP ACCRUING to the second look.
+# games per cell). The pre-registered label stays RULED_OUT in the engine output (frozen, unchanged). In this
+# registry the losing look closes ONE HYPOTHESIS (the model's probability against the market's, as a Brier test), parked
+# for R&D. No arm is closed: ride / fade / momentum / pot of gold / no bet stay open to a NEW hypothesis, and the cell
+# is SHADOW and keeps logging (operator 2026-11-10 21:41, 22:03, 22:10 PT and 2026-11-11 16:51 PT; DOCTRINE 1b).
+# The other ten NFL cells KEEP ACCRUING to the second look.
 _EXP037_NFL_FIRST_LOOK_MEASURED = date(2026, 11, 2)
 _W111_1_CITATION = "ADR-0077 + ADR-0078 + DECISION_LOG 2026-11-10 22:03 / 22:10 PT (supersedes W99.2 RULED_OUT)"
+_W112_2_CITATION = _W111_1_CITATION + " + DECISION_LOG 2026-11-11 16:51 PT (a losing look closes a hypothesis, not an arm)"
 for _bd, _delta, _ci in (
     (ExecutionBand.T1_MULTI_DAY, "-0.0161", "[-0.0294, -0.0027]"),
     (ExecutionBand.T2_SAME_DAY, "-0.0157", "[-0.0299, -0.0011]"),
 ):
     promote_cell_status(
         MarketType.NFL_GAME_TOTAL, _bd, CellStatus.SHADOW,
-        superseding_reference=_W111_1_CITATION,
+        superseding_reference=_W112_2_CITATION,
         reason=(f"EXP-037 first look, n=60 settled games: delta Brier vs market {_delta} {_ci} "
-                f"(game-cluster 95% CI upper bound < 0); rule 5.1. Routing result (ADR-0077): fade arm closed; "
-                f"ride / momentum / pot of gold / no bet stay open; cell keeps logging"),
+                f"(game-cluster 95% CI upper bound < 0); rule 5.1. Hypothesis closed (EXP-037, parked for R&D); "
+                f"every arm stays open; cell keeps logging"),
         measured_date=_EXP037_NFL_FIRST_LOOK_MEASURED,
-        closed_arms=(ClosedArm(
-            arm=ARM_FADE,
-            reason=f"EXP-037 first look n=60: delta Brier vs market {_delta} {_ci}; model-disagreement entry loses to the market here",
+        closed_arms=(),
+        closed_hypotheses=(ClosedHypothesis(
+            exp_id="EXP-037",
+            model="NFL engine probability for game total (pre-game, this band)",
+            comparison=f"Brier of the model vs Brier of the market mid; delta {_delta} {_ci}, n=60 settled games",
+            look="EXP-037 first look (W98.2 results, engine_20261102T135056Z), rule 5.1",
+            frozen_label="RULED_OUT",
             measured_date=_EXP037_NFL_FIRST_LOOK_MEASURED,
-            citing_decision=_W111_1_CITATION),),
+            citing_decision=_W112_2_CITATION),),
     )
 
 

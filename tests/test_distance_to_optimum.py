@@ -272,13 +272,13 @@ def test_b1_counts_ruled_out_but_logging_arms(tmp_path):
     assert m["B3"]["value"].startswith("2 of 5")
 
 
-def test_p2_reads_verdicts_routed_with_closed_arms_not_closed_cells(tmp_path):
+def test_p2_reads_verdicts_routed_with_closed_hypotheses_not_closed_arms(tmp_path):
     (tmp_path / "exp_output/CALIBRATION").mkdir(parents=True)
-    cells = [{"cell": "a", "release": True, "verdict": {"verdict": "RULED_OUT", "routing": {"closed_arms": ["FADE"]}},
+    cells = [{"cell": "a", "release": True, "verdict": {"verdict": "RULED_OUT", "routing": {"closed_arms": [], "closed_hypotheses": ["EXP-037"]}},
               "projection": {"date": "2026-11-02"}}]
     (tmp_path / "exp_output/CALIBRATION/engine_1.json").write_text(json.dumps({"generated": "2026-11-12T00:00:00Z", "cells": cells}))
     v = by_id(d.proof(tmp_path))["P2"]["value"]
-    assert v.startswith("1 verdicts, routed (1 closed arms")
+    assert v.startswith("1 verdicts, routed (1 closed hypotheses, 0 closed arms")
 
 
 def test_b1_counts_the_two_nfl_game_total_cells_as_logging():

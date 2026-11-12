@@ -389,14 +389,14 @@ def proof(repo: Path) -> list[dict]:
     scored = [c for c in cells if c.get("release") and c.get("verdict")]
     verdicts = [c for c in cells if c.get("verdict")]
     p1 = m_ok("P1", f"{len(scored)} / {len(cells)}", s, as_of, note="cells released at a scored look / cells the engine tracks")
-    def _arms(v) -> int:   # engine files carry a dict; older/flattened ones a bare label string
+    def _hyp(v) -> int:   # engine files carry a dict; older/flattened ones a bare label string. W112.2: a losing look closes a hypothesis, no arm
         label = v.get("verdict") if isinstance(v, dict) else v
         routing = (v.get("routing") if isinstance(v, dict) else None) or {}
-        return len(routing.get("closed_arms", ["FADE"] if label == "RULED_OUT" else []))
-    closed_arms = sum(_arms(c["verdict"]) for c in verdicts)
+        return len(routing.get("closed_hypotheses", ["EXP"] if label == "RULED_OUT" else []))
+    closed_hyp = sum(_hyp(c["verdict"]) for c in verdicts)
     closed_cells = registry_closed_cells(repo)
-    p2 = m_ok("P2", f"{len(verdicts)} verdicts, routed ({closed_arms} closed arms, {closed_cells if closed_cells is not None else '?'} closed cells)", s, as_of,
-              note="W111.1 (ADR-0077/0078): a losing look closes the FADE arm only; the cell stays SHADOW and keeps logging; the frozen label is unchanged")
+    p2 = m_ok("P2", f"{len(verdicts)} verdicts, routed ({closed_hyp} closed hypotheses, 0 closed arms, {closed_cells if closed_cells is not None else '?'} closed cells)", s, as_of,
+              note="W112.2 (ADR-0077/0078; DOCTRINE 1b): a losing look closes that hypothesis (parked for R&D) and no arm; the cell stays SHADOW and keeps logging; the frozen label is unchanged")
     dates = sorted((c["projection"]["date"], c["cell"]) for c in cells if (c.get("projection") or {}).get("date"))
     if not dates:
         return [p1, p2, m_na("P3", "engine projects no first-look date", s)]

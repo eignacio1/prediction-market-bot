@@ -233,10 +233,10 @@ def engine_rows(blob: dict, today: date, modal_nfl: str) -> list[dict]:
         if c.get("verdict") == "RULED_OUT" or str(c.get("status_text", "")).upper().startswith("RULED_OUT"):
             out.append({"id": c["cell"], "tests": f"{c['sport']} {c['market_type']} {c['band']} vs market",
                         "rows": f"{c['rows']} rows / {c['judged_n']} judged", "rate": "closed", "judged_n": "closed",
-                        "second": "none (look read)", "proj": "FADE ARM CLOSED (routed)", "modal": "verdict issued, routed",
-                        "note": "fade arm closed; ride / momentum / pot of gold / no bet open; cell stays SHADOW and keeps logging (ADR-0077/0078)",
+                        "second": "none (look read)", "proj": "HYPOTHESIS CLOSED (routed)", "modal": "verdict issued, routed",
+                        "note": "hypothesis closed (EXP-037, parked for R&D); every arm open; cell stays SHADOW and keeps logging (ADR-0077/0078)",
                         "sport": c["sport"], "family": c["market_type"], "band": c["band"], "rows_n": c.get("rows"),
-                        "settled_games": c.get("settled_games"), "first_look": None, "second_state": "look read; fade arm closed (routed)"})
+                        "settled_games": c.get("settled_games"), "first_look": None, "second_state": "look read; routed: hypothesis closed (parked for R&D)"})
             continue
         looks = c.get("looks") or []
         need = (c.get("first_look_n") or 0) - (c.get("judged_n") or 0)
@@ -282,7 +282,7 @@ def render(blob: dict, repo: Path, today: date | None = None) -> str:
          "windows (zero accrual outside them); interval = 10th-90th percentile of a Gamma(k+0.5, active_days) posterior "
          "on that rate. Applies when the last 14 days are representative of the season; does not for lumpy schedules "
          "(NFL byes) or a ramp-up window. " + SEASON_NOTE, "",
-         f"**{len(blob['cells'])} calibration-engine cells + {len(STATIC)} frozen hypotheses = {len(rows)} rows, {sum(1 for r in rows if str(r['proj']).startswith('FADE ARM CLOSED'))} closed ARMS (verdicts, routed; the cells stay SHADOW) and {sum(1 for r in rows if str(r['proj']).startswith('CLOSED'))} retired hypotheses (never looked at; shown, never projected).** "
+         f"**{len(blob['cells'])} calibration-engine cells + {len(STATIC)} frozen hypotheses = {len(rows)} rows, {sum(1 for r in rows if str(r['proj']).startswith('HYPOTHESIS CLOSED'))} closed HYPOTHESES (verdicts, routed to R&D; no arm closes, the cells stay SHADOW) and {sum(1 for r in rows if str(r['proj']).startswith('CLOSED'))} retired hypotheses (never looked at; shown, never projected).** "
          "A projected date is when to LOOK, not a prediction of the verdict; no score is read below the judged n.", "",
          "| Hypothesis | What it tests | Rows to date | 14-day accrual | Judged n | Second look (n, left, date) | Projected look (80% interval) | Pre-registered modal outcome | Note |",
          "|---|---|---|---|---|---|---|---|---|"]

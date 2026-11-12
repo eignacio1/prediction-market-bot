@@ -199,17 +199,23 @@ def eligible(policy: Policy, row: dict) -> bool:
 ARMS_ALL = ("RIDE", "FADE", "MOMENTUM", "POT_OF_GOLD", "NO_BET")
 
 
-def routing_for(label: str) -> dict:
+def _exp_id(policy: "Policy") -> str:
+    m = re.search(r"EXP-\d+", policy.citation or "")
+    return m.group(0) if m else "EXP-unknown"
+
+
+def routing_for(label: str, exp_id: str = "EXP-037") -> dict:
     """What a released look MEANS for the cell's arms (ADR-0077; DOCTRINE sections 1, 1b, 8; operator 2026-11-10 22:03 /
-    22:10 PT). The pre-registered label (`verdict` == `verdict_preregistered`) is reported unchanged; this is its reading.
-    A look that loses to the market closes the FADE arm (model-disagreement entry) only: RIDE, MOMENTUM, POT_OF_GOLD and
-    NO_BET stay open, the cell stays SHADOW and keeps logging. A winning look opens nothing by itself (capacity and the
-    operator decide). Nothing here changes a registry status; a scored look never means "market cannot be traded"."""
-    closed = ["FADE"] if label == "RULED_OUT" else []
-    reading = {"RULED_OUT": "fade arm closed (routed); ride / momentum / pot of gold / no bet stay open; cell stays SHADOW",
+    22:10 PT and 2026-11-11 16:51 PT). The pre-registered label (`verdict` == `verdict_preregistered`) is reported
+    unchanged; this is its reading. A look that loses to the market closes THAT HYPOTHESIS (the model's probability
+    against the market's), parked for R&D, and NO arm: every arm stays open to a new hypothesis, the cell stays SHADOW and
+    keeps logging. A winning look opens nothing by itself (capacity and the operator decide). Nothing here changes a
+    registry status; a scored look never means "market cannot be traded"."""
+    closed_h = [exp_id] if label == "RULED_OUT" else []
+    reading = {"RULED_OUT": f"hypothesis closed ({exp_id}, parked for R&D); every arm stays open; cell stays SHADOW",
                "CANDIDATE-PENDING-CAPACITY": "label only: opens nothing by itself (capacity and the operator decide)",
-               }.get(label, "no arm closed; cell stays SHADOW and keeps accruing")
-    return {"closed_arms": closed, "open_arms": [a for a in ARMS_ALL if a not in closed],
+               }.get(label, "no hypothesis closed; cell stays SHADOW and keeps accruing")
+    return {"closed_arms": [], "closed_hypotheses": closed_h, "open_arms": list(ARMS_ALL),
             "cell_status": "SHADOW", "reading": reading}
 
 
@@ -246,7 +252,7 @@ def verdict(policy: Policy, status: str, scores: dict, n_judged: int) -> dict:
             v, why = "SHADOW", "delta vs market CI excludes zero but E_net <= 0 under a fee candidate"
         else:
             v, why = "SHADOW", "CI spans zero"
-    out.update({"verdict": v, "verdict_preregistered": v, "rule": why, "routing": routing_for(v)})
+    out.update({"verdict": v, "verdict_preregistered": v, "rule": why, "routing": routing_for(v, _exp_id(policy))})
     if dc is not None and dc["mean"] <= 0:
         out["model_failure_vs_climatology"] = True         # reported separately; not a decision rule
     return out
