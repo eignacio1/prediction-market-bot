@@ -1275,3 +1275,4 @@
 | 2026-11-13T00:05:27Z | B-089 | CLOSED — merge confirmed, HEAD (d65f580) is ancestor of origin/main — W113.2 NFL wired for Sunday: PR #495 merged 9b3e25a, box deployed 6f40c9a7; layer 3 NFL 0 to 13 cells |
 | 2026-11-13T00:05:40Z | B-086 | CLOSED — W113.3 B-086: NBA shared-latent joint + combo pricer merged; PTSx3PM gap closed, teammate classes open. (commit `a5cffd2`) |
 | 2026-11-13T00:16:05Z | B-084 | CLOSED — W113.1 merged (#493): arm orders sized via size_for, NHL per-row filters (20 splits kept), D6 layer 6/7 rules; wired still 0 of 117. (commit `62128ee`) |
+| 2026-11-13T00:22:25Z | B-090 | W114.2 D6 counted on the box; PURPOSE: D6 wired/117 + E1-E3 per arm measured from box logs |
