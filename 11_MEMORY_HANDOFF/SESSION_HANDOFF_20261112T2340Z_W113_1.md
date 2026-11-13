@@ -1,7 +1,7 @@
 # Session handoff W113.1 (2026-11-12)
 
-**Status:** PARTIAL (code done and tested; PR #493 NOT merged: CI red on a stale test unrelated to this change; layer 6/7 evidence unread because no allowlisted box task reads the arm order log)
-**B-084:** in progress. **Branch:** session/20261112T230401Z-w113-1-d6-wired @ rebased head on origin/main. **PR:** #493, CI `test` failed: 1 failed, 5707 passed. The one failure is `tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted` (registry says live after the 11-12 15:04 PT install approval); main's own run 43326790475 fails the same way. Not my file; Rule 11, logged in GG-1898.
+**Status:** DONE for code (PR #493 merged c097744 on green CI of head a597755, after rebase onto fixed main). Still open: D6 wired 0 until the box arm-order log can be read (no allowlisted task), GG-1896..1898.
+**B-084:** in progress. **Branch:** session/20261112T230401Z-w113-1-d6-wired @ rebased head on origin/main. **PR:** #493 (first run failed: 1 failed, 5707 passed. The one failure is `tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted` (registry says live after the 11-12 15:04 PT install approval); main's own run 43326790475 fails the same way. Not my file; Rule 11, logged in GG-1898; main went green after 113.2, rerun passed, merged.
 **Result:** every arm order is sized by `arm_sizing.size_for` via `decision_trees/row_sizing.py`; NHL has a per-row filter adapter and 20 kept splits; D6 counting rules for layers 6/7 are in `coverage.py`.
 
 ## MEASURE MOVED
