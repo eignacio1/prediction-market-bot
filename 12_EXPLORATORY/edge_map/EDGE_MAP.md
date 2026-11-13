@@ -16,7 +16,7 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 
 | ID | Sport | Hypothesis | Gross | Cost | Net | n | Interval | Status | Next look |
 |---|---|---|---|---|---|---|---|---|---|
-| E01 | NFL | Game total vs market, T1 and T2 (EXP-037) | model Brier worse than market by +0.015 per rung | n/a (no edge to cost) | fade arm closed (routed): model price trails the market price | 72 games | +0.0151 [+0.0039, +0.0266] (T1) | RULED_OUT | closed (verdict issued) |
+| E01 | NFL | Game total vs market, T1 and T2 (EXP-037) | Last line, Brier vs market (EXP-037): model worse by +0.015 per rung | exact taker fee, in the arm net | Held-out arm net/contract (retro_route, NFL game total, 28 games): RIDE -0.014 [-0.069,+0.039]; FADE -0.024 [-0.076,+0.032]; MODEL_FADE -0.032 [-0.122,+0.058]; MOMENTUM -0.025 [-0.085,+0.039]. All intervals include 0: routed to ride / no bet in these leaves | 72 games | +0.0151 [+0.0039, +0.0266] (T1) | RULED_OUT | hypothesis closed (EXP-037, parked for R&D); per-leaf look rides the retro_route re-run |
 | E02 | NFL | Game total vs market, T3 (EXP-037) | first look reached; not read | n/a | not scored | 60 judged at first look | not read | ACCRUING | 2027-01-09 (second look at n=150) |
 | E03 | NFL | Moneyline, spread, team total, T1-T3 (9 cells, EXP-037) | first look reached; not read | n/a | not scored | 60 judged at first look (cell-level counts vary) | not read | ACCRUING | 2026-12-14 to 2026-12-19 (second look at n=150) |
 | E04 | NFL | QB-conditioned moneyline T1 (NFLQB) | sealed at 47 of 60 judged | n/a | not scored | 47 games | not read | ACCRUING | 2026-11-12/13 (projected) |
@@ -24,12 +24,12 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 | E06 | NBA | Blend of engine and market price, v1/v2/v3 x moneyline, spread, total, team total (104.2) | out-of-sample log-loss gain <= 0 in every testable cell | n/a (descriptive) | no cell rejects at Holm/BH | 53 games | e.g. v1 total OOS log-loss gain -0.0160 [-0.038, -0.002] | NO EFFECT NET | see blend_test/plan_calendar.md |
 | E07 | NBA | Engine v1, v2: moneyline, spread, game total, team total (EXP-044, 044b; 8 cells) | not read | n/a | not scored | 27-38 of 400 judged per cell | not read | ACCRUING | first looks 2026-11-17 to 2026-11-25, then monthly into Jan-Feb 2027 |
 | E08 | NBA | Engine v3 (availability): spread, team total, moneyline, game total (EXP-044c) | not read; held-out 2025-26 Brier vs v2 core: spread -0.0076, team total -0.0025 (model vs model) | n/a | not vs market | 10-12 of 100 judged | spread [-0.0104,-0.0048] | ACCRUING | first looks 2026-11-13 to 2026-11-16 |
-| E09 | NBA | Player points, availability-conditioned share (EXP-044d candidate) | engine set worse by +0.0131 at every strike | n/a | fade arm closed (routed) | not stated in this map's sources | +0.0131 [+0.0106, +0.0158] | RULED_OUT | closed (not frozen) |
-| E10 | NHL | Shrunk-spread challenger vs current engine (101) | Brier -0.0008 total, effect 0.0005-0.0008 | n/a (model vs model) | nothing vs market | 3,936 held-out games | total -0.00077 [-0.00140, -0.00013]; team total home includes 0 | RULED_OUT | closed (pre-registered rule: NO) |
+| E09 | NBA | Player points, availability-conditioned share (EXP-044d candidate) | Last line, Brier: engine set worse than the existing arm by +0.0131 at every strike | n/a until the arm table exists | Per-leaf arm net: not yet scored - no retro_route family for NBA player points (props not logging; install awaits the operator). Routed to ride / no bet until it logs | not stated in this map's sources | +0.0131 [+0.0106, +0.0158] | RULED_OUT | hypothesis closed (EXP-044d candidate, not frozen; parked for R&D) |
+| E10 | NHL | Shrunk-spread challenger vs current engine (101) | Last line, Brier: shrunk-spread challenger -0.0008 total vs the current engine | exact taker fee, in the arm net | Held-out arm net/contract (retro_route, NHL, 66 games): game total RIDE -0.023 [-0.045,+0.001], MODEL_FADE -0.023 [-0.080,+0.036]; moneyline RIDE +0.010 [-0.081,+0.106], MODEL_FADE +0.062 [-0.059,+0.170], MOMENTUM +0.074 [+0.015,+0.133] (n=116, 59 games). This row's challenger is model-vs-model, so the arm table is the family's, not the challenger's | 3,936 held-out games | total -0.00077 [-0.00140, -0.00013]; team total home includes 0 | RULED_OUT | hypothesis closed (pre-registered rule, W101; parked for R&D) |
 | E11 | NHL | Regulation-total bias fix (model_pit), 100 | removes about a quarter of pooled bias (-0.080 to -0.059) | n/a | partial; not vs market | pooled regulation totals | not stated | NO EFFECT NET | none |
 | E12 | NHL | Game total and moneyline vs market, T1-T3 (EXP-036) | not read | n/a | not scored | about 210 judged of 2,500 | not read | ACCRUING | projected 2028-04, or not reached |
 | E13 | MLB | Two-factor model vs naive, moneyline and total (105.3) | Brier +0.0008 [-0.0010,+0.0025] ML; +0.0005 total | n/a (vs naive, not market) | not distinguishable | games in sample | see gross | NO EFFECT NET | none |
-| E14 | MLB | Lineup-aware model vs Kalshi closing line (106.4) | moneyline model - market -0.0075 (market wins); total -0.0031 | n/a | moneyline: market wins; total: no gain | 753 games (ML), 735 (total) | ML [-0.0121,-0.0029]; total [-0.0075,+0.0011] | RULED_OUT | none |
+| E14 | MLB | Lineup-aware model vs Kalshi closing line (106.4) | Last line, Brier vs closing line: moneyline model - market -0.0075; total -0.0031 | n/a until the arm table exists | Per-leaf arm net: not yet scored for MLB - no retro_route family (MLB idle until 2027; 2026 rows are the look-back corpus). Routed to ride / no bet until it is scored | 753 games (ML), 735 (total) | ML [-0.0121,-0.0029]; total [-0.0075,+0.0011] | RULED_OUT | hypothesis closed (106.4, parked for R&D); per-leaf look on the 2026 look-back corpus |
 | E15 | MLB | Game-market shadow cells: moneyline, run line, total, team total, T1-T3 (12 cells) | no judged games | n/a | not scored | 0 judged | n/a | ACCRUING | judged games begin 2027-03-01 |
 
 ### Ride / fade
@@ -102,7 +102,7 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 - **E11** 12_EXPLORATORY/nhl_engine/results_W100_1.md @ 1b117ea
 - **E12** 04_EXECUTION/PROOF_CALENDAR.md @ ef80ff9
 - **E13** 12_EXPLORATORY/mlb_engine/RESULT_W105_3.md @ 921253c
-- **E14** 12_EXPLORATORY/mlb_engine/RESULT_W106_4.md @ e0176e8 — Moneyline fade arm closed (routed) as tested; total is NO EFFECT NET. As-played lineups flatter the model
+- **E14** 12_EXPLORATORY/mlb_engine/RESULT_W106_4.md @ e0176e8 — Moneyline hypothesis closed as tested (106.4, parked for R&D); total is NO EFFECT NET. As-played lineups flatter the model
 - **E15** 04_EXECUTION/PROOF_CALENDAR.md @ ef80ff9
 - **R01** 12_EXPLORATORY/ride_board/RESULT.md @ 3e58045
 - **R02** 12_EXPLORATORY/ride_cells/results_W91_1.md @ dc7f290 — Backward test void; forward test is the only one left
@@ -131,4 +131,4 @@ Built 2026-11-09 from committed result files only; every row cites `path @ commi
 - **T01** 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T569_t4_latency_thesis_RESULTS.md @ f4e4236 — NOT SUPPORTED for the current feature set; other feature sets untested
 
 
-> Wording note (W111.2, B-077, DOCTRINE section 1b): a closed fade arm is a routing result, not a verdict on the market; the status key RULED_OUT is the registry enum and is unchanged. Per-leaf arm scoring is not in this map yet (DOCTRINE_CONFORMANCE row 27).
+> Wording note (W111.2, B-077, DOCTRINE section 1b): a closed fade arm is a routing result, not a verdict on the market; the status key RULED_OUT is the registry enum and is unchanged. W114.3 (B-085): E01 / E10 now lead with held-out per-arm net after fees from retro_route (results.json), Brier vs the market is the last line; E09 / E14 have no retro_route family yet and say so.
