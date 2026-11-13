@@ -1281,3 +1281,4 @@
 | 2026-11-13T00:23:37Z | B-086 | W114.4 NBA joint teammate legs one usage pool per team. PURPOSE: D4 NBA / teammate joint error |
 | 2026-11-13T00:47:20Z | W114.1 (B-087) | CLOSED — W114.1: Muse intake (#494) merged; NBA adapter now tags rows with 12 shot-distance filters (#500); 54 leaves scored, 5 kept. (commit `499522d`) |
 | 2026-11-13T00:47:49Z | W114.1 (B-087) | CLOSED — merge confirmed, HEAD (0b82d16) is ancestor of origin/main — Muse intake #494 and NBA distance filters #500 merged |
+| 2026-11-13T00:49:40Z | B-085 | CLOSED — merge confirmed, HEAD (70f9c8b) is ancestor of origin/main — W114.3 doctrine leftovers: orchestrator defers to router (#497), per-leaf arm scoring before Brier (#499); docs 330fbd2, handoff 70f9c8b |
