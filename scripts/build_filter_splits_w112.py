@@ -23,7 +23,15 @@ NBA_DATA_THROUGH = "2026-06-30T00:00:00+00:00"  # end of the 2025-26 season: the
 
 
 def nba_splits() -> list:
-    doc = json.loads((EXP / "granularity_index_nba" / "leaf_scores.json").read_text())
+    out = []
+    # 111.4 index leaves, then (W114.1) the Muse-archive shot-distance leaves from 113.4: same scorer, same KEPT rule below
+    for src, label in (("granularity_index_nba", "111.4 leaf_scores.json"), ("archive_intake", "113.4 archive_intake leaf_scores.json")):
+        out += _nba_from(EXP / src / "leaf_scores.json", label)
+    return out
+
+
+def _nba_from(path, label) -> list:
+    doc = json.loads(path.read_text())
     out = []
     for x in doc["leaves"]:
         kind = "total" if x["family"] in ("GAME_TOTAL", "TEAM_TOTAL") else "side"
@@ -33,7 +41,7 @@ def nba_splits() -> list:
                else "held_out_games_below_min" if tg < MIN_HELD_GAMES else "held_out_net_not_positive")
         out.append({"sport": "NBA", "series": NBA_SERIES[x["family"]], "filter": f"{x['entry']}@{kind}", "leaf": x["leaf"],
                     "arm": x["arm"], "kept": bool(kept), "why": why, "fit_games": x["fit_games"], "test_games": tg,
-                    "test_mean": tm, "bh": x["bh"], "source": "111.4 leaf_scores.json"})
+                    "test_mean": tm, "bh": x["bh"], "source": label})
     return out
 
 
@@ -76,6 +84,9 @@ def main() -> int:
     (OUT / "filter_splits.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
     (OUT / "filter_data").mkdir(exist_ok=True)
     pct = json.loads((EXP / "granularity_index_nba" / "team_percentiles.json").read_text())
+    dist = json.loads((EXP / "archive_intake" / "team_percentiles.json").read_text())  # same season (2026), same bot event store
+    for team in pct:
+        pct[team].update(dist.get(team, {}))
     (OUT / "filter_data" / "nba_team_percentiles.json").write_text(json.dumps(
         {"data_through_utc": NBA_DATA_THROUGH, "season_label": 2026, "teams": pct}, indent=1, sort_keys=True) + "\n")
     print(f"splits={doc['n']} kept={doc['n_kept']} teams={len(pct)}")

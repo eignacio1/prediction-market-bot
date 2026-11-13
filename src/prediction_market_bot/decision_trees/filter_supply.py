@@ -52,6 +52,7 @@ def nba_table(path: Optional[str] = None) -> dict:
 
 def nba_adapter(row: dict, table: Optional[dict] = None) -> Tuple[Optional[dict], Optional[str]]:
     """The 111.4 granularity-index leaves for the row's game: prior-season league percentiles of both teams."""
+    from prediction_market_bot.archive_intake.nba_distance_filters import HIGHER_IS_BETTER, distance_filters  # lazy: package imports pandas
     from prediction_market_bot.nba_engine.filters import nba_filters
     from prediction_market_bot.pregame_shadow.nba_forecaster import parse_event_ticker
 
@@ -64,7 +65,12 @@ def nba_adapter(row: dict, table: Optional[dict] = None) -> Tuple[Optional[dict]
     teams = t["teams"]
     if home not in teams or away not in teams:
         return None, "nba_team_not_in_percentile_table"
-    return nba_filters(teams[home], teams[away]), None
+    out = nba_filters(teams[home], teams[away])
+    # W114.1 (B-087): the 12 Muse-archive shot-distance entries. Their percentiles sit in the same table; only splits scored and
+    # kept in filter_splits.json can move an arm, the rest are logged. A table without them (older build) just skips this.
+    if all(k in teams[home] and k in teams[away] for k in HIGHER_IS_BETTER):
+        out.update(distance_filters(teams[home], teams[away]))
+    return out, None
 
 
 def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str]]:
