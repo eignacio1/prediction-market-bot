@@ -3507,3 +3507,5 @@ continually jumping is more valuable that saving tokens (even with compaction) -
 Effect: from Wave 114 every block carries MODEL: Sonnet (default) or MODEL: Haiku (mechanical); never Opus / Fable in a terminal
 (strategic-handoff step 8). Block size unchanged (operator 2026-10-30: three parts, ~130 min). Window error W55 (re-proposed his own
 doctrine). The window does not suggest shorter strategy windows.
+
+| 2026-11-12 | W113.2 / B-089 | NFL wired for Sunday (PR #495, 9b3e25a; box 6f40c9a7). 25-entry NFL granularity index built by one generic Situation engine (D-06: machinery, not the operator's examples); 13 entries with a scored leaf exported as tree splits through nfl_adapter (14 of 14 week-10 games carry 26 split keys). Held-out moneyline RIDE family +0.167 [+0.073, +0.258], n=81, 27 games; no split localises it; fit window picked FADE (held-out -0.15 to -0.23), a time-regime flip. Hypothesis closed (EXP-W113.2-NFL-SPLITS-01, parked for R&D); the EXP-id was chosen by the window and needs registering. SEATS/nfl.toml N5, N6 moved to applied (14 of 23). Stale props-install registry test fixed to accept live. |
