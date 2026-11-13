@@ -93,7 +93,7 @@ router no filters), so D6 did not move. *Said but not built:* "wired execution" 
 |---|---|---|---|---|
 | 113.1 | trees · 3 | First cells wired end to end (NBA, NHL): size_for in the order path, NHL filters supplied, layers 6 / 7 counted, D6 recounted | ⬜ | |
 | 113.2 | NFL · 3 | NFL wired for Sunday: weather forecast store, MatchupBook, the NFL granularity index (box count, personnel, coverage) as tree splits, per leaf per arm | ✅ | PR #495 merged 9b3e25a, box deployed (6f40c9a7). Layer 3 NFL 0 to 13 cells; 25 index entries (13 scored); D5(b) 12 to 14 of 23. Handoff `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261113T0000Z_W113_2.md` |
-| 113.3 | engine · 3 | NBA joint: shared minutes / usage / pace latent so same-player and teammate legs price right; parlay pot-of-gold branch | ⬜ | |
+| 113.3 | engine · 3 | NBA joint: shared minutes / usage / pace latent so same-player and teammate legs price right; parlay pot-of-gold branch | ✅ PARTIAL (A,B,C built; PR #496 merged a5cffd2, CI green) | same-player PTSx3PM cov gap +0.086 -> -0.004; teammate PTS, PTSxAST teammates, WINxREB not closed; see SESSION_HANDOFF_20261113_W113_3.md |
 | 113.4 | data · 3 | The bot reads Muse's archive (pinned, read-only), grades it by recompute, turns VERIFIED tables into index entries | ⬜ | |
 
 ### 113.1 - TREES / EXECUTION (THE FIRST CELLS WIRED END TO END)
