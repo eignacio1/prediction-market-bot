@@ -85,3 +85,58 @@ def test_split_is_exact_and_deterministic_for_a_seed():
     x = J._split(T, w, np.random.default_rng(9))
     assert (x.sum(1) == T).all() and (x >= 0).all()
     assert np.array_equal(x, J._split(T, w, np.random.default_rng(9)))
+
+
+# ---- W114.4: one usage pool per team -------------------------------------------------------------------------------------
+def _corr(x, y):
+    return float(np.corrcoef(x, y)[0, 1])
+
+
+def test_team_pool_latent_gives_teammates_positive_covariance_at_fixed_team_points():
+    h, a = _game()
+    ros = _roster()
+    base = J.simulate_team(h, np.abs(h - a), ros, np.random.default_rng(2), J.with_params(s_pool=0.0))
+    pool = J.simulate_team(h, np.abs(h - a), ros, np.random.default_rng(2), J.with_params(s_pool=1.2))
+    c0 = _corr(base.stat["points"][:, 0], base.stat["points"][:, 1])
+    c1 = _corr(pool.stat["points"][:, 0], pool.stat["points"][:, 1])
+    assert c1 > c0 + 0.05                                                       # shared rest-bucket shock lifts them together
+    assert np.array_equal(pool.stat["points"].sum(1) + pool.rest_points, h)    # still one pool: the shares sum to the team's points
+
+
+def test_one_players_usage_up_takes_points_from_every_teammate():
+    h, a = _game()
+    base = _roster()
+    hot = J.JointRoster(base.players, base.mpg, base.mu, base.team_mean_pts, usage=[1.8] + [1.0] * 7)
+    p = J.with_params(s_pool=0.4, s_tmin=0.1)
+    d0 = J.simulate_team(h, np.abs(h - a), base, np.random.default_rng(4), p)
+    d1 = J.simulate_team(h, np.abs(h - a), hot, np.random.default_rng(4), p)
+    assert d1.stat["points"][:, 0].mean() > d0.stat["points"][:, 0].mean() + 3
+    for j in range(1, 6):
+        assert d1.stat["points"][:, j].mean() < d0.stat["points"][:, j].mean()
+
+
+def test_assists_rise_with_teammates_makes_only_when_loaded():
+    h, a = _game()
+    ros = _roster()
+    off = J.simulate_team(h, np.abs(h - a), ros, np.random.default_rng(6), J.with_params(gamma_ast=0.0))
+    on = J.simulate_team(h, np.abs(h - a), ros, np.random.default_rng(6), J.with_params(gamma_ast=1.2))
+    # player 0's assists vs teammate 1's points
+    c_off = _corr(off.stat["assists"][:, 0], off.stat["points"][:, 1])
+    c_on = _corr(on.stat["assists"][:, 0], on.stat["points"][:, 1])
+    assert c_on > c_off + 0.03
+
+
+def test_rebounds_rise_when_the_opponent_misses_more():
+    h, a = _game()
+    ros = _roster()
+    d = J.simulate_team(h, np.abs(h - a), ros, np.random.default_rng(8), J.with_params(gamma_reb=1.0), opp_pts=a, opp_mean_pts=114.0)
+    assert _corr(d.stat["rebounds"][:, 1], a) < -0.02                           # opponent scores less -> more misses -> more boards
+    d0 = J.simulate_team(h, np.abs(h - a), ros, np.random.default_rng(8), J.with_params(gamma_reb=0.0), opp_pts=a, opp_mean_pts=114.0)
+    assert _corr(d.stat["rebounds"][:, 1], a) < _corr(d0.stat["rebounds"][:, 1], a)
+
+
+def test_defaults_of_new_latents_keep_previous_behaviour_available():
+    # all-zero new params reproduce the 113.3 draws exactly (same rng stream order aside from the added normals)
+    h, a = _game()
+    d = J.simulate_team(h, np.abs(h - a), _roster(), np.random.default_rng(0), J.with_params(s_pool=0, s_tmin=0, gamma_ast=0, gamma_reb=0))
+    assert np.array_equal(d.stat["points"].sum(1) + d.rest_points, h)

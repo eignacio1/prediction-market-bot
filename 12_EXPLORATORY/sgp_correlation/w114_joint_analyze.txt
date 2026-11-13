@@ -1,0 +1,41 @@
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+/Users/earlignacio/Library/Python/3.9/lib/python/site-packages/pandas/core/util/hashing.py:330: RuntimeWarning: invalid value encountered in cast
+  vals.astype(str).astype(object), hash_key, encoding
+PTS x AST (teammates)      pairs=  7064 g=1003 real=0.425 eng=0.324 ind=0.320 dLL=+0.0019[+0.0015,+0.0022] dBS=+0.0008[+0.0007,+0.0010] excess real=+0.1045[+0.0896,+0.1198] eng=+0.0039
+PTS x PTS (opponents)      pairs=  5091 g= 957 real=0.395 eng=0.288 ind=0.283 dLL=+0.0030[+0.0024,+0.0036] dBS=+0.0012[+0.0010,+0.0015] excess real=+0.1124[+0.0925,+0.1341] eng=+0.0053
+PTS x AST (same player)    pairs=  4631 g=1063 real=0.444 eng=0.331 ind=0.321 dLL=+0.0055[+0.0047,+0.0063] dBS=+0.0024[+0.0020,+0.0027] excess real=+0.1227[+0.1083,+0.1376] eng=+0.0099
+PTS x REB (same player)    pairs=  4631 g=1063 real=0.441 eng=0.321 ind=0.307 dLL=+0.0082[+0.0072,+0.0093] dBS=+0.0035[+0.0030,+0.0039] excess real=+0.1334[+0.1183,+0.1481] eng=+0.0141
+TOT x PTS                  pairs=  4631 g=1063 real=0.332 eng=0.306 ind=0.271 dLL=+0.0074[+0.0034,+0.0114] dBS=+0.0030[+0.0014,+0.0047] excess real=+0.0604[+0.0367,+0.0841] eng=+0.0345
+TT x PTS (own)             pairs=  4631 g=1063 real=0.355 eng=0.317 ind=0.275 dLL=+0.0119[+0.0079,+0.0160] dBS=+0.0049[+0.0033,+0.0066] excess real=+0.0801[+0.0599,+0.1012] eng=+0.0419
+WIN x PTS                  pairs=  4631 g=1063 real=0.359 eng=0.289 ind=0.267 dLL=+0.0080[+0.0068,+0.0092] dBS=+0.0033[+0.0029,+0.0038] excess real=+0.0920[+0.0819,+0.1021] eng=+0.0219
+WIN x REB                  pairs=  4631 g=1063 real=0.363 eng=0.284 ind=0.291 dLL=-0.0033[-0.0040,-0.0027] dBS=-0.0015[-0.0017,-0.0012] excess real=+0.0729[+0.0619,+0.0842] eng=-0.0063
+PTS x 3PM (same player)    pairs=  4392 g=1062 real=0.502 eng=0.429 ind=0.336 dLL=+0.0496[+0.0440,+0.0559] dBS=+0.0229[+0.0200,+0.0256] excess real=+0.1659[+0.1511,+0.1804] eng=+0.0929
+TOT x 3PM                  pairs=  4392 g=1062 real=0.337 eng=0.338 ind=0.323 dLL=+0.0004[-0.0012,+0.0019] dBS=+0.0002[-0.0005,+0.0008] excess real=+0.0140[-0.0101,+0.0393] eng=+0.0143
+PTS x PTS (teammates)      pairs=  3532 g=1003 real=0.377 eng=0.265 ind=0.282 dLL=-0.0092[-0.0110,-0.0072] dBS=-0.0036[-0.0043,-0.0029] excess real=+0.0947[+0.0731,+0.1156] eng=-0.0173
+REB x REB (teammates)      pairs=  3532 g=1003 real=0.433 eng=0.338 ind=0.334 dLL=+0.0022[+0.0017,+0.0028] dBS=+0.0010[+0.0007,+0.0012] excess real=+0.0998[+0.0774,+0.1216] eng=+0.0047
+ML x TOT                   pairs=  1075 g=1075 real=0.272 eng=0.286 ind=0.286 dLL=+0.0000[-0.0005,+0.0005] dBS=+0.0000[-0.0002,+0.0002] excess real=-0.0140[-0.0389,+0.0133] eng=-0.0000
+ML x TT                    pairs=  1075 g=1075 real=0.367 eng=0.381 ind=0.290 dLL=+0.0099[-0.0019,+0.0214] dBS=+0.0053[+0.0003,+0.0102] excess real=+0.0767[+0.0488,+0.1059] eng=+0.0908
+SPR x TOT                  pairs=  1075 g=1075 real=0.252 eng=0.264 ind=0.264 dLL=+0.0003[-0.0002,+0.0009] dBS=+0.0001[-0.0001,+0.0003] excess real=-0.0119[-0.0376,+0.0132] eng=-0.0002

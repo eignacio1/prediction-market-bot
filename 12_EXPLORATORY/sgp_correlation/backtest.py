@@ -91,7 +91,7 @@ def run(data_dir, season, engine="old", jp=None, max_games=None, skip_games=0, n
                 played = d[d.team_tricode == team].set_index("person_id")
                 if engine == "joint":
                     RJ = J.JointRoster(R.players, [m for m, _, _ in ros], R.mu, float(pts.mean()))
-                    jd = J.simulate_team(pts, np.abs(marg), RJ, rng, jp)
+                    jd = J.simulate_team(pts, np.abs(marg), RJ, rng, jp, opp_pts=(a if side == 'H' else h), opp_mean_pts=float((a if side == 'H' else h).mean()))
                 for stat in P.STATS:
                     dd = jd.stat[stat] if engine == "joint" else P.player_draws(pts, R, stat, rng)[0]
                     for i in range(TOP_LEGS):
