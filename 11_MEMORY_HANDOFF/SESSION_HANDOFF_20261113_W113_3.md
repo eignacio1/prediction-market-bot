@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: B-086
+tier: STANDARD
+timestamp: 2026-11-13T00:08:00Z
+commit: a5cffd2
+one_line_summary: W113.3 B-086: NBA shared-latent joint + combo pricer merged; PTSx3PM gap closed, teammate classes open.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D4 NBA (whole board from one engine, parlays included)
+gap_delta: PTSx3PM same-player cov gap +0.0861 -> -0.0042 (12_EXPLORATORY/sgp_correlation/RESULT_W113_3.md @ a5cffd2); teammate PTS +0.0247 -> +0.0230
+pattern_sweep: n/a (no defect fixed)
+surface_delta: 0
+-->
+
 # Session handoff - W113.3 (B-086) NBA joint for same-game legs
 
 **Status:** PARTIAL | B-086: built and merged, teammate classes open | branch session/20261112T230443Z-w113-3-nba-joint, merged as a5cffd2 | PR #496, CI green (first run red on a stale registry test already red on main; rebased onto the fix, re-ran green) | Operator decisions: none.
@@ -37,3 +53,9 @@ Fixed engine constants; top-3 players per team; median lines; no team-total cap 
 - directive_conflicts: none
 - `*_install` tasks needed: none
 - Box deploy read after merge: requested via the deploy_truth_read box task; nothing in t4-mlb imports the new modules, so no decision to record.
+
+## Strategic Decisions This Session
+None - implementation-only session.
+
+**One thing pending:** 113.1 wires `price_combo` into `decision_trees/longshot.py`; next research look: a pace/total latent shared across both teams' players for the teammate classes.
+**Resume:** read this file, then `12_EXPLORATORY/sgp_correlation/RESULT_W113_3.md`.
