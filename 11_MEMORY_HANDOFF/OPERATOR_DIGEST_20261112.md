@@ -25,3 +25,9 @@ The bot's decision trees can now take the matchup-style filters as part of the d
 - Measure: D6 layer 7 code built; no E1/E2/E3 rows per arm yet.
 
 NEXT SESSION PRIMER: Remove the box override file, then read `logs/arm_orders/orders.jsonl` for the first `arm_order` row, or the NO BET counts with the epoch stated. Then register the markout GG.
+
+## W113.1 — arm orders sized, NHL filters added (2026-11-12)
+- Every demo arm order now goes through the sizing rule. Stakes stay flat demo money and Kelly stays 0. No real money at risk.
+- NHL now has per-game filters. 20 of 72 tested splits held up on held-out games, and 1 survives the multiple-testing correction. They only fire on this machine today, because the NHL data has no job on the box yet (GG-1898).
+- Cells wired end to end is still 0 of 117. The bot's arm order log can't be read from here, so layers 6 and 7 can't be counted yet.
+- Pillar moved: DEPTH (D6, layer 3 NHL). Nothing needed from you.

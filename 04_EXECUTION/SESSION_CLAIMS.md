@@ -1274,3 +1274,4 @@
 | 2026-11-12T23:05:31Z | B-087; GG-1930..1932 | W113.4 B-087 DATA STANDARD: bot reads Muse archive read-only pinned, grades VERIFIED by recompute. PURPOSE: D-06 granularity bar; NBA index entries 24->N; D1 NBA/NHL |
 | 2026-11-13T00:05:27Z | B-089 | CLOSED — merge confirmed, HEAD (d65f580) is ancestor of origin/main — W113.2 NFL wired for Sunday: PR #495 merged 9b3e25a, box deployed 6f40c9a7; layer 3 NFL 0 to 13 cells |
 | 2026-11-13T00:05:40Z | B-086 | CLOSED — W113.3 B-086: NBA shared-latent joint + combo pricer merged; PTSx3PM gap closed, teammate classes open. (commit `a5cffd2`) |
+| 2026-11-13T00:16:05Z | B-084 | CLOSED — W113.1 merged (#493): arm orders sized via size_for, NHL per-row filters (20 splits kept), D6 layer 6/7 rules; wired still 0 of 117. (commit `62128ee`) |
