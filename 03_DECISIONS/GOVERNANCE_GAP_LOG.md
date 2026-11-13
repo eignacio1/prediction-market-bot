@@ -4731,3 +4731,18 @@ W113.1, 2026-11-12. `row_sizing.leg_draws` builds draws from identity (same tick
 **Status:** OPEN · **Severity:** MEDIUM
 
 W113.1, 2026-11-12. `filter_supply.nhl_filters_for_row` reads `exp_output/NHL_EVENTS` (parquet; games, events, shifts). It is not in RUNTIME_REGISTRY, so on the box every NHL row will note `filters_unavailable:nhl_game_not_in_store` and the 20 kept NHL splits never fire live. `coverage.filter_layer_sports` counts NHL only when the store is present (local: layer 3 NHL 0 to 9). Also: `nhl_filters_for_row` named in the brief did not exist (#489 shipped `nhl_filters(home, away)`); this block built the per-row function. Needs a store refresh job (a surface add, Hard Rule 14) before NHL layer 3 is real on the box. Separately, main CI is red on `tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted` (registry entry now live after the 11-12 install approval; test expects paused), so PR 493 cannot merge on green.
+
+### GG-1930 — Archive vs bot definitional mismatches: NBA turnovers, neutral-site home/road, NHL penaltiesFor (W113.4)
+**Status:** OPEN · **Severity:** LOW
+
+W113.4, 2026-11-12. Recompute against the Muse archive (pinned cc7bf85) matched on shooting by distance, but MISMATCHED on NBA team turnovers per game (archive higher; likely team turnovers counted), home/road labeling for neutral-site games, and NHL penaltiesFor (neither committed nor drawn matches). Those items stay REPORTED, not VERIFIED. See 12_EXPLORATORY/archive_intake/GRADES.md.
+
+### GG-1931 — No pre-game NHL starting-goalie capture, so archive goalie snapshots are UNCHECKABLE (W113.4)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W113.4, 2026-11-12. The bot knows the NHL starter only post-game (see GG-1010). Archive snapshots carry no puck-drop time and the bot's NHL store and Kalshi NHL history end June 2026, so snapshot timing cannot be graded. Needs a forward capture (bot-side snapshots plus Kalshi candles for November games).
+
+### GG-1932 — W113.1 filter_supply has not yet picked up the 12 distance filters (W113.4)
+**Status:** OPEN · **Severity:** LOW
+
+W113.4, 2026-11-12. Interface: `archive_intake.nba_distance_filters.distance_filters(home, away)`, percentiles in 12_EXPLORATORY/archive_intake/team_percentiles.json. 113.1 owns decision_trees/filter_supply.py; wiring is its call. All 54 leaves route to NO_BET provisionally (0 BH survivors).

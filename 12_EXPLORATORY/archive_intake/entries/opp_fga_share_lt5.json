@@ -1,0 +1,171 @@
+{
+ "points": {
+  "20": {
+   "name": "opp_fga_share_lt5",
+   "metric": "in_lt5",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612738,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "lt5ft-volume"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.281615925058548,
+   "n_plays": 1708,
+   "games": 20,
+   "rank_league": 3,
+   "of_league": 30,
+   "rank_history": 13,
+   "of_history": 270,
+   "percentile_history": 0.9553903345724907,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.5571545553239741,
+    "r_spearman_brown": 0.7156059794052431,
+    "ci95": [
+     0.6444596468929622,
+     0.7777213718790189
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 1708,
+    "own_in_situation": 1708
+   },
+   "cross": {
+    "opp": 1610612740,
+    "expected": 0.349025350007017,
+    "league": 0.3209405043826628,
+    "delta_vs_league": 0.028084845624354204,
+    "opp_value": 0.3932146829810901,
+    "opp_n": 1798
+   }
+  },
+  "40": {
+   "name": "opp_fga_share_lt5",
+   "metric": "in_lt5",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612738,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "lt5ft-volume"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.2594955059437518,
+   "n_plays": 3449,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 3,
+   "of_history": 270,
+   "percentile_history": 0.9925650557620818,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.7286848112908119,
+    "r_spearman_brown": 0.8430510947183041,
+    "ci95": [
+     0.7996278826591545,
+     0.878677219324012
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 3449,
+    "own_in_situation": 3449
+   },
+   "cross": {
+    "opp": 1610612740,
+    "expected": 0.3691739723159548,
+    "league": 0.3209405043826628,
+    "delta_vs_league": 0.048233467933291974,
+    "opp_value": 0.4345564074479737,
+    "opp_n": 3652
+   }
+  },
+  "82": {
+   "name": "opp_fga_share_lt5",
+   "metric": "in_lt5",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612738,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "over",
+     "direction": "lt5ft-volume"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.2501756851721715,
+   "n_plays": 7115,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 1,
+   "of_history": 270,
+   "percentile_history": 1.0,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.8278490465344656,
+    "r_spearman_brown": 0.9058177403697935,
+    "ci95": [
+     0.8828231039701321,
+     0.9260623259067668
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 1.0,
+    "league_share": 1.0,
+    "own_possessions": 7115,
+    "own_in_situation": 7115
+   },
+   "cross": {
+    "opp": 1610612740,
+    "expected": 0.35580140710917985,
+    "league": 0.3209405043826628,
+    "delta_vs_league": 0.03486090272651704,
+    "opp_value": 0.4280323450134771,
+    "opp_n": 7420
+   }
+  }
+ },
+ "name": "opp_fga_share_lt5",
+ "season": 2026,
+ "unit_shown": 1610612738,
+ "opp_shown": 1610612740,
+ "metric": "in_lt5",
+ "side": "dfn",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "over",
+   "direction": "lt5ft-volume"
+  }
+ ],
+ "source_family_grade": "VERIFIED (GRADES.md)"
+}
