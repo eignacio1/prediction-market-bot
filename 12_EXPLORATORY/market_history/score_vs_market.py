@@ -1,4 +1,7 @@
-"""W88.3 Part B: paired Brier of a frozen model vs the Kalshi pre-game price, game-clustered interval, skill weight.
+"""W88.3 Part B (reordered W114.3, B-085): per-leaf ARM scoring first, then the paired Brier of a frozen model vs the Kalshi
+pre-game price as the last, labelled line. The arm table is retro_route's method on the same joined rows (RIDE / FADE /
+MODEL_FADE per leaf, fit on the earlier 70% of games, scored on the later 30%, net of the exact taker fee, 90% game-clustered
+interval); it is what the tree routes on. Brier vs the market is a calibration read, never the verdict (DOCTRINE section 1).
 Joins <model_side.json> rows (game_id, start_time_utc, home, away, p_model, y) to <SERIES>_pregame.jsonl (one market per
 event, hourly candles). Market price = mid of (yes_bid.close, yes_ask.close) of the last hourly candle ending at or
 before start - 1h (the band's decision time), flipped to the home side when the listed market is the away team; rows
@@ -19,6 +22,7 @@ from prediction_market_bot.c3_forecasting import nhl_pregame as nhl  # noqa: E40
 from prediction_market_bot.c5_execution.position_gate import skill_weight  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion.mlb_game_pregame_features import canon as mlb_canon  # noqa: E402
 from prediction_market_bot.pregame_shadow.nba_forecaster import parse_market_ticker as nba_parse  # noqa: E402
+from prediction_market_bot.quant import retro_route  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 from prediction_market_bot.quant.scoring import brier, brier_diff  # noqa: E402
 
@@ -74,6 +78,11 @@ def summarize(joined: list[dict]) -> dict:
             "median_spread": sorted(j["spread"] for j in joined)[len(joined) // 2]}
 
 
+def arm_table(kind: str, joined: list[dict]) -> dict:
+    """Per-leaf routed arm and held-out net per contract after the exact fee (retro_route.arm_report) for these game rows."""
+    return retro_route.arm_report(retro_route.game_rows(joined, kind.upper(), f"{kind.upper()}_MONEYLINE"))
+
+
 def main():
     kind = sys.argv[1]
     model_side = json.loads(Path(sys.argv[2]).read_text())
@@ -101,12 +110,16 @@ def main():
         if y_mkt_home != g["y"]:
             drop["outcome_disagrees"] += 1
             continue
-        joined.append({"game_id": g["game_id"], "p_model": min(max(g["p_model"], 1e-4), 1 - 1e-4),
+        joined.append({"game_id": g["game_id"], "ticker": r["ticker"], "start_time_utc": g["start_time_utc"],
+                       "p_model": min(max(g["p_model"], 1e-4), 1 - 1e-4),
                        "p_market": mid if home_listed else 1 - mid, "spread": spread, "y": g["y"],
                        "quote_age_s": int(start - DECISION_LEAD_S - ts),
                        **({"inseason_prior_min": g["inseason_prior_min"]} if "inseason_prior_min" in g else {})})
     res = {"model_sha256": model_side["model_sha256"], "season": model_side["season"], "n_model_rows": len(model_side["rows"]),
-           "dropped": dict(drop), **summarize(joined)}
+           "dropped": dict(drop),
+           "arms": arm_table(kind, joined),  # FIRST: what the tree routes on
+           "brier_vs_market_last_line": "calibration read only, not the verdict; model-minus-market Brier (positive = model closer)",
+           **summarize(joined)}
     if joined and "inseason_prior_min" in joined[0]:
         res["full_inseason_history_ge30"] = summarize([j for j in joined if j["inseason_prior_min"] >= 30])
     res["rows"] = joined

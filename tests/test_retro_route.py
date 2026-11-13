@@ -48,3 +48,27 @@ def test_split_is_by_game_date_and_route_no_lookahead():
     assert max(r["start_time_utc"] for r in rows if rr.game_id(r) in fit_g) <= min(r["start_time_utc"] for r in rows if rr.game_id(r) in test_g)
     out = rr.route(rows)
     assert out["fit_games"] == 70
+
+
+# --- W114.3: game_rows / arm_report on a case where the truth is known ---------------------------------------------
+def _hist(n=200, fav_wins=0.80, price=0.70):
+    """Favourite priced 0.70 wins 80% of games: RIDE must be the routed arm in that leaf and net > 0; FADE must lose."""
+    losers = round(1 / (1 - fav_wins))  # deterministic: every `losers`-th game loses, so the win rate is exact
+    return [{"ticker": "KXNHLGAME-X%d-H" % i, "game_id": "G%03d" % i, "start_time_utc": "2025-01-%02dT00:00:00Z" % (1 + i // 10),
+             "p_market": price, "spread": 0.02, "y": 0 if i % losers == 0 else 1, "p_model": 0.5} for i in range(n)]
+
+
+def test_game_rows_ride_wins_when_favourite_underpriced():
+    from prediction_market_bot.quant import retro_route as rr
+    rows = rr.game_rows(_hist(), "NHL", "NHL_MONEYLINE")
+    rep = rr.arm_report(rows)
+    assert rep["family_heldout_by_arm"]["RIDE"]["net"] > 0 > rep["family_heldout_by_arm"]["FADE"]["net"]
+    routed = [l for l in rep["leaves"] if l["arm"] != "NO_BET"]
+    assert routed and all(l["arm"] == "RIDE" for l in routed)
+
+
+def test_game_rows_overpriced_favourite_routes_to_no_bet_for_ride():
+    from prediction_market_bot.quant import retro_route as rr
+    rep = rr.arm_report(rr.game_rows(_hist(fav_wins=0.50), "NHL", "NHL_MONEYLINE"))
+    assert rep["family_heldout_by_arm"]["RIDE"]["net"] < 0  # losing arm is routed away, not "no edge"
+    assert not any(l["arm"] == "RIDE" for l in rep["leaves"])

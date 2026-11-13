@@ -2,6 +2,9 @@
 Part B: does the best factor add to the Kalshi KXNHLGAME pre-game price beyond the frozen nhl_pregame_v1 p?
 
 Exploratory: reads the event store and the Kalshi history store; writes only under 12_EXPLORATORY/nhl_engine/results.
+W114.3 (B-085): the routing result is the per-leaf arm table (held-out net per contract after fees, per arm; see part_b.py
+``arms``). The rule below is the factor-stack calibration read, reported last; ``does not add`` there is a statement about
+that stack's blend with the price, not about any arm, cell or market.
 Rule fixed BEFORE the 2025 look (stated in results_W84.md): ``adds`` = the factor coefficient's 95% CI (stacked on
 logit(market)) excludes 0 AND the cross-validated blend beats the market on Brier with the 95% CI of the paired
 difference below 0; ``does not add`` = the coefficient CI includes 0 and its upper end is under 0.5 (half a unit of

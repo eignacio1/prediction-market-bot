@@ -1,6 +1,9 @@
 """W84.3 Part B: does the best Part A factor add to the KXNHLGAME pre-game price beyond frozen nhl_pregame_v1?
 Exploratory only. Reads the event store, cached box payloads and the Kalshi history store; no live model is changed.
-Verdict rule is fixed in run_w84_3.py's docstring (written before the 2025 look)."""
+W114.3 (B-085): the output now leads with ``arms`` - per-leaf routed arm and held-out net per contract after the exact fee
+(retro_route.arm_report: RIDE / FADE / MODEL_FADE, earlier 70% of games fit, later 30% scored, 90% game-clustered interval).
+The stacked-logit coefficient and the CV Brier blend vs the market follow as the LAST, labelled calibration read; the rule for
+its ``verdict`` is fixed in run_w84_3.py's docstring (written before the 2025 look) and is not the routing result."""
 from __future__ import annotations
 
 import gzip
@@ -20,6 +23,7 @@ from prediction_market_bot.analytics import kalshi_history as kh  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion import nhl_ingest as ni  # noqa: E402
 from prediction_market_bot.c2_feature_store.nhl_features import NhlFeatureStore, parse_ts  # noqa: E402
 from prediction_market_bot.c3_forecasting import nhl_pregame as m  # noqa: E402
+from prediction_market_bot.quant import retro_route as rr  # noqa: E402
 
 OUT = R.OUT
 FEATS = ["xg_share5", "st_net60", "gsax", "rest"]
@@ -124,6 +128,10 @@ def main():
            "factor_train_seasons": R.FACTOR_TRAIN, "factor_coefs_std": dict(zip(["const"] + FEATS, map(float, b)))}
     adds = ci[0] > 0 or ci[1] < 0
     res["verdict"] = ("adds" if adds and dci[1] < 0 else "does not add" if (not adds and abs(ci).max() < 0.5) else "too few to tell")
+    res["verdict_note"] = "calibration read of the factor stack vs the market, reported last; the routing result is `arms`"
+    legs = [{"game_id": g, "ticker": f"KXNHLGAME-{g}-H", "start_time_utc": str(t), "p_market": mk_, "spread": sp, "y": int(yy),
+             "p_model": fz_} for g, t, mk_, sp, yy, fz_ in zip(d.game_id, d.start_time_utc, d.mkt, d.spread, d.y, d.frozen)]
+    res = {"arms": rr.arm_report(rr.game_rows(legs, "NHL", "NHL_MONEYLINE")), **res}
     json.dump(res, open(safe_out(OUT / "part_b.json"), "w"), indent=1); print(json.dumps(res, indent=1))
 
 

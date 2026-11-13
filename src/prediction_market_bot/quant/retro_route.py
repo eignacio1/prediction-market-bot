@@ -260,3 +260,39 @@ def whole_arm_table(rows: list[dict], games: set) -> dict:
             if x is not None:
                 out[(r["sport"], r["market_type"])][a][g].append(x)
     return out
+
+
+# --- W114.3 (B-085): the same per-leaf, held-out, net-after-costs arm scoring for one-quote-per-game history joins ----
+def game_rows(joined: Iterable[dict], sport: str, market_type: str, band: str = "T3") -> list[dict]:
+    """Shape history-join rows (one pre-game quote per game: ticker, game_id, start_time_utc, p_market = YES mid, spread,
+    y = YES outcome, p_model = the model's YES probability) like shadow rows, so route() scores RIDE / FADE / MODEL_FADE per
+    leaf, fit on the earlier 70% of games and tested on the later 30%, net of the exact taker fee. No MOMENTUM (one quote)."""
+    out = []
+    for j in joined:
+        mid, half = float(j["p_market"]), float(j["spread"]) / 2.0
+        out.append({
+            "sport": sport, "market_type": market_type, "band": band, "market_ticker": j["ticker"], "run_id": "pregame",
+            "event_ticker": f'{j["ticker"].split("-")[0]}-{j["game_id"]}', "mid": mid,
+            "yes_bid": max(mid - half, 0.005), "yes_ask": min(mid + half, 0.995), "y": float(j["y"]),
+            "p_yes": j.get("p_model"), "ts_utc": j["start_time_utc"], "start_time_utc": j["start_time_utc"],
+        })
+    return out
+
+
+def arm_report(rows: list[dict]) -> dict:
+    """What a leaf-routed reader needs, arms first: per-leaf routed arm with held-out net and interval, the unrouted
+    held-out net per arm for the whole family, and the counts. Model-vs-market Brier is NOT here; callers add it last."""
+    res = route(rows)
+    _, test_g = split_games(rows)
+    fam = {}
+    for _, arms in whole_arm_table(rows, test_g).items():
+        for a, by in arms.items():
+            if len(by) >= MIN_TEST_GAMES:
+                m, lo, hi, p = boot_ci(by)
+                fam[a] = {"net": m, "lo90": lo, "hi90": hi, "p_gt0": p, "n": sum(len(v) for v in by.values()), "games": len(by)}
+    leaves = [{k: l[k] for k in ("leaf", "arm", "thin", "fit_games", "test_games", "bh", "draft",
+                                 "test_mean", "test_lo", "test_hi", "test_n_games") if k in l} for l in res["leaves"]]
+    return {"unit": "net per contract after exact taker fee, held out (latest 30% of games), 90% game-clustered interval",
+            "fit_games": res["fit_games"], "test_games": res["test_games"],
+            "routed_leaves": sum(l["arm"] != "NO_BET" for l in res["leaves"]), "thin_leaves": sum(l["thin"] for l in res["leaves"]),
+            "family_heldout_by_arm": fam, "leaves": leaves}

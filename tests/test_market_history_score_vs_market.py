@@ -44,3 +44,12 @@ def test_mlb_parse_2025_ticker_without_hhmm():
     assert svm.mlb_parse("KXMLBGAME-25APR16ATHCWS-ATH") == {"away": "ATH", "home": "CWS"}
     assert svm.mlb_parse("KXMLBGAME-25APR16ATHCWS-CWS") == {"away": "ATH", "home": "CWS"}
     assert svm.mlb_parse("KXMLBGAME-25JUN011910NYYBOS-NYY") == {"away": "NYY", "home": "BOS"}
+
+
+def test_arm_table_scores_arms_per_leaf_before_brier():
+    # favourite priced 0.70 wins 4 of 5 games: the arm table must show RIDE net > 0 and FADE net < 0, held out
+    joined = [{"game_id": i, "ticker": f"KXNHLGAME-X{i}-H", "start_time_utc": "2025-01-%02dT00:00:00Z" % (1 + i // 10),
+               "p_model": 0.5, "p_market": 0.70, "spread": 0.02, "y": 0 if i % 5 == 0 else 1} for i in range(200)]
+    a = svm.arm_table("nhl", joined)
+    assert a["family_heldout_by_arm"]["RIDE"]["net"] > 0 > a["family_heldout_by_arm"]["FADE"]["net"]
+    assert a["routed_leaves"] >= 1
