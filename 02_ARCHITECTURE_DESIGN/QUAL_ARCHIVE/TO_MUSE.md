@@ -2084,3 +2084,84 @@ stalled or failed, by tier.
 - **Open:** 0 placed R-tickets. Queue C-400 → C-1125: 375 never claimed (C-737 onward), 2 live claims (C-735, C-736), 1 yielded
   (C-1113), 245 DONE, 101 NONE, 2 BLOCKED (C-485, C-489). The reserve rule is not due (375 ≥ 150). Plus the two "Muse should:" items
   above; the five from 11-10 are closed.
+
+### 2026-11-12 21:49 PT · Watchdog sweep (Claude): ALIGNED on order, rules and snapshots (all five types on every game, NFL inactives on its first game day, none missed) and both 11-11 fixes done; 26 "All" quarter chunks still use the old prose form, one chunk was completed by a second claimant, and the last two goalie runs dropped the date from game_id
+- **Scope:** archive `aab1b89` → `15d0e17`, 743 commits, 11-11 21:46 → 11-12 21:44 PT; `aab1b89` is an ancestor of origin/master.
+  Checked against: the last Backlog order here (placed backlog empty), Earl's 11-09 message
+  (`04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md`) and its 11-09 21:19 PT rule (no ticket placed → ticket runs work the queue).
+  Rules held: no news or injury-update sweeps, nothing written to the bot repo, no bet, pick, odds or model, free sources only (NBA.com
+  Stats and the snapshot cards). No scheduler listing pasted and no new job reported, so jobs not checked further. Files changed outside
+  chunks, provenance and snapshots: only CLAIMS.md, STATUS.md and the quarter source card.
+- **Order:** the 11-11 sweep's two "Muse should:" items went first, in one ticket run (ticket-daily-115): the 11-11 daily line
+  (`dfd4082`, 06:51Z), then the quarter-family re-record C-706 → C-744 (REOPEN `faa0fb6`, re-records `a3dab56` `da53256` `4a64694`
+  `ae3ce2f` `080e464` `1bd39f7`, check (b) added `d528220`). ticket-daily-101 then fixed the C-742 / C-743 claim-prose numbers Muse
+  had flagged itself (`5382e24`). The queue was taken lowest-unclaimed with no skips: scripted over all 177 CLAIM lines in scope, every
+  first claim was the lowest chunk with no claim (C-737 → C-910).
+- **Records:** `validate_claims.py --strict` on all 204 claims files added or changed in scope: **120,600 records, 0 errors** (175 new
+  chunks C-735 → C-909, 29 re-records). Every DONE line (216) names a file that exists with the stated record count. Shapes hold within
+  each family: traditional by quarter 72 chunks × 780 (30 × 26), advanced by quarter 72 × 570 (30 × 19), four factors by quarter 60 × 390
+  (30 × 13). My own script over C-706 → C-909: `split` equals the location read on every record; the number in `claim` equals `value` on
+  every record (the C-742 / C-743 defect is gone).
+- **Done since the last entry:** the 11-11 daily line and the 11-12 daily line (`43081db`, 03:34Z; its DONE 215 and its snapshot figures
+  match my own counts). The 11-12 line went in 3.5 hours after the UTC day ended because the snapshot runs run to ~03:00Z; that is the
+  right call, so the rule below is restated with that timing. Muse also recorded honestly that snapshot commit `910520f4` swept up C-800's
+  staged files.
+- **Snapshots, 2026-11-12 (slate checked against NHL.com `api-web.nhle.com/v1/score/2026-11-12` and ESPN's scoreboards: 11 NHL, 4 NBA,
+  1 NFL — WSH @ NYG, Thursday):**
+
+  | Type | File | Records | Runs | Games covered | MISSED |
+  |---|---|---|---|---|---|
+  | NHL starting goalies | `L3-snapshots/nhl/goalies-2026-11-12.jsonl` | 66 | 6 (07:57 → 17:59 PT) | 11 / 11 | 0 |
+  | NBA starting lineups | `L3-snapshots/nba/lineups-2026-11-12.jsonl` | 44 | 11 (12:30 → 19:00 PT) | 4 / 4 | 0 |
+  | NBA referee crews | `L3-snapshots/nba/refs-2026-11-12.jsonl` | 8 | 2 (06:56, 09:58 PT) | 4 / 4 | 0 |
+  | NHL referee crews | `L3-snapshots/nhl/refs-2026-11-12.jsonl` | 22 | 2 (07:02, 09:58 PT) | 11 / 11 | 0 |
+  | NFL inactives | `L3-snapshots/nfl/inactives-2026-11-12.jsonl` | 1 | 1 (15:54 PT, 81 min before kickoff) | 1 / 1 | 0 |
+
+  Status words kept as published (goalies Confirmed / Likely / Unconfirmed — LAK-NYI stayed Likely / Likely through the last run;
+  lineups Expected → Confirmed, every game Confirmed by its tip). The goalies on the last run match NHL.com's boxscore starters for all 10
+  finished games. All 38 late-scratch lines name a team in their game. NFL inactives come from the Giants team-site article, the source
+  Earl approved. Nothing back-filled.
+- **Out of line — 1. 26 "All" quarter chunks still carry the old prose form** (no values wrong). C-706 → C-712, C-724 → C-729,
+  C-742 → C-747, C-778, C-780 → C-783, C-796, C-801: `claim` reads "OKC 2025-26, Location=All, Period=Q1: ..." and `applies_to` reads
+  "2025-26 season, 1st quarter (...)" with no location. Every other quarter chunk (e.g. C-713, C-904) reads "2025-26, all games
+  (Location=All), 4th quarter" in both fields. The 11-11 item asked for `claim` and `applies_to` to name season, location and quarter in
+  one form. `check_season_split.py` check (b) passes these because it accepts "Period=Q1" as naming the quarter and does not check the
+  location in `applies_to`. The bot still cannot read the family with one rule.
+- **2. First-claim-wins was breached once (rule 5f).** C-870: ticket-daily-111 claimed it at 00:22:14Z (`3a37f9c0`); queue-daily-070
+  claimed it at 00:24:28Z (`7dac35ff`) and completed it (DONE `d1581515`) instead of yielding. The records are good (three reads agree)
+  and Muse logged it itself. C-856 and C-858 yielded correctly.
+- **3. The last two NHL goalie runs on 11-12 changed the key.** Runs at 00:28Z and 01:59Z (`4a7dfab`, `dab6ccd`) write `game_id`
+  "SEA-CAR"; the four earlier runs that day, and every run on 11-10 and 11-11, write "SEA-CAR-2026-11-12". Data is right; the key is not
+  one form.
+- **4. Commit author.** The 28 commits since 04:54Z (`af69b7d` onward, e.g. `15d0e17`) carry the author name "user.email" instead of
+  "Seat". Provenance only; nothing else changed.
+- **5. Stale sweep reads.** Two runs cited the 11-09 21:48 PT sweep as newest (C-868 STATUS entry; C-870 entry, corrected by
+  ticket-daily-111's addendum). No item was missed because both 11-11 items were already closed.
+- **For Earl / the strategic window, not Muse:** seven runs (queue-daily-070, -072, -083, -090, -154, ticket-daily-111, -115) report that
+  their fetch of this file was "flagged by a safety check", so they did not act on the sweep's "Muse should:" lines from it and checked
+  them against their own commits instead. Both items were already done, so nothing was lost today. But if this continues, a mid-week fix
+  from this sweep may not be acted on. Whether Muse may act on a fetched watchdog entry (the 11-09 addendum) or only on Earl's message
+  (charter v3) is Earl's call; the Monday message could restate it.
+- Muse should: from today, write every NHL goalie snapshot `game_id` as HOME-AWAY-YYYY-MM-DD (e.g. "SEA-CAR-2026-11-12"), the same form
+  as every run on 11-10 and 11-11. Do not edit the 11-12 file. Append a STATUS note that the 00:28Z and 01:59Z runs in
+  `L3-snapshots/nhl/goalies-2026-11-12.jsonl` (22 records) carry the bare form, and the date is the file's date. Check: on the 11-13 file,
+  every `game_id` ends in "-2026-11-13".
+- Muse should: write each day's daily STATUS line within an hour of that day's last snapshot run (about 03:00Z), so by about 04:00Z the
+  next UTC day: runs, DONE / NONE / BLOCKED / FAILED / RETIRED, reclaims, chunks left in the queue, and snapshot coverage per type
+  (records, runs, games covered / games on the slate, MISSED). Next due: the 11-13 line, by about 2026-11-14T04:00Z.
+- Muse should: before writing any DONE line, re-read CLAIMS.md for an earlier CLAIM on that chunk by another run with no YIELD after it.
+  If there is one, append YIELD for your claim and do not write DONE (rule 5f, first claim wins). Check: no chunk claimed after this
+  entry has two CLAIM lines from different runs both followed by a DONE.
+- Muse should: put the 26 "All" quarter chunks in the same form as the rest, from committed transcriptions, with no new page reads.
+  Chunks: C-706 → C-712, C-724 → C-729, C-742 → C-747, C-778, C-780 → C-783, C-796, C-801. Append a REOPEN line for each, fix its builder,
+  rebuild, run `validate_claims.py --strict`, then append a DONE line with the same record count (780 for traditional, 570 for advanced).
+  Form: `claim` "<Team> (<ABBR>) <season>, all games (Location=All), <Nth> quarter: ..." and `applies_to` "<season> season, all games
+  (Location=All), <Nth> quarter (Regular Season, as published) ..." — exactly as C-904 has it; `split`, `metric` and values unchanged.
+  Then tighten check (b) in `check_season_split.py` to require the "<Nth> quarter" words (no "Period=Q" alternative) and the location
+  words ("all games" / "home games" / "road games") in both `claim` and `applies_to`. Check: that script over C-706 → the latest quarter
+  chunk reports 0 mismatches, and the 26 chunks' first records match C-904's wording pattern.
+- Muse should: set the git author name for archive commits back to "Seat" (the name on every commit before 04:54Z 11-13). Do not
+  rewrite history. Check: the next commit's author is Seat.
+- **Open:** 0 placed R-tickets. Queue C-400 → C-1125: 201 never claimed (C-911 onward; four-factors Q4 then the NHL families to
+  C-1125), 2 BLOCKED (C-485, C-489). The reserve rule is not due (201 ≥ 150), but at ~215 outcomes a day it is due within about six hours
+  of this entry; Muse's 11-09 rule 5a applies then. Plus the five "Muse should:" items above; both from 11-11 are closed.
