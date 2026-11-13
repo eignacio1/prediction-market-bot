@@ -4731,3 +4731,33 @@ W113.1, 2026-11-12. `row_sizing.leg_draws` builds draws from identity (same tick
 **Status:** OPEN · **Severity:** MEDIUM
 
 W113.1, 2026-11-12. `filter_supply.nhl_filters_for_row` reads `exp_output/NHL_EVENTS` (parquet; games, events, shifts). It is not in RUNTIME_REGISTRY, so on the box every NHL row will note `filters_unavailable:nhl_game_not_in_store` and the 20 kept NHL splits never fire live. `coverage.filter_layer_sports` counts NHL only when the store is present (local: layer 3 NHL 0 to 9). Also: `nhl_filters_for_row` named in the brief did not exist (#489 shipped `nhl_filters(home, away)`); this block built the per-row function. Needs a store refresh job (a surface add, Hard Rule 14) before NHL layer 3 is real on the box. Separately, main CI is red on `tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted` (registry entry now live after the 11-12 install approval; test expects paused), so PR 493 cannot merge on green.
+
+### GG-1930 — Archive vs bot definitional mismatches: NBA turnovers, neutral-site home/road, NHL penaltiesFor (W113.4)
+**Status:** OPEN · **Severity:** LOW
+
+W113.4, 2026-11-12. Recompute against the Muse archive (pinned cc7bf85) matched on shooting by distance, but MISMATCHED on NBA team turnovers per game (archive higher; likely team turnovers counted), home/road labeling for neutral-site games, and NHL penaltiesFor (neither committed nor drawn matches). Those items stay REPORTED, not VERIFIED. See 12_EXPLORATORY/archive_intake/GRADES.md.
+
+### GG-1931 — No pre-game NHL starting-goalie capture, so archive goalie snapshots are UNCHECKABLE (W113.4)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W113.4, 2026-11-12. The bot knows the NHL starter only post-game (see GG-1010). Archive snapshots carry no puck-drop time and the bot's NHL store and Kalshi NHL history end June 2026, so snapshot timing cannot be graded. Needs a forward capture (bot-side snapshots plus Kalshi candles for November games).
+
+### GG-1932 — W113.1 filter_supply has not yet picked up the 12 distance filters (W113.4)
+**Status:** OPEN · **Severity:** LOW
+
+W113.4, 2026-11-12. Interface: `archive_intake.nba_distance_filters.distance_filters(home, away)`, percentiles in 12_EXPLORATORY/archive_intake/team_percentiles.json. 113.1 owns decision_trees/filter_supply.py; wiring is its call. All 54 leaves route to NO_BET provisionally (0 BH survivors).
+
+### GG-1933 — NFL layer 3 is 0 on the box: NflProviders snapshots are not on disk there (W114.2)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W114.2, 2026-11-13. `d6_read` on the box (results/20261113T0044Z_d6_read.md) shows `sports_with_filter_data = ["nba"]`. `nfl_engine.providers.default_nfl_providers()` returns None when its snapshots (schedule, team-games, percentiles, matchup book) are missing, so every NFL row records `filters_unavailable` and the 13 NFL layer-3 cells never count. Locally they do. Needs the snapshot files named and a box job or deploy path that puts them there (surface add, Hard Rule 14). Operator approval is needed only for an install.
+
+### GG-1934 — `demo_fill_forward_report.arm_orders_report` uses `datetime.fromisoformat`, which fails on "Z" under the box's Python 3.9 (W114.2)
+**Status:** OPEN · **Severity:** LOW
+
+W114.2, 2026-11-13. `arm_orders_read.parse_ts` is tolerant; the older report is not. Not fixed in 114.2 (out of scope, Hard Rule 11). Fix: route it through `arm_orders_read.parse_ts` or `filter_supply.parse_ts`.
+
+### GG-1935 — Daily breaker causes 690 of the arm-order skips and NHL rows are all unrouted (W114.2)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W114.2, 2026-11-13. Box `logs/arm_orders/orders.jsonl` (6,578 rows to 00:44:44Z): `daily_breaker` 690 skips across RIDE/FADE/MOMENTUM; `unrouted` 593 (NBA/NFL ERROR) and 1,415 NHL UNROUTED. Fills are few (23 of 206 orders) and none settled, so E2/E3 are null. Question to answer next: is the breaker tripping on demo stakes or on a stale base, and why NHL has no tree route.

@@ -1,0 +1,98 @@
+[
+ {
+  "name": "opp_fg_pct_lt5",
+  "ok": true,
+  "rank_history": 9,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.8492269663880538
+ },
+ {
+  "name": "opp_fga_share_lt5",
+  "ok": true,
+  "rank_history": 1,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.9058177403697935
+ },
+ {
+  "name": "opp_fg_pct_5_9",
+  "ok": true,
+  "rank_history": 74,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.6194415452739109
+ },
+ {
+  "name": "opp_fga_share_5_9",
+  "ok": true,
+  "rank_history": 41,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.8930014305420019
+ },
+ {
+  "name": "opp_fg_pct_10_14",
+  "ok": true,
+  "rank_history": 18,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.3469423622894091
+ },
+ {
+  "name": "opp_fga_share_10_14",
+  "ok": true,
+  "rank_history": 10,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.8504912329018514
+ },
+ {
+  "name": "opp_fg_pct_15_19",
+  "ok": true,
+  "rank_history": 6,
+  "of_history": 270,
+  "trait": false,
+  "split_half_r": 0.12951968733569547
+ },
+ {
+  "name": "opp_fga_share_15_19",
+  "ok": true,
+  "rank_history": 3,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.9443958694399388
+ },
+ {
+  "name": "opp_fg_pct_20_24",
+  "ok": true,
+  "rank_history": 10,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.3220697448895191
+ },
+ {
+  "name": "opp_fga_share_20_24",
+  "ok": true,
+  "rank_history": 18,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.907893644394568
+ },
+ {
+  "name": "opp_fg_pct_25plus",
+  "ok": true,
+  "rank_history": 14,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.2828046073100698
+ },
+ {
+  "name": "opp_fga_share_25plus",
+  "ok": true,
+  "rank_history": 23,
+  "of_history": 270,
+  "trait": true,
+  "split_half_r": 0.9362833756776676
+ }
+]

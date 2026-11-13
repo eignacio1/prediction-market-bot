@@ -1,0 +1,191 @@
+{
+ "points": {
+  "20": {
+   "name": "opp_fg_pct_lt5",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "lt5ft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lt5ft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.5651260504201681,
+   "n_plays": 476,
+   "games": 20,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 9,
+   "of_history": 270,
+   "percentile_history": 0.9702602230483272,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.45878787960327266,
+    "r_spearman_brown": 0.6289987544015558,
+    "ci95": [
+     0.5337270779421367,
+     0.7100765806238392
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.27419354838709675,
+    "league_share": 0.3225914861837192,
+    "own_possessions": 1736,
+    "own_in_situation": 476
+   },
+   "cross": {
+    "opp": 1610612747,
+    "expected": 0.6472493167318208,
+    "league": 0.6462317130386568,
+    "delta_vs_league": 0.0010176036931640597,
+    "opp_value": 0.7283950617283951,
+    "opp_n": 486
+   }
+  },
+  "40": {
+   "name": "opp_fg_pct_lt5",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "lt5ft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lt5ft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.5778474399164054,
+   "n_plays": 957,
+   "games": 40,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 14,
+   "of_history": 270,
+   "percentile_history": 0.9516728624535316,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.6311565629055498,
+    "r_spearman_brown": 0.7738761284585485,
+    "ci95": [
+     0.7061551194366076,
+     0.8262013161673293
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.2754749568221071,
+    "league_share": 0.3206949259963464,
+    "own_possessions": 3474,
+    "own_in_situation": 957
+   },
+   "cross": {
+    "opp": 1610612747,
+    "expected": 0.652440076135037,
+    "league": 0.6462317130386568,
+    "delta_vs_league": 0.006208363096380176,
+    "opp_value": 0.7235772357723578,
+    "opp_n": 984
+   }
+  },
+  "82": {
+   "name": "opp_fg_pct_lt5",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612760,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "lt5ft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "lt5ft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.5825335892514395,
+   "n_plays": 2084,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 9,
+   "of_history": 270,
+   "percentile_history": 0.9702602230483272,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.7379621711525287,
+    "r_spearman_brown": 0.8492269663880538,
+    "ci95": [
+     0.8009133800201691,
+     0.8864562335496025
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.28756726921484754,
+    "league_share": 0.3209405043826628,
+    "own_possessions": 7247,
+    "own_in_situation": 2084
+   },
+   "cross": {
+    "opp": 1610612747,
+    "expected": 0.6540547193813699,
+    "league": 0.6462317130386568,
+    "delta_vs_league": 0.007823006342713157,
+    "opp_value": 0.7195238095238096,
+    "opp_n": 2100
+   }
+  }
+ },
+ "name": "opp_fg_pct_lt5",
+ "season": 2026,
+ "unit_shown": 1610612760,
+ "opp_shown": 1610612747,
+ "metric": "make",
+ "side": "dfn",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "lt5ft"
+  },
+  {
+   "family": "KXNBASPREAD",
+   "line": "cover",
+   "direction": "lt5ft"
+  }
+ ],
+ "source_family_grade": "VERIFIED (GRADES.md)"
+}

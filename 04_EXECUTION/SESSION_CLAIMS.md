@@ -1272,9 +1272,16 @@
 | 2026-11-12T23:05:01Z | B-086; GG reserve 3 | W113.3 B-086 ENGINE: NBA joint shared latent for same-player/teammate legs + SGP parlay branch. PURPOSE: D4 NBA (whole board one engine, parlays included); same-game joint error by pair class |
 | 2026-11-12T23:05:13Z | GG-1896..GG-1898, B-084 | W113.1 trees/execution: first cells wired end to end (B-084). PURPOSE: moves D6 wired 0->N, layer 3 NFL/NHL, layer 6/7 evidence |
 | 2026-11-12T23:05:31Z | B-087; GG-1930..1932 | W113.4 B-087 DATA STANDARD: bot reads Muse archive read-only pinned, grades VERIFIED by recompute. PURPOSE: D-06 granularity bar; NBA index entries 24->N; D1 NBA/NHL |
+| 2026-11-13T00:05:32Z | W113.4 (B-087) | MERGED: NO — branch `session/20261112T230415Z-w113-4-archive-intake` awaiting merge — W113.4: bot reads Muse archive read-only, grades it (4 verified, 3 mismatch), 12 NBA index entries; PR #494 held on red main CI. (commit `70a249a`) |
 | 2026-11-13T00:05:27Z | B-089 | CLOSED — merge confirmed, HEAD (d65f580) is ancestor of origin/main — W113.2 NFL wired for Sunday: PR #495 merged 9b3e25a, box deployed 6f40c9a7; layer 3 NFL 0 to 13 cells |
 | 2026-11-13T00:05:40Z | B-086 | CLOSED — W113.3 B-086: NBA shared-latent joint + combo pricer merged; PTSx3PM gap closed, teammate classes open. (commit `a5cffd2`) |
 | 2026-11-13T00:16:05Z | B-084 | CLOSED — W113.1 merged (#493): arm orders sized via size_for, NHL per-row filters (20 splits kept), D6 layer 6/7 rules; wired still 0 of 117. (commit `62128ee`) |
 | 2026-11-13T00:22:25Z | B-090 | W114.2 D6 counted on the box; PURPOSE: D6 wired/117 + E1-E3 per arm measured from box logs |
 | 2026-11-13T00:22:31Z | B-085 | W114.3 doctrine leftovers: router picks the arm. PURPOSE: D-04 CONTRADICTED->fixed; decision points contradicting DOCTRINE |
 | 2026-11-13T00:23:37Z | B-086 | W114.4 NBA joint teammate legs one usage pool per team. PURPOSE: D4 NBA / teammate joint error |
+| 2026-11-13T00:47:20Z | W114.1 (B-087) | CLOSED — W114.1: Muse intake (#494) merged; NBA adapter now tags rows with 12 shot-distance filters (#500); 54 leaves scored, 5 kept. (commit `499522d`) |
+| 2026-11-13T00:47:49Z | W114.1 (B-087) | CLOSED — merge confirmed, HEAD (0b82d16) is ancestor of origin/main — Muse intake #494 and NBA distance filters #500 merged |
+| 2026-11-13T00:49:40Z | B-085 | CLOSED — merge confirmed, HEAD (70f9c8b) is ancestor of origin/main — W114.3 doctrine leftovers: orchestrator defers to router (#497), per-leaf arm scoring before Brier (#499); docs 330fbd2, handoff 70f9c8b |
+| 2026-11-13T00:49:11Z | B-090 | CLOSED — W114.2: D6 measured on the box (0/117) and first E1-E3 per arm via two new read-only box tasks (#498). (commit `cbf7d64`) |
+| 2026-11-13T00:49:25Z | B-090 | CLOSED — merge confirmed, HEAD (6e74e2a) is ancestor of origin/main — W114.2 D6 0/117 on box, E1-E3 first values (#498) |
+| 2026-11-13T00:51:47Z | B-090 | CLOSED — merge confirmed, HEAD (b20694a) is ancestor of origin/main — W114.2 D6 0/117 on box, E1-E3 first values (#498) |

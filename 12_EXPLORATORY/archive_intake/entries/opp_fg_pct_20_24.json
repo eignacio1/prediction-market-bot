@@ -1,0 +1,191 @@
+{
+ "points": {
+  "20": {
+   "name": "opp_fg_pct_20_24",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612759,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "20_24ft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "20_24ft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.37037037037037035,
+   "n_plays": 297,
+   "games": 20,
+   "rank_league": 13,
+   "of_league": 30,
+   "rank_history": 107,
+   "of_history": 270,
+   "percentile_history": 0.6059479553903346,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 20,
+    "n_unit_seasons": 270,
+    "r_half": 0.05677255902377328,
+    "r_spearman_brown": 0.10744518021213327,
+    "ci95": [
+     -0.12963260765727974,
+     0.3066508773278623
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.16732394366197184,
+    "league_share": 0.15733756534727408,
+    "own_possessions": 1775,
+    "own_in_situation": 297
+   },
+   "cross": {
+    "opp": 1610612743,
+    "expected": 0.38166571915861286,
+    "league": 0.38166571915861286,
+    "delta_vs_league": 0.0,
+    "opp_value": 0.3914590747330961,
+    "opp_n": 281
+   }
+  },
+  "40": {
+   "name": "opp_fg_pct_20_24",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612759,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "20_24ft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "20_24ft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.34796747967479674,
+   "n_plays": 615,
+   "games": 40,
+   "rank_league": 3,
+   "of_league": 30,
+   "rank_history": 22,
+   "of_history": 270,
+   "percentile_history": 0.9219330855018587,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 40,
+    "n_unit_seasons": 270,
+    "r_half": 0.06593059430854493,
+    "r_spearman_brown": 0.12370522932839402,
+    "ci95": [
+     -0.08904169115306029,
+     0.30480369459044687
+    ],
+    "trait": false
+   },
+   "frequency": {
+    "own_share": 0.1713091922005571,
+    "league_share": 0.15963911568430078,
+    "own_possessions": 3590,
+    "own_in_situation": 615
+   },
+   "cross": {
+    "opp": 1610612743,
+    "expected": 0.38166571915861286,
+    "league": 0.38166571915861286,
+    "delta_vs_league": 0.0,
+    "opp_value": 0.413854351687389,
+    "opp_n": 563
+   }
+  },
+  "82": {
+   "name": "opp_fg_pct_20_24",
+   "metric": "make",
+   "unit_kind": "team",
+   "side": "dfn",
+   "unit": 1610612759,
+   "markets": [
+    {
+     "family": "KXNBATOTAL",
+     "line": "under",
+     "direction": "20_24ft"
+    },
+    {
+     "family": "KXNBASPREAD",
+     "line": "cover",
+     "direction": "20_24ft"
+    }
+   ],
+   "ok": true,
+   "bucket": "in",
+   "value": 0.3529874213836478,
+   "n_plays": 1272,
+   "games": 82,
+   "rank_league": 1,
+   "of_league": 30,
+   "rank_history": 10,
+   "of_history": 270,
+   "percentile_history": 0.966542750929368,
+   "stability": {
+    "ok": true,
+    "bucket": "in",
+    "games": 82,
+    "n_unit_seasons": 270,
+    "r_half": 0.1919446555711059,
+    "r_spearman_brown": 0.3220697448895191,
+    "ci95": [
+     0.15234673155463782,
+     0.4601628866743198
+    ],
+    "trait": true
+   },
+   "frequency": {
+    "own_share": 0.17030392288124246,
+    "league_share": 0.1605227255097897,
+    "own_possessions": 7469,
+    "own_in_situation": 1272
+   },
+   "cross": {
+    "opp": 1610612743,
+    "expected": 0.38166571915861286,
+    "league": 0.38166571915861286,
+    "delta_vs_league": 0.0,
+    "opp_value": 0.4367034834324554,
+    "opp_n": 1177
+   }
+  }
+ },
+ "name": "opp_fg_pct_20_24",
+ "season": 2026,
+ "unit_shown": 1610612759,
+ "opp_shown": 1610612743,
+ "metric": "make",
+ "side": "dfn",
+ "markets": [
+  {
+   "family": "KXNBATOTAL",
+   "line": "under",
+   "direction": "20_24ft"
+  },
+  {
+   "family": "KXNBASPREAD",
+   "line": "cover",
+   "direction": "20_24ft"
+  }
+ ],
+ "source_family_grade": "VERIFIED (GRADES.md)"
+}
