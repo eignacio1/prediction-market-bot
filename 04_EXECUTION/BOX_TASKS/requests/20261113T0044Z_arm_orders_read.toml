@@ -1,0 +1,2 @@
+task = "arm_orders_read"
+note = "W114.2 B-090: arm-order log E1-E3 per arm"
