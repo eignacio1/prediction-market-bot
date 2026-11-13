@@ -33,13 +33,13 @@ LABEL = {
     "active": "active",
     "blocked": "blocked",
     "dark": "dark",
-    "ruled_out": "fade arm closed (routed; provisional, DOCTRINE 8)",
+    "ruled_out": "untradeable (no book / data) (routed; provisional, DOCTRINE 8)",
     "not_implemented": "registered, not built",
 }
 
 
 SHORT = {"shadow": "shadow", "active": "active", "blocked": "blocked", "dark": "dark",
-         "ruled_out": "fade arm closed", "not_implemented": "not built"}
+         "ruled_out": "untradeable (no book / data)", "not_implemented": "not built"}
 
 
 def _v(x) -> str:

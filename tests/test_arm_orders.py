@@ -100,8 +100,42 @@ def test_tags(env):
 
 
 def test_cap_blocks(env, monkeypatch):
+    """A huge flat stake is cut by arm_sizing's event cap; the c4 hard-limit backstop still blocks a stake past it."""
     monkeypatch.setattr(ao, "size_for", lambda *a: 10_000.0)
-    assert go(env, row())["reason"] in ("per_event_cap", "daily_breaker") and env.client.calls == []
+    r = go(env, row())
+    assert r["event"] == ao.ORDER_EVENT and r["stake_usd"] <= 5.0 and "event" in r["size_for"]["binding_caps"]
+    monkeypatch.setattr(ao, "sized_stake", lambda *a, **k: (10_000.0, {}))
+    assert go(env, row())["reason"] in ("per_event_cap", "daily_breaker")
+
+
+def _game_row(ticker, run):
+    r = row("RIDE", "yes", 0.70)
+    r.update(run_id=run, market_ticker=ticker, event_ticker="KXGAME-26NOV12AABB", market_type="x")
+    return r
+
+
+def test_size_decision_on_every_order_and_kelly_zero(env):
+    r = go(env, row())
+    sf = r["size_for"]
+    assert sf["kelly_placed"] is False and sf["kelly_fraction_live"] == 0.0 and "kelly_shaped_usd" in sf
+    assert r["size_arm"] == "RIDE"
+    s = go(env, row(None, None, branch="NO_BET"))
+    assert s["event"] == ao.SKIP_EVENT  # skips are logged too
+
+
+def test_correlated_second_leg_is_capped(env):
+    from prediction_market_bot.decision_trees import row_sizing as rs
+    first = go(env, _game_row("TA", "r1"))
+    assert first["event"] == ao.ORDER_EVENT and first["stake_usd"] == 1.0
+    rs.DRAWS_PROVIDER = lambda leg: rs.np.arange(rs.N_DRAWS) % 2 == 0  # 113.3 joint stand-in: the two legs move together
+    try:
+        second = go(env, _game_row("TB", "r2"))
+    finally:
+        rs.DRAWS_PROVIDER = None
+    assert second["event"] == ao.SKIP_EVENT and second["reason"].startswith("size_zero")
+    assert second["size_for"]["merged_legs"] == 1 and second["size_for"]["correlated_exposure_usd"] == 1.0
+    third = go(env, _game_row("TC", "r3"))  # identity draws: independent market -> not merged
+    assert third["event"] == ao.ORDER_EVENT
 
 
 def test_sizer_hook(env, monkeypatch):

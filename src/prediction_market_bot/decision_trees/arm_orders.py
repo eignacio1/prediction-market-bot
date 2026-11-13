@@ -15,8 +15,9 @@ For RIDE and FADE the side is derived here from the row and must equal the route
 Switch ARM_ORDERS: "on" -> the arm path replaces the old edge rule on routed rows; "dry" -> would-be orders are
 logged, none placed, and the old rule runs exactly as before; anything else (default) -> OFF, today's behaviour.
 Price and placement are the ADR-0072 policy (demo_fill_policy.decide: book anchor, 60 s cancel, max mid gap).
-Stake goes through size_for(arm, cell, context); the default is today's flat demo stake. Block 112.2 plugs the real
-per-arm rule in through SIZER with the same signature.
+Stake goes through c4_risk_engine.arm_sizing.size_for (W113.1, via row_sizing: flat demo stake cut by the event / day /
+arm / same-game caps; Kelly-shaped stake logged, never placed). The decision is logged on every order and skip. SIZER, if
+set, overrides it (tests).
 Every order and every would-be order carries: arm, leaf_id, split path (branch + filters fired), and the ADR-0072
 assignment (treatment / control) the row would have had. Orders go to their own log so the placement comparison
 (treatment vs control) is still read on its own rows.
@@ -33,6 +34,7 @@ from typing import Any, Callable, Optional
 
 from prediction_market_bot.c4_risk_engine import exposure_gate as xg
 from prediction_market_bot.c4_risk_engine import risk
+from prediction_market_bot.decision_trees import row_sizing as rs
 from prediction_market_bot.c5_execution import demo_fill_policy as pol
 from prediction_market_bot.c5_execution import kill_switch_state as ksw
 from prediction_market_bot.c5_execution.shadow_flat_stake import SHADOW_KILL_BAND, demo_host_ok
@@ -115,6 +117,16 @@ def size_for(arm: str, cell: Any, context: dict) -> float:
     return float(measurement_stake_and_stratum(context["entry"])[0])
 
 
+def sized_stake(arm: str, row: dict, router: dict, side: str, ctx: dict, log: Optional[Path], now: datetime):
+    """(stake, {'size_for': {...}}). The SIZER hook (if set) wins and carries no decision; else layer 6, arm_sizing.size_for,
+    with the open exposure and same-game legs read from the arm order log (W113.1)."""
+    if SIZER is not None:
+        return float(SIZER(arm, None, ctx)), {}
+    flat = size_for(arm, None, ctx)
+    d = rs.order_decision(row, router, side, flat, _placed(log), now)
+    return float(d.stake_usd), d.as_row_fields()
+
+
 def arm_of(router: Optional[dict]) -> Optional[str]:
     """The arm the router logged for this row, normalised; None when unrouted or NO_BET."""
     if not router or router.get("branch") in (None, "ERROR"):
@@ -185,7 +197,11 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
         return out(SKIP_EVENT, why)
     entry_guess = float(mid) if side == "yes" else 1.0 - float(mid)
     ctx = {"entry": entry_guess, "row": row, "router": router, "side": side, "assignment": would}
-    stake = size_for(arm, None, ctx)
+    stake, sz = sized_stake(arm, row, router, side, ctx, log, now)
+    base.update(sz)
+    base["size_arm"] = rs.sizing_arm(router)
+    if stake <= 0:
+        return out(SKIP_EVENT, "size_zero:" + str((sz.get("size_for") or {}).get("reason", "sizer")), stake_usd=stake)
     why = cap_reason(row.get("event_ticker") or ticker, stake, now.strftime("%Y-%m-%d"), log)
     if why:
         return out(SKIP_EVENT, why, stake_usd=stake)
