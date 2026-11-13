@@ -1279,3 +1279,4 @@
 | 2026-11-13T00:22:25Z | B-090 | W114.2 D6 counted on the box; PURPOSE: D6 wired/117 + E1-E3 per arm measured from box logs |
 | 2026-11-13T00:22:31Z | B-085 | W114.3 doctrine leftovers: router picks the arm. PURPOSE: D-04 CONTRADICTED->fixed; decision points contradicting DOCTRINE |
 | 2026-11-13T00:23:37Z | B-086 | W114.4 NBA joint teammate legs one usage pool per team. PURPOSE: D4 NBA / teammate joint error |
+| 2026-11-13T00:47:20Z | W114.1 (B-087) | CLOSED — W114.1: Muse intake (#494) merged; NBA adapter now tags rows with 12 shot-distance filters (#500); 54 leaves scored, 5 kept. (commit `499522d`) |
