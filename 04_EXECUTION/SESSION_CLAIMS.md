@@ -1284,3 +1284,4 @@
 | 2026-11-13T00:49:40Z | B-085 | CLOSED — merge confirmed, HEAD (70f9c8b) is ancestor of origin/main — W114.3 doctrine leftovers: orchestrator defers to router (#497), per-leaf arm scoring before Brier (#499); docs 330fbd2, handoff 70f9c8b |
 | 2026-11-13T00:49:11Z | B-090 | CLOSED — W114.2: D6 measured on the box (0/117) and first E1-E3 per arm via two new read-only box tasks (#498). (commit `cbf7d64`) |
 | 2026-11-13T00:49:25Z | B-090 | CLOSED — merge confirmed, HEAD (6e74e2a) is ancestor of origin/main — W114.2 D6 0/117 on box, E1-E3 first values (#498) |
+| 2026-11-13T00:51:47Z | B-090 | CLOSED — merge confirmed, HEAD (b20694a) is ancestor of origin/main — W114.2 D6 0/117 on box, E1-E3 first values (#498) |
