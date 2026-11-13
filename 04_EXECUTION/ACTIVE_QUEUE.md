@@ -89,7 +89,7 @@ cells cannot be counted until the count runs on the box → 114.2.
 |---|---|---|---|---|---|
 | 114.1 | data · 2 | Land PR #494 (Muse intake): resolve the conflict, CI, merge; wire the NBA distance filters | Sonnet | ⬜ | |
 | 114.2 | proof · 2 | D6 counted on the box: arm_orders_read + d6_read box tasks; first real D6 and E1-E3 per arm | Sonnet | ⬜ | |
-| 114.3 | window · 2 | Doctrine leftovers: orchestrator defers to the router; scorers per leaf per arm; edge-map rows | Sonnet | ⬜ | |
+| 114.3 | window · 2 | Doctrine leftovers: orchestrator defers to the router; scorers per leaf per arm; edge-map rows | Sonnet | ✅ | #497 c5b97f4, #499 e862d90, docs 330fbd2; E09 / E14 arm tables still open |
 | 114.4 | engine · 2 | NBA joint teammate legs: shared usage pool so teammate PTS / AST co-move the right way | Sonnet | ⬜ | |
 
 ### 114.1 - DATA (LAND THE MUSE INTAKE) · MODEL: Sonnet
