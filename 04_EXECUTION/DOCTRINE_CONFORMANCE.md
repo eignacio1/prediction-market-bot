@@ -31,7 +31,7 @@ Doctrine rules used:
 |---|---|---|---|---|---|
 | 7 | R1 | `run_t1_mlb_game_market.py:204,272-279` | `REFUSED_NO_EDGE`: no order unless model p beats market p plus vig | CONFORMS as the FADE arm's entry rule; the label reads as a verdict, and there is no other arm at this gate | backlog ticket (route arms at the gate, needs 111.3 router first) |
 | 8 | R1 | `run_t1_nfl_game_market.py:220,304-312` | Same gate for NFL | CONFORMS (fade arm only); same note | backlog |
-| 9 | R1 | `execution_bands_orchestrator.py:108,180` | "T1 is the gating condition — no edge means no bet": a model-edge test gates every later band | CONTRADICTS (the tree, not the model's edge, picks the arm) | 111.3 / backlog |
+| 9 | R1 | `execution_bands_orchestrator.py:108,180` | "T1 is the gating condition — no edge means no bet": a model-edge test gates every later band | FIXED 2026-11-13 (W114.3, #497 c5b97f4): `decide(..., route=)` takes the router's arm; the model edge is the FADE entry input and a logged field; no-route path unchanged (tested) | done |
 | 10 | R1 | `run_t2_mlb_sameday.py:468,488` | `PASS_NO_EDGE` | CONFORMS as fade arm entry; label | backlog |
 | 11 | R5 | `c4_risk_engine/risk.py:65,979-1036` | `run_state = "NO_EDGE"` is a monitoring state | CONFORMS (alarm vocabulary, no routing effect); rename later | backlog |
 | 12 | R5 | `scripts/edge_rate_trend.py:9,105,162` | NO_EDGE trend state | CONFORMS (alarm only) | backlog |
@@ -59,7 +59,7 @@ Doctrine rules used:
 | 24 | R2 | `visual_dashboard/script.js:461-464` | `NAME.RULED_OUT = 'Fade arm closed (routed)'` | CONFORMS (already the doctrine phrase) | none |
 | 25 | R2 | `scripts/build_visual_dashboard_html.py`, `tests/test_visual_dashboard_edge_map.py:63` | Builds the page; test pins status enum | CONFORMS (enum is registry vocabulary); allowlist | 111.2 |
 | 26 | R2 R3 | `12_EXPLORATORY/edge_map/EDGE_MAP.md` + `edge_map.json` | 40 hypotheses; rows read "no edge", "RULED_OUT", "nothing vs market", "market wins"; summary says "7 hypotheses are ruled out" | CONTRADICTS (verdict language on patterns; statuses scored as model-vs-market) | 111.2 (docs-only wording; status names stay) |
-| 27 | R3 | edge map rows E01, E09, E10, E14 | Scored as model Brier minus market Brier; no per-leaf, per-arm net | MISSING (per-leaf arm scoring) | backlog + 111.3 |
+| 27 | R3 | edge map rows E01, E09, E10, E14 | Scored as model Brier minus market Brier; no per-leaf, per-arm net | PARTLY FIXED 2026-11-13 (W114.3, #499 e862d90): E01 / E10 lead with held-out net per arm (retro_route), Brier last; E09 / E14 say no family is scored yet | E09 / E14 arm tables need retro_route families |
 
 ## E. Commands and templates
 
@@ -75,8 +75,8 @@ Doctrine rules used:
 
 | # | Rule | Where | What it does | Verdict | Owner |
 |---|---|---|---|---|---|
-| 33 | R3 | `12_EXPLORATORY/market_history/score_vs_market.py:69` | Scores a factor only as a competing price (Brier vs market) | CONTRADICTS (R3) | backlog (rewrite as per-leaf net; .py via PR) |
-| 34 | R3 | `12_EXPLORATORY/nhl_engine/run_w84_3.py:6` | "beats the market" Brier-vs-market scoring | CONTRADICTS (R3) | backlog |
+| 33 | R3 | `12_EXPLORATORY/market_history/score_vs_market.py:69` | Scores a factor only as a competing price (Brier vs market) | FIXED 2026-11-13 (W114.3, #499 e862d90): output leads with `arms` (per-leaf held-out net per arm), Brier is the last labelled line | done |
+| 34 | R3 | `12_EXPLORATORY/nhl_engine/run_w84_3.py:6` | "beats the market" Brier-vs-market scoring | FIXED 2026-11-13 (W114.3, #499 e862d90): docstring and `part_b.py` lead with the arm table; its Brier rule is the last, labelled calibration read (part_b.py not run here: needs box data) | done |
 | 35 | R2 | `12_EXPLORATORY/20261009_nfl_first_look_expectations/study.py:80` | Probabilities for `RULED_OUT` outcome of the first look | CONTRADICTS (R4); frozen with its pre-registration | none: frozen; allowlisted |
 | 36 | R2 | `NFL_FIRST_LOOK_EXPECTATIONS.md`, `nfl_first_look/results_W98_2.md`, `results_W99_2.md` | Pre-registered rule text and results that used RULED_OUT | frozen pre-registration and results; allowlisted | none |
 | 37 | R2 R3 | `quant_w104_blend/RESULT.md:32,52`, `mlb_engine/RESULT_W106_4.md:9`, `quant_w109_props/RESULT.md:23`, `nfl_board_v2/results_W93_4.md:47` | "none beats the market", "Does it beat the market? No", "no edge shown" | CONTRADICTS (wording); results of closed blocks | 111.2 only if the file is not a frozen result; otherwise noted |
