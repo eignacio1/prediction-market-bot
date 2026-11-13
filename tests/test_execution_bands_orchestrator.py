@@ -2,6 +2,7 @@
 import pytest
 
 from prediction_market_bot.execution_bands import ExecutionBand, get_band_config
+from prediction_market_bot.decision_trees.router import FADE, NO_BET, POT_OF_GOLD, RIDE, Route
 from prediction_market_bot.execution_bands_orchestrator import (
     BandDecision,
     BandSignal,
@@ -311,3 +312,51 @@ class TestBatchDecide:
         decisions = self._orch().batch_decide([t1], t2_signals=[t2], t3_signals=[t3])
         assert decisions[0].action == "PROCEED"
         assert decisions[0].final_band == ExecutionBand.T3_PRE_TIP
+
+
+# ---------------------------------------------------------------------------
+# W114.3 / D-04: the router's arm decides; the model edge is only the FADE entry input
+# ---------------------------------------------------------------------------
+
+class TestRouterDecidesArm:
+    def test_ride_not_overridden_by_negative_model_edge(self):
+        d = MultiBandOrchestrator().decide(_t1(direction="PASS", edge=-0.05), route=Route(RIDE, "yes", ("ride:cell",)))
+        assert d.action == "PROCEED" and d.direction == "YES"
+        assert d.final_edge == pytest.approx(-0.05)  # logged, not the bet
+        assert "model_edge=-0.0500" in d.rationale
+
+    def test_ride_side_comes_from_router_not_model(self):
+        d = MultiBandOrchestrator().decide(_t1(direction="YES", edge=0.05), route=Route(RIDE, "no", ("ride:cell",)))
+        assert d.direction == "NO"
+
+    def test_pot_of_gold_proceeds_with_negative_edge(self):
+        d = MultiBandOrchestrator().decide(_t1(direction="PASS", edge=-0.01), route=Route(POT_OF_GOLD, "yes", ("longshot",)))
+        assert d.should_proceed
+
+    def test_ride_not_held_by_t3_fade(self):
+        d = MultiBandOrchestrator().decide(_t1(), t3=_t3("FADE"), route=Route(RIDE, "yes", ("r",)))
+        assert d.action == "PROCEED"
+
+    def test_no_bet_passes_even_with_big_model_edge(self):
+        d = MultiBandOrchestrator().decide(_t1(edge=0.30), route=Route(NO_BET, None, ("no_tree_claims",)))
+        assert d.action == "PASS" and d.direction == "PASS"
+
+    def test_fade_needs_actionable_model_edge_on_routed_side(self):
+        o = MultiBandOrchestrator()
+        assert o.decide(_t1(direction="YES", edge=0.05), route=Route(FADE, "yes", ("f",))).should_proceed
+        assert not o.decide(_t1(direction="YES", edge=-0.02), route=Route(FADE, "yes", ("f",))).should_proceed
+        assert not o.decide(_t1(direction="NO", edge=0.05), route=Route(FADE, "yes", ("f",))).should_proceed
+
+    def test_no_route_keeps_legacy_edge_gate(self):
+        o = MultiBandOrchestrator()
+        assert o.decide(_t1(direction="PASS", edge=-0.05)).action == "PASS"
+        assert o.decide(_t1()).should_proceed
+
+    def test_batch_routes_by_ticker_and_falls_back(self):
+        a, b = _t1(ticker="A", direction="PASS", edge=-0.05), _t1(ticker="B", direction="PASS", edge=-0.05)
+        out = MultiBandOrchestrator().batch_decide([a, b], routes={"A": Route(RIDE, "yes", ("r",))})
+        assert out[0].should_proceed and out[1].action == "PASS"  # B has no router decision -> legacy
+
+    def test_kelly_still_min_across_bands(self):
+        d = MultiBandOrchestrator().decide(_t1(kelly=0.25), t2=_t2(kelly=0.20), route=Route(RIDE, "yes", ("r",)))
+        assert d.final_kelly == 0.20

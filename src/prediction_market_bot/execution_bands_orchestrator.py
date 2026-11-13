@@ -16,7 +16,16 @@ Multi-band interaction rules (STRATEGY_OVERVIEW.md P6):
     T3 NEUTRAL  + T1/T2 actionable  →  PROCEED at T2/T1 sizing
     T3 absent, T2 present           →  PROCEED at T2 sizing
     T3 absent, T2 absent            →  PROCEED at T1 sizing
-    T1 direction == PASS            →  PASS regardless of T2/T3
+    T1 direction == PASS            →  PASS regardless of T2/T3  (legacy path only, see below)
+
+Doctrine (DOCTRINE §1, operator 2026-11-10 21:35 PT; W114.3, OPERATOR_DIRECTIVES D-04):
+  The engine's price is ONE input to the tree, never the bet. When the caller passes the
+  router's Route (decision_trees/router.py), THE ROUTER'S ARM decides: NO_BET -> PASS;
+  RIDE / POT_OF_GOLD / MOMENTUM_* -> PROCEED on the router's side whatever the sign of the
+  model's edge (the edge is only logged); FADE -> PROCEED only when the model's edge is
+  actionable, because model_p > market + vig is the fade arm's entry rule and nothing more.
+  With no Route (no router decision for that market, e.g. the idle MLB T4M-PROJ path) the
+  legacy edge-gated rules above apply UNCHANGED.
 
 Governance:
   BandDecision.action == PROCEED feeds C4 RiskEngine but does NOT place orders.
@@ -31,13 +40,14 @@ References:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Mapping, Optional
 
 from prediction_market_bot.execution_bands import (
     ExecutionBand,
     get_band_config,
     BAND_REGISTRY,
 )
+from prediction_market_bot.decision_trees.router import FADE, NO_BET, Route
 
 
 # ---------------------------------------------------------------------------
@@ -163,9 +173,14 @@ class MultiBandOrchestrator:
         t1: BandSignal,
         t2: Optional[BandSignal] = None,
         t3: Optional[BandSignal] = None,
+        route: Optional[Route] = None,
     ) -> BandDecision:
         """
         Apply P6 rules and return the authoritative BandDecision.
+
+        route : Route, optional
+            The router's decision for this market. When given, its arm decides
+            (see module Doctrine note); when None the legacy edge-gated rules run.
 
         Parameters
         ----------
@@ -177,7 +192,10 @@ class MultiBandOrchestrator:
         t3 : BandSignal, optional
             T3 signal from PIPE-06 pre-tip momentum scan.
         """
-        # T1 is the gating condition — no edge means no bet regardless of T2/T3
+        if route is not None:
+            return self._decide_routed(t1, t2, t3, route)
+
+        # LEGACY (no router decision): T1 is the gating condition — no edge means no bet regardless of T2/T3
         if not t1.is_actionable:
             return BandDecision(
                 player_name=t1.player_name,
@@ -230,6 +248,7 @@ class MultiBandOrchestrator:
         t1_signals: list[BandSignal],
         t2_signals: Optional[list[BandSignal]] = None,
         t3_signals: Optional[list[BandSignal]] = None,
+        routes: Optional[Mapping[str, Route]] = None,
     ) -> list[BandDecision]:
         """
         Apply multi-band rules across all players for a full game day.
@@ -246,6 +265,8 @@ class MultiBandOrchestrator:
             All T2 signals from today's PIPE-05 run (same-day injury overlay).
         t3_signals : list[BandSignal], optional
             Most recent T3 signals from PIPE-06 (last 15-min scan cycle).
+        routes : mapping ticker -> Route, optional
+            Router decisions; a ticker with no entry takes the legacy path.
         """
         t2_idx: dict[str, BandSignal] = (
             {s.ticker: s for s in t2_signals} if t2_signals else {}
@@ -255,13 +276,48 @@ class MultiBandOrchestrator:
         )
 
         return [
-            self.decide(t1, t2=t2_idx.get(t1.ticker), t3=t3_idx.get(t1.ticker))
+            self.decide(
+                t1,
+                t2=t2_idx.get(t1.ticker),
+                t3=t3_idx.get(t1.ticker),
+                route=(routes or {}).get(t1.ticker),
+            )
             for t1 in t1_signals
         ]
 
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------
+
+    def _decide_routed(
+        self,
+        t1: BandSignal,
+        t2: Optional[BandSignal],
+        t3: Optional[BandSignal],
+        route: Route,
+    ) -> BandDecision:
+        """The router's arm decides; the model edge is the FADE entry input and a logged field."""
+        sigs = [x for x in (t1, t2, t3) if x is not None]
+        gov = t3 or t2 or t1  # most recent band governs the logged edge, as in the legacy rules
+        kelly = min(x.kelly_fraction for x in sigs)  # most conservative band, as in the legacy rules
+        logged = f"arm={route.tree}; model_edge={gov.edge:+.4f} (logged, not the bet)"
+
+        def out(action: str, direction: str, why: str) -> BandDecision:
+            return BandDecision(
+                player_name=t1.player_name, ticker=t1.ticker, action=action, direction=direction,
+                final_band=gov.band, final_kelly=kelly, final_edge=gov.edge,
+                rationale=f"router {why}; {logged}; reasons={'|'.join(route.reasons)}",
+            )
+
+        if route.tree == NO_BET or route.side not in ("yes", "no"):
+            return out("PASS", "PASS", "NO_BET")
+        direction = route.side.upper()
+        if route.tree == FADE:
+            # model_p > market + vig is the fade arm's entry rule: it needs an actionable model edge ON the routed side.
+            model_agrees = gov.direction == direction and gov.is_actionable
+            if not model_agrees:
+                return out("PASS", "PASS", "FADE entry rule unmet (model edge not actionable on the routed side)")
+        return out("PROCEED", direction, route.tree)
 
     def _apply_t3_rules(
         self,
