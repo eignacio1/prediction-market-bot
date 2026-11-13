@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W114.2: recheck box deploy of e8e06a1 (3rd)"
