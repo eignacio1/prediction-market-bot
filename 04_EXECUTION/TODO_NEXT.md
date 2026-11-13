@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-13T00:40:00Z (W114.1 (B-087) — W114.1: Muse intake (#494) merged; NBA adapter now tags rows with 12 shot-distance filters (#500); 54 leaves scored, 5 kept.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261113T0040Z_W114_1.md` for full session detail.
+**Last reviewed:** 2026-11-13T01:01:00Z (B-086 — W114.4: team-pool latents added to the NBA joint (default off); held-out teammate PTS x PTS gap not closed (+0.0230 -> +0.0224); fitted values not shipped (#501).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261113T0101Z_W114_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
