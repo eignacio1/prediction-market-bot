@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: B-090
+tier: STANDARD
+timestamp: 2026-11-13T00:50:00Z
+commit: cbf7d64
+one_line_summary: W114.2: D6 measured on the box (0/117) and first E1-E3 per arm via two new read-only box tasks (#498).
+gg_touched: GG-1933, GG-1934, GG-1935
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, EXECUTION
+gap_measure: D6, E1, E2, E3
+gap_delta: D6 uncountable -> 0/117 wired (d6_read @ 2026-11-13T00:45:55Z); E1 fills RIDE 21/162, FADE 1/37, MOMENTUM 1/7 (arm_orders_read @ 00:45:26Z)
+pattern_sweep: n/a (no defect fixed); Python 3.9 "Z" fromisoformat defect found in demo_fill_forward_report, registered GG-1934
+surface_delta: +2 read-only allowlisted box tasks (arm_orders_read, d6_read), no cron or service
+-->
+
 # SESSION HANDOFF — W114.2 (B-090) — D6 counted on the box
 
 Status: DONE · Ticket B-090 · branch session/20261113T002213Z-w114-2-d6-box-reads · PR #498 merged e8e06a1 on green CI (test job, run 43336788400)
