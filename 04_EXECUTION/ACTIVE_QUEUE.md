@@ -90,7 +90,7 @@ cells cannot be counted until the count runs on the box → 114.2.
 | 114.1 | data · 2 | Land PR #494 (Muse intake): resolve the conflict, CI, merge; wire the NBA distance filters | Sonnet | ✅ | #494 ae7562b, #500 499522d; NBA index entries 24 -> 36; 54 leaves scored, 5 kept, 0 BH; 14-day NBA RIDE 651 -> 382 (kept splits conflict) |
 | 114.2 | proof · 2 | D6 counted on the box: arm_orders_read + d6_read box tasks; first real D6 and E1-E3 per arm | Sonnet | ✅ | #498 e8e06a1; D6 0/117 on the box; E1 fills RIDE 21/162, FADE 1/37, MOM 1/7, E2/E3 null (0 settled); NHL layer 3 = 0 (no NHL_EVENTS box job, Monday proposal in handoff); NFL layer 3 = 0 on box (GG-1933); GG-1934, GG-1935 |
 | 114.3 | window · 2 | Doctrine leftovers: orchestrator defers to the router; scorers per leaf per arm; edge-map rows | Sonnet | ✅ | #497 c5b97f4, #499 e862d90, docs 330fbd2; E09 / E14 arm tables still open |
-| 114.4 | engine · 2 | NBA joint teammate legs: shared usage pool so teammate PTS / AST co-move the right way | Sonnet | ⬜ | |
+| 114.4 | engine · 2 | NBA joint teammate legs: shared usage pool so teammate PTS / AST co-move the right way | Sonnet | 🟨 | #501 d9db05a; latents built (default off), tested; held-out teammate PTS x PTS +0.0230 -> +0.0224 not closed, PTS x AST +0.0108 -> +0.0078; Brier unchanged; hypothesis closed (W114.4 team-pool latents, parked for R&D) |
 
 ### 114.1 - DATA (LAND THE MUSE INTAKE) · MODEL: Sonnet
 
