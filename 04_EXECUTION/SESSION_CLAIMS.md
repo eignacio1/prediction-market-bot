@@ -1272,3 +1272,4 @@
 | 2026-11-12T23:05:01Z | B-086; GG reserve 3 | W113.3 B-086 ENGINE: NBA joint shared latent for same-player/teammate legs + SGP parlay branch. PURPOSE: D4 NBA (whole board one engine, parlays included); same-game joint error by pair class |
 | 2026-11-12T23:05:13Z | GG-1896..GG-1898, B-084 | W113.1 trees/execution: first cells wired end to end (B-084). PURPOSE: moves D6 wired 0->N, layer 3 NFL/NHL, layer 6/7 evidence |
 | 2026-11-12T23:05:31Z | B-087; GG-1930..1932 | W113.4 B-087 DATA STANDARD: bot reads Muse archive read-only pinned, grades VERIFIED by recompute. PURPOSE: D-06 granularity bar; NBA index entries 24->N; D1 NBA/NHL |
+| 2026-11-13T00:05:27Z | B-089 | CLOSED — merge confirmed, HEAD (d65f580) is ancestor of origin/main — W113.2 NFL wired for Sunday: PR #495 merged 9b3e25a, box deployed 6f40c9a7; layer 3 NFL 0 to 13 cells |
