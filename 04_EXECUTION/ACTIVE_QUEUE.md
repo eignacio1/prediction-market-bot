@@ -87,7 +87,7 @@ cells cannot be counted until the count runs on the box → 114.2.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 114.1 | data · 2 | Land PR #494 (Muse intake): resolve the conflict, CI, merge; wire the NBA distance filters | Sonnet | ⬜ | |
+| 114.1 | data · 2 | Land PR #494 (Muse intake): resolve the conflict, CI, merge; wire the NBA distance filters | Sonnet | ✅ | #494 ae7562b, #500 499522d; NBA index entries 24 -> 36; 54 leaves scored, 5 kept, 0 BH; 14-day NBA RIDE 651 -> 382 (kept splits conflict) |
 | 114.2 | proof · 2 | D6 counted on the box: arm_orders_read + d6_read box tasks; first real D6 and E1-E3 per arm | Sonnet | ⬜ | |
 | 114.3 | window · 2 | Doctrine leftovers: orchestrator defers to the router; scorers per leaf per arm; edge-map rows | Sonnet | ✅ | #497 c5b97f4, #499 e862d90, docs 330fbd2; E09 / E14 arm tables still open |
 | 114.4 | engine · 2 | NBA joint teammate legs: shared usage pool so teammate PTS / AST co-move the right way | Sonnet | ⬜ | |
@@ -217,7 +217,7 @@ Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂�
 | 113.1 | trees · 3 | First cells wired end to end (NBA, NHL): size_for in the order path, NHL filters supplied, layers 6 / 7 counted, D6 recounted | ✅ | #493 c097744: arm orders sized via size_for; NHL per-row filters (local only, GG-1898); D6 still 0 - uncountable without a box read of the arm-order log → 114.2 |
 | 113.2 | NFL · 3 | NFL wired for Sunday: weather forecast store, MatchupBook, the NFL granularity index (box count, personnel, coverage) as tree splits, per leaf per arm | ✅ | PR #495 merged 9b3e25a, box deployed (6f40c9a7). Layer 3 NFL 0 to 13 cells; 25 index entries (13 scored); D5(b) 12 to 14 of 23. Handoff `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261113T0000Z_W113_2.md` |
 | 113.3 | engine · 3 | NBA joint: shared minutes / usage / pace latent so same-player and teammate legs price right; parlay pot-of-gold branch | ✅ PARTIAL (A,B,C built; PR #496 merged a5cffd2, CI green) | same-player PTSx3PM cov gap +0.086 -> -0.004; teammate PTS, PTSxAST teammates, WINxREB not closed; see SESSION_HANDOFF_20261113_W113_3.md |
-| 113.4 | data · 3 | The bot reads Muse's archive (pinned, read-only), grades it by recompute, turns VERIFIED tables into index entries | ⚠️ | built on PR #494, CONFLICTED and unmerged, no handoff → 114.1 |
+| 113.4 | data · 3 | The bot reads Muse's archive (pinned, read-only), grades it by recompute, turns VERIFIED tables into index entries | ⚠️ | built on PR #494; merged in 114.1 (ae7562b); handoff SESSION_HANDOFF_20261112T2344Z_W113_4.md ✅ |
 
 ### ✅ WAVE 112 — WRITTEN 2026-11-12 ~01:15 UTC · CLOSED 2026-11-12 ~06:13 UTC (operator 11-11 22:13 PT) · SW-9 · four blocks · verified on GitHub (#486 #487 #488 #489 #492 merged, main CI green; handoffs W112_1..4) · moved: **D6 layer 3 NBA 0 → 9 cells; layer 6 built (size_for); layer 7 built and switched on in the repo (box DRY on an override — window clearing it); closed hypotheses replace closed arms (D-03 BUILT); D5(b) NHL applied 3 → 8 of 12** · open: 112.4 Part B (goalie timing), D6 wired still 0 (the pieces are not joined → 113.1)
 
