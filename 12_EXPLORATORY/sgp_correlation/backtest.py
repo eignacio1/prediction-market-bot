@@ -5,18 +5,22 @@ Engine: engine_v2 with FIXED league constants (same as W109.3, fitted on no test
 strictly before the game; player means from the player's prior games only; 4,000 draws per game; props by nba_engine/props.py.
 Legs are defined from the engine's own draws (lines = the draw median, so no outcome data picks a line). A game is scored only
 when both teams have >= 10 prior games. Players who did not play are dropped (the market would void the leg).
-Usage: PYTHONPATH=src python3 backtest.py <data_dir> <season> <out_prefix>
+Usage: PYTHONPATH=src python3 backtest.py <data_dir> <season> <out_prefix> [old|joint] [params_json] [max_games] [skip_games]
+W113.3: ``joint`` swaps the props layer for nba_engine/joint.py (shared latent); team scores, lines' selection, legs and pair
+definitions are identical, so before -> after is the same games, same pairs, same seeds. Game-level rows go to <prefix>_games.csv.
 """
 import collections, itertools, json, sys
 import numpy as np, pandas as pd
 from prediction_market_bot.nba_engine import engine_v2 as E2
 from prediction_market_bot.nba_engine import props as P
+from prediction_market_bot.nba_engine import joint as J
 from prediction_market_bot.quant import sgp as S
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), ".."))
 from _fence import safe_out  # noqa: E402
 
 LEAGUE, N, MIN_PRIOR_TEAM = 114.0, 4000, 10
+COMBO3 = []   # (game, type, p_joint, p_indep, y) 3-leg rows, filled by run()
 PARAMS = E2.V2Params(hca=2.0, tbias=0.0, sd_margin=13.0, sd_total=19.0)
 STAT_COL = {"points": "points", "rebounds": "rebounds_total", "assists": "assists", "threes": "three_pointers_made"}
 TOP_LEGS, ROSTER_N = 3, 8
@@ -39,26 +43,33 @@ def load(data_dir, season):
     return sch.sort_values(["game_date", "game_id"]).reset_index(drop=True), pb
 
 
-def run(data_dir, season):
+def run(data_dir, season, engine="old", jp=None, max_games=None, skip_games=0, n_draws=N):
     sch, pb = load(data_dir, season)
     box = {g: d for g, d in pb.groupby("game_id")}
     hist = collections.defaultdict(list)          # team -> [(date, pts_for, pts_against)]
     phist = collections.defaultdict(list)         # (team, pid) -> [(date, row-dict)]
-    rows, ngames = [], 0
+    rows, grows, ngames, seen_games = [], [], 0, 0
+    jp = jp or J.JointParams()
     for _, g in sch.iterrows():
         gid, date, H, A = g.game_id, g.game_date, g.home_team_abbreviation, g.away_team_abbreviation
         d = box.get(gid)
         if d is None or pd.isna(g.home_pts):
             continue
-        if len(hist[H]) >= MIN_PRIOR_TEAM and len(hist[A]) >= MIN_PRIOR_TEAM:
+        scorable = len(hist[H]) >= MIN_PRIOR_TEAM and len(hist[A]) >= MIN_PRIOR_TEAM
+        if scorable:
+            seen_games += 1
+        if scorable and seen_games > skip_games and (max_games is None or ngames < max_games):
             sh = lambda v: (sum(v) + 8 * LEAGUE) / (len(v) + 8)
             fH, aH = sh([x[1] for x in hist[H]]), sh([x[2] for x in hist[H]])
             fA, aA = sh([x[1] for x in hist[A]]), sh([x[2] for x in hist[A]])
             mu_h, mu_a = (fH + aA) / 2, (fA + aH) / 2
             mm, tt = E2.game_means(PARAMS, mu_h, mu_a)
-            h, a = E2.simulate(PARAMS, mm, tt, N, seed=int(gid) % 100003)
+            h, a = E2.simulate(PARAMS, mm, tt, n_draws, seed=int(gid) % 100003)
             marg, tot = h - a, h + a
             r_h, r_a = float(g.home_pts), float(g.away_pts)
+            grows.append((gid, date, float(np.mean(marg >= 1)), int(r_h - r_a >= 1), float(np.mean(marg >= int(round(np.median(marg))))),
+                          int(r_h - r_a >= int(round(np.median(marg)))), float(np.mean(tot >= int(round(np.median(tot))))),
+                          int(r_h + r_a >= int(round(np.median(tot))))))
             legs = []   # (name, side, pid, stat, draw_bool, real_bool)
             m50, t50 = int(round(np.median(marg))), int(round(np.median(tot)))
             legs += [("ML", "H", None, None, marg >= 1, r_h - r_a >= 1),
@@ -78,8 +89,11 @@ def run(data_dir, season):
                 R = P.TeamRoster(tuple(str(p) for _, p, _ in ros), {s: [m[s] for _, _, m in ros] for s in P.STATS}, float(pts.mean()))
                 rng = np.random.default_rng(int(gid) % 99991 + (7 if side == "A" else 0))
                 played = d[d.team_tricode == team].set_index("person_id")
+                if engine == "joint":
+                    RJ = J.JointRoster(R.players, [m for m, _, _ in ros], R.mu, float(pts.mean()))
+                    jd = J.simulate_team(pts, np.abs(marg), RJ, rng, jp)
                 for stat in P.STATS:
-                    dd, _ = P.player_draws(pts, R, stat, rng)
+                    dd = jd.stat[stat] if engine == "joint" else P.player_draws(pts, R, stat, rng)[0]
                     for i in range(TOP_LEGS):
                         pid = ros[i][1]
                         if pid not in played.index:
@@ -89,6 +103,18 @@ def run(data_dir, season):
                         if not 0.15 <= pm <= 0.85:
                             continue
                         legs.append((stat, side, pid, stat, dd[:, i] >= line, float(played.loc[pid, STAT_COL[stat]]) >= line))
+            for side_ in ("H", "A"):                      # W113.3 Part C: 3-leg same-game combos on one player
+                own_win = legs[0] if side_ == "H" else legs[1]
+                for pid_ in {l[2] for l in legs if l[2] is not None and l[1] == side_}:
+                    by = {l[3]: l for l in legs if l[2] == pid_}
+                    for nm3, parts in (("WIN + PTS + 3PM (same player)", [own_win, by.get("points"), by.get("threes")]),
+                                       ("TOT + PTS + 3PM (same player)", [legs[3], by.get("points"), by.get("threes")]),
+                                       ("PTS + REB + AST (same player)", [by.get("points"), by.get("rebounds"), by.get("assists")])):
+                        if any(p_ is None for p_ in parts):
+                            continue
+                        allh = np.logical_and.reduce([p_[4] for p_ in parts])
+                        pm_ = [(np.sum(p_[4]) + 0.5) / (n_draws + 1.0) for p_ in parts]
+                        COMBO3.append((gid, nm3, (np.sum(allh) + 0.5) / (n_draws + 1.0), float(np.prod(pm_)), int(all(p_[5] for p_ in parts))))
             def kind(l): return l[0]
             def pairs():
                 P_ = [l for l in legs if l[3] is not None]
@@ -126,20 +152,27 @@ def run(data_dir, season):
                     if k in seen:
                         continue
                     seen.add(k)
-                    pj = (np.sum(x[4] & y[4]) + 0.5) / (N + 1.0)
-                    pa, pb = (np.sum(x[4]) + 0.5) / (N + 1.0), (np.sum(y[4]) + 0.5) / (N + 1.0)
+                    pj = (np.sum(x[4] & y[4]) + 0.5) / (n_draws + 1.0)
+                    pa, pb = (np.sum(x[4]) + 0.5) / (n_draws + 1.0), (np.sum(y[4]) + 0.5) / (n_draws + 1.0)
                     rows.append((gid, date, nm, float(pj), float(pa * pb), float(pa), float(pb), int(x[5]), int(y[5])))
             ngames += 1
         for side, tm, f, ag in (("H", H, g.home_pts, g.away_pts), ("A", A, g.away_pts, g.home_pts)):
             hist[tm].append((date, float(f), float(ag)))
         for _, r in d.iterrows():
             phist[(r.team_tricode, r.person_id)].append((date, r))
-    return pd.DataFrame(rows, columns=["game", "date", "type", "p_joint", "p_indep", "p_a", "p_b", "y_a", "y_b"]), ngames
+    games = pd.DataFrame(grows, columns=["game", "date", "p_ml", "y_ml", "p_spr", "y_spr", "p_tot", "y_tot"])
+    return pd.DataFrame(rows, columns=["game", "date", "type", "p_joint", "p_indep", "p_a", "p_b", "y_a", "y_b"]), ngames, games
 
 
 if __name__ == "__main__":
     data_dir, season, prefix = sys.argv[1:4]
-    df, ng = run(data_dir, int(season))
+    engine = sys.argv[4] if len(sys.argv) > 4 else "old"
+    jp = J.JointParams(**json.loads(sys.argv[5])) if len(sys.argv) > 5 and sys.argv[5] != "-" else None
+    mg = int(sys.argv[6]) if len(sys.argv) > 6 and sys.argv[6] != "-" else None
+    sk = int(sys.argv[7]) if len(sys.argv) > 7 else 0
+    df, ng, games = run(data_dir, int(season), engine, jp, mg, sk)
     df["y"] = df.y_a * df.y_b
     df.to_csv(safe_out(prefix + "_rows.csv.gz"), index=False)
+    games.to_csv(safe_out(prefix + "_games.csv"), index=False)
+    pd.DataFrame(COMBO3, columns=["game", "type", "p_joint", "p_indep", "y"]).to_csv(safe_out(prefix + "_combo3.csv.gz"), index=False)
     print(ng, "games scored;", len(df), "pairs")

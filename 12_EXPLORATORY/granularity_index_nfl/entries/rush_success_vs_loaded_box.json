@@ -1,0 +1,143 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": true,
+    "unit": "SF",
+    "bucket": 1,
+    "value": 0.5,
+    "n_plays": 56,
+    "games": 6,
+    "rank_league": 4,
+    "of_league": 29,
+    "rank_history": 11,
+    "of_history": 121,
+    "percentile_history": 0.9166666666666666
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.08178352225226547,
+    "r_spearman_brown": 0.15120127191805025,
+    "ci95": [
+     -0.14527118446903692,
+     0.3882902697182433
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 9.333333333333334,
+   "cross": {
+    "unit": "SF",
+    "opponent": "JAX",
+    "expected": 0.4218426501035197,
+    "league": 0.4218426501035197,
+    "frequency_per_game": 9.333333333333334
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "SF",
+    "bucket": 1,
+    "value": 0.55,
+    "n_plays": 120,
+    "games": 10,
+    "rank_league": 2,
+    "of_league": 32,
+    "rank_history": 2,
+    "of_history": 128,
+    "percentile_history": 0.9921259842519685
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.2087174774667547,
+    "r_spearman_brown": 0.34535361878639736,
+    "ci95": [
+     0.06252811274695735,
+     0.5507376883476132
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 12.0,
+   "cross": {
+    "unit": "SF",
+    "opponent": "JAX",
+    "expected": 0.430605886774097,
+    "league": 0.41827468785471056,
+    "frequency_per_game": 12.0
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "SF",
+    "bucket": 1,
+    "value": 0.5087719298245614,
+    "n_plays": 171,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 3,
+    "of_history": 128,
+    "percentile_history": 0.984251968503937
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.1700300448655681,
+    "r_spearman_brown": 0.29064218583396106,
+    "ci95": [
+     -0.01285159731208604,
+     0.5067987117833784
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 10.058823529411764,
+   "cross": {
+    "unit": "SF",
+    "opponent": "JAX",
+    "expected": 0.4260321659278422,
+    "league": 0.4183311855670103,
+    "frequency_per_game": 10.058823529411764
+   }
+  }
+ },
+ "name": "rush_success_vs_loaded_box",
+ "season": 2025,
+ "unit_shown": "SF",
+ "opp_shown": "JAX",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "part",
+ "markets": [
+  {
+   "family": "KXNFLRSHYDS",
+   "line": "over",
+   "direction": "box"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "run"
+  },
+  {
+   "family": "KXNFLSPREAD",
+   "line": "cover",
+   "direction": "run"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "over",
+   "direction": "run"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

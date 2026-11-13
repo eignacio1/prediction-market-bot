@@ -1,0 +1,133 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.5,
+    "n_plays": 104,
+    "games": 6,
+    "rank_league": 4,
+    "of_league": 32,
+    "rank_history": 11,
+    "of_history": 121,
+    "percentile_history": 0.9166666666666666
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.029929825868206906,
+    "r_spearman_brown": 0.05812012647167832,
+    "ci95": [
+     -0.3430769832510454,
+     0.3325561820135203
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 17.333333333333332,
+   "cross": {
+    "unit": "LA",
+    "opponent": "LA",
+    "expected": 0.4280979851981541,
+    "league": 0.437432771602725,
+    "frequency_per_game": 17.333333333333332
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.4644808743169399,
+    "n_plays": 183,
+    "games": 10,
+    "rank_league": 9,
+    "of_league": 32,
+    "rank_history": 26,
+    "of_history": 128,
+    "percentile_history": 0.8031496062992126
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.05646816762290125,
+    "r_spearman_brown": 0.10689989410652485,
+    "ci95": [
+     -0.2102597151134352,
+     0.3430198935811351
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 18.3,
+   "cross": {
+    "unit": "LA",
+    "opponent": "LA",
+    "expected": 0.41543047801700866,
+    "league": 0.43327630453378957,
+    "frequency_per_game": 18.3
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.5138461538461538,
+    "n_plays": 325,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 3,
+    "of_history": 128,
+    "percentile_history": 0.984251968503937
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.20733782149961943,
+    "r_spearman_brown": 0.3434628118285696,
+    "ci95": [
+     0.08972906701320008,
+     0.5340303039434404
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 19.11764705882353,
+   "cross": {
+    "unit": "LA",
+    "opponent": "LA",
+    "expected": 0.4320226884163885,
+    "league": 0.4279519266509726,
+    "frequency_per_game": 19.11764705882353
+   }
+  }
+ },
+ "name": "rush_success_with_motion",
+ "season": 2025,
+ "unit_shown": "LA",
+ "opp_shown": "LA",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "ftn",
+ "markets": [
+  {
+   "family": "KXNFLRSHYDS",
+   "line": "over",
+   "direction": "motion"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "motion"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

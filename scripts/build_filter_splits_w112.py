@@ -37,6 +37,24 @@ def nba_splits() -> list:
     return out
 
 
+NHL_SERIES = {"NHL_GAME_TOTAL": "KXNHLTOTAL", "NHL_PUCK_LINE": "KXNHLSPREAD", "NHL_MONEYLINE": "KXNHLGAME"}
+
+
+def nhl_splits() -> list:
+    """W113.1 Part B: the 112.x NHL per-leaf scores (nhl_factors_w112/leaf_scores.json), same KEPT rule as the NBA table."""
+    doc = json.loads((EXP / "nhl_factors_w112" / "leaf_scores.json").read_text())
+    out = []
+    for x in doc["leaves"]:
+        tg, tm = x.get("test_games") or 0, x.get("test_mean")
+        kept = (not x["thin"] and x["arm"] != "NO_BET" and tg >= MIN_HELD_GAMES and tm is not None and tm > 0)
+        why = ("kept" if kept else "thin" if x["thin"] else "no_arm_positive_in_fit" if x["arm"] == "NO_BET"
+               else "held_out_games_below_min" if tg < MIN_HELD_GAMES else "held_out_net_not_positive")
+        out.append({"sport": "NHL", "series": NHL_SERIES[x["family"]], "filter": x["filter"], "leaf": x["leaf"],
+                    "arm": x["arm"], "kept": bool(kept), "why": why, "fit_games": x["fit_games"], "test_games": tg,
+                    "test_mean": tm, "bh": x["bh"], "source": "112 nhl_factors_w112 leaf_scores.json"})
+    return out
+
+
 def nfl_splits() -> list:
     doc = json.loads((EXP / "20261111_w110_1_nfl_weather_matchup" / "results_leaves.json").read_text())
     out = []
@@ -52,7 +70,7 @@ def nfl_splits() -> list:
 
 
 def main() -> int:
-    splits = nba_splits() + nfl_splits()
+    splits = nba_splits() + nfl_splits() + nhl_splits()
     doc = {"min_held_games": MIN_HELD_GAMES, "rule": "kept = not thin, arm != NO_BET, held-out games >= min, held-out mean net > 0",
            "n": len(splits), "n_kept": sum(s["kept"] for s in splits), "splits": splits}
     (OUT / "filter_splits.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")

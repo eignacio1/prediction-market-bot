@@ -1,0 +1,117 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<80 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 127,
+    "r_half": -0.07582656710788446,
+    "r_spearman_brown": -0.16409596815738842,
+    "ci95": [
+     -0.7025622397730279,
+     0.2232000925231893
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 8.166666666666666,
+   "cross": {
+    "unit": "LAC",
+    "opponent": "SEA",
+    "expected": 0.4455081092989114,
+    "league": 0.43917169974115616,
+    "frequency_per_game": 8.166666666666666
+   }
+  },
+  "10": {
+   "split": {
+    "ok": false,
+    "reason": "n<80 or unit absent",
+    "games": 10
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": -0.0809292608758782,
+    "r_spearman_brown": -0.17611105964053242,
+    "ci95": [
+     -0.7119673982721749,
+     0.1986782950051709
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 6.5,
+   "cross": {
+    "unit": "LAC",
+    "opponent": "SEA",
+    "expected": 0.43560129215164894,
+    "league": 0.42672292545710266,
+    "frequency_per_game": 6.5
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "LAC",
+    "bucket": 1,
+    "value": 0.33064516129032256,
+    "n_plays": 124,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 2,
+    "of_history": 128,
+    "percentile_history": 0.9921259842519685
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.03569501618608508,
+    "r_spearman_brown": 0.06892958955722482,
+    "ci95": [
+     -0.3815616370846671,
+     0.3857927831802347
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 7.294117647058823,
+   "cross": {
+    "unit": "LAC",
+    "opponent": "SEA",
+    "expected": 0.4341557206601369,
+    "league": 0.42302381774249226,
+    "frequency_per_game": 7.294117647058823
+   }
+  }
+ },
+ "name": "pass_success_allowed_vs_man",
+ "season": 2025,
+ "unit_shown": "LAC",
+ "opp_shown": "SEA",
+ "metric": "success",
+ "side": "dfn",
+ "higher_is_better": false,
+ "source": "part",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "under",
+   "direction": "coverage"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "under",
+   "direction": "coverage"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

@@ -43,9 +43,9 @@ def test_install_refused_when_budget_red_and_writes_nothing():
     assert rc == 0 and wrote == []
 
 
-def test_registry_entry_is_paused_and_task_is_allowlisted():
+def test_registry_entry_is_paused_or_live_and_task_is_allowlisted():
     import box_tasks as bt
     assert "nba_engine_props_shadow_install" in bt.TASKS
     import runtime_registry as rr
     e = [c for c in rr.load() if c["key"] == I.OWN_KEY]
-    assert len(e) == 1 and e[0]["status"] == "paused" and e[0]["reviewed"] is True
+    assert len(e) == 1 and e[0]["status"] in ("paused", "live") and e[0]["reviewed"] is True  # live after the operator-approved install (11-12)

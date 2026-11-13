@@ -1,0 +1,125 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<150 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 128,
+    "r_half": 0.3199995899917396,
+    "r_spearman_brown": 0.4848480142236137,
+    "ci95": [
+     0.2720337657838586,
+     0.640729411533951
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 24.166666666666668,
+   "cross": {
+    "unit": "KC",
+    "opponent": "SF",
+    "expected": -0.0629655367880188,
+    "league": 0.3697168649979483,
+    "frequency_per_game": 24.166666666666668
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "KC",
+    "bucket": 1,
+    "value": 0.1910569105691057,
+    "n_plays": 246,
+    "games": 10,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 1,
+    "of_history": 128,
+    "percentile_history": 1.0
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.47730562969023527,
+    "r_spearman_brown": 0.6461839988930628,
+    "ci95": [
+     0.4875277931878551,
+     0.7563583375456472
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 24.6,
+   "cross": {
+    "unit": "KC",
+    "opponent": "SF",
+    "expected": -0.03054508365704639,
+    "league": 0.40631091617933723,
+    "frequency_per_game": 24.6
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "KC",
+    "bucket": 1,
+    "value": 0.2949640287769784,
+    "n_plays": 417,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 3,
+    "of_history": 128,
+    "percentile_history": 0.984251968503937
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.6424911408286218,
+    "r_spearman_brown": 0.7823374201026021,
+    "ci95": [
+     0.6891785794436572,
+     0.8482391883198612
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 24.529411764705884,
+   "cross": {
+    "unit": "KC",
+    "opponent": "SF",
+    "expected": 0.05124849980085178,
+    "league": 0.4371830985915493,
+    "frequency_per_game": 24.529411764705884
+   }
+  }
+ },
+ "name": "loaded_box_rate_faced",
+ "season": 2025,
+ "unit_shown": "KC",
+ "opp_shown": "SF",
+ "metric": "loaded",
+ "side": "off",
+ "higher_is_better": false,
+ "source": "part",
+ "markets": [
+  {
+   "family": "KXNFLRSHYDS",
+   "line": "under",
+   "direction": "box"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "under",
+   "direction": "box"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

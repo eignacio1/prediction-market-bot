@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-12T23:44:00Z (W113.4 (B-087) — W113.4: bot reads Muse archive read-only, grades it (4 verified, 3 mismatch), 12 NBA index entries; PR #494 held on red main CI.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T2344Z_W113_4.md` for full session detail.
+**Last reviewed:** 2026-11-13T00:20:00Z (B-084 — W113.1 merged (#493): arm orders sized via size_for, NHL per-row filters (20 splits kept), D6 layer 6/7 rules; wired still 0 of 117.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T2340Z_W113_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

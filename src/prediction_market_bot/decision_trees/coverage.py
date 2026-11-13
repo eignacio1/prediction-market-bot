@@ -112,22 +112,51 @@ def filter_layer_sports() -> set:
     if fsup.default_supply().nfl_providers is not None:
         out.add("nfl")
     try:
+        import glob
         import importlib
-        if hasattr(importlib.import_module("prediction_market_bot.nhl_engine.filters"), "nhl_filters_for_row"):
+        importlib.import_module("prediction_market_bot.nhl_engine.filters")
+        # W113.1: the per-row adapter is filter_supply.nhl_filters_for_row; it counts only where the compiled NHL event
+        # store is present (a box without the store supplies "nhl_game_not_in_store" and shows no layer-3 NHL).
+        if glob.glob(fsup.nhl_store_dir() + "/games_202[56].parquet"):
             out.add("nhl")
     except ImportError:
         pass
     return out
 
 
+GG1771_EPOCH_ISO = "2026-11-06T01:03:42Z"  # NO-side demo fills before this were mirror-priced: not layer-7 evidence
+
+
+def order_evidence(orders, fills_for=None, epoch_iso: str = GG1771_EPOCH_ISO) -> Tuple[set, set]:
+    """(cells with layer-6 evidence, cells with layer-7 evidence) from the arm order log (W113.1 Part C).
+    Layer 6: any logged arm order / would-order / skip for the cell carries a ``size_for`` decision (the pregame_shadow package
+    may not reach the sizing modules - tests/test_pregame_shadow_safety - so the decision is logged where the arm path runs).
+    Layer 7: a placed (ok) ``arm_order`` in the current epoch whose fill outcome is MEASURED - ``fills_for(order_id, ticker)``
+    answers with a dict that has a ``fills`` count (0 = no-fill recorded). Pre-epoch NO-side orders are dropped."""
+    l6, l7 = set(), set()
+    for r in orders or []:
+        key = (r.get("market_type"), r.get("band"))
+        if isinstance(r.get("size_for"), dict):
+            l6.add(key)
+        if r.get("event") != "arm_order" or not r.get("ok") or not r.get("order_id") or fills_for is None:
+            continue
+        post = str(r.get("ts", "")) >= epoch_iso
+        if not post:
+            continue
+        f = fills_for(r["order_id"], r.get("ticker"))
+        if isinstance(f, dict) and f.get("fills") is not None:
+            l7.add(key)
+    return l6, l7
+
+
 def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = None, splits_doc: Optional[dict] = None,
-              filter_sports: Optional[set] = None) -> List[dict]:
+              filter_sports: Optional[set] = None, orders=None, fills_for=None) -> List[dict]:
     """W111.3 Part C -- D6: for every registered cell, which of the seven layers are present AND evidenced.
     Evidence only, no credit for intent: layer 1 = the cell's leaves carry a logged model p (a MODEL_FADE fit entry);
     2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (W112.1: the sport's
     adapter has data AND the cell's series has a KEPT tested split, i.e. a split a tested leaf uses); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
-    10+ held-out games; 6 = a sizing rule (kelly_fraction is 0 on every band: False); 7 = fills measured for the cell
-    (shadow rows are not fills: False). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
+    10+ held-out games; 6 = the cell's arm-path rows carry a size_for decision (order_evidence); 7 = the cell's current-epoch arm orders have fills
+    measured, fill or no-fill (shadow rows are not fills). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
     In-play bands score 0 layers by construction (router returns NO_BET)."""
     import json
     import os
@@ -143,6 +172,7 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
     for key, rec in leaf_map_doc["leaves"].items():
         sport, mt, band = key.split("|")[:3]
         by.setdefault((mt, band), []).append(rec)
+    l6_cells, l7_cells = order_evidence(orders, fills_for)
     out = []
     for r in (rows if rows is not None else cell_rows()):
         ls = by.get((r["market_type"], r["band"]), [])
@@ -153,12 +183,21 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
                 x["sport"].lower() == str(r["sport"]).lower() and x["series"] in (None, r.get("family")) for x in kept),
             any(not x["thin"] and x["arm"] != "NO_BET" for x in ls),
             any((x.get("test") or {}).get("test_n_games", 0) >= MIN_HELD_GAMES for x in ls),
-            False,
-            False,
+            (r["market_type"], r["band"]) in l6_cells,
+            (r["market_type"], r["band"]) in l7_cells,
         ]
         out.append({"market_type": r["market_type"], "band": r["band"], "sport": r["sport"], "layers": have,
                     "n_layers": sum(have), "wired": all(have)})
     return out
+
+
+LAYER_NAMES = ("1 model p", "2 market state", "3 factor filters", "4 tree arm", "5 held-out net", "6 sizing", "7 fills")
+
+
+def missing_one_layer(cells: List[dict]) -> List[dict]:
+    """Cells that have six of seven layers, with the one they lack (W113.1 Part C)."""
+    return [{"market_type": c["market_type"], "band": c["band"], "sport": c["sport"],
+             "missing": LAYER_NAMES[c["layers"].index(False)]} for c in cells if c["n_layers"] == 6]
 
 
 def d6_summary(cells: List[dict]) -> dict:

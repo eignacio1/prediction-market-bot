@@ -1,0 +1,125 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": false,
+    "reason": "n<80 or unit absent",
+    "games": 6
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 124,
+    "r_half": 0.07430701876591561,
+    "r_spearman_brown": 0.1383347915780612,
+    "ci95": [
+     -0.2345834999488082,
+     0.4072220619089119
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 9.333333333333334,
+   "cross": {
+    "unit": "MIN",
+    "opponent": "CIN",
+    "expected": 0.20789327404113397,
+    "league": 0.20789327404113397,
+    "frequency_per_game": 9.333333333333334
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "MIN",
+    "bucket": 1,
+    "value": 0.14705882352941177,
+    "n_plays": 102,
+    "games": 10,
+    "rank_league": 3,
+    "of_league": 27,
+    "rank_history": 15,
+    "of_history": 111,
+    "percentile_history": 0.8727272727272728
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.08451216427507438,
+    "r_spearman_brown": 0.15585286557217226,
+    "ci95": [
+     -0.19376236384968612,
+     0.3997662737128105
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 10.2,
+   "cross": {
+    "unit": "MIN",
+    "opponent": "CIN",
+    "expected": 0.19910371318822023,
+    "league": 0.19910371318822023,
+    "frequency_per_game": 10.2
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "MIN",
+    "bucket": 1,
+    "value": 0.12962962962962962,
+    "n_plays": 162,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 2,
+    "of_history": 128,
+    "percentile_history": 0.9921259842519685
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": -0.024304331444948955,
+    "r_spearman_brown": -0.0498194923442517,
+    "ci95": [
+     -0.46232880099492163,
+     0.26010438379270867
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 9.529411764705882,
+   "cross": {
+    "unit": "MIN",
+    "opponent": "CIN",
+    "expected": 0.19244638451319035,
+    "league": 0.19244638451319035,
+    "frequency_per_game": 9.529411764705882
+   }
+  }
+ },
+ "name": "red_zone_td_rate_allowed",
+ "season": 2025,
+ "unit_shown": "MIN",
+ "opp_shown": "CIN",
+ "metric": "touchdown",
+ "side": "dfn",
+ "higher_is_better": false,
+ "source": "pbp",
+ "markets": [
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "under",
+   "direction": "red-zone"
+  },
+  {
+   "family": "KXNFLTOTAL",
+   "line": "under",
+   "direction": "red-zone"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W113.2: confirm box HEAD carries PR 495 (NFL splits + snapshots)"

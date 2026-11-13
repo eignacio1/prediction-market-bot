@@ -41,8 +41,7 @@ def test_shipped_nba_table_is_prior_season():
     assert fsup.parse_ts(t["data_through_utc"]) < datetime(2026, 10, 1, tzinfo=timezone.utc) and len(t["teams"]) == 30
 
 
-def test_nfl_forecast_issued_after_row_is_refused_and_unwired_says_so():
-    assert fsup.nfl_adapter({"ts_utc": ROW["ts_utc"]})[1] == "nfl_weather_forecast_and_matchup_book_not_wired"
+def test_nfl_forecast_issued_after_row_is_refused():
     prov = SimpleNamespace(weather=lambda r: (None, "2026-11-13T00:00:00Z"), terms=lambda r: (None, None, "2026-11-01T00:00:00Z"),
                            lines=lambda r: (3.0, 44.0))
     f, note = fsup.FilterSupply(nfl_providers=prov).for_row({**ROW, "sport": "NFL"})

@@ -26,3 +26,15 @@ def test_bad_book_is_no_bet_not_error():
 
 def test_never_raises():
     assert router_fields({}, "X")["router"]["branch"] == "ERROR"
+
+
+def test_routed_row_carries_size_for_w113_1():
+    """Layer-6 evidence: a routed shadow row carries a size_for decision; Kelly is never placed."""
+    from prediction_market_bot.decision_trees import row_sizing as rs
+    out = rs.row_decision({"market_type": "x", "band": "T1", "mid": 0.6, "p_yes": 0.7},
+                          {"branch": "RIDE", "arm": "RIDE", "side": "yes"})
+    sf = out["size_for"]
+    assert sf["kelly_placed"] is False and sf["kelly_fraction_live"] == 0.0 and sf["context"] == "row_level_empty_book"
+    assert rs.row_decision({}, {"branch": "ERROR"}) is None
+    assert rs.sizing_arm({"branch": "MOMENTUM_FADE", "arm": "MOMENTUM"}) == "MOMENTUM_FADE"
+    assert rs.sizing_arm({"branch": "MODEL_FADE", "arm": "MODEL_FADE"}) == "FADE"

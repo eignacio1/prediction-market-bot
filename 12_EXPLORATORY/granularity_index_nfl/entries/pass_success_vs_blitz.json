@@ -1,0 +1,133 @@
+{
+ "points": {
+  "6": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.4696969696969697,
+    "n_plays": 66,
+    "games": 6,
+    "rank_league": 4,
+    "of_league": 17,
+    "rank_history": 17,
+    "of_history": 60,
+    "percentile_history": 0.728813559322034
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 6,
+    "n_unit_seasons": 126,
+    "r_half": 0.11101458917358302,
+    "r_spearman_brown": 0.1998436208765901,
+    "ci95": [
+     -0.1428937569001975,
+     0.42450935358469066
+    ],
+    "trait": false
+   },
+   "frequency_per_game": 11.0,
+   "cross": {
+    "unit": "LA",
+    "opponent": "HOU",
+    "expected": 0.43519539369660404,
+    "league": 0.4463390170511535,
+    "frequency_per_game": 11.0
+   }
+  },
+  "10": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.5210084033613446,
+    "n_plays": 119,
+    "games": 10,
+    "rank_league": 5,
+    "of_league": 32,
+    "rank_history": 9,
+    "of_history": 127,
+    "percentile_history": 0.9365079365079365
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 10,
+    "n_unit_seasons": 128,
+    "r_half": 0.29486380931609313,
+    "r_spearman_brown": 0.45543601913135723,
+    "ci95": [
+     0.21665041570669896,
+     0.6295232087964759
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 11.9,
+   "cross": {
+    "unit": "LA",
+    "opponent": "HOU",
+    "expected": 0.44818350803814994,
+    "league": 0.4430342384887839,
+    "frequency_per_game": 11.9
+   }
+  },
+  "17": {
+   "split": {
+    "ok": true,
+    "unit": "LA",
+    "bucket": 1,
+    "value": 0.550561797752809,
+    "n_plays": 178,
+    "games": 17,
+    "rank_league": 1,
+    "of_league": 32,
+    "rank_history": 1,
+    "of_history": 128,
+    "percentile_history": 1.0
+   },
+   "stability": {
+    "ok": true,
+    "bucket": 1,
+    "games": 17,
+    "n_unit_seasons": 128,
+    "r_half": 0.3857800987523326,
+    "r_spearman_brown": 0.5567695756342067,
+    "ci95": [
+     0.37883686176848896,
+     0.6885894078023993
+    ],
+    "trait": true
+   },
+   "frequency_per_game": 10.470588235294118,
+   "cross": {
+    "unit": "LA",
+    "opponent": "HOU",
+    "expected": 0.4626419162302397,
+    "league": 0.4425815756264648,
+    "frequency_per_game": 10.470588235294118
+   }
+  }
+ },
+ "name": "pass_success_vs_blitz",
+ "season": 2025,
+ "unit_shown": "LA",
+ "opp_shown": "HOU",
+ "metric": "success",
+ "side": "off",
+ "higher_is_better": true,
+ "source": "ftn",
+ "markets": [
+  {
+   "family": "KXNFLPASSYDS",
+   "line": "over",
+   "direction": "blitz"
+  },
+  {
+   "family": "KXNFLTEAMTOTAL",
+   "line": "over",
+   "direction": "blitz"
+  }
+ ],
+ "application": "pending Part C (score_leaves.py)"
+}

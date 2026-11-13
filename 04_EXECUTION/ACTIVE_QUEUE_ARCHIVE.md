@@ -24404,3 +24404,187 @@ Report: per COMMON RULES. MEASURE MOVED: D5(b) NHL applied 3 -> N of 12; D1 NHL 
 decisions: none.
 END OF BLOCK 112.4
 ```
+
+---
+
+## (archived 2026-11-13) WAVE 113 · WRITTEN 2026-11-12 ~06:30 UTC (11-11 22:30 PT) · SW-9 · four blocks · paste each block into its own terminal
+
+**Every part runs on data that exists when you paste it. CI is the gate for code only. The build continues on every lane (operator 11-09 21:29 PT).**
+
+**REVISED 2026-11-12 15:00 PT (operator: "4 highly substantive blocks"; likely the last wave until his limit resets Monday 11-16).** 113.2 is now NFL wired for Sunday's slate (the granularity examples he gave - loaded vs light box - as tree splits); the doctrine leftovers move to W114: their live impact is low (the orchestrator's arm choice runs only on the idle MLB path; the two scorers are research scripts). Every block runs to merge with no window or operator touch.
+
+**THE SCOPE IS D6.** After Wave 112: layer 3 on 9 NBA cells (NFL, NHL 0) · layer 5 on NFL 9 / NBA 7 / NHL 7 · layer 6 built, no row
+sized by it · layer 7 built and ON in the repo, the box DRY on an untracked override (the window is clearing it with the allowlisted
+`demo_fill_rearm` task under the 16:51 PT authorization) · **wired 0 of 117.** 113.1 **trees / execution** = B-084 the first cells wired
+end to end · 113.2 **NFL** = B-089 NFL wired for Sunday: weather forecast, MatchupBook and the NFL granularity index as tree splits · 113.3 **engine** = B-086 the NBA joint for same-game legs (the
+pot-of-gold arm) · 113.4 **data** = B-087 the bot reads Muse, read-only, grades it.
+**113.1 status (2026-11-13 00:15Z):** MERGED (c097744, green CI). PR #493 (sizing via `size_for`, NHL filters, D6 layer 6/7 rules); Layer 3 NHL 0 to 9 local; D6 wired still 0 (no box arm-order read exists). Handoff `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T2340Z_W113_1.md`; GG-1896..1898.
+
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-04 is still CONTRADICTED in three code paths (the orchestrator's arm choice; two Brier-only scorers)
+- deferred to **W114** with the reason above (low live impact while MLB is idle). Then D-01 (the multi-arm tree end to end, D6 = 0) → **113.1**; D-08 (pot of gold routed in) → **113.3**; D-06 (granularity, and the
+archive Muse fills every day that no code reads) → **113.4**; D-06 for NFL ("what if a team ranks #2 in the league in success rate when using a loaded box ... but drop to #26 ... when using a light box", 10-16) → **113.2**.
+
+**DOCTRINE CHECK (W48), Wave 112 close.** *Premise:* "layers built separately add up to a wired cell". 112 built layers 3, 6 and 7 as
+separate pieces; none is joined to the next (the order path sizes itself, coverage.py counts no size decision, NFL / NHL hand the
+router no filters), so D6 did not move. *Said but not built:* "wired execution" (16:51 PT) — 113.1 joins them.
+
+- **Pushback:** wiring the first NBA cells end to end will put real demo orders on leaves that have not earned an arm on held-out games
+  (112.1's 7 kept splits are chance-level). The order count and the per-arm P&L will be small and noisy for weeks; the frozen leaf-map
+  forward test, not this wave, says which leaves earn an arm.
+- **Surface:** box GREEN at 06:07Z (deploy truth OK, dashboard on box HEAD). Installs approved 11-12 15:04 PT (NBA props shadow, dashboard memory); run by the window. Delta: 0 installs, 0 crons; 113.4 adds no scheduled job (reads on demand).
+- **Dependencies:** none blocking. 113.1 reads `arm_sizing.size_for` as merged (#487); 113.3 and 113.4 write new modules only; 113.2
+  owns its files alone.
+
+| # | Lane | Block | Status | Outcome |
+|---|---|---|---|---|
+| 113.1 | trees · 3 | First cells wired end to end (NBA, NHL): size_for in the order path, NHL filters supplied, layers 6 / 7 counted, D6 recounted | ⬜ | |
+| 113.2 | NFL · 3 | NFL wired for Sunday: weather forecast store, MatchupBook, the NFL granularity index (box count, personnel, coverage) as tree splits, per leaf per arm | ✅ | PR #495 merged 9b3e25a, box deployed (6f40c9a7). Layer 3 NFL 0 to 13 cells; 25 index entries (13 scored); D5(b) 12 to 14 of 23. Handoff `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261113T0000Z_W113_2.md` |
+| 113.3 | engine · 3 | NBA joint: shared minutes / usage / pace latent so same-player and teammate legs price right; parlay pot-of-gold branch | ✅ PARTIAL (A,B,C built; PR #496 merged a5cffd2, CI green) | same-player PTSx3PM cov gap +0.086 -> -0.004; teammate PTS, PTSxAST teammates, WINxREB not closed; see SESSION_HANDOFF_20261113_W113_3.md |
+| 113.4 | data · 3 | The bot reads Muse's archive (pinned, read-only), grades it by recompute, turns VERIFIED tables into index entries | ⬜ | |
+
+### 113.1 - TREES / EXECUTION (THE FIRST CELLS WIRED END TO END)
+
+```
+WAVE 113 - BLOCK 113.1 - TREES / EXECUTION - THE FIRST CELLS WIRED END TO END (B-084)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W113.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W113_1.md. Every part runs on data that exists now. If the queue
+banner names a window PR waiting for a merge, merge it first (read its CI; squash on green).
+
+PURPOSE: D6 wired 0 of 117 after Wave 112 built layers 3, 6 and 7 as separate pieces. OPERATOR_DIRECTIVES D-01; operator 2026-11-11
+16:51 PT: "we haven't come close to building out the bot in the substantive fashion (regarding wired execution) that I had anticipated."
+This block joins the pieces and counts the first wired cells.
+
+PART A (~45 min) - size every arm order through the sizing rule (layer 6 into layer 7)
+1. decision_trees/arm_orders.py: replace its flat default with c4_risk_engine/arm_sizing.size_for(arm, cell, context) (#487), passing
+   the same-game context the correlation cap needs. Log the size decision (stake, reason, the Kelly-shaped stake it would have been) on
+   every arm order AND every routed shadow row, so layer 6 has evidence per row. Tests: a correlated second leg is capped; Kelly stays 0.
+2. scripts/claude_md_now.py: its RULED_OUT label reads "untradeable (no book / data)", not "fade arm closed" (112.2 directive_conflicts).
+
+PART B (~45 min) - filters for NHL (layer 3); NFL is 113.2's
+1. filter_supply.py: the NHL adapter calls nhl_engine's nhl_filters_for_row (#489) point-in-time. Kept splits only where tested per leaf;
+   replay 14 days for NBA and NHL: decisions per arm before vs after. Leave the NFL adapter function to 113.2 (it owns it this wave).
+
+PART C (~40 min) - count it
+1. coverage.py: layer 6 evidenced when a cell's routed rows carry a size_for decision; layer 7 when its arm orders placed in the current
+   epoch have fills measured (fill or no-fill recorded, per arm). Recount D6 per sport; name every cell missing exactly one layer and
+   which. PR; merge on green; read the box deploy (deploy_truth_read) and the first arm_order rows on the box (an allowlisted read; if
+   none fits, say so for the window).
+
+Report: per COMMON RULES. MEASURE MOVED: D6 wired 0 -> N; layer 3 cells NFL / NHL 0 -> N; layer 6 / 7 evidence counts; E1-E3 per arm
+(first rows, epoch stated). Operator decisions: none.
+END OF BLOCK 113.1
+```
+
+### 113.2 - NFL (WIRED FOR SUNDAY; THE NFL GRANULARITY INDEX AS TREE SPLITS)
+
+```
+WAVE 113 - BLOCK 113.2 - NFL - NFL WIRED FOR SUNDAY: WEATHER FORECAST, MATCHUPBOOK AND THE NFL GRANULARITY INDEX AS TREE SPLITS (B-089)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W113.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W113_2.md. Every part runs on data that exists now.
+
+PURPOSE: NFL has 13 routed cells and layer 5 on 9 of them, but layer 3 is 0: 112.1 logged `nfl_weather_forecast_and_matchup_book_not_wired`.
+Sunday 11-15 is a full slate, and arm orders are ON (since 2026-11-12 06:43Z), so every NFL row this weekend should carry its splits.
+OPERATOR_DIRECTIVES D-06, the operator 2026-10-16: "What if a team ranks #2 in the league in success rate when using a loaded box (8
+defenders or more) against the run but drop to #26 in the league when using a light box against the run - but their opponent ... #14
+in the league when faced with a light box BUT get tackled behind the line of scrimmage on 75% of their runs. How would bets get placed
+pre-game?" and 10-14: "what teams run the most cover 6 against 3 wide out sets that's motioned to the boundary, matched with volume and
+success rate". His examples are illustrations, not specs (W17): build the MACHINERY for questions of that shape. GRANULARITY_INDEX.md:
+the split, the rank vs history at the same point in a season (with stability), the matchup cross, the market map, the application.
+
+PART A (~45 min) - the two missing feeds, point-in-time
+1. The weather FORECAST known before kickoff (free source, timestamped at capture; the 110.1 weather filter used realised weather): store
+   it per game, backfill what the free source keeps, and say how far back it goes. A MatchupBook provider built from 110.1's matchup
+   crosses so the router gets them per row. The NFL adapter function in decision_trees/filter_supply.py is yours this wave (113.1 owns the
+   NBA / NHL adapters in the same file - keep your edit inside the NFL function; whoever merges second rebases).
+
+PART B (~50 min) - the NFL granularity index, the machinery once
+1. From nflverse play-by-play + its free participation fields (check what is free and for which seasons: defenders in the box, offence
+   personnel and formation, defence personnel, coverage type, motion; anything only a paid source has is a registered gap): a generic
+   split = (metric, situation filter, unit: team offence / defence / player), value point-in-time, rank vs every team-season at the same
+   week, split-half stability, and the matchup cross (both sides, how often the situation occurs). Reuse 111.4's NBA machinery's design.
+2. About 20 entries chosen by the market they map to (game total, spread, team total; pass / rush yards props where KXNFL series exist):
+   run success vs loaded and light boxes, run stuff rate, pass success vs coverage families, personnel-group tendencies, red-zone / third-
+   down splits. Write them into 12_EXPLORATORY/granularity_index_nfl/ with all five parts filled except application.
+
+PART C (~45 min) - applied: splits in the tree, live by Sunday
+1. Export each as a filter through the NFL adapter; score per leaf against the 2026 NFL shadow rows' Kalshi prices (held out, net after
+   costs per arm: RIDE / FADE / MOMENTUM / POT OF GOLD / NO BET, intervals and n) - especially inside the RIDE NFL moneyline family lead
+   (W110.5: +0.134 [+0.017, +0.236]). Keep a split only where tested; update SEATS/nfl.toml stages. PR; merge on green; confirm on the
+   box (deploy_truth_read) that Sunday's NFL shadow rows will carry filters (a dry call of the adapter on this week's games).
+
+Report: per COMMON RULES. MEASURE MOVED: D6 layer 3 NFL 0 -> N cells; NFL index entries 0 -> N with all five parts; D5(b) NFL applied
+12 -> N of 21; D1 NFL. Operator decisions: none.
+END OF BLOCK 113.2
+```
+
+### 113.3 - ENGINE (THE NBA JOINT FOR SAME-GAME LEGS)
+
+```
+WAVE 113 - BLOCK 113.3 - ENGINE - THE NBA JOINT PRICED RIGHT FOR SAME-PLAYER AND TEAMMATE LEGS; THE PARLAY BRANCH OF POT OF GOLD (B-086)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W113.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W113_3.md. Every part runs on data that exists now.
+
+PURPOSE: OPERATOR_DIRECTIVES D-07 (one engine pricing the whole board, "parlay correlations included") and D-08 (the pot of gold routed
+in; operator 2026-11-05: "we should have the pot of gold decision trees routed in too"; retail flow first, 10-16: "beating buddy off his
+phone placing parlays, that's the first step"). W110.4 (12_EXPLORATORY/sgp_correlation/) measured the NBA engine's joint: right for game x
+team / player points, WRONG for same-player cross-stat (points x threes realised covariance +0.091 vs engine +0.005) and teammate points
+(sign wrong). Same-game parlays are priced off exactly those joints.
+
+PART A (~50 min) - the shared latent
+1. In the NBA engine's simulation: draw each player's minutes, usage share and the game's pace as shared latents per simulated game, then
+   derive points, threes, rebounds, assists from them, so same-player stats co-move and teammates compete for one usage pool. Point-in-
+   time inputs only. Tests on known answers (a usage shift lowers a teammate's points; points and threes co-move).
+
+PART B (~40 min) - held-out check
+1. Re-run W110.4's covariance check on held-out games: engine vs realised for same-player cross-stat, teammate pairs, and game x player
+   legs; report each pair class before -> after with intervals. The game-level prices must not get worse (moneyline, spread, total
+   Brier on the same held-out games, reported last).
+
+PART C (~35 min) - the parlay branch
+1. Price 2- and 3-leg same-game combos from the joint (no Kalshi combo market is open - W110.4; price them as the bot's own fair value),
+   compare with the product of the single legs (the correlation a retail parlay ignores), and export it for decision_trees/longshot.py's
+   pot-of-gold branch as an input (113.1 owns decision_trees/: hand the interface over in your handoff). PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D4 NBA (whole board from one engine, parlays included); same-game joint error by pair class
+before -> after; D-07 / D-08. Operator decisions: none.
+END OF BLOCK 113.3
+```
+
+### 113.4 - DATA (THE BOT READS MUSE)
+
+```
+WAVE 113 - BLOCK 113.4 - DATA - THE BOT READS MUSE'S ARCHIVE, READ-ONLY, AND GRADES IT VERIFIED BY RECOMPUTE (B-087)
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W113.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W113_4.md. Every part runs on data that exists now.
+
+PURPOSE: OPERATOR_DIRECTIVES D-06 (the granularity bar). Muse fills eignacio1/sports-intel-archive (private; your gh credentials read it)
+with ~25,000 records a day - NBA opponent shooting by zone and distance, hustle, tracking defence, team traditional / advanced, NFL team
+splits, MoneyPuck NHL, and game-day snapshots (NBA lineups, NHL starting goalies, refs) - and no code in the bot reads any of it. The
+charter (project doc claude/MUSE_PARTNERSHIP_CHARTER_v3.md, sections 3 and 5): the bot reads the archive READ-ONLY, pinned to a commit;
+nothing feeds a model until VERIFIED (the bot recomputed the fact or its class from free data and matched it); REPORTED is sourced and
+dated, not yet recomputed. Never write to the archive; never message Muse (the operator does that).
+
+PART A (~45 min) - the intake
+1. NEW src/prediction_market_bot/archive_intake/: clone or fetch the archive read-only at a pinned commit (record the SHA), parse its
+   tables and snapshot files into point-in-time frames (as_of, source, source_time kept), and expose them by sport / table / season. Never
+   copy the archive wholesale into this repo; a small fixture for tests only.
+
+PART B (~45 min) - grade it
+1. For each table family, recompute a sample from the bot's own free sources (the NBA event store for opponent shooting by zone / distance
+   and team stats; the NHL shot store for MoneyPuck-class team numbers; nflverse for NFL splits) and grade VERIFIED / MISMATCH /
+   UNCHECKABLE with the tolerance stated. NHL starting-goalie snapshots: their timestamps vs the bot's own capture and vs Kalshi price
+   moves on the same games (the 112.4 Part B question). Write 12_EXPLORATORY/archive_intake/GRADES.md.
+
+PART C (~35 min) - into the index
+1. VERIFIED NBA tables become granularity-index entries through 111.4's index API (split, rank vs history at the same point of the season,
+   matchup cross, market map) - new entries only, scored per leaf per arm as 111.4 did, and exported as router filters (113.1 owns
+   filter_supply.py: hand over the interface). PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: archive tables graded N (VERIFIED / MISMATCH / UNCHECKABLE); NBA index entries 24 -> N; D1 NBA /
+NHL; D-06. Operator decisions: none.
+END OF BLOCK 113.4
+```

@@ -28,3 +28,8 @@ NEXT SESSION PRIMER: Remove the box override file, then read `logs/arm_orders/or
 
 ## W113.4 - the bot reads Muse's archive and checks it
 The bot now reads Muse's archive without touching it, and re-did the math from its own data. NBA shot-by-distance numbers matched on all 540 values, and most NHL counts matched. Three items did not match (NBA turnovers, neutral-site home/road, NHL penalties) and the NHL goalie timing can't be checked until we capture goalies ourselves. We added 12 new NBA shot-distance signals (24 to 36); none beat the market yet, so they sit at no-bet for now. No real money at risk. The code is not merged: main's tests are already red on one unrelated check, and I only merge on green.
+## W113.1 — arm orders sized, NHL filters added (2026-11-12)
+- Every demo arm order now goes through the sizing rule. Stakes stay flat demo money and Kelly stays 0. No real money at risk.
+- NHL now has per-game filters. 20 of 72 tested splits held up on held-out games, and 1 survives the multiple-testing correction. They only fire on this machine today, because the NHL data has no job on the box yet (GG-1898).
+- Cells wired end to end is still 0 of 117. The bot's arm order log can't be read from here, so layers 6 and 7 can't be counted yet.
+- Pillar moved: DEPTH (D6, layer 3 NHL). Nothing needed from you.

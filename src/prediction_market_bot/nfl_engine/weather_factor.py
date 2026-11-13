@@ -45,12 +45,13 @@ class WeatherEffects:
     precip: float = 0.0     # per mm of hourly precipitation
 
 
-def assert_priceable(ctx: WeatherContext) -> None:
-    """Raise unless `ctx` could have been known before kickoff."""
+def assert_priceable(ctx: WeatherContext, min_lead_h: float = MIN_LEAD_H) -> None:
+    """Raise unless `ctx` could have been known before kickoff. `min_lead_h` defaults to the 12h pricing rule; a shadow
+    row passes 0 because its own timestamp (not a lead floor) is the point-in-time bound (W113.2)."""
     if ctx.source == "realised":
         raise ValueError("realised weather is a look-ahead leak for pricing; use a forecast")
-    if ctx.source == "forecast" and (ctx.lead_h is None or ctx.lead_h < MIN_LEAD_H):
-        raise ValueError(f"forecast lead {ctx.lead_h}h < {MIN_LEAD_H}h minimum")
+    if ctx.source == "forecast" and (ctx.lead_h is None or ctx.lead_h < min_lead_h):
+        raise ValueError(f"forecast lead {ctx.lead_h}h < {min_lead_h}h minimum")
 
 
 def is_indoor(roof: Optional[str]) -> bool:
