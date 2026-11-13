@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-12T06:20:00Z (B-083 — W112.3 arm-driven demo orders merged (#486, ON via #492); box still DRY until override file is deleted) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T0111Z_W112_3.md` for full session detail.
+**Last reviewed:** 2026-11-12T23:44:00Z (W113.4 (B-087) — W113.4: bot reads Muse archive read-only, grades it (4 verified, 3 mismatch), 12 NBA index entries; PR #494 held on red main CI.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261112T2344Z_W113_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

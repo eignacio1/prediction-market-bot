@@ -25,3 +25,6 @@ The bot's decision trees can now take the matchup-style filters as part of the d
 - Measure: D6 layer 7 code built; no E1/E2/E3 rows per arm yet.
 
 NEXT SESSION PRIMER: Remove the box override file, then read `logs/arm_orders/orders.jsonl` for the first `arm_order` row, or the NO BET counts with the epoch stated. Then register the markout GG.
+
+## W113.4 - the bot reads Muse's archive and checks it
+The bot now reads Muse's archive without touching it, and re-did the math from its own data. NBA shot-by-distance numbers matched on all 540 values, and most NHL counts matched. Three items did not match (NBA turnovers, neutral-site home/road, NHL penalties) and the NHL goalie timing can't be checked until we capture goalies ourselves. We added 12 new NBA shot-distance signals (24 to 36); none beat the market yet, so they sit at no-bet for now. No real money at risk. The code is not merged: main's tests are already red on one unrelated check, and I only merge on green.

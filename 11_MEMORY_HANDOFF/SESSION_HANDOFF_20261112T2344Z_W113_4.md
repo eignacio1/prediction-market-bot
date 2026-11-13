@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W113.4 (B-087)
+tier: STANDARD
+timestamp: 2026-11-12T23:44:00Z
+commit: 70a249a
+one_line_summary: W113.4: bot reads Muse archive read-only, grades it (4 verified, 3 mismatch), 12 NBA index entries; PR #494 held on red main CI.
+gg_touched: GG-1930, GG-1931, GG-1932
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D1, D-06 (NBA index entries)
+gap_delta: NBA index entries 24 -> 36 (12_EXPLORATORY/archive_intake/entries_summary.json @ 70a249a)
+pattern_sweep: fence scan (tests/test_exploratory_isolation.py) flagged write-shaped calls in 12_EXPLORATORY/archive_intake/*.py; swept the folder, all writes now via safe_out
+surface_delta: 0
+-->
+
 # Session handoff - W113.4 (B-087), 20261112T2344Z
 
 **Status:** Parts A, B, C built and pushed on PR #494 (branch session/20261112T230415Z-w113-4-archive-intake). NOT merged: CI is red only on tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted, which also fails on main (run 43326790475). The test still expects status paused; the registry now says live after the 11-12 install approvals. Not a 113.4 file, not mine to edit. Merge PR #494 once main is green.
