@@ -121,3 +121,24 @@ def test_coverage_layer3_needs_data_and_a_kept_split():
     none = cov.d6_summary(cov.d6_layers(splits_doc={"splits": []}, filter_sports={"nba"}))["by_sport"]
     assert on["nba"]["per_layer"][2] > 0 and off["nba"]["per_layer"][2] == 0 and none["nba"]["per_layer"][2] == 0
     assert on["nfl"]["per_layer"][2] == 0  # NFL has no kept split and no data
+
+
+def test_nba_adapter_adds_muse_distance_leaves_when_table_has_them():
+    """W114.1 (B-087): known answer for the shot-distance entries; a table without them (older build) skips them."""
+    from prediction_market_bot.archive_intake.nba_distance_filters import HIGHER_IS_BETTER
+    # CLE allows few rim FG% (percentile 0.1 = good), BOS allows many (0.9): mean 0.5 -> mid; lower is better -> home_edge
+    t = {**TABLE, "teams": {k: {**v, **{n: (0.1 if k == "CLE" else 0.9) for n in HIGHER_IS_BETTER}} for k, v in TABLE["teams"].items()}}
+    f, note = fsup.nba_adapter(ROW, t)
+    assert note is None
+    assert f["opp_fg_pct_lt5@total"] == "mid"
+    assert f["opp_fg_pct_lt5@side"] == "home_edge"
+    assert "opp_fg_pct_lt5@total" not in fsup.nba_adapter(ROW, TABLE)[0]  # old table: not invented
+
+
+def test_shipped_table_carries_all_distance_entries_and_kept_archive_splits_are_scored():
+    from prediction_market_bot.archive_intake.nba_distance_filters import HIGHER_IS_BETTER
+    t = fsup.nba_table()
+    assert all(n in team for team in t["teams"].values() for n in HIGHER_IS_BETTER)
+    sp = [s for s in lm.default_splits().doc["splits"] if s["source"].startswith("113.4")] if hasattr(lm.default_splits(), "doc") else None
+    if sp is not None:
+        assert len(sp) == 54 and all(s["test_games"] >= 10 and s["test_mean"] > 0 for s in sp if s["kept"])
