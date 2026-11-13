@@ -4746,3 +4746,18 @@ W113.4, 2026-11-12. The bot knows the NHL starter only post-game (see GG-1010). 
 **Status:** OPEN · **Severity:** LOW
 
 W113.4, 2026-11-12. Interface: `archive_intake.nba_distance_filters.distance_filters(home, away)`, percentiles in 12_EXPLORATORY/archive_intake/team_percentiles.json. 113.1 owns decision_trees/filter_supply.py; wiring is its call. All 54 leaves route to NO_BET provisionally (0 BH survivors).
+
+### GG-1933 — NFL layer 3 is 0 on the box: NflProviders snapshots are not on disk there (W114.2)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W114.2, 2026-11-13. `d6_read` on the box (results/20261113T0044Z_d6_read.md) shows `sports_with_filter_data = ["nba"]`. `nfl_engine.providers.default_nfl_providers()` returns None when its snapshots (schedule, team-games, percentiles, matchup book) are missing, so every NFL row records `filters_unavailable` and the 13 NFL layer-3 cells never count. Locally they do. Needs the snapshot files named and a box job or deploy path that puts them there (surface add, Hard Rule 14). Operator approval is needed only for an install.
+
+### GG-1934 — `demo_fill_forward_report.arm_orders_report` uses `datetime.fromisoformat`, which fails on "Z" under the box's Python 3.9 (W114.2)
+**Status:** OPEN · **Severity:** LOW
+
+W114.2, 2026-11-13. `arm_orders_read.parse_ts` is tolerant; the older report is not. Not fixed in 114.2 (out of scope, Hard Rule 11). Fix: route it through `arm_orders_read.parse_ts` or `filter_supply.parse_ts`.
+
+### GG-1935 — Daily breaker causes 690 of the arm-order skips and NHL rows are all unrouted (W114.2)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W114.2, 2026-11-13. Box `logs/arm_orders/orders.jsonl` (6,578 rows to 00:44:44Z): `daily_breaker` 690 skips across RIDE/FADE/MOMENTUM; `unrouted` 593 (NBA/NFL ERROR) and 1,415 NHL UNROUTED. Fills are few (23 of 206 orders) and none settled, so E2/E3 are null. Question to answer next: is the breaker tripping on demo stakes or on a stale base, and why NHL has no tree route.
