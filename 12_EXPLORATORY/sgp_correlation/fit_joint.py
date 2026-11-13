@@ -9,7 +9,8 @@ import backtest as B
 from _fence import safe_out
 
 SPACE = dict(blow_thresh=(4, 14), blow_k=(0.0, 0.6), s_min=(0.05, 0.35), s_use=(0.05, 0.6), s_three=(0.0, 0.8),
-             s_ast=(0.0, 0.6), s_reb=(0.0, 0.6), beta_reb=(-0.8, 0.2), beta_ast=(0.0, 1.5))
+             s_ast=(0.0, 0.6), s_reb=(0.0, 0.6), beta_reb=(-0.8, 0.2), beta_ast=(0.0, 1.5),
+             s_pool=(0.0, 1.5), s_tmin=(0.0, 0.4), gamma_ast=(0.0, 2.0), gamma_reb=(0.0, 2.0))   # last four: W114.4 team pool
 
 
 def gaps(df):
