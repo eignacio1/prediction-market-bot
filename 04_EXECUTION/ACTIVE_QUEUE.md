@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 114 READY TO PASTE - four blocks, MODEL: Sonnet, two parts each (the operator's last wave before Monday): 114.1 land the Muse intake, 114.2 D6 counted on the box, 114.3 the doctrine leftovers, 114.4 the NBA joint's teammate legs.** Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** EXP-038 second-look draft.
+> **▶ WAVE 115 READY FOR MONDAY 11-16 - four Sonnet blocks, three parts each: 115.1 the first wired cells on the box, 115.2 the box data stores layer 3 needs (installs prepared for your approval), 115.3 MLB routed for spring, 115.4 the NBA props through the tree.** Each block re-reads the box first. Binding doctrine: 02_ARCHITECTURE_DESIGN/DOCTRINE.md. **Waiting on you:** EXP-038 second-look draft; Monday: Muse message (04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md).
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -43,7 +43,7 @@ close: Waves 101-103 moved measurement and execution correctness (GG-1771), not 
 | | D3 challengers ready | **5** (NFL QB; EXP-041; EXP-044b; EXP-044c NBA engine v3, frozen not installed; one counted by the script) | ≥ 1 per arm | 0 |
 | | D4 engine stage (ADR-0073) | **NFL: data layer + board engine + test, frozen forward test (EXP-045) · NBA: data layer + board engine; v1 / v2 / v3 logging; 11-04 slate v1 56/56, v2 44/56, v3 38/56 markets (no OOM - runs never succeed before the window closes, 102.1); v3 has no settled game yet · NHL: board engine v2 (late-game state; totals still low)** · MLB: none | each sport: data → factors → whole board | 0 |
 | | D5 betting architecture (ADR-0075) | **(a) NFL 8/8, NBA 8/8, NHL 7/8, MLB 3/8** (W109) · **(b) applied NFL 14 / 23, NBA 11 / 17, NHL 8 / 12, MLB 0 (W110: NFL weather + matchup and NBA usage / crosses now router filters; scored per leaf, 0 leaves earn an arm yet)** | 8 / 8 per sport; every factor a tested split | NBA 4 → 8, NHL 2 → 7 (W109) |
-| | **D6 cells wired end to end (ADR-0077, added 2026-11-11)** | **0** (layers: simulated prob · market state · factor filters as splits · tree choosing the arm · per-leaf net per arm · risk / sizing · execution). W112 close: layer 3 NBA 9 cells; layer 5 NFL 9 / NBA 7 / NHL 7; layers 6 and 7 built, not yet joined → 113.1 | every registered cell | new |
+| | **D6 cells wired end to end (ADR-0077, added 2026-11-11)** | **0** (layers: simulated prob · market state · factor filters as splits · tree choosing the arm · per-leaf net per arm · risk / sizing · execution). ON THE BOX (d6_read 2026-11-13 00:45Z): 0 / 117; one layer short: NBA_SPREAD T2 / T3 (6), NFL_GAME_TOTAL T3, NFL_SPREAD T3 (3) → 115.1 / 115.2 | every registered cell | new |
 | **EXECUTION** | E1 demo orders filled | **T4 MLB 177 / 4,316 = 4.1% · T1 MLB 85 / 485 = 17.5%** (MLB books idle since 10-20) | fills ≈ intended orders | 0 |
 | | E2 P&L per filled bet | **T4 −$0.21** (n 177) · **T1 −$1.50** (n 83) | positive net of fees | 0 |
 | | E3 win rate, fills vs non-fills | **T4 25.4% vs 48.3% · T1 28.9% vs 52.1%** · resting fills picked off; **entry cost measured (98.2): taking at the quote loses ~0.10 / contract in NBA and NFL - keep the frozen rule**; NHL unclear | fills ≥ non-fills | 0 |
@@ -61,29 +61,173 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 114 · WRITTEN 2026-11-13 ~00:35 UTC (11-12 16:35 PT) · SW-9 · four blocks · MODEL: Sonnet for all four · paste each into its own terminal
+## ▶ NOW — WAVE 115 · WRITTEN 2026-11-13 ~01:15 UTC (11-12 17:15 PT) FOR MONDAY 11-16 · SW-9 · four blocks · MODEL: Sonnet for all four · paste each into its own terminal
 
-**The operator's last wave until his limit resets Monday 11-16 (16:18 PT: "we're at 91%").** Sized to finish: **two parts, ~75 minutes
-each** (his three-part rule resumes in W115). Every part runs on data that exists now; every block runs through to merge on its own.
+**Written before the weekend; every block re-reads the box first (deploy_truth_read, d6_read, arm_orders_read) and works from what it says
+then.** Three parts, ~130 minutes each (the standing rule). Every block runs through to merge on its own.
 
-114.1 **finish 113.4** = land the Muse intake (PR #494 is conflicted, unmerged) and wire its NBA distance filters · 114.2 **D6 on the box**
-= read tasks for the arm-order log and the D6 scorecard, run on real box logs (113.1 could not count D6: "layers 6 and 7 need the box
-order log, which no allowlisted task reads") · 114.3 **doctrine leftovers** = the orchestrator defers to the router; Brier-only scorers
-score per leaf per arm (D-04, deferred from 113.2) · 114.4 **teammate legs** = the NBA joint's teammate classes (113.3 closed same-player,
-not teammates).
+**THE SCOPE IS D6, MEASURED ON THE BOX** (W114.2, 2026-11-13 00:45Z): **0 of 117 wired.** Four cells are missing exactly one layer:
+NBA_SPREAD T2 / T3 (layer 6, sizing) and NFL_GAME_TOTAL T3 / NFL_SPREAD T3 (layer 3, filters). On the box, layer 3 works for NBA only:
+NHL's event store does not exist there (GG-1898) and the NFL snapshot provider returns nothing (GG-1933). 1,415 NHL rows are unrouted on
+the box, and the daily breaker is the biggest reason arm orders skip (690, GG-1935).
 
-**OPENS WITH (OPERATOR_DIRECTIVES):** D-04, CONTRADICTED in code since the 111.2 audit and deferred once → **114.3**. Then D-01 (D6 still 0,
-uncountable from here) → **114.2**; D-06 (Muse's data unread) → **114.1**; D-07 / D-08 (parlay correlations) → **114.4**.
+115.1 **D6** = B-091 the first wired cells · 115.2 **box data** = B-092 the stores layer 3 needs, as install tasks for your approval ·
+115.3 **MLB** = B-088 routed on the 2026 look-back for spring · 115.4 **props** = B-093 the NBA prop cells through the tree.
 
-**DOCTRINE CHECK (W48), Wave 113 close.** *Premise:* "a layer that exists is a layer that counts". 113.1 built layers 6 / 7 evidence rules
-but D6 is computed where the logs are not (the box holds the arm-order log; the NHL event store exists only locally, GG-1898). Wired
-cells cannot be counted until the count runs on the box → 114.2.
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-01 (the multi-arm tree end to end; "wired execution", 11-11 16:51 PT) → **115.1 / 115.2**. Then
+D-09 (retail flow first: "beating buddy off his phone placing parlays, that's the first step") → **115.4**; D-07 (one engine per sport
+pricing the whole board - MLB has the least routing) → **115.3**.
 
-- **Pushback:** two-part blocks leave tails: 114.4's teammate fix may not close all three classes, and 114.2's first box D6 count may
-  still be 0 if no arm order has filled since 06:43Z. Both are honest Monday starting points, not failures.
-- **Surface:** box GREEN at 23:05Z (93 live, HEALTHY); installs done (NBA props shadow, dashboard 384 MB). Delta this wave: 0 installs,
-  0 crons (114.2 adds read-only box tasks).
-- **Dependencies:** none blocking. 114.1 edits only the NBA-distance function in filter_supply.py; 114.2 reads coverage.py unchanged.
+**DOCTRINE CHECK (W48), Wave 114 close.** *Premise:* "what works in the repo works on the box". W114.2 measured the box for the first
+time: NFL and NHL filters that pass locally supply nothing there (missing data stores), NHL rows go unrouted, and a breaker built for a
+real-money book is skipping demo orders. The tree is only as wired as the box it runs on → 115.1 / 115.2.
+
+- **Pushback:** 115.2 ends in two installs that need your yes by name; until then NHL and part of NFL stay at layer 3 = 0 on the box, so
+  the first wired cells this wave are likely NBA (and the two NFL T3 cells if the snapshot fix needs no install).
+- **Surface:** box GREEN at 23:05Z (93 live). Delta: 0 installs in-wave; 115.2 PREPARES two (paused registry entries) for your approval.
+- **Dependencies:** none blocking. 115.4's leaf file is loaded by 115.3's loader if merged first, else handed over.
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 115.1 | D6 · 3 | The first wired cells on the box: NBA spread layer 6, NHL rows routed, the daily breaker vs demo orders, GG-1934 | Sonnet | ⬜ | |
+| 115.2 | box data · 3 | NFL snapshots on the box (GG-1933); the NHL event store job (GG-1898) - install tasks ready for approval | Sonnet | ⬜ | |
+| 115.3 | MLB · 3 | MLB routed on the 2026 look-back corpus: leaf map, arms per leaf, per-family leaf files | Sonnet | ⬜ | |
+| 115.4 | props · 3 | NBA prop cells through the tree: market state, player splits as filters, arms per leaf | Sonnet | ⬜ | |
+
+### 115.1 - D6 (THE FIRST WIRED CELLS ON THE BOX) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.1 - D6 - THE FIRST WIRED CELLS ON THE BOX (B-091) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_1.md. Before Part A, re-read the box (d6_read,
+arm_orders_read) and work from what it says now.
+
+PURPOSE: D6 is 0 of 117 on the box (W114.2, 2026-11-13 00:45Z). NBA_SPREAD T2 / T3 lack only layer 6. Operator 2026-11-11 16:51 PT:
+"we haven't come close to building out the bot in the substantive fashion (regarding wired execution) that I had anticipated."
+
+PART A (~45 min) - NBA spread layer 6, and the breaker
+1. Why NBA_SPREAD T2 / T3 rows carry no size_for decision on the box; fix it so every routed row of every cell carries one.
+2. GG-1935: the daily breaker skipped 690 arm orders. Find which breaker (arm_sizing's per-day cap, or risk.py's MAX_DAILY_LOSS_PCT /
+   _HARD_LIMITS) and against which book. A cap in arm_sizing calibrated to the demo stake is yours to fix (demo is plumbing). A hard limit
+   in risk.py is NOT changed here (Hard Rule 3 / G6): register it, and if the demo book is tripping a real-money limit, propose in the
+   handoff how the demo arm-order book should be measured separately.
+
+PART B (~45 min) - NHL rows routed, and the report
+1. 1,415 NHL rows were UNROUTED on the box while NHL routed 9 of 9 cells in the repo (W110.3). Find why (missing leaf entries, band /
+   market-type names, the absent NHL_EVENTS store) and fix what does not need 115.2's store.
+2. GG-1934: the Python 3.9 "Z" timestamp defect in demo_fill_forward_report.arm_orders_report (E2 / E3 per arm). Sweep scripts/ and src/
+   for the same pattern (Hard Rule 13).
+
+PART C (~40 min) - count it on the box
+1. PR; merge on green; after the box deploys, file d6_read and arm_orders_read and report D6 per sport, the first wired cells by name, and
+   E1 / E2 / E3 per arm (epoch-split), with source file and time.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 wired on the box 0 -> N; arm-order skips by reason before -> after; E1-E3 per arm.
+Operator decisions: none (a risk.py hard limit, if implicated, is registered and proposed, not changed).
+END OF BLOCK 115.1
+```
+
+### 115.2 - BOX DATA (THE STORES LAYER 3 NEEDS) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.2 - BOX DATA - NFL SNAPSHOTS AND THE NHL EVENT STORE ON THE BOX, AS INSTALLS READY FOR APPROVAL (B-092) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_2.md. Before Part A, re-read the box (deploy_truth_read,
+d6_read) and work from what it says now.
+
+PURPOSE: layer 3 (factor filters as tree splits) works on the box for NBA only. NFL: default_nfl_providers() returns None on the box
+(GG-1933) though the snapshots are committed CSVs in decision_trees/filter_data/ (data through 2026-11-10, refreshed weekly by
+scripts/nfl_build_snapshots.py). NHL: exp_output/NHL_EVENTS does not exist on the box (GG-1898); W114.2's handoff has the Monday proposal
+(a one-time backfill, then a daily cron after the 09:00 nhl_backfill, flock-guarded, logged, registry entry, staleness alarm).
+
+PART A (~45 min) - NFL on the box
+1. Why the provider returns None on the box (path, file present, deploy, import); fix it in code if no install is needed. If keeping the
+   snapshots current needs a weekly job, write it as an install task (below) instead of a manual refresh.
+
+PART B (~50 min) - the NHL event store job
+1. Write scripts/nhl_event_store_install.py (install / readback / uninstall, budget probe, crontab backup-or-abort, one BEGIN/END block,
+   like ride_board_install.py), the RUNTIME_REGISTRY entry (status paused - the operator's named approval is the activation), the
+   allowlist lines in scripts/box_tasks.py, tests. Size the backfill (disk, time, rate limit) from a local dry run and state it.
+
+PART C (~35 min) - ready for the operator
+1. PR; merge on green. Add to 04_EXECUTION/ACTIVE_QUEUE.md "Needs your decision" the exact approval sentence for each install task you
+   wrote ("I approve the box-task request that runs <task>, which ..."), with what it does and its cost. Do not run any install.
+
+Report: per COMMON RULES. MEASURE MOVED: layer 3 on the box NFL 0 -> N cells (if fixed without install); installs ready for approval N.
+Operator decisions: the install tasks (prepared, not run).
+END OF BLOCK 115.2
+```
+
+### 115.3 - MLB (ROUTED ON THE 2026 LOOK-BACK FOR SPRING) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.3 - MLB - ROUTED ON THE 2026 LOOK-BACK CORPUS: LEAF MAP AND ARMS PER LEAF, READY FOR SPRING (B-088) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_3.md. Every part runs on data that exists now.
+
+PURPOSE: MLB has 42 registered cells - the most of any sport - and the least routing (W114.2 box: layer 1 on 3 cells, layer 2 on 12, layer
+4 on 0). MLB is idle until the 2027 season; its 2026 rows (T1 player hits, T4M-PROJ, game markets, postseason) are the look-back corpus
+(ADR-0075: "MLB goes idle for live betting after the World Series and becomes the look-back corpus"). OPERATOR_DIRECTIVES D-01 / D-07.
+
+PART A (~45 min) - one loader for many leaf maps
+1. decision_trees/leaf_map.py loads every decision_trees/leaf_maps/*.json as well as leaf_map.json (no behaviour change for existing
+   leaves; tests). router.py reads the merged map.
+
+PART B (~50 min) - MLB leaves from 2026
+1. Extend retro_route's method (12_EXPLORATORY/retro_route/run.py) to the settled 2026 MLB rows that have a Kalshi price: leaves = cell x
+   band x favoured-side price bin x last move, fit window / held-out window by date, net after costs per arm (RIDE / FADE / MOMENTUM / POT
+   OF GOLD / NO BET), intervals and n, BH across leaves. Thin leaves route to NO BET. Write 12_EXPLORATORY/retro_route_mlb/ROUTING.md.
+
+PART C (~35 min) - the leaf file, and D6 for MLB
+1. Write decision_trees/leaf_maps/mlb.json (fit-window arms only); register routing for the MLB cells so their 2027 rows carry an arm from
+   day one. Report MLB layers before -> after (local coverage.py). PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: MLB cells routed 0 -> N; MLB leaves with an arm on the fit window; family-level held-out leads.
+Operator decisions: none.
+END OF BLOCK 115.3
+```
+
+### 115.4 - PROPS (THE NBA PROP CELLS THROUGH THE TREE) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.4 - PROPS - THE NBA PROP CELLS THROUGH THE TREE (B-093) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_4.md. Every part runs on data that exists now.
+
+PURPOSE: OPERATOR_DIRECTIVES D-09, operator 2026-10-16: "Beating Kalshi or institutions is a tall task - beating buddy off his phone
+placing parlays, that's the first step." The 9 NBA prop shadow cells (EXP-047: points, rebounds, assists, threes) have logged since
+2026-11-12 23:39Z (operator-approved install); the 22-series prop price archive has run since 11-11. They log forecasts; no router reads
+them.
+
+PART A (~45 min) - market state and filters for props
+1. The props shadow runner logs the router's decision (as the six game-market writers do, decision_trees/shadow_route.py): layer 2 from
+   the prop price archive (price, move, ladder gap, time to start); layer 3 from player-level splits - the 111.4 / 114.1 NBA index entries
+   that map to player points / threes (usage, matchup vs opponent zone / distance defence, minutes context), point-in-time.
+
+PART B (~50 min) - arms per leaf
+1. Score props per leaf with retro_route's method on the settled prop rows plus the archive's settled series: RIDE / FADE / MOMENTUM / POT
+   OF GOLD / NO BET, net after costs (exact Kalshi fee, taker price), intervals and n, BH. Say how many settled props exist and what n a
+   leaf needs. Write 12_EXPLORATORY/retro_route_props/ROUTING.md.
+
+PART C (~35 min) - the leaf file and the count
+1. Write decision_trees/leaf_maps/nba_props.json (fit window only; thin leaves NO BET); if 115.3's loader is not merged, hand the file
+   over in the handoff. Report the prop cells' layers before -> after. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: B4 props families routed; prop cells with layers 2 / 3 / 4 / 5; D-09 PARTIAL -> (state).
+Operator decisions: none.
+END OF BLOCK 115.4
+```
+
+
+## Sequencing track
+
+Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 114 — WRITTEN 2026-11-13 ~00:35 UTC · CLOSED 2026-11-13 ~01:07 UTC (operator 11-12 17:07 PT) · SW-9 · four blocks, Sonnet, two parts · verified on GitHub (#494 #497 #498 #499 #500 #501 merged, main CI green) · moved: **Muse intake landed (NBA index 24 → 36); D6 measured ON THE BOX for the first time (0 / 117; 4 cells one layer short); arm orders: RIDE 162 / 21 fills, FADE 37 / 1, MOMENTUM 7 / 1; the orchestrator defers to the router (D-04)** · open: layer 3 on the box NBA only (GG-1898, GG-1933), NHL rows unrouted on the box, daily breaker skips (GG-1935), teammate-pool hypothesis closed (parked)
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
@@ -91,124 +235,6 @@ cells cannot be counted until the count runs on the box → 114.2.
 | 114.2 | proof · 2 | D6 counted on the box: arm_orders_read + d6_read box tasks; first real D6 and E1-E3 per arm | Sonnet | ✅ | #498 e8e06a1; D6 0/117 on the box; E1 fills RIDE 21/162, FADE 1/37, MOM 1/7, E2/E3 null (0 settled); NHL layer 3 = 0 (no NHL_EVENTS box job, Monday proposal in handoff); NFL layer 3 = 0 on box (GG-1933); GG-1934, GG-1935 |
 | 114.3 | window · 2 | Doctrine leftovers: orchestrator defers to the router; scorers per leaf per arm; edge-map rows | Sonnet | ✅ | #497 c5b97f4, #499 e862d90, docs 330fbd2; E09 / E14 arm tables still open |
 | 114.4 | engine · 2 | NBA joint teammate legs: shared usage pool so teammate PTS / AST co-move the right way | Sonnet | 🟨 | #501 d9db05a; latents built (default off), tested; held-out teammate PTS x PTS +0.0230 -> +0.0224 not closed, PTS x AST +0.0108 -> +0.0078; Brier unchanged; hypothesis closed (W114.4 team-pool latents, parked for R&D) |
-
-### 114.1 - DATA (LAND THE MUSE INTAKE) · MODEL: Sonnet
-
-```
-WAVE 114 - BLOCK 114.1 - DATA - LAND PR #494 (THE BOT READS MUSE) AND WIRE ITS NBA DISTANCE FILTERS (B-087) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_1.md. Two parts, ~75 minutes.
-
-PURPOSE: OPERATOR_DIRECTIVES D-06. 113.4 built the archive intake (read-only, pinned SHA), graded tables (12_EXPLORATORY/archive_intake/
-GRADES.md) and 12 NBA index entries (opponent FG% / shot share by distance bin) with nba_distance_filters.py - but PR #494 (branch
-session/20261112T230415Z-w113-4-archive-intake) is CONFLICTED, never ran CI, has no handoff. Muse adds ~25,000 records a day; none
-reach the bot until this lands.
-
-PART A (~40 min) - land it
-1. Merge origin/main into the PR branch (no rebase / force-push of history already pushed), resolve conflicts keeping main's version of
-   anything another block changed, run the fast tests, push, wait for CI, squash-merge on green. Never write to the archive.
-
-PART B (~35 min) - wire and report
-1. decision_trees/filter_supply.py: the NBA adapter calls nba_distance_filters for the row's two teams (point-in-time; only splits tested
-   per leaf kept, as 111.4 / 113.1 did). Replay 14 days of NBA rows: decisions per arm before vs after. PR; merge on green.
-2. Write the handoff 113.4 never wrote: tables graded (VERIFIED / MISMATCH / UNCHECKABLE counts), index entries, what Muse data is still
-   unread. Fill the 113.4 and 114.1 queue rows.
-
-Report: per COMMON RULES. MEASURE MOVED: archive tables graded N; NBA index entries 24 -> N; NBA layer-3 splits from Muse data. Operator
-decisions: none.
-END OF BLOCK 114.1
-```
-
-### 114.2 - PROOF (D6 COUNTED ON THE BOX) · MODEL: Sonnet
-
-```
-WAVE 114 - BLOCK 114.2 - PROOF - D6 COUNTED ON THE BOX: READ TASKS FOR THE ARM-ORDER LOG AND THE D6 SCORECARD (B-090) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_2.md. Two parts, ~75 minutes.
-
-PURPOSE: D6 (cells wired through all seven layers) is the scope's headline measure, and it cannot be counted: 113.1 - "layers 6 and 7
-need the box order log, which no allowlisted task reads"; layer 3 NHL needs exp_output/NHL_EVENTS, which exists only locally (GG-1898).
-Arm orders have been ON since 2026-11-12 06:43Z (the router's arm drives the demo orders, operator-authorized 11-11 16:51 PT).
-
-PART A (~40 min) - two read-only box tasks
-1. scripts/arm_orders_read.py: summarise the box's logs/arm_orders/orders.jsonl - orders / would / skips per arm and sport, skip reasons,
-   fills and P&L per filled order per arm (E1 / E2), fills vs non-fills (E3), split by the GG-1771 epoch (never mixed). scripts/d6_read.py:
-   run decision_trees/coverage.py's d6_summary on the box against its real logs; per sport wired / registered and cells per layer; name every
-   cell missing exactly one layer. Add both to scripts/box_tasks.py's allowlist (read-only, no writes outside the results file) with tests.
-   PR; merge on green.
-
-PART B (~35 min) - run them and report
-1. File both requests in 04_EXECUTION/BOX_TASKS/requests/ after the box has deployed your merge (check deploy_truth_read). Report D6 per
-   sport and E1-E3 per arm with their source file and time. If NHL layer 3 is 0 on the box because NHL_EVENTS has no box job, say exactly
-   what job would build it (a Monday install for the operator) - do not install anything.
-
-Report: per COMMON RULES. MEASURE MOVED: D6 measured on the box (value, source); E1 / E2 / E3 per arm (first values). Operator decisions:
-none (an NHL_EVENTS box job, if needed, is proposed for Monday, not run).
-END OF BLOCK 114.2
-```
-
-### 114.3 - WINDOW LANE (THE DOCTRINE LEFTOVERS IN CODE) · MODEL: Sonnet
-
-```
-WAVE 114 - BLOCK 114.3 - WINDOW LANE - THE DOCTRINE LEFTOVERS: THE ROUTER, NOT THE MODEL'S EDGE, PICKS THE ARM (B-085) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_3.md. Two parts, ~75 minutes.
-
-PURPOSE: OPERATOR_DIRECTIVES D-04, CONTRADICTED. Operator 2026-11-10 21:35 PT: depth is "meant to ENHANCE OUR DECISION TREES WHICH COULD
-VERY WELL MEAN RIDE THE WAVE"; DOCTRINE section 1: the engine's price is one input to the tree, never the bet. Left open by the 111.2
-audit (04_EXECUTION/DOCTRINE_CONFORMANCE.md): execution_bands_orchestrator.py:108 and :180 (the model's edge picks the arm),
-12_EXPLORATORY/market_history/score_vs_market.py:69 and nhl_engine/run_w84_3.py:6 (a factor judged only by Brier vs the market), edge-map
-rows E01 / E09 / E10 / E14 (no per-leaf arm scoring).
-
-PART A (~40 min) - the orchestrator defers to the router
-1. Where execution_bands_orchestrator.py chooses an arm or side from model_p vs price, take the router's decision (decision_trees/
-   router.py); keep the model edge only as the FADE arm's entry input and a logged field. Paths with no router decision (idle MLB
-   T4M-PROJ) unchanged and say so. Test: a routed RIDE row is not overridden by a negative model edge. PR; merge on green.
-
-PART B (~35 min) - the scorers, and the ledgers
-1. score_vs_market.py, run_w84_3.py and the four edge-map rows: per leaf, held out, net after costs per arm (retro_route's method); Brier
-   vs the market only as a last, labelled line. No "no edge" wording. PR; merge on green.
-2. DOCTRINE_CONFORMANCE.md rows marked fixed with commits; OPERATOR_DIRECTIVES.md (yours this wave): D-04 to its new state, D-22 BUILT
-   (#480), and the count still CONTRADICTED / NOT BUILT with owners.
-
-Report: per COMMON RULES. MEASURE MOVED: D-04 CONTRADICTED -> (state); decision points contradicting DOCTRINE N -> M. PLUMBING for the
-pillars. Operator decisions: none.
-END OF BLOCK 114.3
-```
-
-### 114.4 - ENGINE (THE NBA JOINT'S TEAMMATE LEGS) · MODEL: Sonnet
-
-```
-WAVE 114 - BLOCK 114.4 - ENGINE - THE NBA JOINT'S TEAMMATE LEGS: ONE USAGE POOL PER TEAM (B-086) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
-bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_4.md. Two parts, ~75 minutes.
-
-PURPOSE: OPERATOR_DIRECTIVES D-07 / D-08 (one engine pricing the whole board, parlay correlations included; the pot of gold routed in).
-113.3 (#496, nba_engine/joint.py, 12_EXPLORATORY/sgp_correlation/RESULT_W113_3.md) closed same-player PTS x 3PM (+0.086 -> -0.004) but
-not teammates: PTS x PTS teammates +0.025 -> +0.023 (sign still wrong), PTS x AST teammates +0.004 -> +0.011 (worse), WIN x REB open.
-
-PART A (~45 min) - one pool per team
-1. In joint.py: teammates draw from ONE team usage pool per simulated game (shares that sum to the team's possessions used, with each
-   player's share point-in-time), assists tied to teammates' made shots, rebounds to the game's misses; pace a game-level latent. Tests
-   on known answers (a teammate's usage share up -> others' points down; assists rise with teammates' makes).
-
-PART B (~30 min) - held-out check
-1. Re-run 113.3's covariance check on held-out games: each pair class before -> after with intervals; game-level Brier (ML / spread /
-   total) must not get worse (reported last). Re-price 113.3's combos and hand any change to the pot-of-gold branch's input. PR; merge on
-   green.
-
-Report: per COMMON RULES. MEASURE MOVED: teammate joint error by class before -> after; D4 NBA. Operator decisions: none.
-END OF BLOCK 114.4
-```
-
-
-## Sequencing track
-
-Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
 ### ✅ WAVE 113 — WRITTEN 2026-11-12 ~06:30 UTC (revised 23:03Z) · CLOSED 2026-11-13 ~00:18 UTC (operator 11-12 16:18 PT) · SW-9 · four blocks · verified on GitHub (#493 #495 #496 merged, main CI green; #494 conflicted) · moved: **layer 3 NFL 0 → 13 cells; 25 NFL index entries; D5(b) NFL 12 → 14 of 23; arm orders sized by size_for; same-player PTS x 3PM joint gap closed** · open: D6 uncountable from the repo (→ 114.2), Muse intake unmerged (→ 114.1), teammate legs (→ 114.4)
 

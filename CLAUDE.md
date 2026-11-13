@@ -26,7 +26,7 @@ Generated 2026-11-13 by `scripts/claude_md_now.py --write` from the code at that
   - NHL: 9 shadow · 12 not built
 - Not shadow, not unbuilt: mlb_player_prop_hits / T4M-ARITH - blocked; mlb_player_prop_hits / T4M-FLOW - blocked; mlb_player_prop_hits / T4M-PROJ - active; nba_player_points / T4 - dark.
 - Kelly (execution_bands.py): 0.0 on T1, T2, T3, T4-CORR, T4-EXIT, T4M-PROJ, T4NFL-ARITH, T4NFL-FLOW, T4NHL-ARITH, T4NHL-FLOW. Non-zero on a band with an ACTIVE cell: none. Provisional non-zero values on 12 bands with no ACTIVE cell; no real capital anywhere (Hard Rule 2).
-- Open governance gaps: 257 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
+- Open governance gaps: 263 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
 <!-- NOW:END -->
 
 **Window-maintained (as of 2026-11-13, SW-9; RED in the session scan after 7 days):**
@@ -34,12 +34,12 @@ Generated 2026-11-13 by `scripts/claude_md_now.py --write` from the code at that
   (flat demo stakes, real fills; re-armed 2026-11-11 02:39Z after a turn-off tripped on pre-GG-1771 data). **MLB is idle** until the 2027
   season; its 2026 rows are the look-back corpus. NBA player props (9 cells, Wave 109.3) are built but not logging: the box install
   `nba_engine_props_shadow_install` waits on the operator's approval.
-- **Last wave closed:** 113 (2026-11-13; #493 #495 #496). NFL is wired for filters (layer 3 NFL 13 cells; pre-kickoff weather,
-  MatchupBook, 25 NFL index entries); arm orders are sized by `arm_sizing.size_for` and have run ON on the box since 2026-11-12 06:43Z;
-  the NBA joint prices same-player legs right, teammate legs not yet. **D6 wired: 0 of 117 as counted from the repo** — layers 6 / 7 need
-  the box's arm-order log, which no task reads yet. The Muse intake (PR #494) is built but unmerged.
-- **In flight:** Wave 114 (the operator's last before his limit resets Monday 11-16): 114.1 lands the Muse intake, 114.2 counts D6 on
-  the box, 114.3 brings the orchestrator and old scorers in line with the doctrine, 114.4 fixes the NBA joint's teammate legs.
+- **Last wave closed:** 114 (2026-11-13; #494 #497-#501). The bot reads Muse's archive (read-only, pinned). D6 is measured ON THE BOX
+  (`scripts/d6_read.py`): **0 of 117 wired**; NBA_SPREAD T2 / T3 lack only sizing, NFL_GAME_TOTAL T3 / NFL_SPREAD T3 only filters. Arm
+  orders (on since 11-12 06:43Z): RIDE 162 orders / 21 fills, FADE 37 / 1, MOMENTUM 7 / 1, none settled yet. On the box, filters work for
+  NBA only (NHL event store absent, GG-1898; NFL provider empty, GG-1933). The orchestrator now defers to the router.
+- **Next:** Wave 115, written for Monday 11-16 (the operator's weekly limit resets then): the first wired cells on the box, the box data
+  stores (installs prepared for his approval), MLB routed for spring, NBA props through the tree.
 - **Live numbers** (pillars, distance table, forward test, fills) are in the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`;
   **what is in scope, in order,** is `04_EXECUTION/ROLLING_BACKLOG.json`. Waiting on the operator: the "Needs your decision" section of
   the queue.

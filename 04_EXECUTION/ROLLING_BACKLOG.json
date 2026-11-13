@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-13T00:35Z",
+ "as_of": "2026-11-13T01:15Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -37,7 +37,7 @@
    "why": "Operator 11-10 22:16 PT: the big decisions have all been his; most of what he raised had been talked about numerous times",
    "source": "SW-9 2026-11-11",
    "wave": "built 11-11 (04_EXECUTION/OPERATOR_DIRECTIVES.md)",
-   "order": 13
+   "order": 16
   },
   {
    "id": "B-076",
@@ -49,7 +49,7 @@
    "why": "Operator 11-10 22:05 / 22:10 PT: no cell should be closed; the engine encodes the beat-the-market rule (W53)",
    "source": "SW-9 2026-11-11",
    "wave": "111.1 (closed 11-12)",
-   "order": 14
+   "order": 17
   },
   {
    "id": "B-077",
@@ -61,7 +61,7 @@
    "why": "Operator 11-10 22:10 PT: \"I NEED better help from you and every other strategy window\" - checks audited work against the premise, never code against doctrine (W53)",
    "source": "SW-9 2026-11-11",
    "wave": "111.2 (closed 11-12)",
-   "order": 15
+   "order": 18
   },
   {
    "id": "B-069",
@@ -73,7 +73,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.1 (closed 11-11)",
-   "order": 16
+   "order": 19
   },
   {
    "id": "B-068",
@@ -85,7 +85,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.2 (closed 11-11)",
-   "order": 17
+   "order": 20
   },
   {
    "id": "B-071",
@@ -97,7 +97,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.3 (closed 11-11)",
-   "order": 18
+   "order": 21
   },
   {
    "id": "B-072",
@@ -109,7 +109,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "110.4 (closed 11-11)",
-   "order": 19
+   "order": 22
   },
   {
    "id": "B-066",
@@ -121,7 +121,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.1",
-   "order": 20
+   "order": 23
   },
   {
    "id": "B-067",
@@ -133,7 +133,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.2",
-   "order": 21
+   "order": 24
   },
   {
    "id": "B-070",
@@ -145,7 +145,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109.3",
-   "order": 22
+   "order": 25
   },
   {
    "id": "B-064",
@@ -157,7 +157,7 @@
    "why": "MLB props 0 of 50; the in-season sports untested",
    "source": "SW-9 W107 close",
    "wave": "109.4",
-   "order": 23
+   "order": 26
   },
   {
    "id": "B-063",
@@ -169,11 +169,11 @@
    "why": "107.2 could not see under 20 minutes",
    "source": "SW-9 W107 close",
    "wave": "108.2",
-   "order": 24
+   "order": 27
   },
   {
    "id": "B-001",
-   "order": 25,
+   "order": 28,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -193,7 +193,7 @@
    "why": "Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.",
    "source": "window, stress test 11-03",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 26
+   "order": 29
   },
   {
    "id": "B-042",
@@ -205,11 +205,11 @@
    "why": "Operator 11-04 16:29 PT: \"I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back\"; 16:31 PT: \"Sit on it for now - the next window upon handoff will need to operate on it\". Operator's Muse chat is out of usage until 11-09 20:50 PT.",
    "source": "operator 2026-11-04",
    "wave": "Muse prompt ready (rewritten 11-09 from the sweep): 04_EXECUTION/MUSE_SETUP_PASTE_2026-11-09.md; Earl sends 11-09 20:50 PT",
-   "order": 27
+   "order": 30
   },
   {
    "id": "B-017",
-   "order": 28,
+   "order": 31,
    "status": "NEXT",
    "lane": "flex",
    "rank": "plumbing",
@@ -221,7 +221,7 @@
   },
   {
    "id": "B-008",
-   "order": 29,
+   "order": 32,
    "status": "NEXT",
    "lane": "proof",
    "rank": "1",
@@ -233,7 +233,7 @@
   },
   {
    "id": "B-012",
-   "order": 30,
+   "order": 33,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -245,7 +245,7 @@
   },
   {
    "id": "B-013",
-   "order": 31,
+   "order": 34,
    "status": "LATER",
    "lane": "engine",
    "rank": "3",
@@ -257,7 +257,7 @@
   },
   {
    "id": "B-014",
-   "order": 32,
+   "order": 35,
    "status": "LATER",
    "lane": "engine",
    "rank": "6",
@@ -269,7 +269,7 @@
   },
   {
    "id": "B-015",
-   "order": 33,
+   "order": 36,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -281,7 +281,7 @@
   },
   {
    "id": "B-016",
-   "order": 34,
+   "order": 37,
    "status": "LATER",
    "lane": "flex",
    "rank": "plumbing",
@@ -293,7 +293,7 @@
   },
   {
    "id": "B-018",
-   "order": 35,
+   "order": 38,
    "status": "NEXT",
    "lane": "engine",
    "rank": "2",
@@ -305,7 +305,7 @@
   },
   {
    "id": "B-019",
-   "order": 36,
+   "order": 39,
    "status": "LATER",
    "lane": "window",
    "rank": "7",
@@ -317,7 +317,7 @@
   },
   {
    "id": "B-020",
-   "order": 37,
+   "order": 40,
    "status": "LATER",
    "lane": "window",
    "rank": "plumbing",
@@ -329,7 +329,7 @@
   },
   {
    "id": "B-021",
-   "order": 38,
+   "order": 41,
    "status": "LATER",
    "lane": "proof",
    "rank": "1",
@@ -341,7 +341,7 @@
   },
   {
    "id": "B-022",
-   "order": 39,
+   "order": 42,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -353,7 +353,7 @@
   },
   {
    "id": "B-023",
-   "order": 40,
+   "order": 43,
    "status": "PARKED",
    "lane": "flex",
    "rank": "-",
@@ -365,7 +365,7 @@
   },
   {
    "id": "B-024",
-   "order": 41,
+   "order": 44,
    "status": "NOW",
    "lane": "engine",
    "rank": "8",
@@ -377,7 +377,7 @@
   },
   {
    "id": "B-025",
-   "order": 42,
+   "order": 45,
    "status": "PARKED",
    "lane": "flex",
    "rank": "8",
@@ -397,7 +397,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
-   "order": 43
+   "order": 46
   },
   {
    "id": "B-074",
@@ -409,7 +409,7 @@
    "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
    "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
    "wave": "109 ->",
-   "order": 44
+   "order": 47
   },
   {
    "id": "B-075",
@@ -421,7 +421,7 @@
    "why": "Operator 11-10 21:45 PT: \"This CANNOT keep fucking happening\" - stale doctrine read by every window",
    "source": "SW-9 2026-11-11",
    "wave": "111 ->",
-   "order": 45
+   "order": 48
   },
   {
    "id": "B-079",
@@ -433,7 +433,7 @@
    "why": "OPERATOR_DIRECTIVES D-01 / D-08: the router logs arms on 27 of 117 cells but never reads the leaf map; replay all NO_BET",
    "source": "SW-9 2026-11-11",
    "wave": "111.3 (closed 11-12)",
-   "order": 11
+   "order": 14
   },
   {
    "id": "B-080",
@@ -445,7 +445,7 @@
    "why": "OPERATOR_DIRECTIVES D-06, raised five times since 09-25 (\"AND FUCKING BLEED EM OUT\"; 11-10 PG mid-range example)",
    "source": "SW-9 2026-11-11",
    "wave": "111.4 (closed 11-12)",
-   "order": 12
+   "order": 15
   },
   {
    "id": "B-081",
@@ -457,7 +457,7 @@
    "why": "Scope re-cut around D6 (operator 11-11 16:51 PT); layer 3 zero in every sport",
    "source": "SW-9 2026-11-12",
    "wave": "112.1 (closed 11-12)",
-   "order": 7
+   "order": 10
   },
   {
    "id": "B-082",
@@ -469,7 +469,7 @@
    "why": "Operator 16:51 PT: \"it's closing THAT SPECIFIC HYPOTHESIS\"",
    "source": "SW-9 2026-11-12",
    "wave": "112.2 (closed 11-12)",
-   "order": 8
+   "order": 11
   },
   {
    "id": "B-083",
@@ -481,7 +481,7 @@
    "why": "Wired execution - operator 16:51 PT",
    "source": "SW-9 2026-11-12",
    "wave": "112.3 (closed 11-12)",
-   "order": 9
+   "order": 12
   },
   {
    "id": "B-084",
@@ -493,55 +493,55 @@
    "why": "Dependency split out of Wave 112",
    "source": "SW-9 2026-11-12",
    "wave": "113.1 (closed 11-13; D6 count moved to B-090)",
-   "order": 10
+   "order": 13
   },
   {
    "id": "B-085",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "window",
    "rank": "doctrine",
    "title": "Doctrine leftovers in code: the orchestrator defers to the router (execution_bands_orchestrator.py:108,180); score_vs_market.py and run_w84_3.py score per leaf per arm; edge-map rows E01/E09/E10/E14",
    "measure": "D-04 CONTRADICTED -> BUILT",
    "why": "111.2 audit left them open",
    "source": "SW-9 2026-11-12",
-   "wave": "114.3",
-   "order": 3
+   "wave": "114.3 (closed 11-13; E09 / E14 arm tables open)",
+   "order": 6
   },
   {
    "id": "B-086",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "engine",
    "rank": "pot of gold",
    "title": "NBA joint with shared minutes / usage / pace latents so same-player and teammate legs price right; same-game combos priced for the pot-of-gold branch",
    "measure": "same-game joint error; D4 NBA",
    "why": "W110.4: same-player cross-stat and teammate covariance wrong",
    "source": "SW-9 2026-11-12",
-   "wave": "113.3 partial -> 114.4 (teammate legs)",
-   "order": 4
+   "wave": "113.3 / 114.4 (same-player closed; teammate-pool hypothesis closed, parked for R&D)",
+   "order": 7
   },
   {
    "id": "B-087",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "data",
    "rank": "granularity",
    "title": "The bot reads Muse's archive read-only at a pinned commit, grades tables VERIFIED by recompute, turns VERIFIED NBA tables into index entries; NHL goalie snapshot timing",
    "measure": "tables graded; index entries",
    "why": "~25k records/day, no code reads them",
    "source": "SW-9 2026-11-12",
-   "wave": "113.4 built, unmerged -> 114.1",
-   "order": 5
+   "wave": "114.1 (closed 11-13)",
+   "order": 8
   },
   {
    "id": "B-088",
-   "status": "NEXT",
+   "status": "NOW",
    "lane": "proof",
    "rank": "routing",
    "title": "MLB cells routed on the 2026 look-back corpus (0 of 18 routed): leaf map and per-leaf arms from settled 2026 rows, ready for spring",
    "measure": "MLB routed cells; D6 MLB",
    "why": "Plan W114",
    "source": "SW-9 2026-11-12",
-   "wave": "114",
-   "order": 6
+   "wave": "115.3",
+   "order": 9
   },
   {
    "id": "B-089",
@@ -553,19 +553,55 @@
    "why": "Operator 2026-11-12 15:00 PT: \"4 highly substantive blocks\"; 10-16 loaded / light box example",
    "source": "SW-9 2026-11-12",
    "wave": "113.2 (closed 11-13)",
-   "order": 2
+   "order": 5
   },
   {
    "id": "B-090",
-   "status": "NOW",
+   "status": "DONE",
    "lane": "proof",
    "rank": "D6",
    "title": "D6 counted on the box: allowlisted read tasks arm_orders_read (orders / fills / P&L per arm, epoch-split) and d6_read (coverage.d6_summary on box logs); NHL_EVENTS box job proposed for Monday if needed (GG-1898)",
    "measure": "D6 measured on the box; E1-E3 per arm",
    "why": "113.1: D6 cannot be counted - the arm-order log lives on the box and no task reads it",
    "source": "SW-9 2026-11-13",
-   "wave": "114.2",
+   "wave": "114.2 (closed 11-13)",
+   "order": 4
+  },
+  {
+   "id": "B-091",
+   "status": "NOW",
+   "lane": "D6",
+   "rank": "D6",
+   "title": "The first wired cells on the box: NBA spread layer 6, NHL rows routed (1,415 unrouted), the daily breaker vs demo arm orders (GG-1935), GG-1934; D6 recounted on the box",
+   "measure": "D6 wired on the box",
+   "why": "W114.2: 0 / 117, four cells one layer short",
+   "source": "SW-9 2026-11-13",
+   "wave": "115.1",
    "order": 1
+  },
+  {
+   "id": "B-092",
+   "status": "NOW",
+   "lane": "box data",
+   "rank": "plumbing",
+   "title": "Box data stores for layer 3: NFL snapshot provider on the box (GG-1933); NHL event store job (GG-1898) as an install task for operator approval",
+   "measure": "layer 3 on the box NFL / NHL",
+   "why": "W114.2: layer 3 works on the box for NBA only",
+   "source": "SW-9 2026-11-13",
+   "wave": "115.2",
+   "order": 2
+  },
+  {
+   "id": "B-093",
+   "status": "NOW",
+   "lane": "props",
+   "rank": "retail flow",
+   "title": "NBA prop cells through the tree: market state from the prop archive, player splits as filters, arms per leaf, leaf_maps/nba_props.json",
+   "measure": "B4 props routed; prop cells layers",
+   "why": "D-09 retail flow first; props logging since 11-12",
+   "source": "SW-9 2026-11-13",
+   "wave": "115.4",
+   "order": 3
   }
  ]
 }

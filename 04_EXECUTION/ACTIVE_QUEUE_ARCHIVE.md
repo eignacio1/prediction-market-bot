@@ -24588,3 +24588,149 @@ Report: per COMMON RULES. MEASURE MOVED: archive tables graded N (VERIFIED / MIS
 NHL; D-06. Operator decisions: none.
 END OF BLOCK 113.4
 ```
+
+---
+
+## (archived 2026-11-13) WAVE 114 · WRITTEN 2026-11-13 ~00:35 UTC (11-12 16:35 PT) · SW-9 · four blocks · MODEL: Sonnet for all four · paste each into its own terminal
+
+**The operator's last wave until his limit resets Monday 11-16 (16:18 PT: "we're at 91%").** Sized to finish: **two parts, ~75 minutes
+each** (his three-part rule resumes in W115). Every part runs on data that exists now; every block runs through to merge on its own.
+
+114.1 **finish 113.4** = land the Muse intake (PR #494 is conflicted, unmerged) and wire its NBA distance filters · 114.2 **D6 on the box**
+= read tasks for the arm-order log and the D6 scorecard, run on real box logs (113.1 could not count D6: "layers 6 and 7 need the box
+order log, which no allowlisted task reads") · 114.3 **doctrine leftovers** = the orchestrator defers to the router; Brier-only scorers
+score per leaf per arm (D-04, deferred from 113.2) · 114.4 **teammate legs** = the NBA joint's teammate classes (113.3 closed same-player,
+not teammates).
+
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-04, CONTRADICTED in code since the 111.2 audit and deferred once → **114.3**. Then D-01 (D6 still 0,
+uncountable from here) → **114.2**; D-06 (Muse's data unread) → **114.1**; D-07 / D-08 (parlay correlations) → **114.4**.
+
+**DOCTRINE CHECK (W48), Wave 113 close.** *Premise:* "a layer that exists is a layer that counts". 113.1 built layers 6 / 7 evidence rules
+but D6 is computed where the logs are not (the box holds the arm-order log; the NHL event store exists only locally, GG-1898). Wired
+cells cannot be counted until the count runs on the box → 114.2.
+
+- **Pushback:** two-part blocks leave tails: 114.4's teammate fix may not close all three classes, and 114.2's first box D6 count may
+  still be 0 if no arm order has filled since 06:43Z. Both are honest Monday starting points, not failures.
+- **Surface:** box GREEN at 23:05Z (93 live, HEALTHY); installs done (NBA props shadow, dashboard 384 MB). Delta this wave: 0 installs,
+  0 crons (114.2 adds read-only box tasks).
+- **Dependencies:** none blocking. 114.1 edits only the NBA-distance function in filter_supply.py; 114.2 reads coverage.py unchanged.
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 114.1 | data · 2 | Land PR #494 (Muse intake): resolve the conflict, CI, merge; wire the NBA distance filters | Sonnet | ✅ | #494 ae7562b, #500 499522d; NBA index entries 24 -> 36; 54 leaves scored, 5 kept, 0 BH; 14-day NBA RIDE 651 -> 382 (kept splits conflict) |
+| 114.2 | proof · 2 | D6 counted on the box: arm_orders_read + d6_read box tasks; first real D6 and E1-E3 per arm | Sonnet | ✅ | #498 e8e06a1; D6 0/117 on the box; E1 fills RIDE 21/162, FADE 1/37, MOM 1/7, E2/E3 null (0 settled); NHL layer 3 = 0 (no NHL_EVENTS box job, Monday proposal in handoff); NFL layer 3 = 0 on box (GG-1933); GG-1934, GG-1935 |
+| 114.3 | window · 2 | Doctrine leftovers: orchestrator defers to the router; scorers per leaf per arm; edge-map rows | Sonnet | ✅ | #497 c5b97f4, #499 e862d90, docs 330fbd2; E09 / E14 arm tables still open |
+| 114.4 | engine · 2 | NBA joint teammate legs: shared usage pool so teammate PTS / AST co-move the right way | Sonnet | 🟨 | #501 d9db05a; latents built (default off), tested; held-out teammate PTS x PTS +0.0230 -> +0.0224 not closed, PTS x AST +0.0108 -> +0.0078; Brier unchanged; hypothesis closed (W114.4 team-pool latents, parked for R&D) |
+
+### 114.1 - DATA (LAND THE MUSE INTAKE) · MODEL: Sonnet
+
+```
+WAVE 114 - BLOCK 114.1 - DATA - LAND PR #494 (THE BOT READS MUSE) AND WIRE ITS NBA DISTANCE FILTERS (B-087) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_1.md. Two parts, ~75 minutes.
+
+PURPOSE: OPERATOR_DIRECTIVES D-06. 113.4 built the archive intake (read-only, pinned SHA), graded tables (12_EXPLORATORY/archive_intake/
+GRADES.md) and 12 NBA index entries (opponent FG% / shot share by distance bin) with nba_distance_filters.py - but PR #494 (branch
+session/20261112T230415Z-w113-4-archive-intake) is CONFLICTED, never ran CI, has no handoff. Muse adds ~25,000 records a day; none
+reach the bot until this lands.
+
+PART A (~40 min) - land it
+1. Merge origin/main into the PR branch (no rebase / force-push of history already pushed), resolve conflicts keeping main's version of
+   anything another block changed, run the fast tests, push, wait for CI, squash-merge on green. Never write to the archive.
+
+PART B (~35 min) - wire and report
+1. decision_trees/filter_supply.py: the NBA adapter calls nba_distance_filters for the row's two teams (point-in-time; only splits tested
+   per leaf kept, as 111.4 / 113.1 did). Replay 14 days of NBA rows: decisions per arm before vs after. PR; merge on green.
+2. Write the handoff 113.4 never wrote: tables graded (VERIFIED / MISMATCH / UNCHECKABLE counts), index entries, what Muse data is still
+   unread. Fill the 113.4 and 114.1 queue rows.
+
+Report: per COMMON RULES. MEASURE MOVED: archive tables graded N; NBA index entries 24 -> N; NBA layer-3 splits from Muse data. Operator
+decisions: none.
+END OF BLOCK 114.1
+```
+
+### 114.2 - PROOF (D6 COUNTED ON THE BOX) · MODEL: Sonnet
+
+```
+WAVE 114 - BLOCK 114.2 - PROOF - D6 COUNTED ON THE BOX: READ TASKS FOR THE ARM-ORDER LOG AND THE D6 SCORECARD (B-090) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_2.md. Two parts, ~75 minutes.
+
+PURPOSE: D6 (cells wired through all seven layers) is the scope's headline measure, and it cannot be counted: 113.1 - "layers 6 and 7
+need the box order log, which no allowlisted task reads"; layer 3 NHL needs exp_output/NHL_EVENTS, which exists only locally (GG-1898).
+Arm orders have been ON since 2026-11-12 06:43Z (the router's arm drives the demo orders, operator-authorized 11-11 16:51 PT).
+
+PART A (~40 min) - two read-only box tasks
+1. scripts/arm_orders_read.py: summarise the box's logs/arm_orders/orders.jsonl - orders / would / skips per arm and sport, skip reasons,
+   fills and P&L per filled order per arm (E1 / E2), fills vs non-fills (E3), split by the GG-1771 epoch (never mixed). scripts/d6_read.py:
+   run decision_trees/coverage.py's d6_summary on the box against its real logs; per sport wired / registered and cells per layer; name every
+   cell missing exactly one layer. Add both to scripts/box_tasks.py's allowlist (read-only, no writes outside the results file) with tests.
+   PR; merge on green.
+
+PART B (~35 min) - run them and report
+1. File both requests in 04_EXECUTION/BOX_TASKS/requests/ after the box has deployed your merge (check deploy_truth_read). Report D6 per
+   sport and E1-E3 per arm with their source file and time. If NHL layer 3 is 0 on the box because NHL_EVENTS has no box job, say exactly
+   what job would build it (a Monday install for the operator) - do not install anything.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 measured on the box (value, source); E1 / E2 / E3 per arm (first values). Operator decisions:
+none (an NHL_EVENTS box job, if needed, is proposed for Monday, not run).
+END OF BLOCK 114.2
+```
+
+### 114.3 - WINDOW LANE (THE DOCTRINE LEFTOVERS IN CODE) · MODEL: Sonnet
+
+```
+WAVE 114 - BLOCK 114.3 - WINDOW LANE - THE DOCTRINE LEFTOVERS: THE ROUTER, NOT THE MODEL'S EDGE, PICKS THE ARM (B-085) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_3.md. Two parts, ~75 minutes.
+
+PURPOSE: OPERATOR_DIRECTIVES D-04, CONTRADICTED. Operator 2026-11-10 21:35 PT: depth is "meant to ENHANCE OUR DECISION TREES WHICH COULD
+VERY WELL MEAN RIDE THE WAVE"; DOCTRINE section 1: the engine's price is one input to the tree, never the bet. Left open by the 111.2
+audit (04_EXECUTION/DOCTRINE_CONFORMANCE.md): execution_bands_orchestrator.py:108 and :180 (the model's edge picks the arm),
+12_EXPLORATORY/market_history/score_vs_market.py:69 and nhl_engine/run_w84_3.py:6 (a factor judged only by Brier vs the market), edge-map
+rows E01 / E09 / E10 / E14 (no per-leaf arm scoring).
+
+PART A (~40 min) - the orchestrator defers to the router
+1. Where execution_bands_orchestrator.py chooses an arm or side from model_p vs price, take the router's decision (decision_trees/
+   router.py); keep the model edge only as the FADE arm's entry input and a logged field. Paths with no router decision (idle MLB
+   T4M-PROJ) unchanged and say so. Test: a routed RIDE row is not overridden by a negative model edge. PR; merge on green.
+
+PART B (~35 min) - the scorers, and the ledgers
+1. score_vs_market.py, run_w84_3.py and the four edge-map rows: per leaf, held out, net after costs per arm (retro_route's method); Brier
+   vs the market only as a last, labelled line. No "no edge" wording. PR; merge on green.
+2. DOCTRINE_CONFORMANCE.md rows marked fixed with commits; OPERATOR_DIRECTIVES.md (yours this wave): D-04 to its new state, D-22 BUILT
+   (#480), and the count still CONTRADICTED / NOT BUILT with owners.
+
+Report: per COMMON RULES. MEASURE MOVED: D-04 CONTRADICTED -> (state); decision points contradicting DOCTRINE N -> M. PLUMBING for the
+pillars. Operator decisions: none.
+END OF BLOCK 114.3
+```
+
+### 114.4 - ENGINE (THE NBA JOINT'S TEAMMATE LEGS) · MODEL: Sonnet
+
+```
+WAVE 114 - BLOCK 114.4 - ENGINE - THE NBA JOINT'S TEAMMATE LEGS: ONE USAGE POOL PER TEAM (B-086) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W114.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W114_4.md. Two parts, ~75 minutes.
+
+PURPOSE: OPERATOR_DIRECTIVES D-07 / D-08 (one engine pricing the whole board, parlay correlations included; the pot of gold routed in).
+113.3 (#496, nba_engine/joint.py, 12_EXPLORATORY/sgp_correlation/RESULT_W113_3.md) closed same-player PTS x 3PM (+0.086 -> -0.004) but
+not teammates: PTS x PTS teammates +0.025 -> +0.023 (sign still wrong), PTS x AST teammates +0.004 -> +0.011 (worse), WIN x REB open.
+
+PART A (~45 min) - one pool per team
+1. In joint.py: teammates draw from ONE team usage pool per simulated game (shares that sum to the team's possessions used, with each
+   player's share point-in-time), assists tied to teammates' made shots, rebounds to the game's misses; pace a game-level latent. Tests
+   on known answers (a teammate's usage share up -> others' points down; assists rise with teammates' makes).
+
+PART B (~30 min) - held-out check
+1. Re-run 113.3's covariance check on held-out games: each pair class before -> after with intervals; game-level Brier (ML / spread /
+   total) must not get worse (reported last). Re-price 113.3's combos and hand any change to the pot-of-gold branch's input. PR; merge on
+   green.
+
+Report: per COMMON RULES. MEASURE MOVED: teammate joint error by class before -> after; D4 NBA. Operator decisions: none.
+END OF BLOCK 114.4
+```
