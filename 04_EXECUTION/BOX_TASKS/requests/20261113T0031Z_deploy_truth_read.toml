@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W114.2: has the box deployed e8e06a1 (arm_orders_read, d6_read)?"
