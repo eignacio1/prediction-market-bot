@@ -31,6 +31,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 from prediction_market_bot.atomic_io import atomic_write_text  # noqa: E402  GG-754
 from prediction_market_bot.c5_execution.demo_fill_policy import is_venue_transient  # noqa: E402  GG-841
+from prediction_market_bot.timeparse import parse_ts  # noqa: E402  GG-1934 (box is Python 3.9)
 
 JUDGED_N = 550
 WEEKS = 8
@@ -89,10 +90,7 @@ def assignment_check(events: list[dict], seed: str, share: float) -> dict:
 
 
 def _ts(r: dict) -> Optional[datetime]:
-    try:
-        return datetime.fromisoformat(str(r.get("ts")))
-    except ValueError:
-        return None
+    return parse_ts(r.get("ts"))  # GG-1934: tolerant of Z and 5-digit fractions
 
 
 def load_events(path: Path) -> list[dict]:
@@ -264,9 +262,8 @@ def _historical_404_terminal(r: dict, fills_for: Optional[Callable[[str, str], d
     if str(st.get("status") or "").lower() not in TERMINAL_STATUSES:
         return False
     attempt = _ts(r)
-    try:
-        terminal_at = datetime.fromisoformat(str(st.get("last_update")).replace("Z", "+00:00"))
-    except ValueError:
+    terminal_at = parse_ts(st.get("last_update"))  # GG-1934
+    if terminal_at is None:
         return False
     if attempt is None:
         return False
@@ -746,7 +743,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 fills_for = lambda oid, tk: lookup_fill(client, oid, tk, cache, sides.get(oid))  # noqa: E731
         except Exception as e:  # noqa: BLE001 - report must still be written from the log
             note = f"fills skipped: {type(e).__name__}"
-    since = datetime.fromisoformat(a.since.replace("Z", "+00:00")) if a.since else None
+    since = parse_ts(a.since) if a.since else None
     rep = build_report(events, now, fills_for, note, since, _assign_params(Path(a.env_file)), epoch_floor=GG1771_EPOCH)
     rep["gg1771_epoch"] = GG1771_EPOCH.isoformat()
     try:  # W112.3: per-arm E1/E2/E3 + markout on the arm-order log; a failure never blocks the main report

@@ -30,22 +30,7 @@ EPOCH = datetime(2026, 11, 6, 1, 3, 42, tzinfo=timezone.utc)  # GG-1771 / GG-178
 PRE, POST = "pre_epoch_yes_only", "post_epoch_all_sides"
 
 
-def parse_ts(s: Any) -> Optional[datetime]:
-    """Tolerant ISO parse: trailing Z, 5-digit fractional seconds (Kalshi), naive -> UTC. None when unparseable."""
-    if not s:
-        return None
-    t = str(s).strip().replace("Z", "+00:00")
-    if "." in t:
-        head, _, rest = t.partition(".")
-        digits = ""
-        while rest and rest[0].isdigit():
-            digits, rest = digits + rest[0], rest[1:]
-        t = head + "." + (digits + "000000")[:6] + rest
-    try:
-        d = datetime.fromisoformat(t)
-    except ValueError:
-        return None
-    return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+from prediction_market_bot.timeparse import parse_ts  # noqa: E402  GG-1934: one tolerant parser
 
 
 def load_rows(path: Path) -> List[dict]:
