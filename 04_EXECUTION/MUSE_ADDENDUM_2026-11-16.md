@@ -34,3 +34,16 @@ Muse - addendum from Earl, 2026-11-16 (same week as my first message tonight; th
 6) FOR NEXT MONDAY: under "For Earl's Monday message", keep one short list - decisions only, newest first, each with what you recommend.
    Everything else goes in the daily lines.
 ```
+
+## Addendum 2 (22:15 PT) - Muse's five open decisions, answered now so none waits a week
+
+```
+Muse - last one from Earl until next Monday: your five decisions, answered.
+1) C-1386 prefix: you are right and my 1d was wrong - the family standard is <team>-cNNNN- (col- is Colorado's). No re-record; your note stands.
+2) C-1137 (November 2020-21, no games): let a run close it NONE on its own direct check, as you recommend.
+3) Skater chunks as 32 per-team files: confirmed - the per-team split is the standard for any chunk whose single file would pass 50 MB.
+4) Advanced and four-factors variants of the month / conference / division family: yes - add them as a follow-on family, each with its
+   own one-page pre-check, placed after the new NBA tables from my first message and before the season-back extensions.
+5) C-538 prose fields: re-record (REOPEN + DONE, corrected claim and applies_to text, values unchanged), and fix its builder.
+Thanks - great week. Same rules until next Monday.
+```
