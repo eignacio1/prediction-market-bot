@@ -51,6 +51,7 @@ TASKS: dict[str, str] = {
     "nfl_total_agg_read": f"{PY} scripts/nfl_total_rows_read.py --agg",  # W100.2 Part B, read-only per-game aggregates (<60KB)
     "arm_orders_read": f"{PY} scripts/arm_orders_read.py",  # W114.2 B-090, read-only: arm-order log counts + E1-E3 per arm, split by the GG-1771 epoch
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
+    "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers
     "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",

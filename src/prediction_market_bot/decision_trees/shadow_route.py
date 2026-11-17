@@ -54,13 +54,14 @@ def _ledger_tail_mids(path: str) -> dict:
     return out
 
 
-def previous_mid(row: dict) -> tuple:
-    """(prev_mid, source). In-process memory first, then the cell ledger tail, else (None, 'unavailable')."""
+def previous_mid(row: dict, ledger_path: Optional[str] = None) -> tuple:
+    """(prev_mid, source). In-process memory first, then the cell ledger tail, else (None, 'unavailable').
+    ledger_path (W115.3): the cell file of a writer that does not use PM_SHADOW_DIR naming (the NHL writer)."""
     t = row["market_ticker"]
     if t in _SEEN:
         return _SEEN[t], "process_memory"
     base = os.environ.get("PM_SHADOW_DIR", os.path.join("exp_output", "PREGAME_SHADOW"))
-    path = os.path.join(base, f"{row.get('sport')}_{row.get('market_type')}_{row.get('band')}.jsonl")
+    path = ledger_path or os.path.join(base, f"{row.get('sport')}_{row.get('market_type')}_{row.get('band')}.jsonl")
     try:
         key = (path, os.path.getsize(path))
     except OSError:
@@ -76,7 +77,7 @@ _NEUTRAL = ("unknown", "neutral", "mid", "calm", "")
 
 
 def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None,
-                  filters_note: Optional[str] = None) -> dict:
+                  filters_note: Optional[str] = None, ledger_path: Optional[str] = None) -> dict:
     """{'router': {...}} for a shadow row; never raises (a failure is recorded as branch ERROR).
 
     filters: optional {filter_name: leaf_or_bool} from nfl_engine.filters / the NBA granularity filter, computed by a
@@ -84,32 +85,56 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
     filters_note says why (the supply's note, else "no per-row filter input"). Logs the split path: the market-state leaf, then
     each tested filter condition that was kept (changed or agreed with the arm), logged only, or untested."""
     try:
-        move_src = "caller"
-        if prev_mid is None:
-            prev_mid, move_src = previous_mid(row)
-        s = Situation(sport=row.get("sport", ""), family=series, ticker=row["market_ticker"], event=row["event_ticker"],
-                      tier=tier_for_hours(row.get("horizon_hours_to_start")), yes_bid=row["yes_bid"],
-                      yes_ask=row["yes_ask"], half_spread=row.get("half_spread"), model_p=row.get("p_yes"),
-                      market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid, filters=filters or None)
-        r = route(s, _ev())
-        d = r.leaf
-        if s.mid is not None:
-            _SEEN[row["market_ticker"]] = s.mid
-        fired = sorted(k for k, v in (filters or {}).items() if v is True or (v and str(v) not in _NEUTRAL))
-        sp = r.split
-        out = {"branch": r.tree, "side": r.side, "depth": DEPTH.get(row.get("band"), "stripped"), "tier": s.tier,
-               "reason": ";".join(map(str, r.reasons)), "orders": "off",
-               "leaf_id": d.leaf_id if d else None, "arm": d.arm if d else None,
-               "arm_source": lm.ARM_SOURCE if d else None, "thin": d.thin if d else None,
-               "filters_fired": fired,
-               "filters_note": None if filters is not None else (filters_note or "no per-row filter input"),
-               "filters_n": len(filters) if filters else 0,
-               "split_kept": sp["kept"] if sp else [], "split_logged_only": sp["logged_only"] if sp else [],
-               "split_untested_n": len(sp["untested"]) if sp else 0, "split_conflict": bool(sp and sp["conflict"]),
-               "arm_pre_split": r.arm_pre_split,
-               "split_path": (d.leaf_id + (" > " + " > ".join(sp["kept"]) if sp and sp["kept"] else "")) if d else None,
-               "move_source": move_src if prev_mid is not None else f"na:{move_src}"}
-        return {"router": out}
+        return {"router": route_row(row, series, prev_mid, filters, filters_note, ledger_path)}
     except Exception as e:  # noqa: BLE001
+        # W115.3 (GG-1939): the type name alone hid the cause of 5,390 ERROR rows on the box; the message rides along.
         return {"router": {"branch": "ERROR", "side": None, "depth": None, "tier": None,
-                           "reason": type(e).__name__, "orders": "off"}}
+                           "reason": (type(e).__name__ + ":" + str(e))[:160], "orders": "off"}}
+
+
+def route_row(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None,
+              filters_note: Optional[str] = None, ledger_path: Optional[str] = None) -> dict:
+    """The router block for a row. Raises on a malformed row (router_fields records that as branch ERROR)."""
+    move_src = "caller"
+    if prev_mid is None:
+        prev_mid, move_src = previous_mid(row, ledger_path)
+    s = Situation(sport=row.get("sport", ""), family=series, ticker=row["market_ticker"], event=row["event_ticker"],
+                  tier=tier_for_hours(row.get("horizon_hours_to_start")), yes_bid=row["yes_bid"],
+                  yes_ask=row["yes_ask"], half_spread=row.get("half_spread"), model_p=row.get("p_yes"),
+                  market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid, filters=filters or None)
+    r = route(s, _ev())
+    d = r.leaf
+    if s.mid is not None:
+        _SEEN[row["market_ticker"]] = s.mid
+    fired = sorted(k for k, v in (filters or {}).items() if v is True or (v and str(v) not in _NEUTRAL))
+    sp = r.split
+    out = {"branch": r.tree, "side": r.side, "depth": DEPTH.get(row.get("band"), "stripped"), "tier": s.tier,
+           "reason": ";".join(map(str, r.reasons)), "orders": "off",
+           "leaf_id": d.leaf_id if d else None, "arm": d.arm if d else None,
+           "arm_source": lm.ARM_SOURCE if d else None, "thin": d.thin if d else None,
+           "filters_fired": fired,
+           "filters_note": None if filters is not None else (filters_note or "no per-row filter input"),
+           "filters_n": len(filters) if filters else 0,
+           "split_kept": sp["kept"] if sp else [], "split_logged_only": sp["logged_only"] if sp else [],
+           "split_untested_n": len(sp["untested"]) if sp else 0, "split_conflict": bool(sp and sp["conflict"]),
+           "arm_pre_split": r.arm_pre_split,
+           "split_path": (d.leaf_id + (" > " + " > ".join(sp["kept"]) if sp and sp["kept"] else "")) if d else None,
+           "move_source": move_src if prev_mid is not None else f"na:{move_src}"}
+    return out
+
+
+def hook_for(ledger_path_for=None, supply=None):
+    """W115.3: the router hook for a shadow writer that does not go through pregame_shadow.runner (the NHL writer).
+    Returns ``extra_for(row) -> {'router': {...}}``: filters from the supply (known before the row's ts_utc), the previous
+    mid from the writer's own cell file, then the same router_fields the runner calls. Logging only; never raises."""
+    def extra_for(row: dict) -> dict:
+        try:
+            from prediction_market_bot.decision_trees.filter_supply import default_supply
+            flt, note = (supply or default_supply()).for_row(row)
+            series = str(row.get("market_ticker", "")).split("-", 1)[0]
+            path = str(ledger_path_for(row)) if ledger_path_for else None
+            return router_fields(row, series, filters=flt, filters_note=note, ledger_path=path)
+        except Exception as e:  # noqa: BLE001
+            return {"router": {"branch": "ERROR", "side": None, "depth": None, "tier": None,
+                               "reason": ("hook:" + type(e).__name__ + ":" + str(e))[:160], "orders": "off"}}
+    return extra_for
