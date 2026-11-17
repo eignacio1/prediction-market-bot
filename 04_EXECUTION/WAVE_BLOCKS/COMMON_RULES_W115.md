@@ -3,16 +3,22 @@
 Every Wave 115 block tells the terminal to read this file first. Text below is the rules verbatim.
 
 ```
-COMMON RULES - WAVE 115 (THE FIRST WIRED CELLS ON THE BOX; THE BOX DATA STORES LAYER 3 NEEDS; MLB ROUTED FOR SPRING; NBA PROPS THROUGH THE TREE) - SW-9 (read first; they bind this block)
-- THIS WAVE (four blocks, written 2026-11-12 17:15 PT for the operator's Monday 11-16 reset; operator: "There'll be a few things that
-  likely change between now and the Monday reset"). EVERY PREMISE BELOW IS DATED 2026-11-13 ~01:00Z: re-read the box (deploy_truth_read,
-  d6_read, arm_orders_read) before Part A and work from what it says now. SIZE: the standing rule again - THREE parts, about 130
-  minutes. MODEL: Sonnet for every block (strategic-handoff step 8). THE SCOPE IS D6, measured ON THE BOX since W114.2 (d6_read,
-  2026-11-13 00:45Z): 0 of 117 wired; cells by layers present 0:72 1:12 2:5 3:4 4:15 5:5 6:4 7:0; missing exactly one layer - NBA_SPREAD
-  T2 / T3 (layer 6) and NFL_GAME_TOTAL T3 / NFL_SPREAD T3 (layer 3). 115.1 = the first wired cells (B-091); 115.2 = the box data stores
-  layer 3 needs - NFL snapshots (GG-1933) and the NHL event store (GG-1898), as install tasks the operator approves by name (B-092);
-  115.3 = MLB routed on the 2026 look-back corpus for spring (B-088); 115.4 = the NBA props cells (logging since 2026-11-12 23:39Z)
-  through the tree (B-093). Do not edit ROLLING_BACKLOG.json.
+COMMON RULES - WAVE 115 (THE FABLE WAVE: EVIDENCE DESIGN SO LEAVES EARN ARMS; EXECUTION AS A DECISION; ONE GAME END TO END ON THE BOX) - SW-9, rewritten 2026-11-16 (read first; they bind this block)
+- THIS WAVE (THREE blocks, ALL ON FABLE - operator 2026-11-16 16:56 PT: "ALL 3 terminals will be running on Fable ... Fable eats
+  tokens like no tomorrow so let's be strategic with this"; a one-day exception to the Sonnet rule). The three hardest problems in the
+  project, one each: 115.1 EVIDENCE DESIGN - every per-leaf test so far returned 0 survivors (NFL 0 / 82 leaves, NBA 0 / 85 and 0 / 54,
+  retro-route 1 lead in 365 leaves) because six weeks of rows are cut into hundreds of leaves and each is judged alone; build the
+  statistics that let a leaf earn an arm (B-094). 115.2 EXECUTION AS A DECISION - fills win 25% vs 48% for non-fills; RIDE filled 21 of
+  162; the daily breaker skipped 690 arm orders; nothing has settled into a P&L; make placement a modelled choice per arm (B-095).
+  115.3 ONE GAME END TO END ON THE BOX - D6 is 0 of 117 on the box; trace real games through all seven layers there, fix every break,
+  name the first wired cells (B-091 + B-092). Do not edit ROLLING_BACKLOG.json.
+- FABLE BUDGET (binding): spend tokens on reasoning, code and tests - not on reading. Run the session-start protocol from the governance
+  scan's printed output only; do not open archives, old handoffs or DECISION_LOG history; read only the files your block names plus
+  what you must touch. No wide repo sweeps, no re-deriving what a named prior study already measured (cite it). Handoff: 60 lines at
+  most, numbers and file paths, no narrative. One PR per part where possible; merge on green yourself. If a part cannot finish, stop at a
+  clean merge and say exactly what is left - a Sonnet terminal finishes it tomorrow.
+- EVERY PREMISE IS DATED: the box numbers quoted are from 2026-11-13 00:45Z unless a block says otherwise. Re-read the box first
+  (d6_read, arm_orders_read, deploy_truth_read are allowlisted read tasks) and work from what it says now.
 - A LOSING LOOK CLOSES ONLY THAT TEST (operator 2026-11-11 16:51 PT, binding; DOCTRINE 1b): "a cell being closed isn't just closing the
   "fade arm" - it's closing THAT SPECIFIC HYPOTHESIS, for future research and development that we'll circle back ... a cell closing
   shouldn't mean anything is being closed but a test." No cell, market or arm closes. Text says "hypothesis closed (<EXP-id>, parked for
@@ -39,7 +45,7 @@ COMMON RULES - WAVE 115 (THE FIRST WIRED CELLS ON THE BOX; THE BOX DATA STORES L
   window too). Never work around it. Prepare and test the install, push, and name the exact task in your handoff; the window runs it
   only after the operator approves that task by name in chat (as he did for t3_lock_stagger_install and install_batch_w99_install on
   2026-11-03). The install gate's deadlock is fixed (#405, #412: the batch exempts only its own reds; each step reads its own conf).
-- SIZE (operator 2026-10-30 08:38 PT): THREE parts, about 130 minutes. Part C is a task you can switch to whenever an earlier part
+- SIZE (operator 2026-10-30 08:38 PT; Fable wave: three parts, as long as the reasoning needs within one session): THREE parts, about 130 minutes. Part C is a task you can switch to whenever an earlier part
   waits on the box (a long fetch, a deploy, CI). Push after every part.
 - After EACH part: push, and update this block's row in 04_EXECUTION/ACTIVE_QUEUE.md (NOW table: Status + one line) with a docs-only
   push. Stop at a pushed boundary (context ~60%, a blocker, or the time) and write the handoff. Never leave work unpushed.
@@ -202,15 +208,16 @@ COMMON RULES - WAVE 115 (THE FIRST WIRED CELLS ON THE BOX; THE BOX DATA STORES L
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Four blocks run in parallel. File ownership: 115.1 = decision_trees/arm_orders.py, row_sizing.py, shadow_route.py, coverage.py,
-  c4_risk_engine/arm_sizing.py, c5_execution/shadow_flat_stake.py, scripts/demo_fill_forward_report.py, scripts/arm_orders_read.py,
-  scripts/d6_read.py. 115.2 = src/prediction_market_bot/nfl_engine/providers.py, scripts/nfl_build_snapshots.py,
-  decision_trees/filter_data/, src/prediction_market_bot/c1_signal_ingestion/nhl_event_store.py, NEW scripts/*_install.py for the two
-  stores (+ tests, + scripts/box_tasks.py allowlist lines), their RUNTIME_REGISTRY.toml entries (status paused). 115.3 =
-  decision_trees/router.py, leaf_map.py (make it load every decision_trees/leaf_maps/*.json as well as leaf_map.json), NEW
-  decision_trees/leaf_maps/mlb.json, 12_EXPLORATORY/retro_route_mlb/. 115.4 = NEW decision_trees/leaf_maps/nba_props.json,
-  12_EXPLORATORY/retro_route_props/, the NBA props shadow runner (scripts/run_nba_engine_props_shadow.py) and its filter hook; if 115.3's
-  loader is not merged first, hand the file over in the handoff rather than editing leaf_map.py.
+- Three blocks run in parallel. File ownership: 115.1 = NEW src/prediction_market_bot/decision_trees/evidence/ (pooling, sequential
+  test, power calendar), decision_trees/leaf_map.py and leaf_map.json (+ NEW decision_trees/leaf_maps/), 12_EXPLORATORY/retro_route/,
+  12_EXPLORATORY/evidence_design/, the new pre-registration it writes. 115.2 = NEW src/prediction_market_bot/c5_execution/placement/
+  (fill and adverse-selection model, placement policy), c5_execution/demo_fill_policy.py, shadow_flat_stake.py,
+  decision_trees/arm_orders.py, c4_risk_engine/arm_sizing.py, scripts/demo_fill_forward_report.py, scripts/arm_orders_read.py,
+  12_EXPLORATORY/placement/, the ADR-0072 addendum PROPOSAL it drafts. 115.3 = decision_trees/filter_supply.py, shadow_route.py,
+  router.py, row_sizing.py, coverage.py, scripts/d6_read.py, src/prediction_market_bot/nfl_engine/providers.py,
+  c1_signal_ingestion/nhl_event_store.py, NEW scripts/*_install.py (+ box_tasks.py allowlist lines, paused registry entries), the shadow
+  writers' router hooks. 115.1 reads router.py, 115.3 reads leaf_map.py: neither edits the other's file; an interface change goes in the
+  handoff.
 - ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
   pushed docs-only.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and

@@ -3516,3 +3516,15 @@ Archive pinned at cc7bf8501c38; never written to. Grades: VERIFIED NBA opponent 
 | 2026-11-12 | W113.1 / B-084 | Shadow rows stay free of c4_risk_engine imports (tests/test_pregame_shadow_safety.py not weakened); layer-6 evidence is read from the arm order log (GG-1896). Same-game cap uses identity draws until 113.3's joint is plugged into row_sizing.DRAWS_PROVIDER (GG-1897). NHL event store has no box job, so NHL splits stay local until one is registered (GG-1898). Kelly stays 0. |
 
 | 2026-11-13 | B-086 / W114.4 | NBA joint team-pool latents (s_pool, s_tmin, gamma_ast, gamma_reb) merged default-OFF (#501). Held-out 2025-26 (1,075 games): teammate PTS x PTS gap +0.0230 -> +0.0224 (not closed), PTS x AST +0.0108 -> +0.0078 (not closed), same-player classes slightly worse, 3-leg combo Brier slightly worse, game Brier unchanged. Judgment: fitted values NOT shipped; 113.3 behaviour stays the pricing reference and the pot-of-gold input is unchanged. Hypothesis closed (W114.4 team-pool latents, parked for R&D); next candidate is a lineup-level or game-script latent. Result: 12_EXPLORATORY/sgp_correlation/RESULT_W114_4.md. |
+
+## 2026-11-16 16:56 PT — Operator: the Fable wave; project review; backlog reworked (SW-9)
+Verbatim (excerpt): "usage has reset. Fable eats tokens like no tomorrow so let's be strategic with this ... 1) give me the high-end view
+of the project and what needs addressing - as a result of that, rework the backlog accordingly. 2) Generate 3 blocks for the next wave -
+understand that ALL 3 terminals will be running on Fable. 3) Do a sweep through the project - provide insights and actionable follow-ups
++ an iteration task list that the window can act upon once Fable is removed after today." 17:00 PT: one Fable turn in the window took
+his session from 5% to 60%.
+Effect: Wave 115 rewritten as three Fable blocks (evidence design B-094; execution as a decision B-095; one game end to end on the box
+B-091 + B-092) with a FABLE BUDGET rule; the unsent Sonnet draft archived, its MLB / props blocks move to W116. Review:
+04_EXECUTION/PROJECT_REVIEW_2026-11-16_FABLE.md. Backlog re-ranked (53 tickets; 5 merged or parked; B-094..B-098 added). Box read
+2026-11-17 00:57Z: D6 3 / 117 (first wired cells, NBA); first settled arm P&L. A one-day exception to strategic-handoff step 8 (no Fable
+in terminals), by the operator's order. Window lesson: never run the long strategy window on Fable.

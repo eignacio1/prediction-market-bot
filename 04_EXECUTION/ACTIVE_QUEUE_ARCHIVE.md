@@ -24734,3 +24734,166 @@ PART B (~30 min) - held-out check
 Report: per COMMON RULES. MEASURE MOVED: teammate joint error by class before -> after; D4 NBA. Operator decisions: none.
 END OF BLOCK 114.4
 ```
+
+---
+
+## (archived 2026-11-16, NEVER SENT - superseded by the Fable wave; its MLB / props blocks return in W116) WAVE 115 (Sonnet draft) · WRITTEN 2026-11-13 ~01:15 UTC (11-12 17:15 PT) FOR MONDAY 11-16 · SW-9 · four blocks · MODEL: Sonnet for all four · paste each into its own terminal
+
+**Written before the weekend; every block re-reads the box first (deploy_truth_read, d6_read, arm_orders_read) and works from what it says
+then.** Three parts, ~130 minutes each (the standing rule). Every block runs through to merge on its own.
+
+**THE SCOPE IS D6, MEASURED ON THE BOX** (W114.2, 2026-11-13 00:45Z): **0 of 117 wired.** Four cells are missing exactly one layer:
+NBA_SPREAD T2 / T3 (layer 6, sizing) and NFL_GAME_TOTAL T3 / NFL_SPREAD T3 (layer 3, filters). On the box, layer 3 works for NBA only:
+NHL's event store does not exist there (GG-1898) and the NFL snapshot provider returns nothing (GG-1933). 1,415 NHL rows are unrouted on
+the box, and the daily breaker is the biggest reason arm orders skip (690, GG-1935).
+
+115.1 **D6** = B-091 the first wired cells · 115.2 **box data** = B-092 the stores layer 3 needs, as install tasks for your approval ·
+115.3 **MLB** = B-088 routed on the 2026 look-back for spring · 115.4 **props** = B-093 the NBA prop cells through the tree.
+
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-01 (the multi-arm tree end to end; "wired execution", 11-11 16:51 PT) → **115.1 / 115.2**. Then
+D-09 (retail flow first: "beating buddy off his phone placing parlays, that's the first step") → **115.4**; D-07 (one engine per sport
+pricing the whole board - MLB has the least routing) → **115.3**.
+
+**DOCTRINE CHECK (W48), Wave 114 close.** *Premise:* "what works in the repo works on the box". W114.2 measured the box for the first
+time: NFL and NHL filters that pass locally supply nothing there (missing data stores), NHL rows go unrouted, and a breaker built for a
+real-money book is skipping demo orders. The tree is only as wired as the box it runs on → 115.1 / 115.2.
+
+- **Pushback:** 115.2 ends in two installs that need your yes by name; until then NHL and part of NFL stay at layer 3 = 0 on the box, so
+  the first wired cells this wave are likely NBA (and the two NFL T3 cells if the snapshot fix needs no install).
+- **Surface:** box GREEN at 23:05Z (93 live). Delta: 0 installs in-wave; 115.2 PREPARES two (paused registry entries) for your approval.
+- **Dependencies:** none blocking. 115.4's leaf file is loaded by 115.3's loader if merged first, else handed over.
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 115.1 | D6 · 3 | The first wired cells on the box: NBA spread layer 6, NHL rows routed, the daily breaker vs demo orders, GG-1934 | Sonnet | ⬜ | |
+| 115.2 | box data · 3 | NFL snapshots on the box (GG-1933); the NHL event store job (GG-1898) - install tasks ready for approval | Sonnet | ⬜ | |
+| 115.3 | MLB · 3 | MLB routed on the 2026 look-back corpus: leaf map, arms per leaf, per-family leaf files | Sonnet | ⬜ | |
+| 115.4 | props · 3 | NBA prop cells through the tree: market state, player splits as filters, arms per leaf | Sonnet | ⬜ | |
+
+### 115.1 - D6 (THE FIRST WIRED CELLS ON THE BOX) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.1 - D6 - THE FIRST WIRED CELLS ON THE BOX (B-091) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_1.md. Before Part A, re-read the box (d6_read,
+arm_orders_read) and work from what it says now.
+
+PURPOSE: D6 is 0 of 117 on the box (W114.2, 2026-11-13 00:45Z). NBA_SPREAD T2 / T3 lack only layer 6. Operator 2026-11-11 16:51 PT:
+"we haven't come close to building out the bot in the substantive fashion (regarding wired execution) that I had anticipated."
+
+PART A (~45 min) - NBA spread layer 6, and the breaker
+1. Why NBA_SPREAD T2 / T3 rows carry no size_for decision on the box; fix it so every routed row of every cell carries one.
+2. GG-1935: the daily breaker skipped 690 arm orders. Find which breaker (arm_sizing's per-day cap, or risk.py's MAX_DAILY_LOSS_PCT /
+   _HARD_LIMITS) and against which book. A cap in arm_sizing calibrated to the demo stake is yours to fix (demo is plumbing). A hard limit
+   in risk.py is NOT changed here (Hard Rule 3 / G6): register it, and if the demo book is tripping a real-money limit, propose in the
+   handoff how the demo arm-order book should be measured separately.
+
+PART B (~45 min) - NHL rows routed, and the report
+1. 1,415 NHL rows were UNROUTED on the box while NHL routed 9 of 9 cells in the repo (W110.3). Find why (missing leaf entries, band /
+   market-type names, the absent NHL_EVENTS store) and fix what does not need 115.2's store.
+2. GG-1934: the Python 3.9 "Z" timestamp defect in demo_fill_forward_report.arm_orders_report (E2 / E3 per arm). Sweep scripts/ and src/
+   for the same pattern (Hard Rule 13).
+
+PART C (~40 min) - count it on the box
+1. PR; merge on green; after the box deploys, file d6_read and arm_orders_read and report D6 per sport, the first wired cells by name, and
+   E1 / E2 / E3 per arm (epoch-split), with source file and time.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 wired on the box 0 -> N; arm-order skips by reason before -> after; E1-E3 per arm.
+Operator decisions: none (a risk.py hard limit, if implicated, is registered and proposed, not changed).
+END OF BLOCK 115.1
+```
+
+### 115.2 - BOX DATA (THE STORES LAYER 3 NEEDS) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.2 - BOX DATA - NFL SNAPSHOTS AND THE NHL EVENT STORE ON THE BOX, AS INSTALLS READY FOR APPROVAL (B-092) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_2.md. Before Part A, re-read the box (deploy_truth_read,
+d6_read) and work from what it says now.
+
+PURPOSE: layer 3 (factor filters as tree splits) works on the box for NBA only. NFL: default_nfl_providers() returns None on the box
+(GG-1933) though the snapshots are committed CSVs in decision_trees/filter_data/ (data through 2026-11-10, refreshed weekly by
+scripts/nfl_build_snapshots.py). NHL: exp_output/NHL_EVENTS does not exist on the box (GG-1898); W114.2's handoff has the Monday proposal
+(a one-time backfill, then a daily cron after the 09:00 nhl_backfill, flock-guarded, logged, registry entry, staleness alarm).
+
+PART A (~45 min) - NFL on the box
+1. Why the provider returns None on the box (path, file present, deploy, import); fix it in code if no install is needed. If keeping the
+   snapshots current needs a weekly job, write it as an install task (below) instead of a manual refresh.
+
+PART B (~50 min) - the NHL event store job
+1. Write scripts/nhl_event_store_install.py (install / readback / uninstall, budget probe, crontab backup-or-abort, one BEGIN/END block,
+   like ride_board_install.py), the RUNTIME_REGISTRY entry (status paused - the operator's named approval is the activation), the
+   allowlist lines in scripts/box_tasks.py, tests. Size the backfill (disk, time, rate limit) from a local dry run and state it.
+
+PART C (~35 min) - ready for the operator
+1. PR; merge on green. Add to 04_EXECUTION/ACTIVE_QUEUE.md "Needs your decision" the exact approval sentence for each install task you
+   wrote ("I approve the box-task request that runs <task>, which ..."), with what it does and its cost. Do not run any install.
+
+Report: per COMMON RULES. MEASURE MOVED: layer 3 on the box NFL 0 -> N cells (if fixed without install); installs ready for approval N.
+Operator decisions: the install tasks (prepared, not run).
+END OF BLOCK 115.2
+```
+
+### 115.3 - MLB (ROUTED ON THE 2026 LOOK-BACK FOR SPRING) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.3 - MLB - ROUTED ON THE 2026 LOOK-BACK CORPUS: LEAF MAP AND ARMS PER LEAF, READY FOR SPRING (B-088) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_3.md. Every part runs on data that exists now.
+
+PURPOSE: MLB has 42 registered cells - the most of any sport - and the least routing (W114.2 box: layer 1 on 3 cells, layer 2 on 12, layer
+4 on 0). MLB is idle until the 2027 season; its 2026 rows (T1 player hits, T4M-PROJ, game markets, postseason) are the look-back corpus
+(ADR-0075: "MLB goes idle for live betting after the World Series and becomes the look-back corpus"). OPERATOR_DIRECTIVES D-01 / D-07.
+
+PART A (~45 min) - one loader for many leaf maps
+1. decision_trees/leaf_map.py loads every decision_trees/leaf_maps/*.json as well as leaf_map.json (no behaviour change for existing
+   leaves; tests). router.py reads the merged map.
+
+PART B (~50 min) - MLB leaves from 2026
+1. Extend retro_route's method (12_EXPLORATORY/retro_route/run.py) to the settled 2026 MLB rows that have a Kalshi price: leaves = cell x
+   band x favoured-side price bin x last move, fit window / held-out window by date, net after costs per arm (RIDE / FADE / MOMENTUM / POT
+   OF GOLD / NO BET), intervals and n, BH across leaves. Thin leaves route to NO BET. Write 12_EXPLORATORY/retro_route_mlb/ROUTING.md.
+
+PART C (~35 min) - the leaf file, and D6 for MLB
+1. Write decision_trees/leaf_maps/mlb.json (fit-window arms only); register routing for the MLB cells so their 2027 rows carry an arm from
+   day one. Report MLB layers before -> after (local coverage.py). PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: MLB cells routed 0 -> N; MLB leaves with an arm on the fit window; family-level held-out leads.
+Operator decisions: none.
+END OF BLOCK 115.3
+```
+
+### 115.4 - PROPS (THE NBA PROP CELLS THROUGH THE TREE) · MODEL: Sonnet
+
+```
+WAVE 115 - BLOCK 115.4 - PROPS - THE NBA PROP CELLS THROUGH THE TREE (B-093) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_4.md. Every part runs on data that exists now.
+
+PURPOSE: OPERATOR_DIRECTIVES D-09, operator 2026-10-16: "Beating Kalshi or institutions is a tall task - beating buddy off his phone
+placing parlays, that's the first step." The 9 NBA prop shadow cells (EXP-047: points, rebounds, assists, threes) have logged since
+2026-11-12 23:39Z (operator-approved install); the 22-series prop price archive has run since 11-11. They log forecasts; no router reads
+them.
+
+PART A (~45 min) - market state and filters for props
+1. The props shadow runner logs the router's decision (as the six game-market writers do, decision_trees/shadow_route.py): layer 2 from
+   the prop price archive (price, move, ladder gap, time to start); layer 3 from player-level splits - the 111.4 / 114.1 NBA index entries
+   that map to player points / threes (usage, matchup vs opponent zone / distance defence, minutes context), point-in-time.
+
+PART B (~50 min) - arms per leaf
+1. Score props per leaf with retro_route's method on the settled prop rows plus the archive's settled series: RIDE / FADE / MOMENTUM / POT
+   OF GOLD / NO BET, net after costs (exact Kalshi fee, taker price), intervals and n, BH. Say how many settled props exist and what n a
+   leaf needs. Write 12_EXPLORATORY/retro_route_props/ROUTING.md.
+
+PART C (~35 min) - the leaf file and the count
+1. Write decision_trees/leaf_maps/nba_props.json (fit window only; thin leaves NO BET); if 115.3's loader is not merged, hand the file
+   over in the handoff. Report the prop cells' layers before -> after. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: B4 props families routed; prop cells with layers 2 / 3 / 4 / 5; D-09 PARTIAL -> (state).
+Operator decisions: none.
+END OF BLOCK 115.4
+```
