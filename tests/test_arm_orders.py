@@ -160,3 +160,20 @@ def test_maybe_place_on_routed_row_uses_arm_path_only(env, monkeypatch):
     nb = row(None, None, branch="NO_BET")
     nb.update(e_net_yes_k007=0.5, e_net_no_k007=0.1)
     assert sfs.maybe_place(nb, env.client) is None and env.client.calls == []
+
+
+def test_every_routed_skip_carries_a_row_level_size_decision_w116_3(env):
+    """W116.3 (B-092, layer 6): a routed row logs its size_for before any skip; a NO_BET row sizes to 0 and does not
+    count as layer-6 evidence; an ERROR / unrouted row carries none."""
+    from prediction_market_bot.decision_trees import coverage as cov
+    nb = go(env, row(None, None, branch="NO_BET"))
+    assert nb["reason"] == "no_bet" and nb["size_for"]["arm"] == "NO_BET" and nb["size_for"]["stake_usd"] == 0
+    dis = go(env, row("RIDE", "no", 0.70))  # side disagreement skip, still sized at row level
+    assert dis["event"] == ao.SKIP_EVENT and dis["size_for"]["arm"] == "RIDE"
+    assert dis["size_for"]["context"] == "row_level_empty_book"
+    err = go(env, row(None, None, branch="ERROR"))
+    assert "size_for" not in err
+    l6, _ = cov.order_evidence([nb, err])
+    assert l6 == set()
+    l6, _ = cov.order_evidence([nb, dis])
+    assert l6 == {("x", "T1")}

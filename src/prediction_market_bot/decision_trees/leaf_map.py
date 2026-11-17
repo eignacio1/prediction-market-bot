@@ -47,8 +47,12 @@ class LeafMap:
             return cls(json.load(fh))
 
     @staticmethod
-    def row_for(sport: str, market_type: str, band: str, mid: float, prev_mid: Optional[float]) -> dict:
-        r = {"sport": sport, "market_type": market_type, "band": band, "mid": mid}
+    def row_for(sport: str, market_type: str, band: str, mid: float, prev_mid: Optional[float],
+                ticker: Optional[str] = None, yes_bid: Optional[float] = None, yes_ask: Optional[float] = None) -> dict:
+        # W116.3 (GG-1939): the MODEL_FADE arm prices both sides with retro_route.side_net, which needs the ticker (fee
+        # series) and the book; without them every MODEL_FADE leaf raised KeyError('market_ticker') -> router ERROR.
+        r = {"sport": sport, "market_type": market_type, "band": band, "mid": mid,
+             "market_ticker": ticker, "yes_bid": yes_bid, "yes_ask": yes_ask}
         r["move"] = None if prev_mid is None else mid - prev_mid
         return r
 
@@ -83,6 +87,8 @@ class LeafMap:
         elif arm == "MODEL_FADE":
             if p_yes is None:
                 return LeafDecision(lid, "NO_BET", None, "model_fade_needs_model_p", **base)
+            if not r.get("market_ticker") or r.get("yes_bid") is None or r.get("yes_ask") is None:
+                return LeafDecision(lid, "NO_BET", None, "model_fade_needs_ticker_and_book", **base)
             ey = rr.side_net({**r, "y": float(p_yes)}, "YES")
             en = rr.side_net({**r, "y": float(p_yes)}, "NO")
             if max(ey, en) <= 0:

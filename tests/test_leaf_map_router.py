@@ -88,7 +88,7 @@ def test_d6_layers_6_and_7_are_evidence_only_w113_1():
     c0 = base[0]
     key = (c0["market_type"], c0["band"])
     orders = [{"event": "arm_order", "ok": True, "order_id": "o1", "ticker": "T", "market_type": key[0], "band": key[1],
-               "ts": "2026-11-12T10:00:00Z", "size_for": {"stake_usd": 1.0}},
+               "ts": "2026-11-12T10:00:00Z", "size_for": {"arm": "RIDE", "stake_usd": 1.0}},
               {"event": "arm_order", "ok": True, "order_id": "old", "ticker": "T", "market_type": "X", "band": "T1",
                "ts": "2026-11-01T10:00:00Z"}]
     seen = []
@@ -99,3 +99,30 @@ def test_d6_layers_6_and_7_are_evidence_only_w113_1():
     got = {(c["market_type"], c["band"]): c for c in cov.d6_layers(orders=orders, fills_for=ff)}[key]
     assert got["layers"][5] and got["layers"][6]
     assert all("missing" in m for m in cov.missing_one_layer(base))
+
+
+def test_model_fade_leaf_prices_with_the_ticker_and_book_w116_3():
+    """W116.3 (GG-1939): the MODEL_FADE arm raised KeyError('market_ticker') -> 2,851 NBA / 181 NFL router ERROR rows."""
+    m = lm.LeafMap({"leaves": {"S|M|T1|2|na": {"arm": "MODEL_FADE", "thin": False, "fit": {}, "test": None, "bh": False}}})
+    d = m.decide(m.row_for("S", "M", "T1", 0.57, None, ticker="KXNBATOTAL-26NOV12AAABBB-T220", yes_bid=0.56,
+                           yes_ask=0.58), p_yes=0.30)
+    assert (d.arm, d.side) == ("MODEL_FADE", "no")
+    bare = m.decide(m.row_for("S", "M", "T1", 0.57, None), p_yes=0.30)  # no ticker / book: a reasoned NO_BET, never a raise
+    assert bare.arm == "NO_BET" and bare.reason == "model_fade_needs_ticker_and_book"
+
+
+def test_every_kept_split_and_model_fade_leaf_routes_without_error_w116_3():
+    splits = json.load(open(os.path.join(ROOT, "src/prediction_market_bot/decision_trees/filter_splits.json")))["splits"]
+    fam = {"KXNBATOTAL": "NBA_GAME_TOTAL", "KXNBAGAME": "NBA_MONEYLINE", "KXNBASPREAD": "NBA_SPREAD"}
+    branches = set()
+    for x in splits:
+        if not x["kept"] or x["series"] not in fam:
+            continue
+        for band in ("T1", "T2", "T3"):
+            for mid in (0.2, 0.35, 0.5, 0.65, 0.8):
+                for prev in (None, mid - 0.05, mid + 0.05):
+                    r = _row(fam[x["series"]], band, mid, p=0.3, tk=x["series"] + "-26NOV12AAABBB-T1")
+                    b = router_fields(r, x["series"], prev_mid=prev, filters={x["filter"]: x["leaf"]})["router"]
+                    assert b["branch"] != "ERROR", b["reason"]
+                    branches.add(b["branch"])
+    assert "FADE" in branches  # the MODEL_FADE arm now reaches its tree

@@ -166,7 +166,8 @@ def _route_leaf(s: Situation, ev: Evidence) -> Route:
         return Route(NO_BET, None, ("price_extreme",))
     from prediction_market_bot.decision_trees import leaf_map as lm
 
-    row = lm.LeafMap.row_for(s.sport, s.market_type or "", s.band, s.mid, s.prev_mid)
+    row = lm.LeafMap.row_for(s.sport, s.market_type or "", s.band, s.mid, s.prev_mid,
+                             ticker=s.ticker, yes_bid=s.yes_bid, yes_ask=s.yes_ask)
     d = ev.leaf_map.decide(row, s.model_p)
     split, pre = None, None
     if s.filters:  # W112.1: leaf = market-state leaf x filter condition; only KEPT (tested per leaf) splits change the arm
