@@ -73,7 +73,7 @@ down. Every part runs to merge on its own overnight; anything for the operator l
 |---|---|---|---|---|---|
 | 116.1 | quant · 3 | Finish 115.1: evidence pipeline, three-router held-out comparison, power calendar, leaf map v2 behind a switch, router v2 frozen | Opus | ⬜ | |
 | 116.2 | execution · 3 | Finish 115.2: placement model tests, settlement join + GG-1934, policy behind a switch, report per arm and option, ADR-0072 addendum proposal | Opus | ⬜ | |
-| 116.3 | D6 · 3 | Finish 115.3: read the trace, write the three trace tables, fix the breaks, row-level sizing, D6 recount; NHL store shrunk before any install | Opus | ⬜ | |
+| 116.3 | D6 · 3 | Finish 115.3: read the trace, write the three trace tables, fix the breaks, row-level sizing, D6 recount; NHL store shrunk before any install | Opus | 🟨 parked | ERROR cause found (MODEL_FADE leaf row had no ticker/book → KeyError; NBA 2,851 + NFL 181 rows) and fixed in PR #503 (CI pending, not merged). Row-level sizing on every routed row. Box D6 baseline is 3 (all NBA). NHL store shrink and GG-1939..1941 registration not done. Handoff: SESSION_HANDOFF_20261117T0620Z_W116_3.md |
 
 - **Pushback:** 116.2's cap change raises demo arm orders from ~50 to ~2,200 a day - it ships behind a switch at the OLD values, with
   the raise proposed for the operator, because the 11-12 ADR-0072 addendum promised those gates were unchanged.
