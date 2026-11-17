@@ -90,7 +90,7 @@ premise with pooled evidence, pre-registered before its first forward row.
 |---|---|---|---|---|---|
 | 115.1 | quant · 3 | Evidence design: pooled, sequential evidence so leaves earn arms; power calendar; routing v2 pre-registered | Fable | ⬜ | |
 | 115.2 | execution · 3 | Execution as a decision: fill and adverse-selection model, placement policy per arm, the breaker, settled P&L per arm | Fable | 🟡 PARTIAL | stopped on usage. Branch `session/20261117T010348Z-w115-2-placement` @ bdf2847, no PR, nothing merged. Done: GG-1935 answered, demo arm-book caps separated from the real-money limits, order rows log the book at submit. Not done: GG-1934 join, placement tests / policy / switch, addendum proposal. Handoff W115_2 |
-| 115.3 | D6 · 3 | One game end to end on the box, per sport: trace all seven layers, fix every break; 3 wired cells → every in-season sport | Fable | ⬜ | |
+| 115.3 | D6 · 3 | One game end to end on the box, per sport: trace all seven layers, fix every break; 3 wired cells → every in-season sport | Fable | 🟡 PARTIAL | Stopped on the usage addendum. Branch `session/20261117T010353Z-w115-3-d6-one-game` @ 1ce79c5, PR #502 (CI pending, unmerged): NHL rows routed, NFL layer-3 rule fixed, router ERROR message logged, `d6_trace_read` task. D6 still 3 / 117; trace not run; NHL store needs 0.9-2.0 GB and does not fit the box as built. Handoff `SESSION_HANDOFF_20261117T0115Z_W115_3.md`. |
 
 ### 115.1 - QUANT (EVIDENCE DESIGN: HOW A LEAF EARNS AN ARM) · MODEL: Fable
 
