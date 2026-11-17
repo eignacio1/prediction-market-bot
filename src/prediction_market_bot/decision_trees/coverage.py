@@ -109,8 +109,14 @@ def filter_layer_sports() -> set:
         out.add("nba")
     except (OSError, ValueError):
         pass
-    if fsup.default_supply().nfl_providers is not None:
-        out.add("nfl")
+    # W115.3 (GG-1941): the default FilterSupply never holds providers (nfl_adapter resolves them lazily), so the old test
+    # ``default_supply().nfl_providers is not None`` was false on every host and NFL layer 3 could not count anywhere.
+    try:
+        from prediction_market_bot.nfl_engine.providers import default_nfl_providers
+        if fsup.default_supply().nfl_providers is not None or default_nfl_providers() is not None:
+            out.add("nfl")
+    except Exception:  # noqa: BLE001 - a host that cannot load the snapshots shows no layer-3 NFL
+        pass
     try:
         import glob
         import importlib

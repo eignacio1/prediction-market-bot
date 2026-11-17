@@ -23,8 +23,15 @@ def make_adapter():
         return KalshiVenueAdapter(KalshiMarketClient("public-read-only-no-auth"))
 
 
+def router_hook(root: Path):
+    """W115.3 (GG-1940): NHL rows were written with no router decision, so the arm path logged every one 'unrouted'
+    (5,513 skips on the box). The same hook the runner uses, injected here so nhl_shadow_eval imports no router code."""
+    from prediction_market_bot.decision_trees.shadow_route import hook_for
+    return hook_for(lambda r: ev.cell_path(root, r["market_type"], r["band"]))
+
+
 def main(argv=None) -> int:
-    return ev.main(argv, on_row=make_on_row(make_adapter()))
+    return ev.main(argv, on_row=make_on_row(make_adapter()), extra_for=router_hook)
 
 
 if __name__ == "__main__":
