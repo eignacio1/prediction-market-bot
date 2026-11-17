@@ -101,3 +101,9 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
    rewrites, box reads). Never Opus or Fable for a terminal block. Block size stays the operator's 2026-10-30 rule (three parts, ~130
    minutes) - do not re-propose it as new. The operator keeps one long strategy window per scope, by choice (2026-11-12 15:11 PT):
    do not suggest shorter windows to save tokens.
+9. STEP BACK BEFORE THE NEXT TEST (operator 2026-11-16 22:18 PT: "It's essentially taking the vision that I've discussed but systemizing
+   it - providing the tactical ops behind its structure. Brother that's what I need YOU for"). At every wave close, before writing the next
+   wave, read the last three waves' results side by side and ask what they have in common. The same null three times (0 survivors, 0
+   wired, a skip reason that keeps growing) is a finding about the METHOD or the PLUMBING, not about the sport: the next wave fixes the
+   method; it does not run a fourth test of the same shape. Name it in the wave's DOCTRINE CHECK line. (The pooled-evidence design and
+   the "daily breaker" were both visible three waves before the Fable review found them - W57.)
