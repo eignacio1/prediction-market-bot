@@ -1,0 +1,2 @@
+task = "d6_trace_read"
+note = "W116.3: re-read after #502 deploy (trace absent at 06:03Z: box HEAD 9caa073)"
