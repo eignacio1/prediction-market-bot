@@ -43,6 +43,7 @@ from prediction_market_bot.c4_risk_engine import exposure_gate as xg
 from prediction_market_bot.c4_risk_engine import arm_sizing as asz
 from prediction_market_bot.decision_trees import row_sizing as rs
 from prediction_market_bot.c5_execution import demo_fill_policy as pol
+from prediction_market_bot.c5_execution.placement import policy as plc
 from prediction_market_bot.c5_execution import kill_switch_state as ksw
 from prediction_market_bot.c5_execution.shadow_flat_stake import SHADOW_KILL_BAND, demo_host_ok, order_context
 
@@ -239,10 +240,18 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
     if dec.action != "SUBMIT":
         return out(SKIP_EVENT, dec.reason, meta=dec.meta, stake_usd=stake)
     price_yes = dec.mid_price
+    placement = "rest_touch"  # ADR-0072 rule. W116.2: the per-arm choice runs only when ARM_PLACEMENT_POLICY=on (default off)
+    if plc.is_on(pol.switch_value(plc.SWITCH_ENV)):
+        bk = dec.meta or {}
+        p = plc.place(arm, base.get("leaf_id"), side, float(bk["yes_bid"]), float(bk["yes_ask"]), "on")
+        base["placement_reason"] = p.reason
+        if p.option == "no_place":
+            return out(SKIP_EVENT, "placement_no_place", meta=dec.meta, stake_usd=stake)
+        placement, price_yes = p.option, p.price_yes
     entry = price_yes if side == "yes" else 1.0 - price_yes
-    placement = "rest_touch"  # ADR-0072 rule; the per-arm placement choice (W115.2 Part C) is wired behind its own switch
     if m == DRY:
-        return out(WOULD_EVENT, "dry_run_no_order", side=side, stake_usd=stake, price_yes=price_yes, entry_price=entry)
+        return out(WOULD_EVENT, "dry_run_no_order", side=side, stake_usd=stake, price_yes=price_yes, entry_price=entry,
+                   placement=placement)
     order = client.submit_order(ticker=ticker, side=side, size_usd=stake, mid_price=price_yes, band=KILL_BAND,
                                 client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"arm-orders/{rid}")))
     r = {"event": ORDER_EVENT, "ok": order.ok, "order_id": order.order_id, "stake_usd": stake, "side": side,
