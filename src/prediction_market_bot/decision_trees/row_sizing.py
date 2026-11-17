@@ -115,8 +115,10 @@ def open_exposure(placed: Iterable[dict], event_ticker: Optional[str], day: str,
 
 
 def order_decision(row: dict, router: dict, side: str, flat_stake_usd: float, placed: Iterable[dict],
-                   now: Optional[datetime] = None) -> asz.SizeDecision:
-    """Size one arm order. ``placed`` = the arm order log's ok orders (read once by the caller)."""
+                   now: Optional[datetime] = None, caps: Optional[asz.DemoBookCaps] = None) -> asz.SizeDecision:
+    """Size one arm order. ``placed`` = the arm order log's ok orders (read once by the caller); ``caps`` = the demo
+    book's cap profile (None -> arm_sizing.BASE_CAPS)."""
+    caps = caps or asz.BASE_CAPS
     now = now or datetime.now(timezone.utc)
     arm = sizing_arm(router) or "NO_BET"
     ex = open_exposure(placed, row.get("event_ticker"), now.strftime("%Y-%m-%d"), arm)
@@ -129,7 +131,9 @@ def order_decision(row: dict, router: dict, side: str, flat_stake_usd: float, pl
                  for o in ex["legs"]]
     ctx = asz.SizingContext(price=_price(row, side), p_win=_p_win(row, side), flat_stake_usd=float(flat_stake_usd),
                             open_event_usd=ex["event"], open_day_usd=ex["day"], open_arm_usd=ex["arm"],
-                            new_leg_draws=leg_draws(new), same_game_open=tuple(open_legs))
+                            new_leg_draws=leg_draws(new), same_game_open=tuple(open_legs),
+                            event_cap_usd=caps.event_usd, day_cap_usd=caps.day_usd,
+                            default_arm_budget_usd=caps.arm_budget_usd)
     return asz.size_for(arm, cell_for(row), ctx)
 
 

@@ -28,14 +28,38 @@ from prediction_market_bot.quant import sgp
 ARMS = ("RIDE", "FADE", "MOMENTUM_FOLLOW", "MOMENTUM_FADE", "POT_OF_GOLD", "NO_BET")
 
 FLAT_DEMO_STAKE_USD = 1.00             # ADR-0059 T1_MEASUREMENT_STAKE_USD; the context may override it
-# The DEMO ARM BOOK's own caps (W115.2 / GG-1935). They are caps on stake PLACED in the ledger-less arm-order book, in
+# The DEMO ARM BOOK's own caps (W115.2 / W116.2, GG-1935). They cap stake PLACED in the ledger-less arm-order book, in
 # demo dollars. They are not, and never read, the real-money limits in risk.py (_HARD_LIMITS, MAX_DAILY_LOSS_PCT), which
-# stay as they are until G6. Sized from the box read of 2026-11-17: the router wants about 2,200 arm orders a day at the
-# flat $1 stake, an order rests 60 s and about 14% fill, so $1 placed is about $0.14 of exposure. The old $50 day cap let
-# about 2% of the wanted orders through (7,552 zeroed in five days), which starved E1-E3 of rows.
-DEFAULT_EVENT_CAP_USD = 25.00          # placed stake per event per day (about $3.50 filled at the measured fill rate)
-DEFAULT_DAY_CAP_USD = 2500.00          # placed stake per UTC day across all arms (about the whole wanted flow)
-DEFAULT_ARM_BUDGET_USD = 1500.00       # placed stake per arm per day
+# stay as they are until G6. TWO PROFILES, chosen by the switch ARM_BOOK_CAPS (default OFF -> "base"):
+#   base   5 / 50 / 25 per event / day / arm - the values the 2026-11-12 ADR-0072 addendum said were unchanged.
+#   raised 25 / 2,500 / 1,500 - PROPOSED (W116.2 addendum proposal, operator approval sentence in "Needs your decision").
+#          The box read of 2026-11-17: the router wants about 2,200 arm orders a day at the flat $1 stake; the $50 day cap
+#          let about 2% through (7,552 zeroed in five days). Only ARM_BOOK_CAPS=raised turns it on; nothing here does.
+CAPS_SWITCH_ENV = "ARM_BOOK_CAPS"
+CAPS_RAISED_VALUE = "raised"
+
+
+@dataclass(frozen=True)
+class DemoBookCaps:
+    profile: str
+    event_usd: float                   # placed stake per event per UTC day
+    day_usd: float                     # placed stake per UTC day across all arms
+    arm_budget_usd: float              # placed stake per arm per UTC day
+
+
+BASE_CAPS = DemoBookCaps("base", 5.00, 50.00, 25.00)
+RAISED_CAPS = DemoBookCaps("raised", 25.00, 2500.00, 1500.00)
+
+
+def demo_book_caps(switch_value: Optional[str] = None) -> DemoBookCaps:
+    """The demo arm book's caps for a switch value (the caller reads the switch; this module does no I/O).
+    Only the exact value "raised" selects RAISED_CAPS; anything else, empty or unknown, is BASE_CAPS."""
+    return RAISED_CAPS if (switch_value or "").strip().lower() == CAPS_RAISED_VALUE else BASE_CAPS
+
+
+DEFAULT_EVENT_CAP_USD = BASE_CAPS.event_usd
+DEFAULT_DAY_CAP_USD = BASE_CAPS.day_usd
+DEFAULT_ARM_BUDGET_USD = BASE_CAPS.arm_budget_usd
 DEFAULT_CLUSTER_CAP_USD = None         # None -> one leg's flat stake: correlated legs are sized as one
 MERGE_PHI = 0.90                       # legs with phi >= this move together and merge into one exposure
 HYPOTHETICAL_KELLY_FRACTION = 0.25     # logged only; the live fraction is 0.0 (execution_bands.py)
@@ -57,7 +81,8 @@ class SizingContext:
     flat_stake_usd: float = FLAT_DEMO_STAKE_USD
     event_cap_usd: float = DEFAULT_EVENT_CAP_USD
     day_cap_usd: float = DEFAULT_DAY_CAP_USD
-    arm_budget_usd: Mapping[str, float] = field(default_factory=dict)   # arm -> budget; missing -> DEFAULT_ARM_BUDGET_USD
+    arm_budget_usd: Mapping[str, float] = field(default_factory=dict)   # arm -> budget; missing -> default_arm_budget_usd
+    default_arm_budget_usd: float = DEFAULT_ARM_BUDGET_USD
     open_event_usd: float = 0.0                # already staked on this event (all arms)
     open_day_usd: float = 0.0                  # already staked today (all arms)
     open_arm_usd: float = 0.0                  # already staked today on THIS arm
@@ -154,7 +179,7 @@ def size_for(arm: str, cell: Any, context: Optional[SizingContext] = None) -> Si
 
     cut("event", ctx.event_cap_usd - ctx.open_event_usd)
     cut("day", ctx.day_cap_usd - ctx.open_day_usd)
-    cut("arm_budget", float(ctx.arm_budget_usd.get(arm, DEFAULT_ARM_BUDGET_USD)) - ctx.open_arm_usd)
+    cut("arm_budget", float(ctx.arm_budget_usd.get(arm, ctx.default_arm_budget_usd)) - ctx.open_arm_usd)
     merged_usd, merged_n = _cluster(ctx)
     ccap = ctx.cluster_cap_usd if ctx.cluster_cap_usd is not None else float(ctx.flat_stake_usd)
     if merged_n:

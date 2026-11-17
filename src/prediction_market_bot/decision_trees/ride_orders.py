@@ -4,11 +4,15 @@ A decision is turned into one of three actions:
   ORDER  the route is RIDE / FADE / MOMENTUM_* on a cell whose ride_cells.toml status is HELD_OUT or
          FORWARD_PASSED, and every gate below is clear -> one flat demo order (book RIDE_BOARD).
   PAPER  the cell is IN_SAMPLE (or the route has no table cell) -> logged, no order.
-  SKIP   a gate refused (switch off, production host, kill switch, per-event cap, daily breaker, cash).
+  SKIP   a gate refused (switch off, production host, kill switch, demo-book event cap, demo-book day cap, cash).
 
 Gates, in order: switch RIDE_BOARD_ORDERS == "on" (anything else is OFF) -> demo host -> NFR-03 kill switch
-(global + band "ride_board") -> per-event cap (c4 _HARD_LIMITS) -> daily breaker (c4 MAX_DAILY_LOSS_PCT of the
-book notional, measured on the book's own placed stake: ledger-less, so the stake IS the exposure) -> cash.
+(global + band "ride_board") -> demo-book event cap (stake placed on the event, all days) -> demo-book day cap (stake
+placed per UTC day; ledger-less, so the stake IS the exposure) -> cash.
+W116.2 (GG-1935 sweep): these caps used to READ the real-money constants (risk._HARD_LIMITS per-event exposure $500, and
+notional x risk.MAX_DAILY_LOSS_PCT = $150, logged as "daily_breaker" though no loss was measured). They are now this
+demo book's own constants AT THE SAME VALUES, so behaviour is unchanged and a change to a real-money limit no longer
+moves a demo cap.
 The exposure gate (W87.2) is fed after every order and still runs inside KalshiMarketClient.submit_order.
 Production Kalshi or real funds: never.
 """
@@ -21,7 +25,6 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 from prediction_market_bot.c4_risk_engine import exposure_gate as xg
-from prediction_market_bot.c4_risk_engine import risk
 from prediction_market_bot.c5_execution import demo_fill_policy as pol
 from prediction_market_bot.c5_execution import kill_switch_state as ksw
 from prediction_market_bot.c5_execution.shadow_flat_stake import demo_host_ok
@@ -34,6 +37,8 @@ ORDER_EVENT = "ride_order"
 NOTIONAL_USD = xg.SHADOW_NOTIONAL_USD
 ORDERABLE = ride.RIDEABLE  # HELD_OUT, FORWARD_PASSED
 ORDER = "ORDER"
+DEMO_BOOK_EVENT_CAP_USD = 500.00   # stake placed per event, all days (was read from risk._HARD_LIMITS; same value)
+DEMO_BOOK_DAY_CAP_USD = 150.00     # stake placed per UTC day (was notional 1000 x risk.MAX_DAILY_LOSS_PCT; same value)
 PAPER = "PAPER"
 SKIP = "SKIP"
 
@@ -80,11 +85,11 @@ def day_exposure_usd(day: str, path: Optional[Path] = None) -> float:
 
 
 def cap_reason(event: str, stake: float, day: str, path: Optional[Path] = None) -> Optional[str]:
-    """Per-event cap and daily breaker, both from c4's own constants."""
-    if event_exposure_usd(event, path) + stake > risk._HARD_LIMITS["max_single_event_exposure_usd"]:
-        return "per_event_cap"
-    if day_exposure_usd(day, path) + stake > NOTIONAL_USD * risk.MAX_DAILY_LOSS_PCT:
-        return "daily_breaker"
+    """The demo book's event and day caps on stake PLACED (no real-money limit is read here)."""
+    if event_exposure_usd(event, path) + stake > DEMO_BOOK_EVENT_CAP_USD + 1e-9:
+        return "demo_book_event_cap"
+    if day_exposure_usd(day, path) + stake > DEMO_BOOK_DAY_CAP_USD + 1e-9:
+        return "demo_book_day_cap"
     return None
 
 

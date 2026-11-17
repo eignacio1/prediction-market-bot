@@ -95,14 +95,21 @@ def _placed(path: Optional[Path] = None) -> list:
     return [e for e in _read(path or order_log_path()) if e.get("event") == ORDER_EVENT and e.get("ok")]
 
 
-def cap_reason(event: str, stake: float, day: str, path: Optional[Path] = None) -> Optional[str]:
+def book_caps() -> asz.DemoBookCaps:
+    """The demo arm book's cap profile from the ARM_BOOK_CAPS switch (default OFF -> base 5 / 50 / 25)."""
+    return asz.demo_book_caps(pol.switch_value(asz.CAPS_SWITCH_ENV))
+
+
+def cap_reason(event: str, stake: float, day: str, path: Optional[Path] = None,
+               caps: Optional[asz.DemoBookCaps] = None) -> Optional[str]:
     """Backstop behind size_for (it matters only when a SIZER override skips arm_sizing): stake placed today in the demo
     arm book, per event and in total, against the demo book's own caps. No real-money limit is read here."""
+    caps = caps or book_caps()
     today = [e for e in _placed(path) if str(e.get("ts", "")).startswith(day)]
     if sum(float(e.get("stake_usd") or 0) for e in today if e.get("event_ticker") == event) + stake > \
-            asz.DEFAULT_EVENT_CAP_USD + 1e-9:
+            caps.event_usd + 1e-9:
         return "demo_book_event_cap"
-    if sum(float(e.get("stake_usd") or 0) for e in today) + stake > asz.DEFAULT_DAY_CAP_USD + 1e-9:
+    if sum(float(e.get("stake_usd") or 0) for e in today) + stake > caps.day_usd + 1e-9:
         return "demo_book_day_cap"
     return None
 
@@ -134,13 +141,14 @@ def size_for(arm: str, cell: Any, context: dict) -> float:
     return float(measurement_stake_and_stratum(context["entry"])[0])
 
 
-def sized_stake(arm: str, row: dict, router: dict, side: str, ctx: dict, log: Optional[Path], now: datetime):
+def sized_stake(arm: str, row: dict, router: dict, side: str, ctx: dict, log: Optional[Path], now: datetime,
+                caps: Optional[asz.DemoBookCaps] = None):
     """(stake, {'size_for': {...}}). The SIZER hook (if set) wins and carries no decision; else layer 6, arm_sizing.size_for,
     with the open exposure and same-game legs read from the arm order log (W113.1)."""
     if SIZER is not None:
         return float(SIZER(arm, None, ctx)), {}
     flat = size_for(arm, None, ctx)
-    d = rs.order_decision(row, router, side, flat, _placed(log), now)
+    d = rs.order_decision(row, router, side, flat, _placed(log), now, caps)
     return float(d.stake_usd), d.as_row_fields()
 
 
@@ -214,12 +222,14 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
         return out(SKIP_EVENT, why)
     entry_guess = float(mid) if side == "yes" else 1.0 - float(mid)
     ctx = {"entry": entry_guess, "row": row, "router": router, "side": side, "assignment": would}
-    stake, sz = sized_stake(arm, row, router, side, ctx, log, now)
+    caps = book_caps()
+    base["book_caps"] = caps.profile
+    stake, sz = sized_stake(arm, row, router, side, ctx, log, now, caps)
     base.update(sz)
     base["size_arm"] = rs.sizing_arm(router)
     if stake <= 0:
         return out(SKIP_EVENT, "size_zero:" + str((sz.get("size_for") or {}).get("reason", "sizer")), stake_usd=stake)
-    why = cap_reason(row.get("event_ticker") or ticker, stake, now.strftime("%Y-%m-%d"), log)
+    why = cap_reason(row.get("event_ticker") or ticker, stake, now.strftime("%Y-%m-%d"), log, caps)
     if why:
         return out(SKIP_EVENT, why, stake_usd=stake)
     why = pol.cash_skip_reason(client, stake)

@@ -98,3 +98,19 @@ def test_module_has_no_order_path_import():
     import inspect
     src = inspect.getsource(a)
     assert "ride_orders" not in src and "venue_adapter" not in src and "submit_order" not in src
+
+
+def test_cap_profiles_default_to_base_and_raise_only_on_the_exact_switch():
+    """W116.2: base 5 / 50 / 25 is the default (the 2026-11-12 ADR-0072 addendum values); raised only on "raised"."""
+    assert (a.DEFAULT_EVENT_CAP_USD, a.DEFAULT_DAY_CAP_USD, a.DEFAULT_ARM_BUDGET_USD) == (5.0, 50.0, 25.0)
+    for v in (None, "", "off", "on", "RAISED-ish", "1"):
+        assert a.demo_book_caps(v) is a.BASE_CAPS
+    assert a.demo_book_caps(" Raised ") is a.RAISED_CAPS
+    assert (a.RAISED_CAPS.event_usd, a.RAISED_CAPS.day_usd, a.RAISED_CAPS.arm_budget_usd) == (25.0, 2500.0, 1500.0)
+
+
+def test_default_arm_budget_comes_from_the_context():
+    ctx = a.SizingContext(open_arm_usd=24.60)
+    assert "arm_budget" in a.size_for("RIDE", CELL, ctx).binding_caps
+    ctx = a.SizingContext(open_arm_usd=24.60, default_arm_budget_usd=1500.0, event_cap_usd=25.0, day_cap_usd=2500.0)
+    assert a.size_for("RIDE", CELL, ctx).binding_caps == ()
