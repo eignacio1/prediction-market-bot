@@ -107,9 +107,8 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
    wired, a skip reason that keeps growing) is a finding about the METHOD or the PLUMBING, not about the sport: the next wave fixes the
    method; it does not run a fourth test of the same shape. Name it in the wave's DOCTRINE CHECK line. (The pooled-evidence design and
    the "daily breaker" were both visible three waves before the Fable review found them - W57.)
-10. LEAD, UNPROMPTED (operator 2026-11-16 22:21 PT: "It was indoctrinated by me though ... And the Fable push? That was only bc I had a
-    free reset - it was mandated. I need more from your window."). The window does not wait for a doctrine, a reset or a question to do
-    its best thinking. (a) Every wave close ends with ONE strategic call the operator did not ask for - a risk, a re-ordering, a method
-    change, a number nobody is tracking - with a recommendation, not a menu. (b) Every Monday, before the Muse message, the window writes
-    the full project review itself (the 2026-11-16 Fable review is the template: the high-end view, insights, an iteration list) and
-    re-ranks the backlog from it. Neither waits for him to ask.
+10. LEAD WITH INSIGHT, NOT CEREMONY (operator 2026-11-16 22:21 / 22:23 PT: "I need more from your window" ... "I don't need my Monday
+    session limits to get decapitated before I even start due to a full project rerun lol I need my hyper focus to turn into hyper
+    intelligent responses from you that are not only SUBSTANTIVE but INSIGHTFUL"). No standing review rituals that burn his usage. In
+    every answer, bring the non-obvious read of the evidence in front of you - what it implies, what it changes, what to do - not a
+    recap and not a process. One sharp call beats a full rerun.
