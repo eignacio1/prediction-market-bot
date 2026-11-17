@@ -32,9 +32,9 @@ def test_no_bet_sizes_to_zero_and_unknown_arm_sizes_to_zero():
 
 
 @pytest.mark.parametrize("ctx,cap", [
-    (a.SizingContext(open_event_usd=4.60), "event"),
-    (a.SizingContext(open_day_usd=49.60), "day"),
-    (a.SizingContext(open_arm_usd=24.60), "arm_budget"),
+    (a.SizingContext(open_event_usd=a.DEFAULT_EVENT_CAP_USD - 0.40), "event"),
+    (a.SizingContext(open_day_usd=a.DEFAULT_DAY_CAP_USD - 0.40), "day"),
+    (a.SizingContext(open_arm_usd=a.DEFAULT_ARM_BUDGET_USD - 0.40), "arm_budget"),
 ])
 def test_each_cap_binds_to_its_known_headroom(ctx, cap):
     d = a.size_for("RIDE", CELL, ctx)
@@ -42,7 +42,7 @@ def test_each_cap_binds_to_its_known_headroom(ctx, cap):
 
 
 def test_a_full_cap_sizes_zero_with_the_reason():
-    d = a.size_for("RIDE", CELL, a.SizingContext(open_event_usd=5.0))
+    d = a.size_for("RIDE", CELL, a.SizingContext(open_event_usd=a.DEFAULT_EVENT_CAP_USD))
     assert d.stake_usd == 0.0 and d.reason.startswith("cap binds, stake 0") and "event" in d.reason
 
 

@@ -22,7 +22,14 @@ Every order and every would-be order carries: arm, leaf_id, split path (branch +
 assignment (treatment / control) the row would have had. Orders go to their own log so the placement comparison
 (treatment vs control) is still read on its own rows.
 Gates, in order: switch -> demo host -> kill switch (global + shadow band) -> arm -> side -> listing -> stake ->
-per-event cap and daily breaker (c4 constants) -> cash -> placement policy. Production Kalshi or real funds: never.
+demo-book event / day caps (arm_sizing constants, a backstop behind size_for) -> cash -> placement policy.
+Production Kalshi or real funds: never.
+
+W115.2 / GG-1935: the backstop used to compare stake PLACED against two real-money constants (risk._HARD_LIMITS
+per-event exposure, and notional x risk.MAX_DAILY_LOSS_PCT = $150 of stake placed per day, logged as "daily_breaker"
+although no loss was measured). The demo arm book now has its own caps in arm_sizing and this module reads no
+real-money limit; risk.py is unchanged. Each order row also carries what the book looked like at submit
+(``book_at_submit``, spread, sizes, hours to start), which the placement model needs.
 """
 from __future__ import annotations
 
@@ -33,11 +40,11 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 from prediction_market_bot.c4_risk_engine import exposure_gate as xg
-from prediction_market_bot.c4_risk_engine import risk
+from prediction_market_bot.c4_risk_engine import arm_sizing as asz
 from prediction_market_bot.decision_trees import row_sizing as rs
 from prediction_market_bot.c5_execution import demo_fill_policy as pol
 from prediction_market_bot.c5_execution import kill_switch_state as ksw
-from prediction_market_bot.c5_execution.shadow_flat_stake import SHADOW_KILL_BAND, demo_host_ok
+from prediction_market_bot.c5_execution.shadow_flat_stake import SHADOW_KILL_BAND, demo_host_ok, order_context
 
 BOOK = "ARM_ORDERS"
 SWITCH_ENV = "ARM_ORDERS"
@@ -89,14 +96,24 @@ def _placed(path: Optional[Path] = None) -> list:
 
 
 def cap_reason(event: str, stake: float, day: str, path: Optional[Path] = None) -> Optional[str]:
-    placed = _placed(path)
-    if sum(float(e.get("stake_usd") or 0) for e in placed if e.get("event_ticker") == event) + stake > \
-            risk._HARD_LIMITS["max_single_event_exposure_usd"]:
-        return "per_event_cap"
-    if sum(float(e.get("stake_usd") or 0) for e in placed if str(e.get("ts", "")).startswith(day)) + stake > \
-            NOTIONAL_USD * risk.MAX_DAILY_LOSS_PCT:
-        return "daily_breaker"
+    """Backstop behind size_for (it matters only when a SIZER override skips arm_sizing): stake placed today in the demo
+    arm book, per event and in total, against the demo book's own caps. No real-money limit is read here."""
+    today = [e for e in _placed(path) if str(e.get("ts", "")).startswith(day)]
+    if sum(float(e.get("stake_usd") or 0) for e in today if e.get("event_ticker") == event) + stake > \
+            asz.DEFAULT_EVENT_CAP_USD + 1e-9:
+        return "demo_book_event_cap"
+    if sum(float(e.get("stake_usd") or 0) for e in today) + stake > asz.DEFAULT_DAY_CAP_USD + 1e-9:
+        return "demo_book_day_cap"
     return None
+
+
+def submit_context(row: dict, side: str, meta: Optional[dict], now: datetime) -> dict:
+    """What a later fill analysis needs, from the row and the book read the placement rule already made (no API call)."""
+    ctx = order_context(row, side, now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    ctx["book_at_submit"] = {k: (meta or {}).get(k) for k in ("yes_bid", "yes_ask", "book_mid", "model_mid", "gap")}
+    ctx["hours_to_start"] = row.get("horizon_hours_to_start")
+    ctx["start_time_utc"] = row.get("start_time_utc")
+    return ctx
 
 
 def feed_exposure_gate(path: Optional[Path] = None) -> None:
@@ -213,12 +230,14 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
         return out(SKIP_EVENT, dec.reason, meta=dec.meta, stake_usd=stake)
     price_yes = dec.mid_price
     entry = price_yes if side == "yes" else 1.0 - price_yes
+    placement = "rest_touch"  # ADR-0072 rule; the per-arm placement choice (W115.2 Part C) is wired behind its own switch
     if m == DRY:
         return out(WOULD_EVENT, "dry_run_no_order", side=side, stake_usd=stake, price_yes=price_yes, entry_price=entry)
     order = client.submit_order(ticker=ticker, side=side, size_usd=stake, mid_price=price_yes, band=KILL_BAND,
                                 client_order_id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"arm-orders/{rid}")))
     r = {"event": ORDER_EVENT, "ok": order.ok, "order_id": order.order_id, "stake_usd": stake, "side": side,
-         "price_yes": price_yes, "entry_price": entry, "error": order.error, **base}
+         "price_yes": price_yes, "entry_price": entry, "error": order.error, "placement": placement,
+         **submit_context(row, side, dec.meta, now), **base}
     if not order.ok:
         r.update(pol.refusal_context(client, None))
     append_order_log(r, log)

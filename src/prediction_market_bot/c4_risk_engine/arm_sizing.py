@@ -28,9 +28,14 @@ from prediction_market_bot.quant import sgp
 ARMS = ("RIDE", "FADE", "MOMENTUM_FOLLOW", "MOMENTUM_FADE", "POT_OF_GOLD", "NO_BET")
 
 FLAT_DEMO_STAKE_USD = 1.00             # ADR-0059 T1_MEASUREMENT_STAKE_USD; the context may override it
-DEFAULT_EVENT_CAP_USD = 5.00           # per event (demo scale; real hard limit in risk._HARD_LIMITS is a different, larger fence)
-DEFAULT_DAY_CAP_USD = 50.00            # per UTC day across all arms
-DEFAULT_ARM_BUDGET_USD = 25.00         # per arm per day
+# The DEMO ARM BOOK's own caps (W115.2 / GG-1935). They are caps on stake PLACED in the ledger-less arm-order book, in
+# demo dollars. They are not, and never read, the real-money limits in risk.py (_HARD_LIMITS, MAX_DAILY_LOSS_PCT), which
+# stay as they are until G6. Sized from the box read of 2026-11-17: the router wants about 2,200 arm orders a day at the
+# flat $1 stake, an order rests 60 s and about 14% fill, so $1 placed is about $0.14 of exposure. The old $50 day cap let
+# about 2% of the wanted orders through (7,552 zeroed in five days), which starved E1-E3 of rows.
+DEFAULT_EVENT_CAP_USD = 25.00          # placed stake per event per day (about $3.50 filled at the measured fill rate)
+DEFAULT_DAY_CAP_USD = 2500.00          # placed stake per UTC day across all arms (about the whole wanted flow)
+DEFAULT_ARM_BUDGET_USD = 1500.00       # placed stake per arm per day
 DEFAULT_CLUSTER_CAP_USD = None         # None -> one leg's flat stake: correlated legs are sized as one
 MERGE_PHI = 0.90                       # legs with phi >= this move together and merge into one exposure
 HYPOTHETICAL_KELLY_FRACTION = 0.25     # logged only; the live fraction is 0.0 (execution_bands.py)
