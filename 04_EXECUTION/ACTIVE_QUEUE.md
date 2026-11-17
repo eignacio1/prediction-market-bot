@@ -89,7 +89,7 @@ premise with pooled evidence, pre-registered before its first forward row.
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 115.1 | quant · 3 | Evidence design: pooled, sequential evidence so leaves earn arms; power calendar; routing v2 pre-registered | Fable | ⬜ | |
-| 115.2 | execution · 3 | Execution as a decision: fill and adverse-selection model, placement policy per arm, the breaker, settled P&L per arm | Fable | ⬜ | |
+| 115.2 | execution · 3 | Execution as a decision: fill and adverse-selection model, placement policy per arm, the breaker, settled P&L per arm | Fable | 🟡 PARTIAL | stopped on usage. Branch `session/20261117T010348Z-w115-2-placement` @ bdf2847, no PR, nothing merged. Done: GG-1935 answered, demo arm-book caps separated from the real-money limits, order rows log the book at submit. Not done: GG-1934 join, placement tests / policy / switch, addendum proposal. Handoff W115_2 |
 | 115.3 | D6 · 3 | One game end to end on the box, per sport: trace all seven layers, fix every break; 3 wired cells → every in-season sport | Fable | ⬜ | |
 
 ### 115.1 - QUANT (EVIDENCE DESIGN: HOW A LEAF EARNS AN ARM) · MODEL: Fable
