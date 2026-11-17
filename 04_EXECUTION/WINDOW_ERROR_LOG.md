@@ -211,3 +211,9 @@ proposing. Fix: strategic-handoff step 8 names the rule; D-34 added to OPERATOR_
 The Fable wave (115.1-115.3) was written as three full three-part blocks; Fable's burn rate ended all three PARTIAL within ~15 minutes,
 and the window itself spent ~55% of a session on one Fable turn. Operator: "I probably set too lofty of a goal". Rule: Fable takes ONE
 design block (the decisions only a top model gets right, written down); Sonnet / Opus terminals build from it; never Fable in the window.
+
+### W57 - SW-9, 2026-11-16 22:17 PT - the "daily breaker" starved the arm-order test for four days and the window read it as a safety feature
+Arm orders went on 11-12; the skip reason "daily_breaker" (a placed-stake cap of $150 borrowed from the real-money MAX_DAILY_LOSS_PCT) plus
+size_for's $50 day cap zeroed ~8,000 demo orders. The window saw "daily breaker 690" at the W114 close and wrote it as a question for a
+Fable block instead of recognising a real-money limit on a demo path. Operator: "Daily breaker .... how did we miss that?" Rule: CLAUDE.md
+Q1 - every demo / shadow cap cites its own derivation; skip reasons are reported numbers.

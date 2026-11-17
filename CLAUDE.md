@@ -185,7 +185,9 @@ nothing about whether it writes rows (GG-163, GG-118).
 - **Q1 Hard limits:** `risk.py` `_HARD_LIMITS` (`max_single_event_exposure_usd` 500, `max_drawdown_pct` 0.20 permanent kill switch,
   `max_portfolio_deployment_pct`), `MAX_DAILY_LOSS_PCT` 0.15, and `execution_bands.py` `kelly_fraction`. Were they calibrated to the system
   in the Right-now block? Never cite a bankroll figure from a document. All hard limits need a formal ADR revision at G6 (open since
-  2026-05-29). Any positive Kelly needs the ADR-0048 ruin check (`scripts/mc_empirical_bootstrap.py`).
+  2026-05-29). Any positive Kelly needs the ADR-0048 ruin check (`scripts/mc_empirical_bootstrap.py`). Every cap on a DEMO or shadow path
+  must cite its own derivation, never a real-money constant (GG-1935: a $150 "daily breaker" borrowed from `MAX_DAILY_LOSS_PCT` and a $50
+  day cap starved the arm-order test of ~8,000 orders), and every skip reason is a reported number, not a log line.
 - **Q2 Stubs:** assess any live hit fresh. Watch `venue_adapter.py`'s hard-coded Polymarket `"tag": "nba"` (KI-019) if venues ever change.
 - **Q3 Architecture:** for each limit, what is the assumption and does today's system still satisfy it? Verify, don't assume.
 - **Q4 Interfaces:** `grep -rn "def evaluate_forecast\|def open_position\|def exit_position\|def submit_order" src/` — has a risk-gate or
