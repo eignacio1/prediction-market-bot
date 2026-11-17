@@ -1287,3 +1287,4 @@
 | 2026-11-13T00:51:47Z | B-090 | CLOSED — merge confirmed, HEAD (b20694a) is ancestor of origin/main — W114.2 D6 0/117 on box, E1-E3 first values (#498) |
 | 2026-11-13T01:04:20Z | B-086 | CLOSED — W114.4: team-pool latents added to the NBA joint (default off); held-out teammate PTS x PTS gap not closed (+0.0230 -> +0.0224); fitted values not shipped (#501). (commit `d9db05a`) |
 | 2026-11-13T01:04:32Z | B-086 | CLOSED — merge confirmed, HEAD (a75463f) is ancestor of origin/main — W114.4 team-pool latents merged default-off (#501); teammate gap not closed |
+| 2026-11-17T01:04:50Z | B-095; GG-1942..GG-1944 | W115.2 B-095 EXECUTION: placement as a decision - fills, adverse selection, breaker, settled P&L per arm. PURPOSE: E1/E2/E3 per arm (first settled values); adverse-selection term per arm; arm-order skips by reason |
