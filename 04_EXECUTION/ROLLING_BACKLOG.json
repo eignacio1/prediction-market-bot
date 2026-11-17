@@ -1,6 +1,6 @@
 {
  "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
- "as_of": "2026-11-17T01:35Z",
+ "as_of": "2026-11-17T06:30Z",
  "ranking": [
   "1 market-anchored pricing (10-21)",
   "2 one engine per sport (10-13)",
@@ -36,7 +36,7 @@
    "measure": "leaves with an arm; held-out net per row by router",
    "why": "0 survivors in every per-leaf test; family effects exist",
    "source": "SW-9 Fable review 2026-11-16",
-   "wave": "115.1 (Fable)",
+   "wave": "115.1 PARTIAL (Fable) -> 116.1 (Opus)",
    "order": 1
   },
   {
@@ -48,7 +48,7 @@
    "measure": "E1-E3 per arm; expected net per placement option",
    "why": "fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders",
    "source": "SW-9 Fable review 2026-11-16",
-   "wave": "115.2 (Fable)",
+   "wave": "115.2 PARTIAL (Fable) -> 116.2 (Opus)",
    "order": 2
   },
   {
@@ -60,7 +60,7 @@
    "measure": "D6 wired on the box",
    "why": "W114.2: 0 / 117, four cells one layer short",
    "source": "SW-9 2026-11-13",
-   "wave": "115.3 (Fable) with B-092",
+   "wave": "115.3 PARTIAL (Fable; #502 merged) -> 116.3 (Opus)",
    "order": 3
   },
   {
@@ -72,7 +72,7 @@
    "measure": "layer 3 on the box NFL / NHL",
    "why": "W114.2: layer 3 works on the box for NBA only",
    "source": "SW-9 2026-11-13",
-   "wave": "115.3 (Fable) with B-091",
+   "wave": "115.3 PARTIAL (Fable; #502 merged) -> 116.3 (Opus)",
    "order": 4
   },
   {

@@ -38,9 +38,9 @@ Generated 2026-11-17 by `scripts/claude_md_now.py --write` from the code at that
   first, all NBA.** NFL / NHL have no filter data on the box (layer 3 = 0). First settled arm P&L (arm orders on since 11-12): RIDE 256
   orders / 39 fills, +0.006 per filled contract before fees; MOMENTUM fills win 42% vs 65% unfilled; the sizing day cap zeroed ~7,500
   demo orders. No leaf has earned an arm on its own evidence yet.
-- **In flight:** Wave 115, the Fable wave (operator 2026-11-16: all three terminals on Fable, one day): 115.1 evidence design (pooled,
-  sequential evidence so leaves earn arms), 115.2 execution as a decision (fills, adverse selection, placement), 115.3 one game end to
-  end on the box. Review and the post-Fable task list: `04_EXECUTION/PROJECT_REVIEW_2026-11-16_FABLE.md`.
+- **In flight:** Wave 116 (three Opus blocks) finishing the Fable wave, which stopped on usage: 116.1 the pooled + sequential evidence
+  router (v2) measured against v1 and "ride every favourite", then frozen behind a switch; 116.2 the placement model, settlement join and
+  per-arm report (cap raise and policy proposed, not on); 116.3 the D6 trace on the box (#502 merged: NHL rows now routed).
 - **Live numbers** (pillars, distance table, forward test, fills) are in the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`;
   **what is in scope, in order,** is `04_EXECUTION/ROLLING_BACKLOG.json`. Waiting on the operator: the "Needs your decision" section of
   the queue.

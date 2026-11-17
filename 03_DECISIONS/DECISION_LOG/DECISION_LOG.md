@@ -3528,3 +3528,12 @@ B-091 + B-092) with a FABLE BUDGET rule; the unsent Sonnet draft archived, its M
 04_EXECUTION/PROJECT_REVIEW_2026-11-16_FABLE.md. Backlog re-ranked (53 tickets; 5 merged or parked; B-094..B-098 added). Box read
 2026-11-17 00:57Z: D6 3 / 117 (first wired cells, NBA); first settled arm P&L. A one-day exception to strategic-handoff step 8 (no Fable
 in terminals), by the operator's order. Window lesson: never run the long strategy window on Fable.
+
+## 2026-11-16 22:03 PT — Operator: three Opus terminals overnight to finish the Fable wave; Muse addendum (SW-9)
+Verbatim (excerpt): "bc I wanna sleep we're gonna speed up the runs by sending 3 opus terminals at once ... let's finish up whatever Fable
+couldn't do ... the Monday only prompting for Muse is a bit annoying but it is what it is ... give me another addendum block to drop into
+Muse to prep for the week since we won't have anymore comms until next Monday."
+Effect: Wave 116 = three Opus blocks continuing 115.1 / 115.2 / 115.3 from their branches and handoffs (a one-night exception to the
+Sonnet rule, his order). The 115.2 cap raise (~50 -> ~2,200 demo arm orders a day) ships behind a switch at the old values and is proposed
+to him, because the 11-12 ADR-0072 addendum said those gates were unchanged. Muse addendum: 04_EXECUTION/MUSE_ADDENDUM_2026-11-16.md.
+Window error W56: three Fable blocks sized as if Fable cost what Sonnet does; lesson - Fable for one design block, Sonnet / Opus build.

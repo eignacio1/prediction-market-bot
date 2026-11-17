@@ -206,3 +206,8 @@ Asked how to stretch usage, the window suggested "fewer, bigger blocks" as if ne
 parts, ~130 minutes - quoted in every COMMON RULES since). Operator: "I thought we're already doing that, it was literally a doctrine
 that I made a few strategy windows ago." Same failure as W54 (repeated directives): check OPERATOR_DIRECTIVES / COMMON RULES before
 proposing. Fix: strategic-handoff step 8 names the rule; D-34 added to OPERATOR_DIRECTIVES.
+
+### W56 - SW-9, 2026-11-16 17:17 PT - sized three Fable blocks as if Fable cost what Sonnet does
+The Fable wave (115.1-115.3) was written as three full three-part blocks; Fable's burn rate ended all three PARTIAL within ~15 minutes,
+and the window itself spent ~55% of a session on one Fable turn. Operator: "I probably set too lofty of a goal". Rule: Fable takes ONE
+design block (the decisions only a top model gets right, written down); Sonnet / Opus terminals build from it; never Fable in the window.

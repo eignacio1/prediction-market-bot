@@ -24897,3 +24897,171 @@ Report: per COMMON RULES. MEASURE MOVED: B4 props families routed; prop cells wi
 Operator decisions: none.
 END OF BLOCK 115.4
 ```
+
+---
+
+## (archived 2026-11-17) WAVE 115 (THE FABLE WAVE) · REWRITTEN 2026-11-17 ~01:30 UTC (11-16 17:30 PT) · SW-9 · THREE blocks · MODEL: Fable for all three · paste each into its own terminal
+
+**Operator 2026-11-16 16:56 PT:** "ALL 3 terminals will be running on Fable ... let's be strategic with this." The three hardest problems
+in the project, one per terminal; the mechanical work (MLB routing, props through the tree, installs) waits for Sonnet in Wave 116.
+Review behind this wave: `04_EXECUTION/PROJECT_REVIEW_2026-11-16_FABLE.md`.
+
+**Why these three.** The tree is built; nothing flows through it to a result. (1) No leaf has ever earned an arm - 0 survivors in every
+per-leaf test - because thin leaves are judged alone. (2) Orders that fill lose to orders that don't (25% vs 48%), and placement is still
+a fixed rule, not a decision. (3) On the box, where it counts, 3 of 117 cells are wired (NBA, first ever, read 11-17 00:57Z) - NFL, NHL and MLB are at 0. Each is a reasoning problem, not a build.
+
+115.1 **evidence design** = B-094 · 115.2 **execution as a decision** = B-095 · 115.3 **one game end to end on the box** = B-091 + B-092.
+
+**OPENS WITH (OPERATOR_DIRECTIVES):** D-01 (the multi-arm tree end to end; "wired execution", 11-11 16:51 PT) → all three. D-06 / D-04
+(depth as tree splits that actually route) → 115.1.
+
+**DOCTRINE CHECK (W48).** *Premise challenged:* "a leaf earns an arm when its own held-out rows clear a multiple-comparison test". At
+today's row rate that is months per leaf and never for most; the premise makes the tree unroutable by construction → 115.1 replaces the
+premise with pooled evidence, pre-registered before its first forward row.
+
+- **Pushback:** pooling borrows strength and can also borrow error - a family-level effect smeared onto a leaf where it is false. 115.1
+  must show, on held-out data, that pooled routing beats per-leaf routing and beats "ride everything", or say it does not.
+- **Surface:** box GREEN at the last read; Monday reads requested 11-17 01:0xZ. Delta: 0 installs in-wave; 115.3 PREPARES install tasks
+  for your approval; 115.2 PROPOSES an ADR-0072 addendum (a frozen-test change is yours).
+- **Dependencies:** none blocking; file ownership is disjoint (COMMON RULES).
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 115.1 | quant · 3 | Evidence design: pooled, sequential evidence so leaves earn arms; power calendar; routing v2 pre-registered | Fable | 🟡 PARTIAL | Stopped on the usage addendum. Branch `session/20261117T010343Z-w115-1-evidence` (pushed, no PR): pooling model + always-valid sequential test written and checked against closed forms. Not started: pipeline, three-router comparison, power calendar, leaf map v2, pre-registration. No measured result yet. Handoff: `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261117T011739Z_W115_1.md` |
+| 115.2 | execution · 3 | Execution as a decision: fill and adverse-selection model, placement policy per arm, the breaker, settled P&L per arm | Fable | 🟡 PARTIAL | stopped on usage. Branch `session/20261117T010348Z-w115-2-placement` @ bdf2847, no PR, nothing merged. Done: GG-1935 answered, demo arm-book caps separated from the real-money limits, order rows log the book at submit. Not done: GG-1934 join, placement tests / policy / switch, addendum proposal. Handoff W115_2 |
+| 115.3 | D6 · 3 | One game end to end on the box, per sport: trace all seven layers, fix every break; 3 wired cells → every in-season sport | Fable | 🟡 PARTIAL | Stopped on the usage addendum. Branch `session/20261117T010353Z-w115-3-d6-one-game` @ 1ce79c5, PR #502 (CI pending, unmerged): NHL rows routed, NFL layer-3 rule fixed, router ERROR message logged, `d6_trace_read` task. D6 still 3 / 117; trace not run; NHL store needs 0.9-2.0 GB and does not fit the box as built. Handoff `SESSION_HANDOFF_20261117T0115Z_W115_3.md`. |
+
+### 115.1 - QUANT (EVIDENCE DESIGN: HOW A LEAF EARNS AN ARM) · MODEL: Fable
+
+```
+WAVE 115 - BLOCK 115.1 - QUANT - EVIDENCE DESIGN: POOLED, SEQUENTIAL EVIDENCE SO LEAVES EARN ARMS (B-094) - MODEL: Fable
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block, the FABLE BUDGET above all. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_1.md (60 lines at most).
+
+THE PROBLEM: the router picks an arm per leaf (RIDE / FADE / MOMENTUM / POT OF GOLD / NO BET) from decision_trees/leaf_map.json. Every
+per-leaf test so far returned nothing: NFL 0 of 82 leaves (W110.1), NBA 0 of 85 (W111.4) and 0 of 54 (W114.1), retro-route 1 lead in 365
+leaves (W110.5, 12_EXPLORATORY/retro_route/ROUTING.md) - while FAMILY-level held-out effects exist (RIDE NFL moneyline +0.134 [+0.017,
++0.236]; MODEL FADE NHL puck line +0.088 [+0.037, +0.136]; FOLLOW MOVE NHL moneyline +0.074 [+0.015, +0.133]). Six weeks of rows are cut
+into cell x band x price bin x move x filter and each piece is judged alone with BH. Operator 2026-11-10 21:41 PT: "my vision from DAY 1
+was to build out the decision trees so we optimize every single route while using tried and true math scaffolding". The scaffolding for
+thin leaves is what is missing. Read first, and build on, not over: 12_EXPLORATORY/retro_route/, 12_EXPLORATORY/longshot_bias/,
+12_EXPLORATORY/market_history/ (+ KALSHI_HISTORY_MANIFEST.md), 12_EXPLORATORY/fees_exact/, decision_trees/ride.py + ride_cells.toml.
+
+PART A - the evidence model
+1. A hierarchical model of net-after-costs per arm over the leaf tree (sport > family > band > price bin > move > filter): partial pooling
+   so a thin leaf is shrunk toward its parents by how much the data says leaves differ (empirical Bayes or a full hierarchical fit - your
+   call, justified). Rows within a game are correlated: cluster by game. Costs exact (fees_exact), taker price unless 115.2's interface
+   says otherwise.
+2. A prior from LONG history where the arm is a property of prices, not of our model: RIDE / longshot effects can be measured on years of
+   free closing lines (nflverse spread / total / moneyline lines back to 1999; whatever free NBA / NHL line history exists - check, and
+   register a gap if none) and on Kalshi's own history (the manifest). State exactly how a sportsbook-line prior maps to a Kalshi leaf
+   and what it cannot tell us (Kalshi fees, spreads, fills).
+
+PART B - the decision rule, and the calendar
+1. The routing rule: a leaf takes an arm when its POSTERIOR says net > 0 with probability above a stated bar, else NO BET; sequential by
+   design (always-valid / alpha-spending - a look every week must not inflate error). Compare on held-out data three routers: per-leaf BH
+   (today), pooled (yours), and "ride every favourite". Report net per row, by sport, with game-clustered intervals. If pooled does not
+   win, say so plainly - that is a result.
+2. The power calendar: for every leaf, at the current row rate, the date it could first earn an arm under each router. This is the
+   number the operator needs: how long until the tree routes on its own evidence.
+
+PART C - land it, frozen before its first forward row
+1. src/prediction_market_bot/decision_trees/evidence/ (model, sequential test, calendar; tests on known answers and on a planted effect
+   recovered / a planted null not recovered). leaf_map v2 written to decision_trees/leaf_maps/ with each leaf's arm, posterior and source;
+   leaf_map.py loads it behind a switch (default: v1, so the frozen W111.3 forward test is untouched).
+2. A NEW pre-registration for router v2 (frozen before any forward row: model, bar, looks, what would falsify it). Turning v2 on for
+   logging is yours once merged; changing what the frozen v1 test reads is not. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: leaves with an arm (v1 vs v2, fit and held-out); held-out net per row by router; power
+calendar (median and first date a leaf earns an arm, per sport); D5(a) decision trees. Operator decisions: none (a new pre-registration).
+END OF BLOCK 115.1
+```
+
+### 115.2 - EXECUTION (PLACEMENT AS A DECISION) · MODEL: Fable
+
+```
+WAVE 115 - BLOCK 115.2 - EXECUTION - PLACEMENT AS A DECISION: FILLS, ADVERSE SELECTION, THE BREAKER, SETTLED P&L PER ARM (B-095) - MODEL: Fable
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block, the FABLE BUDGET above all. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_2.md (60 lines at most).
+
+THE PROBLEM: the EXECUTION pillar is where the measured money goes. Orders that fill win 25% of the time against 48% for orders that
+don't (adverse selection: we get filled when we are wrong). Box read 2026-11-17 00:57Z (arm orders on since 11-12 06:43Z): RIDE 256 orders / 39 fills, fills win 69% vs 59% for unfilled, +0.006 per
+filled contract BEFORE fees; MOMENTUM 76 / 16, fills win 42% vs 65% unfilled, -0.044; FADE 100 / 6 (4 settled). Skips: the sizing rule's DAY
+cap zeroed about 7,500 orders (RIDE 4,111), the event cap about 1,500, the daily breaker 690 (GG-1935); 244 outcome lookups failed;
+5,390 rows unrouted. Placement is one fixed rule (ADR-0072: book_anchor_cancel, rest 60 s, max mid gap) for every arm.
+Operator 2026-11-11 16:59 PT: "We will find ways to beat the market - with better stat calibration and better sizing and placement and
+depth." Read first and build on: 12_EXPLORATORY/fill_markout/, fill_dtmc/, forward_entry_cost/, fees_exact/, the ADR-0072 addendum
+(2026-11-12), c5_execution/demo_fill_policy.py, decision_trees/arm_orders.py, c4_risk_engine/arm_sizing.py. Re-read the box first
+(arm_orders_read).
+
+PART A - make the data readable, and diagnose the breaker
+1. Fix GG-1934 and the settlement join so every arm order has: placed / filled / cancelled, fill price, markout at 1 / 5 / 30 minutes
+   and at close, settled outcome, exact fees. Sweep for the same timestamp pattern (Hard Rule 13).
+2. GG-1935: which breaker skipped 690 orders, against which book, on what loss figure. A cap in arm_sizing mis-sized for the demo arm
+   book is yours to fix. A hard limit in risk.py (_HARD_LIMITS, MAX_DAILY_LOSS_PCT) is NOT changed (Hard Rule 3; G6): if a demo book is
+   tripping a real-money limit, design the separation (the demo arm book measured on its own) and implement it without touching the limit.
+
+PART B - the model
+1. From every demo order with a fill outcome (the ADR-0072 test since 10-14 and the arm orders; epoch rule GG-1771, never mixed) plus the
+   price archive: P(fill | price offset, spread, depth, time to start, arm, sport) and E(outcome | filled) vs E(outcome | not filled) -
+   the adverse-selection term, per arm. State n per cell and what the data cannot support.
+2. The placement choice per arm per leaf: cross now (pay the spread and the taker fee, no selection), rest at the touch, rest inside,
+   or do not place - the option with the highest expected net after fees and selection. RIDE (backing the favourite) and FADE face
+   opposite selection; show it.
+
+PART C - land it
+1. src/prediction_market_bot/c5_execution/placement/ (model + policy, tests on known answers); arm_orders.py calls it behind a switch
+   DEFAULT OFF; scripts/demo_fill_forward_report.py reports E1 / E2 / E3 and markout per arm AND per placement option.
+2. The frozen ADR-0072 test is the operator's: write the addendum PROPOSAL (what the policy would change, the comparison it sets up, its
+   judged n) and add its approval sentence to 04_EXECUTION/ACTIVE_QUEUE.md "Needs your decision". Do not switch the policy on. PR(s);
+   merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: E1 / E2 / E3 per arm (first settled values); adverse-selection term per arm; expected net per
+placement option; arm-order skips by reason before -> after. Operator decisions: the ADR-0072 addendum (proposed, not applied).
+END OF BLOCK 115.2
+```
+
+### 115.3 - D6 (ONE GAME END TO END ON THE BOX) · MODEL: Fable
+
+```
+WAVE 115 - BLOCK 115.3 - D6 - ONE GAME END TO END ON THE BOX, PER SPORT: TRACE, FIX EVERY BREAK, FIRST WIRED CELLS (B-091 + B-092) - MODEL: Fable
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W115.md` and quote its first line. Those rules
+bind this block, the FABLE BUDGET above all. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W115_3.md (60 lines at most).
+
+THE PROBLEM: D6 = registered cells wired through all seven layers - (1) simulated probability, (2) market state, (3) factor filters as tree
+splits, (4) a tree choosing the arm, (5) per-leaf held-out net per arm, (6) sizing rule, (7) execution with fills measured. Measured ON
+THE BOX (d6_read, 2026-11-17 00:57Z): 3 of 117 - the first wired cells, all NBA. Cells per layer L1..L7: NBA 25 cells [9,12,9,7,7,7,5];
+NFL 29 [9,12,0,9,9,9,4]; NHL 21 [9,9,0,8,7,0,0]; MLB 42 [3,12,0,3,0,0,0]. One layer short: NBA_GAME_TOTAL T2 (fills), NBA_TEAM_TOTAL T3,
+NFL_GAME_TOTAL T3, NFL_SPREAD T1 / T3, NFL_TEAM_TOTAL T3 (all layer 3 - the box has filter data for NBA only). Known breaks: 1,415 NHL rows UNROUTED on the box though NHL routes 9 of 9 cells in the repo; default_nfl_providers() returns None on
+the box (GG-1933) though its snapshots are committed in decision_trees/filter_data/; exp_output/NHL_EVENTS does not exist on the box
+(GG-1898); layer 1 is on only 9 of 25 NBA cells. Each wave fixed a layer in the repo and the box stayed at 0. Operator 2026-11-11 16:51
+PT: "we haven't come close to building out the bot in the substantive fashion (regarding wired execution) that I had anticipated."
+
+METHOD (the point of using Fable here): do not fix layer by layer. Take ONE real game per in-season sport (NBA, NFL, NHL) from the last
+three days on the box and follow it through all seven layers there - what each layer read, wrote and handed on - using the allowlisted
+read tasks (add read-only ones where a layer cannot be seen; tests; no writes outside results files). Every place the chain breaks is a
+finding; fix the cause, not the count.
+
+PART A - the trace
+1. Re-read the box (d6_read, arm_orders_read, deploy_truth_read). Build the trace for one NBA game and write it down as a table: layer,
+   file / log on the box, what was there, the break if any. Then NFL and NHL. Check coverage.py's own evidence rules against the trace -
+   a rule that cannot be satisfied on the box as built is itself a finding.
+
+PART B - fix the causes
+1. In your files (COMMON RULES ownership): NHL rows routed; the NFL provider on the box; row-level size decisions on every routed row
+   (NBA spread); layer 1 / 2 gaps the trace shows. PR(s); merge on green; after the box deploys, re-trace the same games' successors.
+2. What needs a new job on the box is NOT run: write the install task (install / readback / uninstall, budget probe, crontab backup-or-
+   abort, registry entry paused, allowlist line, tests - like ride_board_install.py) for the NHL event store (W114.2's handoff has the
+   proposal) and for anything else the trace proves is needed, sized from a local dry run.
+
+PART C - count, and hand the operator his decisions
+1. d6_read on the box: D6 per sport, the first wired cells BY NAME, and for every cell not wired the one cause that would wire it. Put the
+   exact approval sentence for each install task you wrote in 04_EXECUTION/ACTIVE_QUEUE.md "Needs your decision", with cost.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 wired on the box 3 -> N (cells named); breaks found N, fixed N, needing an install N.
+Operator decisions: the install tasks (prepared, not run).
+END OF BLOCK 115.3
+```
