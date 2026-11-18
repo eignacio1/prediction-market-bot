@@ -3552,3 +3552,5 @@ Operator, verbatim: "Yes - I provide my approvals." Scope: the two DECISION line
 `kelly_fraction` 0, no real capital. Neither switch is on: `ARM_PLACEMENT_POLICY=on` waits for a frozen `config/placement_policy.json`
 fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm and option; `ARM_BOOK_CAPS=raised` waits for GG-1942
 (ARM_ORDERS advisory in the exposure gate). Code merges wait on GG-1955 (main's backlog duplicate turns code CI red).
+
+| 2026-11-18 | B-094 / W116.1 | Router v2 (pooled evidence) frozen behind PM_LEAF_MAP_VERSION, default v1; it arms 0 leaves held out, so v1 stays the frozen test and v2 logging waits on the operator. E-process validity defect fixed (GG-1954). PR #506 left unmerged: red only on GG-1955 (main backlog duplicate order 16), which this block may not edit. t4-mlb restart judged unnecessary after merge (default path unchanged, MLB idle). |
