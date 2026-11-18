@@ -4847,6 +4847,8 @@ W116.2, 2026-11-17. `arm_orders.act` schedules the 60 s cancel for every placeme
 W116.2, 2026-11-17. `placement.join.records` sets `depth` None: `book_at_submit` carries yes_bid / yes_ask only, and `book_yes_bid_size` / `book_yes_ask_size` arrive only when the upstream row has them (most do not). P(fill) is estimated on offset, spread, time to start, arm and sport; depth is a registered missing conditioner. Fix: `demo_fill_policy.decide` already calls `client.get_market_book`; check whether it returns sizes, and log top-of-book sizes in `meta` so the order row carries them. Same gap for spread: the 486 orders read on 2026-11-18 have no logged spread, because `book_at_submit` landed in fb8000c, so the `cross` option is valued at an assumed 2c (6c NHL) until the orders that carry it resolve.
 
 ### GG-1955 — main's ROLLING_BACKLOG.json fails validation: duplicate order 16 (B-074, B-018), so every code PR's CI is red (W116.2)
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-11-18 01:45Z, SW-9):** window error W58. Orders renumbered 1..N, ROLLING_BACKLOG.md re-rendered; `--check` and tests/test_rolling_backlog.py + test_visual_dashboard_backlog.py pass. Re-run CI on #505-#508.
 
 W116.2, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main (94bcee8): `ValueError: duplicate order 16 (B-018)`. The duplicate was introduced by da9e8c7 (B-099, docs-only push), and ab392a8 did not clear it. Docs-only pushes skip the test job, so main shows green while `tests/test_rolling_backlog.py::test_real_file_validates` and `test_committed_markdown_matches_the_json` fail on every code PR (PR #505 is red only for this). W116.2 may not edit ROLLING_BACKLOG.json (block rule). Fix (owner: the strategic window / B-099 author): give one of B-074 / B-018 a unique order and regenerate the markdown.
