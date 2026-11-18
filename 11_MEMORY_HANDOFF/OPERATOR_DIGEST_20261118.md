@@ -18,3 +18,6 @@ owns (GG-1955), not on this work. No real money anywhere.
 - The NHL data store was shrunk to fit the box (about 320 MB instead of 2 GB). Installing it needs your OK by name (`nhl_event_store_install`), and the box is low on free memory.
 - The last code change can't merge: main's backlog file has two items at order 16, which turns every code PR red. The strategic window fixes that (GG-1955).
 - No real money; Kelly still 0.
+
+## W117.0 cleanup (B-098)
+All four parked Wave 116 changes (#505, #506, #507, #508) are now live on main, each only after its tests passed. The box is running the new code. Old branches went from 16 to 10 plus main; the ones with unsaved work, the two data branches, and anything with an open PR were kept. Nothing was installed on the box: the NHL data-store install is waiting for your approval by name. No real money moved; this was housekeeping only.

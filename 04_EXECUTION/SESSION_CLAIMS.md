@@ -1298,3 +1298,4 @@
 | 2026-11-18T01:36:29Z | B-092 | CLOSED — W116.3 parked: D6 traces + NHL store shrink done; PR #507 red on main's backlog dup (GG-1955); NHL install awaits approval (commit `f206b6b`) |
 | 2026-11-18T01:37:41Z | B-092 | CLOSED — merge confirmed, HEAD (d971d24) is ancestor of origin/main — W116.3 docs on main; PR #507 open, waits on GG-1955 for green CI; nhl_event_store_install awaits approval |
 | 2026-11-18T01:46:28Z | B-098 | W117.0 cleanup: land parked W116 PRs #508 #505 #506 #507, prune branches. PURPOSE: PLUMBING - PRs merged of 4, remote branches before/after |
+| 2026-11-18T02:31:07Z | B-098 | CLOSED — W117.0 landed parked W116 PRs #505-#508 on green CI and pruned remote branches 16 -> 10 plus main. (commit `228a63f`) |
