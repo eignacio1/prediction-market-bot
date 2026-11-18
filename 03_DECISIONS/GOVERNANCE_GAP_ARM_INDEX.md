@@ -2,7 +2,7 @@
 
 Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 312 of 335 are auto and unreviewed.
 
-**Counts:** Core=229 (189 OPEN), MLB=52 (36 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
+**Counts:** Core=229 (184 OPEN), MLB=52 (35 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
 
 ## Core (229)
 
@@ -57,7 +57,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-754 — OPEN · MEDIUM _(auto)_: demo_fill_forward_report: no_outcome check not epoch-gated; two plain write_text writers
 - GG-755 — OPEN · MEDIUM _(auto)_: Fee formula inlined at 9 src sites plus a second fee model (GG-673 grew from 7)
 - GG-756 — OPEN · MEDIUM _(auto)_: NFL engine interface is not sport-agnostic and the code does not match INTERFACE.md
-- GG-757 — OPEN · MEDIUM _(auto)_: NFL engine invariants are not run by CI
+- GG-757 — RESOLVED · MEDIUM _(auto)_: NFL engine invariants are not run by CI
 - GG-759 — OPEN · LOW _(auto)_: Stale comments that now state the wrong thing
 - GG-760 — OPEN · LOW _(auto)_: Type debt: mypy 162 errors on c4/c5/pregame_shadow, including unsound unions in kalshi_client and paper_trader
 - GG-761 — OPEN · LOW _(auto)_: Layering inversions and sport literals outside C4/C6 (GG-674 unchanged)
@@ -68,8 +68,8 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-777 — OPEN · LOW _(auto)_: No free defender coverage assignment (who covered whom, man vs zone per defender)
 - GG-778 — OPEN · LOW _(auto)_: No free DL/EDGE pass-rush snap counts or alignment
 - GG-779 — OPEN · LOW _(auto)_: No free tracking-derived separation / speed / route quality
-- GG-891 — OPEN · LOW _(auto)_: KXNBATEAMTOTAL never listed: the 3 NBA_TEAM_TOTAL cells cannot get rows
-- GG-892 — OPEN · MEDIUM _(auto)_: nba_shadow silent arm masked by player-points rows (NBA_*.jsonl glob)
+- GG-891 — RESOLVED · LOW _(auto)_: KXNBATEAMTOTAL never listed: the 3 NBA_TEAM_TOTAL cells cannot get rows
+- GG-892 — RESOLVED · MEDIUM _(auto)_: nba_shadow silent arm masked by player-points rows (NBA_*.jsonl glob)
 - GG-915 — IN PROGRESS · MEDIUM _(auto)_: SURFACE BUDGET counted import-blind "behind HEAD" hours (false RED on unrelated merges)
 - GG-1000 — OPEN · LOW _(auto)_: PFR advanced passing is not capturable by a plain GET (Cloudflare 403); the source card says CAPTURABLE
 - GG-1001 — OPEN · LOW _(auto)_: A newly registered cron is RED against the surface budget until its first write, so its own installer refuses 
@@ -127,7 +127,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1080 — RESOLVED · HIGH _(auto)_: Install gate waved W83.2's install through on a RED surface budget
 - GG-1082 — RESOLVED · HIGH _(auto)_: Exposure gate not yet on the order path; settled-ticker feed missing
 - GG-441 — RESOLVED · HIGH _(auto)_: Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisib
-- GG-452 — OPEN · LOW _(auto)_: DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
+- GG-452 — RESOLVED · LOW _(auto)_: DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
 - GG-538 — OPEN · MEDIUM _(auto)_: The only pre-2026 Kalshi price history lived in one untracked agent worktree (single copy, no manifest)
 - GG-529 — OPEN · MEDIUM _(auto)_: EXP-038 second-look date trigger ('or 2027-01-31, whichever first') is undefined
 - GG-1750 — OPEN · MEDIUM _(auto)_: ADR-0072 forward test: "the look is taken once" (10-21 addendum) vs a report that recomputes daily; which day 
@@ -192,7 +192,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1450 — OPEN · MEDIUM _(auto)_: EXP-044 / EXP-044b runners merged but not installed; no box read-back
 - GG-1452 — CLOSED-AS-ARTIFACT · LOW _(auto)_: Wave 94 common rules reference a Deploy job summary that does not exist for docs-only or skipped runs
 - GG-1461 — OPEN · LOW _(auto)_: The fence scan in `tests/test_exploratory_isolation.py` treats any `.rename()` / `.replace()` as a write
-- GG-1462 — OPEN · LOW _(auto)_: Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
+- GG-1462 — RESOLVED · LOW _(auto)_: Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
 - GG-1395 — OPEN · LOW _(auto)_: W93.3 too few archive snapshots and zero settlements for engine-vs-market scoring
 - GG-1480 — OPEN · LOW _(auto)_: Docs-only pushes under `12_EXPLORATORY/` run the full deploy gate (up to 23 min)
 - GG-1481 — OPEN · MEDIUM _(auto)_: Demo `insufficient_balance` rejections with the cash guard active: cause unproven
@@ -285,7 +285,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1253 — RESOLVED · LOW _(auto)_: MLB ticker HHMM is read as Eastern time without a per-family check
 - GG-1301 — OPEN · LOW _(auto)_: MLB game start taken from the ticker HHMM read as ET is unverified for the W90.3 time-to-start tiers
 - GG-1342 — WATCH ITEM · LOW _(auto)_: Ride cells have no scored look until MLB resumes: forward looks start 2027-04
-- GG-1440 — OPEN · MEDIUM _(auto)_: T4 MLB silent-arm alarm reads RED for 8-16 min every night: "started" is the scheduled start, T4 writes from f
+- GG-1440 — RESOLVED · MEDIUM _(auto)_: T4 MLB silent-arm alarm reads RED for 8-16 min every night: "started" is the scheduled start, T4 writes from f
 - GG-1441 — OPEN · LOW _(auto)_: Three T4 MLB first-row lags far above the 8-16 min pattern are unexplained (2026-10-06 22:00Z 218 min, 10-12 2
 - GG-1430 — OPEN · LOW _(auto)_: W94.Q two KXMLBHIT T0-2h 20-25c cells in 89.2 do not reproduce
 - GG-1431 — OPEN · LOW _(auto)_: W94.Q reported n differs from re-run n (KXMLBSPREAD 186 vs 179; 91.2 net2-5c 117 vs 202/324)
