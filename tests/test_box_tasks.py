@@ -50,6 +50,9 @@ def test_only_capture_install_can_change_the_box():
         if name == "health_rerun":        # the one exception: appends to logs/health.log exactly as the cron line does
             assert re.sub(r"2>&1|2>/dev/null|>> logs/health\.log", "", c).count(">") == 0, name
             continue
+        if name == "nhl_event_store_refresh_once":   # appends the refresh log exactly as the cron line does; the lock fd is 9>
+            assert re.sub(r"2>&1|>> logs/nhl_event_store_refresh\.log|9>/tmp/nhl_event_store_refresh\.lock", "", c).count(">") == 0
+            continue
         assert not re.search(r">", re.sub(r"2>&1|2>/dev/null", "", c)), name
 
 
