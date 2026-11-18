@@ -1,0 +1,2 @@
+task = "nhl_event_store_refresh_once"
+note = "W118.3 part A one pass of approved refresh job (resumable)"
