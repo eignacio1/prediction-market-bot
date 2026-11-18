@@ -383,3 +383,6 @@ Mechanical pass: files exist, PRs merged, SHAs ancestors of origin/main. Class c
 | GG-1942 | H | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
 | GG-1943 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
 | GG-1944 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+
+### GA-6 tick 5 (2026-11-18)
+Closed GG-1462 (A). Checked, left open: GG-1581 (flock now on 6 box T3 lines, but OOM kills continued 2026-11-15, 9 in the kernel journal since 11-10, so the cause is not fully fixed), GG-1460 and GG-1461 (`_fence.py`/scan unchanged).

@@ -4516,7 +4516,9 @@ W94.2, 2026-10-29, T-1461. `WRITE_ATTRS` includes `rename` and `replace`, so pan
 
 ### GG-1462 — Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**Resolved (2026-11-18, GA-6 tick 5):** class A. `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W118.md:54` now names `logs/vps_deploy.log` on the box as the read-back and says the GitHub "Deploy to VPS" job is manual-only (cites GG-1462). The only remaining "Deploy job summary" text is the superseded `COMMON_RULES_W96.md`.
 
 W94.2, 2026-10-29, T-1462. `deploy.yml` has `workflow_dispatch` only (last run 2026-10-16); deploys run on the box via `scripts/ops/vps_deploy.sh` cron every 5 min, gated by the approval-path tests (13 tests, 5-20 min), so the box lags `main` by up to ~20 min. The correct read-back is `logs/vps_deploy.log` on the box and `git merge-base --is-ancestor <sha> HEAD`. The common-rules text should say so.
 
