@@ -1,0 +1,2 @@
+task="arm_orders_read"
+note="W116.2 re-read after fb8000c deployed 00:54Z: joined lookups_failed vs 244/432, per-arm E1/E2/E3, option nets"
