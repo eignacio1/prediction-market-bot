@@ -47,9 +47,11 @@ summed as fully correlated (`pipeline.null_row_sd`, `Config.null_var="binary"`).
 So v2 earns arms sooner and on more leaves than v1 at the same true effect. On the data in hand, though, no leaf shows an
 effect it can prove.
 
-## Not done (parked, see handoff)
-- `leaf_map.py` `PM_LEAF_MAP_VERSION` switch.
-- v2 pre-registration.
-- GG-1936..1938.
-- PR / CI / merge.
-- Queue row.
+## Wiring and registration (done in W116.1)
+- `leaf_map.py`: the `PM_LEAF_MAP_VERSION` switch (default v1; v2 = `leaf_maps/leaf_map_v2.json`, sha256 pinned by a test).
+  `LeafDecision` carries `posterior` and `source`.
+- Frozen pre-registration: `ROUTER_V2_PREREGISTRATION_2026-11-17.md`.
+- Gaps: GG-1936 (no free NBA / NHL line history), GG-1937 (Kalshi history unparsed), GG-1938 (no filter column on
+  settled rows), GG-1954 (the e-process validity defect, fixed here).
+- Turning v2 on for logging is the operator's decision (ACTIVE_QUEUE "Needs your decision"). Today it would log NO_BET
+  on every row.
