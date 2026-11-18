@@ -3545,3 +3545,10 @@ off); tolerant `parse_ts` (GG-1934 resolved); one-pull settlement join (outcome 
 price, tested). Box read 00:59Z, post-epoch: RIDE P(fill) 0.14, selection −0.058 [−0.195, +0.080]; FADE cross +0.18 [+0.09, +0.28]
 on an assumed spread. Proposal: 03_DECISIONS/ADR-0072_ADDENDUM_PROPOSAL_2026-11-17_placement-and-caps.md; two decisions in the queue.
 Registered GG-1942 (cap-raise precondition), GG-1943, GG-1944, GG-1955 (main backlog duplicate blocks code CI). Nothing turned on.
+
+## 2026-11-18 01:15Z — Operator approves both W116.2 demo decisions (placement policy, arm-book cap raise)
+Operator, verbatim: "Yes - I provide my approvals." Scope: the two DECISION lines W116.2 filed in ACTIVE_QUEUE "Needs your decision"
+(ADR-0072 addendum, 03_DECISIONS/ADR-0072_ADDENDUM_PROPOSAL_2026-11-17_placement-and-caps.md, now APPROVED). Demo only,
+`kelly_fraction` 0, no real capital. Neither switch is on: `ARM_PLACEMENT_POLICY=on` waits for a frozen `config/placement_policy.json`
+fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm and option; `ARM_BOOK_CAPS=raised` waits for GG-1942
+(ARM_ORDERS advisory in the exposure gate). Code merges wait on GG-1955 (main's backlog duplicate turns code CI red).
