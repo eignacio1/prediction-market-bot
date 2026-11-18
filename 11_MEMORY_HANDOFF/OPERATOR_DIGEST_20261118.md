@@ -21,3 +21,10 @@ owns (GG-1955), not on this work. No real money anywhere.
 
 ## W117.0 cleanup (B-098)
 All four parked Wave 116 changes (#505, #506, #507, #508) are now live on main, each only after its tests passed. The box is running the new code. Old branches went from 16 to 10 plus main; the ones with unsaved work, the two data branches, and anything with an open PR were kept. Nothing was installed on the box: the NHL data-store install is waiting for your approval by name. No real money moved; this was housekeeping only.
+
+## W117.2 — NHL history as a head start (no real money, nothing live changed)
+We tested whether a season of free NHL closing lines helps the router learn faster. It does, a little: the first bet it can justify
+moves 1 to 7 weeks earlier, but still not before 2027. Using coarser buckets did not help; it made things slower.
+Two ideas closed as tests, not as markets: the closing line under-reacting to its own movement (all three markets), parked for later.
+Riding the books' favourite on Kalshi loses about 5.5 cents per contract after fees; Kalshi already prices like the books.
+One ask for Monday: a free 2026-27 closing-line source, so puck lines and totals can be checked against Kalshi too.

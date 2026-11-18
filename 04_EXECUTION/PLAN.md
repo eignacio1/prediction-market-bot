@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-18T02:31:00Z (B-098 — W117.0 landed parked W116 PRs #505-#508 on green CI and pruned remote branches 16 -> 10 plus main.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0214Z_W117_0.md` for full session detail.
+**Last reviewed:** 2026-11-18T03:00:00Z (B-099 — W117.2 NHL consensus prior, momentum closed, Kalshi vs books gap, family-vs-leaf power calendar) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0249Z_W117_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
