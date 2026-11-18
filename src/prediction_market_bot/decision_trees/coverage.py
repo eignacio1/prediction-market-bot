@@ -135,14 +135,15 @@ GG1771_EPOCH_ISO = "2026-11-06T01:03:42Z"  # NO-side demo fills before this were
 
 def order_evidence(orders, fills_for=None, epoch_iso: str = GG1771_EPOCH_ISO) -> Tuple[set, set]:
     """(cells with layer-6 evidence, cells with layer-7 evidence) from the arm order log (W113.1 Part C).
-    Layer 6: any logged arm order / would-order / skip for the cell carries a ``size_for`` decision (the pregame_shadow package
+    Layer 6: any logged arm order / would-order / skip for the cell carries a ``size_for`` decision for an arm other than NO_BET (the pregame_shadow package
     may not reach the sizing modules - tests/test_pregame_shadow_safety - so the decision is logged where the arm path runs).
     Layer 7: a placed (ok) ``arm_order`` in the current epoch whose fill outcome is MEASURED - ``fills_for(order_id, ticker)``
     answers with a dict that has a ``fills`` count (0 = no-fill recorded). Pre-epoch NO-side orders are dropped."""
     l6, l7 = set(), set()
     for r in orders or []:
         key = (r.get("market_type"), r.get("band"))
-        if isinstance(r.get("size_for"), dict):
+        sf = r.get("size_for")
+        if isinstance(sf, dict) and sf.get("arm") not in (None, "NO_BET"):  # W116.3: a NO_BET size (0 by rule) is not sizing
             l6.add(key)
         if r.get("event") != "arm_order" or not r.get("ok") or not r.get("order_id") or fills_for is None:
             continue
@@ -161,7 +162,7 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
     Evidence only, no credit for intent: layer 1 = the cell's leaves carry a logged model p (a MODEL_FADE fit entry);
     2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (W112.1: the sport's
     adapter has data AND the cell's series has a KEPT tested split, i.e. a split a tested leaf uses); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
-    10+ held-out games; 6 = the cell's arm-path rows carry a size_for decision (order_evidence); 7 = the cell's current-epoch arm orders have fills
+    10+ held-out games; 6 = the cell's arm-path rows carry a size_for decision for an arm other than NO_BET (order_evidence); 7 = the cell's current-epoch arm orders have fills
     measured, fill or no-fill (shadow rows are not fills). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
     In-play bands score 0 layers by construction (router returns NO_BET)."""
     import json

@@ -171,6 +171,15 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
             "arm": arm or router.get("branch") or "UNROUTED", "leaf_id": router.get("leaf_id"),
             "split_path": {"branch": router.get("branch"), "tier": router.get("tier"),
                            "filters_fired": router.get("filters_fired") or [], "reason": router.get("reason")}}
+    # W116.3 (B-092, layer 6): every routed row carries the sizing decision it would get on an empty book, before any
+    # skip - a NO_BET leaf sizes to 0 ("NO_BET arm: no stake"); a placed order's richer decision overwrites it below.
+    if router.get("branch") not in (None, "ERROR"):
+        try:
+            rd = rs.row_decision(row, router)
+        except Exception as e:  # noqa: BLE001 - sizing evidence never blocks the arm path
+            rd = {"size_for_error": (type(e).__name__ + ":" + str(e))[:160]}
+        if rd:
+            base.update(rd)
 
     def out(event, reason, **kw):
         r = {"event": event, "reason": reason, **base, **kw}

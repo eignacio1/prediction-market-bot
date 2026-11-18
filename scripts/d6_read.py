@@ -33,6 +33,18 @@ def layer3_inputs() -> dict:
             "nhl_games_parquet": sorted(os.path.basename(p) for p in glob.glob(d + "/games_202[56].parquet"))}
 
 
+def unwired_causes(cells: list, names) -> dict:
+    """W116.3 (B-091): for every cell not wired, its ONE cause = the first layer (1..7, pipeline order) it lacks.
+    Per sport: {cause: [ 'MARKET_TYPE|BAND', ... ]}. The first gap upstream is the one that blocks every layer after it."""
+    out: dict = {}
+    for c in cells:
+        if c["wired"]:
+            continue
+        cause = names[c["layers"].index(False)]
+        out.setdefault(c["sport"], {}).setdefault(cause, []).append(c["market_type"] + "|" + c["band"])
+    return out
+
+
 def build(orders: list, fills_for, note: str, source: str, now: Optional[datetime] = None) -> dict:
     from prediction_market_bot.decision_trees import coverage
     cells = coverage.d6_layers(orders=orders, fills_for=fills_for)
@@ -41,6 +53,9 @@ def build(orders: list, fills_for, note: str, source: str, now: Optional[datetim
     return {"source": source, "read_utc": (now or datetime.now(timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "arm_order_rows": len(orders), "fills_note": note or "ok", "d6": s,
             "missing_exactly_one_layer": coverage.missing_one_layer(cells), "layer3_inputs": layer3_inputs(),
+            "wired_cells": [{"sport": c["sport"], "market_type": c["market_type"], "band": c["band"]}
+                            for c in cells if c["wired"]],
+            "unwired_cause": unwired_causes(cells, coverage.LAYER_NAMES),
             "cells_by_n_layers": {str(n): sum(1 for c in cells if c["n_layers"] == n) for n in range(8)}}
 
 

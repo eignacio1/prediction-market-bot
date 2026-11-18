@@ -86,7 +86,7 @@ def test_d6_build_counts_layers_6_7_from_orders():
     base = coverage.d6_layers(orders=[], fills_for=None)
     pick = next(c for c in base if c["n_layers"] >= 1)
     orders = [{"ts": POST_TS, "event": "arm_order", "ok": True, "order_id": "z", "market_type": pick["market_type"],
-               "band": pick["band"], "size_for": {"stake": 1}, "ticker": "T"}]
+               "band": pick["band"], "size_for": {"arm": "RIDE", "stake": 1}, "ticker": "T"}]
     out = d6_read.build(orders, lambda oid, tk: {"fills": 0}, "ok", "src")
     cell = next(c for c in coverage.d6_layers(orders=orders, fills_for=lambda o, t: {"fills": 0})
                 if (c["market_type"], c["band"]) == (pick["market_type"], pick["band"]))
@@ -95,6 +95,20 @@ def test_d6_build_counts_layers_6_7_from_orders():
     assert sum(out["cells_by_n_layers"].values()) == len(base)
     assert "nhl_store_dir_exists" in out["layer3_inputs"]
     json.dumps(out, default=str)
+
+
+def test_d6_build_names_wired_cells_and_one_cause_per_unwired_w116_3():
+    cells = [{"sport": "NBA", "market_type": "A", "band": "T2", "layers": [True] * 7, "n_layers": 7, "wired": True},
+             {"sport": "NBA", "market_type": "B", "band": "T1", "layers": [True] * 5 + [False, False], "n_layers": 5,
+              "wired": False},
+             {"sport": "NHL", "market_type": "C", "band": "T3", "layers": [True, True, False, True, True, False, False],
+              "n_layers": 4, "wired": False}]
+    from prediction_market_bot.decision_trees import coverage
+    got = d6_read.unwired_causes(cells, coverage.LAYER_NAMES)
+    assert got == {"NBA": {"6 sizing": ["B|T1"]}, "NHL": {"3 factor filters": ["C|T3"]}}
+    out = d6_read.build([], None, "ok", "src")
+    n_unwired = sum(len(v) for d in out["unwired_cause"].values() for v in d.values())
+    assert len(out["wired_cells"]) + n_unwired == out["d6"]["registered"]
 
 
 def _bt():
