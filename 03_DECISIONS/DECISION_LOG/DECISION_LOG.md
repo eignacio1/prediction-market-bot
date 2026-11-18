@@ -3614,3 +3614,9 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - Installed 06:26Z: one retention line, daily 14:17Z, crontab backed up; readback OK; surface budget GREEN; healthcheck HEALTHY (2 WARN:
   disk 87%, 90% in ~2.0 days). Nothing freed yet - the first run is 2026-11-18 14:17Z (expected ~87% -> ~73%: compress ~1.9 GB, journald
   cap ~1.5 GB). The window re-reads disk_read after it. Proof calendar regenerated on the box 06:15Z.
+
+### 2026-11-18 06:30Z (11-17 22:29 PT) - operator - no paid capacity
+- "ya not paying for more lol" (on resizing the 24 GB box). Capacity plan is $0: (1) weekly off-box copy of irreplaceable evidence
+  (PRICE_ARCHIVE, KALSHI_HISTORY, settled ledgers) to the operator's Mac through the desktop bridge - fixes the single copy; (2) once a
+  copy is verified, the box keeps a rolling hot window and older files live compressed on the box or only off-box; (3) cut waste at the
+  writer (ride-board log, 119.3). New scheduled job -> operator approval. Backlog B-103.
