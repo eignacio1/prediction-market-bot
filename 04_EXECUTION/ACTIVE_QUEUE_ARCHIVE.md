@@ -25422,3 +25422,166 @@ PART C - gap burn-down
 Report: per COMMON RULES. MEASURE MOVED: PLUMBING - handoff files live before -> after; OPEN gaps before -> after; pushes checked.
 END OF BLOCK 117.4
 ```
+
+
+## (archived 2026-11-18) WAVE 118 · written 2026-11-18 ~05:40 UTC · SW-9
+
+**The structure.** The bot is a router being built, layer by layer and sport by sport. A null routes a leaf (RIDE or NO BET) and
+parks the hypothesis for R&D; it is not a verdict. This wave builds in the three places where the structure can grow now:
+- **MLB:** a full logged and settled season the router has never read (118.1).
+- **Layer 3:** where your depth doctrine enters the trees, NBA first (118.2).
+- **NHL:** its store lands on the box today (118.3).
+
+It also gives the box room to keep growing (118.4). Your gap burner runs alongside; it owns existing gap statuses (COMMON RULES).
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 118.1 | proof · MLB · 3 | The 2026 MLB season through router v2: held-out arms per cell, a frozen MLB leaf map and the 2027 pre-registration | Sonnet | | ✅ merged PR #522 | postseason only (22 games; regular season never logged). 12 cells NO BET provisional, 0 earned arms; RIDE baseline +0.037/row [-0.024,+0.090]; map frozen, 2027 prereg written |
+| 118.2 | depth · NBA · 3 | Muse's NBA tables as point-in-time factor classes, pre-registered as tree splits, scored per leaf per arm | Sonnet | ✅ merged e7f35cf | 5 classes built+scored; 12 kept leaves, 0 BH, S3/S5 thin (coverage). nba_depth_v2.json not wired |
+| 118.3 | D6 · NHL · 3 | NHL layer 3 from the store on the box; goalie confirmation as a split and a timing study; NHL leaves through router v2 | Sonnet | 🟡 PART B DONE, A/C OPEN | B: goalie lag 0.2c (n 14), below cost, routes NO BET. Store build not started (refresh_once fixed in #524, rerun requested 06:13Z). A/C not started. |
+| 118.4 | infra · 3 | Disk measured, a retention policy as code with a box dry run, a days-to-90% alarm; the install proposed | Sonnet | 🟨 | A+B+C code merged (#521, #525); dry run pending box deploy; install awaiting approval |
+
+- **Pushback:** 118.2 scores new splits on about five weeks of NBA rows, so most splits will route to "no help", and that is the
+  expected result. What lasts is the point-in-time factor pipeline from Muse's archive into layer 3. Next wave wires its splits into
+  the live filter path.
+- **Surface:** box HEALTHY at 05:05Z, disk 87% with the NHL store building at 13:29Z (FAIL at 90%). Delta: +2 read-only box tasks
+  (118.4); 0 installs; 1 install proposed (`disk_retention_install`).
+- **Dependencies:** none blocking. 118.3 needs the NHL store built at 13:29Z; if it is absent, it builds and tests in the repo and
+  says so.
+
+### 118.1 - PROOF · MLB (THE LOGGED SEASON THROUGH THE ROUTER) · MODEL: Sonnet
+
+```
+WAVE 118 - BLOCK 118.1 - PROOF - MLB 2026 THROUGH ROUTER V2: HELD-OUT ARMS PER CELL, FROZEN MLB LEAF MAP, 2027 PRE-REGISTRATION (B-088) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W118.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/evidence_design/RESULT.md (router v2) and the MLB rows of the registry.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W118_1.md.
+
+WHY: MLB is the one sport with a whole season logged and settled - 2026, through the World Series - and the router has never read it
+(0 of 18 MLB cells routed). Every other sport is waiting on forward rows; MLB is not.
+
+PART A - the corpus
+1. Every 2026 MLB shadow / forecast row (game markets T1-T3, player hits, T4M) with the market price at the row, the settled outcome
+   and its game id. Count rows and games per cell.
+2. Split by date: fit on the first two thirds of the regular season, hold out the last third. Keep the postseason as its own look.
+   State the split before reading any result.
+
+PART B - the router on MLB
+1. Router v2 (pooled posterior + e-process) per leaf and per arm on the fit rows - RIDE, FADE, MOMENTUM where the rows allow it, and
+   NO BET. v1 runs as a comparison and ride-every-favourite as the baseline.
+2. Held-out net per row per arm, game-clustered intervals, per cell.
+3. Each cell leaves with its routing (an arm, or NO BET with its hypothesis closed and parked for R&D) - never "MLB failed".
+
+PART C - frozen for 2027
+1. Freeze leaf_maps/mlb_2026_lookback.json, plus a pre-registration for the 2027 forward test (judged n, look rule, what each cell
+   does on opening day).
+2. Report MLB layers 1-5 from the look-back in the same shape d6_read uses (no change to d6_read itself).
+3. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: MLB cells routed 0 -> N (by arm); held-out net per arm with intervals; P1 / P2 for MLB.
+END OF BLOCK 118.1
+```
+
+### 118.2 - DEPTH · NBA (MUSE'S TABLES AS TREE SPLITS) · MODEL: Sonnet
+
+```
+WAVE 118 - BLOCK 118.2 - DEPTH - NBA FACTOR CLASSES FROM THE ARCHIVE, PRE-REGISTERED AS SPLITS, SCORED PER LEAF PER ARM (B-101) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W118.md` and quote its first line. Those rules
+bind this block. Then read 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md and archive_intake/ (archive.py, nba_distance_filters.py).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W118_2.md.
+
+WHY: the operator's doctrine puts the edge in depth - matchup, personnel, availability - entering the router as layer-3 splits
+(ADR-0075). The archive now holds it: Muse's sports-intel-archive has L3-split/nba (shot dashboards, player tracking, league
+matchups by season and month) and L3-snapshots/nba (daily lineups since 2026-11-10). One NBA filter class is wired today (distance).
+
+PART A - the inventory and the pre-registration
+1. For each NBA table in the archive: what it holds, which seasons, when it was knowable before tip (point-in-time), and its join keys
+   to our rows.
+2. Choose 3 to 5 factor classes with a clear matchup or personnel meaning (for example: confirmed lineup vs the projected one; the
+   opponent's defence against this team's shot profile; pace and usage shifts). Write each split's exact definition, the cells it
+   applies to and the arm it would change in 12_EXPLORATORY/nba_depth_splits/PREREG.md, committed BEFORE any result is read.
+
+PART B - build and score
+1. Build the classes point in time in decision_trees/filters/nba_depth.py via archive_intake at a pinned archive SHA, with tests:
+   no look-ahead; join coverage stated.
+2. Score each split per leaf per arm on held-out NBA rows: net after costs per arm, game-clustered. A split that helps no leaf is
+   logged as a routing result (the hypothesis is closed and parked), not deleted.
+
+PART C - land it
+1. Kept splits go into leaf_maps/nba_depth_v2.json behind the version switch - the live frozen map is not touched. Do not edit
+   filter_supply.py; that wiring is next wave.
+2. Report D5 per factor class (aggregated / interpreted / applied) before -> after.
+3. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA factor classes by stage; splits kept / tested per cell and arm; D1 classes the NBA
+model conditions on.
+END OF BLOCK 118.2
+```
+
+### 118.3 - D6 · NHL (WIRED FROM ITS STORE) · MODEL: Sonnet
+
+```
+WAVE 118 - BLOCK 118.3 - D6 - NHL LAYER 3 FROM THE STORE, GOALIE CONFIRMATION AS A SPLIT AND A TIMING STUDY, NHL THROUGH ROUTER V2 (B-012) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W118.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0510Z_W117_3.md and 12_EXPLORATORY/nhl_consensus/RESULT.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W118_3.md.
+
+WHAT EXISTS:
+- The NHL event store was installed 2026-11-18 05:04Z (daily 13:29Z); its first build is at 13:29Z.
+- NHL logs 21 cells; D6 is 0 of 21 (layer 3: store absent).
+- The NHL consensus prior is from 117.2.
+- Muse snapshots NHL goalies and referees daily (L3-snapshots/nhl).
+
+PART A - the store on the box, and layer 3
+1. Request nhl_event_store_readback, then budget_read and health_read: store present, size on disk, disk % after it, refresh log clean.
+   If the store is absent or failed, fix it in the repo and say so.
+2. NHL factor classes, point in time from the store (shot quality / expected goals, goalie, special teams, rest), as splits in
+   filter_supply.py. d6_read NHL layers.
+
+PART B - goalie confirmation (IT-12)
+1. Pre-register in 12_EXPLORATORY/nhl_goalie_timing/PREREG.md: confirmed vs projected starter as a split. Then the timing study: when
+   the confirmation lands (Muse snapshot times), does the Kalshi price move, by how much, and over what lag (price archive).
+2. A lag the archive can see is a candidate arm; no lag is a routing result.
+
+PART C - NHL through the router
+1. NHL leaves through router v2 with the consensus prior: an arm or NO BET per leaf per cell.
+2. leaf_maps/nhl_v2.json behind the version switch.
+3. PR(s); merge on green. After deploy: d6_read - D6 NHL 0 -> N, named, with the one cause for each unwired cell.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 NHL 0 -> N (named); NHL layer-3 classes built; goalie-confirmation lag with its n.
+END OF BLOCK 118.3
+```
+
+### 118.4 - INFRA (ROOM TO GROW) · MODEL: Sonnet
+
+```
+WAVE 118 - BLOCK 118.4 - INFRA - DISK MEASURED, RETENTION AS CODE, DAYS-TO-90% ALARM; INSTALL PROPOSED (B-102) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W118.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W118_4.md.
+
+WHY: the box was at 87% disk on 11-18, before the NHL store; the healthcheck FAILs at 90%, and a FAIL blocks every install (Hard Rule
+14). Every store, cell and log this project adds lands on this one box.
+
+PART A - measure
+1. Add an allowlisted, read-only `disk_read` box task: df -h, the 25 largest directories under the project (du -x, depth 2), logs/ and
+   exp_output/ sizes, the journald size, and the 7-day growth where logs allow it. Test it.
+2. After deploy, read it and write the table in your handoff.
+
+PART B - retention as code (append-only evidence is never deleted)
+1. A policy in code: compress JSONL ledgers and logs older than N days to .gz (every reader taught to read .gz, with tests proving each
+   one still reads), rotate plain logs, and cap journald.
+2. An allowlisted `disk_retention_dryrun` read task that lists what it would compress and the bytes saved. Run it on the box.
+
+PART C - guard and propose
+1. Add a healthcheck WARN when the 7-day growth puts the disk at 90% within 14 days.
+2. Write the `disk_retention_install` task (cron or logrotate line, readback, uninstall, budget probe, allowlist line, tests) and its
+   approval sentence in "Needs your decision". Do not run it. Target once installed: under 75%.
+3. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - disk % now; bytes the dry run would free; days to 90% at the current rate.
+END OF BLOCK 118.4
+```
