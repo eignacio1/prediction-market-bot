@@ -1,0 +1,2 @@
+task = "proof_calendar_read"
+note = "Window: dashboard shows the proof calendar 13 days old; regenerate (GG-1720 may cut it)."
