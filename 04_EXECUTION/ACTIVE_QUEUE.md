@@ -71,7 +71,7 @@ down. Every part runs to merge on its own overnight; anything for the operator l
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 116.1 | quant · 3 | Finish 115.1: evidence pipeline, three-router held-out comparison, power calendar, leaf map v2 behind a switch, router v2 frozen | Opus | ⬜ | |
+| 116.1 | quant · 3 | Finish 115.1: evidence pipeline, three-router held-out comparison, power calendar, leaf map v2 behind a switch, router v2 frozen | Opus | 🟨 PR #506 CI | **v2 does not win on its own evidence yet:** fit on the earliest 70% of games, it arms 0 leaves, so 0 held-out bets. v1 nets −0.0064 per row [−0.0138, +0.0009] (161 test games); ride every favourite −0.0256 [−0.0394, −0.0129]; v2 − v1 +0.0064 = the value of abstaining. Power calendar: at a true +0.05 per contract, v2 has 84 leaves (first 2027-01-20) vs v1's 46 (first 2027-02-17). E-process validity defect found and fixed (GG-1954: binary null 275/300 → 2/300 false claims). v2 map frozen (sha256 79f46cb4…, 0 armed) behind PM_LEAF_MAP_VERSION, default v1; pre-registration ROUTER_V2_PREREGISTRATION_2026-11-17.md. GG-1936..1938 registered. |
 | 116.2 | execution · 3 | Finish 115.2: placement model tests, settlement join + GG-1934, policy behind a switch, report per arm and option, ADR-0072 addendum proposal | Opus | ⬜ | |
 | 116.3 | D6 · 3 | Finish 115.3: read the trace, write the three trace tables, fix the breaks, row-level sizing, D6 recount; NHL store shrunk before any install | Opus | 🟨 parked | ERROR cause found (MODEL_FADE leaf row had no ticker/book → KeyError; NBA 2,851 + NFL 181 rows) and fixed in PR #503 (CI pending, not merged). Row-level sizing on every routed row. Box D6 baseline is 3 (all NBA). NHL store shrink and GG-1939..1941 registration not done. Handoff: SESSION_HANDOFF_20261117T0620Z_W116_3.md |
 
@@ -528,6 +528,8 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **DECISION - ROUTER V2 ON FOR LOGGING (W116.1, 2026-11-17):** turn router v2 on for logging (v1 stays the frozen test). It sets `PM_LEAF_MAP_VERSION=v2` beside v1 in shadow logging only: no orders, `kelly_fraction` 0. Today v2 would log NO_BET on every row; it earns an arm only when a leaf's pooled P(net>0) >= 0.90 and its e-value >= 10 (pre-registered). Logging it now starts the forward clock its pre-registration scores. Reply "yes, router v2 logging" or not.
 
 > **AUTHORIZED 2026-11-11 16:51 PT (operator, in chat: "yes I approve"):** D6 layer 7 - the router's arm drives the ADR-0072 demo forward
 > test's orders (demo money only, flat demo stakes, `kelly_fraction` 0, kill switch and zero-orders alarm unchanged), recorded as a
