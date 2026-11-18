@@ -1,0 +1,49 @@
+{
+ "snapshot_games": 58,
+ "games_with_kalshi_event": 58,
+ "events_eligible": 14,
+ "placebo_windows": 7274,
+ "n_events": 14,
+ "n_games": 14,
+ "point": {
+  "D20": 0.0014,
+  "D40": 0.0071,
+  "D60": 0.0071,
+  "D120": 0.0071,
+  "D_lag": 0.0021,
+  "D60_informative": 0.0,
+  "D60_routine": 0.0083
+ },
+ "ci90": {
+  "D20": [
+   0.0,
+   0.0029
+  ],
+  "D40": [
+   0.0021,
+   0.0129
+  ],
+  "D60": [
+   0.0021,
+   0.0136
+  ],
+  "D120": [
+   0.0025,
+   0.0129
+  ],
+  "D_lag": [
+   0.0007,
+   0.0043
+  ],
+  "D60_informative": [
+   0.0,
+   0.0
+  ],
+  "D60_routine": [
+   0.0025,
+   0.0155
+  ]
+ },
+ "events_informative": 2,
+ "mean_half_spread": 0.005
+}
