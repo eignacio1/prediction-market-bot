@@ -2141,7 +2141,9 @@ W75.1 Part B (2026-10-14). Separation, yards per route run and top speed need NG
 
 ### GG-891 — KXNBATEAMTOTAL never listed: the 3 NBA_TEAM_TOTAL cells cannot get rows
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**RESOLVED 2026-11-18 (gap agent GA-6, BREADTH).** The entry closed on the autoflip recording the TEAM_TOTAL T1 flip. Box read-only 2026-10-21/22 (logged on GG-890, ledger row in GG_BURNDOWN.md): `nba_autoflip.log` shows 8 + 4 promotions = 12/12 NBA game cells, which includes the 3 NBA_TEAM_TOTAL cells.
 
 **2026-10-20 (W80.2) - premise stale:** `KXNBATEAMTOTAL` IS listed (public GET: `KXNBATEAMTOTAL-26OCT21INDNOP-NOP137`, active) and `NBA_TEAM_TOTAL_T1.jsonl` holds 374 valid rows, flip check FLIP-OK 374/374 (box preflight 20261020T0005Z). The 9-of-12 ceiling is 12-of-12. Stays OPEN only until the 12:40Z autoflip records the TEAM_TOTAL T1 flip; close on that evidence.
 
@@ -2149,7 +2151,9 @@ W78.3 read-only GET 2026-10-15: KXNBAGAME 56, KXNBASPREAD 200, KXNBATOTAL 200 op
 
 ### GG-892 — nba_shadow silent arm masked by player-points rows (NBA_*.jsonl glob)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PLUMBING).** PR #275 is an ancestor of box HEAD 53c83e86 (`git merge-base --is-ancestor`), so the deploy the entry waited on has happened. `silent_arms.py:247` documents and avoids the shared sport-prefix glob.
 
 W78.3: `silent_arms.load_inputs` globbed `NBA_*.jsonl` for the game arm, which also matches `NBA_NBA_PLAYER_POINTS_*`; live points rows would hide a dead game arm. Fixed in PR #275 with a test; pending deploy at write time. Sweep of the other arms' globs (MLB_/NFL_/NHL_) found no sibling families sharing a prefix. Close after deploy read-back.
 
