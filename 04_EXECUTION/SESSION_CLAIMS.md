@@ -1308,3 +1308,4 @@
 | 2026-11-18T05:04:35Z | W117.3 | CLOSED — W117.3: NBA moneyline/team-total pricing + box-row stump rule; D6 on box 3->4 (NBA); healthcheck SIGPIPE false-FAIL fixed, health_rerun added (commit `e868a15`) |
 | 2026-11-18T05:07:24Z | B-095 | CLOSED — merge confirmed, HEAD (a1dccbd) is ancestor of origin/main — W117.1 close: caps raised, spread logged (454/486 backfilled), FADE crossed +0.166 [-0.016,+0.348] does not clear zero clustered, frozen placement table empty (PRs #512 #514 #519) |
 | 2026-11-18T05:23:32Z | W118.3 | W118.3 NHL layer 3 + goalie timing + router v2. PURPOSE: D6 NHL 0->N |
+| 2026-11-18T05:24:11Z | B-102 | W118.4 disk measured, retention as code, days-to-90% alarm. PURPOSE: PLUMBING - disk % now; bytes dry run frees; days to 90% |
