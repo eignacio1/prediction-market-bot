@@ -1,0 +1,2 @@
+task = "arm_orders_read"
+note = "W116.2 after PR 504: join lookups_failed vs 244/432, per-arm E1/E2/E3, selection, option nets"
