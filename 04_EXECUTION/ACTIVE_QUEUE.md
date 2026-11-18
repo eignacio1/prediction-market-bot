@@ -107,7 +107,7 @@ It also gives the box room to keep growing (118.4). Your gap burner runs alongsi
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 118.1 | proof · MLB · 3 | The 2026 MLB season through router v2: held-out arms per cell, a frozen MLB leaf map and the 2027 pre-registration | Sonnet | ⬜ | |
+| 118.1 | proof · MLB · 3 | The 2026 MLB season through router v2: held-out arms per cell, a frozen MLB leaf map and the 2027 pre-registration | Sonnet | | ✅ merged PR #522 | postseason only (22 games; regular season never logged). 12 cells NO BET provisional, 0 earned arms; RIDE baseline +0.037/row [-0.024,+0.090]; map frozen, 2027 prereg written |
 | 118.2 | depth · NBA · 3 | Muse's NBA tables as point-in-time factor classes, pre-registered as tree splits, scored per leaf per arm | Sonnet | ✅ merged e7f35cf | 5 classes built+scored; 12 kept leaves, 0 BH, S3/S5 thin (coverage). nba_depth_v2.json not wired |
 | 118.3 | D6 · NHL · 3 | NHL layer 3 from the store on the box; goalie confirmation as a split and a timing study; NHL leaves through router v2 | Sonnet | ⬜ | |
 | 118.4 | infra · 3 | Disk measured, a retention policy as code with a box dry run, a days-to-90% alarm; the install proposed | Sonnet | 🟨 | A+B+C code merged (#521, #525); dry run pending box deploy; install awaiting approval |

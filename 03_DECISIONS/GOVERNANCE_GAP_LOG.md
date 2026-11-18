@@ -4870,3 +4870,8 @@ W116.2, 2026-11-17. `placement.join.records` sets `depth` None: `book_at_submit`
 **Resolution (2026-11-18 01:45Z, SW-9):** window error W58. Orders renumbered 1..N, ROLLING_BACKLOG.md re-rendered; `--check` and tests/test_rolling_backlog.py + test_visual_dashboard_backlog.py pass. Re-run CI on #505-#508.
 
 W116.2, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main (94bcee8): `ValueError: duplicate order 16 (B-018)`. The duplicate was introduced by da9e8c7 (B-099, docs-only push), and ab392a8 did not clear it. Docs-only pushes skip the test job, so main shows green while `tests/test_rolling_backlog.py::test_real_file_validates` and `test_committed_markdown_matches_the_json` fail on every code PR (PR #505 is red only for this). W116.2 may not edit ROLLING_BACKLOG.json (block rule). Fix (owner: the strategic window / B-099 author): give one of B-074 / B-018 a unique order and regenerate the markdown.
+
+### GG-1957 — MLB regular-season game-market rows were never logged; the router cannot read the season it was meant to (W118.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W118.1, 2026-11-18. `exp_output/PREGAME_SHADOW/settled/MLB_*.jsonl` begins 2026-10-05; the regular season lives only in T4/audit logs without router-shaped fields (market price at row, game id, settled outcome per market). The look-back therefore has 22 games and no cell reaches the 10 held-out game minimum. Also: the game-id split sees 25 ids vs 22 per cell (3 games carry a different id in some family). Fix before opening day 2027: confirm all 12 game cells log from game one, and reconcile game ids across families. Deadline: March 2027.
