@@ -2,6 +2,31 @@
 
 > **▶ WAVE 118 READY TO PASTE - four Sonnet blocks + your gap burner: 118.1 MLB 2026 through router v2, 118.2 NBA depth as tree splits, 118.3 NHL wired from its store, 118.4 box disk room to grow.**
 
+## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
+
+Target: OPEN gaps **272 (2026-11-18) → 150** (operator 11-17 21:17 PT: "250+ gaps is ridiculously high and we need to get it to 150").
+It owns the status lines of existing gaps; wave blocks only append new ones. The window keeps this section at the top of the file.
+
+```
+GAP BURNER - STANDING - BURN OPEN GOVERNANCE GAPS TOWARD 150 - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:.claude/commands/gap-agent.md` and follow it (it binds this block: the never-list,
+the classes, the state files 03_DECISIONS/GG_BURNDOWN.md and GG_AGENT_STATE.md, the stop rule). Read it from origin/main; do not
+assume the local copy is current. Then read the newest 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W*.md for which files the running wave
+owns - never edit those files.
+
+TARGET: OPEN gaps (`grep -cE "^\*\*Status:\*\* OPEN\b" 03_DECISIONS/GOVERNANCE_GAP_LOG.md`) down to 150. Order: duplicates and gaps whose fix
+is already merged and deployed (cite the PR and the box read), then stale gaps whose premise no longer exists (cite the evidence), then
+small fixes inside the never-list. Anything bigger: size it and add it to the "Large (for waves)" list for the window - do not start it.
+
+COEXISTENCE: a wave runs alongside. You own the status lines of EXISTING gaps; blocks append new ones. `git pull --rebase` right before
+every push of the gap log; never rewrite another session's text; run scripts/lib/gg_id_uniqueness_check.py before pushing.
+
+Run as `/loop` ticks if the terminal has it; otherwise tick back to back. Stop per the stop rule. Report each tick: OPEN before -> after,
+closed by class, and the Large list.
+END OF GAP BURNER
+```
+
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
 

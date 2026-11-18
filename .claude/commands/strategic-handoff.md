@@ -112,3 +112,6 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
     intelligent responses from you that are not only SUBSTANTIVE but INSIGHTFUL"). No standing review rituals that burn his usage. In
     every answer, bring the non-obvious read of the evidence in front of you - what it implies, what it changes, what to do - not a
     recap and not a process. One sharp call beats a full rerun.
+11. GAP BURNER AT THE TOP (operator 2026-11-17 21:23 PT: "leave the gap burner block somewhere around the top of the Active Queue at all
+    times so I don't have to scrub thru the entire thing looking for it"). The "🔥 GAP BURNER" section stays directly under the banner
+    of 04_EXECUTION/ACTIVE_QUEUE.md through every wave rewrite; refresh its OPEN count and date at each wave close. Never archive it.
