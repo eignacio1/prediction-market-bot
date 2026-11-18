@@ -15,9 +15,18 @@ the classes, the state files 03_DECISIONS/GG_BURNDOWN.md and GG_AGENT_STATE.md, 
 assume the local copy is current. Then read the newest 04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W*.md for which files the running wave
 owns - never edit those files.
 
-TARGET: OPEN gaps (`grep -cE "^\*\*Status:\*\* OPEN\b" 03_DECISIONS/GOVERNANCE_GAP_LOG.md`) down to 150. Order: duplicates and gaps whose fix
-is already merged and deployed (cite the PR and the box read), then stale gaps whose premise no longer exists (cite the evidence), then
-small fixes inside the never-list. Anything bigger: size it and add it to the "Large (for waves)" list for the window - do not start it.
+TARGET: OPEN gaps (`grep -cE "^\*\*Status:\*\* OPEN\b" 03_DECISIONS/GOVERNANCE_GAP_LOG.md`) down to 150 in this session.
+BULK MODE (operator 2026-11-17 21:47 PT: 2 a tick is far too slow). For this session these pace rules replace gap-agent.md's; its
+never-list still binds.
+1) Bucket ALL OPEN gaps in one scripted pass: for every gap, extract the files, scripts, PRs, tasks and GG ids it names, and check them
+   mechanically (exists, merged, an ancestor of box HEAD, duplicate). Write one table in GG_BURNDOWN.md: id, severity, age, class,
+   one-line evidence. Classes: A fixed + evidence / B duplicate / D premise gone (names something that no longer exists, superseded by
+   a later ADR or by the doctrine, or a one-season item the season has passed) / C small fix / L large / W owned by the running wave /
+   O watch.
+2) Close every A, B and D in batches of 20 per commit, each with its evidence line.
+3) Then class C: up to 10 per tick.
+4) L goes on the "Large (for waves)" list with a size; never start one.
+If you stall above 150, report the count per class so the window can route the rest.
 
 COEXISTENCE: a wave runs alongside. You own the status lines of EXISTING gaps; blocks append new ones. `git pull --rebase` right before
 every push of the gap log; never rewrite another session's text; run scripts/lib/gg_id_uniqueness_check.py before pushing.
