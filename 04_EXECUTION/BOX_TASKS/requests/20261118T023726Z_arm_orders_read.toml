@@ -1,0 +1,2 @@
+task = "arm_orders_read"
+note = "W117.1 B-095 re-read: spread_logged, skips by reason, E1-E3 per arm before caps flip."
