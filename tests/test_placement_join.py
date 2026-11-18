@@ -78,3 +78,13 @@ def test_per_arm_e1_e2_e3_known_answer():
     assert a["E2_per_filled_contract_before_fees"] == round(((1 - 0.40) + (0 - 0.60)) / 2, 4)  # 0.0
     assert a["E3_win_rate_fills"] == 0.5 and a["E3_win_rate_nonfills_counterfactual"] == 0.5
     assert len(pj.model_records(recs)) == 4
+
+
+def test_per_arm_by_option_splits_placements():
+    now = datetime(2026, 11, 10, 12, tzinfo=timezone.utc)
+    rows = [{"event": "arm_order", "ok": True, "order_id": f"o{i}", "arm": "RIDE", "side": "yes", "ticker": "KXNBAGAME-X-A",
+             "ts": "2026-11-10T00:00:00Z", "entry_price": 0.5, "placement": p} for i, p in enumerate(["rest_touch", "cross", "cross"])]
+    recs = pj.records(rows, [], lambda t: {"result": "yes"}, None, now)
+    out = pj.per_arm(recs, by="option")
+    assert out["RIDE|cross|post_epoch_all_sides"]["E1_orders"] == 2
+    assert out["RIDE|rest_touch|post_epoch_all_sides"]["placement"] == "rest_touch"
