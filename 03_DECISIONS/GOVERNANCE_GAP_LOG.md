@@ -4761,3 +4761,33 @@ W114.2, 2026-11-13. `arm_orders_read.parse_ts` is tolerant; the older report is 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W114.2, 2026-11-13. Box `logs/arm_orders/orders.jsonl` (6,578 rows to 00:44:44Z): `daily_breaker` 690 skips across RIDE/FADE/MOMENTUM; `unrouted` 593 (NBA/NFL ERROR) and 1,415 NHL UNROUTED. Fills are few (23 of 206 orders) and none settled, so E2/E3 are null. Question to answer next: is the breaker tripping on demo stakes or on a stale base, and why NHL has no tree route.
+
+### GG-1939 — Router ERROR on every MODEL_FADE leaf: the leaf row carried no ticker or book (W115.3 / W116.3)
+**Status:** OPEN · **Severity:** HIGH
+
+W116.3, 2026-11-17. Box trace (results/20261117T060933Z_d6_trace_read.md, 3-day window) shows 2,851 NBA and 181 NFL router ERROR rows, all `KeyError`. The cause: `leaf_map.LeafMap.row_for` built a row without `market_ticker` / `yes_bid` / `yes_ask`, and the MODEL_FADE branch's `retro_route.side_net` reads all three. So every leaf routed to MODEL_FADE (map arm or kept-split override) raised whenever p_yes was present. Fix merged in PR #503 (6f81a8c): the router passes the ticker and book in, and a MODEL_FADE leaf without a book routes NO_BET `model_fade_needs_ticker_and_book`. Fuzz: 0 errors in 5,760 runs. Stays OPEN until a box trace after the deploy shows ERROR rows at 0 (GG-072).
+
+### GG-1940 — NHL rows reach the arm path without a router block (W115.3 / W116.3)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.3, 2026-11-17. Box trace, game 26NOV16VANUTA: NHL_PUCK_LINE T2/T3 rows carry no `router` (router 0 of rows), so the W115.3 `shadow_route.hook_for` NHL hook has not reached them. Re-running one row gives `filters_unavailable:nhl_game_not_in_store` and NO_BET `leaf_not_in_map`. Next: find which NHL writer emits these rows and attach the hook there.
+
+### GG-1941 — NFL layer 3 could not count on any host (W115.3)
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+W115.3 (PR #502). `coverage.filter_layer_sports` tested `default_supply().nfl_providers`, which is always None because providers resolve lazily. Fixed: it also accepts `default_nfl_providers()`. Box d6_read 20261117T060933Z lists `sports_with_filter_data = [nba, nfl]`. NFL layer 3 still reads 0, and correctly: 0 of the 28 tested NFL filter splits are kept (filter_splits.json). That is a routing result, not a fault.
+
+### GG-1951 — Layer 3 credits a cell from the split file, not from rows that fired a kept split (W116.3)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.3, 2026-11-17. `coverage.d6_layers` layer 3 = the sport has filter data AND its series has a kept split in filter_splits.json. The box trace shows `L3_rows_with_kept_split = 0` in every cell traced, including the NBA cells counted wired. Run locally, the same NBA supply against the shipped splits fires 6 kept splits on KXNBATOTAL (their arms conflict, so the arm stands) and 1 on KXNBASPREAD (RIDE). Either the box rows lose `split_kept` (check the trace's field read and the router's paths that return before the split lookup) or the rule over-credits. Do not tighten the rule until the cause is known; a row-evidence rule may drop D6.
+
+### GG-1952 — NBA_PLAYER_POINTS rows get no filters: "nba_event_ticker_unparsed" (W116.3)
+**Status:** OPEN · **Severity:** LOW
+
+W116.3, 2026-11-17. Box trace: every NBA_PLAYER_POINTS row has filters 0 with note `nba_event_ticker_unparsed`, and every leaf is `leaf_not_in_map` (layers all 0). `filter_supply.nba_adapter` parses with `nba_forecaster.parse_event_ticker`, which does not take the props event-ticker form. Needs a props parser (team pair from the props event) plus prop leaves in the map.
+
+### GG-1953 — NHL event store is not on the box, and its build does not fit the box's memory (W116.3)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer3_inputs), so NHL layer 3 = 0 and NHL rows note `nhl_game_not_in_store`. Measured locally: `nhl_event_store.compile_store` peaks at ~2.0 GB RSS and `filter_supply._nhl_state` at ~885 MB, both over the ~600 MB budget. Planned shrink (not started): streamed compile, at most two seasons, compact filter state. Re-measure; propose the install task to the operator only if it is under ~600 MB.
