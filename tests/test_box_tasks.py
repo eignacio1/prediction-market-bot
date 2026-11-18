@@ -47,6 +47,9 @@ def test_only_capture_install_can_change_the_box():
                        "install_batch_w99_install", "install_batch_w99_uninstall", "dashboard_memmax_install"}
     import re
     for name, c in bt.TASKS.items():      # the only redirections allowed are stderr ones; nothing writes a file
+        if name == "health_rerun":        # the one exception: appends to logs/health.log exactly as the cron line does
+            assert re.sub(r"2>&1|2>/dev/null|>> logs/health\.log", "", c).count(">") == 0, name
+            continue
         assert not re.search(r">", re.sub(r"2>&1|2>/dev/null", "", c)), name
 
 
@@ -204,3 +207,18 @@ def test_health_read_is_read_only_and_shows_last_run(tmp_path):
     out = subprocess.run(cmd, shell=True, cwd=tmp_path, capture_output=True, text=True).stdout
     assert "[FAIL] disk 91% used" in out and "[WARN] x" in out
     assert "old fault" not in out and "[OK]" not in out
+
+
+def test_health_rerun_runs_the_cron_line_and_prints_the_run(tmp_path):
+    import subprocess
+    cmd = bt.TASKS["health_rerun"]
+    assert "bash deploy/healthcheck.sh >> logs/health.log 2>&1" in cmd and "crontab" not in cmd and "install" not in cmd
+    (tmp_path / "logs").mkdir()
+    (tmp_path / "deploy").mkdir()
+    (tmp_path / ".env").write_text("A=1\n")
+    (tmp_path / "logs" / "health.log").write_text("=== VPS Health Check (W72.3) ===\n[FAIL] old\n")
+    (tmp_path / "deploy" / "healthcheck.sh").write_text(
+        "echo '=== VPS Health Check (W72.3) ==='; echo '[OK] x'; echo '[WARN] disk 85% used'; echo '=== HEALTHY: 0 faults ==='; exit 0\n")
+    out = subprocess.run(cmd, shell=True, cwd=tmp_path, capture_output=True, text=True).stdout
+    assert "[WARN] disk 85% used" in out and "HEALTHY: 0 faults" in out and "old" not in out and "[OK]" not in out
+    assert (tmp_path / "logs" / "health.log").read_text().count("=== VPS Health Check") == 2  # appended, like the cron line

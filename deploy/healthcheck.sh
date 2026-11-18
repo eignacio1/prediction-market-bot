@@ -125,10 +125,12 @@ for svc in t4-mlb pmbot-web-dashboard; do
 done
 
 # 7. cron arms
+# W117.3: ``echo | grep -q`` under ``set -o pipefail`` reports a PRESENT arm as MISSING once the crontab is bigger than the 64KB pipe
+# buffer (grep -q exits at the first match, echo dies of SIGPIPE, the pipeline is non-zero). Here-strings have no pipe.
 if CRON="$($CRONTAB_CMD 2>/dev/null)" && [ -n "$CRON" ]; then
     LIVE="$(echo "$CRON" | grep -v '^[[:space:]]*#')"
     for arm in vps_deploy.sh run_mlb_pregame.py run_resolve_mlb.py archive_market_prices.py healthcheck.sh; do
-        if echo "$LIVE" | grep -q "$arm"; then pass "cron arm present: $arm"; else fail "cron arm MISSING from crontab: $arm"; fi
+        if grep -q -- "$arm" <<<"$LIVE"; then pass "cron arm present: $arm"; else fail "cron arm MISSING from crontab: $arm"; fi
     done
     ORPHANS=""
     for tok in $(echo "$LIVE" | grep -oE '[A-Za-z0-9_]+\.py' | sort -u); do
@@ -141,9 +143,9 @@ fi
 
 # 8. deploy truth
 if DT="$("$PYTHON" "$PROJ/scripts/ops/deploy_truth.py" --proj "$PROJ" check 2>&1)"; then
-    if echo "$DT" | grep -q '^  ALARM'; then
+    if grep -q '^  ALARM' <<<"$DT"; then
         while IFS= read -r l; do fail "deploy truth: ${l#  }"; done < <(echo "$DT" | grep '^  ALARM')
-    elif echo "$DT" | grep -q '^  UNKNOWN'; then
+    elif grep -q '^  UNKNOWN' <<<"$DT"; then
         warn "deploy truth has UNKNOWN lines: $(echo "$DT" | grep '^  UNKNOWN' | head -2 | tr '\n' ';')"
     else
         pass "deploy truth: no stale service code, failed deploy or stuck pending restart"
