@@ -26,7 +26,7 @@ Generated 2026-11-18 by `scripts/claude_md_now.py --write` from the code at that
   - NHL: 9 shadow · 12 not built
 - Not shadow, not unbuilt: mlb_player_prop_hits / T4M-ARITH - blocked; mlb_player_prop_hits / T4M-FLOW - blocked; mlb_player_prop_hits / T4M-PROJ - active; nba_player_points / T4 - dark.
 - Kelly (execution_bands.py): 0.0 on T1, T2, T3, T4-CORR, T4-EXIT, T4M-PROJ, T4NFL-ARITH, T4NFL-FLOW, T4NHL-ARITH, T4NHL-FLOW. Non-zero on a band with an ACTIVE cell: none. Provisional non-zero values on 12 bands with no ACTIVE cell; no real capital anywhere (Hard Rule 2).
-- Open governance gaps: 274 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
+- Open governance gaps: 272 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
 <!-- NOW:END -->
 
 **Window-maintained (as of 2026-11-18, SW-9; RED in the session scan after 7 days):**
