@@ -3586,3 +3586,10 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - GG-1936: B-099 now supplies the NHL prior; NBA stays open. Corpus caveat: 108,439 rows here vs 106,430 in W116.1 RESULT.md.
 
 | 2026-11-18 | W117.3 | Applied operator-approved stump rule (11-17 17:45 PT): D6 layer 3 = splits tested on box rows with logged verdicts, kept or not; `l3_kept` reported beside it. Layer 1 = logged p_yes. NBA spread-implied P(win) tolerance set at 0.02 (measured worst 0.017). Healthcheck cron-arm FAIL was a pipefail/SIGPIPE bug, not a missing line; fixed (#516). |
+
+### 2026-11-18 05:06Z - SW-9 - nhl_event_store_install run (operator-approved 11-17 17:45 PT)
+- 02:35Z refused by Hard Rule 14: healthcheck FAIL "cron arm MISSING: run_mlb_pregame.py" was false (`echo "$LIVE" | grep -q` takes
+  SIGPIPE under pipefail on a large crontab; the registry probe was right). Fixed by W117.3 (#516, here-strings + regression test,
+  health_rerun task); window added health_read (#509, merged by 117.4).
+- 05:04Z installed: one refresh line, daily 13:29Z, crontab backed up; readback OK, store directory not built yet (first run 13:29Z).
+  Box HEALTHY, surface budget GREEN before and after. Watch: disk 87% before the ~325 MB store; healthcheck FAIL line is 90%.

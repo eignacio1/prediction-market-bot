@@ -680,7 +680,7 @@ What should reorder this, and what should stop it:
    evaluate-and-log, no orders). Approve with: "I approve the box-task request that runs nba_engine_props_shadow_install, which adds a crontab line on the paper box."
 3. ~~**`dashboard_memmax_install`**~~ APPROVED 11-12 15:04 PT (109.5: the dashboard service hit its 128 MB cap 5,082 times; raises it to 384 MB). Approve with:
    "I approve the box-task request that runs dashboard_memmax_install, which changes the dashboard service's memory limit on the paper box."
-4. ~~**`nhl_event_store_install`**~~ APPROVED 11-17 17:45 PT (runs after #507 merges) (W116.3, 2026-11-18, PR #507): one paused cron line (13:29 UTC daily) that refreshes the NHL event store
+4. ~~**`nhl_event_store_install`**~~ APPROVED 11-17 17:45 PT · **INSTALLED 2026-11-18 05:04Z** by the window (first refused 02:35Z by a false healthcheck FAIL - SIGPIPE under pipefail, fixed by 117.3 #516; readback: 1 line, daily 13:29Z, store builds on its first run; disk 87% before, store ~325 MB, FAIL line 90%) (W116.3, 2026-11-18, PR #507): one paused cron line (13:29 UTC daily) that refreshes the NHL event store
    on the box (two seasons, streamed compile). Without it NHL has no filter data on the box, so no NHL cell can pass D6 layer 3. Measured
    locally: compile peak 2,049 -> 270 MB, NHL filter-state build 913 -> 318 MB (same output on 40 games). Risk: the box has ~126 MB free
    with swap in use, so the first run may swap; it runs under nice and flock, no orders, `kelly_fraction` 0. Approve with:
