@@ -1,0 +1,2150 @@
+{
+ "corpus": {
+  "raw_settled_rows": 2153,
+  "deduped_rows": 2087,
+  "games": 25,
+  "range": [
+   "2026-10-05T21:00:00+00:00",
+   "2026-10-29T00:00:00+00:00"
+  ],
+  "split": "earliest 0.667 of games fit / rest held out",
+  "fit_games": 16,
+  "test_games": 9,
+  "fit_rows": 1302,
+  "test_rows": 785,
+  "rows_per_cell": {
+   "MLB_GAME_TOTAL|T1": 235,
+   "MLB_GAME_TOTAL|T2": 233,
+   "MLB_GAME_TOTAL|T3": 233,
+   "MLB_MONEYLINE|T1": 22,
+   "MLB_MONEYLINE|T2": 22,
+   "MLB_MONEYLINE|T3": 22,
+   "MLB_RUN_LINE|T1": 132,
+   "MLB_RUN_LINE|T2": 132,
+   "MLB_RUN_LINE|T3": 132,
+   "MLB_TEAM_TOTAL|T1": 308,
+   "MLB_TEAM_TOTAL|T2": 308,
+   "MLB_TEAM_TOTAL|T3": 308
+  },
+  "games_per_cell": {
+   "MLB_GAME_TOTAL|T1": 22,
+   "MLB_GAME_TOTAL|T2": 22,
+   "MLB_GAME_TOTAL|T3": 22,
+   "MLB_MONEYLINE|T1": 22,
+   "MLB_MONEYLINE|T2": 22,
+   "MLB_MONEYLINE|T3": 22,
+   "MLB_RUN_LINE|T1": 22,
+   "MLB_RUN_LINE|T2": 22,
+   "MLB_RUN_LINE|T3": 22,
+   "MLB_TEAM_TOTAL|T1": 22,
+   "MLB_TEAM_TOTAL|T2": 22,
+   "MLB_TEAM_TOTAL|T3": 22
+  }
+ },
+ "fit_window_leaves": {
+  "v2_leaves": 80,
+  "v2_armed": 0,
+  "v1_leaves": 80,
+  "v1_armed": 0,
+  "v1_arms": {
+   "NO_BET": 80
+  }
+ },
+ "heldout_routers": {
+  "v2_pooled": {
+   "ALL": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 785,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 94,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 9,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 54,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 126,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": null
+   }
+  },
+  "v1_per_leaf": {
+   "ALL": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 785,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 94,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 9,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 54,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 126,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T2": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T3": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": null
+   }
+  },
+  "ride_every_favourite": {
+   "ALL": {
+    "per_row": {
+     "net": 0.03656,
+     "lo90": -0.02413,
+     "hi90": 0.08962,
+     "rows": 785,
+     "games": 9
+    },
+    "per_bet": {
+     "net": 0.03656,
+     "lo90": -0.02413,
+     "hi90": 0.08962,
+     "rows": 785,
+     "games": 9
+    }
+   },
+   "MLB_GAME_TOTAL|T1": {
+    "per_row": {
+     "net": 0.00917,
+     "lo90": -0.0528,
+     "hi90": 0.07296,
+     "rows": 94,
+     "games": 9
+    },
+    "per_bet": {
+     "net": 0.00917,
+     "lo90": -0.0528,
+     "hi90": 0.07296,
+     "rows": 94,
+     "games": 9
+    }
+   },
+   "MLB_GAME_TOTAL|T2": {
+    "per_row": {
+     "net": 0.04159,
+     "lo90": -0.00836,
+     "hi90": 0.09209,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.04159,
+     "lo90": -0.00836,
+     "hi90": 0.09209,
+     "rows": 83,
+     "games": 8
+    }
+   },
+   "MLB_GAME_TOTAL|T3": {
+    "per_row": {
+     "net": 0.04278,
+     "lo90": -0.0094,
+     "hi90": 0.10391,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.04278,
+     "lo90": -0.0094,
+     "hi90": 0.10391,
+     "rows": 83,
+     "games": 8
+    }
+   },
+   "MLB_MONEYLINE|T1": {
+    "per_row": {
+     "net": 0.08474,
+     "lo90": -0.14522,
+     "hi90": 0.3125,
+     "rows": 9,
+     "games": 9
+    },
+    "per_bet": {
+     "net": 0.08474,
+     "lo90": -0.14522,
+     "hi90": 0.3125,
+     "rows": 9,
+     "games": 9
+    }
+   },
+   "MLB_MONEYLINE|T2": {
+    "per_row": {
+     "net": 0.17019,
+     "lo90": -0.08356,
+     "hi90": 0.41895,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.17019,
+     "lo90": -0.08356,
+     "hi90": 0.41895,
+     "rows": 8,
+     "games": 8
+    }
+   },
+   "MLB_MONEYLINE|T3": {
+    "per_row": {
+     "net": 0.17889,
+     "lo90": -0.0761,
+     "hi90": 0.42641,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.17889,
+     "lo90": -0.0761,
+     "hi90": 0.42641,
+     "rows": 8,
+     "games": 8
+    }
+   },
+   "MLB_RUN_LINE|T1": {
+    "per_row": {
+     "net": 0.00578,
+     "lo90": -0.1242,
+     "hi90": 0.13119,
+     "rows": 54,
+     "games": 9
+    },
+    "per_bet": {
+     "net": 0.00578,
+     "lo90": -0.1242,
+     "hi90": 0.13119,
+     "rows": 54,
+     "games": 9
+    }
+   },
+   "MLB_RUN_LINE|T2": {
+    "per_row": {
+     "net": 0.04367,
+     "lo90": -0.08564,
+     "hi90": 0.16801,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.04367,
+     "lo90": -0.08564,
+     "hi90": 0.16801,
+     "rows": 48,
+     "games": 8
+    }
+   },
+   "MLB_RUN_LINE|T3": {
+    "per_row": {
+     "net": 0.0455,
+     "lo90": -0.0832,
+     "hi90": 0.17053,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.0455,
+     "lo90": -0.0832,
+     "hi90": 0.17053,
+     "rows": 48,
+     "games": 8
+    }
+   },
+   "MLB_TEAM_TOTAL|T1": {
+    "per_row": {
+     "net": -0.00176,
+     "lo90": -0.08456,
+     "hi90": 0.07707,
+     "rows": 126,
+     "games": 9
+    },
+    "per_bet": {
+     "net": -0.00176,
+     "lo90": -0.08456,
+     "hi90": 0.07707,
+     "rows": 126,
+     "games": 9
+    }
+   },
+   "MLB_TEAM_TOTAL|T2": {
+    "per_row": {
+     "net": 0.05777,
+     "lo90": 0.01492,
+     "hi90": 0.10113,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.05777,
+     "lo90": 0.01492,
+     "hi90": 0.10113,
+     "rows": 112,
+     "games": 8
+    }
+   },
+   "MLB_TEAM_TOTAL|T3": {
+    "per_row": {
+     "net": 0.05751,
+     "lo90": 0.01953,
+     "hi90": 0.0975,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.05751,
+     "lo90": 0.01953,
+     "hi90": 0.0975,
+     "rows": 112,
+     "games": 8
+    }
+   }
+  },
+  "always_FADE": {
+   "ALL": {
+    "per_row": {
+     "net": -0.07821,
+     "lo90": -0.1239,
+     "hi90": -0.02721,
+     "rows": 785,
+     "games": 9
+    },
+    "per_bet": {
+     "net": -0.07821,
+     "lo90": -0.1239,
+     "hi90": -0.02721,
+     "rows": 785,
+     "games": 9
+    }
+   },
+   "MLB_GAME_TOTAL|T1": {
+    "per_row": {
+     "net": -0.06394,
+     "lo90": -0.11812,
+     "hi90": -0.00934,
+     "rows": 94,
+     "games": 9
+    },
+    "per_bet": {
+     "net": -0.06394,
+     "lo90": -0.11812,
+     "hi90": -0.00934,
+     "rows": 94,
+     "games": 9
+    }
+   },
+   "MLB_GAME_TOTAL|T2": {
+    "per_row": {
+     "net": -0.06882,
+     "lo90": -0.118,
+     "hi90": -0.02059,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.06882,
+     "lo90": -0.118,
+     "hi90": -0.02059,
+     "rows": 83,
+     "games": 8
+    }
+   },
+   "MLB_GAME_TOTAL|T3": {
+    "per_row": {
+     "net": -0.06624,
+     "lo90": -0.12633,
+     "hi90": -0.01481,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.06624,
+     "lo90": -0.12633,
+     "hi90": -0.01481,
+     "rows": 83,
+     "games": 8
+    }
+   },
+   "MLB_MONEYLINE|T1": {
+    "per_row": {
+     "net": -0.11642,
+     "lo90": -0.34422,
+     "hi90": 0.11472,
+     "rows": 9,
+     "games": 9
+    },
+    "per_bet": {
+     "net": -0.11642,
+     "lo90": -0.34422,
+     "hi90": 0.11472,
+     "rows": 9,
+     "games": 9
+    }
+   },
+   "MLB_MONEYLINE|T2": {
+    "per_row": {
+     "net": -0.19739,
+     "lo90": -0.44611,
+     "hi90": 0.05639,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.19739,
+     "lo90": -0.44611,
+     "hi90": 0.05639,
+     "rows": 8,
+     "games": 8
+    }
+   },
+   "MLB_MONEYLINE|T3": {
+    "per_row": {
+     "net": -0.20616,
+     "lo90": -0.45366,
+     "hi90": 0.04886,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.20616,
+     "lo90": -0.45366,
+     "hi90": 0.04886,
+     "rows": 8,
+     "games": 8
+    }
+   },
+   "MLB_RUN_LINE|T1": {
+    "per_row": {
+     "net": -0.03717,
+     "lo90": -0.15869,
+     "hi90": 0.08998,
+     "rows": 54,
+     "games": 9
+    },
+    "per_bet": {
+     "net": -0.03717,
+     "lo90": -0.15869,
+     "hi90": 0.08998,
+     "rows": 54,
+     "games": 9
+    }
+   },
+   "MLB_RUN_LINE|T2": {
+    "per_row": {
+     "net": -0.06737,
+     "lo90": -0.1911,
+     "hi90": 0.06079,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.06737,
+     "lo90": -0.1911,
+     "hi90": 0.06079,
+     "rows": 48,
+     "games": 8
+    }
+   },
+   "MLB_RUN_LINE|T3": {
+    "per_row": {
+     "net": -0.06971,
+     "lo90": -0.19387,
+     "hi90": 0.0578,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.06971,
+     "lo90": -0.19387,
+     "hi90": 0.0578,
+     "rows": 48,
+     "games": 8
+    }
+   },
+   "MLB_TEAM_TOTAL|T1": {
+    "per_row": {
+     "net": -0.09469,
+     "lo90": -0.15164,
+     "hi90": -0.03036,
+     "rows": 126,
+     "games": 9
+    },
+    "per_bet": {
+     "net": -0.09469,
+     "lo90": -0.15164,
+     "hi90": -0.03036,
+     "rows": 126,
+     "games": 9
+    }
+   },
+   "MLB_TEAM_TOTAL|T2": {
+    "per_row": {
+     "net": -0.08917,
+     "lo90": -0.13189,
+     "hi90": -0.04771,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.08917,
+     "lo90": -0.13189,
+     "hi90": -0.04771,
+     "rows": 112,
+     "games": 8
+    }
+   },
+   "MLB_TEAM_TOTAL|T3": {
+    "per_row": {
+     "net": -0.08388,
+     "lo90": -0.12235,
+     "hi90": -0.04844,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.08388,
+     "lo90": -0.12235,
+     "hi90": -0.04844,
+     "rows": 112,
+     "games": 8
+    }
+   }
+  },
+  "always_MOMENTUM": {
+   "ALL": {
+    "per_row": {
+     "net": 0.01925,
+     "lo90": -0.00812,
+     "hi90": 0.04809,
+     "rows": 785,
+     "games": 9
+    },
+    "per_bet": {
+     "net": 0.04151,
+     "lo90": -0.0175,
+     "hi90": 0.10519,
+     "rows": 364,
+     "games": 8
+    }
+   },
+   "MLB_GAME_TOTAL|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 94,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_GAME_TOTAL|T2": {
+    "per_row": {
+     "net": -0.03426,
+     "lo90": -0.11581,
+     "hi90": 0.04919,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.04739,
+     "lo90": -0.14939,
+     "hi90": 0.07022,
+     "rows": 60,
+     "games": 8
+    }
+   },
+   "MLB_GAME_TOTAL|T3": {
+    "per_row": {
+     "net": 0.05066,
+     "lo90": -0.03144,
+     "hi90": 0.13894,
+     "rows": 83,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.06674,
+     "lo90": -0.04359,
+     "hi90": 0.17112,
+     "rows": 63,
+     "games": 8
+    }
+   },
+   "MLB_MONEYLINE|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 9,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_MONEYLINE|T2": {
+    "per_row": {
+     "net": 0.06891,
+     "lo90": -0.19109,
+     "hi90": 0.31769,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.06891,
+     "lo90": -0.19109,
+     "hi90": 0.31769,
+     "rows": 8,
+     "games": 8
+    }
+   },
+   "MLB_MONEYLINE|T3": {
+    "per_row": {
+     "net": 0.01439,
+     "lo90": -0.18329,
+     "hi90": 0.21206,
+     "rows": 8,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.02877,
+     "lo90": -0.46372,
+     "hi90": 0.5363,
+     "rows": 4,
+     "games": 4
+    }
+   },
+   "MLB_RUN_LINE|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 54,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_RUN_LINE|T2": {
+    "per_row": {
+     "net": 0.00561,
+     "lo90": -0.05654,
+     "hi90": 0.07882,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.0077,
+     "lo90": -0.08281,
+     "hi90": 0.09854,
+     "rows": 35,
+     "games": 8
+    }
+   },
+   "MLB_RUN_LINE|T3": {
+    "per_row": {
+     "net": -0.02801,
+     "lo90": -0.11349,
+     "hi90": 0.06686,
+     "rows": 48,
+     "games": 8
+    },
+    "per_bet": {
+     "net": -0.06402,
+     "lo90": -0.22901,
+     "hi90": 0.1525,
+     "rows": 21,
+     "games": 8
+    }
+   },
+   "MLB_TEAM_TOTAL|T1": {
+    "per_row": {
+     "net": 0.0,
+     "lo90": 0.0,
+     "hi90": 0.0,
+     "rows": 126,
+     "games": 9
+    },
+    "per_bet": null
+   },
+   "MLB_TEAM_TOTAL|T2": {
+    "per_row": {
+     "net": 0.06859,
+     "lo90": -0.00391,
+     "hi90": 0.1324,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.08933,
+     "lo90": -0.00481,
+     "hi90": 0.17368,
+     "rows": 86,
+     "games": 8
+    }
+   },
+   "MLB_TEAM_TOTAL|T3": {
+    "per_row": {
+     "net": 0.05781,
+     "lo90": -0.00607,
+     "hi90": 0.11861,
+     "rows": 112,
+     "games": 8
+    },
+    "per_bet": {
+     "net": 0.07442,
+     "lo90": -0.00782,
+     "hi90": 0.15716,
+     "rows": 87,
+     "games": 8
+    }
+   }
+  }
+ },
+ "heldout_unrouted_arm_by_cell": {
+  "MLB_GAME_TOTAL|T1": {
+   "RIDE": {
+    "net": 0.00917,
+    "lo90": -0.0528,
+    "hi90": 0.07296,
+    "rows": 94,
+    "games": 9
+   },
+   "FADE": {
+    "net": -0.06394,
+    "lo90": -0.11812,
+    "hi90": -0.00934,
+    "rows": 94,
+    "games": 9
+   },
+   "MODEL_FADE": {
+    "net": 0.04474,
+    "lo90": -0.0851,
+    "hi90": 0.17761,
+    "rows": 77,
+    "games": 9
+   },
+   "MOMENTUM": null
+  },
+  "MLB_GAME_TOTAL|T2": {
+   "RIDE": {
+    "net": 0.04159,
+    "lo90": -0.00836,
+    "hi90": 0.09209,
+    "rows": 83,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.06882,
+    "lo90": -0.118,
+    "hi90": -0.02059,
+    "rows": 83,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": 0.02327,
+    "lo90": -0.11167,
+    "hi90": 0.16148,
+    "rows": 74,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": -0.04739,
+    "lo90": -0.14939,
+    "hi90": 0.07022,
+    "rows": 60,
+    "games": 8
+   }
+  },
+  "MLB_GAME_TOTAL|T3": {
+   "RIDE": {
+    "net": 0.04278,
+    "lo90": -0.0094,
+    "hi90": 0.10391,
+    "rows": 83,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.06624,
+    "lo90": -0.12633,
+    "hi90": -0.01481,
+    "rows": 83,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": 0.01215,
+    "lo90": -0.1186,
+    "hi90": 0.1441,
+    "rows": 75,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": 0.06674,
+    "lo90": -0.04359,
+    "hi90": 0.17112,
+    "rows": 63,
+    "games": 8
+   }
+  },
+  "MLB_MONEYLINE|T1": {
+   "RIDE": {
+    "net": 0.08474,
+    "lo90": -0.14522,
+    "hi90": 0.3125,
+    "rows": 9,
+    "games": 9
+   },
+   "FADE": {
+    "net": -0.11642,
+    "lo90": -0.34422,
+    "hi90": 0.11472,
+    "rows": 9,
+    "games": 9
+   },
+   "MODEL_FADE": {
+    "net": -0.20115,
+    "lo90": -0.44488,
+    "hi90": 0.04886,
+    "rows": 8,
+    "games": 8
+   },
+   "MOMENTUM": null
+  },
+  "MLB_MONEYLINE|T2": {
+   "RIDE": {
+    "net": 0.17019,
+    "lo90": -0.08356,
+    "hi90": 0.41895,
+    "rows": 8,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.19739,
+    "lo90": -0.44611,
+    "hi90": 0.05639,
+    "rows": 8,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": -0.33112,
+    "lo90": -0.47992,
+    "hi90": -0.07864,
+    "rows": 8,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": 0.06891,
+    "lo90": -0.19109,
+    "hi90": 0.31769,
+    "rows": 8,
+    "games": 8
+   }
+  },
+  "MLB_MONEYLINE|T3": {
+   "RIDE": {
+    "net": 0.17889,
+    "lo90": -0.0761,
+    "hi90": 0.42641,
+    "rows": 8,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.20616,
+    "lo90": -0.45366,
+    "hi90": 0.04886,
+    "rows": 8,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": -0.32151,
+    "lo90": -0.48877,
+    "hi90": -0.03293,
+    "rows": 7,
+    "games": 7
+   },
+   "MOMENTUM": {
+    "net": 0.02877,
+    "lo90": -0.46372,
+    "hi90": 0.5363,
+    "rows": 4,
+    "games": 4
+   }
+  },
+  "MLB_RUN_LINE|T1": {
+   "RIDE": {
+    "net": 0.00578,
+    "lo90": -0.1242,
+    "hi90": 0.13119,
+    "rows": 54,
+    "games": 9
+   },
+   "FADE": {
+    "net": -0.03717,
+    "lo90": -0.15869,
+    "hi90": 0.08998,
+    "rows": 54,
+    "games": 9
+   },
+   "MODEL_FADE": {
+    "net": -0.06026,
+    "lo90": -0.18682,
+    "hi90": 0.07063,
+    "rows": 48,
+    "games": 9
+   },
+   "MOMENTUM": null
+  },
+  "MLB_RUN_LINE|T2": {
+   "RIDE": {
+    "net": 0.04367,
+    "lo90": -0.08564,
+    "hi90": 0.16801,
+    "rows": 48,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.06737,
+    "lo90": -0.1911,
+    "hi90": 0.06079,
+    "rows": 48,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": -0.08545,
+    "lo90": -0.18517,
+    "hi90": 0.03348,
+    "rows": 46,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": 0.0077,
+    "lo90": -0.08281,
+    "hi90": 0.09854,
+    "rows": 35,
+    "games": 8
+   }
+  },
+  "MLB_RUN_LINE|T3": {
+   "RIDE": {
+    "net": 0.0455,
+    "lo90": -0.0832,
+    "hi90": 0.17053,
+    "rows": 48,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.06971,
+    "lo90": -0.19387,
+    "hi90": 0.0578,
+    "rows": 48,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": -0.0654,
+    "lo90": -0.17682,
+    "hi90": 0.05634,
+    "rows": 45,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": -0.06402,
+    "lo90": -0.22901,
+    "hi90": 0.1525,
+    "rows": 21,
+    "games": 8
+   }
+  },
+  "MLB_TEAM_TOTAL|T1": {
+   "RIDE": {
+    "net": -0.00176,
+    "lo90": -0.08456,
+    "hi90": 0.07707,
+    "rows": 126,
+    "games": 9
+   },
+   "FADE": {
+    "net": -0.09469,
+    "lo90": -0.15164,
+    "hi90": -0.03036,
+    "rows": 126,
+    "games": 9
+   },
+   "MODEL_FADE": {
+    "net": -0.01385,
+    "lo90": -0.10839,
+    "hi90": 0.08294,
+    "rows": 96,
+    "games": 9
+   },
+   "MOMENTUM": null
+  },
+  "MLB_TEAM_TOTAL|T2": {
+   "RIDE": {
+    "net": 0.05777,
+    "lo90": 0.01492,
+    "hi90": 0.10113,
+    "rows": 112,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.08917,
+    "lo90": -0.13189,
+    "hi90": -0.04771,
+    "rows": 112,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": 0.00985,
+    "lo90": -0.08613,
+    "hi90": 0.10351,
+    "rows": 108,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": 0.08933,
+    "lo90": -0.00481,
+    "hi90": 0.17368,
+    "rows": 86,
+    "games": 8
+   }
+  },
+  "MLB_TEAM_TOTAL|T3": {
+   "RIDE": {
+    "net": 0.05751,
+    "lo90": 0.01953,
+    "hi90": 0.0975,
+    "rows": 112,
+    "games": 8
+   },
+   "FADE": {
+    "net": -0.08388,
+    "lo90": -0.12235,
+    "hi90": -0.04844,
+    "rows": 112,
+    "games": 8
+   },
+   "MODEL_FADE": {
+    "net": 0.01392,
+    "lo90": -0.07843,
+    "hi90": 0.10561,
+    "rows": 108,
+    "games": 8
+   },
+   "MOMENTUM": {
+    "net": 0.07442,
+    "lo90": -0.00782,
+    "hi90": 0.15716,
+    "rows": 87,
+    "games": 8
+   }
+  }
+ },
+ "all_games_unrouted_arm_by_cell_descriptive": {
+  "MLB_GAME_TOTAL|T1": {
+   "RIDE": {
+    "net": -0.00694,
+    "lo90": -0.05479,
+    "hi90": 0.04341,
+    "rows": 235,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.03452,
+    "lo90": -0.0823,
+    "hi90": 0.01251,
+    "rows": 235,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.02402,
+    "lo90": -0.12808,
+    "hi90": 0.08289,
+    "rows": 200,
+    "games": 22
+   },
+   "MOMENTUM": null
+  },
+  "MLB_GAME_TOTAL|T2": {
+   "RIDE": {
+    "net": 0.02895,
+    "lo90": -0.0185,
+    "hi90": 0.07668,
+    "rows": 233,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.05422,
+    "lo90": -0.10165,
+    "hi90": -0.00612,
+    "rows": 233,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.05788,
+    "lo90": -0.14873,
+    "hi90": 0.03692,
+    "rows": 212,
+    "games": 22
+   },
+   "MOMENTUM": {
+    "net": -0.05144,
+    "lo90": -0.12344,
+    "hi90": 0.02294,
+    "rows": 155,
+    "games": 20
+   }
+  },
+  "MLB_GAME_TOTAL|T3": {
+   "RIDE": {
+    "net": 0.02499,
+    "lo90": -0.02189,
+    "hi90": 0.07467,
+    "rows": 233,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.04836,
+    "lo90": -0.09768,
+    "hi90": -0.00147,
+    "rows": 233,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.05653,
+    "lo90": -0.14496,
+    "hi90": 0.03426,
+    "rows": 218,
+    "games": 22
+   },
+   "MOMENTUM": {
+    "net": 0.01699,
+    "lo90": -0.07076,
+    "hi90": 0.10035,
+    "rows": 160,
+    "games": 22
+   }
+  },
+  "MLB_MONEYLINE|T1": {
+   "RIDE": {
+    "net": 0.01594,
+    "lo90": -0.16814,
+    "hi90": 0.19367,
+    "rows": 22,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.04866,
+    "lo90": -0.22501,
+    "hi90": 0.13499,
+    "rows": 22,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.06309,
+    "lo90": -0.23534,
+    "hi90": 0.11473,
+    "rows": 18,
+    "games": 18
+   },
+   "MOMENTUM": null
+  },
+  "MLB_MONEYLINE|T2": {
+   "RIDE": {
+    "net": -0.02769,
+    "lo90": -0.20995,
+    "hi90": 0.15278,
+    "rows": 22,
+    "games": 22
+   },
+   "FADE": {
+    "net": 0.00044,
+    "lo90": -0.18002,
+    "hi90": 0.18317,
+    "rows": 22,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.00313,
+    "lo90": -0.2016,
+    "hi90": 0.19433,
+    "rows": 20,
+    "games": 20
+   },
+   "MOMENTUM": {
+    "net": 0.04077,
+    "lo90": -0.16736,
+    "hi90": 0.24268,
+    "rows": 16,
+    "games": 16
+   }
+  },
+  "MLB_MONEYLINE|T3": {
+   "RIDE": {
+    "net": -0.06999,
+    "lo90": -0.24951,
+    "hi90": 0.11092,
+    "rows": 22,
+    "games": 22
+   },
+   "FADE": {
+    "net": 0.0427,
+    "lo90": -0.13776,
+    "hi90": 0.22225,
+    "rows": 22,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": 0.01662,
+    "lo90": -0.18863,
+    "hi90": 0.22133,
+    "rows": 19,
+    "games": 19
+   },
+   "MOMENTUM": {
+    "net": -0.04584,
+    "lo90": -0.35157,
+    "hi90": 0.25847,
+    "rows": 7,
+    "games": 7
+   }
+  },
+  "MLB_RUN_LINE|T1": {
+   "RIDE": {
+    "net": -0.01188,
+    "lo90": -0.08342,
+    "hi90": 0.06245,
+    "rows": 132,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.01711,
+    "lo90": -0.09127,
+    "hi90": 0.05422,
+    "rows": 132,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.03869,
+    "lo90": -0.12596,
+    "hi90": 0.06088,
+    "rows": 112,
+    "games": 22
+   },
+   "MOMENTUM": null
+  },
+  "MLB_RUN_LINE|T2": {
+   "RIDE": {
+    "net": 0.02134,
+    "lo90": -0.04656,
+    "hi90": 0.09071,
+    "rows": 132,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.04454,
+    "lo90": -0.11368,
+    "hi90": 0.0235,
+    "rows": 132,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.02822,
+    "lo90": -0.11713,
+    "hi90": 0.06314,
+    "rows": 118,
+    "games": 22
+   },
+   "MOMENTUM": {
+    "net": -0.03662,
+    "lo90": -0.13186,
+    "hi90": 0.05536,
+    "rows": 84,
+    "games": 20
+   }
+  },
+  "MLB_RUN_LINE|T3": {
+   "RIDE": {
+    "net": 0.02304,
+    "lo90": -0.04486,
+    "hi90": 0.09234,
+    "rows": 132,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.04655,
+    "lo90": -0.11546,
+    "hi90": 0.02107,
+    "rows": 132,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.00804,
+    "lo90": -0.09686,
+    "hi90": 0.08406,
+    "rows": 119,
+    "games": 22
+   },
+   "MOMENTUM": {
+    "net": -0.04529,
+    "lo90": -0.19806,
+    "hi90": 0.12077,
+    "rows": 52,
+    "games": 20
+   }
+  },
+  "MLB_TEAM_TOTAL|T1": {
+   "RIDE": {
+    "net": -0.00464,
+    "lo90": -0.05047,
+    "hi90": 0.04103,
+    "rows": 308,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.06934,
+    "lo90": -0.1089,
+    "hi90": -0.02843,
+    "rows": 308,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.03779,
+    "lo90": -0.11013,
+    "hi90": 0.04484,
+    "rows": 258,
+    "games": 22
+   },
+   "MOMENTUM": null
+  },
+  "MLB_TEAM_TOTAL|T2": {
+   "RIDE": {
+    "net": 0.04121,
+    "lo90": 0.00742,
+    "hi90": 0.07618,
+    "rows": 308,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.0696,
+    "lo90": -0.10389,
+    "hi90": -0.03601,
+    "rows": 308,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.04087,
+    "lo90": -0.11185,
+    "hi90": 0.03207,
+    "rows": 294,
+    "games": 22
+   },
+   "MOMENTUM": {
+    "net": -0.0338,
+    "lo90": -0.10844,
+    "hi90": 0.04466,
+    "rows": 217,
+    "games": 20
+   }
+  },
+  "MLB_TEAM_TOTAL|T3": {
+   "RIDE": {
+    "net": 0.04501,
+    "lo90": 0.01279,
+    "hi90": 0.07809,
+    "rows": 308,
+    "games": 22
+   },
+   "FADE": {
+    "net": -0.06974,
+    "lo90": -0.10237,
+    "hi90": -0.03763,
+    "rows": 308,
+    "games": 22
+   },
+   "MODEL_FADE": {
+    "net": -0.03615,
+    "lo90": -0.10767,
+    "hi90": 0.03714,
+    "rows": 294,
+    "games": 22
+   },
+   "MOMENTUM": {
+    "net": 0.00626,
+    "lo90": -0.05384,
+    "hi90": 0.06913,
+    "rows": 214,
+    "games": 22
+   }
+  }
+ },
+ "full_corpus_v2": {
+  "leaves": 81,
+  "armed": 0,
+  "cells": {
+   "MLB_GAME_TOTAL|T1": {
+    "leaves": 3,
+    "arms": {
+     "NO_BET": 3
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_GAME_TOTAL-T1, parked for R&D); logs continue in 2027"
+   },
+   "MLB_GAME_TOTAL|T2": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_GAME_TOTAL-T2, parked for R&D); logs continue in 2027"
+   },
+   "MLB_GAME_TOTAL|T3": {
+    "leaves": 9,
+    "arms": {
+     "NO_BET": 9
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_GAME_TOTAL-T3, parked for R&D); logs continue in 2027"
+   },
+   "MLB_MONEYLINE|T1": {
+    "leaves": 1,
+    "arms": {
+     "NO_BET": 1
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_MONEYLINE-T1, parked for R&D); logs continue in 2027"
+   },
+   "MLB_MONEYLINE|T2": {
+    "leaves": 4,
+    "arms": {
+     "NO_BET": 4
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_MONEYLINE-T2, parked for R&D); logs continue in 2027"
+   },
+   "MLB_MONEYLINE|T3": {
+    "leaves": 4,
+    "arms": {
+     "NO_BET": 4
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_MONEYLINE-T3, parked for R&D); logs continue in 2027"
+   },
+   "MLB_RUN_LINE|T1": {
+    "leaves": 3,
+    "arms": {
+     "NO_BET": 3
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_RUN_LINE-T1, parked for R&D); logs continue in 2027"
+   },
+   "MLB_RUN_LINE|T2": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_RUN_LINE-T2, parked for R&D); logs continue in 2027"
+   },
+   "MLB_RUN_LINE|T3": {
+    "leaves": 9,
+    "arms": {
+     "NO_BET": 9
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_RUN_LINE-T3, parked for R&D); logs continue in 2027"
+   },
+   "MLB_TEAM_TOTAL|T1": {
+    "leaves": 3,
+    "arms": {
+     "NO_BET": 3
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_TEAM_TOTAL-T1, parked for R&D); logs continue in 2027"
+   },
+   "MLB_TEAM_TOTAL|T2": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_TEAM_TOTAL-T2, parked for R&D); logs continue in 2027"
+   },
+   "MLB_TEAM_TOTAL|T3": {
+    "leaves": 9,
+    "arms": {
+     "NO_BET": 9
+    },
+    "games": 22,
+    "routing": "NO_BET",
+    "note": "hypothesis closed (EXP-W118.1-MLB-MLB_TEAM_TOTAL-T3, parked for R&D); logs continue in 2027"
+   }
+  }
+ },
+ "d6_mlb_lookback": {
+  "layer_names": [
+   "1 model p",
+   "2 market state",
+   "3 factor filters",
+   "4 tree arm",
+   "5 held-out net",
+   "6 sizing",
+   "7 fills"
+  ],
+  "cells": [
+   {
+    "market_type": "MLB_GAME_TOTAL",
+    "band": "T1",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_GAME_TOTAL",
+    "band": "T2",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_GAME_TOTAL",
+    "band": "T3",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_MONEYLINE",
+    "band": "T1",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_MONEYLINE",
+    "band": "T2",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_MONEYLINE",
+    "band": "T3",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_RUN_LINE",
+    "band": "T1",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_RUN_LINE",
+    "band": "T2",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_RUN_LINE",
+    "band": "T3",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_TEAM_TOTAL",
+    "band": "T1",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_TEAM_TOTAL",
+    "band": "T2",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   },
+   {
+    "market_type": "MLB_TEAM_TOTAL",
+    "band": "T3",
+    "sport": "mlb",
+    "layers": [
+     true,
+     true,
+     false,
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_layers": 2,
+    "wired": false,
+    "l3_kept": false
+   }
+  ],
+  "summary": {
+   "wired": 0,
+   "registered": 12,
+   "by_sport": {
+    "mlb": {
+     "registered": 12,
+     "wired": 0,
+     "per_layer": [
+      12,
+      12,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "l3_stump": 0,
+     "l3_kept": 0
+    }
+   }
+  },
+  "layers_1_to_5_present_per_cell": {
+   "MLB_GAME_TOTAL|T1": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_GAME_TOTAL|T2": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_GAME_TOTAL|T3": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_MONEYLINE|T1": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_MONEYLINE|T2": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_MONEYLINE|T3": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_RUN_LINE|T1": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_RUN_LINE|T2": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_RUN_LINE|T3": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_TEAM_TOTAL|T1": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_TEAM_TOTAL|T2": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   "MLB_TEAM_TOTAL|T3": [
+    true,
+    true,
+    false,
+    false,
+    false
+   ]
+  },
+  "note": "cells not in this ledger (player hits, T4M, NBA-style props) are out of scope: 18 registered MLB game cells vs 12 pulled"
+ },
+ "power_calendar_2027": {
+  "MLB_GAME_TOTAL|T1": {
+   "var_game": 0.01792,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 10,
+    "0.04": 3,
+    "0.06": 2
+   }
+  },
+  "MLB_GAME_TOTAL|T2": {
+   "var_game": 0.01842,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 10,
+    "0.04": 3,
+    "0.06": 2
+   }
+  },
+  "MLB_GAME_TOTAL|T3": {
+   "var_game": 0.01785,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 10,
+    "0.04": 3,
+    "0.06": 2
+   }
+  },
+  "MLB_MONEYLINE|T1": {
+   "var_game": 0.24504,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": null,
+    "0.04": 33,
+    "0.06": 15
+   }
+  },
+  "MLB_MONEYLINE|T2": {
+   "var_game": 0.25239,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": null,
+    "0.04": 34,
+    "0.06": 15
+   }
+  },
+  "MLB_MONEYLINE|T3": {
+   "var_game": 0.25171,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": null,
+    "0.04": 34,
+    "0.06": 15
+   }
+  },
+  "MLB_RUN_LINE|T1": {
+   "var_game": 0.04184,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 23,
+    "0.04": 6,
+    "0.06": 3
+   }
+  },
+  "MLB_RUN_LINE|T2": {
+   "var_game": 0.03772,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 21,
+    "0.04": 6,
+    "0.06": 3
+   }
+  },
+  "MLB_RUN_LINE|T3": {
+   "var_game": 0.03785,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 21,
+    "0.04": 6,
+    "0.06": 3
+   }
+  },
+  "MLB_TEAM_TOTAL|T1": {
+   "var_game": 0.01688,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 9,
+    "0.04": 3,
+    "0.06": 1
+   }
+  },
+  "MLB_TEAM_TOTAL|T2": {
+   "var_game": 0.00988,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 6,
+    "0.04": 2,
+    "0.06": 1
+   }
+  },
+  "MLB_TEAM_TOTAL|T3": {
+   "var_game": 0.00881,
+   "games_per_week_assumed": 90.0,
+   "weeks_to_first_arm_if_mu": {
+    "0.02": 5,
+    "0.04": 2,
+    "0.06": 1
+   }
+  }
+ }
+}
