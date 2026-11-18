@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 117 READY TO PASTE - the CLEANUP block first (lands #505-#508, prunes branches), then four blocks: 117.1 FADE crossed measured with its real cost + approved caps / policy, 117.2 NHL consensus history as a prior, 117.3 NBA wired across the board, 117.4 hygiene (Haiku).** Decisions waiting on you: items 4-6 under "Needs your decision".
+> **▶ WAVE 117 READY TO PASTE - the CLEANUP block first (lands #505-#508, prunes branches), then four blocks: 117.1 FADE crossed measured with its real cost + approved caps / policy, 117.2 NHL consensus history as a prior, 117.3 NBA wired across the board, 117.4 hygiene (Haiku).** Items 4-6 APPROVED 11-17 17:45 PT (the NHL install runs after 117.0 merges #507).
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -143,6 +143,8 @@ PART A - the caps, and the data the decision needs
 2. Every arm order logs best bid, best ask, spread and depth at the touch when submitted (book_at_submit exists; read what it carries).
    New orders must show spread_logged > 0. Backfill the 486 existing orders from the nearest price-archive tick before submit, and
    state how many it fills.
+3. NFL v1 per-leaf to NO BET (operator-approved 11-17 17:45 PT, "Needs your decision" (b)): arm_orders routes NFL per-leaf demo orders to
+   NO BET, logs the reason "hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D)", and NFL shadow rows keep logging. Test it.
 
 PART B - FADE crossed, honestly
 1. Recompute each option's net per contract with the real crossing cost (ask minus order price, plus the taker fee) on every order that
@@ -235,8 +237,9 @@ PART A - layer 1
 PART B - the named causes
 1. Fix TEAM_TOTAL T1-3 layer 3, SPREAD T1 layer 4 and GAME_TOTAL T1 layer 6, or name exactly why each cannot pass.
 2. GG-1951: layer 3 counts box rows that carry a kept split, not the split file.
-3. If "Needs your decision" carries the operator's approval of the layer-3 stump definition, apply it in coverage.py. Otherwise leave
-   the rule as it is.
+3. The layer-3 stump definition is APPROVED (operator 11-17 17:45 PT, "Needs your decision" (c)). Apply it in coverage.py: layer 3 is
+   present when a cell's splits were tested on box rows and logged with their verdicts, kept or not. d6_read reports stumps separately
+   from cells with a kept split, so D6 shows both numbers.
 4. PR(s); merge on green.
 
 PART C - the count
@@ -631,6 +634,15 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
+> **AUTHORIZATION - THREE DECISIONS (operator, 2026-11-17 17:45 PT: "yes approve on all 3", answering the window's message naming
+> `nhl_event_store_install`, NFL v1 per-leaf to no bet, and counting tested stumps at layer 3).**
+> (a) `nhl_event_store_install`, which adds a crontab line on the paper box. Run by the window with its readback and a budget read, after
+> 117.0 merges PR #507.
+> (b) NFL v1 per-leaf demo orders route to NO BET: hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D). NFL shadow rows keep
+> logging. NBA / NHL v1 are unchanged and the frozen ADR-0072 file is untouched. Built by 117.1 (arm_orders).
+> (c) D6 layer 3 is present when a cell's splits were tested on box rows and logged with their verdicts, kept or not (a tested stump).
+> d6_read reports stumps separately from cells with a kept split. Built by 117.3 (coverage.py).
+
 > **APPROVED 2026-11-17 PT by the operator ("Yes - I provide my approvals.") - DEMO ARM PLACEMENT POLICY ON (W116.2):** Turns on only when the frozen table exists (none yet). turn `ARM_PLACEMENT_POLICY=on` for router-arm demo orders, reading a frozen `config/placement_policy.json` fitted only on orders that logged their spread (30+ resolved per side of each cell), judged at 100 resolved orders per arm and option (ADR-0072 addendum proposal 2026-11-17). Today's read, before spread was logged: FADE cross +0.18 per order [+0.09, +0.28], n=100, with an assumed spread; RIDE and MOMENTUM within noise. Demo only, `kelly_fraction` 0.
 
 > **APPROVED 2026-11-17 PT by the operator ("Yes - I provide my approvals.") - DEMO ARM BOOK CAPS RAISED (W116.2):** Turns on only after GG-1942 is fixed and merged. turn `ARM_BOOK_CAPS=raised` (25 per event / $2,500 a day / $1,500 per arm, demo only; about 50 -> about 2,200 demo arm orders a day) **only after GG-1942 is fixed** (ARM_ORDERS advisory in the exposure gate; otherwise about $200 of open demo stake halts every book). Same addendum proposal.
@@ -668,15 +680,15 @@ What should reorder this, and what should stop it:
    evaluate-and-log, no orders). Approve with: "I approve the box-task request that runs nba_engine_props_shadow_install, which adds a crontab line on the paper box."
 3. ~~**`dashboard_memmax_install`**~~ APPROVED 11-12 15:04 PT (109.5: the dashboard service hit its 128 MB cap 5,082 times; raises it to 384 MB). Approve with:
    "I approve the box-task request that runs dashboard_memmax_install, which changes the dashboard service's memory limit on the paper box."
-4. **`nhl_event_store_install`** (W116.3, 2026-11-18, PR #507): one paused cron line (13:29 UTC daily) that refreshes the NHL event store
+4. ~~**`nhl_event_store_install`**~~ APPROVED 11-17 17:45 PT (runs after #507 merges) (W116.3, 2026-11-18, PR #507): one paused cron line (13:29 UTC daily) that refreshes the NHL event store
    on the box (two seasons, streamed compile). Without it NHL has no filter data on the box, so no NHL cell can pass D6 layer 3. Measured
    locally: compile peak 2,049 -> 270 MB, NHL filter-state build 913 -> 318 MB (same output on 40 games). Risk: the box has ~126 MB free
    with swap in use, so the first run may swap; it runs under nice and flock, no orders, `kelly_fraction` 0. Approve with:
    "I approve the box-task request that runs nhl_event_store_install, which adds a crontab line on the paper box."
-5. **NFL v1 per-leaf orders → no bet (SW-9, 2026-11-18).** Held out, v1's NFL per-leaf arms lose −0.020 per row [−0.037, −0.005],
+5. ~~**NFL v1 per-leaf orders → no bet**~~ APPROVED 11-17 17:45 PT (SW-9, 2026-11-18). Held out, v1's NFL per-leaf arms lose −0.020 per row [−0.037, −0.005],
    the interval wholly below zero (W116.1). Route NFL per-leaf demo orders to NO BET and record "hypothesis closed (EXP-W110.5 NFL
    per-leaf, parked for R&D)"; NBA / NHL v1 unchanged and the frozen ADR-0072 file untouched. Approve with: "Route NFL v1 per-leaf to no bet."
-6. **D6 layer 3 for a stump (SW-9, 2026-11-18).** Today layer 3 needs a KEPT split, so a family whose splits were all tested and none
+6. ~~**D6 layer 3 for a stump**~~ APPROVED 11-17 17:45 PT (SW-9, 2026-11-18). Today layer 3 needs a KEPT split, so a family whose splits were all tested and none
    helped (NFL: 0 of 28 kept) counts as unwired, though under ADR-0077 that null is a routing result - the tree is a stump that picks
    one arm, or NO BET, at the root. Proposed definition: layer 3 is present when the cell's splits were tested on box rows and logged
    with their verdicts, kept or not. It would raise D6 without any new edge, so it is your call. Approve with: "Count tested stumps at layer 3."

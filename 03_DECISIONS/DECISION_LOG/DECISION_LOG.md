@@ -3567,3 +3567,8 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - Correction recorded: the window's 11-16 lead that RIDE fills enjoy favourable selection (69% vs 59%) rested on the minority of orders
   whose outcomes resolved; with all 486 joined, RIDE non-fills win 81%, i.e. adverse selection.
 - New operator questions (queue "Needs your decision" 5 and 6): route NFL v1 per-leaf demo orders to no bet; count tested stumps at layer 3.
+
+### 2026-11-18 01:47Z (11-17 17:45 PT) - operator - three approvals
+- "yes approve on all 3": (a) nhl_event_store_install (window runs it after 117.0 merges #507); (b) NFL v1 per-leaf demo orders route
+  to NO BET, hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D), built by 117.1; (c) D6 layer 3 counts tested stumps, reported
+  separately from kept splits, built by 117.3. Blockquote in ACTIVE_QUEUE "Needs your decision".
