@@ -4825,9 +4825,11 @@ W116.1, 2026-11-17. A raw Kalshi history pull exists only in the operator's loca
 W116.1, 2026-11-17. The doctrine tree is market state > filters > arm (DOCTRINE §1). The settled W110.5 rows have no layer-2 filter value, so v2's pooled tree stops at the move level (sport > family > band > bin > move). Filters as splits (D6 layer 2) cannot be scored per leaf until settled rows record the filter value at decision time. Depends on W116.3's `row_decision` on every routed row (GG-1951..GG-1953). Once rows carry it, add a filter depth to the tree under a new pre-registration.
 
 ### GG-1954 — The e-process was invalid on binary payoffs (plug-in variance); fixed on the W116.1 branch (W116.1)
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
 
 W116.1, 2026-11-17. With plug-in variance, a run where every favourite won gave log E = 32.9 on 15 games. Under a planted binary null, 275 of 300 runs claimed an arm (bound: 30). Fix (PR #506): `pipeline.Config.null_var="binary"` floors each increment's variance at the null variance of a net = 0 contract at its own cost, c(1−c), with sds summed within a game. Measured after the fix: binary null 2/300 false claims; power on a planted +0.10 effect 79/100 (was 99/100, which was invalid). Tests: `tests/test_evidence_w115.py::test_binary_*`. Resolve when PR #506 is merged and main CI is green. Lesson: a Gaussian e-process needs a variance floor before it is used on binary payoffs.
+
+**Update 2026-11-18 (W117.0):** PR #506 merged (5ddaf0d) on a green CI run of its head; router v2 stays behind PM_LEAF_MAP_VERSION (default v1).
 
 ### GG-1942 — The arm-order book is not an advisory book in the exposure gate, so raised demo caps would halt every book (W116.2)
 **Status:** OPEN · **Severity:** HIGH
