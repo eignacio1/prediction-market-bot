@@ -3,7 +3,7 @@ Last reviewed: 2026-11-18. Spec frozen before results: SPEC.md (commit "W118.1: 
 
 ## Corpus (Part A, as run)
 Premise correction: the game-market shadow ledger holds the **postseason only** (2026-10-05..10-29), not the regular season. Operator chose the
-postseason-only look-back on 2026-11-18 ("Proceed with recommendation"). 2,153 settled rows -> 2,087 after dedupe; 12 cells
+postseason-only look-back on 2026-11-18 ("Proceed with recommendation"). 2,153 raw rows -> 2,087 after dedupe; 12 cells
 (MONEYLINE / RUN_LINE / GAME_TOTAL / TEAM_TOTAL x T1-T3), 22 games per cell. SPEC said "22 games"; the game-id split sees **25 ids**
 (3 games carry a different id in at least one family — a join caveat, logged as a gap, not corrected here). Split (2/3 by start time):
 16 fit games / 1,302 rows, 9 held-out games / 785 rows. Held-out games per cell are **8-9, under the 10-game minimum: nothing here is judged.**

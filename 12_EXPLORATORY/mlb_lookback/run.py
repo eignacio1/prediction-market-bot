@@ -97,9 +97,9 @@ for c in sorted({cell(r) for r in rows}):
     earned = {a: n for a, n in arms.items() if a != "NO_BET"}
     fullcells[c] = {"leaves": sum(arms.values()), "arms": arms, "games": len({rr.game_id(r) for r in rows if cell(r) == c}),
                     "routing": max(earned, key=earned.get) if earned else "NO_BET",
-                    "note": None if earned else f"hypothesis closed (EXP-W118.1-MLB-{c.replace('|','-')}, parked for R&D); logs continue in 2027"}
+                    "note": None if earned else f"hypothesis closed (EXP-W118.1-MLB-{'-'.join(c.split('|'))}, parked for R&D); logs continue in 2027"}
 rows_per_cell = collections.Counter(cell(r) for r in rows); games_per_cell = {c: len({rr.game_id(r) for r in rows if cell(r) == c}) for c in rows_per_cell}
-out = {"corpus": {"raw_settled_rows": raw, "deduped_rows": len(rows), "games": len({rr.game_id(r) for r in rows}),
+out = {"corpus": {"raw_rows": raw, "deduped_rows": len(rows), "games": len({rr.game_id(r) for r in rows}),
                   "range": [min(r["start_time_utc"] for r in rows), max(r["start_time_utc"] for r in rows)],
                   "split": f"earliest {FRAC:.3f} of games fit / rest held out", "fit_games": len(fit_g), "test_games": len(test_g),
                   "fit_rows": len(fit), "test_rows": len(test), "rows_per_cell": dict(sorted(rows_per_cell.items())), "games_per_cell": dict(sorted(games_per_cell.items()))},
