@@ -70,7 +70,10 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-007 — T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton Values
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. Constants unchanged. **Next:** Calibrate before any NBA T4 activation.
 
@@ -176,7 +179,10 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-037 — Calibration Collapse + Inverted Edge Realization: the Model's Edge Signal Is Anti-Predictive
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** The old NBA book is frozen, adjudicated in GG-034 / GG-037. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the old NBA book trades again.
 
 **Current state (2026-10-08, W59.1):** Alpha half still unexplained per entry; MLB-side analogue is GG-105. **Next:** Fold NBA retest into NBA preseason work.
 
@@ -196,7 +202,10 @@ Session-start scans caught `decisions_logged: false`. They did not catch "this v
 
 ### GG-038 — T4 Kill Switch SLA: 60s NFR-03 Is 12× Too Slow for Continuous T4 Evaluation
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** ADR-0060 (NFR-03 band-level kill-switch latency remedy) ACCEPTED 2026-09-03; implementation not verified this session, so not closed. **Next:** Verify band-level kill switch latency measurement against ADR-0060 acceptance criteria.
 **Actively-Broken:** YES
@@ -239,7 +248,10 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-039 — T4 Price Cache / Staleness Check Architecture
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. **Next:** Revisit at NBA preseason.
 
@@ -267,7 +279,10 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-040 — T4 Real-Time Data Sources: Required Feeds Not in Current C1 Architecture
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. MLB analogue is GG-066. **Next:** Revisit at NBA preseason.
 
@@ -295,7 +310,10 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-041 — KXNBAPTS Orderbook Depth Data: Finals Window Missed; ADR-0005 Limit Empirical Basis Absent
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** The old NBA book is frozen, adjudicated in GG-034 / GG-037. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the old NBA book trades again.
 
 **Current state (2026-10-08, W59.1):** NBA is DARK per operator directive (resume ~1 month before 2026-27 tip-off); no new evidence this session. Finals window is past; data cannot be recovered retroactively. **Next:** Capture depth in next NBA season via archiver depth sampling.
 
@@ -368,7 +386,10 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-046 — T4 Commercial Validation: Independent Alpha Hypothesis Untested and Unregistered
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** T4 independent validation still unregistered/unfinished; T-569 latency test returned NOT SUPPORTED per CLAUDE.md. Operator-blocked. **Next:** Operator decision on T4 validation track.
 **Blocked-On-Operator:** YES
@@ -469,7 +490,10 @@ Test harnesses: `tests/test_gg038_t4_mlb_halt_latency.py`, `tests/test_gg038_sys
 
 ### GG-066 — MLB C1 Has No Real-Time/Sub-Poll-Interval Event Feed (Blocks Event-Driven T4 Sub-Bands)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** MLB still polls ESPN at POLL_INTERVAL_S=45 (run_t4_mlb_live.py:151); no sub-poll event feed exists. **Next:** Needs a C1 feed decision; blocks event-driven T4 sub-bands.
 
@@ -558,7 +582,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-094 — MLB Has No Qualitative/PRF-Analogue Feature Layer Despite Being the Sole ACTIVE Pool
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Superseded document or tool (GG-094 depth now tracked as D1-D6; GG-172 plan superseded by rolling backlog + DOCTRINE.md; GG-345 MLB probes moved to HEALTH_PROBES.md, in-season only; GG-423 Live Terminal rebuilt, #491). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the superseded document or tool is revived.
 
 **Current state (2026-10-08, W59.1):** mlb_features.py still has 0 references to qualitative/PRF (grep this session). **Next:** Design MLB qualitative layer; tied to pre-game deep-tree directive (ADR-0068).
 
@@ -586,7 +613,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-098 — MLB T1 Aggregate EV Metrics Are Cited as Milestones While Still Variance-Dominated (Small-n Subset Structure Masked; Aggregate Sign-Flipped n=151→169)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Aggregate-vs-direction decomposition concern stands; not re-run. **Next:** Re-run EXP-017B decomposition on current clean cohort.
 
@@ -614,7 +644,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-105 — T4M-PROJ (ACTIVE, highest-volume band) shows a statistically significant, tercile-monotonic ANTI-PREDICTIVE relationship between its own computed edge and realized win rate, on clean data (Workstream B / T-322/T-323/T-324 discovery)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Remediation in progress per entry (ADR-0047 shrinkage live since epoch 8); T4M-PROJ now clean_n=1898 so anti-predictive tercile can be retested. **Next:** Re-run tercile test on clean cohort.
 
@@ -797,7 +830,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-140 — GG-105 remediation exhausted the entire class of monotonic-transform recalibration candidates without a structural check ruling that class out first (temperature scaling, LR+Platt refit, isotonic — all tested serially, all failed the same way)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Depends on GG-105 outcome; not re-checked. **Next:** Revisit after GG-105 retest.
 
@@ -825,7 +861,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-150 — Cross-book (T1 vs T4) opposite-direction conflicts are alarmed, not blocked; a blocking control is an unstaffed gap
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Alarm-only by design; no blocking control built. **Next:** Operator decision on a blocking control.
 
@@ -880,7 +919,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-153 — T1's clean cohort is permanently frozen at clean_n=0 by the interaction of ADR-0048's zeroing and the epoch-10 ALL_BANDS reset; cannot self-heal under the current regime
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **W89.6 2026-10-26 (operator-approved disposition):** ADR-0057 was already ACCEPTED 2026-08-26 (T-499); only its section 4 (T1 fate A/B/C) remains deferred. Not retired: the operator reopened T1 on the game-market axis 2026-08-25 (ADR-0058), so retiring T1 (option A) would contradict that. Practical state is option C (dark, excluded from G6 count). Decision still the operator's.
 
@@ -910,7 +952,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-154 — Session-start protocol cannot verify CLAUDE.md's architectural claims against live source, and Step 4 silently no-ops without SSH access
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** CLAUDE.md Right-now block is generated from code and checked each session (scripts/claude_md_now.py); box reads replace ssh. Window triage applied, spot-checked 2026-11-18.
 
 **Current state (2026-10-08, W59.1):** Session-start greps remain hardcoded snapshots; not re-verified. **Next:** Replace hardcoded greps with checked-in assertions.
 **Actively-Broken:** YES
@@ -938,7 +982,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-156 — No forward price archive existed for any MLB market family before 2026-08-01; Phase 2's market-comparison gate had no input source and the same absence limits GG-142 counterfactual analysis
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Permanent historical fact (no MLB price archive before 2026-08-01); nothing to fix. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen only if a free pre-2026-08 price source appears.
 
 **Current state (2026-10-08, W59.1):** Triage lead cited only 'verified in prior pass' with no checkable evidence; not closed on say-so. **Next:** Confirm exp_output/PRICE_ARCHIVE has continuous forward files per MLB family, then close.
 
@@ -965,7 +1012,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-157 — `paper_trader.py` has zero orderbook/depth/fill validation; every paper fill (including the live epoch-12 flat-$1 cohort) is assumed at mid, and GG-155/T-411 shows that assumption sits against a quantity that swings 10-100x intraday
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Paper fills as evidence superseded by fills-only counting (GG-527). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if paper rows are proposed as execution evidence again.
 
 **Current state (2026-10-08, W59.1):** paper_trader.py still has no depth/fill validation (1 incidental keyword hit, no orderbook check). **Next:** Add depth-aware fill check or document mid-fill as an assumption in results.
 
@@ -1049,7 +1099,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-161 — 22 stuck T1/T2 aged_open positions: OPS_HEALTH_AND_DEPTH_STATUS_2026-08-04.md's "not an API-outage signal" claim is contradicted by direct evidence; retries genuinely happen daily but a cron-window-correlated 406 failure mode was never surfaced
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Paper fills as evidence superseded by fills-only counting (GG-527). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if paper rows are proposed as execution evidence again.
 
 **Current state (2026-10-08, W59.1):** VPS paper_mlb_cron.log still shows MLB schedule API 406 Not Acceptable on self-heal queries (2026-10-05 01:31Z, 2026-10-07 06:13Z); failure mode persists, not yet correlated to cron windows. **Next:** Correlate the 406 timestamps against cron windows and add a retry/UA fix to the self-heal query.
 **Actively-Broken:** YES
@@ -1292,7 +1345,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-168 — Step 4's T4 cycle-log write-recency probe (GG-163/T-429) has no exemption for "daily T4 budget exhausted" — a legitimate zero-new-rows state indistinguishable from a real outage by the probe's own logic
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Step 4 probe in CLAUDE.md still has no budget-exhausted exemption (re-read this session). **Next:** Add budget-exhausted exemption to the probe.
 
@@ -1346,7 +1402,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-172 — `MARKET_EXPANSION_ACTION_PLAN.md` Phases 1-4 are written entirely in market-type terms and contain zero boxes addressing band activation, even though the operator's coverage directive is explicitly "all five bands" and three of five bands have essentially no trading history
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Superseded document or tool (GG-094 depth now tracked as D1-D6; GG-172 plan superseded by rolling backlog + DOCTRINE.md; GG-345 MLB probes moved to HEALTH_PROBES.md, in-season only; GG-423 Live Terminal rebuilt, #491). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the superseded document or tool is revived.
 
 **Current state (2026-10-08, W59.1):** MARKET_EXPANSION_ACTION_PLAN.md still states at l.14 the band dimension is unowned and the GG-172 ID is only 'reserved'; no band-activation boxes added. **Next:** Add band-activation boxes to Phases 1-4.
 
@@ -1372,7 +1431,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-174 — `PolymarketVenueAdapter._parse_market()`'s CLOB query hardcodes `"tag": "nba"` (KI-019), unconfirmed against Polymarket's real tag taxonomy, and silently returns an empty market set for any other value
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** By operator directive: "No Polymarket build work". Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if Polymarket activates.
 
 **Current state (2026-10-08, W59.1):** venue_adapter.py:350 still hardcodes "tag": "nba" (KI-019); path dormant until Polymarket KYC. **Next:** Confirm Polymarket tag taxonomy before activation.
 
@@ -1580,7 +1642,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-189 — T-465 register-and-stop: 46 stuck-open T4M-PROJ epoch-12 positions, 76 rejected-position mismatches, and outcome-store coverage gap block any GG-185/GG-170 backfill
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Three residual populations blocking backfill; not re-derived this session. **Next:** Clear the 46 stuck-open positions first.
 
@@ -1686,7 +1751,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-202 — T4's 45s poll cadence was tuned against MLB/NBA's near-continuous state progression; NFL's drive-level, dead-period-clustered structure breaks that assumption, and NFL game markets sit at the efficient end of the venue's own gradient
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy in-play (T4 / T5) design item; no in-play arm runs, doctrine builds pre-game first and an in-play tree must earn its speed (ADR-0068, DOCTRINE). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen when an in-play arm is proposed.
 
 **Current state (2026-10-08, W59.1):** POLL_INTERVAL_S is still 45 for MLB (run_t4_mlb_live.py:151); NFL not live. **Next:** Decide NFL cadence before any NFL T4 work.
 
@@ -1832,7 +1900,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-209 — MLB T1 has no force-close/flatten mechanism for open positions; a kill-switch trip or operator halt can only stop new bets, not exit existing exposure early
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** No force-close wiring found for T1; PaperTrader.exit_position exists but is not called from the T1 pipeline. **Next:** Wire exit_position into kill-switch handling.
 
@@ -1959,19 +2030,25 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-730 — nflverse pbp_participation has no 2026 file: current-season coverage, pressure and personnel unavailable
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W73.2 Part A (2026-10-14). The `pbp_participation` release (read 2026-10-14) lists 2016-2025 and `_old_2023` only. It is the only free source of `defense_man_zone_type`, `defense_coverage_type`, `was_pressure`, `time_to_throw`, `offense/defense_personnel`. 2026 features for coverage/pressure/personnel cannot be built from it; FTN 2026 (blitzers, rushers, motion) and pbp-derived features partly substitute. Re-check the release at each data-layer build; close when a 2026 file appears.
 
 ### GG-731 — No free table of NFL offensive/defensive coordinators or the actual play caller
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W73.2 Part A (2026-10-14). Syndicate32 shows play callers as a matchup factor. nflverse `games` has `home_coach`/`away_coach` (head coach) only. Registered as a GAP, not bought (ADR-0073 point 4).
 
 ### GG-732 — nflverse injuries and officials carry no publication timestamp
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W73.2 Part A (2026-10-14). `injuries_*` is keyed by (season, week, team, gsis_id) with no report time; `officials` has no assignment time. Point-in-time use is by a conservative week rule (FACTOR_TAXONOMY GAP-3), enforced and tested in the W73.2 store. A true as-of timestamp needs our own dated snapshots going forward.
 
@@ -1979,7 +2056,9 @@ W73.2 Part B (2026-10-15). Measured: `injuries` 2015-2024 DO carry `date_modifie
 
 ### GG-733 — nflverse games.parquet lines are closing values in a rolling, overwritten file, not as-of-kickoff snapshots
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W73.2 Part A (2026-10-14). `games.parquet` (schedules tag) updates in place (2026-10-14T23:36Z). `spread_line`, `total_line`, moneylines are final values: usable as a market comparison, never as a model input. W73.2 snapshots the file per build so 2026 lines become point-in-time from now on.
 
@@ -1987,25 +2066,34 @@ W73.2 Part B (2026-10-15). Mitigation is live: each weekly `nfl_event_store` bui
 
 ### GG-734 — No free historical weather FORECAST archive confirmed; stored temp/wind are at-game values
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W73.2 Part A (2026-10-14). `games.temp`/`wind` (fill 0.74 in 2018, 0.38 in 2022, 0.67 in 2025; roofed games null) and `pbp.weather` are recorded at game time, not forecasts available before kickoff. Treated as a labelled leakage-risk feature until a forecast source is verified. Candidate sources are unverified.
 
 ### GG-740 — Slice failure: no single owned map of the running system; fixes landed in one place while the same defect survived elsewhere
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** Answered by ADR-0074: runtime registry (95 live, 0 unreviewed per budget_read 11-18), pattern sweep (Hard Rule 13). Window triage applied, spot-checked 2026-11-18.
 
 Registered 2026-10-14 by the strategic window (ADR-0074). Hundreds of short sessions each saw a slice of the system; nobody owned what runs end to end, and fixes were not swept for the same defect elsewhere. Evidence: GG-122 -> GG-144 (same broken grep fixed in the hook, left in CLAUDE.md Step 3 for 13 days); GG-532 and GG-163 (silent arm / silent T4 found by hand); GG-661 (stale code running after skipped restarts); GG-203 (only evidence cell dark 38 days). **Done 2026-10-14 (window):** `02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml` + `scripts/runtime_registry.py` + `tests/test_runtime_registry.py` (CI fails on an unregistered cron line, service or workflow; 76 components registered, 75 live); `RUNTIME_MAP.md` generated; Hard Rule 13 + `pattern_sweep:` handoff key (required after 2026-10-15T12:00Z, `generate_session_artifacts.py`, tests). **Open until:** a terminal (a) wires registry check, surface counts and live columns (running code SHA, last write, alarm state) into the governance scan, and (b) reviews all 75 auto-classified entries against the live crontab (`reviewed = true`). Pillar: PLUMBING (protects every pillar).
 
 ### GG-741 — Strategic windows were unaccountable: no pushback against surface outrunning reliability, plumbing escalated, notes not read, colliding blocks
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** Answered by ADR-0074: window error log, Pushback / Surface / Dependencies lines in every wave (Hard Rule 15). Window triage applied, spot-checked 2026-11-18.
 
 Registered 2026-10-14 (ADR-0074). Twelve window errors seeded in `04_EXECUTION/WINDOW_ERROR_LOG.md` (W1-W12, plus two historical slice failures). **Done 2026-10-14 (window):** the log with a pattern tally; Hard Rules 14-15 in CLAUDE.md (surface budget; error log read first; notes-first; Pushback / Surface / Dependencies lines in every wave; operator routing limited to pre-registration, frozen artifact/book, real capital, strategy); `/strategic-handoff` step 0 + Surface row + wave format; window paste-in updated. **Open until:** two consecutive waves are issued in the new format and the next window handoff reads and extends the log. Pillar: PLUMBING.
 
 ### GG-747 — T4 portfolio has 4,309 closed rows vs 4,275 in the resolved ledger (gap of 34)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 B74-A L2, 2026-10-14. Last T4 entry 2026-10-14T02:29Z. Unexplained difference of 34 between the portfolio's closed rows and the resolved T4 ledger. Pillar: PROOF (P&L per filled bet is read from one of these). Proposed fix: diff the two by position id, classify the 34 (legacy, cancelled, duplicate), and add the reconciliation as a Q7 assertion.
 
@@ -2111,31 +2199,41 @@ B74-A Part A, 2026-10-14: `tests/test_generate_mlb_features.py:540` (`TestPostse
 
 ### GG-775 — No free receiver/defender alignment or routes-run denominator (slot vs wide, TE/RB role)
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.1 Part B (2026-10-14). WR-SLOT, TE-IN, RB-REC, CB-SLOT archetypes need pre-snap alignment and routes run per player. nflverse participation gives `route` only on the targeted play and no alignment. Source would be NGS/PFF tracking (not free).
 
 ### GG-776 — No free OL block-level win rates or blocker attribution
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.1 Part B (2026-10-14). OL-PASS and OL-RUN archetypes need per-blocker pass-block/run-block outcomes. pbp attributes sacks/pressure to the team and defender only. Source would be PFF-type grading (not free). OL stays team-level proxy only.
 
 ### GG-777 — No free defender coverage assignment (who covered whom, man vs zone per defender)
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.1 Part B (2026-10-14). CB-SHD, CB-ZN, S-DEEP, LB-COV need per-defender assignment. participation has play-level `defense_man_zone_type` only; PFR def counts targets allowed to the covering defender but not alignment or scheme. Mass CB classification therefore deferred; WR chosen instead.
 
 ### GG-778 — No free DL/EDGE pass-rush snap counts or alignment
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.1 Part B (2026-10-14). DL-RUSH rates need a pass-rush-snap denominator and alignment (wide-9 / 3-tech). snaps give total defensive snaps, not rush snaps; alignment not free.
 
 ### GG-779 — No free tracking-derived separation / speed / route quality
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.1 Part B (2026-10-14). Separation, yards per route run and top speed need NGS/Sportradar tracking. Cross-cutting for WR/TE/CB. Registered as a GAP, not bought (ADR-0073 point 4).
 
@@ -2159,19 +2257,25 @@ W78.3: `silent_arms.load_inputs` globbed `NBA_*.jsonl` for the game arm, which a
 
 ### GG-910 — NBA engine: no point-in-time injury history before 2026-09-08
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W79.3 FACTOR_TAXONOMY N10/GAP-1. The ESPN injuries endpoint serves the current list only; the store has daily snapshots from 2026-09-08 (2 files). Games before that cannot be given an as-of injury state, so availability cannot be backtested on this store. Pillar: DEPTH (D5b NBA availability). Proposed fix: take the snapshot daily (not weekly) from now; no purchase. Legacy availability studies (NBA-T3) used other sources and are not rebuilt here.
 
 ### GG-911 — NBA engine: officials crew has no assignment timestamp
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W79.3 GAP-2. `officials` lists the crew for finished games; nothing says when the crew was public, so crew cannot be used pre-tip without an assumption. Pillar: DEPTH. Proposed fix: capture the NBA official assignment page (posted game day) as a dated snapshot going forward.
 
 ### GG-912 — NBA engine: coaches are season-level with no tenure dates
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W79.3 GAP-3. `coaches` has no start/end dates; mid-season firings and interims are invisible and the point-in-time contract refuses the table (`season_static`). Pillar: DEPTH. Proposed fix: derive head coach per game from game-level sources if a free one exists, else snapshot from now.
 
@@ -2219,12 +2323,16 @@ W89.3, 2026-10-27. The unpriced-share screen (`12_EXPLORATORY/unpriced_screen/re
 
 ### GG-1261 — NFL venue (N13) and weather (N14) have no out-of-sample per-game points term, so their share priced cannot be screened
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W89.3, 2026-10-27. `20261011_nfl_totals_venue_weather` tests fixed league strikes, not a per-game term against the line. A rolling-origin ridge contribution in points, from schedule roof/surface/temp/wind, would let the screen run. Free data.
 
 ### GG-1895 — NBA granularity index: data limits on lineup, position, tracking and props splits (W111.4)
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 Registered by W111.4 (B-080). Limits that cap how deep the NBA index entries and their tree splits can go today:
 - Lineups come from `lineup_source=quarter_box`, so they are not exact after mid-quarter substitutions.
@@ -2641,7 +2749,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the opera
 
 ### GG-295 — Live NFL T1 portfolio's `kalshi_threshold` backfill (all 42 positions) has no corresponding commit anywhere in repo history and is misattributed to an unrelated session (T-562)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy NFL T1 paper book (stub model), superseded by shadow arms + arm orders. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the NFL T1 paper book is revived.
 
 **Current state (2026-10-08, W59.1):** HIGH governance issue on a ledger mutation with no commit; not re-derived. **Next:** Operator review of provenance.
 
@@ -2667,7 +2778,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the opera
 
 ### GG-296 — T4M-PROJ's shard-3 demand figure (~2,000 approvals/$1,907.85 stake, 2026-09-20) is a ring-buffer ceiling artifact, not a measured count, and any collateral-funded accrual night risks non-randomly truncating the project's only clean G6 cohort
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Verified: paper_trader.py l.86 MAX_REJECTED_POSITIONS=2000 and the live T4 portfolio holds exactly 2000 rejected_positions (VPS, this session) - the figure is a ring-buffer ceiling. **Next:** Persist rejections to an append-only file before funding accrual.
 
@@ -2740,7 +2854,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the opera
 
 ### GG-301 — T4M-PROJ's calibration headline reverses sign and turns net-negative when restricted to Kalshi-confirmed-filled rows only (n=34 of 765)
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Sign reversal rests on n=34 / 9 days and is unverified; fill confirmation has not expanded (GG-300 still open, no re-polling code). For context, current VPS ledger T4M-PROJ epoch-12 n=1898 has total mean pnl/bet -0.0481, post-outage bucket -0.0875, so the full-cohort positive P&L has itself eroded. **Next:** Re-run t571 Variant B after fill-confirmation coverage expands (blocked on GG-300).
 
@@ -2791,7 +2908,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-304 — `kalshi_order_status` field reads `"submitted"` uniformly across both confirmed-FILLED and confirmed-unretrievable T4M-PROJ rows, making it non-discriminating for any downstream fill-status inference
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Still true 2026-10-07: VPS paper_portfolio_mlb_t4.json closed_positions kalshi_order_status = 'submitted' for 4169 of 4181 rows (rest 'failed: HTTP 410'); paper_trader.py sets it only at submission (lines 660/676) with no re-poll. **Next:** Document the field as submission-acceptance-only in schema docs, or add a periodic order-status re-poll writing a separate kalshi_fill_status field.
 
@@ -2815,7 +2935,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-307 — `build_t4mlb_cohorts`'s edge-reconstruction formula has never been tested against T4M_ARITH/T4M_FLOW inputs, only against T4M-PROJ — a disclosed scope boundary on this wave's scoring-harness work, not a defect
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Premise holds: build_t4mlb_cohorts (scripts/clv_harness.py:315) exists, T4M_ARITH/FLOW remain BLOCKED per EXECUTION_BANDS.md; no test or reference to ARITH/FLOW in clv_harness.py (grep empty). Prospective scope boundary only. **Next:** No action until ARITH/FLOW activation is proposed; then validate the edge-reconstruction formula on that band's schema.
 
@@ -2866,7 +2989,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-316 — A T1 NFL run cannot be attributed to an actor: `approval_commit` is a static epoch marker, not a runtime capture, and no run/trigger/host field exists on any row or audit event — scheduling anything before fixing this reproduces GG-302 at higher frequency
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy NFL T1 paper book (stub model), superseded by shadow arms + arm orders. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the NFL T1 paper book is revived.
 
 **Current state (2026-10-08, W59.1):** Code grep (src, scripts): approval_commit is set by approval_commit_for_epoch / backfill_logic_epoch.py as a static epoch marker; no run/host/trigger field found on rows. **Next:** Add run_id/host/trigger fields to NFL T1 rows and audit events before scheduling.
 
@@ -2891,7 +3017,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-317 — The T1 NFL run script defaults to the fixed-p STUB model and will open one paper row on every market with a nominal edge: one hand-run on 2026-09-29 wrote 802 STUB-labeled rows into the NFL pool (66% of evaluated markets), inflating the pool with rows that are pipeline-shape evidence only
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy NFL T1 paper book (stub model), superseded by shadow arms + arm orders. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the NFL T1 paper book is revived.
 
 **Current state (2026-10-08, W59.1):** Verified: run_t1_nfl_game_market.py l.19 states the default wired model is StubNFLForecastModel (PROVENANCE 'STUB ... GG-255', l.171); live NFL pool has 4 open, all STUB. **Next:** Refuse to run the stub model without an explicit flag.
 
@@ -2916,7 +3045,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-320 — T4M-PROJ fails ADR-0068 criterion C5: a stripped three-scalar tree is filed in a band whose measured cadence (~60s) does not pay for the stripping, and the latency thesis that licensed it measured NOT SUPPORTED
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** ADR-0068 criterion C5 finding stands; T-569 latency NOT SUPPORTED. Operator decision on refiling. **Next:** Operator decision on T4M-PROJ band placement.
 
@@ -2940,7 +3072,10 @@ This resolves MODEL provenance definitively (the EXP-027 LR model, not the stub,
 
 ### GG-323 — T4 cycle log carries game-state fields on 0.9% of rows; the T-583 harness admits only a pre-epoch-12 window of ~210 games; September cycle rows have no decoupled outcomes
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-08, W59.1):** Claim is stale as a number but premise holds: VPS cycle log 2026-10-08 has 456,964 rows, 31 keys; home_score/away_score/inning_half/outs/on_base fields non-null on 24,057 rows (5.3%, first 2026-09-29T18:16Z), pitcher fields on 19,176; ~95% of rows (all pre-09-29) lack them. The prior sample only saw non-null inning/h_so_far/ab_so_far, which are not the fields claimed. **Next:** Update entry figures (0.9% -> 5.3% and rising ~daily); state fields accrue forward only, so no backfill is possible; re-measure at harness decision time and register September decoupled-outcome fill separately.
 
@@ -3184,7 +3319,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-345 — Step 4 has no season awareness and will false-alarm through the off-season (0-player T1 runs, T4 cycle-log age, feature CSV stuck at 2026-09-27)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Superseded document or tool (GG-094 depth now tracked as D1-D6; GG-172 plan superseded by rolling backlog + DOCTRINE.md; GG-345 MLB probes moved to HEALTH_PROBES.md, in-season only; GG-423 Live Terminal rebuilt, #491). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the superseded document or tool is revived.
 
 **Current state (2026-10-08, W59.1):** CLAUDE.md Step 4 text mentions 'during MLB season' only as prose (l.290); no code/hook gates the checks by season. **Next:** Add a season flag to the session-start health probe.
 
@@ -3437,7 +3575,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-406 — Shadow code on VPS is not auto-pulled on later pushes
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** vps_deploy.sh runs every 5 min (RUNTIME_REGISTRY cron 3-58/5); deploy_truth_read 20261118T0603Z: services run box HEAD code. Window triage applied, spot-checked 2026-11-18.
 
 **Current state (2026-10-08, W59.1):** VPS /opt/prediction-market-bot is on branch main at 85004525 and is 1 commit behind origin/main (ssh, this session); no auto-pull is configured. **Next:** Add a deploy step or cron git pull for shadow code.
 
@@ -3632,7 +3772,10 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-423 — Live Terminal T1 freshness shows red at 58 days under a zero-Kelly book
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Superseded document or tool (GG-094 depth now tracked as D1-D6; GG-172 plan superseded by rolling backlog + DOCTRINE.md; GG-345 MLB probes moved to HEALTH_PROBES.md, in-season only; GG-423 Live Terminal rebuilt, #491). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the superseded document or tool is revived.
 
 **Current state (2026-10-08, W59.1):** scripts/web_dashboard.py _freshness() sets t1_mlb level red/amber purely from paper_portfolio_mlb.json age vs season thresholds, with no kelly_fraction==0 awareness. VPS file now logs/paper_portfolio_mlb.json mtime 2026-10-05 23:05 (~2d), so the 58d figure is stale but the operator question stands. **Next:** Operator decision; if staleness is irrelevant at zero Kelly, render the t1_mlb chip grey with 'zero-Kelly, sizing off' in _freshness()/paintFresh.
 
@@ -3830,7 +3973,9 @@ W85.3 built `c4_risk_engine/exposure_gate.py` (GG-441) and wired it into the T1 
 
 ### GG-538 — The only pre-2026 Kalshi price history lived in one untracked agent worktree (single copy, no manifest)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** Pre-2026 Kalshi history is on the VPS, sha256 verified (GG-538 current-state W62.2; KALSHI_HISTORY_MANIFEST.md); window triage 2026-11-18 confirms the copy completed. Window triage applied, spot-checked 2026-11-18.
 
 **Current state (2026-10-09, W62.2):** MITIGATED, awaiting the operator's acceptance to close: `raw/` + rebuilt `candles/`/`markets/` copied to the VPS with sha256 verified; manifest at `12_EXPLORATORY/KALSHI_HISTORY_MANIFEST.md`. **Next:** operator decides whether to refresh the tracked `exp_output/KALSHI_HISTORY/{markets,VALIDATION.json}` (still the stale 862/415 build) and whether a scheduled VPS copy of `raw/` is wanted.
 
@@ -3867,7 +4012,10 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 ### GG-536 — T1 MLB paper book: 17.5% of closed positions were filled on demo; the 83 settled fills lose $1.50/bet while the unfilled remainder is flat
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 **Current state (2026-10-09, W62.3):** T1 MLB (`paper_portfolio_mlb.json`) submits real demo orders like T4. Of 485 closed positions, 85 CONFIRMED_FILLED, 400 CONFIRMED_NOT_FILLED (346 no match inside the fills horizon, 54 never accepted), 0 UNVERIFIABLE. Settled: all 469 rows -$113.17 (-$0.241/bet, game-clustered 95% CI -1.365..+0.915); fills n=83 -$124.73 (-$1.503/bet, CI -3.666..+0.631, 28.9% win); non-fills n=386 +$11.56 (+$0.030/bet, 52.1% win). The ledger's 12.44% paper drawdown is therefore mostly a calibration figure. **Next (operator's call, nothing changed):** whether T1 counting/G6/dashboards should use fills only as T4M-PROJ now does (GG-527 decision covered T4M-PROJ only). Sidecar `logs/t1_mlb_fill_status.jsonl` (own book, append-only) is the evidence.
 
@@ -3888,7 +4036,10 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 ### GG-562 — Archived NFL game-market paper book holds 4 OPEN positions entered by StubNFLForecastModel (not a trained model); two are past their game date and unresolved
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy NFL T1 paper book (stub model), superseded by shadow arms + arm orders. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the NFL T1 paper book is revived.
 
 **Current state (2026-10-10, W65.3 step 0, read-only):** `logs/paper_portfolio_t1_nfl_game_market.json` on the VPS (file last written 2026-10-07 01:56 UTC) has 4 positions, all `OPEN`, `size_usd` 1.0, `kalshi_order_status` `local_only`, entered 2026-09-29 05:36:39Z, `forecast_id` prefix `T1-NFLGM-PT-`. These are real ledger rows. They are what the Live Terminal showed as "STUB, model P 0.0000": `run_t1_nfl_game_market.py` carries `StubNFLForecastModel` with `PROVENANCE = "STUB (... NOT a trained model, GG-255)"`, and `logic_epoch.py` classifies that text as `EVIDENCE_STUB`. Game dates seen: 2026-10-08 (TB/DAL, past, still OPEN) and 2026-10-11 (CIN/MIA). Nothing was changed.
 
@@ -3996,7 +4147,9 @@ W69.3 (2026-10-12) found no official NBA injury-report PDFs retrievable for Jan�
 
 ### GG-611 — EXP-040 live shadow logging not wired or deployed
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** EXP-040 shadow logging wired: silent_arms_read 20261118T023549Z "NBA player points minutes+injury challenger (EXP-040): rows written". Window triage applied, spot-checked 2026-11-18.
 
 The EXP-040 artifact is frozen (sha256 `c47cbac7…8527`) and `NBAPlayerPointsMinutesModel` exists, but no forecaster, runner, registry cell, runtime injury-report fetch, or VPS deploy exists. Until a shadow row carrying the sha is logged before its game, no row counts toward the pre-registration. Deferred because it touches the EXP-039 runner that W69.2 is working on for NBA opening night and requires a VPS deploy outside this session's permissions. Needs its own claim and an operator deploy step.
 
@@ -4008,7 +4161,10 @@ W69.2 Part A (2026-10-12): the Kalshi series list shows KXNBAGAME/SPREAD/TOTAL, 
 
 ### GG-630 — Post-Game Resolve (NBA T1/T4 auto-resolve) is paused; nothing proves the VPS can resolve the old NBA book when NBA reopens 2026-10-20
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** The old NBA book is frozen, adjudicated in GG-034 / GG-037. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if the old NBA book trades again.
 
 W70.3 (T-860) investigated the "dark ~75 days" workflows. Not an accident: T-399 (2026-07-29) deliberately commented out the `schedule:` of `post_game_resolve.yml` and `tss_daily_sync.yml` because the old NBA book was dark; last scheduled success 2026-07-28. State read 2026-10-12: VPS crons for the old NBA pipeline are LIVE (`run_pregame.py` 17:55/01:25, `run_paper_trade.py` 18:00/01:30 `PAPER_YES_ONLY`, `run_resolve.py` 06:00). `paper_early_cron.log` = "No KXNBAPTS markets available"; `resolve_cron.log` = 0 open positions. Nothing is stuck today. Risk: when KXNBAPTS markets return (2026-10-20) `run_paper_trade.py` can open positions in the old NBA paper book, and resolving them was moved to GitHub Actions in June 2026 (Session 44) because `nba_api` was 403-blocked from the VPS (GG-013). Unverified: whether the VPS `run_resolve.py` can still resolve (the T-140 `build_tss_cache.py` runs fine on the VPS daily, so the block may be gone, but resolve uses other endpoints). If it cannot, positions sit open and NBA book drawdown reads go stale. Touches the old NBA paper book only (frozen per ADR-0035/37), not MLB. Not fixed here. Before 2026-10-20: (a) confirm VPS `run_resolve.py` can reach its data endpoint, or (b) uncomment the `schedule:` in `post_game_resolve.yml`, or (c) confirm the old NBA `run_paper_trade.py` crons are meant to stay on. The 2026-27 NBA arm (EXP-038) is shadow-only and does not depend on this.
 
@@ -4096,13 +4252,17 @@ Pillar: PLUMBING. Closes when the read-side policy for validators/raw stores is 
 
 ### GG-800 — No free field holds pre-snap motion DIRECTION or boundary side (F6 granularity gap)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.2 Part A. Checked every free nflverse field for the 2022-2025 plays: FTN carries `is_motion` (boolean) and `starting_hash` (L/R/M/0 -- the ball's hash, not the motion man's direction), `n_offense_backfield`, `qb_location`; participation carries `offense_positions`, `route`, `offense_formation` with no alignment coordinates or motion path; pbp carries nothing pre-snap. None says which way the motion went or whether it ended at the boundary. The operator's "motioned to the boundary" cannot be answered; the factor is built on motion yes/no and a direction is never inferred. Likely paid-only (charting vendors / tracking data). Pillar: DEPTH. Closes when a free source with motion direction is found, or the paid-only status is confirmed and the cell is recorded as not buildable.
 
 ### GG-801 — Coverage shell is known on only 55-61% of scrimmage plays, and motion on none before 2022
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W75.2 Part A. `defense_coverage_type` is populated for 53-61% of run+pass plays in every season 2018-2025 (the rest are runs and non-dropbacks); FTN `is_motion` exists 2022+ only (99.7-100% fill there). Any shell x motion cell therefore has at most four seasons of history, and 2026 has no participation file (GAP-1/GG-730). Cell-level EPA (unit x shell x personnel x motion) is at single-season n a noise measurement (Part A YoY r about 0.0-0.1), so the buildable signal is the shell MIX, not team-specific cell success. Pillar: DEPTH. Closes when a longer motion history or in-season 2026 participation exists.
 
@@ -4175,7 +4335,9 @@ W83.3 GAP-3 (NHL-9, NHL-10). `GET /v1/gamecenter/<id>/right-rail` exposes gameIn
 
 ### GG-1013 — NHL engine: no free injury or availability history
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W83.3 GAP-4 (NHL-11). Scratches are post-game only and there is no free structured injury history. Pillar: DEPTH. Proposed fix: forward-only daily snapshots of the public injury pages once a refresh job is registered; history cannot be backfilled for free.
 
@@ -4193,7 +4355,9 @@ W83.2, 2026-10-22 00:36Z. `curl` of `https://ak-static.cms.nba.com/referee/injur
 
 ### GG-1031 — NBA play-type frequencies have no definition or event-store labels, so Muse's play-type class is gradeable by ordering against proxies only
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W83.2. pbp carries no play-type labels and NBA.com publishes no definitions; the grade (PARTIAL, 4 of 7 classes hold at Spearman >= 0.5 against fixed proxies) cannot test the frequencies themselves. Needs a labelled source or a derivation rule; free only.
 
@@ -4205,19 +4369,25 @@ W83.2. A stale NBA_SEAT.md render passed locally and failed in CI because the lo
 
 ### GG-1060 — NBA PAM mass tier: archetypes and modifiers with no free signal at all stay UNSCORED
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W84.2 Part A. No free source gives a scorable clause for PRF-10, PRF-11 and modifiers M-1, M-7, M-8, M-9, M-10, M-11, M-12, M-15, M-16, M-19, M-20 (plus others listed UNSCORED in `12_EXPLORATORY/nba_pam_mass_tier/results_W84.md`); Muse's R-027 map marks PRF-10 and M-1/7-12/15/16/19/20/23/32 as NONE. All 420 qualified 2026 player-seasons are UNSCORED for each; never proxied. Pillar: DEPTH D5(b). Proposed fix: a source registered per row (tracking, defensive-matchup, or manual panel from the seat), or a v5 taxonomy decision that drops the row.
 
 ### GG-1061 — NBA PAM mass tier: the event store lacks height, age, years, hustle, catch-and-shoot, contested rebounds and deflections
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W84.2 Part A. Clauses needing those fields are unscored, so PRF-1…4, 8, 9, 12, 14, 15 can only reach MET_PARTIAL, never MET. stats.nba.com is unreachable and is not scraped around. Pillar: DEPTH D5(b). Proposed fix: add free height/age/experience (roster pages) and any free hustle source to the event store as a registered job; re-run `12_EXPLORATORY/nba_pam_mass_tier/run.py`.
 
 ### GG-1062 — NBA PAM taxonomy v4 clauses that cannot be scored as written
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W84.2 Part A. PRF-14's volatility clause has no defined metric, and PRF-1's 40%-of-possessions clause has no definition; both left unscored rather than interpreted. Pillar: DEPTH D5(b). Proposed fix: Muse/seat define the metric in v5; `taxonomy.json` was not edited here.
 
@@ -4235,7 +4405,9 @@ W84.2 Part B cross not run (n = 0): PREGAME_SHADOW NBA_PLAYER_POINTS rows (since
 
 ### GG-1090 — No Kalshi candle history for NFL spread, total or team-total markets, nor for the 2026 season: the market-anchored test could only measure the anchor-timing gap on moneyline 2025
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** MEDIUM
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W85.1 Part A. `exp_output/KALSHI_HISTORY/candles/KXNFLGAME.jsonl` holds 411 one-minute sets (188 games, 2025 season to Jan 2026). There is none for the spread, total or team-total series and none for 2026, so the T1/T2/T3 anchor-versus-close gap (SD 0.026/0.021/0.015 at ko-36h/-24h/-6h vs 0.010 at ko-30min) is measured on moneyline only, and the historical test anchors every family on the de-vigged close. EXP-041's live anchor is the mid at decision time. Proposed fix: archive the three ladder series' candles forward and backfill what the public API serves; free data only. Owner: next DEPTH wave.
 
@@ -4276,7 +4448,10 @@ W87.1 Part A. Means identical; half-widths differ 0.16 vs 0.17 on the snapshot. 
 
 ### GG-1190 — T4 `cache_bankroll` is flat at $1,000 against realized −$140.93
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 W88.1 Part A. Any drawdown or exposure limit expressed as a fraction of bankroll reads a bankroll that does not move with realized P&L on the T4 book (cache $1,000; ledger realized −$140.93 on 4,316 paper bets). Percent-of-bankroll limits are therefore not measuring what they say for T4. Needs an owner decision on which bankroll the limits read. Not fixed here (Hard Rule 11).
 
@@ -4337,7 +4512,9 @@ W89.2, 2026-10-27. The archive covers MLB game-market families, KXMLBHIT and NFL
 
 ### GG-1251 — Candle history is partial and local-only, so price paths between archive snapshots cannot be rebuilt
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W89.2, 2026-10-27. KXNFLGAME holds 415 of 862 tickers; EXP-035 candle numbers are VOID. Part B of W89.2 used ~20-min archive snapshots, which cannot see sub-snapshot overreaction.
 
@@ -4444,7 +4621,9 @@ W90.3, 2026-10-27, T-1310. Strategy J's "news-driven vs unexplained" split needs
 W90.3, 2026-10-27, T-1310. run_w90_3.py `mlb_start` reads the event-ticker HHMM as US/Eastern, the same assumption as GG-1253, and no join to a schedule source confirms it for the 52,474-ticker archive. It only drives the time-to-start tier and the news-window proxy, not the move or the cost; a wrong offset would shift tier boundaries. Closes with GG-1253.
 
 ### GG-1302 — NBA and NHL pre-game history is one hourly-candle season-start window (n<=119 signals), too thin to carry a router decision
-**Status:** OPEN · **Severity:** LOW
+**Status:** ACCEPTED UNCERTAINTY · **Severity:** LOW
+
+**Reason:** Registered data limit, free sources only (operator 11-17: "a factor only a paid source has is a registered gap"); stays in the live log as the data-gap inventory. Reopen if a free source appears. Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
 
 W90.3, 2026-10-27, T-1310. The follow/fade grid for NBA (91 signals) and NHL (117) comes from the 89.7 hourly game-market candles only; no spread, total or prop candles exist and the cadence (1 h) is coarser than the MLB/NFL archive (20 min). Their cells are mostly untestable (<30 games) and the NBA settle-follow cell that clears BH is a single marginal split. Re-run W90.3 when the shadow arms have logged a season of two-sided pre-game quotes.
 
@@ -4492,7 +4671,10 @@ W94.3, 2026-10-29, T-1440. The 2026-10-29 00:04Z "T4 MLB live SILENT 19.6h" was 
 
 ### GG-1441 — Three T4 MLB first-row lags far above the 8-16 min pattern are unexplained (2026-10-06 22:00Z 218 min, 10-12 21:00Z 106 min, 10-18 21:08Z 1620 min)
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 W94.3, 2026-10-29, T-1441. Found in the same scheduled-start vs first-row comparison. May be postponed games, doubleheaders or games T4 does not cover; not checked, so a real outage cannot be ruled out. Needs the per-game list against the T4 discovery log.
 
@@ -4504,7 +4686,9 @@ W94.3, 2026-10-29, T-1441. Found in the same scheduled-start vs first-row compar
 W94.2, 2026-10-29, T-1460. `safe_out` (`12_EXPLORATORY/_fence.py:7`) joins a relative path to `ROOT` = `12_EXPLORATORY/`. Three scripts pass the repo-relative form and so write to the nested directory: `nfl_board_v2/heldout_keynumbers.py:35`, `nfl_board_v2/kalshi_compare.py:94`, `nfl_board_v2/n15_interpret.py:46`. This is the likely origin of the untracked `12_EXPLORATORY/12_EXPLORATORY/` in the main tree. Their committed JSONs may be the nested copies or stale. Not fixed in this block (rule 11); the fix is either `safe_out` stripping a leading `12_EXPLORATORY/` or the three call sites, plus a test that fails on a doubled prefix.
 
 ### GG-1450 — EXP-044 / EXP-044b runners merged but not installed; no box read-back
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** EXP-044 / 044b installed: same silent_arms_read, "NBA engine v1 (EXP-044) / v2 (EXP-044b): rows written". Window triage applied, spot-checked 2026-11-18.
 
 W94.1 (2026-10-29). `nba_engine/live.py` and `live_v2.py` plus the current-season refresh are merged (PR #368, #374) but have no cron line or RUNTIME_REGISTRY entry. The 00:04Z `budget_read` was RED (T4 MLB silent arm; 94.3 later diagnosed it as a false positive) and no GREEN read was seen. The box also needs the 2016-2026 `schedule`/`espn_schedule`/`team_box` parquet for `--raw`. Until installed, no forward row exists. Next wave: register, ship the history store, install on GREEN, read back first night's rows.
 
@@ -4637,13 +4821,18 @@ W97.3, 2026-11-03, T-1580. The picks sheet prints "no reasons available" for eve
 
 ### GG-1581 — Box is OOM-killing shadow-arm cycles: the T3 runners stack with no lock
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** Flock lock added; box OOM counters 0 (oom_kill 0 in the 11-11 cgroup read, none in 11-18 results); budget_read 20261118T0523Z 0 stale/down. Window triage applied, spot-checked 2026-11-18.
 
 W97.3, 2026-11-03, T-1581. 20 OOM kills of `python` in about 90 min (6 at 23:xx on Nov 2, 14 at 00:xx on Nov 3; `dmesg -T`), two of them 171-180 MB shadow runners; RAM 961 MB, available 57-134 MB, swap 1.3-1.5 GB, load 9.5. Cause: `run_nba_pregame_shadow`, `run_pregame_shadow`, `run_nhl_shadow_staked` and `run_nba_player_points_shadow` T3 lines launch every 10 min with no `flock`, each run lasts 13-62 min, so 2-3 copies of each run at once (peak RSS 243-381 MB each). Every kill is a lost cycle (rows not written). Proposed fix, for the strategic window (it edits existing cron lines, outside W97.3 PERMISSIONS): wrap each T3 line in `flock -n /tmp/<runner>.lock`, as the NBA engine lines already are, and spread the start minutes; first confirm with each arm's pre-registration that skipping a launch while the prior run is alive is acceptable. Also look at why an NBA pregame T3 run lasts 62 min. Detail: `12_EXPLORATORY/picks_sheet_w97/results_W97_3.md`.
 
 ### GG-1582 — T1 MLB `SemanticFloorViolation` on 2026-07-10 is unexplained
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Reason:** Legacy MLB books (T4M-PROJ, T1 MLB) idle since the World Series; router and arm orders replace them (ADR-0077); MLB 2027 opens on the 2026 look-back leaf map (W118.1). Window triage 03_DECISIONS/GG_WINDOW_TRIAGE_2026-11-18.md (SW-9, operator-directed).
+**Reopen trigger:** Reopen if T4M-PROJ or the T1 MLB book trades again.
 
 W97.3, 2026-11-03, T-1582. `paper_mlb_cron.log` line 1229: 16 games fetched, 0 players matched. The other hit (2026-10-16, 1 game, "No KXMLBHIT markets available") is a no-player-markets postseason day and needs nothing. The July hit predates this window and was not diagnosed.
 
@@ -4759,7 +4948,9 @@ W113.1, 2026-11-12. The brief asked for the size decision on every routed shadow
 W113.1, 2026-11-12. `row_sizing.leg_draws` builds draws from identity (same ticker+side = one event, opposite side = complement, other market = independent). A home moneyline and a home spread in one game are correlated but are NOT merged. Closes when 113.3's joint is set as `row_sizing.DRAWS_PROVIDER`. Also: arm_orders and arm_sizing use different arm vocabularies (MOMENTUM / MODEL_FADE vs MOMENTUM_FOLLOW / MOMENTUM_FADE / no MODEL_FADE); mapped in `row_sizing.sizing_arm`, `size_arm` logged.
 
 ### GG-1898 — NHL event store has no box job; NHL layer 3 counts only where the store exists (W113.1)
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** NHL event store has its box job: same install; readback results/20261118T050414Z_nhl_event_store_readback.md shows the cron block. Window triage applied, spot-checked 2026-11-18.
 
 W113.1, 2026-11-12. `filter_supply.nhl_filters_for_row` reads `exp_output/NHL_EVENTS` (parquet; games, events, shifts). It is not in RUNTIME_REGISTRY, so on the box every NHL row will note `filters_unavailable:nhl_game_not_in_store` and the 20 kept NHL splits never fire live. `coverage.filter_layer_sports` counts NHL only when the store is present (local: layer 3 NHL 0 to 9). Also: `nhl_filters_for_row` named in the brief did not exist (#489 shipped `nhl_filters(home, away)`); this block built the per-row function. Needs a store refresh job (a surface add, Hard Rule 14) before NHL layer 3 is real on the box. Separately, main CI is red on `tests/test_w109_3_props_shadow_install.py::test_registry_entry_is_paused_and_task_is_allowlisted` (registry entry now live after the 11-12 install approval; test expects paused), so PR 493 cannot merge on green.
 
@@ -4791,14 +4982,18 @@ W114.2, 2026-11-13. `d6_read` on the box (results/20261113T0044Z_d6_read.md) sho
 W114.2, 2026-11-13. `arm_orders_read.parse_ts` is tolerant; the older report is not. Not fixed in 114.2 (out of scope, Hard Rule 11). Fix: route it through `arm_orders_read.parse_ts` or `filter_supply.parse_ts`.
 
 ### GG-1935 — Daily breaker causes 690 of the arm-order skips and NHL rows are all unrouted (W114.2)
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** Daily breaker was a real-money cap on the demo path; caps separated (#504) and raised (#514, operator-approved 11-17). Window triage applied, spot-checked 2026-11-18.
 
 W114.2, 2026-11-13. Box `logs/arm_orders/orders.jsonl` (6,578 rows to 00:44:44Z): `daily_breaker` 690 skips across RIDE/FADE/MOMENTUM; `unrouted` 593 (NBA/NFL ERROR) and 1,415 NHL UNROUTED. Fills are few (23 of 206 orders) and none settled, so E2/E3 are null. Question to answer next: is the breaker tripping on demo stakes or on a stale base, and why NHL has no tree route.
 
 **Update 2026-11-18 (W116.2).** Cause 1, fixed in 580cce8 (PR #504): arm orders were sized against risk.py's real-money limits ($150 a day = notional x MAX_DAILY_LOSS_PCT). The demo arm book now has its own caps (`arm_sizing`: base 5 / $50 / $25; raised behind `ARM_BOOK_CAPS`, off). Still open: the box read at 00:59Z shows `daily_breaker` 690 and `size_zero: day` 9,093 post-epoch. GG-1942 may explain part of the breaker count (ARM_ORDERS is not advisory in the exposure gate). NHL UNROUTED 5,573 is tracked under GG-1940 (W116.3).
 
 ### GG-1939 — Router ERROR on every MODEL_FADE leaf: the leaf row carried no ticker or book (W115.3 / W116.3)
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** Router ERROR = KeyError market_ticker in LeafMap.row_for; fixed #503 / #507 (W116.3); d6_read 11-18 shows routed rows. Window triage applied, spot-checked 2026-11-18.
 
 W116.3, 2026-11-17. Box trace (results/20261117T060933Z_d6_trace_read.md, 3-day window) shows 2,851 NBA and 181 NFL router ERROR rows, all `KeyError`. The cause: `leaf_map.LeafMap.row_for` built a row without `market_ticker` / `yes_bid` / `yes_ask`, and the MODEL_FADE branch's `retro_route.side_net` reads all three. So every leaf routed to MODEL_FADE (map arm or kept-split override) raised whenever p_yes was present. Fix merged in PR #503 (6f81a8c): the router passes the ticker and book in, and a MODEL_FADE leaf without a book routes NO_BET `model_fade_needs_ticker_and_book`. Fuzz: 0 errors in 5,760 runs. Stays OPEN until a box trace after the deploy shows ERROR rows at 0 (GG-072).
 
@@ -4827,7 +5022,9 @@ W116.3 2026-11-18: PR #507 adds the window-wide `split_kept` count per cell to d
 W116.3, 2026-11-17. Box trace: every NBA_PLAYER_POINTS row has filters 0 with note `nba_event_ticker_unparsed`, and every leaf is `leaf_not_in_map` (layers all 0). `filter_supply.nba_adapter` parses with `nba_forecaster.parse_event_ticker`, which does not take the props event-ticker form. Needs a props parser (team pair from the props event) plus prop leaves in the map.
 
 ### GG-1953 — NHL event store is not on the box, and its build does not fit the box's memory (W116.3)
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** NHL store shrunk 2,049 -> 270 MB peak (#507), installed 11-18 05:04Z (results/20261118T050412Z_nhl_event_store_install.md, exit 0). Window triage applied, spot-checked 2026-11-18.
 
 W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer3_inputs), so NHL layer 3 = 0 and NHL rows note `nhl_game_not_in_store`. Measured locally: `nhl_event_store.compile_store` peaks at ~2.0 GB RSS and `filter_supply._nhl_state` at ~885 MB, both over the ~600 MB budget. Planned shrink (not started): streamed compile, at most two seasons, compact filter state. Re-measure; propose the install task to the operator only if it is under ~600 MB.
 
@@ -4863,7 +5060,9 @@ W116.1, 2026-11-17. With plug-in variance, a run where every favourite won gave 
 **Update 2026-11-18 (W117.0):** PR #506 merged (5ddaf0d) on a green CI run of its head; router v2 stays behind PM_LEAF_MAP_VERSION (default v1).
 
 ### GG-1942 — The arm-order book is not an advisory book in the exposure gate, so raised demo caps would halt every book (W116.2)
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** Arm-order book is advisory in the exposure gate: #508 merged; exposure_gate.py:53 ARM_ORDERS advisory True. Window triage applied, spot-checked 2026-11-18.
 
 W116.2, 2026-11-17. `arm_orders.BOOK = "ARM_ORDERS"` is fed to `exposure_gate.record_book`, but `exposure_gate.BOOKS` has no ARM_ORDERS entry, so `advisory` is False and the book's demo stakes count in the per-book and SYSTEM breach sums against `max_drawdown_pct` 0.20 on the $1,000 shadow notional (GATE_MODE enforce). Under the base caps (5 / 50 / 25) open demo stake stays well under $200; under ARM_BOOK_CAPS=raised (day cap $2,500) about $200 open would write `exposure_gate_breach` and halt every book. RIDE_BOARD and SHADOW are already advisory (GG-1240). Fix (owner: exposure_gate, not 116.2): add ARM_ORDERS to BOOKS as advisory, ledger-less, like RIDE_BOARD. **Precondition for the cap raise**; it may also explain part of GG-1935's daily_breaker skips (check).
 
@@ -4875,7 +5074,9 @@ W116.2, 2026-11-17. `arm_orders.BOOK = "ARM_ORDERS"` is fed to `exposure_gate.re
 W116.2, 2026-11-17. `arm_orders.act` schedules the 60 s cancel for every placement option. Arm orders have n = 0 at rest_inside, so `placement.model.option_table` marks it unsupported and the frozen table cannot choose it; ON is safe today. Before any table names rest_inside, either log arm orders at rest_inside (switch on, demo) or estimate it only from rows with the same cancel rule. Never pool the control's no-cancel fills into the arm estimate.
 
 ### GG-1944 — Book depth at submit is not logged on arm orders, so P(fill | depth) cannot be estimated (W116.2)
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** Depth at submit is logged on arm orders: #512 (W117.1); arm_orders.py:123. Window triage applied, spot-checked 2026-11-18.
 
 W116.2, 2026-11-17. `placement.join.records` sets `depth` None: `book_at_submit` carries yes_bid / yes_ask only, and `book_yes_bid_size` / `book_yes_ask_size` arrive only when the upstream row has them (most do not). P(fill) is estimated on offset, spread, time to start, arm and sport; depth is a registered missing conditioner. Fix: `demo_fill_policy.decide` already calls `client.get_market_book`; check whether it returns sizes, and log top-of-book sizes in `meta` so the order row carries them. Same gap for spread: the 486 orders read on 2026-11-18 have no logged spread, because `book_at_submit` landed in fb8000c, so the `cross` option is valued at an assumed 2c (6c NHL) until the orders that carry it resolve.
 
