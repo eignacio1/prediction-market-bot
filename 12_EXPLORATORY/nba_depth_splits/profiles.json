@@ -1,0 +1,991 @@
+{
+ "archive_sha": "bafaeef4de9596fd7a69941b36ca16a34af2f344",
+ "season": 2025,
+ "teams": {
+  "ATL": {
+   "net_rating": 2.2,
+   "pace": 102.5,
+   "home_wp": 0.585,
+   "road_wp": 0.537,
+   "zone_def_fg": {
+    "restricted area": 66.0,
+    "in the paint (non-ra)": 44.5,
+    "mid-range": 41.5,
+    "corner 3": 38.2,
+    "above the break 3": 34.6
+   },
+   "zone_off_share": {
+    "restricted area": 0.28750000000000003,
+    "in the paint (non-ra)": 0.20326086956521738,
+    "mid-range": 0.07989130434782608,
+    "corner 3": 0.11630434782608695,
+    "above the break 3": 0.31304347826086953
+   }
+  },
+  "BOS": {
+   "net_rating": 8.3,
+   "pace": 95.58,
+   "home_wp": 0.732,
+   "road_wp": 0.634,
+   "zone_def_fg": {
+    "restricted area": 65.7,
+    "in the paint (non-ra)": 41.9,
+    "mid-range": 42.1,
+    "corner 3": 36.4,
+    "above the break 3": 35.6
+   },
+   "zone_off_share": {
+    "restricted area": 0.20985603543743075,
+    "in the paint (non-ra)": 0.19933554817275745,
+    "mid-range": 0.12403100775193796,
+    "corner 3": 0.0813953488372093,
+    "above the break 3": 0.38538205980066437
+   }
+  },
+  "BKN": {
+   "net_rating": -10.0,
+   "pace": 97.6,
+   "home_wp": 0.293,
+   "road_wp": 0.195,
+   "zone_def_fg": {
+    "restricted area": 68.1,
+    "in the paint (non-ra)": 46.0,
+    "mid-range": 41.4,
+    "corner 3": 42.0,
+    "above the break 3": 36.6
+   },
+   "zone_off_share": {
+    "restricted area": 0.29390892962743936,
+    "in the paint (non-ra)": 0.1785925487876996,
+    "mid-range": 0.07273802483737433,
+    "corner 3": 0.11354228267297455,
+    "above the break 3": 0.3412182140745121
+   }
+  },
+  "CHA": {
+   "net_rating": 4.9,
+   "pace": 97.59,
+   "home_wp": 0.512,
+   "road_wp": 0.561,
+   "zone_def_fg": {
+    "restricted area": 66.4,
+    "in the paint (non-ra)": 43.2,
+    "mid-range": 40.3,
+    "corner 3": 38.6,
+    "above the break 3": 35.1
+   },
+   "zone_off_share": {
+    "restricted area": 0.2604049493813273,
+    "in the paint (non-ra)": 0.19291338582677162,
+    "mid-range": 0.06017997750281214,
+    "corner 3": 0.11136107986501687,
+    "above the break 3": 0.37514060742407196
+   }
+  },
+  "CHI": {
+   "net_rating": -5.3,
+   "pace": 103.22,
+   "home_wp": 0.439,
+   "road_wp": 0.317,
+   "zone_def_fg": {
+    "restricted area": 65.9,
+    "in the paint (non-ra)": 42.5,
+    "mid-range": 42.9,
+    "corner 3": 37.3,
+    "above the break 3": 36.6
+   },
+   "zone_off_share": {
+    "restricted area": 0.3519337016574586,
+    "in the paint (non-ra)": 0.15966850828729282,
+    "mid-range": 0.045303867403314914,
+    "corner 3": 0.11767955801104973,
+    "above the break 3": 0.325414364640884
+   }
+  },
+  "CLE": {
+   "net_rating": 4.1,
+   "pace": 100.7,
+   "home_wp": 0.659,
+   "road_wp": 0.61,
+   "zone_def_fg": {
+    "restricted area": 63.3,
+    "in the paint (non-ra)": 44.1,
+    "mid-range": 42.3,
+    "corner 3": 40.3,
+    "above the break 3": 36.1
+   },
+   "zone_off_share": {
+    "restricted area": 0.28761799000555244,
+    "in the paint (non-ra)": 0.195446973903387,
+    "mid-range": 0.07495835646862853,
+    "corner 3": 0.10660744031093837,
+    "above the break 3": 0.3353692393114936
+   }
+  },
+  "DAL": {
+   "net_rating": -5.2,
+   "pace": 102.62,
+   "home_wp": 0.39,
+   "road_wp": 0.25,
+   "zone_def_fg": {
+    "restricted area": 67.7,
+    "in the paint (non-ra)": 44.8,
+    "mid-range": 42.9,
+    "corner 3": 37.1,
+    "above the break 3": 34.3
+   },
+   "zone_off_share": {
+    "restricted area": 0.29016120066703727,
+    "in the paint (non-ra)": 0.22846025569760975,
+    "mid-range": 0.12896053362979432,
+    "corner 3": 0.1056142301278488,
+    "above the break 3": 0.24680377987770985
+   }
+  },
+  "DEN": {
+   "net_rating": 5.2,
+   "pace": 99.49,
+   "home_wp": 0.683,
+   "road_wp": 0.634,
+   "zone_def_fg": {
+    "restricted area": 70.1,
+    "in the paint (non-ra)": 45.4,
+    "mid-range": 40.7,
+    "corner 3": 36.5,
+    "above the break 3": 34.2
+   },
+   "zone_off_share": {
+    "restricted area": 0.26894586894586897,
+    "in the paint (non-ra)": 0.20740740740740743,
+    "mid-range": 0.11623931623931623,
+    "corner 3": 0.10883190883190884,
+    "above the break 3": 0.2985754985754986
+   }
+  },
+  "DET": {
+   "net_rating": 8.4,
+   "pace": 99.88,
+   "home_wp": 0.775,
+   "road_wp": 0.683,
+   "zone_def_fg": {
+    "restricted area": 62.8,
+    "in the paint (non-ra)": 44.3,
+    "mid-range": 39.8,
+    "corner 3": 38.2,
+    "above the break 3": 33.2
+   },
+   "zone_off_share": {
+    "restricted area": 0.33910614525139665,
+    "in the paint (non-ra)": 0.22290502793296094,
+    "mid-range": 0.09217877094972067,
+    "corner 3": 0.10279329608938546,
+    "above the break 3": 0.2430167597765363
+   }
+  },
+  "GSW": {
+   "net_rating": -0.5,
+   "pace": 100.05,
+   "home_wp": 0.537,
+   "road_wp": 0.366,
+   "zone_def_fg": {
+    "restricted area": 69.2,
+    "in the paint (non-ra)": 47.1,
+    "mid-range": 43.3,
+    "corner 3": 41.1,
+    "above the break 3": 34.4
+   },
+   "zone_off_share": {
+    "restricted area": 0.25675675675675674,
+    "in the paint (non-ra)": 0.16779279279279274,
+    "mid-range": 0.07882882882882881,
+    "corner 3": 0.13175675675675674,
+    "above the break 3": 0.3648648648648648
+   }
+  },
+  "HOU": {
+   "net_rating": 5.4,
+   "pace": 96.98,
+   "home_wp": 0.732,
+   "road_wp": 0.537,
+   "zone_def_fg": {
+    "restricted area": 66.1,
+    "in the paint (non-ra)": 44.3,
+    "mid-range": 39.6,
+    "corner 3": 38.6,
+    "above the break 3": 34.0
+   },
+   "zone_off_share": {
+    "restricted area": 0.2728285077951002,
+    "in the paint (non-ra)": 0.24164810690423164,
+    "mid-range": 0.13530066815144765,
+    "corner 3": 0.10579064587973275,
+    "above the break 3": 0.24443207126948774
+   }
+  },
+  "IND": {
+   "net_rating": -7.8,
+   "pace": 101.78,
+   "home_wp": 0.268,
+   "road_wp": 0.195,
+   "zone_def_fg": {
+    "restricted area": 67.2,
+    "in the paint (non-ra)": 47.0,
+    "mid-range": 45.7,
+    "corner 3": 39.5,
+    "above the break 3": 34.2
+   },
+   "zone_off_share": {
+    "restricted area": 0.27063447501403703,
+    "in the paint (non-ra)": 0.18641212801796742,
+    "mid-range": 0.1207186973610331,
+    "corner 3": 0.1005053340819764,
+    "above the break 3": 0.32172936552498593
+   }
+  },
+  "LAC": {
+   "net_rating": 1.1,
+   "pace": 97.29,
+   "home_wp": 0.561,
+   "road_wp": 0.463,
+   "zone_def_fg": {
+    "restricted area": 68.9,
+    "in the paint (non-ra)": 43.8,
+    "mid-range": 39.3,
+    "corner 3": 38.8,
+    "above the break 3": 35.7
+   },
+   "zone_off_share": {
+    "restricted area": 0.26897788404064554,
+    "in the paint (non-ra)": 0.228332337118948,
+    "mid-range": 0.0986252241482367,
+    "corner 3": 0.10340705319784815,
+    "above the break 3": 0.3006575014943215
+   }
+  },
+  "LAL": {
+   "net_rating": 1.5,
+   "pace": 99.22,
+   "home_wp": 0.683,
+   "road_wp": 0.61,
+   "zone_def_fg": {
+    "restricted area": 72.0,
+    "in the paint (non-ra)": 43.2,
+    "mid-range": 45.1,
+    "corner 3": 37.6,
+    "above the break 3": 34.3
+   },
+   "zone_off_share": {
+    "restricted area": 0.26778242677824265,
+    "in the paint (non-ra)": 0.22534369396294082,
+    "mid-range": 0.11297071129707112,
+    "corner 3": 0.100418410041841,
+    "above the break 3": 0.2934847579199043
+   }
+  },
+  "MEM": {
+   "net_rating": -6.0,
+   "pace": 101.69,
+   "home_wp": 0.325,
+   "road_wp": 0.275,
+   "zone_def_fg": {
+    "restricted area": 69.5,
+    "in the paint (non-ra)": 44.9,
+    "mid-range": 42.5,
+    "corner 3": 39.9,
+    "above the break 3": 35.2
+   },
+   "zone_off_share": {
+    "restricted area": 0.25289256198347104,
+    "in the paint (non-ra)": 0.2269972451790634,
+    "mid-range": 0.08319559228650138,
+    "corner 3": 0.1046831955922865,
+    "above the break 3": 0.33223140495867765
+   }
+  },
+  "MIA": {
+   "net_rating": 2.1,
+   "pace": 104.22,
+   "home_wp": 0.634,
+   "road_wp": 0.415,
+   "zone_def_fg": {
+    "restricted area": 65.5,
+    "in the paint (non-ra)": 46.0,
+    "mid-range": 39.5,
+    "corner 3": 39.0,
+    "above the break 3": 34.7
+   },
+   "zone_off_share": {
+    "restricted area": 0.2886266094420601,
+    "in the paint (non-ra)": 0.2301502145922747,
+    "mid-range": 0.07510729613733906,
+    "corner 3": 0.1051502145922747,
+    "above the break 3": 0.30096566523605156
+   }
+  },
+  "MIL": {
+   "net_rating": -6.1,
+   "pace": 98.33,
+   "home_wp": 0.463,
+   "road_wp": 0.317,
+   "zone_def_fg": {
+    "restricted area": 69.6,
+    "in the paint (non-ra)": 40.1,
+    "mid-range": 42.5,
+    "corner 3": 40.8,
+    "above the break 3": 36.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.2551199531889994,
+    "in the paint (non-ra)": 0.1568168519602106,
+    "mid-range": 0.131070801638385,
+    "corner 3": 0.13282621416032764,
+    "above the break 3": 0.32416617905207723
+   }
+  },
+  "MIN": {
+   "net_rating": 3.1,
+   "pace": 101.5,
+   "home_wp": 0.634,
+   "road_wp": 0.561,
+   "zone_def_fg": {
+    "restricted area": 63.3,
+    "in the paint (non-ra)": 42.9,
+    "mid-range": 40.3,
+    "corner 3": 40.2,
+    "above the break 3": 34.0
+   },
+   "zone_off_share": {
+    "restricted area": 0.29548022598870055,
+    "in the paint (non-ra)": 0.18474576271186444,
+    "mid-range": 0.09999999999999999,
+    "corner 3": 0.10847457627118645,
+    "above the break 3": 0.3112994350282486
+   }
+  },
+  "NOP": {
+   "net_rating": -4.4,
+   "pace": 101.37,
+   "home_wp": 0.415,
+   "road_wp": 0.22,
+   "zone_def_fg": {
+    "restricted area": 67.4,
+    "in the paint (non-ra)": 48.5,
+    "mid-range": 40.4,
+    "corner 3": 37.2,
+    "above the break 3": 34.2
+   },
+   "zone_off_share": {
+    "restricted area": 0.38440265486725667,
+    "in the paint (non-ra)": 0.19137168141592922,
+    "mid-range": 0.06913716814159293,
+    "corner 3": 0.084070796460177,
+    "above the break 3": 0.27101769911504425
+   }
+  },
+  "NYK": {
+   "net_rating": 6.4,
+   "pace": 97.71,
+   "home_wp": 0.75,
+   "road_wp": 0.537,
+   "zone_def_fg": {
+    "restricted area": 64.7,
+    "in the paint (non-ra)": 44.5,
+    "mid-range": 40.2,
+    "corner 3": 38.1,
+    "above the break 3": 35.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.2828395751816657,
+    "in the paint (non-ra)": 0.17439910564561206,
+    "mid-range": 0.11291224147568471,
+    "corner 3": 0.1352711011738401,
+    "above the break 3": 0.2945779765231973
+   }
+  },
+  "OKC": {
+   "net_rating": 11.1,
+   "pace": 100.37,
+   "home_wp": 0.829,
+   "road_wp": 0.75,
+   "zone_def_fg": {
+    "restricted area": 61.0,
+    "in the paint (non-ra)": 40.2,
+    "mid-range": 37.5,
+    "corner 3": 40.0,
+    "above the break 3": 35.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.28139013452914796,
+    "in the paint (non-ra)": 0.1860986547085202,
+    "mid-range": 0.10650224215246637,
+    "corner 3": 0.10426008968609866,
+    "above the break 3": 0.3217488789237668
+   }
+  },
+  "ORL": {
+   "net_rating": 0.6,
+   "pace": 100.56,
+   "home_wp": 0.625,
+   "road_wp": 0.487,
+   "zone_def_fg": {
+    "restricted area": 68.4,
+    "in the paint (non-ra)": 45.7,
+    "mid-range": 42.2,
+    "corner 3": 38.6,
+    "above the break 3": 34.2
+   },
+   "zone_off_share": {
+    "restricted area": 0.31459398069278816,
+    "in the paint (non-ra)": 0.198182850653038,
+    "mid-range": 0.10164679159568425,
+    "corner 3": 0.1101646791595684,
+    "above the break 3": 0.27541169789892106
+   }
+  },
+  "PHI": {
+   "net_rating": -0.1,
+   "pace": 100.39,
+   "home_wp": 0.561,
+   "road_wp": 0.537,
+   "zone_def_fg": {
+    "restricted area": 66.2,
+    "in the paint (non-ra)": 41.8,
+    "mid-range": 41.5,
+    "corner 3": 39.0,
+    "above the break 3": 33.8
+   },
+   "zone_off_share": {
+    "restricted area": 0.3182069728832319,
+    "in the paint (non-ra)": 0.17819590481460987,
+    "mid-range": 0.1123408965135584,
+    "corner 3": 0.09075816270060874,
+    "above the break 3": 0.30049806308799115
+   }
+  },
+  "PHX": {
+   "net_rating": 1.4,
+   "pace": 98.14,
+   "home_wp": 0.61,
+   "road_wp": 0.488,
+   "zone_def_fg": {
+    "restricted area": 68.6,
+    "in the paint (non-ra)": 44.6,
+    "mid-range": 41.7,
+    "corner 3": 36.8,
+    "above the break 3": 33.9
+   },
+   "zone_off_share": {
+    "restricted area": 0.23405435385468665,
+    "in the paint (non-ra)": 0.19079312257348865,
+    "mid-range": 0.12201885745978923,
+    "corner 3": 0.10205213533000553,
+    "above the break 3": 0.3510815307820299
+   }
+  },
+  "POR": {
+   "net_rating": -0.4,
+   "pace": 101.63,
+   "home_wp": 0.585,
+   "road_wp": 0.439,
+   "zone_def_fg": {
+    "restricted area": 66.1,
+    "in the paint (non-ra)": 44.7,
+    "mid-range": 42.4,
+    "corner 3": 39.1,
+    "above the break 3": 34.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.31760133259300394,
+    "in the paint (non-ra)": 0.14880621876735145,
+    "mid-range": 0.06440866185452528,
+    "corner 3": 0.11937812326485286,
+    "above the break 3": 0.34980566352026654
+   }
+  },
+  "SAC": {
+   "net_rating": -9.7,
+   "pace": 100.12,
+   "home_wp": 0.366,
+   "road_wp": 0.171,
+   "zone_def_fg": {
+    "restricted area": 70.5,
+    "in the paint (non-ra)": 50.0,
+    "mid-range": 43.9,
+    "corner 3": 39.1,
+    "above the break 3": 37.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.22553430821147355,
+    "in the paint (non-ra)": 0.2744656917885264,
+    "mid-range": 0.16029246344206974,
+    "corner 3": 0.08323959505061868,
+    "above the break 3": 0.25646794150731156
+   }
+  },
+  "SAS": {
+   "net_rating": 8.4,
+   "pace": 100.72,
+   "home_wp": 0.8,
+   "road_wp": 0.707,
+   "zone_def_fg": {
+    "restricted area": 63.5,
+    "in the paint (non-ra)": 42.8,
+    "mid-range": 42.4,
+    "corner 3": 34.5,
+    "above the break 3": 35.4
+   },
+   "zone_off_share": {
+    "restricted area": 0.31423804226918794,
+    "in the paint (non-ra)": 0.1696329254727475,
+    "mid-range": 0.09510567296996664,
+    "corner 3": 0.13793103448275862,
+    "above the break 3": 0.2830923248053393
+   }
+  },
+  "TOR": {
+   "net_rating": 2.9,
+   "pace": 99.22,
+   "home_wp": 0.585,
+   "road_wp": 0.537,
+   "zone_def_fg": {
+    "restricted area": 66.8,
+    "in the paint (non-ra)": 44.1,
+    "mid-range": 39.7,
+    "corner 3": 38.5,
+    "above the break 3": 33.7
+   },
+   "zone_off_share": {
+    "restricted area": 0.3020361990950226,
+    "in the paint (non-ra)": 0.21493212669683256,
+    "mid-range": 0.11990950226244344,
+    "corner 3": 0.10180995475113122,
+    "above the break 3": 0.26131221719457015
+   }
+  },
+  "UTA": {
+   "net_rating": -8.2,
+   "pace": 103.54,
+   "home_wp": 0.341,
+   "road_wp": 0.195,
+   "zone_def_fg": {
+    "restricted area": 72.9,
+    "in the paint (non-ra)": 49.4,
+    "mid-range": 44.8,
+    "corner 3": 39.1,
+    "above the break 3": 36.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.258099945085118,
+    "in the paint (non-ra)": 0.23997803404722678,
+    "mid-range": 0.09884678747940691,
+    "corner 3": 0.1158704008786381,
+    "above the break 3": 0.28720483250961004
+   }
+  },
+  "WAS": {
+   "net_rating": -11.8,
+   "pace": 102.49,
+   "home_wp": 0.268,
+   "road_wp": 0.146,
+   "zone_def_fg": {
+    "restricted area": 69.2,
+    "in the paint (non-ra)": 41.5,
+    "mid-range": 41.5,
+    "corner 3": 40.9,
+    "above the break 3": 35.5
+   },
+   "zone_off_share": {
+    "restricted area": 0.2733812949640288,
+    "in the paint (non-ra)": 0.19701162147205314,
+    "mid-range": 0.12728278915329275,
+    "corner 3": 0.08854454897620366,
+    "above the break 3": 0.3137797454344217
+   }
+  }
+ },
+ "name2abbr": {
+  "Atlanta Hawks": "ATL",
+  "Boston Celtics": "BOS",
+  "Brooklyn Nets": "BKN",
+  "Charlotte Hornets": "CHA",
+  "Chicago Bulls": "CHI",
+  "Cleveland Cavaliers": "CLE",
+  "Dallas Mavericks": "DAL",
+  "Denver Nuggets": "DEN",
+  "Detroit Pistons": "DET",
+  "Golden State Warriors": "GSW",
+  "Houston Rockets": "HOU",
+  "Indiana Pacers": "IND",
+  "LA Clippers": "LAC",
+  "Los Angeles Lakers": "LAL",
+  "Memphis Grizzlies": "MEM",
+  "Miami Heat": "MIA",
+  "Milwaukee Bucks": "MIL",
+  "Minnesota Timberwolves": "MIN",
+  "New Orleans Pelicans": "NOP",
+  "New York Knicks": "NYK",
+  "Oklahoma City Thunder": "OKC",
+  "Orlando Magic": "ORL",
+  "Philadelphia 76ers": "PHI",
+  "Phoenix Suns": "PHX",
+  "Portland Trail Blazers": "POR",
+  "Sacramento Kings": "SAC",
+  "San Antonio Spurs": "SAS",
+  "Toronto Raptors": "TOR",
+  "Utah Jazz": "UTA",
+  "Washington Wizards": "WAS"
+ },
+ "refs": {
+  "Ray Acosta": {
+   "games": 67.0,
+   "fta": 45.3,
+   "pts": 230.8
+  },
+  "Brandon Adair": {
+   "games": 39.0,
+   "fta": 47.7,
+   "pts": 230.9
+  },
+  "Brent Barnaky": {
+   "games": 62.0,
+   "fta": 47.8,
+   "pts": 230.8
+  },
+  "Dannica Baroody": {
+   "games": 39.0,
+   "fta": 46.4,
+   "pts": 228.3
+  },
+  "Curtis Blair": {
+   "games": 55.0,
+   "fta": 44.3,
+   "pts": 224.4
+  },
+  "Tony Brothers": {
+   "games": 58.0,
+   "fta": 48.3,
+   "pts": 231.4
+  },
+  "Nick Buchert": {
+   "games": 63.0,
+   "fta": 48.8,
+   "pts": 228.4
+  },
+  "John Butler": {
+   "games": 62.0,
+   "fta": 47.8,
+   "pts": 228.5
+  },
+  "James Capers Jr.": {
+   "games": 61.0,
+   "fta": 44.8,
+   "pts": 234.0
+  },
+  "Derrick Collins": {
+   "games": 41.0,
+   "fta": 47.8,
+   "pts": 229.5
+  },
+  "John Conley": {
+   "games": 39.0,
+   "fta": 45.9,
+   "pts": 231.9
+  },
+  "Sean Corbin": {
+   "games": 60.0,
+   "fta": 44.9,
+   "pts": 231.7
+  },
+  "Kevin Cutler": {
+   "games": 61.0,
+   "fta": 47.0,
+   "pts": 226.4
+  },
+  "Mousa Dagher": {
+   "games": 56.0,
+   "fta": 48.3,
+   "pts": 233.4
+  },
+  "Eric Dalen": {
+   "games": 62.0,
+   "fta": 46.6,
+   "pts": 230.3
+  },
+  "Marc Davis": {
+   "games": 61.0,
+   "fta": 46.0,
+   "pts": 235.3
+  },
+  "J.B. DeRosa": {
+   "games": 65.0,
+   "fta": 48.0,
+   "pts": 228.1
+  },
+  "Mitchell Ervin": {
+   "games": 64.0,
+   "fta": 48.9,
+   "pts": 231.8
+  },
+  "Che Flores": {
+   "games": 47.0,
+   "fta": 46.6,
+   "pts": 233.0
+  },
+  "Tyler Ford": {
+   "games": 59.0,
+   "fta": 46.4,
+   "pts": 231.3
+  },
+  "Brian Forte": {
+   "games": 54.0,
+   "fta": 45.9,
+   "pts": 223.2
+  },
+  "Scott Foster": {
+   "games": 62.0,
+   "fta": 48.9,
+   "pts": 233.3
+  },
+  "Pat Fraher": {
+   "games": 62.0,
+   "fta": 50.8,
+   "pts": 234.2
+  },
+  "Jacyn Goble": {
+   "games": 66.0,
+   "fta": 47.1,
+   "pts": 234.3
+  },
+  "John Goble": {
+   "games": 61.0,
+   "fta": 45.5,
+   "pts": 230.5
+  },
+  "Jason Goldenberg": {
+   "games": 60.0,
+   "fta": 46.8,
+   "pts": 234.5
+  },
+  "Nate Green": {
+   "games": 58.0,
+   "fta": 47.8,
+   "pts": 234.6
+  },
+  "Robert Hussey": {
+   "games": 47.0,
+   "fta": 45.4,
+   "pts": 227.5
+  },
+  "Simone Jelks": {
+   "games": 40.0,
+   "fta": 48.2,
+   "pts": 230.8
+  },
+  "Matt Kallio": {
+   "games": 41.0,
+   "fta": 43.5,
+   "pts": 231.9
+  },
+  "Bill Kennedy": {
+   "games": 35.0,
+   "fta": 44.1,
+   "pts": 238.3
+  },
+  "Courtney Kirkland": {
+   "games": 60.0,
+   "fta": 47.4,
+   "pts": 230.9
+  },
+  "Marat Kogut": {
+   "games": 57.0,
+   "fta": 48.3,
+   "pts": 231.3
+  },
+  "Karl Lane": {
+   "games": 55.0,
+   "fta": 47.0,
+   "pts": 233.8
+  },
+  "Mark Lindsay": {
+   "games": 63.0,
+   "fta": 48.4,
+   "pts": 226.9
+  },
+  "Tre Maddox": {
+   "games": 45.0,
+   "fta": 47.1,
+   "pts": 235.5
+  },
+  "Ed Malloy": {
+   "games": 39.0,
+   "fta": 47.7,
+   "pts": 233.2
+  },
+  "Biniam Maru": {
+   "games": 39.0,
+   "fta": 49.1,
+   "pts": 233.0
+  },
+  "Suyash Mehta": {
+   "games": 47.0,
+   "fta": 46.0,
+   "pts": 228.7
+  },
+  "Sha'Rae Mitchell": {
+   "games": 35.0,
+   "fta": 47.0,
+   "pts": 230.3
+  },
+  "Rodney Mott": {
+   "games": 42.0,
+   "fta": 47.1,
+   "pts": 227.6
+  },
+  "Ashley Moyer-Gleich": {
+   "games": 42.0,
+   "fta": 44.6,
+   "pts": 230.1
+  },
+  "Matt Myers": {
+   "games": 47.0,
+   "fta": 45.9,
+   "pts": 236.9
+  },
+  "Andy Nagy": {
+   "games": 62.0,
+   "fta": 49.5,
+   "pts": 237.1
+  },
+  "Pat O'Connell": {
+   "games": 42.0,
+   "fta": 47.8,
+   "pts": 228.9
+  },
+  "J.T. Orr": {
+   "games": 41.0,
+   "fta": 47.3,
+   "pts": 228.2
+  },
+  "Gediminas Petraitis": {
+   "games": 65.0,
+   "fta": 47.6,
+   "pts": 228.6
+  },
+  "J.D. Ralls": {
+   "games": 43.0,
+   "fta": 49.0,
+   "pts": 226.4
+  },
+  "Phenizee Ransom": {
+   "games": 54.0,
+   "fta": 49.4,
+   "pts": 235.7
+  },
+  "Jenna Reneau": {
+   "games": 38.0,
+   "fta": 47.3,
+   "pts": 230.6
+  },
+  "Tyler Ricks": {
+   "games": 40.0,
+   "fta": 46.0,
+   "pts": 226.9
+  },
+  "Natalie Sago": {
+   "games": 63.0,
+   "fta": 46.2,
+   "pts": 230.8
+  },
+  "Jenna Schroeder": {
+   "games": 47.0,
+   "fta": 47.0,
+   "pts": 231.3
+  },
+  "Brandon Schwab": {
+   "games": 57.0,
+   "fta": 45.6,
+   "pts": 233.2
+  },
+  "Danielle Scott": {
+   "games": 45.0,
+   "fta": 46.3,
+   "pts": 236.0
+  },
+  "Evan Scott": {
+   "games": 43.0,
+   "fta": 44.5,
+   "pts": 230.0
+  },
+  "Kevin Scott": {
+   "games": 62.0,
+   "fta": 46.8,
+   "pts": 228.4
+  },
+  "Michael Smith": {
+   "games": 39.0,
+   "fta": 47.9,
+   "pts": 231.6
+  },
+  "Jonathan Sterling": {
+   "games": 46.0,
+   "fta": 46.1,
+   "pts": 233.5
+  },
+  "Dedric Taylor": {
+   "games": 57.0,
+   "fta": 47.8,
+   "pts": 229.8
+  },
+  "Josh Tiven": {
+   "games": 64.0,
+   "fta": 46.5,
+   "pts": 228.9
+  },
+  "Scott Twardoski": {
+   "games": 56.0,
+   "fta": 45.6,
+   "pts": 228.4
+  },
+  "Justin Van Duyne": {
+   "games": 65.0,
+   "fta": 46.3,
+   "pts": 231.2
+  },
+  "C.J. Washington": {
+   "games": 41.0,
+   "fta": 46.0,
+   "pts": 234.7
+  },
+  "James Williams": {
+   "games": 64.0,
+   "fta": 44.7,
+   "pts": 233.6
+  },
+  "Leon Wood": {
+   "games": 39.0,
+   "fta": 48.4,
+   "pts": 232.9
+  },
+  "Sean Wright": {
+   "games": 59.0,
+   "fta": 46.8,
+   "pts": 229.3
+  },
+  "Zach Zarba": {
+   "games": 60.0,
+   "fta": 47.0,
+   "pts": 232.9
+  }
+ },
+ "edges": {
+  "pairs_n": 870,
+  "matchup_side": [
+   -0.021227150847421994,
+   0.021246858632602894
+  ],
+  "matchup_total": [
+   1.0822542359183567,
+   1.0987346040767845
+  ]
+ }
+}
