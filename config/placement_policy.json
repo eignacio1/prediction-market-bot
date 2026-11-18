@@ -1,0 +1,8 @@
+{
+  "frozen_at": "2026-11-18T04:52:49Z",
+  "preregistration": "05_RESEARCH_EXPERIMENTS/EXP-W117.1_placement_policy_PREREG_2026-11-18.md",
+  "fit": "scripts/arm_orders_read.py box read 20261118T045227Z; orders to 2026-11-18T03:45:47Z; spread logged (0) or archive-backfilled (454 of 486)",
+  "rule": "policy.table_from_clustered: cross only if the game-clustered 95% interval of (cross - rest_touch) is wholly above 0 and the cell has >= 20 games; else rest_touch",
+  "min_games_per_cell": 20,
+  "cells": {}
+}

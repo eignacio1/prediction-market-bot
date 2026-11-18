@@ -96,3 +96,20 @@ def table_from_options(options: dict) -> dict:
         if best in OPTIONS and (best == "no_place" or (row.get(best) or {}).get("supported")):
             cells[cell] = {"best": best, "supported": True, "best_net": row.get("best_net")}
     return {"cells": cells}
+
+
+MIN_GAMES = 20   # W117.1: games per cell before a non-default option can be written (clustered, so games - not orders - are the n)
+
+
+def table_from_clustered(clustered: dict, min_games: int = MIN_GAMES) -> dict:
+    """W117.1 frozen-table rule, on model.option_net_clustered output (``by`` = arm). A cell names ``cross`` only when the
+    game-clustered 95% interval of (cross - rest_touch) per order, on orders with a real logged/backfilled spread, lies wholly
+    above zero AND the cell has >= ``min_games`` games. Anything else is left out and stays rest_touch (today's rule)."""
+    cells = {}
+    for cell, row in clustered.items():
+        d = row.get("cross_minus_rest") or {}
+        lo = d.get("ci", [None, None])[0]
+        if lo is not None and lo > 0 and (d.get("n_games") or 0) >= min_games:
+            cells[cell] = {"best": "cross", "supported": True, "best_net": (row.get("cross") or {}).get("net"),
+                           "n_games": d["n_games"], "n_orders": d["n"], "diff_ci": d["ci"]}
+    return {"cells": cells}
