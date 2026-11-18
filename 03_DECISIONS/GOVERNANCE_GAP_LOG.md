@@ -4753,7 +4753,9 @@ W113.4, 2026-11-12. Interface: `archive_intake.nba_distance_filters.distance_fil
 W114.2, 2026-11-13. `d6_read` on the box (results/20261113T0044Z_d6_read.md) shows `sports_with_filter_data = ["nba"]`. `nfl_engine.providers.default_nfl_providers()` returns None when its snapshots (schedule, team-games, percentiles, matchup book) are missing, so every NFL row records `filters_unavailable` and the 13 NFL layer-3 cells never count. Locally they do. Needs the snapshot files named and a box job or deploy path that puts them there (surface add, Hard Rule 14). Operator approval is needed only for an install.
 
 ### GG-1934 — `demo_fill_forward_report.arm_orders_report` uses `datetime.fromisoformat`, which fails on "Z" under the box's Python 3.9 (W114.2)
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**RESOLVED 2026-11-18 (W116.2, PR #504 fb8000c).** `timeparse.parse_ts` is tolerant (Z, 5-digit fractions, naive -> UTC; Python 3.9-safe) and the fill path was swept onto it. Box check after the deploy (`BOX_TASKS/results/20261118T005838Z_arm_orders_read.md`, 00:59Z): rows with an unparseable ts 0 of 69,218; outcome lookups failed 0 of 486 (before: 244 of 432); test `tests/test_placement_join.py`.
 
 W114.2, 2026-11-13. `arm_orders_read.parse_ts` is tolerant; the older report is not. Not fixed in 114.2 (out of scope, Hard Rule 11). Fix: route it through `arm_orders_read.parse_ts` or `filter_supply.parse_ts`.
 
@@ -4762,10 +4764,14 @@ W114.2, 2026-11-13. `arm_orders_read.parse_ts` is tolerant; the older report is 
 
 W114.2, 2026-11-13. Box `logs/arm_orders/orders.jsonl` (6,578 rows to 00:44:44Z): `daily_breaker` 690 skips across RIDE/FADE/MOMENTUM; `unrouted` 593 (NBA/NFL ERROR) and 1,415 NHL UNROUTED. Fills are few (23 of 206 orders) and none settled, so E2/E3 are null. Question to answer next: is the breaker tripping on demo stakes or on a stale base, and why NHL has no tree route.
 
+**Update 2026-11-18 (W116.2).** Cause 1, fixed in 580cce8 (PR #504): arm orders were sized against risk.py's real-money limits ($150 a day = notional x MAX_DAILY_LOSS_PCT). The demo arm book now has its own caps (`arm_sizing`: base 5 / $50 / $25; raised behind `ARM_BOOK_CAPS`, off). Still open: the box read at 00:59Z shows `daily_breaker` 690 and `size_zero: day` 9,093 post-epoch. GG-1942 may explain part of the breaker count (ARM_ORDERS is not advisory in the exposure gate). NHL UNROUTED 5,573 is tracked under GG-1940 (W116.3).
+
 ### GG-1939 — Router ERROR on every MODEL_FADE leaf: the leaf row carried no ticker or book (W115.3 / W116.3)
 **Status:** OPEN · **Severity:** HIGH
 
 W116.3, 2026-11-17. Box trace (results/20261117T060933Z_d6_trace_read.md, 3-day window) shows 2,851 NBA and 181 NFL router ERROR rows, all `KeyError`. The cause: `leaf_map.LeafMap.row_for` built a row without `market_ticker` / `yes_bid` / `yes_ask`, and the MODEL_FADE branch's `retro_route.side_net` reads all three. So every leaf routed to MODEL_FADE (map arm or kept-split override) raised whenever p_yes was present. Fix merged in PR #503 (6f81a8c): the router passes the ticker and book in, and a MODEL_FADE leaf without a book routes NO_BET `model_fade_needs_ticker_and_book`. Fuzz: 0 errors in 5,760 runs. Stays OPEN until a box trace after the deploy shows ERROR rows at 0 (GG-072).
+
+W116.3 2026-11-18: #503 merged and deployed 00:54:51Z (box HEAD 53c83e86). Box trace 20261118T010409Z: the 3-day window still holds NBA 3,096 / NFL 181 / NHL 97 ERROR rows, all logged before the fix. The first ERROR row per sport, re-run under today's code, routes with no raise (NFL RIDE; NHL NO_BET leaf_not_in_map). PR #507 adds `error_after` (last ERROR time, routed rows after it) and a 20-row re-run per sport. Resolve when a post-#507 trace shows 0 rows still raising.
 
 ### GG-1940 — NHL rows reach the arm path without a router block (W115.3 / W116.3)
 **Status:** OPEN · **Severity:** MEDIUM
@@ -4782,6 +4788,8 @@ W115.3 (PR #502). `coverage.filter_layer_sports` tested `default_supply().nfl_pr
 
 W116.3, 2026-11-17. `coverage.d6_layers` layer 3 = the sport has filter data AND its series has a kept split in filter_splits.json. The box trace shows `L3_rows_with_kept_split = 0` in every cell traced, including the NBA cells counted wired. Run locally, the same NBA supply against the shipped splits fires 6 kept splits on KXNBATOTAL (their arms conflict, so the arm stands) and 1 on KXNBASPREAD (RIDE). Either the box rows lose `split_kept` (check the trace's field read and the router's paths that return before the split lookup) or the rule over-credits. Do not tighten the rule until the cause is known; a row-evidence rule may drop D6.
 
+W116.3 2026-11-18: PR #507 adds the window-wide `split_kept` count per cell to d6_trace_read. Trace tables: `04_EXECUTION/W116_3_D6_TRACE_TABLES.md`.
+
 ### GG-1952 — NBA_PLAYER_POINTS rows get no filters: "nba_event_ticker_unparsed" (W116.3)
 **Status:** OPEN · **Severity:** LOW
 
@@ -4792,10 +4800,19 @@ W116.3, 2026-11-17. Box trace: every NBA_PLAYER_POINTS row has filters 0 with no
 
 W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer3_inputs), so NHL layer 3 = 0 and NHL rows note `nhl_game_not_in_store`. Measured locally: `nhl_event_store.compile_store` peaks at ~2.0 GB RSS and `filter_supply._nhl_state` at ~885 MB, both over the ~600 MB budget. Planned shrink (not started): streamed compile, at most two seasons, compact filter state. Re-measure; propose the install task to the operator only if it is under ~600 MB.
 
+W116.3 2026-11-18: shrink done and measured locally in PR #507: compile 2,049 -> 270 MB peak (streamed, 25-game chunks, two seasons), `_nhl_state` 913 -> 318 MB (column-pruned reads, per-file shift sums; output identical on 40 games). Paused install `nhl_event_store_install` prepared and tested; it runs only after the operator approves it by name (Needs your decision #4). Risk: the box has ~126 MB free with swap in use.
+
+### GG-1956 — ROLLING_BACKLOG.json on main is invalid: every code PR's CI is red (W116.3)
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-11-18, W116.3 close):** duplicate of GG-1955 (W116.2, same defect, registered first). Tracked there; PR #507 waits on it with #505 and #508.
+
+W116.3, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main: `ValueError: duplicate order 16 (B-018)` (B-074 and B-018 both hold order 16), since ab392a8 "Backlog B-099: rank label and order fixed (docs-only)". Docs-only pushes skip the test suite, so main shows green while every code PR fails 3 tests (test_rolling_backlog x2, test_visual_dashboard_backlog). Seen on PR #507 run 44213394562. Terminals may not edit ROLLING_BACKLOG.json, so the fix belongs to the strategic window: give B-018 (or B-074) a free order and regenerate the markdown. Pattern: a docs-only edit to a validated JSON should run its validator before the push.
+
 ### GG-1936 — No free NBA / NHL closing-line history to give router v2 a long-history prior (W116.1)
 **Status:** OPEN · **Severity:** MEDIUM
 
-W116.1, 2026-11-17. Router v2 (`decision_trees/evidence/`) takes a long-history prior per bin from nflverse for NFL only (`12_EXPLORATORY/evidence_design/prior_nflverse.json`, TRANSFER_SD 0.03). There is no free ($0) NBA or NHL source of historical closing lines with results, so NBA / NHL leaves start from the pooled root. That is why their power calendar runs later (`power_calendar.json`). Next: search free sources (archived odds dumps, Kalshi's own history, GG-1937). A paid-only source stays a registered gap (DOCTRINE §2).
+W116.1, 2026-11-17. Router v2 (`decision_trees/evidence/`) takes a long-history prior per bin from nflverse for NFL only (`12_EXPLORATORY/evidence_design/prior_nflverse.json`, TRANSFER_SD 0.03). There is no free ($0) NBA or NHL source of historical closing lines with results, so NBA / NHL leaves start from the pooled root. That is why their power calendar runs later (`power_calendar.json`). Next: search free sources (archived odds dumps, Kalshi's own history, GG-1937). A paid-only source stays a registered gap (DOCTRINE §2). **Update 2026-11-18:** backlog B-099 (operator 11-17 16:07 PT) names free NHL 2025-26 consensus lines as the NHL prior. Once it lands, an NHL prior in `prior_nflverse.json` form can enter v2 under a new pre-registration. NBA stays open.
 
 ### GG-1937 — Kalshi's own market history is not usable as a prior until its candles are parsed (W116.1)
 **Status:** OPEN · **Severity:** MEDIUM
@@ -4811,3 +4828,27 @@ W116.1, 2026-11-17. The doctrine tree is market state > filters > arm (DOCTRINE 
 **Status:** OPEN · **Severity:** HIGH
 
 W116.1, 2026-11-17. With plug-in variance, a run where every favourite won gave log E = 32.9 on 15 games. Under a planted binary null, 275 of 300 runs claimed an arm (bound: 30). Fix (PR #506): `pipeline.Config.null_var="binary"` floors each increment's variance at the null variance of a net = 0 contract at its own cost, c(1−c), with sds summed within a game. Measured after the fix: binary null 2/300 false claims; power on a planted +0.10 effect 79/100 (was 99/100, which was invalid). Tests: `tests/test_evidence_w115.py::test_binary_*`. Resolve when PR #506 is merged and main CI is green. Lesson: a Gaussian e-process needs a variance floor before it is used on binary payoffs.
+
+### GG-1942 — The arm-order book is not an advisory book in the exposure gate, so raised demo caps would halt every book (W116.2)
+**Status:** OPEN · **Severity:** HIGH
+
+W116.2, 2026-11-17. `arm_orders.BOOK = "ARM_ORDERS"` is fed to `exposure_gate.record_book`, but `exposure_gate.BOOKS` has no ARM_ORDERS entry, so `advisory` is False and the book's demo stakes count in the per-book and SYSTEM breach sums against `max_drawdown_pct` 0.20 on the $1,000 shadow notional (GATE_MODE enforce). Under the base caps (5 / 50 / 25) open demo stake stays well under $200; under ARM_BOOK_CAPS=raised (day cap $2,500) about $200 open would write `exposure_gate_breach` and halt every book. RIDE_BOARD and SHADOW are already advisory (GG-1240). Fix (owner: exposure_gate, not 116.2): add ARM_ORDERS to BOOKS as advisory, ledger-less, like RIDE_BOARD. **Precondition for the cap raise**; it may also explain part of GG-1935's daily_breaker skips (check).
+
+**Update 2026-11-18 (W116.2):** fix in PR #508 (ARM_ORDERS advisory; arm orders still gate under SHADOW). Stays OPEN until merged and deployed; the merge waits on GG-1955.
+
+### GG-1943 — rest_inside is cancelled at 60 s on the arm path but the model's rest_inside evidence is the never-cancelled ADR-0072 control (W116.2)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.2, 2026-11-17. `arm_orders.act` schedules the 60 s cancel for every placement option. Arm orders have n = 0 at rest_inside, so `placement.model.option_table` marks it unsupported and the frozen table cannot choose it; ON is safe today. Before any table names rest_inside, either log arm orders at rest_inside (switch on, demo) or estimate it only from rows with the same cancel rule. Never pool the control's no-cancel fills into the arm estimate.
+
+### GG-1944 — Book depth at submit is not logged on arm orders, so P(fill | depth) cannot be estimated (W116.2)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.2, 2026-11-17. `placement.join.records` sets `depth` None: `book_at_submit` carries yes_bid / yes_ask only, and `book_yes_bid_size` / `book_yes_ask_size` arrive only when the upstream row has them (most do not). P(fill) is estimated on offset, spread, time to start, arm and sport; depth is a registered missing conditioner. Fix: `demo_fill_policy.decide` already calls `client.get_market_book`; check whether it returns sizes, and log top-of-book sizes in `meta` so the order row carries them. Same gap for spread: the 486 orders read on 2026-11-18 have no logged spread, because `book_at_submit` landed in fb8000c, so the `cross` option is valued at an assumed 2c (6c NHL) until the orders that carry it resolve.
+
+### GG-1955 — main's ROLLING_BACKLOG.json fails validation: duplicate order 16 (B-074, B-018), so every code PR's CI is red (W116.2)
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-11-18 01:45Z, SW-9):** window error W58. Orders renumbered 1..N, ROLLING_BACKLOG.md re-rendered; `--check` and tests/test_rolling_backlog.py + test_visual_dashboard_backlog.py pass. Re-run CI on #505-#508.
+
+W116.2, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main (94bcee8): `ValueError: duplicate order 16 (B-018)`. The duplicate was introduced by da9e8c7 (B-099, docs-only push), and ab392a8 did not clear it. Docs-only pushes skip the test job, so main shows green while `tests/test_rolling_backlog.py::test_real_file_validates` and `test_committed_markdown_matches_the_json` fail on every code PR (PR #505 is red only for this). W116.2 may not edit ROLLING_BACKLOG.json (block rule). Fix (owner: the strategic window / B-099 author): give one of B-074 / B-018 a unique order and regenerate the markdown.

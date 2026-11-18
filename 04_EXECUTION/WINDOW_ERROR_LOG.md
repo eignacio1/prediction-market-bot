@@ -217,3 +217,9 @@ Arm orders went on 11-12; the skip reason "daily_breaker" (a placed-stake cap of
 size_for's $50 day cap zeroed ~8,000 demo orders. The window saw "daily breaker 690" at the W114 close and wrote it as a question for a
 Fable block instead of recognising a real-money limit on a demo path. Operator: "Daily breaker .... how did we miss that?" Rule: CLAUDE.md
 Q1 - every demo / shadow cap cites its own derivation; skip reasons are reported numbers.
+
+### W58 - SW-9, 2026-11-17 16:19 PT - a hand edit of ROLLING_BACKLOG.json skipped its own validator and turned every code PR red
+The window added B-099 with a python one-off and pushed docs-only without running `scripts/rolling_backlog.py --check`; the order shift
+left two tickets on order 16. Docs-only pushes skip CI, so main stayed green while PRs #505-#508 failed three backlog tests (GG-1955,
+GG-1956 found by W116.2 / W116.3). Fixed 17:45 PT: orders renumbered 1..N, .md re-rendered, check and tests pass. Rule: any edit to
+ROLLING_BACKLOG.json ends with `python3 scripts/rolling_backlog.py && python3 scripts/rolling_backlog.py --check` before the push.
