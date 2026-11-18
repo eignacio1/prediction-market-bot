@@ -110,7 +110,7 @@ It also gives the box room to keep growing (118.4). Your gap burner runs alongsi
 | 118.1 | proof · MLB · 3 | The 2026 MLB season through router v2: held-out arms per cell, a frozen MLB leaf map and the 2027 pre-registration | Sonnet | ⬜ | |
 | 118.2 | depth · NBA · 3 | Muse's NBA tables as point-in-time factor classes, pre-registered as tree splits, scored per leaf per arm | Sonnet | ⬜ | |
 | 118.3 | D6 · NHL · 3 | NHL layer 3 from the store on the box; goalie confirmation as a split and a timing study; NHL leaves through router v2 | Sonnet | ⬜ | |
-| 118.4 | infra · 3 | Disk measured, a retention policy as code with a box dry run, a days-to-90% alarm; the install proposed | Sonnet | ⬜ | |
+| 118.4 | infra · 3 | Disk measured, a retention policy as code with a box dry run, a days-to-90% alarm; the install proposed | Sonnet | 🟨 | A+B+C code merged (#521, #525); dry run pending box deploy; install awaiting approval |
 
 - **Pushback:** 118.2 scores new splits on about five weeks of NBA rows, so most splits will route to "no help", and that is the
   expected result. What lasts is the point-in-time factor pipeline from Muse's archive into layer 3. Next wave wires its splits into
@@ -613,6 +613,8 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **PROPOSED - APPROVAL NEEDED (W118.4, B-102): `disk_retention_install`.** Say "approve disk_retention_install" and the window runs that one task: it adds one daily crontab line (14:17 UTC, flocked, nice/ionice) on the paper box that gzip-compresses old KALSHI_HISTORY raw files and .bak files (sha256-verified before the plain copy is replaced; nothing is ever deleted) and caps journald at 200M. Disk is 87% and growing about 1.5 points a day (90% in about 2 days, where the healthcheck FAILs and blocks every install). Target once installed: under 75%. Reversible with `disk_retention_uninstall`; the window reads the crontab back after install. Demo/paper only, no orders, no real capital, $0.
 
 > **AUTHORIZATION - THREE DECISIONS (operator, 2026-11-17 17:45 PT: "yes approve on all 3", answering the window's message naming
 > `nhl_event_store_install`, NFL v1 per-leaf to no bet, and counting tested stumps at layer 3).**

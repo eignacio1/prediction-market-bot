@@ -2,7 +2,7 @@
 
 Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 312 of 335 are auto and unreviewed.
 
-**Counts:** Core=229 (186 OPEN), MLB=52 (35 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
+**Counts:** Core=229 (184 OPEN), MLB=52 (35 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
 
 ## Core (229)
 
@@ -127,7 +127,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1080 — RESOLVED · HIGH _(auto)_: Install gate waved W83.2's install through on a RED surface budget
 - GG-1082 — RESOLVED · HIGH _(auto)_: Exposure gate not yet on the order path; settled-ticker feed missing
 - GG-441 — RESOLVED · HIGH _(auto)_: Kill switch is realized-loss-only and in-memory: with resolution dark, settled-but-unresolved stake is invisib
-- GG-452 — OPEN · LOW _(auto)_: DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
+- GG-452 — RESOLVED · LOW _(auto)_: DEPENDENCY_LOCKS requirements files disagree with pyproject.toml bounds; CI installs from the locks
 - GG-538 — OPEN · MEDIUM _(auto)_: The only pre-2026 Kalshi price history lived in one untracked agent worktree (single copy, no manifest)
 - GG-529 — OPEN · MEDIUM _(auto)_: EXP-038 second-look date trigger ('or 2027-01-31, whichever first') is undefined
 - GG-1750 — OPEN · MEDIUM _(auto)_: ADR-0072 forward test: "the look is taken once" (10-21 addendum) vs a report that recomputes daily; which day 
@@ -192,7 +192,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1450 — OPEN · MEDIUM _(auto)_: EXP-044 / EXP-044b runners merged but not installed; no box read-back
 - GG-1452 — CLOSED-AS-ARTIFACT · LOW _(auto)_: Wave 94 common rules reference a Deploy job summary that does not exist for docs-only or skipped runs
 - GG-1461 — OPEN · LOW _(auto)_: The fence scan in `tests/test_exploratory_isolation.py` treats any `.rename()` / `.replace()` as a write
-- GG-1462 — OPEN · LOW _(auto)_: Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
+- GG-1462 — RESOLVED · LOW _(auto)_: Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
 - GG-1395 — OPEN · LOW _(auto)_: W93.3 too few archive snapshots and zero settlements for engine-vs-market scoring
 - GG-1480 — OPEN · LOW _(auto)_: Docs-only pushes under `12_EXPLORATORY/` run the full deploy gate (up to 23 min)
 - GG-1481 — OPEN · MEDIUM _(auto)_: Demo `insufficient_balance` rejections with the cash guard active: cause unproven

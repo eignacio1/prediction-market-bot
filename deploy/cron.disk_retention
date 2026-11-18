@@ -1,0 +1,6 @@
+# BEGIN W118.4 DISK RETENTION
+# W118.4 / B-102 -- daily disk retention: gzip-compress (sha256-verified, never delete) old evidence files whose readers read .gz, and cap journald at 200M.
+# PAUSED in the registry until the operator approves the named install task `disk_retention_install`.
+# Daily at 14:17 UTC (06:17 PT; after the 13:29 refresh). Touches only files matching src/prediction_market_bot/disk_retention.py POLICY with readers_verified.
+17 14 * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 15 ionice -c3 /opt/prediction-market-bot/venv/bin/python scripts/run_disk_retention.py >> logs/disk_retention.log 2>&1 ) 9>/tmp/disk_retention.lock
+# END W118.4 DISK RETENTION

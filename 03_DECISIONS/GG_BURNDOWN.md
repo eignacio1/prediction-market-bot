@@ -112,3 +112,277 @@ OPEN 270 -> 268. Closed A: GG-1440 (start_grace_h=0.5, 152f076 ancestor of box H
 
 ## Tick GA-6.3 (2026-11-18)
 OPEN 268 -> 266. Closed A: GG-892 (PR #275 ancestor of box HEAD 53c83e86), GG-891 (12/12 NBA game cells flipped, GG-890 box read). Still true, not closed: GG-1774 (2 flock -w 240 lines in deploy/cron.conf, no log on timeout; cron.conf is a running component, window), GG-1001, GG-1231, GG-406 (needs box read).
+
+
+## GA-6 bulk pass (2026-11-18, OPEN 266 at start)
+
+Mechanical pass: files exist, PRs merged, SHAs ancestors of origin/main. Class counts: C 160 · O 72 · W 21 · L 9 · A 1 (GG-452 closed). The C rows have NO closure proof yet: the pass only shows what each names. Classes are rule-based (id range, wave) and are not read-verified except GG-452.
+
+| id | sev | first date | class | evidence |
+|---|---|---|---|---|
+| GG-004 | H | 26-06-01 | C | no mechanical closure signal; needs manual read |
+| GG-007 | L | 26-06-02 | C | no mechanical closure signal; needs manual read |
+| GG-027 | L | 26-05-28 | C | no mechanical closure signal; needs manual read |
+| GG-037 | H | 26-06-16 | C | no mechanical closure signal; needs manual read |
+| GG-038 | H | 26-07-15 | C | no mechanical closure signal; needs manual read |
+| GG-039 | M | 26-07-15 | C | no mechanical closure signal; needs manual read |
+| GG-040 | L | 26-07-15 | C | no mechanical closure signal; needs manual read |
+| GG-041 | L | 26-06-02 | C | no mechanical closure signal; needs manual read |
+| GG-045 | L | 26-06-26 | C | no mechanical closure signal; needs manual read |
+| GG-046 | H | 26-06-26 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-066 | M | 26-07-02 | C | no mechanical closure signal; needs manual read |
+| GG-094 | H | 26-07-06 | C | no mechanical closure signal; needs manual read |
+| GG-098 | M | 26-07-06 | C | no mechanical closure signal; needs manual read |
+| GG-105 | H | 26-07-10 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-133 | L | 26-05-30 | C | no mechanical closure signal; needs manual read |
+| GG-134 | M | 26-07-22 | C | no mechanical closure signal; needs manual read |
+| GG-137 | L | 26-07-22 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-140 | M | 26-07-16 | C | no mechanical closure signal; needs manual read |
+| GG-150 | L | 26-07-31 | C | no mechanical closure signal; needs manual read |
+| GG-151 | L | 26-07-15 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-153 | M | 26-07-15 | C | no mechanical closure signal; needs manual read |
+| GG-154 | M | 26-07-29 | C | no mechanical closure signal; needs manual read |
+| GG-156 | H | 26-07-30 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-157 | H | 26-07-31 | C | no mechanical closure signal; needs manual read |
+| GG-158 | M | 26-08-01 | C | no mechanical closure signal; needs manual read |
+| GG-160 | M | 26-07-30 | C | no mechanical closure signal; needs manual read |
+| GG-161 | M | 26-08-04 | C | no mechanical closure signal; needs manual read |
+| GG-162 | L | 26-07-07 | C | no mechanical closure signal; needs manual read |
+| GG-164 | M | 26-07-02 | C | no mechanical closure signal; needs manual read |
+| GG-165 | L | 26-08-05 | C | no mechanical closure signal; needs manual read |
+| GG-167 | L | 26-08-07 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-168 | M | 26-08-07 | C | no mechanical closure signal; needs manual read |
+| GG-170 | C | 26-08-03 | C | no mechanical closure signal; needs manual read |
+| GG-172 | H | 26-06-04 | C | no mechanical closure signal; needs manual read |
+| GG-174 | M | 26-08-13 | C | no mechanical closure signal; needs manual read |
+| GG-177 | L | 26-08-14 | C | no mechanical closure signal; needs manual read |
+| GG-183 | L | 26-08-15 | C | no mechanical closure signal; needs manual read |
+| GG-187 | L | 26-07-05 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-189 | H | 26-07-02 | C | no mechanical closure signal; needs manual read |
+| GG-192 | M | 26-05-29 | C | no mechanical closure signal; needs manual read |
+| GG-196 | M | 26-08-04 | C | no mechanical closure signal; needs manual read |
+| GG-190 | H | 26-08-02 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-202 | M | 26-08-21 | C | no mechanical closure signal; needs manual read |
+| GG-206 | M | 26-08-17 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-209 | M | 26-08-26 | C | no mechanical closure signal; needs manual read |
+| GG-224 | M | 26-08-28 | C | no mechanical closure signal; needs manual read |
+| GG-234 | L | 26-09-01 | C | no mechanical closure signal; needs manual read |
+| GG-487 | L | 26-10-07 | C | no mechanical closure signal; needs manual read |
+| GG-730 | M | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-731 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-732 | M | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-733 | M | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-734 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-740 | H | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-741 | H | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-747 | M | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-748 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-749 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-750 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-752 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-754 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-755 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-756 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-758 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-759 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-760 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-761 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-762 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-763 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-764 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-766 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-775 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-776 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-777 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-778 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-779 | L | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-910 | M | 26-09-08 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-911 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-912 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-913 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-914 | M | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1000 | L | 26-10-21 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1001 | L | 26-10-22 | C | no mechanical closure signal; needs manual read |
+| GG-1260 | M | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1261 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1895 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-243 | L | 26-07-07 | C | no mechanical closure signal; needs manual read |
+| GG-256 | L | 26-07-07 | C | no mechanical closure signal; needs manual read |
+| GG-257 | L | 26-09-07 | C | no mechanical closure signal; needs manual read |
+| GG-261 | M | 26-09-05 | C | no mechanical closure signal; needs manual read |
+| GG-262 | L | 26-09-09 | C | no mechanical closure signal; needs manual read |
+| GG-266 | L | 26-09-09 | C | no mechanical closure signal; needs manual read |
+| GG-275 | M | 26-09-11 | C | no mechanical closure signal; needs manual read |
+| GG-279 | M | 26-09-11 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-289 | L | 26-09-18 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-295 | H | 26-09-17 | C | no mechanical closure signal; needs manual read |
+| GG-296 | H | 26-08-13 | C | no mechanical closure signal; needs manual read |
+| GG-298 | M | 26-07-02 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-299 | L | 26-07-16 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-301 | H | 26-07-31 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-304 | M | 26-09-24 | C | no mechanical closure signal; needs manual read |
+| GG-307 | L | 26-09-24 | C | no mechanical closure signal; needs manual read |
+| GG-312 | H | 26-07-17 | C | no mechanical closure signal; needs manual read |
+| GG-316 | H | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-317 | M | 26-09-29 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-320 | H | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-323 | M | 26-07-02 | C | no mechanical closure signal; needs manual read |
+| GG-326 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-327 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-330 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-331 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-332 | M | 26-10-02 | C | no mechanical closure signal; needs manual read |
+| GG-333 | H | 26-10-02 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-340 | M | 26-10-02 | C | no mechanical closure signal; needs manual read |
+| GG-341 | L | 26-10-02 | C | no mechanical closure signal; needs manual read |
+| GG-342 | L | 26-10-02 | C | no mechanical closure signal; needs manual read |
+| GG-344 | M | 26-10-02 | C | no mechanical closure signal; needs manual read |
+| GG-345 | M | 26-09-27 | C | no mechanical closure signal; needs manual read |
+| GG-346 | M | 26-07-03 | C | no mechanical closure signal; needs manual read |
+| GG-347 | M | 26-10-03 | C | no mechanical closure signal; needs manual read |
+| GG-348 | L | 26-07-04 | C | no mechanical closure signal; needs manual read |
+| GG-349 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-353 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-354 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-355 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-356 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-402 | L | 26-10-02 | C | no mechanical closure signal; needs manual read |
+| GG-404 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-406 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-408 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-409 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-410 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-416 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-417 | H | 26-10-03 | C | no mechanical closure signal; needs manual read |
+| GG-418 | L | 26-10-08 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-421 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-422 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-423 | L | 26-10-05 | C | no mechanical closure signal; needs manual read |
+| GG-425 | L | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-452 | L | 26-05-22 | A | requirements-base.txt aligned to pyproject (sklearn 1.8.0, scipy 1.12.0) 2026-10-26; line 8 cites GG-452 |
+| GG-538 | M | 26-10-09 | C | no mechanical closure signal; needs manual read |
+| GG-529 | M | 26-10-08 | C | no mechanical closure signal; needs manual read |
+| GG-1750 | M | 26-11-02 | C | no mechanical closure signal; needs manual read |
+| GG-536 | M | 26-10-09 | C | no mechanical closure signal; needs manual read |
+| GG-562 | L | 26-09-29 | C | no mechanical closure signal; needs manual read |
+| GG-564 | M | 26-10-10 | C | no mechanical closure signal; needs manual read |
+| GG-570 | L | 26-10-11 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-587 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-596 | M | 26-10-13 | C | no mechanical closure signal; needs manual read |
+| GG-610 | M | 26-10-12 | C | no mechanical closure signal; needs manual read |
+| GG-611 | H | ? | C | no mechanical closure signal; needs manual read |
+| GG-588 | L | 26-10-12 | C | no mechanical closure signal; needs manual read |
+| GG-630 | M | 26-07-28 | C | no mechanical closure signal; needs manual read |
+| GG-620 | M | 26-10-13 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-621 | L | 26-10-13 | C | no mechanical closure signal; needs manual read |
+| GG-670 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-671 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-673 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-674 | M | 26-10-20 | C | no mechanical closure signal; needs manual read |
+| GG-675 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-676 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-677 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-690 | M | 26-10-14 | C | no mechanical closure signal; needs manual read |
+| GG-800 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-801 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-850 | L | 26-10-16 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-885 | L | 26-10-16 | C | no mechanical closure signal; needs manual read |
+| GG-970 | M | 26-07-23 | C | no mechanical closure signal; needs manual read |
+| GG-971 | M | 26-10-20 | C | no mechanical closure signal; needs manual read |
+| GG-985 | M | 26-10-20 | C | no mechanical closure signal; needs manual read |
+| GG-990 | M | 26-10-21 | C | no mechanical closure signal; needs manual read |
+| GG-1010 | H | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1011 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1012 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1013 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1014 | M | 26-10-14 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1030 | H | 26-10-21 | C | no mechanical closure signal; needs manual read |
+| GG-1031 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1032 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1060 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1061 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1062 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1063 | L | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1064 | L | 26-10-18 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1090 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-1180 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-1181 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-1182 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-1183 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-1190 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-1191 | M | ? | C | no mechanical closure signal; needs manual read |
+| GG-1192 | L | ? | C | no mechanical closure signal; needs manual read |
+| GG-1230 | H | 26-10-04 | C | no mechanical closure signal; needs manual read |
+| GG-1231 | M | 26-10-25 | C | no mechanical closure signal; needs manual read |
+| GG-1232 | M | 26-10-20 | C | no mechanical closure signal; needs manual read |
+| GG-1251 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1252 | M | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1254 | M | 26-08-01 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1280 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1281 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1282 | M | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1283 | L | 26-10-20 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1284 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1291 | L | 26-10-27 | C | no mechanical closure signal; needs manual read |
+| GG-1331 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1332 | M | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1333 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1334 | M | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1300 | M | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1301 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1302 | L | 26-10-27 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1292 | M | 26-10-27 | C | no mechanical closure signal; needs manual read |
+| GG-1293 | M | 26-10-27 | C | no mechanical closure signal; needs manual read |
+| GG-1340 | M | 26-08-01 | C | no mechanical closure signal; needs manual read |
+| GG-1341 | M | 26-10-28 | C | no mechanical closure signal; needs manual read |
+| GG-1441 | L | 26-10-06 | C | no mechanical closure signal; needs manual read |
+| GG-1460 | L | 26-10-29 | C | no mechanical closure signal; needs manual read |
+| GG-1450 | M | 26-10-29 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-1451 | M | ? | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1461 | L | 26-10-29 | C | no mechanical closure signal; needs manual read |
+| GG-1462 | L | 26-10-16 | C | no mechanical closure signal; needs manual read |
+| GG-1420 | M | 26-10-28 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1390 | M | 26-10-28 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1393 | M | 26-10-28 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1394 | M | 26-10-28 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1395 | L | 26-10-28 | O | registered data/factor gap (doctrine: paid-only or absent factor stays a registered gap) |
+| GG-1430 | L | 26-10-29 | C | no mechanical closure signal; needs manual read |
+| GG-1431 | L | 26-10-29 | C | no mechanical closure signal; needs manual read |
+| GG-1480 | L | 26-10-30 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1481 | M | 26-10-12 | C | names merged PR/commit; fix present, closure evidence (box read or test) still needed |
+| GG-1470 | M | 26-10-30 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1471 | L | 26-10-30 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1472 | L | 26-10-30 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1520 | M | 26-10-30 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1521 | M | 26-10-30 | C | no mechanical closure signal; needs manual read |
+| GG-1522 | L | 26-10-30 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1580 | L | 26-11-03 | C | no mechanical closure signal; needs manual read |
+| GG-1581 | H | 26-11-03 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1582 | L | 26-07-10 | C | no mechanical closure signal; needs manual read |
+| GG-1600 | L | ? | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1690 | L | 26-11-04 | C | no mechanical closure signal; needs manual read |
+| GG-1720 | M | 26-11-05 | L | needs box task / runtime change (never-list or >1 session) |
+| GG-1773 | M | 26-11-05 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1774 | M | 26-11-05 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1896 | L | 26-11-12 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1897 | M | 26-11-12 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1898 | M | 26-11-12 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1930 | L | 26-11-12 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1931 | M | 26-11-12 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1932 | L | 26-11-12 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1933 | M | 26-11-13 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1935 | M | 26-11-13 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1939 | H | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1940 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1951 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1952 | L | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1953 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1936 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1937 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1938 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1942 | H | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1943 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+| GG-1944 | M | 26-11-17 | W | W113-W117 wave-owned (COMMON_RULES_W118) |
+
+### GA-6 tick 5 (2026-11-18)
+Closed GG-1462 (A). Checked, left open: GG-1581 (flock now on 6 box T3 lines, but OOM kills continued 2026-11-15, 9 in the kernel journal since 11-10, so the cause is not fully fixed), GG-1460 and GG-1461 (`_fence.py`/scan unchanged).

@@ -1460,6 +1460,20 @@ schedule = "29 13 * * *"
 mirrors = ["deploy/cron.nhl_event_store"]
 command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_event_store_refresh\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_event_store_refresh.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
 [[component]]
+key = "cron|17 14 * * *|scripts/run_disk_retention.py"
+kind = "cron"
+source = "deploy/cron.disk_retention"
+status = "paused"
+reviewed = true
+purpose = "W118.4 / B-102: daily disk retention -- gzip-compress (sha256 round trip, never delete) old evidence files whose readers read .gz (KALSHI_HISTORY raw stores, migration .bak files) and cap journald at 200M. Target disk under 75% (87% on 11-18). PAUSED until the operator approves the named install task disk_retention_install."
+pillar = "PLUMBING"
+writes = ["logs/disk_retention.log", "exp_output/KALSHI_HISTORY/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/disk_retention.log is older than 30h once installed; the healthcheck disk line and days-to-90% WARN are the downstream signal"
+max_age_h = "30"
+schedule = "17 14 * * *"
+mirrors = ["deploy/cron.disk_retention"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 15 ionice -c3"
+[[component]]
 key = "workflow|docs_guard.yml"
 kind = "workflow"
 source = ".github/workflows/docs_guard.yml"

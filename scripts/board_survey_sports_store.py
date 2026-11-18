@@ -27,6 +27,10 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.disk_retention import dated_files, open_text, read_bytes  # noqa: E402  (W118.4: raw_*.jsonl may be .gz)
+
 ROOT = Path(__file__).resolve().parents[1]
 API = "https://api.elections.kalshi.com/trade-api/v2"
 WRITER_VERSION = "board_survey_sports_store/1"
@@ -114,8 +118,8 @@ class Store:
         self._lock = open(self.path / ".lock", "w")
         fcntl.flock(self._lock, fcntl.LOCK_EX | fcntl.LOCK_NB)      # concurrent run fails fast
         self.index: dict[tuple, set] = defaultdict(set)
-        for f in sorted(glob.glob(str(self.path / "raw_????-??-??.jsonl"))):
-            with open(f) as fh:
+        for f in dated_files(self.path, "raw_????-??-??.jsonl"):
+            with open_text(f) as fh:
                 for line in fh:
                     if line.strip():
                         r = json.loads(line); self.index[(r["kind"], r["key"])].add(r["content_sha256"])
@@ -139,8 +143,8 @@ class Store:
         return "revision" if "revises_content_sha256" in row else "written"
 
     def rows(self, kind: str | None = None):
-        for f in sorted(glob.glob(str(self.path / "raw_????-??-??.jsonl"))):
-            with open(f) as fh:
+        for f in dated_files(self.path, "raw_????-??-??.jsonl"):
+            with open_text(f) as fh:
                 for line in fh:
                     if line.strip():
                         r = json.loads(line)
@@ -149,8 +153,8 @@ class Store:
 
     def digest(self) -> str:
         h = hashlib.sha256()
-        for f in sorted(glob.glob(str(self.path / "raw_????-??-??.jsonl"))):
-            h.update(Path(f).read_bytes())
+        for f in dated_files(self.path, "raw_????-??-??.jsonl"):
+            h.update(read_bytes(f))
         return h.hexdigest()
 
 

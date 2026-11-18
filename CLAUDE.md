@@ -26,17 +26,18 @@ Generated 2026-11-18 by `scripts/claude_md_now.py --write` from the code at that
   - NHL: 9 shadow · 12 not built
 - Not shadow, not unbuilt: mlb_player_prop_hits / T4M-ARITH - blocked; mlb_player_prop_hits / T4M-FLOW - blocked; mlb_player_prop_hits / T4M-PROJ - active; nba_player_points / T4 - dark.
 - Kelly (execution_bands.py): 0.0 on T1, T2, T3, T4-CORR, T4-EXIT, T4M-PROJ, T4NFL-ARITH, T4NFL-FLOW, T4NHL-ARITH, T4NHL-FLOW. Non-zero on a band with an ACTIVE cell: none. Provisional non-zero values on 12 bands with no ACTIVE cell; no real capital anywhere (Hard Rule 2).
-- Open governance gaps: 272 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
+- Open governance gaps: 264 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
 <!-- NOW:END -->
 
 **Window-maintained (as of 2026-11-18, SW-9; RED in the session scan after 7 days):**
 - **In season:** NFL, NBA, NHL — game families as SHADOW arms logging every forecast, plus the ADR-0072 demo forward test with arm
   orders from the router (flat demo stakes, real fills, `kelly_fraction` 0). NBA player props log as 9 shadow cells (installed 11-12).
   **MLB is idle** until the 2027 season; its 2026 rows are the look-back corpus.
-- **Last wave closed:** 116 (2026-11-18). **D6 on the box (`scripts/d6_read.py`, 01:05Z): 3 of 117 wired, all NBA.** Per arm,
-  post-epoch: RIDE fills win 69% vs 81% unfilled (adverse selection), FADE crossed +0.183 per contract before its crossing cost was
-  measured. Router v2 (pooled + sequential) arms no leaf; the power calendar puts the first earned arm in 2027 at realistic edges.
-  Wave 117 in flight: placement with real costs, NHL history as a prior, NBA wired across the board.
+- **Last wave closed:** 117 (2026-11-18). **D6 on the box (`scripts/d6_read.py`, 05:01Z): 4 of 117 wired, all NBA.** Arm orders
+  since the 11-06 epoch, measured with the real spread and counted by game: no arm and placement clears zero after costs yet (FADE
+  crossing +16.6¢ on 20 games, interval spans 0); resting orders are adversely selected. Router v2 (pooled + sequential) arms no leaf;
+  its power calendar dates the first earned arm to 2027. NHL event store on the box since 11-18. Wave 118 in flight: MLB 2026 through
+  router v2, NBA depth as tree splits, NHL wired from its store, box disk room; a gap burner runs alongside (272 → 150).
 
 ---
 

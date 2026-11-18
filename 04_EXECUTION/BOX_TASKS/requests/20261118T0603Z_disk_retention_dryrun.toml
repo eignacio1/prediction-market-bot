@@ -1,0 +1,2 @@
+task = "disk_retention_dryrun"
+note = "W118.4 Part B: read-only dry run, what would be compressed and bytes saved"
