@@ -4821,6 +4821,8 @@ W116.1, 2026-11-17. With plug-in variance, a run where every favourite won gave 
 
 W116.2, 2026-11-17. `arm_orders.BOOK = "ARM_ORDERS"` is fed to `exposure_gate.record_book`, but `exposure_gate.BOOKS` has no ARM_ORDERS entry, so `advisory` is False and the book's demo stakes count in the per-book and SYSTEM breach sums against `max_drawdown_pct` 0.20 on the $1,000 shadow notional (GATE_MODE enforce). Under the base caps (5 / 50 / 25) open demo stake stays well under $200; under ARM_BOOK_CAPS=raised (day cap $2,500) about $200 open would write `exposure_gate_breach` and halt every book. RIDE_BOARD and SHADOW are already advisory (GG-1240). Fix (owner: exposure_gate, not 116.2): add ARM_ORDERS to BOOKS as advisory, ledger-less, like RIDE_BOARD. **Precondition for the cap raise**; it may also explain part of GG-1935's daily_breaker skips (check).
 
+**Update 2026-11-18 (W116.2):** fix in PR #508 (ARM_ORDERS advisory; arm orders still gate under SHADOW). Stays OPEN until merged and deployed; the merge waits on GG-1955.
+
 ### GG-1943 — rest_inside is cancelled at 60 s on the arm path but the model's rest_inside evidence is the never-cancelled ADR-0072 control (W116.2)
 **Status:** OPEN · **Severity:** MEDIUM
 
