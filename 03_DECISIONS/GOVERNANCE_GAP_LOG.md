@@ -3643,7 +3643,8 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-425 — /project governance-gap Age column shows '—' when a block has no date; ADR titles render '— —'
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** LOW
+**Evidence:** `scripts/generate_project_state.py` now takes the earliest date in a gap block as its age date and the ADR title regex strips a leading em/en dash (checked on '# ADR-0070 — Probit x' and '# ADR-0070: Foo'); tests/test_generate_project_state.py 16 pass. Dashboard/tooling only.
 
 **Current state (2026-10-08, W59.1):** scripts/generate_project_state.py:154 takes the first date regex match in the block as first_date, and the W59.1 'Current state (2026-10-08...)' stamp now makes it wrong (age ~0) instead of '—'; line 178 regex r'# (ADR-\d+)[:\s]+(.*)' leaves the leading '— ' of titles like 'ADR-0070 — Probit...', rendering '— —'. **Next:** Strip leading em-dash in ADR title regex and derive gap age from the Gap-ID/Source date or the Registered-by wave, not the first date in the block.
 

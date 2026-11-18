@@ -149,11 +149,12 @@ def sec_governance(repo: Path) -> dict:
             continue
         st = re.search(r"(?m)^\*\*Status:\*\*\s*([A-Z][A-Z \-]*)", b)
         sv = re.search(r"\*\*Severity:\*\*\s*([A-Z]+)", b)
-        dt = re.search(r"(20\d\d-\d\d-\d\d)", b)
+        dts = re.findall(r"(20\d\d-\d\d-\d\d)", b)  # GG-425: earliest date in the block, not the first (later "Current state" stamps)
+        dt = min(dts) if dts else None
         gaps.append({"id": m.group(1), "title": m.group(2).strip()[:140],
                      "status": (st.group(1).strip() if st else "UNKNOWN"),
                      "severity": (sv.group(1) if sv else "UNSPECIFIED"),
-                     "first_date": dt.group(1) if dt else None})
+                     "first_date": dt})
     opn = [g for g in gaps if g["status"] == "OPEN"]
     by_sev = {s: 0 for s in SEVERITY_ORDER}
     for g in opn:
@@ -186,7 +187,7 @@ def sec_decisions(repo: Path) -> dict:
     for p in sorted((repo / ADR_DIR).glob("ADR-*.md")):
         head = p.read_text(encoding="utf-8", errors="replace")[:1500]
         m = re.search(r"(?m)^\*\*Status:\*\*\s*([A-Z]+)", head)
-        t = re.match(r"# (ADR-\d+)[:\s]+(.*)", head)
+        t = re.match(r"# (ADR-\d+)\s*[:\u2014\u2013-]*\s*(.*)", head)
         adrs.append({"id": t.group(1) if t else p.stem[:8], "title": (t.group(2) if t else p.stem)[:110],
                      "status": m.group(1) if m else "UNKNOWN", "source": f"{ADR_DIR}/{p.name}"})
     cnt: dict[str, int] = {}
