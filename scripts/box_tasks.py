@@ -59,6 +59,7 @@ TASKS: dict[str, str] = {
     # Not read-only in the strict sense: it appends one run to logs/health.log, which is what the cron does every day.
     "health_rerun": "export $(grep -v '^#' .env | xargs); bash deploy/healthcheck.sh >> logs/health.log 2>&1; "
                     "awk '/^=== VPS Health Check/{buf=\"\"} {buf=buf $0 \"\\n\"} END{printf \"%s\", buf}' logs/health.log | grep -E '^(=== |\\[FAIL\\]|\\[WARN\\])'",
+    "disk_read": f"{PY} scripts/disk_read.py",  # W118.4 B-102, read-only: df, 25 largest dirs, logs/ + exp_output/ sizes, journald, 7-day growth
     "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",

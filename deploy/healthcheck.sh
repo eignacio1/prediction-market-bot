@@ -19,6 +19,7 @@
 #   8  deploy truth (scripts/ops/deploy_truth.py): failed deploy / stale pending restart / stale service code
 #   9  Kalshi DEMO API reachable (read-only GET, 2 tries)
 #  10  logs/ writable, disk < 90%
+#  10b disk growth (W118.4): WARN when the 7-day growth reaches 90% within 14 days
 #  11  demo-fill stall (W109.6): WARN when 0 demo orders in 24h while shadow arms logged rows
 #
 # Env overrides exist for tests/test_healthcheck.py only:
@@ -170,9 +171,19 @@ fi
 
 # 10. logs + disk
 if [ -w "$PROJ/logs" ]; then pass "logs/ writable"; else fail "logs/ not writable"; fi
-USE="$(df -P "$PROJ" 2>/dev/null | awk 'NR==2{gsub("%","",$5); print $5}')"
+USE="${PMBOT_DISK_FAKE_PCT:-$(df -P "$PROJ" 2>/dev/null | awk 'NR==2{gsub("%","",$5); print $5}')}"   # override: tests only (W118.4)
 if [ -n "${USE:-}" ]; then
     if [ "$USE" -ge 90 ]; then fail "disk ${USE}% used"; elif [ "$USE" -ge 80 ]; then warn "disk ${USE}% used"; else pass "disk ${USE}% used"; fi
+fi
+
+# 10b. disk growth (W118.4 / B-102): WARN when the 7-day growth puts the disk at 90% within 14 days; records one sample per run
+if DG="$(cd "$PROJ" && PYTHONPATH="$PROJ/src" "$PYTHON" -m prediction_market_bot.disk_guard "$PROJ" --record 2>&1)"; then
+    case "$DG" in
+        WARN*) warn "disk growth: ${DG#WARN: }" ;;
+        *) pass "disk growth: ${DG#OK: }" ;;
+    esac
+else
+    warn "disk growth check errored: $(echo "$DG" | tail -1)"
 fi
 
 # 11. demo-fill stall (W109.6): the forward test sat 5 days with every switch off and nothing alarmed
