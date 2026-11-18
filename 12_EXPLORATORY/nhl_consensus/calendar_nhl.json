@@ -1,0 +1,317 @@
+{
+ "prior": "nhl",
+ "as_of": "2026-11-11",
+ "rows": 108439,
+ "nodes": {
+  "family": 15,
+  "band": 45,
+  "price_bin": 128,
+  "leaf": 365
+ },
+ "by_mu": {
+  "0.02": {
+   "MLB": {
+    "family": {
+     "nodes": 4,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "band": {
+     "nodes": 12,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "price_bin": {
+     "nodes": 30,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "leaf": {
+     "nodes": 81,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    }
+   },
+   "NBA": {
+    "family": {
+     "nodes": 4,
+     "earn_within_104w": 2,
+     "first": "2028-08-16",
+     "first_weeks": 92,
+     "median_of_earners": "2028-09-27"
+    },
+    "band": {
+     "nodes": 12,
+     "earn_within_104w": 2,
+     "first": "2028-04-05",
+     "first_weeks": 73,
+     "median_of_earners": "2028-08-23"
+    },
+    "price_bin": {
+     "nodes": 36,
+     "earn_within_104w": 6,
+     "first": "2027-10-20",
+     "first_weeks": 49,
+     "median_of_earners": "2028-05-24"
+    },
+    "leaf": {
+     "nodes": 103,
+     "earn_within_104w": 4,
+     "first": "2027-11-24",
+     "first_weeks": 54,
+     "median_of_earners": "2028-06-28"
+    }
+   },
+   "NFL": {
+    "family": {
+     "nodes": 4,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "band": {
+     "nodes": 12,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "price_bin": {
+     "nodes": 36,
+     "earn_within_104w": 2,
+     "first": "2028-07-05",
+     "first_weeks": 86,
+     "median_of_earners": "2028-07-19"
+    },
+    "leaf": {
+     "nodes": 87,
+     "earn_within_104w": 2,
+     "first": "2028-08-16",
+     "first_weeks": 92,
+     "median_of_earners": "2028-09-06"
+    }
+   },
+   "NHL": {
+    "family": {
+     "nodes": 3,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "band": {
+     "nodes": 9,
+     "earn_within_104w": 4,
+     "first": "2028-01-26",
+     "first_weeks": 63,
+     "median_of_earners": "2028-04-05"
+    },
+    "price_bin": {
+     "nodes": 26,
+     "earn_within_104w": 5,
+     "first": "2027-07-14",
+     "first_weeks": 35,
+     "median_of_earners": "2028-03-08"
+    },
+    "leaf": {
+     "nodes": 94,
+     "earn_within_104w": 6,
+     "first": "2027-07-14",
+     "first_weeks": 35,
+     "median_of_earners": "2028-03-01"
+    }
+   },
+   "ALL": {
+    "family": {
+     "nodes": 15,
+     "earn_within_104w": 2,
+     "first": "2028-08-16",
+     "first_weeks": 92,
+     "median_of_earners": "2028-09-27"
+    },
+    "band": {
+     "nodes": 45,
+     "earn_within_104w": 6,
+     "first": "2028-01-26",
+     "first_weeks": 63,
+     "median_of_earners": "2028-04-05"
+    },
+    "price_bin": {
+     "nodes": 128,
+     "earn_within_104w": 13,
+     "first": "2027-07-14",
+     "first_weeks": 35,
+     "median_of_earners": "2028-05-10"
+    },
+    "leaf": {
+     "nodes": 365,
+     "earn_within_104w": 12,
+     "first": "2027-07-14",
+     "first_weeks": 35,
+     "median_of_earners": "2028-04-19"
+    }
+   }
+  },
+  "0.05": {
+   "MLB": {
+    "family": {
+     "nodes": 4,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "band": {
+     "nodes": 12,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "price_bin": {
+     "nodes": 30,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    },
+    "leaf": {
+     "nodes": 81,
+     "earn_within_104w": 0,
+     "first": null,
+     "first_weeks": null,
+     "median_of_earners": null
+    }
+   },
+   "NBA": {
+    "family": {
+     "nodes": 4,
+     "earn_within_104w": 4,
+     "first": "2027-06-16",
+     "first_weeks": 31,
+     "median_of_earners": "2027-07-21"
+    },
+    "band": {
+     "nodes": 12,
+     "earn_within_104w": 8,
+     "first": "2027-03-03",
+     "first_weeks": 16,
+     "median_of_earners": "2027-08-11"
+    },
+    "price_bin": {
+     "nodes": 36,
+     "earn_within_104w": 23,
+     "first": "2027-02-24",
+     "first_weeks": 15,
+     "median_of_earners": "2027-10-13"
+    },
+    "leaf": {
+     "nodes": 103,
+     "earn_within_104w": 30,
+     "first": "2027-02-24",
+     "first_weeks": 15,
+     "median_of_earners": "2027-11-24"
+    }
+   },
+   "NFL": {
+    "family": {
+     "nodes": 4,
+     "earn_within_104w": 4,
+     "first": "2027-09-01",
+     "first_weeks": 42,
+     "median_of_earners": "2027-12-22"
+    },
+    "band": {
+     "nodes": 12,
+     "earn_within_104w": 12,
+     "first": "2027-08-04",
+     "first_weeks": 38,
+     "median_of_earners": "2027-11-10"
+    },
+    "price_bin": {
+     "nodes": 36,
+     "earn_within_104w": 25,
+     "first": "2027-03-31",
+     "first_weeks": 20,
+     "median_of_earners": "2028-03-08"
+    },
+    "leaf": {
+     "nodes": 87,
+     "earn_within_104w": 31,
+     "first": "2027-04-07",
+     "first_weeks": 21,
+     "median_of_earners": "2027-10-06"
+    }
+   },
+   "NHL": {
+    "family": {
+     "nodes": 3,
+     "earn_within_104w": 3,
+     "first": "2027-07-07",
+     "first_weeks": 34,
+     "median_of_earners": "2027-07-21"
+    },
+    "band": {
+     "nodes": 9,
+     "earn_within_104w": 9,
+     "first": "2027-03-10",
+     "first_weeks": 17,
+     "median_of_earners": "2027-07-21"
+    },
+    "price_bin": {
+     "nodes": 26,
+     "earn_within_104w": 20,
+     "first": "2027-01-20",
+     "first_weeks": 10,
+     "median_of_earners": "2027-07-14"
+    },
+    "leaf": {
+     "nodes": 94,
+     "earn_within_104w": 24,
+     "first": "2027-01-20",
+     "first_weeks": 10,
+     "median_of_earners": "2027-09-15"
+    }
+   },
+   "ALL": {
+    "family": {
+     "nodes": 15,
+     "earn_within_104w": 11,
+     "first": "2027-06-16",
+     "first_weeks": 31,
+     "median_of_earners": "2027-08-25"
+    },
+    "band": {
+     "nodes": 45,
+     "earn_within_104w": 29,
+     "first": "2027-03-03",
+     "first_weeks": 16,
+     "median_of_earners": "2027-09-01"
+    },
+    "price_bin": {
+     "nodes": 128,
+     "earn_within_104w": 68,
+     "first": "2027-01-20",
+     "first_weeks": 10,
+     "median_of_earners": "2027-10-13"
+    },
+    "leaf": {
+     "nodes": 365,
+     "earn_within_104w": 85,
+     "first": "2027-01-20",
+     "first_weeks": 10,
+     "median_of_earners": "2027-10-06"
+    }
+   }
+  }
+ }
+}

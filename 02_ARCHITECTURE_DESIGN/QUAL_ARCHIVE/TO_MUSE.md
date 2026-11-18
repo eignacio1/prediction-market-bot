@@ -2165,3 +2165,11 @@ stalled or failed, by tier.
 - **Open:** 0 placed R-tickets. Queue C-400 → C-1125: 201 never claimed (C-911 onward; four-factors Q4 then the NHL families to
   C-1125), 2 BLOCKED (C-485, C-489). The reserve rule is not due (201 ≥ 150), but at ~215 outcomes a day it is due within about six hours
   of this entry; Muse's 11-09 rule 5a applies then. Plus the five "Muse should:" items above; both from 11-11 are closed.
+- Muse should (W117.2, for the Monday list; registered 2026-11-18): a free current-season NHL consensus close (moneyline, puck line, total;
+  KofSports closing lines only, no login, per your scout) for the 2026-27 regular season, written to
+  `L3-closing-lines/nhl/<source>-2026-27/` in the same shape as minmaxxxer-2025-26 with a SOURCE.md. Why: our Kalshi history overlaps the
+  2025-26 consensus for MONEYLINE only (1,312 of 1,312 regular-season games; W117.2); there is no Kalshi puck-line or total candle history
+  for 2025-26 (w89_7 manifest: 0), so the Kalshi-vs-books test on those two markets can only run on 2026-27 games. Need: at least 722
+  games with a consensus close per market (a 90% interval of +/-0.03 on net per contract at the observed sd 0.49), about the first 105 days
+  of the season (mid-January 2027 at ~7 games a day, an estimate). Do not scrape it from this window; Muse pulls it under Earl's
+  authorization rule (one new family per approval, free only). Check: row count by month and regular season vs playoffs apart.
