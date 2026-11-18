@@ -1296,3 +1296,4 @@
 | 2026-11-18T01:14:03Z | B-095 | CLOSED — merge confirmed, HEAD (39d8328) is ancestor of origin/main — W116.2 docs on main; code PRs #505 and #508 open, waiting on GG-1955 (backlog dup) for green CI |
 | 2026-11-18T01:20:18Z | B-094 | MERGED: NO — branch `session/w116-1-evidence-opus` awaiting merge (PR #506, GG-1955) — W116.1 router v2 built, measured, frozen; PR #506 (29dd6b6) red only on GG-1955 backlog duplicate, not merged (commit `29dd6b6`) |
 | 2026-11-18T01:36:29Z | B-092 | CLOSED — W116.3 parked: D6 traces + NHL store shrink done; PR #507 red on main's backlog dup (GG-1955); NHL install awaits approval (commit `f206b6b`) |
+| 2026-11-18T01:37:41Z | B-092 | CLOSED — merge confirmed, HEAD (d971d24) is ancestor of origin/main — W116.3 docs on main; PR #507 open, waits on GG-1955 for green CI; nhl_event_store_install awaits approval |
