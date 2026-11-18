@@ -1,0 +1,2 @@
+task = "d6_trace_read"
+note = "W116.3: post-#503 read (prior 005231Z d6_read ran 34s before the deploy) - wired cells by name, ERROR rows after"
