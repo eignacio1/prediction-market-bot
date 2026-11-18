@@ -35,6 +35,7 @@ import arm_orders_read as aor  # noqa: E402
 SPORTS = ("NBA", "NFL", "NHL")
 TAIL_BYTES = 6_000_000
 MAX_FILL_LOOKUPS = 8
+RERUN_SAMPLE = 20   # W116.3: ERROR rows re-run per sport under today's code
 
 
 def ledger_files(repo: Path = REPO) -> List[Path]:
@@ -160,6 +161,32 @@ def reraise(row: dict) -> dict:
     return out
 
 
+def error_after(rows: List[dict]) -> dict:
+    """W116.3 (GG-1939): ERROR rows before -> after a fix, from the rows alone: when the last ERROR row was logged and
+    how many routed rows came after it. A window total mixes rows logged before the fix with rows after it."""
+    errs = [str(r.get("ts_utc")) for r in rows if (r.get("router") or {}).get("branch") == "ERROR" and r.get("ts_utc")]
+    last = max(errs) if errs else None
+    after = [r for r in rows if r.get("router") and (last is None or str(r.get("ts_utc", "")) > last)]
+    return {"error_rows": len(errs), "last_error_ts": last, "router_rows_after_last_error": len(after),
+            "last_row_ts": max((str(r.get("ts_utc")) for r in rows if r.get("ts_utc")), default=None)}
+
+
+def rerun_sample(rows: List[dict], k: int = RERUN_SAMPLE) -> dict:
+    """Re-run up to k logged ERROR rows (spread over cells) under today's code; count how many still raise."""
+    by_cell: Dict[str, List[dict]] = {}
+    for r in rows:
+        if (r.get("router") or {}).get("branch") == "ERROR":
+            by_cell.setdefault(f"{r.get('market_type')}|{r.get('band')}", []).append(r)
+    pick: List[dict] = []
+    while len(pick) < k and any(by_cell.values()):
+        for c in sorted(by_cell):
+            if by_cell[c] and len(pick) < k:
+                pick.append(by_cell[c].pop(0))
+    res = [reraise(r) for r in pick]
+    return {"n": len(res), "still_raise": sum(1 for x in res if "router_raised" in x or "raised" in (x.get("filters") or {})),
+            "now_branch": dict(Counter((x.get("now_routes") or {}).get("branch", "RAISED") for x in res))}
+
+
 def host_facts(repo: Path = REPO) -> dict:
     from prediction_market_bot.decision_trees import coverage, filter_supply as fsup
     out: dict = {"python": sys.version.split()[0]}
@@ -194,7 +221,7 @@ def build(rows: List[dict], orders: List[dict], fills_for, now: datetime, leaf_d
         srows = [r for r in rows if str(r.get("sport", "")).upper() == sport]
         board: Dict[str, dict] = {}
         for r in srows:  # every cell of the sport in the window: the row-side evidence next to the rule
-            b = board.setdefault(f"{r.get('market_type')}|{r.get('band')}", {"rows": 0, "p": 0, "router": 0, "routed": 0, "error": 0, "filters": 0, "arm": 0})
+            b = board.setdefault(f"{r.get('market_type')}|{r.get('band')}", {"rows": 0, "p": 0, "router": 0, "routed": 0, "error": 0, "filters": 0, "split_kept": 0, "arm": 0})
             x = r.get("router") or {}
             b["rows"] += 1
             b["p"] += r.get("p_yes") is not None
@@ -202,14 +229,17 @@ def build(rows: List[dict], orders: List[dict], fills_for, now: datetime, leaf_d
             b["routed"] += x.get("branch") not in (None, "ERROR")
             b["error"] += x.get("branch") == "ERROR"
             b["filters"] += bool(x.get("filters_n"))
+            b["split_kept"] += bool(x.get("split_kept"))   # W116.3 (GG-1951): layer 3 as rows saw it, window-wide, next to the file rule
             b["arm"] += x.get("branch") not in (None, "ERROR", "NO_BET")
         errs = Counter((r.get("router") or {}).get("reason") for r in srows if (r.get("router") or {}).get("branch") == "ERROR")
         s: dict = {"rows_in_window": len(srows), "cells_in_window": board, "error_reasons": _top(errs, 6)}
         first_err = next((r for r in srows if (r.get("router") or {}).get("branch") == "ERROR"), None)
         first_nr = next((r for r in srows if not r.get("router")), None)
+        s["error_after"] = error_after(srows)
         if with_reraise:
             s["error_row_rerun"] = reraise(first_err) if first_err else None
             s["no_router_row_rerun"] = reraise(first_nr) if first_nr else None
+            s["error_rerun_sample"] = rerun_sample(srows)
         g = pick_game(srows, now)
         s["game"] = g
         if g:

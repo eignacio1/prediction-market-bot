@@ -93,6 +93,10 @@ TASKS: dict[str, str] = {
     "nba_engine_props_shadow_install": f"{PY} scripts/nba_engine_props_shadow_install.py install",
     "nba_engine_props_shadow_readback": f"{PY} scripts/nba_engine_props_shadow_install.py readback",
     "nba_engine_props_shadow_uninstall": f"{PY} scripts/nba_engine_props_shadow_install.py uninstall",
+    # W116.3 / B-092 (GG-1953): NHL event store daily refresh cron line (fetch + streamed two-season compile). Budget-gated, backs up the crontab first. NOT run without the operator's named approval.
+    "nhl_event_store_install": f"{PY} scripts/nhl_event_store_install.py install",
+    "nhl_event_store_readback": f"{PY} scripts/nhl_event_store_install.py readback",
+    "nhl_event_store_uninstall": f"{PY} scripts/nhl_event_store_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",

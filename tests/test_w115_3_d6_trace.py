@@ -102,6 +102,7 @@ def test_build_shows_each_layer_and_the_break():
     assert ml["L7_fill_lookups"][0]["fills"] == 1 and ml["rule_says_layers"] == [1, 1, 1, 1, 1, 1, 0]
     assert tot["L4_branch"] == {"NO_ROUTER_BLOCK": 1} and tot["events"] == {"arm_skip|unrouted|UNROUTED": 1} and tot["rule_says_layers"] is None
     assert nhl["cells_in_window"]["NHL_GAME_TOTAL|T1"]["router"] == 0
+    assert nhl["cells_in_window"]["NHL_MONEYLINE|T1"]["split_kept"] == 1 and nhl["cells_in_window"]["NHL_GAME_TOTAL|T1"]["split_kept"] == 0  # GG-1951
     assert doc["sports"]["NBA"]["game"] is None
 
 
@@ -119,3 +120,26 @@ def test_allowlist_entry_is_read_only_and_script_never_writes():
     assert bt.TASKS["d6_trace_read"].endswith("scripts/d6_trace_read.py")
     src = (REPO / "scripts" / "d6_trace_read.py").read_text()
     assert not re.search(r"\.write_text\(|open\([^)]*[\"'][wa]b?[\"']|submit_order|\.unlink\(|os\.remove", src)
+
+
+def test_error_after_splits_rows_logged_before_and_after_the_last_error():  # W116.3, GG-1939
+    rows = [_row(router={"branch": "ERROR", "reason": "KeyError"}, ts_utc="2026-11-15T10:00:00+00:00"),
+            _row(router={"branch": "ERROR", "reason": "KeyError"}, ts_utc="2026-11-15T11:00:00+00:00"),
+            _row(router={"branch": "NO_BET"}, ts_utc="2026-11-15T12:00:00+00:00"),
+            _row(router={"branch": "RIDE"}, ts_utc="2026-11-15T13:00:00+00:00"),
+            _row(ts_utc="2026-11-15T14:00:00+00:00")]
+    e = tr.error_after(rows)
+    assert e == {"error_rows": 2, "last_error_ts": "2026-11-15T11:00:00+00:00", "router_rows_after_last_error": 2,
+                 "last_row_ts": "2026-11-15T14:00:00+00:00"}
+    assert tr.error_after([_row(router={"branch": "RIDE"})])["router_rows_after_last_error"] == 1
+
+
+def test_rerun_sample_spreads_over_cells_and_counts_raises(monkeypatch):
+    calls = []
+    monkeypatch.setattr(tr, "reraise", lambda r: calls.append(r["market_type"]) or (
+        {"router_raised": ["x"]} if r["market_type"] == "NHL_GAME_TOTAL" else {"filters": {"n": 1}, "now_routes": {"branch": "RIDE"}}))
+    err = {"branch": "ERROR", "reason": "KeyError"}
+    rows = [_row(router=err)] * 5 + [_row(mt="NHL_GAME_TOTAL", router=err)] * 2 + [_row(router={"branch": "RIDE"})]
+    out = tr.rerun_sample(rows, k=3)
+    assert calls == ["NHL_GAME_TOTAL", "NHL_MONEYLINE", "NHL_GAME_TOTAL"]  # round robin over cells
+    assert out == {"n": 3, "still_raise": 2, "now_branch": {"RAISED": 2, "RIDE": 1}}
