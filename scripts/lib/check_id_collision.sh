@@ -58,6 +58,22 @@ check_id_collision() {
   local range="$1" repo_root="$2" exclude_row="${3:-}"
   local ids
   ids="$(grep -oE '(T|GG|ADR)-[0-9]+' <<< "$range" | sort -u || true)"
+  # GG-422: expand "PFX-A..PFX-B" (also "PFX-A..B", en/em dash) to every integer
+  # in the interval so an interior overlap is seen, not just the two endpoints.
+  # Capped at 200 ids per range (a larger span keeps endpoint-only behaviour).
+  local rng pfx lo hi n
+  while IFS= read -r rng; do
+    [ -z "$rng" ] && continue
+    pfx="${rng%%-*}"; lo="$(grep -oE '[0-9]+' <<< "$rng" | sed -n 1p)"; hi="$(grep -oE '[0-9]+' <<< "$rng" | sed -n 2p)"
+    if [ -n "$lo" ] && [ -n "$hi" ] && [ "$((10#$hi))" -ge "$((10#$lo))" ] && [ "$((10#$hi - 10#$lo))" -le 200 ]; then
+      n=$((10#$lo))
+      while [ "$n" -le "$((10#$hi))" ]; do
+        ids="$ids"$'\n'"$(printf '%s-%0*d' "$pfx" "${#lo}" "$n")"
+        n=$((n + 1))
+      done
+    fi
+  done < <(grep -oE '(T|GG|ADR)-[0-9]+ ?(\.\.|–|—|-) ?((T|GG|ADR)-)?[0-9]+' <<< "$range" || true)
+  ids="$(sort -u <<< "$ids")"
   [ -z "$ids" ] && return 0
 
   local claims_file="$repo_root/04_EXECUTION/SESSION_CLAIMS.md"

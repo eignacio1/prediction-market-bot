@@ -3603,7 +3603,8 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-422 — Claim ranges that share an endpoint or overlap collide; 47.1 and 48.2 held overlapping GG ranges
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+**Evidence:** `scripts/lib/check_id_collision.sh` now expands A..B ranges to every id (cap 200); tests `test_range_interior_overlap_is_detected` / `test_range_without_overlap_passes` in tests/test_claim_session_collision.py (19 pass). Repo/test tooling only; no box runtime path.
 
 **Current state (2026-10-08, W59.1):** scripts/lib/check_id_collision.sh extracts only literal T-/GG-/ADR- tokens from the range string (grep -oE), so a range 'GG-340..GG-399' checks just its two endpoints; interior overlap is invisible and an in-use endpoint hard-refuses. Premise still true at worktree HEAD. **Next:** Expand A..B ranges to numeric intervals and compare interval overlap against SESSION_CLAIMS.md rows (reject true overlap, tolerate a shared endpoint explicitly).
 
@@ -4487,7 +4488,8 @@ W94.3, 2026-10-29, T-1441. Found in the same scheduled-start vs first-row compar
 
 ### GG-1460 — `_fence.safe_out` resolves relative paths against `12_EXPLORATORY/`, so a path that already starts `12_EXPLORATORY/` writes to `12_EXPLORATORY/12_EXPLORATORY/…`
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** LOW
+**Evidence:** `12_EXPLORATORY/_fence.py` `safe_out` strips a leading `12_EXPLORATORY/` from a relative path so it no longer nests; verified by direct call (both forms resolve to ROOT/...). Repo/test tooling only; no box runtime path.
 
 W94.2, 2026-10-29, T-1460. `safe_out` (`12_EXPLORATORY/_fence.py:7`) joins a relative path to `ROOT` = `12_EXPLORATORY/`. Three scripts pass the repo-relative form and so write to the nested directory: `nfl_board_v2/heldout_keynumbers.py:35`, `nfl_board_v2/kalshi_compare.py:94`, `nfl_board_v2/n15_interpret.py:46`. This is the likely origin of the untracked `12_EXPLORATORY/12_EXPLORATORY/` in the main tree. Their committed JSONs may be the nested copies or stale. Not fixed in this block (rule 11); the fix is either `safe_out` stripping a leading `12_EXPLORATORY/` or the three call sites, plus a test that fails on a doubled prefix.
 
@@ -4512,7 +4514,8 @@ W94.1: the post-merge Test Suite run for PR #368 concluded `skipped` (job `test`
 
 ### GG-1461 — The fence scan in `tests/test_exploratory_isolation.py` treats any `.rename()` / `.replace()` as a write
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** LOW
+**Evidence:** `tests/test_exploratory_isolation.py` scan now flags only os/shutil.rename|replace and 1-arg Path.rename; df.rename(columns=..) and str.replace(a,b) pass; new test `test_inmemory_rename_replace_not_flagged_but_path_rename_is` (205 pass). Repo/test tooling only; no box runtime path.
 
 W94.2, 2026-10-29, T-1461. `WRITE_ATTRS` includes `rename` and `replace`, so pandas `DataFrame.rename` and `str.replace` fail CI as writes. It cost this block two CI rounds (`drift_measure.py`, `callers_measure.py`, `callers_kalshi_look.py` reworded to `to_frame` / `set_axis` / slicing). Sweep: no remaining `.rename(` / `.replace(` call in `12_EXPLORATORY/*.py` today, so the false positive bites only new code. Fix would restrict the scan to `Path`-typed receivers or `os.rename` / `os.replace`.
 

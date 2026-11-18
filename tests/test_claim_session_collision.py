@@ -269,3 +269,15 @@ def test_rejects_taken_id_matching_this_session_own_t354_t355_claim(tmp_path):
     assert result.returncode != 0
     assert "COLLISION: T-354" in result.stderr
     assert "COLLISION: T-355" in result.stderr
+
+
+def test_range_interior_overlap_is_detected(tmp_path):
+    # GG-422: a claimed range GG-340..GG-399 must collide with an existing claim on an interior id.
+    _make_registries(tmp_path, session_claims="| 2026-11-01 | GG-350 | other |\n")
+    r = _run_check(tmp_path, "GG-340..GG-399")
+    assert r.returncode == 1 and "GG-350" in r.stderr
+
+
+def test_range_without_overlap_passes(tmp_path):
+    _make_registries(tmp_path, session_claims="| 2026-11-01 | GG-500 | other |\n")
+    assert _run_check(tmp_path, "GG-340..GG-399").returncode == 0

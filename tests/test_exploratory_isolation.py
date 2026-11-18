@@ -83,6 +83,10 @@ def scan_source(src: str, name: str = "<src>") -> list[str]:
             elif isinstance(f, ast.Attribute):
                 if f.attr in NET_WRITE_ATTRS and not isinstance(f.value, ast.Constant):
                     bad.append(f"{loc} network-write-shaped call .{f.attr}()")
+                elif f.attr in ("rename", "replace") and not (
+                        (isinstance(f.value, ast.Name) and f.value.id in ("os", "shutil"))
+                        or (len(n.args) == 1 and not n.keywords and not isinstance(f.value, ast.Constant))):
+                    pass  # GG-1461: df.rename(columns=..), str.replace(a, b) are in-memory; only os.rename/os.replace/Path.rename(x) write
                 elif f.attr in WRITE_ATTRS:
                     # path.write_text(..) -> receiver must be safe; os.remove(path)/shutil.x(src,dst) -> every arg must be safe
                     recv_ok = safe_target(f.value)
@@ -138,3 +142,10 @@ def test_scan_allows_fenced_write_and_clean_read():
           "d = json.load(open('exp_output/PRICE_ARCHIVE/prices_2026-08-01.jsonl'))\n"
           "safe_out('study/b.csv').write_text('x')\n")
     assert scan_source(ok, "ok.py") == []
+
+
+def test_inmemory_rename_replace_not_flagged_but_path_rename_is():
+    # GG-1461
+    assert scan_source("import pandas as pd\ndf = pd.DataFrame()\ndf.rename(columns={'a': 'b'})\n'x'.replace('a', 'b')\n") == []
+    assert scan_source("import os\nos.rename('a', 'b')\n")
+    assert scan_source("from pathlib import Path\nPath('a').rename('b')\n")
