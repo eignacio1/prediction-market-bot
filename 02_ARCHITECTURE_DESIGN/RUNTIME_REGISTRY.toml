@@ -1459,3 +1459,16 @@ max_age_h = "30"
 schedule = "29 13 * * *"
 mirrors = ["deploy/cron.nhl_event_store"]
 command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_event_store_refresh\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_event_store_refresh.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+[[component]]
+key = "workflow|docs_guard.yml"
+kind = "workflow"
+source = ".github/workflows/docs_guard.yml"
+status = "live"
+reviewed = true
+purpose = "CI on every push to main, docs-only included (W117.4, W58): checks the rolling backlog, gap id uniqueness, the gaps-by-arm index and the runtime registry in seconds, with no test suite."
+pillar = "PLUMBING"
+writes = []
+alarm = "Actions status line (red run on main)"
+schedule = ""
+mirrors = []
+command = "docs_guard.yml"

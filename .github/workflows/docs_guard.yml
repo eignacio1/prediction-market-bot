@@ -1,0 +1,39 @@
+name: Docs Guard
+
+# W117.4 (window error W58, GG-1955): docs-only pushes skip the Test Suite, so a
+# validated file (ROLLING_BACKLOG.json, the gap log ids, the generated indexes) could
+# go red on main with nothing reporting it. This workflow runs on EVERY push to main,
+# docs-only included, and on every PR. No test suite: each check is one fast command.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: docs-guard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rolling backlog matches its JSON
+        run: python3 scripts/rolling_backlog.py --check
+
+      - name: Governance gap ids are unique (live log + archive)
+        run: python3 scripts/lib/gg_id_uniqueness_check.py 03_DECISIONS/GOVERNANCE_GAP_LOG.md 03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md
+
+      - name: Gaps-by-arm index is current
+        run: python3 scripts/generate_gap_arm_index.py --check
+
+      - name: Runtime registry covers every mirrored component
+        run: python3 scripts/runtime_registry.py check
