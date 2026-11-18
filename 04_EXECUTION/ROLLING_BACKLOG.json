@@ -79,13 +79,13 @@
       "id": "B-099",
       "status": "NEXT",
       "lane": "proof",
-      "rank": 1,
+      "rank": "evidence clock",
       "title": "NHL 2025-26 sportsbook consensus (open+close, ML / puck line / total, 1,394 games, vig-removed, free) -> NHL leaf prior + historical MOMENTUM backtest + Kalshi-vs-consensus gap",
       "measure": "PROOF: NHL first-arm dates in the power calendar, with vs without the prior; MOMENTUM open->close backtest net per contract",
       "why": "Shortens the evidence clock (116.1: first arm at +2c is 2027-07). Archive L3-closing-lines/nhl/minmaxxxer-2025-26 (Muse 2026-11-17, 335 KB, 3/3 spot checks vs MoneyPuck). Operator: no paid sources ever.",
       "source": "operator 2026-11-17 16:07 PT; Muse pull 16:18 PT",
       "wave": "117",
-      "order": 0
+      "order": 5
     },
     {
       "id": "B-088",
