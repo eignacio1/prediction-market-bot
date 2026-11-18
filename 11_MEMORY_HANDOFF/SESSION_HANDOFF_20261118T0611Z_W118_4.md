@@ -1,5 +1,20 @@
 # Session handoff - W118.4 (INFRA: disk measured, retention as code, days-to-90% alarm; install proposed)
 Common rules first line quoted: "# Wave 118 common rules". Model: Sonnet. PRs: #521 (Part A + alarm), #525 (Part B/C), both merged on green CI I read.
+<!-- session-meta
+task_id: B-102
+tier: STANDARD
+timestamp: 2026-11-18T06:12:00Z
+commit: 328361a
+one_line_summary: W118.4 disk: measured 87%, retention-as-code + days-to-90% alarm merged (#521, #525); install awaits approval.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: PLUMBING (disk %, bytes freed by dry run, days to 90%)
+gap_delta: dry run frees ~3.36 GB; disk 87% -> ~72-73% once installed (box dry run 20261118T0608Z); nothing freed yet
+pattern_sweep: grep readers of KALSHI_HISTORY raw/thin in scripts/ src/ 12_EXPLORATORY/ -> 3 readers taught .gz; PRICE_ARCHIVE (~25) and seek reader HELD
+surface_delta: +1 cron (disk_retention, registered, paused until approval)
+-->
 
 vision_pillar: PLUMBING (infrastructure; room to keep logging). gap_measure: disk % / days-to-90%. gap_delta: none (no gap text or status edited; the gap burner owns those).
 

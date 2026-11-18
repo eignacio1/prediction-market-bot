@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-18T06:10:00Z (B-101 — W118.2 merged (#523): 5 NBA depth splits built PIT and scored per leaf per arm; 12 kept, 0 BH, S3/S5 parked on coverage; not wired.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T054930Z_W118_2.md` for full session detail.
+**Last reviewed:** 2026-11-18T06:12:00Z (B-102 — W118.4 disk: measured 87%, retention-as-code + days-to-90% alarm merged (#521, #525); install awaits approval.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0611Z_W118_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

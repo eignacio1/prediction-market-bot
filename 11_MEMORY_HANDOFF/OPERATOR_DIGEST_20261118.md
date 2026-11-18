@@ -36,3 +36,7 @@ We built five new NBA factors (pace and net rating, shot-zone matchup, lineup st
 None passed the strict significance test. The best lead is shot-zone matchup on spreads, which looked positive but is far too thin to trust yet.
 Lineup status and referee crew could not be judged, because their data only starts 11-10. They are parked, not closed, and we re-test in about four weeks.
 Nothing is wired into the bot yet (that is 118.3). Still zero real money at risk.
+
+## W118.4 - disk space (plumbing)
+The server's disk is 87% full and was growing about 1.5 points a day, so roughly 2 days from the 90% line that blocks installs. I built the fix but have not turned it on. It shrinks old data files in place after checking each copy is identical, never deletes any evidence, and caps the system log. A trial run says it frees about 3.4 GB, which puts the disk near 72%. A new warning also now fires when the disk is within 14 days of 90%. No money at risk.
+**Needs you:** say "approve disk_retention_install" and I run that one task. It is reversible.
