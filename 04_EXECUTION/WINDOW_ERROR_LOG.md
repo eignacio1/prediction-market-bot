@@ -223,3 +223,9 @@ The window added B-099 with a python one-off and pushed docs-only without runnin
 left two tickets on order 16. Docs-only pushes skip CI, so main stayed green while PRs #505-#508 failed three backlog tests (GG-1955,
 GG-1956 found by W116.2 / W116.3). Fixed 17:45 PT: orders renumbered 1..N, .md re-rendered, check and tests pass. Rule: any edit to
 ROLLING_BACKLOG.json ends with `python3 scripts/rolling_backlog.py && python3 scripts/rolling_backlog.py --check` before the push.
+
+### W59 - SW-9, 2026-11-16 22:30 PT (found 11-17 22:08 PT) - blamed the Muse sweep's failures on the operator's usage limits without reading the run
+The nightly sweep had failed 11-13 through 11-17. The window told the operator the 11-16 failure was "likely" his 5-hour limit and moved
+the task to Haiku; the run's own message (screenshot, 11-17) was "Not enough disk space to clone the repository eignacio1/sports-intel-archive" -
+the archive outgrew the session disk, and the sweep's prompt told it to attach and clone the archive. Fixed 06:09Z: the prompt now reads
+the archive only through the GitHub API (never cloned). Rule: diagnose a failed scheduled run from its own output before naming a cause.
