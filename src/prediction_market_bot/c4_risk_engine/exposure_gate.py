@@ -47,6 +47,10 @@ BOOKS: dict[str, dict[str, Any]] = {
     "SHADOW": {"band": "shadow", "portfolio": None, "frozen": False, "advisory": True},
     # W105.5 / B-054: the ride/fade board's own demo book. Ledger-less and advisory, exactly like SHADOW.
     "RIDE_BOARD": {"band": "ride_board", "portfolio": None, "frozen": False, "advisory": True},
+    # GG-1942 / W116.2: the router-arm demo book (decision_trees.arm_orders.BOOK). Ledger-less and advisory like
+    # RIDE_BOARD: its demo stakes must never count toward breach / SYSTEM sums or the raised demo caps halt every book.
+    # Its orders submit under the shadow kill band, so the order-path writer check stays on SHADOW.
+    "ARM_ORDERS": {"band": "arm_orders", "portfolio": None, "frozen": False, "advisory": True},
 }
 # GG-1240: an ``advisory`` book is reported and must have a live writer, but it is excluded from breach
 # and system sums. SHADOW stakes are hypothetical (no ledger, never resolve), so against the $1,000
