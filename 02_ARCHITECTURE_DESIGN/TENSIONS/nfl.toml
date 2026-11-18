@@ -53,7 +53,7 @@ id = "NFL-T6"
 title = "Forward test: treatment arm barely fills while control fills; fills lose while non-fills win"
 status = "OPEN"
 where = "forward test (ADR-0072) treatment vs control; E3 adverse selection"
-evidence = "11_MEMORY_HANDOFF/SESSION_HANDOFF_20261015T0025Z_W73_1.md (NHL control 29 fills vs treatment 1); 04_EXECUTION/ACTIVE_QUEUE.md E3 row (T4 24.1% vs 48.7%, T1 28.9% vs 52.1%)"
+evidence = "11_MEMORY_HANDOFF/archive/2026-10/SESSION_HANDOFF_20261015T0025Z_W73_1.md (NHL control 29 fills vs treatment 1); 04_EXECUTION/ACTIVE_QUEUE.md E3 row (T4 24.1% vs 48.7%, T1 28.9% vs 52.1%)"
 pillar = "EXECUTION (E1, E3)"
 relief = "Enough fills per arm to read E2/E3 (about 550 per arm); a pricing change that the treatment arm's fill rate then confirms or refutes. Not NFL-specific; recorded here because NFL shares the arm design"
 

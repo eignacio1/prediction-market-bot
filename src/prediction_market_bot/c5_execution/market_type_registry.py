@@ -1037,7 +1037,7 @@ for _bd, _delta, _ci in (
 # --- EXP-036 / T-654 (Wave 52.A): NHL pre-game SHADOW cells, flipped via promote_cell_status ---
 # Records reality, not a promotion: deploy/cron.nhl_shadow already evaluates these nine cells at
 # kelly_fraction 0 and logs rows to data/shadow/nhl/. Row counts per cell (all > 0, all valid) are
-# the terminal-verified W51.3 table in 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261003_W51_3.md (D4);
+# the terminal-verified W51.3 table in 11_MEMORY_HANDOFF/archive/2026-10/SESSION_HANDOFF_20261003_W51_3.md (D4);
 # re-verifying them on the VPS is VPS-PENDING for the landing block. SHADOW is evaluate-and-log
 # only; kelly_fraction is untouched (ADR-0048). GG-401: every NHL band currently uses a projected
 # goalie, so no NHL T3 score may be read until GG-401 is fixed or the pre-registration amended.
