@@ -16,8 +16,8 @@ class FakeClient:
         return SimpleNamespace(ok=True, order_id="oid-1", error=None)
 
 
-def row(arm="RIDE", side="yes", mid=0.70, branch=None, leaf="L1"):
-    return {"run_id": "r1", "market_ticker": "T1", "event_ticker": "EV1", "sport": "nfl", "market_type": "x",
+def row(arm="RIDE", side="yes", mid=0.70, branch=None, leaf="L1", sport="nba"):
+    return {"run_id": "r1", "market_ticker": "T1", "event_ticker": "EV1", "sport": sport, "market_type": "x",
             "band": "T1", "mid": mid, "yes_bid": mid - 0.01, "yes_ask": mid + 0.01,
             "router": {"branch": branch or arm, "arm": arm, "side": side, "leaf_id": leaf, "tier": "T2-6h",
                        "filters_fired": ["rest"], "reason": "leaf_arm:" + str(arm)}}
@@ -135,13 +135,56 @@ def test_book_caps_switch_default_off_and_raised_only_when_set(env, monkeypatch,
 
 
 def test_order_row_carries_the_book_at_submit(env, monkeypatch):
-    meta = {"yes_bid": 0.69, "yes_ask": 0.71, "book_mid": 0.70, "model_mid": 0.70, "gap": 0.0}
+    meta = {"yes_bid": 0.69, "yes_ask": 0.71, "book_mid": 0.70, "model_mid": 0.70, "gap": 0.0,
+            "yes_bid_size": 120.0, "yes_ask_size": 40.0}
     monkeypatch.setattr(ao.pol, "decide", lambda c, t, d, mid, rid: SimpleNamespace(action="SUBMIT", mid_price=0.69, reason="ok", meta=meta))
     r0 = row()
     r0.update(horizon_hours_to_start=3.5, book_yes_bid_size=120, book_yes_ask_size=40)
     r = go(env, r0)
     assert r["book_at_submit"]["yes_ask"] == 0.71 and r["hours_to_start"] == 3.5 and r["book_yes_bid_size"] == 120
     assert r["placement"] == "rest_touch" and r["pre_order_spread"] == pytest.approx(0.02) and r["intended_side"] == "yes"
+    # W117.1: spread and the depth at the order's OWN touch are logged explicitly (YES rests on the bid)
+    assert r["book_at_submit"]["spread"] == pytest.approx(0.02) and r["book_at_submit"]["own_touch_size"] == 120.0
+
+
+def test_own_touch_size_for_a_no_order_is_the_ask_size(env, monkeypatch):
+    meta = {"yes_bid": 0.30, "yes_ask": 0.33, "book_mid": 0.315, "model_mid": 0.315, "gap": 0.0,
+            "yes_bid_size": 7.0, "yes_ask_size": 55.0}
+    monkeypatch.setattr(ao.pol, "decide", lambda c, t, d, mid, rid: SimpleNamespace(action="SUBMIT", mid_price=0.33, reason="ok", meta=meta))
+    r = go(env, row("RIDE", "no", mid=0.30))
+    assert r["event"] == ao.ORDER_EVENT and r["book_at_submit"]["own_touch_size"] == 55.0
+    assert r["book_at_submit"]["spread"] == pytest.approx(0.03)
+
+
+def test_spread_is_derived_when_the_book_meta_has_no_spread_field(env, monkeypatch):
+    meta = {"yes_bid": 0.40, "yes_ask": 0.44}
+    monkeypatch.setattr(ao.pol, "decide", lambda c, t, d, mid, rid: SimpleNamespace(action="SUBMIT", mid_price=0.40, reason="ok", meta=meta))
+    r = go(env, row("RIDE", "no", mid=0.42))
+    assert r["book_at_submit"]["spread"] == pytest.approx(0.04) and r["book_at_submit"]["own_touch_size"] is None
+
+
+def test_nfl_per_leaf_demo_order_routes_to_no_bet_and_nothing_is_submitted(env):
+    """W117.1 A3 (operator 11-17 17:45 PT): an NFL row routed by the per-leaf map places no order; the reason is logged."""
+    r = go(env, row("RIDE", "yes", sport="nfl"))
+    assert r["event"] == ao.SKIP_EVENT and r["reason"] == "hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D)"
+    assert r["arm"] == "NO_BET" and r["arm_pre_nfl_rule"] == "RIDE" and env.client.calls == []
+
+
+def test_nba_and_nhl_per_leaf_orders_are_unchanged(env):
+    assert go(env, row("RIDE", "yes", sport="nba"))["event"] == ao.ORDER_EVENT
+    assert go(env, _sport_row("nhl", "r9", "TN"))["event"] == ao.ORDER_EVENT
+
+
+def test_nfl_row_not_routed_by_a_leaf_is_not_touched_by_the_rule(env):
+    r = row("RIDE", "yes", sport="nfl")
+    r["router"]["reason"], r["router"]["leaf_id"] = "ride_rule", None
+    assert go(env, r)["event"] == ao.ORDER_EVENT
+
+
+def _sport_row(sport, run, ticker):
+    r = row("RIDE", "yes", 0.70, sport=sport)
+    r.update(run_id=run, market_ticker=ticker, event_ticker="EV-" + ticker)
+    return r
 
 
 def _game_row(ticker, run):

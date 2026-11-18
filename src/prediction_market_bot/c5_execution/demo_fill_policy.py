@@ -237,7 +237,8 @@ def decide(client: Any, ticker: str, direction: str, mid_price: float, position_
     book_mid = (bid + ask) / 2.0
     gap = abs(mid_price - book_mid)
     max_gap = _float_env(MAX_GAP_ENV, DEFAULT_MAX_MID_GAP)
-    meta = {"yes_bid": bid, "yes_ask": ask, "model_mid": mid_price, "book_mid": book_mid, "gap": gap}
+    meta = {"yes_bid": bid, "yes_ask": ask, "model_mid": mid_price, "book_mid": book_mid, "gap": gap,
+            "spread": round(ask - bid, 4), "yes_bid_size": book.get("yes_bid_size"), "yes_ask_size": book.get("yes_ask_size")}
     if gap > max_gap:
         return Decision("SKIP", mid_price, "mid_gap_above_threshold", {**meta, "max_gap": max_gap})
     # submit_order buys YES at mid_price, or NO at 1 - mid_price. Our side's best bid:

@@ -1226,7 +1226,18 @@ class KalshiMarketClient:
             return False, {}
         if bid > 1.0 or ask > 1.0:  # legacy cent-denominated fields
             bid, ask = bid / 100.0, ask / 100.0
-        return True, {"yes_bid": bid, "yes_ask": ask}
+        out = {"yes_bid": bid, "yes_ask": ask}
+        # W117.1: contracts resting at the touch, from the same payload (no extra call). Absent when the venue omits them.
+        for k, names in (("yes_bid_size", ("yes_bid_size_fp", "yes_bid_size")),
+                         ("yes_ask_size", ("yes_ask_size_fp", "yes_ask_size"))):
+            for n in names:
+                try:
+                    if raw.get(n) is not None and raw.get(n) != "":
+                        out[k] = float(raw[n])
+                        break
+                except (TypeError, ValueError):
+                    continue
+        return True, out
 
     def is_listed_on_demo(self, ticker: str) -> bool | None:
         """W67.2/GG-564: is this ticker listed on the venue orders are routed to (demo under

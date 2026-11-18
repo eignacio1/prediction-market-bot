@@ -250,12 +250,19 @@ def joined(rows: List[dict], client: Any, now: datetime) -> dict:
     """The W116.2 per-order join, its health, per-arm E1/E2/E3 + markouts, and the placement model per epoch (never pooled)."""
     from prediction_market_bot.c5_execution.placement import join as pj, model as pm
     fills, market_of, candles_of, note = make_join_inputs(rows, client, now)
-    recs = pj.records(rows, fills, market_of, candles_of, now)
+    from prediction_market_bot.c5_execution.placement import archive_book as ab
+    book_of = ab.book_of_for(rows, REPO / "exp_output" / "PRICE_ARCHIVE")
+    recs = pj.records(rows, fills, market_of, candles_of, now, book_of=book_of)
     out: Dict[str, Any] = {"join_note": note, "join_health": pj.join_health(recs), "per_arm": pj.per_arm(recs),
                            "per_arm_option": pj.per_arm(recs, by="option"),
-                           "placement_model": {}}
+                           "placement_model": {}, "spread_coverage": {}, "cross_clustered": {}}
     for ep in (PRE, POST):
         mr = pj.model_records([r for r in recs if r["epoch"] == ep])
+        src = Counter((r.get("spread_src") or "none") for r in mr)
+        out["spread_coverage"][ep] = {"orders": len(mr), "logged": src.get("logged", 0), "backfilled_archive": src.get("archive", 0),
+                                      "no_spread": src.get("none", 0)}
+        out["cross_clustered"][ep] = {"by_arm": pm.option_net_clustered(mr, ("arm",)),
+                                      "by_arm_sport": pm.option_net_clustered(mr, ("arm", "sport"))}
         out["placement_model"][ep] = {"n": len(mr), "by_arm": pm.summary(mr, ("arm",)),
                                       "by_arm_sport": pm.summary(mr, ("arm", "sport")),
                                       "by_arm_leaf": _trim(pm.summary(mr, ("arm", "leaf")), 10)}
