@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W118.4: confirm box deployed 628b0e4 before disk_retention_dryrun"
