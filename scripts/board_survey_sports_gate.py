@@ -20,6 +20,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import board_survey_sports_store as bs  # noqa: E402
+from board_survey_sports_store import dated_files, open_text  # noqa: E402  (W118.4 .gz-aware readers)
 from market_efficiency_survey import calib_gap  # noqa: E402
 from execution_cost_surface import parse_ticker_start, tau_bucket  # noqa: E402
 
@@ -99,8 +100,8 @@ SUB = tuple(map(int, os.environ["SUB"].split("/"))) if os.environ.get("SUB") els
 def done_keys(store_dir: str) -> set:
     """(kind,key) already stored in a closed store dir (read-only; no lock)."""
     out = set()
-    for f in glob.glob(os.path.join(store_dir, "raw_????-??-??.jsonl")):
-        for line in open(f):
+    for f in dated_files(store_dir, "raw_????-??-??.jsonl"):       # W118.4: plain or .gz
+        for line in open_text(f):
             r = json.loads(line)
             out.add((r["kind"], r["key"].split("|")[0] + "|" + (r["key"].split("|")[1] if "|" in r["key"] else "")))
     return out

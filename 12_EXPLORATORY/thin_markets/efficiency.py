@@ -30,6 +30,10 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.disk_retention import dated_files as _dated_files, open_text as _open_text  # noqa: E402  (W118.4)
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -82,7 +86,7 @@ def load(paths: list[str]) -> tuple[dict, dict]:
     """markets: ticker -> market dict; candles: (ticker, period) -> sorted unique candle list."""
     markets, candles = {}, defaultdict(dict)
     for p in paths:
-        with open(p) as fh:
+        with _open_text(p) as fh:                       # W118.4: plain or .gz
             for line in fh:
                 if not line.strip():
                     continue
@@ -255,7 +259,7 @@ def main(argv=None) -> int:
     ap.add_argument("--out-json", required=True)
     ap.add_argument("--out-md", required=True)
     a = ap.parse_args(argv)
-    paths = sorted(p for d in a.store for p in glob.glob(str(Path(d) / "raw_*.jsonl")))
+    paths = sorted(p for d in a.store for p in _dated_files(d, "raw_*.jsonl"))
     markets, candles = load(paths)
     summ = summarize(markets, candles)
     order = rank(summ)

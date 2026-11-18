@@ -102,6 +102,10 @@ TASKS: dict[str, str] = {
     "nba_engine_props_shadow_readback": f"{PY} scripts/nba_engine_props_shadow_install.py readback",
     "nba_engine_props_shadow_uninstall": f"{PY} scripts/nba_engine_props_shadow_install.py uninstall",
     # W116.3 / B-092 (GG-1953): NHL event store daily refresh cron line (fetch + streamed two-season compile). Budget-gated, backs up the crontab first. NOT run without the operator's named approval.
+    "disk_retention_dryrun": f"{PY} scripts/run_disk_retention.py --dry-run",   # W118.4 B-102, read-only: lists what retention would compress + bytes saved
+    "disk_retention_install": f"{PY} scripts/disk_retention_install.py install",
+    "disk_retention_readback": f"{PY} scripts/disk_retention_install.py readback",
+    "disk_retention_uninstall": f"{PY} scripts/disk_retention_install.py uninstall",
     "nhl_event_store_install": f"{PY} scripts/nhl_event_store_install.py install",
     "nhl_event_store_readback": f"{PY} scripts/nhl_event_store_install.py readback",
     "nhl_event_store_uninstall": f"{PY} scripts/nhl_event_store_install.py uninstall",
