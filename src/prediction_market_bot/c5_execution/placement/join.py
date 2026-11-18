@@ -100,9 +100,14 @@ def spread_at_submit(r: dict) -> Optional[float]:
     return None if yb is None or ya is None or ya < yb else round(ya - yb, 4)
 
 
+def depth_at_submit(r: dict) -> Optional[float]:
+    """Contracts resting at the order's OWN touch at submit (W117.1), or None when it was not logged."""
+    return _f((r.get("book_at_submit") or {}).get("own_touch_size"))
+
+
 def records(rows: Iterable[dict], fills: Optional[Iterable[dict]], market_of: Callable[[str], Optional[dict]],
             candles_of: Optional[Callable[[str], Any]] = None, now: Optional[datetime] = None,
-            epoch: datetime = EPOCH) -> List[dict]:
+            epoch: datetime = EPOCH, book_of: Optional[Callable[[str, datetime], Optional[dict]]] = None) -> List[dict]:
     """One record per placed arm order (see module doc). ``fills`` None means the fills pull failed: fill status is then
     unknown and every record is outcome "lookup_failed" with filled None."""
     now = now or datetime.now(timezone.utc)
@@ -122,9 +127,15 @@ def records(rows: Iterable[dict], fills: Optional[Iterable[dict]], market_of: Ca
             "order_id": r["order_id"], "arm": r.get("arm"), "sport": r.get("sport"), "leaf_id": r.get("leaf_id"),
             "epoch": ep, "ts": ts.isoformat(), "ticker": tk, "series": series, "side": side,
             "placement": r.get("placement") or "rest_touch", "price": _f(r.get("entry_price")),
-            "spread": spread_at_submit(r), "depth": None, "hours": _f(r.get("hours_to_start")),
-            "filled": None, "contracts": 0.0, "fill_price": None, "fee_per_contract": None, "maker_share": None,
+            "spread": spread_at_submit(r), "depth": depth_at_submit(r), "hours": _f(r.get("hours_to_start")),
+            "spread_src": None, "spread_age_s": None, "filled": None, "contracts": 0.0, "fill_price": None, "fee_per_contract": None, "maker_share": None,
             "won": None, "outcome": "lookup_failed", "markout": {}}
+        if rec["spread"] is not None:
+            rec["spread_src"] = "logged"
+        elif book_of is not None and tk:  # W117.1: read-time backfill from the price archive; the order log is never edited
+            b = book_of(tk, ts)
+            if b:
+                rec.update(spread=b["spread"], spread_src="archive", spread_age_s=b.get("age_s"))
         if by_oid is None:
             out.append(rec)
             continue
@@ -230,5 +241,6 @@ def model_records(recs: List[dict]) -> List[dict]:
     """Records in the shape placement.model expects (one epoch at a time - the caller filters)."""
     return [{"arm": r["arm"], "sport": r["sport"], "leaf_id": r["leaf_id"], "placement": r["placement"], "price": r["price"],
              "filled": bool(r["filled"]), "won": r["won"], "spread": r["spread"], "depth": r["depth"], "hours": r["hours"],
-             "series": r["series"]}
+             "series": r["series"], "ticker": r["ticker"], "order_id": r["order_id"], "spread_src": r.get("spread_src"),
+             "spread_age_s": r.get("spread_age_s")}
             for r in recs if r["filled"] is not None and r["price"] is not None]

@@ -118,7 +118,13 @@ def cap_reason(event: str, stake: float, day: str, path: Optional[Path] = None,
 def submit_context(row: dict, side: str, meta: Optional[dict], now: datetime) -> dict:
     """What a later fill analysis needs, from the row and the book read the placement rule already made (no API call)."""
     ctx = order_context(row, side, now.strftime("%Y-%m-%dT%H:%M:%SZ"))
-    ctx["book_at_submit"] = {k: (meta or {}).get(k) for k in ("yes_bid", "yes_ask", "book_mid", "model_mid", "gap")}
+    ctx["book_at_submit"] = {k: (meta or {}).get(k) for k in ("yes_bid", "yes_ask", "book_mid", "model_mid", "gap", "spread",
+                                                              "yes_bid_size", "yes_ask_size")}
+    # W117.1 (B-095): the spread and the depth at the order's OWN touch are logged explicitly (YES rests on the bid, NO on the ask)
+    b = ctx["book_at_submit"]
+    if b.get("spread") is None and b.get("yes_bid") is not None and b.get("yes_ask") is not None:
+        b["spread"] = round(float(b["yes_ask"]) - float(b["yes_bid"]), 4)
+    b["own_touch_size"] = b.get("yes_bid_size") if side == "yes" else b.get("yes_ask_size")
     ctx["hours_to_start"] = row.get("horizon_hours_to_start")
     ctx["start_time_utc"] = row.get("start_time_utc")
     return ctx
@@ -175,6 +181,17 @@ def side_for(arm: str, row: dict, router: dict) -> Optional[str]:
     return rs if rs in ("yes", "no") else None
 
 
+NFL_PER_LEAF_REASON = "hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D)"
+
+
+def is_nfl_per_leaf(row: dict, router: dict) -> bool:
+    """True for an NFL row whose route came from the per-leaf arm map (W111.3: reason "leaf_arm:<arm>", a leaf_id on the
+    route). Only the demo order is withheld: the router and the shadow rows are untouched and keep logging."""
+    if str(row.get("sport") or "").lower() != "nfl":
+        return False
+    return bool(router.get("leaf_id")) and "leaf_arm:" in str(router.get("reason") or "")
+
+
 def is_routed(row: dict) -> bool:
     """True when the row carries a usable router decision (so the arm, not the old rule, owns it when ON)."""
     r = row.get("router")
@@ -219,6 +236,9 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
         return out(SKIP_EVENT, "kill_switch_halted", meta=halted)
     if arm is None:
         return out(SKIP_EVENT, "no_bet" if router.get("branch") == "NO_BET" else "unrouted")
+    if is_nfl_per_leaf(row, router):  # W117.1 A3, operator-approved 11-17 17:45 PT: NFL v1 per-leaf demo orders route to NO BET
+        base["arm_pre_nfl_rule"], base["arm"] = arm, "NO_BET"
+        return out(SKIP_EVENT, NFL_PER_LEAF_REASON)
     side = side_for(arm, row, router)
     if side is None:
         return out(SKIP_EVENT, "side_unavailable_or_disagrees", router_side=router.get("side"))

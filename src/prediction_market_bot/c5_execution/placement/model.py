@@ -192,7 +192,8 @@ def _spread(r: dict) -> float:
     return SPREAD_BY_SPORT.get(str(r.get("sport") or "").lower(), DEFAULT_SPREAD)
 
 
-def option_table(records: Iterable[dict], by: Sequence[str] = ("arm",), min_n: int = MIN_N) -> Dict[str, dict]:
+def option_table(records: Iterable[dict], by: Sequence[str] = ("arm",), min_n: int = MIN_N,
+                 strict_spread: bool = True) -> Dict[str, dict]:
     """Expected net per order placed (dollars per contract, after exact fees and selection) for each placement option,
     and the best supported one. ``placement`` must not be in ``by``: the options are compared inside a cell."""
     assert "placement" not in by, "options are compared inside a cell"
@@ -210,6 +211,8 @@ def option_table(records: Iterable[dict], by: Sequence[str] = ("arm",), min_n: i
                         "supported": m["n"] >= min_n and nf >= min_n}
         # crossing: every order in the cell, filled or not, bought at the far touch - the unselected population
         touch = [r for r in rs if (r.get("placement") or "rest_touch") == "rest_touch" and edge(r) is not None]
+        if strict_spread:  # W117.1: a crossing cost is valued only where a spread was logged or backfilled, never assumed
+            touch = [r for r in touch if r.get("spread") is not None]
         v = []
         for r in touch:
             px = min(0.99, float(r["price"]) + _spread(r))
@@ -230,3 +233,73 @@ def summary(records: List[dict], by: Sequence[str] = ("arm",), min_n: int = MIN_
     return {"by": list(by), "min_n": min_n, "fill": fill_table(records, by),
             "selection": selection_table(records, by, min_n),
             "options": option_table(records, [k for k in by if k != "placement"], min_n)}
+
+
+# ---- game-clustered intervals (W117.1 Part B) --------------------------------------------------------------------------
+
+def game_of(r: dict) -> str:
+    """The game an order belongs to: sport + the date-and-teams part of the ticker (KXNBAGAME-26NOV17ABCDEF-ABC -> 26NOV17ABCDEF), so
+    the game, spread and total markets of one game share a key. Orders on one game are not independent; this is the cluster."""
+    parts = str(r.get("ticker") or "").split("-")
+    return str(r.get("sport") or "?").lower() + "|" + (parts[1] if len(parts) > 1 else str(r.get("ticker") or r.get("order_id")))
+
+
+def t_crit(df: float, z: float = Z95) -> float:
+    """Two-sided 95% Student-t critical value by the Cornish-Fisher expansion (df >= 2); the normal value for large df."""
+    if df < 2:
+        return float("inf")
+    return z + (z ** 3 + z) / (4 * df) + (5 * z ** 5 + 16 * z ** 3 + 3 * z) / (96 * df ** 2)
+
+
+def cluster_mean_ci(vals: Sequence[float], games: Sequence[str]) -> dict:
+    """Mean of per-order values with a game-clustered 95% interval: the CR1 sandwich standard error with G games, the t critical
+    value on G - 1 degrees of freedom. ``n`` is orders, ``n_games`` is games; fewer than 2 games has no interval."""
+    n = len(vals)
+    if n == 0:
+        return {"n": 0, "n_games": 0, "mean": None, "lo": None, "hi": None}
+    m = sum(vals) / n
+    g: Dict[str, List[float]] = {}
+    for v, k in zip(vals, games):
+        g.setdefault(k, []).append(v)
+    G = len(g)
+    if G < 2:
+        return {"n": n, "n_games": G, "mean": m, "lo": None, "hi": None}
+    meat = sum((sum(x - m for x in v)) ** 2 for v in g.values())
+    se = math.sqrt(G / (G - 1) * meat) / n
+    h = t_crit(G - 1) * se
+    return {"n": n, "n_games": G, "mean": m, "lo": m - h, "hi": m + h}
+
+
+def _cl(r: Optional[dict]) -> dict:
+    return {"n": r["n"], "n_games": r["n_games"], "net": _r(r["mean"]), "ci": [_r(r["lo"]), _r(r["hi"])]}
+
+
+def option_net_clustered(records: Iterable[dict], by: Sequence[str] = ("arm",)) -> Dict[str, dict]:
+    """Per cell, net per contract after exact fees for each option, with game-clustered intervals and n in orders AND games.
+
+      rest_touch   per order placed, on the orders that have a real spread (the same orders the crossing is valued on)
+      cross        won - (price + real spread) - taker fee, per order; ONLY orders with a logged or backfilled spread
+      rest_touch_all   rest_touch on every resolved order in the cell, spread or not
+    Reads: if ``cross`` has an interval wholly above zero it cleared zero after costs on these games; the comparison with
+    rest_touch is on the same orders (``cross_minus_rest``)."""
+    assert "placement" not in by
+    out = {}
+    for cell, rs in sorted(_group(records, by).items()):
+        res = [r for r in rs if (r.get("placement") or "rest_touch") == "rest_touch" and edge(r) is not None]
+        sp = [r for r in res if r.get("spread") is not None]
+
+        def touch_v(r: dict) -> float:
+            return (edge(r) - _fee(r, float(r["price"]), "maker")) if r.get("filled") else 0.0
+
+        def cross_v(r: dict) -> float:
+            px = min(0.99, float(r["price"]) + max(0.0, float(r["spread"])))
+            return (1.0 if r["won"] else 0.0) - px - _fee(r, px, "taker")
+        row = {"rest_touch_all": _cl(cluster_mean_ci([touch_v(r) for r in res], [game_of(r) for r in res])),
+               "rest_touch": _cl(cluster_mean_ci([touch_v(r) for r in sp], [game_of(r) for r in sp])),
+               "cross": _cl(cluster_mean_ci([cross_v(r) for r in sp], [game_of(r) for r in sp])),
+               "cross_minus_rest": _cl(cluster_mean_ci([cross_v(r) - touch_v(r) for r in sp], [game_of(r) for r in sp])),
+               "n_spread_logged": sum(1 for r in sp if r.get("spread_src") == "logged"),
+               "n_spread_archive": sum(1 for r in sp if r.get("spread_src") == "archive"),
+               "n_no_spread": len(res) - len(sp), "no_place": {"net": 0.0}}
+        out[cell] = row
+    return out
