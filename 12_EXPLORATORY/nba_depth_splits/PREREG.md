@@ -75,3 +75,19 @@ That is a routing result for the look, not a verdict on the split. A split that 
 ## 4. Guards
 No look-ahead: tested per split (a row at time t never reads an archive value with `source_time`/`status_at_utc` > t, nor any
 2026-27 season value). No edits to `filter_supply.py`, `leaf_map.json` (frozen v1) or `leaf_map_v2.json`. Kelly stays 0. Free data only.
+
+## 5. Amendment A1 (2026-11-18, before any outcome read; code not yet run on rows)
+Pins three under-specified definitions. No leaf, cell, arm or threshold above changes.
+- **S2 matchup scalar.** Team offence zone mix = mean of the `home` and `road` "teams shooting, by zone" 2025-26 tables
+  (attempts per game by zone: restricted area, paint non-RA, mid-range, corner 3, above-the-break 3). Opponent allowed FG% by zone =
+  "opponent shooting, by zone, all games" 2025-26 (zones merged the same way, FGA-weighted for corner 3). Value for an ordered pair
+  (offence O, defence D) = sum over zones of share_O(zone) x allowedFG_D(zone) x points(zone) (2, or 3 for corner / above-break 3).
+  Leaves are terciles over all 870 ordered pairs: `@total` from the mean of the two teams' matchup values, `@side` from home value
+  minus away value (edge = outer thirds of that difference over all pairs).
+- **S3 rotation player.** An OUT-listed player counts as rotation if the same team's starter detail in any snapshot with
+  `status_at_utc <= ts_utc` lists that name at >= 20 min. Leaves: `confirmed` (both sides Confirmed), `mixed`, `projected_clean`
+  (neither confirmed, no rotation OUT), `projected_rotation_out`. One leaf set for all four families.
+- **S5 crew.** Crew = chief + referee + umpire from the latest refs snapshot with `snapshot_at_utc <= ts_utc`; referee values are
+  2025-26 `total points per game` and `free-throw attempts per game` (min 20 games worked); at least 2 of 3 refs must join, else `unknown`.
+  Leaf = terciles of the mean of the two percentiles against the league referee distribution.
+- Scored per (split x leaf x cell x band) as section 3 states; BH over all of those tests.
