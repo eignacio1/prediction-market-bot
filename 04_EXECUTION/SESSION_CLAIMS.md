@@ -1309,3 +1309,4 @@
 | 2026-11-18T05:07:24Z | B-095 | CLOSED — merge confirmed, HEAD (a1dccbd) is ancestor of origin/main — W117.1 close: caps raised, spread logged (454/486 backfilled), FADE crossed +0.166 [-0.016,+0.348] does not clear zero clustered, frozen placement table empty (PRs #512 #514 #519) |
 | 2026-11-18T05:23:32Z | W118.3 | W118.3 NHL layer 3 + goalie timing + router v2. PURPOSE: D6 NHL 0->N |
 | 2026-11-18T05:24:11Z | B-102 | W118.4 disk measured, retention as code, days-to-90% alarm. PURPOSE: PLUMBING - disk % now; bytes dry run frees; days to 90% |
+| 2026-11-18T05:24:04Z | B-101 GG-1957..1959 | W118.2 NBA depth factor classes from archive as pre-registered tree splits. PURPOSE: D5(b) NBA factor classes by stage; splits kept/tested per cell and arm; D1 NBA classes |
