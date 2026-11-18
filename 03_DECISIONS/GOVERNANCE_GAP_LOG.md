@@ -4791,3 +4791,23 @@ W116.3, 2026-11-17. Box trace: every NBA_PLAYER_POINTS row has filters 0 with no
 **Status:** OPEN · **Severity:** MEDIUM
 
 W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer3_inputs), so NHL layer 3 = 0 and NHL rows note `nhl_game_not_in_store`. Measured locally: `nhl_event_store.compile_store` peaks at ~2.0 GB RSS and `filter_supply._nhl_state` at ~885 MB, both over the ~600 MB budget. Planned shrink (not started): streamed compile, at most two seasons, compact filter state. Re-measure; propose the install task to the operator only if it is under ~600 MB.
+
+### GG-1936 — No free NBA / NHL closing-line history to give router v2 a long-history prior (W116.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.1, 2026-11-17. Router v2 (`decision_trees/evidence/`) takes a long-history prior per bin from nflverse for NFL only (`12_EXPLORATORY/evidence_design/prior_nflverse.json`, TRANSFER_SD 0.03). There is no free ($0) NBA or NHL source of historical closing lines with results, so NBA / NHL leaves start from the pooled root. That is why their power calendar runs later (`power_calendar.json`). Next: search free sources (archived odds dumps, Kalshi's own history, GG-1937). A paid-only source stays a registered gap (DOCTRINE §2).
+
+### GG-1937 — Kalshi's own market history is not usable as a prior until its candles are parsed (W116.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.1, 2026-11-17. A raw Kalshi history pull exists only in the operator's local checkout (`exp_output/KALSHI_HISTORY/raw/raw_2026-10-*.jsonl`, 792 MB, untracked; whether the box has a copy is not verified), and nothing parses it into (price bin, move bin, outcome) rows. Parsed, it would be a same-venue prior for every sport, with the venue's own fees, and better than nflverse's sportsbook lines. Next: a candle parser that fits the box's memory budget, then a prior per (sport, family, bin) in the same JSON form as `prior_nflverse.json`, read through a new pre-registration (v2's is frozen).
+
+### GG-1938 — Settled shadow rows carry no filter column, so router v2 cannot fit the filter level (W116.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W116.1, 2026-11-17. The doctrine tree is market state > filters > arm (DOCTRINE §1). The settled W110.5 rows have no layer-2 filter value, so v2's pooled tree stops at the move level (sport > family > band > bin > move). Filters as splits (D6 layer 2) cannot be scored per leaf until settled rows record the filter value at decision time. Depends on W116.3's `row_decision` on every routed row (GG-1951..GG-1953). Once rows carry it, add a filter depth to the tree under a new pre-registration.
+
+### GG-1954 — The e-process was invalid on binary payoffs (plug-in variance); fixed on the W116.1 branch (W116.1)
+**Status:** OPEN · **Severity:** HIGH
+
+W116.1, 2026-11-17. With plug-in variance, a run where every favourite won gave log E = 32.9 on 15 games. Under a planted binary null, 275 of 300 runs claimed an arm (bound: 30). Fix (PR #506): `pipeline.Config.null_var="binary"` floors each increment's variance at the null variance of a net = 0 contract at its own cost, c(1−c), with sds summed within a game. Measured after the fix: binary null 2/300 false claims; power on a planted +0.10 effect 79/100 (was 99/100, which was invalid). Tests: `tests/test_evidence_w115.py::test_binary_*`. Resolve when PR #506 is merged and main CI is green. Lesson: a Gaussian e-process needs a variance floor before it is used on binary payoffs.
