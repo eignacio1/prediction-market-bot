@@ -1302,3 +1302,4 @@
 | 2026-11-18T02:32:40Z | B-098 | CLOSED — merge confirmed, HEAD (630cf95) is ancestor of origin/main — W117.0 landed #505-#508 on green CI; remote branches 16 -> 10 + main |
 | 2026-11-18T02:36:53Z | B-095 | W117.1 B-095 EXECUTION: caps raised, spread logged, FADE crossed honest, frozen placement table. PURPOSE: E1/E2/E3 per arm after real costs; spread_logged 0 -> N |
 | 2026-11-18T02:37:00Z | TBD | W117.4 hygiene. PURPOSE: PLUMBING - handoff files live 795->under 60; OPEN gaps down; every push checked (backlog + GG ids) |
+| 2026-11-18T02:41:11Z | B-099 | W117.2 NHL consensus prior + momentum + Kalshi-vs-books. PURPOSE: first-arm dates per sport prior vs none; momentum term; Kalshi-consensus gap n |
