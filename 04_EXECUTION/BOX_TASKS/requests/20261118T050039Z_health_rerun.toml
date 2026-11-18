@@ -1,0 +1,2 @@
+task = "health_rerun"
+note = "W117.3 addendum: healthcheck after SIGPIPE fix"
