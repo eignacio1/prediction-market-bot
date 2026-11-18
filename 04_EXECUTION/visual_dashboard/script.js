@@ -1,21 +1,21 @@
 /* ============================================================ DATA (edited by the strategic window at each wave close) */
 const DIST = [
-  ["Breadth","B1","Cells logging / registered","52 / 108","the whole board","0 since W100 (count fix 50 → 52)"],
-  ["Breadth","B2","Families with a logging cell","17 / 19","19 / 19 + parlays","0"],
+  ["Breadth","B1","Cells logging / registered","61 / 117 (box: 49 in the code + 12 NBA game cells autoflipped)","the whole board","+9 NBA props (W109)"],
+  ["Breadth","B2","Families with a logging cell","20 / 22 (box)","22 / 22 + parlays","+4 NBA prop families"],
   ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
-  ["Breadth","B4","Props · parlay families logging","2 · 0","the board's props and parlays","0"],
-  ["Depth","D1","Factor classes per pre-game model","NFL team (+ QB challenger personnel) · NBA points personnel, team, venue · NHL personnel, team, venue · MLB personnel, team. No live model uses matchup, weather or qualitative","every class at every arm","0"],
+  ["Breadth","B4","Props · parlay families logging","5 · 0 (MLB hits; NBA points, rebounds, assists, threes)","the board's props and parlays","2 → 5"],
+  ["Depth","D1","Factor classes per pre-game model","Engines: NFL team + QB personnel · NBA personnel, team, venue · NHL personnel, team, venue · MLB personnel, team. Layer-3 splits: NBA 9 kept + 12 stumps, NFL 13 cells. NBA archive classes (lineups, shot profile vs defence, pace / usage) in build","every class at every arm","NBA depth splits (118.2)"],
   ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
-  ["Depth","D3","Pre-registered challengers ready","5 (NFL QB · EXP-041 · EXP-044b · EXP-044c NBA v3 · one by script)","≥ 1 per arm","0"],
-  ["Depth","D4","Engine stage per sport","NFL board engine + frozen forward test (EXP-045) · NBA board engine v1/v2/v3, 3 of 3 arms nightly · NHL board engine v2 · MLB pitch store, model priced behind the market (routed to ride)","each sport: data → factors → whole board","NBA coverage fixed 11-05 (3 of 3)"],
-  ["Depth","D5","Betting architecture (8 parts) · factors applied","NFL 8/8 · 10 of 21 · NBA 4/8 · 5 of 17 · NHL 2/8 · 3 of 12 · MLB 3/8 · none","8 of 8 per sport; factors applied","router 4 → 5 branches (pot of gold, W106)"],
-  ["Execution","E1","Demo orders filled","T4 MLB 177 / 4,316 (4.1%) · T1 MLB 85 / 485 (17.5%)","fills ≈ intended orders","0 (MLB idle since 10-20)"],
-  ["Execution","E2","P&L per filled bet","T4 −$0.21 · T1 −$1.50","positive, net of fees","0"],
-  ["Execution","E3","Win rate, fills vs non-fills","T4 25.4% vs 48.3% · T1 28.9% vs 52.1% · trading cost 1.5–2.3¢ game lines, 4–8¢ props; maker loses everywhere","fills at least as good","cost wall measured (W106)"],
-  ["Execution","FT","Forward test (ADR-0072)","Restarted 11-06 01:03Z (NO-side pricing fix, GG-1771). NFL on clean fills: INCONCLUSIVE","~550 fills per arm from the restart","NFL ADOPT → INCONCLUSIVE, clock restarted"],
-  ["Proof","P1","Cells at a scored look","12 / 49 (NFL first look, 11-02)","every cell judged at its n","0"],
-  ["Proof","P2","Verdicts issued","12: NFL total T1 + T2 fade arm closed, routed to ride / no bet · 10 keep accruing · 0 candidate","a verdict per cell (a NO counts)","0"],
-  ["Proof","P3","Next look","11-13 (NFL QB moneyline) · ~91% \"keep accruing\"","—","—"],
+  ["Depth","D3","Pre-registered challengers ready","6 (NFL QB · EXP-041 · EXP-044b · EXP-044c · one by script · router v2)","≥ 1 per arm","+1 router v2 (W116)"],
+  ["Depth","D4","Engine stage per sport","NFL board engine + frozen forward test (EXP-045) · NBA engine v1/v2/v3 nightly · NHL engine v2 + event store on the box (11-18) · MLB pitch store, routed to ride","each sport: data → factors → whole board","NHL store on the box"],
+  ["Depth","D5","Architecture (8 parts) · factors applied","NFL 8/8 · 14 of 23 · NBA 8/8 · 11 · NHL 7/8 · 8 of 12 · MLB 3/8 · none","8 of 8 per sport; factors applied","NBA 4 → 8, NHL 2 → 7 (W109)"],
+  ["Depth","D6","Cells wired end to end (7 layers)","4 / 117 on the box: NBA 4/25 · NFL 0/29 · NHL 0/21 · MLB 0/42","every registered cell","0 → 4 (W114–117)"],
+  ["Execution","E1","Arm orders filled (since 11-06)","RIDE 39 / 279 · MOMENTUM 20 / 96 · FADE 6 / 111","fills ≈ intended orders","arm orders on (11-12)"],
+  ["Execution","E2","P&L per filled contract, after fees","RIDE −0.8¢ · MOMENTUM +7.5¢ · FADE +10.6¢ (6 fills); crossing, by game: no arm clears zero","positive, net of fees","measured with real spread (W117)"],
+  ["Execution","E3","Win rate, fills vs non-fills","RIDE 69% vs 81% · MOMENTUM 50% vs 50% · FADE 33% vs 38% — resting orders picked off","fills at least as good","full join (W116)"],
+  ["Proof","P1","Cells at a scored look","12 / 61 (NFL first look 11-02) + router held-out reads (W116–117, exploratory)","every cell judged at its n","0"],
+  ["Proof","P2","Verdicts issued","12 NFL + hypotheses closed: NFL v1 per-leaf, NHL momentum, ride every favourite","a verdict per cell (a NO counts)","+3 closed hypotheses"],
+  ["Proof","P3","Next look / first earned arm","Power calendar: first arm 2027-07 at +2¢ (2027-01 at +5¢); MLB 2026 look-back in 118.1","—","dated (W116)"],
 ];
 
 const F = [
@@ -69,31 +69,35 @@ const BANDS = ["T1","T2","T3","T4","T4M-PROJ","T4M-ARITH","T4M-FLOW","T4NFL-ARIT
 const CELLS = __CELLS__;
 const MXNOTE = {
   "MLB_PLAYER_PROP_HITS|T4M-PROJ":"The only ACTIVE cell, idle since the World Series. Real fills −$0.21 a bet (n 177).",
-  "MLB_PLAYER_PROP_HITS|T1":"18-feature LR + Platt. Idle until the 2027 season.",
+  "MLB_PLAYER_PROP_HITS|T1":"18-feature LR + Platt. Idle until 2027; the 2026 season is the router's look-back (118.1).",
   "NBA_PLAYER_POINTS|T4":"T4 is DARK (legacy NBA book, frozen). T1–T3 SHADOW cells (EXP-039 / EXP-040), logging only.",
+  "NBA_SPREAD|T2":"Wired end to end on the box (D6): router arm → demo order → fill.",
+  "NBA_SPREAD|T3":"Wired end to end on the box (D6).",
+  "NBA_GAME_TOTAL|T3":"Wired end to end on the box (D6).",
+  "NBA_TEAM_TOTAL|T3":"Wired end to end on the box (D6, from 11-18).",
 };
 
 const ARMS = [
-  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","First look 11-02: total T1 + T2 fade arm closed (routed to ride / no bet), 10 keep accruing"],
+  ["Router arm orders (ADR-0072)","—","Demo orders, real fills","good","ADR-0072 + 11-12 addendum","placement re-fit as spreads accumulate","RIDE 279 / 39, MOMENTUM 96 / 20, FADE 111 / 6 since 11-06; none clears zero after costs yet"],
+  ["Router v2 (pooled + sequential)","—","Frozen, logging switch waits on you","warn","W116.1 pre-registration","weekly looks, Tue 10:00 UTC","Arms no leaf held out; first earned arm 2027 at realistic edges"],
+  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","Per-leaf orders routed to NO BET (11-17); total T1 + T2 fade arm closed"],
   ["NFL engine (board)","—","Frozen forward test","good","EXP-045","01-12","Prices moneyline / spread / total from one simulation"],
-  ["NFL QB-shrunk challenger",2,"Logging","good","accepted 10-10","11-13","Next scored look on the calendar"],
-  ["NBA game markets",12,"Logging","good","EXP-038","second look: definition due before January","Draft definition waiting on you (GG-529)"],
-  ["NBA engine v1 / v2 / v3",3,"Logging","good","EXP-044 / 044b / 044c","first looks 11-13 .. 11-25","3 of 3 arms every night since 11-05; blend weight w ≈ 0 so far"],
-  ["NBA player points",4,"Logging","good","EXP-039 / EXP-040","n = 300 player-games","Shadow only"],
-  ["NHL game markets",9,"Logging","good","EXP-036","preliminary all 2026-27","Board engine v2; judged sample not reachable this season"],
-  ["Ride / pot-of-gold router",28,"Paper, orders OFF","warn","EXP-042 / EXP-043","NFL total ride ~11-19","Ride board built; install waits on you. Pot of gold 0 of 17 orderable"],
-  ["MLB (all arms)","—","Idle (off-season)","warn","EXP-037 MLB","2027 season","Engine priced behind the market (w = 0); routed to ride; pitch store 1.42M pitches"],
+  ["NBA game markets",12,"Logging · 4 wired (D6)","good","EXP-038","second look: definition due before January","Draft definition waiting on you (GG-529); depth splits in build (118.2)"],
+  ["NBA engine v1 / v2 / v3",3,"Logging","good","EXP-044 / 044b / 044c","blend test 12-29 .. 02-15","Moneyline and team totals now priced from the same simulation (117.3)"],
+  ["NBA player props",12,"Logging","good","EXP-039 / 040 / 047","n = 300 player-games","Points, rebounds, assists, threes; layers 1–2"],
+  ["NHL game markets",9,"Logging · store on the box","good","EXP-036","2026-27","Store builds 11-18 13:29Z; wiring, goalie timing and router v2 in 118.3"],
+  ["MLB (all arms)","42","Idle · look-back","warn","EXP-037 MLB","2027 season","2026 season through router v2 (118.1); a frozen 2027 leaf map"],
 ];
 const CAL = [
-  ["Tonight → week","Wave 108 running: untested edge rows · news lag at trade resolution · NBA / NFL / NHL props · weather scoping"],
-  ["Thu 11-13","Next scored look: NFL QB moneyline (modal: keep accruing). NBA engine first looks begin (11-13 .. 11-25)"],
-  ["~11-19","NFL game-total ride cell look (if the ride board is installed)"],
-  ["Mon 11-16","Muse weekly reset — the one message of the week"],
+  ["Now","Wave 118: MLB 2026 through router v2 · NBA depth splits · NHL wired from its store · box disk room · gap burner (272 → 150)"],
+  ["Wed 11-18 13:29Z","NHL event store's first build on the box"],
+  ["Mon 11-23","Muse weekly message — 2026-27 free consensus lines on the list (puck line, total)"],
   ["12-14 .. 01-09","NFL second looks"],
   ["before 2027-01","Define what EXP-038's NBA second look scores (GG-529, draft ready)"],
   ["01-12","NFL engine forward test (EXP-045) reads"],
   ["12-29 .. 02-15","NBA blend test (frozen) reads"],
-  ["2027 season","MLB ride cells and MLB engine resume"],
+  ["2027-01 .. 07","Router v2's first earned arm, by the power calendar (+5¢ .. +2¢ edges)"],
+  ["2027 season","MLB opens with its frozen 2026 look-back leaf map"],
 ];
 
 const WAVES = [
@@ -151,17 +155,27 @@ const WAVES = [
    d:"Pot of gold grafted (router 5 branches). <b>Trading cost 1.5–2.3¢ on game lines, 4–8¢ on props; maker loses everywhere</b>. Ride / fade 0 cells net, pot of gold 0 of 17, MLB props 0 of 50, NBA blend w ≈ 0, MLB engine priced behind the market."},
   {w:"107", k:"neg", t:"The whole record on one page.",
    d:"<b>Edge map: 39 hypotheses, none survives costs forward</b>. News speed: injury news moves the line ~0.3¢ in 20 min — below cost. NBA v3 does not lead Kalshi. You: the build continues on every lane — negative results are expected for a while."},
-  {w:"108", k:"now", t:"Close the last sports gaps; scope weather.",
-   d:"Untested edge rows on the NBA / NHL archive · news lag at trade-print resolution · NBA / NFL / NHL props net of costs · Kalshi weather vs NOAA (research only)."},
+  {w:"108–109", k:"hit", t:"Props on the board; architecture per sport.",
+   d:"Prop series archived for three sports; <b>D5(a) NBA 4 → 8, NHL 2 → 7</b>; +9 NBA prop SHADOW cells. Weather scoped: Kalshi beats a free forecast, no build."},
+  {w:"110–111", k:"hit", t:"The router, routing.",
+   d:"Every settled shadow row scored by arm per leaf (365 leaves); the router reads the leaf map; <b>a losing look closes a hypothesis, never a cell</b> (D-02 / D-03 built)."},
+  {w:"112–114", k:"hit", t:"Layers 3, 6 and 7; D6 on the box.",
+   d:"Splits at layer 3 (NBA 9 cells, NFL 13), size_for at layer 6, <b>the router's arm drives demo orders</b> at layer 7 (approved 11-11). D6 measured on the box for the first time; Muse's archive enters through a pinned intake."},
+  {w:"115–116", k:"", t:"Fable designs, Opus finishes.",
+   d:"<b>Router v2</b> (pooled + always-valid sequential test) built and frozen: arms no leaf held out; v1's NFL per-leaf loses 2.0¢ a row. Power calendar: first earned arm in 2027. Order join fixed (lookup failures 244 → 0). <b>D6 0 → 3</b>."},
+  {w:"117", k:"", t:"Real costs, history as a prior.",
+   d:"Measured with the real spread and counted by game, <b>no arm clears zero yet</b> (FADE crossing +16.6¢ on 20 games, interval spans 0). Kalshi tracks the books at the NHL close. NHL store installed; <b>D6 3 → 4</b>; live handoffs 644 → 42."},
+  {w:"118", k:"now", t:"Build where the evidence is.",
+   d:"MLB's logged season through router v2 · NBA depth from Muse's archive as tree splits · NHL wired from its store · room on the box · gap burner to 150."},
 ];
 
 const DESK = [
-  {a:"var(--warn)", t:"Ride board install", c:"The box's only red",
-   d:"<span class='mono'>ride_board_install</span> adds one crontab line (paper, orders OFF). Needed for the ride cells' looks."},
+  {a:"var(--warn)", t:"Router v2 on for logging", c:"Proposed 11-17",
+   d:"Logs v2's arm beside v1 in shadow only; no order changes and v1 stays the frozen test. One line in Needs your decision."},
   {a:"var(--warn)", t:"NBA second look (GG-529)", c:"Before January",
    d:"EXP-038's date-triggered second look needs a definition. Draft ready: accept or change."},
-  {a:"var(--s1)", t:"News burst capture install", c:"Wait for 108.2",
-   d:"Captures prices every 20 s around news times. 108.2 reads trade prints first and says whether it is still worth installing."},
+  {a:"var(--s1)", t:"Disk retention install", c:"Coming from 118.4",
+   d:"Compresses old logs (evidence never deleted) so the box stays under 90% disk, where the healthcheck fails and blocks installs."},
   {a:"var(--ink-3)", t:"Cross-venue (Kalshi vs Polymarket)", c:"Parked by you",
    d:"The other structural option for edge. Nothing built; reopening it is your call."},
 ];
@@ -181,8 +195,9 @@ const BACKLOG = __BACKLOG__;
 const EDGEMAP = __EDGEMAP__;
 const PICKS = __PICKS__;
 const CALAGE = __CALAGE__;
-const FUNNEL = [["T4 · closed",4316,"var(--seq-250)"],["T4 · filled",177,"var(--crit)"],
-                ["T1 · closed",485,"var(--seq-250)"],["T1 · filled",85,"var(--crit)"]];
+const FUNNEL = [["RIDE · orders",279,"var(--seq-250)"],["RIDE · filled",39,"var(--crit)"],
+                ["MOMENTUM · orders",96,"var(--seq-250)"],["MOMENTUM · filled",20,"var(--crit)"],
+                ["FADE · orders",111,"var(--seq-250)"],["FADE · filled",6,"var(--crit)"]];
 
 /* ============================================================ RENDER */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
