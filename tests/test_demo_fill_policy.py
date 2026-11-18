@@ -274,6 +274,8 @@ def test_repo_mirrored_config_carries_registered_parameters():
             k, v = line.split("=", 1)
             cfg[k] = v
     cfg.pop("ARM_ORDERS", None)  # W112.3 switch (addendum), not a registered ADR-0072 parameter
+    cfg.pop("ARM_BOOK_CAPS", None)  # W117.1 approved switch (operator 11-17), not a registered ADR-0072 parameter
+    cfg.pop("ARM_PLACEMENT_POLICY", None)  # W117.1 approved switch, same
     assert cfg == {"DEMO_FILL_PLACEMENT_RULE": "book_anchor_cancel", "SHADOW_FLAT_STAKE": "on",
                    "DEMO_FILL_CANCEL_AFTER_S": "60", "DEMO_FILL_MAX_MID_GAP": "0.05",
                    "DEMO_FILL_ASSIGN_SHARE": "0.5", "DEMO_FILL_SEED": "w64-2"}
