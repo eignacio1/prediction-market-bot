@@ -46,7 +46,8 @@ def load_rows(settled: str) -> list:
 
 
 def _t(s):
-    return datetime.fromisoformat(str(s).replace("Z", "+00:00"))
+    s = str(s)
+    return datetime.fromisoformat(s[:-1] + "+00:00" if s.endswith("Z") else s)
 
 
 class Snapshots:
