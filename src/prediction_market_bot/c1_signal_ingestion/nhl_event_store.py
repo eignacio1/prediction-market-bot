@@ -61,6 +61,13 @@ def current_season(today: Optional[dt.date] = None) -> int:
     return today.year if today.month >= 9 else today.year - 1
 
 
+def store_seasons(today: Optional[dt.date] = None) -> list[int]:
+    """The seasons the box keeps (W116.3, GG-1953): the one in progress and the one before it -- two at most, so the compile and
+    the router's filter state stay inside the box's memory."""
+    cs = current_season(today)
+    return [cs - 1, cs]
+
+
 class LockedThrottle(Throttle):
     """``Throttle`` shared by worker threads: the lock serialises the spacing, so N threads overlap latency but the
     request rate across all of them never exceeds ``1 / interval_s``."""
@@ -305,19 +312,45 @@ def parse_box_team(payload: dict) -> dict:
 
 
 # ---------------------------------------------------------------- compile (raw cache -> parquet)
-def compile_store(root: Path) -> dict:
+COMPILE_CHUNK_GAMES = 25    # W116.3 (GG-1953): parsed rows become a DataFrame every this many games (25: 270 MB peak locally)
+
+
+def compile_store(root: Path, seasons: Optional[list] = None) -> dict:
     """Parse the whole raw cache into one parquet per (table, season). Deterministic: rows are sorted, files are
-    rewritten whole. Returns {table: {season: rows}} plus per-game box reconciliation facts for the checks."""
+    rewritten whole. Returns {table: {season: rows}} plus per-game box reconciliation facts for the checks.
+    ``seasons`` (W116.3): compile only these start years (the box keeps two); recon.json then covers only them.
+    Streamed (W116.3, GG-1953): every ``COMPILE_CHUNK_GAMES`` games the parsed rows go to a part file, and the season's table
+    is then rewritten from its parts under one unified schema (a column all-null in one part takes the type it has in the
+    others; int with nulls becomes double, as one whole-season DataFrame would make it). Peak memory is one chunk."""
+    import shutil
     import pandas as pd
+    import pyarrow as pa
+    import pyarrow.parquet as pq
     sched = json.loads((root / "schedule_games.json").read_text())
     by_season: dict[int, list[dict]] = {}
     for g in sched:
-        by_season.setdefault(g["season"], []).append(g)
+        if seasons is None or g["season"] in seasons:
+            by_season.setdefault(g["season"], []).append(g)
     counts: dict = {t: {} for t in TABLES}
     recon: list[dict] = []
+    names = ("games", "events", "shifts", "box_players", "rosters")
     for season, games in sorted(by_season.items()):
         ev, sh, bx, ro, gm = [], [], [], [], []
-        for g in games:
+        parts_dir = root / f".compile_parts_{season}"
+        shutil.rmtree(parts_dir, ignore_errors=True)
+        parts_dir.mkdir(parents=True)
+        parts: dict = {n: [] for n in names}
+
+        def flush():
+            for name, rows in zip(names, (gm, ev, sh, bx, ro)):
+                if rows:
+                    pp = parts_dir / f"{name}_{len(parts[name]):04d}.parquet"
+                    pd.DataFrame(rows).to_parquet(pp, index=False)
+                    parts[name].append(pp)
+                    rows.clear()
+        for i, g in enumerate(games):
+            if i and i % COMPILE_CHUNK_GAMES == 0:
+                flush()
             gid = g["game_id"]
             have = {k: cache_path(root, k, season, gid).exists() for k in KINDS}
             row = dict(g, has_pbp=have["pbp"], has_box=have["box"], has_shifts=have["shifts"])
@@ -346,11 +379,30 @@ def compile_store(root: Path) -> dict:
                         seen.add(key)
                         sh.append(r)
             recon.append(facts)
-        for name, rows in (("games", gm), ("events", ev), ("shifts", sh), ("box_players", bx), ("rosters", ro)):
-            df = pd.DataFrame(rows)
-            df.to_parquet(root / f"{name}_{season}.parquet", index=False)
-            counts[name][season] = len(df)
-    (root / "recon.json").write_text(json.dumps(recon))
+        flush()
+        for name in names:
+            out = root / f"{name}_{season}.parquet"
+            tmp = out.with_name(out.name + ".tmp")   # written aside, then renamed: a reader never sees a half-written table
+            if not parts[name]:
+                pd.DataFrame().to_parquet(tmp, index=False)
+                os.replace(tmp, out)
+                counts[name][season] = 0
+                continue
+            schema = pa.unify_schemas([pq.read_schema(pp).remove_metadata() for pp in parts[name]], promote_options="permissive")
+            n = 0
+            with pq.ParquetWriter(tmp, schema) as w:
+                for pp in parts[name]:
+                    t = pq.read_table(pp).replace_schema_metadata(None)
+                    t = t.select([c for c in schema.names if c in t.column_names])
+                    for c in schema.names:   # a column a part never saw is all-null there
+                        if c not in t.column_names:
+                            t = t.append_column(c, pa.nulls(len(t), schema.field(c).type))
+                    w.write_table(t.select(schema.names).cast(schema))
+                    n += len(t)
+            os.replace(tmp, out)
+            counts[name][season] = n
+        shutil.rmtree(parts_dir, ignore_errors=True)
+    atomic_write_text(root / "recon.json", json.dumps(recon))
     return counts
 
 
@@ -366,9 +418,10 @@ def main(argv: Optional[list] = None) -> int:
     f.add_argument("--limit", type=int, default=None)
     c = sub.add_parser("compile", help="raw cache -> parquet tables")
     c.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    c.add_argument("--seasons", default=None, help="comma-separated start years to compile (default: every season cached)")
     a = ap.parse_args(argv)
     if a.cmd == "compile":
-        print(json.dumps(compile_store(a.root)))
+        print(json.dumps(compile_store(a.root, [int(x) for x in a.seasons.split(",")] if a.seasons else None)))
     if a.cmd == "fetch":
         seasons = list(range(a.from_season, (a.to_season or current_season()) + 1))
         print(json.dumps(build_fetch(a.root, seasons, a.rps, a.threads, a.limit)))

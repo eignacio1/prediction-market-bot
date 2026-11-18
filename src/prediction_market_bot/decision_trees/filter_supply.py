@@ -99,6 +99,8 @@ def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str
 _NHL_ALIAS = {"LA": "LAK", "NJ": "NJD", "TB": "TBL", "SJ": "SJS"}  # Kalshi two-letter codes -> store abbreviations
 _NHL_MONTHS = {m: i for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split(), 1)}
 _NHL_STATE: dict = {}
+NHL_GAME_COLS = ("game_id", "game_type", "start_time_utc", "game_date_et", "venue", "neutral_site", "home_team_id", "home",
+                 "away_team_id", "away")
 
 
 def nhl_store_dir() -> str:
@@ -113,14 +115,24 @@ def _nhl_state(store: str):
     import os
     import pandas as pd
     from prediction_market_bot.nhl_engine import factors_w112 as fx
+    from prediction_market_bot.c1_signal_ingestion.nhl_event_store import store_seasons
     key = (os.path.abspath(store), max([os.path.getmtime(p) for p in glob.glob(store + "/*.parquet")] or [0]))
     if _NHL_STATE.get("key") == key:
         return _NHL_STATE["v"]
 
-    def load(kind):
-        ps = sorted(glob.glob(f"{store}/{kind}_202[56].parquet"))
-        return pd.concat([pd.read_parquet(p) for p in ps], ignore_index=True) if ps else None
-    g, ev, sh = load("games"), load("events"), load("shifts")
+    def load(kind, cols, filters=None, agg=None):  # W116.3 (GG-1953): only the columns the factors read, one file at a time
+        out = []
+        for p in sorted(f"{store}/{kind}_{y}.parquet" for y in store_seasons()):
+            if not os.path.exists(p):
+                continue
+            d = pd.read_parquet(p, columns=cols, filters=filters)
+            out.append(agg(d) if agg else d)
+        return pd.concat(out, ignore_index=True) if out else None
+    g = load("games", list(NHL_GAME_COLS))
+    ev = load("events", ["game_id", "type", "x", "y", "owner_team_id"], filters=[("type", "in", list(fx.UNBLOCKED))])
+    # shift time per (game, team, skater) is all deployment_rolling sums; aggregating per file keeps one season's raw shifts at most
+    sh = load("shifts", ["game_id", "team_id", "player_id", "duration_s"],
+              agg=lambda d: d.groupby(["game_id", "team_id", "player_id"], as_index=False)["duration_s"].sum())
     if g is None or ev is None or sh is None:
         v = None
     else:
@@ -128,6 +140,7 @@ def _nhl_state(store: str):
         look = {(r.game_date_et, r.away, r.home): int(r.game_id) for r in g.itertuples()}
         v = {"fx": fx, "g": g.set_index("game_id"), "look": look, "sched": fx.schedule_context(g).set_index(["game_id", "team_id"]),
              "q": fx.shot_quality_rolling(ev, g), "d": fx.deployment_rolling(sh, g)}
+        del ev, sh
     _NHL_STATE.clear()
     _NHL_STATE.update(key=key, v=v)
     return v

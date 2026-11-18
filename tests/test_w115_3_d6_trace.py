@@ -102,6 +102,7 @@ def test_build_shows_each_layer_and_the_break():
     assert ml["L7_fill_lookups"][0]["fills"] == 1 and ml["rule_says_layers"] == [1, 1, 1, 1, 1, 1, 0]
     assert tot["L4_branch"] == {"NO_ROUTER_BLOCK": 1} and tot["events"] == {"arm_skip|unrouted|UNROUTED": 1} and tot["rule_says_layers"] is None
     assert nhl["cells_in_window"]["NHL_GAME_TOTAL|T1"]["router"] == 0
+    assert nhl["cells_in_window"]["NHL_MONEYLINE|T1"]["split_kept"] == 1 and nhl["cells_in_window"]["NHL_GAME_TOTAL|T1"]["split_kept"] == 0  # GG-1951
     assert doc["sports"]["NBA"]["game"] is None
 
 

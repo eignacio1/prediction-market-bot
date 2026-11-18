@@ -1,0 +1,8 @@
+# BEGIN W116.3 NHL EVENT STORE REFRESH
+# W116.3 / B-092 (GG-1953) -- daily refresh of the NHL event store that feeds NHL layer-3 filters (filter_supply.nhl_adapter).
+# PAUSED in the registry until the operator approves the named install task `nhl_event_store_install`.
+# Daily at 13:29 UTC (05:29 PT, no NHL games; minute 29 of hour 13 is used by no other line). Fetches the current and previous
+# season (resumable, public NHL API GETs at <= 2 req/s) and runs the streamed two-season compile (270 MB peak measured locally).
+# Writes exp_output/NHL_EVENTS/ only. No order, position, fill, stake or kelly.
+29 13 * * * ( flock -n 9 || { printf '{"ts":"\%s","runner":"nhl_event_store_refresh","event":"SKIP_LOCKED","reason":"previous run still holding /tmp/nhl_event_store_refresh.lock"}\n' "$(date -u +\%FT\%TZ)" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_nhl_event_store_refresh.py >> logs/nhl_event_store_refresh.log 2>&1 ) 9>/tmp/nhl_event_store_refresh.lock
+# END W116.3 NHL EVENT STORE REFRESH

@@ -194,7 +194,7 @@ def build(rows: List[dict], orders: List[dict], fills_for, now: datetime, leaf_d
         srows = [r for r in rows if str(r.get("sport", "")).upper() == sport]
         board: Dict[str, dict] = {}
         for r in srows:  # every cell of the sport in the window: the row-side evidence next to the rule
-            b = board.setdefault(f"{r.get('market_type')}|{r.get('band')}", {"rows": 0, "p": 0, "router": 0, "routed": 0, "error": 0, "filters": 0, "arm": 0})
+            b = board.setdefault(f"{r.get('market_type')}|{r.get('band')}", {"rows": 0, "p": 0, "router": 0, "routed": 0, "error": 0, "filters": 0, "split_kept": 0, "arm": 0})
             x = r.get("router") or {}
             b["rows"] += 1
             b["p"] += r.get("p_yes") is not None
@@ -202,6 +202,7 @@ def build(rows: List[dict], orders: List[dict], fills_for, now: datetime, leaf_d
             b["routed"] += x.get("branch") not in (None, "ERROR")
             b["error"] += x.get("branch") == "ERROR"
             b["filters"] += bool(x.get("filters_n"))
+            b["split_kept"] += bool(x.get("split_kept"))   # W116.3 (GG-1951): layer 3 as rows saw it, window-wide, next to the file rule
             b["arm"] += x.get("branch") not in (None, "ERROR", "NO_BET")
         errs = Counter((r.get("router") or {}).get("reason") for r in srows if (r.get("router") or {}).get("branch") == "ERROR")
         s: dict = {"rows_in_window": len(srows), "cells_in_window": board, "error_reasons": _top(errs, 6)}

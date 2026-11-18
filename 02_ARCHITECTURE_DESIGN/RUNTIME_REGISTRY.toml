@@ -1445,3 +1445,17 @@ max_age_h = "3"
 schedule = "39 * * * *"
 mirrors = ["deploy/cron.nba_engine_props_shadow"]
 command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nba_engine_props_shadow\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nba_engine_props_shadow.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+[[component]]
+key = "cron|29 13 * * *|scripts/run_nhl_event_store_refresh.py"
+kind = "cron"
+source = "deploy/cron.nhl_event_store"
+status = "paused"
+reviewed = true
+purpose = "W116.3 / B-092 (GG-1953): daily refresh of the NHL event store (current + previous season; resumable fetch of public NHL API games, streamed two-season compile, 270 MB peak measured) that feeds NHL layer-3 filters (filter_supply.nhl_adapter). No order, position, fill, stake or kelly. PAUSED until the operator approves the named install task nhl_event_store_install."
+pillar = "DEPTH"
+writes = ["logs/nhl_event_store_refresh.log", "exp_output/NHL_EVENTS/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/nhl_event_store_refresh.log is older than 30h once installed; NHL layer 3 = 0 in d6_read is the downstream signal"
+max_age_h = "30"
+schedule = "29 13 * * *"
+mirrors = ["deploy/cron.nhl_event_store"]
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_event_store_refresh\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_event_store_refresh.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
