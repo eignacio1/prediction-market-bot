@@ -14,7 +14,7 @@ LAGS = (20, 40, 60, 120)
 
 def ts(s):
     s = s.split(".")[0].rstrip("Z")
-    return datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+    return datetime.strptime(s + "+0000", "%Y-%m-%dT%H:%M:%S%z")
 
 
 CODE = {"Anaheim Ducks": "ANA", "Boston Bruins": "BOS", "Buffalo Sabres": "BUF", "Calgary Flames": "CGY", "Carolina Hurricanes": "CAR",
