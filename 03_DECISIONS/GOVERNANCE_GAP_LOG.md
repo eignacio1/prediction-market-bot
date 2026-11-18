@@ -3965,13 +3965,15 @@ Found W61.3: `candles/` and `raw/` existed only in `.claude/worktrees/agent-a622
 
 ### GG-587 — Forward-report turn-off edits tracked deploy/demo_fill.env on the VPS and would trip vps_deploy.sh's dirty-tree guard
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+**Evidence:** fixed by 6f3133e (W69.1 #234, untracked turn-off override); `scripts/demo_fill_forward_report.py:652` states the tracked demo_fill.env is not touched. Commit is an ancestor of box HEAD 6e5bf41 (ssh read-only).
 
 `scripts/demo_fill_forward_report.py` comments out the switches in `deploy/demo_fill.env` when an ADR-0072 condition trips. On the VPS that is a tracked-file edit, which `vps_deploy.sh` `heal_dirty_tree` aborts on (or reverts, re-arming the switches). Fix: commit the turn-off to main, or move the switch to an untracked override file. Also: 30-min markout and non-demo-host conditions are not evaluable by the job. Found by T-822 (W68.2).
 
 ### GG-596 — Forward-report cancel_fail_rate counts HTTP 404 (order already terminal) as a cancel failure, so the ADR-0072 turn-off can trip on a healthy cancel path
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+**Evidence:** fixed by 5b5c693 (W70.1 #237): cancel 404 on a terminal order is `cancel_already_terminal`, incl. pre-fix rows via `_historical_404_terminal` (`demo_fill_forward_report.py:253,449`). Ancestor of box HEAD 6e5bf41.
 
 First on-box forward report (W69.1, 2026-10-13T00:09Z) tripped `cancel_fail_rate_gt_10pct_in_a_day` at rate 1.0. Cells: MLB treatment 0 ok / 380 failed; NFL 906 ok / 229 failed (79.8% ok). The logged failures are `HTTP 404 not_found` on the cancel call (`unfilled_after_N` 17, `sweep_overdue` 383): the order was already terminal (filled/expired) when the cancel arrived, so cancel never had anything to cancel. NFL shows the cancel path works on resting orders. The metric conflates "already terminal" with "cancel API failed". Fix: classify 404 as `already_terminal`, exclude it from the failure rate, report it separately. Not fixed in W69.1 (Hard Rule 11). Until fixed the turn-off can re-trip on every report run. Found by W69.1.
 

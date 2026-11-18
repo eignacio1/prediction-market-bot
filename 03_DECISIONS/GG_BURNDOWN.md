@@ -386,3 +386,6 @@ Mechanical pass: files exist, PRs merged, SHAs ancestors of origin/main. Class c
 
 ### GA-6 tick 5 (2026-11-18)
 Closed GG-1462 (A). Checked, left open: GG-1581 (flock now on 6 box T3 lines, but OOM kills continued 2026-11-15, 9 in the kernel journal since 11-10, so the cause is not fully fixed), GG-1460 and GG-1461 (`_fence.py`/scan unchanged).
+
+### GA-6 tick 6 (2026-11-18): read-all-C pass
+Read all 151 C gaps individually. Closed GG-587, GG-596 (fix commits on box HEAD). Left open after check: GG-611 (box NBA player-points rows carry no EXP-040 sha c47cbac7 in the last 400KB), GG-348 (t4-mlb.timer still inactive on box; retire-or-rearm is a decision), GG-1230 (fix on box; no post-fix successful run visible in off-season). OPEN 264 -> 262.
