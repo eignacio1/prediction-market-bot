@@ -252,6 +252,7 @@ def joined(rows: List[dict], client: Any, now: datetime) -> dict:
     fills, market_of, candles_of, note = make_join_inputs(rows, client, now)
     recs = pj.records(rows, fills, market_of, candles_of, now)
     out: Dict[str, Any] = {"join_note": note, "join_health": pj.join_health(recs), "per_arm": pj.per_arm(recs),
+                           "per_arm_option": pj.per_arm(recs, by="option"),
                            "placement_model": {}}
     for ep in (PRE, POST):
         mr = pj.model_records([r for r in recs if r["epoch"] == ep])

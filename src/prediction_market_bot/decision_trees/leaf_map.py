@@ -17,6 +17,17 @@ from typing import Optional
 from prediction_market_bot.quant import retro_route as rr
 
 DEFAULT_MAP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_map.json")
+# W116.1: PM_LEAF_MAP_VERSION picks the map the router reads. "v1" (default) = the frozen W110.5 per-leaf map above;
+# "v2" = leaf_maps/leaf_map_v2.json (pooled posterior + e-process, W115.1). Anything else is refused, not guessed.
+MAP_VERSIONS = {"v1": DEFAULT_MAP,
+                "v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "leaf_map_v2.json")}
+
+
+def map_path(version: Optional[str] = None) -> str:
+    v = (version if version is not None else os.environ.get("PM_LEAF_MAP_VERSION", "v1")).strip().lower() or "v1"
+    if v not in MAP_VERSIONS:
+        raise ValueError(f"PM_LEAF_MAP_VERSION={v!r}: expected one of {sorted(MAP_VERSIONS)}")
+    return MAP_VERSIONS[v]
 ARM_SOURCE = "leaf_map_w110_5_fit_window"
 # map arm -> router tree. MODEL_FADE (model price vs market) and FADE (against the favourite) both land in the FADE tree.
 ARM_TREE = {"RIDE": "RIDE", "FADE": "FADE", "MODEL_FADE": "FADE", "MOMENTUM": "MOMENTUM_FOLLOW",
@@ -34,6 +45,8 @@ class LeafDecision:
     fit: Optional[dict] = None
     heldout: Optional[dict] = None
     bh: bool = False
+    posterior: Optional[dict] = None  # v2: arm -> [mean net, sd, P(net>0)]
+    source: Optional[dict] = None  # v2: arm -> [path node with most evidence, log path e-value]
 
 
 class LeafMap:
@@ -67,12 +80,14 @@ class LeafMap:
         if rec is None:
             return LeafDecision(lid, "NO_BET", None, "leaf_not_in_map", False, False)
         ho = rec.get("test")
-        base = dict(thin=rec["thin"], known=True, fit=rec["fit"], heldout=ho, bh=rec["bh"])
-        if rec["thin"]:
+        base = dict(thin=rec.get("thin", False), known=True, fit=rec.get("fit"), heldout=ho, bh=rec.get("bh", False),
+                    posterior=rec.get("posterior"), source=rec.get("source"))
+        if base["thin"]:
             return LeafDecision(lid, "NO_BET", None, "leaf_thin", **base)
         arm = arm_override or rec["arm"]
         if arm == "NO_BET":
-            return LeafDecision(lid, "NO_BET", None, "leaf_no_arm_positive_in_fit", **base)
+            why = "leaf_no_arm_earned_v2" if self.doc.get("version") == "v2" else "leaf_no_arm_positive_in_fit"
+            return LeafDecision(lid, "NO_BET", None, why, **base)
         fs = rr.fav_side(r).lower()
         other = "no" if fs == "yes" else "yes"
         if arm == "RIDE":
@@ -145,6 +160,11 @@ def default_splits() -> FilterSplits:
     return FilterSplits.load()
 
 
-@lru_cache(maxsize=1)
+@lru_cache(maxsize=None)
+def _load_version(path: str) -> LeafMap:
+    return LeafMap.load(path)
+
+
 def default_map() -> LeafMap:
-    return LeafMap.load()
+    """The map PM_LEAF_MAP_VERSION names (default v1), cached per file."""
+    return _load_version(map_path())

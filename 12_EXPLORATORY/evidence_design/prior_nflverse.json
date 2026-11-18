@@ -1,0 +1,34 @@
+{
+ "source": "nflverse games.csv (free)",
+ "seasons": [
+  2006,
+  2025
+ ],
+ "bins": {
+  "NFL_GAME_TOTAL|2": {
+   "n": 5216,
+   "gap": -0.00343,
+   "se": 0.00692
+  },
+  "NFL_MONEYLINE|2": {
+   "n": 2548,
+   "gap": -0.0176,
+   "se": 0.00981
+  },
+  "NFL_MONEYLINE|3": {
+   "n": 2126,
+   "gap": 0.00572,
+   "se": 0.00962
+  },
+  "NFL_MONEYLINE|4": {
+   "n": 607,
+   "gap": 0.01241,
+   "se": 0.01395
+  },
+  "NFL_SPREAD|2": {
+   "n": 5162,
+   "gap": -0.00914,
+   "se": 0.00696
+  }
+ }
+}

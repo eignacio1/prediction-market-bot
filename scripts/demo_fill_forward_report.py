@@ -612,6 +612,19 @@ def arm_orders_report(rows: list[dict], fills_for: Optional[Callable[[str, str],
             "note": "own rows; the treatment/control placement comparison is read on shadow_order rows only (ADR-0072 addendum 2026-11-12)"}
 
 
+def arm_orders_join(rows: list[dict], client: Any, now: datetime) -> dict:
+    """W116.2: placement.join over the arm-order log (scripts/arm_orders_read.make_join_inputs supplies the read-only GETs)."""
+    import importlib.util
+    from prediction_market_bot.c5_execution.placement import join as pj
+    spec = importlib.util.spec_from_file_location("arm_orders_read", Path(__file__).with_name("arm_orders_read.py"))
+    aor = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(aor)
+    fills, market_of, candles_of, note = aor.make_join_inputs(rows, client, now)
+    recs = pj.records(rows, fills, market_of, candles_of, now)
+    return {"note": note, "health": pj.join_health(recs), "per_arm": pj.per_arm(recs),
+            "per_arm_option": pj.per_arm(recs, by="option")}
+
+
 def _override_for(env_path: Path) -> Path:
     return env_path.with_name("demo_fill.override.env")
 
@@ -726,6 +739,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         print(json.dumps(st))
         return 0
     fills_for = None
+    client = None
     note = ""
     if not a.no_fills:
         try:
@@ -752,6 +766,11 @@ def main(argv: Optional[list[str]] = None) -> int:
         rep["arm_orders"] = arm_orders_report(arm_rows, fills_for, load_markouts(MARKOUT_DIR / "markouts.jsonl"))
     except Exception as e:  # noqa: BLE001
         rep["arm_orders"] = {"error": type(e).__name__}
+    if fills_for is not None:
+        try:  # W116.2: the one-pull per-order join - E1/E2/E3 + markouts per arm and per placement option, epochs never pooled
+            rep["arm_orders_join"] = arm_orders_join(arm_rows, client, now)
+        except Exception as e:  # noqa: BLE001 - never blocks the main report
+            rep["arm_orders_join"] = {"error": type(e).__name__}
     if since is not None:
         a.no_act = True  # a windowed read-back never edits the switch config
     if not a.no_act and turn_off(rep["tripped"], now, Path(a.env_file), pol.append_log):

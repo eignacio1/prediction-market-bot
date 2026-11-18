@@ -1,6 +1,6 @@
 # ADR-0072 Addendum PROPOSAL — per-arm placement policy and the demo arm-book cap raise (2026-11-17)
 
-**Status: PROPOSED. Not authorized; nothing is on.** Written by W116.2 (B-095). The frozen ADR-0072 file and the 2026-11-12 arm-orders
+**Status: APPROVED by the operator 2026-11-17 PT ("Yes - I provide my approvals."), both decisions. Nothing is on yet:** decision 1 waits for the frozen table (spread-logged orders, 30+ per side); decision 2 waits for GG-1942. Originally PROPOSED; Written by W116.2 (B-095). The frozen ADR-0072 file and the 2026-11-12 arm-orders
 addendum are not edited. Both switches ship OFF (`deploy/demo_fill.env` carries comment lines only; the code defaults are off).
 Measure: EXECUTION — E1 / E2 / E3 per arm and per placement option; D6 layer 7 (execution with fills measured).
 DEMO money only, flat demo stakes, `kelly_fraction` 0 everywhere, no real capital (Hard Rule 2).

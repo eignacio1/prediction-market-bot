@@ -3545,3 +3545,30 @@ off); tolerant `parse_ts` (GG-1934 resolved); one-pull settlement join (outcome 
 price, tested). Box read 00:59Z, post-epoch: RIDE P(fill) 0.14, selection −0.058 [−0.195, +0.080]; FADE cross +0.18 [+0.09, +0.28]
 on an assumed spread. Proposal: 03_DECISIONS/ADR-0072_ADDENDUM_PROPOSAL_2026-11-17_placement-and-caps.md; two decisions in the queue.
 Registered GG-1942 (cap-raise precondition), GG-1943, GG-1944, GG-1955 (main backlog duplicate blocks code CI). Nothing turned on.
+
+## 2026-11-18 01:15Z — Operator approves both W116.2 demo decisions (placement policy, arm-book cap raise)
+Operator, verbatim: "Yes - I provide my approvals." Scope: the two DECISION lines W116.2 filed in ACTIVE_QUEUE "Needs your decision"
+(ADR-0072 addendum, 03_DECISIONS/ADR-0072_ADDENDUM_PROPOSAL_2026-11-17_placement-and-caps.md, now APPROVED). Demo only,
+`kelly_fraction` 0, no real capital. Neither switch is on: `ARM_PLACEMENT_POLICY=on` waits for a frozen `config/placement_policy.json`
+fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm and option; `ARM_BOOK_CAPS=raised` waits for GG-1942
+(ARM_ORDERS advisory in the exposure gate). Code merges wait on GG-1955 (main's backlog duplicate turns code CI red).
+
+| 2026-11-18 | B-094 / W116.1 | Router v2 (pooled evidence) frozen behind PM_LEAF_MAP_VERSION, default v1; it arms 0 leaves held out, so v1 stays the frozen test and v2 logging waits on the operator. E-process validity defect fixed (GG-1954). PR #506 left unmerged: red only on GG-1955 (main backlog duplicate order 16), which this block may not edit. t4-mlb restart judged unnecessary after merge (default path unchanged, MLB idle). |
+| 2026-11-18 | B-092 (W116.3) | Parked PR #507 (NHL store shrink + paused install + trace error_after) unmerged: CI red only from main's ROLLING_BACKLOG.json duplicate order 16 (GG-1955), which the block forbids us to edit. Did not work around it. NHL store measured under the ~600 MB bar (318 MB read peak), so `nhl_event_store_install` is proposed for operator approval, flagged against the box's ~126 MB free. GG-1956 folded into GG-1955 as a duplicate. D6 stays 3 of 117 (NBA_GAME_TOTAL T3, NBA_SPREAD T2/T3). |
+
+### 2026-11-18 01:55Z (11-17 17:55 PT) - SW-9 - Wave 116 closed, Wave 117 issued (pre-wave cleanup + four blocks, Sonnet / Haiku)
+- Operator 17:39 PT: "116 is done - confirm receipt then set up the next wave. We're back to our regular 3 (but for this one send 4 since
+  we're trying to catch up on work). Also - give me a short terminal block to clean up branches".
+- W116 verified: #503 #504 merged and deployed; #505-#508 were red only on main's backlog duplicate (window error W58, GG-1955), fixed
+  7e97f1f; the cleanup block (117.0) lands them. Results in COMMON_RULES_W117 "Wave 116 results".
+- Wave 117 is aimed at the evidence clock (W116.1 power calendar: first earned arm 2027-07 at +2c): 117.1 bigger edges (FADE crossed with
+  its real cost; approved caps and policy), 117.2 history as a prior (free NHL consensus, B-099) and coarse leaves, 117.3 more cells wired
+  (NBA moneyline / team totals from the engine sim, B-100), 117.4 hygiene (every push checks the backlog and GG ids).
+- Correction recorded: the window's 11-16 lead that RIDE fills enjoy favourable selection (69% vs 59%) rested on the minority of orders
+  whose outcomes resolved; with all 486 joined, RIDE non-fills win 81%, i.e. adverse selection.
+- New operator questions (queue "Needs your decision" 5 and 6): route NFL v1 per-leaf demo orders to no bet; count tested stumps at layer 3.
+
+### 2026-11-18 01:47Z (11-17 17:45 PT) - operator - three approvals
+- "yes approve on all 3": (a) nhl_event_store_install (window runs it after 117.0 merges #507); (b) NFL v1 per-leaf demo orders route
+  to NO BET, hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D), built by 117.1; (c) D6 layer 3 counts tested stumps, reported
+  separately from kept splits, built by 117.3. Blockquote in ACTIVE_QUEUE "Needs your decision".

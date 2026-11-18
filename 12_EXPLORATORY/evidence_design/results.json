@@ -1,0 +1,1018 @@
+{
+ "corpus": {
+  "rows": 106430,
+  "fit_rows": 73233,
+  "test_rows": 33197,
+  "fit_games": 375,
+  "test_games": 161
+ },
+ "config": {
+  "bar": 0.9,
+  "alpha": 0.1,
+  "root_sd": 0.1,
+  "tau_floor": 0.005,
+  "min_inc_games": 5,
+  "transfer_sd": 0.03,
+  "null_var": "binary",
+  "e_process": "mean over path nodes (depth >= 2) of per-node mixture-LR e-processes"
+ },
+ "heldout": {
+  "pooled_v2": {
+   "ALL": {
+    "rows": 33197,
+    "games": 161,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NBA": {
+    "rows": 16687,
+    "games": 67,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NFL": {
+    "rows": 5583,
+    "games": 28,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NHL": {
+    "rows": 10927,
+    "games": 66,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "pooled_v2_no_long_prior": {
+   "ALL": {
+    "rows": 33197,
+    "games": 161,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NBA": {
+    "rows": 16687,
+    "games": 67,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NFL": {
+    "rows": 5583,
+    "games": 28,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NHL": {
+    "rows": 10927,
+    "games": 66,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "per_leaf_v1": {
+   "ALL": {
+    "rows": 33197,
+    "games": 161,
+    "bets": 17164,
+    "net_per_row": [
+     -0.00643,
+     -0.01383,
+     0.00092
+    ],
+    "net_per_bet": [
+     -0.01244,
+     -0.02739,
+     0.00133
+    ]
+   },
+   "NBA": {
+    "rows": 16687,
+    "games": 67,
+    "bets": 6505,
+    "net_per_row": [
+     -0.00618,
+     -0.01722,
+     0.00373
+    ],
+    "net_per_bet": [
+     -0.01586,
+     -0.04252,
+     0.01021
+    ]
+   },
+   "NFL": {
+    "rows": 5583,
+    "games": 28,
+    "bets": 3652,
+    "net_per_row": [
+     -0.02008,
+     -0.03694,
+     -0.00538
+    ],
+    "net_per_bet": [
+     -0.0307,
+     -0.05627,
+     -0.00831
+    ]
+   },
+   "NHL": {
+    "rows": 10927,
+    "games": 66,
+    "bets": 7007,
+    "net_per_row": [
+     0.00017,
+     -0.01236,
+     0.01336
+    ],
+    "net_per_bet": [
+     0.00026,
+     -0.02115,
+     0.01968
+    ]
+   }
+  },
+  "per_leaf_bh_survivors_only": {
+   "ALL": {
+    "rows": 33197,
+    "games": 161,
+    "bets": 70,
+    "net_per_row": [
+     0.00057,
+     0.0003,
+     0.00086
+    ],
+    "net_per_bet": [
+     0.26819,
+     0.24634,
+     0.28902
+    ]
+   },
+   "NBA": {
+    "rows": 16687,
+    "games": 67,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NFL": {
+    "rows": 5583,
+    "games": 28,
+    "bets": 0,
+    "net_per_row": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "NHL": {
+    "rows": 10927,
+    "games": 66,
+    "bets": 70,
+    "net_per_row": [
+     0.00172,
+     0.00093,
+     0.00259
+    ],
+    "net_per_bet": [
+     0.26819,
+     0.24634,
+     0.28902
+    ]
+   }
+  },
+  "ride_every_favourite": {
+   "ALL": {
+    "rows": 33197,
+    "games": 161,
+    "bets": 33197,
+    "net_per_row": [
+     -0.02564,
+     -0.03942,
+     -0.01292
+    ],
+    "net_per_bet": [
+     -0.02564,
+     -0.03942,
+     -0.01292
+    ]
+   },
+   "NBA": {
+    "rows": 16687,
+    "games": 67,
+    "bets": 16687,
+    "net_per_row": [
+     -0.04224,
+     -0.06208,
+     -0.02172
+    ],
+    "net_per_bet": [
+     -0.04224,
+     -0.06208,
+     -0.02172
+    ]
+   },
+   "NFL": {
+    "rows": 5583,
+    "games": 28,
+    "bets": 5583,
+    "net_per_row": [
+     -0.00788,
+     -0.04576,
+     0.02597
+    ],
+    "net_per_bet": [
+     -0.00788,
+     -0.04576,
+     0.02597
+    ]
+   },
+   "NHL": {
+    "rows": 10927,
+    "games": 66,
+    "bets": 10927,
+    "net_per_row": [
+     -0.00937,
+     -0.02732,
+     0.0098
+    ],
+    "net_per_bet": [
+     -0.00937,
+     -0.02732,
+     0.0098
+    ]
+   }
+  }
+ },
+ "paired_heldout_net_per_row": {
+  "pooled_v2 - per_leaf_v1": {
+   "ALL": [
+    0.00643,
+    -0.00091,
+    0.01383
+   ],
+   "NBA": [
+    0.00618,
+    -0.0037,
+    0.01722
+   ],
+   "NFL": [
+    0.02008,
+    0.00539,
+    0.03695
+   ],
+   "NHL": [
+    -0.00017,
+    -0.01336,
+    0.0124
+   ]
+  },
+  "pooled_v2 - ride_every_favourite": {
+   "ALL": [
+    0.02564,
+    0.01296,
+    0.03956
+   ],
+   "NBA": [
+    0.04224,
+    0.02178,
+    0.06213
+   ],
+   "NFL": [
+    0.00788,
+    -0.02583,
+    0.04579
+   ],
+   "NHL": [
+    0.00937,
+    -0.00979,
+    0.02736
+   ]
+  },
+  "pooled_v2 - pooled_v2_no_long_prior": {
+   "ALL": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "NBA": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "NFL": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "NHL": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "leaves_with_arm": {
+  "per_leaf_v1": {
+   "leaves": 365,
+   "armed_fit": 113,
+   "armed_with_10_heldout_games": 105,
+   "heldout_net_positive": 41,
+   "heldout_interval_above_0": 1
+  },
+  "pooled_v2": {
+   "leaves": 356,
+   "armed_fit": 0,
+   "armed_with_10_heldout_games": 0,
+   "heldout_net_positive": 0,
+   "heldout_interval_above_0": 0
+  },
+  "pooled_v2_arms": {
+   "NO_BET": 356
+  },
+  "per_leaf_v1_arms": {
+   "RIDE": 43,
+   "FADE": 27,
+   "NO_BET": 252,
+   "MODEL_FADE": 20,
+   "MOMENTUM": 23
+  }
+ },
+ "tau_sd_by_depth_fit": {
+  "RIDE": {
+   "1": 0.0197,
+   "2": 0.005,
+   "3": 0.0131,
+   "4": 0.005,
+   "5": 0.005
+  },
+  "FADE": {
+   "1": 0.0092,
+   "2": 0.005,
+   "3": 0.0369,
+   "4": 0.005,
+   "5": 0.005
+  },
+  "MODEL_FADE": {
+   "1": 0.0087,
+   "2": 0.005,
+   "3": 0.005,
+   "4": 0.005,
+   "5": 0.005
+  },
+  "MOMENTUM": {
+   "1": 0.005,
+   "2": 0.005,
+   "3": 0.005,
+   "4": 0.005,
+   "5": 0.005
+  }
+ },
+ "family_posteriors_fit": {
+  "RIDE": {
+   "MLB|MLB_GAME_TOTAL": [
+    0.0172,
+    0.0137,
+    0.896,
+    0.01
+   ],
+   "MLB|MLB_MONEYLINE": [
+    0.0166,
+    0.0141,
+    0.882,
+    0.0
+   ],
+   "MLB|MLB_RUN_LINE": [
+    0.017,
+    0.0139,
+    0.89,
+    0.0
+   ],
+   "MLB|MLB_TEAM_TOTAL": [
+    0.0176,
+    0.0135,
+    0.905,
+    0.03
+   ],
+   "NBA|NBA_GAME_TOTAL": [
+    -0.0294,
+    0.0093,
+    0.001,
+    0.0
+   ],
+   "NBA|NBA_MONEYLINE": [
+    -0.0284,
+    0.0099,
+    0.002,
+    0.0
+   ],
+   "NBA|NBA_SPREAD": [
+    -0.0295,
+    0.0093,
+    0.001,
+    0.0
+   ],
+   "NBA|NBA_TEAM_TOTAL": [
+    -0.03,
+    0.009,
+    0.0,
+    0.0
+   ],
+   "NFL|NFL_GAME_TOTAL": [
+    -0.0072,
+    0.0088,
+    0.207,
+    0.0
+   ],
+   "NFL|NFL_MONEYLINE": [
+    -0.0074,
+    0.0089,
+    0.205,
+    0.0
+   ],
+   "NFL|NFL_SPREAD": [
+    -0.0064,
+    0.0088,
+    0.233,
+    0.01
+   ],
+   "NFL|NFL_TEAM_TOTAL": [
+    -0.0052,
+    0.0084,
+    0.269,
+    0.03
+   ],
+   "NHL|NHL_GAME_TOTAL": [
+    -0.0164,
+    0.0085,
+    0.027,
+    0.03
+   ],
+   "NHL|NHL_MONEYLINE": [
+    -0.0157,
+    0.0097,
+    0.052,
+    0.08
+   ],
+   "NHL|NHL_PUCK_LINE": [
+    -0.0188,
+    0.0091,
+    0.019,
+    0.0
+   ]
+  },
+  "FADE": {
+   "MLB|MLB_GAME_TOTAL": [
+    -0.0513,
+    0.0119,
+    0.0,
+    0.0
+   ],
+   "MLB|MLB_MONEYLINE": [
+    -0.051,
+    0.0121,
+    0.0,
+    0.04
+   ],
+   "MLB|MLB_RUN_LINE": [
+    -0.0513,
+    0.012,
+    0.0,
+    0.0
+   ],
+   "MLB|MLB_TEAM_TOTAL": [
+    -0.0518,
+    0.0119,
+    0.0,
+    0.0
+   ],
+   "NBA|NBA_GAME_TOTAL": [
+    -0.0477,
+    0.0108,
+    0.0,
+    0.0
+   ],
+   "NBA|NBA_MONEYLINE": [
+    -0.048,
+    0.0111,
+    0.0,
+    0.0
+   ],
+   "NBA|NBA_SPREAD": [
+    -0.0472,
+    0.0108,
+    0.0,
+    0.0
+   ],
+   "NBA|NBA_TEAM_TOTAL": [
+    -0.0485,
+    0.0108,
+    0.0,
+    0.0
+   ],
+   "NFL|NFL_GAME_TOTAL": [
+    -0.0408,
+    0.0105,
+    0.0,
+    0.0
+   ],
+   "NFL|NFL_MONEYLINE": [
+    -0.0408,
+    0.0106,
+    0.0,
+    0.01
+   ],
+   "NFL|NFL_SPREAD": [
+    -0.0412,
+    0.0105,
+    0.0,
+    0.0
+   ],
+   "NFL|NFL_TEAM_TOTAL": [
+    -0.0414,
+    0.0105,
+    0.0,
+    0.0
+   ],
+   "NHL|NHL_GAME_TOTAL": [
+    -0.0539,
+    0.011,
+    0.0,
+    0.0
+   ],
+   "NHL|NHL_MONEYLINE": [
+    -0.0525,
+    0.0113,
+    0.0,
+    0.0
+   ],
+   "NHL|NHL_PUCK_LINE": [
+    -0.0517,
+    0.0111,
+    0.0,
+    0.0
+   ]
+  },
+  "MODEL_FADE": {
+   "MLB|MLB_GAME_TOTAL": [
+    -0.034,
+    0.0125,
+    0.003,
+    0.0
+   ],
+   "MLB|MLB_MONEYLINE": [
+    -0.0337,
+    0.0126,
+    0.004,
+    0.42
+   ],
+   "MLB|MLB_RUN_LINE": [
+    -0.0338,
+    0.0125,
+    0.003,
+    0.0
+   ],
+   "MLB|MLB_TEAM_TOTAL": [
+    -0.034,
+    0.0125,
+    0.003,
+    0.0
+   ],
+   "NBA|NBA_GAME_TOTAL": [
+    -0.0346,
+    0.0112,
+    0.001,
+    0.0
+   ],
+   "NBA|NBA_MONEYLINE": [
+    -0.0353,
+    0.0113,
+    0.001,
+    0.0
+   ],
+   "NBA|NBA_SPREAD": [
+    -0.0356,
+    0.0111,
+    0.001,
+    0.0
+   ],
+   "NBA|NBA_TEAM_TOTAL": [
+    -0.0349,
+    0.011,
+    0.001,
+    0.0
+   ],
+   "NFL|NFL_GAME_TOTAL": [
+    -0.0353,
+    0.0114,
+    0.001,
+    0.0
+   ],
+   "NFL|NFL_MONEYLINE": [
+    -0.0356,
+    0.0115,
+    0.001,
+    0.0
+   ],
+   "NFL|NFL_SPREAD": [
+    -0.0357,
+    0.0113,
+    0.001,
+    0.0
+   ],
+   "NFL|NFL_TEAM_TOTAL": [
+    -0.0353,
+    0.0112,
+    0.001,
+    0.0
+   ],
+   "NHL|NHL_GAME_TOTAL": [
+    -0.0251,
+    0.0092,
+    0.003,
+    0.0
+   ],
+   "NHL|NHL_MONEYLINE": [
+    -0.0243,
+    0.0099,
+    0.007,
+    0.88
+   ],
+   "NHL|NHL_PUCK_LINE": [
+    -0.0252,
+    0.0094,
+    0.004,
+    0.0
+   ]
+  },
+  "MOMENTUM": {
+   "MLB|MLB_GAME_TOTAL": [
+    -0.0092,
+    0.0088,
+    0.148,
+    0.0
+   ],
+   "MLB|MLB_MONEYLINE": [
+    -0.0092,
+    0.0089,
+    0.151,
+    0.0
+   ],
+   "MLB|MLB_RUN_LINE": [
+    -0.0096,
+    0.0088,
+    0.138,
+    0.0
+   ],
+   "MLB|MLB_TEAM_TOTAL": [
+    -0.0095,
+    0.0087,
+    0.139,
+    0.0
+   ],
+   "NBA|NBA_GAME_TOTAL": [
+    -0.0094,
+    0.0077,
+    0.111,
+    0.0
+   ],
+   "NBA|NBA_MONEYLINE": [
+    -0.0099,
+    0.0081,
+    0.111,
+    0.0
+   ],
+   "NBA|NBA_SPREAD": [
+    -0.0101,
+    0.0077,
+    0.096,
+    0.05
+   ],
+   "NBA|NBA_TEAM_TOTAL": [
+    -0.0114,
+    0.0073,
+    0.059,
+    0.0
+   ],
+   "NFL|NFL_GAME_TOTAL": [
+    -0.0103,
+    0.0084,
+    0.111,
+    0.0
+   ],
+   "NFL|NFL_MONEYLINE": [
+    -0.0091,
+    0.0086,
+    0.146,
+    0.1
+   ],
+   "NFL|NFL_SPREAD": [
+    -0.0093,
+    0.0085,
+    0.137,
+    0.23
+   ],
+   "NFL|NFL_TEAM_TOTAL": [
+    -0.0104,
+    0.0081,
+    0.1,
+    0.0
+   ],
+   "NHL|NHL_GAME_TOTAL": [
+    -0.0075,
+    0.0065,
+    0.124,
+    0.0
+   ],
+   "NHL|NHL_MONEYLINE": [
+    -0.0068,
+    0.0078,
+    0.19,
+    0.0
+   ],
+   "NHL|NHL_PUCK_LINE": [
+    -0.0041,
+    0.0073,
+    0.284,
+    0.0
+   ]
+  }
+ },
+ "power_calendar": {
+  "as_of": "2026-11-11",
+  "row_rate": "games per leaf in the corpus's last 14 days / 2",
+  "assumption": "true net = the leaf's current pooled posterior mean for its best arm; leaves whose best mean <= 0 never earn",
+  "bh_tests_m": 176,
+  "pooled_v2": {
+   "MLB": {
+    "leaves": 81,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "NBA": {
+    "leaves": 103,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "NFL": {
+    "leaves": 87,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "NHL": {
+    "leaves": 94,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "ALL": {
+    "leaves": 365,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   }
+  },
+  "per_leaf_bh": {
+   "MLB": {
+    "leaves": 81,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "NBA": {
+    "leaves": 103,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "NFL": {
+    "leaves": 87,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "NHL": {
+    "leaves": 94,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   },
+   "ALL": {
+    "leaves": 365,
+    "can_earn_within_104_weeks": 0,
+    "first": null,
+    "median_of_those": null,
+    "median_all_leaves": "beyond 104 weeks / never"
+   }
+  },
+  "ride_every_favourite": "no evidence required: every leaf rides from day 0",
+  "sensitivity": {
+   "at_0.02": {
+    "pooled_v2_leaf_only_upper_bound": {
+     "MLB": {
+      "leaves": 81,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NBA": {
+      "leaves": 103,
+      "can_earn_within_104_weeks": 4,
+      "first": "2027-12-01",
+      "median_of_those": "2028-08-16",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NFL": {
+      "leaves": 87,
+      "can_earn_within_104_weeks": 2,
+      "first": "2028-08-16",
+      "median_of_those": "2028-09-20",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NHL": {
+      "leaves": 94,
+      "can_earn_within_104_weeks": 6,
+      "first": "2027-07-21",
+      "median_of_those": "2028-03-29",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "ALL": {
+      "leaves": 365,
+      "can_earn_within_104_weeks": 12,
+      "first": "2027-07-21",
+      "median_of_those": "2028-05-10",
+      "median_all_leaves": "beyond 104 weeks / never"
+     }
+    },
+    "per_leaf_bh": {
+     "MLB": {
+      "leaves": 81,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NBA": {
+      "leaves": 103,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NFL": {
+      "leaves": 87,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NHL": {
+      "leaves": 94,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "ALL": {
+      "leaves": 365,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     }
+    }
+   },
+   "at_0.05": {
+    "pooled_v2_leaf_only_upper_bound": {
+     "MLB": {
+      "leaves": 81,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NBA": {
+      "leaves": 103,
+      "can_earn_within_104_weeks": 27,
+      "first": "2027-03-03",
+      "median_of_those": "2027-12-08",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NFL": {
+      "leaves": 87,
+      "can_earn_within_104_weeks": 30,
+      "first": "2027-04-14",
+      "median_of_those": "2027-11-17",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NHL": {
+      "leaves": 94,
+      "can_earn_within_104_weeks": 27,
+      "first": "2027-01-20",
+      "median_of_those": "2027-10-13",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "ALL": {
+      "leaves": 365,
+      "can_earn_within_104_weeks": 84,
+      "first": "2027-01-20",
+      "median_of_those": "2027-11-17",
+      "median_all_leaves": "beyond 104 weeks / never"
+     }
+    },
+    "per_leaf_bh": {
+     "MLB": {
+      "leaves": 81,
+      "can_earn_within_104_weeks": 0,
+      "first": null,
+      "median_of_those": null,
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NBA": {
+      "leaves": 103,
+      "can_earn_within_104_weeks": 18,
+      "first": "2027-03-24",
+      "median_of_those": "2027-10-13",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NFL": {
+      "leaves": 87,
+      "can_earn_within_104_weeks": 11,
+      "first": "2027-09-01",
+      "median_of_those": "2028-06-14",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "NHL": {
+      "leaves": 94,
+      "can_earn_within_104_weeks": 17,
+      "first": "2027-02-17",
+      "median_of_those": "2027-12-22",
+      "median_all_leaves": "beyond 104 weeks / never"
+     },
+     "ALL": {
+      "leaves": 365,
+      "can_earn_within_104_weeks": 46,
+      "first": "2027-02-17",
+      "median_of_those": "2028-03-15",
+      "median_all_leaves": "beyond 104 weeks / never"
+     }
+    }
+   }
+  }
+ },
+ "full_corpus_v2": {
+  "leaves": 365,
+  "armed": 0,
+  "arms": {
+   "NO_BET": 365
+  },
+  "looks": 7
+ }
+}
