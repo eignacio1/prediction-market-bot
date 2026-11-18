@@ -1305,3 +1305,4 @@
 | 2026-11-18T02:41:11Z | B-099 | W117.2 NHL consensus prior + momentum + Kalshi-vs-books. PURPOSE: first-arm dates per sport prior vs none; momentum term; Kalshi-consensus gap n |
 | 2026-11-18T04:45:07Z | B-099 | CLOSED — merge confirmed, HEAD (b6e5cfa) is ancestor of origin/main — W117.2 NHL consensus prior, momentum closed, Kalshi vs books gap, family-vs-leaf calendar |
 | 2026-11-18T04:52:36Z | W117.4 | CLOSED — W117.4 hygiene: docs guard on every push, 602 handoffs archived (live 644->42), GG-1650 resolved, OPEN gaps 273->272 (commit `e539f51`) |
+| 2026-11-18T05:04:35Z | W117.3 | CLOSED — W117.3: NBA moneyline/team-total pricing + box-row stump rule; D6 on box 3->4 (NBA); healthcheck SIGPIPE false-FAIL fixed, health_rerun added (commit `e868a15`) |

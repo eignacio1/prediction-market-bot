@@ -3584,3 +3584,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - Power calendar (a node alone, true net +0.02 / +0.05): history as a prior moves the first arm 1-7 weeks earlier; coarse (family, band)
   leaves move it 6-40 weeks later or never. The prior is the lever that moved the date more; neither puts a first arm before 2027.
 - GG-1936: B-099 now supplies the NHL prior; NBA stays open. Corpus caveat: 108,439 rows here vs 106,430 in W116.1 RESULT.md.
+
+| 2026-11-18 | W117.3 | Applied operator-approved stump rule (11-17 17:45 PT): D6 layer 3 = splits tested on box rows with logged verdicts, kept or not; `l3_kept` reported beside it. Layer 1 = logged p_yes. NBA spread-implied P(win) tolerance set at 0.02 (measured worst 0.017). Healthcheck cron-arm FAIL was a pipefail/SIGPIPE bug, not a missing line; fixed (#516). |

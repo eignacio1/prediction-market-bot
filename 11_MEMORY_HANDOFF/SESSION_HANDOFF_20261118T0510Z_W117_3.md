@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W117.3
+tier: STANDARD
+timestamp: 2026-11-18T05:10:00Z
+commit: e868a15
+one_line_summary: W117.3: NBA moneyline/team-total pricing + box-row stump rule; D6 on box 3->4 (NBA); healthcheck SIGPIPE false-FAIL fixed, health_rerun added
+gg_touched: GG-1951
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D6
+gap_delta: D6 3 -> 4 wired, all NBA (d6_read on box 2026-11-18T05:01Z)
+pattern_sweep: grep 'echo "$X" | grep -q' in deploy/ scripts/ -> 3 sites in healthcheck.sh, all fixed with here-strings (#516)
+surface_delta: +1 allowlisted box task (health_rerun); 0 cron/services
+-->
+
 # Session handoff - W117.3 (2026-11-18 05:10Z, Sonnet)
 
 session-meta: block 117.3 + SW-9 addendum; PRs #511 (coverage/d6_read/ml_team_total), #516 (healthcheck + health_rerun); box at ea9d08ee.

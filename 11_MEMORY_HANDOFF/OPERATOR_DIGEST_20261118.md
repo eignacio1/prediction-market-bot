@@ -28,3 +28,5 @@ moves 1 to 7 weeks earlier, but still not before 2027. Using coarser buckets did
 Two ideas closed as tests, not as markets: the closing line under-reacting to its own movement (all three markets), parked for later.
 Riding the books' favourite on Kalshi loses about 5.5 cents per contract after fees; Kalshi already prices like the books.
 One ask for Monday: a free 2026-27 closing-line source, so puck lines and totals can be checked against Kalshi too.
+
+**W117.3 (NBA wiring).** The count of bet types fully wired through all seven layers went from 3 to 4, all NBA. We can now price NBA moneylines and team totals from the game simulation, and the checks agree with the spread-implied odds. The box health alarm that said a cron job was missing was a false alarm from a bug in the check itself; fixed, and the box now reads healthy (one warning: disk 87%). No real money at risk. Next: NBA moneyline/spread/team totals need more rows before the tree can pick an arm.
