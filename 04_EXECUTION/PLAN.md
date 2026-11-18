@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-13T01:01:00Z (B-086 — W114.4: team-pool latents added to the NBA joint (default off); held-out teammate PTS x PTS gap not closed (+0.0230 -> +0.0224); fitted values not shipped (#501).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261113T0101Z_W114_4.md` for full session detail.
+**Last reviewed:** 2026-11-18T01:16:00Z (B-092 — W116.3 parked: D6 traces + NHL store shrink done; PR #507 red on main's backlog dup (GG-1955); NHL install awaits approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0116Z_W116_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 116 READY TO PASTE - three Opus blocks finishing the Fable wave (116.1 router v2 measured and frozen, 116.2 placement landed, 116.3 D6 traced and wired). STOP THE THREE FABLE TERMINALS FIRST.** Muse: send 04_EXECUTION/MUSE_ADDENDUM_2026-11-16.md (fenced block). **Waiting on you:** EXP-038 second-look draft; approvals the wave will add overnight.
+> **▶ WAVE 117 READY TO PASTE - the CLEANUP block first (lands #505-#508, prunes branches), then four blocks: 117.1 FADE crossed measured with its real cost + approved caps / policy, 117.2 NHL consensus history as a prior, 117.3 NBA wired across the board, 117.4 hygiene (Haiku).** Items 4-6 APPROVED 11-17 17:45 PT (the NHL install runs after 117.0 merges #507).
 
 > **RULE: prompt text here is ONLY for blocks firing now.** Closed prompts move verbatim to
 > `04_EXECUTION/ACTIVE_QUEUE_ARCHIVE.md`; closed waves keep their ROWS in the Sequencing track below.
@@ -61,139 +61,244 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 116 · WRITTEN 2026-11-17 ~06:30 UTC (11-16 22:30 PT) · SW-9 · three blocks · MODEL: Opus for all three · paste each into its own terminal
+## ▶ NOW — WAVE 117 · WRITTEN 2026-11-18 ~01:55 UTC (11-17 17:55 PT) · SW-9 · pre-wave cleanup + four blocks · MODEL: Sonnet (Haiku for 117.4) · paste each into its own terminal
 
-**Before pasting: stop the three Fable terminals** (Esc, then close the tab). Two of them resumed on their own at 22:00 when the limit
-reset (115.3 merged #502 and filed box reads at 22:01-22:02); left running, they would work the same branches as these blocks.
+**Order:** paste the CLEANUP block first and let it land the four parked W116 PRs (#505-#508), then the four Wave 117 blocks.
 
-**Finish the Fable wave.** Each block continues a Fable block from its pushed branch and handoff; the hard design is done and written
-down. Every part runs to merge on its own overnight; anything for the operator lands in "Needs your decision".
+**Why this wave.** W116.1's power calendar: at a true +2c per contract the first leaf earns an arm in 2027-07, the median in 2028-05.
+That clock is statistics, not bandwidth. Three things shorten it, and each block moves one: **bigger edges** (117.1: FADE crossed
+is the only arm and option with an interval above zero, +0.183 per contract on 100 orders, but its crossing cost was never logged),
+**history as a prior** (117.2: Muse's free NHL consensus lines, plus coarse leaves), **more cells actually wired** (117.3: NBA moneyline
+and team totals priced from the engine's existing simulation). 117.4 cuts the repo tax and closes the hole that let W58 turn PRs red.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 116.1 | quant · 3 | Finish 115.1: evidence pipeline, three-router held-out comparison, power calendar, leaf map v2 behind a switch, router v2 frozen | Opus | 🟨 PR #506 red only on GG-1955 (main's backlog duplicate order 16; not this PR's to fix); merges when main validates | **v2 does not win on its own evidence yet:** fit on the earliest 70% of games, it arms 0 leaves, so 0 held-out bets. v1 nets −0.0064 per row [−0.0138, +0.0009] (161 test games); ride every favourite −0.0256 [−0.0394, −0.0129]; v2 − v1 +0.0064 = the value of abstaining. Power calendar: at a true +0.05 per contract, v2 has 84 leaves (first 2027-01-20) vs v1's 46 (first 2027-02-17). E-process validity defect found and fixed (GG-1954: binary null 275/300 → 2/300 false claims). v2 map frozen (sha256 79f46cb4…, 0 armed) behind PM_LEAF_MAP_VERSION, default v1; pre-registration ROUTER_V2_PREREGISTRATION_2026-11-17.md. GG-1936..1938 registered. |
-| 116.2 | execution · 3 | Finish 115.2: placement model tests, settlement join + GG-1934, policy behind a switch, report per arm and option, ADR-0072 addendum proposal | Opus | 🟨 | #504 merged fb8000c (deployed 00:54Z): lookups failed 0/486 (was 244/432). #505 (report per option) red only on GG-1955 (main backlog dup). C2 proposal + 2 decisions filed; nothing on. |
-| 116.3 | D6 · 3 | Finish 115.3: read the trace, write the three trace tables, fix the breaks, row-level sizing, D6 recount; NHL store shrunk before any install | Opus | 🟦 PR #507 CI | Part A done: `04_EXECUTION/W116_3_D6_TRACE_TABLES.md`. ERROR fix #503 merged and deployed 00:54:51Z; re-run of logged ERROR rows under today's code routes with no raise (NBA 3,096 / NFL 181 / NHL 97 window rows, all pre-fix). Box D6 after #503: 3 (NBA_GAME_TOTAL T3, NBA_SPREAD T2, NBA_SPREAD T3). Breaks: layer 3 (NFL no kept split; NHL store absent, GG-1953; split credited from file not rows, GG-1951). PR #507: NHL store 2,049→270 MB compile, 913→318 MB filter state; paused install `nhl_event_store_install` awaits approval (Needs your decision #4). |
+| 117.0 | cleanup · 2 | Land #508 #505 #506 #507 on green; prune remote branches (merged or nothing unlanded); prune worktrees | Sonnet | ⬜ | |
+| 117.1 | execution · 3 | Caps raised (approved); spread logged on every order + backfilled; FADE crossed measured with its real cost; frozen placement table, policy on (approved) | Sonnet | ⬜ | |
+| 117.2 | quant · 3 | NHL consensus history as a router-v2 prior; momentum and Kalshi-vs-books tests pre-registered; family vs leaf power calendar | Sonnet | ⬜ | |
+| 117.3 | D6 · 3 | NBA layer 1 for moneyline + team totals; the named NBA layer causes; D6 recount on the box | Sonnet | ⬜ | |
+| 117.4 | hygiene · 3 | Every push to main checks the backlog and GG ids; handoffs older than 7 days archived; gaps with merged fixes resolved | Haiku | ⬜ | |
 
-- **Pushback:** 116.2's cap change raises demo arm orders from ~50 to ~2,200 a day - it ships behind a switch at the OLD values, with
-  the raise proposed for the operator, because the 11-12 ADR-0072 addendum promised those gates were unchanged.
-- **Surface:** box GREEN (00:58Z: 94 live, HEALTHY). Delta: 0 installs; installs only proposed.
-- **Dependencies:** none blocking; ownership disjoint (COMMON RULES).
+- **Pushback:** 117.1 turns a placement policy on from about 100 FADE orders spread over few games, which risks fitting noise. The guards
+  are a table frozen before any forward order, "keep today's rule" wherever a cell is under its minimum n, and the pre-registered
+  forward comparison.
+- **Surface:** box GREEN at 00:58Z (94 live, HEALTHY). Delta: 0 installs in the blocks; one CI workflow (not runtime);
+  `nhl_event_store_install` (+1 paused cron line) only if the operator approves it by name.
+- **Dependencies:** the cleanup block lands the PRs the wave builds on. Inside the wave, ownership is disjoint (COMMON RULES). 117.3
+  Part C reads NHL only if the install has run; otherwise it skips NHL.
 
-### 116.1 - QUANT (FINISH 115.1: ROUTER V2 MEASURED AND FROZEN) · MODEL: Opus
-
-```
-WAVE 116 - BLOCK 116.1 - QUANT - FINISH 115.1: THE EVIDENCE PIPELINE, THREE ROUTERS HELD OUT, THE POWER CALENDAR, ROUTER V2 FROZEN (B-094) - MODEL: Opus
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W116.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261117T011739Z_W115_1.md in full and check out branch
-session/20261117T010343Z-w115-1-evidence (73c3fa8 or newer). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W116_1.md.
-
-WHAT EXISTS (Fable, do not redo): decision_trees/evidence/model.py (game-clustered pooling over the leaf tree, DerSimonian-Laird tau per
-depth, prior_obs hook) and evidence/sequential.py (always-valid e-process), checked against brute force in scratch, not yet as repo
-tests. The routing rule is FIXED: a leaf takes an arm iff pooled P(net > 0) >= 0.90 AND a node on its path at family depth or deeper has
-e-value >= 10 (alpha 0.10), else NO BET; weekly looks cut Tuesday 10:00 UTC. Known inputs: nflverse games.csv has odds 2006-2026 (5,444
-games); no free NBA / NHL closing-line history (GG-1936); Kalshi history needs candle parsing (GG-1937).
-
-PART A - the pipeline and its tests
-1. evidence/pipeline.py exactly as the handoff's EXACT NEXT STEP describes (rows -> weekly looks -> posterior + e-process -> arm per
-   leaf), on W110.5's split (12_EXPLORATORY/retro_route/). Repo tests: model and sequential against brute force; a planted effect is
-   recovered and a planted null is not; the e-process stays valid across weekly looks.
-
-PART B - the measurement
-1. The three-router held-out comparison - per-leaf BH (v1), pooled (v2), ride every favourite - net per row by sport with game-clustered
-   intervals, in 12_EXPLORATORY/evidence_design/RESULT.md. If v2 does not win, say so plainly; that is a result.
-2. evidence/calendar.py: for each leaf, the date it could first earn an arm at the current row rate under v1 and v2 (median and first
-   date per sport). The nflverse prior for NFL only (GG-1936 / GG-1937 stay registered).
-
-PART C - land it, frozen
-1. leaf_maps/leaf_map_v2.json behind env PM_LEAF_MAP_VERSION (default v1; LeafDecision gains defaulted posterior / source; router.py
-   untouched - the 115.1 interface note). The router v2 pre-registration frozen before any forward row. Register GG-1936..GG-1938 in the
-   gap log. PR(s); merge on green. Put "turn router v2 on for logging (v1 stays the frozen test)" in "Needs your decision" as a dated
-   approval sentence.
-
-Report: per COMMON RULES. MEASURE MOVED: leaves with an arm v1 vs v2 (fit and held-out); held-out net per row by router; power calendar.
-Operator decisions: v2 logging switch (proposed).
-END OF BLOCK 116.1
-```
-
-### 116.2 - EXECUTION (FINISH 115.2: PLACEMENT LANDED) · MODEL: Opus
+### 117.0 - CLEANUP (BEFORE THE WAVE) · MODEL: Sonnet
 
 ```
-WAVE 116 - BLOCK 116.2 - EXECUTION - FINISH 115.2: PLACEMENT MODEL, SETTLEMENT JOIN, POLICY BEHIND A SWITCH, PER-ARM REPORT (B-095) - MODEL: Opus
+PRE-WAVE 117 - CLEANUP - LAND THE FOUR PARKED W116 PRS, THEN PRUNE BRANCHES (B-098) - MODEL: Sonnet
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W116.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261117T011757Z_W115_2.md in full and check out branch
-session/20261117T010348Z-w115-2-placement (bdf2847 or newer). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W116_2.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W117.md` and quote its first line. Those rules
+bind this block. Claim with scripts/claim_session.sh. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W117_0.md, 30 lines at most.
+Main's backlog file is fixed (7e97f1f, GG-1955 resolved). It was the only red on all four PRs.
 
-WHAT EXISTS (Fable, do not redo; 33 tests pass): GG-1935 answered (the "daily breaker" is arm_orders.cap_reason comparing stake PLACED per
-UTC day against $150 borrowed from the real-money limit - not a loss figure); demo-book caps moved into c4_risk_engine/arm_sizing.py
-(25 / 2,500 / 1,500 per event / day / arm, were 5 / 50 / 25); arm order rows carry placement, book_at_submit, hours_to_start;
-c5_execution/placement/model.py (fill, selection and option tables) written, smoke-run only.
+PART A - land the parked PRs, in this order: #508 (GG-1942 ARM_ORDERS advisory), #505 (forward report per arm and option), #506
+(router v2, default v1), #507 (NHL store shrink + paused install). For each:
+- merge origin/main into the branch (never force-push a branch someone else pushed), push, and read CI on the new head;
+- squash-merge only on green;
+- if a conflict would change the PR's meaning, stop on that PR, name it, and move to the next;
+- after each merge, read deploy_truth_read and record the t4-mlb decision.
+Then the merged PR's pending step from its handoff:
+- #506: mark GG-1954 RESOLVED, queue row 116.1 ✅.
+- #505 / #508: queue row 116.2 ✅. ARM_BOOK_CAPS stays as it is; 117.1 flips it.
+- #507: queue row 116.3 ✅. Install nothing; the window runs nhl_event_store_install only after the operator approves it.
 
-PART A - make the caps safe to merge, and the data readable
-1. The cap raise lifts demo arm orders from ~50 to ~2,200 a day, and the 2026-11-12 ADR-0072 addendum said those gates were unchanged.
-   Ship the separation (no risk.py constant read anywhere in the demo path) but keep the OLD values (5 / 50 / 25) as the default, the new
-   ones behind a switch, OFF. Same real-money-constant pattern in decision_trees/ride_orders.py:85-87 - fix it the same way.
-2. GG-1934: tolerant timestamps in scripts/demo_fill_forward_report.py (_ts line ~91, ~268, ~749); sweep scripts/ and src/ for the same
-   pattern. The per-order join in scripts/arm_orders_read.py: one paginated fills pull, market results cached per ticker, markouts at
-   1 / 5 / 30 min and close, exact fees - outcome lookups failed for 244 of 432 orders on the 11-17 read; get that near zero.
+PART B - prune branches. For every remote branch list: tip SHA, last commit date, its PR (number + state) if any, and
+`git cherry origin/main <branch>`.
+- DELETE a remote branch only if its PR is merged, or `git cherry` shows no "+" line (nothing unlanded) - and in both cases it has no
+  open PR.
+- KEEP: data/nba-injury-reports, data/nhl-goalie-probe, #149's branch, any branch with an open PR, any branch with unlanded commits.
+- Write the table to 12_EXPLORATORY/branch_cleanup_w117/LIST.md (DELETED / KEPT, each with its reason).
+- Then `git worktree prune`. Remove local worktrees whose branch was deleted; never remove one with uncommitted changes - list it instead.
+- Close no PR.
 
-PART B - the model, tested
-1. tests/test_placement_model.py (known-answer counts). From every demo order with a fill outcome (epoch rule GG-1771, never mixed):
-   P(fill | offset, spread, depth, time to start, arm, sport) and the adverse-selection term per arm - fills vs non-fills. State n per
-   cell. The option per arm per leaf: cross now / rest at touch / rest inside / do not place, by expected net after fees and selection.
-
-PART C - land it, and the operator's two decisions
-1. placement policy behind a switch DEFAULT OFF; demo_fill_forward_report reports E1 / E2 / E3 and markouts per arm AND per option.
-   PR(s); merge on green; after deploy request arm_orders_read and report the per-arm numbers.
-2. The ADR-0072 addendum PROPOSAL (what the policy and the cap raise change, the comparison, its judged n) and two dated approval
-   sentences in "Needs your decision": the cap raise; the placement policy on. Register GG-1942..GG-1944. Turn nothing on.
-
-Report: per COMMON RULES. MEASURE MOVED: outcome lookups failed before -> after; E1 / E2 / E3 per arm; adverse-selection term per arm;
-expected net per option. Operator decisions: cap raise; placement policy (both proposed).
-END OF BLOCK 116.2
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - PRs merged (of 4); remote branches before -> after; branches kept with unlanded commits.
+END OF CLEANUP BLOCK
 ```
 
-### 116.3 - D6 (FINISH 115.3: THE TRACE, THE FIXES, THE COUNT) · MODEL: Opus
+### 117.1 - EXECUTION (FADE CROSSED, MEASURED WITH ITS REAL COST) · MODEL: Sonnet
 
 ```
-WAVE 116 - BLOCK 116.3 - D6 - FINISH 115.3: READ THE TRACE, FIX THE BREAKS, ROW-LEVEL SIZING, RECOUNT D6 ON THE BOX (B-091 + B-092) - MODEL: Opus
+WAVE 117 - BLOCK 117.1 - EXECUTION - CAPS RAISED, SPREAD LOGGED, FADE CROSSED MEASURED HONESTLY, FROZEN PLACEMENT TABLE (B-095) - MODEL: Sonnet
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W116.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261117T0115Z_W115_3.md and git log on main since 2026-11-17 01:00Z.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W116_3.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W117.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0125Z_W116_2_APPROVALS.md and the two APPROVED lines in "Needs your
+decision". Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W117_1.md.
 
-WHAT EXISTS (Fable): #502 MERGED (b8e0750, 22:01 PT): NHL shadow writer now calls the router (was 5,513 unrouted skips); NFL layer-3
-counting rule fixed (it tested a field never set on any host - so GG-1933 "returns None on the box" is probably wrong); router ERROR rows
-(NBA 5,193 / NFL 197) now log their message; scripts/d6_trace_read (read-only) follows one game per sport through the seven layers.
-After the merge the Fable terminal filed deploy_truth_read and d6_trace_read requests (4987330, d3f0c18) - read their results in
-04_EXECUTION/BOX_TASKS/results/ (re-request if absent). NHL event store: a local dry run peaks at 2.0 GB to compile and 885 MB per-run
-filter state; the box has 961 MB - shrink before proposing any install. row_decision (row-level size) is called by nothing.
+WHAT EXISTS (box 2026-11-18 00:58Z, post-epoch, all orders joined, lookups failed 0 of 486):
+- RIDE: 279 orders / 39 fills; fills win 69% vs non-fills 81% (adverse selection); E2 -0.008 per contract after fees.
+- MOMENTUM: 96 / 20; fills 50% vs non-fills 50%; E2 +0.075.
+- FADE: 111 / 6; fills 33% vs non-fills 38%; E2 +0.106.
+- Best option per arm is "cross": FADE +0.183 [+0.089, +0.277] (n 100), RIDE +0.023 [-0.023, +0.069], MOMENTUM +0.020
+  [-0.091, +0.131]. spread_logged = 0 on every order, so no option's crossing cost has been measured.
+- The day cap drove most skips: RIDE 5,010, FADE 2,040, MOMENTUM 2,043.
 
-PART A - the trace
-1. From the d6_trace_read result write the three trace tables (NBA, NFL, NHL: layer, file / log, what was there, the break). Check
-   coverage.py's evidence rules against them; a rule the box cannot satisfy is a finding.
+PART A - the caps, and the data the decision needs
+1. ARM_BOOK_CAPS=raised: operator-approved 11-17, applies once #508 is merged (the cleanup block). Flip it the way ARM_ORDERS was
+   switched (deploy/demo_fill.env via PR, merge on green, deploy readback). Then arm_orders_read: skips by reason, before -> after.
+2. Every arm order logs best bid, best ask, spread and depth at the touch when submitted (book_at_submit exists; read what it carries).
+   New orders must show spread_logged > 0. Backfill the 486 existing orders from the nearest price-archive tick before submit, and
+   state how many it fills.
+3. NFL v1 per-leaf to NO BET (operator-approved 11-17 17:45 PT, "Needs your decision" (b)): arm_orders routes NFL per-leaf demo orders to
+   NO BET, logs the reason "hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D)", and NFL shadow rows keep logging. Test it.
 
-PART B - the fixes
-1. The router ERROR cause now that rows carry the message (5,390 rows). Call row_decision on every routed row (layer 6 evidence).
-   Anything else the trace shows in your files. NHL store: shrink to fit (streamed compile, two seasons max, compact filter state) and
-   measure again locally; only if it fits under ~600 MB write the install task (paused registry entry, readback, uninstall, budget
-   probe, allowlist line, tests) and its approval sentence in "Needs your decision". PR(s); merge on green.
+PART B - FADE crossed, honestly
+1. Recompute each option's net per contract with the real crossing cost (ask minus order price, plus the taker fee) on every order that
+   has a spread. Report game-clustered intervals, by sport, with n in games as well as orders.
+   - If FADE crossed keeps an interval above zero, say plainly that it is the first arm-and-option on forward demo data to clear zero
+     after costs, and where (sport, band).
+   - If it does not, say that plainly.
+2. Why FADE rests and almost never fills (6 of 111): its price against the touch at submit.
+
+PART C - the frozen table, and the policy (operator-approved 11-17)
+1. Write config/placement_policy.json, fitted ONLY on orders before its freeze time that have a logged or backfilled spread. State the
+   minimum n per cell; wherever a cell is under it, keep today's rule (rest at the touch). Commit it frozen with a pre-registration: the
+   forward comparison (policy vs today's rule), its judged n, and how a look is read.
+2. Then ARM_PLACEMENT_POLICY=on per the approval: PR, merge on green, deploy readback. kelly_fraction stays 0; demo only.
+
+Report: per COMMON RULES. MEASURE MOVED: E1 / E2 / E3 per arm and option after real costs; spread_logged 0 -> N (new + backfilled);
+day-cap skips before -> after. Clock lever: bigger edges - state the edge and its interval.
+END OF BLOCK 117.1
+```
+
+### 117.2 - QUANT (HISTORY AS A PRIOR; COARSE LEAVES) · MODEL: Sonnet
+
+```
+WAVE 117 - BLOCK 117.2 - QUANT - NHL CONSENSUS HISTORY INTO ROUTER V2; MOMENTUM AND KALSHI-VS-BOOKS TESTS; FAMILY VS LEAF CALENDAR (B-099) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W117.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/evidence_design/RESULT.md and 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0135Z_W116_1.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W117_2.md.
+
+WHAT EXISTS:
+- Router v2 (decision_trees/evidence/, #506): pooled posterior plus an always-valid e-process, with an NFL prior from nflverse
+  (prior_nflverse.py, TRANSFER_SD 0.03).
+- Power calendar: first arm at +0.02 in 2027-07-21; at +0.05 in 2027-01-20.
+- Muse's free pull (2026-11-17), in the sports-intel-archive at L3-closing-lines/nhl/minmaxxxer-2025-26/: 1,394 NHL games (1,312
+  regular + 82 playoff), 2025-10-07 to 2026-06-14, open AND close for moneyline / puck line / total on every game. It is a vig-removed
+  consensus of 16-23 books (median 20), with no per-book lines. 3 of 3 spot checks match MoneyPuck. Read its SOURCE.md first.
+- Free sources only, ever (operator 11-17).
+
+PART A - the prior
+1. An archive_intake loader for that folder at a pinned SHA (read-only), with the terms from SOURCE.md recorded. Keep regular season
+   and playoffs apart.
+2. prior_nhl_consensus, built like prior_nflverse: per bin (family x price band x favourite / underdog), the realised net of riding and of
+   fading at the consensus close, with its transfer SD stated.
+3. Power calendar with vs without the prior: NHL with this one, NFL with nflverse. That measures what a prior is worth, in both sports.
+
+PART B - two tests the history allows. Pre-register each in 12_EXPLORATORY/nhl_consensus/PREREG.md before reading any result.
+1. MOMENTUM: does the open-to-close move carry information past the close? Model the outcome on the close probability plus
+   (close - open), separately for moneyline, puck line and total, with game-clustered intervals. A positive move term means the close
+   under-reacts, which is a prior for the follow-the-move arm.
+2. KALSHI VS BOOKS: count the NHL games where our Kalshi price archive overlaps 2025-26. For those games, measure the gap (Kalshi minus
+   consensus at the close) and whether riding the consensus side wins net of Kalshi fees.
+   - If there is no overlap, say so, and state how many 2026-27 games a free current-season consensus would need (Muse's scout: KofSports,
+     closing lines only, no login).
+   - Register that need for the window's Monday Muse list. Do not scrape it yourself.
+
+PART C - coarse leaves
+1. The power calendar under v2 at family level (no leaf split) vs leaf level, per sport, at +0.02 and +0.05.
+2. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: first-arm dates per sport (prior vs none; family vs leaf); the momentum term with its
+interval; the Kalshi-vs-consensus gap and its n. Clock levers: history as a prior, coarse leaves - say which moved the date more.
+END OF BLOCK 117.2
+```
+
+### 117.3 - D6 (NBA WIRED ACROSS THE BOARD) · MODEL: Sonnet
+
+```
+WAVE 117 - BLOCK 117.3 - D6 - NBA LAYER 1 FOR MONEYLINE AND TEAM TOTALS; THE NAMED NBA CAUSES; D6 RECOUNT ON THE BOX (B-100 + B-092) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W117.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0116Z_W116_3.md and 04_EXECUTION/W116_3_D6_TRACE_TABLES.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W117_3.md.
+
+WHAT EXISTS (d6_read 2026-11-18 01:05Z): D6 3 of 117 (NBA_GAME_TOTAL T3, NBA_SPREAD T2, NBA_SPREAD T3). One cause per unwired NBA cell:
+- TEAM_TOTAL T1-3: layer 3.
+- SPREAD T1: layer 4.
+- GAME_TOTAL T1: layer 6.
+- GAME_TOTAL T2: layer 7 (fills).
+- Moneylines, props and T4 / T5: layer 1 (no model p).
+NFL and NHL stop at layer 3 (NHL store absent from the box; GG-1951: layer 3 is credited from the split file, not from box rows).
+
+PART A - layer 1
+1. Price NBA moneyline and team totals from the engine's existing game simulation - the same draws that price spread and total - point
+   in time, on the shadow rows.
+2. Tests:
+   - P(win) agrees with the spread-implied probability within a stated tolerance.
+   - The two team totals are consistent with the game total.
+   - On a planted case, the price is recovered.
+
+PART B - the named causes
+1. Fix TEAM_TOTAL T1-3 layer 3, SPREAD T1 layer 4 and GAME_TOTAL T1 layer 6, or name exactly why each cannot pass.
+2. GG-1951: layer 3 counts box rows that carry a kept split, not the split file.
+3. The layer-3 stump definition is APPROVED (operator 11-17 17:45 PT, "Needs your decision" (c)). Apply it in coverage.py: layer 3 is
+   present when a cell's splits were tested on box rows and logged with their verdicts, kept or not. d6_read reports stumps separately
+   from cells with a kept split, so D6 shows both numbers.
+4. PR(s); merge on green.
 
 PART C - the count
-1. After deploy: d6_read on the box. D6 per sport, wired cells BY NAME, and for each unwired cell the one cause. Record the t4-mlb deploy
-   decision the 115.3 handoff left open. Register GG-1939..GG-1941.
+1. After deploy: d6_read on the box. Report D6 per sport, the wired cells BY NAME, and the one cause for each still-unwired NBA cell.
+2. If nhl_event_store_install has run (the window runs it only after the operator approves it by name), re-read for NHL layer 3 and
+   report it. If it has not run, skip NHL.
 
-Report: per COMMON RULES. MEASURE MOVED: D6 wired on the box 3 -> N (named); unrouted / ERROR rows before -> after; NHL store memory.
-Operator decisions: an NHL store install only if it fits (proposed).
-END OF BLOCK 116.3
+Report: per COMMON RULES. MEASURE MOVED: D6 on the box 3 -> N, named; NBA layer-1 cells before -> after. Clock lever: more cells
+wired (evidence starts only when a cell is wired).
+END OF BLOCK 117.3
+```
+
+### 117.4 - HYGIENE (THE W58 HOLE; THE REPO TAX) · MODEL: Haiku
+
+```
+WAVE 117 - BLOCK 117.4 - HYGIENE - EVERY PUSH CHECKS THE BACKLOG; HANDOFFS ARCHIVED; GAPS WITH MERGED FIXES RESOLVED (B-098) - MODEL: Haiku
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W117.md` and quote its first line. Those rules
+bind this block. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W117_4.md.
+
+WHY: docs-only pushes skip CI, so on 11-17 a ROLLING_BACKLOG.json with a duplicate order went green on main and turned four code PRs
+red (window error W58, GG-1955).
+
+PART A - the hole
+1. Add a light workflow that runs on every push to main, docs-only included, with no test suite (it should take seconds):
+   - python3 scripts/rolling_backlog.py --check
+   - python3 scripts/lib/gg_id_uniqueness_check.py 03_DECISIONS/GOVERNANCE_GAP_LOG.md 03_DECISIONS/GOVERNANCE_GAP_LOG_ARCHIVE.md
+2. Pattern sweep: list every other generated or validated file that only the test job checks. Add each one whose check is a single
+   command.
+3. PR; merge on green.
+
+PART B - handoff folder
+1. First grep every consumer of 11_MEMORY_HANDOFF paths (scripts/session_delta.sh, .claude/hooks/, scripts/) and make each one also
+   find archived files. Tests.
+2. Then git mv every SESSION_HANDOFF_* older than 7 days into 11_MEMORY_HANDOFF/archive/<YYYY-MM>/. Report the live count before ->
+   after (target under 60).
+3. PR for any code; the moves themselves are docs-only.
+
+PART C - gap burn-down
+1. List the OPEN gaps whose own text names a fix PR. For each, check that the PR is merged and that its test exists, and only then
+   mark it RESOLVED with the PR link.
+2. Report OPEN before -> after. List any gap that needs judgement and leave it untouched.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - handoff files live before -> after; OPEN gaps before -> after; pushes checked.
+END OF BLOCK 117.4
 ```
 
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 116 (OPUS) — WRITTEN 2026-11-17 ~06:30 UTC · CLOSED 2026-11-18 ~01:40 UTC (operator 11-17 17:39 PT) · SW-9 · three Opus blocks finishing the Fable wave · verified on GitHub (#503 #504 merged and deployed 00:54Z; #505 #506 #507 #508 green-ready after the window's backlog fix 7e97f1f, landed by 117.0; handoffs W116_1 / W116_2 / W116_2_APPROVALS / W116_3) + box (`20261118T00*`) · moved: **router v2 built and frozen (arms 0 leaves held out; v1 NFL −0.020 per row, interval below 0); power calendar - first arm 2027-07 at +2c; join lookups failed 244 → 0; FADE crossed +0.183 [+0.089, +0.277] before its crossing cost; router ERROR fixed; D6 3 / 117 (NBA); NHL store 2,049 → 270 MB**
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 116.1 | quant · 3 | Finish 115.1: evidence pipeline, three routers held out, power calendar, v2 map behind a switch, router v2 frozen | Opus | ✅ (PR #506 lands in 117.0) | v2 arms 0 of 356 leaves (fit) / 365 (all); held out v1 −0.0064 [−0.0138, +0.0009], NFL −0.0201 [−0.0369, −0.0054]; ride every favourite −0.0256; Fable's e-process false claims 275/300 → 2/300 after a binary variance floor; calendar at +0.02 first 2027-07-21, median 2028-05-10; GG-1936..1938, GG-1954. |
+| 116.2 | execution · 3 | Finish 115.2: placement model tests, settlement join, policy behind a switch, report per arm and option, ADR-0072 addendum | Opus | ✅ (#504 merged; #505 #508 land in 117.0) | Lookups failed 244 → 0 of 486. RIDE fills win 69% vs 81% unfilled (adverse), E2 −0.008 after fees; MOMENTUM 50 / 50, +0.075; FADE 6 of 111 filled, +0.106; option "cross" best for every arm, FADE +0.183 [+0.089, +0.277] - spread not logged. Operator approved the cap raise (after GG-1942) and the placement policy (after a frozen spread-logged table). |
+| 116.3 | D6 · 3 | Finish 115.3: trace, fixes, row-level sizing, D6 recount; NHL store shrunk | Opus | ✅ (#503 merged; #507 lands in 117.0) | Router ERROR = KeyError market_ticker (GG-1939), fixed; size_for on every routed row; D6 3 / 117 named (NBA_GAME_TOTAL T3, NBA_SPREAD T2 / T3); trace tables + 5 coverage findings (GG-1951); NHL store fits (270 / 318 MB), `nhl_event_store_install` awaits approval. |
 
 ### 🟡 WAVE 115 (FABLE) — WRITTEN 2026-11-17 ~01:30 UTC · STOPPED ~01:18 UTC on usage (operator addendum) · SW-9 · three Fable blocks, all PARTIAL · pushed: branches w115-1-evidence (73c3fa8), w115-2-placement (bdf2847); #502 merged 06:01Z (115.3 resumed at the 22:00 reset) · designed: pooled + sequential evidence rule; GG-1935 answered (the "breaker" is a placed-stake cap, not a loss); NHL rows routed · finished by Wave 116 (Opus)
 
@@ -529,6 +634,15 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
+> **AUTHORIZATION - THREE DECISIONS (operator, 2026-11-17 17:45 PT: "yes approve on all 3", answering the window's message naming
+> `nhl_event_store_install`, NFL v1 per-leaf to no bet, and counting tested stumps at layer 3).**
+> (a) `nhl_event_store_install`, which adds a crontab line on the paper box. Run by the window with its readback and a budget read, after
+> 117.0 merges PR #507.
+> (b) NFL v1 per-leaf demo orders route to NO BET: hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D). NFL shadow rows keep
+> logging. NBA / NHL v1 are unchanged and the frozen ADR-0072 file is untouched. Built by 117.1 (arm_orders).
+> (c) D6 layer 3 is present when a cell's splits were tested on box rows and logged with their verdicts, kept or not (a tested stump).
+> d6_read reports stumps separately from cells with a kept split. Built by 117.3 (coverage.py).
+
 > **APPROVED 2026-11-17 PT by the operator ("Yes - I provide my approvals.") - DEMO ARM PLACEMENT POLICY ON (W116.2):** Turns on only when the frozen table exists (none yet). turn `ARM_PLACEMENT_POLICY=on` for router-arm demo orders, reading a frozen `config/placement_policy.json` fitted only on orders that logged their spread (30+ resolved per side of each cell), judged at 100 resolved orders per arm and option (ADR-0072 addendum proposal 2026-11-17). Today's read, before spread was logged: FADE cross +0.18 per order [+0.09, +0.28], n=100, with an assumed spread; RIDE and MOMENTUM within noise. Demo only, `kelly_fraction` 0.
 
 > **APPROVED 2026-11-17 PT by the operator ("Yes - I provide my approvals.") - DEMO ARM BOOK CAPS RAISED (W116.2):** Turns on only after GG-1942 is fixed and merged. turn `ARM_BOOK_CAPS=raised` (25 per event / $2,500 a day / $1,500 per arm, demo only; about 50 -> about 2,200 demo arm orders a day) **only after GG-1942 is fixed** (ARM_ORDERS advisory in the exposure gate; otherwise about $200 of open demo stake halts every book). Same addendum proposal.
@@ -566,11 +680,18 @@ What should reorder this, and what should stop it:
    evaluate-and-log, no orders). Approve with: "I approve the box-task request that runs nba_engine_props_shadow_install, which adds a crontab line on the paper box."
 3. ~~**`dashboard_memmax_install`**~~ APPROVED 11-12 15:04 PT (109.5: the dashboard service hit its 128 MB cap 5,082 times; raises it to 384 MB). Approve with:
    "I approve the box-task request that runs dashboard_memmax_install, which changes the dashboard service's memory limit on the paper box."
-4. **`nhl_event_store_install`** (W116.3, 2026-11-18, PR #507): one paused cron line (13:29 UTC daily) that refreshes the NHL event store
+4. ~~**`nhl_event_store_install`**~~ APPROVED 11-17 17:45 PT (runs after #507 merges) (W116.3, 2026-11-18, PR #507): one paused cron line (13:29 UTC daily) that refreshes the NHL event store
    on the box (two seasons, streamed compile). Without it NHL has no filter data on the box, so no NHL cell can pass D6 layer 3. Measured
    locally: compile peak 2,049 -> 270 MB, NHL filter-state build 913 -> 318 MB (same output on 40 games). Risk: the box has ~126 MB free
    with swap in use, so the first run may swap; it runs under nice and flock, no orders, `kelly_fraction` 0. Approve with:
    "I approve the box-task request that runs nhl_event_store_install, which adds a crontab line on the paper box."
+5. ~~**NFL v1 per-leaf orders → no bet**~~ APPROVED 11-17 17:45 PT (SW-9, 2026-11-18). Held out, v1's NFL per-leaf arms lose −0.020 per row [−0.037, −0.005],
+   the interval wholly below zero (W116.1). Route NFL per-leaf demo orders to NO BET and record "hypothesis closed (EXP-W110.5 NFL
+   per-leaf, parked for R&D)"; NBA / NHL v1 unchanged and the frozen ADR-0072 file untouched. Approve with: "Route NFL v1 per-leaf to no bet."
+6. ~~**D6 layer 3 for a stump**~~ APPROVED 11-17 17:45 PT (SW-9, 2026-11-18). Today layer 3 needs a KEPT split, so a family whose splits were all tested and none
+   helped (NFL: 0 of 28 kept) counts as unwired, though under ADR-0077 that null is a routing result - the tree is a stump that picks
+   one arm, or NO BET, at the root. Proposed definition: layer 3 is present when the cell's splits were tested on box rows and logged
+   with their verdicts, kept or not. It would raise D6 without any new edge, so it is your call. Approve with: "Count tested stumps at layer 3."
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
 
