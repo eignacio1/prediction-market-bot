@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W117.0: after merges of PR 505 (a795d84), 506 (5ddaf0d), 507; record t4-mlb decision"
