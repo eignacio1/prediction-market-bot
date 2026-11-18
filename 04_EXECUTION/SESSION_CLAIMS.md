@@ -1315,3 +1315,4 @@
 | 2026-11-18T06:06:48Z | B-101 | CLOSED — W118.2 merged (#523): 5 NBA depth splits built PIT and scored per leaf per arm; 12 kept, 0 BH, S3/S5 parked on coverage; not wired. (commit `e7f35cf`) |
 | 2026-11-18T06:07:05Z | B-101 | CLOSED — merge confirmed, HEAD (a41f51d) is ancestor of origin/main — W118.2 merged (#523, e7f35cf); docs closed a41f51d |
 | 2026-11-18T06:12:16Z | B-102 | CLOSED — W118.4 disk: measured 87%, retention-as-code + days-to-90% alarm merged (#521, #525); install awaits approval. (commit `328361a`) |
+| 2026-11-18T06:12:29Z | B-102 | CLOSED — merge confirmed, HEAD (bbc79e4) is ancestor of origin/main — W118.4 disk: retention + alarm merged; install awaits approval |
