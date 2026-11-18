@@ -4771,6 +4771,8 @@ W114.2, 2026-11-13. Box `logs/arm_orders/orders.jsonl` (6,578 rows to 00:44:44Z)
 
 W116.3, 2026-11-17. Box trace (results/20261117T060933Z_d6_trace_read.md, 3-day window) shows 2,851 NBA and 181 NFL router ERROR rows, all `KeyError`. The cause: `leaf_map.LeafMap.row_for` built a row without `market_ticker` / `yes_bid` / `yes_ask`, and the MODEL_FADE branch's `retro_route.side_net` reads all three. So every leaf routed to MODEL_FADE (map arm or kept-split override) raised whenever p_yes was present. Fix merged in PR #503 (6f81a8c): the router passes the ticker and book in, and a MODEL_FADE leaf without a book routes NO_BET `model_fade_needs_ticker_and_book`. Fuzz: 0 errors in 5,760 runs. Stays OPEN until a box trace after the deploy shows ERROR rows at 0 (GG-072).
 
+W116.3 2026-11-18: #503 merged and deployed 00:54:51Z (box HEAD 53c83e86). Box trace 20261118T010409Z: the 3-day window still holds NBA 3,096 / NFL 181 / NHL 97 ERROR rows, all logged before the fix. The first ERROR row per sport, re-run under today's code, routes with no raise (NFL RIDE; NHL NO_BET leaf_not_in_map). PR #507 adds `error_after` (last ERROR time, routed rows after it) and a 20-row re-run per sport. Resolve when a post-#507 trace shows 0 rows still raising.
+
 ### GG-1940 — NHL rows reach the arm path without a router block (W115.3 / W116.3)
 **Status:** OPEN · **Severity:** MEDIUM
 
@@ -4786,6 +4788,8 @@ W115.3 (PR #502). `coverage.filter_layer_sports` tested `default_supply().nfl_pr
 
 W116.3, 2026-11-17. `coverage.d6_layers` layer 3 = the sport has filter data AND its series has a kept split in filter_splits.json. The box trace shows `L3_rows_with_kept_split = 0` in every cell traced, including the NBA cells counted wired. Run locally, the same NBA supply against the shipped splits fires 6 kept splits on KXNBATOTAL (their arms conflict, so the arm stands) and 1 on KXNBASPREAD (RIDE). Either the box rows lose `split_kept` (check the trace's field read and the router's paths that return before the split lookup) or the rule over-credits. Do not tighten the rule until the cause is known; a row-evidence rule may drop D6.
 
+W116.3 2026-11-18: PR #507 adds the window-wide `split_kept` count per cell to d6_trace_read. Trace tables: `04_EXECUTION/W116_3_D6_TRACE_TABLES.md`.
+
 ### GG-1952 — NBA_PLAYER_POINTS rows get no filters: "nba_event_ticker_unparsed" (W116.3)
 **Status:** OPEN · **Severity:** LOW
 
@@ -4795,6 +4799,13 @@ W116.3, 2026-11-17. Box trace: every NBA_PLAYER_POINTS row has filters 0 with no
 **Status:** OPEN · **Severity:** MEDIUM
 
 W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer3_inputs), so NHL layer 3 = 0 and NHL rows note `nhl_game_not_in_store`. Measured locally: `nhl_event_store.compile_store` peaks at ~2.0 GB RSS and `filter_supply._nhl_state` at ~885 MB, both over the ~600 MB budget. Planned shrink (not started): streamed compile, at most two seasons, compact filter state. Re-measure; propose the install task to the operator only if it is under ~600 MB.
+
+W116.3 2026-11-18: shrink done and measured locally in PR #507: compile 2,049 -> 270 MB peak (streamed, 25-game chunks, two seasons), `_nhl_state` 913 -> 318 MB (column-pruned reads, per-file shift sums; output identical on 40 games). Paused install `nhl_event_store_install` prepared and tested; it runs only after the operator approves it by name (Needs your decision #4). Risk: the box has ~126 MB free with swap in use.
+
+### GG-1956 — ROLLING_BACKLOG.json on main is invalid: every code PR's CI is red (W116.3)
+**Status:** OPEN · **Severity:** HIGH
+
+W116.3, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main: `ValueError: duplicate order 16 (B-018)` (B-074 and B-018 both hold order 16), since ab392a8 "Backlog B-099: rank label and order fixed (docs-only)". Docs-only pushes skip the test suite, so main shows green while every code PR fails 3 tests (test_rolling_backlog x2, test_visual_dashboard_backlog). Seen on PR #507 run 44213394562. Terminals may not edit ROLLING_BACKLOG.json, so the fix belongs to the strategic window: give B-018 (or B-074) a free order and regenerate the markdown. Pattern: a docs-only edit to a validated JSON should run its validator before the push.
 
 ### GG-1936 — No free NBA / NHL closing-line history to give router v2 a long-history prior (W116.1)
 **Status:** OPEN · **Severity:** MEDIUM
