@@ -156,15 +156,36 @@ def order_evidence(orders, fills_for=None, epoch_iso: str = GG1771_EPOCH_ISO) ->
     return l6, l7
 
 
+def ledger_evidence(rows) -> Dict[Tuple[str, str], dict]:
+    """W117.3 (GG-1951): per (market_type, band), what the BOX shadow-ledger rows themselves carry.
+    p: rows with a logged model p (``p_yes``)  -> layer 1.
+    tested: rows whose router block logged a split verdict (``split_kept`` or ``split_logged_only`` non-empty) -> layer 3 STUMP
+      (operator 11-17 17:45 PT: layer 3 is present when a cell's splits were tested on box rows and logged with their verdicts, kept or not).
+    kept: rows with a non-empty ``split_kept`` -> layer 3 with a kept split (the stricter number, reported beside the stump)."""
+    out: Dict[Tuple[str, str], dict] = {}
+    for r in rows or []:
+        key = (r.get("market_type"), r.get("band"))
+        d = out.setdefault(key, {"rows": 0, "p": 0, "tested": 0, "kept": 0})
+        rt = r.get("router") or {}
+        d["rows"] += 1
+        d["p"] += r.get("p_yes") is not None
+        d["kept"] += bool(rt.get("split_kept"))
+        d["tested"] += bool(rt.get("split_kept") or rt.get("split_logged_only"))
+    return out
+
+
 def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = None, splits_doc: Optional[dict] = None,
-              filter_sports: Optional[set] = None, orders=None, fills_for=None) -> List[dict]:
+              filter_sports: Optional[set] = None, orders=None, fills_for=None, box_evidence: Optional[dict] = None) -> List[dict]:
     """W111.3 Part C -- D6: for every registered cell, which of the seven layers are present AND evidenced.
     Evidence only, no credit for intent: layer 1 = the cell's leaves carry a logged model p (a MODEL_FADE fit entry);
     2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (W112.1: the sport's
     adapter has data AND the cell's series has a KEPT tested split, i.e. a split a tested leaf uses); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
     10+ held-out games; 6 = the cell's arm-path rows carry a size_for decision for an arm other than NO_BET (order_evidence); 7 = the cell's current-epoch arm orders have fills
     measured, fill or no-fill (shadow rows are not fills). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
-    In-play bands score 0 layers by construction (router returns NO_BET)."""
+    In-play bands score 0 layers by construction (router returns NO_BET).
+    W117.3: with ``box_evidence`` (ledger_evidence of the host's shadow rows) layer 1 is ALSO present when the cell's rows carry a logged
+    model p, and layer 3 is the approved STUMP rule (splits tested on box rows and logged with verdicts, kept or not) read from the rows,
+    not from the split file (GG-1951). Each cell then reports ``l3_kept`` (a kept split on box rows) beside it. Without it: the old rules."""
     import json
     import os
     if leaf_map_doc is None:
@@ -183,18 +204,21 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
     out = []
     for r in (rows if rows is not None else cell_rows()):
         ls = by.get((r["market_type"], r["band"]), [])
+        ev = (box_evidence or {}).get((r["market_type"], r["band"]), {})
+        l3_file = bool(ls) and str(r["sport"]).lower() in fsports and any(
+            x["sport"].lower() == str(r["sport"]).lower() and x["series"] in (None, r.get("family")) for x in kept)
         have = [
-            any("MODEL_FADE" in x.get("fit", {}) for x in ls),
+            any("MODEL_FADE" in x.get("fit", {}) for x in ls) or bool(ev.get("p")),
             bool(ls),
-            bool(ls) and str(r["sport"]).lower() in fsports and any(
-                x["sport"].lower() == str(r["sport"]).lower() and x["series"] in (None, r.get("family")) for x in kept),
+            bool(ev.get("tested")) if box_evidence is not None else l3_file,
             any(not x["thin"] and x["arm"] != "NO_BET" for x in ls),
             any((x.get("test") or {}).get("test_n_games", 0) >= MIN_HELD_GAMES for x in ls),
             (r["market_type"], r["band"]) in l6_cells,
             (r["market_type"], r["band"]) in l7_cells,
         ]
         out.append({"market_type": r["market_type"], "band": r["band"], "sport": r["sport"], "layers": have,
-                    "n_layers": sum(have), "wired": all(have)})
+                    "n_layers": sum(have), "wired": all(have),
+                    "l3_kept": bool(ev.get("kept")) if box_evidence is not None else l3_file})
     return out
 
 
@@ -211,8 +235,10 @@ def d6_summary(cells: List[dict]) -> dict:
     """Per sport: cells wired end to end / registered, and cells per layer. The number scripts/distance_to_optimum reads."""
     sports: Dict[str, dict] = {}
     for c in cells:
-        d = sports.setdefault(c["sport"], {"registered": 0, "wired": 0, "per_layer": [0] * 7})
+        d = sports.setdefault(c["sport"], {"registered": 0, "wired": 0, "per_layer": [0] * 7, "l3_stump": 0, "l3_kept": 0})
         d["registered"] += 1
+        d["l3_stump"] += bool(c["layers"][2])
+        d["l3_kept"] += bool(c.get("l3_kept"))
         d["wired"] += c["wired"]
         for i, h in enumerate(c["layers"]):
             d["per_layer"][i] += h
