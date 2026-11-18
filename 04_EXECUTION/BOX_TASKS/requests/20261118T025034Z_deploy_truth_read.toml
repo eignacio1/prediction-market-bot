@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W117.3: is #511 on the box before d6_read"
