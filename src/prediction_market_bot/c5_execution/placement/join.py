@@ -188,11 +188,12 @@ def _mean(v: List[float]) -> Optional[float]:
     return round(sum(v) / len(v), 4) if v else None
 
 
-def per_arm(recs: List[dict]) -> Dict[str, dict]:
-    """E1 / E2 / E3 and mean markouts per (arm, epoch). E2 is per filled contract, before and after exact fees."""
+def per_arm(recs: List[dict], by: str = "arm") -> Dict[str, dict]:
+    """E1 / E2 / E3 and mean markouts per (arm, epoch) - or per (arm, placement option, epoch) with by="option". E2 is per
+    filled contract, before and after exact fees."""
     acc: Dict[str, dict] = {}
     for r in recs:
-        k = f"{r['arm']}|{r['epoch']}"
+        k = f"{r['arm']}|{r['placement']}|{r['epoch']}" if by == "option" else f"{r['arm']}|{r['epoch']}"
         c = acc.setdefault(k, {"arm": r["arm"], "epoch": r["epoch"], "orders": 0, "fills": 0, "gross": [], "net": [],
                                "won_f": [], "won_u": [], "mk": {}})
         c["orders"] += 1
@@ -214,7 +215,7 @@ def per_arm(recs: List[dict]) -> Dict[str, dict]:
             c["won_u"].append(w)
     out = {}
     for k, c in sorted(acc.items()):
-        out[k] = {"arm": c["arm"], "epoch": c["epoch"], "E1_orders": c["orders"], "E1_fills": c["fills"],
+        out[k] = {"arm": c["arm"], "epoch": c["epoch"], "placement": k.split("|")[1] if by == "option" else None, "E1_orders": c["orders"], "E1_fills": c["fills"],
                   "fill_rate": round(c["fills"] / c["orders"], 4) if c["orders"] else None,
                   "E2_per_filled_contract_before_fees": _mean(c["gross"]),
                   "E2_per_filled_contract_after_fees": _mean(c["net"]), "n_settled_fills": len(c["gross"]),
