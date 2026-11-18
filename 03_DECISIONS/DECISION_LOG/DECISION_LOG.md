@@ -3602,3 +3602,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   runs alongside: "250+ gaps is ridiculously high and we need to get it to 150 at some point."
 - Wave 118 builds where the structure can grow: 118.1 MLB 2026 through router v2 (B-088), 118.2 NBA depth as layer-3 splits (B-101),
   118.3 NHL from its store + goalie timing (B-012), 118.4 box capacity (B-102). COMMON_RULES_W118 frames nulls as routing results.
+
+| 2026-11-18 | B-101 / W118.2 | NBA depth splits S3 (lineup status) and S5 (ref crew) closed as hypotheses (EXP-NBADEPTH-001-S3 / -S5, parked for R&D) because snapshot join coverage was 7-16%, not because a test lost; re-score after about 4 more weeks of snapshots. S1, S2 and S4 kept 12 leaves, 0 BH-significant, 0 draft-strength; `nba_depth_v2.json` stays unwired until 118.3. Kelly 0, no real capital. |

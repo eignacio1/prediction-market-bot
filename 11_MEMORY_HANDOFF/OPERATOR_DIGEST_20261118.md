@@ -30,3 +30,9 @@ Riding the books' favourite on Kalshi loses about 5.5 cents per contract after f
 One ask for Monday: a free 2026-27 closing-line source, so puck lines and totals can be checked against Kalshi too.
 
 **W117.3 (NBA wiring).** The count of bet types fully wired through all seven layers went from 3 to 4, all NBA. We can now price NBA moneylines and team totals from the game simulation, and the checks agree with the spread-implied odds. The box health alarm that said a cron job was missing was a false alarm from a bug in the check itself; fixed, and the box now reads healthy (one warning: disk 87%). No real money at risk. Next: NBA moneyline/spread/team totals need more rows before the tree can pick an arm.
+
+## W118.2 — NBA depth splits (B-101)
+We built five new NBA factors (pace and net rating, shot-zone matchup, lineup status, home/road gap, referee crew) and tested each one on the last five weeks of logged NBA forecasts, which are paper rows, not real fills.
+None passed the strict significance test. The best lead is shot-zone matchup on spreads, which looked positive but is far too thin to trust yet.
+Lineup status and referee crew could not be judged, because their data only starts 11-10. They are parked, not closed, and we re-test in about four weeks.
+Nothing is wired into the bot yet (that is 118.3). Still zero real money at risk.

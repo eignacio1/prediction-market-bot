@@ -1312,3 +1312,4 @@
 | 2026-11-18T05:24:04Z | B-101 GG-1957..1959 | W118.2 NBA depth factor classes from archive as pre-registered tree splits. PURPOSE: D5(b) NBA factor classes by stage; splits kept/tested per cell and arm; D1 NBA classes |
 | 2026-11-18T05:25:17Z | GG-2000..GG-2002 | STANDING — gap agent tick loop — FOR PLUMBING (OPEN gaps) — burn down the gap log |
 | 2026-11-18T05:44:11Z | B-088 | W118.1 PROOF: MLB 2026 postseason look-back through router v2. PURPOSE: MLB cells routed 0->N, P1/P2 for MLB |
+| 2026-11-18T06:06:48Z | B-101 | CLOSED — W118.2 merged (#523): 5 NBA depth splits built PIT and scored per leaf per arm; 12 kept, 0 BH, S3/S5 parked on coverage; not wired. (commit `e7f35cf`) |
