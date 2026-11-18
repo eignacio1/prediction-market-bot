@@ -1911,7 +1911,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: T4M-PROJ 
 
 ### GG-230 — `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-blob threshold, flagged and never registered
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PLUMBING).** `bash scripts/check_memory_bank_snapshots.sh` at origin/main HEAD: `Compass OS Health line length: 73 chars (line 402)`, under the 3000 threshold (was 5159). The line was split in an earlier wave; no violation remains.
 
 **Current state (2026-10-08, W59.1):** MEMORY_BANK.md Compass OS Health line is 5158 chars (was 5159); threshold 3000. **Next:** Split the line.
 
@@ -4490,7 +4492,9 @@ W94.1 (2026-10-29). `nba_engine/live.py` and `live_v2.py` plus the current-seaso
 W94.1 Part C. Sources for 93.1 expected missing minutes, 92.3 lineups and officials are not in the event store, so v2 tested only altitude and travel (neither kept). D5(b) NBA applied classes stay 4, not the addendum's 7. Related: GG-1420.
 
 ### GG-1452 — Wave 94 common rules reference a Deploy job summary that does not exist for docs-only or skipped runs
-**Status:** OPEN · **Severity:** LOW
+**Status:** CLOSED-AS-ARTIFACT · **Severity:** LOW
+
+**CLOSED-AS-ARTIFACT 2026-11-18 (gap agent GA-6).** Duplicate of GG-1462, which carries the same cause (no Deploy job since W67.3) and the correct read-back (`logs/vps_deploy.log` on the box, `git merge-base --is-ancestor`). GG-1462 survives.
 
 W94.1: the post-merge Test Suite run for PR #368 concluded `skipped` (job `test` only); no Deploy job to read. See GG-1462 (same cause). Recorded t4-mlb decision: none taken, no src file t4-mlb imports was changed.
 

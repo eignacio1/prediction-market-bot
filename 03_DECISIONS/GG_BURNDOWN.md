@@ -101,3 +101,8 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 - GS-3 skipped: GG-234/243/256/353/422 (C, claim_session/check_id_collision code), GG-342 (31 unmerged remote branches, none provably on main), GG-195/260/349/350/417 (shared-tree drift, retirement not authorized), GG-409/418/312/763/299/327/041/266/045/410/423/330/331/691 (C, L or operator), E-class engine gaps untouched.
 - GS-3 follow-up: GG-349/GG-417 (index.lock, session_guard.sh check) remain OPEN, class C, not drift.
 - W89.6 class C worked: GG-229, GG-426 (already fixed), GG-352 (doc line), GG-430, GG-691 (PR #341). Skipped: GG-842 (live runner message), GG-309 (CLAUDE.md edit needs operator), GG-452 (needs VPS pip freeze), GG-415 (cron/box change). E-class engine gaps untouched.
+
+## Tick GA-6.1 (2026-11-18)
+OPEN 272 -> 270. Closed A: GG-230 (check script reads 73 chars, was 5159). Closed B: GG-1452 (duplicate of GG-1462).
+Triaged, not closed: GG-1939/1940/1935/1942/1952 are W118-wave-owned (class W; fixes in flight, box trace pending). GG-1480 NOT moot (DOCS_ONLY_ROOTS still omits 12_EXPLORATORY/; vps_deploy.sh is a running component, so class L/window). GG-133 NOT moot (CHANGELOG last entry 2026-05-30). GG-1032 NOT moot (local python 3.9.6, no tomllib).
+Large add: GG-1480 (one-line roots edit in vps_deploy.sh plus a box read-back; window).
