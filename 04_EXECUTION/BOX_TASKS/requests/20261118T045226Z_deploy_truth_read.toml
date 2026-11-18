@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W117.1 A1: read back ARM_BOOK_CAPS=raised deploy (#514) and t4-mlb restart."
