@@ -1,0 +1,2 @@
+task = "nhl_event_store_readback"
+note = "Operator approved nhl_event_store_install 11-17 17:45 PT. Box HEALTHY 05:01Z (disk 87%, store 325 MB)."
