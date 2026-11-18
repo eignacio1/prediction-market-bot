@@ -1,0 +1,2 @@
+task = "d6_trace_read"
+note = "W116.3: re-read after #503 (6f81a8c) is deployed - ERROR rows after, D6 recount"
