@@ -17,7 +17,7 @@ postseason-only look-back on 2026-11-18 ("Proceed with recommendation"). 2,153 s
 | always FADE | n/a | -0.0782 [-0.1239, -0.0272] |
 | always MOMENTUM (where a move exists) | n/a | +0.0415 [-0.0175, +0.1052], 8 games |
 Full-corpus v2 (frozen map): 81 leaves, 0 armed. Per cell held-out net by arm: `results.json` -> `heldout_unrouted_arm_by_cell`.
-What the held-out rows show (description, not verdict): RIDE is positive in 10 of 12 cells but every interval spans 0 except
+What the held-out rows show (description, not verdict): RIDE is positive in 11 of 12 cells but every interval spans 0 except
 TEAM_TOTAL T2/T3 (+0.058 [+0.015, +0.101], +0.058 [+0.020, +0.098]); FADE is negative everywhere and its intervals exclude 0 in 6 cells; MODEL_FADE is negative on MONEYLINE.
 
 ## Routing per cell (Part B.3)
