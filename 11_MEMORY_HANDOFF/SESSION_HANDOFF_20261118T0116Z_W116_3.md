@@ -1,6 +1,22 @@
+<!-- session-meta
+task_id: B-092
+tier: STANDARD
+timestamp: 2026-11-18T01:16:00Z
+commit: f206b6b
+one_line_summary: W116.3 parked: D6 traces + NHL store shrink done; PR #507 red on main's backlog dup (GG-1955); NHL install awaits approval
+gg_touched: GG-1939, GG-1940, GG-1941, GG-1951, GG-1953, GG-1956 (dup of GG-1955)
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D6
+gap_delta: D6 3 -> 3 (d6_read 20261118T010409Z); NHL store peak RSS 2049->270 MB compile, 913->318 MB read (local)
+pattern_sweep: row_for has one caller (router._route_leaf); side_net row contract grepped across decision_trees/; ERROR rerun sample spans every sport's cells
+surface_delta: +1 cron line (nhl_event_store, PAUSED in RUNTIME_REGISTRY, not installed); 0 live
+-->
+
 # Handoff — W116.3 (finishes 115.3: B-091 + B-092) — 2026-11-18T01:16Z
 
-Status: PARTIAL, parked. Code done and tested. PR #507 is red only because of main's backlog file (GG-1956). This handoff supersedes SESSION_HANDOFF_20261117T0620Z_W116_3.md.
+Status: PARTIAL, parked. Code done and tested. PR #507 is red only because of main's backlog file (GG-1955; our GG-1956 folded into it). This handoff supersedes SESSION_HANDOFF_20261117T0620Z_W116_3.md.
 
 ## State
 - **B-091 (Part A, trace + coverage rules): DONE.**

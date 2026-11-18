@@ -1295,3 +1295,4 @@
 | 2026-11-18T01:13:48Z | B-095 | CLOSED — W116.2 close: operator approved placement policy + arm-book cap raise (both still off); GG-1942 fix in PR #508 (commit `bba152e`) |
 | 2026-11-18T01:14:03Z | B-095 | CLOSED — merge confirmed, HEAD (39d8328) is ancestor of origin/main — W116.2 docs on main; code PRs #505 and #508 open, waiting on GG-1955 (backlog dup) for green CI |
 | 2026-11-18T01:20:18Z | B-094 | MERGED: NO — branch `session/w116-1-evidence-opus` awaiting merge (PR #506, GG-1955) — W116.1 router v2 built, measured, frozen; PR #506 (29dd6b6) red only on GG-1955 backlog duplicate, not merged (commit `29dd6b6`) |
+| 2026-11-18T01:36:29Z | B-092 | CLOSED — W116.3 parked: D6 traces + NHL store shrink done; PR #507 red on main's backlog dup (GG-1955); NHL install awaits approval (commit `f206b6b`) |

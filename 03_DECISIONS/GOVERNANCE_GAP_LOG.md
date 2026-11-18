@@ -4803,7 +4803,9 @@ W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer
 W116.3 2026-11-18: shrink done and measured locally in PR #507: compile 2,049 -> 270 MB peak (streamed, 25-game chunks, two seasons), `_nhl_state` 913 -> 318 MB (column-pruned reads, per-file shift sums; output identical on 40 games). Paused install `nhl_event_store_install` prepared and tested; it runs only after the operator approves it by name (Needs your decision #4). Risk: the box has ~126 MB free with swap in use.
 
 ### GG-1956 — ROLLING_BACKLOG.json on main is invalid: every code PR's CI is red (W116.3)
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED · **Severity:** HIGH
+
+**Resolution (2026-11-18, W116.3 close):** duplicate of GG-1955 (W116.2, same defect, registered first). Tracked there; PR #507 waits on it with #505 and #508.
 
 W116.3, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main: `ValueError: duplicate order 16 (B-018)` (B-074 and B-018 both hold order 16), since ab392a8 "Backlog B-099: rank label and order fixed (docs-only)". Docs-only pushes skip the test suite, so main shows green while every code PR fails 3 tests (test_rolling_backlog x2, test_visual_dashboard_backlog). Seen on PR #507 run 44213394562. Terminals may not edit ROLLING_BACKLOG.json, so the fix belongs to the strategic window: give B-018 (or B-074) a free order and regenerate the markdown. Pattern: a docs-only edit to a validated JSON should run its validator before the push.
 
