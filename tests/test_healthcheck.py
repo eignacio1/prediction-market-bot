@@ -178,3 +178,12 @@ def test_demo_fill_stall_warns_not_fails(rig):
     assert "[WARN] demo-fill stall: DEMO ORDERS = 0" in out
     assert "demo_fill.override.env" in out and "treatment_markout_30m_worse_than_control" in out
     assert "[FAIL] demo" not in out
+
+
+def test_big_crontab_does_not_make_a_present_arm_read_missing(rig):
+    """W117.3: echo|grep -q under pipefail reported run_mlb_pregame.py MISSING on the box (crontab > 64KB pipe buffer)."""
+    filler = "".join("%d * * * * cd /x && %s scripts/z%d.py\n" % (i % 60, "y" * 700, i) for i in range(300))
+    rig[2].write_text(CRON + filler)
+    rc, out = run(rig)
+    assert "cron arm MISSING" not in out, out
+    assert "cron arm present: run_mlb_pregame.py" in out
