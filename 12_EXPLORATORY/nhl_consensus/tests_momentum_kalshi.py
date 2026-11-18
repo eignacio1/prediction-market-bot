@@ -84,7 +84,7 @@ def kalshi(games, kdir):
         if not e:
             unmatched += 1; continue
         matched += 1
-        cutoff = int(D.datetime.strptime(g["start_time_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=D.timezone.utc).timestamp()) - 3600
+        cutoff = int(D.datetime.strptime(g["start_time_utc"], "%Y-%m-%dT%H:%M:%S%z").timestamp()) - 3600
         ph, pa = px(ev[e][h], cutoff), px(ev[e][a], cutoff)
         if not ph or not pa:
             no_px += 1; continue
