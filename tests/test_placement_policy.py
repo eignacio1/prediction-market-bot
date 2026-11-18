@@ -52,3 +52,17 @@ def test_act_on_uses_table_and_no_place_skips(env, monkeypatch, tmp_path):  # no
     assert r["placement"] == "rest_inside" and r["price_yes"] == pytest.approx(0.70) and r["placement_reason"] == "table:RIDE|L1"
     s = ao.act(row("FADE", "no"), env.client, log=tmp_path / "f.jsonl")
     assert s["event"] == ao.SKIP_EVENT and "placement_no_place" in str(s)
+
+
+def test_table_from_clustered_needs_interval_above_zero_and_games():
+    from prediction_market_bot.c5_execution.placement import policy as pp
+    mk = lambda lo, g: {"cross": {"net": 0.1}, "cross_minus_rest": {"n": 100, "n_games": g, "ci": [lo, 0.3]}}
+    t = pp.table_from_clustered({"FADE": mk(-0.03, 20), "RIDE": mk(0.01, 5), "MOMENTUM": mk(0.01, 21)})
+    assert list(t["cells"]) == ["MOMENTUM"]  # FADE interval includes 0; RIDE has too few games
+
+
+def test_frozen_table_file_loads_and_is_all_rest_touch():
+    from prediction_market_bot.c5_execution.placement import policy as pp
+    t = pp.load_table()
+    assert t is not None and t["cells"] == {}
+    assert pp.place("FADE", None, "yes", 0.40, 0.44, switch_value="on").option == "rest_touch"
