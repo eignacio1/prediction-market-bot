@@ -3609,3 +3609,8 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 
 | 2026-11-18 | B-102 / W118.4 | Disk retention is compress-and-verify, never delete: files older than the age gate are gzipped, the decompressed sha256 is checked, and only then is the plain file removed. Only targets whose readers were taught .gz are compressed (kalshi raw/thin, json.bak). PRICE_ARCHIVE (~25 readers), rebuilt candles (seek reader) and audit ledgers are HELD and reported. journald is capped at 200M. The daily cron (14:17 UTC) is written but paused; `disk_retention_install` needs the operator's approval by name. Box dry run: ~3.36 GB freed; the 87% disk, growing +1.54 pct/day, would land near 72-73%. |
 | 2026-11-18 | GA-6 | Operator (11-18) approved gap-burner edits to `.claude/hooks/session_guard.sh` only (stale index.lock check, GG-417/349); governance_scan_full.sh stays off-limits absent further approval. Window triage (GG_WINDOW_TRIAGE_2026-11-18.md) applied: 14 resolved, 41 closed-as-artifact with reopen triggers, 25 ACCEPTED UNCERTAINTY. OPEN 272 -> 173. |
+
+### 2026-11-18 06:30Z - SW-9 - disk_retention_install run (operator-approved 11-17 22:18 PT)
+- Installed 06:26Z: one retention line, daily 14:17Z, crontab backed up; readback OK; surface budget GREEN; healthcheck HEALTHY (2 WARN:
+  disk 87%, 90% in ~2.0 days). Nothing freed yet - the first run is 2026-11-18 14:17Z (expected ~87% -> ~73%: compress ~1.9 GB, journald
+  cap ~1.5 GB). The window re-reads disk_read after it. Proof calendar regenerated on the box 06:15Z.
