@@ -1,0 +1,175 @@
+{
+ "prereg": "12_EXPLORATORY/nhl_consensus/PREREG.md @ 2a45e52",
+ "seed": 117,
+ "boot": 2000,
+ "momentum_regular": {
+  "moneyline": {
+   "n": 1312,
+   "beta": -0.8618,
+   "ci90": [
+    -4.29246,
+    2.86071
+   ],
+   "moved_share": 0.975,
+   "move_sd": 0.0262,
+   "verdict": "hypothesis closed (EXP-W117.2-MOM-moneyline, parked for R&D)",
+   "heldout_30pct": {
+    "beta_fit_first70": -0.0118,
+    "loglik_gain_vs_beta0_on_last30": 0.002,
+    "n": 394
+   }
+  },
+  "puck_line": {
+   "n": 1312,
+   "beta": -0.039,
+   "ci90": [
+    -0.15547,
+    0.05972
+   ],
+   "moved_share": 0.101,
+   "move_sd": 0.9151,
+   "verdict": "hypothesis closed (EXP-W117.2-MOM-puck_line, parked for R&D)",
+   "heldout_30pct": {
+    "beta_fit_first70": -0.0781,
+    "loglik_gain_vs_beta0_on_last30": -0.474,
+    "n": 394
+   }
+  },
+  "total": {
+   "n": 1266,
+   "beta": -0.1406,
+   "ci90": [
+    -0.47534,
+    0.17824
+   ],
+   "moved_share": 0.306,
+   "move_sd": 0.2791,
+   "verdict": "hypothesis closed (EXP-W117.2-MOM-total, parked for R&D)",
+   "heldout_30pct": {
+    "beta_fit_first70": -0.1633,
+    "loglik_gain_vs_beta0_on_last30": -0.022,
+    "n": 380
+   }
+  }
+ },
+ "momentum_playoffs_descriptive": {
+  "moneyline": {
+   "n": 82,
+   "beta": 31.2552,
+   "ci90": [
+    10.79365,
+    61.1294
+   ],
+   "moved_share": 0.963,
+   "move_sd": 0.019,
+   "verdict": "move carries information (prior for follow-the-move)",
+   "heldout_30pct": {
+    "beta_fit_first70": 37.7012,
+    "loglik_gain_vs_beta0_on_last30": 0.4,
+    "n": 25
+   }
+  },
+  "puck_line": {
+   "n": 82,
+   "beta": 0.0218,
+   "ci90": [
+    -0.33587,
+    0.48429
+   ],
+   "moved_share": 0.073,
+   "move_sd": 0.8082,
+   "verdict": "hypothesis closed (EXP-W117.2-MOM-puck_line, parked for R&D)",
+   "heldout_30pct": {
+    "beta_fit_first70": 0.2523,
+    "loglik_gain_vs_beta0_on_last30": -0.475,
+    "n": 25
+   }
+  },
+  "total": {
+   "n": 72,
+   "beta": 0.402,
+   "ci90": [
+    -1.36376,
+    2.049
+   ],
+   "moved_share": 0.264,
+   "move_sd": 0.256,
+   "verdict": "hypothesis closed (EXP-W117.2-MOM-total, parked for R&D)",
+   "heldout_30pct": {
+    "beta_fit_first70": 1.5102,
+    "loglik_gain_vs_beta0_on_last30": -1.221,
+    "n": 22
+   }
+  }
+ },
+ "kalshi_vs_books_regular": {
+  "consensus_games": 1312,
+  "matched_to_kalshi_event": 1312,
+  "unmatched": 0,
+  "no_eligible_price": 0,
+  "n_eligible": 1312,
+  "eligibility": "last hourly candle with t <= start-1h, bid and ask present, spread <= 0.10, both tickers",
+  "thin_rule_n": 300,
+  "gap_kalshi_mid_minus_consensus_home": {
+   "mean": 0.00157,
+   "sd": 0.0094,
+   "ci90": [
+    0.00114,
+    0.00198
+   ]
+  },
+  "ride_consensus_side_net": {
+   "mean": -0.05477,
+   "sd": 0.4932,
+   "ci90": [
+    -0.07729,
+    -0.03141
+   ]
+  },
+  "mirror_other_side_net": {
+   "mean": 0.00798,
+   "sd": 0.4933,
+   "ci90": [
+    -0.01487,
+    0.03086
+   ]
+  },
+  "median_age_of_price_min_before_cutoff": 0,
+  "thin": false
+ },
+ "kalshi_vs_books_playoffs_descriptive": {
+  "consensus_games": 82,
+  "matched_to_kalshi_event": 80,
+  "unmatched": 2,
+  "no_eligible_price": 0,
+  "n_eligible": 80,
+  "eligibility": "last hourly candle with t <= start-1h, bid and ask present, spread <= 0.10, both tickers",
+  "thin_rule_n": 300,
+  "gap_kalshi_mid_minus_consensus_home": {
+   "mean": 0.00261,
+   "sd": 0.0091,
+   "ci90": [
+    0.00089,
+    0.0043
+   ]
+  },
+  "ride_consensus_side_net": {
+   "mean": -0.01268,
+   "sd": 0.4854,
+   "ci90": [
+    -0.10618,
+    0.07588
+   ]
+  },
+  "mirror_other_side_net": {
+   "mean": -0.03206,
+   "sd": 0.4851,
+   "ci90": [
+    -0.11577,
+    0.05429
+   ]
+  },
+  "median_age_of_price_min_before_cutoff": 0,
+  "thin": true
+ }
+}

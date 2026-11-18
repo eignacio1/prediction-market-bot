@@ -1,0 +1,85 @@
+{
+ "source": "Muse archive L3-closing-lines/nhl/minmaxxxer-2025-26 @ 018634eca5555e3ab1936862b9842bf850e63084",
+ "terms": {
+  "dataset": "minmaxxxer/nhl-closing-odds-2025-26 (HuggingFace)",
+  "license": "CC-BY-4.0",
+  "terms": "Data compiled from publicly available game and odds information; not affiliated with the NHL, Flashscore or any bookmaker. For research and analysis.",
+  "authorization": "Earl, 2026-11-17 16:13 PT: this source and table only; no paid sources, ever"
+ },
+ "season": "2025-26 regular season",
+ "transfer_sd_note": "0.03 applied by the runner, as for nflverse",
+ "bins": {
+  "NHL_GAME_TOTAL|2": {
+   "n": 1266,
+   "gap": 0.02134,
+   "se": 0.01399,
+   "ride_net": 0.02134,
+   "fade_net": -0.02134
+  },
+  "NHL_MONEYLINE|2": {
+   "n": 1167,
+   "gap": -0.03276,
+   "se": 0.01457,
+   "ride_net": -0.03276,
+   "fade_net": 0.03276
+  },
+  "NHL_MONEYLINE|3": {
+   "n": 145,
+   "gap": 0.00456,
+   "se": 0.03817,
+   "ride_net": 0.00456,
+   "fade_net": -0.00456
+  },
+  "NHL_PUCK_LINE|2": {
+   "n": 750,
+   "gap": 0.03813,
+   "se": 0.01748,
+   "ride_net": 0.03813,
+   "fade_net": -0.03813
+  },
+  "NHL_PUCK_LINE|3": {
+   "n": 562,
+   "gap": 0.05073,
+   "se": 0.01886,
+   "ride_net": 0.05073,
+   "fade_net": -0.05073
+  }
+ },
+ "playoffs_descriptive_only": {
+  "NHL_GAME_TOTAL|2": {
+   "n": 72,
+   "gap": -0.04891,
+   "se": 0.05902,
+   "ride_net": -0.04891,
+   "fade_net": 0.04891
+  },
+  "NHL_MONEYLINE|2": {
+   "n": 76,
+   "gap": -0.02485,
+   "se": 0.05745,
+   "ride_net": -0.02485,
+   "fade_net": 0.02485
+  },
+  "NHL_MONEYLINE|3": {
+   "n": 6,
+   "gap": 0.31083,
+   "se": 0.00794,
+   "ride_net": 0.31083,
+   "fade_net": -0.31083
+  },
+  "NHL_PUCK_LINE|2": {
+   "n": 48,
+   "gap": 0.06338,
+   "se": 0.06767,
+   "ride_net": 0.06338,
+   "fade_net": -0.06338
+  },
+  "NHL_PUCK_LINE|3": {
+   "n": 34,
+   "gap": -0.00142,
+   "se": 0.08117,
+   "ride_net": -0.00142,
+   "fade_net": 0.00142
+  }
+ }
+}

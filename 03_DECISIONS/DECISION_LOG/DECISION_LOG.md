@@ -3572,3 +3572,15 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - "yes approve on all 3": (a) nhl_event_store_install (window runs it after 117.0 merges #507); (b) NFL v1 per-leaf demo orders route
   to NO BET, hypothesis closed (EXP-W110.5 NFL per-leaf, parked for R&D), built by 117.1; (c) D6 layer 3 counts tested stumps, reported
   separately from kept splits, built by 117.3. Blockquote in ACTIVE_QUEUE "Needs your decision".
+
+### 2026-11-18 W117.2 (QUANT, Sonnet) - NHL consensus history as a prior; momentum and Kalshi-vs-books tests (B-099)
+- Pre-registered (PREREG.md @ 2a45e52) before any outcome statistic; Muse archive pinned @ 018634e, CC-BY-4.0, authorization Earl
+  2026-11-17 16:13 PT (this source and table only, free only). Regular season and playoffs kept apart; playoffs descriptive.
+- Momentum: hypothesis closed (EXP-W117.2-MOM-moneyline, EXP-W117.2-MOM-puck_line, EXP-W117.2-MOM-total; parked for R&D). All three
+  90% intervals contain 0. The moneyline move is small, so that test has little power; stated, not hidden.
+- Kalshi vs books (moneyline, n=1,312): Kalshi mid = consensus close +0.0016 [+0.0011, +0.0020]; riding the consensus favourite at the Kalshi
+  ask plus fee nets -0.0548 per contract. Routing result: ride the consensus loses in these leaves. Puck line and total: no 2025-26 Kalshi
+  history; 2026-27 need (722 games per market) registered in TO_MUSE.md. No scraping.
+- Power calendar (a node alone, true net +0.02 / +0.05): history as a prior moves the first arm 1-7 weeks earlier; coarse (family, band)
+  leaves move it 6-40 weeks later or never. The prior is the lever that moved the date more; neither puts a first arm before 2027.
+- GG-1936: B-099 now supplies the NHL prior; NBA stays open. Corpus caveat: 108,439 rows here vs 106,430 in W116.1 RESULT.md.
