@@ -3026,7 +3026,8 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-330 — Q7 ledger-invariant check is vacuously green in a fresh worktree (SOURCE_UNAVAILABLE x3, exit 0)
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** LOW
+**Evidence:** `scripts/assert_ledger_invariants.py` now prints a `[VACUOUS]` banner and a `vacuous` line when all three sources are missing (verified with nonexistent paths; 36 ledger-invariant tests pass). Stays alarm-only; `--strict` unchanged. Repo tooling only.
 
 **Current state (2026-10-08, W59.1):** Verified: scripts/assert_ledger_invariants.py run in this fresh worktree reports SOURCE_UNAVAILABLE 3 times and exits 0. **Next:** Make a fresh worktree fail loudly (or resolve sources via an env path) when sources are unavailable.
 

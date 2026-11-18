@@ -897,6 +897,10 @@ def run(
             print(f"[SOURCE_UNAVAILABLE] {label}: {path} not found or corrupt (see CORRUPT_READ) — skipping its bands.", file=sys.stderr)
             lines.append({"type": "source_unavailable", "source": str(path), "label": label})
 
+    if t1_pf is None and t4_pf is None and store is None:  # GG-330: every source missing (e.g. a fresh worktree) is not a pass
+        print("[VACUOUS] ALL ledger sources unavailable: nothing was checked, this is NOT a clean result. "
+              "Run on the box or pass --t1-portfolio / --t4-portfolio / --outcome-store.", file=sys.stderr)
+        lines.append({"type": "vacuous", "reason": "all_sources_unavailable"})
     if store is None:
         print(f"[SOURCE_UNAVAILABLE] outcome store: {outcome_store_path} not found or corrupt — Task 2 cross-path check skipped.", file=sys.stderr)
         lines.append({"type": "source_unavailable", "source": str(outcome_store_path), "label": "outcome_store"})
