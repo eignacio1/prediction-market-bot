@@ -1,0 +1,2 @@
+task = "silent_arms_read"
+note = "Window: healthcheck UNHEALTHY 1 fault at 02:35Z refused nhl_event_store_install (Hard Rule 14); find the fault."
