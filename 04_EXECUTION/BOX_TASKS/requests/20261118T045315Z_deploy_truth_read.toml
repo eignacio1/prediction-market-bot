@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W117.3: is 40593d2 (health_rerun) on the box"
