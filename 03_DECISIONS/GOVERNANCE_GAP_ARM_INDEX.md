@@ -2,7 +2,7 @@
 
 Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 312 of 335 are auto and unreviewed.
 
-**Counts:** Core=229 (191 OPEN), MLB=52 (36 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
+**Counts:** Core=229 (189 OPEN), MLB=52 (36 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
 
 ## Core (229)
 
@@ -42,7 +42,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-216 — WATCH ITEM · LOW _(auto)_: Venue registry tracked "CA eligibility" but never account-level geo/IP jurisdiction; a Kalshi-side account cla
 - GG-224 — OPEN · MEDIUM _(auto)_: Live systemd services holding an in-memory ledger copy silently revert external file-level repairs on their ne
 - GG-234 — OPEN · LOW _(auto)_: Task assignment named `T-508 / GG-231` for new work; both IDs were already consumed by unrelated, already-clos
-- GG-230 — OPEN · LOW _(auto)_: `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-b
+- GG-230 — RESOLVED · LOW _(auto)_: `MEMORY_BANK.md`'s "Compass OS Health" single-line field is 5159 chars, 1.7x the script's own 3000-char anti-b
 - GG-730 — OPEN · MEDIUM _(auto)_: nflverse pbp_participation has no 2026 file: current-season coverage, pressure and personnel unavailable
 - GG-731 — OPEN · LOW _(auto)_: No free table of NFL offensive/defensive coordinators or the actual play caller
 - GG-732 — OPEN · MEDIUM _(auto)_: nflverse injuries and officials carry no publication timestamp
@@ -190,7 +190,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1341 — OPEN · MEDIUM _(auto)_: Kalshi public market-data rate limit (~4 req/s global, 429s) makes every-strike candle fetch infeasible in one
 - GG-1460 — OPEN · LOW _(auto)_: `_fence.safe_out` resolves relative paths against `12_EXPLORATORY/`, so a path that already starts `12_EXPLORA
 - GG-1450 — OPEN · MEDIUM _(auto)_: EXP-044 / EXP-044b runners merged but not installed; no box read-back
-- GG-1452 — OPEN · LOW _(auto)_: Wave 94 common rules reference a Deploy job summary that does not exist for docs-only or skipped runs
+- GG-1452 — CLOSED-AS-ARTIFACT · LOW _(auto)_: Wave 94 common rules reference a Deploy job summary that does not exist for docs-only or skipped runs
 - GG-1461 — OPEN · LOW _(auto)_: The fence scan in `tests/test_exploratory_isolation.py` treats any `.rename()` / `.replace()` as a write
 - GG-1462 — OPEN · LOW _(auto)_: Wave 94 common rules say "read the Deploy job summary after merge"; no Deploy job exists since W67.3
 - GG-1395 — OPEN · LOW _(auto)_: W93.3 too few archive snapshots and zero settlements for engine-vs-market scoring
