@@ -3593,3 +3593,12 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   health_rerun task); window added health_read (#509, merged by 117.4).
 - 05:04Z installed: one refresh line, daily 13:29Z, crontab backed up; readback OK, store directory not built yet (first run 13:29Z).
   Box HEALTHY, surface budget GREEN before and after. Watch: disk 87% before the ~325 MB store; healthcheck FAIL line is 90%.
+
+### 2026-11-18 05:40Z (11-17 21:40 PT) - SW-9 - Wave 117 closed; Wave 118 issued (four Sonnet blocks + the operator's gap burner)
+- Operator 21:17 PT on the window's devil's advocate: concerns 1 (wiring is not evidence), 6 (depth absent from the plan), 7 (box
+  capacity). "with each coming wave close ... my strategy windows IMMEDIATELY turn to well fuck none of those experiments/research/dev
+  moved the needle we must be fucked. It's just not the right conceptual building structure. We are fine - we've been fine ... I think
+  Fable was at the right end, and you have great ideas too. Let's have you think a bit more structurally instead of mayday". A gap burner
+  runs alongside: "250+ gaps is ridiculously high and we need to get it to 150 at some point."
+- Wave 118 builds where the structure can grow: 118.1 MLB 2026 through router v2 (B-088), 118.2 NBA depth as layer-3 splits (B-101),
+  118.3 NHL from its store + goalie timing (B-012), 118.4 box capacity (B-102). COMMON_RULES_W118 frames nulls as routing results.
