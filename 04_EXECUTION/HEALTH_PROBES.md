@@ -18,8 +18,7 @@ ssh prediction-market-vps "echo '=== T1 MLB — last 3 runs ===' && grep -E 'pla
 ```bash
 # T1 MLB: fires when games exist but 0 players matched → ticker/name pipeline dead
 tail -500 /opt/prediction-market-bot/logs/paper_mlb_cron.log 2>/dev/null | grep -c "SemanticFloorViolation" || echo "0"
-# T4 MLB: fires per-evaluation when staleness detected → ESPN or Kalshi data is stale
-grep -c "CONTAMINATION_HALT" /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null || echo "0"
+# (GG-344: the all-time CONTAMINATION_HALT count was retired as a signal — it is non-zero by design at every game end. Use the windowed line below.)
 # T4 MLB staleness, recency-windowed (see GG-085 below — do not threshold the raw payload.staleness_halts counter):
 tail -500 /opt/prediction-market-bot/logs/audit_mlb_t4.jsonl 2>/dev/null | grep -c '"failed_checks": \["game_state_fresh"\]' || echo "0"
 ```

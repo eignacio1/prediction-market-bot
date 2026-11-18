@@ -3163,7 +3163,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-344 — audit_mlb_t4.jsonl CONTAMINATION_HALT count (162,168) is unusable as a health signal
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** HEALTH_PROBES.md no longer carries the raw all-time CONTAMINATION_HALT grep; only the tail-500 windowed game_state_fresh count remains (this commit). CLAUDE.md and the scans never carried the raw count.
 
 **Current state (2026-10-08, W59.1):** VPS audit_mlb_t4.jsonl CONTAMINATION_HALT count is 164,048 on 2026-10-08 (162,168 at registration, still growing) while recency-windowed game_state_fresh failures in tail -500 are 0, so the raw count carries no health signal. **Next:** Replace the raw-count line in CLAUDE.md Step 4 / governance_scan.sh with the tail-windowed game_state_fresh count only, or retire it.
 
@@ -3262,7 +3264,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-349 — Stale .git/index.lock held open by a Virtualization XPC host process blocks all shared-tree git writes; recurrence unknown
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** MEDIUM
+
+**Evidence:** Same session_guard.sh check appends each stale-lock occurrence to .scan_output/index_lock_events.log, so recurrence is now recorded (this commit).
 
 **Current state (2026-10-08, W59.1):** No .git/index.lock present in the shared tree today (ls, this session); recurrence still unknown. **Next:** Log lock occurrences in session_guard.sh to establish recurrence.
 
@@ -3300,7 +3304,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-354 — Full test suite exceeds 10 minutes in the foreground and there is no documented fast subset
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** LOW
+
+**Evidence:** Fast smoke subset documented at the `unit` marker in pyproject.toml: `pytest -q -m unit`, measured 1:57 on 2026-11-18.
 
 **Current state (2026-10-08, W59.1):** Only a 'unit' marker is defined in pyproject.toml (l.81); no documented fast-subset command found in CLAUDE.md. **Next:** Define and document a <2 min smoke subset.
 
@@ -3547,7 +3553,9 @@ Re-filed 2026-10-21 under the operator's observation rule. Reopens if: the archi
 
 ### GG-417 — Cowork strategic window sandbox can create but not delete files in the shared tree, leaving .git/index.lock behind
 
-**Status:** OPEN · **Severity:** HIGH
+**Status:** RESOLVED (GA-6, 2026-11-18) · **Severity:** HIGH
+
+**Evidence:** .claude/hooks/session_guard.sh now flags a stale index.lock (>10 min, no git process) and logs it; tested with a backdated lock (this commit; operator authorized hook edit 2026-11-18).
 
 **Current state (2026-10-08, W59.1):** 2026-10-08: git grep for no-optional-locks/index.lock in scripts/.claude/src finds no guard code; mitigation is operator convention only (Cowork window read-only git), no recurrence guard for other sandboxed windows. **Next:** Add a session_guard.sh check that flags a stale .git/index.lock (age>10min, no live git process) so a sandbox-left lock is surfaced at session start.
 

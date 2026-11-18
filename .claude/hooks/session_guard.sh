@@ -144,6 +144,26 @@ else
   git --no-pager status --short
 fi
 
+echo "--- Stale git index.lock (GG-417 / GG-349) ---"
+GIT_COMMON="$(git rev-parse --git-common-dir 2>/dev/null)"
+LOCK_FOUND=0
+for L in "$GIT_COMMON/index.lock" "$(git rev-parse --git-dir 2>/dev/null)/index.lock"; do
+  [ -f "$L" ] || continue
+  LOCK_FOUND=1
+  LOCK_AGE_MIN="$(( ( $(date +%s) - $(stat -f %m "$L" 2>/dev/null || stat -c %Y "$L" 2>/dev/null || date +%s) ) / 60 ))"
+  if pgrep -x git >/dev/null 2>&1; then
+    echo "OK  $L present (${LOCK_AGE_MIN}m) and a git process is running — likely live."
+  elif [ "$LOCK_AGE_MIN" -gt 10 ] 2>/dev/null; then
+    echo "!!  STALE LOCK: $L is ${LOCK_AGE_MIN}m old and no git process is running."
+    echo "    A sandboxed window (Cowork) likely left it. Do NOT blind-delete: confirm no"
+    echo "    session is mid-commit, then remove it. Occurrence logged to .scan_output/index_lock_events.log (GG-349)."
+    mkdir -p .scan_output 2>/dev/null && echo "$(date -u +%FT%TZ) stale ${LOCK_AGE_MIN}m $L" >> .scan_output/index_lock_events.log 2>/dev/null || true
+  else
+    echo "OK  $L present but only ${LOCK_AGE_MIN}m old — likely live."
+  fi
+done
+[ "$LOCK_FOUND" -eq 0 ] && echo "OK  no index.lock"
+
 echo "--- MEMORY_BANK snapshot hygiene (T-334) ---"
 if [ -x scripts/check_memory_bank_snapshots.sh ]; then
   bash scripts/check_memory_bank_snapshots.sh
