@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W117.1 readback after #514 (caps) and #519 (policy on): box HEAD, t4-mlb restart."
