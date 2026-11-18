@@ -616,6 +616,10 @@ What should reorder this, and what should stop it:
 
 > **PROPOSED - APPROVAL NEEDED (W118.4, B-102): `disk_retention_install`.** Say "approve disk_retention_install" and the window runs that one task: it adds one daily crontab line (14:17 UTC, flocked, nice/ionice) on the paper box that gzip-compresses old KALSHI_HISTORY raw files and .bak files (sha256-verified before the plain copy is replaced; nothing is ever deleted) and caps journald at 200M. Disk is 87% and growing about 1.5 points a day (90% in about 2 days, where the healthcheck FAILs and blocks every install). Target once installed: under 75%. Reversible with `disk_retention_uninstall`; the window reads the crontab back after install. Demo/paper only, no orders, no real capital, $0.
 
+> **AUTHORIZATION - DISK RETENTION INSTALL (operator, 2026-11-17 22:18 PT: "Yes", answering the window's "If you approve it now
+> ('I approve disk_retention_install'), I'll run it the moment 118.4 merges it").** `disk_retention_install` (W118.4): journald cap and
+> compression of old logs / archive files (nothing deleted). Run by the window with readback, disk_read and a health rerun.
+
 > **AUTHORIZATION - THREE DECISIONS (operator, 2026-11-17 17:45 PT: "yes approve on all 3", answering the window's message naming
 > `nhl_event_store_install`, NFL v1 per-leaf to no bet, and counting tested stumps at layer 3).**
 > (a) `nhl_event_store_install`, which adds a crontab line on the paper box. Run by the window with its readback and a budget read, after
