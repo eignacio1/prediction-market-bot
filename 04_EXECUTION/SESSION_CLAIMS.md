@@ -1303,3 +1303,4 @@
 | 2026-11-18T02:36:53Z | B-095 | W117.1 B-095 EXECUTION: caps raised, spread logged, FADE crossed honest, frozen placement table. PURPOSE: E1/E2/E3 per arm after real costs; spread_logged 0 -> N |
 | 2026-11-18T02:37:00Z | TBD | W117.4 hygiene. PURPOSE: PLUMBING - handoff files live 795->under 60; OPEN gaps down; every push checked (backlog + GG ids) |
 | 2026-11-18T02:41:11Z | B-099 | W117.2 NHL consensus prior + momentum + Kalshi-vs-books. PURPOSE: first-arm dates per sport prior vs none; momentum term; Kalshi-consensus gap n |
+| 2026-11-18T04:45:07Z | B-099 | CLOSED — merge confirmed, HEAD (b6e5cfa) is ancestor of origin/main — W117.2 NHL consensus prior, momentum closed, Kalshi vs books gap, family-vs-leaf calendar |
