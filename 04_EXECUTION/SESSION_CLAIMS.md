@@ -1319,3 +1319,4 @@
 | 2026-11-18T06:11:32Z | GA-6 | MERGED: NO — branch `session/20261118T052440Z-gap-agent` awaiting merge — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed. (commit `0e07b73`) |
 | 2026-11-18T06:13:32Z | GA-6 | CLOSED — merge confirmed, HEAD (b3bf690) is ancestor of origin/main — Gap burner: OPEN 272 -> 173, window triage applied |
 | 2026-11-18T06:13:27Z | B-088 | CLOSED — W118.1 MLB look-back: postseason-only (22 games), router v2 arms 0 leaves, 12 cells recorded NO BET, map frozen (commit `f4266f6`) |
+| 2026-11-18T06:14:00Z | B-088 | CLOSED — merge confirmed, HEAD (84ff2e9) is ancestor of origin/main — W118.1 MLB postseason look-back merged; 12 cells NO BET provisional, 0 earned arms |
