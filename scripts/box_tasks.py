@@ -52,6 +52,9 @@ TASKS: dict[str, str] = {
     "arm_orders_read": f"{PY} scripts/arm_orders_read.py",  # W114.2 B-090, read-only: arm-order log counts + E1-E3 per arm, split by the GG-1771 epoch
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
     "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers
+    # SW-9 2026-11-18: the last healthcheck run's FAIL / WARN lines (read-only). A RED budget refused an approved install (Hard
+    # Rule 14) and no read task showed which check failed.
+    "health_read": "awk '/^=== VPS Health Check/{buf=\"\"} {buf=buf $0 \"\\n\"} END{printf \"%s\", buf}' logs/health.log | grep -E '^(=== |\\[FAIL\\]|\\[WARN\\])'",
     "deploy_truth_read": "git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check",
     "capture_install": f"{PY} scripts/thin_capture_install.py install",
     "capture_readback": f"{PY} scripts/thin_capture_install.py readback",

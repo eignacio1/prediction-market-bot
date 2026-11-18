@@ -191,3 +191,16 @@ def test_markout_book_proof(tmp_path):
     out = m.proof(tmp_path / "m.jsonl", tmp_path / "l.jsonl")
     assert out["legacy_no_book"] == 1 and out["legacy_in_shadow_order"] == 1 and out["legacy_not_shadow_order"] == 0
     assert "markout_book_proof_read" in __import__("box_tasks").TASKS
+
+
+def test_health_read_is_read_only_and_shows_last_run(tmp_path):
+    import subprocess
+    cmd = bt.TASKS["health_read"]
+    assert not any(w in cmd for w in ("crontab", " install", "rm ", "systemctl", "git ", ">"))
+    (tmp_path / "logs").mkdir()
+    (tmp_path / "logs" / "health.log").write_text(
+        "=== VPS Health Check (W72.3) ===\n[FAIL] old fault\n=== UNHEALTHY: 1 fault(s), 0 warning(s) ===\n"
+        "=== VPS Health Check (W72.3) ===\n[OK] fine\n[FAIL] disk 91% used\n[WARN] x\n=== UNHEALTHY: 1 fault(s), 1 warning(s) ===\n")
+    out = subprocess.run(cmd, shell=True, cwd=tmp_path, capture_output=True, text=True).stdout
+    assert "[FAIL] disk 91% used" in out and "[WARN] x" in out
+    assert "old fault" not in out and "[OK]" not in out
