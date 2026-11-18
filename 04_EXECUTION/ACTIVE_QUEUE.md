@@ -61,7 +61,7 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 117 · WRITTEN 2026-11-18 ~01:55 UTC (11-17 17:55 PT) · SW-9 · pre-wave cleanup + four blocks · MODEL: Sonnet (Haiku for 117.4) · paste each into its own terminal
+## ▶ NOW — WAVE 117 (CLOSED 2026-11-18 ~05:15 UTC, operator 21:10 PT; next wave not written yet) · WRITTEN 2026-11-18 ~01:55 UTC (11-17 17:55 PT) · SW-9 · pre-wave cleanup + four blocks · MODEL: Sonnet (Haiku for 117.4) · paste each into its own terminal
 
 **Order:** paste the CLEANUP block first and let it land the four parked W116 PRs (#505-#508), then the four Wave 117 blocks.
 
@@ -73,11 +73,11 @@ and team totals priced from the engine's existing simulation). 117.4 cuts the re
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 117.0 | cleanup · 2 | Land #508 #505 #506 #507 on green; prune remote branches (merged or nothing unlanded); prune worktrees | Sonnet | ⬜ | |
-| 117.1 | execution · 3 | Caps raised (approved); spread logged on every order + backfilled; FADE crossed measured with its real cost; frozen placement table, policy on (approved) | Sonnet | ✅ 11-18 05:10Z | #512 #514 #519 merged. FADE crossed +0.166 [-0.016, +0.348] (105 orders / 20 games): interval includes 0. Table has 0 cells. |
-| 117.2 | quant · 3 | NHL consensus history as a router-v2 prior; momentum and Kalshi-vs-books tests pre-registered; family vs leaf power calendar | Sonnet | ✅ | merged e499ad5 (#513); prior moves first arm 1-7 wks earlier, coarse leaves later; momentum closed; Kalshi ride -0.055; 2026-27 consensus need on TO_MUSE |
-| 117.3 | D6 · 3 | NBA layer 1 for moneyline + team totals; the named NBA layer causes; D6 recount on the box | Sonnet | ✅ | PRs #511, #516; D6 on the box 3 → 4 (all NBA); box health_rerun GREEN (0 faults, 1 warn: disk 87%) - the false cron-arm FAIL was a pipefail/SIGPIPE bug in healthcheck.sh, fixed; window may run `nhl_event_store_install` (325M local; disk 87% is the one warning to watch) |
-| 117.4 | hygiene · 3 | Every push to main checks the backlog and GG ids; handoffs older than 7 days archived; gaps with merged fixes resolved | Haiku | ⬜ | |
+| 117.0 | cleanup · 2 | Land #508 #505 #506 #507 on green; prune remote branches (merged or nothing unlanded); prune worktrees | Sonnet | ✅ | #505-#508 merged on green; remote branches 16 → 10 + main; 8 kept with unlanded commits (12_EXPLORATORY/branch_cleanup_w117/LIST.md). |
+| 117.1 | execution · 3 | Caps raised (approved); spread logged on every order + backfilled; FADE crossed measured with its real cost; frozen placement table, policy on (approved) | Sonnet | ✅ | #512 #514 #519 merged. Game-clustered with real spread: FADE crossed +0.166 [−0.016, +0.348] (105 orders / 20 games), RIDE +0.016, MOMENTUM +0.052 - no arm and option clears zero. Spread backfilled 454 / 486. NFL per-leaf → NO BET. Caps raised; policy on but table has 0 cells (no-op). |
+| 117.2 | quant · 3 | NHL consensus history as a router-v2 prior; momentum and Kalshi-vs-books tests pre-registered; family vs leaf power calendar | Sonnet | ✅ | NHL prior: first arm 1-7 weeks earlier (NFL 7 with nflverse); coarse leaves 6-40 weeks LATER. Momentum closed (all intervals contain 0). Kalshi vs books, NHL ML n 1,312: gap +0.0016, riding consensus at ask −0.055. No first arm before 2027. |
+| 117.3 | D6 · 3 | NBA layer 1 for moneyline + team totals; the named NBA layer causes; D6 recount on the box | Sonnet | ✅ | #511 #516 merged. D6 3 → 4 (NBA_TEAM_TOTAL T3 added); NBA layer 1 12 → 15; stump rule from box rows. Healthcheck false FAIL (SIGPIPE) fixed; NHL store installed by the window 05:04Z, builds 13:29Z. |
+| 117.4 | hygiene · 3 | Every push to main checks the backlog and GG ids; handoffs older than 7 days archived; gaps with merged fixes resolved | Haiku | ✅ | docs_guard on every push (#510); handoffs live 644 → 42; health_read (#509); OPEN gaps 273 → 272. |
 
 - **Pushback:** 117.1 turns a placement policy on from about 100 FADE orders spread over few games, which risks fitting noise. The guards
   are a table frozen before any forward order, "keep today's rule" wherever a cell is under its minimum n, and the pre-registered

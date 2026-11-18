@@ -28,30 +28,6 @@
   },
   "tickets": [
     {
-      "id": "B-095",
-      "status": "NOW",
-      "lane": "execution",
-      "rank": "execution",
-      "title": "Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed",
-      "measure": "E1-E3 per arm; expected net per placement option",
-      "why": "fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders",
-      "source": "SW-9 Fable review 2026-11-16",
-      "wave": "117.1 (Sonnet): caps raised, spread logged, FADE crossed measured with real cost, frozen placement table",
-      "order": 1
-    },
-    {
-      "id": "B-099",
-      "status": "NOW",
-      "lane": "proof",
-      "rank": "evidence clock",
-      "title": "NHL 2025-26 sportsbook consensus (open+close, ML / puck line / total, 1,394 games, vig-removed, free) -> NHL leaf prior + historical MOMENTUM backtest + Kalshi-vs-consensus gap",
-      "measure": "PROOF: NHL first-arm dates in the power calendar, with vs without the prior; MOMENTUM open->close backtest net per contract",
-      "why": "Shortens the evidence clock (116.1: first arm at +2c is 2027-07). Archive L3-closing-lines/nhl/minmaxxxer-2025-26 (Muse 2026-11-17, 335 KB, 3/3 spot checks vs MoneyPuck). Operator: no paid sources ever.",
-      "source": "operator 2026-11-17 16:07 PT; Muse pull 16:18 PT",
-      "wave": "117.2 (Sonnet)",
-      "order": 2
-    },
-    {
       "id": "B-100",
       "status": "NOW",
       "lane": "D6",
@@ -60,32 +36,8 @@
       "measure": "D6 NBA on the box 3 -> N, cells named",
       "why": "116.3: NBA moneylines, props and T4/T5 stop at layer 1 (no model p); a game sim prices the whole board (ADR-0073), so ML and team totals are the cheapest wiring left",
       "source": "SW-9 2026-11-18 (W116.3 d6_read 01:05Z)",
-      "wave": "117.3 (Sonnet)",
-      "order": 3
-    },
-    {
-      "id": "B-092",
-      "status": "NOW",
-      "lane": "box data",
-      "rank": "plumbing",
-      "title": "Box data stores for layer 3: NFL snapshot provider on the box (GG-1933); NHL event store job (GG-1898) as an install task for operator approval",
-      "measure": "layer 3 on the box NFL / NHL",
-      "why": "W114.2: layer 3 works on the box for NBA only",
-      "source": "SW-9 2026-11-13",
-      "wave": "117.3 (Sonnet): NHL store install on approval (#507), then NHL layer 3 on the box",
-      "order": 4
-    },
-    {
-      "id": "B-098",
-      "status": "NOW",
-      "lane": "window",
-      "rank": "hygiene",
-      "title": "Repo mass: 784 handoff files, 263 open gaps, 3 dead PRs (#149 #458 #477), unsent wave drafts - archive, close, burn down by file (Haiku)",
-      "measure": "open gaps; handoff files in the live folder",
-      "why": "every session pays to scan it",
-      "source": "SW-9 Fable review 2026-11-16",
-      "wave": "117.4 (Haiku) + pre-wave cleanup block (branches)",
-      "order": 5
+      "wave": "117.3 started (D6 NBA 4 / 25); continues",
+      "order": 1
     },
     {
       "id": "B-088",
@@ -97,7 +49,7 @@
       "why": "Plan W114",
       "source": "SW-9 2026-11-12",
       "wave": "116 (Sonnet): MLB routed on the 2026 look-back",
-      "order": 6
+      "order": 2
     },
     {
       "id": "B-093",
@@ -109,7 +61,7 @@
       "why": "D-09 retail flow first; props logging since 11-12",
       "source": "SW-9 2026-11-13",
       "wave": "116 (Sonnet): NBA props through the tree",
-      "order": 7
+      "order": 3
     },
     {
       "id": "B-097",
@@ -121,11 +73,11 @@
       "why": "nobody has sized the prize; guides which cells to wire first",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (Sonnet)",
-      "order": 8
+      "order": 4
     },
     {
       "id": "B-024",
-      "order": 9,
+      "order": 5,
       "status": "NEXT",
       "lane": "engine",
       "rank": "8",
@@ -145,11 +97,11 @@
       "why": "no mid-week correction reached Muse since 11-12",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (window)",
-      "order": 10
+      "order": 6
     },
     {
       "id": "B-012",
-      "order": 11,
+      "order": 7,
       "status": "NEXT",
       "lane": "engine",
       "rank": "2",
@@ -169,11 +121,11 @@
       "why": "107.2 could not see under 20 minutes",
       "source": "SW-9 W107 close",
       "wave": "117: trade-print momentum",
-      "order": 12
+      "order": 8
     },
     {
       "id": "B-017",
-      "order": 13,
+      "order": 9,
       "status": "NEXT",
       "lane": "flex",
       "rank": "plumbing",
@@ -193,7 +145,7 @@
       "why": "Operator 11-10 21:45 PT: \"This CANNOT keep fucking happening\" - stale doctrine read by every window",
       "source": "SW-9 2026-11-11",
       "wave": "116 (Haiku): rewrite STRATEGY / ARCHITECTURE overview bodies to DOCTRINE",
-      "order": 14
+      "order": 10
     },
     {
       "id": "B-074",
@@ -205,11 +157,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "folded into B-098",
-      "order": 15
+      "order": 11
     },
     {
       "id": "B-018",
-      "order": 16,
+      "order": 12,
       "status": "LATER",
       "lane": "engine",
       "rank": "2",
@@ -229,11 +181,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 17
+      "order": 13
     },
     {
       "id": "B-013",
-      "order": 18,
+      "order": 14,
       "status": "LATER",
       "lane": "engine",
       "rank": "3",
@@ -245,7 +197,7 @@
     },
     {
       "id": "B-014",
-      "order": 19,
+      "order": 15,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -257,7 +209,7 @@
     },
     {
       "id": "B-015",
-      "order": 20,
+      "order": 16,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -269,7 +221,7 @@
     },
     {
       "id": "B-016",
-      "order": 21,
+      "order": 17,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -281,7 +233,7 @@
     },
     {
       "id": "B-021",
-      "order": 22,
+      "order": 18,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -293,7 +245,7 @@
     },
     {
       "id": "B-001",
-      "order": 23,
+      "order": 19,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -305,7 +257,7 @@
     },
     {
       "id": "B-008",
-      "order": 24,
+      "order": 20,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -317,7 +269,7 @@
     },
     {
       "id": "B-022",
-      "order": 25,
+      "order": 21,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -329,7 +281,7 @@
     },
     {
       "id": "B-023",
-      "order": 26,
+      "order": 22,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -341,7 +293,7 @@
     },
     {
       "id": "B-025",
-      "order": 27,
+      "order": 23,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -350,6 +302,54 @@
       "why": "Breadth outran proof; expansion ranks last.",
       "source": "ranking 10-27",
       "wave": ""
+    },
+    {
+      "id": "B-095",
+      "status": "DONE",
+      "lane": "execution",
+      "rank": "execution",
+      "title": "Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed",
+      "measure": "E1-E3 per arm; expected net per placement option",
+      "why": "fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders",
+      "source": "SW-9 Fable review 2026-11-16",
+      "wave": "117.1 (closed 11-18)",
+      "order": 24
+    },
+    {
+      "id": "B-099",
+      "status": "DONE",
+      "lane": "proof",
+      "rank": "evidence clock",
+      "title": "NHL 2025-26 sportsbook consensus (open+close, ML / puck line / total, 1,394 games, vig-removed, free) -> NHL leaf prior + historical MOMENTUM backtest + Kalshi-vs-consensus gap",
+      "measure": "PROOF: NHL first-arm dates in the power calendar, with vs without the prior; MOMENTUM open->close backtest net per contract",
+      "why": "Shortens the evidence clock (116.1: first arm at +2c is 2027-07). Archive L3-closing-lines/nhl/minmaxxxer-2025-26 (Muse 2026-11-17, 335 KB, 3/3 spot checks vs MoneyPuck). Operator: no paid sources ever.",
+      "source": "operator 2026-11-17 16:07 PT; Muse pull 16:18 PT",
+      "wave": "117.2 (closed 11-18)",
+      "order": 25
+    },
+    {
+      "id": "B-092",
+      "status": "DONE",
+      "lane": "box data",
+      "rank": "plumbing",
+      "title": "Box data stores for layer 3: NFL snapshot provider on the box (GG-1933); NHL event store job (GG-1898) as an install task for operator approval",
+      "measure": "layer 3 on the box NFL / NHL",
+      "why": "W114.2: layer 3 works on the box for NBA only",
+      "source": "SW-9 2026-11-13",
+      "wave": "117.3 + window install 05:04Z (closed 11-18)",
+      "order": 26
+    },
+    {
+      "id": "B-098",
+      "status": "DONE",
+      "lane": "window",
+      "rank": "hygiene",
+      "title": "Repo mass: 784 handoff files, 263 open gaps, 3 dead PRs (#149 #458 #477), unsent wave drafts - archive, close, burn down by file (Haiku)",
+      "measure": "open gaps; handoff files in the live folder",
+      "why": "every session pays to scan it",
+      "source": "SW-9 Fable review 2026-11-16",
+      "wave": "117.0 + 117.4 (closed 11-18)",
+      "order": 27
     },
     {
       "id": "B-094",

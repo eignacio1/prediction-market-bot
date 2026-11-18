@@ -10,109 +10,81 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ## NOW — in the current wave
 
-### B-095 · Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed
-
-- order 1 · lane: execution · rank: execution · wave: 117.1 (Sonnet): caps raised, spread logged, FADE crossed measured with real cost, frozen placement table
-- **measure:** E1-E3 per arm; expected net per placement option
-- **why:** fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders
-- **source:** SW-9 Fable review 2026-11-16
-
-### B-099 · NHL 2025-26 sportsbook consensus (open+close, ML / puck line / total, 1,394 games, vig-removed, free) -> NHL leaf prior + historical MOMENTUM backtest + Kalshi-vs-consensus gap
-
-- order 2 · lane: proof · rank: evidence clock · wave: 117.2 (Sonnet)
-- **measure:** PROOF: NHL first-arm dates in the power calendar, with vs without the prior; MOMENTUM open->close backtest net per contract
-- **why:** Shortens the evidence clock (116.1: first arm at +2c is 2027-07). Archive L3-closing-lines/nhl/minmaxxxer-2025-26 (Muse 2026-11-17, 335 KB, 3/3 spot checks vs MoneyPuck). Operator: no paid sources ever.
-- **source:** operator 2026-11-17 16:07 PT; Muse pull 16:18 PT
-
 ### B-100 · NBA layer 1 across the board: moneyline and team totals priced from the same engine simulation as spread / total; fix the named NBA layer causes (TEAM_TOTAL T1-3 layer 3, SPREAD T1 layer 4, GAME_TOTAL T1 layer 6); GG-1951 layer 3 counted from box rows
 
-- order 3 · lane: D6 · rank: layer 1 · wave: 117.3 (Sonnet)
+- order 1 · lane: D6 · rank: layer 1 · wave: 117.3 started (D6 NBA 4 / 25); continues
 - **measure:** D6 NBA on the box 3 -> N, cells named
 - **why:** 116.3: NBA moneylines, props and T4/T5 stop at layer 1 (no model p); a game sim prices the whole board (ADR-0073), so ML and team totals are the cheapest wiring left
 - **source:** SW-9 2026-11-18 (W116.3 d6_read 01:05Z)
-
-### B-092 · Box data stores for layer 3: NFL snapshot provider on the box (GG-1933); NHL event store job (GG-1898) as an install task for operator approval
-
-- order 4 · lane: box data · rank: plumbing · wave: 117.3 (Sonnet): NHL store install on approval (#507), then NHL layer 3 on the box
-- **measure:** layer 3 on the box NFL / NHL
-- **why:** W114.2: layer 3 works on the box for NBA only
-- **source:** SW-9 2026-11-13
-
-### B-098 · Repo mass: 784 handoff files, 263 open gaps, 3 dead PRs (#149 #458 #477), unsent wave drafts - archive, close, burn down by file (Haiku)
-
-- order 5 · lane: window · rank: hygiene · wave: 117.4 (Haiku) + pre-wave cleanup block (branches)
-- **measure:** open gaps; handoff files in the live folder
-- **why:** every session pays to scan it
-- **source:** SW-9 Fable review 2026-11-16
 
 ## NEXT — drawn into the next wave or two
 
 ### B-088 · MLB cells routed on the 2026 look-back corpus (0 of 18 routed): leaf map and per-leaf arms from settled 2026 rows, ready for spring
 
-- order 6 · lane: proof · rank: routing · wave: 116 (Sonnet): MLB routed on the 2026 look-back
+- order 2 · lane: proof · rank: routing · wave: 116 (Sonnet): MLB routed on the 2026 look-back
 - **measure:** MLB routed cells; D6 MLB
 - **why:** Plan W114
 - **source:** SW-9 2026-11-12
 
 ### B-093 · NBA prop cells through the tree: market state from the prop archive, player splits as filters, arms per leaf, leaf_maps/nba_props.json
 
-- order 7 · lane: props · rank: retail flow · wave: 116 (Sonnet): NBA props through the tree
+- order 3 · lane: props · rank: retail flow · wave: 116 (Sonnet): NBA props through the tree
 - **measure:** B4 props routed; prop cells layers
 - **why:** D-09 retail flow first; props logging since 11-12
 - **source:** SW-9 2026-11-13
 
 ### B-097 · Capacity and dollar ceiling: fillable size x net per arm per sport from the order log and depth archive - what the wired cells are worth at $1k / $10k / $100k
 
-- order 8 · lane: proof · rank: capacity · wave: 116 (Sonnet)
+- order 4 · lane: proof · rank: capacity · wave: 116 (Sonnet)
 - **measure:** $ per day per sport at each bankroll
 - **why:** nobody has sized the prize; guides which cells to wire first
 - **source:** SW-9 Fable review 2026-11-16
 
 ### B-024 · Pot of gold as an ARM of the tree (big hitters, longshots, parlays), scored per leaf and routed - not a phase after the standard board (operator 11-05: "we should have the pot of gold decision trees routed in too"); W110.4 built the same-game correlation, W111.3 scores the longshot branches per leaf
 
-- order 9 · lane: engine · rank: 8 · wave: 116-117: pot-of-gold arm scored through router v2 (after B-094)
+- order 5 · lane: engine · rank: 8 · wave: 116-117: pot-of-gold arm scored through router v2 (after B-094)
 - **measure:** -
 - **why:** After the standard board, per the north star.
 - **source:** CLAUDE.md north star
 
 ### B-096 · Muse watchdog repair: the nightly sweep has failed to start since 11-13 (environment error); recreate it if 11-16 fails; move its fixes into the Monday message only (TO_MUSE fetch is safety-flagged on Muse's side)
 
-- order 10 · lane: window · rank: plumbing · wave: 116 (window)
+- order 6 · lane: window · rank: plumbing · wave: 116 (window)
 - **measure:** sweep runs / week
 - **why:** no mid-week correction reached Muse since 11-12
 - **source:** SW-9 Fable review 2026-11-16
 
 ### B-012 · NHL engine: factor classes point-in-time from the shot-level store, then the whole board
 
-- order 11 · lane: engine · rank: 2 · wave: 116: NHL goalie timing vs Muse snapshots (needs NHL_EVENTS on the box)
+- order 7 · lane: engine · rank: 2 · wave: 116: NHL goalie timing vs Muse snapshots (needs NHL_EVENTS on the box)
 - **measure:** D4 NHL data layer -> factors -> board
 - **why:** 97.4 built the NHL board engine; it trails Kalshi at n 33 and EXP-046 was not earned. Revisit with B-029 and ~200 games of this season.
 - **source:** ADR-0073
 
 ### B-063 · News lag at trade-print resolution (Kalshi public trades) - is there a minutes-long window the 20-min archive missed
 
-- order 12 · lane: quant · rank: 4 · wave: 117: trade-print momentum
+- order 8 · lane: quant · rank: 4 · wave: 117: trade-print momentum
 - **measure:** lag to half / full adjustment and net per news type
 - **why:** 107.2 could not see under 20 minutes
 - **source:** SW-9 W107 close
 
 ### B-017 · NBA store refresh lag: the last game date trails by about two days
 
-- order 13 · lane: flex · rank: plumbing · wave: 116 (Haiku): NBA store refresh lag
+- order 9 · lane: flex · rank: plumbing · wave: 116 (Haiku): NBA store refresh lag
 - **measure:** store lag <= 1 day
 - **why:** 15:46Z refresh line live; confirm the store reaches yesterday after its first run (next window).
 - **source:** 95.1 handoff (observed)
 
 ### B-075 · Rewrite the bodies of STRATEGY_OVERVIEW.md and ARCHITECTURE_OVERVIEW.md to DOCTRINE.md (multi-arm routing, ADR-0077); today they carry a banner only
 
-- order 14 · lane: window · rank: plumbing · wave: 116 (Haiku): rewrite STRATEGY / ARCHITECTURE overview bodies to DOCTRINE
+- order 10 · lane: window · rank: plumbing · wave: 116 (Haiku): rewrite STRATEGY / ARCHITECTURE overview bodies to DOCTRINE
 - **measure:** doctrine stack bodies current
 - **why:** Operator 11-10 21:45 PT: "This CANNOT keep fucking happening" - stale doctrine read by every window
 - **source:** SW-9 2026-11-11
 
 ### B-074 · Governance: gap burn-down (250 OPEN) folded into blocks touching the same files
 
-- order 15 · lane: window · rank: plumbing · wave: folded into B-098
+- order 11 · lane: window · rank: plumbing · wave: folded into B-098
 - **measure:** OPEN gaps
 - **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
 - **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
@@ -121,49 +93,49 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ### B-018 · MLB engine (pitch-level store) before spring
 
-- order 16 · lane: engine · rank: 2 · wave: before spring
+- order 12 · lane: engine · rank: 2 · wave: before spring
 - **measure:** D4 MLB none -> data layer
 - **why:** MLB has no engine; spring training starts in February.
 - **source:** ADR-0073; Muse R-082 / R-083
 
 ### B-073 · Architecture / scaffolding: engine-to-registry wiring so a new market family is a config row, not a build (ADR-0073 "one engine prices the whole board")
 
-- order 17 · lane: flex · rank: plumbing · wave: after D6 > 20 cells
+- order 13 · lane: flex · rank: plumbing · wave: after D6 > 20 cells
 - **measure:** families added by config
 - **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
 - **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
 
 ### B-013 · NFL engine: factors applied to team totals and alternate lines from the line (market-anchored adjustments)
 
-- order 18 · lane: engine · rank: 3
+- order 14 · lane: engine · rank: 3
 - **measure:** NFL factors applied with a measured skill weight
 - **why:** Board v2 matches Kalshi's ladders; the factors have so far added nothing from the line (85.1, 94.2).
 - **source:** 93.4, 94.2
 
 ### B-014 · PAM into the engines (NBA first): archetypes as engine inputs, tested held-out
 
-- order 19 · lane: engine · rank: 6
+- order 15 · lane: engine · rank: 6
 - **measure:** PAM factors applied in an engine
 - **why:** PAM pays only through an engine; its standalone tests were null (89.5).
 - **source:** operator 10-14 (PAM piped into the engines)
 
 ### B-015 · Ladder ride on NBA / NHL ladders (EXP-043's pooled hypothesis accrues from 10-28)
 
-- order 20 · lane: proof · rank: 1
+- order 16 · lane: proof · rank: 1
 - **measure:** EXP-043 rows by sport
 - **why:** The only ride mechanism we can see; NBA / NHL ladders started archiving 10-28.
 - **source:** EXP-043
 
 ### B-016 · NBA officials known before the price: a capture route for crew assignments (GG-1390)
 
-- order 21 · lane: flex · rank: plumbing
+- order 17 · lane: flex · rank: plumbing
 - **measure:** officials factor usable pre-game
 - **why:** Crews have no pre-game timestamp, so the officials factor is an upper bound.
 - **source:** 93.2, GG-1390, Muse R-040
 
 ### B-021 · Wire the accepted gate (position_gate.py) only after a cell passes a look
 
-- order 22 · lane: proof · rank: 1 · wave: after a pass
+- order 18 · lane: proof · rank: 1 · wave: after a pass
 - **measure:** a gate with a non-zero skill weight
 - **why:** No model earns a weight today (94.Q); wiring an empty gate changes nothing.
 - **source:** 85.2, 94.Q
@@ -172,40 +144,68 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ### B-001 · NBA engine v3 (EXP-044c): installed 11-04 03:30Z; log every game (5 of 11 missed on 11-04, OOM) and read its first week
 
-- order 23 · lane: engine · rank: 2 · wave: superseded: NBA engine judged per leaf through the tree (B-094)
+- order 19 · lane: engine · rank: 2 · wave: superseded: NBA engine judged per leaf through the tree (B-094)
 - **measure:** D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7
 - **why:** v3 logging since 11-04 03:30Z (412 rows) but silent for 5 games (OOM).
 - **source:** 95.1 handoff, GG-1450
 
 ### B-008 · NBA and NHL calibration scan (89.2's method) on the new archive rows, as discovery; freeze survivors for a forward test
 
-- order 24 · lane: proof · rank: 1 · wave: superseded by B-094 (calibration scan becomes the long-history prior)
+- order 20 · lane: proof · rank: 1 · wave: superseded by B-094 (calibration scan becomes the long-history prior)
 - **measure:** in-season ride candidates (IN_SAMPLE) 0 -> n; frozen 0 -> n
 - **why:** Every ride cell so far is MLB; NBA / NHL prices have been archived since 10-28 and need about two weeks of rows.
 - **source:** 91.3 / 92.1 not-done part; GG-1250
 
 ### B-022 · Parlay / combo families into the archive and a cell (GG-1250 remainder)
 
-- order 25 · lane: flex · rank: 8
+- order 21 · lane: flex · rank: 8
 - **measure:** B4 parlays 0 -> 1
 - **why:** Parlays come after the standard board is built (operator's market-class roadmap).
 - **source:** GG-1250
 
 ### B-023 · Polymarket: any build work
 
-- order 26 · lane: flex · rank: -
+- order 22 · lane: flex · rank: -
 - **measure:** -
 - **why:** Operator 10-27 17:31 PT: "we're not building shit for polymarket yet".
 - **source:** operator
 
 ### B-025 · New sports, and the T5 band
 
-- order 27 · lane: flex · rank: 8
+- order 23 · lane: flex · rank: 8
 - **measure:** B3 5 of 5
 - **why:** Breadth outran proof; expansion ranks last.
 - **source:** ranking 10-27
 
 ## DONE — closed at a wave close (kept for one wave, then dropped)
+
+### B-095 · ~~Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed~~
+
+- order 24 · lane: execution · rank: execution · wave: 117.1 (closed 11-18)
+- **measure:** E1-E3 per arm; expected net per placement option
+- **why:** fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders
+- **source:** SW-9 Fable review 2026-11-16
+
+### B-099 · ~~NHL 2025-26 sportsbook consensus (open+close, ML / puck line / total, 1,394 games, vig-removed, free) -> NHL leaf prior + historical MOMENTUM backtest + Kalshi-vs-consensus gap~~
+
+- order 25 · lane: proof · rank: evidence clock · wave: 117.2 (closed 11-18)
+- **measure:** PROOF: NHL first-arm dates in the power calendar, with vs without the prior; MOMENTUM open->close backtest net per contract
+- **why:** Shortens the evidence clock (116.1: first arm at +2c is 2027-07). Archive L3-closing-lines/nhl/minmaxxxer-2025-26 (Muse 2026-11-17, 335 KB, 3/3 spot checks vs MoneyPuck). Operator: no paid sources ever.
+- **source:** operator 2026-11-17 16:07 PT; Muse pull 16:18 PT
+
+### B-092 · ~~Box data stores for layer 3: NFL snapshot provider on the box (GG-1933); NHL event store job (GG-1898) as an install task for operator approval~~
+
+- order 26 · lane: box data · rank: plumbing · wave: 117.3 + window install 05:04Z (closed 11-18)
+- **measure:** layer 3 on the box NFL / NHL
+- **why:** W114.2: layer 3 works on the box for NBA only
+- **source:** SW-9 2026-11-13
+
+### B-098 · ~~Repo mass: 784 handoff files, 263 open gaps, 3 dead PRs (#149 #458 #477), unsent wave drafts - archive, close, burn down by file (Haiku)~~
+
+- order 27 · lane: window · rank: hygiene · wave: 117.0 + 117.4 (closed 11-18)
+- **measure:** open gaps; handoff files in the live folder
+- **why:** every session pays to scan it
+- **source:** SW-9 Fable review 2026-11-16
 
 ### B-094 · ~~Evidence design: hierarchical pooling + sequential test so thin leaves earn arms; long-history priors; power calendar; router v2 pre-registered~~
 
