@@ -41,3 +41,10 @@ Nothing is wired into the bot yet (that is 118.3). Still zero real money at risk
 The server's disk is 87% full and was growing about 1.5 points a day, so roughly 2 days from the 90% line that blocks installs. I built the fix but have not turned it on. It shrinks old data files in place after checking each copy is identical, never deletes any evidence, and caps the system log. A trial run says it frees about 3.4 GB, which puts the disk near 72%. A new warning also now fires when the disk is within 14 days of 90%. No money at risk.
 **Needs you:** say "approve disk_retention_install" and I run that one task. It is reversible.
 **Gap burner (GA-6):** Open gaps went from 272 to 173. 80 of those closures came from the window's triage list (fixed, premise gone, or accepted data limits). The rest I fixed in code and tested, including a stale git-lock warning at session start. Still 23 above the 150 target; the rest need your rulings or waves. No real money touched.
+## W118.1 MLB look-back (B-088) — plain English
+- The block assumed a full 2026 MLB season in our data. We only have the postseason: 22 games. You chose to look back at that anyway.
+- Result: the new router picked an arm for none of the 80 leaves. Every MLB cell is recorded as NO BET for now. That is a placeholder, not a finding.
+- Only TEAM_TOTAL T2 and T3 "ride the market" show a positive interval above zero (about +5.8 cents per row). Fading the market lost in every cell.
+- Nothing is judged yet: each cell has 8-9 held-out games and the bar is 10. The 2027 pre-registration sets weekly looks.
+- Open item: GG-1957 (the data gap). I did not read OPERATOR_DIRECTIVES.md, so conflicts with it are unchecked.
+- No runtime code changed. No box deploy was needed.
