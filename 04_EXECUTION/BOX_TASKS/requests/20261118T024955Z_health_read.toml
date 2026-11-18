@@ -1,0 +1,2 @@
+task = "health_read"
+note = "after #509; find the fault that refused nhl_event_store_install"
