@@ -106,3 +106,9 @@ Purpose: PLUMBING, scored — OPEN gaps before → after, per tick. Procedure: `
 OPEN 272 -> 270. Closed A: GG-230 (check script reads 73 chars, was 5159). Closed B: GG-1452 (duplicate of GG-1462).
 Triaged, not closed: GG-1939/1940/1935/1942/1952 are W118-wave-owned (class W; fixes in flight, box trace pending). GG-1480 NOT moot (DOCS_ONLY_ROOTS still omits 12_EXPLORATORY/; vps_deploy.sh is a running component, so class L/window). GG-133 NOT moot (CHANGELOG last entry 2026-05-30). GG-1032 NOT moot (local python 3.9.6, no tomllib).
 Large add: GG-1480 (one-line roots edit in vps_deploy.sh plus a box read-back; window).
+
+## Tick GA-6.2 (2026-11-18)
+OPEN 270 -> 268. Closed A: GG-1440 (start_grace_h=0.5, 152f076 ancestor of box HEAD 53c83e86), GG-757 (invariants moved into tests/test_nfl_engine_v0.py). GG-759 left: the BOT_ENV comment cannot be checked without reading the box .env (blocked by permissions); next tick can read it via a box task.
+
+## Tick GA-6.3 (2026-11-18)
+OPEN 268 -> 266. Closed A: GG-892 (PR #275 ancestor of box HEAD 53c83e86), GG-891 (12/12 NBA game cells flipped, GG-890 box read). Still true, not closed: GG-1774 (2 flock -w 240 lines in deploy/cron.conf, no log on timeout; cron.conf is a running component, window), GG-1001, GG-1231, GG-406 (needs box read).

@@ -2053,7 +2053,9 @@ B74-A L5 (HEAD before W73.2 Part B merged). ADR-0073 point 6 calls NFL the templ
 
 ### GG-757 — NFL engine invariants are not run by CI
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PROOF).** The engine invariants (ML identity, monotone ladders, total = home + away, joint bounded by marginals) now live in `tests/test_nfl_engine_v0.py` (`test_total_is_sum_exactly`, `test_ladders_monotone_and_ml_identity`, ...), inside `pyproject.toml:77` `testpaths=["tests"]`, so CI runs them on push. The old `12_EXPLORATORY/nfl_engine/test_engine.py` no longer exists.
 
 B74-A L5. `12_EXPLORATORY/nfl_engine/test_engine.py` is outside `pyproject.toml:77` `testpaths=["tests"]`; no `__init__.py`; `study.py:24-30` uses sys.path/importlib hacks. The invariants INTERFACE §5 calls asserted (ML identity, monotone ladders, total = home + away) never run on push. Pillar: PROOF. Proposed fix: move into `tests/` or extend `testpaths`.
 
@@ -2139,7 +2141,9 @@ W75.1 Part B (2026-10-14). Separation, yards per route run and top speed need NG
 
 ### GG-891 — KXNBATEAMTOTAL never listed: the 3 NBA_TEAM_TOTAL cells cannot get rows
 
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
+
+**RESOLVED 2026-11-18 (gap agent GA-6, BREADTH).** The entry closed on the autoflip recording the TEAM_TOTAL T1 flip. Box read-only 2026-10-21/22 (logged on GG-890, ledger row in GG_BURNDOWN.md): `nba_autoflip.log` shows 8 + 4 promotions = 12/12 NBA game cells, which includes the 3 NBA_TEAM_TOTAL cells.
 
 **2026-10-20 (W80.2) - premise stale:** `KXNBATEAMTOTAL` IS listed (public GET: `KXNBATEAMTOTAL-26OCT21INDNOP-NOP137`, active) and `NBA_TEAM_TOTAL_T1.jsonl` holds 374 valid rows, flip check FLIP-OK 374/374 (box preflight 20261020T0005Z). The 9-of-12 ceiling is 12-of-12. Stays OPEN only until the 12:40Z autoflip records the TEAM_TOTAL T1 flip; close on that evidence.
 
@@ -2147,7 +2151,9 @@ W78.3 read-only GET 2026-10-15: KXNBAGAME 56, KXNBASPREAD 200, KXNBATOTAL 200 op
 
 ### GG-892 — nba_shadow silent arm masked by player-points rows (NBA_*.jsonl glob)
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PLUMBING).** PR #275 is an ancestor of box HEAD 53c83e86 (`git merge-base --is-ancestor`), so the deploy the entry waited on has happened. `silent_arms.py:247` documents and avoids the shared sport-prefix glob.
 
 W78.3: `silent_arms.load_inputs` globbed `NBA_*.jsonl` for the game arm, which also matches `NBA_NBA_PLAYER_POINTS_*`; live points rows would hide a dead game arm. Fixed in PR #275 with a test; pending deploy at write time. Sweep of the other arms' globs (MLB_/NFL_/NHL_) found no sibling families sharing a prefix. Close after deploy read-back.
 
@@ -4463,7 +4469,9 @@ W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB 
 
 ### GG-1440 — T4 MLB silent-arm alarm reads RED for 8-16 min every night: "started" is the scheduled start, T4 writes from first pitch
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PLUMBING).** `silent_arms.py:97-101` sets `start_grace_h=0.5` on t4_mlb with the GG-1440 rationale (landed 152f076, 2026-10-30); the grace is applied at `silent_arms.py:130`. 152f076 is an ancestor of box HEAD 53c83e86 (`git merge-base --is-ancestor`), so it is deployed.
 
 W94.3, 2026-10-29, T-1440. The 2026-10-29 00:04Z "T4 MLB live SILENT 19.6h" was false: first row 00:08:14Z, process healthy (active since 10-27 04:58Z, 0 restarts). `silent_arms.py` t4_mlb has window 3h, lead 0, scheduled start from a cache rounded to :00/:30; measured lag to first row 8-16 min (10-24 16.4, 10-25 9.8, 10-27 10.1, 10-28 7.7, 10-29 8.2). Recommended fix: `start_grace_h=0.5` on t4_mlb only + regression test on the 00:04Z case and one on a GG-163-style outage. Not applied: the block bars changing the gauge. Hard Rule 14 interaction: installs are blocked for those minutes each night. See `12_EXPLORATORY/t4_mlb_silent/results_W94_3.md`.
 
