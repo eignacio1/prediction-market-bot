@@ -2,7 +2,7 @@
 
 Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 312 of 335 are auto and unreviewed.
 
-**Counts:** Core=229 (192 OPEN), MLB=52 (36 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
+**Counts:** Core=229 (191 OPEN), MLB=52 (36 OPEN), NBA=34 (31 OPEN), NHL=20 (14 OPEN) — 335 live gaps.
 
 ## Core (229)
 
@@ -205,7 +205,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1580 — OPEN · LOW _(auto)_: Picks sheet cannot say why: ledger rows hold `feature_row_sha256`, not the features
 - GG-1581 — OPEN · HIGH _(auto)_: Box is OOM-killing shadow-arm cycles: the T3 runners stack with no lock
 - GG-1600 — OPEN · LOW _(auto)_: Frozen-evidence ladder re-run does not complete in one session on the 1-core box
-- GG-1650 — OPEN · LOW _(auto)_: `tests/test_seat_interface.py` and `tests/test_tensions.py` are un-collectable on the current tree
+- GG-1650 — RESOLVED · LOW _(auto)_: `tests/test_seat_interface.py` and `tests/test_tensions.py` are un-collectable on the current tree
 - GG-1690 — OPEN · LOW _(auto)_: Picks sheet lists both mirror sides of one moneyline/spread bet, and T1 and T2 arms as separate picks
 - GG-1720 — OPEN · MEDIUM _(auto)_: `proof_calendar_read` box task drops its ssh session (exit 255) on the long `--emit` run and sits at the 60 KB
 - GG-1770 — RESOLVED · MEDIUM _(auto)_: `lookup_fill` reads a NO buy as a YES order, so win/loss on every NO-side demo fill is inverted in the fill re

@@ -4630,7 +4630,7 @@ W98.3, 2026-11-03, T-1630. GG-1580 is fixed for the NBA, NFL and MLB game-market
 W98.2 Part C: 259/570 ladder shards done in about 33 min of box time (total 2390.6 s, mean 9.2 s, max 52.3 s). No unit exceeds 900 s; the constraint is total throughput. 311 shards remain (KXMLBTOTAL, KXMLBSPREAD, KXMLBTEAMTOTAL x95, KXNFLTEAMTOTAL x26), needing about 5 more `frozen_resume_step` runs. The two 91.2 held-out KXMLBTOTAL cells stay unclassified until then. Registered by W98.2; no code fix needed.
 
 ### GG-1650 — `tests/test_seat_interface.py` and `tests/test_tensions.py` are un-collectable on the current tree
-**Status:** OPEN · **Severity:** LOW
+**Status:** RESOLVED · **Severity:** LOW
 
 W99.3, 2026-11-04. Found while running the full suite for PR #407: both files fail at collection (pre-existing, unrelated to W99.3). Registered, not fixed (Hard Rule 11). They therefore cover nothing for D5 components (seat interface, structural tensions) until repaired.
 
