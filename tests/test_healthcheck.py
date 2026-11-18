@@ -61,7 +61,7 @@ def run(rig, **extra):
     proj, sysctl, crontab = rig
     env = {**os.environ, "PMBOT_DIR": str(proj), "PMBOT_PYTHON": sys.executable,
            "PMBOT_SYSTEMCTL": str(sysctl), "PMBOT_CRONTAB_CMD": f"cat {crontab}",
-           "PMBOT_SKIP_NET": "1", "PMBOT_MIN_OPENSSL": "0", **extra}
+           "PMBOT_SKIP_NET": "1", "PMBOT_MIN_OPENSSL": "0", "PMBOT_DISK_FAKE_PCT": "40", **extra}   # W118.4: not the host's real disk
     r = subprocess.run(["bash", str(SCRIPT)], env=env, capture_output=True, text=True)
     return r.returncode, r.stdout
 
@@ -187,3 +187,28 @@ def test_big_crontab_does_not_make_a_present_arm_read_missing(rig):
     rc, out = run(rig)
     assert "cron arm MISSING" not in out, out
     assert "cron arm present: run_mlb_pregame.py" in out
+
+
+def _disk_health(days_pcts):
+    from datetime import datetime, timedelta, timezone
+    now = datetime.now(timezone.utc)
+    return "".join("=== VPS Health Check (W72.3) ===\n%s\n\n[OK] disk %d%% used\n" % (
+        (now - timedelta(days=d)).strftime("%Y-%m-%dT%H:%M:%SZ"), p) for d, p in days_pcts)
+
+
+def test_disk_growth_warns_when_90_is_within_14_days(rig):
+    """W118.4: 82% now, +2 pct/day over the last 6 days -> 90% in 4 days -> WARN (never a FAIL), and one sample is recorded."""
+    proj = rig[0]
+    (proj / "logs/health.log").write_text(_disk_health([(6, 70), (0, 82)]))
+    rc, out = run(rig, PMBOT_DISK_FAKE_PCT="82")
+    assert "[WARN] disk growth:" in out and "90% in 4.0 days" in out and "[FAIL] disk" not in out
+    assert (proj / "logs/disk_samples.jsonl").read_text().count("\n") == 1
+
+
+def test_disk_growth_is_ok_when_slow_or_unknown(rig):
+    proj = rig[0]
+    rc, out = run(rig)                                  # no history at all (40% fake disk)
+    assert rc == 0 and "[OK] disk growth: disk" in out and "[WARN] disk growth" not in out
+    (proj / "logs/health.log").write_text(_disk_health([(6, 50), (0, 51)]))
+    rc, out = run(rig, PMBOT_DISK_FAKE_PCT="51")
+    assert "[WARN] disk growth" not in out and "[OK] disk growth" in out
