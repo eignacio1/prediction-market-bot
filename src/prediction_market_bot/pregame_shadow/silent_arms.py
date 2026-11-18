@@ -184,7 +184,11 @@ def _parse(ts) -> Optional[datetime]:
     if not ts or not isinstance(ts, str):
         return None
     try:
-        return _aware(datetime.fromisoformat(ts.replace("Z", "+00:00")))
+        from prediction_market_bot.timeparse import parse_ts as _tol  # GG-1934
+        d = _tol(ts)
+        if d is None:
+            raise ValueError(ts)
+        return _aware(d)
     except ValueError:
         return None
 

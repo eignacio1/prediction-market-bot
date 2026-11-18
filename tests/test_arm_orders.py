@@ -100,12 +100,48 @@ def test_tags(env):
 
 
 def test_cap_blocks(env, monkeypatch):
-    """A huge flat stake is cut by arm_sizing's event cap; the c4 hard-limit backstop still blocks a stake past it."""
+    """A huge flat stake is cut by arm_sizing's event cap; the demo-book backstop still blocks a stake past it."""
     monkeypatch.setattr(ao, "size_for", lambda *a: 10_000.0)
     r = go(env, row())
-    assert r["event"] == ao.ORDER_EVENT and r["stake_usd"] <= 5.0 and "event" in r["size_for"]["binding_caps"]
+    assert r["event"] == ao.ORDER_EVENT and r["stake_usd"] <= ao.asz.DEFAULT_EVENT_CAP_USD and "event" in r["size_for"]["binding_caps"]
     monkeypatch.setattr(ao, "sized_stake", lambda *a, **k: (10_000.0, {}))
-    assert go(env, row())["reason"] in ("per_event_cap", "daily_breaker")
+    assert go(env, row())["reason"] == "demo_book_event_cap"
+
+
+def test_backstop_reads_the_demo_book_caps_never_a_real_money_limit(env, monkeypatch):
+    """GG-1935: the old backstop was notional x risk.MAX_DAILY_LOSS_PCT ($150 of stake placed). The demo book's own day cap
+    decides now, and moving the real-money constants changes nothing here."""
+    from prediction_market_bot.c4_risk_engine import risk
+    assert not hasattr(ao, "risk")
+    monkeypatch.setattr(risk, "MAX_DAILY_LOSS_PCT", 0.0)
+    monkeypatch.setitem(risk._HARD_LIMITS, "max_single_event_exposure_usd", 0.0)
+    assert ao.cap_reason("EV1", 1.0, "2026-11-17", env.log) is None
+    tiny = ao.asz.DemoBookCaps("t", 5.0, 2.0, 25.0)
+    for i, ev in enumerate(("A", "B")):
+        ao.append_order_log({"event": ao.ORDER_EVENT, "ok": True, "stake_usd": 1.0, "event_ticker": ev}, env.log)
+    day = ao._placed(env.log)[0]["ts"][:10]
+    assert ao.cap_reason("C", 1.0, day, env.log, tiny) == "demo_book_day_cap"
+    assert ao.cap_reason("C", 1.0, "1999-01-01", env.log, tiny) is None
+
+
+def test_book_caps_switch_default_off_and_raised_only_when_set(env, monkeypatch, tmp_path):
+    """W116.2: with ARM_BOOK_CAPS unset the arm book sizes at the base caps (5 / 50 / 25); "raised" lifts them."""
+    monkeypatch.setattr(ao, "size_for", lambda *a: 10_000.0)
+    r = go(env, row())
+    assert r["book_caps"] == "base" and r["stake_usd"] == pytest.approx(5.0)
+    env.sw["ARM_BOOK_CAPS"] = "raised"
+    r = ao.act(row(), env.client, log=tmp_path / "fresh.jsonl")
+    assert r["book_caps"] == "raised" and r["stake_usd"] == pytest.approx(25.0)
+
+
+def test_order_row_carries_the_book_at_submit(env, monkeypatch):
+    meta = {"yes_bid": 0.69, "yes_ask": 0.71, "book_mid": 0.70, "model_mid": 0.70, "gap": 0.0}
+    monkeypatch.setattr(ao.pol, "decide", lambda c, t, d, mid, rid: SimpleNamespace(action="SUBMIT", mid_price=0.69, reason="ok", meta=meta))
+    r0 = row()
+    r0.update(horizon_hours_to_start=3.5, book_yes_bid_size=120, book_yes_ask_size=40)
+    r = go(env, r0)
+    assert r["book_at_submit"]["yes_ask"] == 0.71 and r["hours_to_start"] == 3.5 and r["book_yes_bid_size"] == 120
+    assert r["placement"] == "rest_touch" and r["pre_order_spread"] == pytest.approx(0.02) and r["intended_side"] == "yes"
 
 
 def _game_row(ticker, run):

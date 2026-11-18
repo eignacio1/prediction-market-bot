@@ -53,8 +53,11 @@ def _epoch(t) -> int:
     if isinstance(t, (int, float)):
         return int(t)
     if isinstance(t, str):
-        s = t.replace("Z", "+00:00")
-        t = datetime.fromisoformat(s)
+        from prediction_market_bot.timeparse import parse_ts  # GG-1934: Kalshi 5-digit fractions
+        p = parse_ts(t)
+        if p is None:
+            raise ValueError(f"unparseable timestamp: {t!r}")
+        t = p
     if t.tzinfo is None:
         t = t.replace(tzinfo=timezone.utc)
     return int(t.timestamp())

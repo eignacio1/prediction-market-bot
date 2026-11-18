@@ -33,7 +33,11 @@ def ledger_limit(p):
 
 
 def ts(s) -> float:
-    return datetime.fromisoformat(str(s).replace("Z", "+00:00")).timestamp()
+    from prediction_market_bot.timeparse import parse_ts  # GG-1934: Kalshi 5-digit fractions
+    d = parse_ts(s)
+    if d is None:
+        raise ValueError(f"unparseable timestamp: {s!r}")
+    return d.timestamp()
 
 
 def fnum(*vals):

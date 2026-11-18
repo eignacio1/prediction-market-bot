@@ -83,14 +83,24 @@ def test_per_event_cap_blocks(env):
             fh.write(json.dumps({"event": ro.ORDER_EVENT, "ok": True, "event_ticker": "EV1", "stake_usd": 99.0,
                                  "ts": f"2026-11-0{i + 1}T12:00:00Z"}) + "\n")
     r = go(env, row(rid="b"), stake=10.0)  # 495 + 10 > 500
-    assert r["reason"] == "per_event_cap" and env.client.calls == []
+    assert r["reason"] == "demo_book_event_cap" and env.client.calls == []
 
 
 def test_daily_breaker_blocks(env):
     assert go(env, row(event="E1", rid="a"), stake=100.0)["action"] == ro.ORDER
     assert go(env, row(event="E2", rid="b"), stake=45.0)["action"] == ro.ORDER
     r = go(env, row(event="E3", rid="c"), stake=10.0)  # 155 > 15% of 1000
-    assert r["reason"] == "daily_breaker" and len(env.client.calls) == 2
+    assert r["reason"] == "demo_book_day_cap" and len(env.client.calls) == 2
+
+
+def test_caps_never_read_a_real_money_limit(env, monkeypatch):
+    """W116.2 sweep of GG-1935: moving the real-money constants changes no demo-book cap."""
+    from prediction_market_bot.c4_risk_engine import risk
+    assert not hasattr(ro, "risk")
+    monkeypatch.setattr(risk, "MAX_DAILY_LOSS_PCT", 0.0)
+    monkeypatch.setitem(risk._HARD_LIMITS, "max_single_event_exposure_usd", 0.0)
+    assert ro.cap_reason("EV1", 100.0, "2026-11-17", env.log) is None
+    assert (ro.DEMO_BOOK_EVENT_CAP_USD, ro.DEMO_BOOK_DAY_CAP_USD) == (500.0, 150.0)
 
 
 def test_listing_skip(env, monkeypatch):

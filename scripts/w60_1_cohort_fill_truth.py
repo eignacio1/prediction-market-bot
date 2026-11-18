@@ -42,7 +42,8 @@ def parse_ts(s):
     if not s:
         return None
     try:
-        return datetime.fromisoformat(str(s).replace("Z", "+00:00")).astimezone(timezone.utc)
+        from prediction_market_bot.timeparse import parse_ts as _tol  # GG-1934
+        return _tol(s)
     except ValueError:
         return None
 
