@@ -4799,7 +4799,7 @@ W116.3, 2026-11-17. `exp_output/NHL_EVENTS` is missing on the box (d6_read layer
 ### GG-1936 — No free NBA / NHL closing-line history to give router v2 a long-history prior (W116.1)
 **Status:** OPEN · **Severity:** MEDIUM
 
-W116.1, 2026-11-17. Router v2 (`decision_trees/evidence/`) takes a long-history prior per bin from nflverse for NFL only (`12_EXPLORATORY/evidence_design/prior_nflverse.json`, TRANSFER_SD 0.03). There is no free ($0) NBA or NHL source of historical closing lines with results, so NBA / NHL leaves start from the pooled root. That is why their power calendar runs later (`power_calendar.json`). Next: search free sources (archived odds dumps, Kalshi's own history, GG-1937). A paid-only source stays a registered gap (DOCTRINE §2).
+W116.1, 2026-11-17. Router v2 (`decision_trees/evidence/`) takes a long-history prior per bin from nflverse for NFL only (`12_EXPLORATORY/evidence_design/prior_nflverse.json`, TRANSFER_SD 0.03). There is no free ($0) NBA or NHL source of historical closing lines with results, so NBA / NHL leaves start from the pooled root. That is why their power calendar runs later (`power_calendar.json`). Next: search free sources (archived odds dumps, Kalshi's own history, GG-1937). A paid-only source stays a registered gap (DOCTRINE §2). **Update 2026-11-18:** backlog B-099 (operator 11-17 16:07 PT) names free NHL 2025-26 consensus lines as the NHL prior. Once it lands, an NHL prior in `prior_nflverse.json` form can enter v2 under a new pre-registration. NBA stays open.
 
 ### GG-1937 — Kalshi's own market history is not usable as a prior until its candles are parsed (W116.1)
 **Status:** OPEN · **Severity:** MEDIUM
