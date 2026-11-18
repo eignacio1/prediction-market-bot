@@ -72,7 +72,7 @@ down. Every part runs to merge on its own overnight; anything for the operator l
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 116.1 | quant · 3 | Finish 115.1: evidence pipeline, three-router held-out comparison, power calendar, leaf map v2 behind a switch, router v2 frozen | Opus | 🟨 PR #506 CI | **v2 does not win on its own evidence yet:** fit on the earliest 70% of games, it arms 0 leaves, so 0 held-out bets. v1 nets −0.0064 per row [−0.0138, +0.0009] (161 test games); ride every favourite −0.0256 [−0.0394, −0.0129]; v2 − v1 +0.0064 = the value of abstaining. Power calendar: at a true +0.05 per contract, v2 has 84 leaves (first 2027-01-20) vs v1's 46 (first 2027-02-17). E-process validity defect found and fixed (GG-1954: binary null 275/300 → 2/300 false claims). v2 map frozen (sha256 79f46cb4…, 0 armed) behind PM_LEAF_MAP_VERSION, default v1; pre-registration ROUTER_V2_PREREGISTRATION_2026-11-17.md. GG-1936..1938 registered. |
-| 116.2 | execution · 3 | Finish 115.2: placement model tests, settlement join + GG-1934, policy behind a switch, report per arm and option, ADR-0072 addendum proposal | Opus | ⬜ | |
+| 116.2 | execution · 3 | Finish 115.2: placement model tests, settlement join + GG-1934, policy behind a switch, report per arm and option, ADR-0072 addendum proposal | Opus | 🟨 | #504 merged fb8000c (deployed 00:54Z): lookups failed 0/486 (was 244/432). #505 (report per option) red only on GG-1955 (main backlog dup). C2 proposal + 2 decisions filed; nothing on. |
 | 116.3 | D6 · 3 | Finish 115.3: read the trace, write the three trace tables, fix the breaks, row-level sizing, D6 recount; NHL store shrunk before any install | Opus | 🟨 parked | ERROR cause found (MODEL_FADE leaf row had no ticker/book → KeyError; NBA 2,851 + NFL 181 rows) and fixed in PR #503 (CI pending, not merged). Row-level sizing on every routed row. Box D6 baseline is 3 (all NBA). NHL store shrink and GG-1939..1941 registration not done. Handoff: SESSION_HANDOFF_20261117T0620Z_W116_3.md |
 
 - **Pushback:** 116.2's cap change raises demo arm orders from ~50 to ~2,200 a day - it ships behind a switch at the OLD values, with
@@ -528,6 +528,10 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **DECISION - DEMO ARM PLACEMENT POLICY ON (W116.2, 2026-11-18):** turn `ARM_PLACEMENT_POLICY=on` for router-arm demo orders, reading a frozen `config/placement_policy.json` fitted only on orders that logged their spread (30+ resolved per side of each cell), judged at 100 resolved orders per arm and option (ADR-0072 addendum proposal 2026-11-17). Today's read, before spread was logged: FADE cross +0.18 per order [+0.09, +0.28], n=100, with an assumed spread; RIDE and MOMENTUM within noise. Demo only, `kelly_fraction` 0.
+
+> **DECISION - DEMO ARM BOOK CAPS RAISED (W116.2, 2026-11-18):** turn `ARM_BOOK_CAPS=raised` (25 per event / $2,500 a day / $1,500 per arm, demo only; about 50 -> about 2,200 demo arm orders a day) **only after GG-1942 is fixed** (ARM_ORDERS advisory in the exposure gate; otherwise about $200 of open demo stake halts every book). Same addendum proposal.
 
 > **DECISION - ROUTER V2 ON FOR LOGGING (W116.1, 2026-11-17):** turn router v2 on for logging (v1 stays the frozen test). It sets `PM_LEAF_MAP_VERSION=v2` beside v1 in shadow logging only: no orders, `kelly_fraction` 0. Today v2 would log NO_BET on every row; it earns an arm only when a leaf's pooled P(net>0) >= 0.90 and its e-value >= 10 (pre-registered). Logging it now starts the forward clock its pre-registration scores. Reply "yes, router v2 logging" or not.
 

@@ -3537,3 +3537,11 @@ Effect: Wave 116 = three Opus blocks continuing 115.1 / 115.2 / 115.3 from their
 Sonnet rule, his order). The 115.2 cap raise (~50 -> ~2,200 demo arm orders a day) ships behind a switch at the old values and is proposed
 to him, because the 11-12 ADR-0072 addendum said those gates were unchanged. Muse addendum: 04_EXECUTION/MUSE_ADDENDUM_2026-11-16.md.
 Window error W56: three Fable blocks sized as if Fable cost what Sonnet does; lesson - Fable for one design block, Sonnet / Opus build.
+
+## 2026-11-18 01:10Z — W116.2 (B-095): settlement join landed; placement policy and cap raise PROPOSED, both off
+PR #504 (fb8000c, deployed 00:54Z): demo arm caps separate from risk.py (base 5/$50/$25 default; raised behind `ARM_BOOK_CAPS`,
+off); tolerant `parse_ts` (GG-1934 resolved); one-pull settlement join (outcome lookups failed 0/486, was 244/432); placement model
+(P(fill), selection term, option nets, Wilson / mean intervals, MIN_N 30) and policy behind `ARM_PLACEMENT_POLICY` (off = today's
+price, tested). Box read 00:59Z, post-epoch: RIDE P(fill) 0.14, selection −0.058 [−0.195, +0.080]; FADE cross +0.18 [+0.09, +0.28]
+on an assumed spread. Proposal: 03_DECISIONS/ADR-0072_ADDENDUM_PROPOSAL_2026-11-17_placement-and-caps.md; two decisions in the queue.
+Registered GG-1942 (cap-raise precondition), GG-1943, GG-1944, GG-1955 (main backlog duplicate blocks code CI). Nothing turned on.
