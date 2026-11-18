@@ -2053,7 +2053,9 @@ B74-A L5 (HEAD before W73.2 Part B merged). ADR-0073 point 6 calls NFL the templ
 
 ### GG-757 — NFL engine invariants are not run by CI
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PROOF).** The engine invariants (ML identity, monotone ladders, total = home + away, joint bounded by marginals) now live in `tests/test_nfl_engine_v0.py` (`test_total_is_sum_exactly`, `test_ladders_monotone_and_ml_identity`, ...), inside `pyproject.toml:77` `testpaths=["tests"]`, so CI runs them on push. The old `12_EXPLORATORY/nfl_engine/test_engine.py` no longer exists.
 
 B74-A L5. `12_EXPLORATORY/nfl_engine/test_engine.py` is outside `pyproject.toml:77` `testpaths=["tests"]`; no `__init__.py`; `study.py:24-30` uses sys.path/importlib hacks. The invariants INTERFACE §5 calls asserted (ML identity, monotone ladders, total = home + away) never run on push. Pillar: PROOF. Proposed fix: move into `tests/` or extend `testpaths`.
 
@@ -4463,7 +4465,9 @@ W91.1, 2026-10-28, T-1342. All 11 cells stay IN_SAMPLE (backward UNTESTED). MLB 
 
 ### GG-1440 — T4 MLB silent-arm alarm reads RED for 8-16 min every night: "started" is the scheduled start, T4 writes from first pitch
 
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED · **Severity:** MEDIUM
+
+**RESOLVED 2026-11-18 (gap agent GA-6, PLUMBING).** `silent_arms.py:97-101` sets `start_grace_h=0.5` on t4_mlb with the GG-1440 rationale (landed 152f076, 2026-10-30); the grace is applied at `silent_arms.py:130`. 152f076 is an ancestor of box HEAD 53c83e86 (`git merge-base --is-ancestor`), so it is deployed.
 
 W94.3, 2026-10-29, T-1440. The 2026-10-29 00:04Z "T4 MLB live SILENT 19.6h" was false: first row 00:08:14Z, process healthy (active since 10-27 04:58Z, 0 restarts). `silent_arms.py` t4_mlb has window 3h, lead 0, scheduled start from a cache rounded to :00/:30; measured lag to first row 8-16 min (10-24 16.4, 10-25 9.8, 10-27 10.1, 10-28 7.7, 10-29 8.2). Recommended fix: `start_grace_h=0.5` on t4_mlb only + regression test on the 00:04Z case and one on a GG-163-style outage. Not applied: the block bars changing the gauge. Hard Rule 14 interaction: installs are blocked for those minutes each night. See `12_EXPLORATORY/t4_mlb_silent/results_W94_3.md`.
 
