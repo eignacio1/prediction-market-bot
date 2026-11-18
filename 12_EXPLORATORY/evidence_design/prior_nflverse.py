@@ -5,6 +5,9 @@ E[favourite side wins] - devigged closing probability, with its standard error (
 import csv, json, math, os, sys
 from collections import defaultdict
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from _fence import safe_out  # noqa: E402
+
 EDGES = (0.35, 0.5, 0.65, 0.8)
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -52,8 +55,7 @@ def main(path):
         n = len(xs); m = sum(xs) / n
         se = math.sqrt(sum((x - m) ** 2 for x in xs) / (n - 1) / n) if n > 1 else None
         out["bins"][f"{mt}|{b}"] = {"n": n, "gap": round(m, 5), "se": round(se, 5) if se else None}
-    with open(os.path.join(HERE, "prior_nflverse.json"), "w") as fh:
-        json.dump(out, fh, indent=1)
+    safe_out("evidence_design/prior_nflverse.json").write_text(json.dumps(out, indent=1))
     print(json.dumps(out, indent=1))
 
 

@@ -271,6 +271,7 @@ if "--write-map" in sys.argv:
            "config": out["config"], "tau_sd_by_depth": {a: {str(d): round(math.sqrt(t), 4) for d, t in sorted(full.fits[a].tau2.items())} for a in cfg.arms},
            "unseen_leaf": "seen=false leaves inherit their deepest known ancestor plus tau; a key outside the map is NO_BET",
            "leaves": leaves}
-    mp = os.path.join(HERE, "..", "..", "src", "prediction_market_bot", "decision_trees", "leaf_maps", "leaf_map_v2.json")
-    json.dump(doc, open(os.path.normpath(mp), "w"), indent=1, sort_keys=True)
+    # Written inside the fence; the copy under src/.../leaf_maps/ is a reviewed promotion pinned by sha256
+    # in tests/test_leaf_map_version_w116.py and in ROUTER_V2_PREREGISTRATION_2026-11-17.md.
+    safe_out("evidence_design/leaf_map_v2.json").write_text(json.dumps(doc, indent=1, sort_keys=True))
 print(json.dumps({k: out[k] for k in ("heldout", "paired_heldout_net_per_row", "leaves_with_arm", "full_corpus_v2", "power_calendar")}, indent=1))
