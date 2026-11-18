@@ -74,7 +74,7 @@ and team totals priced from the engine's existing simulation). 117.4 cuts the re
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 117.0 | cleanup · 2 | Land #508 #505 #506 #507 on green; prune remote branches (merged or nothing unlanded); prune worktrees | Sonnet | ⬜ | |
-| 117.1 | execution · 3 | Caps raised (approved); spread logged on every order + backfilled; FADE crossed measured with its real cost; frozen placement table, policy on (approved) | Sonnet | ⬜ | |
+| 117.1 | execution · 3 | Caps raised (approved); spread logged on every order + backfilled; FADE crossed measured with its real cost; frozen placement table, policy on (approved) | Sonnet | 🟨 PARKED 11-18 02:55Z | A2+A3+B tooling merged (#512). Not done: A1 caps PR, box read, B verdict, C table + policy flip |
 | 117.2 | quant · 3 | NHL consensus history as a router-v2 prior; momentum and Kalshi-vs-books tests pre-registered; family vs leaf power calendar | Sonnet | ⬜ | |
 | 117.3 | D6 · 3 | NBA layer 1 for moneyline + team totals; the named NBA layer causes; D6 recount on the box | Sonnet | ⬜ | |
 | 117.4 | hygiene · 3 | Every push to main checks the backlog and GG ids; handoffs older than 7 days archived; gaps with merged fixes resolved | Haiku | ⬜ | |
