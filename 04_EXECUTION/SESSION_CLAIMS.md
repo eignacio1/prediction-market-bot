@@ -1300,3 +1300,4 @@
 | 2026-11-18T01:46:28Z | B-098 | W117.0 cleanup: land parked W116 PRs #508 #505 #506 #507, prune branches. PURPOSE: PLUMBING - PRs merged of 4, remote branches before/after |
 | 2026-11-18T02:31:07Z | B-098 | CLOSED — W117.0 landed parked W116 PRs #505-#508 on green CI and pruned remote branches 16 -> 10 plus main. (commit `228a63f`) |
 | 2026-11-18T02:32:40Z | B-098 | CLOSED — merge confirmed, HEAD (630cf95) is ancestor of origin/main — W117.0 landed #505-#508 on green CI; remote branches 16 -> 10 + main |
+| 2026-11-18T02:36:53Z | B-095 | W117.1 B-095 EXECUTION: caps raised, spread logged, FADE crossed honest, frozen placement table. PURPOSE: E1/E2/E3 per arm after real costs; spread_logged 0 -> N |
