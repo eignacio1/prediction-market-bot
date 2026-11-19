@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: W119.3
+tier: STANDARD
+timestamp: 2026-11-19T04:45:00Z
+commit: 30e6acb
+one_line_summary: W119.3: ride-board log cut, FADE inside-spread 50/50 forward test (EXP-W119.3), GG-1943 fixed; merged, on box
+gg_touched: GG-1943
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION, PLUMBING
+gap_measure: E1/E2/E3, FADE fill rate, ride-board bytes/day
+gap_delta: FADE fill rate 6/111 (5.4%) -> touch 22/342 (6.4%), inside 2/17 (11.8%), counts only (arm_orders_read 20261119T0420Z); bytes/day not yet measurable
+pattern_sweep: grep decisions.jsonl readers in src/ scripts/ tests/ -> only tests/test_run_ride_board.py; cancel_rule guard applied in option_table and option_net_clustered
+surface_delta: 0 components; +1 state file in RUNTIME_REGISTRY writes
+-->
 ---
 task_id: W119.3 (code merged; deploy + Part C reads OPEN)
 vision_pillar: EXECUTION (E1/E2/E3, FADE fill rate)

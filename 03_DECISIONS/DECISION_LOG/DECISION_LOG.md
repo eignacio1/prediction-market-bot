@@ -3620,3 +3620,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   (PRICE_ARCHIVE, KALSHI_HISTORY, settled ledgers) to the operator's Mac through the desktop bridge - fixes the single copy; (2) once a
   copy is verified, the box keeps a rolling hot window and older files live compressed on the box or only off-box; (3) cut waste at the
   writer (ride-board log, 119.3). New scheduled job -> operator approval. Backlog B-103.
+
+| 2026-11-19 | W119.3 | FADE gets a pre-registered demo placement option, rest_inside (mid snapped toward own touch, 60 s cancel), assigned 50/50 by hash of the row id against a concurrent rest_touch control (EXP-W119.3, frozen 2026-11-19T01:08:53Z, judged n 100 orders and 20 games per option). "Mid when spread >= 2 ticks" was read as mid snapped toward own touch, which changes the old one-tick rule on wider spreads. Ride-board decisions.jsonl keeps 12 reader fields and logs a repeated NO_BET once an hour; order rows are never skipped. GG-1943 fixed in code via a cancel_rule guard. Demo only, Kelly 0. |

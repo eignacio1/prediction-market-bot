@@ -1323,3 +1323,5 @@
 | 2026-11-19T01:04:14Z | B-101,B-100 | W119.2 NBA depth splits wired behind switch + registry truth + NBA layer4 stump. PURPOSE: D5(b) NBA applied, B1 code==box, D6 NBA 4->N |
 | 2026-11-19T01:10:56Z | B-103 | W119.4 B-103 verified weekly evidence copy to Mac; readers .gz; disk to ~50%. PURPOSE: PLUMBING (disk %, bytes off-box verified) |
 | 2026-11-19T04:45:31Z | W119.2 | CLOSED — W119.2: NBA depth splits wired behind switch, 12 NBA game cells SHADOW in code, layer-4 stump rule; D6 NBA 4 -> 7 (PR #527) (commit `109c469`) |
+| 2026-11-19T04:44:47Z | W119.3 | CLOSED — W119.3: ride-board log cut, FADE inside-spread 50/50 forward test (EXP-W119.3), GG-1943 fixed; merged, on box (commit `30e6acb`) |
+| 2026-11-19T04:46:01Z | W119.3 | CLOSED — merge confirmed, HEAD (cf9a381) is ancestor of origin/main — ride-board log cut, FADE inside-spread forward test, GG-1943; merged, on box |
