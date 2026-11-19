@@ -144,3 +144,39 @@ def deployment_rolling(shifts: pd.DataFrame, games: pd.DataFrame, window: int = 
     m = gl.merge(sh, on=["game_id", "team_id"], how="inner")
     r = _through_rolling(m, ["top_share"], window)
     return r[["game_id", "team_id", "start", "top_share_prior"]].rename(columns={"top_share_prior": "top_share"})
+
+
+GOALIE_PRIOR_SHOTS = 300.0        # shrinkage weight toward the league save rate (a goalie with 300 shots counts half own, half league)
+GOALIE_MIN_SHOTS = 100.0          # below this many season shots the goalie's rate is NaN ("unknown"), never a guess
+
+
+def goalie_rolling(box: pd.DataFrame, games: pd.DataFrame) -> pd.DataFrame:
+    """W119.1 goalie class. Per (game_id, team_id, start): ``goalie_sv`` = the save rate of that game's starting goalie over his season
+    through this game, shrunk toward the league rate. Read it with ``asof``: the target game then sees the team's LAST COMPLETED
+    starter and his season-to-date rate (the store has no pre-game lineup, so "last starter" is the point-in-time proxy; a real
+    lineup feed is a registered gap). NaN until the goalie has GOALIE_MIN_SHOTS season shots."""
+    b = box[box["group"] == "goalies"]
+    b = b[b["starter"] == True].sort_values("toi_s", ascending=False).drop_duplicates(["game_id", "team_id"])
+    gl = _long(games)[["game_id", "team_id", "start"]]
+    m = gl.merge(b[["game_id", "team_id", "season", "player_id", "shots_against", "saves"]], on=["game_id", "team_id"], how="inner")
+    m = m.dropna(subset=["shots_against", "saves"]).sort_values(["start", "game_id"])
+    # league rate is an expanding rate through this row (never the full-season total: that would leak later games)
+    league = m["saves"].cumsum() / m["shots_against"].cumsum().replace(0, np.nan)
+    key = ["season", "player_id"]
+    m["cum_sa"] = m.groupby(key)["shots_against"].cumsum()
+    m["cum_sv"] = m.groupby(key)["saves"].cumsum()
+    m["goalie_sv"] = (m["cum_sv"] + GOALIE_PRIOR_SHOTS * league) / (m["cum_sa"] + GOALIE_PRIOR_SHOTS)
+    m.loc[m["cum_sa"] < GOALIE_MIN_SHOTS, "goalie_sv"] = np.nan
+    return m[["game_id", "team_id", "start", "goalie_sv"]]
+
+
+def special_teams_rolling(box: pd.DataFrame, games: pd.DataFrame, window: int = 20) -> pd.DataFrame:
+    """W119.1 special-teams class. Per (game_id, team_id, start): ``pp_for`` = power-play goals the team scored per game and
+    ``pim_taken`` = its penalty minutes per game, each over its ``window`` games ending with this one. Read with ``asof``.
+    NaN until 5 games."""
+    t = box.groupby(["game_id", "team_id"]).agg(pp_for=("pp_goals", "sum"), pim_taken=("pim", "sum")).reset_index()
+    gl = _long(games)[["game_id", "team_id", "start"]]
+    m = gl.merge(t, on=["game_id", "team_id"], how="inner")
+    r = _through_rolling(m, ["pp_for", "pim_taken"], window)
+    return r[["game_id", "team_id", "start", "pp_for_prior", "pim_taken_prior"]].rename(
+        columns={"pp_for_prior": "pp_for", "pim_taken_prior": "pim_taken"})

@@ -20,7 +20,9 @@ DEFAULT_MAP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_map
 # W116.1: PM_LEAF_MAP_VERSION picks the map the router reads. "v1" (default) = the frozen W110.5 per-leaf map above;
 # "v2" = leaf_maps/leaf_map_v2.json (pooled posterior + e-process, W115.1). Anything else is refused, not guessed.
 MAP_VERSIONS = {"v1": DEFAULT_MAP,
-                "v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "leaf_map_v2.json")}
+                "v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "leaf_map_v2.json"),
+                # W119.1: v2 with the NHL leaves re-run on the 2026-27 shadow rows (consensus prior). Opt-in only; default stays v1.
+                "nhl_v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nhl_v2.json")}
 
 
 def map_path(version: Optional[str] = None) -> str:

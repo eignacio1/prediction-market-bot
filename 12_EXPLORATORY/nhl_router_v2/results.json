@@ -1,0 +1,123 @@
+{
+ "corpus": {
+  "rows": 53088,
+  "games": 324,
+  "fit_games": 226,
+  "test_games": 98,
+  "range": [
+   "2026-10-03T00:00:00+00:00",
+   "2026-11-19T00:30:00+00:00"
+  ]
+ },
+ "heldout": {
+  "no_prior": {
+   "armed_leaves": 0,
+   "leaves": 87,
+   "per_row": {
+    "net": 0.0,
+    "lo90": 0.0,
+    "hi90": 0.0,
+    "games": 98
+   },
+   "per_bet": null
+  },
+  "consensus_prior": {
+   "armed_leaves": 0,
+   "leaves": 87,
+   "per_row": {
+    "net": 0.0,
+    "lo90": 0.0,
+    "hi90": 0.0,
+    "games": 98
+   },
+   "per_bet": null
+  }
+ },
+ "full": {
+  "leaves": 99,
+  "armed": 0,
+  "cells": {
+   "NHL_GAME_TOTAL|T1": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 309,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_GAME_TOTAL-T1); logs continue"
+   },
+   "NHL_GAME_TOTAL|T2": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 305,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_GAME_TOTAL-T2); logs continue"
+   },
+   "NHL_GAME_TOTAL|T3": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 316,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_GAME_TOTAL-T3); logs continue"
+   },
+   "NHL_MONEYLINE|T1": {
+    "leaves": 8,
+    "arms": {
+     "NO_BET": 8
+    },
+    "games": 309,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_MONEYLINE-T1); logs continue"
+   },
+   "NHL_MONEYLINE|T2": {
+    "leaves": 10,
+    "arms": {
+     "NO_BET": 10
+    },
+    "games": 305,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_MONEYLINE-T2); logs continue"
+   },
+   "NHL_MONEYLINE|T3": {
+    "leaves": 9,
+    "arms": {
+     "NO_BET": 9
+    },
+    "games": 316,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_MONEYLINE-T3); logs continue"
+   },
+   "NHL_PUCK_LINE|T1": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 309,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_PUCK_LINE-T1); logs continue"
+   },
+   "NHL_PUCK_LINE|T2": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 305,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_PUCK_LINE-T2); logs continue"
+   },
+   "NHL_PUCK_LINE|T3": {
+    "leaves": 12,
+    "arms": {
+     "NO_BET": 12
+    },
+    "games": 316,
+    "routing": "NO_BET in every leaf",
+    "note": "routed to no bet in these leaves (EXP-W119.1-NHL-V2-NHL_PUCK_LINE-T3); logs continue"
+   }
+  }
+ }
+}
