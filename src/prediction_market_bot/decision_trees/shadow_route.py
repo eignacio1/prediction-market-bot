@@ -100,8 +100,9 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
 
 
 def candidate_arms_on() -> bool:
-    """W120.2: PM_CANDIDATE_ARMS=on logs the arm each candidate map would pick beside v1. Default off (operator queue item 7)."""
-    return os.environ.get("PM_CANDIDATE_ARMS", "off").strip().lower() == "on"
+    """W120.2: logs the arm each candidate map would pick beside v1. ON by default (operator approved queue item 7, 2026-11-18 21:19 PT);
+    PM_CANDIDATE_ARMS=off is the off-switch. Shadow only: orders follow v1."""
+    return os.environ.get("PM_CANDIDATE_ARMS", "on").strip().lower() != "off"
 
 
 # name -> (map version, sports it applies to or None for all, depth switch)

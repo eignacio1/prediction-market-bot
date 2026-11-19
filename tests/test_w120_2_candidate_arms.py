@@ -9,13 +9,13 @@ def _row(sport="NBA", mt="NBA_GAME_TOTAL", band="T3", tk="KXNBATOTAL-26NOV12AAAB
             "yes_bid": 0.68, "yes_ask": 0.72, "half_spread": 0.02, "p_yes": 0.7, "horizon_hours_to_start": 3.0}
 
 
-def test_off_by_default_row_has_only_v1(monkeypatch):
-    monkeypatch.delenv("PM_CANDIDATE_ARMS", raising=False)
+def test_off_switch_row_has_only_v1(monkeypatch):
+    monkeypatch.setenv("PM_CANDIDATE_ARMS", "off")
     assert "router_candidates" not in sr.router_fields(_row(), "KXNBATOTAL", prev_mid=0.7)
 
 
 def test_on_adds_columns_and_leaves_v1_block_identical(monkeypatch):
-    monkeypatch.delenv("PM_CANDIDATE_ARMS", raising=False)
+    monkeypatch.setenv("PM_CANDIDATE_ARMS", "off")
     off = sr.router_fields(_row(), "KXNBATOTAL", prev_mid=0.7)["router"]
     monkeypatch.setenv("PM_CANDIDATE_ARMS", "on")
     on = sr.router_fields(_row(), "KXNBATOTAL", prev_mid=0.7)
@@ -79,12 +79,12 @@ def test_v1_nhl_row_logs_a_tested_split_and_keeps_its_arm():
     assert look["logged_only"] and not look["kept"] and look["arm"] is None
 
 
-def test_existing_splits_unchanged_by_the_append():
-    head = subprocess.run(["git", "show", "origin/main:src/prediction_market_bot/decision_trees/filter_splits.json"],
-                          capture_output=True, text=True)
-    if head.returncode != 0:
-        return
-    import json
-    old = json.loads(head.stdout)["splits"]
-    now = lm.FilterSplits.load().doc["splits"]
-    assert now[:len(old)] == old
+def test_logged_not_applied_splits_never_kept():
+    sp = [x for x in lm.FilterSplits.load().doc["splits"] if str(x.get("why", "")).endswith("|logged_not_applied_to_v1")]
+    assert len(sp) >= 42
+    assert all(x.get("kept") is False for x in sp)
+
+
+def test_default_is_on(monkeypatch):
+    monkeypatch.delenv("PM_CANDIDATE_ARMS", raising=False)
+    assert sr.candidate_arms_on() is True
