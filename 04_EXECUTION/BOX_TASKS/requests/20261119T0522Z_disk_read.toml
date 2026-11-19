@@ -1,0 +1,2 @@
+task = "disk_read"
+note = "W120.3: disk % BEFORE the daily 14:17Z retention apply (baseline was 74% at 04:25Z)"

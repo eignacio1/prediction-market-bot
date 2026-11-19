@@ -1,0 +1,2 @@
+task = "disk_retention_dryrun"
+note = "W120.3: after the 3 readers moved to io_jsonl (#531); held bytes should be 0 for verified targets"
