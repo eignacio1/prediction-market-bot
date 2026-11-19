@@ -30,7 +30,7 @@ def nba_splits() -> list:
     return out
 
 
-def _nba_from(path, label) -> list:
+def _nba_from(path, label, sport="NBA", series_map=None) -> list:
     doc = json.loads(path.read_text())
     out = []
     for x in doc["leaves"]:
@@ -39,7 +39,7 @@ def _nba_from(path, label) -> list:
         kept = (not x["thin"] and x["arm"] != "NO_BET" and tg >= MIN_HELD_GAMES and tm is not None and tm > 0)
         why = ("kept" if kept else "thin" if x["thin"] else "no_arm_positive_in_fit" if x["arm"] == "NO_BET"
                else "held_out_games_below_min" if tg < MIN_HELD_GAMES else "held_out_net_not_positive")
-        out.append({"sport": "NBA", "series": NBA_SERIES[x["family"]], "filter": f"{x['entry']}@{kind}", "leaf": x["leaf"],
+        out.append({"sport": sport, "series": (series_map or NBA_SERIES)[x["family"]], "filter": f"{x['entry']}@{kind}", "leaf": x["leaf"],
                     "arm": x["arm"], "kept": bool(kept), "why": why, "fit_games": x["fit_games"], "test_games": tg,
                     "test_mean": tm, "bh": x["bh"], "source": label})
     return out
@@ -77,8 +77,33 @@ def nfl_splits() -> list:
     return out
 
 
+NFL_SERIES = {"GAME_TOTAL": "KXNFLTOTAL", "TEAM_TOTAL": "KXNFLTEAMTOTAL", "SPREAD": "KXNFLSPREAD", "MONEYLINE": "KXNFLGAME"}
+
+
+def nfl_index_splits() -> list:
+    """W120.1: the W113.2 granularity-index leaves (12_EXPLORATORY/granularity_index_nfl/leaf_scores.json), keyed by the
+    Kalshi series so the verdict is logged on box rows. Same KEPT rule as NBA / NHL; a thin leaf is logged-only with its reason."""
+    return _nba_from(EXP / "granularity_index_nfl" / "leaf_scores.json", "113.2 granularity_index_nfl leaf_scores.json", "NFL", NFL_SERIES)
+
+
+def merge_nfl_index() -> int:
+    """W120.1: append ONLY the NFL index entries (series KXNFL*) to the shipped table, leaving every NBA / NHL / 110.1 entry
+    byte-identical (a full rebuild would also re-read the NHL scores that changed after the shipped table, and move v1 routing).
+    Run: python3 scripts/build_filter_splits_w112.py --nfl-index-only"""
+    path = OUT / "filter_splits.json"
+    doc = json.loads(path.read_text())
+    keep = [x for x in doc["splits"] if "granularity_index_nfl" not in str(x.get("source") or "")]
+    splits = keep + nfl_index_splits()
+    doc.update(n=len(splits), n_kept=sum(x["kept"] for x in splits), splits=splits)
+    path.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")
+    print(f"splits={doc['n']} kept={doc['n_kept']} nfl_index={len(nfl_index_splits())}")
+    return 0
+
+
 def main() -> int:
-    splits = nba_splits() + nfl_splits() + nhl_splits()
+    if "--nfl-index-only" in __import__("sys").argv:
+        return merge_nfl_index()
+    splits = nba_splits() + nfl_splits() + nfl_index_splits() + nhl_splits()
     doc = {"min_held_games": MIN_HELD_GAMES, "rule": "kept = not thin, arm != NO_BET, held-out games >= min, held-out mean net > 0",
            "n": len(splits), "n_kept": sum(s["kept"] for s in splits), "splits": splits}
     (OUT / "filter_splits.json").write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n")

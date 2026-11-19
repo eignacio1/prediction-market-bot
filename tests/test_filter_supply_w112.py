@@ -1,5 +1,6 @@
 """W112.1: filters reach the router as tree splits, point in time; only tested (kept) splits change the logged arm."""
 import json
+from pathlib import Path
 from datetime import datetime, timezone
 from types import SimpleNamespace
 
@@ -45,7 +46,24 @@ def test_nfl_forecast_issued_after_row_is_refused():
     prov = SimpleNamespace(weather=lambda r: (None, "2026-11-13T00:00:00Z"), terms=lambda r: (None, None, "2026-11-01T00:00:00Z"),
                            lines=lambda r: (3.0, 44.0))
     f, note = fsup.FilterSupply(nfl_providers=prov).for_row({**ROW, "sport": "NFL"})
-    assert f is None and note.startswith("pit_violation")
+    # W120.1: a late forecast is never a pit_violation that drops the row; its weather is just not used (see test_nfl_providers_w113_2).
+    assert note is None or not note.startswith("pit_violation")
+
+
+def test_shipped_table_has_nfl_index_verdicts_and_v1_entries_unchanged():
+    import subprocess
+    doc = json.loads((Path(__file__).resolve().parents[1] / "src/prediction_market_bot/decision_trees/filter_splits.json").read_text())
+    nfl = [x for x in doc["splits"] if str(x.get("series") or "").startswith("KXNFL") and x.get("sport") == "NFL" and "granularity_index_nfl" in str(x.get("source"))]
+    assert len(nfl) == 130 and all("kept" in x and "leaf" in x and "filter" in x for x in nfl)
+    assert doc["n"] == len(doc["splits"])
+    # every NBA / NHL entry is exactly as shipped in v1 (additive change only)
+    head = subprocess.run(["git", "show", "origin/main:src/prediction_market_bot/decision_trees/filter_splits.json"],
+                          capture_output=True, text=True, cwd=str(Path(__file__).resolve().parents[1]))
+    if head.returncode == 0:
+        old = json.loads(head.stdout)["splits"]
+        key = lambda x: json.dumps(x, sort_keys=True)
+        new_keys = {key(x) for x in doc["splits"]}
+        assert all(key(x) in new_keys for x in old if "granularity_index_nfl" not in str(x.get("source") or ""))
 
 
 def test_nhl_and_other_sports_log_a_reason_not_a_guess():
@@ -142,3 +160,14 @@ def test_shipped_table_carries_all_distance_entries_and_kept_archive_splits_are_
     sp = [s for s in lm.default_splits().doc["splits"] if s["source"].startswith("113.4")] if hasattr(lm.default_splits(), "doc") else None
     if sp is not None:
         assert len(sp) == 54 and all(s["test_games"] >= 10 and s["test_mean"] > 0 for s in sp if s["kept"])
+
+
+def test_shipped_nfl_entries_give_layer3_verdicts_and_never_change_a_non_kept_arm():
+    doc = json.loads((Path(__file__).resolve().parents[1] / "src/prediction_market_bot/decision_trees/filter_splits.json").read_text())
+    fs = lm.FilterSplits(doc)
+    e = next(x for x in doc["splits"] if x.get("sport") == "NFL" and str(x.get("series")).startswith("KXNFL") and not x["kept"]
+             and x["filter"].endswith(("@total", "@side")))
+    out = fs.lookup("NFL", e["series"], {e["filter"]: e["leaf"]})
+    assert out is not None
+    # logged-only verdicts are recorded and cannot move the arm (v1 routing unchanged)
+    assert out["kept"] == [] and out["logged_only"] and out["arm"] is None
