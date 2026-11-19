@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W120.2: is 96e9790 (candidate arms default ON) on the box"
