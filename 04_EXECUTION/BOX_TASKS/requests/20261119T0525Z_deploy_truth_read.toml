@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W120.1: is the PR 532 merge (NFL split verdicts) on the box"
