@@ -51,6 +51,7 @@ TASKS: dict[str, str] = {
     "nfl_total_agg_read": f"{PY} scripts/nfl_total_rows_read.py --agg",  # W100.2 Part B, read-only per-game aggregates (<60KB)
     "arm_orders_read": f"{PY} scripts/arm_orders_read.py",  # W114.2 B-090, read-only: arm-order log counts + E1-E3 per arm, split by the GG-1771 epoch
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
+    "candidate_arms_read": f"{PY} scripts/candidate_arms_read.py",  # W120.2, read-only: shadow rows carrying candidate-map arms, per sport
     "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers
     # SW-9 2026-11-18: the last healthcheck run's FAIL / WARN lines (read-only). A RED budget refused an approved install (Hard
     # Rule 14) and no read task showed which check failed.
