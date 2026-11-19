@@ -25585,3 +25585,162 @@ PART C - guard and propose
 Report: per COMMON RULES. MEASURE MOVED: PLUMBING - disk % now; bytes the dry run would free; days to 90% at the current rate.
 END OF BLOCK 118.4
 ```
+
+
+## (archived 2026-11-19) WAVE 119 · written 2026-11-18 ~06:30 UTC · SW-9
+
+**Wire what 118 built.** 118 built three things that are not in the live trees yet:
+- NHL's store (not yet built on the box);
+- NBA depth splits from Muse's archive (scored, kept, not wired);
+- a placement table (frozen, but every arm still rests at its own bid).
+
+This wave puts each into the running router. Nulls route leaves (COMMON RULES). The disk retention install was run by the window
+(operator-approved 11-17 22:18 PT).
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 119.1 | D6 · NHL · 3 | Finish 118.3: NHL store built on the box, layer-3 splits from it, NHL through router v2 with the consensus prior, D6 recount | Sonnet | ✅ #530 merged; D6 NHL 6 -> 6; goalie/ST 8 of 42 leaves kept, 0 BH; NHL router v2 all NO_BET; nhl_v2 map opt-in | SESSION_HANDOFF_20261119T0135Z_W119_1 |
+| 119.2 | depth · NBA · 3 | NBA depth splits into the live trees behind the switch; the registry tells the truth about NBA game cells; NBA layer 4 thin leaves | Sonnet | ⬜ | |
+| 119.3 | execution · 3 | The ride-board log cut to size; FADE priced inside the spread as a pre-registered demo option; placement re-fit on logged spreads | Sonnet | ✅ code merged (#526, #528); on box HEAD 9b527446; FADE inside 17 orders / 2 fills, judged n not reached | SESSION_HANDOFF_20261119T0150Z_W119_3 |
+| 119.4 | infra · 3 | Verified weekly evidence copy to the operator's Mac; readers taught .gz; disk to ~50% ($0, operator 11-18 17:09 PT) | Sonnet | | 🟨 | #529 merged; Mac copy verified 5827 files/7.2 GB; launchd written, not loaded (operator yes); dry-run bytes pending. Handoff SESSION_HANDOFF_20261119T0500Z_W119_4.md |
+
+- **Pushback:** 119.2 wires depth splits that no correction for multiple tests backs (0 of 12 pass BH). Wiring them behind the version
+  switch is a build, not a claim. The live map changes only by the operator's switch, and the switch is not flipped this wave.
+- **Surface:** box HEALTHY at 05:05Z; disk retention installing (87% → ~73% expected). Delta: 0 new installs proposed.
+- **Dependencies:** none blocking. 119.1 reaches filter_supply only through the nhl adapter; if it must change filter_supply, it
+  rebases on 119.2's merge.
+
+### 119.1 - D6 · NHL (FINISH 118.3) · MODEL: Sonnet
+
+```
+WAVE 119 - BLOCK 119.1 - D6 - NHL STORE BUILT ON THE BOX, LAYER-3 SPLITS, NHL THROUGH ROUTER V2, D6 RECOUNT (B-012) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W119.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0620Z_W118_3.md (its "NOT done" list is this block).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W119_1.md.
+
+PART A - the store on the box
+1. deploy_truth_read (#524 deployed?), then read the result of request 20261118T0613Z_nhl_event_store_refresh_once. Repeat the one-shot
+   refresh until the store is built (900 s per run, resumable).
+2. Then nhl_event_store_readback, budget_read, disk_read and health_read: store size, disk %, refresh log clean.
+
+PART B - layer 3
+1. NHL factor classes as tested splits in the nhl adapter: shot quality / xG, deployment, rest exist - add goalie (season-level, point in
+   time) and special teams. Score them per leaf per arm, held out.
+2. d6_read: NHL layers.
+
+PART C - router v2
+1. NHL leaves through router v2 with the consensus prior (12_EXPLORATORY/nhl_consensus): an arm or NO BET per leaf per cell.
+2. leaf_maps/nhl_v2.json behind PM_LEAF_MAP_VERSION.
+3. PR(s); merge on green. After deploy: d6_read - D6 NHL 0 -> N, named, with the one cause for each unwired cell.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 NHL 0 -> N (named); NHL layer-3 classes tested / kept; store on the box (size, disk %).
+END OF BLOCK 119.1
+```
+
+### 119.2 - DEPTH · NBA (SPLITS INTO THE LIVE TREES) · MODEL: Sonnet
+
+```
+WAVE 119 - BLOCK 119.2 - DEPTH - NBA DEPTH SPLITS WIRED BEHIND THE SWITCH; REGISTRY TRUTH FOR NBA GAME CELLS; NBA LAYER 4 (B-101 + B-100) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W119.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T054930Z_W118_2.md and 12_EXPLORATORY/nba_depth_splits/RESULT.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W119_2.md.
+
+PART A - depth into the live path
+1. Wire decision_trees/filters/nba_depth.py into filter_supply.py for NBA rows: S1 pace / net rating, S2 shot-zone matchup, S4 home /
+   road gap; S3 lineups and S5 refs computed and logged but not split on (thin).
+2. Every NBA shadow row carries the depth fields (point in time; the archive SHA pinned and logged).
+3. The 12 kept leaves from leaf_maps/nba_depth_v2.json go behind PM_LEAF_MAP_VERSION. The live v1 map is untouched; nothing is flipped.
+4. Tests: no look-ahead; the depth fields are present on rows; v1 output unchanged when the switch is off.
+
+PART B - the registry tells the truth
+1. NBA's 12 game cells are NOT_IMPLEMENTED in the code but flip to SHADOW at runtime on the box (scripts/nba_cell_autoflip.py), so
+   claude_md_now and B1 undercount NBA by 12.
+2. Make the code's registry carry their real status (the flips are long done), keeping the autoflip tests meaningful. B1 by code ==
+   B1 on the box.
+
+PART C - NBA layer 4
+1. NBA MONEYLINE T1-3, SPREAD T1 and TEAM_TOTAL T1 stop at layer 4 ("every leaf thin, no arm leaf").
+2. With the stump rule, a thin cell's tree is a stump: the root picks an arm or NO BET from the family-level posterior. Make coverage.py
+   count that, test it, and run d6_read after deploy.
+3. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA classes applied in the live path; B1 by code before -> after; D6 NBA 4 -> N (named).
+END OF BLOCK 119.2
+```
+
+### 119.3 - EXECUTION (PLACEMENT THAT FILLS) · MODEL: Sonnet
+
+```
+WAVE 119 - BLOCK 119.3 - EXECUTION - RIDE-BOARD LOG CUT TO SIZE; FADE PRICED INSIDE THE SPREAD (PRE-REGISTERED, DEMO); PLACEMENT RE-FIT (B-095) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W119.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0510Z_W117_1.md and
+05_RESEARCH_EXPERIMENTS/EXP-W117.1_placement_policy_PREREG_2026-11-18.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W119_3.md.
+
+PART A - the disk grower
+1. logs/ride_board/decisions.jsonl grew to 1.0 GB in a week (the largest single file on a 24 GB box). Cut it to the fields a reader
+   uses: grep its readers, keep those fields, and drop duplicate per-cycle rows that carry no new decision.
+2. Tests that every reader still works. State the bytes per day before -> after.
+
+PART B - FADE inside the spread
+1. FADE rests at its own best bid on the side the market is leaving, so it fills 6 of 111.
+2. Pre-register, before any order, a demo placement option for FADE: rest one tick inside the spread (or at mid when the spread is 2
+   ticks or more), cancel at 60 s. Fix GG-1943 first: rest_inside's evidence must come from the same cancel rule.
+3. It ships under the 11-17 placement approval as one option in the frozen table, with its comparison and judged n. Report the fill
+   rate and adverse-selection term per option as orders come in.
+
+PART C - re-fit
+1. Re-fit config/placement_policy.json only on orders whose spread was logged at submit (since 11-18); state n per cell. The frozen
+   rule stands: a cell under its minimum n keeps today's rule.
+2. After deploy: arm_orders_read. Report E1 / E2 / E3 per arm and option, and the day-cap skips now that the caps are raised.
+3. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: ride-board bytes / day before -> after; FADE fill rate before -> after; E1 / E2 / E3 per arm
+and option.
+END OF BLOCK 119.3
+```
+
+
+### 119.4 - INFRA (EVIDENCE OFF THE BOX, DISK TO ~50%, $0) · MODEL: Sonnet
+
+```
+WAVE 119 - BLOCK 119.4 - INFRA - VERIFIED WEEKLY EVIDENCE COPY TO THE OPERATOR'S MAC; READERS TAUGHT .gz; DISK TO ~50% (B-103) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W119.md` and quote its first line. Those rules
+bind this block, except ownership: this block owns src/prediction_market_bot/disk_retention.py, scripts/ops/evidence_*, a new shared
+reader helper, and the readers it converts - but NOT 119.3's files (arm_orders_read, demo_fill_forward_report, the ride board) and NOT
+119.1 / 119.2's. Read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0611Z_W118_4.md and the newest results/*_disk_read.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W119_4.md.
+
+WHY (operator 11-18 17:06-17:09 PT, $0, "so we don't have to fuck around w this thing anymore"): the box holds the ONLY full copy of
+evidence that cannot be re-captured (price archive, Kalshi history, settled ledgers; GG-158), and its disk is 74% (6.2 GB free of 24).
+Target: a verified copy off the box, then the box near 50%. Nothing is ever deleted from the box in this block.
+
+PART A - the copy (on the operator's Mac; this terminal runs there)
+1. scripts/ops/evidence_pull.sh: rsync over the existing ssh alias (prediction-market-vps), box side read-only, into
+   ~/PredictionMarketEvidence/ (outside every repo): exp_output/PRICE_ARCHIVE, exp_output/KALSHI_HISTORY, the settled ledgers and
+   shadow ledgers (list them). Compressed files are copied as-is. After the copy: a manifest of sha256 per file on BOTH sides, compared;
+   any mismatch -> exit non-zero and say so.
+2. Run it once now; report the Mac folder size and the manifest match.
+3. Write the weekly launchd job (Sunday 03:00 local, catches up if the Mac was asleep) and its uninstall line. Then ask the operator in
+   chat, in one plain sentence: "Install the weekly evidence copy to your Mac (about N GB now, ~M MB a month)?" Load it only on his yes.
+
+PART B - readers, then compression
+1. One helper (e.g. prediction_market_bot/io_jsonl.py: open_jsonl(path) reads .jsonl or .jsonl.gz transparently). Convert every reader
+   of PRICE_ARCHIVE, logs/*.jsonl and PREGAME_SHADOW* that this block owns; tests per reader. List the readers owned by 119.1-119.3 for
+   the window (they adopt the helper next wave) and keep their inputs uncompressed until then.
+2. Extend disk_retention's policy: compress (sha-checked, never delete) PRICE_ARCHIVE days older than 14, idle MLB in-play logs, shadow
+   ledgers older than 30 days, and 12_EXPLORATORY/frozen_evidence_check - each only once every reader of it handles .gz.
+3. disk_retention_dryrun on the box: bytes it would free; then let the installed daily job (14:17Z) apply it, or request one run of it.
+
+PART C - measure
+1. disk_read after the run: disk % before -> after (target ~50%; say what is left and why if it is above 55%).
+2. PR(s); merge on green. Register any gap the copy or the readers expose.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - off-box verified copies 0 -> 1 (Mac folder size, manifest match); disk % before
+-> after; readers converted / held.
+END OF BLOCK 119.4
+```
