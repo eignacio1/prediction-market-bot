@@ -159,96 +159,96 @@ evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 [[cell]]
 market = "nba_moneyline"
 band = "T1"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_moneyline"
 band = "T2"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_moneyline"
 band = "T3"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_spread"
 band = "T1"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_spread"
 band = "T2"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_spread"
 band = "T3"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_game_total"
 band = "T1"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_game_total"
 band = "T2"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_game_total"
 band = "T3"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_team_total"
 band = "T1"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_team_total"
 band = "T2"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
 [[cell]]
 market = "nba_team_total"
 band = "T3"
-status = "not_implemented"
-serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented)"
+status = "shadow"
+serving_model = "src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2)"
 factors = ["B1", "B2"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 
