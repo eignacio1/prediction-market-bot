@@ -18,3 +18,5 @@ NBA depth splits (matchup, rest, refs-style factors) are now wired into the rout
 
 **W120.1 (NFL):** NFL bets now record which of our tested rules applied to them, which is the missing step that kept NFL cells from counting as wired. Nothing changes in how orders are placed; no real money involved. We can't say how many NFL cells count until the next NFL games (Nov 22-23) produce rows; the recount is queued.
 - W120.3 (auto): W120.3: three held readers read .gz, Mac evidence copy compacted 7.21->5.70 GiB, box disk still 74% until the 14:17Z retention apply (~63% expected); weekly Mac job awaits operator yes.
+
+**W120.2 (depth):** The three newer routing maps now write down what they would have done next to the live one, on every NBA and NFL shadow row (about 70 rows each in the first hour; NHL appears after its daily 14:00Z run). Orders still follow the live map only, no real money. NHL goalie and special-teams results are recorded but not applied, because applying them would change live NHL orders. One process slip, disclosed: my first commit reached main before any pull request existed; the later checks came back green and nothing changed in behavior.
