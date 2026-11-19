@@ -77,7 +77,8 @@ _NEUTRAL = ("unknown", "neutral", "mid", "calm", "")
 
 
 def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None,
-                  filters_note: Optional[str] = None, ledger_path: Optional[str] = None) -> dict:
+                  filters_note: Optional[str] = None, ledger_path: Optional[str] = None,
+                  depth: Optional[dict] = None) -> dict:
     """{'router': {...}} for a shadow row; never raises (a failure is recorded as branch ERROR).
 
     filters: optional {filter_name: leaf_or_bool} from nfl_engine.filters / the NBA granularity filter, computed by a
@@ -85,15 +86,27 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
     filters_note says why (the supply's note, else "no per-row filter input"). Logs the split path: the market-state leaf, then
     each tested filter condition that was kept (changed or agreed with the arm), logged only, or untested."""
     try:
-        return {"router": route_row(row, series, prev_mid, filters, filters_note, ledger_path)}
+        return {"router": route_row(row, series, prev_mid, filters, filters_note, ledger_path, depth)}
     except Exception as e:  # noqa: BLE001
         # W115.3 (GG-1939): the type name alone hid the cause of 5,390 ERROR rows on the box; the message rides along.
         return {"router": {"branch": "ERROR", "side": None, "depth": None, "tier": None,
                            "reason": (type(e).__name__ + ":" + str(e))[:160], "orders": "off"}}
 
 
+def _depth_fields(depth: Optional[dict], ds: Optional[dict]) -> dict:
+    """W119.2: depth leaves, pinned archive SHA and the depth-split verdict, logged on every NBA row (switch on or off).
+    Nothing is added to rows without depth input, so non-NBA and v1 rows are byte-identical to before."""
+    if not depth:
+        return {}
+    return {"depth_leaves": depth.get("leaves"), "depth_archive_sha": depth.get("archive_sha"),
+            "depth_season": depth.get("season"), "depth_logged_only": depth.get("logged_only"),
+            "depth_split_applied": bool(ds and ds["kept"] and ds["arm"] and not ds["conflict"]),
+            "depth_split_kept": ds["kept"] if ds else [], "depth_split_conflict": bool(ds and ds["conflict"])}
+
+
 def route_row(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None,
-              filters_note: Optional[str] = None, ledger_path: Optional[str] = None) -> dict:
+              filters_note: Optional[str] = None, ledger_path: Optional[str] = None,
+              depth: Optional[dict] = None) -> dict:
     """The router block for a row. Raises on a malformed row (router_fields records that as branch ERROR)."""
     move_src = "caller"
     if prev_mid is None:
@@ -101,7 +114,8 @@ def route_row(row: dict, series: str, prev_mid: Optional[float] = None, filters:
     s = Situation(sport=row.get("sport", ""), family=series, ticker=row["market_ticker"], event=row["event_ticker"],
                   tier=tier_for_hours(row.get("horizon_hours_to_start")), yes_bid=row["yes_bid"],
                   yes_ask=row["yes_ask"], half_spread=row.get("half_spread"), model_p=row.get("p_yes"),
-                  market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid, filters=filters or None)
+                  market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid, filters=filters or None,
+                  depth=(depth or {}).get("leaves") or None)
     r = route(s, _ev())
     d = r.leaf
     if s.mid is not None:
@@ -119,6 +133,7 @@ def route_row(row: dict, series: str, prev_mid: Optional[float] = None, filters:
            "split_untested_n": len(sp["untested"]) if sp else 0, "split_conflict": bool(sp and sp["conflict"]),
            "arm_pre_split": r.arm_pre_split,
            "split_path": (d.leaf_id + (" > " + " > ".join(sp["kept"]) if sp and sp["kept"] else "")) if d else None,
+           **_depth_fields(depth, r.depth_split),
            "move_source": move_src if prev_mid is not None else f"na:{move_src}"}
     return out
 
@@ -130,10 +145,11 @@ def hook_for(ledger_path_for=None, supply=None):
     def extra_for(row: dict) -> dict:
         try:
             from prediction_market_bot.decision_trees.filter_supply import default_supply
-            flt, note = (supply or default_supply()).for_row(row)
+            sup = supply or default_supply()
+            flt, note = sup.for_row(row)
             series = str(row.get("market_ticker", "")).split("-", 1)[0]
             path = str(ledger_path_for(row)) if ledger_path_for else None
-            return router_fields(row, series, filters=flt, filters_note=note, ledger_path=path)
+            return router_fields(row, series, filters=flt, filters_note=note, ledger_path=path, depth=getattr(sup, "depth_for_row", lambda r: None)(row))
         except Exception as e:  # noqa: BLE001
             return {"router": {"branch": "ERROR", "side": None, "depth": None, "tier": None,
                                "reason": ("hook:" + type(e).__name__ + ":" + str(e))[:160], "orders": "off"}}

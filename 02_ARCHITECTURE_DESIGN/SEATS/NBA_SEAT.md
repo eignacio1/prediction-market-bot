@@ -31,18 +31,18 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | market | band | registry status | serving model | factors conditioned on |
 |---|---|---|---|---|
 | nba_player_points | T4 | dark | none | — |
-| nba_moneyline | T1 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_moneyline | T2 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_moneyline | T3 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_spread | T1 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_spread | T2 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_spread | T3 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_game_total | T1 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_game_total | T2 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_game_total | T3 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_team_total | T1 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_team_total | T2 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
-| nba_team_total | T3 | not_implemented | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is not_implemented) | B1, B2 |
+| nba_moneyline | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_moneyline | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_moneyline | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_spread | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_spread | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_spread | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_game_total | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_game_total | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_game_total | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_team_total | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_team_total | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
+| nba_team_total | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_model.py (code dispatches this market; registry status is shadow, W119.2) | B1, B2 |
 | nba_player_points | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_player_points_model.py | B3, B4, B2 |
 | nba_player_points | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_player_points_model.py | B3, B4, B2 |
 | nba_player_points | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_player_points_model.py | B3, B4, B2 |

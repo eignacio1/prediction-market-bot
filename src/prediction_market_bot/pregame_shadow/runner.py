@@ -121,12 +121,14 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
                 "model_sha256": fc.model_sha256, "feature_row_sha256": fc.feature_row_sha256,
                 "start_time_utc": start.isoformat(), "start_time_source": src, "code_sha": code_sha,
             }
-            flt, flt_note = (filter_supply or default_supply()).for_row(row)  # W112.1: known before this row's ts_utc
+            _sup = filter_supply or default_supply()
+            flt, flt_note = _sup.for_row(row)  # W112.1: known before this row's ts_utc
+            _depth = getattr(_sup, "depth_for_row", lambda r: None)(row)  # W119.2: NBA depth leaves + pinned archive SHA (None for other sports)
             led = ledgers.setdefault((mt_name, band), CellLedger(ledger_dir, fc.sport, mt_name, band, ledger_extra))
             # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
             why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
                    else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
-            rf = router_fields(row, series, filters=flt, filters_note=flt_note)
+            rf = router_fields(row, series, filters=flt, filters_note=flt_note, depth=_depth)
             if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **rf}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
