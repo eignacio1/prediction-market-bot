@@ -1330,3 +1330,4 @@
 | 2026-11-19T04:55:25Z | W119.4 | CLOSED — merge confirmed, HEAD (73e17c7) is ancestor of origin/main — evidence copy verified, readers .gz, retention extended, merged #529 |
 | 2026-11-19T05:00:04Z | W119.1 | CLOSED — merge confirmed, HEAD (9eed293) is ancestor of origin/main — NHL store on box, goalie+special-teams splits, NHL router v2 (all no bet), D6 NHL 6->6; PR #530 merged ea75451 |
 | 2026-11-19T05:16:56Z | W120.4 | CLOSED — W120.4: Strategy/Architecture overviews rewritten to DOCTRINE; PRs 477/458 closed; dashboard wording + CLAUDE.md fixed. (commit `0a3d7d1`) |
+| 2026-11-19T05:28:36Z | W120.1 | CLOSED — W120.1: NFL box rows now log split verdicts (130 NFL index leaves in filter_splits, late weather no longer drops a row's filters); D6 recount waits for the deploy and the next NFL slate. (commit `abf5956 (PR #532, squash-merged on green CI: guard + test)`) |

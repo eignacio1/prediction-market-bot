@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-19T05:20:00Z (W120.4 — W120.4: Strategy/Architecture overviews rewritten to DOCTRINE; PRs 477/458 closed; dashboard wording + CLAUDE.md fixed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0508Z_W120_4.md` for full session detail.
+**Last reviewed:** 2026-11-19T05:30:00Z (W120.1 — W120.1: NFL box rows now log split verdicts (130 NFL index leaves in filter_splits, late weather no longer drops a row's filters); D6 recount waits for the deploy and the next NFL slate.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0530Z_W120_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

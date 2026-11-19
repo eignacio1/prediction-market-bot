@@ -15,3 +15,5 @@ NBA depth splits (matchup, rest, refs-style factors) are now wired into the rout
 - Needs your yes: install the weekly copy to your Mac (about 2 GB a month)? It is written but not switched on.
 - Pillar moved: plumbing (evidence safety). No real money involved.
 - W120.4 (auto): W120.4: Strategy/Architecture overviews rewritten to DOCTRINE; PRs 477/458 closed; dashboard wording + CLAUDE.md fixed.
+
+**W120.1 (NFL):** NFL bets now record which of our tested rules applied to them, which is the missing step that kept NFL cells from counting as wired. Nothing changes in how orders are placed; no real money involved. We can't say how many NFL cells count until the next NFL games (Nov 22-23) produce rows; the recount is queued.

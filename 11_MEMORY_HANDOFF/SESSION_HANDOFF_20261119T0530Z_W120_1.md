@@ -17,18 +17,15 @@ surface_delta: 0
 directive_conflicts: none found
 -->
 
-## Part A — why NFL rows had no layer 3
-1. filter_splits.json held no entries for the W113.2 NFL split filters the runtime emits -> every lookup "untested" -> split_kept / split_logged_only empty.
-2. A forecast stamped after the row (beyond the 120 s grace) raised PITViolation and dropped ALL filters (25 of 150 NFL_SPREAD T1 rows).
+## Strategic Decisions This Session
+None - implementation-only session.
 
-## Part B — shipped (PR #532)
-- nfl_adapter: late forecast -> weather "none" (never used, no look-ahead); other filters and verdicts kept.
-- build_filter_splits_w112.py --nfl-index-only: merges 130 NFL leaves from granularity_index_nfl/leaf_scores.json (frozen scoring). Table 281 -> 411 entries; every prior entry byte-identical (tested). 36 kept in the table; kept NFL leaves may change the logged arm by design, others log only.
-- Tests: late-forecast tests updated, verdict-present + additive-table tests added; 493 related tests pass.
-- Do NOT run the full builder without --nfl-index-only: it re-reads newer NHL/NBA results and moves existing entries.
+## What changed (PR #532)
+- Cause 1: filter_splits.json had no entries for the W113.2 NFL split filters, so lookups were "untested". Cause 2: a forecast stamped after the row dropped ALL its filters (25 of 150 NFL_SPREAD T1 rows).
+- Fix: late forecast -> weather "none" (no look-ahead), other filters kept; 130 NFL index leaves merged additively (281 -> 411; 36 kept). Never run the builder without --nfl-index-only.
 
-## Part C — open
-- Box requests queued on main (f1380fb): deploy_truth_read, d6_read. Result files land in 04_EXECUTION/BOX_TASKS/results/.
-- Next NFL slate: weekend of Nov 22-23. Rows from before deploy carry no verdicts. The window recounts D6 after that slate; report NFL 0 -> N named plus the one cause per unwired NFL cell then.
-- Unmeasured: whether kept leaves wire all four one-layer-away cells (NFL_GAME_TOTAL T3, NFL_SPREAD T1/T3, NFL_TEAM_TOTAL T3). Only 4 NFL leaves are kept (3 team-total, 1 spread); layer 3 counts logged-only too, so rows should count once a leaf is hit.
-- Hypothesis closed (EXP-W113.2-NFL-SPLITS-01, parked for R&D) stands; this block adds no new closure.
+## One thing pending
+D6 recount: box requests (deploy_truth_read, d6_read) are queued. Next NFL slate Nov 22-23; then report NFL 0 -> N named plus the one cause per unwired cell. Unmeasured until then.
+
+## Resume
+`git fetch origin && ls -t 04_EXECUTION/BOX_TASKS/results | head`
