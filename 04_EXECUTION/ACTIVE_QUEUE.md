@@ -110,6 +110,7 @@ This wave puts each into the running router. Nulls route leaves (COMMON RULES). 
 | 119.1 | D6 · NHL · 3 | Finish 118.3: NHL store built on the box, layer-3 splits from it, NHL through router v2 with the consensus prior, D6 recount | Sonnet | ⬜ | |
 | 119.2 | depth · NBA · 3 | NBA depth splits into the live trees behind the switch; the registry tells the truth about NBA game cells; NBA layer 4 thin leaves | Sonnet | ⬜ | |
 | 119.3 | execution · 3 | The ride-board log cut to size; FADE priced inside the spread as a pre-registered demo option; placement re-fit on logged spreads | Sonnet | ⬜ | |
+| 119.4 | infra · 3 | Verified weekly evidence copy to the operator's Mac; readers taught .gz; disk to ~50% ($0, operator 11-18 17:09 PT) | Sonnet | ⬜ | |
 
 - **Pushback:** 119.2 wires depth splits that no correction for multiple tests backs (0 of 12 pass BH). Wiring them behind the version
   switch is a build, not a claim. The live map changes only by the operator's switch, and the switch is not flipped this wave.
@@ -210,6 +211,47 @@ and option.
 END OF BLOCK 119.3
 ```
 
+
+### 119.4 - INFRA (EVIDENCE OFF THE BOX, DISK TO ~50%, $0) · MODEL: Sonnet
+
+```
+WAVE 119 - BLOCK 119.4 - INFRA - VERIFIED WEEKLY EVIDENCE COPY TO THE OPERATOR'S MAC; READERS TAUGHT .gz; DISK TO ~50% (B-103) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W119.md` and quote its first line. Those rules
+bind this block, except ownership: this block owns src/prediction_market_bot/disk_retention.py, scripts/ops/evidence_*, a new shared
+reader helper, and the readers it converts - but NOT 119.3's files (arm_orders_read, demo_fill_forward_report, the ride board) and NOT
+119.1 / 119.2's. Read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T0611Z_W118_4.md and the newest results/*_disk_read.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W119_4.md.
+
+WHY (operator 11-18 17:06-17:09 PT, $0, "so we don't have to fuck around w this thing anymore"): the box holds the ONLY full copy of
+evidence that cannot be re-captured (price archive, Kalshi history, settled ledgers; GG-158), and its disk is 74% (6.2 GB free of 24).
+Target: a verified copy off the box, then the box near 50%. Nothing is ever deleted from the box in this block.
+
+PART A - the copy (on the operator's Mac; this terminal runs there)
+1. scripts/ops/evidence_pull.sh: rsync over the existing ssh alias (prediction-market-vps), box side read-only, into
+   ~/PredictionMarketEvidence/ (outside every repo): exp_output/PRICE_ARCHIVE, exp_output/KALSHI_HISTORY, the settled ledgers and
+   shadow ledgers (list them). Compressed files are copied as-is. After the copy: a manifest of sha256 per file on BOTH sides, compared;
+   any mismatch -> exit non-zero and say so.
+2. Run it once now; report the Mac folder size and the manifest match.
+3. Write the weekly launchd job (Sunday 03:00 local, catches up if the Mac was asleep) and its uninstall line. Then ask the operator in
+   chat, in one plain sentence: "Install the weekly evidence copy to your Mac (about N GB now, ~M MB a month)?" Load it only on his yes.
+
+PART B - readers, then compression
+1. One helper (e.g. prediction_market_bot/io_jsonl.py: open_jsonl(path) reads .jsonl or .jsonl.gz transparently). Convert every reader
+   of PRICE_ARCHIVE, logs/*.jsonl and PREGAME_SHADOW* that this block owns; tests per reader. List the readers owned by 119.1-119.3 for
+   the window (they adopt the helper next wave) and keep their inputs uncompressed until then.
+2. Extend disk_retention's policy: compress (sha-checked, never delete) PRICE_ARCHIVE days older than 14, idle MLB in-play logs, shadow
+   ledgers older than 30 days, and 12_EXPLORATORY/frozen_evidence_check - each only once every reader of it handles .gz.
+3. disk_retention_dryrun on the box: bytes it would free; then let the installed daily job (14:17Z) apply it, or request one run of it.
+
+PART C - measure
+1. disk_read after the run: disk % before -> after (target ~50%; say what is left and why if it is above 55%).
+2. PR(s); merge on green. Register any gap the copy or the readers expose.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - off-box verified copies 0 -> 1 (Mac folder size, manifest match); disk % before
+-> after; readers converted / held.
+END OF BLOCK 119.4
+```
 
 ## Sequencing track
 
