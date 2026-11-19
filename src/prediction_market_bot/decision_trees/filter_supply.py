@@ -128,7 +128,13 @@ def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str
 
     ctx, issued = providers.weather(row)
     th, ta, through = providers.terms(row)
-    assert_pit(issued, row["ts_utc"], "NFL weather forecast")
+    try:
+        assert_pit(issued, row["ts_utc"], "NFL weather forecast")
+    except PITViolation:
+        # W120.1: a forecast stamped after the row (beyond the capture grace) is NEVER used, but it no longer drops the
+        # row's other filters: weather becomes "none" (leaf unknown) and the split verdicts are still logged.
+        from prediction_market_bot.nfl_engine.weather_factor import WeatherContext
+        ctx = WeatherContext("none", getattr(ctx, "roof", None))
     assert_pit(through, row["ts_utc"], "NFL matchup book")
     spread, total = providers.lines(row)
     out = nfl_filters(ctx, th, ta, spread, total, min_lead_h=0.0)   # the row timestamp is the PIT bound

@@ -31,7 +31,8 @@ def test_live_forecast_flows_to_a_weather_leaf_and_late_capture_is_refused():
     assert note is None and f["weather"] == "cold" and f["spread_bucket"] == "big"   # 5s after the row: inside the grace
     late = {**rec, "issued_utc": "2026-11-13T12:10:00+00:00"}
     f, note = fsup.FilterSupply(nfl_providers=_prov(late)).for_row(ROW)
-    assert f is None and note.startswith("pit_violation")
+    # W120.1: the late forecast is refused (weather never taken from it) but the row keeps its other filters and verdict lookups.
+    assert note is None and f is not None and f["weather"] in ("none", "unknown") and f["spread_bucket"] == "big"
 
 
 def test_no_forecast_and_no_line_are_named_unknown_never_guessed():
