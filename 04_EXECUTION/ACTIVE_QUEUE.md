@@ -110,7 +110,7 @@ on box rows. This wave:
 | 120.1 | D6 · NFL · 3 | NFL layer 3 on box rows: tested splits logged with verdicts; the four one-layer-away NFL cells wired; D6 recount | Sonnet | ⬜ | |
 | 120.2 | depth · router · 3 | Candidate maps (router v2, nba_depth, nhl_v2) log their arm beside v1 on every box row - shadow only, if approved; NHL T1 layer 3 | Sonnet | ⬜ | |
 | 120.3 | infra · io · 3 | The three held readers read .gz -> 1.87 GB compressible; the Mac copy kept compressed; disk measured | Sonnet | ⬜ | |
-| 120.4 | docs · 3 | STRATEGY_OVERVIEW and ARCHITECTURE_OVERVIEW bodies rewritten to DOCTRINE.md; superseded PRs closed | Haiku | ⬜ | |
+| 120.4 | docs · 3 | STRATEGY_OVERVIEW and ARCHITECTURE_OVERVIEW bodies rewritten to DOCTRINE.md; superseded PRs closed | Haiku | ✅ | Bodies rewritten (c4902e6); #477 and #458 closed as superseded, #149 open. Open for window: dashboard still says "fade arm closed" (body.html, script.js) vs DOCTRINE 1b. |
 
 - **Pushback:** logging candidate maps beside v1 adds columns to every shadow row and more disk; that is why 120.3 lands in the same
   wave. And the candidate maps arm almost nothing, so most of the new columns will read NO BET. That is the evidence they need.
