@@ -45,6 +45,9 @@ def test_registry_applies_records_and_ignores_garbage(tmp_path, monkeypatch):
     assert not p.exists()
     reg.MARKET_TYPE_REGISTRY  # seeded NOT_IMPLEMENTED
     k = (reg.MarketType.NBA_TEAM_TOTAL, reg.ExecutionBand.T3_PRE_TIP)
+    # W119.2: the code now carries these cells as SHADOW; reset one to prove the autoflip record still promotes a NOT_IMPLEMENTED cell
+    assert reg.MARKET_TYPE_REGISTRY[k].status is reg.CellStatus.SHADOW
+    reg.promote_cell_status(*k, reg.CellStatus.NOT_IMPLEMENTED)
     assert reg.MARKET_TYPE_REGISTRY[k].status is reg.CellStatus.NOT_IMPLEMENTED
     from pathlib import Path as P
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -56,7 +59,16 @@ def test_registry_applies_records_and_ignores_garbage(tmp_path, monkeypatch):
         assert reg.MARKET_TYPE_REGISTRY[(reg.MarketType.NFL_MONEYLINE, reg.ExecutionBand.T1_MULTI_DAY)].citing_decision != "EXP-038"
     finally:
         p.unlink()
-        reg.promote_cell_status(*k, reg.CellStatus.NOT_IMPLEMENTED)
+        reg.promote_cell_status(*k, reg.CellStatus.SHADOW, superseding_reference="EXP-038")
+
+
+def test_w119_2_nba_game_cells_are_shadow_in_code():
+    from prediction_market_bot.c5_execution import market_type_registry as reg
+    cells = [(m, b) for m in reg._NBA_GAME_FAMILIES for b in (reg.ExecutionBand.T1_MULTI_DAY, reg.ExecutionBand.T2_SAME_DAY,
+                                                              reg.ExecutionBand.T3_PRE_TIP)]
+    assert len(cells) == 12
+    assert all(reg.MARKET_TYPE_REGISTRY[c].status is reg.CellStatus.SHADOW for c in cells)
+    assert not any(reg.MARKET_TYPE_REGISTRY[c].status is reg.CellStatus.ACTIVE for c in cells)   # promotion is SHADOW only
 
 
 CRON = ("0 1 * * * a\n# BEGIN EXP-038 NBA PRESEASON\n57 * * * * c\n# END EXP-038 NBA PRESEASON\n"
