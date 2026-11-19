@@ -7,6 +7,7 @@ sys.path.insert(0, "src")
 from _fence import safe_out
 from pypdf import PdfReader
 from prediction_market_bot.quant import news_lag as nl
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 pdf_dir, arch_dir, out = sys.argv[1:4]
 ET = ZoneInfo("America/New_York")
@@ -33,8 +34,8 @@ for (t0, r0), (t1, r1) in zip(rep, rep[1:]):
 # price archive -> {(game_date_code, team_code): [(ts, yes_mid)]}
 MON = {m: i for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split(), 1)}
 px = collections.defaultdict(list)
-for f in sorted(glob.glob(arch_dir + "/prices_2026-1*.jsonl")):
-    for line in open(f):
+for f in glob_files(arch_dir + "/prices_2026-1*.jsonl"):
+    for line in open_jsonl(f):
         if '"KXNBAGAME"' not in line: continue
         r = json.loads(line)
         m = re.match(r"KXNBAGAME-26([A-Z]{3})(\d\d)([A-Z]+)-([A-Z]+)$", r["ticker"])

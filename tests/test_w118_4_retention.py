@@ -64,12 +64,12 @@ def test_compress_skips_when_no_space(tmp_path, monkeypatch):
 def test_only_old_files_and_only_verified_targets_are_compressed(tmp_path):
     old = _raw(tmp_path / "exp_output/KALSHI_HISTORY/raw", "2026-10-02", age=40)
     fresh = _raw(tmp_path / "exp_output/KALSHI_HISTORY/raw", "2026-11-18", age=0.1)
-    held = _raw(tmp_path / "exp_output/PRICE_ARCHIVE", "2026-10-02", age=40)
-    held.rename(held.with_name("prices_2026-10-02.jsonl"))
-    held = held.with_name("prices_2026-10-02.jsonl")
+    held = _raw(tmp_path / "exp_output/PREGAME_SHADOW_X", "2026-10-02", age=40)
+    held.rename(held.with_name("ledger.jsonl"))
+    held = held.with_name("ledger.jsonl")
     pl = dr.plan(tmp_path, NOW)
     assert [r["path"] for r in pl["compress"]] == ["exp_output/KALSHI_HISTORY/raw/raw_2026-10-02.jsonl"]
-    assert [r["path"] for r in pl["held"]] == ["exp_output/PRICE_ARCHIVE/prices_2026-10-02.jsonl"]
+    assert [r["path"] for r in pl["held"]] == ["exp_output/PREGAME_SHADOW_X/ledger.jsonl"]
     assert pl["saved_compress"] > 0 and pl["saved_held"] > 0
     res = dr.apply(tmp_path, NOW)
     assert [(r[0], r[1]) for r in res] == [("exp_output/KALSHI_HISTORY/raw/raw_2026-10-02.jsonl", True)]
@@ -87,7 +87,7 @@ def test_dry_run_changes_nothing(tmp_path, capsys):
 
 def test_every_policy_target_with_verified_readers_is_covered_by_a_reader_test():
     # adding a verified target requires adding its reader test here (this list is the checklist)
-    assert {t.name for t in dr.POLICY if t.readers_verified} == {"kalshi_history_raw", "kalshi_history_thin_raw", "json_bak"}
+    assert {t.name for t in dr.POLICY if t.readers_verified} == {"kalshi_history_raw", "kalshi_history_thin_raw", "json_bak", "price_archive", "price_archive_depth", "frozen_evidence_check_pre"}
 
 
 # ---- each reader of the KALSHI_HISTORY raw stores still reads a compressed day -----------------------------------------------------

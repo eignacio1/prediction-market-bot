@@ -30,6 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import repro as R  # noqa: E402
 from _fence import safe_out  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl, resolve  # W119.4: reads .jsonl or .jsonl.gz
 
 CACHE = os.path.join("frozen_evidence_check", "_cache")
 WINDOWS = (None, "2026-10-28")  # full archive, and the wave window (W94.Q: dates <= 2026-10-27)
@@ -49,16 +50,17 @@ def prefilter(archive: str, budget_s: float = 600.0) -> dict:
     done = left = 0
     outs = {s: _dir("pre", s) for s in ALL_SERIES}
     for f in files:
-        name, size = os.path.basename(f), os.path.getsize(f)
+        name, size = os.path.basename(f), os.path.getsize(resolve(f))
         marker = os.path.join(outs[ALL_SERIES[0]], name + ".src")
-        if os.path.exists(marker) and open(marker).read().strip() == str(size):
+        # a .gz-only day is a settled (>14d) source whose plain size is gone: the marker alone says it was split
+        if os.path.exists(marker) and (not os.path.exists(f) or open(marker).read().strip() == str(size)):
             continue
         if time.time() - t0 > budget_s:
             left += 1
             continue
         hs = {s: open(safe_out(os.path.join(outs[s], name + ".tmp")), "w") for s in ALL_SERIES}
         try:
-            with open(f) as fh:
+            with open_jsonl(f) as fh:
                 for line in fh:
                     m = _SER.search(line)
                     h = hs.get(m.group(1)) if m else None
@@ -80,11 +82,12 @@ def _series_dir(series: str, until: str | None) -> str:
     if not until:
         return d
     sub = _dir("subset", series, f"until_{until}")
-    for f in glob.glob(os.path.join(d, "prices_*.jsonl")):
+    for f in glob_files(os.path.join(d, "prices_*.jsonl")):
         if R.file_date(f) < until:
-            link = os.path.join(sub, os.path.basename(f))
+            real = resolve(f)  # .gz-only day: link under its .gz name
+            link = os.path.join(sub, os.path.basename(real))
             if not os.path.islink(link):
-                safe_out(link).symlink_to(os.path.abspath(f))
+                safe_out(link).symlink_to(os.path.abspath(real))
     return sub
 
 
@@ -108,7 +111,7 @@ def _shard_path(series: str, date: str) -> str:
 
 
 def shard_dates(series: str) -> list:
-    return sorted(R.file_date(f) for f in glob.glob(os.path.join(_dir("pre", series), "prices_*.jsonl")))
+    return sorted(R.file_date(f) for f in glob_files(os.path.join(_dir("pre", series), "prices_*.jsonl")))
 
 
 def run_shard(series: str, date: str, settle: str) -> dict:
@@ -118,9 +121,10 @@ def run_shard(series: str, date: str, settle: str) -> dict:
     import calib
     import ladder_ride as LR
     sub = _dir("shard", series, date)
-    link = os.path.join(sub, f"prices_{date}.jsonl")
+    real = resolve(os.path.join(_dir("pre", series), f"prices_{date}.jsonl"))  # plain or .gz
+    link = os.path.join(sub, os.path.basename(real))
     if not os.path.islink(link):
-        safe_out(link).symlink_to(os.path.abspath(os.path.join(_dir("pre", series), f"prices_{date}.jsonl")))
+        safe_out(link).symlink_to(os.path.abspath(real))
     st = calib.load_settlements(settle)
     recs, _ = LR.build_records(LR.load(sub))
     rows = {"old": X.ladder_rows(recs, st, lambda s, q: X.fee_k007(q)), "exact": X.ladder_rows(recs, st, X.fee_x)}

@@ -31,15 +31,16 @@ from prediction_market_bot.decision_trees import leaf_map as lm  # noqa: E402
 from prediction_market_bot.decision_trees import ride  # noqa: E402
 from prediction_market_bot.decision_trees.filter_supply import FilterSupply  # noqa: E402
 from prediction_market_bot.decision_trees.router import Evidence, Situation, route  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 
 def replay(archive: str, days: int):
-    files = sorted(glob.glob(os.path.join(archive, "prices_*.jsonl")))[-days:]
+    files = glob_files(os.path.join(archive, "prices_*.jsonl"))[-days:]
     ev = Evidence(ride=ride.load(), leaf_map=lm.default_map(), filter_splits=lm.default_splits())
     supply = FilterSupply()
     seen, rows, notes = set(), [], Counter()
     for f in files:
-        for line in open(f):
+        for line in open_jsonl(f):
             r = json.loads(line)
             if r["series_ticker"] not in SERIES:
                 continue

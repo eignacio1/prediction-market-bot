@@ -20,6 +20,10 @@ import sys
 import time
 import urllib.request
 from collections import Counter, defaultdict
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 ARCHIVE = "exp_output/PRICE_ARCHIVE"
 OUT = "exp_output/EXP-033-MULTILEG-COHERENCE"
@@ -132,8 +136,8 @@ def scan_archive(archive_dir: str):
 
 
 def iter_price_rows(archive_dir: str):
-    for path in sorted(glob.glob(os.path.join(archive_dir, "prices_*.jsonl"))):
-        with open(path) as fh:
+    for path in glob_files(os.path.join(archive_dir, "prices_*.jsonl")):
+        with open_jsonl(path) as fh:
             for line in fh:
                 yield os.path.basename(path), json.loads(line)
 

@@ -20,6 +20,7 @@ from prediction_market_bot.quant.inference import benjamini_hochberg, cluster_bo
 from prediction_market_bot.quant.ladder import parse_ticker  # noqa: E402
 from prediction_market_bot.quant.ladder_loo import loo_ladder_prices  # noqa: E402
 from prediction_market_bot.quant.money import fee_k007  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 KINDS = {"KXNFLTOTAL": "total", "KXMLBTOTAL": "total", "KXNFLTEAMTOTAL": "total", "KXMLBTEAMTOTAL": "total",
          "KXNFLSPREAD": "margin", "KXMLBSPREAD": "margin"}
@@ -29,8 +30,8 @@ MIN_GAMES, Q = 20, 0.10
 def load(archive):
     """-> {(series, event, group): {hour_key: [(ts, ticker, bid, ask)]}}, one snapshot per clock hour per ladder."""
     snaps = defaultdict(dict)
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        for line in open(f):
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        for line in open_jsonl(f):
             r = json.loads(line)
             s = r["series_ticker"]
             if s not in KINDS or r.get("yes_mid") is None:

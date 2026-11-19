@@ -24,6 +24,7 @@ from _fence import safe_out  # noqa: E402
 from prediction_market_bot.decision_trees.router import (  # noqa: E402
     Evidence, RideCell, Situation, Skill, route)
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 # W89.2 survivors (results_W89.md): family, tier, bucket, book, side, net 95% lower bound per contract.
 SURVIVORS = [
@@ -56,8 +57,8 @@ def fnum(x):
 
 def situations(archive):
     seen, out = set(), []
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        with open(f) as fh:
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        with open_jsonl(f) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)

@@ -22,6 +22,7 @@ import re
 import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from prediction_market_bot.io_jsonl import jsonl_paths, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 REPO = Path(__file__).resolve().parent.parent
 WINDOW_DAYS = 14
@@ -175,10 +176,10 @@ def emit(repo: Path, now: datetime | None = None) -> dict:
         v = c.get("verdict")
         c["verdict"] = v.get("verdict") if isinstance(v, dict) else v
     arch: dict[str, dict[str, int]] = {}
-    for p in sorted((repo / "exp_output/PRICE_ARCHIVE").glob("prices_*.jsonl")):
+    for p in jsonl_paths((repo / "exp_output/PRICE_ARCHIVE"), "prices_*.jsonl"):
         day = p.stem.split("_", 1)[1]
         seen: dict[str, set] = {}
-        with open(p) as fh:
+        with open_jsonl(p) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)

@@ -1,0 +1,27 @@
+# Evidence that cannot be re-captured (GG-158). One path or glob per line, relative to the box project root.
+# Directories are copied whole. Compressed (.gz) files are copied as-is. Blank lines and # lines are ignored.
+exp_output/PRICE_ARCHIVE
+exp_output/KALSHI_HISTORY
+exp_output/PREGAME_SHADOW
+exp_output/PREGAME_SHADOW_EXP040
+exp_output/PREGAME_SHADOW_EXP047
+exp_output/PREGAME_SHADOW_NFLQB
+exp_output/PREGAME_SHADOW_PASSYDS
+exp_output/PREGAME_SHADOW_PRESEASON
+exp_output/NBA_EVENTS
+exp_output/NHL_EVENTS
+data/shadow
+logs/arm_orders
+# settled / resolved ledgers and the append-only audit ledgers
+logs/t4_mlb_resolved_ledger*.jsonl
+logs/t4_mlb_outcome_store*.jsonl
+logs/t4_mlb_totals_outcome_store.jsonl
+logs/t4_mlb_fill_status.jsonl
+logs/t1_mlb_fill_status.jsonl
+logs/t4_mlb_cycle_log.jsonl
+logs/t4_position_trajectories.jsonl
+logs/audit*.jsonl
+logs/demo_fill_policy.jsonl
+logs/spread_observations.jsonl
+logs/paper_portfolio*.json
+# NOT copied: logs/ride_board (119.3 owns it; derived, being cut to kept fields), venv, .git

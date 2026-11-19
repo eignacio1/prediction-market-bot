@@ -26,6 +26,9 @@ import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
+
 ARCHIVE_DIR = "exp_output/PRICE_ARCHIVE"
 CRON_CONF = "deploy/cron.conf"
 
@@ -95,7 +98,7 @@ def check_day(d: date, coverage: dict[str, set[int]]) -> tuple[bool, list[str]]:
     counts = {sport: 0 for sport in due_sports}
     total = 0
     try:
-        with open(path) as f:
+        with open_jsonl(path) as f:
             for line in f:
                 line = line.strip()
                 if not line:

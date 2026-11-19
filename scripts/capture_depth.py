@@ -32,6 +32,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from phase0_market_survey import FAMILY_PATTERNS, _book_metrics, _classify, _normalize_book  # noqa: E402
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 API = "https://api.elections.kalshi.com/trade-api/v2"
 PAUSE_S = 0.30            # same floor as the archiver; T4M-PROJ shares the account read budget
@@ -114,8 +118,8 @@ def list_open(series: str, get) -> tuple[list[dict], int]:
 
 def seen_in_slot(store: Path, slot: str) -> set[str]:
     seen: set[str] = set()
-    for p in glob.glob(str(store / "depth_????-??-??.jsonl")):
-        with open(p) as fh:
+    for p in glob_files(str(store / "depth_????-??-??.jsonl")):
+        with open_jsonl(p) as fh:
             for line in fh:
                 if f'"slot": "{slot}"' in line:
                     seen.add(json.loads(line)["ticker"])

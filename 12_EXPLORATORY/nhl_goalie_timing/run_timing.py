@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import argparse, glob, json, os, random, re, sys
 from collections import defaultdict
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src"))
+from prediction_market_bot.io_jsonl import open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 from datetime import datetime, timedelta, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -45,9 +48,9 @@ def load_prices(arch, dates):
     out = defaultdict(lambda: defaultdict(list))  # event_ticker -> team -> [(ts, mid, hs)]
     for d in dates:
         p = os.path.join(arch, f"prices_{d}.jsonl")
-        if not os.path.exists(p):
+        if not (os.path.exists(p) or os.path.exists(p + ".gz")):
             continue
-        with open(p) as f:
+        with open_jsonl(p) as f:
             for line in f:
                 if "KXNHLGAME" not in line[:80] and '"KXNHLGAME"' not in line[:120]:
                     continue

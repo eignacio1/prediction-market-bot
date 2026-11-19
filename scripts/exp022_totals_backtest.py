@@ -41,6 +41,7 @@ from prediction_market_bot.c1_signal_ingestion.mlb_team_stats_store import (  # 
     MLBTeamStatsStore,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
+from prediction_market_bot.io_jsonl import jsonl_paths, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 CACHE_DIR = WORKTREE / "exp_output" / "MLB" / "cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -123,13 +124,13 @@ def parse_ticker(ticker: str, event_ticker: str) -> tuple[str, str, str] | None:
 
 
 def load_totals_rows() -> list[dict]:
-    files = sorted((MAIN_TREE / "exp_output" / "PRICE_ARCHIVE").glob("prices_2026-08-*.jsonl"))
+    files = jsonl_paths((MAIN_TREE / "exp_output" / "PRICE_ARCHIVE"), "prices_2026-08-*.jsonl")
     files = [f for f in files if f.suffix == ".jsonl"]  # drop .BROKEN_FIRSTRUN
     total_kxmlbtotal_rows = 0
     dropped_postgame = 0
     kept_rows: list[dict] = []
     for fp in files:
-        with fp.open() as fh:
+        with open_jsonl(fp) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)

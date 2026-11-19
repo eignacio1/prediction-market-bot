@@ -23,6 +23,10 @@ import board_survey_sports_store as bs  # noqa: E402
 from board_survey_sports_store import dated_files, open_text  # noqa: E402  (W118.4 .gz-aware readers)
 from market_efficiency_survey import calib_gap  # noqa: E402
 from execution_cost_surface import parse_ticker_start, tau_bucket  # noqa: E402
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 SERIES = "KXMLBTEAMTOTAL"
 WINDOW_START = "2026-08-01T23:01:11Z"
@@ -78,8 +82,8 @@ def read_ref_tau(exp032: str, series: str = SERIES) -> dict:
 def archive_snaps(archive: str) -> dict:
     """ticker -> [(run_ts, bid, ask)] usable two-sided rows, sorted."""
     out: dict = {}
-    for p in sorted(glob.glob(os.path.join(archive, "prices_????-??-??.jsonl"))):
-        for line in open(p):
+    for p in glob_files(os.path.join(archive, "prices_????-??-??.jsonl")):
+        for line in open_jsonl(p):
             if SERIES not in line:
                 continue
             r = json.loads(line)

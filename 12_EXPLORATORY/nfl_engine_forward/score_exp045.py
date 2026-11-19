@@ -14,14 +14,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _fence import safe_out
 from prediction_market_bot.nfl_engine import forward_test as ft
 from prediction_market_bot.nfl_engine.board_v2 import build_library
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 MDE = 0.02       # smallest true net P&L per contract worth detecting
 FREEZE_DEFAULT = "2026-10-29T03:00:00Z"
 
 
 def read_archive(archive_dir):
-    for f in sorted(glob.glob(str(Path(archive_dir) / "prices_*.jsonl"))):
-        with open(f) as fh:
+    for f in glob_files(str(Path(archive_dir) / "prices_*.jsonl")):
+        with open_jsonl(f) as fh:
             for line in fh:
                 if '"KXNFL' in line:
                     yield json.loads(line)

@@ -18,6 +18,7 @@ from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 from prediction_market_bot.quant.multiplicity import holm  # noqa: E402
 from prediction_market_bot.quant.props_calib import holdout_cell, net_pnl_side, time_split  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 PROPS = {"KXMLBHIT"}
 LINES = {"KXMLBTOTAL", "KXMLBSPREAD", "KXMLBGAME", "KXMLBTEAMTOTAL", "KXMLBF5TOTAL"}
@@ -43,8 +44,8 @@ def load_settle(dirs):
 
 def scan(archive, fams):
     first = {}
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        for line in open(f):
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        for line in open_jsonl(f):
             try:
                 r = json.loads(line)
             except ValueError:

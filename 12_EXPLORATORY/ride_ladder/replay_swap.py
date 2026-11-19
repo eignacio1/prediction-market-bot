@@ -12,12 +12,13 @@ import calib as C  # noqa: E402
 from _fence import safe_out  # noqa: E402
 from prediction_market_bot.decision_trees import ride  # noqa: E402
 from prediction_market_bot.decision_trees.router import Evidence, Situation, route  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 
 def sits(archive):
     seen, out = set(), []
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        for line in open(f):
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        for line in open_jsonl(f):
             try:
                 r = json.loads(line)
                 bid, ask = float(r["yes_bid"]), float(r["yes_ask"])

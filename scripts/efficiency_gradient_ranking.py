@@ -39,6 +39,10 @@ import sys
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Any
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 N_BOOTSTRAP = 2000
 TIGHTNESS_MID_LO, TIGHTNESS_MID_HI = 0.05, 0.95
@@ -49,8 +53,8 @@ def _iter_jsonl(pattern: str):
     Never materializes the full row set — the prior version built one ~1.8M-element
     list of parsed dicts before aggregating, which OOM-killed the VPS (961Mi total
     RAM, ~582Mi available at run time). Kept as a generator for that reason."""
-    for path in sorted(glob.glob(pattern)):
-        with open(path) as fh:
+    for path in glob_files(pattern):
+        with open_jsonl(path) as fh:
             for line in fh:
                 line = line.strip()
                 if not line:

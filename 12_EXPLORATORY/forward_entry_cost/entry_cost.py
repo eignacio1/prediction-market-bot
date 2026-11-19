@@ -26,6 +26,7 @@ from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E40
 from prediction_market_bot.quant.money import fee_rate  # noqa: E402
 sys.path.insert(0, str(REPO / "12_EXPLORATORY"))
 from _fence import safe_out  # noqa: E402
+from prediction_market_bot.io_jsonl import jsonl_paths, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 TOPUP_TS = datetime(2026, 10, 16, 5, 40, tzinfo=timezone.utc)  # same split as demo_fill_forward_report (verdict window)
 JUDGED_N = 550          # per arm, ADR-0072
@@ -58,7 +59,7 @@ def game_of(tk: str) -> str:
 
 
 def load_jsonl(path: Path) -> Iterable[dict]:
-    with open(path) as fh:
+    with open_jsonl(path) as fh:
         for line in fh:
             try:
                 r = json.loads(line)
@@ -95,7 +96,7 @@ class Series:
 
 def load_archives(archive: Path, tickers: set, first_day: str) -> tuple[Series, Series]:
     q, d = Series(), Series()
-    for path in sorted(archive.glob("prices_20??-??-??.jsonl")):
+    for path in jsonl_paths(archive, "prices_20??-??-??.jsonl"):
         if path.name[7:17] < first_day:
             continue
         for r in load_jsonl(path):
@@ -107,7 +108,7 @@ def load_archives(archive: Path, tickers: set, first_day: str) -> tuple[Series, 
                     continue
                 if 0.0 < bid < ask < 1.0 and r.get("status") in (None, "active"):
                     q.add(tk, t, {"bid": bid, "ask": ask})
-    for path in sorted(archive.glob("depth_20??-??-??.jsonl")):
+    for path in jsonl_paths(archive, "depth_20??-??-??.jsonl"):
         if path.name[6:16] < first_day:
             continue
         for r in load_jsonl(path):

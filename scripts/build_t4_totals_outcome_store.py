@@ -79,6 +79,7 @@ os.environ.setdefault("BOT_ENV", "paper")  # import-time gate in run_resolve_mlb
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO_ROOT / "src"))
 
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # noqa: E402  W119.4: reads .jsonl or .jsonl.gz
 from prediction_market_bot.run_resolve_mlb import _verify_official_date  # noqa: E402
 from prediction_market_bot.c1_signal_ingestion.mlb_ingestion import (  # noqa: E402
     _FALLBACK_TEAM_ABBR,
@@ -160,9 +161,9 @@ def parse_event_ticker(event_ticker: str) -> dict | None:
 def scan_archive(glob_pattern: str) -> dict[str, dict]:
     """Enumerate distinct KXMLBTOTAL event_tickers across the price archive."""
     events: dict[str, dict] = {}
-    files = sorted(glob.glob(glob_pattern))
+    files = glob_files(glob_pattern)
     for fp in files:
-        with open(fp) as f:
+        with open_jsonl(fp) as f:
             for line in f:
                 line = line.strip()
                 if not line:

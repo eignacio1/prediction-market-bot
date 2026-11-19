@@ -38,6 +38,10 @@ import urllib.request
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 ROOT = Path(__file__).resolve().parents[1]
 API = "https://api.elections.kalshi.com/trade-api/v2/markets"
@@ -101,8 +105,8 @@ def archive_tickers(archive_dir: str) -> dict[str, dict[str, str]]:
     """series -> {ticker: event_ticker}. Reads only strict prices_YYYY-MM-DD.jsonl files
     (the .BROKEN_FIRSTRUN set-aside file is excluded, as in EXP-031)."""
     out: dict[str, dict[str, str]] = defaultdict(dict)
-    for path in sorted(glob.glob(os.path.join(archive_dir, "prices_????-??-??.jsonl"))):
-        with open(path) as fh:
+    for path in glob_files(os.path.join(archive_dir, "prices_????-??-??.jsonl")):
+        with open_jsonl(path) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)
