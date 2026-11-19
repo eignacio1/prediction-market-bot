@@ -109,7 +109,7 @@ This wave puts each into the running router. Nulls route leaves (COMMON RULES). 
 |---|---|---|---|---|---|
 | 119.1 | D6 · NHL · 3 | Finish 118.3: NHL store built on the box, layer-3 splits from it, NHL through router v2 with the consensus prior, D6 recount | Sonnet | ⬜ | |
 | 119.2 | depth · NBA · 3 | NBA depth splits into the live trees behind the switch; the registry tells the truth about NBA game cells; NBA layer 4 thin leaves | Sonnet | ⬜ | |
-| 119.3 | execution · 3 | The ride-board log cut to size; FADE priced inside the spread as a pre-registered demo option; placement re-fit on logged spreads | Sonnet | ⬜ | |
+| 119.3 | execution · 3 | The ride-board log cut to size; FADE priced inside the spread as a pre-registered demo option; placement re-fit on logged spreads | Sonnet | ✅ code merged (#526, #528); on box HEAD 9b527446; FADE inside 17 orders / 2 fills, judged n not reached | SESSION_HANDOFF_20261119T0150Z_W119_3 |
 | 119.4 | infra · 3 | Verified weekly evidence copy to the operator's Mac; readers taught .gz; disk to ~50% ($0, operator 11-18 17:09 PT) | Sonnet | ⬜ | |
 
 - **Pushback:** 119.2 wires depth splits that no correction for multiple tests backs (0 of 12 pass BH). Wiring them behind the version

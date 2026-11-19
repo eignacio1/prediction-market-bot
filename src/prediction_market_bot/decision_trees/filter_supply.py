@@ -73,6 +73,49 @@ def nba_adapter(row: dict, table: Optional[dict] = None) -> Tuple[Optional[dict]
     return out, None
 
 
+_DEPTH_PROF: dict = {}
+DEPTH_SPLIT_LOGGED = ("lineup_status", "ref_crew@total")  # S3 / S5: computed and logged, never split on (thin; EXP-NBADEPTH-001)
+
+
+def nba_depth_profiles(path: Optional[str] = None) -> dict:
+    p = path or os.path.join(DATA_DIR, "nba_depth_profiles.json")
+    if p not in _DEPTH_PROF:
+        with open(p) as fh:
+            _DEPTH_PROF[p] = json.load(fh)
+    return _DEPTH_PROF[p]
+
+
+def nba_season_of(ts) -> int:
+    """Season label = start year (2026 = 2026-27): Aug-Dec -> that year, Jan-Jul -> the year before."""
+    d = parse_ts(ts)
+    return d.year if d.month >= 8 else d.year - 1
+
+
+def nba_depth_adapter(row: dict, prof: Optional[dict] = None, lineup_snap=None, rotation=None, crew=None,
+                      refs_snap_at=None) -> Tuple[Optional[dict], Optional[str]]:
+    """W119.2: {'leaves', 'logged_only', 'archive_sha', 'season'} for an NBA row from PRIOR-season archive profiles only.
+    S1/S2/S4 leaves may split (when the switch is on); S3 lineup and S5 refs are computed when a point-in-time snapshot is
+    passed in (no runtime source on the box yet: they are 'unknown') and are never split on. Raises PITViolation (wrapped by
+    the supply) when the profile is not strictly before the row's season or a snapshot is after the row."""
+    from prediction_market_bot.decision_trees.filters import nba_depth as nd
+    from prediction_market_bot.pregame_shadow.nba_forecaster import parse_event_ticker
+
+    prof = prof if prof is not None else nba_depth_profiles()
+    ev = parse_event_ticker(row.get("event_ticker", ""))
+    if ev is None:
+        return None, "nba_event_ticker_unparsed"
+    _, _, away, home = ev
+    try:
+        leaves = nd.depth_filters(home, away, prof, row_season=nba_season_of(row["ts_utc"]), lineup_snap=lineup_snap,
+                                  rotation=rotation, crew=crew, refs_snap_at=refs_snap_at, ts_utc=row["ts_utc"])
+    except nd.PITViolation as e:
+        raise PITViolation(str(e))
+    logged = [k for k in DEPTH_SPLIT_LOGGED if k in leaves]
+    split_leaves = {k: v for k, v in leaves.items() if k not in DEPTH_SPLIT_LOGGED}
+    return {"leaves": split_leaves, "logged_only": {k: leaves[k] for k in logged},
+            "archive_sha": prof.get("archive_sha"), "season": prof.get("season")}, None
+
+
 def nfl_adapter(row: dict, providers=None) -> Tuple[Optional[dict], Optional[str]]:
     """110.1 weather + matchup + market-state leaves. ``providers`` has weather(row)->(WeatherContext, issued_utc),
     terms(row)->(Terms_home, Terms_away, data_through_utc) and lines(row)->(spread, total). None -> unavailable."""
@@ -202,8 +245,21 @@ def nhl_adapter(row: dict) -> Tuple[Optional[dict], Optional[str]]:
 
 class FilterSupply:
     def __init__(self, nba_table_: Optional[dict] = None, nfl_providers=None,
-                 nhl: Optional[Callable[[dict], Tuple[Optional[dict], Optional[str]]]] = None):
+                 nhl: Optional[Callable[[dict], Tuple[Optional[dict], Optional[str]]]] = None,
+                 depth_profiles: Optional[dict] = None, depth_inputs: Optional[Callable[[dict], dict]] = None):
         self.nba_table, self.nfl_providers, self.nhl = nba_table_, nfl_providers, nhl or nhl_adapter
+        self.depth_profiles, self.depth_inputs = depth_profiles, depth_inputs  # depth_inputs(row) -> lineup/crew snapshot kwargs (S3/S5)
+
+    def depth_for_row(self, row: dict) -> Optional[dict]:
+        """W119.2: NBA depth block for the row, or None (other sports, unparsed ticker, PIT problem). Never raises; a PIT
+        violation or load failure yields None so the row is logged without depth rather than with a later season's profile."""
+        if str(row.get("sport", "")).upper() != "NBA":
+            return None
+        try:
+            d, _ = nba_depth_adapter(row, self.depth_profiles, **(self.depth_inputs(row) if self.depth_inputs else {}))
+            return d
+        except Exception:  # noqa: BLE001 - depth never blocks a shadow row
+            return None
 
     def for_row(self, row: dict) -> Tuple[Optional[dict], Optional[str]]:
         sport = str(row.get("sport", "")).upper()

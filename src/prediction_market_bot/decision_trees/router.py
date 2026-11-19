@@ -44,6 +44,7 @@ class Situation:
     band: Optional[str] = None
     prev_mid: Optional[float] = None  # the same ticker's previous logged mid, for the leaf's move bin
     filters: Optional[Mapping] = None  # W112.1: {filter_name: leaf_label} from the sport's adapter (None = none supplied)
+    depth: Optional[Mapping] = None  # W119.2: NBA depth leaves; routes only when PM_LEAF_MAP_VERSION carries +nba_depth
 
     @property
     def mid(self) -> Optional[float]:
@@ -88,6 +89,7 @@ class Route:
     leaf: Optional[object] = None  # W111.3: the leaf_map.LeafDecision behind the route (leaf_id, verbatim arm, held-out stats)
     split: Optional[dict] = None  # W112.1: the filter-split lookup (kept / logged_only / untested / arm / conflict) when filters came in
     arm_pre_split: Optional[str] = None  # the market-state leaf's own arm before a kept split replaced it
+    depth_split: Optional[dict] = None  # W119.2: the depth-split lookup when the switch is on and the row carried depth leaves
 
 
 def book_classes(s: Situation) -> tuple:
@@ -177,9 +179,20 @@ def _route_leaf(s: Situation, ev: Evidence) -> Route:
             pre = d.arm
             d = ev.leaf_map.decide(row, s.model_p, arm_override=split["arm"])
             d = replace(d, reason=f"split_arm:{split['arm']};{d.reason}")
+    dsplit = None
+    if s.depth and lm.depth_enabled():  # W119.2: depth splits (EXP-NBADEPTH-001), switch-gated; v1 path above is untouched when off
+        dsplit = lm.default_depth_splits().lookup(s.market_type or "", s.band or "", dict(s.depth))
+        prior = split["arm"] if split else None
+        if (dsplit["arm"] and not dsplit["conflict"] and not (split and split["conflict"])
+                and (prior is None or prior == dsplit["arm"]) and not d.thin and d.known and dsplit["arm"] != d.arm):
+            pre = pre or d.arm
+            d = ev.leaf_map.decide(row, s.model_p, arm_override=dsplit["arm"])
+            d = replace(d, reason=f"depth_arm:{dsplit['arm']};{d.reason}")
+        elif dsplit["arm"] and prior and prior != dsplit["arm"]:
+            dsplit = {**dsplit, "conflict": True}  # depth and the live split disagree: nothing changes
     if d.arm == "NO_BET":
-        return Route(NO_BET, None, (d.reason,), leaf=d, split=split, arm_pre_split=pre)
-    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d, split=split, arm_pre_split=pre)
+        return Route(NO_BET, None, (d.reason,), leaf=d, split=split, arm_pre_split=pre, depth_split=dsplit)
+    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d, split=split, arm_pre_split=pre, depth_split=dsplit)
 
 
 def route(s: Situation, ev: Evidence) -> Route:

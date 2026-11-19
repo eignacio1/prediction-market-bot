@@ -1120,6 +1120,16 @@ def _apply_nba_game_promotions() -> None:
 _apply_nba_game_promotions()
 
 
+# W119.2 (Part B): registry truth. The 12 NBA game cells have been flipped to SHADOW on the box by scripts/nba_cell_autoflip.py
+# since EXP-038 started logging, but the code seeded them NOT_IMPLEMENTED, so claude_md_now and B1 counted the code 12 short of the
+# box. The status is now carried statically (same superseding_reference the autoflip uses); the autoflip stays as the
+# fail-safe for any cell it names that is still NOT_IMPLEMENTED, so its tests keep their meaning.
+for _mt in _NBA_GAME_FAMILIES:
+    for _bd in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+        if MARKET_TYPE_REGISTRY[(_mt, _bd)].status is CellStatus.NOT_IMPLEMENTED:
+            promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-038")
+
+
 # ---------------------------------------------------------------------------
 # Per-cell measurement state (ADR-0053 §2.2 / §6.3 item 3)
 # ---------------------------------------------------------------------------

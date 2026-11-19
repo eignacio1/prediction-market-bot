@@ -1369,7 +1369,7 @@ status = "live"
 reviewed = true
 purpose = "Ride/fade board (W105.5 / B-054): every 5 min through the NBA/NHL/NFL game windows reads the live book, asks the router (FADE / RIDE / MOMENTUM / NO_BET) and logs every decision. Demo orders (book RIDE_BOARD, flat stake, kelly 0) only on a HELD_OUT / FORWARD_PASSED cell and only with RIDE_BOARD_ORDERS=on (OFF by default); IN_SAMPLE cells are paper rows. Demo only, never production Kalshi."
 pillar = "EXECUTION"
-writes = ["logs/ride_board_cron.log", "logs/ride_board/decisions.jsonl", "logs/ride_board/orders.jsonl"]
+writes = ["logs/ride_board_cron.log", "logs/ride_board/decisions.jsonl", "logs/ride_board/orders.jsonl", "logs/ride_board/last_state.json"]
 alarm = "staleness: SURFACE BUDGET goes RED if logs/ride_board_cron.log is older than 14h (longest scheduled gap is 11h); orders: KalshiMarketClient refusals land in logs/ride_board/orders.jsonl as ride_order ok=false"
 max_age_h = "14"
 schedule = "3-58/5 0-5,17-23 * * *"

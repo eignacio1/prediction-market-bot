@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W119.2: is 109c469 deployed on the box?"

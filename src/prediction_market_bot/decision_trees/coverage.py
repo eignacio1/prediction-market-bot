@@ -174,12 +174,36 @@ def ledger_evidence(rows) -> Dict[Tuple[str, str], dict]:
     return out
 
 
+MIN_STUMP_ROWS = 30  # pooled fit rows a cell needs before its root has a family-level posterior to decide from
+
+
+def stump_root(leaves: List[dict]) -> Optional[dict]:
+    """W119.2 Part C: the tree of a cell whose leaves are thin (or all NO_BET) is a STUMP: the root picks an arm or NO_BET from the
+    family-level posterior (the cell's leaves pooled, row-weighted mean net per contract on the fit window, per arm).
+    Root arm = the best pooled arm when its pooled mean net is > 0, else NO_BET (a routing result, not a stop: the cell rides
+    the market / takes no bet in these leaves). Returns None when the cell has fewer than MIN_STUMP_ROWS pooled fit rows."""
+    pooled: Dict[str, List[float]] = {}
+    for x in leaves:
+        for arm, v in (x.get("fit") or {}).items():
+            m, n = v
+            a = pooled.setdefault(arm, [0.0, 0])
+            a[0] += m * n
+            a[1] += n
+    rows = max((n for _, n in pooled.values()), default=0)
+    if rows < MIN_STUMP_ROWS:
+        return None
+    means = {arm: (w / n) for arm, (w, n) in pooled.items() if n >= MIN_STUMP_ROWS}
+    best = max(means, key=means.get) if means else None
+    return {"arm": best if best is not None and means[best] > 0 else "NO_BET",
+            "pooled_mean_net": {a: round(m, 5) for a, m in sorted(means.items())}, "rows": rows}
+
+
 def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = None, splits_doc: Optional[dict] = None,
               filter_sports: Optional[set] = None, orders=None, fills_for=None, box_evidence: Optional[dict] = None) -> List[dict]:
     """W111.3 Part C -- D6: for every registered cell, which of the seven layers are present AND evidenced.
     Evidence only, no credit for intent: layer 1 = the cell's leaves carry a logged model p (a MODEL_FADE fit entry);
     2 = the cell has leaves split on market state; 3 = factor filters reach the router as per-row splits (W112.1: the sport's
-    adapter has data AND the cell's series has a KEPT tested split, i.e. a split a tested leaf uses); 4 = at least one non-thin leaf routed to an arm; 5 = at least one leaf with
+    adapter has data AND the cell's series has a KEPT tested split, i.e. a split a tested leaf uses); 4 = at least one non-thin leaf routed to an arm, or (W119.2) the cell's tree is a stump whose root decides from the pooled family posterior (stump_root; ``l4_stump``); 5 = at least one leaf with
     10+ held-out games; 6 = the cell's arm-path rows carry a size_for decision for an arm other than NO_BET (order_evidence); 7 = the cell's current-epoch arm orders have fills
     measured, fill or no-fill (shadow rows are not fills). A cell is 'wired' only with all seven. When it applies: pre-game cells (T1-T3).
     In-play bands score 0 layers by construction (router returns NO_BET).
@@ -207,17 +231,20 @@ def d6_layers(leaf_map_doc: Optional[dict] = None, rows: Optional[List[dict]] = 
         ev = (box_evidence or {}).get((r["market_type"], r["band"]), {})
         l3_file = bool(ls) and str(r["sport"]).lower() in fsports and any(
             x["sport"].lower() == str(r["sport"]).lower() and x["series"] in (None, r.get("family")) for x in kept)
+        arm_leaf = any(not x["thin"] and x["arm"] != "NO_BET" for x in ls)
+        stump = None if arm_leaf else stump_root(ls)   # W119.2: no arm leaf -> the cell's tree is a stump (root decides)
         have = [
             any("MODEL_FADE" in x.get("fit", {}) for x in ls) or bool(ev.get("p")),
             bool(ls),
             bool(ev.get("tested")) if box_evidence is not None else l3_file,
-            any(not x["thin"] and x["arm"] != "NO_BET" for x in ls),
+            arm_leaf or stump is not None,
             any((x.get("test") or {}).get("test_n_games", 0) >= MIN_HELD_GAMES for x in ls),
             (r["market_type"], r["band"]) in l6_cells,
             (r["market_type"], r["band"]) in l7_cells,
         ]
         out.append({"market_type": r["market_type"], "band": r["band"], "sport": r["sport"], "layers": have,
                     "n_layers": sum(have), "wired": all(have),
+                    "l4_stump": stump is not None, "stump_arm": stump["arm"] if stump else None,
                     "l3_kept": bool(ev.get("kept")) if box_evidence is not None else l3_file})
     return out
 
@@ -235,10 +262,11 @@ def d6_summary(cells: List[dict]) -> dict:
     """Per sport: cells wired end to end / registered, and cells per layer. The number scripts/distance_to_optimum reads."""
     sports: Dict[str, dict] = {}
     for c in cells:
-        d = sports.setdefault(c["sport"], {"registered": 0, "wired": 0, "per_layer": [0] * 7, "l3_stump": 0, "l3_kept": 0})
+        d = sports.setdefault(c["sport"], {"registered": 0, "wired": 0, "per_layer": [0] * 7, "l3_stump": 0, "l3_kept": 0, "l4_stump": 0})
         d["registered"] += 1
         d["l3_stump"] += bool(c["layers"][2])
         d["l3_kept"] += bool(c.get("l3_kept"))
+        d["l4_stump"] += bool(c.get("l4_stump"))
         d["wired"] += c["wired"]
         for i, h in enumerate(c["layers"]):
             d["per_layer"][i] += h

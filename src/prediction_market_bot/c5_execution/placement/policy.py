@@ -14,7 +14,9 @@ returns is in the YES frame, the value submit_order takes (it buys YES at it, or
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import math
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -49,20 +51,33 @@ def load_table(path: Optional[Path] = None) -> Optional[dict]:
     return t if isinstance(t, dict) and isinstance(t.get("cells"), dict) else None
 
 
-def choice(arm: str, leaf: Optional[str], table: Optional[dict]) -> tuple:
-    """(option, reason) from the table; rest_touch unless a supported cell names something else."""
+def in_share(key: str, share: float) -> bool:
+    """Deterministic, outcome-blind split: True for ``share`` of keys (sha256 of the key). The same key always lands the same way."""
+    return int(hashlib.sha256(str(key).encode()).hexdigest()[:8], 16) / 0x100000000 < share
+
+
+def choice(arm: str, leaf: Optional[str], table: Optional[dict], order_key: Optional[str] = None) -> tuple:
+    """(option, reason) from the table; rest_touch unless a supported cell names something else.
+    A cell with ``share`` < 1 (W119.3 forward test) names its option for that share of orders by hash of ``order_key``; the rest
+    stay rest_touch as the concurrent control ("control:<cell>"). Without an order_key a shared cell is NOT applied."""
     if table is None:
         return "rest_touch", "no_table"
     for key in ((f"{arm}|{leaf}",) if leaf else ()) + (str(arm),):
         c = table["cells"].get(key)
         if isinstance(c, dict) and c.get("supported") and c.get("best") in OPTIONS:
+            share = c.get("share")
+            if share is not None and float(share) < 1.0:
+                if order_key is None or not in_share(order_key, float(share)):
+                    return "rest_touch", f"control:{key}"
             return c["best"], f"table:{key}"
     return "rest_touch", "default_rest_touch"
 
 
 def price_for(option: str, side: str, yes_bid: float, yes_ask: float) -> Optional[float]:
     """YES-frame limit for each option. Touch: our side's best bid (YES -> yes_bid; NO -> 1 - yes_ask, passed as yes_ask).
-    Inside: one tick better than our touch while still strictly inside the spread, else None. Cross: the far touch."""
+    Inside (W119.3): one tick better than our touch, or the mid when the spread is 2 ticks or more, snapped to the tick toward
+    our own touch so it never crosses (YES buys round down, NO buys round up); None when the spread is under 2 ticks (no
+    price strictly inside). Cross: the far touch."""
     if option == "no_place":
         return None
     if option == "rest_touch":
@@ -70,17 +85,22 @@ def price_for(option: str, side: str, yes_bid: float, yes_ask: float) -> Optiona
     if option == "cross":
         return yes_ask if side == "yes" else yes_bid
     if option == "rest_inside":
-        p = round(yes_bid + TICK, 2) if side == "yes" else round(yes_ask - TICK, 2)
+        ticks = round((yes_ask - yes_bid) / TICK)
+        if ticks < 2:
+            return None
+        half = ticks / 2.0
+        # A NO buy is at 1 - p, so its own touch is the ask: its mid snaps UP (toward the ask); a YES buy snaps DOWN (toward the bid).
+        p = round(yes_bid + (math.floor(half) if side == "yes" else math.ceil(half)) * TICK, 2)
         return p if yes_bid < p < yes_ask else None
     raise ValueError(option)
 
 
 def place(arm: str, leaf: Optional[str], side: str, yes_bid: float, yes_ask: float, switch_value: Optional[str] = None,
-          table: Optional[dict] = None, table_path: Optional[Path] = None) -> Placement:
+          table: Optional[dict] = None, table_path: Optional[Path] = None, order_key: Optional[str] = None) -> Placement:
     """The placement for one order. OFF -> rest_touch at the touch, exactly today's price."""
     if not is_on(switch_value):
         return Placement("rest_touch", price_for("rest_touch", side, yes_bid, yes_ask), "switch_off")
-    opt, why = choice(arm, leaf, table if table is not None else load_table(table_path))
+    opt, why = choice(arm, leaf, table if table is not None else load_table(table_path), order_key)
     px = price_for(opt, side, yes_bid, yes_ask)
     if opt == "rest_inside" and px is None:  # a one-tick spread has no inside: fall back to the touch
         return Placement("rest_touch", price_for("rest_touch", side, yes_bid, yes_ask), "inside_not_room")

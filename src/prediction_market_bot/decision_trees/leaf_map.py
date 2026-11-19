@@ -25,9 +25,19 @@ MAP_VERSIONS = {"v1": DEFAULT_MAP,
 
 def map_path(version: Optional[str] = None) -> str:
     v = (version if version is not None else os.environ.get("PM_LEAF_MAP_VERSION", "v1")).strip().lower() or "v1"
+    v = v.split("+", 1)[0] or "v1"   # W119.2: "+nba_depth" is a feature suffix (depth_enabled), not a different map file
     if v not in MAP_VERSIONS:
         raise ValueError(f"PM_LEAF_MAP_VERSION={v!r}: expected one of {sorted(MAP_VERSIONS)}")
     return MAP_VERSIONS[v]
+
+
+def depth_enabled(version: Optional[str] = None) -> bool:
+    """W119.2: the NBA depth splits (leaf_maps/nba_depth_v2.json) apply only when PM_LEAF_MAP_VERSION carries ``+nba_depth``
+    (e.g. ``v1+nba_depth``). Default off: v1 output is unchanged and nothing is flipped by this code."""
+    v = (version if version is not None else os.environ.get("PM_LEAF_MAP_VERSION", "v1")).strip().lower()
+    return "nba_depth" in v.split("+")[1:]
+
+
 ARM_SOURCE = "leaf_map_w110_5_fit_window"
 # map arm -> router tree. MODEL_FADE (model price vs market) and FADE (against the favourite) both land in the FADE tree.
 ARM_TREE = {"RIDE": "RIDE", "FADE": "FADE", "MODEL_FADE": "FADE", "MOMENTUM": "MOMENTUM_FOLLOW",
@@ -153,6 +163,50 @@ class FilterSplits:
         arms = {a for _, a in kept}
         return {"kept": [f"{t}->{a}" for t, a in kept], "logged_only": logged, "untested": untested,
                 "arm": next(iter(arms)) if len(arms) == 1 else None, "conflict": len(arms) > 1}
+
+
+DEPTH_SPLITS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nba_depth_v2.json")
+
+
+class DepthSplits:
+    """W119.2: the 12 KEPT NBA depth splits (nba_depth_v2.json, EXP-NBADEPTH-001), keyed (market_type, band, filter, leaf).
+    Same kept rule and conflict rule as FilterSplits; only KEPT entries are indexed, every other depth value is logged."""
+
+    def __init__(self, doc: dict):
+        self.doc = doc
+        self.kept = {}
+        self.tested = set()
+        for s in doc["splits"]:
+            k = ("NBA_" + s["series"], s["band"], s["filter"], s["leaf"])
+            self.tested.add(k)
+            if s["kept"]:
+                self.kept.setdefault(k, set()).add(s["arm"])
+
+    @classmethod
+    def load(cls, path: str = DEPTH_SPLITS) -> "DepthSplits":
+        with open(path) as fh:
+            return cls(json.load(fh))
+
+    def lookup(self, market_type: str, band: str, depth: dict) -> dict:
+        kept, logged = [], []
+        for name in sorted(depth):
+            leaf = depth[name]
+            if leaf in (None, False, "unknown"):
+                continue
+            k = (market_type, band, name, leaf)
+            arms = self.kept.get(k)
+            if arms and len(arms) == 1:
+                kept.append((f"{name}={leaf}", next(iter(arms))))
+            elif k in self.tested:
+                logged.append(f"{name}={leaf}")
+        arms = {a for _, a in kept}
+        return {"kept": [f"{t}->{a}" for t, a in kept], "logged_only": logged, "untested": [],
+                "arm": next(iter(arms)) if len(arms) == 1 else None, "conflict": len(arms) > 1}
+
+
+@lru_cache(maxsize=1)
+def default_depth_splits() -> DepthSplits:
+    return DepthSplits.load()
 
 
 @lru_cache(maxsize=1)
