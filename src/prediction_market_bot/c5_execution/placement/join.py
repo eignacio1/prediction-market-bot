@@ -242,5 +242,6 @@ def model_records(recs: List[dict]) -> List[dict]:
     return [{"arm": r["arm"], "sport": r["sport"], "leaf_id": r["leaf_id"], "placement": r["placement"], "price": r["price"],
              "filled": bool(r["filled"]), "won": r["won"], "spread": r["spread"], "depth": r["depth"], "hours": r["hours"],
              "series": r["series"], "ticker": r["ticker"], "order_id": r["order_id"], "spread_src": r.get("spread_src"),
-             "spread_age_s": r.get("spread_age_s")}
+             "spread_age_s": r.get("spread_age_s"),
+             "cancel_rule": "cancel_60s"}  # every record here is an arm order: arm_orders.act schedules the 60 s cancel (GG-1943)
             for r in recs if r["filled"] is not None and r["price"] is not None]

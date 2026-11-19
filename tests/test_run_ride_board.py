@@ -50,3 +50,55 @@ def test_ride_board_install_wanted_line_is_registry_live():
     cur = "0 * * * * x\n"
     merged = inst.merged_crontab(cur, lines)
     assert inst.without_block(merged)[0] == cur
+
+
+# ---- W119.3 Part A: the log is compact and a repeated NO_BET row is not re-logged ----
+def _rows(d):
+    p = d / "decisions.jsonl"
+    return [json.loads(l) for l in p.read_text().splitlines()] if p.exists() else []
+
+
+def _cycle(tmp_path, mkts, now):
+    from calib import tier
+    return rr.run(mkts, now, Evidence(ride=ride.load()), tier, tmp_path, archive_dir=tmp_path / "none", place=False)
+
+
+def test_logged_row_has_only_the_kept_fields(tmp_path):
+    _cycle(tmp_path, {"KXNBAGAME": [mk("A", "0.40", "0.44")]}, 1794000000.0)
+    (r,) = _rows(tmp_path)
+    assert set(r) == set(rr.LOG_FIELDS)
+    for dropped in ("book", "cell", "agreed", "mid", "half_spread", "sport", "event_ticker"):
+        assert dropped not in r
+
+
+def test_repeated_no_bet_logged_once_then_heartbeat(tmp_path):
+    m = {"KXNBAGAME": [mk("B", None, None)]}          # NO_BET, no price
+    t0 = 1794000000.0
+    for i in range(5):                                # five 5-min cycles, nothing changes
+        _cycle(tmp_path, m, t0 + 300 * i)
+    assert len(_rows(tmp_path)) == 1
+    _cycle(tmp_path, m, t0 + rr.HEARTBEAT_S + 1)      # past the heartbeat: one more row
+    assert len(_rows(tmp_path)) == 2
+
+
+def test_changed_no_bet_reason_is_logged(tmp_path):
+    t0 = 1794000000.0
+    _cycle(tmp_path, {"KXNBAGAME": [mk("A", None, None)]}, t0)
+    _cycle(tmp_path, {"KXNBAGAME": [mk("A", "0.01", "0.99")]}, t0 + 300)
+    rows = _rows(tmp_path)
+    assert len(rows) == 2 and rows[0]["why"] != rows[1]["why"]
+
+
+def test_order_routing_rows_are_never_skipped():
+    row = {"route": "RIDE", "ticker": "T", "side": "yes", "why": ["x"], "cell_status": "HELD_OUT", "tier": "T2"}
+    state = {"T": [rr._state_key(row), 1000.0]}
+    assert rr.should_log(row, state, 1010.0) is True
+    nb = {**row, "route": "NO_BET", "side": None}
+    state = {"T": [rr._state_key(nb), 1000.0]}
+    assert rr.should_log(nb, state, 1010.0) is False
+
+
+def test_corrupt_state_file_is_ignored(tmp_path):
+    (tmp_path / rr.STATE_FILE).write_text("{not json")
+    _cycle(tmp_path, {"KXNBAGAME": [mk("B", None, None)]}, 1794000000.0)
+    assert len(_rows(tmp_path)) == 1

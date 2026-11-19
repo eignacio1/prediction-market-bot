@@ -272,7 +272,7 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
     placement = "rest_touch"  # ADR-0072 rule. W116.2: the per-arm choice runs only when ARM_PLACEMENT_POLICY=on (default off)
     if plc.is_on(pol.switch_value(plc.SWITCH_ENV)):
         bk = dec.meta or {}
-        p = plc.place(arm, base.get("leaf_id"), side, float(bk["yes_bid"]), float(bk["yes_ask"]), "on")
+        p = plc.place(arm, base.get("leaf_id"), side, float(bk["yes_bid"]), float(bk["yes_ask"]), "on", order_key=rid)
         base["placement_reason"] = p.reason
         if p.option == "no_place":
             return out(SKIP_EVENT, "placement_no_place", meta=dec.meta, stake_usd=stake)
