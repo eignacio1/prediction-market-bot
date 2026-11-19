@@ -229,3 +229,9 @@ The nightly sweep had failed 11-13 through 11-17. The window told the operator t
 the task to Haiku; the run's own message (screenshot, 11-17) was "Not enough disk space to clone the repository eignacio1/sports-intel-archive" -
 the archive outgrew the session disk, and the sweep's prompt told it to attach and clone the archive. Fixed 06:09Z: the prompt now reads
 the archive only through the GitHub API (never cloned). Rule: diagnose a failed scheduled run from its own output before naming a cause.
+
+### W60 - SW-9, 2026-11-18 22:44 PT - the Muse sweep "fix" changed the prompt, but the clone happens before the prompt runs
+W59's fix rewrote the scheduled task's prompt to never clone the archive. The 11-18 run failed with the same platform message ("Not enough
+disk space to clone the repository eignacio1/sports-intel-archive"): the task's environment attaches and clones that repo at session
+setup, before the model reads a word. The window declared it fixed without a run to confirm it (its own fire attempt was blocked).
+Rule: a fix to a scheduled task is unconfirmed until one run of it succeeds; say "unconfirmed" until then.

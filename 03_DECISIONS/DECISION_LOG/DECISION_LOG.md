@@ -3627,3 +3627,6 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 
 ### 2026-11-19 05:20Z (11-18 21:19 PT) - operator - candidate maps logged beside v1 approved
 - "yes I give approval": router v2, +nba_depth and nhl_v2 log their arm beside v1 on every pregame shadow row, shadow only; orders follow v1. W120.2 switches it on.
+
+### 2026-11-19 06:50Z (11-18 22:44 PT) - operator - weekly evidence copy to the Mac approved
+- "Yes": W121.4 installs scripts/ops/evidence_pull_launchd.sh on the Mac (5.7 GB now, ~100-150 MB / month compressed).
