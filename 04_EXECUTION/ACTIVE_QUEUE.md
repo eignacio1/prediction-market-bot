@@ -108,7 +108,7 @@ on box rows. This wave:
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 120.1 | D6 · NFL · 3 | NFL layer 3 on box rows: tested splits logged with verdicts; the four one-layer-away NFL cells wired; D6 recount | Sonnet |🟨 | PR #532 merged; verdicts log after deploy. D6 recount queued (d6_read) after the Nov 22-23 NFL slate. Handoff W120_1. |
-| 120.2 | depth · router · 3 | Candidate maps (router v2, nba_depth, nhl_v2) log their arm beside v1 on every box row - shadow only, if approved; NHL T1 layer 3 | Sonnet | ⬜ | |
+| 120.2 | depth · router · 3 | Candidate maps (router v2, nba_depth, nhl_v2) log their arm beside v1 on every box row - shadow only, if approved; NHL T1 layer 3 | Sonnet | ✅ | W120.2 closed 11-19 06:15Z: candidate logging ON (PRs 534, 535; item 7 approved). Box rows carrying candidate arms (72h): NBA router_v2 71, NBA nba_depth 71, NFL router_v2 73, NHL 0 until the 14:00Z run; errors 0. NHL goalie/ST verdicts logged, not applied (42). |
 | 120.3 | infra · io · 3 | The three held readers read .gz -> 1.87 GB compressible; the Mac copy kept compressed; disk measured | Sonnet |✅ | PR #531; readers .gz; Mac 7.21->5.70 GiB; disk 74% until 14:17Z apply; weekly job awaits yes |
 | 120.4 | docs · 3 | STRATEGY_OVERVIEW and ARCHITECTURE_OVERVIEW bodies rewritten to DOCTRINE.md; superseded PRs closed | Haiku | ✅ | Bodies rewritten (c4902e6); #477 and #458 closed as superseded, #149 open. Open for window: dashboard still says "fade arm closed" (body.html, script.js) vs DOCTRINE 1b. |
 
