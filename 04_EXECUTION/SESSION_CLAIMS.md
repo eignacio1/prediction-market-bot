@@ -1320,3 +1320,4 @@
 | 2026-11-18T06:13:32Z | GA-6 | CLOSED — merge confirmed, HEAD (b3bf690) is ancestor of origin/main — Gap burner: OPEN 272 -> 173, window triage applied |
 | 2026-11-18T06:13:27Z | B-088 | CLOSED — W118.1 MLB look-back: postseason-only (22 games), router v2 arms 0 leaves, 12 cells recorded NO BET, map frozen (commit `f4266f6`) |
 | 2026-11-18T06:14:00Z | B-088 | CLOSED — merge confirmed, HEAD (84ff2e9) is ancestor of origin/main — W118.1 MLB postseason look-back merged; 12 cells NO BET provisional, 0 earned arms |
+| 2026-11-19T01:04:14Z | B-101,B-100 | W119.2 NBA depth splits wired behind switch + registry truth + NBA layer4 stump. PURPOSE: D5(b) NBA applied, B1 code==box, D6 NBA 4->N |
