@@ -1,15 +1,23 @@
-# W119.1 handoff (PARTIAL, parked by operator at dinner). Last reviewed: 2026-11-18
+# W119.1 handoff (CLOSED). Last reviewed: 2026-11-18
 Common rules read (first line "# Wave 119 common rules"); W118.3 handoff read.
-## Done (Part A)
-- deploy_truth_read: box HEAD dd2f46c = origin/main, #524 deployed.
-- nhl_event_store_refresh_once (20261119T0112Z): 1,737 of 1,737 finished games fetched; 50 failures repeat on pass 2 (fetch_failures.json), so more passes will not help.
-- Readback: NHL_EVENTS 84.6 MB, seasons 2025+2026 compiled (games 1394/1344). Disk 74% (18 of 24 GB). Health HEALTHY 0 faults, surface budget GREEN, refresh log 0 errors.
-- d6_read (box, 01:2xZ): NHL 6 of 21 wired, l3_kept 6, l3_stump 6. Starting point is 6, not 0. NHL_PUCK_LINE T1 is missing exactly layer 3.
-## NOT done
-1. Part B: goalie (shrunk SV% of team's most-used goalie, prior games only, from box_players) and special teams (PP goals for/against rolling) as splits in nhl_engine/filters.py + filter_supply.py; score per leaf per arm held out (pattern: 12_EXPLORATORY/nhl_factors_w112/score_leaves.py; needs fresh nhl/ + nhl_settled/ pulled from the box).
-2. Part C: NHL through router v2 with 12_EXPLORATORY/nhl_consensus prior; leaf_maps/nhl_v2.json + MAP_VERSIONS entry in leaf_map.py; PR, merge on green; d6_read recount with one cause per unwired cell.
+## Part A (store on the box)
+- 1,737 of 1,737 finished games fetched; 50 failures repeat on pass 2 (fetch_failures.json). NHL_EVENTS 84.6 MB, seasons 2025+2026. Disk 74% (18 of 24 GB).
+## Part B (layer 3), PR #530 merged ea75451
+- Goalie (last completed starter, season save rate shrunk 300 shots to an EXPANDING league rate, NaN < 100 shots) and special teams (PP goals, PIM, 20-game roll) as splits in nhl adapter + filter_supply (12 splits total). PREREG_W119_1_GOALIE_ST.md committed before scoring.
+- Scored per leaf per arm, 226 fit / 98 held-out games: 42 new leaves, 23 reportable, 8 held-out positive (goalie 2, special teams 6), 0 pass BH, 0 DRAFT. Routing result: leads for the next look.
+- Defect fixed: shrinkage used the whole-season league rate (leaked later games). tests/test_nhl_goalie_st_w119_1.py pins no-leak.
+- Goalie covers 178 of 324 games (100-shot minimum on a 343-game box). No pre-game lineup feed: registered gap, proxy is last starter.
+## Part C (router v2)
+- 12_EXPLORATORY/nhl_router_v2/run.py, consensus prior (transfer sd 0.03). 99 seen leaves, 9 cells: all NO_BET, 0 armed; held-out 98 games, no bets. Routed to no bet in these leaves; hypothesis closed (EXP-W119.1-NHL-V2, parked for R&D).
+- leaf_maps/nhl_v2.json + MAP_VERSIONS["nhl_v2"]. Opt-in via PM_LEAF_MAP_VERSION=nhl_v2. Default stays v1. NOT flipped on the box.
+## D6 recount (box, 04:53Z, HEAD 9eed2933 contains ea75451)
+- NHL 6 -> 6 of 21. Wired: NHL_{GAME_TOTAL,MONEYLINE,PUCK_LINE} x T2,T3. Layers 1-7 per layer: 9,9,6,9,7,8,8.
+- Unwired, one cause each: T4, T4NHL-ARITH, T4NHL-FLOW, T5 x 3 markets (12 cells) = layer 1, no model p built. T1 x 3 markets = layer 3, no kept split on box rows.
+- Why no move: wiring counts box rows with the active map (v1); new splits need a kept leaf on box rows, and the new classes are scored on shadow rows locally.
 ## Notes
-- Worktree: PM-worktrees/20261119T0120Z-w119-1-nhl (branch w119-1-nhl-layer3). Shared tree was switched to another session's branch.
-- Shared tree has uncommitted edits to scripts/run_ride_board.py and tests/test_run_ride_board.py that are not mine.
-MEASURE MOVED: D6 NHL 6 -> 6 (no change yet); layer-3 classes tested 0 new; store on box 84.6 MB, disk 74%.
-surface_delta: 0 (read tasks and one one-shot run of an approved job).
+- CI failure on first push was main's stale RUNTIME_MAP.md (not this change); fixed by re-render, which main had also landed.
+- OPERATOR_DIRECTIVES.md not read this block (directive_conflicts: unchecked, none known).
+- Worktree PM-worktrees/20261119T0120Z-w119-1-nhl; shared tree has others' uncommitted edits.
+MEASURE MOVED: D6 NHL 6 -> 6 (named above); NHL layer-3 classes tested 2 (4 splits, 42 leaves), kept 8 leaves, 0 BH; store on box 84.6 MB, disk 74%.
+pattern_sweep: league-rate-from-full-sample checked in goalie only; other rollers use _through_rolling (prior games). Not swept in nba/nfl adapters.
+surface_delta: 0 (opt-in map file, no new job or service).
