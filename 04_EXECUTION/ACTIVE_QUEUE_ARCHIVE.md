@@ -25744,3 +25744,154 @@ Report: per COMMON RULES. MEASURE MOVED: PLUMBING - off-box verified copies 0 ->
 -> after; readers converted / held.
 END OF BLOCK 119.4
 ```
+
+
+## (archived 2026-11-19) WAVE 120 · written 2026-11-19 ~05:20 UTC · SW-9
+
+**D6 is 13 / 117 on the box** (NBA 7, NHL 6). Five cells are one layer away: four NFL cells and NHL puck line T1 miss only layer 3.
+Every candidate map built since W116 (router v2, nba_depth, nhl_v2) sits behind a switch that is off, so none of them produces evidence
+on box rows. This wave:
+- **wires NFL** while its season lasts (it ends in January);
+- **logs the candidate maps beside v1** (operator decision 7);
+- **finishes the disk and the Mac copy**, compressed;
+- **brings the strategy docs in line with the doctrine.**
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 120.1 | D6 · NFL · 3 | NFL layer 3 on box rows: tested splits logged with verdicts; the four one-layer-away NFL cells wired; D6 recount | Sonnet |🟨 | PR #532 merged; verdicts log after deploy. D6 recount queued (d6_read) after the Nov 22-23 NFL slate. Handoff W120_1. |
+| 120.2 | depth · router · 3 | Candidate maps (router v2, nba_depth, nhl_v2) log their arm beside v1 on every box row - shadow only, if approved; NHL T1 layer 3 | Sonnet | ✅ | W120.2 closed 11-19 06:15Z: candidate logging ON (PRs 534, 535; item 7 approved). Box rows carrying candidate arms (72h): NBA router_v2 71, NBA nba_depth 71, NFL router_v2 73, NHL 0 until the 14:00Z run; errors 0. NHL goalie/ST verdicts logged, not applied (42). |
+| 120.3 | infra · io · 3 | The three held readers read .gz -> 1.87 GB compressible; the Mac copy kept compressed; disk measured | Sonnet |✅ | PR #531; readers .gz; Mac 7.21->5.70 GiB; disk 74% until 14:17Z apply; weekly job awaits yes |
+| 120.4 | docs · 3 | STRATEGY_OVERVIEW and ARCHITECTURE_OVERVIEW bodies rewritten to DOCTRINE.md; superseded PRs closed | Haiku | ✅ | Bodies rewritten (c4902e6); #477 and #458 closed as superseded, #149 open. Open for window: dashboard still says "fade arm closed" (body.html, script.js) vs DOCTRINE 1b. |
+
+- **Pushback:** logging candidate maps beside v1 adds columns to every shadow row and more disk; that is why 120.3 lands in the same
+  wave. And the candidate maps arm almost nothing, so most of the new columns will read NO BET. That is the evidence they need.
+- **Surface:** box HEALTHY; disk 74%. Delta: 0 box installs; the Mac weekly copy job waits on the operator (decision 8).
+- **Dependencies:** 120.2's switch waits on decision 7; without it, 120.2 builds and tests the logging path but leaves it off.
+
+### 120.1 - D6 · NFL (ONE LAYER AWAY) · MODEL: Sonnet
+
+```
+WAVE 120 - BLOCK 120.1 - D6 - NFL LAYER 3 ON BOX ROWS; THE FOUR ONE-LAYER-AWAY NFL CELLS WIRED; D6 RECOUNT - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
+bind this block. Then read the newest results/*_d6_read.md and the W112 / W113 handoffs on NFL splits (grep 11_MEMORY_HANDOFF for "NFL"
+and "layer 3"). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_1.md.
+
+WHY: NFL is the starved sport (16 games a week; the season ends in January) and the cheapest D6 move on the board. NFL per layer on the
+box: 12, 12, 0, 9, 9, 9, 4. NFL_GAME_TOTAL T3, NFL_SPREAD T1, NFL_SPREAD T3 and NFL_TEAM_TOTAL T3 miss exactly layer 3, because no NFL box
+row carries split verdicts (layer 3 counts box rows: a stump = splits tested and logged with verdicts, kept or not).
+
+PART A - why layer 3 is 0 on the box
+1. The NFL splits from W112-W113 (13 cells) were scored on exploratory rows. Find where NFL shadow rows are written on the box and why
+   they carry no split fields or verdicts.
+
+PART B - NFL splits on box rows
+1. The NFL shadow writer logs, for every row, the split fields (point in time) and the cell's split verdicts (kept or not, from the
+   frozen scoring).
+2. Tests: no look-ahead; fields present; v1 routing unchanged.
+3. PR(s); merge on green.
+
+PART C - the count
+1. After deploy and one NFL slate of rows: d6_read. Report D6 NFL 0 -> N named, and the one cause for each unwired NFL cell.
+2. If a slate is not reached inside the block, say when the next one is, and that the window recounts then.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 NFL 0 -> N (named); NFL layer 3 on box rows 0 -> N.
+END OF BLOCK 120.1
+```
+
+### 120.2 - DEPTH · ROUTER (CANDIDATE MAPS LOGGED BESIDE V1) · MODEL: Sonnet
+
+```
+WAVE 120 - BLOCK 120.2 - DEPTH - ROUTER V2, NBA_DEPTH AND NHL_V2 LOG THEIR ARM BESIDE V1 ON EVERY BOX ROW (SHADOW ONLY); NHL T1 LAYER 3 - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
+bind this block. Then read "Needs your decision" item 7 in 04_EXECUTION/ACTIVE_QUEUE.md (approved or not), and the W116.1, W119.1 and
+W119.2 handoffs. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_2.md.
+
+WHY: every candidate map since W116 is behind a switch that is off, so none earns evidence on box rows. Logging them beside v1 lets
+each be scored on the same forward rows v1 is, at no order risk.
+
+PART A - candidate arms on rows
+1. Every pregame shadow row records, beside v1's arm, the arm each candidate map would pick: router v2 (pooled + e-process), +nba_depth
+   (NBA), nhl_v2 (NHL). Record each with its map version and SHA. Orders keep following v1 only.
+2. Tests: v1 orders unchanged; candidate columns present; a map that errors logs ERROR with its message and never blocks the row.
+3. The switch that turns this on is decision 7 in the queue. If it is approved, turn it on for logging, deploy, and read rows back.
+   If not, ship the path OFF and say so.
+
+PART B - NHL T1 layer 3
+1. NHL PUCK_LINE T1 misses only layer 3, and NHL T1 x 3 have no kept split on box rows. Log the W119.1 goalie and special-teams split
+   verdicts on NHL box rows, the same way 120.1 does for NFL. Coordinate on filter_supply.py by rebase, never overwrite.
+
+PART C - land and count
+1. PR(s); merge on green.
+2. After deploy: d6_read, and a count of rows carrying candidate arms per sport.
+
+Report: per COMMON RULES. MEASURE MOVED: box rows with candidate arms 0 -> N per map; D6 NHL 6 -> N.
+END OF BLOCK 120.2
+```
+
+### 120.3 - INFRA · IO (THE HELD 1.87 GB, AND A COMPRESSED MAC COPY) · MODEL: Sonnet
+
+```
+WAVE 120 - BLOCK 120.3 - INFRA - HELD READERS READ .gz; THE MAC COPY STAYS COMPRESSED; DISK MEASURED (B-103) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0500Z_W119_4.md and
+results/20261119T0500Z_disk_retention_dryrun.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_3.md.
+
+WHY: the retention dry run frees 0 MB today. 1.87 GB (100 files) is held because three readers cannot read .gz yet:
+scripts/arm_orders_read.py, scripts/demo_fill_forward_report.py, and run_ride_board's reader side. And the Mac copy (7.2 GB, ~2 GB a
+month plain) would keep both the plain and the .gz copy of every file as the box compresses - the operator asked that it not balloon
+his storage.
+
+PART A - the three readers
+1. Move each one to io_jsonl, with a test per reader on a .gz fixture.
+2. Then disk_retention_dryrun: the held bytes now freeable.
+3. Let the daily 14:17Z job apply it, or request one run; then disk_read. Report disk % before -> after.
+
+PART B - the Mac copy, compressed
+1. evidence_pull.sh compresses on the Mac whatever the box has compressed. Verify by the sha of the decompressed stream, then remove
+   the Mac's plain duplicate (Mac side only; the box is never touched).
+2. Older plain files on the Mac get the same treatment.
+3. Report the Mac folder size before -> after, and the projected growth per month compressed.
+4. Then ask the operator in chat: "Install the weekly evidence copy to your Mac (about N GB now, ~M MB a month)?" Load it only on his yes.
+
+PART C - what is left
+1. If the box is still above ~60%, list the top five remaining consumers with what each would take (compress / move off box / cut at
+   the writer). Do not act on any of them beyond this block's files.
+2. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - disk % before -> after; held bytes 1.87 GB -> 0; Mac folder GB before -> after;
+weekly job loaded yes / no.
+END OF BLOCK 120.3
+```
+
+### 120.4 - DOCS (THE DOCS MATCH THE DOCTRINE) · MODEL: Haiku
+
+```
+WAVE 120 - BLOCK 120.4 - DOCS - STRATEGY_OVERVIEW AND ARCHITECTURE_OVERVIEW BODIES REWRITTEN TO DOCTRINE.md; SUPERSEDED PRS CLOSED (B-075) - MODEL: Haiku
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
+bind this block. Read 02_ARCHITECTURE_DESIGN/DOCTRINE.md in full first: it wins every disagreement.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_4.md.
+
+WHY: STRATEGY_OVERVIEW.md and ARCHITECTURE_OVERVIEW.md still describe the bot as a model out-pricing the market. The doctrine
+(ADR-0077) is a router choosing an arm per leaf. Every terminal that reads them starts from the wrong picture.
+
+PART A - the two bodies
+1. Rewrite the BODY of each to match DOCTRINE.md. Keep their headings where they still fit, quote the operator verbatim where the
+   doctrine quotes him, link to DOCTRINE.md rather than restating it, and date a "Last reviewed" line.
+2. Never compress the operator's words, and never add a strategy the doctrine does not state.
+
+PART B - pointers
+1. grep the repo for docs that point at either file for a claim the rewrite changed. Fix each pointer line, or list it.
+
+PART C - superseded PRs
+1. #477 (NFL label change, the window's) and #458 (W108.5 dashboard follow-HEAD): check whether main already contains or superseded
+   each change. If so, close it with a one-line comment saying where it landed.
+2. Leave #149 open (it holds unlanded GG-279 work).
+3. Docs-only commits straight to main where allowed; otherwise a PR, merged on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - docs out of line with DOCTRINE 2 -> 0; open PRs 3 -> 1.
+END OF BLOCK 120.4
+```

@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 120 READY TO PASTE - four blocks: 120.1 NFL wired on box rows, 120.2 candidate maps logged beside v1, 120.3 held readers + compressed Mac copy, 120.4 docs to the doctrine (Haiku).** Decisions 7 and 8 under "Needs your decision".
+> **▶ WAVE 121 READY TO PASTE - four blocks: 121.1 the weekly evidence look runs itself, 121.2 NBA props through the tree, 121.3 what each arm is worth in dollars, 121.4 Live Terminal panels (Haiku).** Decision 8 (weekly Mac copy) waits on you.
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,160 +95,169 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 120 · WRITTEN 2026-11-19 ~05:20 UTC (11-18 21:20 PT) · SW-9 · four blocks · MODEL: Sonnet (Haiku for 120.4) · paste each into its own terminal
+## ▶ NOW — WAVE 121 · WRITTEN 2026-11-19 ~06:55 UTC (11-18 22:55 PT) · SW-9 · four blocks · MODEL: Sonnet (Haiku for 121.4) · paste each into its own terminal
 
-**D6 is 13 / 117 on the box** (NBA 7, NHL 6). Five cells are one layer away: four NFL cells and NHL puck line T1 miss only layer 3.
-Every candidate map built since W116 (router v2, nba_depth, nhl_v2) sits behind a switch that is off, so none of them produces evidence
-on box rows. This wave:
-- **wires NFL** while its season lasts (it ends in January);
-- **logs the candidate maps beside v1** (operator decision 7);
-- **finishes the disk and the Mac copy**, compressed;
-- **brings the strategy docs in line with the doctrine.**
+**The router now records, on every box row, what v1 and each candidate map would do.** Nothing scores those rows on a schedule: router
+v2's weekly look (Tuesday 10:00 UTC) exists only as code. This wave:
+- **makes the evidence engine run itself**, weekly, on box rows, for v1 and every candidate;
+- **takes NBA props through the tree;**
+- **puts a dollar figure on each arm**, so wiring follows the money;
+- **shows it all on the Live Terminal.**
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 120.1 | D6 · NFL · 3 | NFL layer 3 on box rows: tested splits logged with verdicts; the four one-layer-away NFL cells wired; D6 recount | Sonnet |🟨 | PR #532 merged; verdicts log after deploy. D6 recount queued (d6_read) after the Nov 22-23 NFL slate. Handoff W120_1. |
-| 120.2 | depth · router · 3 | Candidate maps (router v2, nba_depth, nhl_v2) log their arm beside v1 on every box row - shadow only, if approved; NHL T1 layer 3 | Sonnet | ✅ | W120.2 closed 11-19 06:15Z: candidate logging ON (PRs 534, 535; item 7 approved). Box rows carrying candidate arms (72h): NBA router_v2 71, NBA nba_depth 71, NFL router_v2 73, NHL 0 until the 14:00Z run; errors 0. NHL goalie/ST verdicts logged, not applied (42). |
-| 120.3 | infra · io · 3 | The three held readers read .gz -> 1.87 GB compressible; the Mac copy kept compressed; disk measured | Sonnet |✅ | PR #531; readers .gz; Mac 7.21->5.70 GiB; disk 74% until 14:17Z apply; weekly job awaits yes |
-| 120.4 | docs · 3 | STRATEGY_OVERVIEW and ARCHITECTURE_OVERVIEW bodies rewritten to DOCTRINE.md; superseded PRs closed | Haiku | ✅ | Bodies rewritten (c4902e6); #477 and #458 closed as superseded, #149 open. Open for window: dashboard still says "fade arm closed" (body.html, script.js) vs DOCTRINE 1b. |
+| 121.1 | proof · 3 | Weekly looks run themselves on box rows: v1 + router v2 + nba_depth + nhl_v2 scored per leaf, e-process carried forward; install proposed | Sonnet | ⬜ | |
+| 121.2 | D6 · props · 3 | NBA's 12 prop cells through the tree: market state, player splits from the archive, stump rule, router v2 candidate | Sonnet | ⬜ | |
+| 121.3 | execution · 3 | Capacity and dollar ceiling per arm per sport from logged depth and fills - $ / day at $1k, $10k, $100k | Sonnet | ⬜ | |
+| 121.4 | dashboards · 3 | Live Terminal: candidate arms beside v1, D6 per sport, weekly-look verdicts, disk + Mac copy status; the Mac job if approved | Haiku | ⬜ | |
 
-- **Pushback:** logging candidate maps beside v1 adds columns to every shadow row and more disk; that is why 120.3 lands in the same
-  wave. And the candidate maps arm almost nothing, so most of the new columns will read NO BET. That is the evidence they need.
-- **Surface:** box HEALTHY; disk 74%. Delta: 0 box installs; the Mac weekly copy job waits on the operator (decision 8).
-- **Dependencies:** 120.2's switch waits on decision 7; without it, 120.2 builds and tests the logging path but leaves it off.
+- **Pushback:** a weekly look on four weeks of rows will mostly say "keep watching". It runs anyway, because an e-process only works if
+  every look is taken on schedule; skipping looks breaks the guarantee 116.1 built.
+- **Surface:** box HEALTHY; disk 74% → ~63% at 14:17Z. Delta: +1 weekly cron proposed (121.1, approval); 0 otherwise.
+- **Dependencies:** none. 121.4 reads 121.1's output file if it exists and shows "not yet" if not.
 
-### 120.1 - D6 · NFL (ONE LAYER AWAY) · MODEL: Sonnet
-
-```
-WAVE 120 - BLOCK 120.1 - D6 - NFL LAYER 3 ON BOX ROWS; THE FOUR ONE-LAYER-AWAY NFL CELLS WIRED; D6 RECOUNT - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
-bind this block. Then read the newest results/*_d6_read.md and the W112 / W113 handoffs on NFL splits (grep 11_MEMORY_HANDOFF for "NFL"
-and "layer 3"). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_1.md.
-
-WHY: NFL is the starved sport (16 games a week; the season ends in January) and the cheapest D6 move on the board. NFL per layer on the
-box: 12, 12, 0, 9, 9, 9, 4. NFL_GAME_TOTAL T3, NFL_SPREAD T1, NFL_SPREAD T3 and NFL_TEAM_TOTAL T3 miss exactly layer 3, because no NFL box
-row carries split verdicts (layer 3 counts box rows: a stump = splits tested and logged with verdicts, kept or not).
-
-PART A - why layer 3 is 0 on the box
-1. The NFL splits from W112-W113 (13 cells) were scored on exploratory rows. Find where NFL shadow rows are written on the box and why
-   they carry no split fields or verdicts.
-
-PART B - NFL splits on box rows
-1. The NFL shadow writer logs, for every row, the split fields (point in time) and the cell's split verdicts (kept or not, from the
-   frozen scoring).
-2. Tests: no look-ahead; fields present; v1 routing unchanged.
-3. PR(s); merge on green.
-
-PART C - the count
-1. After deploy and one NFL slate of rows: d6_read. Report D6 NFL 0 -> N named, and the one cause for each unwired NFL cell.
-2. If a slate is not reached inside the block, say when the next one is, and that the window recounts then.
-
-Report: per COMMON RULES. MEASURE MOVED: D6 NFL 0 -> N (named); NFL layer 3 on box rows 0 -> N.
-END OF BLOCK 120.1
-```
-
-### 120.2 - DEPTH · ROUTER (CANDIDATE MAPS LOGGED BESIDE V1) · MODEL: Sonnet
+### 121.1 - PROOF (THE WEEKLY LOOK RUNS ITSELF) · MODEL: Sonnet
 
 ```
-WAVE 120 - BLOCK 120.2 - DEPTH - ROUTER V2, NBA_DEPTH AND NHL_V2 LOG THEIR ARM BESIDE V1 ON EVERY BOX ROW (SHADOW ONLY); NHL T1 LAYER 3 - MODEL: Sonnet
+WAVE 121 - BLOCK 121.1 - PROOF - WEEKLY LOOKS ON BOX ROWS FOR V1 AND EVERY CANDIDATE MAP, E-PROCESS CARRIED FORWARD; INSTALL PROPOSED - MODEL: Sonnet
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
-bind this block. Then read "Needs your decision" item 7 in 04_EXECUTION/ACTIVE_QUEUE.md (approved or not), and the W116.1, W119.1 and
-W119.2 handoffs. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_2.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read decision_trees/evidence/ (model, sequential, pipeline, calendar), 12_EXPLORATORY/evidence_design/RESULT.md
+and 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0620Z_W120_2.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_1.md.
 
-WHY: every candidate map since W116 is behind a switch that is off, so none earns evidence on box rows. Logging them beside v1 lets
-each be scored on the same forward rows v1 is, at no order risk.
+WHY: router v2's guarantee rests on weekly looks taken on schedule (cut Tuesday 10:00 UTC), and none runs. Since 11-19 every shadow row
+carries v1's arm and router_candidates {router_v2, nba_depth, nhl_v2}. This turns those rows into a dated verdict per leaf, every week.
 
-PART A - candidate arms on rows
-1. Every pregame shadow row records, beside v1's arm, the arm each candidate map would pick: router v2 (pooled + e-process), +nba_depth
-   (NBA), nhl_v2 (NHL). Record each with its map version and SHA. Orders keep following v1 only.
-2. Tests: v1 orders unchanged; candidate columns present; a map that errors logs ERROR with its message and never blocks the row.
-3. The switch that turns this on is decision 7 in the queue. If it is approved, turn it on for logging, deploy, and read rows back.
-   If not, ship the path OFF and say so.
+PART A - the runner
+1. evidence/weekly.py: on box rows settled through the cut, per sport and per map (v1, router_v2, +nba_depth, nhl_v2), compute per leaf
+   per arm the pooled posterior and the e-process, carried forward from the previous look's state file (never recomputed from scratch,
+   or the guarantee is void).
+2. Output: exp_output/EVIDENCE_WEEKLY/<date>.json plus a one-page summary - leaves that earned an arm, leaves that lost one, the
+   e-value leaders, and the power calendar refreshed.
+3. Tests: carried-forward state equals a single pass over all rows; a planted effect earns an arm in the expected week; a planted null
+   does not; a missed week is reported, never silently filled.
 
-PART B - NHL T1 layer 3
-1. NHL PUCK_LINE T1 misses only layer 3, and NHL T1 x 3 have no kept split on box rows. Log the W119.1 goalie and special-teams split
-   verdicts on NHL box rows, the same way 120.1 does for NFL. Coordinate on filter_supply.py by rebase, never overwrite.
+PART B - run it once and propose the schedule
+1. A read-only box task evidence_weekly_run that runs it now on box rows. Request it and report the first look.
+2. Write the install task (one cron line, Tuesday 10:00 UTC; readback, uninstall, budget probe, allowlist line, tests) and its approval
+   sentence in "Needs your decision". Do not run it.
+
+PART C - land
+1. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: P1 / P3 - leaves with an arm per map at the first look; next look date; the e-value leaders.
+END OF BLOCK 121.1
+```
+
+### 121.2 - D6 · NBA PROPS (THROUGH THE TREE) · MODEL: Sonnet
+
+```
+WAVE 121 - BLOCK 121.2 - D6 - NBA'S 12 PROP CELLS THROUGH THE TREE: MARKET STATE, PLAYER SPLITS, STUMPS, ROUTER V2 CANDIDATE (B-093) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read the newest results/*_d6_read.md (NBA props stop at layers 1-2), decision_trees/filters/nba_depth.py and the
+EXP-039 / 040 / 047 pre-registrations. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_2.md.
+
+WHY: NBA player props (points, rebounds, assists, threes) are 12 registered cells, logging since 11-12, with a model p from the engine.
+They stop at layer 2. Props are where public attention is thinnest; they are the board's least efficient family by the efficiency
+gradient.
+
+PART A - layer 2 and 3 for props
+1. Market state for prop rows from the prop price archive (installed 11-10): price, move, ladder gap, time to tip.
+2. Player-level splits, point in time from Muse's archive: minutes / usage trend, the opponent's defence at the player's shot zones (from
+   nba_depth's S2), pace, and rest. Pre-register them in 12_EXPLORATORY/nba_props_splits/PREREG.md before reading any result, then log
+   them on prop shadow rows with verdicts (the stump rule).
+
+PART B - arm per leaf
+1. Score the splits per leaf per arm on held-out prop rows, game-clustered.
+2. Add a props map to router_candidates (logged beside v1, under the same approved switch).
+3. Tests: no look-ahead; v1 untouched.
 
 PART C - land and count
 1. PR(s); merge on green.
-2. After deploy: d6_read, and a count of rows carrying candidate arms per sport.
+2. After deploy and one slate: d6_read. Report D6 for prop cells 0 -> N named, and the one cause for each unwired prop cell.
 
-Report: per COMMON RULES. MEASURE MOVED: box rows with candidate arms 0 -> N per map; D6 NHL 6 -> N.
-END OF BLOCK 120.2
+Report: per COMMON RULES. MEASURE MOVED: D6 props 0 -> N; prop splits tested / kept; B4 props families wired.
+END OF BLOCK 121.2
 ```
 
-### 120.3 - INFRA · IO (THE HELD 1.87 GB, AND A COMPRESSED MAC COPY) · MODEL: Sonnet
+### 121.3 - EXECUTION (WHAT EACH ARM IS WORTH) · MODEL: Sonnet
 
 ```
-WAVE 120 - BLOCK 120.3 - INFRA - HELD READERS READ .gz; THE MAC COPY STAYS COMPRESSED; DISK MEASURED (B-103) - MODEL: Sonnet
+WAVE 121 - BLOCK 121.3 - EXECUTION - CAPACITY AND DOLLAR CEILING PER ARM PER SPORT FROM LOGGED DEPTH AND FILLS (B-097) - MODEL: Sonnet
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0500Z_W119_4.md and
-results/20261119T0500Z_disk_retention_dryrun.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_3.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read the W117.1 and W119.3 handoffs and the newest results/*_arm_orders_read.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_3.md.
 
-WHY: the retention dry run frees 0 MB today. 1.87 GB (100 files) is held because three readers cannot read .gz yet:
-scripts/arm_orders_read.py, scripts/demo_fill_forward_report.py, and run_ride_board's reader side. And the Mac copy (7.2 GB, ~2 GB a
-month plain) would keep both the plain and the .gz copy of every file as the box compresses - the operator asked that it not balloon
-his storage.
+WHY: nobody has sized the prize. Since 11-18 every arm order logs the book at submit (best bid / ask, spread, depth at the touch). That,
+times net per contract, says what a wired cell is worth in dollars - which decides which cells deserve wiring first.
 
-PART A - the three readers
-1. Move each one to io_jsonl, with a test per reader on a .gz fixture.
-2. Then disk_retention_dryrun: the held bytes now freeable.
-3. Let the daily 14:17Z job apply it, or request one run; then disk_read. Report disk % before -> after.
+PART A - fillable size
+1. Per sport, family, band and arm: from depth at the touch at submit, and the price archive's depth samples, the contracts fillable
+   within 1 / 2 / 3 ticks of the touch, as a distribution (median, p25, p75) by time to start.
+2. State n per cell, and that depth is measured live at decision time (CLAUDE.md: never a constant).
 
-PART B - the Mac copy, compressed
-1. evidence_pull.sh compresses on the Mac whatever the box has compressed. Verify by the sha of the decompressed stream, then remove
-   the Mac's plain duplicate (Mac side only; the box is never touched).
-2. Older plain files on the Mac get the same treatment.
-3. Report the Mac folder size before -> after, and the projected growth per month compressed.
-4. Then ask the operator in chat: "Install the weekly evidence copy to your Mac (about N GB now, ~M MB a month)?" Load it only on his yes.
+PART B - the dollar ceiling
+1. Fillable size x net per contract per arm (the 117.1 estimates with their intervals; say where the interval spans 0), x opportunities
+   per day.
+2. Report $ / day at bankrolls of $1k, $10k and $100k, where size is capped by fillable depth and by the demo caps.
+3. Rank the cells by ceiling. The ranking orders future wiring; it is NOT a sizing rule. Kelly stays 0 and no real capital moves.
 
-PART C - what is left
-1. If the box is still above ~60%, list the top five remaining consumers with what each would take (compress / move off box / cut at
-   the writer). Do not act on any of them beyond this block's files.
+PART C - land
+1. Write 12_EXPLORATORY/capacity/RESULT.md and a machine-readable table the dashboards can read.
 2. PR(s); merge on green.
 
-Report: per COMMON RULES. MEASURE MOVED: PLUMBING - disk % before -> after; held bytes 1.87 GB -> 0; Mac folder GB before -> after;
-weekly job loaded yes / no.
-END OF BLOCK 120.3
+Report: per COMMON RULES. MEASURE MOVED: E-pillar - fillable contracts per cell (median); $ / day ceiling per arm per sport at three
+bankrolls; the top 10 cells by ceiling.
+END OF BLOCK 121.3
 ```
 
-### 120.4 - DOCS (THE DOCS MATCH THE DOCTRINE) · MODEL: Haiku
+### 121.4 - DASHBOARDS (THE OPERATOR SEES IT) · MODEL: Haiku
 
 ```
-WAVE 120 - BLOCK 120.4 - DOCS - STRATEGY_OVERVIEW AND ARCHITECTURE_OVERVIEW BODIES REWRITTEN TO DOCTRINE.md; SUPERSEDED PRS CLOSED (B-075) - MODEL: Haiku
+WAVE 121 - BLOCK 121.4 - DASHBOARDS - LIVE TERMINAL: CANDIDATE ARMS BESIDE V1, D6 PER SPORT, WEEKLY LOOKS, DISK AND MAC COPY; THE MAC JOB IF APPROVED - MODEL: Haiku
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W120.md` and quote its first line. Those rules
-bind this block. Read 02_ARCHITECTURE_DESIGN/DOCTRINE.md in full first: it wins every disagreement.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W120_4.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read scripts/web_dashboard.py's _router_arm / _arm_orders / _d6 helpers and Live Terminal.html's router, D6 and
+arm-orders panels (#491). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_4.md.
 
-WHY: STRATEGY_OVERVIEW.md and ARCHITECTURE_OVERVIEW.md still describe the bot as a model out-pricing the market. The doctrine
-(ADR-0077) is a router choosing an arm per leaf. Every terminal that reads them starts from the wrong picture.
+WHY: the operator watches the Live Terminal (Bloomberg look, full black, in-season sports only). It does not yet show what the
+candidate maps would do, D6 per sport, or the disk and the Mac copy.
 
-PART A - the two bodies
-1. Rewrite the BODY of each to match DOCTRINE.md. Keep their headings where they still fit, quote the operator verbatim where the
-   doctrine quotes him, link to DOCTRINE.md rather than restating it, and date a "Last reviewed" line.
-2. Never compress the operator's words, and never add a strategy the doctrine does not state.
+PART A - panels (match the existing look, no redesign)
+1. Candidate arms: per sport, today's rows - v1's arm vs router_v2 / nba_depth / nhl_v2. Agreement %, and the rows where they differ.
+2. D6 per sport from the newest d6_read (wired / registered, by name on hover).
+3. Weekly look: newest exp_output/EVIDENCE_WEEKLY/*.json summary if it exists; otherwise "first look not run yet".
+4. Box: disk % and days to 90% (healthcheck), and the last Mac copy (LAST_RUN.json time, files, sha match).
 
-PART B - pointers
-1. grep the repo for docs that point at either file for a claim the rewrite changed. Fix each pointer line, or list it.
+PART B - checks
+1. node --check on the page script; a Playwright screenshot at 1440 wide with no console errors.
+2. Tests for each new server helper.
+3. PR; merge on green.
 
-PART C - superseded PRs
-1. #477 (NFL label change, the window's) and #458 (W108.5 dashboard follow-HEAD): check whether main already contains or superseded
-   each change. If so, close it with a one-line comment saying where it landed.
-2. Leave #149 open (it holds unlanded GG-279 work).
-3. Docs-only commits straight to main where allowed; otherwise a PR, merged on green.
+PART C - the Mac weekly copy (only if the operator approved decision 8)
+1. If "Needs your decision" carries the operator's approval of the weekly evidence copy, run
+   scripts/ops/evidence_pull_launchd.sh install on this Mac, read it back (launchctl list), and say so.
+2. If not, do nothing.
 
-Report: per COMMON RULES. MEASURE MOVED: PLUMBING - docs out of line with DOCTRINE 2 -> 0; open PRs 3 -> 1.
-END OF BLOCK 120.4
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - panels added; Mac weekly job loaded yes / no.
+END OF BLOCK 121.4
 ```
 
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 120 — WRITTEN 2026-11-19 ~05:20 UTC · CLOSED 2026-11-19 ~06:30 UTC (operator 11-18 22:40 PT) · SW-9 · four blocks · moved: **candidate maps (router v2, nba_depth, nhl_v2) logged beside v1 on box rows (approved 21:19 PT); NFL split verdicts on box rows (D6 NFL recount on the 11-22 slate); held readers read .gz (1.87 GB → compressible); Mac copy 7.2 → 5.7 GB; strategy and architecture docs match the doctrine**
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 120.1 | D6 · NFL | NFL layer 3 on box rows | Sonnet | ✅ | filter_splits lacked the W113.2 NFL entries; late weather dropped filters on 25 / 150 rows; both fixed; recount after the 11-22 / 23 slate. |
+| 120.2 | depth · router | Candidate maps beside v1 | Sonnet | ✅ #534 #535 | router_candidates on every shadow row (ON); NBA 71 / NFL 73 rows in 72 h; NHL verdicts logged, not applied. |
+| 120.3 | infra · io | Held readers; Mac copy compressed | Sonnet | ✅ | Held 1.87 GB → 0; Mac 7.21 → 5.70 GiB (~100-150 MB / month); weekly job awaits the operator. |
+| 120.4 | docs | Docs to the doctrine; superseded PRs | Haiku | ✅ | STRATEGY / ARCHITECTURE overviews rewritten; #477 #458 closed. |
 
 ### ✅ WAVE 119 — WRITTEN 2026-11-18 ~06:30 UTC · CLOSED 2026-11-19 ~05:00 UTC (operator 11-18 21:01 PT) · SW-9 · four Sonnet blocks · moved: **D6 4 → 13 on the box (NBA 7, NHL 6); NHL store built (1,737 games); nba_depth wired behind its switch; registry = box (B1 60); ride-board log cut; FADE inside-spread forward test live; evidence copied off the box to the Mac (7.2 GB, sha-verified)**
 
