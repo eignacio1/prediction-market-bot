@@ -34,6 +34,10 @@ from datetime import datetime, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run_power_calc import z_for  # noqa: E402  (reuse project's own inverse-normal, not scipy)
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 DEPTH_DIR = "exp_output/PRICE_ARCHIVE"
 LEDGER = "logs/.vps_portfolio_cache_mlb_t4.json"
@@ -47,8 +51,8 @@ def parse_ts(s):
 
 def load_depth(family=None, series_tickers=None):
     rows = []
-    for fp in sorted(glob.glob(f"{DEPTH_DIR}/depth_*.jsonl")):
-        with open(fp) as f:
+    for fp in glob_files(f"{DEPTH_DIR}/depth_*.jsonl"):
+        with open_jsonl(fp) as f:
             for line in f:
                 try:
                     d = json.loads(line)

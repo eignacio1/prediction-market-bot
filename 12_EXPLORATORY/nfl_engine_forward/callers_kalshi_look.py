@@ -5,12 +5,16 @@ from pathlib import Path
 import numpy as np, pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _fence import safe_out
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 SCHED, ASOF, ARCH, OUT = sys.argv[1:5]
 MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
 rows = {}
-for f in sorted(glob.glob(f"{ARCH}/prices_2026-*.jsonl")):
-    for ln in open(f):
+for f in glob_files(f"{ARCH}/prices_2026-*.jsonl"):
+    for ln in open_jsonl(f):
         if '"KXNFLTEAMTOTAL"' not in ln:
             continue
         r = json.loads(ln)

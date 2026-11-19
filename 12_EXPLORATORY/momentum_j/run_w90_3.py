@@ -19,6 +19,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import core as K  # noqa: E402
 from _fence import safe_out  # noqa: E402
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 ET = ZoneInfo("America/New_York")
 _TK = re.compile(r"-(\d{2})([A-Z]{3})(\d{2})(\d{4})?")
@@ -65,8 +69,8 @@ def load_archive(archive: str, nfl_start: dict):
     """-> {ticker: (sport, series, event, start, [(ts,bid,ask)])} for MLB + NFL (pre-start, two-sided only)."""
     ser = defaultdict(list)
     meta = {}
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        with open(f) as fh:
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        with open_jsonl(f) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)

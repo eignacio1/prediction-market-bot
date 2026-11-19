@@ -35,32 +35,10 @@ JOURNAL_CAP = "200M"
 JOURNAL_DIR = "/var/log/journal"
 
 
-# ---------------------------------------------------------------- reader helpers (used by the readers named in each target)
-def dated_files(directory, pattern: str) -> list:
-    """Sorted paths (as the plain name, even when only ``.gz`` exists on disk) matching ``pattern`` in ``directory``; each once."""
-    base = str(Path(directory) / pattern)
-    names = {p for p in glob.glob(base)} | {p[:-len(GZ)] for p in glob.glob(base + GZ)}
-    return sorted(names)
-
-
-def resolve(path) -> str:
-    """The path that exists on disk: ``path`` if present, else ``path.gz``; FileNotFoundError when neither is."""
-    p = str(path)
-    if os.path.exists(p):
-        return p
-    if os.path.exists(p + GZ):
-        return p + GZ
-    raise FileNotFoundError(p)
-
-
-def open_text(path, mode: str = "r", **kw):
-    """Open ``path`` or ``path.gz`` in text mode (``'rb'`` for bytes). Read-only."""
-    real = resolve(path)
-    if real.endswith(GZ):
-        if "b" in mode:
-            return gzip.open(real, "rb")
-        return gzip.open(real, "rt", encoding=kw.get("encoding", "utf-8"))
-    return open(real, mode, **kw)
+# ---------------------------------------------------------------- reader helpers (implemented in io_jsonl; names kept for existing readers)
+from prediction_market_bot.io_jsonl import jsonl_files as dated_files  # noqa: E402,F401  (pattern WITHOUT .gz; plain names)
+from prediction_market_bot.io_jsonl import resolve  # noqa: E402,F401
+from prediction_market_bot.io_jsonl import open_jsonl as open_text  # noqa: E402,F401
 
 
 def read_bytes(path) -> bytes:
@@ -84,10 +62,18 @@ POLICY = (
     Target("kalshi_history_thin_raw", "exp_output/KALSHI_HISTORY/thin/raw_????-??-??.jsonl", 3, True,
            "same Store reader; kalshi_thin_history_fetch writes through Store"),
     Target("json_bak", "logs/*.json.bak", 14, True, "one-off migration backups; no reader"),
-    Target("price_archive", "exp_output/PRICE_ARCHIVE/prices_????-??-??.jsonl", 14, False,
-           "HELD: ~25 readers glob prices_*.jsonl (scripts/, nba_engine/live.py); teach them, then flip readers_verified"),
+    Target("price_archive", "exp_output/PRICE_ARCHIVE/prices_????-??-??.jsonl", 14, True,
+           "W119.4: every reader converted to io_jsonl (tests/test_w119_4_readers.py audits scripts/, 12_EXPLORATORY/, src/); the newest day stays plain"),
+    Target("price_archive_depth", "exp_output/PRICE_ARCHIVE/depth_????-??-??.jsonl", 14, True,
+           "W119.4: depth_* readers converted with prices_* (same audit)"),
+    Target("frozen_evidence_check_pre", "12_EXPLORATORY/frozen_evidence_check/_cache/pre/*/prices_????-??-??.jsonl", 7, True,
+           "W119.4: repro.py / resume.py / ladder_ride.load read via io_jsonl; subset + shard symlinks are made under the .gz name"),
     Target("kalshi_history_rebuilt", "exp_output/KALSHI_HISTORY/rebuilt_*/candles/*.jsonl", 14, False,
            "HELD: analytics/kalshi_history.py reads these by byte offset (seek)"),
+    Target("pregame_shadow_ledgers", "exp_output/PREGAME_SHADOW*/*.jsonl", 30, False,
+           "HELD: 29 readers incl. live appenders (pregame_shadow/ledger.py), silent_arms and calibration_engine tails; the .lock siblings show them open"),
+    Target("mlb_inplay_logs", "logs/t4_mlb_live*.log", 30, False,
+           "HELD: 'idle' is not provable from file age while the cron still appends; needs a season-gated reader audit (MLB returns 2027)"),
     Target("audit_ledgers", "logs/audit_*.jsonl", 30, False,
            "HELD: live audit ledgers, many readers; MLB is idle until 2027 but the files are append-open"),
 )

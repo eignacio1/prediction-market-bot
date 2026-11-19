@@ -2,6 +2,10 @@
 Read-only. Run on the box: ssh box "cd /opt/prediction-market-bot && nice python3 -" < spread_agg.py   (prints JSON, <60 KB).
 tts proxy = ticker date minus snapshot date (calendar days; game start time is not in the archive, see W103.2 INVENTORY)."""
 import glob, json, re, sys, datetime as dt, collections
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
 RX = re.compile(r"-(\d{2})([A-Z]{3})(\d{2})")
 BANDS = [(0.02, .10), (.10, .30), (.30, .50), (.50, .70), (.70, .90), (.90, .98)]
@@ -15,10 +19,10 @@ def tts(ev, day):
     n = (d - day).days
     return "D0" if n <= 0 else "D1" if n == 1 else "D2+"
 agg = collections.defaultdict(lambda: [0, 0.0, collections.Counter()])
-files = sorted(glob.glob("exp_output/PRICE_ARCHIVE/prices_*.jsonl"))
+files = glob_files("exp_output/PRICE_ARCHIVE/prices_*.jsonl")
 for fp in files:
     day = dt.date.fromisoformat(fp.split("prices_")[1][:10])
-    with open(fp) as fh:
+    with open_jsonl(fp) as fh:
         for line in fh:
             try: d = json.loads(line)
             except Exception: continue

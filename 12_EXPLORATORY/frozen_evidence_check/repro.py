@@ -29,6 +29,10 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from _fence import safe_out  # noqa: E402
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl, resolve  # W119.4: reads .jsonl or .jsonl.gz
 
 
 def under_fence(p: str) -> str:
@@ -49,7 +53,7 @@ NET_TOL = 0.0006  # reported nets are printed to 3 decimals (lo to 4)
 
 
 def archive_files(archive: str) -> list:
-    return sorted(glob.glob(os.path.join(archive, "prices_*.jsonl")))
+    return glob_files(os.path.join(archive, "prices_*.jsonl"))
 
 
 def file_date(path: str) -> str:
@@ -63,9 +67,10 @@ def subset(archive: str, until: str | None) -> str:
     d = under_fence(os.path.join("frozen_evidence_check", "_subset", f"until_{until}"))
     for f in archive_files(archive):
         if file_date(f) < until:
-            link = os.path.join(d, os.path.basename(f))
+            real = resolve(f)  # a day compressed by disk_retention is linked under its .gz name so readers still find it
+            link = os.path.join(d, os.path.basename(real))
             if not os.path.islink(link):  # safe_out() resolves a pre-existing link to its target, which is outside the fence
-                safe_out(link).symlink_to(os.path.abspath(f))
+                safe_out(link).symlink_to(os.path.abspath(real))
     return d
 
 
@@ -75,7 +80,7 @@ def inventory(archive: str) -> dict:
     files = archive_files(archive)
     rows, two_sided, hit_pre = Counter(), Counter(), 0
     for f in files:
-        with open(f) as fh:
+        with open_jsonl(f) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)
@@ -130,7 +135,7 @@ def fetch(archive: str, cache: str, budget_s: float = 780.0, workers: int = 4) -
     cache = under_fence(cache)
     events = set()
     for f in archive_files(archive):
-        with open(f) as fh:
+        with open_jsonl(f) as fh:
             for line in fh:
                 m = re.search(r'"event_ticker":\s*"([^"]+)"', line)
                 s = re.search(r'"series_ticker":\s*"([^"]+)"', line)

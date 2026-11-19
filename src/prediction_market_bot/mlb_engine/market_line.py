@@ -16,6 +16,8 @@ from typing import Dict, Optional, Tuple
 
 import pandas as pd
 
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
+
 MONTHS = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
 _EVENT = re.compile(r"^KX(?:MLBGAME|MLBTOTAL)-(\d\d)([A-Z]{3})(\d\d)(\d{4})([A-Z]+)$")
 _TEAMS = ("ATH ATL AZ BAL BOS CHC CIN CLE COL CWS DET HOU KC LAA LAD MIA MIL MIN NYM NYY PHI PIT SD SEA SF STL TB TEX TOR TWS WSH").split()
@@ -49,8 +51,8 @@ def parse_event(event_ticker: str) -> Optional[dict]:
 def last_pregame(archive_glob: str, cutoff_min: int = 10, series=("KXMLBGAME", "KXMLBTOTAL")) -> pd.DataFrame:
     """Per contract, the latest snapshot at least `cutoff_min` minutes before first pitch (never after)."""
     best: Dict[str, dict] = {}
-    for f in sorted(glob.glob(archive_glob)):
-        with open(f) as fh:
+    for f in glob_files(archive_glob):
+        with open_jsonl(f) as fh:
             for line in fh:
                 if not any(s in line for s in series):
                     continue

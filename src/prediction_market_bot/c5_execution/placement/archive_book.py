@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
+from prediction_market_bot.io_jsonl import open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 from prediction_market_bot.timeparse import parse_ts
 
 MAX_AGE = timedelta(minutes=30)
@@ -38,8 +39,8 @@ def load_ticks(archive_dir: Path, tickers: Iterable[str], days: Iterable[str]) -
     for day in sorted(set(days)):
         f = Path(archive_dir) / f"prices_{day}.jsonl"
         try:
-            fh = f.open()
-        except OSError:
+            fh = open_jsonl(f)
+        except OSError:  # FileNotFoundError is an OSError: a missing day is skipped
             continue
         with fh:
             for line in fh:

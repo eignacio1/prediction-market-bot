@@ -54,6 +54,7 @@ MAIN_TREE = Path("/Users/earlignacio/Documents/Claude/Projects/Prediction Market
 WORKTREE = Path(__file__).resolve().parent.parent
 
 sys.path.insert(0, str(MAIN_TREE / "src"))
+sys.path.insert(0, str(WORKTREE / "src"))  # W119.4: this checkout's io_jsonl wins over a main tree that predates it
 
 from prediction_market_bot.c1_signal_ingestion.nfl_ingestion import (  # noqa: E402
     NFLIngestionClient,
@@ -65,6 +66,7 @@ from prediction_market_bot.c1_signal_ingestion.nfl_team_stats_store import (  # 
     NFLTeamStatsStore,
 )
 from prediction_market_bot.c6_audit_logger.audit_logger import AuditLogger  # noqa: E402
+from prediction_market_bot.io_jsonl import jsonl_paths, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 OUT_DIR = WORKTREE / "exp_output" / "NFL"
 CACHE_DIR = OUT_DIR / "cache"
@@ -416,7 +418,7 @@ def _load_kxnflgame_rows(files: list[Path]) -> tuple[list[dict], dict[str, int]]
     kept = []
     unparsed_segments: dict[str, int] = {}
     for fp in files:
-        with fp.open() as fh:
+        with open_jsonl(fp) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)
@@ -470,7 +472,7 @@ def _load_kxnflgame_rows(files: list[Path]) -> tuple[list[dict], dict[str, int]]
 
 
 def load_nfl_closing_prices() -> list[dict]:
-    files = sorted((MAIN_TREE / "exp_output" / "PRICE_ARCHIVE").glob("prices_2026-*.jsonl"))
+    files = jsonl_paths((MAIN_TREE / "exp_output" / "PRICE_ARCHIVE"), "prices_2026-*.jsonl")
     files = [f for f in files if f.suffix == ".jsonl"]
     kept, _unparsed = _load_kxnflgame_rows(files)
 

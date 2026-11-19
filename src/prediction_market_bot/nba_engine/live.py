@@ -19,6 +19,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 from prediction_market_bot.c1_signal_ingestion import nba_factors as F, nba_point_in_time as P
 from prediction_market_bot.c1_signal_ingestion.nba_point_in_time import COMPLETION_BUFFER, ESPN_TO_NBA_ABBR
 from prediction_market_bot.nba_engine import engine as E, ratings as R, why as W
@@ -97,8 +98,8 @@ def engine_p(s: E.GameSample, parsed: dict) -> Optional[float]:
 
 def read_archive(day: str, archive_dir: Path = ARCHIVE_DIR) -> list:
     out = []
-    for f in sorted(glob.glob(str(archive_dir / f"prices_{day}.jsonl"))):
-        with open(f) as fh:
+    for f in glob_files(str(archive_dir / f"prices_{day}.jsonl")):
+        with open_jsonl(f) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)

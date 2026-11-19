@@ -20,6 +20,10 @@ from typing import Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _fence import safe_out  # noqa: E402
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
 TICK = re.compile(r"-(\d\d)([A-Z]{3})(\d\d)(\d{4})?")
@@ -85,8 +89,8 @@ def boot_median(groups: Dict[str, List[float]], reps: int = 300, seed: int = 86)
 
 def main(depth_glob: str, out_json: str) -> None:
     rows = []
-    for f in sorted(glob.glob(depth_glob)):
-        for line in open(f):
+    for f in glob_files(depth_glob):
+        for line in open_jsonl(f):
             try:
                 r = json.loads(line)
             except ValueError:

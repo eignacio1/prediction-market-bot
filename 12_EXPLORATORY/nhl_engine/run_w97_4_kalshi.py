@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _fence import safe_out  # noqa: E402
 from prediction_market_bot.nhl_engine import model  # noqa: E402
 from prediction_market_bot.quant import bayes_skill  # noqa: E402
+from prediction_market_bot.io_jsonl import jsonl_paths, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 ALIAS = {"NJD": "NJ", "SJS": "SJ", "TBL": "TB", "LAK": "LA"}
 GAP_MIN = 15
@@ -42,10 +43,10 @@ def engine_probs(frame: str) -> pd.DataFrame:
 
 def load_archive(d: Path, since: str) -> pd.DataFrame:
     rows = []
-    for f in sorted(d.glob("prices_2026-*.jsonl")):
+    for f in jsonl_paths(d, "prices_2026-*.jsonl"):
         if f.stem[-10:] < since[:10]:
             continue
-        with open(f) as fh:
+        with open_jsonl(f) as fh:
             for line in fh:
                 if '"KXNHL' not in line:
                     continue

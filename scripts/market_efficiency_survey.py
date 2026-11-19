@@ -19,14 +19,18 @@ import os
 import statistics as st
 from collections import defaultdict
 from datetime import datetime, timezone
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 DEFAULT_ARCHIVE = "exp_output/PRICE_ARCHIVE"
 
 
 def iter_price_rows(archive_dir: str):
     """Yield (filename, row) for every price row; raises on an unparseable line."""
-    for path in sorted(glob.glob(os.path.join(archive_dir, "prices_*.jsonl"))):
-        with open(path) as fh:
+    for path in glob_files(os.path.join(archive_dir, "prices_*.jsonl")):
+        with open_jsonl(path) as fh:
             for line in fh:
                 yield os.path.basename(path), json.loads(line)
 
@@ -100,8 +104,8 @@ def inventory(archive_dir: str) -> dict:
 
 def depth_inventory(archive_dir: str) -> dict:
     d = defaultdict(lambda: {"rows": 0, "tickers": set(), "days": set(), "usable": 0})
-    for path in sorted(glob.glob(os.path.join(archive_dir, "depth_*.jsonl"))):
-        with open(path) as fh:
+    for path in glob_files(os.path.join(archive_dir, "depth_*.jsonl")):
+        with open_jsonl(path) as fh:
             for line in fh:
                 r = json.loads(line)
                 a = d[r["series_ticker"]]

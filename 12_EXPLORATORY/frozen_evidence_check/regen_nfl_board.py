@@ -17,6 +17,10 @@ import os
 import runpy
 import sys
 import tempfile
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EXP = os.path.dirname(HERE)
@@ -31,8 +35,8 @@ def nfl_rows(archive: str, dest: str) -> int:
     import _fence
     n = 0
     with open(_fence.safe_out(dest), "w") as out:
-        for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-            with open(f) as fh:
+        for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+            with open_jsonl(f) as fh:
                 for line in fh:
                     if '"series_ticker": "KXNFL' in line or '"series_ticker":"KXNFL' in line:
                         out.write(line)

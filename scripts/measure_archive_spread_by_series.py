@@ -70,6 +70,7 @@ import statistics
 import sys
 from collections import defaultdict
 from datetime import datetime, timezone
+from prediction_market_bot.io_jsonl import glob_files  # W119.4: reads .jsonl or .jsonl.gz
 
 
 def parse_ts(s):
@@ -153,11 +154,11 @@ def summarize(vals):
 
 def run_spread(args):
     pattern = os.path.join(args.archive_dir, "prices_*.jsonl")
-    files = sorted(glob.glob(pattern))
+    files = glob_files(pattern)
     # Defensive: exclude anything whose name doesn't end exactly in .jsonl
     # (catches .BROKEN_FIRSTRUN and any similar future quarantine suffix
     # even though glob("*.jsonl") already excludes it structurally).
-    files = [f for f in files if f.endswith(".jsonl")]
+    files = [f for f in files if f.endswith(".jsonl")]  # glob_files lists .gz-only days under their plain name
 
     print(f"Found {len(files)} archive files matching prices_*.jsonl", flush=True)
 

@@ -30,6 +30,7 @@ from prediction_market_bot.decision_trees import leaf_map as lm  # noqa: E402
 from prediction_market_bot.decision_trees import ride  # noqa: E402
 from prediction_market_bot.decision_trees.router import NO_BET, Evidence, Situation, route  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 SERIES = ("KXNBAGAME", "KXNBASPREAD", "KXNBATOTAL", "KXNHLGAME", "KXNHLSPREAD", "KXNHLTOTAL",
           "KXNFLGAME", "KXNFLSPREAD", "KXNFLTOTAL")
@@ -51,12 +52,12 @@ API = "https://api.elections.kalshi.com/trade-api/v2/markets/"
 
 
 def decisions(archive: str, days: int):
-    files = sorted(glob.glob(os.path.join(archive, "prices_*.jsonl")))[-days:]
+    files = glob_files(os.path.join(archive, "prices_*.jsonl"))[-days:]
     ev = Evidence(ride=ride.load(), leaf_map=lm.default_map())
     prev = {}
     seen, out = set(), []
     for f in files:
-        for line in open(f):
+        for line in open_jsonl(f):
             r = json.loads(line)
             if r["series_ticker"] not in SERIES:
                 continue

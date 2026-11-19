@@ -29,6 +29,7 @@ sys.path.insert(0, str(REPO / "src"))
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 sys.path.insert(0, str(REPO / "12_EXPLORATORY"))
 from _fence import safe_out  # noqa: E402
+from prediction_market_bot.io_jsonl import jsonl_paths, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 HORIZONS = ("h1", "h5", "h30")
 SNAP_MIN_GAP_S = 120     # closer than this is the same snapshot burst
@@ -98,7 +99,7 @@ def summarize(rows: Iterable[dict], field: str, b: int = 2000) -> dict:
 # ---------------------------------------------------------------- Task 1: maker markouts
 
 def load_jsonl(path: Path) -> Iterable[dict]:
-    with open(path) as fh:
+    with open_jsonl(path) as fh:
         for line in fh:
             try:
                 yield json.loads(line)
@@ -157,7 +158,7 @@ def two_sided(rec: dict) -> Optional[Tuple[float, float]]:
 def snapshot_pairs(archive_dir: Path, first_day: str, families: Tuple[str, ...]) -> Iterable[Tuple[dict, dict]]:
     """Consecutive snapshots of one ticker, SNAP_MIN_GAP_S..SNAP_MAX_GAP_S apart, both two-sided."""
     last: Dict[str, dict] = {}
-    for path in sorted(archive_dir.glob("prices_20??-??-??.jsonl")):
+    for path in jsonl_paths(archive_dir, "prices_20??-??-??.jsonl"):
         if path.name[7:17] < first_day:
             continue
         for rec in load_jsonl(path):
@@ -221,7 +222,7 @@ def depth_report(archive_dir: Path, first_day: str, families: Tuple[str, ...], s
     """Share of depth samples where the touch holds a flat stake, per taker side. A YES taker lifts the NO bids
     (top_of_book_contracts['no']); a NO taker lifts the YES bids (['yes'])."""
     tot, ok, sizes = defaultdict(int), defaultdict(int), defaultdict(list)
-    for path in sorted(archive_dir.glob("depth_20??-??-??.jsonl")):
+    for path in jsonl_paths(archive_dir, "depth_20??-??-??.jsonl"):
         if path.name[6:16] < first_day:
             continue
         for r in load_jsonl(path):

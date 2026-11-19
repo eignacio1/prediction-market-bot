@@ -86,6 +86,10 @@ from mc_survivable_edge_sweep import (
     frontier_from_sweep, TARGET_PKILL, GRID_KELLY,
 )
 from mc_empirical_bootstrap import START_BANKROLL, KILL_DD, DAILY_BREAKER, SEED
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTCOME_STORE = ROOT / "logs" / "t4_mlb_totals_outcome_store.jsonl"
@@ -192,9 +196,9 @@ def build_family_fracs(family, series_ticker, games):
     """Scan PRICE_ARCHIVE, take first valid quote per ticker as entry price,
     join to resolved games, return (fracs_gross, fracs_net, dates_used)."""
     first_quote = {}  # ticker -> (mid_price, game_key, suffix)
-    files = sorted(glob.glob(PRICE_GLOB))
+    files = glob_files(PRICE_GLOB)
     for fn in files:
-        with open(fn) as f:
+        with open_jsonl(fn) as f:
             for line in f:
                 line = line.strip()
                 if not line:

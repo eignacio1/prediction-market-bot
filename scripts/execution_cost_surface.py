@@ -29,6 +29,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from market_efficiency_survey import (  # noqa: E402  (EXP-031, read-only reuse)
     N_BUCKETS, N_DRAWS, NULL_Q, SEED, _null_B, calib_gap,
 )
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[1] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl, resolve  # W119.4: reads .jsonl or .jsonl.gz
 
 # ------------------------------------------------------------------ frozen parameters (prereg §2-§7)
 TAU_EDGES = [-np.inf, 0, 1, 3, 6, 12, 24, 48, np.inf]
@@ -67,7 +71,7 @@ def parse_ticker_start(ticker: str):
 # ------------------------------------------------------------------ loading
 def load_archive(archive_dir: str) -> pd.DataFrame:
     parts = []
-    for path in sorted(glob.glob(os.path.join(archive_dir, "prices_*.jsonl"))):
+    for path in glob_files(os.path.join(archive_dir, "prices_*.jsonl")):
         parts.append(pd.read_json(path, lines=True, dtype=False))
     df = pd.concat(parts, ignore_index=True)
     for c in ["yes_bid", "yes_ask", "no_bid", "no_ask", "yes_mid", "half_spread"]:
@@ -447,7 +451,7 @@ def capacity(depth: pd.DataFrame, family: str, window_tickers=None) -> dict:
 
 
 def load_depth(archive_dir: str) -> pd.DataFrame:
-    parts = [pd.read_json(p, lines=True, dtype=False) for p in sorted(glob.glob(os.path.join(archive_dir, "depth_*.jsonl")))]
+    parts = [pd.read_json(resolve(p), lines=True, dtype=False) for p in glob_files(os.path.join(archive_dir, "depth_*.jsonl"))]
     d = pd.concat(parts, ignore_index=True)
     d["within_5c_usd_min_side"] = pd.to_numeric(d["within_5c_usd_min_side"], errors="coerce")
     return d

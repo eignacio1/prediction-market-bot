@@ -12,6 +12,10 @@ import urllib.request
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from _fence import safe_out  # noqa: E402
+import sys as _sys_io
+from pathlib import Path as _PathIO
+_sys_io.path.insert(0, str(_PathIO(__file__).resolve().parents[2] / "src"))
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 SERIES = ("KXNFLTOTAL", "KXNFLSPREAD", "KXNFLTEAMTOTAL", "KXMLBTOTAL", "KXMLBSPREAD", "KXMLBTEAMTOTAL")
 BASE = "https://api.elections.kalshi.com/trade-api/v2/"
@@ -28,8 +32,8 @@ def get(path):
 
 def main(archive, out):
     events = set()
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        for line in open(f):
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        for line in open_jsonl(f):
             r = json.loads(line)
             if r["series_ticker"] in SERIES:
                 events.add(r["event_ticker"])

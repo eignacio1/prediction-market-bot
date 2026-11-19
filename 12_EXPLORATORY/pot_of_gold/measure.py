@@ -15,6 +15,7 @@ import calib as C  # noqa: E402
 sys.path.insert(0, os.path.dirname(HERE))
 from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant import longshot_bias as L  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 TIGHT = 0.01
 MIN_GAMES_HELD = 20
@@ -36,8 +37,8 @@ def sport_of(series: str) -> str:
 
 def scan(archive):
     first = {}
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        with open(f) as fh:
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        with open_jsonl(f) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)

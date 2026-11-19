@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import calib as C  # noqa: E402
 from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant.money import fee_k007  # noqa: E402
+from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 TIGHT = 0.01  # half_spread <= 1c = deep/tight book class (archive records spread, not size)
 
@@ -32,8 +33,8 @@ def fnum(x):
 def scan(archive: str):
     """First two-sided pre-start snapshot per (ticker, tier); and per-ticker pre-start mid series for Part B."""
     first, series, meta = {}, defaultdict(list), {}
-    for f in sorted(glob.glob(os.path.join(archive, "prices_*.jsonl"))):
-        with open(f) as fh:
+    for f in glob_files(os.path.join(archive, "prices_*.jsonl")):
+        with open_jsonl(f) as fh:
             for line in fh:
                 try:
                     r = json.loads(line)
