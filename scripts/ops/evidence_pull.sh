@@ -83,6 +83,11 @@ PY
   fi
 fi
 cmp -s "$MAN/${STAMP}_box.sha256" "$MAN/${STAMP}_mac.sha256" || { log "MISMATCH: manifests differ after retry"; exit 1; }
+# W120.3: keep the Mac copy compressed - drop a plain file only when its .gz decompresses to the same bytes (Mac side only).
+SZ0="$(du -sh "$DEST" | cut -f1)"
+if [ "${EVIDENCE_NO_COMPACT:-0}" != "1" ]; then
+  python3 "$HERE/evidence_compact.py" "$DEST/data" || log "evidence_compact reported a kept-both or failed file (see above); the pull itself is verified"
+fi
 SZ="$(du -sh "$DEST" | cut -f1)"
 printf '{"utc":"%s","files":%s,"ok":true,"mismatch":0,"prefix_verified":%s,"size":"%s"}\n' "$STAMP" "$N" "$(printf %s "${PREFIX:-}" | grep -c . || true)" "$SZ" > "$DEST/LAST_RUN.json"
-log "OK: $N files, manifests match on both sides, $DEST = $SZ"
+log "OK: $N files, manifests match on both sides, $DEST = $SZ (before compaction $SZ0)"

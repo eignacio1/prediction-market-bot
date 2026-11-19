@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "12_EXPLORATORY" / "longshot_bias"))
 
+from prediction_market_bot import io_jsonl  # noqa: E402  B-103: archive days may be .gz
 from prediction_market_bot.decision_trees import ride, ride_orders  # noqa: E402
 from prediction_market_bot.decision_trees.router import (  # noqa: E402
     NO_BET, Evidence, Situation, book_classes, route)
@@ -50,13 +51,24 @@ def recent_mids(archive_dir: Path, tickers: set, now_ts: float, tail_bytes: int 
     """ticker -> [(epoch, yes_mid)] from the tail of the newest price-archive day file. No future rows."""
     from calib import parse_ts
     out: dict = {}
-    files = sorted(archive_dir.glob("prices_*.jsonl")) if archive_dir.exists() else []
+    files = io_jsonl.jsonl_paths(archive_dir, "prices_*.jsonl") if archive_dir.exists() else []  # B-103: plain or .gz
     for p in files[-1:]:
-        with open(p, "rb") as fh:
-            fh.seek(0, 2)
-            fh.seek(max(0, fh.tell() - tail_bytes))
-            fh.readline()
-            for line in fh:
+        with io_jsonl.open_jsonl(p, "rb") as fh:
+            if io_jsonl.resolve(p).endswith(io_jsonl.GZ):
+                # a gzip stream cannot seek from the end: keep the last tail_bytes of the decompressed stream
+                tail = b""
+                while True:
+                    chunk = fh.read(1 << 20)
+                    if not chunk:
+                        break
+                    tail = (tail + chunk)[-tail_bytes:]
+                lines = tail.split(b"\n")[1:] if len(tail) >= tail_bytes else tail.split(b"\n")
+            else:
+                fh.seek(0, 2)
+                fh.seek(max(0, fh.tell() - tail_bytes))
+                fh.readline()
+                lines = fh
+            for line in lines:
                 try:
                     r = json.loads(line)
                     t = r["ticker"]

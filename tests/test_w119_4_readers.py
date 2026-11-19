@@ -133,9 +133,8 @@ def test_repro_subset_links_a_gz_day_under_its_gz_name(tmp_path, monkeypatch):
 
 # ---- audit: no reader of the archive is left on a plain glob/open ---------------------------------------------------
 ARCHIVE_RE = re.compile(r"""(prices|depth)_(\*|\?\?|20\?\?|\{|2026-|\$\{)|PRICE_GLOB|ARCHIVE_GLOB""")
-# 119.3 files adopt the helper next wave (their inputs stay plain until then); writers; comments/docs; separate datasets.
+# W120.3: run_ride_board / arm_orders_read / demo_fill_forward_report moved to io_jsonl and left this list. Writers; comments/docs; separate datasets.
 ALLOW = {
-    "scripts/run_ride_board.py", "scripts/arm_orders_read.py", "scripts/demo_fill_forward_report.py",
     "scripts/archive_cron_install.py", "scripts/archive_market_prices.py", "scripts/box_tasks.py",
     "scripts/generate_project_state.py", "scripts/thin_market_depth_capture.py",
     "12_EXPLORATORY/quant_w103_prices/analyze.py", "12_EXPLORATORY/ladder_implied/part_b.py",  # already gz-aware

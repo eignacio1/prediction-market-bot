@@ -33,19 +33,21 @@ PRE, POST = "pre_epoch_yes_only", "post_epoch_all_sides"
 
 
 from prediction_market_bot.timeparse import parse_ts  # noqa: E402  GG-1934: one tolerant parser
+from prediction_market_bot import io_jsonl  # noqa: E402  B-103: the log may be stored plain or .gz
 
 
 def load_rows(path: Path) -> List[dict]:
     out: List[dict] = []
     try:
-        for line in path.read_text().splitlines():
-            try:
-                r = json.loads(line)
-            except ValueError:
-                continue
-            if isinstance(r, dict):
-                out.append(r)
-    except OSError:
+        with io_jsonl.open_jsonl(path) as fh:
+            for line in fh:
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
+                if isinstance(r, dict):
+                    out.append(r)
+    except (OSError, EOFError):
         pass
     return out
 

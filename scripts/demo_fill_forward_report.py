@@ -32,6 +32,7 @@ sys.path.insert(0, str(REPO / "src"))
 from prediction_market_bot.atomic_io import atomic_write_text  # noqa: E402  GG-754
 from prediction_market_bot.c5_execution.demo_fill_policy import is_venue_transient  # noqa: E402  GG-841
 from prediction_market_bot.timeparse import parse_ts  # noqa: E402  GG-1934 (box is Python 3.9)
+from prediction_market_bot import io_jsonl  # noqa: E402  B-103: logs may be stored plain or .gz
 
 JUDGED_N = 550
 WEEKS = 8
@@ -95,15 +96,18 @@ def _ts(r: dict) -> Optional[datetime]:
 
 def load_events(path: Path) -> list[dict]:
     out: list[dict] = []
-    if not path.exists():
+    try:
+        fh = io_jsonl.open_jsonl(path)
+    except FileNotFoundError:
         return out
-    for line in path.read_text().splitlines():
-        try:
-            r = json.loads(line)
-        except ValueError:
-            continue
-        if isinstance(r, dict) and _ts(r) is not None:
-            out.append(r)
+    with fh:
+        for line in fh:
+            try:
+                r = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(r, dict) and _ts(r) is not None:
+                out.append(r)
     return out
 
 
@@ -301,13 +305,13 @@ def _diff(t: Optional[dict], c: Optional[dict]) -> Optional[dict]:
 def load_markouts(path: Path) -> list[dict]:
     rows: list[dict] = []
     try:
-        with open(path) as fh:
+        with io_jsonl.open_jsonl(path) as fh:
             for line in fh:
                 try:
                     rows.append(json.loads(line))
                 except ValueError:
                     continue
-    except OSError:
+    except (OSError, EOFError):
         pass
     return rows
 
