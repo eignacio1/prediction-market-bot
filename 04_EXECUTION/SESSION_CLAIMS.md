@@ -1327,3 +1327,4 @@
 | 2026-11-19T04:46:01Z | W119.3 | CLOSED — merge confirmed, HEAD (cf9a381) is ancestor of origin/main — ride-board log cut, FADE inside-spread forward test, GG-1943; merged, on box |
 | 2026-11-19T04:47:18Z | W119.3 | CLOSED — merge confirmed, HEAD (81fcae6) is ancestor of origin/main — ride-board log cut, FADE inside-spread forward test, GG-1943; merged, on box |
 | 2026-11-19T04:55:04Z | W119.4 | CLOSED — W119.4: verified evidence copy on the Mac (5827 files, 7.2 GB, sha256 match both sides); io_jsonl + ~45 readers; retention compresses PRICE_ARCHIVE/depth/frozen_evidence_check; merged (#529) (commit `28aca5c`) |
+| 2026-11-19T04:55:25Z | W119.4 | CLOSED — merge confirmed, HEAD (73e17c7) is ancestor of origin/main — evidence copy verified, readers .gz, retention extended, merged #529 |
