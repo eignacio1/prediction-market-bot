@@ -1,5 +1,23 @@
 # Handoff W120.3 - held readers read .gz; Mac copy compressed; disk measured (PLUMBING)
 
+<!-- session-meta
+task_id: W120.3
+tier: MICRO
+timestamp: 2026-11-19T05:30:00Z
+commit: e39bf49 (PR #531 merged on green; handoff pushed direct to main)
+one_line_summary: W120.3: three held readers read .gz, Mac evidence copy compacted 7.21->5.70 GiB, box disk still 74% until the 14:17Z retention apply (~63% expected); weekly Mac job awaits operator yes.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: box disk %; held bytes; Mac folder GB
+gap_delta: held 1.87 GB -> 0 (readers); Mac 7.21 -> 5.70 GiB; box disk 74% -> 74% (apply pending 14:17Z)
+pattern_sweep: plain open() on *.jsonl swept in src/ scripts/ tests/ deploy/ .claude/; only writers remain allowed
+surface_delta: 0
+directive_conflicts: none
+-->
+
+
 Common rules quoted: "# Wave 120 common rules". Branch w120-3-box, PR #531 merged on green. Box HEAD f1380fb contains it.
 
 - vision_pillar: PLUMBING (infra, B-103)
