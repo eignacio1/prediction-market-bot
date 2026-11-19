@@ -92,4 +92,17 @@ def nhl_filters(home: Mapping, away: Mapping) -> dict:
     # deployment: top-heavy (high top_share) = depth-light; goodness of depth is the inverse
     out["deployment@side"] = side_leaf(home.get("top_share"), away.get("top_share"), higher_is_better=False)
     out["deployment@total"] = total_leaf(home.get("top_share"), away.get("top_share"))
+    # W119.1 goalie (season-level, last completed starter, shrunk save rate; league percentile, higher = better goalie)
+    gh_, ga_ = home.get("goalie_sv"), away.get("goalie_sv")
+    out["goalie@side"] = side_leaf(gh_, ga_)
+    out["goalie@total"] = total_leaf(None if not _ok(gh_) else 1.0 - gh_, None if not _ok(ga_) else 1.0 - ga_)   # weak goalies = high total
+    # W119.1 special teams: goodness = own power-play scoring percentile and (inverted) penalty-minutes percentile
+    ph_, pa_, mh_, ma_ = home.get("pp_for"), away.get("pp_for"), home.get("pim_taken"), away.get("pim_taken")
+    sth = None if not _ok(ph_, mh_) else (ph_ + (1.0 - mh_)) / 2.0
+    sta = None if not _ok(pa_, ma_) else (pa_ + (1.0 - ma_)) / 2.0
+    out["special_teams@side"] = side_leaf(sth, sta)
+    # total lean: more penalties and more power-play scoring = more goals (both teams' mean percentile of pp_for and pim_taken)
+    th = None if not _ok(ph_, mh_) else (ph_ + mh_) / 2.0
+    ta = None if not _ok(pa_, ma_) else (pa_ + ma_) / 2.0
+    out["special_teams@total"] = total_leaf(th, ta)
     return out

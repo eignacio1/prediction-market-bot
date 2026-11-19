@@ -176,14 +176,18 @@ def _nhl_state(store: str):
     # shift time per (game, team, skater) is all deployment_rolling sums; aggregating per file keeps one season's raw shifts at most
     sh = load("shifts", ["game_id", "team_id", "player_id", "duration_s"],
               agg=lambda d: d.groupby(["game_id", "team_id", "player_id"], as_index=False)["duration_s"].sum())
+    box = load("box_players", ["game_id", "season", "team_id", "player_id", "group", "toi_s", "pim", "pp_goals", "shots_against",
+                               "saves", "starter"])      # W119.1: goalie + special-teams classes; absent box = those leaves "unknown"
     if g is None or ev is None or sh is None:
         v = None
     else:
         g = g.drop_duplicates("game_id", keep="last")
         look = {(r.game_date_et, r.away, r.home): int(r.game_id) for r in g.itertuples()}
         v = {"fx": fx, "g": g.set_index("game_id"), "look": look, "sched": fx.schedule_context(g).set_index(["game_id", "team_id"]),
-             "q": fx.shot_quality_rolling(ev, g), "d": fx.deployment_rolling(sh, g)}
-        del ev, sh
+             "q": fx.shot_quality_rolling(ev, g), "d": fx.deployment_rolling(sh, g),
+             "gl": fx.goalie_rolling(box, g) if box is not None else None,
+             "stt": fx.special_teams_rolling(box, g) if box is not None else None}
+        del ev, sh, box
     _NHL_STATE.clear()
     _NHL_STATE.update(key=key, v=v)
     return v
@@ -203,7 +207,7 @@ def nhl_game_id(event_ticker: str, look: dict) -> Optional[int]:
 
 
 def nhl_filters_for_row(row: dict, store: Optional[str] = None) -> Optional[dict]:
-    """The eight NHL filter leaves (nhl_engine.filters.nhl_filters) for a shadow row's game, from facts known before puck drop:
+    """The twelve NHL filter leaves (nhl_engine.filters.nhl_filters) for a shadow row's game, from facts known before puck drop:
     schedule context plus as-of rolling shot quality / deployment and league percentiles at the start time (factors_w112.asof
     carries the point-in-time buffer). None when the game is not in the compiled store (the supply says why)."""
     import pandas as pd
@@ -223,11 +227,14 @@ def nhl_filters_for_row(row: dict, store: Optional[str] = None) -> Optional[dict
         vals = {t: fx.asof(state, int(t), start, (col,)).get(col) for t in state["team_id"].unique()}
         ser = pd.Series({t: v for t, v in vals.items() if v is not None})
         return ser.rank(pct=True, method="average").to_dict() if len(ser) >= 8 else {}
-    p = {"hd_for": pct(st["q"], "hd_for"), "hd_against": pct(st["q"], "hd_against"), "top_share": pct(st["d"], "top_share")}
+    p = {"hd_for": pct(st["q"], "hd_for"), "hd_against": pct(st["q"], "hd_against"), "top_share": pct(st["d"], "top_share"),
+         "goalie_sv": pct(st["gl"], "goalie_sv") if st.get("gl") is not None else {},
+         "pp_for": pct(st["stt"], "pp_for") if st.get("stt") is not None else {},
+         "pim_taken": pct(st["stt"], "pim_taken") if st.get("stt") is not None else {}}
     sides = {}
     for side, tid in (("home", r["home_team_id"]), ("away", r["away_team_id"])):
         sd = st["sched"].loc[(gid, tid)].to_dict()
-        for k in ("hd_for", "hd_against", "top_share"):
+        for k in p:
             sd[k] = p[k].get(tid)
         sides[side] = sd
     st["memo"][gid] = nhl_filters(sides["home"], sides["away"])

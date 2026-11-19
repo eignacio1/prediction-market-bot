@@ -55,7 +55,8 @@ def load_store(store):
     g = pd.concat([pd.read_parquet(p) for p in sorted(glob.glob(f"{store}/games_202[56].parquet"))], ignore_index=True)
     ev = pd.concat([pd.read_parquet(p) for p in sorted(glob.glob(f"{store}/events_202[56].parquet"))], ignore_index=True)
     sh = pd.concat([pd.read_parquet(p) for p in sorted(glob.glob(f"{store}/shifts_202[56].parquet"))], ignore_index=True)
-    return g.drop_duplicates("game_id", keep="last"), ev, sh
+    bx = pd.concat([pd.read_parquet(p) for p in sorted(glob.glob(f"{store}/box_players_202[56].parquet"))], ignore_index=True)
+    return g.drop_duplicates("game_id", keep="last"), ev, sh, bx
 
 
 def game_lookup(g):
@@ -83,21 +84,26 @@ def percentiles(state, start, col):
     return s.rank(pct=True, method="average").to_dict() if len(s) >= 8 else {}
 
 
-def build_leaves(g, ev, sh, gids):
+def build_leaves(g, ev, sh, gids, bx=None):
     sched = fx.schedule_context(g).set_index(["game_id", "team_id"])
     q = fx.shot_quality_rolling(ev, g)
     d = fx.deployment_rolling(sh, g)
+    gl = fx.goalie_rolling(bx, g) if bx is not None else None
+    stt = fx.special_teams_rolling(bx, g) if bx is not None else None
     g = g.set_index("game_id")
     out = {}
     for gid in sorted(gids):
         r = g.loc[gid]
         start = pd.Timestamp(r["start_time_utc"])
         pct = {"hd_for": percentiles(q, start, "hd_for"), "hd_against": percentiles(q, start, "hd_against"),
-               "top_share": percentiles(d, start, "top_share")}
+               "top_share": percentiles(d, start, "top_share"),
+               "goalie_sv": percentiles(gl, start, "goalie_sv") if gl is not None else {},
+               "pp_for": percentiles(stt, start, "pp_for") if stt is not None else {},
+               "pim_taken": percentiles(stt, start, "pim_taken") if stt is not None else {}}
         sides = {}
         for side, tid in (("home", r["home_team_id"]), ("away", r["away_team_id"])):
             s = sched.loc[(gid, tid)].to_dict()
-            for k in ("hd_for", "hd_against", "top_share"):
+            for k in pct:
                 s[k] = pct[k].get(tid)
             sides[side] = s
         out[gid] = nhl_filters(sides["home"], sides["away"])
@@ -162,12 +168,12 @@ def score(rows, leaves_of):
 def main():
     scratch, store = sys.argv[1], sys.argv[2]
     rows = load_rows(scratch)
-    g, ev, sh = load_store(store)
+    g, ev, sh, bx = load_store(store)
     look = game_lookup(g)
     for r in rows:
         r["_gid"] = row_game(r, look)
     matched = [r for r in rows if r["_gid"]]
-    leaves_of = build_leaves(g, ev, sh, {r["_gid"] for r in matched})
+    leaves_of = build_leaves(g, ev, sh, {r["_gid"] for r in matched}, bx)
     for r in rows:
         r["_lv"] = leaves_of.get(r["_gid"])
     res, nfit, ntest = score(rows, leaves_of)
