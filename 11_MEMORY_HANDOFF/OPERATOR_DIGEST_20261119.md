@@ -7,3 +7,10 @@ NBA depth splits (matchup, rest, refs-style factors) are now wired into the rout
 - The daily spending caps still block thousands of orders (about 5,000 RIDE, 2,000 each FADE and MOMENTUM) even after we raised them. Needs a look.
 - The ride-board log is cut to what readers use; the real size saving shows up in about two days.
 - Main's guard check was red from another window's gap cleanup; I fixed it with a generated file.
+
+## W119.4 — your evidence is now copied off the server
+- Your price history, Kalshi history and settled records now have a second copy on your Mac (about 7.2 GB, 5,827 files). I checked every file against the server's copy and they match.
+- Nothing was deleted anywhere. Once the server deploys the new code, it will start compressing old price days to free space. I don't yet know how much that frees, so I can't say the server will reach 50%.
+- Two groups of files stay uncompressed for now because I couldn't prove every program reading them handles compressed files.
+- Needs your yes: install the weekly copy to your Mac (about 2 GB a month)? It is written but not switched on.
+- Pillar moved: plumbing (evidence safety). No real money involved.

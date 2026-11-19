@@ -2,7 +2,7 @@
 task_id: W119.4
 tier: STANDARD
 timestamp: 2026-11-19T05:00:00Z
-commit: 1e7ff0b
+commit: 28aca5c
 one_line_summary: W119.4: verified evidence copy on the Mac (5827 files, 7.2 GB, sha256 match both sides); io_jsonl + ~45 readers; retention compresses PRICE_ARCHIVE/depth/frozen_evidence_check; merged (#529)
 gg_touched: none
 adr_touched: none

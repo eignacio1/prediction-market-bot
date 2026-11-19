@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-19T04:50:00Z (W119.2 — W119.2: NBA depth splits wired behind switch, 12 NBA game cells SHADOW in code, layer-4 stump rule; D6 NBA 4 -> 7 (PR #527)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0120Z_W119_2.md` for full session detail.
+**Last reviewed:** 2026-11-19T05:00:00Z (W119.4 — W119.4: verified evidence copy on the Mac (5827 files, 7.2 GB, sha256 match both sides); io_jsonl + ~45 readers; retention compresses PRICE_ARCHIVE/depth/frozen_evidence_check; merged (#529)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0500Z_W119_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
