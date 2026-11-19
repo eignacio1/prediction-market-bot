@@ -1,0 +1,17 @@
+# Box task `deploy_truth_read` — 20261119T0521Z_deploy_truth_read
+
+- request: `04_EXECUTION/BOX_TASKS/requests/20261119T0521Z_deploy_truth_read.toml`
+- note: W120.3 post-merge (#531 db49430): is the box on it before the dry run
+- ran: 2026-11-19T05:21:52Z on root@157.230.91.33:/opt/prediction-market-bot
+- exit code: 0
+- command (allowlisted, scripts/box_tasks.py): `git log -1 --format='box HEAD %h %cI %s'; python3 scripts/ops/deploy_truth.py check`
+
+```
+box HEAD 525f4c08 2026-11-18T21:17:43-08:00 Session close: W120.4 — CLOSED (handoff, nav chains, claim row, digest)
+DEPLOY TRUTH (W72.3 / GG-661, GG-668: merge != deploy != activation; alarm-only):
+  OK deploy status: deployed at 2026-11-19T05:18:49Z
+  OK box HEAD 525f4c08 = origin/main
+  OK t4-mlb runs box HEAD code (525f4c08; started 2026-11-19T04:24:51Z)
+  OK pmbot-web-dashboard runs box HEAD code (525f4c08; started 2026-11-19T05:18:48Z)
+
+```
