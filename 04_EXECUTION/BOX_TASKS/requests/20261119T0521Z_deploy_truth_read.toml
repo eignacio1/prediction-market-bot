@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W120.3 post-merge (#531 db49430): is the box on it before the dry run"
