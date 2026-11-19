@@ -55,7 +55,7 @@ Band assignment is a structural requirement for all strategies (ADR reference: D
 3. DS sign-off obtained (APR-XXXX)
 4. `band_status` updated in `execution_bands.py` BAND_REGISTRY
 5. `BAND_REGISTRY.validate()` passes with zero violations
-6. STRATEGY_OVERVIEW.md Band Assignment Registry table updated
+6. EXECUTION_BANDS.md § Live Registry updated (the STRATEGY_OVERVIEW.md band table was retired 2026-11-18, W120.4)
 
 ---
 

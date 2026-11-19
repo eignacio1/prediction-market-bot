@@ -87,8 +87,8 @@ only the test closes).
 | `CLAUDE.md` | read first by every session: Right now (generated block checked against code, `scripts/claude_md_now.py`), architecture, north star, rules | 2026-11-11 (lean rewrite) |
 | `02_ARCHITECTURE_DESIGN/DOCTRINE.md` | this file | 2026-11-11 |
 | `03_DECISIONS/ADR-0077_multi-arm-routing-doctrine.md` | the multi-arm routing rule | 2026-11-11 |
-| `02_ARCHITECTURE_DESIGN/STRATEGY_OVERVIEW.md` | strategy history and the strategies A-J | 2026-11-11 (banner; body pre-dates §1) |
-| `02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md` | system components | 2026-11-11 (banner) |
+| `02_ARCHITECTURE_DESIGN/STRATEGY_OVERVIEW.md` | strategy history and the strategies A-J | 2026-11-18 (body rewritten, W120.4) |
+| `02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md` | system components | 2026-11-18 (body rewritten, W120.4) |
 | `02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md` | the router | 2026-11-11 (banner) |
 | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` | the coverage target | 2026-11-11 (banner) |
 | `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` | bands, live registry | 2026-11-11 (banner) |
