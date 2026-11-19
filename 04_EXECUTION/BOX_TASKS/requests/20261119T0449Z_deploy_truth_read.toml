@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W119.1: is ea75451 (nhl_v2 map, goalie/ST splits) on the box"
