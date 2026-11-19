@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W119.1: is #524 deployed before refresh_once"
