@@ -1,0 +1,2 @@
+task = "disk_retention_dryrun"
+note = "W119.4 post-merge (#529): bytes the extended policy (price_archive, depth, frozen_evidence_check) would free; read-only"
