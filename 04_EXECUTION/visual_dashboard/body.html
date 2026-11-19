@@ -122,7 +122,7 @@
         <li><b>NFL v1 per-leaf arms</b> — −2.0¢ a row held out; NFL per-leaf demo orders routed to NO BET (approved 11-17).</li>
         <li><b>NHL momentum on the open-to-close move</b> — no information past the close (117.2).</li>
         <li><b>Ride every favourite</b> — −2.6¢ a row held out.</li>
-        <li><b>MLB pre-game model vs market</b> (EXP-029) and <b>NFL game total T1 + T2</b> — fade arm closed, routed to ride.</li>
+        <li><b>MLB pre-game model vs market</b> (EXP-029) and <b>NFL game total T1 + T2</b> — hypothesis closed (EXP-029 / EXP-037, parked for R&D); routed to ride / no bet.</li>
         <li><b>The 39-row edge map</b> — no single pattern is a bet by itself after costs; each is a routing input.</li>
       </ul>
     </div>
@@ -203,7 +203,7 @@
       <h3>EXP-029 — the first market verdict</h3>
       <div class="cap">Frozen EXP-028 model vs the Kalshi KXMLBHIT market. Pre-registered, scored once behind a lock file.</div>
       <dl class="kv">
-        <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">Fade arm closed (routed)</dd>
+        <dt>Verdict</dt><dd style="color:var(--crit); font-weight:650">Hypothesis closed (EXP-037, parked for R&D)</dd>
         <dt>ΔBrier (market − model)</dt><dd>−0.00393 &nbsp;[−0.00629, −0.00152]</dd>
         <dt>Brier — market / model</dt><dd>0.2238 / 0.2277</dd>
         <dt>Test set</dt><dd>1,316 rows · 215 games</dd>
@@ -218,7 +218,7 @@
       <div class="cap">EXP-037: 12 shadow cells (moneyline, spread, total, team total × T1–T3), frozen team-rate model.</div>
       <dl class="kv">
         <dt>Cells scored</dt><dd>12</dd>
-        <dt>Fade arm closed (routed)</dt><dd style="color:var(--crit); font-weight:650">2 — game total T1 + T2 (~0.016 Brier behind the market)</dd>
+        <dt>Hypothesis closed (parked for R&D)</dt><dd style="color:var(--crit); font-weight:650">2 — game total T1 + T2 (~0.016 Brier behind the market)</dd>
         <dt>Keep accruing</dt><dd style="color:var(--warn); font-weight:650">10 — slightly behind the market, ahead of a naive baseline</dd>
         <dt>Candidate</dt><dd>0</dd>
         <dt>Next looks</dt><dd>11-13 (QB moneyline) · second looks 12-14 .. 01-09</dd>
@@ -294,7 +294,7 @@
       <span><b style="background:color-mix(in srgb,var(--s1) 17%,var(--surface-2))"></b>Defined, not implemented</span>
       <span><b style="background:var(--crit)"></b>BLOCKED</span>
       <span><b style="background:var(--surface-3); border:1px solid var(--axis)"></b>DARK / frozen</span>
-      <span><b style="background:repeating-linear-gradient(135deg,var(--crit) 0 3px,var(--surface-3) 3px 6px)"></b>FADE ARM CLOSED (ROUTED)</span>
+      <span><b style="background:repeating-linear-gradient(135deg,var(--crit) 0 3px,var(--surface-3) 3px 6px)"></b>HYPOTHESIS CLOSED (PARKED FOR R&D)</span>
       <span><b style="border:1px dashed var(--hair-2); background:transparent"></b>Not in registry</span>
     </div>
   </div>

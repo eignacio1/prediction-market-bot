@@ -22,7 +22,7 @@ const F = [
   {g:"vs the market — a routing input, not the verdict",
    rows:[
     {l:"EXP-029 · MLB pre-game model vs Kalshi KXMLBHIT", s:"215 games · 1,316 rows · frozen model, scored once",
-     m:-0.00393, lo:-0.00629, hi:-0.00152, v:"FADE ARM CLOSED", c:"crit"},
+     m:-0.00393, lo:-0.00629, hi:-0.00152, v:"HYPOTHESIS CLOSED (PARKED FOR R&D)", c:"crit"},
     {l:"W61.3 · NFL frozen model vs Kalshi mid, 2025", s:"182 games · exploratory, not a pre-registered verdict",
      m:-0.0068, lo:-0.0227, hi:0.0094, v:"NO DETECTABLE DIFF", c:"warn"},
    ]},
@@ -80,7 +80,7 @@ const MXNOTE = {
 const ARMS = [
   ["Router arm orders (ADR-0072)","—","Demo orders, real fills","good","ADR-0072 + 11-12 addendum","placement re-fit as spreads accumulate","RIDE 279 / 39, MOMENTUM 96 / 20, FADE 111 / 6 since 11-06; none clears zero after costs yet"],
   ["Router v2 (pooled + sequential)","—","Frozen, logging switch waits on you","warn","W116.1 pre-registration","weekly looks, Tue 10:00 UTC","Arms no leaf held out; first earned arm 2027 at realistic edges"],
-  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","Per-leaf orders routed to NO BET (11-17); total T1 + T2 fade arm closed"],
+  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","Per-leaf orders routed to NO BET (11-17); total T1 + T2 hypothesis closed (EXP-037, parked for R&D)"],
   ["NFL engine (board)","—","Frozen forward test","good","EXP-045","01-12","Prices moneyline / spread / total from one simulation"],
   ["NBA game markets",12,"Logging · 4 wired (D6)","good","EXP-038","second look: definition due before January","Draft definition waiting on you (GG-529); depth splits in build (118.2)"],
   ["NBA engine v1 / v2 / v3",3,"Logging","good","EXP-044 / 044b / 044c","blend test 12-29 .. 02-15","Moneyline and team totals now priced from the same simulation (117.3)"],
@@ -102,7 +102,7 @@ const CAL = [
 
 const WAVES = [
   {w:"29–42", k:"neg", t:"Instruments built; both standing hypotheses negative.",
-   d:"Pre-registration, a game-clustered A/B harness and a fail-closed evidence predicate. Then the tests: <b>EXP-029</b> — the MLB pre-game model priced behind the market (fade arm closed, routed) — and <b>EXP-030</b>: a deeper in-play tree is indistinguishable from the 3-scalar one."},
+   d:"Pre-registration, a game-clustered A/B harness and a fail-closed evidence predicate. Then the tests: <b>EXP-029</b> — the MLB pre-game model priced behind the market (hypothesis closed, EXP-029, parked for R&D) — and <b>EXP-030</b>: a deeper in-play tree is indistinguishable from the 3-scalar one."},
   {w:"43–48", k:"hit", t:"From one cell to a board.",
    d:"The NHL arm becomes the first new arm flying (47.3). NFL and MLB postseason game markets — 24 cells — built and pre-registered (47.2). Candle reconstruction passes Gate 2 7/7 on KXMLBTOTAL. Blocks ran ~2 h, so block-size rules were introduced."},
   {w:"49–52", k:"", t:"Landing, and the kill-switch truth.",
@@ -148,7 +148,7 @@ const WAVES = [
   {w:"90–94", k:"hit", t:"The router and the frozen forward tests.",
    d:"Decision-tree router (ride / fade / momentum). <b>11 ride cells pre-registered</b> (EXP-042); ADR-0076 accepted; price archive 2 → 4 sports; NBA and NFL engines on frozen forward tests (EXP-044 / 045)."},
   {w:"95–100", k:"neg", t:"NBA engine prices real games; the first verdicts.",
-   d:"NBA engine v1/v2/v3 live. <b>NFL first look 11-02: 2 cells' fade arm closed (routed), 10 keep accruing</b>. OOM kills 142 / day → 0 after the lock. Muse archive tested in an engine: null."},
+   d:"NBA engine v1/v2/v3 live. <b>NFL first look 11-02: 2 cells' hypothesis closed (EXP-037, parked for R&D), 10 keep accruing</b>. OOM kills 142 / day → 0 after the lock. Muse archive tested in an engine: null."},
   {w:"101–103", k:"neg", t:"ADOPT, then not.",
    d:"NFL forward test printed ADOPT — then <b>NO-side orders were found mirror-priced (GG-1771)</b>; on clean fills INCONCLUSIVE, clock restarted 11-06. NBA misses root-caused (memory) and fixed."},
   {w:"104–106", k:"neg", t:"The cost wall.",
@@ -289,7 +289,7 @@ function bars(host,data){
     `<div class="bv">${v.toLocaleString()}</div></div>`).join('');
 }
 
-const SLABEL={wins:"WINS — pre-registered positive verdict at judged n",active:"ACTIVE — staked, no winning verdict",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen",ruled_out:"FADE ARM CLOSED (ROUTED)",unmapped:"UNMAPPED status"};
+const SLABEL={wins:"WINS — pre-registered positive verdict at judged n",active:"ACTIVE — staked, no winning verdict",shadow:"SHADOW — evaluates and logs",not_implemented:"Defined, not implemented",blocked:"BLOCKED",dark:"DARK / frozen",ruled_out:"HYPOTHESIS CLOSED (PARKED FOR R&D)",unmapped:"UNMAPPED status"};
 const SCLASS={wins:"win",active:"act",shadow:"shd",not_implemented:"ni",blocked:"blk",dark:"dark",ruled_out:"ro",unmapped:"unm"};
 // Green means one thing: the cell's own pre-registered verdict at judged n is positive (builder: scripts/cell_display_state.py).
 // Never derive it from the registry status alone; an absent `d` falls back to the registry status, which is never "wins".
@@ -399,7 +399,7 @@ function govCounts(){
   const n=Object.keys(CELLS).length, logging=(st.shadow||0)+(st.active||0)+(st.wins||0);
   $$('.cellN').forEach(e=>e.textContent=n); $('#mxLogging').textContent=logging;
   $('#mxBreak').textContent=`${st.wins||0} WINS, ${st.active||0} ACTIVE, ${st.shadow||0} SHADOW`;
-  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK ${st.ruled_out?`, ${st.ruled_out} FADE ARM CLOSED (ROUTED)`:""}${st.unmapped?`, ${st.unmapped} UNMAPPED`:""} and ${st.not_implemented||0} defined but not built`;
+  $('#mxOther').textContent=`${st.blocked||0} are BLOCKED, ${st.dark||0} DARK ${st.ruled_out?`, ${st.ruled_out} HYPOTHESIS CLOSED (PARKED FOR R&D)`:""}${st.unmapped?`, ${st.unmapped} UNMAPPED`:""} and ${st.not_implemented||0} defined but not built`;
 }
 
 /* ---- WIRE ---- */
@@ -474,7 +474,7 @@ function edgeMap(){
   const D=EDGEMAP, host=$('#emHost');
   if(!D||!D.ok){ host.innerHTML=`<div class="card em-err"><b>The edge map's source file did not validate.</b><div class="cap">${esc((D&&D.error)||'missing')}. Nothing is drawn rather than a wrong picture.</div></div>`; $('#emHead').textContent='source invalid'; $('#nvEdge').textContent='!'; return; }
   const ORDER=['NET POSITIVE','ACCRUING','UNTESTED','NO EFFECT NET','RULED_OUT'];
-  const NAME={'NET POSITIVE':'Net positive held out','ACCRUING':'Accruing','UNTESTED':'Untested','NO EFFECT NET':'Routing input (not a bet alone)','RULED_OUT':'Fade arm closed (routed)'};
+  const NAME={'NET POSITIVE':'Net positive held out','ACCRUING':'Accruing','UNTESTED':'Untested','NO EFFECT NET':'Routing input (not a bet alone)','RULED_OUT':'Hypothesis closed (parked for R&D)'};
   const key=r=>r.held_out_net_positive===true?'NET POSITIVE':r.status;
   const cls=k=>({'NET POSITIVE':'pos','ACCRUING':'acc','UNTESTED':'unt','NO EFFECT NET':'nil','RULED_OUT':'out'}[k]||'nil');
   const rows=D.rows, cnt={}; rows.forEach(r=>{const k=key(r); cnt[k]=(cnt[k]||0)+1;});
