@@ -86,11 +86,66 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
     filters_note says why (the supply's note, else "no per-row filter input"). Logs the split path: the market-state leaf, then
     each tested filter condition that was kept (changed or agreed with the arm), logged only, or untested."""
     try:
-        return {"router": route_row(row, series, prev_mid, filters, filters_note, ledger_path, depth)}
+        cand_prev = None
+        if candidate_arms_on():  # v1's route_row updates _SEEN with this row's mid, so resolve the previous mid first
+            cand_prev = prev_mid if prev_mid is not None else previous_mid(row, ledger_path)[0]
+        out = {"router": route_row(row, series, prev_mid, filters, filters_note, ledger_path, depth)}
+        if candidate_arms_on():  # W120.2: shadow only; the v1 block above is what orders read and is never altered
+            out["router_candidates"] = candidate_fields(row, series, cand_prev, filters, ledger_path, depth)
+        return out
     except Exception as e:  # noqa: BLE001
         # W115.3 (GG-1939): the type name alone hid the cause of 5,390 ERROR rows on the box; the message rides along.
         return {"router": {"branch": "ERROR", "side": None, "depth": None, "tier": None,
                            "reason": (type(e).__name__ + ":" + str(e))[:160], "orders": "off"}}
+
+
+def candidate_arms_on() -> bool:
+    """W120.2: PM_CANDIDATE_ARMS=on logs the arm each candidate map would pick beside v1. Default off (operator queue item 7)."""
+    return os.environ.get("PM_CANDIDATE_ARMS", "off").strip().lower() == "on"
+
+
+# name -> (map version, sports it applies to or None for all, depth switch)
+CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("NBA",), True),
+              "nhl_v2": ("nhl_v2", ("NHL",), False)}
+
+
+@lru_cache(maxsize=None)
+def _cand_ev(version: str, depth_on: bool):
+    import hashlib
+
+    path = lm.map_path(version)
+    with open(path, "rb") as fh:
+        sha = hashlib.sha256(fh.read()).hexdigest()
+    ev = Evidence(ride=ride.load(), leaf_map=lm.LeafMap.load(path), depth_on=depth_on)
+    return ev, os.path.basename(path), sha
+
+
+def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters: Optional[dict],
+                     ledger_path: Optional[str], depth: Optional[dict]) -> dict:
+    """{name: {arm, branch, side, leaf_id, reason, map, map_version, map_sha256}} for each candidate that applies to the
+    row's sport. A candidate that errors logs ERROR with its message; it never blocks the row or touches v1's block."""
+    out: dict = {}
+    sport = str(row.get("sport", "")).upper()
+    for name, (version, sports, dep) in CANDIDATES.items():
+        if sports is not None and sport not in sports:
+            continue
+        rec = {"map_version": version}
+        try:
+            ev, fname, sha = _cand_ev(version, dep)
+            rec.update(map=fname, map_sha256=sha)
+            s = Situation(sport=row.get("sport", ""), family=series, ticker=row["market_ticker"], event=row["event_ticker"],
+                          tier=tier_for_hours(row.get("horizon_hours_to_start")), yes_bid=row["yes_bid"],
+                          yes_ask=row["yes_ask"], half_spread=row.get("half_spread"), model_p=row.get("p_yes"),
+                          market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid,
+                          filters=filters or None, depth=(depth or {}).get("leaves") or None)
+            r = route(s, ev)
+            d = r.leaf
+            rec.update(arm=d.arm if d else r.tree, branch=r.tree, side=r.side, leaf_id=d.leaf_id if d else None,
+                       reason=";".join(map(str, r.reasons))[:160])
+        except Exception as e:  # noqa: BLE001
+            rec.update(arm="ERROR", branch="ERROR", side=None, leaf_id=None, reason=(type(e).__name__ + ":" + str(e))[:160])
+        out[name] = rec
+    return out
 
 
 def _depth_fields(depth: Optional[dict], ds: Optional[dict]) -> dict:

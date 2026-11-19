@@ -77,6 +77,7 @@ class Evidence:
     longshot: Optional[longshot.Table] = None  # None -> the shipped longshot_cells.toml (all IN_SAMPLE today)
     leaf_map: Optional[object] = None  # W111.3: a leaf_map.LeafMap; when set and the situation has a band, it decides
     filter_splits: Optional[object] = None  # W112.1: a leaf_map.FilterSplits; None -> the shipped filter_splits.json
+    depth_on: Optional[bool] = None  # W120.2: candidate "+nba_depth" arm without the env switch; None -> leaf_map.depth_enabled()
 
 
 @dataclass(frozen=True)
@@ -180,7 +181,7 @@ def _route_leaf(s: Situation, ev: Evidence) -> Route:
             d = ev.leaf_map.decide(row, s.model_p, arm_override=split["arm"])
             d = replace(d, reason=f"split_arm:{split['arm']};{d.reason}")
     dsplit = None
-    if s.depth and lm.depth_enabled():  # W119.2: depth splits (EXP-NBADEPTH-001), switch-gated; v1 path above is untouched when off
+    if s.depth and (ev.depth_on if ev.depth_on is not None else lm.depth_enabled()):  # W119.2: depth splits (EXP-NBADEPTH-001), switch-gated; v1 path above is untouched when off
         dsplit = lm.default_depth_splits().lookup(s.market_type or "", s.band or "", dict(s.depth))
         prior = split["arm"] if split else None
         if (dsplit["arm"] and not dsplit["conflict"] and not (split and split["conflict"])
