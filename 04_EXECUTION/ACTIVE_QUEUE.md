@@ -622,6 +622,10 @@ What should reorder this, and what should stop it:
 
 > **PROPOSED - APPROVAL NEEDED (W118.4, B-102): `disk_retention_install`.** Say "approve disk_retention_install" and the window runs that one task: it adds one daily crontab line (14:17 UTC, flocked, nice/ionice) on the paper box that gzip-compresses old KALSHI_HISTORY raw files and .bak files (sha256-verified before the plain copy is replaced; nothing is ever deleted) and caps journald at 200M. Disk is 87% and growing about 1.5 points a day (90% in about 2 days, where the healthcheck FAILs and blocks every install). Target once installed: under 75%. Reversible with `disk_retention_uninstall`; the window reads the crontab back after install. Demo/paper only, no orders, no real capital, $0.
 
+> **AUTHORIZATION - CANDIDATE MAPS LOGGED BESIDE V1 (operator, 2026-11-18 21:19 PT: "yes I give approval", answering the window's
+> "Approve with: 'Log the candidate maps beside v1.'").** Every pregame shadow row records the arm router v2, +nba_depth and nhl_v2 would
+> pick - shadow only; demo orders keep following v1; the frozen ADR-0072 test is untouched. Built and switched on by W120.2.
+
 > **AUTHORIZATION - DISK RETENTION INSTALL (operator, 2026-11-17 22:18 PT: "Yes", answering the window's "If you approve it now
 > ('I approve disk_retention_install'), I'll run it the moment 118.4 merges it").** `disk_retention_install` (W118.4): journald cap and
 > compression of old logs / archive files (nothing deleted). Run by the window with readback, disk_read and a health rerun.
@@ -684,7 +688,7 @@ What should reorder this, and what should stop it:
    helped (NFL: 0 of 28 kept) counts as unwired, though under ADR-0077 that null is a routing result - the tree is a stump that picks
    one arm, or NO BET, at the root. Proposed definition: layer 3 is present when the cell's splits were tested on box rows and logged
    with their verdicts, kept or not. It would raise D6 without any new edge, so it is your call. Approve with: "Count tested stumps at layer 3."
-7. **Candidate maps logged beside v1 (SW-9, 2026-11-19; supersedes the 11-17 "router v2 on for logging" line above).** Every pregame
+7. ~~**Candidate maps logged beside v1**~~ APPROVED 11-18 21:19 PT (SW-9, 2026-11-19; supersedes the 11-17 "router v2 on for logging" line above). Every pregame
    shadow row also records the arm router v2, +nba_depth and nhl_v2 would pick - shadow only; demo orders keep following v1 and the
    frozen ADR-0072 test is untouched. Without it, none of the maps built since W116 earns evidence on box rows. Approve with:
    "Log the candidate maps beside v1."
