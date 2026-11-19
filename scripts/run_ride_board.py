@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import resource
 import sys
 from datetime import datetime, timezone
@@ -105,10 +106,58 @@ def decide_market(m: dict, series: str, now_ts: float, ev: Evidence, hist: list,
             "yes_bid": yb, "yes_ask": ya, "mid": mid, "half_spread": hs, "move_1h": s.move_1h, "book": depth}
 
 
+# W119.3 / Part A: decisions.jsonl grew 1.0 GB in a week. No code reads it (checked src/ scripts/ tests/ deploy/ .claude/
+# 12_EXPLORATORY/: only tests/test_run_ride_board.py), so the log keeps what a human or a join needs and drops the rest.
+# KEPT: decision_id (join key to ride_board/orders.jsonl), ts, ticker, family, tier, route, side, why, cell_status, yes_bid,
+# yes_ask, move_1h. DROPPED (derivable or not a decision): event_ticker, sport (from family), mid / half_spread (from bid / ask),
+# agreed, cell {tier,bucket,book,kind,net_lo} (from cell_status + the ride_cells table), book depth (volume / OI / liquidity;
+# the price archive keeps those). The full row still goes to ride_orders.act(); only the LOG is compact.
+LOG_FIELDS = ("decision_id", "ts", "ticker", "family", "tier", "route", "side", "why", "cell_status", "yes_bid", "yes_ask",
+              "move_1h")
+HEARTBEAT_S = 3600      # a repeated NO_BET row is re-logged at most this often, so a reader sees the market is still being seen
+STATE_FILE = "last_state.json"
+STATE_KEEP_S = 2 * 86400
+
+
+def compact_row(row: dict) -> dict:
+    return {k: row.get(k) for k in LOG_FIELDS}
+
+
+def _state_key(row: dict) -> str:
+    """What makes a NO_BET row 'new': its route, reasons, cell status and tier. Prices are NOT in the key (they change every
+    cycle and the price archive holds them); an hourly heartbeat row carries the then-current prices."""
+    why = [re.sub(r"-?\d+(?:\.\d+)?", "#", w) for w in row["why"]]  # reasons quote the live price ("price 0.320 ..."): numbers out
+    return json.dumps([row["route"], row["side"], why, row["cell_status"], row["tier"]], sort_keys=True)
+
+
+def _load_state(log_dir: Path) -> dict:
+    try:
+        d = json.loads((log_dir / STATE_FILE).read_text())
+        return d if isinstance(d, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_state(log_dir: Path, state: dict, now_ts: float) -> None:
+    keep = {t: v for t, v in state.items() if now_ts - v[1] <= STATE_KEEP_S}
+    tmp = log_dir / (STATE_FILE + ".tmp")
+    tmp.write_text(json.dumps(keep, sort_keys=True))
+    tmp.replace(log_dir / STATE_FILE)
+
+
+def should_log(row: dict, state: dict, now_ts: float) -> bool:
+    """Always log a row that routes to an order (orders.jsonl joins on its decision_id). A NO_BET row is skipped when it repeats
+    the last logged one for that ticker (same route / reasons with numbers masked / cell status / tier) inside the heartbeat window."""
+    if row["route"] != NO_BET:
+        return True
+    prev = state.get(row["ticker"])
+    return not (prev and prev[0] == _state_key(row) and now_ts - prev[1] < HEARTBEAT_S)
+
+
 def append_decision(row: dict, log_dir: Path) -> None:
     log_dir.mkdir(parents=True, exist_ok=True)
     with open(log_dir / "decisions.jsonl", "a") as fh:
-        fh.write(json.dumps(row, sort_keys=True) + "\n")
+        fh.write(json.dumps(compact_row(row), sort_keys=True, separators=(",", ":")) + "\n")
 
 
 def run(markets_by_series: dict, now_ts: float, ev: Evidence, tier_fn, log_dir: Path, client=None,
@@ -116,15 +165,22 @@ def run(markets_by_series: dict, now_ts: float, ev: Evidence, tier_fn, log_dir: 
     tickers = {m.get("ticker") for ms in markets_by_series.values() for m in ms}
     mids = recent_mids(archive_dir, tickers, now_ts)
     counts: dict = {}
+    log_dir.mkdir(parents=True, exist_ok=True)
+    state = _load_state(log_dir)
     for series, ms in markets_by_series.items():
         for m in ms:
             row = decide_market(m, series, now_ts, ev, mids.get(m.get("ticker"), []), tier_fn)
-            append_decision(row, log_dir)
+            if should_log(row, state, now_ts):
+                append_decision(row, log_dir)
+                state[row["ticker"]] = [_state_key(row), now_ts]
+            else:
+                counts["log_skipped_repeat"] = counts.get("log_skipped_repeat", 0) + 1
             counts[row["route"]] = counts.get(row["route"], 0) + 1
             if row["route"] != NO_BET and place and row["side"] in ("yes", "no"):
                 act = ride_orders.act(row, client, log=order_log, now=datetime.fromtimestamp(now_ts, timezone.utc))
                 key = f"action_{act['action']}"
                 counts[key] = counts.get(key, 0) + 1
+    _save_state(log_dir, state, now_ts)
     return counts
 
 

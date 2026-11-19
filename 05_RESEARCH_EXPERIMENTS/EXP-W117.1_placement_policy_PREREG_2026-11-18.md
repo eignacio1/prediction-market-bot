@@ -19,3 +19,5 @@ spread-logged orders only (not archive-backfilled), post the freeze. Judged n: 1
 **Reading a look:** per arm, the clustered interval of (cross - rest_touch) after costs. Wholly above 0 -> that cell gets `cross` in the next
 frozen table. Includes 0 -> unchanged. Wholly below 0 -> the hypothesis "crossing helps this arm" is closed (EXP-W117.1, parked for R&D); no
 arm closes. No look is read below its judged n.
+
+**W119.3 amendment (2026-11-18):** one FADE cell added as a forward test (rest_inside, 50/50 vs rest_touch control); see EXP-W119.3_fade_inside_spread_PREREG_2026-11-18.md. The cross rule above is unchanged.

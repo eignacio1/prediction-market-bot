@@ -4,8 +4,12 @@ PURE: no I/O, no order path. Input is a list of order records (dicts), one per o
 
   arm, sport      what placed it
   placement       how it was placed: "rest_touch" (own side's best bid, cancelled after 60 s - the ADR-0072 rule and every
-                  arm order so far) or "rest_inside" (a limit inside the spread, never cancelled - the ADR-0072 control arm,
-                  which posts the row's mid). "cross" is never observed: it is valued from the unselected population.
+                  arm order so far) or "rest_inside" (a limit inside the spread: one tick inside, or the mid when the spread is 2
+                  ticks or more; W119.3 - cancelled at 60 s like every arm order). "cross" is never observed: it is valued from
+                  the unselected population.
+  cancel_rule     GG-1943: "cancel_60s" (every arm order; the default when absent) or anything else (the ADR-0072 control posts
+                  the row's mid and is never cancelled). Only cancel_60s records are evidence for rest_touch or rest_inside;
+                  a never-cancelled fill is never pooled into the arm estimate.
   price           what the order bid for one contract of its own side, in (0, 1)
   filled          True / False
   won             True / False once the market resolved, None before. For an unfilled order it is the counterfactual:
@@ -192,6 +196,11 @@ def _spread(r: dict) -> float:
     return SPREAD_BY_SPORT.get(str(r.get("sport") or "").lower(), DEFAULT_SPREAD)
 
 
+def same_cancel_rule(r: dict) -> bool:
+    """GG-1943: True for a record placed under the arm path's 60 s cancel (the default for a record that does not say)."""
+    return (r.get("cancel_rule") or "cancel_60s") == "cancel_60s"
+
+
 def option_table(records: Iterable[dict], by: Sequence[str] = ("arm",), min_n: int = MIN_N,
                  strict_spread: bool = True) -> Dict[str, dict]:
     """Expected net per order placed (dollars per contract, after exact fees and selection) for each placement option,
@@ -201,7 +210,7 @@ def option_table(records: Iterable[dict], by: Sequence[str] = ("arm",), min_n: i
     for cell, rs in sorted(_group(records, by).items()):
         row: dict = {"no_place": {"net": 0.0, "n": len(rs)}}
         for opt in ("rest_touch", "rest_inside"):
-            ors = [r for r in rs if (r.get("placement") or "rest_touch") == opt]
+            ors = [r for r in rs if (r.get("placement") or "rest_touch") == opt and same_cancel_rule(r)]
             # an unresolved filled order has no value yet, so the per-order value is taken on resolved orders only
             v = [(edge(r) - _fee(r, float(r["price"]), "maker")) if r.get("filled") else 0.0
                  for r in ors if edge(r) is not None]
@@ -210,7 +219,7 @@ def option_table(records: Iterable[dict], by: Sequence[str] = ("arm",), min_n: i
             row[opt] = {"net": _r(m["mean"]), "ci": [_r(m["lo"]), _r(m["hi"])], "n": m["n"], "n_filled": nf,
                         "supported": m["n"] >= min_n and nf >= min_n}
         # crossing: every order in the cell, filled or not, bought at the far touch - the unselected population
-        touch = [r for r in rs if (r.get("placement") or "rest_touch") == "rest_touch" and edge(r) is not None]
+        touch = [r for r in rs if (r.get("placement") or "rest_touch") == "rest_touch" and same_cancel_rule(r) and edge(r) is not None]
         if strict_spread:  # W117.1: a crossing cost is valued only where a spread was logged or backfilled, never assumed
             touch = [r for r in touch if r.get("spread") is not None]
         v = []
@@ -285,7 +294,7 @@ def option_net_clustered(records: Iterable[dict], by: Sequence[str] = ("arm",)) 
     assert "placement" not in by
     out = {}
     for cell, rs in sorted(_group(records, by).items()):
-        res = [r for r in rs if (r.get("placement") or "rest_touch") == "rest_touch" and edge(r) is not None]
+        res = [r for r in rs if (r.get("placement") or "rest_touch") == "rest_touch" and same_cancel_rule(r) and edge(r) is not None]
         sp = [r for r in res if r.get("spread") is not None]
 
         def touch_v(r: dict) -> float:
