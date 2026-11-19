@@ -1,0 +1,2 @@
+task = "candidate_arms_read"
+note = "W120.2: after candidate-arm logging ON (96e9790)"
