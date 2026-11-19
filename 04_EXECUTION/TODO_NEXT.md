@@ -11,7 +11,8 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-18T06:15:00Z (B-088 — W118.1 MLB look-back: postseason-only (22 games), router v2 arms 0 leaves, 12 cells recorded NO BET, map frozen) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118T061500Z_W118_1.md` for full session detail.
+**Last reviewed:** 2026-11-19T04:50:00Z (W119.2 — W119.2: NBA depth splits wired behind switch, 12 NBA game cells SHADOW in code, layer-4 stump rule; D6 NBA 4 -> 7 (PR #527)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0120Z_W119_2.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-10-09T07:00:00Z (T-759 — W62.2: pre-2026 Kalshi history secured (892/892, VPS sha-verified) + NFL first-look expectations (MDE 0.038 at n=60); GG-538 opened) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261009T0700Z_W62_2.md` for full session detail.

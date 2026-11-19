@@ -1,0 +1,3 @@
+
+## W119.2 — NBA depth wired (STANDARD)
+NBA depth splits (matchup, rest, refs-style factors) are now wired into the router behind a switch that is OFF. Nothing live changed. The 12 NBA game cells now show as SHADOW in code, so the code count and the box agree at 60. A new layer-4 rule credits NBA spread T1 and team-total T1; D6 for NBA went from 4 to 7 wired on the box. Not credited: NBA moneyline T1-T3 (no per-arm evidence yet). Two factors (S3/S5) have no live data source on the box and log "unknown". Merged as PR #527, deployed. Your call later: when to flip the switch once shadow rows accrue.
