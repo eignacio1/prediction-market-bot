@@ -107,6 +107,10 @@ TASKS: dict[str, str] = {
     "disk_retention_install": f"{PY} scripts/disk_retention_install.py install",
     "disk_retention_readback": f"{PY} scripts/disk_retention_install.py readback",
     "disk_retention_uninstall": f"{PY} scripts/disk_retention_install.py uninstall",
+    "evidence_weekly_run": f"{PY} scripts/run_evidence_weekly.py",   # W121.1: writes only exp_output/EVIDENCE_WEEKLY/ (and nothing that places an order)
+    "evidence_weekly_install": f"{PY} scripts/evidence_weekly_install.py install",
+    "evidence_weekly_readback": f"{PY} scripts/evidence_weekly_install.py readback",
+    "evidence_weekly_uninstall": f"{PY} scripts/evidence_weekly_install.py uninstall",
     "nhl_event_store_install": f"{PY} scripts/nhl_event_store_install.py install",
     "nhl_event_store_readback": f"{PY} scripts/nhl_event_store_install.py readback",
     "nhl_event_store_uninstall": f"{PY} scripts/nhl_event_store_install.py uninstall",

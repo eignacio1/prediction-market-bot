@@ -110,14 +110,22 @@ def node_null_sd(obs: Iterable[Obs], arm: str, min_depth: int = 0) -> Dict[Key, 
     return out
 
 
-def leaf_inputs(obs: Sequence[Obs], arm: str, cfg: Config) -> Tuple[Dict[Key, Tuple[float, float]], Dict[Key, M.Cluster], Dict[Key, float]]:
-    """-> ({leaf: (mean, variance)}, leaf clusters, design effect per family). The variance is cluster-robust by game,
-    moderated toward the family's pooled value, times the family design effect (one game feeds several leaves)."""
+def leaf_clusters(obs: Sequence[Obs], arm: str) -> Dict[Key, M.Cluster]:
     leaves: Dict[Key, M.Cluster] = {}
     for o in obs:
         x = o.nets.get(arm)
         if x is not None:
             leaves.setdefault(o.key, M.Cluster.empty()).add(o.game, x)
+    return leaves
+
+
+def leaf_inputs(obs: Sequence[Obs], arm: str, cfg: Config) -> Tuple[Dict[Key, Tuple[float, float]], Dict[Key, M.Cluster], Dict[Key, float]]:
+    """-> ({leaf: (mean, variance)}, leaf clusters, design effect per family). The variance is cluster-robust by game,
+    moderated toward the family's pooled value, times the family design effect (one game feeds several leaves)."""
+    return leaf_inputs_from_clusters(leaf_clusters(obs, arm), cfg)
+
+
+def leaf_inputs_from_clusters(leaves: Dict[Key, M.Cluster], cfg: Config) -> Tuple[Dict[Key, Tuple[float, float]], Dict[Key, M.Cluster], Dict[Key, float]]:
     fams = defaultdict(list)
     for k in leaves:
         fams[k[:cfg.deff_depth]].append(k)
@@ -200,47 +208,101 @@ class Result:
         return sorted(ks, key=repr)
 
 
-def run(obs: Sequence[Obs], cfg: Optional[Config] = None) -> Result:
-    cfg = cfg or Config()
+@dataclass
+class State:
+    """Everything a weekly look carries to the next one (W121.1). run() is one advance() over all looks; advancing look by
+    look from a saved State gives the same numbers, which is what makes the always-valid guarantee hold across runs."""
+    arms: Sequence[str]
+    run_e: Dict[str, Dict[Key, float]]
+    hist: Dict[str, Dict[Key, List[Tuple[int, float]]]]
+    pend: Dict[str, Dict[Key, M.Cluster]]
+    pend_prior: Dict[str, Dict[Key, Tuple[float, float]]]
+    pend_null: Dict[str, Dict[Key, Dict[str, float]]]
+    leaves: Dict[str, Dict[Key, M.Cluster]]  # all rows through the last look, per arm per leaf (the posterior's input)
+    looks: List[int]
+
+    @classmethod
+    def new(cls, arms: Sequence[str]) -> "State":
+        return cls(tuple(arms), {a: {} for a in arms}, {a: {} for a in arms}, {a: {} for a in arms}, {a: {} for a in arms},
+                   {a: {} for a in arms}, {a: {} for a in arms}, [])
+
+    def to_json(self) -> dict:
+        kj = lambda k: list(k)
+        cj = lambda c: c.by_game
+        return {"arms": list(self.arms), "looks": self.looks,
+                "run_e": {a: [[kj(k), v] for k, v in d.items()] for a, d in self.run_e.items()},
+                "hist": {a: [[kj(k), [list(x) for x in h]] for k, h in d.items()] for a, d in self.hist.items()},
+                "pend": {a: [[kj(k), cj(c)] for k, c in d.items()] for a, d in self.pend.items()},
+                "pend_prior": {a: [[kj(k), list(v)] for k, v in d.items()] for a, d in self.pend_prior.items()},
+                "pend_null": {a: [[kj(k), v] for k, v in d.items()] for a, d in self.pend_null.items()},
+                "leaves": {a: [[kj(k), cj(c)] for k, c in d.items()] for a, d in self.leaves.items()}}
+
+    @classmethod
+    def from_json(cls, j: dict) -> "State":
+        tk = lambda k: tuple(k)
+        cl = lambda g: M.Cluster({x: [float(v[0]), int(v[1])] for x, v in g.items()})
+        arms = tuple(j["arms"])
+        return cls(arms,
+                   {a: {tk(k): float(v) for k, v in j["run_e"][a]} for a in arms},
+                   {a: {tk(k): [(int(x[0]), float(x[1])) for x in h] for k, h in j["hist"][a]} for a in arms},
+                   {a: {tk(k): cl(g) for k, g in j["pend"][a]} for a in arms},
+                   {a: {tk(k): (float(v[0]), float(v[1])) for k, v in j["pend_prior"][a]} for a in arms},
+                   {a: {tk(k): dict(v) for k, v in j["pend_null"][a]} for a in arms},
+                   {a: {tk(k): cl(g) for k, g in j["leaves"][a]} for a in arms},
+                   [int(x) for x in j["looks"]])
+
+
+def advance(state: State, new_obs: Iterable[Obs], cfg: Config) -> State:
+    """Score the looks in new_obs (each look index must be greater than every look already in state) in order, in place."""
     by_look = defaultdict(list)
-    for o in obs:
+    for o in new_obs:
         by_look[o.look].append(o)
-    looks = sorted(by_look)
-    run_e = {a: defaultdict(float) for a in cfg.arms}
-    hist: Dict[str, Dict[Key, List[Tuple[int, float]]]] = {a: {} for a in cfg.arms}
-    pend = {a: {} for a in cfg.arms}
-    pend_prior = {a: {} for a in cfg.arms}
-    pend_null = {a: {} for a in cfg.arms}
-    past: List[Obs] = []
-    for k in looks:
+    for k in sorted(by_look):
+        if state.looks and k <= state.looks[-1]:
+            raise ValueError(f"look {k} is not after the last look taken ({state.looks[-1]}): a look is never re-scored")
         for a in cfg.arms:
-            fit = fit_arm(past, a, cfg)  # sees only looks before k: the prior is fixed before the increment
+            lv, _, _ = leaf_inputs_from_clusters(state.leaves[a], cfg)
+            fit = M.fit_tree(lv, root_prior=(0.0, cfg.root_sd ** 2), tau_floor=cfg.tau_floor, prior_obs=cfg.prior_obs.get(a))
             nulls = node_null_sd(by_look[k], a, cfg.source_min_depth) if cfg.null_var == "binary" else {}
+            pend, pend_prior, pend_null = state.pend[a], state.pend_prior[a], state.pend_null[a]
             for node, c in node_clusters(by_look[k], a, cfg.source_min_depth).items():
                 for g, sd in nulls.get(node, {}).items():
-                    pend_null[a].setdefault(node, {})[g] = pend_null[a].get(node, {}).get(g, 0.0) + sd
-                if node not in pend[a]:
-                    pend[a][node] = M.Cluster.empty()
+                    pend_null.setdefault(node, {})[g] = pend_null.get(node, {}).get(g, 0.0) + sd
+                if node not in pend:
+                    pend[node] = M.Cluster.empty()
                     p = fit.predict(node)
-                    pend_prior[a][node] = (p.mean, p.var)
-                pend[a][node].merge(c)
-                pc = pend[a][node]
+                    pend_prior[node] = (p.mean, p.var)
+                pend[node].merge(c)
+                pc = pend[node]
                 if pc.games < cfg.min_inc_games:
                     continue  # too few games for a usable variance: carried, prior stays frozen
                 se2 = pc.var_cr()
-                if node in pend_null[a]:
-                    se2 = max(se2 or 0.0, sum(v * v for v in pend_null[a][node].values()) / pc.rows ** 2)
+                if node in pend_null:
+                    se2 = max(se2 or 0.0, sum(v * v for v in pend_null[node].values()) / pc.rows ** 2)
                 if not se2 or se2 <= 0:
                     continue
-                m, v = pend_prior[a][node]
-                run_e[a][node] += S.log_e_increment(pc.mean, se2, m, v)
-                hist[a].setdefault(node, []).append((k, run_e[a][node]))
-                del pend[a][node], pend_prior[a][node]
-                pend_null[a].pop(node, None)
-        past.extend(by_look[k])
+                m, v = pend_prior[node]
+                state.run_e[a][node] = state.run_e[a].get(node, 0.0) + S.log_e_increment(pc.mean, se2, m, v)
+                state.hist[a].setdefault(node, []).append((k, state.run_e[a][node]))
+                del pend[node], pend_prior[node]
+                pend_null.pop(node, None)
+            for o in by_look[k]:  # the rows enter the posterior only after this look's increment was scored
+                x = o.nets.get(a)
+                if x is not None:
+                    state.leaves[a].setdefault(o.key, M.Cluster.empty()).add(o.game, x)
+        state.looks.append(k)
+    return state
+
+
+def result_of(state: State, cfg: Config) -> Result:
     fits, clusters, deff = {}, {}, {}
     for a in cfg.arms:
-        leaves, cl, df = leaf_inputs(past, a, cfg)
+        leaves, cl, df = leaf_inputs_from_clusters(state.leaves[a], cfg)
         fits[a] = M.fit_tree(leaves, root_prior=(0.0, cfg.root_sd ** 2), tau_floor=cfg.tau_floor, prior_obs=cfg.prior_obs.get(a))
         clusters[a], deff[a] = cl, df
-    return Result(cfg, fits, hist, clusters, deff, looks)
+    return Result(cfg, fits, state.hist, clusters, deff, list(state.looks))
+
+
+def run(obs: Sequence[Obs], cfg: Optional[Config] = None) -> Result:
+    cfg = cfg or Config()
+    return result_of(advance(State.new(cfg.arms), obs, cfg), cfg)
