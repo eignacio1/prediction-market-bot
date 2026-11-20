@@ -1334,3 +1334,4 @@
 | 2026-11-19T05:29:07Z | W120.3 | CLOSED — W120.3: three held readers read .gz, Mac evidence copy compacted 7.21->5.70 GiB, box disk still 74% until the 14:17Z retention apply (~63% expected); weekly Mac job awaits operator yes. (commit `e39bf49 (PR #531 merged on green; handoff pushed direct to main)`) |
 | 2026-11-19T06:37:20Z | W120.2 | CLOSED — W120.2: router v2, +nba_depth, nhl_v2 arms logged beside v1 on box shadow rows (ON, item 7 approved); NHL goalie/ST verdicts logged not applied. (commit `96e9790`) |
 | 2026-11-19T06:39:08Z | W120.2 | CLOSED — merge confirmed, HEAD (9991f98) is ancestor of origin/main — candidate-arm logging ON on box (PRs 534/535), rows carrying candidate arms read back; NHL pending 14:00Z run |
+| 2026-11-20T15:02:36Z | TBD | W121.1 weekly evidence look runner + install task. PURPOSE: P1/P3 leaves with an arm per map at first look |
