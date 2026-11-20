@@ -1341,3 +1341,4 @@
 | 2026-11-20T15:34:20Z | W121.1 | CLOSED — merge confirmed, HEAD (0cdcd74) is ancestor of origin/main — weekly evidence look runner merged PR 538; first box look 0 arms; install awaits approval |
 | 2026-11-20T15:35:16Z | W121.3 | CLOSED — merge confirmed, HEAD (eb4d456) is ancestor of origin/main — capacity + dollar ceiling per arm per sport (B-097): RESULT.md, table, PRs 536/539, handoff 624baaa; ticks 1-3 unmeasurable, all ceilings span 0 |
 | 2026-11-20T17:05:07Z | W122.4 | CLOSED — W122.4: MLB board priced from pitch store; game cells 3->12 in opening-day dry run; GG-1957 cause found, preflight + fail-closed log; PR #544 (commit `ce63a82`) |
+| 2026-11-20T17:41:02Z | W122.3 | CLOSED — W122.3: NFL PASS_YDS T1 priced at its own horizon (pre24h slot + d6_read); 16 in-play cells need a live feed; Part C awaits 11-22/23 slate (commit `6daac0d`) |

@@ -10,3 +10,6 @@ The weekly check on whether any betting pattern has earned a route now exists an
 - Against Kalshi's own closing prices (Aug–Sep 2026) our prices are the weaker ones on every family. So the engine feeds the tree as an input; it is not a bet by itself.
 - Why 2026 left no game rows: the schedule feed went stale, the runner quit without a trace, and the crons were armed late. Now it checks itself daily and records every quit.
 - Still zero real money at risk. Open stray branches from earlier waves (not mine, not merged): the NBA injury-report data branch and about nine old wave branches. Your call on routing.
+
+## W122.3 - NFL (plain English)
+The ask was to price 17 NFL markets we weren't pricing. 16 of them are in-game markets, and we have no live NFL feed, so they can't be priced yet. That needs its own build. The 17th, passing yards before kickoff, was fixable: we now record its price a day before kickoff, which is where its band sits. It's live on the box. We'll know it worked after Sunday's games (NFL cells with a price: 12 now, 13 expected). No real money touched.

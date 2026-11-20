@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-20T17:05:00Z (W122.4 — W122.4: MLB board priced from pitch store; game cells 3->12 in opening-day dry run; GG-1957 cause found, preflight + fail-closed log; PR #544) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T1620Z_W122_4.md` for full session detail.
+**Last reviewed:** 2026-11-20T17:45:00Z (W122.3 — W122.3: NFL PASS_YDS T1 priced at its own horizon (pre24h slot + d6_read); 16 in-play cells need a live feed; Part C awaits 11-22/23 slate) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T0745Z_W122_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
