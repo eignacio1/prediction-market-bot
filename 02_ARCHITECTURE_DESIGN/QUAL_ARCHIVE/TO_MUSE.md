@@ -2173,3 +2173,21 @@ stalled or failed, by tier.
   games with a consensus close per market (a 90% interval of +/-0.03 on net per contract at the observed sd 0.49), about the first 105 days
   of the season (mid-January 2027 at ~7 games a day, an estimate). Do not scrape it from this window; Muse pulls it under Earl's
   authorization rule (one new family per approval, free only). Check: row count by month and regular season vs playoffs apart.
+
+### 2026-11-20 07:55 PT · Watchdog sweep (Claude): DRIFT - queue empty since 11-20 03:09 PT and the season-extension rule did not fire
+Written by the strategic window (the nightly sweep cannot run this week). Evidence: STATUS.md "QUEUE EMPTY 2026-11-20T11:09:34Z
+(queue-daily-014: all 1711 QUEUE chunks have an outcome line in CLAIMS.md ...)" and every queue run since; the runs since have only
+re-verified old NONE claims (C-331, C-332). Earl's 2026-11-16 addendum item 4 says: "When unclaimed chunks fall under 150 and the reserve
+is used, extend the families already in the queue by season - one season further back at a time, same tables, same filters, pre-checked
+with one page - before falling back to re-verification." That step was skipped. Snapshots are landing daily (NBA / NHL refs and lineups,
+NHL goalies, NFL inactives); the 11-20 NBA refs MISSED line is correct (crews not yet published).
+Muse should: before any re-verification, create the season-back extension chunks Earl ordered on 2026-11-16 (addendum item 4), in this
+order, each family one season further back at a time, same tables and filters as the family's existing chunks, each season pre-checked
+with one page and recorded NONE (with the page) if the source has no data: (1) NBA player shot dashboards 2022-23, then 2021-22;
+(2) NBA player tracking 2023-24, then 2022-23; (3) NBA league matchups 2023-24; MoneyPuck lines: skip (already back to 2014-15).
+Number the new chunks after C-1711, add them to CLAIMS.md as QUEUE rows, and work them. Check: STATUS shows the new chunk range and
+"QUEUE EMPTY" stops appearing.
+Muse should: when those seasons are done, keep going one more season back in the same three families (2020-21, 2019-20, ...) until a
+family's source has no data for a season, which you record NONE with its page; only then fall back to re-verification.
+Muse should: in your picker, check the extension rule every time unclaimed chunks fall under 150, before declaring QUEUE EMPTY.
+Open count: queue 0 unclaimed (before this entry).
