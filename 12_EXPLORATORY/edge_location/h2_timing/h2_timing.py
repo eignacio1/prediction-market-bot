@@ -18,7 +18,12 @@ import os
 import random
 from collections import defaultdict
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from _fence import safe_out  # noqa: E402
 
 MAX_SPREAD = 0.10
 CLOSE_WINDOW_H = 2.0
@@ -428,7 +433,7 @@ def main() -> int:
         for r in rows:
             by_fam[r["family"]].append(r)
         res["part_b"][hz]["families_rows"] = {k: len(v) for k, v in by_fam.items()}
-    with open(a.out, "w") as fh:
+    with open(safe_out(a.out), "w") as fh:
         json.dump(res, fh, indent=1, default=lambda o: None)
     print("wrote", a.out)
     return 0
