@@ -90,6 +90,16 @@ def load_tips(path: Path) -> dict:
     return out
 
 
+def _props_supply(games, pl):
+    """W121.2: prop split leaves for the router candidate; None (rows log without them) if the profiles are missing."""
+    try:
+        from prediction_market_bot.decision_trees.filter_supply import nba_depth_profiles
+        from prediction_market_bot.decision_trees.filters.nba_props import make_props_supply
+        return make_props_supply(games, pl, nba_depth_profiles())
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", default=str(ROOT / "data" / "raw" / "nba_props"))
@@ -121,7 +131,8 @@ def main(argv=None) -> int:
                    kickoff_for=lambda ev: fc.kickoff_for_event(ev), ledger_dir=ledger_dir, run_id=run_id,
                    now_utc=now, code_sha=code_sha(),
                    raw_filter=lambda m: F.parse_market_ticker(m.get("ticker", "")) is not None,
-                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None)
+                   only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
+                   props_for=_props_supply(games, pl))
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", dict(res["written"]))
     print("skipped:", dict(res["skipped"]))

@@ -22,7 +22,9 @@ DEFAULT_MAP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_map
 MAP_VERSIONS = {"v1": DEFAULT_MAP,
                 "v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "leaf_map_v2.json"),
                 # W119.1: v2 with the NHL leaves re-run on the 2026-27 shadow rows (consensus prior). Opt-in only; default stays v1.
-                "nhl_v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nhl_v2.json")}
+                "nhl_v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nhl_v2.json"),
+                # W121.2: NBA player-prop market-state leaves + the 4 PREREG'd player splits (EXP-NBAPROPS-001). Candidate only.
+                "nba_props": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nba_props_v2.json")}
 
 
 def map_path(version: Optional[str] = None) -> str:
@@ -204,6 +206,47 @@ class DepthSplits:
         arms = {a for _, a in kept}
         return {"kept": [f"{t}->{a}" for t, a in kept], "logged_only": logged, "untested": [],
                 "arm": next(iter(arms)) if len(arms) == 1 else None, "conflict": len(arms) > 1}
+
+
+class PropSplits:
+    """W121.2: the NBA player-prop splits (nba_props_v2.json, EXP-NBAPROPS-001), keyed (market-state leaf id, split, split leaf).
+    Only KEPT entries are indexed; `earned` (BH-significant) is reported beside the arm. Same conflict rule as DepthSplits:
+    kept splits that disagree change nothing."""
+
+    def __init__(self, doc: dict):
+        self.kept, self.tested = {}, set()
+        for s in doc["splits"]:
+            k = (s["leaf"], s["split"], s["split_leaf"])
+            self.tested.add(k)
+            if s["kept"]:
+                self.kept.setdefault(k, {})[s["arm"]] = bool(s.get("earned"))
+
+    @classmethod
+    def load(cls, path: Optional[str] = None) -> "PropSplits":
+        with open(path or MAP_VERSIONS["nba_props"]) as fh:
+            return cls(json.load(fh))
+
+    def lookup(self, leaf_id: str, props: dict) -> dict:
+        kept, logged = [], []
+        for name in sorted(props):
+            leaf = props[name]
+            if leaf in (None, False, "unknown"):
+                continue
+            k = (leaf_id, name, leaf)
+            arms = self.kept.get(k)
+            if arms and len(arms) == 1:
+                arm, earned = next(iter(arms.items()))
+                kept.append((f"{name}={leaf}", arm, earned))
+            elif k in self.tested:
+                logged.append(f"{name}={leaf}")
+        arms = {a for _, a, _ in kept}
+        return {"kept": [f"{t}->{a}" for t, a, _ in kept], "earned": [t for t, _, e in kept if e], "logged_only": logged,
+                "arm": next(iter(arms)) if len(arms) == 1 else None, "conflict": len(arms) > 1}
+
+
+@lru_cache(maxsize=1)
+def default_prop_splits() -> PropSplits:
+    return PropSplits.load()
 
 
 @lru_cache(maxsize=1)

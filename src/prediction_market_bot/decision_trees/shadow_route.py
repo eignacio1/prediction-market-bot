@@ -78,7 +78,7 @@ _NEUTRAL = ("unknown", "neutral", "mid", "calm", "")
 
 def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filters: Optional[dict] = None,
                   filters_note: Optional[str] = None, ledger_path: Optional[str] = None,
-                  depth: Optional[dict] = None) -> dict:
+                  depth: Optional[dict] = None, props: Optional[dict] = None) -> dict:
     """{'router': {...}} for a shadow row; never raises (a failure is recorded as branch ERROR).
 
     filters: optional {filter_name: leaf_or_bool} from nfl_engine.filters / the NBA granularity filter, computed by a
@@ -91,7 +91,7 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
             cand_prev = prev_mid if prev_mid is not None else previous_mid(row, ledger_path)[0]
         out = {"router": route_row(row, series, prev_mid, filters, filters_note, ledger_path, depth)}
         if candidate_arms_on():  # W120.2: shadow only; the v1 block above is what orders read and is never altered
-            out["router_candidates"] = candidate_fields(row, series, cand_prev, filters, ledger_path, depth)
+            out["router_candidates"] = candidate_fields(row, series, cand_prev, filters, ledger_path, depth, props)
         return out
     except Exception as e:  # noqa: BLE001
         # W115.3 (GG-1939): the type name alone hid the cause of 5,390 ERROR rows on the box; the message rides along.
@@ -107,7 +107,9 @@ def candidate_arms_on() -> bool:
 
 # name -> (map version, sports it applies to or None for all, depth switch)
 CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("NBA",), True),
-              "nhl_v2": ("nhl_v2", ("NHL",), False)}
+              "nhl_v2": ("nhl_v2", ("NHL",), False),
+              # W121.2: NBA player-prop market-state leaves + 4 player splits (EXP-NBAPROPS-001); applies to NBA_PLAYER_* rows only
+              "nba_props": ("nba_props", ("NBA",), False)}
 
 
 @lru_cache(maxsize=None)
@@ -117,18 +119,21 @@ def _cand_ev(version: str, depth_on: bool):
     path = lm.map_path(version)
     with open(path, "rb") as fh:
         sha = hashlib.sha256(fh.read()).hexdigest()
-    ev = Evidence(ride=ride.load(), leaf_map=lm.LeafMap.load(path), depth_on=depth_on)
+    ev = Evidence(ride=ride.load(), leaf_map=lm.LeafMap.load(path), depth_on=depth_on,
+                  prop_splits=lm.default_prop_splits() if version == "nba_props" else None)
     return ev, os.path.basename(path), sha
 
 
 def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters: Optional[dict],
-                     ledger_path: Optional[str], depth: Optional[dict]) -> dict:
+                     ledger_path: Optional[str], depth: Optional[dict], props: Optional[dict] = None) -> dict:
     """{name: {arm, branch, side, leaf_id, reason, map, map_version, map_sha256}} for each candidate that applies to the
     row's sport. A candidate that errors logs ERROR with its message; it never blocks the row or touches v1's block."""
     out: dict = {}
     sport = str(row.get("sport", "")).upper()
     for name, (version, sports, dep) in CANDIDATES.items():
         if sports is not None and sport not in sports:
+            continue
+        if name == "nba_props" and not str(row.get("market_type", "")).startswith("NBA_PLAYER_"):
             continue
         rec = {"map_version": version}
         try:
@@ -138,11 +143,16 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
                           tier=tier_for_hours(row.get("horizon_hours_to_start")), yes_bid=row["yes_bid"],
                           yes_ask=row["yes_ask"], half_spread=row.get("half_spread"), model_p=row.get("p_yes"),
                           market_type=row.get("market_type"), band=row.get("band"), prev_mid=prev_mid,
-                          filters=filters or None, depth=(depth or {}).get("leaves") or None)
+                          filters=filters or None, depth=(depth or {}).get("leaves") or None,
+                          props=(props if name == "nba_props" else None) or None)
             r = route(s, ev)
             d = r.leaf
             rec.update(arm=d.arm if d else r.tree, branch=r.tree, side=r.side, leaf_id=d.leaf_id if d else None,
                        reason=";".join(map(str, r.reasons))[:160])
+            if name == "nba_props":  # W121.2: which splits fired and whether they are BH-earned, and the leaves that were logged only
+                ps = r.prop_split
+                rec.update(prop_leaves=props or None, prop_split_kept=ps["kept"] if ps else [], prop_split_earned=ps["earned"] if ps else [],
+                           prop_split_applied=bool(ps and ps["arm"] and not ps["conflict"]), prop_split_conflict=bool(ps and ps["conflict"]))
         except Exception as e:  # noqa: BLE001
             rec.update(arm="ERROR", branch="ERROR", side=None, leaf_id=None, reason=(type(e).__name__ + ":" + str(e))[:160])
         out[name] = rec

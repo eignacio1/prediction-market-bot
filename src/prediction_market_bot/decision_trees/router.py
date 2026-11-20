@@ -45,6 +45,7 @@ class Situation:
     prev_mid: Optional[float] = None  # the same ticker's previous logged mid, for the leaf's move bin
     filters: Optional[Mapping] = None  # W112.1: {filter_name: leaf_label} from the sport's adapter (None = none supplied)
     depth: Optional[Mapping] = None  # W119.2: NBA depth leaves; routes only when PM_LEAF_MAP_VERSION carries +nba_depth
+    props: Optional[Mapping] = None  # W121.2: NBA prop split leaves (minutes_trend / zone_defence / pace / rest); candidate only
 
     @property
     def mid(self) -> Optional[float]:
@@ -77,6 +78,7 @@ class Evidence:
     longshot: Optional[longshot.Table] = None  # None -> the shipped longshot_cells.toml (all IN_SAMPLE today)
     leaf_map: Optional[object] = None  # W111.3: a leaf_map.LeafMap; when set and the situation has a band, it decides
     filter_splits: Optional[object] = None  # W112.1: a leaf_map.FilterSplits; None -> the shipped filter_splits.json
+    prop_splits: Optional[object] = None  # W121.2: a leaf_map.PropSplits; None -> prop splits do not apply (v1 path untouched)
     depth_on: Optional[bool] = None  # W120.2: candidate "+nba_depth" arm without the env switch; None -> leaf_map.depth_enabled()
 
 
@@ -91,6 +93,7 @@ class Route:
     split: Optional[dict] = None  # W112.1: the filter-split lookup (kept / logged_only / untested / arm / conflict) when filters came in
     arm_pre_split: Optional[str] = None  # the market-state leaf's own arm before a kept split replaced it
     depth_split: Optional[dict] = None  # W119.2: the depth-split lookup when the switch is on and the row carried depth leaves
+    prop_split: Optional[dict] = None  # W121.2: the prop-split lookup when a candidate supplied PropSplits and the row carried prop leaves
 
 
 def book_classes(s: Situation) -> tuple:
@@ -191,9 +194,20 @@ def _route_leaf(s: Situation, ev: Evidence) -> Route:
             d = replace(d, reason=f"depth_arm:{dsplit['arm']};{d.reason}")
         elif dsplit["arm"] and prior and prior != dsplit["arm"]:
             dsplit = {**dsplit, "conflict": True}  # depth and the live split disagree: nothing changes
+    psplit = None
+    if s.props and ev.prop_splits is not None:  # W121.2: prop splits (EXP-NBAPROPS-001); only a candidate sets ev.prop_splits
+        psplit = ev.prop_splits.lookup(d.leaf_id, dict(s.props))
+        prior = split["arm"] if split else None
+        if (psplit["arm"] and not psplit["conflict"] and not (split and split["conflict"])
+                and (prior is None or prior == psplit["arm"]) and not d.thin and d.known and psplit["arm"] != d.arm):
+            pre = pre or d.arm
+            d = ev.leaf_map.decide(row, s.model_p, arm_override=psplit["arm"])
+            d = replace(d, reason=f"prop_arm:{psplit['arm']};{d.reason}")
+        elif psplit["arm"] and prior and prior != psplit["arm"]:
+            psplit = {**psplit, "conflict": True}
     if d.arm == "NO_BET":
-        return Route(NO_BET, None, (d.reason,), leaf=d, split=split, arm_pre_split=pre, depth_split=dsplit)
-    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d, split=split, arm_pre_split=pre, depth_split=dsplit)
+        return Route(NO_BET, None, (d.reason,), leaf=d, split=split, arm_pre_split=pre, depth_split=dsplit, prop_split=psplit)
+    return Route(lm.ARM_TREE[d.arm], d.side, (d.reason,), leaf=d, split=split, arm_pre_split=pre, depth_split=dsplit, prop_split=psplit)
 
 
 def route(s: Situation, ev: Evidence) -> Route:
