@@ -1,0 +1,2 @@
+task = "capacity_read"
+note = "W121.3 B-097: fillable size per cell from logged depth"
