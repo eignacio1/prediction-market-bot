@@ -93,3 +93,39 @@ flowchart TD
 | H3 supported | A news-reaction arm on the supported event type, fed by Muse's timestamped snapshots |
 | H4 supported | A two-sided quoting arm proposed to the operator as a demo test (new trading mode) |
 | All four not supported | The method holds and the edge is not in these markets at this scale; the operator decides scope (venue, market class) |
+
+## 6. Addendum A (2026-11-20 ~20:25 UTC, W123.4) - H4 operationalization, written BEFORE any Part B result was computed
+Part A fill counts (2,131 post-epoch arm orders, 157 fills) were seen; no simulated fill, markout or settlement outcome had been read.
+The pre-registration above does not fix these details; they are fixed here and any later change is a further dated addendum.
+1. **Horizon = hours to market close**, not to start. The price archive carries no game start time (only `close_time`); close is roughly
+   start plus game length. Buckets: 0-2h, 2-6h, 6-24h, 24h+. Part A also reports hours-to-start buckets where the order logged them.
+2. **Quotes.** Fair = the market's own mid (variant (a)). At every archive snapshot with a two-sided book and spread >= 3 ticks (1c), post
+   YES bid = bid + 1c and YES ask = ask - 1c, one contract each. Spread 1-2 ticks: no inside price exists, no quote.
+   Variant (b), consensus as fair: NOT RUN - no free consensus line overlaps the 2026-11-06+ archive window for NBA / NFL (NHL 2025-26
+   is a prior season). Registered as a data limit.
+3. **Fill rule.** A quote lives until the same ticker's next snapshot, and is judged only if that snapshot is <= 15 min later. The bid
+   fills if the next snapshot's yes_ask <= our bid (the book traded through us); the ask fills if the next yes_bid >= our ask. Fill price =
+   our quote (maker). Snapshots are ~3-8 min apart, so intra-interval trades are not seen: this is conservative on fills, not exact.
+4. **Score.** Held to settlement (Kalshi `result`, public settled-market records). Fee = `quant.money.fee_rate(series, price, "maker")`.
+   Net = settled P&L - fee - AS, with **AS** (adverse selection per filled contract) from Part A real fills: mean(won - limit price | unfilled,
+   settled) - mean(won - limit price | filled, settled), per family x hours-to-close bucket; where a cell has < 10 real fills, the family
+   pooled across buckets; where the family has none, all-families pooled, flagged. AS is subtracted as measured (not clipped at 0).
+   The simulated fill rule already selects on price movement, so subtracting AS may double count: that makes the net conservative, and
+   the gross-of-AS number is reported beside it. The verdict uses the NET number, as pre-registered.
+5. **Unit and intervals.** Net per filled contract; game-clustered (game = event suffix after the series, e.g. 26NOV12CHAPHX); 2,000
+   bootstrap draws, seed 20261120; 90% interval (as H1) with 95% shown. Cells with < 20 games are UNDERPOWERED, not judged.
+   Many-cells control (HYPOTHESIS_DOCTRINE I.4.5): K = number of judged family x horizon cells is stated, and SUPPORTED needs a
+   cell whose bootstrap one-sided p survives Benjamini-Hochberg at q = 0.10 across the K, as well as the interval excluding zero.
+6. **Depth.** Quotes are 1 contract, first in queue at a new inside price level, so logged touch size does not bind and is not used.
+   Fill SIZE beyond 1 contract is therefore not claimed.
+
+## 7. Addendum B (2026-11-20 ~21:00 UTC, W123.4) - deviation, written AFTER the frozen-rule run returned 0 fills
+Disclosure: this is written after a result was seen. The run under Addendum A rule 3 (next snapshot <= 15 min) produced **0 simulated
+fills**, so its literal outcome is UNDERPOWERED. The cause is an assumption in Addendum A that was wrong: archive snapshots are 19-30 min
+apart, not 3-8. Changes, all reported beside the frozen-rule result, never in place of it:
+1. **Gap sensitivity:** max snapshot gap 35 min (variant run; 15 min kept as the frozen run). A longer window lets more price movement into
+   the "traded through" test, so it raises both fills and adverse movement.
+2. **Horizon:** the archive's `close_time` is the market's expiration (e.g. an NFL game on 11-16 shows 11-19), not the game end, so every
+   simulated fill lands in 24h+. The family x horizon grid therefore collapses to family x 24h+ for Part B. Part A real fills use the
+   order's own `close_time` (game-end-like) and are bucketed normally. Registered as a data gap: game start time is not in the archive.
+3. The verdict statement says which run it comes from. A SUPPORTED from run (1) would not have been a pre-registered verdict.
