@@ -1336,3 +1336,4 @@
 | 2026-11-19T06:39:08Z | W120.2 | CLOSED — merge confirmed, HEAD (9991f98) is ancestor of origin/main — candidate-arm logging ON on box (PRs 534/535), rows carrying candidate arms read back; NHL pending 14:00Z run |
 | 2026-11-20T15:02:36Z | TBD | W121.1 weekly evidence look runner + install task. PURPOSE: P1/P3 leaves with an arm per map at first look |
 | 2026-11-20T15:14:12Z | W121.4 | CLOSED — W121.4 Live Terminal panels (candidate arms vs v1, D6 names, weekly look, box disk + Mac copy) merged PR 537; Mac weekly job loaded. (commit `93981da`) |
+| 2026-11-20T15:14:30Z | W121.4 | CLOSED — merge confirmed, HEAD (26478db) is ancestor of origin/main — Live Terminal panels merged PR 537; handoff + digest on main |
