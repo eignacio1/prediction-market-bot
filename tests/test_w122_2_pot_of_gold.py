@@ -99,9 +99,9 @@ def test_generator_promotes_nothing_outside_the_17(tmp_path, monkeypatch):
         w.writerow(cols)
         w.writerows(rows)
     out = tmp_path / "t.toml"
-    monkeypatch.setattr(R, "OUT_TABLE", str(out))
+    monkeypatch.setattr(R, "safe_out", lambda x: x)  # the fence refuses tmp_path; the fence has its own test
     named = [{"family": "KXMLBF5", "tier": "T2-6h", "bucket": "10-15c", "route": "FADE_LONGSHOT", "side": "no", "verdict": "IN_SAMPLE"}]
-    assert R.write_table(str(cells), named) == 2
+    assert R.write_table(str(cells), named, str(out)) == 2
     t = longshot.load(str(out))
     assert t.lookup("KXNBAPTS", "D1", "90-95c", "all").status == "IN_SAMPLE"      # a measured HELD_OUT outside the 17 stays a lead
     assert longshot.decide("KXNBAPTS", "D1", 0.92, 0.01, t).action == "NO_BET"
