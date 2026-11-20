@@ -6,6 +6,7 @@ import collections, datetime as dt, glob, json, re, sys
 from pathlib import Path as _P
 sys.path.insert(0, str(_P(__file__).resolve().parent.parent))
 from _fence import safe_out  # noqa: E402
+from prediction_market_bot import io_jsonl
 from prediction_market_bot.c1_signal_ingestion.nba_ingest import kalshi_code
 from prediction_market_bot.decision_trees.filters import nba_props as NP
 from prediction_market_bot.quant import retro_route as rr
@@ -24,8 +25,8 @@ def ts(s):
 
 def load_snaps(d):
     S = collections.defaultdict(list)
-    for f in sorted(glob.glob(d + "/prices_2026-11-*.jsonl")):
-        for l in open(f):
+    for f in io_jsonl.glob_files(d + "/prices_2026-11-*.jsonl"):
+        for l in io_jsonl.open_jsonl(f):
             if '"KXNBAPTS"' not in l and '"KXNBAREB"' not in l and '"KXNBAAST"' not in l and '"KXNBA3PT"' not in l:
                 continue
             x = json.loads(l)
