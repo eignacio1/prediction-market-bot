@@ -1486,3 +1486,18 @@ alarm = "Actions status line (red run on main)"
 schedule = ""
 mirrors = []
 command = "docs_guard.yml"
+
+[[component]]
+key = "cron|0 10 * * 2|scripts/run_evidence_weekly.py"
+kind = "cron"
+source = "deploy/cron.evidence_weekly"
+status = "paused"
+reviewed = true
+purpose = "W121.1: weekly evidence look (Tuesday 10:00 UTC cut) -- per-leaf per-arm pooled posterior and e-process for v1 and every candidate map, carried forward from the previous look's state; reports leaves that earned or lost an arm and the refreshed power calendar. Read-only on shadow rows. PAUSED until the operator approves the named install task evidence_weekly_install."
+pillar = "PROOF"
+writes = ["logs/evidence_weekly.log", "exp_output/EVIDENCE_WEEKLY/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/evidence_weekly.log is older than 200h once installed; a missed Tuesday shows as missed_looks / CATCH-UP in the next summary"
+max_age_h = "200"
+schedule = "0 10 * * 2"
+mirrors = ["deploy/cron.evidence_weekly"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 15"

@@ -1,0 +1,6 @@
+# BEGIN W121.1 EVIDENCE WEEKLY
+# W121.1 -- weekly evidence look: per-leaf per-arm pooled posterior + e-process for v1 and every candidate map, carried forward from the last look's state file.
+# PAUSED in the registry until the operator approves the named install task `evidence_weekly_install`.
+# Tuesdays 10:00 UTC (the look cut). Reads settled shadow rows; writes only exp_output/EVIDENCE_WEEKLY/. No order, stake or kelly.
+0 10 * * 2 ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 15 /opt/prediction-market-bot/venv/bin/python scripts/run_evidence_weekly.py >> logs/evidence_weekly.log 2>&1 ) 9>/tmp/evidence_weekly.lock
+# END W121.1 EVIDENCE WEEKLY
