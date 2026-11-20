@@ -129,3 +129,27 @@ apart, not 3-8. Changes, all reported beside the frozen-rule result, never in pl
    simulated fill lands in 24h+. The family x horizon grid therefore collapses to family x 24h+ for Part B. Part A real fills use the
    order's own `close_time` (game-end-like) and are bucketed normally. Registered as a data gap: game start time is not in the archive.
 3. The verdict statement says which run it comes from. A SUPPORTED from run (1) would not have been a pre-registered verdict.
+
+## 8. Addendum A1 — H1 operational definitions (2026-11-20, W123.1; written before any settled outcome was joined to the archive)
+H1's section 3 leaves five things open. They are fixed here, before the first outcome is read. Nothing in section 3's rule changes.
+1. **Unit and price.** One row per archived ticker with a settled yes/no result. Price = the last archive snapshot at or before
+   15:00Z on the game date in the ticker (10:00 ET: every NFL / NBA / NHL start is later). Rows with a missing or zero bid or ask, or
+   yes_mid outside [0.02, 0.98], are dropped and counted. Sensitivity (reported, never the verdict): the snapshot nearest 24 h before that cut.
+2. **Cost.** Taker, both sides priced as taken: YES at yes_ask, NO at no_ask, from the logged snapshot book (this is the real spread paid;
+   nothing to backfill). Fee per contract = 0.07 x P x (1 - P) at the taken price (continuous form of the Kalshi schedule).
+3. **Direction (no hindsight).** Per family x price bucket the direction is fixed on the fit window: raw gap = mean(outcome - yes_mid);
+   positive -> buy YES, negative -> buy NO. The held-out net is that direction's mean net per contract on the last 1/3 by game date.
+   Buckets by yes_mid: [.02,.10) [.10,.25) [.25,.50) [.50,.75) [.75,.90) [.90,.98].
+4. **Families.** Headline = moneyline (*GAME), and the MAIN line of *SPREAD and *TOTAL (the strike whose yes_mid is nearest 0.5 in that
+   event at the price snapshot). Non-headline = alternate lines (the other strikes of *SPREAD / *TOTAL), team totals, period lines
+   (MLB F3 / F5 / F7, F5 spread / total), and player props (NBA PTS / REB / AST / 3PT / PRA / STL / 2D / 3D, NFL pass / rush / rec / TD,
+   NHL goal / assist, MLB hit). Family = sport x type; pooled-across-sport lines are secondary.
+5. **The two rule clauses.** "Net gap" = the family's pooled held-out directional net per contract (signed; a negative net is not an
+   edge). Clause 1: some non-headline family has a held-out net gap > 0 with its game-clustered 90% interval wholly above zero. Clause 2:
+   the mean (market-weighted across families) held-out net of non-headline families exceeds that of headline families. The literal
+   "absolute" reading (mean of |net|) is reported beside it. Intervals: game-clustered bootstrap, 2,000 resamples, seed 123, percentile
+   90%. Multiplicity: BH at q 0.10 across the family intervals scanned (count stated). A family with fewer than 30 held-out games is
+   UNDERPOWERED, not judged; the n needed is stated at 80% power for its observed sd and a net gap of one round cost.
+6. **Consensus (Part B2).** The NHL 2025-26 consensus file has no overlap with the archive (archive starts 2026-08-01; the NHL 2026-27
+   closes are not in yet). Kalshi-minus-consensus is therefore reported as not testable on this data, with the W117.2 moneyline gap as
+   the only available figure. Not a verdict input.

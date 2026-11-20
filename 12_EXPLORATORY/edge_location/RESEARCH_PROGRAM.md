@@ -58,7 +58,7 @@ deliberately open: it is filled as data and priority allow.
 ## 7. Status board (updated at each wave close)
 | Branch | Status | Next step | Date |
 |---|---|---|---|
-| H1 | PRE-REGISTERED | W123.1 | 2026-11-20 |
+| H1 | NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window) | Re-run props at 30 held-out games per family | 2026-11-20 |
 | H2 | PRE-REGISTERED | W123.2 | 2026-11-20 |
 | H3 | PRE-REGISTERED | W123.3 | 2026-11-20 |
 | H4 | PRE-REGISTERED | W123.4 (simulation only) | 2026-11-20 |
