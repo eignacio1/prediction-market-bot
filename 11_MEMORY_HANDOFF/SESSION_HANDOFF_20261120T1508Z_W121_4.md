@@ -15,3 +15,5 @@ vision_pillar: PLUMBING. surface_delta: +4 panels/keys on the Live Terminal, +1 
 - Seeded screenshot rows were removed; screenshot is in the session scratchpad only.
 ## Part C
 Decision 8 approved 11-18 22:44 PT. Ran evidence_pull_launchd.sh install; `launchctl list` shows com.predictionmarket.evidence-pull (loaded, exit 0, Sunday 03:00 local). Mac weekly job loaded: YES.
+## Deploy truth (checked 2026-11-20 after merge)
+Box HEAD 3d03d5e0 = origin/main; deployed 2026-11-20T15:08:43Z. t4-mlb restart decision: not_needed (no file t4-mlb imports changed). pmbot-web-dashboard restarted on HEAD. Live /api/data on the box returns candidates_today (NBA/NFL/NHL), box_health disk 64%, weekly_look "first look not run yet", mac_copy "not visible from this host".

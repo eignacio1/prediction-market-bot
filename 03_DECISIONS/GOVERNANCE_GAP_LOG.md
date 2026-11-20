@@ -5091,3 +5091,8 @@ W116.2, 2026-11-18. `scripts/rolling_backlog.py --check` on origin/main (94bcee8
 **Status:** OPEN · **Severity:** MEDIUM
 
 W118.1, 2026-11-18. `exp_output/PREGAME_SHADOW/settled/MLB_*.jsonl` begins 2026-10-05; the regular season lives only in T4/audit logs without router-shaped fields (market price at row, game id, settled outcome per market). The look-back therefore has 22 games and no cell reaches the 10 held-out game minimum. Also: the game-id split sees 25 ids vs 22 per cell (3 games carry a different id in some family). Fix before opening day 2027: confirm all 12 game cells log from game one, and reconcile game ids across families. Deadline: March 2027.
+
+### GG-1958 — Live Terminal "Mac copy" row cannot see the Mac's LAST_RUN.json when the dashboard runs on the box (W121.4)
+**Status:** OPEN · **Severity:** LOW
+
+W121.4, 2026-11-20. `_box_health` reads `$EVIDENCE_DEST/LAST_RUN.json` (default `~/PredictionMarketEvidence`), which exists only on the Mac. The dashboard normally runs on the box, so the row reads "not visible from this host" and the weekly Mac copy has no on-page proof. Fix: ship LAST_RUN.json status to the box (or surface it in the weekly look), or serve a Mac-side dashboard. Window decision. Deadline: before the first Sunday run is relied on (2026-11-22).
