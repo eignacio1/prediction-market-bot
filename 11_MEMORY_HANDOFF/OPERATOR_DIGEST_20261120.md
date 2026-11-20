@@ -16,3 +16,4 @@ The ask was to price 17 NFL markets we weren't pricing. 16 of them are in-game m
 
 ## W122.1 — NBA player points (plain English)
 The bot now prices NBA player-points markets with the same game engine it uses for rebounds, assists and threes, and logs them without placing orders. They started logging on the box at 17:39Z today. On games it hadn't seen, the points forecasts beat a simple base-rate guess at every line, though they run a little low on the easy lines. The count of fully wired prop cells did not move yet (still zero): the points cells are missing one layer, the market-state leaves in the main tree map. Fixing that is a design choice for you, not a bug. No money at risk, nothing live.
+- B-TBD (auto): W123.2 H2 timing NOT SUPPORTED (H-EDGE-2 parked for R&D); 6h drift slope +0.017 [-0.024,+0.056]; CLV +0.86c vs fee 1.08c

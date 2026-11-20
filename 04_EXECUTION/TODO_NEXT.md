@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-20T17:50:00Z (W122.1 — W122.1: NBA points priced by the engine and logged T1-T3 on the box; props D6 0 -> 0 (layer 2 missing)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T1745Z_W122_1.md` for full session detail.
+**Last reviewed:** 2026-11-20T20:45:00Z (B-TBD — W123.2 H2 timing NOT SUPPORTED (H-EDGE-2 parked for R&D); 6h drift slope +0.017 [-0.024,+0.056]; CLV +0.86c vs fee 1.08c) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T2015Z_W123_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

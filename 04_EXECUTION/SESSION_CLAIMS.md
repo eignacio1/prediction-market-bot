@@ -1345,3 +1345,4 @@
 | 2026-11-20T17:41:17Z | W122.3 | CLOSED — merge confirmed, HEAD (68bdee1) is ancestor of origin/main — NFL PASS_YDS T1 priced at own horizon; PRs 542/546 merged; Part C awaits 11-22/23 slate |
 | 2026-11-20T17:48:55Z | W122.1 | CLOSED — W122.1: NBA points priced by the engine and logged T1-T3 on the box; props D6 0 -> 0 (layer 2 missing) (commit `63bb86c`) |
 | 2026-11-20T20:03:47Z | B-TBD | W123.2 H2 timing: CLV of arm orders + predictable drift. PURPOSE: PROOF - H2 verdict; CLV per arm/horizon; drift coefficient |
+| 2026-11-20T20:42:02Z | B-TBD | CLOSED — W123.2 H2 timing NOT SUPPORTED (H-EDGE-2 parked for R&D); 6h drift slope +0.017 [-0.024,+0.056]; CLV +0.86c vs fee 1.08c (commit `c74fc92`) |
