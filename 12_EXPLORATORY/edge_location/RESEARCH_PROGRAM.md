@@ -58,8 +58,9 @@ deliberately open: it is filled as data and priority allow.
 ## 7. Status board (updated at each wave close)
 | Branch | Status | Next step | Date |
 |---|---|---|---|
-| H1 | NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window) | Re-run props at 30 held-out games per family | 2026-11-20 |
-| H2 | PRE-REGISTERED | W123.2 | 2026-11-20 |
-| H3 | PRE-REGISTERED | W123.3 | 2026-11-20 |
-| H4 | PRE-REGISTERED | W123.4 (simulation only) | 2026-11-20 |
+| H1 | NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window) | Re-run props at 30 held-out games per family; dense prop capture (W124.4); judgeable date in the power ledger (W124.1) | 2026-11-20 |
+| H2 | NOT SUPPORTED, parked (R&D): drift not predictable at 24 h / 6 h; arm CLV +0.86c gross vs 1.08c fee | Reopen with new features or early-horizon consensus; fill-level CLV → H-EXEC-4 (W124.3) | 2026-11-20 |
+| H3 | NOT SUPPORTED on NBA injury / starter news (repriced < 1 min); NBA confirmations, NFL inactives UNDERPOWERED | Props and spreads around news (H1 x H3); trade prints forward (W124.4) | 2026-11-20 |
+| H4 | NOT SUPPORTED, parked (R&D): 0 of 18 cells, gross negative before adverse selection | Reopen on 5-min snapshots (W124.4) or a lower fee | 2026-11-20 |
+| H-MEAS-1 | STATED: is the close calibrated per family? If so, CLV becomes a low-variance outcome | W124.2 | 2026-11-20 |
 | H5+ | open | — | — |

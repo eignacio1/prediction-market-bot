@@ -120,6 +120,7 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | H-EDGE-2 | Timing: far-from-start prices are looser and drift predictably | T1 (12-48 h), 6 h | RIDE / FADE / MOMENTUM at entry | W123.2 | NOT SUPPORTED (11-20) — hypothesis closed (H-EDGE-2, parked for R&D) | 6 h b +0.017 [−0.024, +0.056], 24 h b −0.063 [−0.239, +0.035]; CLV +0.86¢ vs 1.08¢ fee; n 89-107 games; `12_EXPLORATORY/edge_location/h2_timing/RESULT.md` | Depth budget into T1; earlier entries |
 | H-EDGE-3 | News latency: Kalshi reprices news over minutes | lineups, scratches, inactives, injuries | MOMENTUM (news arm) | W123.3 | NOT SUPPORTED for NBA injury / starter news, PARKED (R&D) 11-20: +0.3-0.5c still to come at +5 min vs 1.9c cost, median repriced < 1 min, n 45-189; confirmations (n 6) and NFL inactives (n 14) UNDERPOWERED | NHL goalies already fast: 0.2c, n 14 (W118.3); h3_news/RESULT.md | A news-reaction arm per supported event type |
 | H-EDGE-4 | Execution: quoting both sides near fair beats predicting | any family x horizon | NEW: two-sided quoting | W123.4 | NOT SUPPORTED (11-20): hypothesis closed, parked for R&D; frozen 15-min rule UNDERPOWERED (0 fills), 35-min run 0 of 18 cells net > 0 | resting orders adversely selected (RIDE 69% vs 83%) | Demo quoting test proposed to the operator |
+| H-MEAS-1 | Measurement: the closing price is a calibrated estimate of settlement, so closing-line value can stand in for settled P&L at far lower variance | every family with >= 30 games | all arms (outcome licence) | W124.2 | STATED (11-20) | W123: settlement sd ~0.5 / contract vs effects of 1-2c; H2 CLV n 1,760 | LICENSED families score on CLV (settlement confirms); NOT LICENSED stay on settlement |
 
 ### II.2 Program ROUTER — does the tree route better than a fixed rule?
 | ID | Claim | Locus | Arm | Test | Status | Evidence | Consequence / reopen |
@@ -139,6 +140,7 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | EXP-W117.1 | Frozen placement policy beats today's rule | all arms | placement | 05_.../EXP-W117.1 | COLLECTING (table 0 cells) | — | Policy on as cells clear minimum n |
 | EXP-W119.3 | FADE one tick inside the spread fills more without worse selection | FADE | placement | 05_.../EXP-W119.3 | COLLECTING (touch 22 / 342, inside 2 / 17) | — | Read at its judged n |
 | H-EXEC-3 | Demo caps sized like a real book starve the experiment | demo path | — | W115.2 / GG-1935 | SUPPORTED (11-17): ~9,000 orders zeroed | — | Caps separated and raised (approved 11-17) |
+| H-EXEC-4 | Filled orders beat the close net of the fee actually charged | arm x family x hours-to-start (2-6 h named lead) | all arms | W124.3 | STATED (11-20) | W123.2 CLV all orders RIDE +1.43c, FADE +0.75c; W123.4 fills 2-6 h +10.1c (68 fills, descriptive) | Forward-judged; SUPPORTED cells get placement and size priority |
 
 ### II.4 Program DEPTH — do matchup / personnel / context factors change the arm?
 | ID | Claim | Locus | Arm | Test | Status | Evidence | Consequence / reopen |

@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 123 READY TO PASTE - four test blocks (Sonnet), one per pre-registered hypothesis of where the edge lives: 123.1 attention, 123.2 timing, 123.3 news latency, 123.4 execution / liquidity; plus 123.5, the Hypothesis Doctrine registry backfill.**
+> **▶ WAVE 124 READY TO PASTE - four measurement blocks (Sonnet): 124.1 variance tools + power ledger, 124.2 is the close calibrated (licenses closing-line value), 124.3 our fills vs the close net of fees, 124.4 dense capture (built, install needs approval). Wave 123 closed: H1-H4 not supported / underpowered.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,184 +95,167 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 123 · WRITTEN 2026-11-20 ~18:30 UTC (10:30 PT) · SW-9 · four test blocks · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 124 · WRITTEN 2026-11-20 ~21:55 UTC (13:55 PT) · SW-9 · four measurement blocks · MODEL: Sonnet · paste each into its own terminal
 
-**Where does the edge live?** The evidence so far: popular game lines at the close are efficient, forecast edges per leaf are about
-zero, and execution effects are large. The hypothesis is pre-registered and frozen at
-`12_EXPLORATORY/edge_location/HYPOTHESIS.md` (3cead0f, with its diagram). It names four places the edge could be, and this wave tests
-each one on data already logged. Each block ends SUPPORTED / NOT SUPPORTED / UNDERPOWERED, and its answer decides where the next build
-budget goes (HYPOTHESIS.md §5).
+**Tighten the measurement.** Wave 123 answered all four edge questions. Where it could judge, the answer was no; where it could not, it
+was "not enough data". The intervals are wide for one reason: we score on settlement. One contract is a coin flip (sd about 50c), and
+the effects we chase are 1-2c, so a verdict needs thousands of games. Closing-line value (how far the price moved our way by the close)
+has an sd of a few cents. If the close is a calibrated price, CLV measures the same thing with far less noise, roughly 50-100x the
+effective sample. This wave tests whether that licence holds (124.2), builds the variance tools and a power ledger that says when each
+open question becomes judgeable (124.1), applies them to the one place W123 showed a positive gross sign, our own fills (124.3), and
+captures denser data where W123 had none (124.4).
 
-| # | Hypothesis | Block | Model | Status | Outcome |
+| # | Hypothesis / build | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 123.1 | H1 attention | Calibration gap net of cost by family: props, team totals, alt lines vs headline lines; Kalshi vs consensus where it exists | Sonnet | ⬜ | |
-| 123.2 | H2 timing | Closing-line value of every arm order; is the drift from 24 h / 6 h to the close predictable from what we knew? | Sonnet | | ✅ 11-20 PR #549 (b6f79c8): H2 NOT SUPPORTED, hypothesis closed (H-EDGE-2, parked for R&D); 6 h b +0.017 [−0.024, +0.056], 24 h b −0.063 [−0.239, +0.035]; CLV +0.86¢ vs fee 1.08¢ |
-| 123.3 | H3 news latency | Kalshi prints around timestamped news (lineups, scratches, inactives, injury reports): the move still to come at +1 / +5 / +15 min | Sonnet | ✅ | 11-20 PR #550: H3 NOT SUPPORTED on NBA injury / starter news, hypothesis closed (H-EDGE-3, parked for R&D); +0.3-0.5¢ still to come at +5 min vs 1.9¢ cost, median repriced <1 min, n 37-84 events per type; confirmations (n 6) and NFL inactives (n 14) UNDERPOWERED; see 12_EXPLORATORY/edge_location/h3_news/RESULT.md |
-| 123.4 | H4 execution | Two-sided quoting simulated on logged depth; spread earned minus adverse selection measured on real fills | Sonnet | ✅ | NOT SUPPORTED (2026-11-20): 0 of 18 cells net > 0, gross negative all; see 12_EXPLORATORY/edge_location/h4_execution/RESULT.md |
-| 123.5 | registry | The Hypothesis Doctrine registry backfilled: every hypothesis since EXP-001 / HYP-010, live or parked, in full detail (operator 11-20 10:10 PT) | Sonnet | ⬜ | |
+| 124.1 | measurement core | Variance tools in quant/ (control variates, within-game pairing, partial pooling, clustered MDE) + the power ledger for every open hypothesis | Sonnet | ⬜ | |
+| 124.2 | H-MEAS-1 | Is the close calibrated per family? If so, CLV is licensed as the primary outcome for that family (231k settled tickers) | Sonnet | ⬜ | |
+| 124.3 | H-EXEC-4 | Do our filled orders beat the close net of the fee actually charged? Paired by arm, pooled across cells; forward-judged | Sonnet | ⬜ | |
+| 124.4 | capture | Dense capture: props from listing, 5-min snapshots in the last 3 h before start, Kalshi trade prints forward. Built, not installed | Sonnet | ⬜ | |
 
-- **Pushback:** four tests at once on a few weeks of data will return UNDERPOWERED more than once. That is still an answer, and every
-  block states the n it would need. The one risk that matters is a block quietly widening its own test after seeing results, which is
-  why HYPOTHESIS.md is frozen and deviations are written as addenda before any read.
-- **Surface:** read-only. Delta: up to four read-only box tasks; 0 installs; no live change.
-- **Dependencies:** none; four separate folders (COMMON RULES).
+- **Pushback:** tighter intervals do not create edge. W123's gross effects sit at 0.3-1.4c against a 1-2c round cost; sharper
+  measurement may only turn "can't tell" into a clean "no" faster. That is still worth having: it is what lets the router stop paying
+  for tests. The other risk is CLV itself: a close can be biased (favourite-longshot), so it is licensed per family only after 124.2
+  shows calibration, and settlement stays the confirmation.
+- **Surface:** three read-only analysis blocks; one new capture built behind an install that needs your approval by name
+  (`archive_dense_install`), surface check first. Disk is the budget: 124.4 states bytes per day before anything ships.
+- **Dependencies:** none at merge. 124.3 pre-registers settlement as its primary outcome and reports CLV as secondary; the next wave may
+  promote CLV by a dated addendum once 124.2 reports. 124.2 and 124.3 use what is on main in quant/ when they start.
 
-### 123.1 - H1 ATTENTION · MODEL: Sonnet
-
-```
-WAVE 123 - BLOCK 123.1 - H1 ATTENTION - IS THE NET CALIBRATION GAP LARGER IN LESS-WATCHED MARKETS? - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H1 is your pre-registration.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_1.md.
-
-PART A - the data
-1. Every settled Kalshi market with a price snapshot in the archive, NBA / NFL / NHL (and MLB 2026 where present), by family: headline
-   (moneyline, spread, total) vs non-headline (props, team totals, alternate lines, first-half / period lines). Count markets and games
-   per family.
-2. Costs: spread at submit where logged, backfilled otherwise; the Kalshi fee schedule.
-
-PART B - the test (as pre-registered)
-1. Per family and price bucket: settled rate minus price, net of cost, game-clustered 90% intervals. Fit on the first 2/3 by date, judge
-   on the last 1/3.
-2. Where a free consensus exists (NHL 2025-26 file; the NHL 2026-27 closes from Monday): Kalshi minus consensus, per family.
-3. Verdict against H1's rule: SUPPORTED / NOT SUPPORTED / UNDERPOWERED (n needed).
-
-PART C - land
-1. 12_EXPLORATORY/edge_location/h1_attention/RESULT.md: the table, the verdict, and which families lead.
-2. PR; merge on green.
-
-Report: per COMMON RULES. MEASURE MOVED: PROOF - H1 verdict; held-out net gap per family with intervals.
-END OF BLOCK 123.1
-```
-
-### 123.2 - H2 TIMING · MODEL: Sonnet
+### 124.1 - MEASUREMENT CORE + POWER LEDGER · MODEL: Sonnet
 
 ```
-WAVE 123 - BLOCK 123.2 - H2 TIMING - CLOSING-LINE VALUE OF EVERY ARM ORDER; IS THE DRIFT TO THE CLOSE PREDICTABLE? - MODEL: Sonnet
+WAVE 124 - BLOCK 124.1 - MEASUREMENT CORE: VARIANCE TOOLS AND THE POWER LEDGER - MODEL: Sonnet
+PURPOSE: PROOF P3 - every open hypothesis gets a stated date when it becomes judgeable, and the tools that bring that date forward.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H2 is your pre-registration.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_2.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W124.md` and quote its first line. Those rules
+bind this block. Then read src/prediction_market_bot/quant/inference.py and multiplicity.py (what exists), HYPOTHESIS_DOCTRINE.md Part I,
+and the four W123 RESULT.md files under 12_EXPLORATORY/edge_location/.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W124_1.md.
 
-PART A - closing-line value
-1. Every arm order since 11-06: entry price vs the last archived price before start, per arm and per hours-to-start bucket (<1, 1-6,
-   6-24, 24-48 h). Game-clustered intervals.
+PART A - tools (src/prediction_market_bot/quant/variance.py + tests; THE QUANT BAR applies to each: known-answer test, applies/doesn't line,
+one measured result on OUR data with n and interval)
+1. control_variate(y, x, clusters): CUPED-style adjustment, theta fit on the fit window only, clustered interval; report the variance
+   reduction achieved.
+2. paired_within_cluster(rows): difference of two arms / two rules on the same game, clustered by game.
+3. partial_pool(cells): normal-normal empirical Bayes shrinkage of per-cell means with cluster-robust standard errors; returns shrunk
+   estimates, tau, and per-cell intervals. Known-answer: planted heterogeneous and homogeneous cases.
+4. design_effect(rows, clusters) and mde_clustered(sd, n_games, rows_per_game, icc): MDE with the intra-game correlation, so power is
+   stated in games, not rows.
+5. clv(entry_price, close_mid, side): per-contract closing-line value on the order's own side.
 
-PART B - predictable drift
-1. On the price archive, for every market with snapshots at about 24 h and 6 h before start and at the close: the drift (close minus early
-   price).
-2. Regress the drift on what was known at the early point: our model p minus price (shadow rows), the consensus move where one exists,
-   and the router's arm. Fit on the first 2/3 by date, judge on the last 1/3.
-3. Verdict against H2's rule.
+PART B - the power ledger (12_EXPLORATORY/edge_location/power_ledger/: POWER_LEDGER.md + power_ledger.json + the script)
+1. Every hypothesis in HYPOTHESIS_DOCTRINE Part II with status COLLECTING, UNDERPOWERED, LOOKING or PRE-REGISTERED (and the W123
+   UNDERPOWERED sub-items: H1 props, H3 NBA confirmations and NFL inactives, H-EXEC-2).
+2. For each: unit (games / events), n now, outcome sd under settlement and under CLV where a price path exists, ICC, MDE now, n needed for
+   MDE = one round cost at 80% power, current yield per week, and the date that n is reached. Name the tool from Part A that shortens it
+   most and by how much (measured, not assumed).
+3. Write it so the weekly evidence look can re-run it (a CLI with --out; no box change this wave).
 
-PART C - land
-1. 12_EXPLORATORY/edge_location/h2_timing/RESULT.md, with the n needed if UNDERPOWERED.
-2. PR; merge on green.
+PART C - land: PR (code), CI green, merge. RESULT section in POWER_LEDGER.md. Update only the "Next" column of rows you measured in
+HYPOTHESIS_DOCTRINE Part II (add "judgeable ~<date>").
 
-Report: per COMMON RULES. MEASURE MOVED: PROOF - H2 verdict; CLV per arm and horizon; drift coefficient with interval.
-END OF BLOCK 123.2
+Report: per COMMON RULES. MEASURE MOVED: PROOF P3 - hypotheses with a dated judgeable look: before -> after (power_ledger.json).
+END OF BLOCK 124.1
 ```
 
-### 123.3 - H3 NEWS LATENCY · MODEL: Sonnet
+### 124.2 - H-MEAS-1: IS THE CLOSE CALIBRATED? · MODEL: Sonnet
 
 ```
-WAVE 123 - BLOCK 123.3 - H3 NEWS LATENCY - DOES KALSHI TAKE MINUTES TO PRICE NEWS? (B-063) - MODEL: Sonnet
+WAVE 124 - BLOCK 124.2 - H-MEAS-1: IS THE CLOSING PRICE A CALIBRATED ESTIMATE OF SETTLEMENT, PER FAMILY? - MODEL: Sonnet
+PURPOSE: PROOF - license (or refuse) closing-line value as a low-variance outcome, per family, so every later test needs fewer games.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H3 is your pre-registration - and the W118.3
-goalie-timing result (12_EXPLORATORY/nhl_goalie_timing/). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_3.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W124.md` and quote its first line. Those rules
+bind this block. Then read HYPOTHESIS_DOCTRINE.md Part I, 12_EXPLORATORY/edge_location/h1_attention/RESULT.md and fetch_settled.py,
+and h2_timing/RESULT.md (Part A, CLV).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W124_2.md.
 
-PART A - the events
-1. From Muse's snapshots (archive at a pinned SHA), timestamped news since 11-10: NBA starting lineups and late scratches, NFL inactives,
-   injury-report changes. One row per event: time posted, team / player, and the markets it touches.
-2. State n per event type.
+PART A - pre-register (12_EXPLORATORY/edge_location/meas_close/PREREG.md, committed BEFORE any settlement is joined to a close)
+1. Claim: within a family, settled rate given closing mid c is c (slope 1, intercept 0). Close = last archive snapshot before start.
+2. Rule per family (>= 30 games and >= 200 markets): calibration slope 90% interval contains 1, and mean |settled rate - c| across price
+   buckets below half one round cost -> LICENSED (CLV may be the primary outcome for that family; settlement stays the confirmation).
+   Otherwise NOT LICENSED (settlement only). Fewer games -> UNDERPOWERED, n needed.
+3. Second claim on our own orders: settled net per contract regressed on CLV, slope interval contains 1 (CLV predicts what settlement pays).
+4. Name the fit/judge split (by date, 2/3 - 1/3), the clustering (game), price buckets, and how favourite-longshot bias is shown.
 
-PART B - the price path
-1. Kalshi public trade prints for those markets (Kalshi's public trades endpoint; a read-only box task if it must run on the box), plus the
-   archive where prints are missing. Price from -30 to +30 min around each event; the move still to come at +1 / +5 / +15 min, net of
-   one round cost. Event-clustered intervals.
-2. Verdict against H3's rule. If a type is UNDERPOWERED, say how many events it needs and when the season gets there.
+PART B - run: every settled ticker in the archive (NBA / NFL / NHL, MLB 2026 where present), per family. Report per family: slope,
+intercept, bucket table, verdict, and the variance ratio (settlement sd^2 / CLV sd^2 per contract) = the effective-sample multiplier.
 
-PART C - land
-1. 12_EXPLORATORY/edge_location/h3_news/RESULT.md.
-2. PR; merge on green.
+PART C - land: RESULT.md + results.json, PR, CI green, merge. Add registry row H-MEAS-1 in HYPOTHESIS_DOCTRINE Part II.1 (Program EDGE).
 
-Report: per COMMON RULES. MEASURE MOVED: PROOF - H3 verdict per event type; the minutes-to-reprice distribution.
-END OF BLOCK 123.3
+Report: per COMMON RULES. MEASURE MOVED: PROOF - families licensed for CLV: 0 -> n; effective-sample multiplier per family.
+END OF BLOCK 124.2
 ```
 
-### 123.4 - H4 EXECUTION / LIQUIDITY · MODEL: Sonnet
+### 124.3 - H-EXEC-4: DO OUR FILLS BEAT THE CLOSE NET OF FEES? · MODEL: Sonnet
 
 ```
-WAVE 123 - BLOCK 123.4 - H4 EXECUTION - SIMULATED TWO-SIDED QUOTING ON LOGGED DEPTH, NET OF ADVERSE SELECTION MEASURED ON REAL FILLS - MODEL: Sonnet
+WAVE 124 - BLOCK 124.3 - H-EXEC-4: DO FILLED ORDERS BEAT THE CLOSE NET OF THE FEE ACTUALLY CHARGED? - MODEL: Sonnet
+PURPOSE: EXECUTION E2 / PROOF - the one place W123 showed a positive gross sign (RIDE CLV +1.43c, FADE +0.75c on all orders; fills at
+2-6 h +10.1c edge on 68 fills) measured on FILLS, net, with the tightest honest interval.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H4 is your pre-registration - plus
-12_EXPLORATORY/capacity/RESULT.md and the W117.1 / W119.3 placement handoffs. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_4.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W124.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/edge_location/h2_timing/RESULT.md, h4_execution/RESULT.md, HYPOTHESIS_DOCTRINE Part I and
+Part II.3 (EXEC), and quant/inference.py + quant/fills.py + quant/costs.py + quant/kalshi_fees.json.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W124_3.md.
 
-PART A - adverse selection, measured
-1. From real demo fills since 11-06: win rate of filled vs unfilled orders, and the price move after the fill (markouts at 1 / 5 / 30 min
-   and the close), by family, arm, placement and hours to start. This is the cost a quoting strategy pays.
+PART A - pre-register (12_EXPLORATORY/edge_location/exec_fills/PREREG.md, committed before any post-freeze fill is read)
+1. Population judged: arm-order fills dated after 2026-11-20 20:00 UTC (forward). Everything before is DESCRIPTIVE only (W123 saw it).
+2. Outcome, primary: settled net per contract after the fee actually charged (maker vs taker from the order record). Secondary: CLV net
+   of that fee. The 2-6 h window is a NAMED lead from W123.4, judged forward only.
+3. Method: control variate = entry mid vs model p (fit on pre-freeze data only); arms compared paired within game; partial pooling across
+   arm x family x hours-to-start; alpha spending over weekly looks (multiplicity.py), Pocock or O'Brien-Fleming named in advance.
+4. Rule: an arm x cell is SUPPORTED when its pooled net interval is wholly above zero at a look; NOT SUPPORTED when wholly below; else
+   COLLECTING with the date its n is reached (use 124.1's ledger if merged, else compute and flag).
 
-PART B - the simulation
-1. On logged depth (book at submit since 11-18, plus the archive's depth samples), quote one tick inside on both sides around a fair price:
-   (a) the market's own mid, (b) the consensus where one exists.
-2. A quote fills when the book trades through it. Score each fill to settlement; subtract the Part A adverse-selection term for the same
-   family and horizon, and the fee.
-3. Net per filled contract by family x horizon, game-clustered. Verdict against H4's rule.
+PART B - descriptive now: the same table on pre-freeze fills (labelled DESCRIPTIVE), with the variance reduction each tool gave.
+PART C - the first forward look runs only if >= 1 week of forward fills exists; otherwise write the look schedule and stop.
 
-PART C - land
-1. 12_EXPLORATORY/edge_location/h4_execution/RESULT.md. If SUPPORTED, write (do not run) the demo-test proposal for the operator: cells,
-   size, cancel rule, judged n. It is a new trading mode, so it is his call.
-2. PR; merge on green.
+PART D - land: RESULT.md (or SCHEDULE.md) + json, PR, CI green, merge. Add registry row H-EXEC-4 in HYPOTHESIS_DOCTRINE Part II.3.
 
-Report: per COMMON RULES. MEASURE MOVED: PROOF / EXECUTION - H4 verdict; adverse selection per family and horizon; simulated net per
-filled contract.
-END OF BLOCK 123.4
+Report: per COMMON RULES. MEASURE MOVED: EXECUTION E2 - P&L per filled bet net of fees with interval, per arm (descriptive) and the
+forward look date.
+END OF BLOCK 124.3
 ```
 
-
-### 123.5 - REGISTRY (EVERY HYPOTHESIS, LIVE OR PARKED) · MODEL: Sonnet
+### 124.4 - DENSE CAPTURE WHERE W123 HAD NO DATA · MODEL: Sonnet
 
 ```
-WAVE 123 - BLOCK 123.5 - REGISTRY - BACKFILL THE HYPOTHESIS DOCTRINE: EVERY HYPOTHESIS SINCE EXP-001 / HYP-010, LIVE OR PARKED (B-110) - MODEL: Sonnet
+WAVE 124 - BLOCK 124.4 - DENSE CAPTURE: PROPS FROM LISTING, 5-MIN SNAPSHOTS NEAR START, TRADE PRINTS FORWARD - MODEL: Sonnet
+PURPOSE: PROOF P3 - the W123 tests that could not be judged lacked data, not method: H1 props had no fit window (props enter the archive
+late; NHL props have no snapshot before 15:00Z), H4's simulation broke on 19-30 min snapshot spacing, H3 had trade prints only from 11-10.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
-bind this block, except ownership: this block owns 02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md Part II only (Part I and III are the
-window's) and a new generator script. Read HYPOTHESIS_DOCTRINE.md in full first. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_5.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W124.md` and quote its first line. Those rules
+bind this block. Then read scripts/archive_market_prices.py, scripts/archive_cron_install.py (the install pattern to copy),
+scripts/disk_retention*.py, the archive lines in deploy/cron.conf, and the Limits sections of the four W123 RESULT.md files.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W124_4.md.
 
-WHY (operator 2026-11-20 10:10 PT): "let's get a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D)
-listed in comprehensive detail." Part II holds W104 onward; everything before it lives scattered across 05_RESEARCH_EXPERIMENTS/
-(EXP-001 .. EXP-047, HYP-010 .. HYP-012 and their addenda), EXPERIMENT_LOG/, RESULTS_SUMMARIES/, 12_EXPLORATORY/*/RESULT.md, ADRs and
-the registry's closed-hypothesis reasons.
+PART A - measure first (read-only box tasks: disk_read, plus a new read-only task if needed): current archive bytes per day, disk %,
+retention headroom, Kalshi rate-limit headroom at the current cadence.
+PART B - build scripts/archive_dense_capture.py (NEW cron lines only; no existing line edited):
+1. Props: every NBA / NFL / NHL prop series snapshotted from first listing on the game date (at the current 20-min cadence).
+2. Game families (ML / spread / total / team total): 5-min snapshots in the 3 h before start.
+3. Kalshi public trade prints for markets with a game today, written forward to exp_output/TRADE_PRINTS/ (compressed).
+4. Every record carries event timestamps; output compressed (.gz) and covered by disk retention.
+PART C - budget gate: the install refuses unless projected disk after 30 days stays under 80% and the request rate stays under half the
+documented public limit. State bytes/day and requests/min measured on a dry run.
+PART D - scripts/archive_dense_install.py (install / readback / uninstall), allowlist entries archive_dense_install / _readback /
+_uninstall in scripts/box_tasks.py, RUNTIME_REGISTRY entry. DO NOT RUN THE INSTALL. Put one approval line for the window under
+`operator decisions:` in your handoff.
 
-PART A - the inventory
-1. Enumerate every pre-registration, experiment log, result summary and exploratory RESULT.md, plus every closed-hypothesis reason in
-   market_type_registry.py.
-2. For each hypothesis, read its own file and fill the Part II columns: ID (keep the EXP / HYP id), program / branch (map to EDGE /
-   ROUTER / EXEC / DEPTH / ARMS / ENGINE, or a new program stated with a one-line mechanism), claim and mechanism, locus, arm, test (file
-   + commit), status with date, evidence (numbers with their source), consequence and reopen trigger.
-3. Never invent a number. If a file does not state one, write "not stated in <file>".
+PART E - land: PR, CI green, merge.
 
-PART B - the registry
-1. Merge the entries into Part II under their programs, keeping the window's W104+ rows; add a "Pre-W104 history" subsection per
-   program.
-2. Add scripts/hypothesis_registry.py: it lists every pre-registration file and flags any with no registry line, so the registry cannot
-   silently drift. Test it.
-3. Docs-only commit for the doctrine; PR for the script; merge on green.
-
-PART C - report
-1. Count by status (STATED / PRE-REGISTERED / COLLECTING / LOOKING / SUPPORTED / PARKED / UNDERPOWERED / SUPERSEDED).
-2. List the parked hypotheses whose reopen trigger has already fired, for the window.
-
-Report: per COMMON RULES. MEASURE MOVED: PROOF - hypotheses registered N (by status); unregistered pre-registrations 0.
-END OF BLOCK 123.5
+Report: per COMMON RULES. MEASURE MOVED: PROOF P3 - none until installed; state the expected gain (props games per week into H1, snapshot
+spacing for H4, prints for H3).
+END OF BLOCK 124.4
 ```
+
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 123 — WRITTEN 2026-11-20 ~18:30 UTC · CLOSED 2026-11-20 ~21:40 UTC (operator 13:43 PT) · SW-9 · four test blocks (123.5 registry backfill not sent; carried as B-110) · verified on GitHub (#549 #550 #552 #553 merged; handoffs W123_1..4) · moved: **the four edge-location branches answered: H1 attention NOT SUPPORTED on 18 judged non-headline families, props UNDERPOWERED (no fit window); H2 timing NOT SUPPORTED (drift unpredictable; CLV +0.86c vs 1.08c fee); H3 news NOT SUPPORTED on NBA injury / starter news (+0.3-0.5c left at +5 min vs 1.9c cost, repriced < 1 min); H4 quoting NOT SUPPORTED (0 of 18 cells, gross negative). Intervals too wide where it matters → Wave 124 tightens the measurement**
+- 123.1 H1 #553 · 123.2 H2 #549 · 123.3 H3 #550 #552 · 123.4 H4 (result in h4_execution/RESULT.md) · 123.5 not sent.
 
 ### ✅ WAVE 122 — WRITTEN 2026-11-20 ~15:55 UTC · CLOSED 2026-11-20 ~18:00 UTC (operator 10:00 PT) · SW-9 · four build blocks · moved: **NBA points priced and logging; pot of gold scored (0 earned, next look 12-10); NFL in-play cells need a live feed; MLB 2027 board priced, 12 game cells in the dry run, GG-1957 cause found**
 
