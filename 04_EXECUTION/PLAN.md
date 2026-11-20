@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-20T21:15:00Z (W123.4 — W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T2115Z_W123_4.md` for full session detail.
+**Last reviewed:** 2026-11-20T20:55:00Z (W123.3 — W123.3 H3 news latency NOT SUPPORTED on NBA injury/starter news (+0.3-0.5c vs 1.9c cost); confirmations, NFL inactives underpowered) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T2100Z_W123_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

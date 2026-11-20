@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: W123.3
+tier: MICRO
+timestamp: 2026-11-20T20:55:00Z
+commit: e03e1fd
+one_line_summary: W123.3 H3 news latency NOT SUPPORTED on NBA injury/starter news (+0.3-0.5c vs 1.9c cost); confirmations, NFL inactives underpowered
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P2
+gap_delta: P2 H3 verdict issued per event type, 4 NOT SUPPORTED, 2 UNDERPOWERED (h3_news/results.json @ c44d48b)
+pattern_sweep: n/a (no defect fixed; safe_out isolation miss in run_h3.py was this block's own, fixed before merge)
+surface_delta: 0
+-->
 # Handoff W123.3 — H3 news latency (B-063). 2026-11-20
 Rules read: first line of COMMON_RULES_W123.md "# Wave 123 common rules".
 vision_pillar: PROOF — H3 verdict per event type; minutes-to-reprice distribution (median 0, p90 0 on every type).
@@ -14,3 +29,8 @@ For the window:
 - Next supportable test: same news on NBA prop / team-total markets (H1 overlap); needs its own pre-registration.
 - Branch w123-3-h3-news in worktree PM-worktrees/w123-3; the untracked edge_location/ stub I made in the main tree was moved there.
 PR: w123-3-h3-news (a .py under 12_EXPLORATORY needs green CI before merge).
+
+## Strategic Decisions This Session
+None. Hypothesis H-EDGE-3 closed per doctrine (routing result, parked for R&D).
+One thing pending: next supportable H3 test is the same news on NBA prop / team-total markets; needs its own pre-registration.
+Resume: read 12_EXPLORATORY/edge_location/h3_news/RESULT.md, then ACTIVE_QUEUE.md.

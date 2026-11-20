@@ -1350,3 +1350,4 @@
 | 2026-11-20T20:41:54Z | W123.4 | CLOSED — W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D (commit `590fd0c`) |
 | 2026-11-20T20:43:59Z | W123.4 | CLOSED — W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D (commit `590fd0c`) |
 | 2026-11-20T20:44:12Z | W123.4 | CLOSED — merge confirmed, HEAD (f6dd544) is ancestor of origin/main — H4 NOT SUPPORTED, parked for R&D |
+| 2026-11-20T20:50:43Z | W123.3 | CLOSED — W123.3 H3 news latency NOT SUPPORTED on NBA injury/starter news (+0.3-0.5c vs 1.9c cost); confirmations, NFL inactives underpowered (commit `e03e1fd`) |
