@@ -34,3 +34,5 @@ PR: w123-3-h3-news (a .py under 12_EXPLORATORY needs green CI before merge).
 None. Hypothesis H-EDGE-3 closed per doctrine (routing result, parked for R&D).
 One thing pending: next supportable H3 test is the same news on NBA prop / team-total markets; needs its own pre-registration.
 Resume: read 12_EXPLORATORY/edge_location/h3_news/RESULT.md, then ACTIVE_QUEUE.md.
+
+Stray branches on origin (not mine, not merged, operator routing call): data/nba-injury-reports (110 commits, 0d), w105-5-ride-board (2, 14d), w108-2-news-lag-prints (2, 10d), w108-5-dashboard-stale (4, 10d), w109-5-dashboard-mem (5, 9d), w115-1-evidence (1, 3d), w117-1-execution (1, 2d). Ref origin/main 082c6bf. Some may have landed under other SHAs.
