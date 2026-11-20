@@ -106,7 +106,7 @@ budget goes (HYPOTHESIS.md §5).
 | # | Hypothesis | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 123.1 | H1 attention | Calibration gap net of cost by family: props, team totals, alt lines vs headline lines; Kalshi vs consensus where it exists | Sonnet | ⬜ | |
-| 123.2 | H2 timing | Closing-line value of every arm order; is the drift from 24 h / 6 h to the close predictable from what we knew? | Sonnet | ⬜ | |
+| 123.2 | H2 timing | Closing-line value of every arm order; is the drift from 24 h / 6 h to the close predictable from what we knew? | Sonnet | | ✅ 11-20 PR #549 (b6f79c8): H2 NOT SUPPORTED, hypothesis closed (H-EDGE-2, parked for R&D); 6 h b +0.017 [−0.024, +0.056], 24 h b −0.063 [−0.239, +0.035]; CLV +0.86¢ vs fee 1.08¢ |
 | 123.3 | H3 news latency | Kalshi prints around timestamped news (lineups, scratches, inactives, injury reports): the move still to come at +1 / +5 / +15 min | Sonnet | ⬜ | |
 | 123.4 | H4 execution | Two-sided quoting simulated on logged depth; spread earned minus adverse selection measured on real fills | Sonnet | ✅ | NOT SUPPORTED (2026-11-20): 0 of 18 cells net > 0, gross negative all; see 12_EXPLORATORY/edge_location/h4_execution/RESULT.md |
 | 123.5 | registry | The Hypothesis Doctrine registry backfilled: every hypothesis since EXP-001 / HYP-010, live or parked, in full detail (operator 11-20 10:10 PT) | Sonnet | ⬜ | |

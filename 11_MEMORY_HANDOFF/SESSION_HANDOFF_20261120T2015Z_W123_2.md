@@ -1,6 +1,6 @@
 # Handoff W123.2 — H2 timing (2026-11-20)
 
-**Status:** DONE (analysis); merge pending CI on PR #549. **Branch:** session/20261120T200255Z-w123-2-h2-timing.
+**Status:** DONE. PR #549 merged on green CI of its head (b6f79c8). **Branch:** session/20261120T200255Z-w123-2-h2-timing.
 **Rules quoted:** COMMON_RULES_W123 first line: "# Wave 123 common rules". Read-only; no order, switch or box install touched.
 **Ticket:** none given in the block; claim was filed as "B-TBD" (flag: backlog id needed, ROLLING_BACKLOG.json not edited per rules).
 
@@ -20,8 +20,8 @@
 
 ## Gates
 - precheck_changed.py: 221 passed after routing the write through `_fence.safe_out` (first run caught a raw open()).
-- After merge: read deploy_truth_read and record the t4-mlb decision (not yet done at time of writing).
-- ACTIVE_QUEUE.md block row: not updated from this worktree (shared nav file, Hard Rule 10: re-read fresh before writing); do it docs-only after merge.
+- deploy_truth_read 20:23Z: box HEAD 8978e824 behind origin/main, no file a service uses differs. t4-mlb decision: NO redeploy needed (analysis-only, nothing a service runs changed); t4-mlb runs box HEAD code, OK.
+- ACTIVE_QUEUE.md row 123.2 updated docs-only after merge (re-read fresh).
 
 ## Footer
 vision_pillar: PROOF (P2 verdict issued: H2 NOT SUPPORTED)
