@@ -22,6 +22,7 @@
     <a class="nv" href="#picks"><span class="ic">✓</span>Tonight's picks<span class="ct" id="nvPicks"></span></a>
     <a class="nv" href="#edgemap"><span class="ic">▦</span>Edge map<span class="ct" id="nvEdge"></span></a>
     <a class="nv" href="#backlog"><span class="ic">☰</span>Rolling backlog<span class="ct" id="nvBacklog"></span></a>
+    <a class="nv" href="#hypotheses"><span class="ic">⌬</span>Hypothesis tracker<span class="ct" id="nvHyp"></span></a>
     <a class="nv" href="#distance"><span class="ic">◎</span>Distance to optimum<span class="ct">16</span></a>
     <a class="nv" href="#verdicts"><span class="ic">⊢</span>Verdict board<span class="ct" id="nvVerd"></span></a>
     <a class="nv" href="#evidence"><span class="ic">▤</span>Execution ledger</a>
@@ -153,6 +154,13 @@
   <p class="lede">Every edge idea tested so far. Each family's bar shows where its ideas stand; open a family to see them, open an idea
   for its numbers. Green only when net is above zero held out (operator 10-19: &ldquo;green means it wins&rdquo;).</p>
   <div id="emHost"></div>
+</section>
+
+<section id="hypotheses">
+  <div class="sechead"><h2>Hypothesis tracker</h2><span class="num" id="hyHead"></span></div>
+  <p class="lede">Every question the bot is asking, live or parked for R&amp;D, read straight from <span class="mono">HYPOTHESIS_DOCTRINE.md</span>
+  (operator 11-20). A parked hypothesis closes that test only, never the cell; each one keeps its reopen trigger.</p>
+  <div id="hyHost"></div>
 </section>
 
 <section id="backlog">

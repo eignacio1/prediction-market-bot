@@ -146,7 +146,7 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | H-DEPTH-NBA-S1..S5 | Pace / net rating (S1), shot-zone matchup (S2), lineups (S3), home / road gap (S4), refs (S5) split NBA leaves | NBA game families | per leaf | W118.2 (EXP nba_depth_splits) | COLLECTING: 12 kept leaves, 0 BH; S3 / S5 UNDERPOWERED (snapshots from 11-10) | best S2 SPREAD T3 MOMENTUM +0.155, lower +0.048, 16 games | Behind +nba_depth (logged beside v1); S3 / S5 reopen with Muse's 2024-26 lineup / ref history (Monday) |
 | H-DEPTH-NHL-1 | Goalie and special-teams splits change NHL arms | NHL game families | per leaf | W119.1 | COLLECTING: 8 positive of 42 held out, 0 BH | — | nhl_v2 candidate logged |
 | H-DEPTH-NHL-2 | Goalie confirmation moves the price with a usable lag | NHL | MOMENTUM | W118.3 | PARKED (R&D) 11-18: 0.2c [0.07, 0.43], n 14 | — | Reopen if H-EDGE-3 finds latency elsewhere |
-| EXP-NBAPROPS-001 | Player splits (minutes / usage, opponent zones, pace, rest) route NBA props | NBA props T1-T3 | per leaf | W121.2 | 1 earned (points), 14 kept of 143 leaves | — | Points now priced (W122.1); nba_props candidate logged |
+| EXP-NBAPROPS-001 | Player splits (minutes / usage, opponent zones, pace, rest) route NBA props | NBA props T1-T3 | per leaf | W121.2 | COLLECTING (11-20): 1 earned (points), 14 kept of 143 leaves | — | Points now priced (W122.1); nba_props candidate logged |
 | H-DEPTH-NFL-1 | NFL tested splits (13 cells, W112-W113) change arms | NFL | per leaf | W120.1 | COLLECTING on box rows (stumps logged) | — | Recount after 11-22 / 23 |
 
 ### II.5 Program ARMS — pot of gold and momentum
@@ -170,12 +170,12 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | MLB-2027 | 2026 look-back routing holds in 2027 | MLB 42 cells | PRE-REGISTERED (PREREG_2027) | opening-day dry run passes (W122.4) |
 
 ### II.7 Parked elsewhere (W104-W122, short form; the backfill expands each)
-- **The 39-row edge map as standalone bets** — PARKED: no single pattern beats cost alone; each is a routing input (W110-W111).
+- **The 39-row edge map as standalone bets** — PARKED (R&D): no single pattern beats cost alone; each is a routing input (W110-W111).
 - **NFL game total T1 + T2, fade arm** — PARKED → routed to ride (EXP-037 NFL).
 - **MLB pre-game model vs market (EXP-029)** — PARKED → routed to ride.
 - **T4 latency thesis (T-569)** — NOT SUPPORTED with the current feature set; in-play arms wait for a measured speed advantage (ADR-0068).
-- **Weather as a factor (W108-W109)** — Kalshi already beats a free forecast; no build.
-- **The old NBA book** (GG-034 / GG-037) — anti-predictive at the NBA Finals; frozen, historical.
+- **Weather as a factor (W108-W109)** — PARKED (R&D): Kalshi already beats a free forecast; no build.
+- **The old NBA book (GG-034 / GG-037)** — PARKED (historical): anti-predictive at the NBA Finals; frozen.
 
 ---
 

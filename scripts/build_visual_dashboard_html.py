@@ -219,6 +219,66 @@ def backlog() -> dict:
     return rolling_backlog.load(ROOT)
 
 
+def hypotheses() -> dict:
+    """The hypothesis tracker (operator 2026-11-20 10:17 PT: "I'd like to see a running tracker on our hypotheses"), parsed from
+    02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md Part II at build time, so the page follows the registry with no hand copy. On any
+    parse failure the panel says so instead of drawing a wrong list."""
+    import re as _re
+    path = ROOT / "02_ARCHITECTURE_DESIGN" / "HYPOTHESIS_DOCTRINE.md"
+    try:
+        text = path.read_text()
+    except OSError as exc:
+        return {"error": f"cannot read {path.name}: {exc}"}
+    reviewed = (_re.search(r"\*\*Last reviewed:\*\* (\d{4}-\d{2}-\d{2})", text) or [None, ""])[1]
+    part = text.split("## Part II", 1)[-1].split("## Part III", 1)[0]
+
+    def norm(status: str) -> str:
+        u = status.upper()
+        for key, out in (("PARKED", "PARKED"), ("NOT SUPPORTED", "NOT SUPPORTED"), ("UNDERPOWERED", "UNDERPOWERED"),
+                         ("SUPPORTED", "SUPPORTED"), ("LOOKING", "LOOKING"), ("IN_SAMPLE", "COLLECTING"),
+                         ("COLLECTING", "COLLECTING"), ("PRE-REGISTERED", "PRE-REGISTERED"), ("WORKING NULL", "WORKING NULL"),
+                         ("SUPERSEDED", "SUPERSEDED"), ("REVISIT", "REVISIT"), ("STATED", "STATED")):
+            if key in u:
+                return out
+        return "OTHER"
+
+    programs, cur, header = [], None, None
+    for line in part.splitlines():
+        h = _re.match(r"^### II\.\d+ (.+)$", line)
+        if h:
+            cur = {"title": h.group(1).strip(), "rows": []}
+            programs.append(cur)
+            header = None
+            continue
+        if cur is None:
+            continue
+        if line.startswith("|") and "---" not in line:
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if cells and cells[0] == "ID":
+                header = [c.lower() for c in cells]
+                continue
+            if header and len(cells) >= len(header) - 1:
+                row = dict(zip(header, cells))
+                st = row.get("status", "")
+                cur["rows"].append({"id": row.get("id", ""), "claim": row.get("claim (mechanism)", row.get("claim", "")),
+                                    "locus": row.get("locus", ""), "arm": row.get("arm", ""), "test": row.get("test", ""),
+                                    "status_raw": st, "status": norm(st), "evidence": row.get("evidence", ""),
+                                    "next": row.get("consequence / reopen", row.get("notes", ""))})
+            continue
+        b = _re.match(r"^- \*\*(.+?)\*\*\s*[—-]+\s*(.+)$", line)
+        if b:
+            st = b.group(2)
+            cur["rows"].append({"id": b.group(1), "claim": "", "locus": "", "arm": "", "test": "", "status_raw": st,
+                                "status": norm(st), "evidence": "", "next": ""})
+    rows = [r for p_ in programs for r in p_["rows"]]
+    if not rows:
+        return {"error": "no registry rows parsed from HYPOTHESIS_DOCTRINE.md Part II"}
+    counts = {}
+    for r in rows:
+        counts[r["status"]] = counts.get(r["status"], 0) + 1
+    return {"reviewed": reviewed, "programs": programs, "counts": counts, "total": len(rows)}
+
+
 def edge_map() -> dict:
     """The edge map (W107.1, B-059): 12_EXPLORATORY/edge_map/edge_map.json. Missing, unparseable or malformed returns ok=False
     with the reason so the panel says so instead of drawing a wrong picture."""
@@ -288,7 +348,7 @@ def render() -> tuple[str, str]:
         return json.dumps(obj, ensure_ascii=False).replace("</", "<\\/")
 
     script = ((SRC / "script.js").read_text().replace("__CELLS__", js(cells())).replace("__RUNTIME__", js(runtime())).replace("__LIVE__", js(runtime_live()))
-              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())).replace("__CALAGE__", js(calendar_age())).replace("__EDGEMAP__", js(edge_map())))
+              .replace("__WINERR__", js(window_errors())).replace("__GAGENT__", js(gg_agent())).replace("__GOV__", js(governance())).replace("__MUSEWEB__", js(muse_web())).replace("__BACKLOG__", js(backlog())).replace("__PICKS__", js(picks())).replace("__CALAGE__", js(calendar_age())).replace("__EDGEMAP__", js(edge_map())).replace("__HYP__", js(hypotheses())))
     html = (SRC / "head.html").read_text() + body + "\n<script>\n" + script + "\n</script>\n</body>\n</html>\n"
     return html, sha
 

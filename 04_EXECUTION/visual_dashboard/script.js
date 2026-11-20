@@ -192,6 +192,7 @@ const WINERR = __WINERR__;
 const GAGENT = __GAGENT__;
 const MUSEWEB = __MUSEWEB__;
 const BACKLOG = __BACKLOG__;
+const HYP = __HYP__;
 const EDGEMAP = __EDGEMAP__;
 const PICKS = __PICKS__;
 const CALAGE = __CALAGE__;
@@ -805,3 +806,29 @@ const io=new IntersectionObserver(es=>{
   }});
 },{rootMargin:'-80px 0px -70% 0px', threshold:0});
 secs.forEach(s=>io.observe(s));
+
+/* ---------- HYPOTHESIS TRACKER (operator 2026-11-20 10:17 PT: "a running tracker on our hypotheses") ---------- */
+(function(){
+  const host=document.getElementById('hyHost'); if(!host) return;
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  if(!HYP || HYP.error){host.innerHTML=`<div class="note warn"><b>Hypothesis tracker unavailable:</b> ${esc(HYP&&HYP.error||'no data')}</div>`;return;}
+  const ORDER=['SUPPORTED','LOOKING','COLLECTING','PRE-REGISTERED','UNDERPOWERED','WORKING NULL','STATED','REVISIT','NOT SUPPORTED','PARKED','SUPERSEDED','OTHER'];
+  const CHIP={'SUPPORTED':'good','LOOKING':'info','COLLECTING':'info','PRE-REGISTERED':'info','UNDERPOWERED':'warn','WORKING NULL':'mute','STATED':'mute','REVISIT':'warn','NOT SUPPORTED':'serious','PARKED':'mute','SUPERSEDED':'mute','OTHER':'mute'};
+  const COL={'good':'var(--good)','info':'var(--s1)','warn':'var(--warn)','serious':'var(--serious)','mute':'var(--ink-3)'};
+  const closed=s=>s==='PARKED'||s==='NOT SUPPORTED'||s==='SUPERSEDED';
+  const chip=s=>`<span class="chip ${CHIP[s]||'mute'}"><i></i>${esc(s)}</span>`;
+  const row=r=>`<details class="hy-row"><summary><span class="hy-id">${esc(r.id)}</span><span class="hy-cl">${esc(r.claim||r.status_raw)}</span>${chip(r.status)}</summary>
+    <dl class="hy-kv">${[['Status',r.status_raw],['Where',r.locus],['Arm',r.arm],['Test',r.test],['Evidence',r.evidence],['Next / reopen',r.next]].filter(x=>x[1]).map(x=>`<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl></details>`;
+  const bar=rows=>{const n=rows.length||1;return `<span class="hy-bar">${ORDER.map(s=>{const c=rows.filter(r=>r.status===s).length;return c?`<i style="width:${100*c/n}%;background:${COL[CHIP[s]]}" title="${esc(s)} ${c}"></i>`:''}).join('')}</span>`;};
+  const total=HYP.total, live=Object.entries(HYP.counts).filter(([k])=>!closed(k)).reduce((a,[,v])=>a+v,0);
+  document.getElementById('hyHead').textContent=`${total} hypotheses · ${live} live · ${total-live} closed / parked · registry reviewed ${HYP.reviewed||'—'}`;
+  const nv=document.getElementById('nvHyp'); if(nv) nv.textContent=String(live);
+  let h=`<div class="hy-sum">${ORDER.filter(s=>HYP.counts[s]).map(s=>`<span class="chip ${CHIP[s]}"><i></i>${esc(s)} ${HYP.counts[s]}</span>`).join('')}</div>`;
+  HYP.programs.forEach((p,i)=>{
+    const [name,...rest]=p.title.split(' — '); const open=p.rows.filter(r=>!closed(r.status)), shut=p.rows.filter(r=>closed(r.status));
+    h+=`<details class="hy-prog"${i===0?' open':''}><summary><span class="hy-pn">${esc(name)}</span><span class="hy-pd">${esc(rest.join(' — '))}</span>${bar(p.rows)}<span class="mono" style="font-size:11.5px;color:var(--ink-3)">${open.length} live · ${shut.length} closed</span></summary>
+      <div class="hy-rows">${open.map(row).join('')}</div>
+      ${shut.length?`<details class="hy-park"><summary>Closed / parked for R&amp;D (${shut.length})</summary><div class="hy-rows">${shut.map(row).join('')}</div></details>`:''}</details>`;
+  });
+  host.innerHTML=h;
+})();
