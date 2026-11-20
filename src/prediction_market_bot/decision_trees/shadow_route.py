@@ -9,6 +9,7 @@ exp_output/PREGAME_SHADOW); where that is unavailable the move bin is "na" and m
 from __future__ import annotations
 
 import os
+import re
 from functools import lru_cache
 from typing import Optional
 
@@ -158,7 +159,76 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
         except Exception as e:  # noqa: BLE001
             rec.update(arm="ERROR", branch="ERROR", side=None, leaf_id=None, reason=(type(e).__name__ + ":" + str(e))[:160])
         out[name] = rec
+    pot = pot_of_gold_candidate(row, series)  # W122.2: a new key only; applies to pot-of-gold price buckets
+    if pot is not None:
+        out["pot_of_gold"] = pot
     return out
+
+
+_POT_TABLE = "longshot_cells_w122.toml"
+_DATE_TK = re.compile(r"-(\d{2})([A-Z]{3})(\d{2})(\d{4})?")
+_MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
+
+
+def _pot_tier(row: dict) -> Optional[str]:
+    """Time tier in calib.tier's vocabulary, from the row's own fields only (no look-ahead). Tickers with HHMM (MLB) use the logged
+    horizon; date-only tickers (NFL / NBA / NHL, props included) use ET calendar days from the row's ts_utc to the event date."""
+    m = _DATE_TK.search(str(row.get("event_ticker", "")))
+    if not m:
+        return tier_for_hours(row.get("horizon_hours_to_start"))
+    if m.group(4):
+        return tier_for_hours(row.get("horizon_hours_to_start"))
+    from datetime import date, datetime
+    from zoneinfo import ZoneInfo
+    ts = datetime.fromisoformat(str(row["ts_utc"]).replace("Z", "+00:00"))
+    days = (date(2000 + int(m.group(1)), _MON[m.group(2)], int(m.group(3))) - ts.astimezone(ZoneInfo("America/New_York")).date()).days
+    return None if days < 0 else "D0" if days == 0 else "D1" if days == 1 else "D2+"
+
+
+@lru_cache(maxsize=1)
+def _pot_table():
+    import hashlib
+
+    from prediction_market_bot.decision_trees import longshot
+
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), _POT_TABLE)
+    with open(path, "rb") as fh:
+        sha = hashlib.sha256(fh.read()).hexdigest()
+    return longshot.load(path), _POT_TABLE, sha
+
+
+def pot_of_gold_candidate(row: dict, series: str) -> Optional[dict]:
+    """W122.2 (B-024): the pot-of-gold arm beside v1, shadow only. Applies to a priced two-sided pre-game row whose YES mid sits in
+    a pot-of-gold bucket (1-15c / 85-99c); any other row gets no key. Uses longshot.decide unchanged: orderable status only, so
+    a candidate arm other than NO_BET needs a HELD_OUT / FORWARD_PASSED pre-registered cell."""
+    from prediction_market_bot.decision_trees import longshot
+    from prediction_market_bot.quant.longshot_bias import pot_bucket
+
+    bid, ask = row.get("yes_bid"), row.get("yes_ask")
+    if bid is None or ask is None:
+        return None
+    bid, ask = float(bid), float(ask)
+    if not bid or not ask or ask < bid:
+        return None
+    mid = (bid + ask) / 2.0
+    b = pot_bucket(mid)
+    if b is None:
+        return None
+    rec = {"map_version": "pot_of_gold", "bucket": b}
+    try:
+        tier = _pot_tier(row)
+        table, fname, sha = _pot_table()
+        rec.update(map=fname, map_sha256=sha, tier=tier)
+        if tier in (None, "D0"):  # the cells exclude D0 (a date-only D0 snapshot may be in play)
+            rec.update(arm=longshot.NO_BET, branch="POT_OF_GOLD", side=None, leaf_id=None, reason=f"tier {tier} not measured")
+            return rec
+        d = longshot.decide(series, tier, mid, (ask - bid) / 2.0, table)
+        c = d.cell
+        rec.update(arm=d.action, branch="POT_OF_GOLD", side=d.side, leaf_id=f"{series}/{tier}/{b}" if c else None,
+                   reason=d.reason[:160], cell_status=c.status if c else None)
+    except Exception as e:  # noqa: BLE001
+        rec.update(arm="ERROR", branch="ERROR", side=None, leaf_id=None, reason=(type(e).__name__ + ":" + str(e))[:160])
+    return rec
 
 
 def _depth_fields(depth: Optional[dict], ds: Optional[dict]) -> dict:
