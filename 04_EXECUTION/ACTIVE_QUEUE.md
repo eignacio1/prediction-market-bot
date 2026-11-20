@@ -109,7 +109,7 @@ v2's weekly look (Tuesday 10:00 UTC) exists only as code. This wave:
 | 121.1 | proof · 3 | Weekly looks run themselves on box rows: v1 + router v2 + nba_depth + nhl_v2 scored per leaf, e-process carried forward; install proposed | Sonnet | ⬜ | |
 | 121.2 | D6 · props · 3 | NBA's 12 prop cells through the tree: market state, player splits from the archive, stump rule, router v2 candidate | Sonnet | ⬜ | |
 | 121.3 | execution · 3 | Capacity and dollar ceiling per arm per sport from logged depth and fills - $ / day at $1k, $10k, $100k | Sonnet | ⬜ | |
-| 121.4 | dashboards · 3 | Live Terminal: candidate arms beside v1, D6 per sport, weekly looks, disk + Mac copy; a PHONE version (/m) and its access path; the Mac job | Sonnet | ⬜ | |
+| 121.4 | dashboards · 3 | Live Terminal: candidate arms beside v1, D6 per sport, weekly-look verdicts, disk + Mac copy status; the Mac job if approved | Haiku | ⬜ | |
 
 - **Pushback:** a weekly look on four weeks of rows will mostly say "keep watching". It runs anyway, because an e-process only works if
   every look is taken on schedule; skipping looks breaks the guarantee 116.1 built.
@@ -213,10 +213,10 @@ bankrolls; the top 10 cells by ceiling.
 END OF BLOCK 121.3
 ```
 
-### 121.4 - DASHBOARDS (THE OPERATOR SEES IT, ON HIS PHONE TOO) · MODEL: Sonnet
+### 121.4 - DASHBOARDS (THE OPERATOR SEES IT) · MODEL: Haiku
 
 ```
-WAVE 121 - BLOCK 121.4 - DASHBOARDS - LIVE TERMINAL PANELS + A PHONE VERSION (/m) AND ITS ACCESS PATH; THE MAC JOB IF APPROVED - MODEL: Sonnet
+WAVE 121 - BLOCK 121.4 - DASHBOARDS - LIVE TERMINAL: CANDIDATE ARMS BESIDE V1, D6 PER SPORT, WEEKLY LOOKS, DISK AND MAC COPY; THE MAC JOB IF APPROVED - MODEL: Haiku
 
 FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
 bind this block. Then read scripts/web_dashboard.py's _router_arm / _arm_orders / _d6 helpers and Live Terminal.html's router, D6 and
@@ -236,18 +236,7 @@ PART B - checks
 2. Tests for each new server helper.
 3. PR; merge on green.
 
-PART C - the phone version (operator 2026-11-19 22:11 PT: "Give me a phone friendly version of the live terminal")
-1. A /m route on the same server: one column, full black Bloomberg look, in-season sports only, built for a 390-px-wide phone in
-   Safari. Top to bottom: health and kill switch; today's arm orders and fills per arm; open positions and demo P&L; D6 per sport;
-   alerts (silent arms, healthcheck faults, disk). Big tap targets, no hover-only detail, auto-refresh like the desktop page. Reuse
-   the existing /api/data; no new data paths. Playwright screenshots at iPhone 15 size (device emulation), no console errors.
-2. Access: today the page is reachable only through an ssh tunnel from the Mac, which a phone cannot open by itself. Do NOT expose the
-   port publicly. Write the $0 private path as a box install task with its approval sentence in "Needs your decision" (Tailscale's
-   free personal plan on the box, `tailscale serve` of localhost:8050 to the operator's own tailnet only; readback, uninstall,
-   budget probe, allowlist line, tests), and list the one-time steps on the operator's side in plain words (the Tailscale app on his
-   phone, one sign-in). Do not run it.
-
-PART D - the Mac weekly copy (only if the operator approved decision 8)
+PART C - the Mac weekly copy (only if the operator approved decision 8)
 1. If "Needs your decision" carries the operator's approval of the weekly evidence copy, run
    scripts/ops/evidence_pull_launchd.sh install on this Mac, read it back (launchctl list), and say so.
 2. If not, do nothing.
