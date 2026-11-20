@@ -59,7 +59,7 @@ def main():
         trb = bd.price_board(ml.RunModel(["is_home"]).fit(train), train)  # naive = train frequency per rung
         for fam in FAMS:
             s, sn = stack(b, None, fam), stack(trb, None, fam)
-            naive = sn.groupby(["side", "k"]).y.mean().rename("naive").reset_index()
+            naive = sn.groupby(["side", "k"]).y.mean().reset_index(name="naive")
             s = s.merge(naive, on=["side", "k"], how="left")
             out["calibration"][f"{season}/{fam}"] = {
                 "n_games": int(b.shape[0]), "n_rung_obs": int(len(s)),
