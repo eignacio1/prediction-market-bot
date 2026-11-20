@@ -1,6 +1,6 @@
 {
   "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
-  "as_of": "2026-11-20T15:40Z",
+  "as_of": "2026-11-20T18:01Z",
   "ranking": [
     "1 market-anchored pricing (10-21)",
     "2 one engine per sport (10-13)",
@@ -28,30 +28,6 @@
   },
   "tickets": [
     {
-      "id": "B-107",
-      "status": "NOW",
-      "lane": "D6",
-      "rank": "layer 1",
-      "title": "NBA points priced by the engine so the one earned prop split (points) can fire; props D6 on the box",
-      "measure": "D6 props; points calibration",
-      "why": "121.2: the only earned prop split is points, and points has no engine price",
-      "source": "SW-9 2026-11-20",
-      "wave": "122.1",
-      "order": 1
-    },
-    {
-      "id": "B-024",
-      "order": 2,
-      "status": "NOW",
-      "lane": "engine",
-      "rank": "8",
-      "title": "Pot of gold as an ARM of the tree (big hitters, longshots, parlays), scored per leaf and routed - not a phase after the standard board (operator 11-05: \"we should have the pot of gold decision trees routed in too\"); W110.4 built the same-game correlation, W111.3 scores the longshot branches per leaf",
-      "measure": "-",
-      "why": "After the standard board, per the north star.",
-      "source": "CLAUDE.md north star",
-      "wave": "122.2"
-    },
-    {
       "id": "B-104",
       "status": "NOW",
       "lane": "D6",
@@ -60,32 +36,20 @@
       "measure": "D6 NFL 0 -> N on the box",
       "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
       "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
-      "wave": "120.1 + 122.3",
-      "order": 3
+      "wave": "122.3; recount after the 11-22 / 23 slate",
+      "order": 1
     },
     {
-      "id": "B-108",
-      "status": "NOW",
-      "lane": "D6",
-      "rank": "layer 1",
-      "title": "MLB 2027 board priced from the pitch store; every registered MLB cell logging from opening day (GG-1957)",
-      "measure": "MLB layer-1 cells 3 -> N; back-test calibration",
-      "why": "2026 regular season never logged for MLB game cells (GG-1957); 3 of 42 MLB cells priced",
-      "source": "SW-9 2026-11-20",
-      "wave": "122.4",
-      "order": 4
-    },
-    {
-      "id": "B-103",
-      "status": "NOW",
-      "lane": "INFRA",
-      "rank": "capacity · $0",
-      "title": "Evidence off the box, $0: weekly verified copy of PRICE_ARCHIVE, KALSHI_HISTORY and settled ledgers to the operator's Mac (desktop bridge); then a rolling hot window on the box",
-      "measure": "off-box copies of irreplaceable evidence 0 -> 1 (verified by checksum); box disk trend",
-      "why": "Operator 11-17 22:29 PT: \"not paying for more\". The 24 GB box holds the only full copy of evidence that cannot be re-captured (GG-158), and growth returns it to 90% within months",
-      "source": "operator 2026-11-17 22:29 PT",
-      "wave": "119.4 + 120.3",
-      "order": 5
+      "id": "B-024",
+      "order": 2,
+      "status": "NEXT",
+      "lane": "engine",
+      "rank": "8",
+      "title": "Pot of gold as an ARM of the tree (big hitters, longshots, parlays), scored per leaf and routed - not a phase after the standard board (operator 11-05: \"we should have the pot of gold decision trees routed in too\"); W110.4 built the same-game correlation, W111.3 scores the longshot branches per leaf",
+      "measure": "-",
+      "why": "After the standard board, per the north star.",
+      "source": "CLAUDE.md north star",
+      "wave": "122.2 scored; next look 12-10"
     },
     {
       "id": "B-095",
@@ -97,7 +61,7 @@
       "why": "fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "119.3 forward test running; re-fit at judged n",
-      "order": 6
+      "order": 3
     },
     {
       "id": "B-096",
@@ -109,7 +73,7 @@
       "why": "no mid-week correction reached Muse since 11-12",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (window)",
-      "order": 7
+      "order": 4
     },
     {
       "id": "B-063",
@@ -121,11 +85,11 @@
       "why": "107.2 could not see under 20 minutes",
       "source": "SW-9 W107 close",
       "wave": "117: trade-print momentum",
-      "order": 8
+      "order": 5
     },
     {
       "id": "B-017",
-      "order": 9,
+      "order": 6,
       "status": "NEXT",
       "lane": "flex",
       "rank": "plumbing",
@@ -145,11 +109,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "folded into B-098",
-      "order": 10
+      "order": 7
     },
     {
       "id": "B-018",
-      "order": 11,
+      "order": 8,
       "status": "LATER",
       "lane": "engine",
       "rank": "2",
@@ -169,11 +133,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 12
+      "order": 9
     },
     {
       "id": "B-013",
-      "order": 13,
+      "order": 10,
       "status": "LATER",
       "lane": "engine",
       "rank": "3",
@@ -185,7 +149,7 @@
     },
     {
       "id": "B-014",
-      "order": 14,
+      "order": 11,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -197,7 +161,7 @@
     },
     {
       "id": "B-015",
-      "order": 15,
+      "order": 12,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -209,7 +173,7 @@
     },
     {
       "id": "B-016",
-      "order": 16,
+      "order": 13,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -221,7 +185,7 @@
     },
     {
       "id": "B-021",
-      "order": 17,
+      "order": 14,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -233,7 +197,7 @@
     },
     {
       "id": "B-001",
-      "order": 18,
+      "order": 15,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -245,7 +209,7 @@
     },
     {
       "id": "B-008",
-      "order": 19,
+      "order": 16,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -257,7 +221,7 @@
     },
     {
       "id": "B-022",
-      "order": 20,
+      "order": 17,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -269,7 +233,7 @@
     },
     {
       "id": "B-023",
-      "order": 21,
+      "order": 18,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -281,7 +245,7 @@
     },
     {
       "id": "B-025",
-      "order": 22,
+      "order": 19,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -290,6 +254,42 @@
       "why": "Breadth outran proof; expansion ranks last.",
       "source": "ranking 10-27",
       "wave": ""
+    },
+    {
+      "id": "B-107",
+      "status": "DONE",
+      "lane": "D6",
+      "rank": "layer 1",
+      "title": "NBA points priced by the engine so the one earned prop split (points) can fire; props D6 on the box",
+      "measure": "D6 props; points calibration",
+      "why": "121.2: the only earned prop split is points, and points has no engine price",
+      "source": "SW-9 2026-11-20",
+      "wave": "122.1 (points live; props layer 2 next)",
+      "order": 20
+    },
+    {
+      "id": "B-108",
+      "status": "DONE",
+      "lane": "D6",
+      "rank": "layer 1",
+      "title": "MLB 2027 board priced from the pitch store; every registered MLB cell logging from opening day (GG-1957)",
+      "measure": "MLB layer-1 cells 3 -> N; back-test calibration",
+      "why": "2026 regular season never logged for MLB game cells (GG-1957); 3 of 42 MLB cells priced",
+      "source": "SW-9 2026-11-20",
+      "wave": "122.4 (dry run; live in 2027)",
+      "order": 21
+    },
+    {
+      "id": "B-103",
+      "status": "DONE",
+      "lane": "INFRA",
+      "rank": "capacity · $0",
+      "title": "Evidence off the box, $0: weekly verified copy of PRICE_ARCHIVE, KALSHI_HISTORY and settled ledgers to the operator's Mac (desktop bridge); then a rolling hot window on the box",
+      "measure": "off-box copies of irreplaceable evidence 0 -> 1 (verified by checksum); box disk trend",
+      "why": "Operator 11-17 22:29 PT: \"not paying for more\". The 24 GB box holds the only full copy of evidence that cannot be re-captured (GG-158), and growth returns it to 90% within months",
+      "source": "operator 2026-11-17 22:29 PT",
+      "wave": "119.4 + 120.3 + 121.4 (Mac copy weekly)",
+      "order": 22
     },
     {
       "id": "B-106",
