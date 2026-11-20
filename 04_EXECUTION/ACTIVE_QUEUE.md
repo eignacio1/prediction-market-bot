@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 121 READY TO PASTE - four blocks: 121.1 the weekly evidence look runs itself, 121.2 NBA props through the tree, 121.3 what each arm is worth in dollars, 121.4 Live Terminal panels (Haiku).** Decision 8 (weekly Mac copy) APPROVED 11-18 22:44 PT; 121.4 installs it.
+> **▶ WAVE 122 READY TO PASTE - four build blocks (Sonnet): 122.1 NBA points priced, 122.2 the pot-of-gold arm, 122.3 the NFL board widened, 122.4 MLB 2027 priced from the pitch store.** Decision 9 (weekly-look install) waits on you.
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,160 +95,159 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 121 · WRITTEN 2026-11-19 ~06:55 UTC (11-18 22:55 PT) · SW-9 · four blocks · MODEL: Sonnet (Haiku for 121.4) · paste each into its own terminal
+## ▶ NOW — WAVE 122 · WRITTEN 2026-11-20 ~15:55 UTC (07:55 PT) · SW-9 · four build blocks · MODEL: Sonnet · paste each into its own terminal
 
-**The router now records, on every box row, what v1 and each candidate map would do.** Nothing scores those rows on a schedule: router
-v2's weekly look (Tuesday 10:00 UTC) exists only as code. This wave:
-- **makes the evidence engine run itself**, weekly, on box rows, for v1 and every candidate;
-- **takes NBA props through the tree;**
-- **puts a dollar figure on each arm**, so wiring follows the money;
-- **shows it all on the Live Terminal.**
+**Build the bot** (operator 07:38 PT: no administrative blocks unless red). Each block widens what the router can price or route:
+- **NBA points:** the one prop split that earned in 121.2 cannot fire, because points has no engine price;
+- **the pot-of-gold arm:** the fifth arm, defined in W105 and scored on nine days of NBA / NHL, now has five more weeks to score on;
+- **the NFL board:** NFL has a price on only 12 of 29 cells;
+- **MLB 2027:** priced from its pitch store, and logging every cell from opening day (GG-1957).
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 121.1 | proof · 3 | Weekly looks run themselves on box rows: v1 + router v2 + nba_depth + nhl_v2 scored per leaf, e-process carried forward; install proposed | Sonnet | | ✅ | PR 538 merged. First look on box 11-20: 0 leaves with an arm on any map; candidate maps 0 settled games. Install awaiting approval (`evidence_weekly_install`). Next look 11-24. |
-| 121.2 | D6 · props · 3 | NBA's 12 prop cells through the tree: market state, player splits from the archive, stump rule, router v2 candidate | Sonnet | ⬜ | |
-| 121.3 | execution · 3 | Capacity and dollar ceiling per arm per sport from logged depth and fills - $ / day at $1k, $10k, $100k | Sonnet | ✅ 2026-11-20 | 12_EXPLORATORY/capacity/RESULT.md; ticks 1-3 not measurable (no NBA/NHL ladder); every ceiling spans 0 |
-| 121.4 | dashboards · 3 | Live Terminal: candidate arms beside v1, D6 per sport, weekly-look verdicts, disk + Mac copy status; the Mac job if approved | Haiku | ✅ | #537 panels merged (candidates beside v1, D6 names, weekly look, disk + Mac copy); Mac weekly job loaded yes. Mac-copy row shows only where the server runs on the Mac. |
+| 122.1 | D6 · NBA props · 3 | NBA points priced by the engine; the earned points split fires on shadow rows; props D6 counted on the box | Sonnet | ⬜ | |
+| 122.2 | arms · 3 | The pot-of-gold arm re-scored on all data to date (NBA / NHL / NFL, props included) and logged beside v1 as a candidate | Sonnet | ⬜ | |
+| 122.3 | D6 · NFL · 3 | NFL board widened: engine prices for the 17 unpriced NFL cells; the weekend slate's D6 recount | Sonnet | ⬜ | |
+| 122.4 | D6 · MLB · 3 | MLB 2027 board priced from the pitch store (game families x bands), every registered cell logging from opening day | Sonnet | ⬜ | |
 
-- **Pushback:** a weekly look on four weeks of rows will mostly say "keep watching". It runs anyway, because an e-process only works if
-  every look is taken on schedule; skipping looks breaks the guarantee 116.1 built.
-- **Surface:** box HEALTHY; disk 74% → ~63% at 14:17Z. Delta: +1 weekly cron proposed (121.1, approval); 0 otherwise.
-- **Dependencies:** none. 121.4 reads 121.1's output file if it exists and shows "not yet" if not.
+- **Pushback:** this is breadth inside the board we already have. It adds no new markets and no new sports (the rule holds until D6
+  passes about 20). Each block widens layer 1 or adds an arm to cells that are already registered.
+- **Surface:** box HEALTHY. Delta: 0 installs (122.4 runs nothing live until 2027). The weekly-look install waits on the operator.
+- **Dependencies:** none. Shared files are add-only, rebased on main (COMMON RULES).
 
-### 121.1 - PROOF (THE WEEKLY LOOK RUNS ITSELF) · MODEL: Sonnet
-
-```
-WAVE 121 - BLOCK 121.1 - PROOF - WEEKLY LOOKS ON BOX ROWS FOR V1 AND EVERY CANDIDATE MAP, E-PROCESS CARRIED FORWARD; INSTALL PROPOSED - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
-bind this block. Then read decision_trees/evidence/ (model, sequential, pipeline, calendar), 12_EXPLORATORY/evidence_design/RESULT.md
-and 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0620Z_W120_2.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_1.md.
-
-WHY: router v2's guarantee rests on weekly looks taken on schedule (cut Tuesday 10:00 UTC), and none runs. Since 11-19 every shadow row
-carries v1's arm and router_candidates {router_v2, nba_depth, nhl_v2}. This turns those rows into a dated verdict per leaf, every week.
-
-PART A - the runner
-1. evidence/weekly.py: on box rows settled through the cut, per sport and per map (v1, router_v2, +nba_depth, nhl_v2), compute per leaf
-   per arm the pooled posterior and the e-process, carried forward from the previous look's state file (never recomputed from scratch,
-   or the guarantee is void).
-2. Output: exp_output/EVIDENCE_WEEKLY/<date>.json plus a one-page summary - leaves that earned an arm, leaves that lost one, the
-   e-value leaders, and the power calendar refreshed.
-3. Tests: carried-forward state equals a single pass over all rows; a planted effect earns an arm in the expected week; a planted null
-   does not; a missed week is reported, never silently filled.
-
-PART B - run it once and propose the schedule
-1. A read-only box task evidence_weekly_run that runs it now on box rows. Request it and report the first look.
-2. Write the install task (one cron line, Tuesday 10:00 UTC; readback, uninstall, budget probe, allowlist line, tests) and its approval
-   sentence in "Needs your decision". Do not run it.
-
-PART C - land
-1. PR(s); merge on green.
-
-Report: per COMMON RULES. MEASURE MOVED: P1 / P3 - leaves with an arm per map at the first look; next look date; the e-value leaders.
-END OF BLOCK 121.1
-```
-
-### 121.2 - D6 · NBA PROPS (THROUGH THE TREE) · MODEL: Sonnet
+### 122.1 - D6 · NBA POINTS (PRICE THE EARNED SPLIT) · MODEL: Sonnet
 
 ```
-WAVE 121 - BLOCK 121.2 - D6 - NBA'S 12 PROP CELLS THROUGH THE TREE: MARKET STATE, PLAYER SPLITS, STUMPS, ROUTER V2 CANDIDATE (B-093) - MODEL: Sonnet
+WAVE 122 - BLOCK 122.1 - D6 - NBA POINTS PRICED BY THE ENGINE; THE EARNED POINTS SPLIT ON SHADOW ROWS; PROPS D6 ON THE BOX - MODEL: Sonnet
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
-bind this block. Then read the newest results/*_d6_read.md (NBA props stop at layers 1-2), decision_trees/filters/nba_depth.py and the
-EXP-039 / 040 / 047 pre-registrations. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_2.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/nba_props_splits/RESULT.md and the W121.2 handoff (PR #541 or main).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_1.md.
 
-WHY: NBA player props (points, rebounds, assists, threes) are 12 registered cells, logging since 11-12, with a model p from the engine.
-They stop at layer 2. Props are where public attention is thinnest; they are the board's least efficient family by the efficiency
-gradient.
+WHY: of 143 prop leaves, one earned an arm (121.2), and it is POINTS. The live prop runner prices rebounds, assists and threes but not
+points, so the one earned leaf cannot fire.
 
-PART A - layer 2 and 3 for props
-1. Market state for prop rows from the prop price archive (installed 11-10): price, move, ladder gap, time to tip.
-2. Player-level splits, point in time from Muse's archive: minutes / usage trend, the opponent's defence at the player's shot zones (from
-   nba_depth's S2), pace, and rest. Pre-register them in 12_EXPLORATORY/nba_props_splits/PREREG.md before reading any result, then log
-   them on prop shadow rows with verdicts (the stump rule).
+PART A - points priced
+1. Add player points to the NBA engine's prop path, from the same simulation as rebounds / assists / threes: point in time, minutes and
+   usage from the engine, and the opponent's defence where the engine has it.
+2. Tests: calibration on held-out games (points by line); the simulated mean is consistent with team totals; no look-ahead.
 
-PART B - arm per leaf
-1. Score the splits per leaf per arm on held-out prop rows, game-clustered.
-2. Add a props map to router_candidates (logged beside v1, under the same approved switch).
-3. Tests: no look-ahead; v1 untouched.
-
-PART C - land and count
-1. PR(s); merge on green.
-2. After deploy and one slate: d6_read. Report D6 for prop cells 0 -> N named, and the one cause for each unwired prop cell.
-
-Report: per COMMON RULES. MEASURE MOVED: D6 props 0 -> N; prop splits tested / kept; B4 props families wired.
-END OF BLOCK 121.2
-```
-
-### 121.3 - EXECUTION (WHAT EACH ARM IS WORTH) · MODEL: Sonnet
-
-```
-WAVE 121 - BLOCK 121.3 - EXECUTION - CAPACITY AND DOLLAR CEILING PER ARM PER SPORT FROM LOGGED DEPTH AND FILLS (B-097) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
-bind this block. Then read the W117.1 and W119.3 handoffs and the newest results/*_arm_orders_read.md.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_3.md.
-
-WHY: nobody has sized the prize. Since 11-18 every arm order logs the book at submit (best bid / ask, spread, depth at the touch). That,
-times net per contract, says what a wired cell is worth in dollars - which decides which cells deserve wiring first.
-
-PART A - fillable size
-1. Per sport, family, band and arm: from depth at the touch at submit, and the price archive's depth samples, the contracts fillable
-   within 1 / 2 / 3 ticks of the touch, as a distribution (median, p25, p75) by time to start.
-2. State n per cell, and that depth is measured live at decision time (CLAUDE.md: never a constant).
-
-PART B - the dollar ceiling
-1. Fillable size x net per contract per arm (the 117.1 estimates with their intervals; say where the interval spans 0), x opportunities
-   per day.
-2. Report $ / day at bankrolls of $1k, $10k and $100k, where size is capped by fillable depth and by the demo caps.
-3. Rank the cells by ceiling. The ranking orders future wiring; it is NOT a sizing rule. Kelly stays 0 and no real capital moves.
-
-PART C - land
-1. Write 12_EXPLORATORY/capacity/RESULT.md and a machine-readable table the dashboards can read.
+PART B - on shadow rows
+1. The prop runner logs points cells (T1-T3) with model p, market state, the kept points split's verdict, and the nba_props
+   candidate's arm. v1 stays untouched.
 2. PR(s); merge on green.
 
-Report: per COMMON RULES. MEASURE MOVED: E-pillar - fillable contracts per cell (median); $ / day ceiling per arm per sport at three
-bankrolls; the top 10 cells by ceiling.
-END OF BLOCK 121.3
+PART C - the count
+1. After deploy and one slate: d6_read. Report props cells wired 0 -> N named, and the one cause for each prop cell still unwired.
+
+Report: per COMMON RULES. MEASURE MOVED: B4 (points logging); D6 props 0 -> N; points calibration on held-out games.
+END OF BLOCK 122.1
 ```
 
-### 121.4 - DASHBOARDS (THE OPERATOR SEES IT) · MODEL: Haiku
+### 122.2 - ARMS (THE POT-OF-GOLD ARM, SCORED ON EVERYTHING TO DATE) · MODEL: Sonnet
 
 ```
-WAVE 121 - BLOCK 121.4 - DASHBOARDS - LIVE TERMINAL: CANDIDATE ARMS BESIDE V1, D6 PER SPORT, WEEKLY LOOKS, DISK AND MAC COPY; THE MAC JOB IF APPROVED - MODEL: Haiku
+WAVE 122 - BLOCK 122.2 - ARMS - POT OF GOLD RE-SCORED ON ALL DATA TO DATE AND LOGGED BESIDE V1 AS A CANDIDATE (B-024) - MODEL: Sonnet
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
-bind this block. Then read scripts/web_dashboard.py's _router_arm / _arm_orders / _d6 helpers and Live Terminal.html's router, D6 and
-arm-orders panels (#491). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_4.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/pot_of_gold/ (DEFINITION, PREREGISTRATION_2026-11-05, RESULT, ROUTER_PRECEDENCE) and
+12_EXPLORATORY/longshot_bias/results_W89.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_2.md.
 
-WHY: the operator watches the Live Terminal (Bloomberg look, full black, in-season sports only). It does not yet show what the
-candidate maps would do, D6 per sport, or the disk and the Mac copy.
+WHY: pot of gold is the fifth arm (DOCTRINE §6). W105.6 scored it on 9 days of NBA / NHL and routed nothing (17 cells IN_SAMPLE). The price
+archive now holds five more weeks of NBA / NHL, plus NBA / NFL / NHL props since 11-10, where lottery-ticket pricing is likeliest.
 
-PART A - panels (match the existing look, no redesign)
-1. Candidate arms: per sport, today's rows - v1's arm vs router_v2 / nba_depth / nhl_v2. Agreement %, and the rows where they differ.
-2. D6 per sport from the newest d6_read (wired / registered, by name on hover).
-3. Weekly look: newest exp_output/EVIDENCE_WEEKLY/*.json summary if it exists; otherwise "first look not run yet".
-4. Box: disk % and days to 90% (healthcheck), and the last Mac copy (LAST_RUN.json time, files, sha match).
+PART A - re-score (the 11-05 pre-registration binds; add props and the new weeks only under a dated addendum written before reading)
+1. Settled first-snapshots per sport, family and price bucket: settled rate minus price, net of the real cost (spread logged since 11-18;
+   fee schedule), game-clustered, held out by date.
+2. Name each of the 17 pre-registered cells: earned / still IN_SAMPLE / closed (routed, parked for R&D).
 
-PART B - checks
-1. node --check on the page script; a Playwright screenshot at 1440 wide with no console errors.
-2. Tests for each new server helper.
-3. PR; merge on green.
+PART B - the arm in the router
+1. A pot_of_gold candidate in router_candidates (a new key only), logged beside v1 on every pregame row it applies to, with its leaf and
+   reason. Shadow only.
+2. Tests: v1 untouched; no look-ahead.
+3. PR(s); merge on green.
 
-PART C - the Mac weekly copy (only if the operator approved decision 8)
-1. If "Needs your decision" carries the operator's approval of the weekly evidence copy, run
-   scripts/ops/evidence_pull_launchd.sh install on this Mac, read it back (launchctl list), and say so.
-2. If not, do nothing.
+PART C - read back
+1. Rows carrying the pot_of_gold arm, per sport, in the first 24 h after deploy.
 
-Report: per COMMON RULES. MEASURE MOVED: PLUMBING - panels added; Mac weekly job loaded yes / no.
-END OF BLOCK 121.4
+Report: per COMMON RULES. MEASURE MOVED: arms with a candidate on box rows 3 -> 4 (+ props); pot-of-gold cells earned / IN_SAMPLE /
+closed.
+END OF BLOCK 122.2
+```
+
+### 122.3 - D6 · NFL (THE BOARD WIDENED) · MODEL: Sonnet
+
+```
+WAVE 122 - BLOCK 122.3 - D6 - NFL ENGINE PRICES FOR THE UNPRICED NFL CELLS; THE WEEKEND SLATE'S D6 RECOUNT (B-104) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read the W120.1 handoff and the newest results/*_d6_read.md (NFL per layer).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_3.md.
+
+WHY: the NFL board engine (EXP-045) prices moneyline, spread and total from one simulation, but only 12 of 29 NFL cells carry a model p
+on the box. NFL's season ends in January, and every unpriced cell is a week of rows lost.
+
+PART A - layer 1 across the NFL board
+1. List the 17 NFL cells without a model p and why (family not priced, band not wired, writer skips it).
+2. Price each from the engine's existing simulation (team totals from the same draws; each band at its own horizon), point in time.
+3. Tests: consistency (team totals sum to the game total; P(win) agrees with the spread-implied probability); no look-ahead.
+
+PART B - on rows
+1. The NFL shadow writer logs every cell with model p, market state and split verdicts (W120.1). v1 is untouched.
+2. PR(s); merge on green.
+
+PART C - the count
+1. After the 11-22 / 23 slate: d6_read. Report D6 NFL 0 -> N named, layer-1 NFL cells 12 -> N, and the one cause for each still-unwired
+   NFL cell.
+
+Report: per COMMON RULES. MEASURE MOVED: NFL layer-1 cells 12 -> N; D6 NFL 0 -> N.
+END OF BLOCK 122.3
+```
+
+### 122.4 - D6 · MLB 2027 (PRICED FROM THE PITCH STORE) · MODEL: Sonnet
+
+```
+WAVE 122 - BLOCK 122.4 - D6 - MLB 2027 BOARD PRICED FROM THE PITCH STORE; EVERY REGISTERED CELL LOGGING FROM OPENING DAY (GG-1957) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read the W118.1 handoff, GG-1957, leaf_maps/mlb_2026_lookback.json and its PREREG_2027, and mlb_engine/.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_4.md.
+
+WHY: MLB is the deepest data the project owns (1.42M pitches), but only 3 of 42 MLB cells carry a model p, and the 2026 regular season
+was never logged for the game cells (GG-1957: the look-back had only 22 postseason games). 2027 must not repeat that.
+
+PART A - the MLB board priced
+1. From the pitch store: a game simulation pricing moneyline, run line, total and team totals per band, point in time (probable starters,
+   bullpen use, park). Back-test on 2025 and 2026 regular-season games against Kalshi closing prices where the archive has them.
+2. Report calibration and the gap to the market per family.
+
+PART B - logging from opening day
+1. Find why the 2026 regular season left no shadow rows for the game cells (GG-1957), and fix it.
+2. Write a dry-run "opening day" test: on a replayed 2026 date, every registered MLB cell writes a row with model p, market state and
+   the 2027 leaf map's arm.
+3. Nothing runs live until the 2027 schedule exists.
+
+PART C - land
+1. PR(s); merge on green.
+2. State what must be true on the box before opening day, as a checklist in the handoff.
+
+Report: per COMMON RULES. MEASURE MOVED: MLB layer-1 cells 3 -> N (in the dry run); back-test calibration per family; GG-1957 cause.
+END OF BLOCK 122.4
 ```
 
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 121 — WRITTEN 2026-11-19 ~06:55 UTC · CLOSED 2026-11-20 ~15:30 UTC (operator 07:38 PT) · SW-9 · four Sonnet blocks · moved: **weekly evidence look built, first look 0 arms on every map (next 11-24); NBA props scored - 1 earned split (points, unpriced); dollar ceiling per arm (top: NBA spread T3 FADE ~$831 / day at $10k, interval spans 0); Live Terminal panels; Mac weekly copy loaded**
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 121.1 | proof | Weekly look runs itself | Sonnet | ✅ #538 | First look (140,223 rows): 0 arms on every map; install awaits the operator. |
+| 121.2 | D6 · props | NBA props through the tree | Sonnet | ✅ #540 | 14 kept, 1 earned (points; no engine price yet); nba_props candidate on REB / AST / 3PT. |
+| 121.3 | execution | Capacity and dollar ceiling | Sonnet | ✅ #536 #539 | 51 cells with depth; FADE leads every sport; $25 event cap binds above $10k. |
+| 121.4 | dashboards | Live Terminal panels; Mac job | Sonnet | ✅ #537 | 4 panels; Mac weekly copy loaded (Sundays 03:00). |
 
 ### ✅ WAVE 120 — WRITTEN 2026-11-19 ~05:20 UTC · CLOSED 2026-11-19 ~06:30 UTC (operator 11-18 22:40 PT) · SW-9 · four blocks · moved: **candidate maps (router v2, nba_depth, nhl_v2) logged beside v1 on box rows (approved 21:19 PT); NFL split verdicts on box rows (D6 NFL recount on the 11-22 slate); held readers read .gz (1.87 GB → compressible); Mac copy 7.2 → 5.7 GB; strategy and architecture docs match the doctrine**
 
@@ -709,6 +708,9 @@ What should reorder this, and what should stop it:
 8. ~~**Weekly evidence copy to your Mac (W119.4 / 120.3)**~~ APPROVED 11-18 22:44 PT (121.4 installs it). Copies the price archive, Kalshi history and ledgers to
    ~/PredictionMarketEvidence every Sunday, sha-checked, kept compressed (120.3 measures the size first). The 120.3 terminal asks you
    before loading it.
+9. **`evidence_weekly_install` (W121.1).** One cron line, Tuesdays 10:00 UTC: the weekly evidence look on box rows for v1 and every
+   candidate map, carried forward. Its guarantee needs every look taken on schedule; the first look (11-17 cut) ran by hand. Approve
+   with: "I approve evidence_weekly_install."
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
 

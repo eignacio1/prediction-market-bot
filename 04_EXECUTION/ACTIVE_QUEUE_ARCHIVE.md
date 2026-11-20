@@ -25895,3 +25895,154 @@ PART C - superseded PRs
 Report: per COMMON RULES. MEASURE MOVED: PLUMBING - docs out of line with DOCTRINE 2 -> 0; open PRs 3 -> 1.
 END OF BLOCK 120.4
 ```
+
+
+## (archived 2026-11-20) WAVE 121 · written 2026-11-19 ~06:55 UTC · SW-9
+
+**The router now records, on every box row, what v1 and each candidate map would do.** Nothing scores those rows on a schedule: router
+v2's weekly look (Tuesday 10:00 UTC) exists only as code. This wave:
+- **makes the evidence engine run itself**, weekly, on box rows, for v1 and every candidate;
+- **takes NBA props through the tree;**
+- **puts a dollar figure on each arm**, so wiring follows the money;
+- **shows it all on the Live Terminal.**
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 121.1 | proof · 3 | Weekly looks run themselves on box rows: v1 + router v2 + nba_depth + nhl_v2 scored per leaf, e-process carried forward; install proposed | Sonnet | | ✅ | PR 538 merged. First look on box 11-20: 0 leaves with an arm on any map; candidate maps 0 settled games. Install awaiting approval (`evidence_weekly_install`). Next look 11-24. |
+| 121.2 | D6 · props · 3 | NBA's 12 prop cells through the tree: market state, player splits from the archive, stump rule, router v2 candidate | Sonnet | ⬜ | |
+| 121.3 | execution · 3 | Capacity and dollar ceiling per arm per sport from logged depth and fills - $ / day at $1k, $10k, $100k | Sonnet | ✅ 2026-11-20 | 12_EXPLORATORY/capacity/RESULT.md; ticks 1-3 not measurable (no NBA/NHL ladder); every ceiling spans 0 |
+| 121.4 | dashboards · 3 | Live Terminal: candidate arms beside v1, D6 per sport, weekly-look verdicts, disk + Mac copy status; the Mac job if approved | Haiku | ✅ | #537 panels merged (candidates beside v1, D6 names, weekly look, disk + Mac copy); Mac weekly job loaded yes. Mac-copy row shows only where the server runs on the Mac. |
+
+- **Pushback:** a weekly look on four weeks of rows will mostly say "keep watching". It runs anyway, because an e-process only works if
+  every look is taken on schedule; skipping looks breaks the guarantee 116.1 built.
+- **Surface:** box HEALTHY; disk 74% → ~63% at 14:17Z. Delta: +1 weekly cron proposed (121.1, approval); 0 otherwise.
+- **Dependencies:** none. 121.4 reads 121.1's output file if it exists and shows "not yet" if not.
+
+### 121.1 - PROOF (THE WEEKLY LOOK RUNS ITSELF) · MODEL: Sonnet
+
+```
+WAVE 121 - BLOCK 121.1 - PROOF - WEEKLY LOOKS ON BOX ROWS FOR V1 AND EVERY CANDIDATE MAP, E-PROCESS CARRIED FORWARD; INSTALL PROPOSED - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read decision_trees/evidence/ (model, sequential, pipeline, calendar), 12_EXPLORATORY/evidence_design/RESULT.md
+and 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0620Z_W120_2.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_1.md.
+
+WHY: router v2's guarantee rests on weekly looks taken on schedule (cut Tuesday 10:00 UTC), and none runs. Since 11-19 every shadow row
+carries v1's arm and router_candidates {router_v2, nba_depth, nhl_v2}. This turns those rows into a dated verdict per leaf, every week.
+
+PART A - the runner
+1. evidence/weekly.py: on box rows settled through the cut, per sport and per map (v1, router_v2, +nba_depth, nhl_v2), compute per leaf
+   per arm the pooled posterior and the e-process, carried forward from the previous look's state file (never recomputed from scratch,
+   or the guarantee is void).
+2. Output: exp_output/EVIDENCE_WEEKLY/<date>.json plus a one-page summary - leaves that earned an arm, leaves that lost one, the
+   e-value leaders, and the power calendar refreshed.
+3. Tests: carried-forward state equals a single pass over all rows; a planted effect earns an arm in the expected week; a planted null
+   does not; a missed week is reported, never silently filled.
+
+PART B - run it once and propose the schedule
+1. A read-only box task evidence_weekly_run that runs it now on box rows. Request it and report the first look.
+2. Write the install task (one cron line, Tuesday 10:00 UTC; readback, uninstall, budget probe, allowlist line, tests) and its approval
+   sentence in "Needs your decision". Do not run it.
+
+PART C - land
+1. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: P1 / P3 - leaves with an arm per map at the first look; next look date; the e-value leaders.
+END OF BLOCK 121.1
+```
+
+### 121.2 - D6 · NBA PROPS (THROUGH THE TREE) · MODEL: Sonnet
+
+```
+WAVE 121 - BLOCK 121.2 - D6 - NBA'S 12 PROP CELLS THROUGH THE TREE: MARKET STATE, PLAYER SPLITS, STUMPS, ROUTER V2 CANDIDATE (B-093) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read the newest results/*_d6_read.md (NBA props stop at layers 1-2), decision_trees/filters/nba_depth.py and the
+EXP-039 / 040 / 047 pre-registrations. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_2.md.
+
+WHY: NBA player props (points, rebounds, assists, threes) are 12 registered cells, logging since 11-12, with a model p from the engine.
+They stop at layer 2. Props are where public attention is thinnest; they are the board's least efficient family by the efficiency
+gradient.
+
+PART A - layer 2 and 3 for props
+1. Market state for prop rows from the prop price archive (installed 11-10): price, move, ladder gap, time to tip.
+2. Player-level splits, point in time from Muse's archive: minutes / usage trend, the opponent's defence at the player's shot zones (from
+   nba_depth's S2), pace, and rest. Pre-register them in 12_EXPLORATORY/nba_props_splits/PREREG.md before reading any result, then log
+   them on prop shadow rows with verdicts (the stump rule).
+
+PART B - arm per leaf
+1. Score the splits per leaf per arm on held-out prop rows, game-clustered.
+2. Add a props map to router_candidates (logged beside v1, under the same approved switch).
+3. Tests: no look-ahead; v1 untouched.
+
+PART C - land and count
+1. PR(s); merge on green.
+2. After deploy and one slate: d6_read. Report D6 for prop cells 0 -> N named, and the one cause for each unwired prop cell.
+
+Report: per COMMON RULES. MEASURE MOVED: D6 props 0 -> N; prop splits tested / kept; B4 props families wired.
+END OF BLOCK 121.2
+```
+
+### 121.3 - EXECUTION (WHAT EACH ARM IS WORTH) · MODEL: Sonnet
+
+```
+WAVE 121 - BLOCK 121.3 - EXECUTION - CAPACITY AND DOLLAR CEILING PER ARM PER SPORT FROM LOGGED DEPTH AND FILLS (B-097) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read the W117.1 and W119.3 handoffs and the newest results/*_arm_orders_read.md.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_3.md.
+
+WHY: nobody has sized the prize. Since 11-18 every arm order logs the book at submit (best bid / ask, spread, depth at the touch). That,
+times net per contract, says what a wired cell is worth in dollars - which decides which cells deserve wiring first.
+
+PART A - fillable size
+1. Per sport, family, band and arm: from depth at the touch at submit, and the price archive's depth samples, the contracts fillable
+   within 1 / 2 / 3 ticks of the touch, as a distribution (median, p25, p75) by time to start.
+2. State n per cell, and that depth is measured live at decision time (CLAUDE.md: never a constant).
+
+PART B - the dollar ceiling
+1. Fillable size x net per contract per arm (the 117.1 estimates with their intervals; say where the interval spans 0), x opportunities
+   per day.
+2. Report $ / day at bankrolls of $1k, $10k and $100k, where size is capped by fillable depth and by the demo caps.
+3. Rank the cells by ceiling. The ranking orders future wiring; it is NOT a sizing rule. Kelly stays 0 and no real capital moves.
+
+PART C - land
+1. Write 12_EXPLORATORY/capacity/RESULT.md and a machine-readable table the dashboards can read.
+2. PR(s); merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: E-pillar - fillable contracts per cell (median); $ / day ceiling per arm per sport at three
+bankrolls; the top 10 cells by ceiling.
+END OF BLOCK 121.3
+```
+
+### 121.4 - DASHBOARDS (THE OPERATOR SEES IT) · MODEL: Haiku
+
+```
+WAVE 121 - BLOCK 121.4 - DASHBOARDS - LIVE TERMINAL: CANDIDATE ARMS BESIDE V1, D6 PER SPORT, WEEKLY LOOKS, DISK AND MAC COPY; THE MAC JOB IF APPROVED - MODEL: Haiku
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W121.md` and quote its first line. Those rules
+bind this block. Then read scripts/web_dashboard.py's _router_arm / _arm_orders / _d6 helpers and Live Terminal.html's router, D6 and
+arm-orders panels (#491). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W121_4.md.
+
+WHY: the operator watches the Live Terminal (Bloomberg look, full black, in-season sports only). It does not yet show what the
+candidate maps would do, D6 per sport, or the disk and the Mac copy.
+
+PART A - panels (match the existing look, no redesign)
+1. Candidate arms: per sport, today's rows - v1's arm vs router_v2 / nba_depth / nhl_v2. Agreement %, and the rows where they differ.
+2. D6 per sport from the newest d6_read (wired / registered, by name on hover).
+3. Weekly look: newest exp_output/EVIDENCE_WEEKLY/*.json summary if it exists; otherwise "first look not run yet".
+4. Box: disk % and days to 90% (healthcheck), and the last Mac copy (LAST_RUN.json time, files, sha match).
+
+PART B - checks
+1. node --check on the page script; a Playwright screenshot at 1440 wide with no console errors.
+2. Tests for each new server helper.
+3. PR; merge on green.
+
+PART C - the Mac weekly copy (only if the operator approved decision 8)
+1. If "Needs your decision" carries the operator's approval of the weekly evidence copy, run
+   scripts/ops/evidence_pull_launchd.sh install on this Mac, read it back (launchctl list), and say so.
+2. If not, do nothing.
+
+Report: per COMMON RULES. MEASURE MOVED: PLUMBING - panels added; Mac weekly job loaded yes / no.
+END OF BLOCK 121.4
+```
