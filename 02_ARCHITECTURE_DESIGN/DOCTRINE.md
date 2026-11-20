@@ -89,6 +89,7 @@ only the test closes).
 | `03_DECISIONS/ADR-0077_multi-arm-routing-doctrine.md` | the multi-arm routing rule | 2026-11-11 |
 | `02_ARCHITECTURE_DESIGN/STRATEGY_OVERVIEW.md` | strategy history and the strategies A-J | 2026-11-18 (body rewritten, W120.4) |
 | `02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md` | system components | 2026-11-18 (body rewritten, W120.4) |
+| `02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md` | how hypotheses are stated, tested, judged, parked and revisited; the registry of every hypothesis | 2026-11-20 (new, operator 11-20 10:10 PT) |
 | `02_ARCHITECTURE_DESIGN/DECISION_ROUTING.md` | the router | 2026-11-11 (banner) |
 | `02_ARCHITECTURE_DESIGN/COVERAGE_TARGET_MATRIX.md` | the coverage target | 2026-11-11 (banner) |
 | `02_ARCHITECTURE_DESIGN/EXECUTION_BANDS.md` | bands, live registry | 2026-11-11 (banner) |

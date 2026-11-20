@@ -10,6 +10,10 @@ COMMON RULES - WAVE 123 (WHERE DOES THE EDGE LIVE? THE FOUR PRE-REGISTERED TESTS
   SUPPORTED / NOT SUPPORTED / UNDERPOWERED (state n and the n needed). A deviation is a dated addendum to HYPOTHESIS.md written before the
   result it would change. Read-only analysis on data already logged: no live order, switch or box install changes in this wave.
 - A null is a routing result: a hypothesis closed and parked for R&D, never a verdict on a market, a sport or the project.
+- 02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md (new, 2026-11-20) binds every test: its Part I protocols and parameters apply, and each
+  block adds or updates its hypothesis's registry line (Part II) in the same PR as its result. The program around H1-H4 is
+  12_EXPLORATORY/edge_location/RESEARCH_PROGRAM.md. Block 123.5 owns Part II's backfill; blocks 123.1-123.4 touch only their own rows
+  (H-EDGE-1..4), rebasing before they push.
 - Do not edit ROLLING_BACKLOG.json (the window owns it).
 - READING BUDGET (kept from the Fable wave): session-start protocol from the governance scan's printed output only; read the files your
   block names and what you touch; no archives or DECISION_LOG history. Handoff 60 lines at most.

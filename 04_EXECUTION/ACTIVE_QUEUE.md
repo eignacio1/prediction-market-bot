@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 123 READY TO PASTE - four test blocks (Sonnet), one per pre-registered hypothesis of where the edge lives: 123.1 attention, 123.2 timing, 123.3 news latency, 123.4 execution / liquidity.**
+> **▶ WAVE 123 READY TO PASTE - four test blocks (Sonnet), one per pre-registered hypothesis of where the edge lives: 123.1 attention, 123.2 timing, 123.3 news latency, 123.4 execution / liquidity; plus 123.5, the Hypothesis Doctrine registry backfill.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -109,6 +109,7 @@ budget goes (HYPOTHESIS.md §5).
 | 123.2 | H2 timing | Closing-line value of every arm order; is the drift from 24 h / 6 h to the close predictable from what we knew? | Sonnet | ⬜ | |
 | 123.3 | H3 news latency | Kalshi prints around timestamped news (lineups, scratches, inactives, injury reports): the move still to come at +1 / +5 / +15 min | Sonnet | ⬜ | |
 | 123.4 | H4 execution | Two-sided quoting simulated on logged depth; spread earned minus adverse selection measured on real fills | Sonnet | ⬜ | |
+| 123.5 | registry | The Hypothesis Doctrine registry backfilled: every hypothesis since EXP-001 / HYP-010, live or parked, in full detail (operator 11-20 10:10 PT) | Sonnet | ⬜ | |
 
 - **Pushback:** four tests at once on a few weeks of data will return UNDERPOWERED more than once. That is still an answer, and every
   block states the n it would need. The one risk that matters is a block quietly widening its own test after seeing results, which is
@@ -231,6 +232,43 @@ filled contract.
 END OF BLOCK 123.4
 ```
 
+
+### 123.5 - REGISTRY (EVERY HYPOTHESIS, LIVE OR PARKED) · MODEL: Sonnet
+
+```
+WAVE 123 - BLOCK 123.5 - REGISTRY - BACKFILL THE HYPOTHESIS DOCTRINE: EVERY HYPOTHESIS SINCE EXP-001 / HYP-010, LIVE OR PARKED (B-110) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
+bind this block, except ownership: this block owns 02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md Part II only (Part I and III are the
+window's) and a new generator script. Read HYPOTHESIS_DOCTRINE.md in full first. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_5.md.
+
+WHY (operator 2026-11-20 10:10 PT): "let's get a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D)
+listed in comprehensive detail." Part II holds W104 onward; everything before it lives scattered across 05_RESEARCH_EXPERIMENTS/
+(EXP-001 .. EXP-047, HYP-010 .. HYP-012 and their addenda), EXPERIMENT_LOG/, RESULTS_SUMMARIES/, 12_EXPLORATORY/*/RESULT.md, ADRs and
+the registry's closed-hypothesis reasons.
+
+PART A - the inventory
+1. Enumerate every pre-registration, experiment log, result summary and exploratory RESULT.md, plus every closed-hypothesis reason in
+   market_type_registry.py.
+2. For each hypothesis, read its own file and fill the Part II columns: ID (keep the EXP / HYP id), program / branch (map to EDGE /
+   ROUTER / EXEC / DEPTH / ARMS / ENGINE, or a new program stated with a one-line mechanism), claim and mechanism, locus, arm, test (file
+   + commit), status with date, evidence (numbers with their source), consequence and reopen trigger.
+3. Never invent a number. If a file does not state one, write "not stated in <file>".
+
+PART B - the registry
+1. Merge the entries into Part II under their programs, keeping the window's W104+ rows; add a "Pre-W104 history" subsection per
+   program.
+2. Add scripts/hypothesis_registry.py: it lists every pre-registration file and flags any with no registry line, so the registry cannot
+   silently drift. Test it.
+3. Docs-only commit for the doctrine; PR for the script; merge on green.
+
+PART C - report
+1. Count by status (STATED / PRE-REGISTERED / COLLECTING / LOOKING / SUPPORTED / PARKED / UNDERPOWERED / SUPERSEDED).
+2. List the parked hypotheses whose reopen trigger has already fired, for the window.
+
+Report: per COMMON RULES. MEASURE MOVED: PROOF - hypotheses registered N (by status); unregistered pre-registrations 0.
+END OF BLOCK 123.5
+```
 
 ## Sequencing track
 
