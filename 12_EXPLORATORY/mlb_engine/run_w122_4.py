@@ -56,7 +56,6 @@ def main():
         train, test = d[d.game_date < train_before], d[(yr == season)]
         m = ml.RunModel(la.LINEUP_FEATURES).fit(train)
         b = bd.price_board(m, test)
-        b.to_pickle(Path(__file__).parent / f".board_{season}.pkl") if False else None
         trb = bd.price_board(ml.RunModel(["is_home"]).fit(train), train)  # naive = train frequency per rung
         for fam in FAMS:
             s, sn = stack(b, None, fam), stack(trb, None, fam)

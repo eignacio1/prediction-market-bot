@@ -140,6 +140,7 @@ ALLOW = {
     "12_EXPLORATORY/quant_w103_prices/analyze.py", "12_EXPLORATORY/ladder_implied/part_b.py",  # already gz-aware
     "12_EXPLORATORY/quant_w94/exact_fee_recompute.py",  # delegates to the converted loaders; only comments name the glob
     "12_EXPLORATORY/mlb_engine/run_w106_4_market.py",  # only passes the glob to market_line.last_pregame (converted)
+    "12_EXPLORATORY/mlb_engine/run_w122_4.py",  # same: only passes the glob to market_line.last_pregame (converted)
     "src/prediction_market_bot/disk_retention.py", "src/prediction_market_bot/io_jsonl.py",
 }
 
