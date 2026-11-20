@@ -109,7 +109,9 @@ def candidate_arms_on() -> bool:
 CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("NBA",), True),
               "nhl_v2": ("nhl_v2", ("NHL",), False),
               # W121.2: NBA player-prop market-state leaves + 4 player splits (EXP-NBAPROPS-001); applies to NBA_PLAYER_* rows only
-              "nba_props": ("nba_props", ("NBA",), False)}
+              "nba_props": ("nba_props", ("NBA",), False),
+              # W122.4 (GG-1957): the pinned MLB 2027 pre-registered map's arm beside v1 on every MLB game-cell row; shadow only
+              "mlb_2027": ("mlb_2027", ("MLB",), False)}
 
 
 @lru_cache(maxsize=None)

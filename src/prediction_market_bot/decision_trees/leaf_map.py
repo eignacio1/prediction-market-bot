@@ -24,7 +24,9 @@ MAP_VERSIONS = {"v1": DEFAULT_MAP,
                 # W119.1: v2 with the NHL leaves re-run on the 2026-27 shadow rows (consensus prior). Opt-in only; default stays v1.
                 "nhl_v2": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nhl_v2.json"),
                 # W121.2: NBA player-prop market-state leaves + the 4 PREREG'd player splits (EXP-NBAPROPS-001). Candidate only.
-                "nba_props": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nba_props_v2.json")}
+                "nba_props": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "nba_props_v2.json"),
+                # W122.4: the frozen MLB 2027 forward-test map (12 game cells, every leaf NO_BET until v2 earns one on 2027 rows). Candidate only.
+                "mlb_2027": os.path.join(os.path.dirname(os.path.abspath(__file__)), "leaf_maps", "mlb_2026_lookback.json")}
 
 
 def map_path(version: Optional[str] = None) -> str:
