@@ -114,7 +114,7 @@ def orders_table(rows: Iterable[dict]) -> dict:
                     "opportunities_per_day": round(len(opp.get(k, ())) / nd, 3)})
     cells_opp_only = sorted(k for k in opp if k not in cells)
     return {"cells": out, "cells_with_opportunities_but_no_placed_order": cells_opp_only,
-            "days_by_sport": {s: sorted(d) for s, d in days.items()}}
+            "days_by_sport": {s: {"n": len(d), "first": min(d), "last": max(d)} for s, d in days.items()}}
 
 
 def ladder_depth(book: dict, side: str) -> Optional[dict]:
@@ -170,7 +170,7 @@ def main(argv: Optional[list] = None) -> int:
            "ladder": ladder_table(glob_files(a.depth_glob)),
            "limits": ["ORDERS log the touch size only; ticks 1 / 2 / 3 are measured from the ladder archive (MLB, NFL)",
                       "own_touch = queue ahead of a resting order; cross_touch = size a taker meets at the opposite touch"]}
-    print(json.dumps(out, indent=1, sort_keys=True))
+    print(json.dumps(out, separators=(",", ":"), sort_keys=True))  # compact: box results cap at 60 KB
     return 0
 
 
