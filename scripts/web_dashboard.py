@@ -500,10 +500,82 @@ def _d6() -> dict:
     Read from decision_trees/coverage.py, the same function scripts/distance_to_optimum.py reads."""
     sys.path.insert(0, str(_REPO_ROOT / "src"))
     from prediction_market_bot.decision_trees import coverage as cov
-    s = cov.d6_summary(cov.d6_layers())
+    cells = cov.d6_layers()
+    s = cov.d6_summary(cells)
+    for c in cells:   # W121.4: cell names per sport, for the hover (wired vs not)
+        s["by_sport"][c["sport"]].setdefault("cells", []).append(
+            {"name": f"{c['market_type']}/{c['band']}", "wired": bool(c["wired"]), "n_layers": c["n_layers"]})
     s["layers"] = ["simulated probability", "market state", "factor filters as splits", "tree chooses the arm",
                    "per-leaf net per arm", "sizing rule", "execution, fills measured"]
     return s
+
+
+CAND_DIFF_ROWS = 40
+
+
+def _candidate_tally(r: dict, acc: dict) -> None:
+    """W121.4: add one shadow row's candidate-map arms (router_candidates, W120.2) beside v1's arm.
+    acc[(SPORT, candidate)] = rows, same_as_v1, errors, and the rows where the candidate's arm differs from v1's."""
+    c = r.get("router_candidates")
+    if not isinstance(c, dict):
+        return
+    sp = str(r.get("sport") or "?").upper()
+    v1 = _router_arm(r)
+    for name, rec in c.items():
+        if not isinstance(rec, dict):
+            continue
+        ca = str(rec.get("arm") or "").upper() or None
+        x = acc.setdefault((sp, str(name)), {"rows": 0, "same": 0, "errors": 0, "diffs": []})
+        x["rows"] += 1
+        if ca == "ERROR":
+            x["errors"] += 1
+        if ca == v1:
+            x["same"] += 1
+        elif len(x["diffs"]) < CAND_DIFF_ROWS:
+            x["diffs"].append({"ts": r.get("ts_utc"), "ticker": r.get("market_ticker"), "band": r.get("band"),
+                               "v1": ARM_NAMES.get(v1 or "", v1), "cand": ARM_NAMES.get(ca or "", ca)})
+
+
+def _candidate_summary(acc: dict) -> dict:
+    """{"rows": [{sport, candidate, rows, same_as_v1, agree_pct, errors, diffs}]} - agree_pct None when no rows."""
+    rows = []
+    for (sp, name), x in sorted(acc.items()):
+        rows.append({"sport": sp, "candidate": name, "rows": x["rows"], "same_as_v1": x["same"], "errors": x["errors"],
+                     "agree_pct": round(100.0 * x["same"] / x["rows"], 1) if x["rows"] else None, "diffs": x["diffs"]})
+    return {"rows": rows}
+
+
+def _weekly_look(root: Path | None = None) -> dict:
+    """W121.4: the newest exp_output/EVIDENCE_WEEKLY/*.json, summarized; none yet -> first look not run yet."""
+    root = root or _REPO_ROOT
+    files = sorted((root / "exp_output" / "EVIDENCE_WEEKLY").glob("*.json"), key=lambda f: (f.stat().st_mtime, f.name))
+    if not files:
+        return {"awaiting": "first look not run yet"}
+    f = files[-1]
+    doc = _load_json(f)
+    scalars = {k: v for k, v in doc.items() if isinstance(v, (str, int, float, bool)) and k != "sha"}
+    return {"file": f.name, "mtime": datetime.fromtimestamp(f.stat().st_mtime, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "summary": scalars, "keys": sorted(doc.keys())[:30]}
+
+
+def _box_health(mac_dir: Path | None = None) -> dict:
+    """W121.4: disk % and days to 90% (disk_guard, the number the healthcheck FAILs on) and the last Mac evidence copy
+    (LAST_RUN.json written by scripts/ops/evidence_pull.sh). The Mac file is only visible when this server runs on the Mac."""
+    out: dict = {"disk": None, "mac_copy": {"awaiting": "LAST_RUN.json not visible from this host"}}
+    try:
+        sys.path.insert(0, str(_REPO_ROOT / "src"))
+        from prediction_market_bot import disk_guard
+        a = disk_guard.assess(_REPO_ROOT)
+        out["disk"] = {"pct": a["now_pct"], "days_to_90": a["days_to_90"], "pct_per_day": a["pct_per_day"], "warn": a["warn"]}
+    except Exception:
+        pass
+    mac_dir = mac_dir or Path(os.environ.get("EVIDENCE_DEST") or Path.home() / "PredictionMarketEvidence")
+    lr = mac_dir / "LAST_RUN.json"
+    if lr.exists():
+        j = _load_json(lr)
+        out["mac_copy"] = {"utc": j.get("utc"), "files": j.get("files"), "ok": j.get("ok"), "mismatch": j.get("mismatch"),
+                           "size": j.get("size")}
+    return out
 
 
 def _closed_hypotheses() -> dict:
@@ -756,6 +828,7 @@ def _shadow(now: datetime) -> dict:
     cells: dict = {}
     tape: list = []
     router_today: dict = {}
+    cand_today: dict = {}
     settled_files = [f for f in files if "settled" in f.relative_to(_REPO_ROOT).parts[:-1]]
     files = [f for f in files if f not in settled_files]
     for f in files:
@@ -779,6 +852,7 @@ def _shadow(now: datetime) -> dict:
                 sp = str(r.get("sport") or "").upper()
                 router_today.setdefault(sp, {})
                 router_today[sp][a] = router_today[sp].get(a, 0) + 1
+                _candidate_tally(r, cand_today)
             if c["last_ts"] is None or ts > c["last_ts"]:
                 c["last_ts"] = ts
                 c["latest_e_net"] = r.get("e_net_yes_k007")
@@ -831,7 +905,8 @@ def _shadow(now: datetime) -> dict:
         o["filters_fired"] = rt.get("filters_fired") or []
         return o
     return {"cells": list(cells.values()), "tape": [slim(r, keep) for r in tape[:400]],
-            "stream": [slim(r, stream_keep) for r in tape[:DECISION_ROWS]], "router_today": router_today}
+            "stream": [slim(r, stream_keep) for r in tape[:DECISION_ROWS]], "router_today": router_today,
+            "candidates_today": _candidate_summary(cand_today)}
 
 
 # W56.2: decision stream. One row per EVALUATION, never per order. WOULD-FIRE is a shadow
@@ -1300,6 +1375,8 @@ def _load_all_data() -> dict:
         # SW-9 2026-11-12: multi-arm routing (ADR-0077) - the arm on every row, arm-driven orders (D6 layer 7), D6.
         "arm_orders":      safe(lambda: _arm_orders(d), {"rows": [], "per_arm": {}, "mode": None}),
         "d6":              safe(_d6, {"awaiting": "decision_trees/coverage.py"}),
+        "weekly_look":     safe(_weekly_look, {"awaiting": "first look not run yet"}),
+        "box_health":      safe(_box_health, {}),
         "freshness":       safe(lambda: _freshness(d, datetime.now(tz=timezone.utc)), {}),
         "silent_arms":     safe(lambda: _silent_arms(d, datetime.now(tz=timezone.utc)), {}),
         "runtime":         safe(_runtime_strip, {"awaiting": "runtime map"}),
@@ -2206,6 +2283,9 @@ const SCROLL=(id,h)=>`<div class="pb flush"><div class="scroll" style="--h:${h}p
 function viewNow(){return `<div id="strip" class="strip"></div><div id="arms" class="arms"></div><div class="grid g-2">
   ${P_('Router — arm chosen per row, today','rtN',`<div class="pb flush"><div id="rtWrap"></div></div>`,`<span class="n">ride · fade · momentum · pot of gold · no bet (ADR-0077)</span>`)}
   ${P_('Wired end to end — D6','d6N',`<div class="pb"><div id="d6Wrap"></div></div>`,`<span class="n">a cell counts only with all seven layers</span>`)}</div>
+  <div class="grid g-2">
+  ${P_('Candidate maps beside v1 — today','cmN',`<div class="pb flush"><div id="cmWrap"></div></div>`,`<span class="n">shadow only · orders follow v1 · agree % = same arm as v1</span>`)}
+  ${P_('Box — disk, weekly look, Mac copy','bxN',`<div class="pb"><div id="bxWrap"></div></div>`,`<span class="n">disk_guard · exp_output/EVIDENCE_WEEKLY · LAST_RUN.json</span>`)}</div>
   <div class="grid g-1">${P_('Arm orders — the router\'s arm places demo orders (layer 7)','aoN',SCROLL('aoWrap',260),`<span class="n" id="aoNote"></span>`)}</div>
   <div class="grid g-1">
   ${(((LAST&&LAST.season)||{}).MLB||{}).state==='in_season'?P_('T4M-PROJ placements (paper orders)','plN',SCROLL('plWrap',260),`<span class="n" id="plRule"></span>`):''}
@@ -2409,10 +2489,32 @@ function fillRouter(d){
     if(!x.by_sport){ dw.innerHTML=AW(x.awaiting||'D6 scorecard'); $('#d6N').textContent='—'; }
     else { $('#d6N').textContent=`${x.wired} of ${x.registered} cells wired`; const L=x.layers||[];
       dw.innerHTML=`<div class="d6row"><span></span><span class="d6hd">wired / cells</span>`+L.map((l,i)=>`<span class="d6hd">${i+1} ${esc(l)}</span>`).join('')+`</div>`+
-        Object.entries(x.by_sport).sort().map(([s,v])=>`<div class="d6row"><span class="lb">${esc(s.toUpperCase())}</span><span class="${v.wired?'pos':'neg'}">${v.wired} / ${v.registered}</span>`+
+        Object.entries(x.by_sport).sort().map(([s,v])=>`<div class="d6row"><span class="lb">${esc(s.toUpperCase())}</span><span class="${v.wired?'pos':'neg'}" title="${esc(d6Names(v))}">${v.wired} / ${v.registered}</span>`+
           (v.per_layer||[]).map((n,i)=>`<span class="d6cell ${n?'':'zero'}" title="${esc(s.toUpperCase())} · layer ${i+1} ${esc(L[i]||'')}: ${n} of ${v.registered} cells"><i style="width:${(v.registered?100*n/v.registered:0).toFixed(1)}%"></i></span>`).join('')+`</div>`).join('')+
         `<div class="dim" style="font-size:11px;margin-top:6px">bar = share of the sport's registered cells with that layer evidenced · red outline = no cell has it yet · source: decision_trees/coverage.py</div>`; } }
+  fillCandidates(d); fillBox(d);
   fillArmOrders(d,null,'#aoWrap','#aoN','#aoNote'); }
+function d6Names(v){const c=v.cells||[]; if(!c.length) return 'cell names not served';
+  const w=c.filter(x=>x.wired).map(x=>x.name), n=c.filter(x=>!x.wired).map(x=>x.name+' ('+x.n_layers+'/7)');
+  return 'WIRED: '+(w.join(', ')||'none')+'\nNOT YET: '+(n.join(', ')||'none');}
+function fillCandidates(d){
+  const w=$('#cmWrap'); if(!w) return; const rows=((d.shadow&&d.shadow.candidates_today)||{}).rows||[];
+  if(!rows.length){ w.innerHTML=AW('candidate-map rows today (router_candidates on shadow rows)'); $('#cmN').textContent='—'; return; }
+  const tot=rows.reduce((a,r)=>a+r.rows,0), same=rows.reduce((a,r)=>a+r.same_as_v1,0);
+  $('#cmN').textContent=`${tot} rows · ${tot?(100*same/tot).toFixed(1):'—'}% same arm as v1`;
+  const diffs=[]; rows.forEach(r=>(r.diffs||[]).forEach(x=>diffs.push(Object.assign({sport:r.sport,cname:r.candidate},x))));
+  diffs.sort((a,b)=>String(b.ts||'').localeCompare(String(a.ts||'')));
+  w.innerHTML=`<table><thead><tr><th>SPORT</th><th>CANDIDATE</th><th class="r">ROWS</th><th class="r">AGREE</th><th class="r">ERRORS</th></tr></thead><tbody>`+
+    rows.map(r=>`<tr><td>${esc(r.sport)}</td><td>${esc(r.candidate)}</td><td class="r">${r.rows}</td><td class="r ${r.agree_pct!=null&&r.agree_pct<50?'amb':''}">${r.agree_pct==null?'—':r.agree_pct.toFixed(1)+'%'}</td><td class="r ${r.errors?'neg':''}">${r.errors}</td></tr>`).join('')+`</tbody></table>`+
+    (diffs.length?`<div class="scroll" style="--h:180px"><table><thead><tr><th>TIME</th><th>SPORT</th><th>TICKER</th><th>V1</th><th>CANDIDATE</th><th>ARM</th></tr></thead><tbody>`+
+      diffs.slice(0,60).map(x=>`<tr><td>${esc(String(x.ts||'').slice(5,16).replace('T',' '))}</td><td>${esc(x.sport)}</td><td class="dim">${esc(x.ticker||'—')}</td><td class="${armCls(x.v1||'')}">${esc(x.v1||'—')}</td><td>${esc(x.cname)}</td><td class="${armCls(x.cand||'')}">${esc(x.cand||'—')}</td></tr>`).join('')+`</tbody></table></div>`:'<div class="dim" style="font-size:11px;padding:6px">no rows differ from v1 today</div>'); }
+function fillBox(d){
+  const w=$('#bxWrap'); if(!w) return; const b=d.box_health||{}, k=b.disk, wk=d.weekly_look||{}, m=b.mac_copy||{};
+  const diskTxt=k?`<span class="${k.pct>=90?'neg':(k.warn||k.pct>=80)?'amb':'pos'}">${k.pct}% used</span> · `+(k.days_to_90==null?'no 90% date (flat or too little history)':k.days_to_90<=0?'at or past 90%':k.days_to_90.toFixed(1)+' days to 90%'):'<span class="dim">disk not readable</span>';
+  const macTxt=m.utc?`<span class="${m.ok?'pos':'neg'}">${m.ok?'sha match':'MISMATCH '+esc(String(m.mismatch))}</span> · ${esc(m.utc)} · ${m.files} files${m.size?' · '+esc(m.size):''}`:`<span class="dim">${esc(m.awaiting||'no copy yet')}</span>`;
+  const wkTxt=wk.file?`${esc(wk.file)} · ${esc(wk.mtime)}<div class="dim" style="font-size:11px">${Object.entries(wk.summary||{}).slice(0,8).map(([a,c])=>esc(a)+': '+esc(String(c))).join(' · ')}</div>`:`<span class="dim">${esc(wk.awaiting||'first look not run yet')}</span>`;
+  $('#bxN').textContent=k?k.pct+'% disk':'—';
+  w.innerHTML=`<table><tbody><tr><td class="dim">DISK</td><td>${diskTxt}</td></tr><tr><td class="dim">WEEKLY LOOK</td><td>${wkTxt}</td></tr><tr><td class="dim">MAC COPY</td><td>${macTxt}</td></tr></tbody></table>`; }
 function fillNow(d){
   const st=$('#strip'); if(!st) return;
   fillRouter(d);
