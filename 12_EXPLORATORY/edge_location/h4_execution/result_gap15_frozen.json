@@ -1,0 +1,196 @@
+{
+ "max_gap_min": 15.0,
+ "verdict": "UNDERPOWERED",
+ "why": "no family x horizon cell reaches 20 games",
+ "partA_rows": 1738,
+ "pooled_as": [
+  -0.06452882221789291,
+  145,
+  1593
+ ],
+ "sim_fills": 0,
+ "cells": [],
+ "as_table": {
+  "KXNBASPREAD|0-2h": [
+   -0.012730728429985898,
+   101,
+   "family"
+  ],
+  "KXNBASPREAD|2-6h": [
+   -0.12227777777777772,
+   36,
+   "cell"
+  ],
+  "KXNBASPREAD|6-24h": [
+   0.039208976157082784,
+   62,
+   "cell"
+  ],
+  "KXNBASPREAD|24h+": [
+   -0.012730728429985898,
+   101,
+   "family"
+  ],
+  "KXNBATEAMTOTAL|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNBATEAMTOTAL|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNBATEAMTOTAL|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNBATEAMTOTAL|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNBATOTAL|0-2h": [
+   -0.06615961538461532,
+   25,
+   "family"
+  ],
+  "KXNBATOTAL|2-6h": [
+   0.08135110294117642,
+   17,
+   "cell"
+  ],
+  "KXNBATOTAL|6-24h": [
+   -0.06615961538461532,
+   25,
+   "family"
+  ],
+  "KXNBATOTAL|24h+": [
+   -0.06615961538461532,
+   25,
+   "family"
+  ],
+  "KXNFLSPREAD|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLSPREAD|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLSPREAD|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLSPREAD|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTEAMTOTAL|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTEAMTOTAL|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTEAMTOTAL|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTEAMTOTAL|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTOTAL|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTOTAL|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTOTAL|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNFLTOTAL|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLGAME|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLGAME|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLGAME|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLGAME|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLSPREAD|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLSPREAD|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLSPREAD|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLSPREAD|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLTOTAL|0-2h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLTOTAL|2-6h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLTOTAL|6-24h": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ],
+  "KXNHLTOTAL|24h+": [
+   -0.06452882221789291,
+   145,
+   "all-pooled"
+  ]
+ },
+ "bh_keep": []
+}

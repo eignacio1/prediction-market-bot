@@ -243,3 +243,9 @@ been failing since 11-13 (GG: archive attached to the scheduled task). The windo
 "about a day" when it was about 4.5 hours. Fixed 07:55 PT: a watchdog entry in TO_MUSE.md orders the extensions and an open-ended
 season-back rule. Rule: size Muse's week by its measured burn rate, not by a list, and check the queue at every wave close while
 the nightly sweep is down.
+
+### 2026-11-20 - W123.4: H4 Addendum A froze a snapshot-spacing assumption nobody checked
+Addendum A (fill rule: next snapshot <= 15 min) assumed the price archive samples every 3-8 min. It samples every 19-30 min, so the frozen
+rule produced 0 fills and needed a disclosed post-result Addendum B (35-min sensitivity run). The archive's `close_time` is also expiration,
+not game end, so no simulated fill was below 24h. Rule: before freezing a simulation's parameters, measure the input's spacing and fields
+on the real file (one 10-second check), not from handoff prose.

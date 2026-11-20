@@ -118,3 +118,14 @@ The pre-registration above does not fix these details; they are fixed here and a
    cell whose bootstrap one-sided p survives Benjamini-Hochberg at q = 0.10 across the K, as well as the interval excluding zero.
 6. **Depth.** Quotes are 1 contract, first in queue at a new inside price level, so logged touch size does not bind and is not used.
    Fill SIZE beyond 1 contract is therefore not claimed.
+
+## 7. Addendum B (2026-11-20 ~21:00 UTC, W123.4) - deviation, written AFTER the frozen-rule run returned 0 fills
+Disclosure: this is written after a result was seen. The run under Addendum A rule 3 (next snapshot <= 15 min) produced **0 simulated
+fills**, so its literal outcome is UNDERPOWERED. The cause is an assumption in Addendum A that was wrong: archive snapshots are 19-30 min
+apart, not 3-8. Changes, all reported beside the frozen-rule result, never in place of it:
+1. **Gap sensitivity:** max snapshot gap 35 min (variant run; 15 min kept as the frozen run). A longer window lets more price movement into
+   the "traded through" test, so it raises both fills and adverse movement.
+2. **Horizon:** the archive's `close_time` is the market's expiration (e.g. an NFL game on 11-16 shows 11-19), not the game end, so every
+   simulated fill lands in 24h+. The family x horizon grid therefore collapses to family x 24h+ for Part B. Part A real fills use the
+   order's own `close_time` (game-end-like) and are bucketed normally. Registered as a data gap: game start time is not in the archive.
+3. The verdict statement says which run it comes from. A SUPPORTED from run (1) would not have been a pre-registered verdict.

@@ -119,7 +119,7 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | H-EDGE-1 | Attention: less-watched markets are mispriced more | props, team totals, alt lines | FADE / RIDE / POT OF GOLD | W123.1 | PRE-REGISTERED (11-20) | — | Wiring priority moves to supported families |
 | H-EDGE-2 | Timing: far-from-start prices are looser and drift predictably | T1 (12-48 h), 6 h | RIDE / FADE / MOMENTUM at entry | W123.2 | PRE-REGISTERED (11-20) | — | Depth budget into T1; earlier entries |
 | H-EDGE-3 | News latency: Kalshi reprices news over minutes | lineups, scratches, inactives, injuries | MOMENTUM (news arm) | W123.3 | PRE-REGISTERED (11-20) | NHL goalies already fast: 0.2c, n 14 (W118.3) | A news-reaction arm per supported event type |
-| H-EDGE-4 | Execution: quoting both sides near fair beats predicting | any family x horizon | NEW: two-sided quoting | W123.4 | PRE-REGISTERED (11-20) | resting orders adversely selected (RIDE 69% vs 83%) | Demo quoting test proposed to the operator |
+| H-EDGE-4 | Execution: quoting both sides near fair beats predicting | any family x horizon | NEW: two-sided quoting | W123.4 | NOT SUPPORTED (11-20): hypothesis closed, parked for R&D; frozen 15-min rule UNDERPOWERED (0 fills), 35-min run 0 of 18 cells net > 0 | resting orders adversely selected (RIDE 69% vs 83%) | Demo quoting test proposed to the operator |
 
 ### II.2 Program ROUTER — does the tree route better than a fixed rule?
 | ID | Claim | Locus | Arm | Test | Status | Evidence | Consequence / reopen |
