@@ -1,0 +1,3561 @@
+{
+ "settled_tickers": 231739,
+ "archive_tickers_with_pre_start_snapshot": 95440,
+ "coverage_by_series": {
+  "NFL|GAME": {
+   "settled": 0,
+   "any_snapshot": 296,
+   "pre_start_snapshot": 296,
+   "first_snapshot_after_cut": 0
+  },
+  "NFL|SPREAD": {
+   "settled": 0,
+   "any_snapshot": 4071,
+   "pre_start_snapshot": 3801,
+   "first_snapshot_after_cut": 270
+  },
+  "NFL|TOTAL": {
+   "settled": 0,
+   "any_snapshot": 3006,
+   "pre_start_snapshot": 2831,
+   "first_snapshot_after_cut": 175
+  },
+  "MLB|GAME": {
+   "settled": 0,
+   "any_snapshot": 488,
+   "pre_start_snapshot": 486,
+   "first_snapshot_after_cut": 2
+  },
+  "NFL|TEAMTOTAL": {
+   "settled": 0,
+   "any_snapshot": 4107,
+   "pre_start_snapshot": 4043,
+   "first_snapshot_after_cut": 64
+  },
+  "MLB|SPREAD": {
+   "settled": 0,
+   "any_snapshot": 1928,
+   "pre_start_snapshot": 1314,
+   "first_snapshot_after_cut": 614
+  },
+  "MLB|TOTAL": {
+   "settled": 0,
+   "any_snapshot": 2802,
+   "pre_start_snapshot": 2392,
+   "first_snapshot_after_cut": 410
+  },
+  "MLB|TEAMTOTAL": {
+   "settled": 0,
+   "any_snapshot": 3346,
+   "pre_start_snapshot": 3066,
+   "first_snapshot_after_cut": 280
+  },
+  "MLB|F3": {
+   "settled": 0,
+   "any_snapshot": 699,
+   "pre_start_snapshot": 657,
+   "first_snapshot_after_cut": 42
+  },
+  "MLB|F5": {
+   "settled": 0,
+   "any_snapshot": 699,
+   "pre_start_snapshot": 657,
+   "first_snapshot_after_cut": 42
+  },
+  "MLB|F7": {
+   "settled": 0,
+   "any_snapshot": 711,
+   "pre_start_snapshot": 660,
+   "first_snapshot_after_cut": 51
+  },
+  "MLB|F5SPREAD": {
+   "settled": 0,
+   "any_snapshot": 932,
+   "pre_start_snapshot": 872,
+   "first_snapshot_after_cut": 60
+  },
+  "MLB|F5TOTAL": {
+   "settled": 0,
+   "any_snapshot": 1631,
+   "pre_start_snapshot": 1526,
+   "first_snapshot_after_cut": 105
+  },
+  "MLB|HIT": {
+   "settled": 0,
+   "any_snapshot": 11509,
+   "pre_start_snapshot": 3086,
+   "first_snapshot_after_cut": 8423
+  },
+  "NBA|GAME": {
+   "settled": 0,
+   "any_snapshot": 342,
+   "pre_start_snapshot": 340,
+   "first_snapshot_after_cut": 2
+  },
+  "NBA|SPREAD": {
+   "settled": 0,
+   "any_snapshot": 5736,
+   "pre_start_snapshot": 5577,
+   "first_snapshot_after_cut": 159
+  },
+  "NBA|TOTAL": {
+   "settled": 0,
+   "any_snapshot": 5230,
+   "pre_start_snapshot": 4901,
+   "first_snapshot_after_cut": 329
+  },
+  "NBA|TEAMTOTAL": {
+   "settled": 0,
+   "any_snapshot": 6896,
+   "pre_start_snapshot": 6422,
+   "first_snapshot_after_cut": 474
+  },
+  "NHL|GAME": {
+   "settled": 0,
+   "any_snapshot": 322,
+   "pre_start_snapshot": 320,
+   "first_snapshot_after_cut": 2
+  },
+  "NHL|SPREAD": {
+   "settled": 0,
+   "any_snapshot": 1270,
+   "pre_start_snapshot": 640,
+   "first_snapshot_after_cut": 630
+  },
+  "NHL|TOTAL": {
+   "settled": 0,
+   "any_snapshot": 1647,
+   "pre_start_snapshot": 1440,
+   "first_snapshot_after_cut": 207
+  },
+  "NHL|TEAMTOTAL": {
+   "settled": 0,
+   "any_snapshot": 1610,
+   "pre_start_snapshot": 1600,
+   "first_snapshot_after_cut": 10
+  },
+  "NHL|GOAL": {
+   "settled": 0,
+   "any_snapshot": 4533,
+   "pre_start_snapshot": 0,
+   "first_snapshot_after_cut": 4533
+  },
+  "NHL|AST": {
+   "settled": 0,
+   "any_snapshot": 2552,
+   "pre_start_snapshot": 0,
+   "first_snapshot_after_cut": 2552
+  },
+  "NFL|PASSYDS": {
+   "settled": 0,
+   "any_snapshot": 299,
+   "pre_start_snapshot": 282,
+   "first_snapshot_after_cut": 17
+  },
+  "NFL|RSHYDS": {
+   "settled": 0,
+   "any_snapshot": 891,
+   "pre_start_snapshot": 756,
+   "first_snapshot_after_cut": 135
+  },
+  "NFL|RECYDS": {
+   "settled": 0,
+   "any_snapshot": 2099,
+   "pre_start_snapshot": 1809,
+   "first_snapshot_after_cut": 290
+  },
+  "NFL|REC": {
+   "settled": 0,
+   "any_snapshot": 1390,
+   "pre_start_snapshot": 1187,
+   "first_snapshot_after_cut": 203
+  },
+  "NFL|TD": {
+   "settled": 0,
+   "any_snapshot": 735,
+   "pre_start_snapshot": 673,
+   "first_snapshot_after_cut": 62
+  },
+  "NFL|PASSTDS": {
+   "settled": 0,
+   "any_snapshot": 125,
+   "pre_start_snapshot": 125,
+   "first_snapshot_after_cut": 0
+  },
+  "NFL|PASSATT": {
+   "settled": 0,
+   "any_snapshot": 90,
+   "pre_start_snapshot": 90,
+   "first_snapshot_after_cut": 0
+  },
+  "NFL|PASSCOMP": {
+   "settled": 0,
+   "any_snapshot": 90,
+   "pre_start_snapshot": 90,
+   "first_snapshot_after_cut": 0
+  },
+  "NFL|RSHATT": {
+   "settled": 0,
+   "any_snapshot": 170,
+   "pre_start_snapshot": 158,
+   "first_snapshot_after_cut": 12
+  },
+  "NFL|RRYDS": {
+   "settled": 0,
+   "any_snapshot": 184,
+   "pre_start_snapshot": 132,
+   "first_snapshot_after_cut": 52
+  },
+  "NBA|PTS": {
+   "settled": 0,
+   "any_snapshot": 3939,
+   "pre_start_snapshot": 516,
+   "first_snapshot_after_cut": 3423
+  },
+  "NBA|REB": {
+   "settled": 0,
+   "any_snapshot": 4267,
+   "pre_start_snapshot": 589,
+   "first_snapshot_after_cut": 3678
+  },
+  "NBA|AST": {
+   "settled": 0,
+   "any_snapshot": 3183,
+   "pre_start_snapshot": 452,
+   "first_snapshot_after_cut": 2731
+  },
+  "NBA|3PT": {
+   "settled": 0,
+   "any_snapshot": 4358,
+   "pre_start_snapshot": 622,
+   "first_snapshot_after_cut": 3736
+  },
+  "NBA|STL": {
+   "settled": 0,
+   "any_snapshot": 1484,
+   "pre_start_snapshot": 17,
+   "first_snapshot_after_cut": 1467
+  },
+  "NBA|PRA": {
+   "settled": 0,
+   "any_snapshot": 2724,
+   "pre_start_snapshot": 354,
+   "first_snapshot_after_cut": 2370
+  },
+  "NBA|2D": {
+   "settled": 0,
+   "any_snapshot": 836,
+   "pre_start_snapshot": 97,
+   "first_snapshot_after_cut": 739
+  },
+  "NBA|3D": {
+   "settled": 0,
+   "any_snapshot": 305,
+   "pre_start_snapshot": 34,
+   "first_snapshot_after_cut": 271
+  }
+ },
+ "primary": {
+  "drops": {
+   "no_settled_result": 40530,
+   "unusable_quote": 1648
+  },
+  "rows": 53262,
+  "split_dates": {
+   "NHL": "2026-11-12",
+   "NBA": "2026-11-11",
+   "MLB": "2026-09-25",
+   "NFL": "2026-10-25"
+  },
+  "sports_games": {
+   "NHL": 160,
+   "NBA": 170,
+   "MLB": 249,
+   "NFL": 149
+  },
+  "families": {
+   "NFL|moneyline": {
+    "n_total": 296,
+    "games_total": 148,
+    "n_fit": 182,
+    "games_fit": 91,
+    "n_judged_rows": 114,
+    "n_judged_used": 114,
+    "games_judged": 57,
+    "net": -0.10522838596491228,
+    "lo": -0.19145680087719297,
+    "hi": -0.01260172894736844,
+    "p": 0.06796601699150424,
+    "se": 0.05453558272724588,
+    "round_cost": 0.019978605263157898,
+    "games_needed": 2626.9754243471516,
+    "raw_gap_judged": 0.0003947368421052579,
+    "buckets": {
+     "1": {
+      "n": 12,
+      "games": 12,
+      "dir": "YES",
+      "net": -0.12173991666666668
+     },
+     "2": {
+      "n": 45,
+      "games": 45,
+      "dir": "YES",
+      "net": -0.10036873333333333
+     },
+     "3": {
+      "n": 45,
+      "games": 45,
+      "dir": "NO",
+      "net": -0.10082033333333335
+     },
+     "4": {
+      "n": 12,
+      "games": 12,
+      "dir": "NO",
+      "net": -0.12347075000000002
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|spread_alt": {
+    "n_total": 3648,
+    "games_total": 149,
+    "n_fit": 2259,
+    "games_fit": 92,
+    "n_judged_rows": 1389,
+    "n_judged_used": 1389,
+    "games_judged": 57,
+    "net": -0.05837631677465803,
+    "lo": -0.09714847153164424,
+    "hi": -0.019398105787198597,
+    "p": 0.012993503248375811,
+    "se": 0.022972906870366773,
+    "round_cost": 0.01772568106551476,
+    "games_needed": 592.1782721622164,
+    "raw_gap_judged": 0.041054715622750176,
+    "buckets": {
+     "0": {
+      "n": 232,
+      "games": 57,
+      "dir": "NO",
+      "net": 0.005449383620689652
+     },
+     "1": {
+      "n": 534,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.015175213483146072
+     },
+     "2": {
+      "n": 430,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.09344338139534884
+     },
+     "3": {
+      "n": 172,
+      "games": 54,
+      "dir": "NO",
+      "net": -0.1820211395348837
+     },
+     "4": {
+      "n": 21,
+      "games": 11,
+      "dir": "NO",
+      "net": -0.1312908095238095
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|spread_main": {
+    "n_total": 149,
+    "games_total": 149,
+    "n_fit": 92,
+    "games_fit": 92,
+    "n_judged_rows": 57,
+    "n_judged_used": 57,
+    "games_judged": 57,
+    "net": -0.030458140350877166,
+    "lo": -0.13660033333333332,
+    "hi": 0.07673824385964916,
+    "p": 0.6906546726636682,
+    "se": 0.06648336737892804,
+    "round_cost": 0.02246463157894738,
+    "games_needed": 3087.8332669142947,
+    "raw_gap_judged": 0.11657894736842106,
+    "buckets": {
+     "2": {
+      "n": 33,
+      "games": 33,
+      "dir": "YES",
+      "net": 0.071312696969697
+     },
+     "3": {
+      "n": 24,
+      "games": 24,
+      "dir": "NO",
+      "net": -0.17039304166666666
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|total_alt": {
+    "n_total": 2682,
+    "games_total": 149,
+    "n_fit": 1656,
+    "games_fit": 92,
+    "n_judged_rows": 1026,
+    "n_judged_used": 1026,
+    "games_judged": 57,
+    "net": -0.027902625730994144,
+    "lo": -0.08381860141325537,
+    "hi": 0.03109561262183235,
+    "p": 0.44677661169415295,
+    "se": 0.03453367193386118,
+    "round_cost": 0.018199792397660817,
+    "games_needed": 1269.3432442378494,
+    "raw_gap_judged": -0.005102339181286551,
+    "buckets": {
+     "0": {
+      "n": 112,
+      "games": 56,
+      "dir": "NO",
+      "net": -0.03354198214285714
+     },
+     "1": {
+      "n": 166,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.046483722891566256
+     },
+     "2": {
+      "n": 262,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.03923267175572518
+     },
+     "3": {
+      "n": 223,
+      "games": 57,
+      "dir": "YES",
+      "net": 0.01688937668161436
+     },
+     "4": {
+      "n": 140,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.06178257142857142
+     },
+     "5": {
+      "n": 123,
+      "games": 55,
+      "dir": "YES",
+      "net": -0.016202479674796745
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|total_main": {
+    "n_total": 149,
+    "games_total": 149,
+    "n_fit": 92,
+    "games_fit": 92,
+    "n_judged_rows": 57,
+    "n_judged_used": 57,
+    "games_judged": 57,
+    "net": -0.1141373157894737,
+    "lo": -0.2202841114035088,
+    "hi": -0.00886390614035089,
+    "p": 0.07596201899050475,
+    "se": 0.06538734061452793,
+    "round_cost": 0.02256794736842106,
+    "games_needed": 2959.5770737845664,
+    "raw_gap_judged": 0.04421052631578946,
+    "buckets": {
+     "2": {
+      "n": 29,
+      "games": 29,
+      "dir": "NO",
+      "net": -0.1560888275862069
+     },
+     "3": {
+      "n": 28,
+      "games": 28,
+      "dir": "YES",
+      "net": -0.07068753571428574
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|moneyline": {
+    "n_total": 484,
+    "games_total": 242,
+    "n_fit": 322,
+    "games_fit": 161,
+    "n_judged_rows": 162,
+    "n_judged_used": 161,
+    "games_judged": 81,
+    "net": 0.03355782608695651,
+    "lo": -0.05328833981481482,
+    "hi": 0.11889432914628462,
+    "p": 0.5157421289355323,
+    "se": 0.05336187858100083,
+    "round_cost": 0.022551378881987584,
+    "games_needed": 2805.127507642194,
+    "raw_gap_judged": 0.001149068322981364,
+    "buckets": {
+     "2": {
+      "n": 80,
+      "games": 80,
+      "dir": "NO",
+      "net": 0.03271746249999999
+     },
+     "3": {
+      "n": 80,
+      "games": 80,
+      "dir": "YES",
+      "net": 0.032097625
+     },
+     "4": {
+      "n": 1,
+      "games": 1,
+      "dir": "YES",
+      "net": 0.217603
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|team_total": {
+    "n_total": 3819,
+    "games_total": 149,
+    "n_fit": 2337,
+    "games_fit": 92,
+    "n_judged_rows": 1482,
+    "n_judged_used": 1482,
+    "games_judged": 57,
+    "net": -0.019425867071524966,
+    "lo": -0.048876673350611216,
+    "hi": 0.009183550339970608,
+    "p": 0.2588705647176412,
+    "se": 0.01732784951857658,
+    "round_cost": 0.022332181511470987,
+    "games_needed": 212.2528173366651,
+    "raw_gap_judged": 0.0020512820512820487,
+    "buckets": {
+     "0": {
+      "n": 266,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.024145736842105255
+     },
+     "1": {
+      "n": 196,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.018105903061224494
+     },
+     "2": {
+      "n": 269,
+      "games": 57,
+      "dir": "YES",
+      "net": 0.00580897397769516
+     },
+     "3": {
+      "n": 273,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.04601293040293041
+     },
+     "4": {
+      "n": 200,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.03720476500000001
+     },
+     "5": {
+      "n": 278,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.0013587877697841554
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|spread_alt": {
+    "n_total": 1095,
+    "games_total": 219,
+    "n_fit": 740,
+    "games_fit": 148,
+    "n_judged_rows": 355,
+    "n_judged_used": 355,
+    "games_judged": 71,
+    "net": -0.02201229859154931,
+    "lo": -0.050119694929577484,
+    "hi": 0.007280862394366187,
+    "p": 0.20889555222388806,
+    "se": 0.017617756467797407,
+    "round_cost": 0.019777411267605634,
+    "games_needed": 348.47548775046295,
+    "raw_gap_judged": -0.0013239436619718328,
+    "buckets": {
+     "0": {
+      "n": 6,
+      "games": 4,
+      "dir": "YES",
+      "net": -0.09043316666666668
+     },
+     "1": {
+      "n": 212,
+      "games": 71,
+      "dir": "NO",
+      "net": -0.01887455660377359
+     },
+     "2": {
+      "n": 135,
+      "games": 71,
+      "dir": "YES",
+      "net": -0.0219847703703704
+     },
+     "3": {
+      "n": 2,
+      "games": 2,
+      "dir": "YES",
+      "net": -0.1512085
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|spread_main": {
+    "n_total": 219,
+    "games_total": 219,
+    "n_fit": 148,
+    "games_fit": 148,
+    "n_judged_rows": 71,
+    "n_judged_used": 71,
+    "games_judged": 71,
+    "net": -0.01207787323943662,
+    "lo": -0.10940755281690139,
+    "hi": 0.08340700845070423,
+    "p": 0.8605697151424287,
+    "se": 0.05804405882739829,
+    "round_cost": 0.0227820985915493,
+    "games_needed": 2850.61136639549,
+    "raw_gap_judged": 0.010704225352112675,
+    "buckets": {
+     "2": {
+      "n": 70,
+      "games": 70,
+      "dir": "YES",
+      "net": -0.004429885714285707
+     },
+     "3": {
+      "n": 1,
+      "games": 1,
+      "dir": "YES",
+      "net": -0.5474370000000001
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|total_alt": {
+    "n_total": 2173,
+    "games_total": 219,
+    "n_fit": 1476,
+    "games_fit": 148,
+    "n_judged_rows": 697,
+    "n_judged_used": 697,
+    "games_judged": 71,
+    "net": -0.04389304160688665,
+    "lo": -0.07560699886983466,
+    "hi": -0.013996779752153127,
+    "p": 0.014992503748125937,
+    "se": 0.018396802625714654,
+    "round_cost": 0.021035088952654237,
+    "games_needed": 335.8968347486638,
+    "raw_gap_judged": 0.04472022955523673,
+    "buckets": {
+     "1": {
+      "n": 136,
+      "games": 71,
+      "dir": "NO",
+      "net": -0.04285781617647058
+     },
+     "2": {
+      "n": 167,
+      "games": 71,
+      "dir": "NO",
+      "net": -0.09771764670658681
+     },
+     "3": {
+      "n": 138,
+      "games": 71,
+      "dir": "YES",
+      "net": 0.03233699275362318
+     },
+     "4": {
+      "n": 127,
+      "games": 71,
+      "dir": "NO",
+      "net": -0.08696159842519685
+     },
+     "5": {
+      "n": 129,
+      "games": 70,
+      "dir": "YES",
+      "net": -0.014452108527131762
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|total_main": {
+    "n_total": 219,
+    "games_total": 219,
+    "n_fit": 148,
+    "games_fit": 148,
+    "n_judged_rows": 71,
+    "n_judged_used": 71,
+    "games_judged": 71,
+    "net": 0.002989084507042246,
+    "lo": -0.09714624929577464,
+    "hi": 0.10427044507042249,
+    "p": 0.9295352323838081,
+    "se": 0.0592498543986511,
+    "round_cost": 0.02341936619718311,
+    "games_needed": 2810.8276637215213,
+    "raw_gap_judged": 0.026408450704225348,
+    "buckets": {
+     "2": {
+      "n": 36,
+      "games": 36,
+      "dir": "YES",
+      "net": -0.01994030555555555
+     },
+     "3": {
+      "n": 35,
+      "games": 35,
+      "dir": "YES",
+      "net": 0.026573599999999985
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|team_total": {
+    "n_total": 3050,
+    "games_total": 219,
+    "n_fit": 2063,
+    "games_fit": 148,
+    "n_judged_rows": 987,
+    "n_judged_used": 987,
+    "games_judged": 71,
+    "net": -0.04614986828774063,
+    "lo": -0.06418570020966674,
+    "hi": -0.028053014133738605,
+    "p": 0.0009995002498750624,
+    "se": 0.010951651163183949,
+    "round_cost": 0.03396317629179331,
+    "games_needed": 45.66174711214727,
+    "raw_gap_judged": 0.028809523809523802,
+    "buckets": {
+     "0": {
+      "n": 49,
+      "games": 35,
+      "dir": "YES",
+      "net": -0.0394405306122449
+     },
+     "1": {
+      "n": 279,
+      "games": 70,
+      "dir": "NO",
+      "net": -0.04076141577060932
+     },
+     "2": {
+      "n": 301,
+      "games": 71,
+      "dir": "YES",
+      "net": -0.03494658139534884
+     },
+     "3": {
+      "n": 237,
+      "games": 71,
+      "dir": "NO",
+      "net": -0.1048150253164557
+     },
+     "4": {
+      "n": 120,
+      "games": 69,
+      "dir": "YES",
+      "net": 0.02684569166666667
+     },
+     "5": {
+      "n": 1,
+      "games": 1,
+      "dir": "NO",
+      "net": -0.1063
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": true
+   },
+   "MLB|period_f3": {
+    "n_total": 648,
+    "games_total": 218,
+    "n_fit": 439,
+    "games_fit": 147,
+    "n_judged_rows": 209,
+    "n_judged_used": 209,
+    "games_judged": 71,
+    "net": -0.02821003827751198,
+    "lo": -0.056873047101449276,
+    "hi": -0.0001464979139218463,
+    "p": 0.10094952523738131,
+    "se": 0.017323701007588368,
+    "round_cost": 0.04797397129186603,
+    "games_needed": 57.26376998262141,
+    "raw_gap_judged": -0.004282296650717702,
+    "buckets": {
+     "1": {
+      "n": 21,
+      "games": 21,
+      "dir": "NO",
+      "net": 0.05013157142857139
+     },
+     "2": {
+      "n": 183,
+      "games": 69,
+      "dir": "YES",
+      "net": -0.03904155737704918
+     },
+     "3": {
+      "n": 5,
+      "games": 5,
+      "dir": "NO",
+      "net": 0.03918880000000001
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|period_f5": {
+    "n_total": 657,
+    "games_total": 219,
+    "n_fit": 441,
+    "games_fit": 147,
+    "n_judged_rows": 216,
+    "n_judged_used": 216,
+    "games_judged": 72,
+    "net": -0.0402742962962963,
+    "lo": -0.08858694513888891,
+    "hi": 0.011511588425925905,
+    "p": 0.20589705147426288,
+    "se": 0.029876139020701364,
+    "round_cost": 0.046402111111111116,
+    "games_needed": 184.61098135148492,
+    "raw_gap_judged": -0.011111111111111108,
+    "buckets": {
+     "1": {
+      "n": 68,
+      "games": 65,
+      "dir": "YES",
+      "net": -0.03356589705882351
+     },
+     "2": {
+      "n": 119,
+      "games": 67,
+      "dir": "NO",
+      "net": -0.022281260504201695
+     },
+     "3": {
+      "n": 29,
+      "games": 24,
+      "dir": "YES",
+      "net": -0.1298378275862069
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|period_f7": {
+    "n_total": 635,
+    "games_total": 213,
+    "n_fit": 428,
+    "games_fit": 144,
+    "n_judged_rows": 207,
+    "n_judged_used": 207,
+    "games_judged": 69,
+    "net": 0.003136971014492754,
+    "lo": -0.03391380458937198,
+    "hi": 0.03748861280193237,
+    "p": 0.8315842078960519,
+    "se": 0.022073247547250752,
+    "round_cost": 0.04563011594202899,
+    "games_needed": 99.86883515713903,
+    "raw_gap_judged": 0.00012077294685990483,
+    "buckets": {
+     "1": {
+      "n": 72,
+      "games": 69,
+      "dir": "NO",
+      "net": 0.032057125000000006
+     },
+     "2": {
+      "n": 107,
+      "games": 66,
+      "dir": "YES",
+      "net": 0.010111467289719624
+     },
+     "3": {
+      "n": 28,
+      "games": 28,
+      "dir": "YES",
+      "net": -0.09788167857142857
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|period_f5spread": {
+    "n_total": 872,
+    "games_total": 218,
+    "n_fit": 588,
+    "games_fit": 147,
+    "n_judged_rows": 284,
+    "n_judged_used": 284,
+    "games_judged": 71,
+    "net": -0.03723530633802819,
+    "lo": -0.08192820334507042,
+    "hi": 0.008938257394366173,
+    "p": 0.17991004497751126,
+    "se": 0.028624707268297085,
+    "round_cost": 0.04947982394366198,
+    "games_needed": 146.97238304471279,
+    "raw_gap_judged": 0.009313380281690145,
+    "buckets": {
+     "0": {
+      "n": 6,
+      "games": 6,
+      "dir": "NO",
+      "net": 0.060784833333333316
+     },
+     "1": {
+      "n": 162,
+      "games": 68,
+      "dir": "NO",
+      "net": -0.029370611111111118
+     },
+     "2": {
+      "n": 116,
+      "games": 71,
+      "dir": "YES",
+      "net": -0.05328876724137931
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|period_f5total": {
+    "n_total": 1443,
+    "games_total": 218,
+    "n_fit": 979,
+    "games_fit": 147,
+    "n_judged_rows": 464,
+    "n_judged_used": 464,
+    "games_judged": 71,
+    "net": -0.06326505818965517,
+    "lo": -0.12475030305296511,
+    "hi": -0.003251630550927275,
+    "p": 0.08295852073963018,
+    "se": 0.036196293428210236,
+    "round_cost": 0.041324915948275864,
+    "games_needed": 336.9102017921121,
+    "raw_gap_judged": 0.036379310344827595,
+    "buckets": {
+     "1": {
+      "n": 52,
+      "games": 45,
+      "dir": "NO",
+      "net": -0.040890211538461556
+     },
+     "2": {
+      "n": 160,
+      "games": 70,
+      "dir": "NO",
+      "net": -0.07288665624999999
+     },
+     "3": {
+      "n": 118,
+      "games": 70,
+      "dir": "NO",
+      "net": -0.08451534745762714
+     },
+     "4": {
+      "n": 78,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.10272129487179488
+     },
+     "5": {
+      "n": 56,
+      "games": 55,
+      "dir": "YES",
+      "net": 0.04318287500000002
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "MLB|prop_hit": {
+    "n_total": 2303,
+    "games_total": 168,
+    "n_fit": 1406,
+    "games_fit": 111,
+    "n_judged_rows": 897,
+    "n_judged_used": 897,
+    "games_judged": 57,
+    "net": -0.032805838350055745,
+    "lo": -0.05895068843369239,
+    "hi": -0.008217701317006812,
+    "p": 0.028985507246376812,
+    "se": 0.015062257110643486,
+    "round_cost": 0.032240634336677815,
+    "games_needed": 76.94836273416402,
+    "raw_gap_judged": -0.0026923076923076944,
+    "buckets": {
+     "0": {
+      "n": 165,
+      "games": 45,
+      "dir": "YES",
+      "net": -0.012523824242424248
+     },
+     "1": {
+      "n": 304,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.017497828947368423
+     },
+     "2": {
+      "n": 73,
+      "games": 43,
+      "dir": "NO",
+      "net": -0.018405849315068498
+     },
+     "3": {
+      "n": 355,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.05830264507042255
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|moneyline": {
+    "n_total": 340,
+    "games_total": 170,
+    "n_fit": 208,
+    "games_fit": 104,
+    "n_judged_rows": 132,
+    "n_judged_used": 132,
+    "games_judged": 66,
+    "net": -0.046764431818181816,
+    "lo": -0.13890117803030302,
+    "hi": 0.04615786742424242,
+    "p": 0.4237881059470265,
+    "se": 0.05714356161236238,
+    "round_cost": 0.019650318181818182,
+    "games_needed": 3452.1602129896937,
+    "raw_gap_judged": -0.0003787878787878791,
+    "buckets": {
+     "0": {
+      "n": 3,
+      "games": 3,
+      "dir": "NO",
+      "net": 0.07798766666666662
+     },
+     "1": {
+      "n": 19,
+      "games": 19,
+      "dir": "NO",
+      "net": -0.09136252631578948
+     },
+     "2": {
+      "n": 44,
+      "games": 44,
+      "dir": "NO",
+      "net": -0.03567625000000001
+     },
+     "3": {
+      "n": 44,
+      "games": 44,
+      "dir": "YES",
+      "net": -0.03677713636363636
+     },
+     "4": {
+      "n": 19,
+      "games": 19,
+      "dir": "YES",
+      "net": -0.0903681052631579
+     },
+     "5": {
+      "n": 3,
+      "games": 3,
+      "dir": "YES",
+      "net": 0.07798766666666662
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|spread_alt": {
+    "n_total": 5261,
+    "games_total": 169,
+    "n_fit": 3208,
+    "games_fit": 104,
+    "n_judged_rows": 2053,
+    "n_judged_used": 2053,
+    "games_judged": 65,
+    "net": -0.024149141743789574,
+    "lo": -0.060255307414691046,
+    "hi": 0.013720780539311328,
+    "p": 0.28285857071464265,
+    "se": 0.022365573876727034,
+    "round_cost": 0.021197363857769116,
+    "games_needed": 447.57035203044916,
+    "raw_gap_judged": -0.0029517778860204606,
+    "buckets": {
+     "0": {
+      "n": 643,
+      "games": 65,
+      "dir": "YES",
+      "net": 0.026344981337480554
+     },
+     "1": {
+      "n": 510,
+      "games": 65,
+      "dir": "YES",
+      "net": -0.00907497058823529
+     },
+     "2": {
+      "n": 589,
+      "games": 65,
+      "dir": "YES",
+      "net": -0.056919811544991504
+     },
+     "3": {
+      "n": 267,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.10122290262172286
+     },
+     "4": {
+      "n": 44,
+      "games": 19,
+      "dir": "YES",
+      "net": -0.03039754545454545
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|spread_main": {
+    "n_total": 169,
+    "games_total": 169,
+    "n_fit": 104,
+    "games_fit": 104,
+    "n_judged_rows": 65,
+    "n_judged_used": 65,
+    "games_judged": 65,
+    "net": -0.12609772307692307,
+    "lo": -0.22966316538461534,
+    "hi": -0.03146111923076926,
+    "p": 0.02798600699650175,
+    "se": 0.06049054530097048,
+    "round_cost": 0.024020800000000012,
+    "games_needed": 2549.5585609181294,
+    "raw_gap_judged": -0.10207692307692309,
+    "buckets": {
+     "2": {
+      "n": 27,
+      "games": 27,
+      "dir": "YES",
+      "net": -0.21601437037037036
+     },
+     "3": {
+      "n": 38,
+      "games": 38,
+      "dir": "YES",
+      "net": -0.06220957894736845
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|total_alt": {
+    "n_total": 4732,
+    "games_total": 169,
+    "n_fit": 2912,
+    "games_fit": 104,
+    "n_judged_rows": 1820,
+    "n_judged_used": 1820,
+    "games_judged": 65,
+    "net": -0.06557166318681318,
+    "lo": -0.12113144585164835,
+    "hi": -0.010052476208791208,
+    "p": 0.05297351324337831,
+    "se": 0.0320667471620046,
+    "round_cost": 0.022984343406593402,
+    "games_needed": 782.5471942036386,
+    "raw_gap_judged": 0.04262637362637363,
+    "buckets": {
+     "0": {
+      "n": 177,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.05133145197740113
+     },
+     "1": {
+      "n": 354,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.04862704802259889
+     },
+     "2": {
+      "n": 368,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.06524504076086957
+     },
+     "3": {
+      "n": 345,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.09838080869565216
+     },
+     "4": {
+      "n": 316,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.061747946202531656
+     },
+     "5": {
+      "n": 260,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.05991107692307693
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|total_main": {
+    "n_total": 169,
+    "games_total": 169,
+    "n_fit": 104,
+    "games_fit": 104,
+    "n_judged_rows": 65,
+    "n_judged_used": 65,
+    "games_judged": 65,
+    "net": -0.10609793846153848,
+    "lo": -0.21289185615384615,
+    "hi": -0.011792680000000009,
+    "p": 0.07896051974012994,
+    "se": 0.06110583324827586,
+    "round_cost": 0.02371020000000001,
+    "games_needed": 2670.2986343228204,
+    "raw_gap_judged": 0.08238461538461539,
+    "buckets": {
+     "2": {
+      "n": 27,
+      "games": 27,
+      "dir": "NO",
+      "net": -0.1289521851851852
+     },
+     "3": {
+      "n": 38,
+      "games": 38,
+      "dir": "NO",
+      "net": -0.08985939473684208
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|team_total": {
+    "n_total": 6409,
+    "games_total": 169,
+    "n_fit": 3939,
+    "games_fit": 104,
+    "n_judged_rows": 2470,
+    "n_judged_used": 2470,
+    "games_judged": 65,
+    "net": -0.059941595951416994,
+    "lo": -0.10026778538461537,
+    "hi": -0.018670516538461537,
+    "p": 0.015992003998001,
+    "se": 0.024475341773007527,
+    "round_cost": 0.028172040890688258,
+    "games_needed": 303.4490882963848,
+    "raw_gap_judged": 0.03177935222672065,
+    "buckets": {
+     "0": {
+      "n": 231,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.02385710822510822
+     },
+     "1": {
+      "n": 466,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.04289576824034335
+     },
+     "2": {
+      "n": 521,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.061557236084452974
+     },
+     "3": {
+      "n": 515,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.07140202330097087
+     },
+     "4": {
+      "n": 422,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.08586996682464455
+     },
+     "5": {
+      "n": 315,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.055475663492063496
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|moneyline": {
+    "n_total": 320,
+    "games_total": 160,
+    "n_fit": 200,
+    "games_fit": 100,
+    "n_judged_rows": 120,
+    "n_judged_used": 120,
+    "games_judged": 60,
+    "net": -0.09663106666666664,
+    "lo": -0.2025213491666667,
+    "hi": 0.009924695416666643,
+    "p": 0.12993503248375812,
+    "se": 0.06467400288096346,
+    "round_cost": 0.021899716666666673,
+    "games_needed": 3236.5722936623706,
+    "raw_gap_judged": 4.166666666667133e-05,
+    "buckets": {
+     "1": {
+      "n": 3,
+      "games": 3,
+      "dir": "NO",
+      "net": -0.4554643333333333
+     },
+     "2": {
+      "n": 56,
+      "games": 56,
+      "dir": "NO",
+      "net": -0.07899210714285713
+     },
+     "3": {
+      "n": 59,
+      "games": 58,
+      "dir": "YES",
+      "net": -0.08834155932203391
+     },
+     "4": {
+      "n": 2,
+      "games": 2,
+      "dir": "YES",
+      "net": -0.29681250000000003
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|spread_alt": {
+    "n_total": 480,
+    "games_total": 160,
+    "n_fit": 300,
+    "games_fit": 100,
+    "n_judged_rows": 180,
+    "n_judged_used": 180,
+    "games_judged": 60,
+    "net": -0.06668058333333333,
+    "lo": -0.1219699063888889,
+    "hi": -0.012206781388888897,
+    "p": 0.044977511244377814,
+    "se": 0.03385619459626316,
+    "round_cost": 0.017452822222222227,
+    "games_needed": 1396.5219802960407,
+    "raw_gap_judged": 0.047749999999999994,
+    "buckets": {
+     "0": {
+      "n": 10,
+      "games": 9,
+      "dir": "NO",
+      "net": -0.1392287
+     },
+     "1": {
+      "n": 125,
+      "games": 59,
+      "dir": "NO",
+      "net": -0.04372374400000001
+     },
+     "2": {
+      "n": 43,
+      "games": 43,
+      "dir": "NO",
+      "net": -0.1144422558139535
+     },
+     "3": {
+      "n": 2,
+      "games": 2,
+      "dir": "YES",
+      "net": -0.11186649999999995
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|spread_main": {
+    "n_total": 160,
+    "games_total": 160,
+    "n_fit": 100,
+    "games_fit": 100,
+    "n_judged_rows": 60,
+    "n_judged_used": 60,
+    "games_judged": 60,
+    "net": 0.056217516666666655,
+    "lo": -0.04602143833333336,
+    "hi": 0.1584412908333333,
+    "p": 0.36081959020489757,
+    "se": 0.06361355036817361,
+    "round_cost": 0.021447633333333337,
+    "games_needed": 3264.700441221924,
+    "raw_gap_judged": 0.05883333333333334,
+    "buckets": {
+     "2": {
+      "n": 57,
+      "games": 57,
+      "dir": "YES",
+      "net": 0.05044691228070173
+     },
+     "3": {
+      "n": 3,
+      "games": 3,
+      "dir": "NO",
+      "net": 0.165859
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|total_alt": {
+    "n_total": 1194,
+    "games_total": 160,
+    "n_fit": 733,
+    "games_fit": 100,
+    "n_judged_rows": 461,
+    "n_judged_used": 461,
+    "games_judged": 60,
+    "net": -0.03363781561822126,
+    "lo": -0.07830820229885058,
+    "hi": 0.009888170006103859,
+    "p": 0.20389805097451275,
+    "se": 0.02677960806218399,
+    "round_cost": 0.016839255965292847,
+    "games_needed": 938.5673817504867,
+    "raw_gap_judged": -0.006746203904555313,
+    "buckets": {
+     "0": {
+      "n": 46,
+      "games": 46,
+      "dir": "NO",
+      "net": -0.06396158695652175
+     },
+     "1": {
+      "n": 91,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.036735263736263735
+     },
+     "2": {
+      "n": 62,
+      "games": 59,
+      "dir": "YES",
+      "net": -0.04099374193548388
+     },
+     "3": {
+      "n": 41,
+      "games": 41,
+      "dir": "YES",
+      "net": -0.033546121951219504
+     },
+     "4": {
+      "n": 115,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.009358260869565227
+     },
+     "5": {
+      "n": 106,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.03989328301886793
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|total_main": {
+    "n_total": 160,
+    "games_total": 160,
+    "n_fit": 100,
+    "games_fit": 100,
+    "n_judged_rows": 60,
+    "n_judged_used": 60,
+    "games_judged": 60,
+    "net": -0.005587216666666642,
+    "lo": -0.11797982916666663,
+    "hi": 0.09492536916666668,
+    "p": 0.9115442278860569,
+    "se": 0.0646144500532973,
+    "round_cost": 0.02272891666666667,
+    "games_needed": 2999.194650934793,
+    "raw_gap_judged": 0.033499999999999974,
+    "buckets": {
+     "2": {
+      "n": 29,
+      "games": 29,
+      "dir": "YES",
+      "net": 0.029824655172413794
+     },
+     "3": {
+      "n": 31,
+      "games": 31,
+      "dir": "NO",
+      "net": -0.03871445161290322
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|team_total": {
+    "n_total": 1600,
+    "games_total": 160,
+    "n_fit": 1000,
+    "games_fit": 100,
+    "n_judged_rows": 600,
+    "n_judged_used": 600,
+    "games_judged": 60,
+    "net": -0.030816535,
+    "lo": -0.06117988466666666,
+    "hi": 0.0029426062499999855,
+    "p": 0.13493253373313344,
+    "se": 0.019391004692675275,
+    "round_cost": 0.021953708333333332,
+    "games_needed": 289.52606225623094,
+    "raw_gap_judged": 0.003758333333333333,
+    "buckets": {
+     "0": {
+      "n": 80,
+      "games": 59,
+      "dir": "NO",
+      "net": -0.0563050625
+     },
+     "1": {
+      "n": 132,
+      "games": 60,
+      "dir": "NO",
+      "net": -0.023869750000000006
+     },
+     "2": {
+      "n": 145,
+      "games": 60,
+      "dir": "YES",
+      "net": 0.002238724137931032
+     },
+     "3": {
+      "n": 131,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.025443305343511455
+     },
+     "4": {
+      "n": 106,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.06792585849056604
+     },
+     "5": {
+      "n": 6,
+      "games": 6,
+      "dir": "YES",
+      "net": -0.10435166666666666
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|prop_passyds": {
+    "n_total": 282,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 282,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rshyds": {
+    "n_total": 756,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 756,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_recyds": {
+    "n_total": 1807,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 1807,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rec": {
+    "n_total": 1162,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 1162,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_td": {
+    "n_total": 482,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 482,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passtds": {
+    "n_total": 125,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 125,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passatt": {
+    "n_total": 90,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 90,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passcomp": {
+    "n_total": 90,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 90,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rshatt": {
+    "n_total": 158,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 158,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rryds": {
+    "n_total": 125,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 125,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_pts": {
+    "n_total": 516,
+    "games_total": 14,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 516,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_reb": {
+    "n_total": 589,
+    "games_total": 14,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 589,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_3pt": {
+    "n_total": 618,
+    "games_total": 14,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 618,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_ast": {
+    "n_total": 444,
+    "games_total": 14,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 444,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_pra": {
+    "n_total": 353,
+    "games_total": 13,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 353,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_2d": {
+    "n_total": 94,
+    "games_total": 10,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 94,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_3d": {
+    "n_total": 19,
+    "games_total": 9,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 19,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|prop_stl": {
+    "n_total": 17,
+    "games_total": 2,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 17,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   }
+  },
+  "pooled": {
+   "HEAD": {
+    "n_total": 2834,
+    "games_total": 723,
+    "n_fit": 1800,
+    "games_fit": 457,
+    "n_judged_rows": 1034,
+    "n_judged_used": 1034,
+    "games_judged": 266,
+    "net": -0.022723226305609297,
+    "lo": -0.049826686691312044,
+    "hi": 0.004050624935212466,
+    "p": 0.1619190404797601,
+    "se": 0.01635161510064671,
+    "round_cost": 0.02200017214700194,
+    "games_needed": 908.8712389272579,
+    "raw_gap_judged": 0.015483558994197294,
+    "buckets": {
+     "0": {
+      "n": 3,
+      "games": 3,
+      "dir": "NO",
+      "net": 0.07798766666666662
+     },
+     "1": {
+      "n": 35,
+      "games": 35,
+      "dir": "NO",
+      "net": -0.05143814285714287
+     },
+     "2": {
+      "n": 533,
+      "games": 256,
+      "dir": "NO",
+      "net": -0.03633880112570357
+     },
+     "3": {
+      "n": 426,
+      "games": 262,
+      "dir": "YES",
+      "net": -0.004237922535211281
+     },
+     "4": {
+      "n": 34,
+      "games": 34,
+      "dir": "YES",
+      "net": -0.02910208823529414
+     },
+     "5": {
+      "n": 3,
+      "games": 3,
+      "dir": "YES",
+      "net": 0.07798766666666662
+     }
+    }
+   },
+   "NONHEAD": {
+    "n_total": 50428,
+    "games_total": 703,
+    "n_fit": 26904,
+    "games_fit": 446,
+    "n_judged_rows": 23524,
+    "n_judged_used": 23524,
+    "games_judged": 257,
+    "net": -0.03610112672164598,
+    "lo": -0.0442208619223113,
+    "hi": -0.027625504287217894,
+    "p": 0.0009995002498750624,
+    "se": 0.0050779023422089535,
+    "round_cost": 0.030370724324094538,
+    "games_needed": 44.436831334301694,
+    "raw_gap_judged": 0.013416723346369662,
+    "buckets": {
+     "0": {
+      "n": 3679,
+      "games": 236,
+      "dir": "NO",
+      "net": -0.02813536749116607
+     },
+     "1": {
+      "n": 5686,
+      "games": 256,
+      "dir": "NO",
+      "net": -0.03279453517411186
+     },
+     "2": {
+      "n": 5922,
+      "games": 256,
+      "dir": "NO",
+      "net": -0.059169022289766976
+     },
+     "3": {
+      "n": 4373,
+      "games": 257,
+      "dir": "YES",
+      "net": -0.025120369540361315
+     },
+     "4": {
+      "n": 2479,
+      "games": 254,
+      "dir": "YES",
+      "net": -0.01827238079870916
+     },
+     "5": {
+      "n": 1385,
+      "games": 253,
+      "dir": "NO",
+      "net": -0.03878382888086643
+     }
+    }
+   }
+  },
+  "pooled_by_type": {
+   "HEAD:moneyline": {
+    "n_total": 1440,
+    "games_total": 720,
+    "n_fit": 912,
+    "games_fit": 456,
+    "n_judged_rows": 528,
+    "n_judged_used": 528,
+    "games_judged": 264,
+    "net": -0.008914941287878788,
+    "lo": -0.05798480151515152,
+    "hi": 0.0375587262310606,
+    "p": 0.7646176911544228,
+    "se": 0.028963411053297892,
+    "round_cost": 0.02111346401515152,
+    "games_needed": 3072.8115628849964,
+    "raw_gap_judged": -9.469696969696915e-05,
+    "buckets": {
+     "0": {
+      "n": 3,
+      "games": 3,
+      "dir": "NO",
+      "net": 0.07798766666666662
+     },
+     "1": {
+      "n": 35,
+      "games": 35,
+      "dir": "NO",
+      "net": -0.05143814285714287
+     },
+     "2": {
+      "n": 225,
+      "games": 225,
+      "dir": "NO",
+      "net": -0.0033957288888888906
+     },
+     "3": {
+      "n": 228,
+      "games": 227,
+      "dir": "YES",
+      "net": -0.007110394736842106
+     },
+     "4": {
+      "n": 34,
+      "games": 34,
+      "dir": "YES",
+      "net": -0.02910208823529414
+     },
+     "5": {
+      "n": 3,
+      "games": 3,
+      "dir": "YES",
+      "net": 0.07798766666666662
+     }
+    }
+   },
+   "NONHEAD:spread": {
+    "n_total": 10484,
+    "games_total": 697,
+    "n_fit": 6507,
+    "games_fit": 444,
+    "n_judged_rows": 3977,
+    "n_judged_used": 3977,
+    "games_judged": 253,
+    "net": -0.004830688458637161,
+    "lo": -0.028576849426493394,
+    "hi": 0.018771941932572814,
+    "p": 0.736631684157921,
+    "se": 0.014436631249155974,
+    "round_cost": 0.019688621574050793,
+    "games_needed": 841.3432125588103,
+    "raw_gap_judged": 0.014857933115413625,
+    "buckets": {
+     "0": {
+      "n": 891,
+      "games": 135,
+      "dir": "YES",
+      "net": 0.012374904601571266
+     },
+     "1": {
+      "n": 1381,
+      "games": 252,
+      "dir": "YES",
+      "net": -0.011359607530774803
+     },
+     "2": {
+      "n": 1197,
+      "games": 236,
+      "dir": "YES",
+      "net": -0.009546841269841278
+     },
+     "3": {
+      "n": 443,
+      "games": 118,
+      "dir": "YES",
+      "net": -0.00857471331828442
+     },
+     "4": {
+      "n": 65,
+      "games": 30,
+      "dir": "YES",
+      "net": 0.010401492307692294
+     }
+    }
+   },
+   "HEAD:spread_main": {
+    "n_total": 697,
+    "games_total": 697,
+    "n_fit": 444,
+    "games_fit": 444,
+    "n_judged_rows": 253,
+    "n_judged_used": 253,
+    "games_judged": 253,
+    "net": -0.013746237154150194,
+    "lo": -0.06557145039525691,
+    "hi": 0.03801541581027669,
+    "p": 0.688655672163918,
+    "se": 0.031228011302229415,
+    "round_cost": 0.022712343873517792,
+    "games_needed": 2958.2633806179547,
+    "raw_gap_judged": 0.016996047430830042,
+    "buckets": {
+     "2": {
+      "n": 187,
+      "games": 187,
+      "dir": "YES",
+      "net": -0.004886026737967911
+     },
+     "3": {
+      "n": 66,
+      "games": 66,
+      "dir": "NO",
+      "net": -0.038850166666666644
+     }
+    }
+   },
+   "NONHEAD:total": {
+    "n_total": 10781,
+    "games_total": 697,
+    "n_fit": 6777,
+    "games_fit": 444,
+    "n_judged_rows": 4004,
+    "n_judged_used": 4004,
+    "games_judged": 253,
+    "net": -0.04199676173826174,
+    "lo": -0.0714033843731067,
+    "hi": -0.012832327725136723,
+    "p": 0.013993003498250875,
+    "se": 0.01771075840519345,
+    "round_cost": 0.020711499999999997,
+    "games_needed": 1144.2562757476708,
+    "raw_gap_judged": 0.025076173826173827,
+    "buckets": {
+     "0": {
+      "n": 335,
+      "games": 167,
+      "dir": "NO",
+      "net": -0.04711821492537313
+     },
+     "1": {
+      "n": 747,
+      "games": 253,
+      "dir": "NO",
+      "net": -0.02767836010709505
+     },
+     "2": {
+      "n": 859,
+      "games": 252,
+      "dir": "NO",
+      "net": -0.04853142607683353
+     },
+     "3": {
+      "n": 747,
+      "games": 234,
+      "dir": "NO",
+      "net": -0.07940861713520748
+     },
+     "4": {
+      "n": 698,
+      "games": 253,
+      "dir": "NO",
+      "net": -0.04243287106017192
+     },
+     "5": {
+      "n": 618,
+      "games": 250,
+      "dir": "YES",
+      "net": -0.00173110194174756
+     }
+    }
+   },
+   "HEAD:total_main": {
+    "n_total": 697,
+    "games_total": 697,
+    "n_fit": 444,
+    "games_fit": 444,
+    "n_judged_rows": 253,
+    "n_judged_used": 253,
+    "games_judged": 253,
+    "net": -0.042685671936758915,
+    "lo": -0.09684174624505931,
+    "hi": 0.011256823122529609,
+    "p": 0.191904047976012,
+    "se": 0.031445947409227966,
+    "round_cost": 0.023138521739130443,
+    "games_needed": 2890.215595653108,
+    "raw_gap_judged": 0.04648221343873517,
+    "buckets": {
+     "2": {
+      "n": 121,
+      "games": 121,
+      "dir": "NO",
+      "net": -0.09213079338842975
+     },
+     "3": {
+      "n": 132,
+      "games": 132,
+      "dir": "YES",
+      "net": 0.0026390227272727143
+     }
+    }
+   },
+   "NONHEAD:team": {
+    "n_total": 14878,
+    "games_total": 697,
+    "n_fit": 9339,
+    "games_fit": 444,
+    "n_judged_rows": 5539,
+    "n_judged_used": 5539,
+    "games_judged": 253,
+    "net": -0.03890652879581152,
+    "lo": -0.0571878030947524,
+    "hi": -0.019714566675954507,
+    "p": 0.0009995002498750624,
+    "se": 0.011496575319095672,
+    "round_cost": 0.026967884816753926,
+    "games_needed": 284.3906411671487,
+    "raw_gap_judged": 0.02026087741469579,
+    "buckets": {
+     "0": {
+      "n": 626,
+      "games": 216,
+      "dir": "NO",
+      "net": -0.02655741214057507
+     },
+     "1": {
+      "n": 1073,
+      "games": 252,
+      "dir": "NO",
+      "net": -0.035471972972972984
+     },
+     "2": {
+      "n": 1236,
+      "games": 253,
+      "dir": "NO",
+      "net": -0.05491841100323625
+     },
+     "3": {
+      "n": 1156,
+      "games": 253,
+      "dir": "NO",
+      "net": -0.056626359861591695
+     },
+     "4": {
+      "n": 848,
+      "games": 251,
+      "dir": "YES",
+      "net": -0.0016759469339622686
+     },
+     "5": {
+      "n": 600,
+      "games": 129,
+      "dir": "NO",
+      "net": -0.043427441666666664
+     }
+    }
+   },
+   "NONHEAD:period": {
+    "n_total": 4255,
+    "games_total": 221,
+    "n_fit": 2875,
+    "games_fit": 148,
+    "n_judged_rows": 1380,
+    "n_judged_used": 1380,
+    "games_judged": 73,
+    "net": -0.03262440652173913,
+    "lo": -0.05284285858575717,
+    "hi": -0.014692116855024175,
+    "p": 0.0009995002498750624,
+    "se": 0.0113771068115201,
+    "round_cost": 0.0454506384057971,
+    "games_needed": 28.29164017547317,
+    "raw_gap_judged": 0.011778985507246374,
+    "buckets": {
+     "0": {
+      "n": 6,
+      "games": 6,
+      "dir": "NO",
+      "net": 0.060784833333333316
+     },
+     "1": {
+      "n": 375,
+      "games": 72,
+      "dir": "NO",
+      "net": -0.011490306666666669
+     },
+     "2": {
+      "n": 685,
+      "games": 72,
+      "dir": "YES",
+      "net": -0.03183684817518249
+     },
+     "3": {
+      "n": 180,
+      "games": 72,
+      "dir": "NO",
+      "net": -0.07597368888888888
+     },
+     "4": {
+      "n": 78,
+      "games": 65,
+      "dir": "NO",
+      "net": -0.10272129487179488
+     },
+     "5": {
+      "n": 56,
+      "games": 55,
+      "dir": "YES",
+      "net": 0.04318287500000002
+     }
+    }
+   },
+   "NONHEAD:prop": {
+    "n_total": 10030,
+    "games_total": 197,
+    "n_fit": 1406,
+    "games_fit": 111,
+    "n_judged_rows": 8624,
+    "n_judged_used": 8513,
+    "games_judged": 86,
+    "net": -0.04687943404205333,
+    "lo": -0.06009964417095454,
+    "hi": -0.03387413629437227,
+    "p": 0.0009995002498750624,
+    "se": 0.007875540508943613,
+    "round_cost": 0.03973061588159285,
+    "games_needed": 20.90066799527505,
+    "raw_gap_judged": 0.002830964407376949,
+    "buckets": {
+     "0": {
+      "n": 1821,
+      "games": 74,
+      "dir": "YES",
+      "net": -0.022658280065897863
+     },
+     "1": {
+      "n": 2110,
+      "games": 86,
+      "dir": "YES",
+      "net": -0.019681648815165875
+     },
+     "2": {
+      "n": 1945,
+      "games": 72,
+      "dir": "NO",
+      "net": -0.07669712236503856
+     },
+     "3": {
+      "n": 1847,
+      "games": 86,
+      "dir": "YES",
+      "net": -0.06390378830536003
+     },
+     "4": {
+      "n": 790,
+      "games": 29,
+      "dir": "YES",
+      "net": -0.062138500000000006
+     }
+    }
+   }
+  },
+  "n_family_tests": 30
+ },
+ "rule": {
+  "clause1_families": [],
+  "clause1_bh": [],
+  "nonhead_signed": -0.04233309672722668,
+  "head_signed": -0.04385673184898353,
+  "nonhead_abs": 0.04241530891941508,
+  "head_abs": 0.06125864085188769,
+  "n_nonhead_judged": 18,
+  "n_head_judged": 12,
+  "underpowered": [
+   "NFL|prop_passyds",
+   "NFL|prop_rshyds",
+   "NFL|prop_recyds",
+   "NFL|prop_rec",
+   "NFL|prop_td",
+   "NFL|prop_passtds",
+   "NFL|prop_passatt",
+   "NFL|prop_passcomp",
+   "NFL|prop_rshatt",
+   "NFL|prop_rryds",
+   "NBA|prop_pts",
+   "NBA|prop_reb",
+   "NBA|prop_3pt",
+   "NBA|prop_ast",
+   "NBA|prop_pra",
+   "NBA|prop_2d",
+   "NBA|prop_3d",
+   "NBA|prop_stl"
+  ]
+ },
+ "sens24h": {
+  "drops": {
+   "no_settled_result": 500,
+   "unusable_quote": 1355
+  },
+  "rows": 19269,
+  "split_dates": {
+   "NHL": "2026-11-12",
+   "NBA": "2026-11-12",
+   "NFL": "2026-10-25"
+  },
+  "sports_games": {
+   "NHL": 156,
+   "NBA": 158,
+   "NFL": 136
+  },
+  "families": {
+   "NFL|moneyline": {
+    "n_total": 270,
+    "games_total": 135,
+    "n_fit": 156,
+    "games_fit": 78,
+    "n_judged_rows": 114,
+    "n_judged_used": 114,
+    "games_judged": 57,
+    "net": -0.10673404385964912,
+    "lo": -0.1954191245614035,
+    "hi": -0.012211802631578948,
+    "p": 0.06896551724137931,
+    "se": 0.054700678000809765,
+    "round_cost": 0.020037631578947373,
+    "games_needed": 2627.356894802995,
+    "raw_gap_judged": 1.2173498077030225e-18,
+    "buckets": {
+     "1": {
+      "n": 12,
+      "games": 12,
+      "dir": "YES",
+      "net": -0.12173991666666667
+     },
+     "2": {
+      "n": 45,
+      "games": 45,
+      "dir": "YES",
+      "net": -0.10283822222222225
+     },
+     "3": {
+      "n": 45,
+      "games": 45,
+      "dir": "NO",
+      "net": -0.10216517777777777
+     },
+     "4": {
+      "n": 12,
+      "games": 12,
+      "dir": "NO",
+      "net": -0.12347075
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|spread_alt": {
+    "n_total": 3331,
+    "games_total": 136,
+    "n_fit": 1943,
+    "games_fit": 79,
+    "n_judged_rows": 1388,
+    "n_judged_used": 1388,
+    "games_judged": 57,
+    "net": -0.0585540425072046,
+    "lo": -0.09543211924367723,
+    "hi": -0.020957018886506334,
+    "p": 0.009995002498750625,
+    "se": 0.02297265887470651,
+    "round_cost": 0.018134082853025937,
+    "games_needed": 565.793250490474,
+    "raw_gap_judged": 0.040857348703170024,
+    "buckets": {
+     "0": {
+      "n": 228,
+      "games": 57,
+      "dir": "NO",
+      "net": 0.007917745614035085
+     },
+     "1": {
+      "n": 526,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.014407260456273769
+     },
+     "2": {
+      "n": 440,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.09308589772727274
+     },
+     "3": {
+      "n": 174,
+      "games": 53,
+      "dir": "NO",
+      "net": -0.18430485632183902
+     },
+     "4": {
+      "n": 20,
+      "games": 10,
+      "dir": "NO",
+      "net": -0.1236599
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NFL|spread_main": {
+    "n_total": 136,
+    "games_total": 136,
+    "n_fit": 79,
+    "games_fit": 79,
+    "n_judged_rows": 57,
+    "n_judged_used": 57,
+    "games_judged": 57,
+    "net": -0.14167098245614035,
+    "lo": -0.24906337017543861,
+    "hi": -0.03676040877192982,
+    "p": 0.02798600699650175,
+    "se": 0.06498908297426059,
+    "round_cost": 0.022555298245614044,
+    "games_needed": 2926.914902397855,
+    "raw_gap_judged": 0.11912280701754384,
+    "buckets": {
+     "2": {
+      "n": 34,
+      "games": 34,
+      "dir": "NO",
+      "net": -0.1592103529411765
+     },
+     "3": {
+      "n": 23,
+      "games": 23,
+      "dir": "NO",
+      "net": -0.11574321739130437
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NFL|total_alt": {
+    "n_total": 2448,
+    "games_total": 136,
+    "n_fit": 1422,
+    "games_fit": 79,
+    "n_judged_rows": 1026,
+    "n_judged_used": 1026,
+    "games_judged": 57,
+    "net": -0.042973412280701735,
+    "lo": -0.06944260726120856,
+    "hi": -0.014608863011695896,
+    "p": 0.012993503248375811,
+    "se": 0.01642541532213948,
+    "round_cost": 0.01856831091617934,
+    "games_needed": 275.87627063483336,
+    "raw_gap_judged": -0.005638401559454192,
+    "buckets": {
+     "0": {
+      "n": 108,
+      "games": 56,
+      "dir": "NO",
+      "net": -0.02925521296296296
+     },
+     "1": {
+      "n": 169,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.04088842603550296
+     },
+     "2": {
+      "n": 264,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.0396893106060606
+     },
+     "3": {
+      "n": 221,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.058030828054298635
+     },
+     "4": {
+      "n": 140,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.05504588571428574
+     },
+     "5": {
+      "n": 124,
+      "games": 55,
+      "dir": "YES",
+      "net": -0.02428870161290321
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NFL|total_main": {
+    "n_total": 136,
+    "games_total": 136,
+    "n_fit": 79,
+    "games_fit": 79,
+    "n_judged_rows": 57,
+    "n_judged_used": 57,
+    "games_judged": 57,
+    "net": -0.060282456140350875,
+    "lo": -0.1657290570175438,
+    "hi": 0.04567863684210527,
+    "p": 0.3548225887056472,
+    "se": 0.06607645311905093,
+    "round_cost": 0.022481824561403515,
+    "games_needed": 3045.4870890434704,
+    "raw_gap_judged": 0.04149122807017543,
+    "buckets": {
+     "2": {
+      "n": 22,
+      "games": 22,
+      "dir": "NO",
+      "net": -0.12519895454545454
+     },
+     "3": {
+      "n": 35,
+      "games": 35,
+      "dir": "YES",
+      "net": -0.019477800000000003
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NFL|team_total": {
+    "n_total": 3490,
+    "games_total": 136,
+    "n_fit": 2007,
+    "games_fit": 79,
+    "n_judged_rows": 1483,
+    "n_judged_used": 1483,
+    "games_judged": 57,
+    "net": -0.027035169251517194,
+    "lo": -0.053059024660576534,
+    "hi": -0.0010257289866165509,
+    "p": 0.09295352323838081,
+    "se": 0.0159919219108017,
+    "round_cost": 0.02410935873229939,
+    "games_needed": 155.11593999924486,
+    "raw_gap_judged": 0.0016992582602832111,
+    "buckets": {
+     "0": {
+      "n": 264,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.029038174242424233
+     },
+     "1": {
+      "n": 193,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.012984300518134722
+     },
+     "2": {
+      "n": 268,
+      "games": 57,
+      "dir": "YES",
+      "net": 0.003315757462686567
+     },
+     "3": {
+      "n": 278,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.036837694244604334
+     },
+     "4": {
+      "n": 199,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.056335648241206036
+     },
+     "5": {
+      "n": 281,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.0333026975088968
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NBA|moneyline": {
+    "n_total": 316,
+    "games_total": 158,
+    "n_fit": 204,
+    "games_fit": 102,
+    "n_judged_rows": 112,
+    "n_judged_used": 109,
+    "games_judged": 55,
+    "net": -0.031972862385321106,
+    "lo": -0.1369690610091743,
+    "hi": 0.06976841834862386,
+    "p": 0.6166916541729135,
+    "se": 0.06353962025746271,
+    "round_cost": 0.020966504587155956,
+    "games_needed": 3124.290606011342,
+    "raw_gap_judged": -0.001192660550458699,
+    "buckets": {
+     "1": {
+      "n": 19,
+      "games": 19,
+      "dir": "NO",
+      "net": -0.04428647368421053
+     },
+     "2": {
+      "n": 36,
+      "games": 36,
+      "dir": "NO",
+      "net": -0.022649527777777772
+     },
+     "3": {
+      "n": 36,
+      "games": 36,
+      "dir": "YES",
+      "net": -0.0245475
+     },
+     "4": {
+      "n": 18,
+      "games": 18,
+      "dir": "YES",
+      "net": -0.05247255555555555
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|moneyline": {
+    "n_total": 312,
+    "games_total": 156,
+    "n_fit": 192,
+    "games_fit": 96,
+    "n_judged_rows": 120,
+    "n_judged_used": 120,
+    "games_judged": 60,
+    "net": -0.12684239166666667,
+    "lo": -0.23534767916666668,
+    "hi": -0.026252281250000002,
+    "p": 0.04697651174412794,
+    "se": 0.06521278696905328,
+    "round_cost": 0.024548883333333337,
+    "games_needed": 2618.81523469212,
+    "raw_gap_judged": 4.166666666666393e-05,
+    "buckets": {
+     "1": {
+      "n": 3,
+      "games": 3,
+      "dir": "NO",
+      "net": -0.44905900000000004
+     },
+     "2": {
+      "n": 57,
+      "games": 57,
+      "dir": "NO",
+      "net": -0.10945073684210524
+     },
+     "3": {
+      "n": 57,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.11031650877192982
+     },
+     "4": {
+      "n": 3,
+      "games": 3,
+      "dir": "YES",
+      "net": -0.44905900000000004
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NHL|spread_alt": {
+    "n_total": 468,
+    "games_total": 156,
+    "n_fit": 288,
+    "games_fit": 96,
+    "n_judged_rows": 180,
+    "n_judged_used": 180,
+    "games_judged": 60,
+    "net": -0.10073678333333336,
+    "lo": -0.16189407444444442,
+    "hi": -0.04620228499999999,
+    "p": 0.0029985007496251873,
+    "se": 0.035695073969885624,
+    "round_cost": 0.04268443888888889,
+    "games_needed": 259.5256216348282,
+    "raw_gap_judged": 0.054249999999999986,
+    "buckets": {
+     "0": {
+      "n": 9,
+      "games": 9,
+      "dir": "NO",
+      "net": -0.05919866666666667
+     },
+     "1": {
+      "n": 120,
+      "games": 60,
+      "dir": "NO",
+      "net": -0.07499261666666665
+     },
+     "2": {
+      "n": 50,
+      "games": 49,
+      "dir": "NO",
+      "net": -0.16007334000000004
+     },
+     "3": {
+      "n": 1,
+      "games": 1,
+      "dir": "YES",
+      "net": -0.5970519999999999
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NHL|spread_main": {
+    "n_total": 156,
+    "games_total": 156,
+    "n_fit": 96,
+    "games_fit": 96,
+    "n_judged_rows": 60,
+    "n_judged_used": 60,
+    "games_judged": 60,
+    "net": -0.05731068333333335,
+    "lo": -0.16565725166666667,
+    "hi": 0.04444794833333333,
+    "p": 0.36281859070464767,
+    "se": 0.06270346259508805,
+    "round_cost": 0.044014983333333334,
+    "games_needed": 753.1557315234087,
+    "raw_gap_judged": 0.011333333333333346,
+    "buckets": {
+     "2": {
+      "n": 56,
+      "games": 56,
+      "dir": "NO",
+      "net": -0.05748510714285715
+     },
+     "3": {
+      "n": 4,
+      "games": 4,
+      "dir": "YES",
+      "net": -0.054868749999999994
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|total_alt": {
+    "n_total": 1247,
+    "games_total": 156,
+    "n_fit": 768,
+    "games_fit": 96,
+    "n_judged_rows": 479,
+    "n_judged_used": 479,
+    "games_judged": 60,
+    "net": -0.040697465553235904,
+    "lo": -0.07968460521920669,
+    "hi": -0.0027733188232108314,
+    "p": 0.07196401799100449,
+    "se": 0.023143375318414202,
+    "round_cost": 0.04318148643006262,
+    "games_needed": 106.60094187063156,
+    "raw_gap_judged": -0.0067640918580375835,
+    "buckets": {
+     "0": {
+      "n": 57,
+      "games": 57,
+      "dir": "YES",
+      "net": -0.0619452456140351
+     },
+     "1": {
+      "n": 80,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.04803000000000002
+     },
+     "2": {
+      "n": 55,
+      "games": 54,
+      "dir": "NO",
+      "net": 0.00033169090909092894
+     },
+     "3": {
+      "n": 48,
+      "games": 48,
+      "dir": "YES",
+      "net": -0.036159854166666686
+     },
+     "4": {
+      "n": 117,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.04262460683760683
+     },
+     "5": {
+      "n": 122,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.04439588524590166
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": false
+   },
+   "NHL|total_main": {
+    "n_total": 156,
+    "games_total": 156,
+    "n_fit": 96,
+    "games_fit": 96,
+    "n_judged_rows": 60,
+    "n_judged_used": 60,
+    "games_judged": 60,
+    "net": -0.15457223333333334,
+    "lo": -0.25756470583333335,
+    "hi": -0.04609049916666674,
+    "p": 0.009995002498750625,
+    "se": 0.06366347483886296,
+    "round_cost": 0.04672646666666669,
+    "games_needed": 688.9022694467164,
+    "raw_gap_judged": 0.02433333333333334,
+    "buckets": {
+     "2": {
+      "n": 40,
+      "games": 40,
+      "dir": "NO",
+      "net": -0.149456875
+     },
+     "3": {
+      "n": 20,
+      "games": 20,
+      "dir": "YES",
+      "net": -0.16480294999999998
+     }
+    },
+    "head": true,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NHL|team_total": {
+    "n_total": 637,
+    "games_total": 69,
+    "n_fit": 37,
+    "games_fit": 9,
+    "n_judged_rows": 600,
+    "n_judged_used": 545,
+    "games_judged": 60,
+    "net": -0.09719981284403668,
+    "lo": -0.14560527991847952,
+    "hi": -0.049460421745802785,
+    "p": 0.001999000499750125,
+    "se": 0.028542727148140906,
+    "round_cost": 0.08062183119266055,
+    "games_needed": 46.51450850599872,
+    "raw_gap_judged": -0.016577981651376153,
+    "buckets": {
+     "1": {
+      "n": 144,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.08641009722222222
+     },
+     "2": {
+      "n": 149,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.08302655033557046
+     },
+     "3": {
+      "n": 137,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.11717932116788322
+     },
+     "4": {
+      "n": 115,
+      "games": 60,
+      "dir": "YES",
+      "net": -0.10527235652173912
+     }
+    },
+    "head": false,
+    "judged": true,
+    "bh_significant": true
+   },
+   "NBA|spread_main": {
+    "n_total": 16,
+    "games_total": 16,
+    "n_fit": 16,
+    "games_fit": 16,
+    "n_judged_rows": 0,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": true,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|spread_alt": {
+    "n_total": 504,
+    "games_total": 16,
+    "n_fit": 504,
+    "games_fit": 16,
+    "n_judged_rows": 0,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|total_alt": {
+    "n_total": 448,
+    "games_total": 16,
+    "n_fit": 448,
+    "games_fit": 16,
+    "n_judged_rows": 0,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|total_main": {
+    "n_total": 16,
+    "games_total": 16,
+    "n_fit": 16,
+    "games_fit": 16,
+    "n_judged_rows": 0,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": true,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NBA|team_total": {
+    "n_total": 259,
+    "games_total": 7,
+    "n_fit": 259,
+    "games_fit": 7,
+    "n_judged_rows": 0,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passyds": {
+    "n_total": 282,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 282,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rshyds": {
+    "n_total": 737,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 737,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_recyds": {
+    "n_total": 1736,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 1736,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rec": {
+    "n_total": 1112,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 1112,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_td": {
+    "n_total": 475,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 475,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passtds": {
+    "n_total": 125,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 125,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passatt": {
+    "n_total": 90,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 90,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_passcomp": {
+    "n_total": 90,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 90,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rshatt": {
+    "n_total": 155,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 155,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   },
+   "NFL|prop_rryds": {
+    "n_total": 121,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 121,
+    "n_judged_used": 0,
+    "games_judged": 0,
+    "head": false,
+    "judged": false,
+    "bh_significant": false
+   }
+  },
+  "pooled": {
+   "HEAD": {
+    "n_total": 1514,
+    "games_total": 450,
+    "n_fit": 934,
+    "games_fit": 277,
+    "n_judged_rows": 580,
+    "n_judged_used": 577,
+    "games_judged": 172,
+    "net": -0.05381351299826691,
+    "lo": -0.08977260172413795,
+    "hi": -0.017408434569132582,
+    "p": 0.015992003998001,
+    "se": 0.02243607902281769,
+    "round_cost": 0.026910065857885617,
+    "games_needed": 739.5106250077284,
+    "raw_gap_judged": 0.019358752166377814,
+    "buckets": {
+     "1": {
+      "n": 34,
+      "games": 34,
+      "dir": "NO",
+      "net": -0.032478735294117655
+     },
+     "2": {
+      "n": 290,
+      "games": 149,
+      "dir": "NO",
+      "net": -0.0748556827586207
+     },
+     "3": {
+      "n": 220,
+      "games": 150,
+      "dir": "YES",
+      "net": -0.0320447
+     },
+     "4": {
+      "n": 33,
+      "games": 33,
+      "dir": "YES",
+      "net": -0.03600418181818183
+     }
+    }
+   },
+   "NONHEAD": {
+    "n_total": 17755,
+    "games_total": 308,
+    "n_fit": 7676,
+    "games_fit": 191,
+    "n_judged_rows": 10079,
+    "n_judged_used": 10079,
+    "games_judged": 117,
+    "net": -0.04207604196844927,
+    "lo": -0.05446718888113003,
+    "hi": -0.03101882509823697,
+    "p": 0.0009995002498750624,
+    "se": 0.007020400993696163,
+    "round_cost": 0.02974541184641333,
+    "games_needed": 40.31078889240696,
+    "raw_gap_judged": 0.001640043655124513,
+    "buckets": {
+     "0": {
+      "n": 1997,
+      "games": 115,
+      "dir": "NO",
+      "net": -0.02993518928392588
+     },
+     "1": {
+      "n": 2411,
+      "games": 117,
+      "dir": "NO",
+      "net": -0.03511854541683949
+     },
+     "2": {
+      "n": 2336,
+      "games": 117,
+      "dir": "NO",
+      "net": -0.049856652825342476
+     },
+     "3": {
+      "n": 1725,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.04487741565217392
+     },
+     "4": {
+      "n": 1035,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.07117695942028987
+     },
+     "5": {
+      "n": 575,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.021019486956521734
+     }
+    }
+   }
+  },
+  "pooled_by_type": {
+   "HEAD:moneyline": {
+    "n_total": 898,
+    "games_total": 449,
+    "n_fit": 552,
+    "games_fit": 276,
+    "n_judged_rows": 346,
+    "n_judged_used": 343,
+    "games_judged": 172,
+    "net": -0.032380699708454815,
+    "lo": -0.08950994489795919,
+    "hi": 0.026266530768187676,
+    "p": 0.3818090954522739,
+    "se": 0.03600736836151972,
+    "round_cost": 0.021911093294460643,
+    "games_needed": 2872.99377284286,
+    "raw_gap_judged": -0.0003644314868804671,
+    "buckets": {
+     "1": {
+      "n": 34,
+      "games": 34,
+      "dir": "NO",
+      "net": -0.032478735294117655
+     },
+     "2": {
+      "n": 138,
+      "games": 138,
+      "dir": "NO",
+      "net": -0.0314723043478261
+     },
+     "3": {
+      "n": 138,
+      "games": 138,
+      "dir": "YES",
+      "net": -0.03239845652173915
+     },
+     "4": {
+      "n": 33,
+      "games": 33,
+      "dir": "YES",
+      "net": -0.03600418181818183
+     }
+    }
+   },
+   "NONHEAD:spread": {
+    "n_total": 4303,
+    "games_total": 308,
+    "n_fit": 2735,
+    "games_fit": 191,
+    "n_judged_rows": 1568,
+    "n_judged_used": 1568,
+    "games_judged": 117,
+    "net": -0.06267595982142855,
+    "lo": -0.09916915118058045,
+    "hi": -0.028377918096546027,
+    "p": 0.00399800099950025,
+    "se": 0.020717914687319688,
+    "round_cost": 0.020952363520408166,
+    "games_needed": 707.5603241291831,
+    "raw_gap_judged": 0.04239477040816327,
+    "buckets": {
+     "0": {
+      "n": 237,
+      "games": 66,
+      "dir": "NO",
+      "net": 0.005369021097046411
+     },
+     "1": {
+      "n": 646,
+      "games": 117,
+      "dir": "NO",
+      "net": -0.02566150619195047
+     },
+     "2": {
+      "n": 490,
+      "games": 106,
+      "dir": "NO",
+      "net": -0.09992135102040818
+     },
+     "3": {
+      "n": 175,
+      "games": 54,
+      "dir": "NO",
+      "net": -0.18020782857142853
+     },
+     "4": {
+      "n": 20,
+      "games": 10,
+      "dir": "NO",
+      "net": -0.1236599
+     }
+    }
+   },
+   "HEAD:spread_main": {
+    "n_total": 308,
+    "games_total": 308,
+    "n_fit": 191,
+    "games_fit": 191,
+    "n_judged_rows": 117,
+    "n_judged_used": 117,
+    "games_judged": 117,
+    "net": -0.0968747777777778,
+    "lo": -0.1729948376068376,
+    "hi": -0.02424199658119659,
+    "p": 0.038980509745127435,
+    "se": 0.04529678187413523,
+    "round_cost": 0.03356026495726496,
+    "games_needed": 1318.3215989353384,
+    "raw_gap_judged": 0.06384615384615387,
+    "buckets": {
+     "2": {
+      "n": 90,
+      "games": 90,
+      "dir": "NO",
+      "net": -0.09591464444444446
+     },
+     "3": {
+      "n": 27,
+      "games": 27,
+      "dir": "NO",
+      "net": -0.10007522222222222
+     }
+    }
+   },
+   "NONHEAD:total": {
+    "n_total": 4143,
+    "games_total": 308,
+    "n_fit": 2638,
+    "games_fit": 191,
+    "n_judged_rows": 1505,
+    "n_judged_used": 1505,
+    "games_judged": 117,
+    "net": -0.02057376279069767,
+    "lo": -0.048145707271273076,
+    "hi": 0.006940155430612497,
+    "p": 0.2048975512243878,
+    "se": 0.016546693681812295,
+    "round_cost": 0.02640200598006644,
+    "games_needed": 284.24055104843063,
+    "raw_gap_judged": -0.005996677740863787,
+    "buckets": {
+     "0": {
+      "n": 165,
+      "games": 113,
+      "dir": "NO",
+      "net": -0.03978431515151514
+     },
+     "1": {
+      "n": 249,
+      "games": 117,
+      "dir": "NO",
+      "net": -0.012635048192771088
+     },
+     "2": {
+      "n": 319,
+      "games": 111,
+      "dir": "NO",
+      "net": -0.003937905956112857
+     },
+     "3": {
+      "n": 269,
+      "games": 105,
+      "dir": "YES",
+      "net": 0.004181479553903347
+     },
+     "4": {
+      "n": 257,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.04939106225680933
+     },
+     "5": {
+      "n": 246,
+      "games": 115,
+      "dir": "YES",
+      "net": -0.03426055691056911
+     }
+    }
+   },
+   "HEAD:total_main": {
+    "n_total": 308,
+    "games_total": 308,
+    "n_fit": 191,
+    "games_fit": 191,
+    "n_judged_rows": 117,
+    "n_judged_used": 117,
+    "games_judged": 117,
+    "net": -0.10863618803418801,
+    "lo": -0.18497995683760685,
+    "hi": -0.03162412094017096,
+    "p": 0.021989005497251374,
+    "se": 0.04605582037035019,
+    "round_cost": 0.034914974358974366,
+    "games_needed": 1259.1660992583413,
+    "raw_gap_judged": 0.03269230769230768,
+    "buckets": {
+     "2": {
+      "n": 62,
+      "games": 62,
+      "dir": "NO",
+      "net": -0.14084922580645162
+     },
+     "3": {
+      "n": 55,
+      "games": 55,
+      "dir": "YES",
+      "net": -0.0723233090909091
+     }
+    }
+   },
+   "NONHEAD:team": {
+    "n_total": 4386,
+    "games_total": 212,
+    "n_fit": 2303,
+    "games_fit": 95,
+    "n_judged_rows": 2083,
+    "n_judged_used": 2083,
+    "games_judged": 117,
+    "net": -0.042765158425348046,
+    "lo": -0.06614747153633532,
+    "hi": -0.01943100331380169,
+    "p": 0.00399800099950025,
+    "se": 0.013876205864585574,
+    "round_cost": 0.0402160897743639,
+    "games_needed": 86.154748211625,
+    "raw_gap_judged": -0.001301008161305813,
+    "buckets": {
+     "0": {
+      "n": 318,
+      "games": 111,
+      "dir": "NO",
+      "net": -0.047185669811320746
+     },
+     "1": {
+      "n": 337,
+      "games": 117,
+      "dir": "NO",
+      "net": -0.03709011275964391
+     },
+     "2": {
+      "n": 417,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.027535570743405274
+     },
+     "3": {
+      "n": 415,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.06336011084337351
+     },
+     "4": {
+      "n": 314,
+      "games": 117,
+      "dir": "YES",
+      "net": -0.07425832802547772
+     },
+     "5": {
+      "n": 282,
+      "games": 58,
+      "dir": "YES",
+      "net": -0.0017075177304964363
+     }
+    }
+   },
+   "NONHEAD:prop": {
+    "n_total": 4923,
+    "games_total": 15,
+    "n_fit": 0,
+    "games_fit": 0,
+    "n_judged_rows": 4923,
+    "n_judged_used": 0,
+    "games_judged": 0
+   }
+  },
+  "n_family_tests": 13
+ }
+}
