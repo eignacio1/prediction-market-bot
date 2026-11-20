@@ -11,6 +11,9 @@ Common rules first line quoted: "# Wave 122 common rules". PR #545 merged (Test 
 Box read 16:21Z (`20261120T1621Z_a_deploy_truth_read`, `_b_candidate_arms_read`): OK, box = origin/main at ce63a82, but that predates this merge; candidates present are nba_depth, router_v2 (NBA, NFL, NHL), nhl_v2. Zero `pot_of_gold` rows. Per the no-future-data rule nothing waited on. Next: rerun `candidate_arms_read` ~24 h after the deploy stamp and report rows per sport. Check it lists the `pot_of_gold` key (it groups by map_version; the map version string is `pot_of_gold`).
 - t4-mlb decision: MLB idle until 2027; the shadow runner restarts on deploy. No restart of t4-mlb needed for this change.
 
+## Part C update (box read 17:03Z)
+Deployed: box HEAD 3e469a3 = origin/main, includes c334dbf. `pot_of_gold` rows so far: **NBA 13**, NFL 0, NHL 0 (the shadow cycle had not yet covered a pot-of-gold price bucket in NFL/NHL; MLB idle). This is the first minutes after deploy, not the full 24 h; a final 24 h count is a re-run of `candidate_arms_read` after 2026-11-21 ~17:00Z. Not waited on.
+
 ## Tests
 `tests/test_w122_2_pot_of_gold.py` (9): v1 router block byte-identical with and without the candidate; only a new key; no look-ahead (tier from row clock, table from frozen file); generator promotes nothing outside the 17; plus the W120.2 / W121.2 candidate tests (28 pass) and `test_exploratory_isolation` (the rescore script uses no subprocess, writes only via safe_out; the table is copied to decision_trees by hand).
 
