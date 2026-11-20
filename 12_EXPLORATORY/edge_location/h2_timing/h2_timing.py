@@ -23,7 +23,9 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 from _fence import safe_out  # noqa: E402
+from prediction_market_bot import io_jsonl  # noqa: E402
 
 MAX_SPREAD = 0.10
 CLOSE_WINDOW_H = 2.0
@@ -198,16 +200,12 @@ def scan_archive(archive_dir: str, starts: Dict[str, float], first_day: str):
     """One pass over the price archive. For every ticker with a known start keeps, online:
     the snapshot nearest 24 h and 6 h before start (inside the windows) and the last one at or before start (inside 2 h)."""
     state: Dict[str, Dict[str, Point]] = {}
-    files = sorted(glob.glob(os.path.join(archive_dir, "prices_*.jsonl")) + glob.glob(os.path.join(archive_dir, "prices_*.jsonl.gz")))
-    seen_days = set()
+    files = io_jsonl.glob_files(os.path.join(archive_dir, "prices_*.jsonl"))
     for f in files:
         day = os.path.basename(f).split("_")[1][:10]
-        if day < first_day or day in seen_days:
+        if day < first_day:
             continue
-        if f.endswith(".gz") and os.path.exists(f[:-3]):
-            continue  # same day stored plain and compressed
-        seen_days.add(day)
-        for r in load_jsonl(f):
+        for r in io_jsonl.iter_jsonl(f):
             t = r.get("ticker")
             st = starts.get(t)
             if st is None:
