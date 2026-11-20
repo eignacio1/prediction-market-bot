@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-20T20:45:00Z (B-TBD — W123.2 H2 timing NOT SUPPORTED (H-EDGE-2 parked for R&D); 6h drift slope +0.017 [-0.024,+0.056]; CLV +0.86c vs fee 1.08c) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T2015Z_W123_2.md` for full session detail.
+**Last reviewed:** 2026-11-20T21:15:00Z (W123.4 — W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T2115Z_W123_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

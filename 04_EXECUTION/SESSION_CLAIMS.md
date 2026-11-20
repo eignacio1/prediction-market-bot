@@ -1347,3 +1347,5 @@
 | 2026-11-20T20:03:47Z | B-TBD | W123.2 H2 timing: CLV of arm orders + predictable drift. PURPOSE: PROOF - H2 verdict; CLV per arm/horizon; drift coefficient |
 | 2026-11-20T20:42:02Z | B-TBD | CLOSED — W123.2 H2 timing NOT SUPPORTED (H-EDGE-2 parked for R&D); 6h drift slope +0.017 [-0.024,+0.056]; CLV +0.86c vs fee 1.08c (commit `c74fc92`) |
 | 2026-11-20T20:43:12Z | B-TBD | CLOSED — merge confirmed, HEAD (b927923) is ancestor of origin/main — W123.2 H2 timing NOT SUPPORTED (H-EDGE-2 parked for R&D) |
+| 2026-11-20T20:41:54Z | W123.4 | CLOSED — W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D (commit `590fd0c`) |
+| 2026-11-20T20:43:59Z | W123.4 | CLOSED — W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D (commit `590fd0c`) |
