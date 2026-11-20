@@ -2,9 +2,9 @@
 
 <!-- session-meta
 task_id: W123.1
-tier: STANDARD
+tier: MICRO
 timestamp: 2026-11-20T21:30:00Z
-commit: see PR
+commit: 49be04d
 one_line_summary: W123.1: H1 NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window)
 gg_touched: none
 adr_touched: none

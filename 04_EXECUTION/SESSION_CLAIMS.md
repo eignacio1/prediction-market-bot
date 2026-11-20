@@ -1352,3 +1352,4 @@
 | 2026-11-20T20:44:12Z | W123.4 | CLOSED — merge confirmed, HEAD (f6dd544) is ancestor of origin/main — H4 NOT SUPPORTED, parked for R&D |
 | 2026-11-20T20:50:43Z | W123.3 | CLOSED — W123.3 H3 news latency NOT SUPPORTED on NBA injury/starter news (+0.3-0.5c vs 1.9c cost); confirmations, NFL inactives underpowered (commit `e03e1fd`) |
 | 2026-11-20T20:50:56Z | W123.3 | CLOSED — merge confirmed, HEAD (b7f778d) is ancestor of origin/main — H3 news latency NOT SUPPORTED on NBA injury/starter news; parked for R&D |
+| 2026-11-20T21:23:22Z | W123.1 | MERGED: NO — branch `session/20261120T200232Z-w123-1-h1-attention` awaiting merge — W123.1: H1 NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window) (commit `49be04d`) |

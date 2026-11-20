@@ -21,3 +21,4 @@ The bot now prices NBA player-points markets with the same game engine it uses f
 - W123.4 (auto): W123.4 H4 execution: two-sided quoting NOT SUPPORTED (0 of 18 cells net > 0, spread minus fee negative everywhere); parked for R&D
 - W123.3 (auto): W123.3 H3 news latency NOT SUPPORTED on NBA injury/starter news (+0.3-0.5c vs 1.9c cost); confirmations, NFL inactives underpowered
 - W123.3 note: 7 old unmerged session branches sit on origin (oldest 14 days); they need your routing call, not merged by me.
+- W123.1 (auto): W123.1: H1 NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window)
