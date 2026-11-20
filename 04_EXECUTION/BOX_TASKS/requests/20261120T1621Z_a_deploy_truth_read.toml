@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W122.2: is PR 545 (pot_of_gold candidate) on the box"
