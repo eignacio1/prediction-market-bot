@@ -49,6 +49,10 @@ def test_slot_windows():
     assert snap.slot_for(29 * 60) == "pre30" and snap.slot_for(30 * 60) == "pre30"
     assert snap.slot_for(0) is None and snap.slot_for(-60) is None and snap.slot_for(31 * 60) is None
     assert snap.slot_for(110 * 60) == "pre2h" and snap.slot_for(104 * 60) is None and snap.slot_for(136 * 60) is None
+    # W122.3: pre24h lies inside the T1 band (12-48 h) and nowhere else
+    assert snap.slot_for(24 * 3600) == "pre24h" and snap.slot_for(22 * 3600) is None and snap.slot_for(26 * 3600) is None
+    from prediction_market_bot.pregame_shadow.bands import band_for_horizon
+    assert band_for_horizon(23.0) == "T1" and band_for_horizon(25.0) == "T1"
 
 
 class FakeClient:
