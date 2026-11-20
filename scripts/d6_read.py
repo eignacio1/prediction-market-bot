@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import itertools
 import json
 import os
 import sys
@@ -56,6 +57,25 @@ def ledger_rows(since: datetime, repo: Path = REPO):
                            "router": {k: (r.get("router") or {}).get(k) for k in ("split_kept", "split_logged_only")}}
 
 
+def passyds_t1_rows(since: datetime, repo: Path = REPO):
+    """W122.3: NFL_PLAYER_PASS_YDS x T1 rows for layer 1. Only snapshot rows from the pre24h slot (inside the T1 band, 12-48 h) with a
+    logged model p count; pre30 / pre2h rows are another horizon and are never credited to T1."""
+    for f in sorted((repo / "exp_output" / "PREGAME_SHADOW_PASSYDS").glob("snap_*.jsonl")):
+        try:
+            fh = f.open("r", encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        with fh:
+            for line in fh:
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
+                ts = aor.parse_ts(r.get("ts_utc")) if isinstance(r, dict) else None
+                if ts is not None and ts >= since and r.get("slot") == "pre24h" and r.get("model_p") is not None:
+                    yield {"market_type": "NFL_PLAYER_PASS_YDS", "band": "T1", "p_yes": r["model_p"], "router": {}}
+
+
 def unwired_causes(cells: list, names) -> dict:
     """W116.3 (B-091): for every cell not wired, its ONE cause = the first layer (1..7, pipeline order) it lacks.
     Per sport: {cause: [ 'MARKET_TYPE|BAND', ... ]}. The first gap upstream is the one that blocks every layer after it."""
@@ -96,7 +116,7 @@ def main(argv: Optional[list] = None) -> int:
     fills_for, note = (None, "fills skipped: --no-fills") if a.no_fills else aor.make_fills_for(rows)
     now = datetime.now(timezone.utc)
     from prediction_market_bot.decision_trees import coverage
-    ledger = coverage.ledger_evidence(ledger_rows(now - timedelta(days=LEDGER_DAYS)))  # streamed: counters only
+    ledger = coverage.ledger_evidence(itertools.chain(ledger_rows(now - timedelta(days=LEDGER_DAYS)), passyds_t1_rows(now - timedelta(days=LEDGER_DAYS))))  # streamed: counters only
     print(json.dumps(build(rows, fills_for, note, a.log, now, ledger), indent=1, sort_keys=True, default=str))
     return 0
 

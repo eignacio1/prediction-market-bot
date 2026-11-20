@@ -39,7 +39,9 @@ STORE = ROOT / "exp_output" / "PREGAME_SHADOW_PASSYDS"
 SCHEDULE = ROOT / "exp_output" / "NFL" / "cache_w47" / "schedule_extended.parquet"
 SERIES = "KXNFLPASSYDS"
 WRITER = "passyds_prekickoff_snapshot/1"
-SLOTS = {"pre30": (0, 30), "pre2h": (105, 135)}      # minutes before kickoff, inclusive upper bound
+# minutes before kickoff, inclusive upper bound. pre24h (W122.3) sits inside the T1 band (12-48 h, pregame_shadow/bands.py) so the
+# cell NFL_PLAYER_PASS_YDS x T1 gets model-p rows at its own horizon; pre30 / pre2h are not T1 and are never credited to it.
+SLOTS = {"pre30": (0, 30), "pre2h": (105, 135), "pre24h": (1380, 1500)}
 KICKOFF_LEAD_S = tc.KICKOFF_LEAD_S                   # occurrence_datetime ~ kickoff + 3 h (fallback only)
 FLOOR_CONTRACTS, FLOOR_WITHIN_C, FLOOR_SPREAD_C = 10, 2, 6   # pre-registration section 5
 WITHIN_C = (1, 2, 5)
