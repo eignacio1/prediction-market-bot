@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-19T06:20:00Z (W120.2 — W120.2: router v2, +nba_depth, nhl_v2 arms logged beside v1 on box shadow rows (ON, item 7 approved); NHL goalie/ST verdicts logged not applied.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261119T0620Z_W120_2.md` for full session detail.
+**Last reviewed:** 2026-11-20T15:15:00Z (W121.4 — W121.4 Live Terminal panels (candidate arms vs v1, D6 names, weekly look, box disk + Mac copy) merged PR 537; Mac weekly job loaded.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T1508Z_W121_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
