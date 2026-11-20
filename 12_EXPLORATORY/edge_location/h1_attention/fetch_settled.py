@@ -1,6 +1,10 @@
 """W123.1 Part A: settled results for every series in PRICE_ARCHIVE since 2026-07-31 (public unauthenticated GET /markets).
-usage: fetch_settled.py <out_dir> ; writes <out_dir>/<SERIES>.json = [{ticker,event_ticker,result,close_time,floor_strike,strike_type}]"""
-import glob, json, os, sys, time, urllib.error, urllib.request
+usage: fetch_settled.py <out_dir inside 12_EXPLORATORY> <archive_dir> ; writes <out_dir>/<SERIES>.json = [{ticker,event_ticker,result,close_time,floor_strike,strike_type}]"""
+import json, os, sys, time, urllib.error, urllib.request
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "src"))
+from _fence import safe_out  # noqa: E402
+from prediction_market_bot import io_jsonl  # noqa: E402
 B = "https://api.elections.kalshi.com/trade-api/v2"
 MIN_TS = 1785456000  # 2026-07-31T00:00:00Z
 
@@ -18,14 +22,9 @@ def get(p):
 
 
 def main(out, archive):
-    os.makedirs(out, exist_ok=True)
-    series = sorted({os.path.basename(p).split("-")[0] for p in []})
-    import gzip
     seen = set()
-    for f in sorted(glob.glob(f"{archive}/prices_*.jsonl*")):
-        if f.endswith("BROKEN_FIRSTRUN"):
-            continue
-        for l in (gzip.open(f, "rt") if f.endswith(".gz") else open(f)):
+    for f in io_jsonl.glob_files(f"{archive}/prices_*.jsonl"):
+        for l in io_jsonl.open_jsonl(f):
             seen.add(json.loads(l)["series_ticker"]) if '"series_ticker"' in l else None
     for s in sorted(seen):
         dst = f"{out}/{s}.json"
@@ -42,7 +41,7 @@ def main(out, archive):
             cur = d.get("cursor") or ""
             if not cur or not ms:
                 break
-        json.dump(rows, open(dst, "w"))
+        json.dump(rows, open(safe_out(dst), "w"))
         print(s, len(rows), flush=True)
 
 

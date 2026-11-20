@@ -6,7 +6,9 @@ from collections import defaultdict
 import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "src"))
 from _fence import safe_out  # noqa: E402
+from prediction_market_bot import io_jsonl  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MON = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
@@ -35,10 +37,8 @@ def load_archive(archive):
     """ticker -> dict(last snapshot <= cut; snapshot nearest cut-24h). Streams every price file."""
     import datetime as dt
     best, near, anyk = {}, {}, {}
-    for f in sorted(glob.glob(f"{archive}/prices_*.jsonl*")):
-        if f.endswith("BROKEN_FIRSTRUN"):
-            continue
-        for l in (gzip.open(f, "rt") if f.endswith(".gz") else open(f)):
+    for f in io_jsonl.glob_files(f"{archive}/prices_*.jsonl"):
+        for l in io_jsonl.open_jsonl(f):
             try:
                 r = json.loads(l)
             except Exception:
