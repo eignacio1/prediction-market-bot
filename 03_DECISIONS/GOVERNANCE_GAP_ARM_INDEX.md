@@ -1,10 +1,10 @@
 # Gaps by Arm — GENERATED (do not hand-edit)
 
-Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 313 of 336 are auto and unreviewed.
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 315 of 338 are auto and unreviewed.
 
-**Counts:** Core=229 (131 OPEN), MLB=53 (19 OPEN), NBA=34 (15 OPEN), NHL=20 (9 OPEN) — 336 live gaps.
+**Counts:** Core=231 (133 OPEN), MLB=53 (19 OPEN), NBA=34 (15 OPEN), NHL=20 (9 OPEN) — 338 live gaps.
 
-## Core (229)
+## Core (231)
 
 - GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
 - GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
@@ -235,6 +235,8 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1943 — OPEN · MEDIUM _(auto)_: rest_inside is cancelled at 60 s on the arm path but the model's rest_inside evidence is the never-cancelled A
 - GG-1944 — RESOLVED · MEDIUM _(auto)_: Book depth at submit is not logged on arm orders, so P(fill | depth) cannot be estimated (W116.2)
 - GG-1955 — RESOLVED · HIGH _(auto)_: main's ROLLING_BACKLOG.json fails validation: duplicate order 16 (B-074, B-018), so every code PR's CI is red 
+- GG-1958 — OPEN · LOW _(auto)_: Live Terminal "Mac copy" row cannot see the Mac's LAST_RUN.json when the dashboard runs on the box (W121.4)
+- GG-1959 — OPEN · MEDIUM _(auto)_: No box task deploys code: a newly merged box task fails until someone pulls over ssh (W121.1)
 
 ## MLB (53)
 
