@@ -106,7 +106,7 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 122.1 | D6 · NBA props · 3 | NBA points priced by the engine; the earned points split fires on shadow rows; props D6 counted on the box | Sonnet | ⬜ | |
-| 122.2 | arms · 3 | The pot-of-gold arm re-scored on all data to date (NBA / NHL / NFL, props included) and logged beside v1 as a candidate | Sonnet | ⬜ | |
+| 122.2 | arms · 3 | The pot-of-gold arm re-scored on all data to date (NBA / NHL / NFL, props included) and logged beside v1 as a candidate | Sonnet | ✅ | PR #545 merged 11-20. 17 cells: 0 earned, 17 IN_SAMPLE, 0 closed. `pot_of_gold` candidate shadow only; box deploy + 24 h read-back pending. Handoff `SESSION_HANDOFF_20261120T1622Z_W122_2.md` |
 | 122.3 | D6 · NFL · 3 | NFL board widened: engine prices for the 17 unpriced NFL cells; the weekend slate's D6 recount | Sonnet | ⬜ | |
 | 122.4 | D6 · MLB · 3 | MLB 2027 board priced from the pitch store (game families x bands), every registered cell logging from opening day | Sonnet | ✅ PR #544 | 12 game cells priced in the opening-day dry run (3 → 12); board back-tested 2025-26; GG-1957 preflight + fail-closed record. Handoff `SESSION_HANDOFF_20261120T1620Z_W122_4.md` |
 
