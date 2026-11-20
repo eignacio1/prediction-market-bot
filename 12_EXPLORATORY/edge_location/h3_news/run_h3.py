@@ -10,6 +10,8 @@ from datetime import datetime, timedelta, timezone
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "src"))
+sys.path.insert(0, os.path.join(HERE, "..", ".."))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.io_jsonl import open_jsonl  # noqa: E402
 
 API = "https://api.elections.kalshi.com/trade-api/v2/markets/trades"
@@ -66,8 +68,7 @@ def fetch_trades(ticker, mn, mx):
         if not cur or not d["trades"]:
             break
     out.sort()
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    json.dump(out, open(path, "w"))
+    json.dump(out, open(safe_out(path), "w"))
     return out
 
 
@@ -287,7 +288,7 @@ def main():
                           "SUPPORTED" if d5["lo"] > 0 and d5["mean"] > res["mean_round_cost"] else
                           "NOT SUPPORTED" if d5["mean"] <= res["mean_round_cost"] or res["minutes_to_reprice"]["median"] <= 1 else "UNDERPOWERED")
         out["types"][t] = res
-    json.dump(out, open(os.path.join(HERE, "results.json"), "w"), indent=1)
+    json.dump(out, open(safe_out(os.path.join(HERE, "results.json")), "w"), indent=1)
     print(json.dumps(out, indent=1))
 
 
