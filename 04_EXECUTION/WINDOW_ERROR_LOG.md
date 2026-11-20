@@ -235,3 +235,11 @@ W59's fix rewrote the scheduled task's prompt to never clone the archive. The 11
 disk space to clone the repository eignacio1/sports-intel-archive"): the task's environment attaches and clones that repo at session
 setup, before the model reads a word. The window declared it fixed without a run to confirm it (its own fire attempt was blocked).
 Rule: a fix to a scheduled task is unconfirmed until one run of it succeeds; say "unconfirmed" until then.
+
+### W61 - SW-9, 2026-11-20 07:46 PT - Muse's queue ran dry mid-week: the window's "keep the queue full" rule was finite and unchecked
+The 11-16 addendum (item 4) gave Muse a five-entry season-extension list and trusted it to fire. Muse emptied the 1,711-chunk queue on
+11-20 03:09 PT and its picker declared QUEUE EMPTY without running the extension step; nobody saw it because the nightly sweep has
+been failing since 11-13 (GG: archive attached to the scheduled task). The window also told the operator the queue had been empty
+"about a day" when it was about 4.5 hours. Fixed 07:55 PT: a watchdog entry in TO_MUSE.md orders the extensions and an open-ended
+season-back rule. Rule: size Muse's week by its measured burn rate, not by a list, and check the queue at every wave close while
+the nightly sweep is down.

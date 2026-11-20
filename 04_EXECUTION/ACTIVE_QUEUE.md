@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 122 READY TO PASTE - four build blocks (Sonnet): 122.1 NBA points priced, 122.2 the pot-of-gold arm, 122.3 the NFL board widened, 122.4 MLB 2027 priced from the pitch store.** Decision 9 (weekly-look install) waits on you.
+> **▶ WAVE 122 READY TO PASTE - four build blocks (Sonnet): 122.1 NBA points priced, 122.2 the pot-of-gold arm, 122.3 the NFL board widened, 122.4 MLB 2027 priced from the pitch store.** Decision 9 (weekly-look install) APPROVED 11-20 07:46 PT.
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -631,6 +631,9 @@ What should reorder this, and what should stop it:
 > **PROPOSED - APPROVAL NEEDED (W121.1): `evidence_weekly_install`.** Say "approve evidence_weekly_install" and the window runs that one task: it adds one crontab line (Tuesday 10:00 UTC, flocked, niced) on the paper box that runs the weekly evidence look on settled shadow rows for v1 and every candidate map, carrying the e-process forward and writing only `exp_output/EVIDENCE_WEEKLY/`. It places no order and touches no stake or Kelly. Install is refused while the surface budget is red; every prior crontab line is preserved and backed up; `evidence_weekly_readback` shows what it wrote and `evidence_weekly_uninstall` removes exactly that block. Registry entry is PAUSED until you approve.
 > **PROPOSED - APPROVAL NEEDED (W118.4, B-102): `disk_retention_install`.** Say "approve disk_retention_install" and the window runs that one task: it adds one daily crontab line (14:17 UTC, flocked, nice/ionice) on the paper box that gzip-compresses old KALSHI_HISTORY raw files and .bak files (sha256-verified before the plain copy is replaced; nothing is ever deleted) and caps journald at 200M. Disk is 87% and growing about 1.5 points a day (90% in about 2 days, where the healthcheck FAILs and blocks every install). Target once installed: under 75%. Reversible with `disk_retention_uninstall`; the window reads the crontab back after install. Demo/paper only, no orders, no real capital, $0.
 
+> **AUTHORIZATION - WEEKLY EVIDENCE LOOK INSTALL (operator, 2026-11-20 07:46 PT: "I approve evidence_weekly_install.").**
+> `evidence_weekly_install` (W121.1): one cron line, Tuesdays 10:00 UTC. Run by the window with readback and a budget read.
+
 > **AUTHORIZATION - WEEKLY EVIDENCE COPY TO THE MAC (operator, 2026-11-18 22:44 PT: "Yes", answering the window's "The weekly copy to
 > your Mac: 5.7 GB now, growing about 100-150 MB a month compressed. Say yes and 121.4 installs it on your Mac.").** W121.4 runs
 > scripts/ops/evidence_pull_launchd.sh install on the operator's Mac and reads it back.
@@ -708,7 +711,7 @@ What should reorder this, and what should stop it:
 8. ~~**Weekly evidence copy to your Mac (W119.4 / 120.3)**~~ APPROVED 11-18 22:44 PT (121.4 installs it). Copies the price archive, Kalshi history and ledgers to
    ~/PredictionMarketEvidence every Sunday, sha-checked, kept compressed (120.3 measures the size first). The 120.3 terminal asks you
    before loading it.
-9. **`evidence_weekly_install` (W121.1).** One cron line, Tuesdays 10:00 UTC: the weekly evidence look on box rows for v1 and every
+9. ~~**`evidence_weekly_install` (W121.1)**~~ APPROVED 11-20 07:46 PT, run by the window. One cron line, Tuesdays 10:00 UTC: the weekly evidence look on box rows for v1 and every
    candidate map, carried forward. Its guarantee needs every look taken on schedule; the first look (11-17 cut) ran by hand. Approve
    with: "I approve evidence_weekly_install."
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
