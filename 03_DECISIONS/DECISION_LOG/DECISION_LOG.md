@@ -3630,3 +3630,6 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 
 ### 2026-11-19 06:50Z (11-18 22:44 PT) - operator - weekly evidence copy to the Mac approved
 - "Yes": W121.4 installs scripts/ops/evidence_pull_launchd.sh on the Mac (5.7 GB now, ~100-150 MB / month compressed).
+
+### 2026-11-20 15:50Z (07:49 PT) - operator - two new Muse families approved
+- "Yes for both": NBA starting lineups + referee crews 2024-25 / 2025-26 (historical box scores); NHL 2026-27 consensus closing lines (KofSports, free). Go in the Monday 11-23 message (04_EXECUTION/MUSE_MONDAY_2026-11-23_DRAFT.md), not a fetched file.
