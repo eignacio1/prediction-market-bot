@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 122 READY TO PASTE - four build blocks (Sonnet): 122.1 NBA points priced, 122.2 the pot-of-gold arm, 122.3 the NFL board widened, 122.4 MLB 2027 priced from the pitch store.** Decision 9 (weekly-look install) APPROVED 11-20 07:46 PT.
+> **▶ WAVE 123 READY TO PASTE - four test blocks (Sonnet), one per pre-registered hypothesis of where the edge lives: 123.1 attention, 123.2 timing, 123.3 news latency, 123.4 execution / liquidity.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,13 +95,148 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 122 (CLOSED 2026-11-20 ~18:00 UTC, operator 10:00 PT; next wave not written yet) · WRITTEN 2026-11-20 ~15:55 UTC (07:55 PT) · SW-9 · four build blocks · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 123 · WRITTEN 2026-11-20 ~18:30 UTC (10:30 PT) · SW-9 · four test blocks · MODEL: Sonnet · paste each into its own terminal
 
-**Build the bot** (operator 07:38 PT: no administrative blocks unless red). Each block widens what the router can price or route:
-- **NBA points:** the one prop split that earned in 121.2 cannot fire, because points has no engine price;
-- **the pot-of-gold arm:** the fifth arm, defined in W105 and scored on nine days of NBA / NHL, now has five more weeks to score on;
-- **the NFL board:** NFL has a price on only 12 of 29 cells;
-- **MLB 2027:** priced from its pitch store, and logging every cell from opening day (GG-1957).
+**Where does the edge live?** The evidence so far: popular game lines at the close are efficient, forecast edges per leaf are about
+zero, and execution effects are large. The hypothesis is pre-registered and frozen at
+`12_EXPLORATORY/edge_location/HYPOTHESIS.md` (3cead0f, with its diagram). It names four places the edge could be, and this wave tests
+each one on data already logged. Each block ends SUPPORTED / NOT SUPPORTED / UNDERPOWERED, and its answer decides where the next build
+budget goes (HYPOTHESIS.md §5).
+
+| # | Hypothesis | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 123.1 | H1 attention | Calibration gap net of cost by family: props, team totals, alt lines vs headline lines; Kalshi vs consensus where it exists | Sonnet | ⬜ | |
+| 123.2 | H2 timing | Closing-line value of every arm order; is the drift from 24 h / 6 h to the close predictable from what we knew? | Sonnet | ⬜ | |
+| 123.3 | H3 news latency | Kalshi prints around timestamped news (lineups, scratches, inactives, injury reports): the move still to come at +1 / +5 / +15 min | Sonnet | ⬜ | |
+| 123.4 | H4 execution | Two-sided quoting simulated on logged depth; spread earned minus adverse selection measured on real fills | Sonnet | ⬜ | |
+
+- **Pushback:** four tests at once on a few weeks of data will return UNDERPOWERED more than once. That is still an answer, and every
+  block states the n it would need. The one risk that matters is a block quietly widening its own test after seeing results, which is
+  why HYPOTHESIS.md is frozen and deviations are written as addenda before any read.
+- **Surface:** read-only. Delta: up to four read-only box tasks; 0 installs; no live change.
+- **Dependencies:** none; four separate folders (COMMON RULES).
+
+### 123.1 - H1 ATTENTION · MODEL: Sonnet
+
+```
+WAVE 123 - BLOCK 123.1 - H1 ATTENTION - IS THE NET CALIBRATION GAP LARGER IN LESS-WATCHED MARKETS? - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H1 is your pre-registration.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_1.md.
+
+PART A - the data
+1. Every settled Kalshi market with a price snapshot in the archive, NBA / NFL / NHL (and MLB 2026 where present), by family: headline
+   (moneyline, spread, total) vs non-headline (props, team totals, alternate lines, first-half / period lines). Count markets and games
+   per family.
+2. Costs: spread at submit where logged, backfilled otherwise; the Kalshi fee schedule.
+
+PART B - the test (as pre-registered)
+1. Per family and price bucket: settled rate minus price, net of cost, game-clustered 90% intervals. Fit on the first 2/3 by date, judge
+   on the last 1/3.
+2. Where a free consensus exists (NHL 2025-26 file; the NHL 2026-27 closes from Monday): Kalshi minus consensus, per family.
+3. Verdict against H1's rule: SUPPORTED / NOT SUPPORTED / UNDERPOWERED (n needed).
+
+PART C - land
+1. 12_EXPLORATORY/edge_location/h1_attention/RESULT.md: the table, the verdict, and which families lead.
+2. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PROOF - H1 verdict; held-out net gap per family with intervals.
+END OF BLOCK 123.1
+```
+
+### 123.2 - H2 TIMING · MODEL: Sonnet
+
+```
+WAVE 123 - BLOCK 123.2 - H2 TIMING - CLOSING-LINE VALUE OF EVERY ARM ORDER; IS THE DRIFT TO THE CLOSE PREDICTABLE? - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H2 is your pre-registration.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_2.md.
+
+PART A - closing-line value
+1. Every arm order since 11-06: entry price vs the last archived price before start, per arm and per hours-to-start bucket (<1, 1-6,
+   6-24, 24-48 h). Game-clustered intervals.
+
+PART B - predictable drift
+1. On the price archive, for every market with snapshots at about 24 h and 6 h before start and at the close: the drift (close minus early
+   price).
+2. Regress the drift on what was known at the early point: our model p minus price (shadow rows), the consensus move where one exists,
+   and the router's arm. Fit on the first 2/3 by date, judge on the last 1/3.
+3. Verdict against H2's rule.
+
+PART C - land
+1. 12_EXPLORATORY/edge_location/h2_timing/RESULT.md, with the n needed if UNDERPOWERED.
+2. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PROOF - H2 verdict; CLV per arm and horizon; drift coefficient with interval.
+END OF BLOCK 123.2
+```
+
+### 123.3 - H3 NEWS LATENCY · MODEL: Sonnet
+
+```
+WAVE 123 - BLOCK 123.3 - H3 NEWS LATENCY - DOES KALSHI TAKE MINUTES TO PRICE NEWS? (B-063) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H3 is your pre-registration - and the W118.3
+goalie-timing result (12_EXPLORATORY/nhl_goalie_timing/). Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_3.md.
+
+PART A - the events
+1. From Muse's snapshots (archive at a pinned SHA), timestamped news since 11-10: NBA starting lineups and late scratches, NFL inactives,
+   injury-report changes. One row per event: time posted, team / player, and the markets it touches.
+2. State n per event type.
+
+PART B - the price path
+1. Kalshi public trade prints for those markets (Kalshi's public trades endpoint; a read-only box task if it must run on the box), plus the
+   archive where prints are missing. Price from -30 to +30 min around each event; the move still to come at +1 / +5 / +15 min, net of
+   one round cost. Event-clustered intervals.
+2. Verdict against H3's rule. If a type is UNDERPOWERED, say how many events it needs and when the season gets there.
+
+PART C - land
+1. 12_EXPLORATORY/edge_location/h3_news/RESULT.md.
+2. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PROOF - H3 verdict per event type; the minutes-to-reprice distribution.
+END OF BLOCK 123.3
+```
+
+### 123.4 - H4 EXECUTION / LIQUIDITY · MODEL: Sonnet
+
+```
+WAVE 123 - BLOCK 123.4 - H4 EXECUTION - SIMULATED TWO-SIDED QUOTING ON LOGGED DEPTH, NET OF ADVERSE SELECTION MEASURED ON REAL FILLS - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W123.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/edge_location/HYPOTHESIS.md in full - section 3 H4 is your pre-registration - plus
+12_EXPLORATORY/capacity/RESULT.md and the W117.1 / W119.3 placement handoffs. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W123_4.md.
+
+PART A - adverse selection, measured
+1. From real demo fills since 11-06: win rate of filled vs unfilled orders, and the price move after the fill (markouts at 1 / 5 / 30 min
+   and the close), by family, arm, placement and hours to start. This is the cost a quoting strategy pays.
+
+PART B - the simulation
+1. On logged depth (book at submit since 11-18, plus the archive's depth samples), quote one tick inside on both sides around a fair price:
+   (a) the market's own mid, (b) the consensus where one exists.
+2. A quote fills when the book trades through it. Score each fill to settlement; subtract the Part A adverse-selection term for the same
+   family and horizon, and the fee.
+3. Net per filled contract by family x horizon, game-clustered. Verdict against H4's rule.
+
+PART C - land
+1. 12_EXPLORATORY/edge_location/h4_execution/RESULT.md. If SUPPORTED, write (do not run) the demo-test proposal for the operator: cells,
+   size, cancel rule, judged n. It is a new trading mode, so it is his call.
+2. PR; merge on green.
+
+Report: per COMMON RULES. MEASURE MOVED: PROOF / EXECUTION - H4 verdict; adverse selection per family and horizon; simulated net per
+filled contract.
+END OF BLOCK 123.4
+```
+
+
+## Sequencing track
+
+Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 122 — WRITTEN 2026-11-20 ~15:55 UTC · CLOSED 2026-11-20 ~18:00 UTC (operator 10:00 PT) · SW-9 · four build blocks · moved: **NBA points priced and logging; pot of gold scored (0 earned, next look 12-10); NFL in-play cells need a live feed; MLB 2027 board priced, 12 game cells in the dry run, GG-1957 cause found**
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
@@ -109,136 +244,6 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 | 122.2 | arms · 3 | The pot-of-gold arm re-scored on all data to date (NBA / NHL / NFL, props included) and logged beside v1 as a candidate | Sonnet | ✅ | Pot of gold: 0 earned · 17 IN_SAMPLE (15 MLB + 2 NFL) · 0 closed; forward sample 56 contracts; next look 12-10; candidate logged. |
 | 122.3 | D6 · NFL · 3 | NFL board widened: engine prices for the 17 unpriced NFL cells; the weekend slate's D6 recount | Sonnet | ✅ | NFL PASS_YDS T1 priced at its own horizon; 16 NFL cells are in-play (T4 / T5) with no live NFL feed; recount after 11-22 / 23. |
 | 122.4 | D6 · MLB · 3 | MLB 2027 board priced from the pitch store (game families x bands), every registered cell logging from opening day | Sonnet | ✅ | MLB board priced from the pitch store; 12 game cells log in the opening-day dry run (3 → 12); GG-1957 cause: crons armed late + a silent exit; #544. |
-
-- **Pushback:** this is breadth inside the board we already have. It adds no new markets and no new sports (the rule holds until D6
-  passes about 20). Each block widens layer 1 or adds an arm to cells that are already registered.
-- **Surface:** box HEALTHY. Delta: 0 installs (122.4 runs nothing live until 2027). The weekly-look install waits on the operator.
-- **Dependencies:** none. Shared files are add-only, rebased on main (COMMON RULES).
-
-### 122.1 - D6 · NBA POINTS (PRICE THE EARNED SPLIT) · MODEL: Sonnet
-
-```
-WAVE 122 - BLOCK 122.1 - D6 - NBA POINTS PRICED BY THE ENGINE; THE EARNED POINTS SPLIT ON SHADOW ROWS; PROPS D6 ON THE BOX - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/nba_props_splits/RESULT.md and the W121.2 handoff (PR #541 or main).
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_1.md.
-
-WHY: of 143 prop leaves, one earned an arm (121.2), and it is POINTS. The live prop runner prices rebounds, assists and threes but not
-points, so the one earned leaf cannot fire.
-
-PART A - points priced
-1. Add player points to the NBA engine's prop path, from the same simulation as rebounds / assists / threes: point in time, minutes and
-   usage from the engine, and the opponent's defence where the engine has it.
-2. Tests: calibration on held-out games (points by line); the simulated mean is consistent with team totals; no look-ahead.
-
-PART B - on shadow rows
-1. The prop runner logs points cells (T1-T3) with model p, market state, the kept points split's verdict, and the nba_props
-   candidate's arm. v1 stays untouched.
-2. PR(s); merge on green.
-
-PART C - the count
-1. After deploy and one slate: d6_read. Report props cells wired 0 -> N named, and the one cause for each prop cell still unwired.
-
-Report: per COMMON RULES. MEASURE MOVED: B4 (points logging); D6 props 0 -> N; points calibration on held-out games.
-END OF BLOCK 122.1
-```
-
-### 122.2 - ARMS (THE POT-OF-GOLD ARM, SCORED ON EVERYTHING TO DATE) · MODEL: Sonnet
-
-```
-WAVE 122 - BLOCK 122.2 - ARMS - POT OF GOLD RE-SCORED ON ALL DATA TO DATE AND LOGGED BESIDE V1 AS A CANDIDATE (B-024) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/pot_of_gold/ (DEFINITION, PREREGISTRATION_2026-11-05, RESULT, ROUTER_PRECEDENCE) and
-12_EXPLORATORY/longshot_bias/results_W89.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_2.md.
-
-WHY: pot of gold is the fifth arm (DOCTRINE §6). W105.6 scored it on 9 days of NBA / NHL and routed nothing (17 cells IN_SAMPLE). The price
-archive now holds five more weeks of NBA / NHL, plus NBA / NFL / NHL props since 11-10, where lottery-ticket pricing is likeliest.
-
-PART A - re-score (the 11-05 pre-registration binds; add props and the new weeks only under a dated addendum written before reading)
-1. Settled first-snapshots per sport, family and price bucket: settled rate minus price, net of the real cost (spread logged since 11-18;
-   fee schedule), game-clustered, held out by date.
-2. Name each of the 17 pre-registered cells: earned / still IN_SAMPLE / closed (routed, parked for R&D).
-
-PART B - the arm in the router
-1. A pot_of_gold candidate in router_candidates (a new key only), logged beside v1 on every pregame row it applies to, with its leaf and
-   reason. Shadow only.
-2. Tests: v1 untouched; no look-ahead.
-3. PR(s); merge on green.
-
-PART C - read back
-1. Rows carrying the pot_of_gold arm, per sport, in the first 24 h after deploy.
-
-Report: per COMMON RULES. MEASURE MOVED: arms with a candidate on box rows 3 -> 4 (+ props); pot-of-gold cells earned / IN_SAMPLE /
-closed.
-END OF BLOCK 122.2
-```
-
-### 122.3 - D6 · NFL (THE BOARD WIDENED) · MODEL: Sonnet
-
-```
-WAVE 122 - BLOCK 122.3 - D6 - NFL ENGINE PRICES FOR THE UNPRICED NFL CELLS; THE WEEKEND SLATE'S D6 RECOUNT (B-104) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
-bind this block. Then read the W120.1 handoff and the newest results/*_d6_read.md (NFL per layer).
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_3.md.
-
-WHY: the NFL board engine (EXP-045) prices moneyline, spread and total from one simulation, but only 12 of 29 NFL cells carry a model p
-on the box. NFL's season ends in January, and every unpriced cell is a week of rows lost.
-
-PART A - layer 1 across the NFL board
-1. List the 17 NFL cells without a model p and why (family not priced, band not wired, writer skips it).
-2. Price each from the engine's existing simulation (team totals from the same draws; each band at its own horizon), point in time.
-3. Tests: consistency (team totals sum to the game total; P(win) agrees with the spread-implied probability); no look-ahead.
-
-PART B - on rows
-1. The NFL shadow writer logs every cell with model p, market state and split verdicts (W120.1). v1 is untouched.
-2. PR(s); merge on green.
-
-PART C - the count
-1. After the 11-22 / 23 slate: d6_read. Report D6 NFL 0 -> N named, layer-1 NFL cells 12 -> N, and the one cause for each still-unwired
-   NFL cell.
-
-Report: per COMMON RULES. MEASURE MOVED: NFL layer-1 cells 12 -> N; D6 NFL 0 -> N.
-END OF BLOCK 122.3
-```
-
-### 122.4 - D6 · MLB 2027 (PRICED FROM THE PITCH STORE) · MODEL: Sonnet
-
-```
-WAVE 122 - BLOCK 122.4 - D6 - MLB 2027 BOARD PRICED FROM THE PITCH STORE; EVERY REGISTERED CELL LOGGING FROM OPENING DAY (GG-1957) - MODEL: Sonnet
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
-bind this block. Then read the W118.1 handoff, GG-1957, leaf_maps/mlb_2026_lookback.json and its PREREG_2027, and mlb_engine/.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_4.md.
-
-WHY: MLB is the deepest data the project owns (1.42M pitches), but only 3 of 42 MLB cells carry a model p, and the 2026 regular season
-was never logged for the game cells (GG-1957: the look-back had only 22 postseason games). 2027 must not repeat that.
-
-PART A - the MLB board priced
-1. From the pitch store: a game simulation pricing moneyline, run line, total and team totals per band, point in time (probable starters,
-   bullpen use, park). Back-test on 2025 and 2026 regular-season games against Kalshi closing prices where the archive has them.
-2. Report calibration and the gap to the market per family.
-
-PART B - logging from opening day
-1. Find why the 2026 regular season left no shadow rows for the game cells (GG-1957), and fix it.
-2. Write a dry-run "opening day" test: on a replayed 2026 date, every registered MLB cell writes a row with model p, market state and
-   the 2027 leaf map's arm.
-3. Nothing runs live until the 2027 schedule exists.
-
-PART C - land
-1. PR(s); merge on green.
-2. State what must be true on the box before opening day, as a checklist in the handoff.
-
-Report: per COMMON RULES. MEASURE MOVED: MLB layer-1 cells 3 -> N (in the dry run); back-test calibration per family; GG-1957 cause.
-END OF BLOCK 122.4
-```
-
-
-## Sequencing track
-
-Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
 ### ✅ WAVE 121 — WRITTEN 2026-11-19 ~06:55 UTC · CLOSED 2026-11-20 ~15:30 UTC (operator 07:38 PT) · SW-9 · four Sonnet blocks · moved: **weekly evidence look built, first look 0 arms on every map (next 11-24); NBA props scored - 1 earned split (points, unpriced); dollar ceiling per arm (top: NBA spread T3 FADE ~$831 / day at $10k, interval spans 0); Live Terminal panels; Mac weekly copy loaded**
 

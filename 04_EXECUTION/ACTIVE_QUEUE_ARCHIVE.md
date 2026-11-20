@@ -26046,3 +26046,144 @@ PART C - the Mac weekly copy (only if the operator approved decision 8)
 Report: per COMMON RULES. MEASURE MOVED: PLUMBING - panels added; Mac weekly job loaded yes / no.
 END OF BLOCK 121.4
 ```
+
+
+## (archived 2026-11-20) WAVE 122 · written 2026-11-20 ~15:55 UTC · SW-9
+
+**Build the bot** (operator 07:38 PT: no administrative blocks unless red). Each block widens what the router can price or route:
+- **NBA points:** the one prop split that earned in 121.2 cannot fire, because points has no engine price;
+- **the pot-of-gold arm:** the fifth arm, defined in W105 and scored on nine days of NBA / NHL, now has five more weeks to score on;
+- **the NFL board:** NFL has a price on only 12 of 29 cells;
+- **MLB 2027:** priced from its pitch store, and logging every cell from opening day (GG-1957).
+
+| # | Lane | Block | Model | Status | Outcome |
+|---|---|---|---|---|---|
+| 122.1 | D6 · NBA props · 3 | NBA points priced by the engine; the earned points split fires on shadow rows; props D6 counted on the box | Sonnet | ✅ | NBA points priced and logging T1-T3 on the box (B4: points joins REB / AST / 3PT); props D6 0 (layer 2 missing on prop rows). |
+| 122.2 | arms · 3 | The pot-of-gold arm re-scored on all data to date (NBA / NHL / NFL, props included) and logged beside v1 as a candidate | Sonnet | ✅ | Pot of gold: 0 earned · 17 IN_SAMPLE (15 MLB + 2 NFL) · 0 closed; forward sample 56 contracts; next look 12-10; candidate logged. |
+| 122.3 | D6 · NFL · 3 | NFL board widened: engine prices for the 17 unpriced NFL cells; the weekend slate's D6 recount | Sonnet | ✅ | NFL PASS_YDS T1 priced at its own horizon; 16 NFL cells are in-play (T4 / T5) with no live NFL feed; recount after 11-22 / 23. |
+| 122.4 | D6 · MLB · 3 | MLB 2027 board priced from the pitch store (game families x bands), every registered cell logging from opening day | Sonnet | ✅ | MLB board priced from the pitch store; 12 game cells log in the opening-day dry run (3 → 12); GG-1957 cause: crons armed late + a silent exit; #544. |
+
+- **Pushback:** this is breadth inside the board we already have. It adds no new markets and no new sports (the rule holds until D6
+  passes about 20). Each block widens layer 1 or adds an arm to cells that are already registered.
+- **Surface:** box HEALTHY. Delta: 0 installs (122.4 runs nothing live until 2027). The weekly-look install waits on the operator.
+- **Dependencies:** none. Shared files are add-only, rebased on main (COMMON RULES).
+
+### 122.1 - D6 · NBA POINTS (PRICE THE EARNED SPLIT) · MODEL: Sonnet
+
+```
+WAVE 122 - BLOCK 122.1 - D6 - NBA POINTS PRICED BY THE ENGINE; THE EARNED POINTS SPLIT ON SHADOW ROWS; PROPS D6 ON THE BOX - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/nba_props_splits/RESULT.md and the W121.2 handoff (PR #541 or main).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_1.md.
+
+WHY: of 143 prop leaves, one earned an arm (121.2), and it is POINTS. The live prop runner prices rebounds, assists and threes but not
+points, so the one earned leaf cannot fire.
+
+PART A - points priced
+1. Add player points to the NBA engine's prop path, from the same simulation as rebounds / assists / threes: point in time, minutes and
+   usage from the engine, and the opponent's defence where the engine has it.
+2. Tests: calibration on held-out games (points by line); the simulated mean is consistent with team totals; no look-ahead.
+
+PART B - on shadow rows
+1. The prop runner logs points cells (T1-T3) with model p, market state, the kept points split's verdict, and the nba_props
+   candidate's arm. v1 stays untouched.
+2. PR(s); merge on green.
+
+PART C - the count
+1. After deploy and one slate: d6_read. Report props cells wired 0 -> N named, and the one cause for each prop cell still unwired.
+
+Report: per COMMON RULES. MEASURE MOVED: B4 (points logging); D6 props 0 -> N; points calibration on held-out games.
+END OF BLOCK 122.1
+```
+
+### 122.2 - ARMS (THE POT-OF-GOLD ARM, SCORED ON EVERYTHING TO DATE) · MODEL: Sonnet
+
+```
+WAVE 122 - BLOCK 122.2 - ARMS - POT OF GOLD RE-SCORED ON ALL DATA TO DATE AND LOGGED BESIDE V1 AS A CANDIDATE (B-024) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/pot_of_gold/ (DEFINITION, PREREGISTRATION_2026-11-05, RESULT, ROUTER_PRECEDENCE) and
+12_EXPLORATORY/longshot_bias/results_W89.md. Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_2.md.
+
+WHY: pot of gold is the fifth arm (DOCTRINE §6). W105.6 scored it on 9 days of NBA / NHL and routed nothing (17 cells IN_SAMPLE). The price
+archive now holds five more weeks of NBA / NHL, plus NBA / NFL / NHL props since 11-10, where lottery-ticket pricing is likeliest.
+
+PART A - re-score (the 11-05 pre-registration binds; add props and the new weeks only under a dated addendum written before reading)
+1. Settled first-snapshots per sport, family and price bucket: settled rate minus price, net of the real cost (spread logged since 11-18;
+   fee schedule), game-clustered, held out by date.
+2. Name each of the 17 pre-registered cells: earned / still IN_SAMPLE / closed (routed, parked for R&D).
+
+PART B - the arm in the router
+1. A pot_of_gold candidate in router_candidates (a new key only), logged beside v1 on every pregame row it applies to, with its leaf and
+   reason. Shadow only.
+2. Tests: v1 untouched; no look-ahead.
+3. PR(s); merge on green.
+
+PART C - read back
+1. Rows carrying the pot_of_gold arm, per sport, in the first 24 h after deploy.
+
+Report: per COMMON RULES. MEASURE MOVED: arms with a candidate on box rows 3 -> 4 (+ props); pot-of-gold cells earned / IN_SAMPLE /
+closed.
+END OF BLOCK 122.2
+```
+
+### 122.3 - D6 · NFL (THE BOARD WIDENED) · MODEL: Sonnet
+
+```
+WAVE 122 - BLOCK 122.3 - D6 - NFL ENGINE PRICES FOR THE UNPRICED NFL CELLS; THE WEEKEND SLATE'S D6 RECOUNT (B-104) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read the W120.1 handoff and the newest results/*_d6_read.md (NFL per layer).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_3.md.
+
+WHY: the NFL board engine (EXP-045) prices moneyline, spread and total from one simulation, but only 12 of 29 NFL cells carry a model p
+on the box. NFL's season ends in January, and every unpriced cell is a week of rows lost.
+
+PART A - layer 1 across the NFL board
+1. List the 17 NFL cells without a model p and why (family not priced, band not wired, writer skips it).
+2. Price each from the engine's existing simulation (team totals from the same draws; each band at its own horizon), point in time.
+3. Tests: consistency (team totals sum to the game total; P(win) agrees with the spread-implied probability); no look-ahead.
+
+PART B - on rows
+1. The NFL shadow writer logs every cell with model p, market state and split verdicts (W120.1). v1 is untouched.
+2. PR(s); merge on green.
+
+PART C - the count
+1. After the 11-22 / 23 slate: d6_read. Report D6 NFL 0 -> N named, layer-1 NFL cells 12 -> N, and the one cause for each still-unwired
+   NFL cell.
+
+Report: per COMMON RULES. MEASURE MOVED: NFL layer-1 cells 12 -> N; D6 NFL 0 -> N.
+END OF BLOCK 122.3
+```
+
+### 122.4 - D6 · MLB 2027 (PRICED FROM THE PITCH STORE) · MODEL: Sonnet
+
+```
+WAVE 122 - BLOCK 122.4 - D6 - MLB 2027 BOARD PRICED FROM THE PITCH STORE; EVERY REGISTERED CELL LOGGING FROM OPENING DAY (GG-1957) - MODEL: Sonnet
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W122.md` and quote its first line. Those rules
+bind this block. Then read the W118.1 handoff, GG-1957, leaf_maps/mlb_2026_lookback.json and its PREREG_2027, and mlb_engine/.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W122_4.md.
+
+WHY: MLB is the deepest data the project owns (1.42M pitches), but only 3 of 42 MLB cells carry a model p, and the 2026 regular season
+was never logged for the game cells (GG-1957: the look-back had only 22 postseason games). 2027 must not repeat that.
+
+PART A - the MLB board priced
+1. From the pitch store: a game simulation pricing moneyline, run line, total and team totals per band, point in time (probable starters,
+   bullpen use, park). Back-test on 2025 and 2026 regular-season games against Kalshi closing prices where the archive has them.
+2. Report calibration and the gap to the market per family.
+
+PART B - logging from opening day
+1. Find why the 2026 regular season left no shadow rows for the game cells (GG-1957), and fix it.
+2. Write a dry-run "opening day" test: on a replayed 2026 date, every registered MLB cell writes a row with model p, market state and
+   the 2027 leaf map's arm.
+3. Nothing runs live until the 2027 schedule exists.
+
+PART C - land
+1. PR(s); merge on green.
+2. State what must be true on the box before opening day, as a checklist in the handoff.
+
+Report: per COMMON RULES. MEASURE MOVED: MLB layer-1 cells 3 -> N (in the dry run); back-test calibration per family; GG-1957 cause.
+END OF BLOCK 122.4
+```
