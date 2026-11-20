@@ -72,6 +72,7 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
              kickoff_miss_reason: Optional[Callable[[str], str]] = None,
              on_row: Optional[Callable[[dict], None]] = None,
              row_extra_for: Optional[Callable[[str], dict]] = None,
+             props_for: Optional[Callable[[dict], Optional[dict]]] = None,  # W121.2: NBA prop split leaves for a row (candidate only)
              filter_supply=None) -> dict:
     """cells = [(MarketType name, series_ticker)]. Returns {'written': {...}, 'skipped': {...}}."""
     written: Counter = Counter()
@@ -128,7 +129,8 @@ def run_once(*, forecaster, cells: list[tuple[str, str]],
             # W98.3 (GG-1580): the top-3 factor contributions, logging only; an arm that cannot give them says so.
             why = ({"reasons": list(fc.reasons)} if getattr(fc, "reasons", None)
                    else {"reasons": None, "reasons_note": NO_REASONS_NOTE})
-            rf = router_fields(row, series, filters=flt, filters_note=flt_note, depth=_depth)
+            _props = props_for(row) if props_for is not None else None
+            rf = router_fields(row, series, filters=flt, filters_note=flt_note, depth=_depth, props=_props)
             if led.append(row, {**quote_fields(m, now_utc), **book_fields(m), **why, **(row_extra_for(tkr) if row_extra_for else {}), **rf}):
                 written[f"{mt_name}:{band}"] += 1
                 if on_row is not None:  # post-persist observer; gets a copy, cannot alter the row
