@@ -106,7 +106,7 @@ v2's weekly look (Tuesday 10:00 UTC) exists only as code. This wave:
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 121.1 | proof · 3 | Weekly looks run themselves on box rows: v1 + router v2 + nba_depth + nhl_v2 scored per leaf, e-process carried forward; install proposed | Sonnet | ⬜ | |
+| 121.1 | proof · 3 | Weekly looks run themselves on box rows: v1 + router v2 + nba_depth + nhl_v2 scored per leaf, e-process carried forward; install proposed | Sonnet | | ✅ | PR 538 merged. First look on box 11-20: 0 leaves with an arm on any map; candidate maps 0 settled games. Install awaiting approval (`evidence_weekly_install`). Next look 11-24. |
 | 121.2 | D6 · props · 3 | NBA's 12 prop cells through the tree: market state, player splits from the archive, stump rule, router v2 candidate | Sonnet | ⬜ | |
 | 121.3 | execution · 3 | Capacity and dollar ceiling per arm per sport from logged depth and fills - $ / day at $1k, $10k, $100k | Sonnet | ✅ 2026-11-20 | 12_EXPLORATORY/capacity/RESULT.md; ticks 1-3 not measurable (no NBA/NHL ladder); every ceiling spans 0 |
 | 121.4 | dashboards · 3 | Live Terminal: candidate arms beside v1, D6 per sport, weekly-look verdicts, disk + Mac copy status; the Mac job if approved | Haiku | ✅ | #537 panels merged (candidates beside v1, D6 names, weekly look, disk + Mac copy); Mac weekly job loaded yes. Mac-copy row shows only where the server runs on the Mac. |

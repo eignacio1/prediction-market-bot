@@ -5096,3 +5096,8 @@ W118.1, 2026-11-18. `exp_output/PREGAME_SHADOW/settled/MLB_*.jsonl` begins 2026-
 **Status:** OPEN · **Severity:** LOW
 
 W121.4, 2026-11-20. `_box_health` reads `$EVIDENCE_DEST/LAST_RUN.json` (default `~/PredictionMarketEvidence`), which exists only on the Mac. The dashboard normally runs on the box, so the row reads "not visible from this host" and the weekly Mac copy has no on-page proof. Fix: ship LAST_RUN.json status to the box (or surface it in the weekly look), or serve a Mac-side dashboard. Window decision. Deadline: before the first Sunday run is relied on (2026-11-22).
+
+### GG-1959 — No box task deploys code: a newly merged box task fails until someone pulls over ssh (W121.1)
+**Status:** OPEN · **Severity:** MEDIUM
+
+W121.1, 2026-11-20. `evidence_weekly_run` was requested after merge and exited 2 (`scripts/run_evidence_weekly.py: No such file`) because the box had not pulled main; the window had to `git pull --ff-only` over ssh, which a cloud window cannot do. Fix: an allowlisted read-mostly `box_pull_main` task (ff-only, refuses a dirty tracked tree) or a documented auto-pull cadence in RUNTIME_REGISTRY. Deadline: before the next wave that adds a box task.

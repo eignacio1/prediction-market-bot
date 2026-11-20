@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W121.1
+tier: STANDARD
+timestamp: 2026-11-20T15:25:00Z
+commit: 6b274cc
+one_line_summary: W121.1 weekly evidence look runner merged (PR 538); first box look: 0 leaves with an arm, install awaits approval.
+gg_touched: GG-1959
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P1, P3
+gap_delta: leaves with an arm per map = 0 at first look (exp_output/EVIDENCE_WEEKLY cut 2026-11-17, box result 20261120T1511Z); next look 2026-11-24
+pattern_sweep: grep pipeline.run consumers in src/ scripts/ tests/ 12_EXPLORATORY -> signature unchanged, 346 selected tests pass; box-deploy gap registered as GG-1959
+surface_delta: +1 paused cron (cron|0 10 * * 2|scripts/run_evidence_weekly.py, registered), +4 box tasks, 0 live
+-->
+
 # Session handoff — W121.1 PROOF: weekly looks, e-process carried forward
 
 - common rules quoted first: `# Wave 121 common rules` (from origin/main COMMON_RULES_W121.md)
