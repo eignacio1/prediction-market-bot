@@ -1,4 +1,4 @@
-"""EXP-047 (W109.3, B-070): NBA player rebounds / assists / threes priced from the NBA engine's own game draws.
+"""EXP-047 (W109.3, B-070; points added W122.1): NBA player points / rebounds / assists / threes priced from the NBA engine's own game draws.
 
 Ticker -> game + player -> engine_v2 draws (fixed league constants, walk-forward shrunk team ratings) ->
 ``nba_engine.props`` split -> P(stat >= n). EVALUATE-AND-LOG only; nothing here can place an order. A player not in
@@ -23,17 +23,22 @@ from prediction_market_bot.pregame_shadow.nba_forecaster import _MON, KALSHI_COD
 from prediction_market_bot.pregame_shadow.nba_player_points_forecaster import _PLAYER, _initial, _norm_surname
 
 SPORT = "NBAENG"
-SERIES = {"KXNBAREB": ("NBA_PLAYER_REBOUNDS", "rebounds"), "KXNBAAST": ("NBA_PLAYER_ASSISTS", "assists"),
+SERIES = {"KXNBAPTS": ("NBA_PLAYER_POINTS", "points"), "KXNBAREB": ("NBA_PLAYER_REBOUNDS", "rebounds"), "KXNBAAST": ("NBA_PLAYER_ASSISTS", "assists"),
           "KXNBA3PT": ("NBA_PLAYER_THREES", "threes")}
 LEAGUE = 114.0
 PRIOR_GAMES, MIN_PRIOR_GAMES, MIN_MPG, ROTATION, DRAWS = 8, 4, 10.0, 10, 4000
 PARAMS = E2.V2Params(hca=2.0, tbias=0.0, sd_margin=13.0, sd_total=19.0)
+# W122.1: points rest bucket fitted on games 2026-11-01..11-07 (51 games) before the held-out window (>= 11-08): rotation mean points
+# (conditional on playing) sum to ~117 > team ~114.5, so the default 8% bucket shrank every player ~10% (held-out mean p 0.46 vs hit 0.56
+# at 10+). 0.08 -> 0.0 cut fit-window bias from +0.04 to ~0. Applies to points only; REB / AST / 3PT keep P.DEFAULT_REST.
+POINTS_REST = 0.0
 MODEL_ID = "nba_engine_v2_props_w109_3"
 _CONSTANTS = dict(params=[2.0, 0.0, 13.0, 19.0], league=LEAGUE, prior_games=PRIOR_GAMES, min_prior=MIN_PRIOR_GAMES,
                   min_mpg=MIN_MPG, rotation=ROTATION, draws=DRAWS, beta=P.DEFAULT_BETA, r=P.DEFAULT_R,
                   rest=P.DEFAULT_REST, conc=P.DEFAULT_CONC)
-MODEL_SHA256 = hashlib.sha256(json.dumps(_CONSTANTS, sort_keys=True).encode()).hexdigest()
-_EVENT = re.compile(r"^(KXNBA(?:REB|AST|3PT))-(\d{2})([A-Z]{3})(\d{2})([A-Z]{6})$")
+MODEL_SHA256 = hashlib.sha256(json.dumps(_CONSTANTS, sort_keys=True).encode()).hexdigest()   # REB / AST / 3PT: unchanged since W109.3
+POINTS_SHA256 = hashlib.sha256(json.dumps({**_CONSTANTS, "points_rest": POINTS_REST}, sort_keys=True).encode()).hexdigest()
+_EVENT = re.compile(r"^(KXNBA(?:PTS|REB|AST|3PT))-(\d{2})([A-Z]{3})(\d{2})([A-Z]{6})$")
 
 
 def parse_market_ticker(t: str) -> Optional[dict]:
@@ -153,10 +158,11 @@ class NBAEngineProps:
         if key not in self._split:
             R = P.TeamRoster(tuple(names), {s: [r[2][s] for r in ros] for s in P.STATS}, float(pts.mean()))
             seed = int(hashlib.sha256("|".join(key).encode()).hexdigest()[:8], 16) % 99991
-            self._split[key] = P.player_draws(pts, R, p["stat"], np.random.default_rng(seed))[0]
+            kw = {"rest": {**P.DEFAULT_REST, "points": POINTS_REST}} if p["stat"] == "points" else {}
+            self._split[key] = P.player_draws(pts, R, p["stat"], np.random.default_rng(seed), **kw)[0]
         d = self._split[key]
         py = P.strike_probs(d[:, hits[0]], [p["n"]])[p["n"]]
         py = min(max(py, 1e-4), 1 - 1e-4)
         row_sha = hashlib.sha256(json.dumps([ros[hits[0]][2], p["game_date"], len(self.games)], sort_keys=True).encode()).hexdigest()
         return PregameForecast(SPORT, p["market_type"], p["event_ticker"], market_ticker, py, as_of_utc,
-                               MODEL_ID, MODEL_SHA256, row_sha)
+                               MODEL_ID, POINTS_SHA256 if p["stat"] == "points" else MODEL_SHA256, row_sha)

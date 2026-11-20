@@ -1,7 +1,7 @@
-"""EXP-047 / W109.3 (B-070): NBA engine player rebounds/assists/threes pregame SHADOW evaluator. EVALUATE-AND-LOG ONLY.
+"""EXP-047 / W109.3 (B-070): NBA engine player points/rebounds/assists/threes pregame SHADOW evaluator. EVALUATE-AND-LOG ONLY.
 
 Public ESPN scoreboard/summary GETs (incremental box-score store + upcoming tip times) and read-only Kalshi list
-reads (series KXNBAREB/KXNBAAST/KXNBA3PT) -> nba_engine_v2 draws -> props split -> rows appended to
+reads (series KXNBAPTS/KXNBAREB/KXNBAAST/KXNBA3PT) -> nba_engine_v2 draws -> props split -> rows appended to
 exp_output/PREGAME_SHADOW_EXP047/NBAENG_<MARKET_TYPE>_<band>.jsonl. No order, no position, no fill, no sizing
 (there is no ``on_row``). Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP047_*.md.
 
@@ -25,7 +25,7 @@ from prediction_market_bot.c1_signal_ingestion.nba_ingest import kalshi_code  # 
 from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as F  # noqa: E402
 from prediction_market_bot.pregame_shadow.runner import run_once  # noqa: E402
 
-CELLS = [("NBA_PLAYER_REBOUNDS", "KXNBAREB"), ("NBA_PLAYER_ASSISTS", "KXNBAAST"), ("NBA_PLAYER_THREES", "KXNBA3PT")]
+CELLS = [("NBA_PLAYER_POINTS", "KXNBAPTS"), ("NBA_PLAYER_REBOUNDS", "KXNBAREB"), ("NBA_PLAYER_ASSISTS", "KXNBAAST"), ("NBA_PLAYER_THREES", "KXNBA3PT")]
 SEASON_START = date(2026, 10, 20)
 SB = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates="
 SUM = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event="
