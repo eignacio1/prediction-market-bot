@@ -1338,3 +1338,4 @@
 | 2026-11-20T15:14:12Z | W121.4 | CLOSED — W121.4 Live Terminal panels (candidate arms vs v1, D6 names, weekly look, box disk + Mac copy) merged PR 537; Mac weekly job loaded. (commit `93981da`) |
 | 2026-11-20T15:14:30Z | W121.4 | CLOSED — merge confirmed, HEAD (26478db) is ancestor of origin/main — Live Terminal panels merged PR 537; handoff + digest on main |
 | 2026-11-20T15:33:59Z | W121.1 | CLOSED — W121.1 weekly evidence look runner merged (PR 538); first box look: 0 leaves with an arm, install awaits approval. (commit `6b274cc`) |
+| 2026-11-20T15:34:20Z | W121.1 | CLOSED — merge confirmed, HEAD (0cdcd74) is ancestor of origin/main — weekly evidence look runner merged PR 538; first box look 0 arms; install awaits approval |
