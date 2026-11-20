@@ -12,7 +12,7 @@ def test_frozen_sha():
 
 
 def test_not_wired_and_every_cell_has_a_routing():
-    assert "mlb_2026_lookback" not in lm.MAP_VERSIONS
+    assert lm.MAP_VERSIONS["v1"] != P and lm.MAP_VERSIONS["mlb_2027"] == P  # W122.4: candidate only, never the default
     doc = json.load(open(P))
     assert len(doc["cells"]) == 12 and all(c["routing"] for c in doc["cells"].values())
     assert all(l["arm"] in ("NO_BET", "RIDE", "FADE", "MODEL_FADE", "MOMENTUM", "POT_OF_GOLD") for l in doc["leaves"].values())

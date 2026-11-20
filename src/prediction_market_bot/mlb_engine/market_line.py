@@ -19,7 +19,7 @@ import pandas as pd
 from prediction_market_bot.io_jsonl import glob_files, open_jsonl  # W119.4: reads .jsonl or .jsonl.gz
 
 MONTHS = {m: i + 1 for i, m in enumerate("JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split())}
-_EVENT = re.compile(r"^KX(?:MLBGAME|MLBTOTAL)-(\d\d)([A-Z]{3})(\d\d)(\d{4})([A-Z]+)$")
+_EVENT = re.compile(r"^KX(?:MLBGAME|MLBTOTAL|MLBSPREAD|MLBTEAMTOTAL)-(\d\d)([A-Z]{3})(\d\d)(\d{4})([A-Z]+)$")
 _TEAMS = ("ATH ATL AZ BAL BOS CHC CIN CLE COL CWS DET HOU KC LAA LAD MIA MIL MIN NYM NYY PHI PIT SD SEA SF STL TB TEX TOR TWS WSH").split()
 
 
@@ -57,8 +57,8 @@ def last_pregame(archive_glob: str, cutoff_min: int = 10, series=("KXMLBGAME", "
                 if not any(s in line for s in series):
                     continue
                 r = json.loads(line)
-                if r.get("series_ticker") not in series:
-                    continue
+                if r.get("series_ticker") not in series or "yes_bid" not in r or "yes_ask" not in r:
+                    continue  # W122.4: some archive rows carry no quote fields
                 ev = parse_event(r["event_ticker"])
                 if ev is None:
                     continue
@@ -108,3 +108,18 @@ def total_rung(c: pd.DataFrame, max_half_spread: float = 1.0) -> pd.DataFrame:
         rows.append({"event": ev, "game_date": r.game_date, "home": r.home, "away": r.away, "k": int(r.k),
                      "p_mkt": float(r.mid), "half_spread": float(r.hs), "volume": float(r.volume), "ts": r.ts})
     return pd.DataFrame(rows)
+
+
+def team_rungs(c: pd.DataFrame, series: str) -> pd.DataFrame:
+    """W122.4: every rung of KXMLBSPREAD / KXMLBTEAMTOTAL. Suffix = TEAM + k (e.g. TEX4): spread = TEAM wins by >= k runs,
+    team total = TEAM scores >= k. Units inferred from monotone ladders and checked against outcomes in the W122.4 driver."""
+    t = c[c.series == series].copy()
+    if t.empty:
+        return t
+    t["team"] = t.side.str.extract(r"^([A-Z]+?)(\d+)$")[0]
+    t["k"] = t.side.str.extract(r"^([A-Z]+?)(\d+)$")[1].astype(float)
+    t = t.dropna(subset=["team", "k"])
+    t["k"] = t.k.astype(int)
+    t["mid"] = (t.bid + t.ask) / 2
+    t["hs"] = (t.ask - t.bid) / 2
+    return t

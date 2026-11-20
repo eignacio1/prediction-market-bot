@@ -49,6 +49,17 @@ def assert_cache_fresh(cur: Path, now: datetime, max_age_h: float = MAX_CACHE_AG
                          "scripts/sync_mlb_games_cache.sh; refusing to log on stale data")
 
 
+def record_failclosed(ledger_dir: Path, now: datetime, reason: str) -> None:
+    """GG-1957: 2026 regular-season MLB game cells logged nothing and nothing said why. Every fail-closed exit appends one
+    line here so a silent arm is a reported number (preflight and the session scan read it)."""
+    try:
+        ledger_dir.mkdir(parents=True, exist_ok=True)
+        with open(ledger_dir / "_MLB_FAILCLOSED.jsonl", "a") as fh:
+            fh.write(json.dumps({"ts": now.isoformat(), "reason": reason[:300]}) + "\n")
+    except OSError:
+        pass
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--refresh", action="store_true", help="re-pull Stats API games (results + probable starters)")
@@ -67,7 +78,11 @@ def main(argv=None) -> int:
                        "--base", str(CACHE / "games.parquet"), "--out", str(CACHE / "games_current.parquet")]):
             raise SystemExit("games refresh failed -- refusing to run on stale data")
     if not a.refresh:
-        assert_cache_fresh(CACHE / "games_current.parquet", now)
+        try:
+            assert_cache_fresh(CACHE / "games_current.parquet", now)
+        except SystemExit as e:          # GG-1957: a fail-closed exit must leave a counted record, not a silent gap
+            record_failclosed(Path(a.ledger_dir), now, str(e))
+            raise
     gp = CACHE / "games.parquet"
     if not gp.exists():
         raise SystemExit(f"{gp} missing -- run scripts/fetch_mlb_game_history.py")
