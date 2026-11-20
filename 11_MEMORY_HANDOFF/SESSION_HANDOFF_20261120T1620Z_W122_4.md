@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W122.4
+tier: STANDARD
+timestamp: 2026-11-20T17:05:00Z
+commit: ce63a82
+one_line_summary: W122.4: MLB board priced from pitch store; game cells 3->12 in opening-day dry run; GG-1957 cause found, preflight + fail-closed log; PR #544
+gg_touched: GG-1957
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: BREADTH, DEPTH
+gap_measure: B1, D6
+gap_delta: MLB layer-1 game cells 3 -> 12 in dry run (tests/test_mlb_opening_day_dry_run_w122.py); not live
+pattern_sweep: record-nothing-on-exit pattern: grep SystemExit/assert_cache_fresh in scripts/run_*_shadow*.py -> MLB runner fixed in #544; other sport runners not re-swept this close-out
+surface_delta: 0 (no cron/service added; preflight is hand-run on box at opening day)
+-->
+
 # Session handoff — W122.4 · MLB 2027 board priced; every game cell logging from opening day (GG-1957)
 Common rules first line quoted: "# Wave 122 common rules". PR #544 merged (Test Suite green; Docs Guard red on main too, same step `generate_gap_arm_index.py --check`, not this PR).
 
