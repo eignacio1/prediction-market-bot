@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-20T17:45:00Z (W122.3 — W122.3: NFL PASS_YDS T1 priced at its own horizon (pre24h slot + d6_read); 16 in-play cells need a live feed; Part C awaits 11-22/23 slate) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T0745Z_W122_3.md` for full session detail.
+**Last reviewed:** 2026-11-20T17:50:00Z (W122.1 — W122.1: NBA points priced by the engine and logged T1-T3 on the box; props D6 0 -> 0 (layer 2 missing)) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261120T1745Z_W122_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.

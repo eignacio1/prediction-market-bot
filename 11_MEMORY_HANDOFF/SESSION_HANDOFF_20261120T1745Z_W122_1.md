@@ -1,4 +1,20 @@
 # Session handoff — W122.1 · NBA points priced by the engine, logged as shadow cells T1-T3 (D6 props)
+
+<!-- session-meta
+task_id: W122.1
+tier: STANDARD
+timestamp: 2026-11-20T17:50:00Z
+commit: 63bb86c
+one_line_summary: W122.1: NBA points priced by the engine and logged T1-T3 on the box; props D6 0 -> 0 (layer 2 missing)
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: BREADTH, DEPTH
+gap_measure: B4, D6 props
+gap_delta: B4 points rows live (T2 260 rows, box 17:39Z); D6 props 0 -> 0 (d6_read 2026-11-20 box @ 685c54c9)
+pattern_sweep: grep SERIES/CELLS consumers of the prop runner in src/ scripts/ tests/ -> registry already had NBA_PLAYER_POINTS T1-T3 SHADOW; REB/AST/3PT hash unchanged
+surface_delta: 0
+-->
 Common rules first line quoted: "# Wave 122 common rules". PR #543 merged (Test Suite + Docs Guard green on its head; rebased once after the gaps-by-arm index went stale on main).
 
 ## MEASURE MOVED
