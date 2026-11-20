@@ -1339,3 +1339,4 @@
 | 2026-11-20T15:14:30Z | W121.4 | CLOSED — merge confirmed, HEAD (26478db) is ancestor of origin/main — Live Terminal panels merged PR 537; handoff + digest on main |
 | 2026-11-20T15:33:59Z | W121.1 | CLOSED — W121.1 weekly evidence look runner merged (PR 538); first box look: 0 leaves with an arm, install awaits approval. (commit `6b274cc`) |
 | 2026-11-20T15:34:20Z | W121.1 | CLOSED — merge confirmed, HEAD (0cdcd74) is ancestor of origin/main — weekly evidence look runner merged PR 538; first box look 0 arms; install awaits approval |
+| 2026-11-20T15:35:16Z | W121.3 | CLOSED — merge confirmed, HEAD (eb4d456) is ancestor of origin/main — capacity + dollar ceiling per arm per sport (B-097): RESULT.md, table, PRs 536/539, handoff 624baaa; ticks 1-3 unmeasurable, all ceilings span 0 |
