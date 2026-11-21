@@ -5101,3 +5101,18 @@ W121.4, 2026-11-20. `_box_health` reads `$EVIDENCE_DEST/LAST_RUN.json` (default 
 **Status:** OPEN · **Severity:** MEDIUM
 
 W121.1, 2026-11-20. `evidence_weekly_run` was requested after merge and exited 2 (`scripts/run_evidence_weekly.py: No such file`) because the box had not pulled main; the window had to `git pull --ff-only` over ssh, which a cloud window cannot do. Fix: an allowlisted read-mostly `box_pull_main` task (ff-only, refuses a dirty tracked tree) or a documented auto-pull cadence in RUNTIME_REGISTRY. Deadline: before the next wave that adds a box task.
+
+### GG-2003 — NBA player props (EXP-047) have no role-state input: `mu` ignores who is out tonight
+**Status:** OPEN · **Severity:** MEDIUM
+
+SW-9, 2026-11-21 (PAM design note, `02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md` class 1). `pregame_shadow/nba_engine_props_forecaster.roster()` sets each player's expected stat to the unweighted mean of his prior games on this team; `nba_engine/props.py` states it "does not model who plays". The game families already use usage redistribution when a rotation player is out (NBA-10, applied, W110.2). Props are priced as if the role a player had before tonight still holds when a creator sits. Task: B-116 (feed NBA-10's vacated-usage redistribution into a pre-registered EXP-047 challenger). Not fixed here (Hard Rule 11).
+
+### GG-2004 — No player-level shrinkage in the NBA props path: four games carry full weight
+**Status:** OPEN · **Severity:** MEDIUM
+
+SW-9, 2026-11-21 (class 3). EXP-047 uses a raw mean with `MIN_PRIOR_GAMES = 4`; team ratings are shrunk (`nba_engine/ratings.py`) but player inputs are not, so a noisy trait (threes, assists) at four games enters with the same weight as a stable one. Pre-registered test: `12_EXPLORATORY/pam_stability/PREREG.md` (H-DEPTH-PAM-3, 16fcd204). Task: B-115.
+
+### GG-2005 — PAM has no point-in-time player-state table; four of the five attribute classes are state, not classification
+**Status:** OPEN · **Severity:** LOW
+
+SW-9, 2026-11-21. `PamRecord` (`src/prediction_market_bot/pam/schema.py`) holds archetype classifications over date ranges. Role state, availability distribution, role security and contributor concentration change game to game and have no home; nothing in PAM carries them, and no engine imports `PamStore`. Proposed minimum schema (player_state, availability_profile, trait_reliability) in PAM_ATTRIBUTE_CLASSES.md §3; no ingestion built. Task: B-117.

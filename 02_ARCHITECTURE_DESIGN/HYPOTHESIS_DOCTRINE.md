@@ -149,6 +149,7 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | H-DEPTH-NHL-1 | Goalie and special-teams splits change NHL arms | NHL game families | per leaf | W119.1 | COLLECTING: 8 positive of 42 held out, 0 BH | — | nhl_v2 candidate logged |
 | H-DEPTH-NHL-2 | Goalie confirmation moves the price with a usable lag | NHL | MOMENTUM | W118.3 | PARKED (R&D) 11-18: 0.2c [0.07, 0.43], n 14 | — | Reopen if H-EDGE-3 finds latency elsewhere |
 | EXP-NBAPROPS-001 | Player splits (minutes / usage, opponent zones, pace, rest) route NBA props | NBA props T1-T3 | per leaf | W121.2 | COLLECTING (11-20): 1 earned (points), 14 kept of 143 leaves | — | Points now priced (W122.1); nba_props candidate logged |
+| H-DEPTH-PAM-3 | Trait stability: per-minute rates shrunk by stat reliability (and shrunk minutes) calibrate NBA props better than EXP-047's raw prior-game mean | NBA props (points / rebounds / assists / threes), pre-game | per leaf (input licence) | 12_EXPLORATORY/pam_stability/PREREG.md (16fcd204) | PRE-REGISTERED (11-21) | design motivation only: operator fantasy test, 5 weeks (PAM_ATTRIBUTE_CLASSES.md) | SUPPORTED → EXP-047 challenger scored per leaf by the router; NOT SUPPORTED → parked, reopen with possession rates / point-in-time PAM priors |
 | H-DEPTH-NFL-1 | NFL tested splits (13 cells, W112-W113) change arms | NFL | per leaf | W120.1 | COLLECTING on box rows (stumps logged) | — | Recount after 11-22 / 23 |
 
 ### II.5 Program ARMS — pot of gold and momentum
