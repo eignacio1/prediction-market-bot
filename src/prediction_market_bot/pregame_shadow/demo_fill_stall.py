@@ -5,7 +5,10 @@ wrote both switches ``off`` to deploy/demo_fill.override.env; every health signa
 logging forecasts, the orders just stopped). This asks the one question none of them asked: did the box place any
 demo order in the last 24h while the shadow arms were writing rows? Alarm-only; reads files, writes nothing.
 
-Orders = ``shadow_order`` events in logs/demo_fill_policy.jsonl. Arms logging = any game-market ledger under
+Orders = two paths, each reported (W125.2, GG-2006): ``shadow_order`` events in logs/demo_fill_policy.jsonl (the pre-router
+path) and ``arm_order`` events with ok=true in logs/arm_orders/orders.jsonl (the live path since ARM_ORDERS=on, 11-12;
+shadow_flat_stake returns early for routed rows, so the old path alone fell to zero while arm orders kept placing). The alarm fires
+only when BOTH are zero. Arms logging = any game-market ledger under
 exp_output/PREGAME_SHADOW with a row in the window. Fires only when orders == 0 AND arms logged, so an off-day or the
 off-season (no rows) is never an alarm.
 """
@@ -23,19 +26,20 @@ WINDOW_H = 24
 POLICY_TAIL_BYTES = 16 * 1024 * 1024
 
 
-def _orders_since(policy_log: Path, since: datetime) -> Optional[int]:
-    if not policy_log.exists():
+def _orders_since(log: Path, since: datetime, event: str = "shadow_order", require_ok: bool = False) -> Optional[int]:
+    """Events named ``event`` at or after ``since``; None when the log is missing. require_ok counts only accepted orders."""
+    if not log.exists():
         return None
     n = 0
-    for ln in _tail_lines(policy_log, POLICY_TAIL_BYTES):
-        if '"shadow_order"' not in ln:
+    for ln in _tail_lines(log, POLICY_TAIL_BYTES):
+        if f'"{event}"' not in ln:
             continue
         try:
             r = json.loads(ln)
         except ValueError:
             continue
         t = _parse(r.get("ts"))
-        if r.get("event") == "shadow_order" and t and t >= since:
+        if r.get("event") == event and t and t >= since and (not require_ok or r.get("ok") is True):
             n += 1
     return n
 
@@ -54,7 +58,10 @@ def stall(repo: Path, now: Optional[datetime] = None) -> dict:
     repo = Path(repo)
     now = _aware(now or datetime.now(timezone.utc))
     since = now - timedelta(hours=WINDOW_H)
-    orders = _orders_since(repo / "logs" / "demo_fill_policy.jsonl", since)
+    shadow = _orders_since(repo / "logs" / "demo_fill_policy.jsonl", since)
+    arm = _orders_since(repo / "logs" / "arm_orders" / "orders.jsonl", since, "arm_order", require_ok=True)
+    orders = None if shadow is None and arm is None else (shadow or 0) + (arm or 0)
+    paths = "shadow_order %s, arm_order %s" % ("?" if shadow is None else shadow, "?" if arm is None else arm)
     led = repo / "exp_output" / "PREGAME_SHADOW"
     logging = []
     for sport in GAME_CELLS:
@@ -67,14 +74,14 @@ def stall(repo: Path, now: Optional[datetime] = None) -> dict:
             logging.append(sport)
     if orders is None:
         return {"status": "unknown", "orders_24h": None, "arms_logging": logging,
-                "text": "demo_fill_policy.jsonl unreadable; cannot count demo orders"}
+                "text": "demo_fill_policy.jsonl and arm_orders/orders.jsonl both unreadable; cannot count demo orders"}
     override = repo / "deploy" / "demo_fill.override.env"
     if orders == 0 and logging:
         why = _override_reason(override) if override.exists() else "no override file; check the placement rule / cron / cancel sweeper"
-        return {"status": "stalled", "orders_24h": 0, "arms_logging": logging,
-                "text": f"DEMO ORDERS = 0 in the last {WINDOW_H}h while arms logged rows ({', '.join(logging)}): {why}"}
-    return {"status": "ok", "orders_24h": orders, "arms_logging": logging,
-            "text": f"{orders} demo order(s) in the last {WINDOW_H}h" if orders else "no demo orders and no arm logging (off-day)"}
+        return {"status": "stalled", "orders_24h": 0, "shadow_orders_24h": shadow, "arm_orders_24h": arm, "arms_logging": logging,
+                "text": f"DEMO ORDERS = 0 in the last {WINDOW_H}h ({paths}) while arms logged rows ({', '.join(logging)}): {why}"}
+    return {"status": "ok", "orders_24h": orders, "shadow_orders_24h": shadow, "arm_orders_24h": arm, "arms_logging": logging,
+            "text": f"{orders} demo order(s) in the last {WINDOW_H}h ({paths})" if orders else "no demo orders and no arm logging (off-day)"}
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -46,3 +46,36 @@ def test_old_order_outside_window_still_stalls(tmp_path):
 
 def test_missing_policy_log_is_unknown(tmp_path):
     assert ds.stall(tmp_path, NOW)["status"] == "unknown"
+
+
+# W125.2 / GG-2006: two order paths; the alarm fires only when both are zero.
+def _arm_log(root, *events):
+    d = root / "logs" / "arm_orders"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "orders.jsonl").write_text("\n".join(json.dumps(e) for e in events))
+
+
+def _arm(age_h, ok=True, event="arm_order"):
+    return {"ts": (NOW - timedelta(hours=age_h)).isoformat(), "event": event, "ok": ok}
+
+
+def test_arm_orders_alone_keep_the_alarm_quiet(tmp_path):
+    root = _rig(tmp_path, arm_age_h=2)               # old path: zero orders in 24h; arms logged rows
+    _arm_log(root, _arm(1), _arm(3))
+    r = ds.stall(root, NOW)
+    assert r["status"] == "ok" and r["shadow_orders_24h"] == 0 and r["arm_orders_24h"] == 2 and "arm_order 2" in r["text"]
+
+
+def test_stalls_only_when_both_paths_are_zero(tmp_path):
+    root = _rig(tmp_path, arm_age_h=2)
+    _arm_log(root, _arm(30), _arm(1, ok=False), _arm(1, event="arm_skip"))  # old, refused, and a skip: none count
+    r = ds.stall(root, NOW)
+    assert r["status"] == "stalled" and "shadow_order 0, arm_order 0" in r["text"]
+
+
+def test_arm_log_missing_or_policy_log_missing_still_reads_the_other(tmp_path):
+    root = _rig(tmp_path, order_age_h=2, arm_age_h=2)   # shadow path alone, no arm log
+    assert ds.stall(root, NOW)["status"] == "ok"
+    (root / "logs" / "demo_fill_policy.jsonl").unlink()
+    _arm_log(root, _arm(1))                             # arm log alone, no policy log
+    assert ds.stall(root, NOW)["status"] == "ok"
