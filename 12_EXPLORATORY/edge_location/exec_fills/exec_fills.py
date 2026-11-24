@@ -16,7 +16,9 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.quant.inference import cluster_bootstrap  # noqa: E402
 
 CUT = "2026-11-20T20:00:00+00:00"
@@ -145,7 +147,8 @@ def main() -> None:
     recs = [json.loads(l) for l in open(a.recs) if l.strip()]
     pre, fwd = split_by_cut(recs)
     res = {"cut": CUT, "descriptive_pre_cut": cell_table(pre), "forward": cell_table(fwd), "n_pre": len(pre), "n_fwd": len(fwd)}
-    Path(a.out).write_text(json.dumps(res, indent=1, default=str))
+    with open(safe_out(a.out), "w") as fh:
+        json.dump(res, fh, indent=1, default=str)
     print(json.dumps({"n_pre": len(pre), "n_fwd": len(fwd)}))
 
 
