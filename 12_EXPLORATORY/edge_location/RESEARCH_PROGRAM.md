@@ -16,7 +16,7 @@ somewhere to find value. This program maps that somewhere, by mechanism, and kee
 Rows are branches (mechanisms). Columns are what every branch must have before it can steer a build. A cell marked "grows" is
 deliberately open: it is filled as data and priority allow.
 
-| | H1 Attention | H2 Timing | H3 News latency | H4 Execution / liquidity | H5+ (open slots) |
+| | H1 Attention | H2 Timing | H3 News latency | H4 Execution / liquidity | H5 favourite-longshot / H6+ (open slots) |
 |---|---|---|---|---|---|
 | **Mechanism** | fewer eyes → slower correction of mispricing | information not yet in the price far from start; drift toward the close | the market digests news over minutes | spread capture minus adverse selection | e.g. cross-market coherence, structural (settlement-rule) quirks, venue gaps |
 | **Where to look first** | props, team totals, alt lines, period lines | T1 band (12-48 h), 6 h | NBA lineups / scratches, NFL inactives, injury reports | families and horizons with deep books and stable mids | grows |
@@ -62,5 +62,6 @@ deliberately open: it is filled as data and priority allow.
 | H2 | NOT SUPPORTED, parked (R&D): drift not predictable at 24 h / 6 h; arm CLV +0.86c gross vs 1.08c fee | Reopen with new features or early-horizon consensus; fill-level CLV → H-EXEC-4 (W124.3) | 2026-11-20 |
 | H3 | NOT SUPPORTED on NBA injury / starter news (repriced < 1 min); NBA confirmations, NFL inactives UNDERPOWERED | Props and spreads around news (H1 x H3); trade prints forward (W124.4) | 2026-11-20 |
 | H4 | NOT SUPPORTED, parked (R&D): 0 of 18 cells, gross negative before adverse selection | Reopen on 5-min snapshots (W124.4) or a lower fee | 2026-11-20 |
-| H-MEAS-1 | STATED: is the close calibrated per family? If so, CLV becomes a low-variance outcome | W124.2 | 2026-11-20 |
+| H-MEAS-1 | Ran 11-23 (#558): CLV LICENSED in 1 of 50 families (MLB F3); 19 NOT LICENSED (10 miscalibrated), 30 UNDERPOWERED | Retest as games accrue; licensed families score on CLV | 2026-11-23 |
+| H5 favourite-longshot (H-EDGE-5) | STATED from H-MEAS-1: close slope > 1 on NHL ML 1.71, NBA ML 1.26, NHL TT 1.10 | W125.3 on the 2025-26 Kalshi history | 2026-11-23 |
 | H5+ | open | — | — |

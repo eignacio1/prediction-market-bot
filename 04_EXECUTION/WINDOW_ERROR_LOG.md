@@ -261,3 +261,9 @@ day Muse runs without a new chunk range.
 124.5 was added to ACTIVE_QUEUE.md and pushed, but the file card in chat was not re-sent, so the operator's copy had four blocks.
 Operator: "124.5 wasn't in the Active Queue - again, please ensure you're updating the one in our chat". Rule: every queue edit ends with
 SendUserFile of ACTIVE_QUEUE.md in the same turn.
+
+### W64 — 2026-11-23 17:05 PT · Window gap entries broke Docs Guard on main for ~20 minutes
+GG-2003..GG-2007 were appended to GOVERNANCE_GAP_LOG.md without running `scripts/generate_gap_arm_index.py`; Docs Guard ("Gaps-by-arm
+index is current") failed on every main push from 00:43Z to 01:02Z, while three W124 PRs were trying to land. Fix: regenerated (pushed).
+Rule: any GG entry the window writes is followed by `python3 scripts/generate_gap_arm_index.py` and the four Docs Guard checks
+(rolling_backlog --check, gg_id_uniqueness_check, generate_gap_arm_index --check, runtime_registry check) before pushing.
