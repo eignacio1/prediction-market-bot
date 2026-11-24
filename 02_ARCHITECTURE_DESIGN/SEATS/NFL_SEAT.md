@@ -65,3 +65,6 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | nfl_team_total | T4NFL-ARITH | not_implemented | none | — |
 | nfl_team_total | T4NFL-FLOW | not_implemented | none | — |
 | nfl_player_pass_yds | T1 | not_implemented | passyds_strike_v1 (frozen, sha256 1053c843...; not yet serving) | N18, N19 |
+| nfl_same_game_combo | T1 | not_implemented | none | — |
+| nfl_same_game_combo | T2 | not_implemented | none | — |
+| nfl_same_game_combo | T3 | not_implemented | none | — |

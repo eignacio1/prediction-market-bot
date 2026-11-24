@@ -455,3 +455,27 @@ status = "not_implemented"
 serving_model = "passyds_strike_v1 (frozen, sha256 1053c843...; not yet serving)"
 factors = ["N18", "N19"]
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_same_game_combo"
+band = "T1"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_same_game_combo"
+band = "T2"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nfl_same_game_combo"
+band = "T3"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
