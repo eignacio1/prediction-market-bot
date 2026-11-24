@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W125.1: is main on the box? placement_fill_read file missing there"
