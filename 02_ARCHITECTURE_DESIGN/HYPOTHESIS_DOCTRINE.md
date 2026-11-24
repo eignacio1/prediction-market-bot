@@ -141,7 +141,7 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 | EXP-W117.1 | Frozen placement policy beats today's rule | all arms | placement | 05_.../EXP-W117.1 | COLLECTING (table 0 cells) | — | Policy on as cells clear minimum n |
 | EXP-W119.3 | FADE one tick inside the spread fills more without worse selection | FADE | placement | 05_.../EXP-W119.3 | COLLECTING (touch 22 / 342, inside 2 / 17) | — | Read at its judged n; judgeable ~2027-02-14 (100 resolved orders at 7/wk) (power_ledger.json) |
 | H-EXEC-3 | Demo caps sized like a real book starve the experiment | demo path | — | W115.2 / GG-1935 | SUPPORTED (11-17): ~9,000 orders zeroed | — | Caps separated and raised (approved 11-17) |
-| H-EXEC-4 | Filled orders beat the close net of the fee actually charged | arm x family x hours-to-start (2-6 h named lead) | all arms | W124.3 | STATED (11-20) | W123.2 CLV all orders RIDE +1.43c, FADE +0.75c; W123.4 fills 2-6 h +10.1c (68 fills, descriptive) | Forward-judged; SUPPORTED cells get placement and size priority |
+| H-EXEC-4 | Filled orders beat the close net of the fee actually charged | arm x family x hours-to-start (2-6 h named lead) | all arms | W124.3 | COLLECTING (11-23; prereg frozen, first look 12-01) | W123.2 CLV all orders RIDE +1.43c, FADE +0.75c; W123.4 fills 2-6 h +10.1c (68 fills, descriptive) | Forward-judged; SUPPORTED cells get placement and size priority |
 
 ### II.4 Program DEPTH — do matchup / personnel / context factors change the arm?
 | ID | Claim | Locus | Arm | Test | Status | Evidence | Consequence / reopen |
