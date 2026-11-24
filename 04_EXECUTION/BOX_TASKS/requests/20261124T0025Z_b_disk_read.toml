@@ -1,0 +1,2 @@
+task = "disk_read"
+note = "SW-9 pre-wave 124: disk headroom for 124.4 dense capture budget"
