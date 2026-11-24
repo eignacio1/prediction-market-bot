@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -100,6 +101,18 @@ def _props_supply(games, pl):
         return None
 
 
+def _c1_out_lookup(fc):
+    """W125.4: names listed Out at the latest pre-tip report slot (<= min(now, tip - 4h)); empty when no report is readable."""
+    from prediction_market_bot.c1_signal_ingestion.nba_injury_reports import InjurySnapshots
+    snaps = InjurySnapshots(ROOT / "data" / "raw" / "nba_injury")
+
+    def look(parsed, as_of):
+        tip = fc.tip_for(parsed)
+        snap = snaps.snapshot(tip, as_of)[0] if tip else None
+        return {n for n, st in (snap or {}).items() if st == "Out"}
+    return look
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", default=str(ROOT / "data" / "raw" / "nba_props"))
@@ -107,6 +120,7 @@ def main(argv=None) -> int:
     ap.add_argument("--bands", default="", help="comma list of T1,T2,T3 (default: all in-window)")
     ap.add_argument("--no-refresh", action="store_true", help="use the stores as they are (no ESPN calls)")
     ap.add_argument("--now", help="ISO UTC override (testing only)")
+    ap.add_argument("--c1", action="store_true", help="W125.4: also log EXP-047-C1 (lineup-cross) beside EXP-047; env PM_PROPS_C1=on does the same")
     ap.add_argument("--dry-run", action="store_true", help="evaluate into a throwaway ledger dir")
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now) if a.now else datetime.now(timezone.utc)
@@ -136,6 +150,18 @@ def main(argv=None) -> int:
     print(f"run_id={run_id} ledger_dir={ledger_dir}")
     print("written:", dict(res["written"]))
     print("skipped:", dict(res["skipped"]))
+    if a.c1 or os.environ.get("PM_PROPS_C1", "off").lower() == "on":      # default OFF; activation is an operator-dated proposal
+        from prediction_market_bot.pregame_shadow import nba_engine_props_c1_forecaster as C1
+        fc1 = C1.NBAEnginePropsC1(games, pl, load_tips(tips_path), None)
+        fc1.out_lookup = _c1_out_lookup(fc1)
+        c1_dir = ledger_dir.parent / "PREGAME_SHADOW_EXP047_C1" if not a.dry_run else ledger_dir / "c1"
+        r1 = run_once(forecaster=fc1, cells=CELLS, list_markets=ad.list_series_markets_raw,
+                      kickoff_for=lambda ev: fc1.kickoff_for_event(ev), ledger_dir=c1_dir, run_id=run_id,
+                      now_utc=now, code_sha=code_sha(),
+                      raw_filter=lambda m: F.parse_market_ticker(m.get("ticker", "")) is not None,
+                      only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
+                      props_for=_props_supply(games, pl))
+        print(f"C1 ledger_dir={c1_dir} written:", dict(r1["written"]))
     return 0
 
 

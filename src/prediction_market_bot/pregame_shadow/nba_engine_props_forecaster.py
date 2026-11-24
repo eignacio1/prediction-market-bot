@@ -101,6 +101,7 @@ class NBAEngineProps:
         self.games, self.pl, self.tips = games, player_rows, tips      # tips: (ET date, frozenset{a,b}) -> tip UTC
         self._draws: dict = {}
         self._split: dict = {}
+        self._tag: tuple = ()          # extra cache-key part for subclasses whose split depends on more than the base inputs
 
     def tip_for(self, parsed: dict) -> Optional[datetime]:
         return self.tips.get((parsed["game_date"], frozenset((parsed["home"], parsed["away"]))))
@@ -133,6 +134,10 @@ class NBAEngineProps:
         out.sort(key=lambda x: (-x[0], x[1]))
         return out[:ROTATION]
 
+    def _mu(self, ros: list, p: dict) -> dict:
+        """Per-player expected stats fed to the split. EXP-047: the plain trailing averages (C1 overrides this one hook)."""
+        return {s: [r[2][s] for r in ros] for s in P.STATS}
+
     def _game_draws(self, p: dict):
         key = (p["game_date"], p["home"], p["away"])
         if key not in self._draws:
@@ -154,10 +159,10 @@ class NBAEngineProps:
         h, a = self._game_draws(p)
         pts = h if p["team"] == p["home"] else a
         names = [n for _, n, _ in ros]
-        key = (p["game_date"], p["home"], p["away"], p["team"], p["stat"])
+        key = (p["game_date"], p["home"], p["away"], p["team"], p["stat"]) + self._tag
         if key not in self._split:
-            R = P.TeamRoster(tuple(names), {s: [r[2][s] for r in ros] for s in P.STATS}, float(pts.mean()))
-            seed = int(hashlib.sha256("|".join(key).encode()).hexdigest()[:8], 16) % 99991
+            R = P.TeamRoster(tuple(names), self._mu(ros, p), float(pts.mean()))
+            seed = int(hashlib.sha256("|".join(key[:5]).encode()).hexdigest()[:8], 16) % 99991
             kw = {"rest": {**P.DEFAULT_REST, "points": POINTS_REST}} if p["stat"] == "points" else {}
             self._split[key] = P.player_draws(pts, R, p["stat"], np.random.default_rng(seed), **kw)[0]
         d = self._split[key]
