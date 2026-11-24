@@ -1,0 +1,111 @@
+{
+ "status": "DRAFT, not a schema; first trait_reliability rows (class 3), NBA regular seasons, fitted 2016-2022 only",
+ "source": "12_EXPLORATORY/pam_stability/results.json",
+ "prereg_sha": "16fcd204d5e41995c761d8e3d27b71c121024620",
+ "rows": [
+  {
+   "stat": "points",
+   "unit": "minutes",
+   "r_split_half": 0.9364534635967517,
+   "r_full": 0.9671840622055448,
+   "r_year_to_year_descriptive": 0.8688395557369574,
+   "k": 60.10269995218529,
+   "k_90ci": [
+    55.77490977443577,
+    64.84395952786561
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "rebounds",
+   "unit": "minutes",
+   "r_split_half": 0.9701312531868951,
+   "r_full": 0.9848392096898169,
+   "r_year_to_year_descriptive": 0.9441171007675827,
+   "k": 27.269351099650788,
+   "k_90ci": [
+    24.961517816521013,
+    29.447159368683426
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "assists",
+   "unit": "minutes",
+   "r_split_half": 0.9670716434372733,
+   "r_full": 0.9832602149125654,
+   "r_year_to_year_descriptive": 0.9097535657003257,
+   "k": 30.157803327847574,
+   "k_90ci": [
+    27.59634354274767,
+    32.606930678332596
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "threes",
+   "unit": "minutes",
+   "r_split_half": 0.9299603648076592,
+   "r_full": 0.9637092882996481,
+   "r_year_to_year_descriptive": 0.891482625193745,
+   "k": 66.70643543370875,
+   "k_90ci": [
+    60.91157458051872,
+    71.17952291282894
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "blocks",
+   "unit": "minutes",
+   "r_split_half": 0.922813706696201,
+   "r_full": 0.9598576330951888,
+   "r_year_to_year_descriptive": 0.9018593856437723,
+   "k": 74.08229821404706,
+   "k_90ci": [
+    66.29627913308111,
+    80.62917270283613
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "steals",
+   "unit": "minutes",
+   "r_split_half": 0.737043186578398,
+   "r_full": 0.848618148671611,
+   "r_year_to_year_descriptive": 0.7774834713585064,
+   "k": 315.9946940109014,
+   "k_90ci": [
+    280.34009990146563,
+    342.6088817631903
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "mpg",
+   "unit": "games",
+   "r_split_half": 0.9761139263992588,
+   "r_full": 0.9879126029721045,
+   "r_year_to_year_descriptive": null,
+   "k": 0.821042732732454,
+   "k_90ci": [
+    0.759508109631479,
+    0.8734998943069784
+   ],
+   "n_player_seasons": 1876
+  },
+  {
+   "stat": "ft_pct",
+   "unit": "attempts",
+   "r_split_half": 0.8750474370709677,
+   "r_full": 0.9333603190731952,
+   "r_year_to_year_descriptive": 0.8971441240606701,
+   "k": 23.28223608175696,
+   "k_90ci": [
+    19.16373366967917,
+    27.12766258139776
+   ],
+   "n_player_seasons": 550
+  }
+ ]
+}
