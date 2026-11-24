@@ -1362,3 +1362,4 @@
 | 2026-11-24T00:58:35Z | W124.2 | CLOSED — merge confirmed, HEAD (b56348c) is ancestor of origin/main — H-MEAS-1 closing-price calibration per family — PR 558 merged; CLV licensed in 1 of 50 cells |
 | 2026-11-24T01:04:17Z | B-118..B-119 | SW-9 Wave 124 close + Wave 125 (execution as a decision, every routed row to a leaf, pot of gold + favourite-longshot arm, engine-consistent props). PURPOSE: EXECUTION E2, D6, B4, D5(b) |
 | 2026-11-24T01:14:20Z | TBD | W125.1 placement as a decision. PURPOSE: EXECUTION E2/E3 - net per filled bet per arm + fill/adverse-selection model; placement policy per arm behind switch |
+| 2026-11-24T00:29:08Z | W124.4 | W124.4 dense capture; PURPOSE: PROOF P3 data for H1/H3/H4 |
