@@ -1,10 +1,10 @@
 # Gaps by Arm — GENERATED (do not hand-edit)
 
-Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 320 of 343 are auto and unreviewed.
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 321 of 344 are auto and unreviewed.
 
-**Counts:** Core=233 (135 OPEN), MLB=53 (19 OPEN), NBA=37 (18 OPEN), NHL=20 (9 OPEN) — 343 live gaps.
+**Counts:** Core=234 (136 OPEN), MLB=53 (19 OPEN), NBA=37 (18 OPEN), NHL=20 (9 OPEN) — 344 live gaps.
 
-## Core (233)
+## Core (234)
 
 - GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
 - GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
@@ -239,6 +239,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1959 — OPEN · MEDIUM _(auto)_: No box task deploys code: a newly merged box task fails until someone pulls over ssh (W121.1)
 - GG-2005 — OPEN · LOW _(auto)_: PAM has no point-in-time player-state table; four of the five attribute classes are state, not classification
 - GG-2006 — OPEN · MEDIUM _(auto)_: The demo-fill stall alarm watches the pre-router order path; the live arm-order path has no stall alarm
+- GG-2008 — OPEN · LOW _(auto)_: RIDE board demo caps (500 per event, 150 per day) are copies of real-money constants with no derivation of the
 
 ## MLB (53)
 

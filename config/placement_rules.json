@@ -1,0 +1,1 @@
+{"rules": {}, "note": "W125.1: frozen by a reviewed commit from the placement_fill_read result; empty until a cell has >= 20 games and a measured reason. Never written by the running bot (Hard Rule 4)."}
