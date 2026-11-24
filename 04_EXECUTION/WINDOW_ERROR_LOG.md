@@ -267,3 +267,5 @@ GG-2003..GG-2007 were appended to GOVERNANCE_GAP_LOG.md without running `scripts
 index is current") failed on every main push from 00:43Z to 01:02Z, while three W124 PRs were trying to land. Fix: regenerated (pushed).
 Rule: any GG entry the window writes is followed by `python3 scripts/generate_gap_arm_index.py` and the four Docs Guard checks
 (rolling_backlog --check, gg_id_uniqueness_check, generate_gap_arm_index --check, runtime_registry check) before pushing.
+
+- 2026-11-23 W125.4: window skipped Step 0 (session_guard.sh and claim_session.sh) at block start; no SESSION_CLAIMS row existed for the session until close. Rule: run guard + claim before the first edit, even when the block is pasted ready-made.

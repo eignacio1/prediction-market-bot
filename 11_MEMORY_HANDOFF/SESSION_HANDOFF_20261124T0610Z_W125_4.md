@@ -1,3 +1,21 @@
+# W125.4 session handoff — session-meta
+
+<!-- session-meta
+task_id: W125.4
+tier: STANDARD
+timestamp: 2026-11-24T06:10:00Z
+commit: 5314fd9
+one_line_summary: W125.4 EXP-047-C1 lineup-cross usage shift on NBA props built (default off); retro INDETERMINATE, points improves, parked.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D1, D5(b)
+gap_delta: D5(b) NBA-10 consumers 1 -> 2 (SEATS/nba.toml @ 5314fd9); D1 unchanged (not activated)
+pattern_sweep: usage_missing/creator_out consumers grep src/ scripts/ tests/ 12_EXPLORATORY/ -> only factors_applied.py, routed via missing_usage(); exploratory-fence write_text pattern checked in run_retro.py (fixed d00374a).
+surface_delta: 0
+-->
+
 # W125.4 handoff — lineup-cross usage shift reaches NBA props
 branch: session/20261124T011335Z-w125-4-lineup-cross-props · PR #561 · prereg 437975c (before any outcome read)
 

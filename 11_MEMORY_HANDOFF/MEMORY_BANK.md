@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-24T05:55:00Z (W125.1 — W125.1 placement: fill model read on box (3,214 orders, none supported); rules switch OFF; GG-2008 registered.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0600Z_W125_1.md` for full session detail.
+**Last reviewed:** 2026-11-24T06:10:00Z (W125.4 — W125.4 EXP-047-C1 lineup-cross usage shift on NBA props built (default off); retro INDETERMINATE, points improves, parked.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0610Z_W125_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
