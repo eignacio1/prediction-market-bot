@@ -1366,3 +1366,4 @@
 | 2026-11-24T00:44:12Z | W124.4 | MERGED: NO — branch `session/20261124T002053Z-w124-4-dense-capture` awaiting merge — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged (commit `15ddfb4`) |
 | 2026-11-24T01:18:11Z | B-118,B-024 | W125.3 H-EDGE-5 FLB + pot of gold per leaf. PURPOSE: PROOF P2, BREADTH B4 |
 | 2026-11-24T00:46:20Z | W124.3 | MERGED: NO — branch `session/20261124T002040Z-w124-3-exec-fills` awaiting merge — W124.3 H-EXEC-4 pre-registered before any forward fill was read; COLLECTING, first look 2026-12-01; PR #554 unmerged (guard red on main). (commit `820cc6e`) |
+| 2026-11-24T05:53:45Z | W125.1 | CLOSED — W125.1 placement: fill model read on box (3,214 orders, none supported); rules switch OFF; GG-2008 registered. (commit `cedbf5e`) |

@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: W125.1
+tier: STANDARD
+timestamp: 2026-11-24T05:55:00Z
+commit: cedbf5e
+one_line_summary: W125.1 placement: fill model read on box (3,214 orders, none supported); rules switch OFF; GG-2008 registered.
+gg_touched: GG-2008
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION
+gap_measure: E2, E3
+gap_delta: none (descriptive; best cell 11 settled-filled games vs 20 bar; box result 20261124T0544Z)
+pattern_sweep: grep MAX_DAILY_LOSS_PCT/_HARD_LIMITS in src/ -> arm path clean, ride_orders.py 500/150 left, registered GG-2008
+surface_delta: 0 (read-only box task and default-off switch only; no cron/service)
+-->
 # SESSION HANDOFF W125.1 - placement as a decision (closed)
 vision_pillar: EXECUTION E2 / E3 (net per filled bet with fee actually charged; adverse selection) - measured, descriptive, no cell supported
 gap_measure: fill model live on the box (3,214 post-epoch arm orders, 0 unknown fill status); best cell 11 settled-filled games vs the 20 bar

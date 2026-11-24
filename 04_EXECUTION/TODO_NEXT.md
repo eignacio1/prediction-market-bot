@@ -11,7 +11,8 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-24T00:50:00Z (W124.1 — W124.1 merged (PR 557): variance tools + power ledger; P3 dated looks 2 -> 9 of 18 hypotheses.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0050Z_W124_1.md` for full session detail.
+**Last reviewed:** 2026-11-24T05:55:00Z (W125.1 — W125.1 placement: fill model read on box (3,214 orders, none supported); rules switch OFF; GG-2008 registered.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0600Z_W125_1.md` for full session detail.
+**Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-18T06:12:00Z (GA-6 — GA-6 gap burner: OPEN gaps 272 -> 173 (window triage applied, 4 hook/probe fixes, 5 code fixes), pushed.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261118_0612_GA.md` for full session detail.
