@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from pathlib import Path
 from statistics import NormalDist
 
@@ -21,6 +22,9 @@ from scipy import stats as sps
 from scipy.optimize import minimize_scalar
 
 from prediction_market_bot.quant.inference import mde_paired
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out  # noqa: E402
 
 STATS = ["points", "rebounds", "assists", "threes"]
 LADDER = {"points": [10, 15, 20, 25, 30], "rebounds": [4, 6, 8, 10, 12], "assists": [2, 4, 6, 8, 10], "threes": [1, 2, 3, 4, 5]}
@@ -418,7 +422,8 @@ def main(argv=None) -> int:
     res["data_report"] = data_report(a.root, seasons)
     res["columns_used"] = SRC_COLS | {"minutes": "minutes", "date": "schedule.game_date", "team": "team_id", "player": "person_id"}
     path = a.out if a.final else a.out.with_name("smoke_results.json")
-    path.write_text(json.dumps(res, indent=1, default=float) + "\n")
+    with open(safe_out(path.resolve()), "w") as fh:
+        fh.write(json.dumps(res, indent=1, default=float) + "\n")
     print(json.dumps({k: res[k] for k in ("verdict", "pooled", "n_stats_positive", "k", "k_min")}, indent=1, default=float))
     return 0
 
