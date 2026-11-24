@@ -1,4 +1,21 @@
 # Handoff W124.1 — variance tools and the power ledger (Sonnet)
+
+<!-- session-meta
+task_id: W124.1
+tier: STANDARD
+timestamp: 2026-11-24T00:50:00Z
+commit: 55f89f5
+one_line_summary: W124.1 merged (PR 557): variance tools + power ledger; P3 dated looks 2 -> 9 of 18 hypotheses.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P3
+gap_delta: P3 dated judgeable looks 2 -> 9 of 18 covered (power_ledger.json @ 2668336)
+pattern_sweep: grepped src/ scripts/ tests/ 12_EXPLORATORY for duplicate SE/MDE helpers; extended quant/variance.py, all exploratory writes via _fence.safe_out; no defect fixed otherwise
+surface_delta: 0
+-->
+
 PR #557 merged (2668336). Test job green on the rebased head.
 
 MEASURE MOVED: PROOF P3 — hypotheses with a dated judgeable look, 2 → 9 of 18 covered (power_ledger.json). H-EXEC-2 gets a date only if H-MEAS-1 licenses CLV (R is the 15:00Z game-morning line, not the close, so CLV here is descriptive).
