@@ -25,4 +25,7 @@ Read live (scripts/muse_check.py first; then STATUS.md tail, "For Earl's Monday 
     its concurrent runs and keep browser headroom for snapshots.
 10. **Bot side:** does the bot have an intake path for every new family Muse is writing? If not, register the task.
 
+**Emergency channel (found 2026-11-23 / 11-24):** Earl's messages still reach Muse and are acted on while the app shows "Out of
+usage" (11-24 15:10 PT urgent fix applied to all 175 job files). Use it only for perishable breakage; it is not a reason to skip this list.
+
 Write ONE message covering every item that needs Muse to act. Then tell Earl what was checked and what was not.
