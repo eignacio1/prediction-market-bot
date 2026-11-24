@@ -1,0 +1,2 @@
+task = "archive_dense_readback"
+note = "W125.2 Part 0: read-only budget gate dry run at today disk; install NOT run"

@@ -1,0 +1,2 @@
+task = "d6_trace_read"
+note = "W125.2 Part C retry: first run exit 255 (ssh) with no output"

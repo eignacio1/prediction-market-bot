@@ -1363,3 +1363,4 @@
 | 2026-11-24T01:04:17Z | B-118..B-119 | SW-9 Wave 124 close + Wave 125 (execution as a decision, every routed row to a leaf, pot of gold + favourite-longshot arm, engine-consistent props). PURPOSE: EXECUTION E2, D6, B4, D5(b) |
 | 2026-11-24T01:14:20Z | TBD | W125.1 placement as a decision. PURPOSE: EXECUTION E2/E3 - net per filled bet per arm + fill/adverse-selection model; placement policy per arm behind switch |
 | 2026-11-24T01:18:11Z | B-118,B-024 | W125.3 H-EDGE-5 FLB + pot of gold per leaf. PURPOSE: PROOF P2, BREADTH B4 |
+| 2026-11-24T00:46:20Z | W124.3 | MERGED: NO — branch `session/20261124T002040Z-w124-3-exec-fills` awaiting merge — W124.3 H-EXEC-4 pre-registered before any forward fill was read; COLLECTING, first look 2026-12-01; PR #554 unmerged (guard red on main). (commit `820cc6e`) |
