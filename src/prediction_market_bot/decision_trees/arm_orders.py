@@ -270,9 +270,18 @@ def act(row: dict, client: Any, now: Optional[datetime] = None, log: Optional[Pa
         return out(SKIP_EVENT, dec.reason, meta=dec.meta, stake_usd=stake)
     price_yes = dec.mid_price
     placement = "rest_touch"  # ADR-0072 rule. W116.2: the per-arm choice runs only when ARM_PLACEMENT_POLICY=on (default off)
-    if plc.is_on(pol.switch_value(plc.SWITCH_ENV)):
+    sw = pol.switch_value(plc.SWITCH_ENV)
+    if plc.is_on(sw) or plc.is_rules(sw):  # W125.1: "rules" = the table first, then the measured rules; "current"/unset = today
         bk = dec.meta or {}
-        p = plc.place(arm, base.get("leaf_id"), side, float(bk["yes_bid"]), float(bk["yes_ask"]), "on", order_key=rid)
+        if plc.is_rules(sw):
+            from prediction_market_bot.c5_execution.placement import fill_model as _fm, model as _pm
+            fam = _fm.family_of(str(ticker).split("-")[0])
+            spr = round(float(bk["yes_ask"]) - float(bk["yes_bid"]), 4)
+            p = plc.place_rules(arm, base.get("leaf_id"), side, float(bk["yes_bid"]), float(bk["yes_ask"]), fam,
+                                _pm.hours_bucket(row.get("horizon_hours_to_start")), _pm.spread_bucket(spr), "rules",
+                                order_key=rid)
+        else:
+            p = plc.place(arm, base.get("leaf_id"), side, float(bk["yes_bid"]), float(bk["yes_ask"]), "on", order_key=rid)
         base["placement_reason"] = p.reason
         if p.option == "no_place":
             return out(SKIP_EVENT, "placement_no_place", meta=dec.meta, stake_usd=stake)

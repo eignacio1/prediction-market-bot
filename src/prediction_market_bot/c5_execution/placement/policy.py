@@ -107,6 +107,65 @@ def place(arm: str, leaf: Optional[str], side: str, yes_bid: float, yes_ask: flo
     return Placement(opt, px, why)
 
 
+# ---- W125.1 Part B: measured per-(arm, family, hours, spread) rules, behind ARM_PLACEMENT_POLICY=rules -----------------------
+# Values of the switch: "current" (the default; also unset or anything but "on"/"rules") = today's order path, untouched; "on" =
+# the W116.2 frozen table above; "rules" = the table FIRST (so EXP-W119.3's FADE 50/50 assignment keeps winning where it names a
+# cell), then the frozen rules file. Nothing here turns itself on: activation is a dated proposal for the window (demo only).
+RULES_ENV = "ARM_PLACEMENT_RULES"
+DEFAULT_RULES = Path(__file__).resolve().parents[4] / "config" / "placement_rules.json"
+RULE_MIN_GAMES = 20
+
+
+def is_rules(value: Optional[str] = None) -> bool:
+    v = os.environ.get(SWITCH_ENV, "") if value is None else value
+    return str(v).strip().lower() == "rules"
+
+
+def load_rules(path: Optional[Path] = None) -> Optional[dict]:
+    """{"rules": {"<arm>|<family>|<hours>|<spread>": {"option", "reason", "n_games", "net", "ci"}}} or None."""
+    p = Path(path or os.environ.get(RULES_ENV) or DEFAULT_RULES)
+    try:
+        t = json.loads(p.read_text())
+    except (OSError, ValueError):
+        return None
+    return t if isinstance(t, dict) and isinstance(t.get("rules"), dict) else None
+
+
+def rule_choice(arm: str, family: str, hours_b: str, spread_b: str, rules: Optional[dict]) -> tuple:
+    """(option, reason). Most specific key first (arm|family|hours|spread, then without spread, then arm|family|hours). A rule applies
+    only with a measured ``reason`` and >= RULE_MIN_GAMES games; otherwise rest_touch."""
+    if rules is None:
+        return "rest_touch", "no_rules"
+    for key in (f"{arm}|{family}|{hours_b}|{spread_b}", f"{arm}|{family}|{hours_b}|*", f"{arm}|{family}|*|*"):
+        c = rules["rules"].get(key)
+        if (isinstance(c, dict) and c.get("option") in OPTIONS and c.get("reason")
+                and (c.get("n_games") or 0) >= RULE_MIN_GAMES):
+            return c["option"], f"rule:{key}"
+    return "rest_touch", "default_rest_touch"
+
+
+def place_rules(arm: str, leaf: Optional[str], side: str, yes_bid: float, yes_ask: float, family: str, hours_b: str, spread_b: str,
+                switch_value: Optional[str] = None, table: Optional[dict] = None, rules: Optional[dict] = None,
+                order_key: Optional[str] = None) -> Placement:
+    """Switch not "rules" -> the W116.2 path (``place``). "rules": a table cell (W119.3 included, incl. its control arm) decides
+    first; only when the table has nothing for this arm/leaf do the measured rules apply. A cross or inside price that is not
+    available falls back to the touch; no_place returns no price."""
+    if not is_rules(switch_value):
+        return place(arm, leaf, side, yes_bid, yes_ask, "on" if is_on(switch_value) else "off", table, None, order_key)
+    t = table if table is not None else load_table(None)
+    opt, why = choice(arm, leaf, t, order_key)
+    if why not in ("default_rest_touch", "no_table"):
+        px = price_for(opt, side, yes_bid, yes_ask)
+        if opt == "rest_inside" and px is None:
+            return Placement("rest_touch", price_for("rest_touch", side, yes_bid, yes_ask), "inside_not_room")
+        return Placement(opt, px, why)
+    opt, why = rule_choice(arm, family, hours_b, spread_b, rules if rules is not None else load_rules(None))
+    px = price_for(opt, side, yes_bid, yes_ask)
+    if opt == "rest_inside" and px is None:
+        return Placement("rest_touch", price_for("rest_touch", side, yes_bid, yes_ask), "inside_not_room")
+    return Placement(opt, px, why)
+
+
 def table_from_options(options: dict) -> dict:
     """The frozen table's cells from placement.model.option_table output (``by`` = arm or arm|leaf). Only cells whose best
     option is supported are written; an unsupported cell is left out and stays rest_touch."""
