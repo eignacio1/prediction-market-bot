@@ -99,7 +99,13 @@ def main():
         items = re.findall(r"^- \*\*(.*)$", m.group(1), re.M)
         open_items = sum(1 for it in items if not re.search(r"RULED|RESOLVED|PLACED|CLOSED|DONE", it))
 
+    try:
+        size_gb = json.loads(gh(f"repos/{REPO}"))["size"] / 1024 / 1024
+    except Exception:  # noqa: BLE001
+        size_gb = -1.0
     findings = []
+    if size_gb >= 4.0:
+        findings.append(f"REPO SIZE: {size_gb:.1f} GB (GitHub strongly recommends under 5 GB).")
     if not commits:
         findings.append("DARK: 0 commits in the last 24h.")
     if unclaimed < FLOOR:
@@ -115,7 +121,7 @@ def main():
 
     if not findings:
         print(f"Muse OK - {len(commits)} commits/24h, {unclaimed:,} unclaimed, snapshots today/yesterday: {snap_line}, "
-              f"{open_items} open questions.")
+              f"{open_items} open questions, repo {size_gb:.2f} GB.")
         return 0
     print(findings[0].split(":")[0])
     for f in findings:
