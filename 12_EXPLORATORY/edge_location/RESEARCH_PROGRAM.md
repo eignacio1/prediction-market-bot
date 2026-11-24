@@ -63,5 +63,5 @@ deliberately open: it is filled as data and priority allow.
 | H3 | NOT SUPPORTED on NBA injury / starter news (repriced < 1 min); NBA confirmations, NFL inactives UNDERPOWERED | Props and spreads around news (H1 x H3); trade prints forward (W124.4) | 2026-11-20 |
 | H4 | NOT SUPPORTED, parked (R&D): 0 of 18 cells, gross negative before adverse selection | Reopen on 5-min snapshots (W124.4) or a lower fee | 2026-11-20 |
 | H-MEAS-1 | Ran 11-23 (#558): CLV LICENSED in 1 of 50 families (MLB F3); 19 NOT LICENSED (10 miscalibrated), 30 UNDERPOWERED | Retest as games accrue; licensed families score on CLV | 2026-11-23 |
-| H5 favourite-longshot (H-EDGE-5) | STATED from H-MEAS-1: close slope > 1 on NHL ML 1.71, NBA ML 1.26, NHL TT 1.10 | W125.3 on the 2025-26 Kalshi history | 2026-11-23 |
+| H5 favourite-longshot (H-EDGE-5) | NOT SUPPORTED, parked (R&D): 0 of 7 testable cells; favourite gross positive in 5 buckets, below one round cost (W125.3 #563) | Reopen on 2026-27 rows at a finer close, or more team-total seasons | 2026-11-24 |
 | H5+ | open | — | — |

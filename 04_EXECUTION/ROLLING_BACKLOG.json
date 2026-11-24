@@ -1,6 +1,6 @@
 {
   "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
-  "as_of": "2026-11-23",
+  "as_of": "2026-11-24",
   "ranking": [
     "1 market-anchored pricing (10-21)",
     "2 one engine per sport (10-13)",
@@ -28,30 +28,6 @@
   },
   "tickets": [
     {
-      "id": "B-095",
-      "status": "NOW",
-      "lane": "execution",
-      "rank": "execution",
-      "title": "Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed",
-      "measure": "E1-E3 per arm; expected net per placement option",
-      "why": "fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders",
-      "source": "SW-9 Fable review 2026-11-16",
-      "wave": "125.1",
-      "order": 1
-    },
-    {
-      "id": "B-113",
-      "status": "NOW",
-      "lane": "EXECUTION",
-      "rank": "fills",
-      "title": "H-EXEC-4: do filled orders beat the close net of the fee actually charged? Paired by arm, pooled, forward-judged - pre-registered on PR #554 (first look 12-01); lands in 125.1 Part 0",
-      "measure": "E2: net per filled bet with interval, per arm",
-      "why": "Operator 11-20 13:43 PT: \"intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing.\"",
-      "source": "operator 2026-11-20 13:43 PT",
-      "wave": "125.1",
-      "order": 2
-    },
-    {
       "id": "B-104",
       "status": "NOW",
       "lane": "D6",
@@ -60,68 +36,56 @@
       "measure": "D6 NFL 0 -> N on the box",
       "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
       "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
-      "wave": "125.2",
-      "order": 3
-    },
-    {
-      "id": "B-114",
-      "status": "NOW",
-      "lane": "PROOF",
-      "rank": "data",
-      "title": "Dense capture: props from listing, 5-min snapshots in the last 3 h, Kalshi trade prints forward (install needs operator approval by name) - built on PR #556; lands in 125.2 Part 0; its gate refused the install at 74% disk",
-      "measure": "props games / week into H1; snapshot spacing for H4; prints for H3",
-      "why": "Operator 11-20 13:43 PT: \"intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing.\"",
-      "source": "operator 2026-11-20 13:43 PT",
-      "wave": "125.2",
-      "order": 4
-    },
-    {
-      "id": "B-118",
-      "status": "NOW",
-      "lane": "PROOF",
-      "rank": "arms / edge",
-      "wave": "125.3",
-      "title": "H-EDGE-5 favourite-longshot at the close: pre-registered on the 2025-26 Kalshi history (never judged), net of fee + half spread, per family x price bucket; routes RIDE-favourite / NO-longshot leaves if supported",
-      "measure": "PROOF P2: first verdict on a priced inefficiency; arms routed by it",
-      "why": "Operator 11-23 17:01 PT: \"give me 4 for the next wave. Align your backlog to ensure we're taking care of the right tickets\"; H-MEAS-1 (#558) slopes NHL ML 1.71 [1.21, 2.21], NBA ML 1.26, NHL TT 1.10",
-      "source": "12_EXPLORATORY/edge_location/meas_close/RESULT.md",
-      "order": 5
-    },
-    {
-      "id": "B-024",
-      "order": 6,
-      "status": "NOW",
-      "lane": "engine",
-      "rank": "8",
-      "title": "Pot of gold as an ARM of the tree (big hitters, longshots, parlays), scored per leaf and routed - not a phase after the standard board (operator 11-05: \"we should have the pot of gold decision trees routed in too\"); W110.4 built the same-game correlation, W111.3 scores the longshot branches per leaf",
-      "measure": "-",
-      "why": "Operator 11-05: \"we should have the pot of gold decision trees routed in too\" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08).",
-      "source": "CLAUDE.md north star",
-      "wave": "125.3"
+      "wave": "126.1",
+      "order": 1
     },
     {
       "id": "B-116",
       "status": "NOW",
       "lane": "D5",
       "rank": "PAM class 1",
-      "title": "One NBA engine across props and game lines: the NBA-10 lineup-cross usage shift reaches player props as a pre-registered EXP-047 challenger (GG-2003)",
+      "title": "NBA props engine stat by stat: EXP-047-C2 stat-specific usage redistribution (C1 improved points, hurt rebounds / assists / threes) (GG-2003)",
       "measure": "D1 personnel / availability on the props arm; D5(b) class 1 in props",
       "why": "D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
-      "wave": "125.4",
-      "order": 7
+      "wave": "126.2",
+      "order": 2
     },
     {
       "id": "B-018",
-      "order": 8,
-      "status": "NEXT",
+      "order": 3,
+      "status": "NOW",
       "lane": "engine",
       "rank": "2",
       "title": "MLB engine (pitch-level store) before spring",
       "measure": "D4 MLB none -> data layer",
       "why": "MLB has no engine; spring training starts in February; next depth lane after 125.4.",
       "source": "ADR-0073; Muse R-082 / R-083",
-      "wave": "before spring"
+      "wave": "126.3"
+    },
+    {
+      "id": "B-024",
+      "order": 4,
+      "status": "NOW",
+      "lane": "engine",
+      "rank": "8",
+      "title": "Pot of gold as an ARM of the tree, now: Kalshi combo (parlay) markets priced from the engine joint draws and logged (KXMVENBASINGLEGAME etc.); longshot leaves scored per leaf (0 of 18 earned, W125.3)",
+      "measure": "-",
+      "why": "Operator 11-05: \"we should have the pot of gold decision trees routed in too\" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08); D-09 \"beating buddy off his phone placing parlays, that's the first step\".",
+      "source": "CLAUDE.md north star",
+      "wave": "126.4"
+    },
+    {
+      "id": "B-013",
+      "order": 5,
+      "status": "NOW",
+      "lane": "engine",
+      "rank": "3",
+      "title": "NFL engine: factors applied to team totals and alternate lines from the line (market-anchored adjustments)",
+      "measure": "NFL factors applied with a measured skill weight",
+      "why": "Board v2 matches Kalshi's ladders; the factors have so far added nothing from the line (85.1, 94.2).",
+      "source": "93.4, 94.2",
+      "wave": "126.5"
     },
     {
       "id": "B-119",
@@ -133,7 +97,7 @@
       "measure": "PROOF P3: props / 5-min / trade-print data for H1, H3, H4",
       "why": "124.4 gate refused at 74% disk (projected 93.9%)",
       "source": "PR #556",
-      "order": 9
+      "order": 6
     },
     {
       "id": "B-115",
@@ -145,7 +109,7 @@
       "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "124.5",
-      "order": 10
+      "order": 7
     },
     {
       "id": "B-110",
@@ -157,7 +121,7 @@
       "why": "Operator 11-20 10:10 PT: \"a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D) listed in comprehensive detail\"",
       "source": "operator 2026-11-20 10:10 PT",
       "wave": "123.5",
-      "order": 11
+      "order": 8
     },
     {
       "id": "B-117",
@@ -169,7 +133,7 @@
       "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "",
-      "order": 12
+      "order": 9
     },
     {
       "id": "B-096",
@@ -181,11 +145,11 @@
       "why": "no mid-week correction reached Muse since 11-12",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (window)",
-      "order": 13
+      "order": 10
     },
     {
       "id": "B-017",
-      "order": 14,
+      "order": 11,
       "status": "NEXT",
       "lane": "flex",
       "rank": "plumbing",
@@ -205,7 +169,7 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "folded into B-098",
-      "order": 15
+      "order": 12
     },
     {
       "id": "B-063",
@@ -217,7 +181,7 @@
       "why": "107.2 could not see under 20 minutes; H3 parked 11-20; needs forward trade prints (B-114 install) first",
       "source": "SW-9 W107 close",
       "wave": "123.3 (H3)",
-      "order": 16
+      "order": 13
     },
     {
       "id": "B-073",
@@ -229,23 +193,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 17
-    },
-    {
-      "id": "B-013",
-      "order": 18,
-      "status": "LATER",
-      "lane": "engine",
-      "rank": "3",
-      "title": "NFL engine: factors applied to team totals and alternate lines from the line (market-anchored adjustments)",
-      "measure": "NFL factors applied with a measured skill weight",
-      "why": "Board v2 matches Kalshi's ladders; the factors have so far added nothing from the line (85.1, 94.2).",
-      "source": "93.4, 94.2",
-      "wave": ""
+      "order": 14
     },
     {
       "id": "B-014",
-      "order": 19,
+      "order": 15,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -257,7 +209,7 @@
     },
     {
       "id": "B-015",
-      "order": 20,
+      "order": 16,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -269,7 +221,7 @@
     },
     {
       "id": "B-016",
-      "order": 21,
+      "order": 17,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -281,7 +233,7 @@
     },
     {
       "id": "B-021",
-      "order": 22,
+      "order": 18,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -293,7 +245,7 @@
     },
     {
       "id": "B-001",
-      "order": 23,
+      "order": 19,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -305,7 +257,7 @@
     },
     {
       "id": "B-008",
-      "order": 24,
+      "order": 20,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -317,7 +269,7 @@
     },
     {
       "id": "B-022",
-      "order": 25,
+      "order": 21,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -329,7 +281,7 @@
     },
     {
       "id": "B-023",
-      "order": 26,
+      "order": 22,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -341,7 +293,7 @@
     },
     {
       "id": "B-025",
-      "order": 27,
+      "order": 23,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -350,6 +302,58 @@
       "why": "Breadth outran proof; expansion ranks last.",
       "source": "ranking 10-27",
       "wave": ""
+    },
+    {
+      "id": "B-095",
+      "status": "DONE",
+      "lane": "execution",
+      "rank": "execution",
+      "title": "Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed",
+      "measure": "E1-E3 per arm; expected net per placement option",
+      "why": "fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders",
+      "source": "SW-9 Fable review 2026-11-16",
+      "wave": "125.1",
+      "order": 24,
+      "outcome": "W125.1 #560: fill model on 3,214 orders; no placement rule supported (best cell 11 settled-filled games vs 20); switch stays current; revisit at the 12-01 H-EXEC-4 look"
+    },
+    {
+      "id": "B-113",
+      "status": "DONE",
+      "lane": "EXECUTION",
+      "rank": "fills",
+      "title": "H-EXEC-4: do filled orders beat the close net of the fee actually charged? Paired by arm, pooled, forward-judged - pre-registered on PR #554 (first look 12-01); lands in 125.1 Part 0",
+      "measure": "E2: net per filled bet with interval, per arm",
+      "why": "Operator 11-20 13:43 PT: \"intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing.\"",
+      "source": "operator 2026-11-20 13:43 PT",
+      "wave": "125.1",
+      "order": 25,
+      "outcome": "W124.3 #554: H-EXEC-4 pre-registered; first look 2026-12-01 (O'Brien-Fleming)"
+    },
+    {
+      "id": "B-114",
+      "status": "DONE",
+      "lane": "PROOF",
+      "rank": "data",
+      "title": "Dense capture: props from listing, 5-min snapshots in the last 3 h, Kalshi trade prints forward (install needs operator approval by name) - built on PR #556; lands in 125.2 Part 0; its gate refused the install at 74% disk",
+      "measure": "props games / week into H1; snapshot spacing for H4; prints for H3",
+      "why": "Operator 11-20 13:43 PT: \"intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing.\"",
+      "source": "operator 2026-11-20 13:43 PT",
+      "wave": "125.2",
+      "order": 26,
+      "outcome": "W124.4 #556 merged; install pending operator approval (B-119) after the 126.1 gate read"
+    },
+    {
+      "id": "B-118",
+      "status": "DONE",
+      "lane": "PROOF",
+      "rank": "arms / edge",
+      "wave": "125.3",
+      "title": "H-EDGE-5 favourite-longshot at the close: pre-registered on the 2025-26 Kalshi history (never judged), net of fee + half spread, per family x price bucket; routes RIDE-favourite / NO-longshot leaves if supported",
+      "measure": "PROOF P2: first verdict on a priced inefficiency; arms routed by it",
+      "why": "Operator 11-23 17:01 PT: \"give me 4 for the next wave. Align your backlog to ensure we're taking care of the right tickets\"; H-MEAS-1 (#558) slopes NHL ML 1.71 [1.21, 2.21], NBA ML 1.26, NHL TT 1.10",
+      "source": "12_EXPLORATORY/edge_location/meas_close/RESULT.md",
+      "order": 27,
+      "outcome": "W125.3 #563: H-EDGE-5 NOT SUPPORTED (0 of 7 testable cells; favourite gross positive, below one round cost); parked for R&D"
     },
     {
       "id": "B-111",
