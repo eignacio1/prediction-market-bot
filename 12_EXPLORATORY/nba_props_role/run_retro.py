@@ -94,7 +94,7 @@ def boot(dsum, dcnt, rng):
 
 
 def main(root, out):
-    root, out = Path(root), safe_out(out)
+    root, out = Path(root), safe_out(HERE / out)
     reg, tips, pb = load(root)
     inj = W.load_inj()
     rows, diag, nodata = [], [], dict(no_report=0, games=0, dnp_excluded=0, name_unmatched=0)
@@ -187,7 +187,6 @@ def main(root, out):
     dg = pd.DataFrame(diag)
     res["out_reliability"] = {int(s): dict(n=int(len(g)), p_played=float(g.played.mean())) for s, g in dg.groupby("season")} if len(dg) else {}
     (out / "RESULT.json").write_text(json.dumps(res, indent=1, sort_keys=True))
-    df.to_csv(out / "rows.csv.gz", index=False)
     print(json.dumps(res["stats"], indent=1), res["verdict"])
 
 
