@@ -104,6 +104,9 @@ def main():
     except Exception:  # noqa: BLE001
         size_gb = -1.0
     findings = []
+    hb = [l for l in status.splitlines() if l.startswith("HEARTBEAT ") and l[10:30] >= since]
+    if not hb and now.strftime("%Y-%m-%dT%H") >= "2026-11-24T18":  # Earl's 11-23 rule: every run ends with a HEARTBEAT line
+        findings.append("NO HEARTBEAT: no HEARTBEAT line in STATUS.md in the last 24h (11-23 rule 6).")
     if size_gb >= 4.0:
         findings.append(f"REPO SIZE: {size_gb:.1f} GB (GitHub strongly recommends under 5 GB).")
     if not commits:
@@ -121,7 +124,7 @@ def main():
 
     if not findings:
         print(f"Muse OK - {len(commits)} commits/24h, {unclaimed:,} unclaimed, snapshots today/yesterday: {snap_line}, "
-              f"{open_items} open questions, repo {size_gb:.2f} GB.")
+              f"{open_items} open questions, repo {size_gb:.2f} GB, {len(hb)} heartbeats.")
         return 0
     print(findings[0].split(":")[0])
     for f in findings:
