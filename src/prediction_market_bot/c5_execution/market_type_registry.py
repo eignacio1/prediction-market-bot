@@ -124,6 +124,15 @@ class MarketType(Enum):
     NBA_GAME_TOTAL = "nba_game_total"
     NBA_TEAM_TOTAL = "nba_team_total"
 
+    # W125.3 (B-024, pot of gold = an arm of the same tree): Kalshi's public /multivariate_event_collections lists
+    # combo (parlay) markets, checked 2026-11-23: KXMVENBASINGLEGAME (196 per-game collections), KXMVENFLSINGLEGAME,
+    # KXMVESPORTSMULTIGAMEEXTENDED, KXMVECROSSCATEGORY (+ SHARD1). REGISTERED, NOT BUILT: no engine prices them yet
+    # (Wave 110 built the same-game correlation they need). Series only; no ticker grammar, no cells beyond NOT_IMPLEMENTED.
+    NBA_SAME_GAME_COMBO = "nba_same_game_combo"
+    NFL_SAME_GAME_COMBO = "nfl_same_game_combo"
+    MULTIGAME_COMBO = "multigame_combo"
+    CROSS_CATEGORY_COMBO = "cross_category_combo"
+
 
 # Series ticker is a property of the market family, not of (family, band) — the
 # same series is evaluated by whichever band's decision tree fires on it.
@@ -160,6 +169,11 @@ _SERIES_TICKER_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NBA_SPREAD: "KXNBASPREAD",
     MarketType.NBA_GAME_TOTAL: "KXNBATOTAL",
     MarketType.NBA_TEAM_TOTAL: "KXNBATEAMTOTAL",
+    # W125.3: combo (parlay) series, registered not built.
+    MarketType.NBA_SAME_GAME_COMBO: "KXMVENBASINGLEGAME",
+    MarketType.NFL_SAME_GAME_COMBO: "KXMVENFLSINGLEGAME",
+    MarketType.MULTIGAME_COMBO: "KXMVESPORTSMULTIGAMEEXTENDED",
+    MarketType.CROSS_CATEGORY_COMBO: "KXMVECROSSCATEGORY",
 }
 
 
@@ -199,6 +213,10 @@ _SPORT_BY_MARKET_TYPE: dict[MarketType, str] = {
     MarketType.NBA_SPREAD: "nba",
     MarketType.NBA_GAME_TOTAL: "nba",
     MarketType.NBA_TEAM_TOTAL: "nba",
+    MarketType.NBA_SAME_GAME_COMBO: "nba",
+    MarketType.NFL_SAME_GAME_COMBO: "nfl",
+    MarketType.MULTIGAME_COMBO: "multi",       # spans sports; no sport engine owns it
+    MarketType.CROSS_CATEGORY_COMBO: "multi",
 }
 
 # Fail-closed enforcement (ADR-0056 §2's enforcement clause): a MarketType
@@ -902,6 +920,12 @@ for _mt in _NBA_ENGINE_PROP_TYPES:
 # KXNBAPTS pre-game shadow only (evaluate-and-log). The pre-existing T4_IN_PLAY cell above stays DARK and untouched.
 for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
     _cells.append(MarketTypeCell(MarketType.NBA_PLAYER_POINTS, _band, CellStatus.NOT_IMPLEMENTED))
+
+# --- W125.3 combo (parlay) families: T1/T2/T3 seeded NOT_IMPLEMENTED (registered, not built) ---
+for _market_type in (MarketType.NBA_SAME_GAME_COMBO, MarketType.NFL_SAME_GAME_COMBO,
+                     MarketType.MULTIGAME_COMBO, MarketType.CROSS_CATEGORY_COMBO):
+    for _band in (ExecutionBand.T1_MULTI_DAY, ExecutionBand.T2_SAME_DAY, ExecutionBand.T3_PRE_TIP):
+        _cells.append(MarketTypeCell(_market_type, _band, CellStatus.NOT_IMPLEMENTED))
 
 
 MARKET_TYPE_REGISTRY: dict[CellKey, MarketTypeCell] = {

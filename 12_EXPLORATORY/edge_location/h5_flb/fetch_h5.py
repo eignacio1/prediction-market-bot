@@ -41,27 +41,41 @@ def starts():
     json.dump(out, open(safe_out(os.path.join(DATA, "starts_2025_26.json")), "w"))
 
 
-def candles(series, market_file, nba_nfl_start_json):
+def candles(series, market_file, nba_nfl_start_json, workers=24):
+    """Parallel + resumable. Only markets whose event start is in the 2025-26 window (PREREG population cut-offs, widened a day)."""
     from datetime import datetime
+    from concurrent.futures import ThreadPoolExecutor
+    import threading
     st = json.load(open(nba_nfl_start_json))
+    lo = int(datetime(2025, 9, 3).timestamp()); hi = int(datetime(2026, 4, 18).timestamp())
     rows = [json.loads(l) for l in open(market_file)]
     outp = safe_out(os.path.join(DATA, f"candles_{series}.jsonl"))
     done = set()
     if os.path.exists(outp):
         done = {json.loads(l)["ticker"] for l in open(outp)}
-    n = 0
-    with open(outp, "a") as f:
-        for r in rows:
-            e, t = r["event_ticker"], r["ticker"]
-            if e not in st or t in done:
-                continue
-            s = int(datetime.fromisoformat(st[e].replace("Z", "+00:00")).timestamp())
-            d = get(f"/historical/markets/{t}/candlesticks?start_ts={s - 8 * 3600}&end_ts={s + 3600}&period_interval=60")
-            time.sleep(0.25)
-            f.write(json.dumps({"ticker": t, "event": e, "start": st[e], "candlesticks": (d or {}).get("candlesticks", []), "ok": d is not None}) + "\n")
-            n += 1
-            if n % 200 == 0:
-                f.flush(); print(series, n, flush=True)
+    todo = []
+    for r in rows:
+        e, t = r["event_ticker"], r["ticker"]
+        if e not in st or t in done:
+            continue
+        s = int(datetime.fromisoformat(st[e].replace("Z", "+00:00")).timestamp())
+        if lo <= s < hi:
+            todo.append((t, e, s))
+    lock, cnt = threading.Lock(), [0]
+    f = open(outp, "a")
+
+    def one(x):
+        t, e, s = x
+        d = get(f"/historical/markets/{t}/candlesticks?start_ts={s - 8 * 3600}&end_ts={s + 3600}&period_interval=60")
+        line = json.dumps({"ticker": t, "event": e, "start": st[e], "candlesticks": (d or {}).get("candlesticks", []), "ok": d is not None}) + "\n"
+        with lock:
+            f.write(line); cnt[0] += 1
+            if cnt[0] % 200 == 0:
+                f.flush(); print(series, cnt[0], "of", len(todo), flush=True)
+    print(series, "todo", len(todo), flush=True)
+    with ThreadPoolExecutor(workers) as ex:
+        list(ex.map(one, todo))
+    f.close()
 
 
 if __name__ == "__main__":

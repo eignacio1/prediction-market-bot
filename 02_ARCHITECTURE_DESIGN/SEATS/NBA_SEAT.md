@@ -55,3 +55,6 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nba.toml`. This file is generated
 | nba_player_threes | T1 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
 | nba_player_threes | T2 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
 | nba_player_threes | T3 | shadow | src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved) | B3 |
+| nba_same_game_combo | T1 | not_implemented | none | — |
+| nba_same_game_combo | T2 | not_implemented | none | — |
+| nba_same_game_combo | T3 | not_implemented | none | — |

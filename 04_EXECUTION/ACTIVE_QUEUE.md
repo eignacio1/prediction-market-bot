@@ -109,7 +109,7 @@ backlog had let slide behind measurement: execution as a decision (Fable's 115.2
 |---|---|---|---|---|---|
 | 125.1 | EXECUTION | Placement as a decision: fill and adverse-selection model per arm from real fills, placement policy per arm, settled P&L per filled bet net of fee; lands H-EXEC-4 (#554) | Sonnet | ⬜ | |
 | 125.2 | D6 / router | Every routed row reaches a leaf: break down and fix the 6,340 router ERROR skips (GG-2007), stall alarm on the arm path (GG-2006), NFL cells to seven layers; lands dense capture (#556) | Sonnet | ⬜ | |
-| 125.3 | ARMS / EDGE | H-EDGE-5 favourite-longshot on the 2025-26 Kalshi history (pre-registered, never judged) + the pot of gold scored per leaf with the FLB split | Sonnet | ⬜ | |
+| 125.3 | ARMS / EDGE | H-EDGE-5 favourite-longshot on the 2025-26 Kalshi history (pre-registered, never judged) + the pot of gold scored per leaf with the FLB split | Sonnet | ✅ 11-24: H-EDGE-5 NOT SUPPORTED; 0 of 18 judged leaves EARNED; combos registered | W125_3 handoff |
 | 125.4 | DEPTH / engine | One NBA engine prices props and game lines consistently: the lineup-cross usage shift (NBA-10, applied on game lines) reaches player props as a pre-registered challenger | Sonnet | ⬜ | |
 
 - **Pushback:** the FLB read comes from 119-126 games per family and a calibration test, not a betting test; after fee and spread the

@@ -385,3 +385,27 @@ status = "shadow"
 serving_model = "src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (NBA engine draws, W109.3 / EXP-047; install not yet approved)"
 factors = ["B3"]
 evidence = "05_RESEARCH_EXPERIMENTS/EXP047_NBA_ENGINE_PROPS_SHADOW_PREREGISTRATION_2026-11-10.md"
+
+[[cell]]
+market = "nba_same_game_combo"
+band = "T1"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_same_game_combo"
+band = "T2"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
+
+[[cell]]
+market = "nba_same_game_combo"
+band = "T3"
+status = "not_implemented"
+serving_model = "none"
+factors = []
+evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
