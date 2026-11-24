@@ -1364,3 +1364,4 @@
 | 2026-11-24T01:14:20Z | TBD | W125.1 placement as a decision. PURPOSE: EXECUTION E2/E3 - net per filled bet per arm + fill/adverse-selection model; placement policy per arm behind switch |
 | 2026-11-24T00:29:08Z | W124.4 | W124.4 dense capture; PURPOSE: PROOF P3 data for H1/H3/H4 |
 | 2026-11-24T00:44:12Z | W124.4 | MERGED: NO — branch `session/20261124T002053Z-w124-4-dense-capture` awaiting merge — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged (commit `15ddfb4`) |
+| 2026-11-24T01:18:11Z | B-118,B-024 | W125.3 H-EDGE-5 FLB + pot of gold per leaf. PURPOSE: PROOF P2, BREADTH B4 |
