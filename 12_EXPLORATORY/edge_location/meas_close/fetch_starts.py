@@ -4,7 +4,7 @@ import json, os, sys, time, urllib.error, urllib.request
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 from _fence import safe_out  # noqa: E402
 B = "https://api.elections.kalshi.com/trade-api/v2"
-TYPES = {"basketball_game", "football_game", "hockey_game", "baseball_game"}
+TYPES = {"basketball_game", "football_game", "hockey_game", "hockey_match", "baseball_game"}
 
 
 def get(p):
