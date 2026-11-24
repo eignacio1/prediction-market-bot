@@ -13,8 +13,9 @@ import argparse, json, math, os, sys
 from datetime import date, timedelta
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "src"))
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 from prediction_market_bot.quant import variance as V  # noqa: E402
+from _fence import safe_out  # noqa: E402
 
 Z90 = 1.6448536269514722
 SEASON = {  # (end, next start): calendar facts used only to flag that a date falls out of season
@@ -159,9 +160,13 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--out", required=True); ap.add_argument("--md")
     ap.add_argument("--meas", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "variance_measurements.json")); ap.add_argument("--asof", default="2026-11-23")
     a = ap.parse_args(); meas = json.load(open(a.meas)); led = build(date.fromisoformat(a.asof), meas)
-    json.dump(led, open(a.out, "w"), indent=1)
+    o = safe_out(a.out)
+    with open(o, "w") as f:
+        json.dump(led, f, indent=1)
     if a.md:
-        open(a.md, "w").write(md(led, meas))
+        m = safe_out(a.md)
+        with open(m, "w") as f:
+            f.write(md(led, meas))
     print(json.dumps(led["p3"]))
 
 
