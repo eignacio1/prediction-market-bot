@@ -256,3 +256,8 @@ on it: CLAIMS.md still holds 1,711 QUEUE chunks and every run since 11-20 11:09 
 window did not re-check between 11-20 and 11-23. Fix: the order goes in Earl's Monday message as item 0 (the rule "anything Muse must act
 on goes in my message to it, never in a file it fetches" is the reason); the window checks CLAIMS.md growth at every wave close and on any
 day Muse runs without a new chunk range.
+
+### W63 — 2026-11-23 16:21 PT · Queue edited in the repo, file card not re-sent
+124.5 was added to ACTIVE_QUEUE.md and pushed, but the file card in chat was not re-sent, so the operator's copy had four blocks.
+Operator: "124.5 wasn't in the Active Queue - again, please ensure you're updating the one in our chat". Rule: every queue edit ends with
+SendUserFile of ACTIVE_QUEUE.md in the same turn.
