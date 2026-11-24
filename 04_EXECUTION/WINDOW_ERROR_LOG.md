@@ -269,3 +269,10 @@ Rule: any GG entry the window writes is followed by `python3 scripts/generate_ga
 (rolling_backlog --check, gg_id_uniqueness_check, generate_gap_arm_index --check, runtime_registry check) before pushing.
 
 - 2026-11-23 W125.4: window skipped Step 0 (session_guard.sh and claim_session.sh) at block start; no SESSION_CLAIMS row existed for the session until close. Rule: run guard + claim before the first edit, even when the block is pasted ready-made.
+
+### W65 — 2026-11-23 22:39 PT · Muse fixes found one push at a time instead of up front
+Earl asked "is it all set?" / "anything else?" four times between 21:38 and 22:37 PT; each answer surfaced more (claim order, late-tip
+snapshots, Thanksgiving slates, source-failure rule, repo size, heartbeat). Operator: "Man why is it that I had to keep pressing you
+for you to keep coming up with this shit." Cause: the window checked that the reported problem was fixed rather than running a full
+failure-mode and value pass before the first message, on the one day Muse can be reached. Fix: 04_EXECUTION/MUSE_MONDAY_CHECKLIST.md,
+run in full before writing any Monday message; one message, not a drip.
