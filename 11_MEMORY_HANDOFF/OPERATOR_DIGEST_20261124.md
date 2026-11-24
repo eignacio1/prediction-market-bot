@@ -10,3 +10,6 @@ We built the tools that tell us how many more games each open question needs, an
 - **Found:** 3,214 orders since 11-12. The best cell has 11 settled-filled games against the bar of 20, so no placement rule is supported yet. Momentum fills most. Fade, ride and model-fade rarely fill. Markouts at +5 and +30 min are within 2¢ of zero.
 - **Caps:** the day and event caps removed 13,237 orders. One leftover real-money copy sits in the RIDE board caps ($500 / $150). It is registered as GG-2008 and starves nothing today.
 - **Needs you:** nothing. Turning the rules on is a dated proposal in RESULT.md, waiting on 20 games per cell.
+
+## W125.3 — favourite-longshot test and pot of gold (11-24)
+Plain English: we tested whether Kalshi favourites are underpriced and longshots overpriced across last season's NHL and NBA games. After costs, they are not, so that idea is closed for now and parked for later research. Nothing else closed. The pot-of-gold bets were also scored leaf by leaf on this season's games: none has earned a place yet, and 15 are routed away. One NBA favourite bucket looked good but on too few bets to trust, so it gets watched going forward. Kalshi does offer parlays, so those are now registered, not built. Pillar moved: PROOF (2 verdicts). Real money at risk: zero. One question for you: OK to fix the pot-of-gold wording in the backlog file?
