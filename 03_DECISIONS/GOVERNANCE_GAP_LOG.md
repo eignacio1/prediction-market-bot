@@ -5127,3 +5127,8 @@ SW-9, 2026-11-24 00:50 UTC. healthcheck 11 (`pregame_shadow/demo_fill_stall.py`)
 
 SW-9, 2026-11-24. arm_orders_read 20261124T0040Z, post-epoch: arm ERROR skips NBA 6,037, NFL 206, NHL 97. Rows the router could not route are placed nothing and never reach a leaf, so they are missing from every per-leaf score. Cause not read (the result is truncated at 30 kB and has no reason breakdown). Task: break ERROR skips down by reason and cell, fix or register each.
 
+
+### GG-2008 — RIDE board demo caps (500 per event, 150 per day) are copies of real-money constants with no derivation of their own
+**Status:** OPEN · **Severity:** LOW
+
+SW-9, W125.1 Part C, 2026-11-24. `decision_trees/ride_orders.py:40-41` hard-codes `DEMO_BOOK_EVENT_CAP_USD = 500.00` and `DEMO_BOOK_DAY_CAP_USD = 150.00`; the comments say they were `risk._HARD_LIMITS` and notional x `MAX_DAILY_LOSS_PCT` "same value", and `tests/test_ride_orders.py:103` pins them. That is the GG-1935 pattern (a demo cap borrowing a real-money constant). Today it starves nothing: `RIDE_BOARD_ORDERS` is OFF by default and absent from `deploy/`. The arm-order book already has its own derivation (`c4_risk_engine/arm_sizing.py`, BASE 5/50/25 and RAISED 25/2500/1500). Fix when the ride board's orders are proposed on: derive the caps from orders per day at the flat stake, as W116.2 did, and re-pin the test. No number changed in this block.
