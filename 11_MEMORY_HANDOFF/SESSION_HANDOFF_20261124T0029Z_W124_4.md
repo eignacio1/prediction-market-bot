@@ -1,4 +1,20 @@
 # Session handoff — W124.4 dense capture (Sonnet) — 20261124T0029Z
+
+<!-- session-meta
+task_id: W124.4
+tier: MICRO
+timestamp: 2026-11-24T00:29:00Z
+commit: 15ddfb4
+one_line_summary: W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P3
+gap_delta: none until installed
+pattern_sweep: box_tasks writers set, runtime registry, cron mirror, disk_retention POLICY checked; no other defect fixed
+surface_delta: +3 (paused cron components archive_dense props/games/prints, registered)
+-->
 Common rules read first: origin fetched; line 1 of COMMON_RULES_W124.md = "# Wave 124 common rules". Branch session/20261124T002053Z-w124-4-dense-capture.
 
 ## Result in one line
