@@ -52,6 +52,7 @@ TASKS: dict[str, str] = {
     "arm_orders_read": f"{PY} scripts/arm_orders_read.py",  # W114.2 B-090, read-only: arm-order log counts + E1-E3 per arm, split by the GG-1771 epoch
     "placement_fill_read": f"{PY} scripts/placement_fill_read.py",  # W125.1 B-095/B-113, read-only: fill model per arm x family x hours + skip-reason counts, compact (<60KB)
     "capacity_read": f"{PY} scripts/capacity_read.py",  # W121.3 B-097, read-only: fillable size per cell and arm from logged depth
+    "router_error_read": f"{PY} scripts/router_error_read.py",  # W125.2 GG-2007, read-only: ERROR / UNROUTED arm skips by exception, cell, date
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
     "candidate_arms_read": f"{PY} scripts/candidate_arms_read.py",  # W120.2, read-only: shadow rows carrying candidate-map arms, per sport
     "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers
