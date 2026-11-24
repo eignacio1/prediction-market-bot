@@ -20,6 +20,9 @@ Read live (scripts/muse_check.py first; then STATUS.md tail, "For Earl's Monday 
 7. **Capacity:** archive repo size and growth per week vs 4 GB; largest file vs 50 MB.
 8. **Usage pressure:** perishable snapshots first if usage runs short.
 9. **Monitoring:** the nightly check ran clean last night (list_triggers last_run); HEARTBEAT lines present.
+11. **Load:** for every family moved up the claim order, how many browser page reads one chunk needs (per-game page families are
+    the heaviest) and whether parallel runs on it can starve the snapshot jobs. Never point the whole queue at a per-page family; cap
+    its concurrent runs and keep browser headroom for snapshots.
 10. **Bot side:** does the bot have an intake path for every new family Muse is writing? If not, register the task.
 
 Write ONE message covering every item that needs Muse to act. Then tell Earl what was checked and what was not.

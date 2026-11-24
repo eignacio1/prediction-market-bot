@@ -276,3 +276,12 @@ snapshots, Thanksgiving slates, source-failure rule, repo size, heartbeat). Oper
 for you to keep coming up with this shit." Cause: the window checked that the reported problem was fixed rather than running a full
 failure-mode and value pass before the first message, on the one day Muse can be reached. Fix: 04_EXECUTION/MUSE_MONDAY_CHECKLIST.md,
 run in full before writing any Monday message; one message, not a drip.
+
+### W66 — 2026-11-24 15:07 PT · The window's own claim order jammed Muse's browser; snapshots late, today's NBA lineups at risk
+The 11-23 night "two last adjustments" message put NBA lineups + refs history (C-2042..C-2131, Basketball-Reference per-game box scores,
+a month per chunk, two reads per page) at the top of the claim order. Dozens of parallel runs flooded Muse's browser ("browser backlog
+full (64)" from ~14:52Z); snapshot jobs queue behind the same browser, so the 10:00 PT refs snapshots landed ~14:40 PT and no NBA lineup
+snapshot had run by 15:07 PT. Queue throughput fell to ~15 chunks in 8 h. The checklist (MUSE_MONDAY_CHECKLIST.md) had no item for the
+load a family puts on the browser, and the window did not ask. Operator had said the night before: "I'm gonna be so mad if something
+broke that could have been prevented last night". Fix: emergency message (stop B2 claims, snapshots preempt above a backlog of 32);
+checklist item 11 below; muse_check alarms on a snapshot type with no file after its first slot and on snapshot lag.
