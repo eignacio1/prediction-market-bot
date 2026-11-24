@@ -107,6 +107,20 @@ def main():
     hb = [l for l in status.splitlines() if l.startswith("HEARTBEAT ") and l[10:30] >= since]
     if not hb and now.strftime("%Y-%m-%dT%H") >= "2026-11-24T18":  # Earl's 11-23 rule: every run ends with a HEARTBEAT line
         findings.append("NO HEARTBEAT: no HEARTBEAT line in STATUS.md in the last 24h (11-23 rule 6).")
+    # W66 (2026-11-24): the browser jam, late snapshots and a stalled queue were all visible in STATUS.md and nothing alarmed.
+    recent_jam = [l for l in status.splitlines()[-1500:] if "backlog full" in l]
+    if recent_jam:
+        findings.append(f"BROWSER JAM: {len(recent_jam)} 'backlog full' note(s) in the newest STATUS entries; snapshots queue behind it.")
+    claims_24h = sum(1 for c in commits if c["commit"]["message"].startswith("CLAIM C-"))
+    done_24h = sum(1 for c in commits if c["commit"]["message"].startswith("DONE C-"))
+    if commits and done_24h < 40:
+        findings.append(f"SLOW QUEUE: {done_24h} chunks DONE in 24h ({claims_24h} claims); normal is ~150.")
+    pt_hour = pt.hour + pt.minute / 60
+    first_slot = {"nba lineups": 12.5, "nba refs": 7.0, "nhl goalies": 8.0, "nhl refs": 7.0}
+    for key, h in first_slot.items():
+        t, _ = snaps.get(key, (0, 0))
+        if pt_hour >= h + 1.5 and t == 0:
+            findings.append(f"SNAPSHOT LATE: no {key} file for {day} and its first slot ({int(h)}:{int((h % 1) * 60):02d} PT) was >90 min ago (confirm the league plays today).")
     if size_gb >= 4.0:
         findings.append(f"REPO SIZE: {size_gb:.1f} GB (GitHub strongly recommends under 5 GB).")
     if not commits:
