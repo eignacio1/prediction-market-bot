@@ -1,5 +1,21 @@
 # Session handoff - W124.5 H-DEPTH-PAM-3 run (2026-11-24 00:40 UTC)
 
+<!-- session-meta
+task_id: W124.5
+tier: MICRO
+timestamp: 2026-11-24T00:40:00Z
+commit: 05aeb8a
+one_line_summary: W124.5 H-DEPTH-PAM-3 judged run on NBA props: SUPPORTED (pooled D +0.00201, 4/4 stats); PR 555 test green
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) class 3 NBA player level, D3
+gap_delta: D5(b) class 3 NBA: absent -> interpreted; D3 +1 challenger (12_EXPLORATORY/pam_stability/RESULT.md @ 05aeb8a)
+pattern_sweep: grep write_text( in 12_EXPLORATORY/ -> only run_pam3.py bypassed _fence.safe_out, fixed 12b54cc
+surface_delta: 0
+-->
+
 COMMON_RULES_W124 first line, quoted: "# Wave 124 common rules".
 
 ## Result
@@ -31,3 +47,8 @@ directive_conflicts: none found (read-only research code, no live path).
 surface_delta: 0 (no cron, service, workflow or box change; one test file, one exploratory script).
 pattern_sweep: exploratory-write fence checked (tests/test_exploratory_isolation.py caught a bare write_text; fixed to safe_out); grep of 12_EXPLORATORY for other write_text uses outside this block not done (out of scope).
 Hard limits / Kelly: untouched. No real capital.
+
+## Close-out
+- Strategic decisions: none (verdict only; no threshold or doctrine change).
+- One thing pending: operator go-ahead to merge PR 555. `test` green; `guard` red on `generate_gap_arm_index.py --check`, which fails on main too (pre-existing, not this PR).
+- Resume: read 12_EXPLORATORY/pam_stability/RESULT.md; next is a pre-registered EXP-047 challenger (shrunk mu) in a later wave.
