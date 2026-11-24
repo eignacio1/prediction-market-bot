@@ -1,0 +1,2 @@
+task = "demo_fill_rearm_check"
+note = "SW-9: health WARN demo-fill stall, 0 demo orders in 24h while arms logged rows"
