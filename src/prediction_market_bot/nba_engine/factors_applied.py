@@ -23,6 +23,7 @@ import pandas as pd
 from prediction_market_bot.nba_engine import decision_tree as D
 from prediction_market_bot.nba_engine import engine_v2 as V
 from prediction_market_bot.nba_engine import engine_v3 as V3
+from prediction_market_bot.nba_engine.usage_redistribution import missing_usage
 
 # name -> (target, class, hours-to-tip at/below which knowable, granularity-index id, description)
 GROUPS: Dict[str, Tuple[str, ...]] = {
@@ -128,9 +129,9 @@ def usage_missing(df: pd.DataFrame) -> pd.DataFrame:
     ``df``: game_id, team_id, share, p_play (probability the listed status plays). The B11 cross: a creator absence moves more
     than the same share spread over several absorbers."""
     d = df.dropna(subset=["share", "p_play"]).copy()
-    d["miss"] = d["share"] * (1.0 - d["p_play"])
+    d["miss"] = missing_usage(d["share"], d["p_play"])
     g = d.groupby(["game_id", "team_id"])
-    top = d.loc[g["share"].idxmax()].assign(creator_out=lambda x: x["share"] * (1.0 - x["p_play"]))
+    top = d.loc[g["share"].idxmax()].assign(creator_out=lambda x: missing_usage(x["share"], x["p_play"]))
     res = g["miss"].sum().rename("usage_missing").to_frame()
     res["creator_out"] = top.set_index(["game_id", "team_id"])["creator_out"]
     return res.reset_index()
