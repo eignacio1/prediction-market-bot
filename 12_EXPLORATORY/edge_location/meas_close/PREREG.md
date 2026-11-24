@@ -63,3 +63,10 @@ RESULT.md + results.json (per family: n markets / games, slope, intercept, inter
 6 h and 24 h, drop counts), the W123 held-out DESCRIPTIVE table, the orders claim. Registry row H-MEAS-1 in HYPOTHESIS_DOCTRINE II.1.
 LICENSED families may use CLV as a primary outcome in later pre-registrations; NOT LICENSED stay settlement-only. A null here is a
 measurement routing result (hypothesis closed for that family, EXP H-MEAS-1, parked for R&D); no market, arm or cell closes.
+
+## Addendum A1 (2026-11-24, before any settlement was joined; the local order file and fetch checks only)
+- The Mac evidence copy of the arm-order log (1,340 `arm_order` rows, ends 2026-11-18T20:23Z) carries no `start_time_utc` and no fill status
+  (fills are a separate box log). So for the orders claim: start = the milestone start of the order's event (same as the family test), and the
+  "filled orders" second line is NOT run (data limit, stated in RESULT). Everything else in the orders claim stands.
+- Added as DESCRIPTIVE only (not a pass condition): mean(settled gross - CLV) with its game-clustered interval, which is zero when the close is
+  calibrated on our own order mix and is far tighter than the slope.
