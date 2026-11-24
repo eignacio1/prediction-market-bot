@@ -4,7 +4,7 @@ Every Wave 124 block tells the terminal to read this file first. Text below is t
 
 ```
 COMMON RULES - WAVE 124 (TIGHTEN THE MEASUREMENT: SMALLER INTERVALS FROM THE SAME DATA, MORE DATA WHERE IT IS THIN) - SW-9 (read first; they bind this block)
-- THIS WAVE (four blocks, MODEL: Sonnet for all four). Operator 2026-11-20 13:43 PT: "123 finished - intervals are still too wide. Now that
+- THIS WAVE (five blocks, MODEL: Sonnet for all five; 124.5 added 2026-11-23 16:35 PT: the pre-registered PAM class-3 test, H-DEPTH-PAM-3). Operator 2026-11-20 13:43 PT: "123 finished - intervals are still too wide. Now that
   we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing."
   Wave 123 returned H1-H4 NOT SUPPORTED or UNDERPOWERED (12_EXPLORATORY/edge_location/h*/RESULT.md). Most intervals are wide because
   the outcome is settlement: one contract is a coin flip (sd about 0.5), and the effects we chase are 1-2c, so a verdict needs thousands
@@ -278,7 +278,7 @@ COMMON RULES - WAVE 124 (TIGHTEN THE MEASUREMENT: SMALLER INTERVALS FROM THE SAM
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Four blocks run in parallel; ownership is disjoint: 124.1 = src/prediction_market_bot/quant/variance.py (new) + its tests +
+- Five blocks run in parallel; ownership is disjoint: 124.5 = 12_EXPLORATORY/pam_stability/ (PREREG.md is frozen; read-only for 124.5) + its test; 124.1 = src/prediction_market_bot/quant/variance.py (new) + its tests +
   12_EXPLORATORY/edge_location/power_ledger/; 124.2 = 12_EXPLORATORY/edge_location/meas_close/; 124.3 = 12_EXPLORATORY/edge_location/
   exec_fills/; 124.4 = scripts/archive_dense_capture.py + scripts/archive_dense_install.py + their tests + one new allowlist entry in
   scripts/box_tasks.py + its RUNTIME_REGISTRY entry. Analysis blocks are read-only over the price archive, the shadow ledgers, the order

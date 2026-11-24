@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 124 READY TO PASTE - four measurement blocks (Sonnet): 124.1 variance tools + power ledger, 124.2 is the close calibrated (licenses closing-line value), 124.3 our fills vs the close net of fees, 124.4 dense capture (built, install needs approval). Wave 123 closed: H1-H4 not supported / underpowered.**
+> **▶ WAVE 124 READY TO PASTE - five blocks (Sonnet): 124.1 variance tools + power ledger, 124.2 is the close calibrated (licenses closing-line value), 124.3 our fills vs the close net of fees, 124.4 dense capture (built, install needs approval), 124.5 PAM class 3 shrinkage test (NBA props). Wave 123 closed: H1-H4 not supported / underpowered.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,7 +95,7 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 124 · WRITTEN 2026-11-20 ~21:55 UTC (13:55 PT) · SW-9 · four measurement blocks · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 124 · WRITTEN 2026-11-20 ~21:55 UTC (13:55 PT), 124.5 added 2026-11-24 00:35 UTC · SW-9 · five blocks · MODEL: Sonnet · paste each into its own terminal
 
 **Tighten the measurement.** Wave 123 answered all four edge questions. Where it could judge, the answer was no; where it could not, it
 was "not enough data". The intervals are wide for one reason: we score on settlement. One contract is a coin flip (sd about 50c), and
@@ -103,7 +103,8 @@ the effects we chase are 1-2c, so a verdict needs thousands of games. Closing-li
 has an sd of a few cents. If the close is a calibrated price, CLV measures the same thing with far less noise, roughly 50-100x the
 effective sample. This wave tests whether that licence holds (124.2), builds the variance tools and a power ledger that says when each
 open question becomes judgeable (124.1), applies them to the one place W123 showed a positive gross sign, our own fills (124.3), and
-captures denser data where W123 had none (124.4).
+captures denser data where W123 had none (124.4). 124.5 (added 11-23) runs the pre-registered PAM class-3 test: the same
+shrinkage idea applied to player inputs for the NBA props arm.
 
 | # | Hypothesis / build | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
@@ -111,6 +112,7 @@ captures denser data where W123 had none (124.4).
 | 124.2 | H-MEAS-1 | Is the close calibrated per family? If so, CLV is licensed as the primary outcome for that family (231k settled tickers) | Sonnet | ⬜ | |
 | 124.3 | H-EXEC-4 | Do our filled orders beat the close net of the fee actually charged? Paired by arm, pooled across cells; forward-judged | Sonnet | ⬜ | |
 | 124.4 | capture | Dense capture: props from listing, 5-min snapshots in the last 3 h before start, Kalshi trade prints forward. Built, not installed | Sonnet | ⬜ | |
+| 124.5 | H-DEPTH-PAM-3 | PAM class 3: do reliability-shrunk player rates calibrate NBA props better than the arm's raw prior-game means? (PREREG 16fcd204, 2016-22 fit, 2023-25 judged) | Sonnet | ⬜ | |
 
 - **Pushback:** tighter intervals do not create edge. W123's gross effects sit at 0.3-1.4c against a 1-2c round cost; sharper
   measurement may only turn "can't tell" into a clean "no" faster. That is still worth having: it is what lets the router stop paying
@@ -118,7 +120,7 @@ captures denser data where W123 had none (124.4).
   shows calibration, and settlement stays the confirmation.
 - **Surface:** three read-only analysis blocks; one new capture built behind an install that needs your approval by name
   (`archive_dense_install`), surface check first. Disk is the budget: 124.4 states bytes per day before anything ships.
-- **Dependencies:** none at merge. 124.3 pre-registers settlement as its primary outcome and reports CLV as secondary; the next wave may
+- **Dependencies:** none at merge; 124.5 owns 12_EXPLORATORY/pam_stability/ and its test only. 124.3 pre-registers settlement as its primary outcome and reports CLV as secondary; the next wave may
   promote CLV by a dated addendum once 124.2 reports. 124.2 and 124.3 use what is on main in quant/ when they start.
 
 ### 124.1 - MEASUREMENT CORE + POWER LEDGER · MODEL: Sonnet
@@ -248,6 +250,50 @@ Report: per COMMON RULES. MEASURE MOVED: PROOF P3 - none until installed; state 
 spacing for H4, prints for H3).
 END OF BLOCK 124.4
 ```
+
+### 124.5 - H-DEPTH-PAM-3: SHRINKAGE VS RAW MEANS FOR NBA PROPS · MODEL: Sonnet
+
+```
+WAVE 124 - BLOCK 124.5 - RUN H-DEPTH-PAM-3: STABILITY-WEIGHTED SHRINKAGE VS EXP-047's RAW MEANS (NBA PROPS) - MODEL: Sonnet
+PURPOSE: DEPTH D5(b) - PAM class 3 (trait stability) at NBA player level, absent -> interpreted if supported; D3 - a challenger for the
+NBA props arm. Backlog B-115, gap GG-2004.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W124.md` and quote its first line. Those rules
+bind this block. Then read, in order: 12_EXPLORATORY/pam_stability/PREREG.md (FROZEN at 16fcd204 - it is the spec; do not change it, a
+deviation is a dated addendum written before the result it would change), 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md class 3,
+src/prediction_market_bot/pregame_shadow/nba_engine_props_forecaster.py (roster() is the control you replicate),
+src/prediction_market_bot/c1_signal_ingestion/nba_event_store.py, and src/prediction_market_bot/quant/inference.py.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W124_5.md.
+
+PART A - data: build the player box score source locally with the event store's own CLI
+(`python -m prediction_market_bot.c1_signal_ingestion.nba_event_store --only player_box schedule` or the names the module lists; free
+sportsdataverse releases, git-ignored output). Seasons 2016-2025 only (season label = year the season ends). Report row counts per season
+and the columns used (minutes, points, rebounds, assists, threes made, blocks, steals, FT made / attempted). Regular season only.
+
+PART B - code: 12_EXPLORATORY/pam_stability/run_pam3.py, exactly per PREREG §3-§6: EXP-047 eligibility replicated from the box scores,
+control mu, challenger mu (shrunk per-minute rate x shrunk minutes, prior and k rules as written), negative binomial per arm per stat with
+dispersion fitted on 2016-2022 only, the threshold ladder, log-loss and Brier, game-clustered bootstrap (2,000, seed 20261121; use
+quant/inference.py's bootstrap if it fits, else a local one named in the handoff). Known-answer test FIRST (PREREG §6: planted rates and
+reliability recovered; challenger beats raw mean on the simulation; zero-noise case shows no gain), under tests/, CI green.
+
+PART C - run once on the judged seasons 2023, 2024, 2025. Write 12_EXPLORATORY/pam_stability/RESULT.md + results.json quoting the PREREG
+SHA: the verdict by the PREREG rule; D with 90% interval pooled and per stat (BH q 0.10); D by prior-games stratum (4-10, 11-30, 31+);
+the reliability table (r split-half, r year-to-year, k) for points, rebounds, assists, threes AND blocks, steals, FT% beside the operator's
+test figures (0.90 / 0.69 / 0.81, descriptive); the decomposition arm (raw rate x raw minutes); the pre-stated modal outcome vs what
+happened. State the consequence in routing words (PREREG §7): SUPPORTED licenses an EXP-047 challenger (its own pre-registration, a later
+wave) - it is not applied until the router scores it per leaf on net after costs.
+
+PART D - land: PR, CI green, merge. Update the H-DEPTH-PAM-3 row in HYPOTHESIS_DOCTRINE Part II.4 (status, evidence, next) in the same PR.
+If SUPPORTED, append the reliability rows as the first `trait_reliability` draft in
+12_EXPLORATORY/pam_stability/trait_reliability_draft.json (not in src/, no schema built).
+
+Read-only: no live path, model, runner, leaf map, cron line or box change.
+
+Report: per COMMON RULES. MEASURE MOVED: DEPTH D5(b) class 3 NBA player level (absent -> interpreted or unchanged) and D3 (+1 challenger
+if SUPPORTED), with RESULT.md as source.
+END OF BLOCK 124.5
+```
+
 
 
 ## Sequencing track

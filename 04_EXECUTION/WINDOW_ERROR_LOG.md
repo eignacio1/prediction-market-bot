@@ -249,3 +249,10 @@ Addendum A (fill rule: next snapshot <= 15 min) assumed the price archive sample
 rule produced 0 fills and needed a disclosed post-result Addendum B (35-min sensitivity run). The archive's `close_time` is also expiration,
 not game end, so no simulated fill was below 24h. Rule: before freezing a simulation's parameters, measure the input's spacing and fields
 on the real file (one 10-second check), not from handoff prose.
+
+### W62 — 2026-11-23 16:30 PT · Muse watchdog entry not acted on, and not checked for three days
+The 11-20 07:55 PT watchdog "Muse should:" entry (season-back extensions) was written to TO_MUSE.md, a file Muse fetches. Muse never acted
+on it: CLAIMS.md still holds 1,711 QUEUE chunks and every run since 11-20 11:09 UTC is QUEUE EMPTY + re-verification (C-809..C-818). The
+window did not re-check between 11-20 and 11-23. Fix: the order goes in Earl's Monday message as item 0 (the rule "anything Muse must act
+on goes in my message to it, never in a file it fetches" is the reason); the window checks CLAIMS.md growth at every wave close and on any
+day Muse runs without a new chunk range.

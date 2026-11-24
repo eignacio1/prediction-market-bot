@@ -1,6 +1,6 @@
 {
   "about": "The rolling backlog: every piece of work in scope, in one ordered list (operator 2026-10-30 08:26 PT: \"a rolling backlog of tickets ... so you (as well as any future windows) have a birds eye view of what needs to be addressed and we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at once\"). Maintained ONLY by the strategic window, at every wave close and whenever the operator moves a ticket. Terminals never edit it; they report in their handoff and the window moves the ticket. A wave's blocks are drawn from the top of NOW and NEXT by lane. Shown on the Visual Dashboard (/visual).",
-  "as_of": "2026-11-21",
+  "as_of": "2026-11-23",
   "ranking": [
     "1 market-anchored pricing (10-21)",
     "2 one engine per sport (10-13)",
@@ -76,6 +76,18 @@
       "order": 4
     },
     {
+      "id": "B-115",
+      "status": "NOW",
+      "lane": "D5",
+      "rank": "PAM class 3",
+      "title": "Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004)",
+      "measure": "D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047",
+      "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
+      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
+      "wave": "124.5",
+      "order": 5
+    },
+    {
       "id": "B-110",
       "status": "NOW",
       "lane": "PROOF",
@@ -85,7 +97,7 @@
       "why": "Operator 11-20 10:10 PT: \"a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D) listed in comprehensive detail\"",
       "source": "operator 2026-11-20 10:10 PT",
       "wave": "123.5",
-      "order": 5
+      "order": 6
     },
     {
       "id": "B-104",
@@ -97,7 +109,7 @@
       "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
       "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
       "wave": "122.3; recount after the 11-22 / 23 slate",
-      "order": 6
+      "order": 7
     },
     {
       "id": "B-063",
@@ -109,18 +121,6 @@
       "why": "107.2 could not see under 20 minutes",
       "source": "SW-9 W107 close",
       "wave": "123.3 (H3)",
-      "order": 7
-    },
-    {
-      "id": "B-115",
-      "status": "NEXT",
-      "lane": "D5",
-      "rank": "PAM class 3",
-      "title": "Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004)",
-      "measure": "D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047",
-      "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
-      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
-      "wave": "",
       "order": 8
     },
     {
