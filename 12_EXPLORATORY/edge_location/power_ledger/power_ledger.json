@@ -1,0 +1,457 @@
+{
+ "asof": "2026-11-23",
+ "rule": "n needed = games_needed(sd_game,1,0,one round cost), 80% power, one-sided 5%; binding = max(that, minimum n) x fit_mult",
+ "caveats": [
+  "R is the game-morning 15:00Z line, not the close: every CLV figure is descriptive until H-MEAS-1",
+  "settlement sd values are proxies where marked; they come from published intervals, not from re-reading the W123 held-out third",
+  "a tighter interval is not an edge: the ledger dates when a test can judge, not what it will find"
+ ],
+ "rows": [
+  {
+   "id": "H-EDGE-1 NBA props",
+   "status": "UNDERPOWERED",
+   "unit": "games (per family)",
+   "n_now": 14,
+   "yield_per_week": 23.5,
+   "yield_src": "archive KXNBAPTS events/week, last 28 d (upper bound; pre-start capture of props not verified)",
+   "inputs_src": [
+    "PROXY: MLB|prop_hit se 0.0151 x sqrt(57 judged games), h1_attention/results.json; no prop family has a judged row",
+    "PROXY: MLB|prop_hit round_cost, same file"
+   ],
+   "measured": true,
+   "sd_settle": 0.114,
+   "cost": 0.0322,
+   "mde_now": 0.0758,
+   "n_needed_mde": 78,
+   "binding": "effect size",
+   "n_needed": 234,
+   "icc_clv": null,
+   "sd_clv": null,
+   "judgeable": "2027-01-28",
+   "judgeable_note": "in season",
+   "tools": {
+    "control_variate": {
+     "n_needed": 217,
+     "saves": 17,
+     "date": "2027-01-22",
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 232,
+     "saves": 2,
+     "date": "2027-01-27",
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    },
+    "partial_pool": {
+     "n_needed": 227,
+     "saves": 7,
+     "date": "2027-01-25",
+     "caveat": "median post_se/raw_se 0.985 over 8 archive series cells (tau 0.0090); shrinks the per-cell interval, not the pooled estimate"
+    }
+   },
+   "best_tool": {
+    "tool": "control_variate",
+    "n_needed": 217,
+    "saves": 17,
+    "date": "2027-01-22",
+    "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": "2027-01-22"
+  },
+  {
+   "id": "H-EDGE-1 NFL props",
+   "status": "UNDERPOWERED",
+   "unit": "games (per family)",
+   "n_now": 15,
+   "yield_per_week": 6.5,
+   "yield_src": "archive KXNFLPASSYDS events/week, last 28 d",
+   "inputs_src": [
+    "PROXY: as above",
+    "PROXY: as above"
+   ],
+   "measured": true,
+   "sd_settle": 0.114,
+   "cost": 0.0322,
+   "mde_now": 0.0732,
+   "n_needed_mde": 78,
+   "binding": "effect size",
+   "n_needed": 234,
+   "icc_clv": null,
+   "sd_clv": null,
+   "judgeable": "2028-02-09",
+   "judgeable_note": "in-season rate reaches it after the NFL season ends 2027-02-14; resumes 2027-09-09 (opening day + 21.8 wk)",
+   "tools": {
+    "control_variate": {
+     "n_needed": 217,
+     "saves": 17,
+     "date": "2028-01-22",
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 232,
+     "saves": 2,
+     "date": "2028-02-07",
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    },
+    "partial_pool": {
+     "n_needed": 227,
+     "saves": 7,
+     "date": "2028-02-01",
+     "caveat": "median post_se/raw_se 0.985 over 8 archive series cells (tau 0.0090); shrinks the per-cell interval, not the pooled estimate"
+    }
+   },
+   "best_tool": {
+    "tool": "control_variate",
+    "n_needed": 217,
+    "saves": 17,
+    "date": "2028-01-22",
+    "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": "2028-01-22"
+  },
+  {
+   "id": "H-EDGE-3 NBA lineup confirmations",
+   "status": "UNDERPOWERED",
+   "unit": "events",
+   "n_now": 6,
+   "yield_per_week": 4.2,
+   "yield_src": "h3_news/RESULT.md: 6 events per 10 days",
+   "inputs_src": [
+    "h3_news/RESULT.md: +0.25c [-0.42, 1.00], n 6",
+    "h3_news/RESULT.md round cost 2.10c"
+   ],
+   "measured": true,
+   "sd_settle": 0.0106,
+   "cost": 0.021,
+   "mde_now": 0.0107,
+   "n_needed_mde": 2,
+   "binding": "minimum n",
+   "n_needed": 30,
+   "icc_clv": null,
+   "sd_clv": null,
+   "judgeable": "2027-01-02",
+   "judgeable_note": "in season",
+   "tools": {
+    "control_variate": {
+     "n_needed": 28,
+     "saves": 2,
+     "date": "2026-12-30",
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 30,
+     "saves": 0,
+     "date": "2027-01-02",
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    }
+   },
+   "best_tool": {
+    "tool": "control_variate",
+    "n_needed": 28,
+    "saves": 2,
+    "date": "2026-12-30",
+    "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": "2026-12-30"
+  },
+  {
+   "id": "H-EDGE-3 NFL inactives",
+   "status": "UNDERPOWERED",
+   "unit": "games",
+   "n_now": 14,
+   "yield_per_week": 14.0,
+   "yield_src": "one Sunday slate per week IF every game's inactives are captured (12 of 14 on 11-15, 1 on other days)",
+   "inputs_src": [
+    "h3_news/RESULT.md: +0.14c [0.00, 0.29], n 14",
+    "h3_news/RESULT.md round cost 2.00c"
+   ],
+   "measured": true,
+   "sd_settle": 0.0033,
+   "cost": 0.02,
+   "mde_now": 0.0022,
+   "n_needed_mde": 1,
+   "binding": "minimum n",
+   "n_needed": 30,
+   "icc_clv": null,
+   "sd_clv": null,
+   "judgeable": "2026-12-01",
+   "judgeable_note": "in season",
+   "tools": {
+    "control_variate": {
+     "n_needed": 28,
+     "saves": 2,
+     "date": "2026-11-30",
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 30,
+     "saves": 0,
+     "date": "2026-12-01",
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    }
+   },
+   "best_tool": {
+    "tool": "control_variate",
+    "n_needed": 28,
+    "saves": 2,
+    "date": "2026-11-30",
+    "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": "2026-11-30"
+  },
+  {
+   "id": "H-EDGE-4 frozen 15-min quoting rule",
+   "status": "UNDERPOWERED",
+   "unit": "games",
+   "n_now": 0,
+   "yield_per_week": 0.0,
+   "yield_src": "0 simulated fills at the frozen rule (h4_execution/RESULT.md)",
+   "inputs_src": [
+    "PROXY: H-EXEC-2 arm-order interval",
+    "archive NBA/NHL spread round cost at R"
+   ],
+   "measured": true,
+   "sd_settle": 0.4948,
+   "cost": 0.022,
+   "mde_now": null,
+   "n_needed_mde": 3128,
+   "binding": "effect size",
+   "n_needed": 3128,
+   "icc_clv": 0.934,
+   "sd_clv": 0.032,
+   "judgeable": null,
+   "judgeable_note": "yield 0 per week",
+   "tools": {
+    "clv_outcome": {
+     "n_needed": 20,
+     "saves": 3108,
+     "date": null,
+     "caveat": "only where H-MEAS-1 (W124.2) licenses CLV; R here is the game-morning line, not the close"
+    },
+    "control_variate": {
+     "n_needed": 2894,
+     "saves": 234,
+     "date": null,
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 3096,
+     "saves": 32,
+     "date": null,
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    }
+   },
+   "best_tool": {
+    "tool": "clv_outcome",
+    "n_needed": 20,
+    "saves": 3108,
+    "date": null,
+    "caveat": "only where H-MEAS-1 (W124.2) licenses CLV; R here is the game-morning line, not the close"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": null
+  },
+  {
+   "id": "H-EXEC-2 FADE crossing the spread",
+   "status": "UNDERPOWERED",
+   "unit": "games",
+   "n_now": 20,
+   "yield_per_week": 8.24,
+   "yield_src": "20 games since the 2026-11-06 epoch (17 days)",
+   "inputs_src": [
+    "doctrine Part II: +0.166 [-0.016, +0.348], 20 games",
+    "archive NBA/NHL spread/game round cost at R"
+   ],
+   "measured": true,
+   "sd_settle": 0.4948,
+   "cost": 0.022,
+   "mde_now": 0.2751,
+   "n_needed_mde": 3128,
+   "binding": "effect size",
+   "n_needed": 3128,
+   "icc_clv": 0.934,
+   "sd_clv": 0.032,
+   "judgeable": null,
+   "judgeable_note": "377 weeks at the current yield (> 2 years): not judgeable on this outcome",
+   "tools": {
+    "clv_outcome": {
+     "n_needed": 30,
+     "saves": 3098,
+     "date": "2026-12-01",
+     "caveat": "only where H-MEAS-1 (W124.2) licenses CLV; R here is the game-morning line, not the close"
+    },
+    "control_variate": {
+     "n_needed": 2894,
+     "saves": 234,
+     "date": null,
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 3096,
+     "saves": 32,
+     "date": null,
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    }
+   },
+   "best_tool": {
+    "tool": "clv_outcome",
+    "n_needed": 30,
+    "saves": 3098,
+    "date": "2026-12-01",
+    "caveat": "only where H-MEAS-1 (W124.2) licenses CLV; R here is the game-morning line, not the close"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": "2026-12-01"
+  },
+  {
+   "id": "EXP-W119.3 FADE one tick inside",
+   "status": "COLLECTING",
+   "unit": "resolved orders",
+   "n_now": 17,
+   "yield_per_week": 7.0,
+   "yield_src": "17 inside orders since the 2026-11-06 epoch (doctrine: inside 2 / 17)",
+   "inputs_src": [
+    "n/a: outcome is a fill rate; the pre-registration judges at n only",
+    "n/a"
+   ],
+   "measured": true,
+   "sd_settle": null,
+   "cost": null,
+   "mde_now": null,
+   "n_needed_mde": null,
+   "binding": "minimum n (pre-registered); no outcome sd applies",
+   "n_needed": 100,
+   "icc_clv": null,
+   "sd_clv": null,
+   "judgeable": "2027-02-14",
+   "judgeable_note": "in season",
+   "tools": {},
+   "best_tool": null,
+   "dated_by": "computation",
+   "judgeable_with_best_tool": null
+  },
+  {
+   "id": "H-DEPTH-NBA-S1/S2/S4 (best leaf)",
+   "status": "COLLECTING",
+   "unit": "games (per leaf)",
+   "n_now": 16,
+   "yield_per_week": 8.62,
+   "yield_src": "16 games since snapshots began 11-10 (13 days) for that leaf",
+   "inputs_src": [
+    "PROXY: spread of best leaf (+0.155, lower +0.048, 16 games) read as a 90% interval",
+    "archive NBASPREAD round cost at R"
+   ],
+   "measured": true,
+   "sd_settle": 0.1301,
+   "cost": 0.021,
+   "mde_now": 0.0809,
+   "n_needed_mde": 238,
+   "binding": "effect size",
+   "n_needed": 238,
+   "icc_clv": 0.007,
+   "sd_clv": 0.0242,
+   "judgeable": "2027-05-22",
+   "judgeable_note": "in season",
+   "tools": {
+    "clv_outcome": {
+     "n_needed": 30,
+     "saves": 208,
+     "date": "2026-12-04",
+     "caveat": "only where H-MEAS-1 (W124.2) licenses CLV; R here is the game-morning line, not the close"
+    },
+    "control_variate": {
+     "n_needed": 221,
+     "saves": 17,
+     "date": "2027-05-09",
+     "caveat": "variance reduction 0.075 measured on archive CLV; not transferred to settlement"
+    },
+    "paired_within_cluster": {
+     "n_needed": 236,
+     "saves": 2,
+     "date": "2027-05-21",
+     "caveat": "variance reduction 0.0105 measured on GAME-vs-SPREAD CLV; applies only to arm-vs-rule pairs on one game"
+    },
+    "partial_pool": {
+     "n_needed": 231,
+     "saves": 7,
+     "date": "2027-05-17",
+     "caveat": "median post_se/raw_se 0.985 over 8 archive series cells (tau 0.0090); shrinks the per-cell interval, not the pooled estimate"
+    }
+   },
+   "best_tool": {
+    "tool": "clv_outcome",
+    "n_needed": 30,
+    "saves": 208,
+    "date": "2026-12-04",
+    "caveat": "only where H-MEAS-1 (W124.2) licenses CLV; R here is the game-morning line, not the close"
+   },
+   "dated_by": "computation",
+   "judgeable_with_best_tool": "2026-12-04"
+  }
+ ],
+ "cited": [
+  {
+   "id": "EXP-045 NFL engine forward",
+   "judgeable": "2027-01-12",
+   "dated_by": "cited: doctrine Part II (reads 01-12)",
+   "status": "COLLECTING"
+  },
+  {
+   "id": "EXP-044/044b/044c NBA engine blend test",
+   "judgeable": "2027-02-15",
+   "dated_by": "cited: doctrine Part II (blend test 12-29 .. 02-15)",
+   "status": "COLLECTING"
+  },
+  {
+   "id": "H-DEPTH-PAM-3 trait stability",
+   "judgeable": "2026-11-23",
+   "dated_by": "cited: PREREG.md retrospective on stored 2023-25 seasons; a build, not a wait",
+   "status": "PRE-REGISTERED"
+  },
+  {
+   "id": "MLB-2027 (42 cells)",
+   "judgeable": null,
+   "dated_by": "cited: PREREG_2027 power calendar, weeks after opening day (+0.04: totals 2-3, run line 6, moneyline ~34); opening-day date not in the repo",
+   "status": "PRE-REGISTERED"
+  }
+ ],
+ "undated": [
+  {
+   "id": "H-ROUTER-2",
+   "reason": "next look 2026-11-24 is a look, not a judgeable date; per-leaf n and sd are not on disk offline"
+  },
+  {
+   "id": "EXP-W117.1",
+   "reason": "table has 0 cells, so yield per cell is not observable yet"
+  },
+  {
+   "id": "H-DEPTH-NBA-S3 / S5",
+   "reason": "waits on lineup / ref history backfill; no n to project"
+  },
+  {
+   "id": "H-DEPTH-NHL-1",
+   "reason": "unit of the 42 held-out items not stated in the doctrine row; no sd on disk"
+  },
+  {
+   "id": "EXP-NBAPROPS-001",
+   "reason": "unit is leaves (143), settled props per leaf not observable offline"
+  },
+  {
+   "id": "H-DEPTH-NFL-1",
+   "reason": "recount after 11-22/23 is a recount date, not a judgeable date"
+  }
+ ],
+ "p3": {
+  "covered": 18,
+  "dated_before": 2,
+  "dated_after": 9,
+  "dated_only_with_licensed_tool": [
+   "H-EXEC-2 FADE crossing the spread"
+  ],
+  "source": "power_ledger.json; before = rows already carrying an ISO judgeable date in doctrine Part II (EXP-044, EXP-045)"
+ }
+}
