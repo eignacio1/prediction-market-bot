@@ -1355,3 +1355,4 @@
 | 2026-11-20T21:23:22Z | W123.1 | MERGED: NO — branch `session/20261120T200232Z-w123-1-h1-attention` awaiting merge — W123.1: H1 NOT SUPPORTED on 18 judged non-headline families; 18 prop families UNDERPOWERED (no fit window) (commit `49be04d`) |
 | 2026-11-20T21:23:55Z | W123.1 | CLOSED — merge confirmed, HEAD (112c44b) is ancestor of origin/main — H1 NOT SUPPORTED; PR #553 merged, session-end artifacts on main |
 | 2026-11-21T20:37:59Z | GG-2003..GG-2005, B-115..B-117 | SW-9 PAM design note: five attribute classes (role state, availability distribution, trait stability, role security, scarcity) mapped to PAM stage + class-3 shrinkage pre-registration. PURPOSE: DEPTH D5(b), D1 |
+| 2026-11-24T00:23:57Z | B-115,GG-2004 | W124.5 H-DEPTH-PAM-3 run. PURPOSE: DEPTH D5(b) class 3 NBA player level + D3 challenger (RESULT.md) |
