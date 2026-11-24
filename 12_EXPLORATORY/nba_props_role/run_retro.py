@@ -186,7 +186,7 @@ def main(root, out):
     res["verdict"] = "SUPPORTED" if imp and not wor else ("REFUTED" if wor and not imp else "INDETERMINATE")
     dg = pd.DataFrame(diag)
     res["out_reliability"] = {int(s): dict(n=int(len(g)), p_played=float(g.played.mean())) for s, g in dg.groupby("season")} if len(dg) else {}
-    (out / "RESULT.json").write_text(json.dumps(res, indent=1, sort_keys=True))
+    safe_out(out / "RESULT.json").write_text(json.dumps(res, indent=1, sort_keys=True))
     print(json.dumps(res["stats"], indent=1), res["verdict"])
 
 
