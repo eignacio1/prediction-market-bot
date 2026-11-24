@@ -5116,3 +5116,14 @@ SW-9, 2026-11-21 (class 3). EXP-047 uses a raw mean with `MIN_PRIOR_GAMES = 4`; 
 **Status:** OPEN · **Severity:** LOW
 
 SW-9, 2026-11-21. `PamRecord` (`src/prediction_market_bot/pam/schema.py`) holds archetype classifications over date ranges. Role state, availability distribution, role security and contributor concentration change game to game and have no home; nothing in PAM carries them, and no engine imports `PamStore`. Proposed minimum schema (player_state, availability_profile, trait_reliability) in PAM_ATTRIBUTE_CLASSES.md §3; no ingestion built. Task: B-117.
+
+### GG-2006 — The demo-fill stall alarm watches the pre-router order path; the live arm-order path has no stall alarm
+**Status:** OPEN · **Severity:** MEDIUM
+
+SW-9, 2026-11-24 00:50 UTC. healthcheck 11 (`pregame_shadow/demo_fill_stall.py`) counts only `shadow_order` events in `logs/demo_fill_policy.jsonl`. Since ARM_ORDERS=on (W112.3, 11-12), routed rows are placed by `decision_trees/arm_orders.py` and logged to `logs/arm_orders/orders.jsonl`; `shadow_flat_stake.place` returns early for them. As routing covers more rows the old path falls to zero, so the box WARNs "DEMO ORDERS = 0 in the last 24h" (health_read 20261124T0025Z) while arm orders keep placing (arm_orders_read 20261124T0040Z: 3,202 post-epoch orders vs ~1,340 on 11-19). Two defects: a false alarm now, and no alarm at all if the arm path stops. Fix: count arm-order `order` events too (and per path), WARN only when both are zero. Not fixed here (Hard Rule 11).
+
+### GG-2007 — Router ERROR skips on 6,340 post-epoch rows (NBA 6,037)
+**Status:** OPEN · **Severity:** MEDIUM
+
+SW-9, 2026-11-24. arm_orders_read 20261124T0040Z, post-epoch: arm ERROR skips NBA 6,037, NFL 206, NHL 97. Rows the router could not route are placed nothing and never reach a leaf, so they are missing from every per-leaf score. Cause not read (the result is truncated at 30 kB and has no reason breakdown). Task: break ERROR skips down by reason and cell, fix or register each.
+
