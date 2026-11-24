@@ -1368,3 +1368,4 @@
 | 2026-11-24T00:46:20Z | W124.3 | MERGED: NO — branch `session/20261124T002040Z-w124-3-exec-fills` awaiting merge — W124.3 H-EXEC-4 pre-registered before any forward fill was read; COLLECTING, first look 2026-12-01; PR #554 unmerged (guard red on main). (commit `820cc6e`) |
 | 2026-11-24T05:53:45Z | W125.1 | CLOSED — W125.1 placement: fill model read on box (3,214 orders, none supported); rules switch OFF; GG-2008 registered. (commit `cedbf5e`) |
 | 2026-11-24T06:12:30Z | W125.4 | CLOSED — W125.4 EXP-047-C1 lineup-cross usage shift on NBA props built (default off); retro INDETERMINATE, points improves, parked. (commit `5314fd9`) |
+| 2026-11-24T06:13:42Z | W125.4 | CLOSED — merge confirmed, HEAD (3618ec2) is ancestor of origin/main — EXP-047-C1 lineup-cross usage shift on NBA props; retro INDETERMINATE, default off |
