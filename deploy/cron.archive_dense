@@ -1,0 +1,10 @@
+# BEGIN W124.4 DENSE CAPTURE
+# W124.4 -- dense capture for PROOF P3 (W123 H1 props fit window, H3 trade prints, H4 snapshot spacing). Public Kalshi endpoints, no orders.
+# PAUSED in the registry until the operator approves the named install task `archive_dense_install`. NEW lines only; no archive line is edited.
+# props: every NBA/NFL/NHL prop dated today (ET), 20-min cadence in the hours the existing prop lines do not cover (06-16 UTC).
+2,22,42 6-16 * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/archive_dense_capture.py --mode props >> logs/archive_dense.log 2>&1 ) 9>/tmp/archive_dense_props.lock
+# games: ML/spread/total/team total, only markets starting within 3 h, every 5 min.
+3-58/5 * * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/archive_dense_capture.py --mode games >> logs/archive_dense.log 2>&1 ) 9>/tmp/archive_dense_games.lock
+# prints: public trade prints for NBA/NFL/NHL tickers dated today (ET), polled every 5 min, written forward to exp_output/TRADE_PRINTS/.
+1-56/5 * * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/archive_dense_capture.py --mode prints >> logs/archive_dense.log 2>&1 ) 9>/tmp/archive_dense_prints.lock
+# END W124.4 DENSE CAPTURE

@@ -1474,6 +1474,48 @@ schedule = "17 14 * * *"
 mirrors = ["deploy/cron.disk_retention"]
 command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 15 ionice -c3"
 [[component]]
+key = "cron|2,22,42 6-16 * * *|scripts/archive_dense_capture.py --mode props"
+kind = "cron"
+source = "deploy/cron.archive_dense"
+status = "paused"
+reviewed = true
+purpose = "W124.4 dense capture (props from first listing, 06-16 UTC gap). PROOF P3: W123 H1/H3/H4 could not be judged on thin data. Public Kalshi endpoints, no orders. PAUSED until the operator approves the named install task archive_dense_install (budget-gated: disk after 30 days under 80%, request rate under half the documented limit)."
+pillar = "PROOF"
+writes = ["logs/archive_dense.log", "exp_output/PRICE_ARCHIVE_DENSE/props/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/archive_dense.log is older than 2h once installed; run lines with an error field are the per-run signal"
+max_age_h = "2"
+schedule = "2,22,42 6-16 * * *"
+mirrors = ["deploy/cron.archive_dense"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+[[component]]
+key = "cron|3-58/5 * * * *|scripts/archive_dense_capture.py --mode games"
+kind = "cron"
+source = "deploy/cron.archive_dense"
+status = "paused"
+reviewed = true
+purpose = "W124.4 dense capture (5-min game-family snapshots in the 3 h before start). PROOF P3: W123 H1/H3/H4 could not be judged on thin data. Public Kalshi endpoints, no orders. PAUSED until the operator approves the named install task archive_dense_install (budget-gated: disk after 30 days under 80%, request rate under half the documented limit)."
+pillar = "PROOF"
+writes = ["logs/archive_dense.log", "exp_output/PRICE_ARCHIVE_DENSE/games/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/archive_dense.log is older than 2h once installed; run lines with an error field are the per-run signal"
+max_age_h = "2"
+schedule = "3-58/5 * * * *"
+mirrors = ["deploy/cron.archive_dense"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+[[component]]
+key = "cron|1-56/5 * * * *|scripts/archive_dense_capture.py --mode prints"
+kind = "cron"
+source = "deploy/cron.archive_dense"
+status = "paused"
+reviewed = true
+purpose = "W124.4 dense capture (public trade prints forward). PROOF P3: W123 H1/H3/H4 could not be judged on thin data. Public Kalshi endpoints, no orders. PAUSED until the operator approves the named install task archive_dense_install (budget-gated: disk after 30 days under 80%, request rate under half the documented limit)."
+pillar = "PROOF"
+writes = ["logs/archive_dense.log", "exp_output/TRADE_PRINTS/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/archive_dense.log is older than 2h once installed; run lines with an error field are the per-run signal"
+max_age_h = "2"
+schedule = "1-56/5 * * * *"
+mirrors = ["deploy/cron.archive_dense"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+[[component]]
 key = "workflow|docs_guard.yml"
 kind = "workflow"
 source = ".github/workflows/docs_guard.yml"
