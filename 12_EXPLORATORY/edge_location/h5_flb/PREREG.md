@@ -76,4 +76,7 @@ NFL team total are expected thin (NFL TT: about 3 weeks of games, probably UNDER
 gross, cost and net are read side by side.
 
 ## Deviations log
-(none yet; every change after this commit is dated and listed here)
+- 2026-11-24 (before any outcome join; no price or result read): the start-time fetch first returned 290 of 1,665 NHL moneyline events
+  (17%, below the 50% UNMEASURABLE line) because the 2025-26 NHL milestones are typed `hockey_tournament`, not `hockey_game`. The type
+  set now includes `hockey_tournament`; the rule (milestone `start_date` by event ticker) is unchanged; coverage 1,664 of 1,665.
+  Code: `fetch_h5.py`. NBA ML 1,478 of 1,479 events, NBA team total 581 of 581, NFL team total 152 of 152 covered.
