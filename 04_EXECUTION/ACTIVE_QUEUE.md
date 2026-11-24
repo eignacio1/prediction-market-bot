@@ -108,7 +108,7 @@ shrinkage idea applied to player inputs for the NBA props arm.
 
 | # | Hypothesis / build | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 124.1 | measurement core | Variance tools in quant/ (control variates, within-game pairing, partial pooling, clustered MDE) + the power ledger for every open hypothesis | Sonnet | ⬜ | |
+| 124.1 | measurement core | Variance tools in quant/ (control variates, within-game pairing, partial pooling, clustered MDE) + the power ledger for every open hypothesis | Sonnet | ✅ MERGED PR #557 (2668336) | P3: dated judgeable look 2 → 9 of 18 hypotheses (+1 only if H-MEAS-1 licenses CLV); power_ledger.json |
 | 124.2 | H-MEAS-1 | Is the close calibrated per family? If so, CLV is licensed as the primary outcome for that family (231k settled tickers) | Sonnet | ⬜ | |
 | 124.3 | H-EXEC-4 | Do our filled orders beat the close net of the fee actually charged? Paired by arm, pooled across cells; forward-judged | Sonnet | ⬜ | |
 | 124.4 | capture | Dense capture: props from listing, 5-min snapshots in the last 3 h before start, Kalshi trade prints forward. Built, not installed | Sonnet | ⬜ | |
