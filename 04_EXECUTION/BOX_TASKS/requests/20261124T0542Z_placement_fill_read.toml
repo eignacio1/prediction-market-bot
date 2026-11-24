@@ -1,0 +1,2 @@
+task = "placement_fill_read"
+note = "W125.1 retry after deploy: Part A+C read-only"
