@@ -1,10 +1,10 @@
 # Gaps by Arm — GENERATED (do not hand-edit)
 
-Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 315 of 338 are auto and unreviewed.
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 320 of 343 are auto and unreviewed.
 
-**Counts:** Core=231 (133 OPEN), MLB=53 (19 OPEN), NBA=34 (15 OPEN), NHL=20 (9 OPEN) — 338 live gaps.
+**Counts:** Core=233 (135 OPEN), MLB=53 (19 OPEN), NBA=37 (18 OPEN), NHL=20 (9 OPEN) — 343 live gaps.
 
-## Core (231)
+## Core (233)
 
 - GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
 - GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
@@ -237,6 +237,8 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1955 — RESOLVED · HIGH _(auto)_: main's ROLLING_BACKLOG.json fails validation: duplicate order 16 (B-074, B-018), so every code PR's CI is red 
 - GG-1958 — OPEN · LOW _(auto)_: Live Terminal "Mac copy" row cannot see the Mac's LAST_RUN.json when the dashboard runs on the box (W121.4)
 - GG-1959 — OPEN · MEDIUM _(auto)_: No box task deploys code: a newly merged box task fails until someone pulls over ssh (W121.1)
+- GG-2005 — OPEN · LOW _(auto)_: PAM has no point-in-time player-state table; four of the five attribute classes are state, not classification
+- GG-2006 — OPEN · MEDIUM _(auto)_: The demo-fill stall alarm watches the pre-router order path; the live arm-order path has no stall alarm
 
 ## MLB (53)
 
@@ -294,7 +296,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1582 — CLOSED-AS-ARTIFACT · LOW _(auto)_: T1 MLB `SemanticFloorViolation` on 2026-07-10 is unexplained
 - GG-1957 — OPEN · MEDIUM _(auto)_: MLB regular-season game-market rows were never logged; the router cannot read the season it was meant to (W118
 
-## NBA (34)
+## NBA (37)
 
 - GG-007 — CLOSED-AS-ARTIFACT · LOW: T4/T5 Threshold Constants (`T4_MIN_DELTA_P`, `T5_YES_CERTAINTY`, `T5_NO_CERTAINTY`) Are Uncalibrated Skeleton 
 - GG-027 — OPEN · LOW: PAM Integration Incomplete Across Bands: T2/T3/T5 Have No Archetype Wiring; Environment Classifier Not Built
@@ -330,6 +332,9 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1390 — OPEN · MEDIUM _(auto)_: NBA referee crew assignment has no timestamp in the archive and no verified free live-capture route, so the of
 - GG-1393 — OPEN · MEDIUM _(auto)_: W93.3 no 2026-27 NBA schedule/team_box in the event store
 - GG-1394 — OPEN · MEDIUM _(auto)_: W93.3 no NBA candles (89.7) to score the engine against
+- GG-2003 — OPEN · MEDIUM _(auto)_: NBA player props (EXP-047) have no role-state input: `mu` ignores who is out tonight
+- GG-2004 — OPEN · MEDIUM _(auto)_: No player-level shrinkage in the NBA props path: four games carry full weight
+- GG-2007 — OPEN · MEDIUM _(auto)_: Router ERROR skips on 6,340 post-epoch rows (NBA 6,037)
 
 ## NHL (20)
 
