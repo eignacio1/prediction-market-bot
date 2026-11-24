@@ -1356,3 +1356,4 @@
 | 2026-11-20T21:23:55Z | W123.1 | CLOSED — merge confirmed, HEAD (112c44b) is ancestor of origin/main — H1 NOT SUPPORTED; PR #553 merged, session-end artifacts on main |
 | 2026-11-21T20:37:59Z | GG-2003..GG-2005, B-115..B-117 | SW-9 PAM design note: five attribute classes (role state, availability distribution, trait stability, role security, scarcity) mapped to PAM stage + class-3 shrinkage pre-registration. PURPOSE: DEPTH D5(b), D1 |
 | 2026-11-24T00:23:57Z | B-115,GG-2004 | W124.5 H-DEPTH-PAM-3 run. PURPOSE: DEPTH D5(b) class 3 NBA player level + D3 challenger (RESULT.md) |
+| 2026-11-24T00:34:05Z | GG-2006..GG-2007 | SW-9 health triage: demo-fill stall WARN reads the pre-router log; router ERROR skips. PURPOSE: EXECUTION E1 (watch the order path that is live) |
