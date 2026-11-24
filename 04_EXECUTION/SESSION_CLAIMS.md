@@ -1357,3 +1357,4 @@
 | 2026-11-21T20:37:59Z | GG-2003..GG-2005, B-115..B-117 | SW-9 PAM design note: five attribute classes (role state, availability distribution, trait stability, role security, scarcity) mapped to PAM stage + class-3 shrinkage pre-registration. PURPOSE: DEPTH D5(b), D1 |
 | 2026-11-24T00:23:57Z | B-115,GG-2004 | W124.5 H-DEPTH-PAM-3 run. PURPOSE: DEPTH D5(b) class 3 NBA player level + D3 challenger (RESULT.md) |
 | 2026-11-24T00:34:05Z | GG-2006..GG-2007 | SW-9 health triage: demo-fill stall WARN reads the pre-router log; router ERROR skips. PURPOSE: EXECUTION E1 (watch the order path that is live) |
+| 2026-11-24T00:42:04Z | TBD | W124.2 H-MEAS-1 closing price calibration per family. PURPOSE: PROOF families licensed for CLV 0 -> n |
