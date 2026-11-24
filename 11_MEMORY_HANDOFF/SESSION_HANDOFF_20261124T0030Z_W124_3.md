@@ -1,12 +1,37 @@
-# Session handoff - W124.3 H-EXEC-4 (fills net of fee actually charged)
-**Common rules first line (origin/main):** "# Wave 124 common rules". Branch `session/20261124T002040Z-w124-3-exec-fills`.
-**Outcome:** PREREG frozen and committed (0ebd092) before any post-freeze fill was read. Status COLLECTING. Part C = schedule only.
-- Part A: `exec_fills/PREREG.md` (population after 2026-11-20T20:00Z, net after fee charged, CV + pairing + EB pooling, OBF spend, rule).
-- Part B: DESCRIPTIVE only, and not net-of-fee: per-fill rows are on the box only; variance reduction per tool not measurable yet.
-- Part C: first eligible look 2026-12-01 (needs >= 7 days of forward fills). `SCHEDULE.md` + `schedule.json`.
-- Part D: registry row H-EXEC-4 updated to COLLECTING. `exec_fills.py` + 7 known-answer tests (pass locally).
-**Flags:** 124.1 not on main, so local helpers (swap when it merges). n dates are ESTIMATES (W123.4 rate). Design factor 2 assumed.
-**Needs window:** a read-only allowlisted box task exporting per-fill join records (code PR); without it no look can run.
-directive_conflicts: none found. surface_delta: +0 runtime (analysis script and tests only). pattern_sweep: fee-from-fill rule
-(`join.fee_of_fill`) reused, no second fee path added. gap_measure: EXECUTION E2 - no number moved (no per-fill net on this machine);
-forward look date set 2026-12-01.
+# Session Handoff — 2026-11-24T00:46Z (W124.3 H-EXEC-4)
+
+<!-- session-meta
+task_id: W124.3
+tier: MICRO
+timestamp: 2026-11-24T00:46:00Z
+commit: 820cc6e
+one_line_summary: W124.3 H-EXEC-4 pre-registered before any forward fill was read; COLLECTING, first look 2026-12-01; PR #554 unmerged (guard red on main).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: E2 (P&L per filled bet net of fees)
+gap_delta: none (no per-fill net computable locally; forward look date set 2026-12-01)
+pattern_sweep: n/a (no defect fixed; exec_fills write routed via safe_out after the isolation test caught it, no other writers in exec_fills/)
+surface_delta: 0
+-->
+
+**Trigger:** operator-initiated. **Last commit:** `820cc6e` on `session/20261124T002040Z-w124-3-exec-fills`, pushed; PR #554.
+Common rules first line (origin/main): "# Wave 124 common rules".
+
+## Strategic Decisions This Session
+| Decision | Rationale | Reference | Owner |
+|---|---|---|---|
+| None beyond the pre-registration | Prereg itself is the record | `12_EXPLORATORY/edge_location/exec_fills/PREREG.md` | Earl |
+
+## What changed
+- PREREG (frozen before any post-cut fill read), SCHEDULE.md + schedule.json, `exec_fills.py` + 7 tests, registry row H-EXEC-4 -> COLLECTING.
+- Part B descriptive only: per-fill rows are box-only, so no net-of-fee interval or variance reduction yet.
+- Local helpers used; W124.1 tools are now on main, swap them in.
+
+## Open
+- **PR #554 NOT merged:** `test` green; `guard` red (gaps-by-arm index) on main too. `--admin` merge was denied; needs operator call.
+- No SESSION_CLAIMS row was written at start (claim never run); queue row 124.3 not updated.
+- Needs a read-only per-fill box export task (code PR) before any look.
+
+**One thing pending:** decide merge of #554 (admin override vs fix gap index). **Resume:** read SCHEDULE.md; first look Tue 2026-12-01 10:00Z.
