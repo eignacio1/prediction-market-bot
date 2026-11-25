@@ -5,6 +5,12 @@
 **Last reviewed:** 2026-11-24 (SW-9 wave-126 spot-check: banner defers to DOCTRINE.md, no contradiction found; body unchanged)
 
 
+**Origin — PAM (operator, 2026-11-24 23:00 PT, verbatim):** "what'd I say about the PAM and the use case for it ...... it's so valuable like
+unbelievably valuable that's the literal inception of my "granularity index" idea and it was made on like day 2". And 22:55 PT: "it's not
+even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds". PAM (the
+Player Attribute Matrix, DS-01) is where this index started: the same stat line means different things by player, role and archetype, and
+a price that ignores that is the gap. H-DEPTH-PAM-3 (stat shrinkage) is one small piece of PAM, not PAM.
+
 **Status:** standing doctrine, recorded by the strategic window 2026-10-16 at the operator's request ("please log in the project
 accordingly so the granularity index that we're gonna continue to arm our decision trees + filtering mechs + betting architecture
 are being built with the right intent"). It implements ADR-0075 (accepted 2026-10-14) at the level of a single fact; it does not

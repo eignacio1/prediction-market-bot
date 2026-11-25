@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 128 READY TO PASTE - five blocks (Sonnet): 128.1 NHL officials / pre-game goalie / availability as splits, 128.2 one NBA props engine (C2 everywhere), 128.3 NFL play-level personnel x coverage, 128.4 run the frozen PAM-3 test, 128.5 Muse's mechanical families moved to free server crons. Wave 127 closed. Two installs await approval. Window handoff after Wave 130.**
+> **▶ WAVE 129 READY TO PASTE - five blocks (Sonnet): 129.1 NHL depth on in shadow, 129.2 the PAM-3 x C2 props challenger, 129.3 MLB 2027 frozen before its first row, 129.4 PAM point-in-time state tables, 129.5 one D6 number + hypothesis registry. Wave 128 closed. Three installs await approval. Window handoff after Wave 130.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 

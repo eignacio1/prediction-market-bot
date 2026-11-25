@@ -291,3 +291,12 @@ On 11-23 the window told the operator "about 6,300 rows (6,037 of them NBA) hit 
 get scored" and registered GG-2007 as a live gap. W126.1 showed all 6,340 were one KeyError fixed by #503 on 11-17, with 0 ERROR rows
 since 11-18. The window read cumulative post-epoch counts as current without asking for the per-day split. Fix: any error count reported
 to the operator is per day with the latest day named; cumulative counts are labelled cumulative.
+
+### W68 — 2026-11-25 07:05 UTC · Misread the operator's PAM point as "drop PAM" and pulled two blocks; left the queue banner on Wave 128
+Operator 22:55 PT: "What did I fucking say about PAM lol it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's
+10 rebounds aren't the same as Wembys 10 rebounds". The window read it as a rebuke for putting PAM in the wave, pulled 129.2 / 129.4,
+parked the PAM tickets and wrote "no PAM work" into the rules (d5f4736f). He meant the opposite, 23:00 PT: "it's so valuable like
+unbelievably valuable that's the literal inception of my "granularity index" idea and it was made on like day 2 - proceed as you did".
+Reverted (809de928); his words now head GRANULARITY_INDEX.md. Also: the first W129 send left the queue's top banner on Wave 128.
+Fix: when an operator message could mean "stop" or "this matters more than you're treating it", ask in one line before tearing work
+out; and the top banner is rewritten in the same edit as the NOW section.

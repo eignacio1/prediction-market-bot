@@ -3720,3 +3720,11 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   backfill (B-110). Leaf map v2 promotion (GG-2010) left out: v2 routes every unseen leaf NO_BET, so it would not move D6.
 - Backlog: B-115 / B-116 / B-120 / B-126 DONE; B-024 and B-124 wait on nba_combo_shadow_install; B-128 (data_offload_install approval +
   Muse retire list) added; DONE tickets older than W127 dropped (kept one wave per the backlog rule). Handoff to SW-10 after W130 (B-125).
+
+### 2026-11-24 23:00 PT — SW-9: PAM is the origin of the granularity index; Wave 129 restored as first written
+- Operator, verbatim: "No I mean what'd I say about the PAM and the use case for it ...... it's so valuable like unbelievably valuable
+  that's the literal inception of my "granularity index" idea and it was made on like day 2 - proceed as you did. It's common sense how
+  it's valuable in pred markets but I just wanted to point it out". Earlier 22:55 PT: "it's not even 1/4 built out yet - it's almost
+  common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds".
+- The 23:05 PT entry above (no PAM work) is withdrawn: d5f4736f reverted by 809de928. W129 stands as written (129.2 PAM-3 x C2 challenger,
+  129.4 PAM state tables). Quote added to GRANULARITY_INDEX.md as its origin. Window error W68.
