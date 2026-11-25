@@ -108,3 +108,14 @@ def test_nightly_budget_is_enforced_across_runs(tmp_path):
 def test_box_tasks_registered_and_demo_only():
     import box_tasks as bt
     assert "PM_COMBO_RFQ_DEMO=on" in bt.TASKS["combo_rfq_demo_run"] and "BOT_ENV=paper" in bt.TASKS["combo_rfq_demo_run"]
+
+
+def test_tip_lookup_resolves_with_the_series_the_forecaster_accepts():
+    """W127.3 defect: kickoff_for_event only parses KXNBAPTS/REB/AST/3PT, so a KXNBAGAME- key never found a tip and every combo was dropped."""
+    from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as F
+    t = datetime(2026, 11, 26, 0, 0, tzinfo=timezone.utc)
+    fc = F.NBAEngineProps({}, {}, {("2026-11-25", frozenset(("MIA", "PHI"))): t})
+    assert fc.kickoff_for_event("KXNBAGAME-26NOV25MIAPHI") is None
+    assert fc.kickoff_for_event("KXNBAPTS-26NOV25MIAPHI")[0] == t
+    for f in ("scripts/nba_combo_shadow.py", "scripts/combo_rfq_demo.py"):
+        assert 'kickoff_for_event("KXNBAGAME' not in (ROOT / f).read_text()
