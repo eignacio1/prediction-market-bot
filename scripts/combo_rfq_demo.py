@@ -217,9 +217,15 @@ def main(argv=None) -> int:
 
     S.WINDOW_MIN = WINDOW_MIN
     S.UNQUOTED_SAMPLE = 1.0            # every combo is a candidate: an RFQ does not need a standing quote
-    combos = {m["ticker"]: m for m in S.fetch_open_combos() if S.same_game(m)}
+    fetched = S.fetch_open_combos()
+    combos = {m["ticker"]: m for m in fetched if S.same_game(m)}
     rows = S.build_rows(list(combos.values()), draws_for, tip_for, now, now.strftime("%Y%m%dT%H%M%SZ"))
+    stages = dict(fetched=len(fetched), same_game=len(combos), rows=len(rows), engine_p=sum(r.get("engine_p") is not None for r in rows),
+                  resolved=sum(bool(r.get("resolved")) for r in rows), mc_se_ok=sum((r.get("mc_se") or 1) <= MIN_ENGINE_SE for r in rows),
+                  flagged=sum(bool(r.get("flags")) for r in rows), unpriced=sum(bool(r.get("legs_unpriced")) for r in rows),
+                  window_min=list(WINDOW_MIN), min_to_tip=sorted(r["minutes_to_tip"] for r in rows if r.get("minutes_to_tip") is not None)[:5])
     summary = run(R.DemoRfqClient.from_env(), rows, combos, now, Path(a.out))
+    summary["stages"] = stages
     print(json.dumps({"event": "COMBO_RFQ_DEMO_RUN", **summary}, default=str))
     return 0
 
