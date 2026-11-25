@@ -112,7 +112,8 @@ class Http:
         for attempt in range(RETRIES):
             self._wait(url)
             self.requests += 1
-            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Encoding": "identity"})
+            # Accept is the standard header every browser/curl sends; statsapi answered the box 406 (content negotiation) without it.
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*", "Accept-Encoding": "identity"})
             try:
                 return self.opener(req, timeout=40)
             except urllib.error.HTTPError as e:
