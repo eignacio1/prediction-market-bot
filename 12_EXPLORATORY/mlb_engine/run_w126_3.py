@@ -72,7 +72,7 @@ def gains(s, base_col):
 def hits_frame(inp, pa, b):
     """Long table of batter-hit rungs: p from the sim, y = that batter's hits in that game (PA table), naive set by caller."""
     h = pm.prep(pa)
-    h = h[h.cls.isin([2, 3, 4, 5])].groupby(["game_pk", "batter"]).size().rename("hits").reset_index()
+    h = h[h.cls.isin([2, 3, 4, 5])].groupby(["game_pk", "batter"]).size().reset_index(name="hits")
     rows = []
     for i, side in enumerate(("away", "home")):
         for sl in range(9):
@@ -105,12 +105,12 @@ def main():
     inp = pm.game_inputs(g26, t["lineups"], hist, league)
     G = len(inp["game_pk"])
     print("games priced:", G, "of", len(g26))
-    cache = Path.home() / '.claude' / 'tmp' / f'w126_3_board_{NDRAW}.parquet'
+    cache = safe_out(HERE / '_cache' / f'w126_3_board_{NDRAW}.parquet')
     if cache.exists():
         b = pd.read_parquet(cache)
     else:
         b = price_parallel(inp)
-        b.to_parquet(cache)
+        b.to_parquet(safe_out(cache))
     res = games.set_index("game_pk")[["home_runs", "away_runs", "home_team", "away_team"]]
     b = b.merge(res, left_on="game_pk", right_index=True)
     out = {"exp": "EXP-MLBSIM-001", "n_draws": NDRAW, "games_in_2026": int(len(g26)), "games_priced": int(G),
@@ -138,7 +138,7 @@ def main():
         print(fam, {k: v for k, v in out["calibration"][fam].items() if k != "by_k"})
     # batter hits vs naive (per-slot league frequency in the training lineups)
     h_tr = pm.prep(pa[pa.game_date < SPLIT])
-    h_tr = h_tr[h_tr.cls.isin([2, 3, 4, 5])].groupby(["game_pk", "batter"]).size().rename("hits").reset_index()
+    h_tr = h_tr[h_tr.cls.isin([2, 3, 4, 5])].groupby(["game_pk", "batter"]).size().reset_index(name="hits")
     lu = t["lineups"][t["lineups"].slot.between(1, 9)].merge(games[["game_pk", "game_date"]], on="game_pk")
     lu = lu[lu.game_date < SPLIT].merge(h_tr, on=["game_pk", "batter"], how="left").fillna({"hits": 0})
     nv = lu.groupby("slot").hits.agg(n1=lambda s: (s >= 1).mean(), n2=lambda s: (s >= 2).mean())
