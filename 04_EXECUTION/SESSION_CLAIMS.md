@@ -1373,3 +1373,4 @@
 | 2026-11-25T00:25:37Z | GG-2003 | W126.2 EXP-047-C2 stat-specific usage redistribution NBA props. PURPOSE: D1 personnel on NBA props arm, D3 +1 challenger |
 | 2026-11-25T00:26:33Z | B-024 | W126.4 Kalshi combo markets priced+logged. PURPOSE: moves B4 (parlay families logging 0->1) and D3 (combo arm prereg) |
 | 2026-11-25T00:26:51Z | B-013 | W126.5 NFL factors as splits on team totals + alt ladders. PURPOSE: D5(b) NFL factor classes applied (tested split per leaf, net per arm) |
+| 2026-11-25T00:27:21Z | B-018 | W126.3 MLB engine: PA model + game sim + board. PURPOSE: D4 MLB engine stage, D5(a) MLB components n of 8 |
