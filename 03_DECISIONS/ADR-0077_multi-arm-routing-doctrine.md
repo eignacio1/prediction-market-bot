@@ -1,7 +1,7 @@
 # ADR-0077: Multi-arm routing — every route optimized by layered decision trees
 
 **Status:** ACCEPTED 2026-11-10 21:45 PT by the operator (directives 21:35, 21:41, 21:45 PT, verbatim in DECISION_LOG; "Yes go add it")
-**Date:** 2026-11-11 (SW-9) **Last reviewed:** 2026-11-11 **Pillar:** DEPTH + PROOF **Decisions logged:** true
+**Date:** 2026-11-11 (SW-9) **Last reviewed:** 2026-11-24 (metadata only; decision text unchanged, still binding) **Pillar:** DEPTH + PROOF **Decisions logged:** true
 **Relation:** extends ADR-0075 (betting architecture) and ADR-0068 (horizon); supersedes nothing. Re-scopes the CLAUDE.md edge condition
 (`model_p > market + vig`) to the fade arm's entry rule.
 

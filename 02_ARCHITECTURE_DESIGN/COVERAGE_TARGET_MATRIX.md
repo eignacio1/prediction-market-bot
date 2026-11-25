@@ -2,14 +2,14 @@
 
 > **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
 
-**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added)
+**Last reviewed:** 2026-11-24 (SW-9 wave-125/126 review: the 10-09 note's "long-shot classes after the standard board" corrected to DOCTRINE §6; Kalshi combo families registered W125.3)
 
 
 **Status:** OPERATOR DIRECTIVE, 2026-08-12. This is the target the phase plan exists to reach. Everything in `MARKET_EXPANSION_ACTION_PLAN.md` should be read against it.
 **Verified against** `origin/main` = `44e845b`. Band inventory read from `execution_bands.py`, not asserted.
 
 > **2026-10-09 note:** this is the **BREADTH** pillar of CLAUDE.md § "What winning looks like — the operator's north star (four pillars)". The operator's whole-board scope since this file was
-> written also names props and parlays (2026-09-22/29), with long-shot classes sequenced after the standard board.
+> written also names props and parlays (2026-09-22/29), with long-shot classes once sequenced after the standard board — superseded 2026-11-05: the pot of gold is an arm of the same tree now (DOCTRINE.md §6); Kalshi combo (parlay) families registered 2026-11-24 (W125.3).
 > The counts below are a 2026-08-12 snapshot — live counts are `MARKET_TYPE_REGISTRY` and the sitrep's BREADTH row.
 
 ---

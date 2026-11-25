@@ -5,7 +5,7 @@ Read the RUNNING SITREP at the top of `04_EXECUTION/ACTIVE_QUEUE.md`, the NOW se
 
 **BOTTOM LINE:** one sentence — how many cells are wired end to end through the multi-arm tree (D6), and which arm is winning where, net after costs? (DOCTRINE.md; "does the model beat the market" is not the question, ADR-0077)
 
-**Last reviewed:** 2026-11-11
+**Last reviewed:** 2026-11-24 (SW-9 wave-126 review: still consistent with DOCTRINE.md)
 **DISTANCE TO OPTIMUM** (CLAUDE.md § "What winning looks like"): BREADTH · DEPTH · EXECUTION · PROOF — one line each with the
 headline measure's value and what moved since the last wave close, from the table at the top of the sitrep.
 **IN FLIGHT:** the current wave's blocks and their status (queue NOW table).

@@ -1,6 +1,6 @@
 # Prediction Market Trading Bot — read this first
 
-**Last reviewed:** 2026-11-11 (SW-9, lean rewrite; operator 2026-11-10 22:28 PT). **Binding strategy:** `02_ARCHITECTURE_DESIGN/DOCTRINE.md` —
+**Last reviewed:** 2026-11-24 (SW-9 wave-126 close; lean rewrite 2026-11-11, operator 2026-11-10 22:28 PT). **Binding strategy:** `02_ARCHITECTURE_DESIGN/DOCTRINE.md` —
 where anything disagrees with it, this file included, DOCTRINE.md wins.
 
 **What this file is.** Claude Code loads it into every session before anything else. So it holds four things only: what is true **right

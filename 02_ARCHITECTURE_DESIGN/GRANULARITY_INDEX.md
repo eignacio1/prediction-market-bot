@@ -2,7 +2,7 @@
 
 > **DOCTRINE NOTICE (2026-11-11, SW-9):** the binding strategy is `02_ARCHITECTURE_DESIGN/DOCTRINE.md`; where this file disagrees with it, DOCTRINE.md wins. In particular: the bot is layered multi-arm trees (ride / fade / momentum / pot of gold / no bet, ADR-0077); "does the model beat the market" is never the verdict - a factor is applied when it is a tested split in the tree, scored per leaf on net after costs per arm. State lives in the RUNNING SITREP (`04_EXECUTION/ACTIVE_QUEUE.md`), not here.
 
-**Last reviewed:** 2026-11-11 (SW-9 doctrine pass: banner added)
+**Last reviewed:** 2026-11-24 (SW-9 wave-126 spot-check: banner defers to DOCTRINE.md, no contradiction found; body unchanged)
 
 
 **Status:** standing doctrine, recorded by the strategic window 2026-10-16 at the operator's request ("please log in the project

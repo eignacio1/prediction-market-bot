@@ -1,6 +1,6 @@
 # DOCTRINE — the binding strategy, in one place
 
-**Last reviewed:** 2026-11-12 (SW-9, Wave 112) · **Owner:** the strategic window · **Review rule:** every wave close; a file in the
+**Last reviewed:** 2026-11-24 (SW-9, Wave 126 close) · **Owner:** the strategic window · **Review rule:** every wave close; a file in the
 Doctrine stack below whose "Last reviewed" is older than 14 days is RED in the session-start scan (`scripts/doctrine_freshness.py`).
 
 *Operator 2026-11-10 21:45 PT: "This CANNOT keep fucking happening. I don't want to keep building blocks that I'll need to fix eventually
@@ -69,6 +69,8 @@ placing parlays, that's the first step" (10-16). Accumulation across every arm, 
 - Four pillars and the distance table (CLAUDE.md § "What winning looks like"); every block names the measure it moves.
 - Ranking (operator 10-27): 1 market-anchored, 2 one engine per sport, 3 granularity, 4 quant, 5 architecture, 6 PAM, 7 Muse, 8 expansion.
 - Wave composition is the window's call (11-05); standing three blocks unless the operator asks; the build continues on every lane (11-09).
+- Build blocks, not administrative ones: "Unless there's something red alert - no need to send an administrative block ... Let's build
+  out the bot" (11-20). An operator side-project note goes to the backlog, not into a wave, unless he pulls it in (11-23 16:22 PT).
 - Doctrine check at every wave close (W48): the premise and its strongest counter-evidence; something said but not built.
 
 ## 8. Guardrails (unchanged)
@@ -84,8 +86,8 @@ only the test closes).
 ## Doctrine stack — every file below carries a "Last reviewed" line and defers to this file
 | File | What it holds | Last reviewed |
 |---|---|---|
-| `CLAUDE.md` | read first by every session: Right now (generated block checked against code, `scripts/claude_md_now.py`), architecture, north star, rules | 2026-11-11 (lean rewrite) |
-| `02_ARCHITECTURE_DESIGN/DOCTRINE.md` | this file | 2026-11-11 |
+| `CLAUDE.md` | read first by every session: Right now (generated block checked against code, `scripts/claude_md_now.py`), architecture, north star, rules | 2026-11-24 |
+| `02_ARCHITECTURE_DESIGN/DOCTRINE.md` | this file | 2026-11-24 |
 | `03_DECISIONS/ADR-0077_multi-arm-routing-doctrine.md` | the multi-arm routing rule | 2026-11-11 |
 | `02_ARCHITECTURE_DESIGN/STRATEGY_OVERVIEW.md` | strategy history and the strategies A-J | 2026-11-18 (body rewritten, W120.4) |
 | `02_ARCHITECTURE_DESIGN/ARCHITECTURE_OVERVIEW.md` | system components | 2026-11-18 (body rewritten, W120.4) |

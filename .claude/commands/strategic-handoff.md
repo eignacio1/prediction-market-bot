@@ -68,7 +68,7 @@ Every Monday before the operator's Muse reset (~20:50 PT) the window sweeps the 
 
 
 ## Doctrine freshness (operator 2026-11-10 21:45 PT: "This CANNOT keep fucking happening") - added 2026-11-11, SW-9
-**Last reviewed:** 2026-11-11
+**Last reviewed:** 2026-11-24 (SW-9 wave-126 review: still consistent with DOCTRINE.md)
 1. The incoming window reads `02_ARCHITECTURE_DESIGN/DOCTRINE.md` right after CLAUDE.md and before writing anything; the outgoing window
    names in its handoff the doctrine changes it made and the DOCTRINE.md date.
 2. At every wave close: re-read DOCTRINE.md against what the operator said this wave; anything he stated as doctrine is written into it
