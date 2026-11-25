@@ -3691,3 +3691,7 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - Plan: W127 (D6 breaks + C2 on; MLB landed / dry run / counted; combos via RFQ in demo; dense capture cut to fit), W128 (H-EXEC-4 look 12-01, NHL engine, MLB tree input, combo per leaf), W129 (PAM-3 run, registry backfill, NFL depth), W130 (handoff to SW-10). Backlog B-120..B-125.
 - Doctrine review at this close: DOCTRINE.md §7 gains the operator's 11-20 build-block rule and the 11-23 side-project rule; COVERAGE_TARGET_MATRIX's stale "long-shot classes after the standard board" corrected to DOCTRINE §6; the stack re-dated after a spot-check for contradictions (ADR-0077: review metadata only).
 - Operator questions routed in chat: NFL NO_BET leaves (keep, or flat demo orders to measure fills); dense capture (shrink, not raise the 80% ceiling).
+
+### 2026-11-24 18:33 PT — Operator: "Approved on rec for both"
+- NFL NO_BET leaves stay NO_BET (W117.1 A3 rule unchanged; no demo orders in those leaves).
+- Dense capture shrinks to fit its gate (W127.4); the 80% disk ceiling is not raised. archive_dense_install still needs approval by name.

@@ -671,6 +671,13 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
+> **AUTHORIZATION - NFL NO_BET LEAVES STAY NO_BET (operator, 2026-11-24 18:33 PT: "Approved on rec for both", answering the window's
+> recommendation to keep the W117.1 A3 per-leaf rule).** NFL cells routed NO_BET place no demo orders; D6 NFL stays where the rule puts
+> it. No block changes the rule.
+
+> **AUTHORIZATION - DENSE CAPTURE SHRINKS TO FIT; THE 80% DISK CEILING STAYS (operator, 2026-11-24 18:33 PT: "Approved on rec for both").**
+> W127.4 cuts the capture to pass its own gate. `archive_dense_install` itself still needs "approve archive_dense_install" by name.
+
 > **PROPOSED - NOT ACTIVATED (W125.4, 2026-11-23): `PM_PROPS_C1` (EXP-047-C1 forward log, default off).** Retro verdict INDETERMINATE: points better, rebounds / assists / threes worse. Recommendation: leave OFF; a points-only variant needs its own pre-registration first. Say "approve PM_PROPS_C1" only if you want the uniform rule logged forward anyway (shadow only, Kelly 0, one extra ledger dir under the existing registered runner).
 
 > **PROPOSED - NOT ACTIVATED (W126.2, 2026-11-24): `PM_PROPS_C2` (EXP-047-C2 forward log, default off).** Retro on unread 2023-24: SUPPORTED, all four stats improve vs EXP-047 (points -0.026, rebounds -0.001 thin, assists -0.004, threes -0.003; 899 games); C2 beats C1 on rebounds, assists, threes. Recommendation: the window switches it ON as shadow logging beside EXP-047 (orders follow v1, Kelly 0). **Hard Rule 14 surface check:** no new cron or service; one extra branch inside the existing `run_nba_engine_props_shadow.py` (RUNTIME_REGISTRY cron `39 * * * *`) writing `exp_output/PREGAME_SHADOW_EXP047_C2/`; adds one extra pricing pass per run (same cost as C1); health signals must be green at activation; `surface_delta: +1 ledger dir, 0 components`. Not switched on by this block.
