@@ -3,6 +3,8 @@
 <!-- session-meta
 task_id: W128.4
 tier: MICRO
+timestamp: 2026-11-25T06:35:00Z
+commit: 82499fd
 one_line_summary: Landed PR #555 (rebased, CI-gated); H-DEPTH-PAM-3 SUPPORTED (judged run was W124.5's, not re-read); Part B routing words written
 gg_touched: GG-2004
 vision_pillar: PROOF, DEPTH
@@ -28,4 +30,6 @@ Block said the judged seasons were never read and Part 0 was code + known-answer
 Conflicts in HYPOTHESIS_DOCTRINE.md (kept main's EXP-047-C1/C2 rows plus the PAM-3 SUPPORTED row), ACTIVE_QUEUE.md (main's side), and generated nav files (main's side).
 
 ## Pending
-- CI on the PR head; Docs Guard (`guard`) was red on main before this PR. Merge only on green of the current head.
+- Nothing open. PR #555 merged 2026-11-25T06:13Z on green head d53bdf5 (Test Suite + Docs Guard).
+- One thing next: pre-register an EXP-047 shrunk-mu challenger (own wave); C2 on shrunk rates is a separate later pre-registration.
+- Resume: read 12_EXPLORATORY/pam_stability/RESULT.md (Part B section).

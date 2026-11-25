@@ -1396,3 +1396,4 @@
 | 2026-11-25T05:56:41Z | TBD | W128.3 NFL play-level personnel/coverage classes; PURPOSE: moves D5(b) NFL stages |
 | 2026-11-25T06:04:06Z | W128.5 | W128.5 data offload: Muse file/API families to server crons; PURPOSE: moves D4 data layers per sport + Muse queue chunks retired |
 | 2026-11-24T00:48:07Z | W124.5 | MERGED: NO — branch `session/20261124T002142Z-w124-5-pam3` awaiting merge — W124.5 H-DEPTH-PAM-3 judged run on NBA props: SUPPORTED (pooled D +0.00201, 4/4 stats); PR 555 test green (commit `05aeb8a`) |
+| 2026-11-25T06:30:45Z | W128.4 | CLOSED — Landed PR #555 (rebased, CI-gated); H-DEPTH-PAM-3 SUPPORTED (judged run was W124.5's, not re-read); Part B routing words written (commit `82499fd`) |

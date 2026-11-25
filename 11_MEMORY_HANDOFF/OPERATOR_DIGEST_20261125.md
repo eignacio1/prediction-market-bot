@@ -31,3 +31,4 @@ Kalshi parlays turn out to have almost no standing price: 97% of open combos hav
 
 ## W127.3 — combos through the demo quote desk
 Kalshi's demo does take quote requests on combo bets, and it filled two of them (1 contract each, play money, not settled yet). Only 3 of 12 requests were recorded because a bug crashed the run; that's fixed. The demo's price was a flat 45/55 whatever the combo, so it says nothing about real-market cost. Also found a bug that would have made the hourly combo logger record nothing; fixed. Needs your call: approve installing the hourly combo logger (paper only, no orders). Pillar: EXECUTION (fills) and BREADTH (stays 0 until you approve). Still zero real money at risk.
+- W128.4 (auto): Landed PR #555 (rebased, CI-gated); H-DEPTH-PAM-3 SUPPORTED (judged run was W124.5's, not re-read); Part B routing words written

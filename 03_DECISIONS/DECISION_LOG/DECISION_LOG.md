@@ -3706,3 +3706,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - Muse usage: the weekly allowance lasted ~24 h this week (523 commits, ~140 jobs, 58 chunks DONE). Monday draft: budget parallel jobs to last seven days.
 - W127 verified (#572–#581 merged): MLB engine counted (D4 first stage, D5(a) 3 -> 4), C2 logging forward, 2 combo demo fills via RFQ, dense capture gate PASS. W128: NHL classes, one NBA props engine (C2 everywhere), NFL play-level, PAM-3 run. Pending approvals: archive_dense_install, nba_combo_shadow_install.
 - 2026-11-24 22:05 PT: W128.5 added (operator 21:59 PT: "let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here."); B-126.
+
+| 2026-11-24 | W128.4 | Operator chose "Land as-is, no rerun" when block 128.4's premise (judged seasons never read) conflicted with PR #555 already holding W124.5's judged H-DEPTH-PAM-3 run. PREREG run-once rule kept; #555 merged with its result (SUPPORTED, pooled D +0.00201 [+0.00184, +0.00219]); 128.4 treated as verification plus Part B routing words. |
