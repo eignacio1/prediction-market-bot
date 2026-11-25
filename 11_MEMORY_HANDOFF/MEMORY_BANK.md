@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-25T00:53:00Z (B-013 (W126.5) — W126.5 NFL splits on team totals and alt ladders: 94 judged rows, 0 arms earned, routed to ride / no bet (PR 570).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0053Z_W126_5.md` for full session detail.
+**Last reviewed:** 2026-11-25T01:00:00Z (W126.2 — W126.2 EXP-047-C2 per-stat absorption on NBA props built (default off); retro on unread 2023-24 SUPPORTED, all four stats improve.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0100Z_W126_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
