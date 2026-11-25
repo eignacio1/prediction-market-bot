@@ -159,7 +159,7 @@ def run(client, rows: list, combos: dict, now: datetime, out_dir: Path, sleep=ti
                    engine_p=r["engine_p"], p_product_of_legs=r["p_product_of_legs"], n_legs=r["n_legs"], **m)
         side = accept_side(m, r["engine_p"])
         rec["accept_possible"] = side is not None
-        if side and summary["accepted"] < R.MAX_ACCEPTS_PER_RUN and v["quote"].get("id"):
+        if side and client.sent["accept"] < R.MAX_ACCEPTS_PER_RUN and v["quote"].get("id"):
             ac = client.accept(rid, v["quote"]["id"], side)
             rec.update(accepted_side=side, accept_resp=ac)
             if ac["ok"]:
