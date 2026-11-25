@@ -110,6 +110,7 @@ evidence = "12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md"
 # W110.2: usage: tree path d_/s_usage_missing, d_/s_creator_out (class lineup). Held-out 2025+2026, n=2268 games, paired vs v2_core: spread Brier -0.00409 [-0.00634,-0.00190]; team_total -0.00173 [-0.00258,-0.00087]; ml +0.00066 [-0.00303,+0.00423]; total -0.00020 [-0.00078,+0.00035]. Scored against realized outcomes: Kalshi spread/total/team-total history has no 2025-26 rows (Oct 2026 only), so no market comparison. Applied = tested path to a price (ADR-0075); NOT a market edge claim. Full table: 12_EXPLORATORY/nba_applied_w110/RESULT_W110_2.md
 # Prior stage evidence retained: 12_EXPLORATORY/20261020_nba_lineup_cross/PREREG_lineup_window.md
 # W125.4: props consumer. The usage shift is one shared function (nba_engine/usage_redistribution.py) used by the game path (usage_missing / creator_out, bit-identical) and by the props challenger EXP-047-C1 (nba_engine_props_c1_forecaster.py, own model hash, PM_PROPS_C1 default off). Note: the game path carried no redistribution rule before W125.4; the proportional rule was defined there. Props verdict: 12_EXPLORATORY/nba_props_role/RESULT.md. Stage for props stays 'registered' until that verdict and a forward log exist.
+# W126.2: second props consumer, EXP-047-C2 (nba_engine_props_c2_forecaster.py, own hash): per-stat absorption fraction (rebounds 0.26, assists 0.31, 3PA 0.27; points full), RESULT_C2.md SUPPORTED on unread 2023-24. Candidate only (PM_PROPS_C2 off); stage stays applied for the game path.
 
 [[factor]]
 id = "B11"
