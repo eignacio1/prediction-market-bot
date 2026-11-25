@@ -117,7 +117,7 @@ This wave lands what is built and switches it on where it is plumbing:
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 127.1 | D6 / router | The remaining layer breaks (moneyline `leaf_not_in_map`, NBA points layer 2, prop ticker parse), GG-2007 closed, PM_PROPS_C2 forward log switched on (plumbing, surface check) | Sonnet | ⬜ | |
+| 127.1 | D6 / router | The remaining layer breaks (moneyline `leaf_not_in_map`, NBA points layer 2, prop ticker parse), GG-2007 closed, PM_PROPS_C2 forward log switched on (plumbing, surface check) | Sonnet | 🟨 | #573 merged + deployed; prop ticker fixed, GG-2007 closed, GG-2010/2011 registered, PM_PROPS_C2 default ON. D6 after-read and C2 row readback pending (box); handoff SESSION_HANDOFF_20261125T0530Z_W127_1.md |
 | 127.2 | DEPTH / MLB | Land #572; opening-day dry run with the engine's prices; ARCHITECTURE_COMPONENTS / manifest row (D4, D5a); the engine price as an input on the MLB look-back corpus per leaf | Sonnet | ⬜ | |
 | 127.3 | POT OF GOLD / EXECUTION | Combos through RFQ in demo: request quotes on engine-priced NBA same-game combos, measure the quote against the engine price and the product of legs; build `nba_combo_shadow_install` for the forward writer | Sonnet | ⬜ | |
 | 127.4 | PROOF data | Dense capture cut to pass its own gate (≤ 99.5 MB/day at today's disk): keep props-from-listing and the last-3h 5-min game snapshots, cut trade prints to markets within 3 h of start; gate read PASS → approval line | Sonnet | ⬜ | |
