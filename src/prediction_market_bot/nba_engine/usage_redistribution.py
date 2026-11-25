@@ -30,3 +30,30 @@ def redistribute(weights: Sequence[float], p_play: Sequence[float]) -> list[floa
         return w
     f = absorption_factor(w, p)
     return [a * b * f for a, b in zip(w, p)]
+
+
+def absorb(weights: Sequence[float], p_play: Sequence[float], lam: float) -> list[float]:
+    """W126.2 (EXP-047-C2): the per-stat rule. Active players take ``lam`` of the vacated weight, in proportion to their own:
+    w_i -> w_i * p_i * (1 + lam * (f - 1)), f the ``absorption_factor``. lam = 1 is ``redistribute`` (called, so equal to the bit);
+    lam = 0 drops the missing players and absorbs nothing. Nobody missing: the input is returned unchanged, bit for bit."""
+    if lam >= 1.0:
+        return redistribute(weights, p_play)
+    w = [float(x) for x in weights]
+    p = [float(x) for x in p_play]
+    if all(x == 1.0 for x in p) or sum(a * b for a, b in zip(w, p)) <= 0.0:
+        return w
+    g = 1.0 + max(lam, 0.0) * (absorption_factor(w, p) - 1.0)
+    return [a * b * g for a, b in zip(w, p)]
+
+
+def absorb_threes(attempts: Sequence[float], makes: Sequence[float], p_play: Sequence[float], lam: float) -> list[float]:
+    """Threes: the vacated three-point ATTEMPTS are absorbed (``absorb``); each active player converts the extra attempts at his own
+    prior make rate (makes_i / attempts_i), so mu3_i' = makes_i * (attempts_i' / attempts_i). A player with no attempts keeps his makes.
+    Nobody missing: ``makes`` is returned unchanged, bit for bit."""
+    m = [float(x) for x in makes]
+    p = [float(x) for x in p_play]
+    if all(x == 1.0 for x in p):
+        return m
+    a = [float(x) for x in attempts]
+    a2 = absorb(a, p, lam)
+    return [mm * (n / o) if o > 0.0 else mm * q for mm, o, n, q in zip(m, a, a2, p)]
