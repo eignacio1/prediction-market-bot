@@ -105,6 +105,13 @@ TASKS: dict[str, str] = {
     "nba_engine_props_shadow_install": f"{PY} scripts/nba_engine_props_shadow_install.py install",
     "nba_engine_props_shadow_readback": f"{PY} scripts/nba_engine_props_shadow_install.py readback",
     "nba_engine_props_shadow_uninstall": f"{PY} scripts/nba_engine_props_shadow_install.py uninstall",
+    # W127.3 Part C (B-024): NBA same-game combo shadow cron. NOT RUN until the operator approves nba_combo_shadow_install by name.
+    "nba_combo_shadow_install": f"{PY} scripts/nba_combo_shadow_install.py install",
+    "nba_combo_shadow_readback": f"{PY} scripts/nba_combo_shadow_install.py readback",
+    "nba_combo_shadow_uninstall": f"{PY} scripts/nba_combo_shadow_install.py uninstall",
+    # W127.3 Part A: DEMO-only RFQs on NBA same-game combos (kalshi_rfq.py refuses any non-demo host; caps in code; Kelly 0). One run per request.
+    "combo_rfq_demo_run": "export $(grep -v '^#' .env | xargs); BOT_ENV=paper PM_COMBO_RFQ_DEMO=on " + PY + " scripts/combo_rfq_demo.py",
+    "combo_rfq_demo_read": "tail -n 80 exp_output/COMBO_RFQ_DEMO/COMBO_RFQ_DEMO.jsonl",
     # W116.3 / B-092 (GG-1953): NHL event store daily refresh cron line (fetch + streamed two-season compile). Budget-gated, backs up the crontab first. NOT run without the operator's named approval.
     "disk_retention_dryrun": f"{PY} scripts/run_disk_retention.py --dry-run",   # W118.4 B-102, read-only: lists what retention would compress + bytes saved
     "disk_retention_install": f"{PY} scripts/disk_retention_install.py install",
