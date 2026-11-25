@@ -111,7 +111,7 @@ Two installs wait on your approval (below). This wave builds depth on the in-sea
 | 128.1 | DEPTH / NHL | NHL factor classes at stage none → tested splits: officials (NHL-9, Muse crew snapshots since 11-10), pre-game starting-goalie confirmation (NHL-2 point-in-time), availability (NHL-11) | Sonnet | ⬜ | |
 | 128.2 | DEPTH / NBA | One NBA props engine: C2's stat-specific usage shift prices every NBA props cell (points, rebounds, assists, threes) and the combo legs, so props, combos and game lines read one engine (D-07) | Sonnet | ⬜ | |
 | 128.3 | DEPTH / NFL | NFL engine depth after 0 of 5 splits earned: play-level personnel / coverage factor classes from nflverse (FTN charting, participation) as point-in-time inputs, tested as splits on the 2026 rows | Sonnet | ⬜ | |
-| 128.4 | PROOF | Run H-DEPTH-PAM-3 as frozen (16fcd204; code on PR #555): shrinkage vs raw means, judged 2023-2025 | Sonnet | ⬜ | |
+| 128.4 | PROOF | Run H-DEPTH-PAM-3 as frozen (16fcd204; code on PR #555): shrinkage vs raw means, judged 2023-2025 | Sonnet | ✅ | SUPPORTED (run in W124.5, not re-read): pooled D +0.00201 [+0.00184, +0.00219], 4 of 4 stats; PR #555 landed with code + result; D5(b) PAM class 3 NBA absent -> interpreted. Next: pre-register EXP-047 shrunk-mu challenger. |
 | 128.5 | DATA / Muse offload | Muse's file / API families become free server cron jobs (MoneyPuck, NHL API, Savant CSVs, ...); Muse keeps browser-only and judgment work; install built, not run | Sonnet | ⬜ | |
 
 - **Pushback:** 128.4 runs a test you called a side project (11-23). It is here because the code and the frozen pre-registration
