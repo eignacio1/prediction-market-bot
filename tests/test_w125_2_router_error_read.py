@@ -30,6 +30,8 @@ def test_groups_by_cause_collapsing_values_and_epoch_split():
     assert out["causes"]["UNROUTED|(no reason logged)"]["n"] == 1
     assert out["per_day"]["2026-11-12"] == {ck: 1}
     assert rer.summarise(rows, None)["total_by_arm"]["ERROR"] == 3
+    # W126.1: all skip rows per day and sport (post-epoch), so a zero-ERROR day is distinguishable from a no-row day
+    assert out["skip_rows_per_day_by_sport"] == {"2026-11-12": {"NBA": 1}, "2026-11-13": {"NFL": 1, "NHL": 1, "NBA": 1}}
 
 
 def test_task_allowlisted_read_only():
