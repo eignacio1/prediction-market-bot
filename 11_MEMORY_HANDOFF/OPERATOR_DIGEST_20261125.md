@@ -19,3 +19,5 @@ Kalshi parlays turn out to have almost no standing price: 97% of open combos hav
 - It under-prices home/team runs and over-prices hits. Home-field and park are the missing pieces.
 - Not done: opening-day dry run, registry row (so D4/D5 MLB did not move), PR/merge. Nothing live changed; no orders.
 - W127.4 (auto): W127.4 dense capture cut 159.2 to 30.5 MB/day; box gate now PASS; install awaits operator approval
+
+**W127.2 (MLB engine):** The MLB engine now prices all 12 game markets in a practice run (no orders placed), and MLB's depth score went from 3 to 4 of 8. I could not test the engine on the 2026 playoff games: the pitch data for October does not exist anywhere free, so 0 of 22 games could be priced. Nothing needed from you today; before opening day I'll need your OK on the 2027 test plan and a daily data job. Still zero real money at risk.

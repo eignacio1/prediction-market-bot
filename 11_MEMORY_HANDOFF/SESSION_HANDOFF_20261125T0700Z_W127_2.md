@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W127.2
+tier: STANDARD
+timestamp: 2026-11-25T05:12:00Z
+commit: 3d16b3e
+one_line_summary: W127.2 MLB engine landed: 12/12 game cells engine-priced offline, D4 MLB none->data+engine+test, D5a 3->4/8, look-back data-blocked
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D4 MLB, D5(a) MLB
+gap_delta: D4 MLB none -> data layer + engine + test; D5(a) MLB 3/8 -> 4/8 (ARCHITECTURE_COMPONENTS.toml @ 3d16b3e)
+pattern_sweep: PRICE_ARCHIVE readers vs io_jsonl test across src/ scripts/ tests/ 12_EXPLORATORY/ -> one ALLOW entry (run_w126_3.py), fixed in #572
+surface_delta: 0 (no cron/service/workflow; forecaster.py unwired, manifest script offline)
+-->
+
 # Session handoff W127.2 (DEPTH / MLB: land the engine, dry run, count it)
 Last reviewed: 2026-11-25. Branch `w127-2-part-a`. Model: Sonnet.
 

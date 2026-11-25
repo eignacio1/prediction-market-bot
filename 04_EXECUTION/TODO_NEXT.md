@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-25T04:25:00Z (W127.4 — W127.4 dense capture cut 159.2 to 30.5 MB/day; box gate now PASS; install awaits operator approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0245Z_W127_4.md` for full session detail.
+**Last reviewed:** 2026-11-25T05:12:00Z (W127.2 — W127.2 MLB engine landed: 12/12 game cells engine-priced offline, D4 MLB none->data+engine+test, D5a 3->4/8, look-back data-blocked) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0700Z_W127_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
