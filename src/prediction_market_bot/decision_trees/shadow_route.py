@@ -100,6 +100,12 @@ def router_fields(row: dict, series: str, prev_mid: Optional[float] = None, filt
                            "reason": (type(e).__name__ + ":" + str(e))[:160], "orders": "off"}}
 
 
+def _nfl_splits_on() -> bool:
+    from prediction_market_bot.decision_trees.filters.nfl_splits import nfl_splits_on
+
+    return nfl_splits_on()
+
+
 def candidate_arms_on() -> bool:
     """W120.2: logs the arm each candidate map would pick beside v1. ON by default (operator approved queue item 7, 2026-11-18 21:19 PT);
     PM_CANDIDATE_ARMS=off is the off-switch. Shadow only: orders follow v1."""
@@ -112,7 +118,9 @@ CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("
               # W121.2: NBA player-prop market-state leaves + 4 player splits (EXP-NBAPROPS-001); applies to NBA_PLAYER_* rows only
               "nba_props": ("nba_props", ("NBA",), False),
               # W122.4 (GG-1957): the pinned MLB 2027 pre-registered map's arm beside v1 on every MLB game-cell row; shadow only
-              "mlb_2027": ("mlb_2027", ("MLB",), False)}
+              "mlb_2027": ("mlb_2027", ("MLB",), False),
+              # W126.5: NFL factor splits (EXP-NFLSPLITS-001) log their leaves beside the router-v2 arm; off unless PM_NFL_SPLITS=on
+              "nfl_splits": ("v2", ("NFL",), False)}
 
 
 @lru_cache(maxsize=None)
@@ -138,6 +146,8 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
             continue
         if name == "nba_props" and not str(row.get("market_type", "")).startswith("NBA_PLAYER_"):
             continue
+        if name == "nfl_splits" and not _nfl_splits_on():  # W126.5: default off
+            continue
         rec = {"map_version": version}
         try:
             ev, fname, sha = _cand_ev(version, dep)
@@ -152,6 +162,8 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
             d = r.leaf
             rec.update(arm=d.arm if d else r.tree, branch=r.tree, side=r.side, leaf_id=d.leaf_id if d else None,
                        reason=";".join(map(str, r.reasons))[:160])
+            if name == "nfl_splits":  # W126.5: tag only; the arm is router v2's, the split leaves are logged, never acted on
+                rec.update(split_leaves=props or None, split_applied=False)
             if name == "nba_props":  # W121.2: which splits fired and whether they are BH-earned, and the leaves that were logged only
                 ps = r.prop_split
                 rec.update(prop_leaves=props or None, prop_split_kept=ps["kept"] if ps else [], prop_split_earned=ps["earned"] if ps else [],
