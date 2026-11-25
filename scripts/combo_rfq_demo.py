@@ -214,7 +214,7 @@ def main(argv=None) -> int:
     tips: dict = {}
 
     def tip_for(suf):
-        k = fc.kickoff_for_event("KXNBAGAME-" + suf)
+        k = fc.kickoff_for_event("KXNBAPTS-" + suf)
         tips[suf] = (k[0].isoformat() if k else None)
         return k and k[0]
 

@@ -178,7 +178,7 @@ def main(argv=None) -> int:
         return cache[suf]
 
     def tip_for(suf):
-        return fc.kickoff_for_event("KXNBAGAME-" + suf) and fc.kickoff_for_event("KXNBAGAME-" + suf)[0]
+        return fc.kickoff_for_event("KXNBAPTS-" + suf) and fc.kickoff_for_event("KXNBAPTS-" + suf)[0]
 
     rows = build_rows(fetch_open_combos(), draws_for, tip_for, now, now.strftime("%Y%m%dT%H%M%SZ"))
     out = Path(a.out)
