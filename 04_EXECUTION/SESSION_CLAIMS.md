@@ -1376,3 +1376,4 @@
 | 2026-11-25T00:27:21Z | B-018 | W126.3 MLB engine: PA model + game sim + board. PURPOSE: D4 MLB engine stage, D5(a) MLB components n of 8 |
 | 2026-11-24T06:17:13Z | W125.2 | MERGED: NO — branch `w125-2-handoff` awaiting merge — W125.2 PARTIAL: #556 merged (install not run, gate REFUSE 86.2%); #559 healthcheck counts both order paths + router_error_read; A/C open. (commit `7570238`) |
 | 2026-11-25T02:18:55Z | B-013 (W126.5) | CLOSED — W126.5 NFL splits on team totals and alt ladders: 94 judged rows, 0 arms earned, routed to ride / no bet (PR 570). (commit `8668534`) |
+| 2026-11-25T02:19:12Z | B-013 (W126.5) | CLOSED — merge confirmed, HEAD (1e88481) is ancestor of origin/main — W126.5 NFL splits: 0 arms earned, ride / no bet, PR 570 |
