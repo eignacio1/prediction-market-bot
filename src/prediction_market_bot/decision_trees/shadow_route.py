@@ -106,6 +106,12 @@ def _nfl_splits_on() -> bool:
     return nfl_splits_on()
 
 
+def _nfl_playlevel_on() -> bool:
+    from prediction_market_bot.decision_trees.filters.nfl_playlevel import nfl_playlevel_on
+
+    return nfl_playlevel_on()
+
+
 def candidate_arms_on() -> bool:
     """W120.2: logs the arm each candidate map would pick beside v1. ON by default (operator approved queue item 7, 2026-11-18 21:19 PT);
     PM_CANDIDATE_ARMS=off is the off-switch. Shadow only: orders follow v1."""
@@ -120,7 +126,9 @@ CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("
               # W122.4 (GG-1957): the pinned MLB 2027 pre-registered map's arm beside v1 on every MLB game-cell row; shadow only
               "mlb_2027": ("mlb_2027", ("MLB",), False),
               # W126.5: NFL factor splits (EXP-NFLSPLITS-001) log their leaves beside the router-v2 arm; off unless PM_NFL_SPLITS=on
-              "nfl_splits": ("v2", ("NFL",), False)}
+              "nfl_splits": ("v2", ("NFL",), False),
+              # W128.3: NFL play-level personnel / coverage / motion crosses (EXP-NFLPLAYLEVEL-001); off unless PM_NFL_PLAYLEVEL=on
+              "nfl_playlevel": ("v2", ("NFL",), False)}
 
 
 @lru_cache(maxsize=None)
@@ -148,6 +156,8 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
             continue
         if name == "nfl_splits" and not _nfl_splits_on():  # W126.5: default off
             continue
+        if name == "nfl_playlevel" and not _nfl_playlevel_on():  # W128.3: default off
+            continue
         rec = {"map_version": version}
         try:
             ev, fname, sha = _cand_ev(version, dep)
@@ -164,6 +174,8 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
                        reason=";".join(map(str, r.reasons))[:160])
             if name == "nfl_splits":  # W126.5: tag only; the arm is router v2's, the split leaves are logged, never acted on
                 rec.update(split_leaves=props or None, split_applied=False)
+            if name == "nfl_playlevel":  # W128.3: tag only; the arm is router v2's, the cross leaves are logged, never acted on
+                rec.update(playlevel_leaves=props or None, playlevel_applied=False)
             if name == "nba_props":  # W121.2: which splits fired and whether they are BH-earned, and the leaves that were logged only
                 ps = r.prop_split
                 rec.update(prop_leaves=props or None, prop_split_kept=ps["kept"] if ps else [], prop_split_earned=ps["earned"] if ps else [],
