@@ -1,10 +1,10 @@
 # Gaps by Arm — GENERATED (do not hand-edit)
 
-Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 324 of 347 are auto and unreviewed.
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 325 of 348 are auto and unreviewed.
 
-**Counts:** Core=235 (137 OPEN), MLB=53 (19 OPEN), NBA=39 (18 OPEN), NHL=20 (9 OPEN) — 347 live gaps.
+**Counts:** Core=236 (138 OPEN), MLB=53 (19 OPEN), NBA=39 (18 OPEN), NHL=20 (9 OPEN) — 348 live gaps.
 
-## Core (235)
+## Core (236)
 
 - GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
 - GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
@@ -241,6 +241,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-2006 — OPEN · MEDIUM _(auto)_: The demo-fill stall alarm watches the pre-router order path; the live arm-order path has no stall alarm
 - GG-2008 — OPEN · LOW _(auto)_: RIDE board demo caps (500 per event, 150 per day) are copies of real-money constants with no derivation of the
 - GG-2011 — OPEN · LOW _(auto)_: NBA_PLAYER_POINTS has no leaves in the frozen v1 map; its candidate leaves cannot reach D6 layers 6 and 7
+- GG-2012 — OPEN · LOW _(auto)_: No allowlisted box task reads the EXP-047-C2 ledger, so "C2 rows are logging" cannot be verified from a cloud 
 
 ## MLB (53)
 

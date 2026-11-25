@@ -5153,3 +5153,9 @@ SW-9, W127.1, 2026-11-25. `d6_trace_read` 20261125T0039Z: NBA_MONEYLINE T1 10 ro
 
 SW-9, W127.1, 2026-11-25. `d6_read` 20261125T0039Z: NBA_PLAYER_POINTS T1-T3 miss layer 2 (market state), with model p present (`nba_player_points_v1`, 102 / 157 / 158 rows). The `nba_props` candidate map (`leaf_maps/nba_props_v2.json`, W121.2) does carry 12 points leaves per band, all thin NO_BET. D6 was not pointed at it: layer 6 reads arm-path rows with a `size_for` for a non-NO_BET arm and layer 7 reads arm orders with measured fills, and a candidate map logs beside v1 and never places an order ("orders follow v1"). Counting layer 2 from the candidate would raise a per-layer number for cells that cannot be wired, and changes the D6 definition. Registered, not routed. Revisit when a points leaf earns an arm in `nba_props` and a decision is made to let that candidate place flat demo orders.
 
+
+
+### GG-2012 — No allowlisted box task reads the EXP-047-C2 ledger, so "C2 rows are logging" cannot be verified from a cloud window
+**Status:** OPEN · **Severity:** LOW
+
+SW-9, W127.1, 2026-11-25. PM_PROPS_C2 went default ON in #573 (deployed, box HEAD c9859b5e), but `scripts/box_tasks.py` has no read for `exp_output/PREGAME_SHADOW_EXP047_C2/`, so the block's required "read back one logged C2 row" could not be done. Fix: add a read-only `props_c2_read` task (row count by day, one sample row) through a PR; until then C2 logging is deployed but unverified. Not an install task; no operator approval needed.

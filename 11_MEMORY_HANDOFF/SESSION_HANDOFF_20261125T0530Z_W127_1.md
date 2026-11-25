@@ -1,9 +1,9 @@
 # Session handoff W127.1 (Sonnet 5.5) - D6 / router layer breaks, GG-2007 closed, PM_PROPS_C2 ON
 
 session-meta: block 127.1; PR #573 merged on green CI (test + guard); deploy confirmed (box HEAD c9859b5e = origin/main, deploy_truth_read 20261125T0401Z_a).
-MEASURE MOVED: D6 per sport - NOT re-read. Before (d6_read 20261125T0039Z): NBA 7, NHL 7, NFL 4, MLB 0 = 18 of 129. After: pending, the box had not run the
-resubmitted request (requests/20261125T0500Z_w1271_d6_read.toml) when this was written. Expected: no move (this block changed logging and registration only).
-C2 forward rows logging: yes/no NOT yet read back; needs the next hourly props run (cron 39 * * * *) plus a read request.
+MEASURE MOVED: D6 per sport - NOT re-read. Before (d6_read 20261125T0039Z): NBA 7, NHL 7, NFL 4, MLB 0 = 18 of 129. After (d6_read 20261125T0500Z_w1271, ran 04:34Z): NBA 7/28, NHL 7/21, NFL 4/32, MLB 0/42, multi 0/6 = 18 of 129. NO MOVE, as expected
+(logging and registration only).
+C2 forward rows logging: UNVERIFIED. No allowlisted box task reads the C2 ledger; registered as GG-2012 (add a read-only props_c2_read task via PR).
 
 ## Done
 - PART A: GG-2007 RESOLVED. Cause KeyError('market_ticker') on MODEL_FADE leaf rows, fixed by #503 (11-17); 0 ERROR rows since 11-18 (router_error_read per_day).
@@ -13,7 +13,7 @@ C2 forward rows logging: yes/no NOT yet read back; needs the next hourly props r
 - PART C: PM_PROPS_C2 default ON in scripts/run_nba_engine_props_shadow.py (shadow logging only; PM_PROPS_C2=off is the off-switch; W120.2 precedent). No install task run.
 
 ## Not done
-- Part D after-read of D6 per sport, and the C2 row readback. First box action: a result for requests/20261125T0500Z_w1271_d6_read.toml, then a read of exp_output/PREGAME_SHADOW_EXP047_C2/.
+- C2 row readback (GG-2012). D6 after-read is done.
 - The 0300Z requests were skipped by the box (sorted before its 0401Z watermark); future requests need names later than the newest result.
 - Flag: d6_trace_read host section shows arm_orders_mode "off" on the box; not investigated.
 - OPERATOR_DIRECTIVES.md not read this session.
