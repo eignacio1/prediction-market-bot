@@ -233,9 +233,38 @@ def readback() -> int:
     return 0
 
 
+def gate_report(usage: dict, existing_pct_per_day) -> dict:
+    """W126.1 Part C: the budget gate as one bounded JSON-able dict, READ-ONLY (no crontab read, no write).
+    verdict + the numbers + what capture size would pass, so the operator's approval line names a real size."""
+    ok, why, nums = gate(usage, existing_pct_per_day)
+    total = float(usage["total_bytes"]) or 1.0
+    base = max(existing_pct_per_day or 0.0, 0.0)
+    room_pct_day = (DISK_CEILING_PCT - usage["pct"]) / HORIZON_DAYS - base      # new capture the ceiling allows per day
+    max_new_mb = max(room_pct_day, 0.0) * total / 100.0 / 1e6
+    new_mb = nums["new_mb_per_day"]
+    return {"verdict": "PASS" if ok else "REFUSE", "reasons": why, "numbers": nums,
+            "ceiling_pct": DISK_CEILING_PCT, "horizon_days": HORIZON_DAYS,
+            "max_new_mb_per_day_under_ceiling": round(max_new_mb, 1),
+            "capture_scale_that_passes": round(min(max_new_mb / new_mb, 1.0), 2) if new_mb else None,
+            "approval_line": "approve archive_dense_install" if ok else
+            "do not approve archive_dense_install as built; shrink capture to <= %.0f MB/day or supersede the %.0f%% ceiling"
+            % (max_new_mb, DISK_CEILING_PCT)}
+
+
+def gate_cmd() -> int:
+    import json
+    try:
+        usage, pct_day = _disk_inputs()
+        print(json.dumps(gate_report(usage, pct_day), indent=1, sort_keys=True))
+        return 0
+    except Exception as e:  # noqa: BLE001
+        print(json.dumps({"verdict": "UNREADABLE", "error": "%s: %s" % (type(e).__name__, e)}))
+        return 1
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
-    if cmd not in ("install", "uninstall", "readback"):
+    if cmd not in ("install", "uninstall", "readback", "gate"):
         print(__doc__)
         sys.exit(2)
-    sys.exit({"install": install, "uninstall": uninstall, "readback": readback}[cmd]())
+    sys.exit({"install": install, "uninstall": uninstall, "readback": readback, "gate": gate_cmd}[cmd]())
