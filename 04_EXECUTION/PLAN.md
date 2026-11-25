@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-25T05:12:00Z (W127.2 — W127.2 MLB engine landed: 12/12 game cells engine-priced offline, D4 MLB none->data+engine+test, D5a 3->4/8, look-back data-blocked) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0700Z_W127_2.md` for full session detail.
+**Last reviewed:** 2026-11-25T05:21:00Z (W127.3 — W127.3: demo RFQ client + run, 2 combo demo fills, tip-lookup bug fixed in both shadows; install awaits approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0521Z_W127_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
