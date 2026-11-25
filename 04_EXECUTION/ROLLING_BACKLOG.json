@@ -28,15 +28,15 @@
   },
   "tickets": [
     {
-      "id": "B-104",
+      "id": "B-122",
       "status": "NOW",
-      "lane": "D6",
-      "rank": "layer 3",
-      "title": "NFL wired on box rows: split fields and verdicts on every NFL shadow row; the four one-layer-away NFL cells",
-      "measure": "D6 NFL 0 -> N on the box",
-      "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
-      "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
-      "wave": "127.1",
+      "lane": "DEPTH",
+      "rank": "depth",
+      "title": "NHL engine depth: goalie confirmation snapshots (Muse, since 11-10) and MoneyPuck lines / goalie logs (Muse R6) as point-in-time factor classes, tested as splits",
+      "measure": "D4 / D5(b) NHL",
+      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
+      "source": "SW-9 plan 2026-11-24",
+      "wave": "128.1",
       "order": 1
     },
     {
@@ -48,24 +48,36 @@
       "measure": "D1 personnel / availability on the props arm; D5(b) class 1 in props",
       "why": "D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
-      "wave": "127.1 (C2 on) / 128 (per leaf)",
+      "wave": "128.2",
       "order": 2
     },
     {
-      "id": "B-018",
-      "order": 3,
+      "id": "B-120",
       "status": "NOW",
-      "lane": "engine",
-      "rank": "2",
-      "title": "MLB engine (pitch-level store) before spring",
-      "measure": "D4 MLB none -> data layer",
-      "why": "MLB has no engine; spring training starts in February; next depth lane after 125.4.",
-      "source": "ADR-0073; Muse R-082 / R-083",
-      "wave": "127.2"
+      "lane": "DEPTH",
+      "rank": "depth",
+      "title": "NFL engine depth after the 126.5 splits (0 of 5 earned): next factor classes at play level (personnel / coverage from nflverse + Muse R7 tendencies) as splits",
+      "measure": "D5(b) NFL",
+      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
+      "source": "SW-9 plan 2026-11-24",
+      "wave": "128.3",
+      "order": 3
+    },
+    {
+      "id": "B-115",
+      "status": "NOW",
+      "lane": "D5",
+      "rank": "PAM class 3",
+      "title": "Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004) - code + known-answer test on PR #555; run pending (operator side project, not urgent, 11-23 16:22 PT)",
+      "measure": "D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047",
+      "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
+      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
+      "wave": "128.4",
+      "order": 4
     },
     {
       "id": "B-024",
-      "order": 4,
+      "order": 5,
       "status": "NOW",
       "lane": "engine",
       "rank": "8",
@@ -73,19 +85,19 @@
       "measure": "-",
       "why": "Operator 11-05: \"we should have the pot of gold decision trees routed in too\" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08); D-09 \"beating buddy off his phone placing parlays, that's the first step\".",
       "source": "CLAUDE.md north star",
-      "wave": "127.3"
+      "wave": "129 (combo per leaf; install pending)"
     },
     {
       "id": "B-119",
-      "status": "NOW",
+      "status": "NEXT",
       "lane": "execution",
       "rank": "install",
-      "wave": "127.4",
-      "title": "Dense capture cut to pass its own gate (<= 99.5 MB/day at 68% disk; 159.2 now, REFUSE 87.2%), then archive_dense_install on operator approval by name",
+      "wave": "install on approval",
+      "title": "archive_dense_install: gate PASS at 30.5 MB/day (W127.4 #574); operator approval by name",
       "measure": "PROOF P3: props / 5-min / trade-print data for H1, H3, H4",
       "why": "124.4 gate refused at 74% disk (projected 93.9%)",
       "source": "PR #556",
-      "order": 5
+      "order": 6
     },
     {
       "id": "B-121",
@@ -96,19 +108,7 @@
       "measure": "P2 / E2",
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
-      "wave": "128",
-      "order": 6
-    },
-    {
-      "id": "B-122",
-      "status": "NEXT",
-      "lane": "DEPTH",
-      "rank": "depth",
-      "title": "NHL engine depth: goalie confirmation snapshots (Muse, since 11-10) and MoneyPuck lines / goalie logs (Muse R6) as point-in-time factor classes, tested as splits",
-      "measure": "D4 / D5(b) NHL",
-      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
-      "source": "SW-9 plan 2026-11-24",
-      "wave": "128",
+      "wave": "129",
       "order": 7
     },
     {
@@ -120,7 +120,7 @@
       "measure": "D6 MLB (opening day)",
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
-      "wave": "128",
+      "wave": "129",
       "order": 8
     },
     {
@@ -132,20 +132,8 @@
       "measure": "B4 / P2",
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
-      "wave": "128",
-      "order": 9
-    },
-    {
-      "id": "B-115",
-      "status": "NEXT",
-      "lane": "D5",
-      "rank": "PAM class 3",
-      "title": "Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004) - code + known-answer test on PR #555; run pending (operator side project, not urgent, 11-23 16:22 PT)",
-      "measure": "D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047",
-      "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
-      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "129",
-      "order": 10
+      "order": 9
     },
     {
       "id": "B-110",
@@ -157,19 +145,7 @@
       "why": "Operator 11-20 10:10 PT: \"a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D) listed in comprehensive detail\"",
       "source": "operator 2026-11-20 10:10 PT",
       "wave": "129",
-      "order": 11
-    },
-    {
-      "id": "B-120",
-      "status": "NEXT",
-      "lane": "DEPTH",
-      "rank": "depth",
-      "title": "NFL engine depth after the 126.5 splits (0 of 5 earned): next factor classes at play level (personnel / coverage from nflverse + Muse R7 tendencies) as splits",
-      "measure": "D5(b) NFL",
-      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
-      "source": "SW-9 plan 2026-11-24",
-      "wave": "129",
-      "order": 12
+      "order": 10
     },
     {
       "id": "B-125",
@@ -181,7 +157,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "130",
-      "order": 13
+      "order": 11
     },
     {
       "id": "B-117",
@@ -193,7 +169,7 @@
       "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "",
-      "order": 14
+      "order": 12
     },
     {
       "id": "B-096",
@@ -205,11 +181,11 @@
       "why": "no mid-week correction reached Muse since 11-12",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (window)",
-      "order": 15
+      "order": 13
     },
     {
       "id": "B-017",
-      "order": 16,
+      "order": 14,
       "status": "NEXT",
       "lane": "flex",
       "rank": "plumbing",
@@ -229,7 +205,7 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "folded into B-098",
-      "order": 17
+      "order": 15
     },
     {
       "id": "B-063",
@@ -241,7 +217,7 @@
       "why": "107.2 could not see under 20 minutes; H3 parked 11-20; needs forward trade prints (B-114 install) first",
       "source": "SW-9 W107 close",
       "wave": "123.3 (H3)",
-      "order": 18
+      "order": 16
     },
     {
       "id": "B-073",
@@ -253,11 +229,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 19
+      "order": 17
     },
     {
       "id": "B-014",
-      "order": 20,
+      "order": 18,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -269,7 +245,7 @@
     },
     {
       "id": "B-015",
-      "order": 21,
+      "order": 19,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -281,7 +257,7 @@
     },
     {
       "id": "B-016",
-      "order": 22,
+      "order": 20,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -293,7 +269,7 @@
     },
     {
       "id": "B-021",
-      "order": 23,
+      "order": 21,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -305,7 +281,7 @@
     },
     {
       "id": "B-001",
-      "order": 24,
+      "order": 22,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -317,7 +293,7 @@
     },
     {
       "id": "B-008",
-      "order": 25,
+      "order": 23,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -329,7 +305,7 @@
     },
     {
       "id": "B-022",
-      "order": 26,
+      "order": 24,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -341,7 +317,7 @@
     },
     {
       "id": "B-023",
-      "order": 27,
+      "order": 25,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -353,7 +329,7 @@
     },
     {
       "id": "B-025",
-      "order": 28,
+      "order": 26,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -362,6 +338,32 @@
       "why": "Breadth outran proof; expansion ranks last.",
       "source": "ranking 10-27",
       "wave": ""
+    },
+    {
+      "id": "B-104",
+      "status": "DONE",
+      "lane": "D6",
+      "rank": "layer 3",
+      "title": "NFL wired on box rows: split fields and verdicts on every NFL shadow row; the four one-layer-away NFL cells",
+      "measure": "D6 NFL 0 -> N on the box",
+      "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
+      "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
+      "wave": "127.1",
+      "order": 27,
+      "outcome": "W127.1 #573: prop ticker parse fixed, GG-2007 closed (fixed 11-17), D6 18 of 117 (box); leaf map v2 promotion open (GG-2010)"
+    },
+    {
+      "id": "B-018",
+      "order": 28,
+      "status": "DONE",
+      "lane": "engine",
+      "rank": "2",
+      "title": "MLB engine (pitch-level store) before spring",
+      "measure": "D4 MLB none -> data layer",
+      "why": "MLB has no engine; spring training starts in February; next depth lane after 125.4.",
+      "source": "ADR-0073; Muse R-082 / R-083",
+      "wave": "127.2",
+      "outcome": "W126.3 #572 + W127.2 #579: MLB PA model + joint sim + board; D4 MLB first stage; D5(a) 3 -> 4; dry run 12/12; 2027 forward pre-reg -> B-123"
     },
     {
       "id": "B-013",

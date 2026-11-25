@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 127 READY TO PASTE - four blocks (Sonnet): 127.1 D6 breaks + NBA props C2 log on, 127.2 MLB engine landed + dry run + counted, 127.3 combos through RFQ in demo, 127.4 dense capture cut to pass its gate. Wave 126 closed. Window handoff after Wave 130.**
+> **▶ WAVE 128 READY TO PASTE - four blocks (Sonnet): 128.1 NHL officials / pre-game goalie / availability as splits, 128.2 one NBA props engine (C2 everywhere), 128.3 NFL play-level personnel x coverage, 128.4 run the frozen PAM-3 test. Wave 127 closed. Two installs await approval. Window handoff after Wave 130.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,152 +95,153 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 127 · WRITTEN 2026-11-25 ~03:15 UTC (11-24 19:15 PT) · SW-9 · four build blocks · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 128 · WRITTEN 2026-11-25 ~05:55 UTC (11-24 21:55 PT) · SW-9 · four build blocks · MODEL: Sonnet · paste each into its own terminal
 
-**Turn 126's builds on, and finish the ones that stopped short.** Wave 126 produced:
-- **NBA props C2 SUPPORTED on an unread season,** with all four stats improving (899 games).
-- **An MLB engine that prices the whole board from one simulation.** It trails Kalshi on all four families on 2026; that is a report, not a verdict, and the engine price is one input to the tree.
-- **A Kalshi combo pricer.** The combo books are RFQ-style: 59,453 of 61,000 open combos show no quote.
-- **NFL splits** tested to a verdict: 0 of 5 earned, and one seat moved to applied.
-- **D6 on the box: 18 of 117** (NBA 7, NHL 7, NFL 4; d6_read 2026-11-25 00:39Z). The router ERROR rows were one bug, fixed 11-17; there have been none since 11-18.
+**Depth where the engines are thinnest, and one frozen test finished.** Wave 127 landed everything:
+- **NBA props C2** logs forward beside the live props model, in shadow.
+- **The MLB engine** is merged and counted: D4 MLB reached its first stage, D5(a) MLB went from 3 to 4, and the opening-day dry run passed 12 of 12 cells.
+- **Combos went through RFQ in demo for the first time:** 3 of 12 requests were quoted and 2 filled.
+- **The dense capture** was cut from 159.2 to 30.5 MB/day, and its gate now passes.
+- **D6** held at 18 of 117.
 
-This wave lands what is built and switches it on where it is plumbing:
-- the remaining D6 breaks and the C2 forward log (127.1);
-- the MLB engine merged and through its opening-day dry run (127.2);
-- combos priced through the RFQ path they actually trade on (127.3);
-- the dense capture cut to fit the disk (127.4).
-
-**Plan to the window handoff after Wave 130 (backlog `wave` fields):**
-- W128: the H-EXEC-4 first look (12-01), the NHL engine, MLB as a tree input, combo per-leaf after a week of logs.
-- W129: the PAM class-3 run, the registry backfill, NFL engine depth.
-- W130: the handoff wave (doctrine stack, distance table, backlog groomed for SW-10).
+Two installs wait on your approval (below). This wave builds depth on the in-season sports' weakest factor classes, extends C2 to the whole NBA props board and finishes one frozen test.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 127.1 | D6 / router | The remaining layer breaks (moneyline `leaf_not_in_map`, NBA points layer 2, prop ticker parse), GG-2007 closed, PM_PROPS_C2 forward log switched on (plumbing, surface check) | Sonnet | 🟨 | #573 merged + deployed; prop ticker fixed, GG-2007 closed, GG-2010/2011 registered, PM_PROPS_C2 default ON. D6 after-read: no move (18/129). C2 readback blocked on GG-2012 (no reader task); handoff SESSION_HANDOFF_20261125T0530Z_W127_1.md |
-| 127.2 | DEPTH / MLB | Land #572; opening-day dry run with the engine's prices; ARCHITECTURE_COMPONENTS / manifest row (D4, D5a); the engine price as an input on the MLB look-back corpus per leaf | Sonnet | 🟡 PR open | #572 merged (11e1e07). Dry run: 12 of 12 game cells log an engine-priced row (offline). D4 MLB: data layer + engine scaffold + test; D5a MLB 3 -> 4 of 8. Part C: 0 of 22 corpus games priceable (Savant has no Oct 2026 pitches); named EXP-MLBENGINE-SPLIT-2027 |
-| 127.3 | POT OF GOLD / EXECUTION | Combos through RFQ in demo: request quotes on engine-priced NBA same-game combos, measure the quote against the engine price and the product of legs; build `nba_combo_shadow_install` for the forward writer | Sonnet | ⬜ | |
-| 127.4 | PROOF data | Dense capture cut to pass its own gate (≤ 99.5 MB/day at today's disk): keep props-from-listing and the last-3h 5-min game snapshots, cut trade prints to markets within 3 h of start; gate read PASS → approval line | Sonnet | ⬜ | |
+| 128.1 | DEPTH / NHL | NHL factor classes at stage none → tested splits: officials (NHL-9, Muse crew snapshots since 11-10), pre-game starting-goalie confirmation (NHL-2 point-in-time), availability (NHL-11) | Sonnet | ⬜ | |
+| 128.2 | DEPTH / NBA | One NBA props engine: C2's stat-specific usage shift prices every NBA props cell (points, rebounds, assists, threes) and the combo legs, so props, combos and game lines read one engine (D-07) | Sonnet | ⬜ | |
+| 128.3 | DEPTH / NFL | NFL engine depth after 0 of 5 splits earned: play-level personnel / coverage factor classes from nflverse (FTN charting, participation) as point-in-time inputs, tested as splits on the 2026 rows | Sonnet | ⬜ | |
+| 128.4 | PROOF | Run H-DEPTH-PAM-3 as frozen (16fcd204; code on PR #555): shrinkage vs raw means, judged 2023-2025 | Sonnet | ⬜ | |
 
-- **Pushback:** two blocks (127.1, 127.4) are close to plumbing. They are here because they finish 126 rather than start new work, and
-  each switches on data the next three waves are judged on. The combo RFQ path may show market makers quoting wide or not at all: that is
-  a measured result for the pot-of-gold arm, not a failure.
-- **Surface:**
-  - 127.1 turns on one env branch inside an already-registered runner (no new cron, no new service).
-  - 127.3 sends demo RFQs only (plumbing) and builds an install it does not run.
-  - 127.4 builds and gate-reads only.
-  - Installs stay yours by name.
-- **Dependencies:** none at merge; ownership in COMMON_RULES_W127.
+- **Pushback:** 128.4 runs a test you called a side project (11-23). It is here because the code and the frozen pre-registration
+  already exist (one cheap session closes it), and its answer feeds 128.2's inputs. If you would rather keep it parked, swap it for the
+  hypothesis-registry backfill (B-110). PROOF moves only in 128.4; the depth blocks produce splits with verdicts on 2026 rows, not
+  forward proof.
+- **Surface:** none live; candidates log behind existing switches. Installs stay yours: `archive_dense_install` (gate PASS, 30.5 MB/day)
+  and `nba_combo_shadow_install` (one hourly cron, budget-gated).
+- **Dependencies:** none at merge; ownership in COMMON_RULES_W128.
+- **Plan after this wave:**
+  - W129: the H-EXEC-4 first look (12-01) plus the weekly evidence look, combo per-leaf if the install is approved, the MLB 2027 pre-registration, the registry backfill.
+  - W130: the handoff to SW-10.
 
-### 127.1 - THE REMAINING D6 BREAKS, AND THE C2 FORWARD LOG ON · MODEL: Sonnet
-
-```
-WAVE 127 - BLOCK 127.1 - D6 / ROUTER: THE REMAINING LAYER BREAKS, GG-2007 CLOSED, PM_PROPS_C2 ON - MODEL: Sonnet
-PURPOSE: DEPTH D6 (18 of 117 on the box, d6_read 20261125T0039Z: NBA 7, NHL 7, NFL 4, MLB 0) and D1 / D3 on the NBA props arm (C2 logs
-forward so the router can score it per leaf). Backlog B-104, B-116.
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W127.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0057Z_W126_1.md ("Not done"), the 20261125T0039Z d6_read,
-d6_trace_read and router_error_read results, GG-2007 / GG-2006, decision_trees/ (router.py, shadow_route.py, filter_supply), the W126.2
-handoff and its ACTIVE_QUEUE proposal line for PM_PROPS_C2, and scripts/box_tasks.py.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W127_1.md.
-
-PART A - close GG-2007 in the log: cause KeyError('market_ticker') on MODEL_FADE leaf rows, fixed by #503 (11-17), 0 ERROR rows since
-11-18 (router_error_read 20261125T0039Z per_day). Resolve with that evidence.
-PART B - the breaks the trace shows, each fixed with a regression test or registered: NBA / NFL moneyline `leaf_not_in_map`, NBA player
-points layer 2 (the frozen v1 leaf map has no leaves for it: do NOT edit v1; route it through the candidate-map path if that is how
-D6 can count it, else register), and the prop ticker parse (`nba_event_ticker_unparsed` in filter_supply). The NFL NO_BET leaves stay as
-they are (operator question pending; do not change them).
-PART C - PM_PROPS_C2 ON as shadow logging: Hard Rule 14 surface check first (health_read green, no new cron or service, one ledger dir).
-Use an existing allowlisted path to set the switch for the registered runner; if the only path is an *_install task, do NOT run it:
-put "approve <task>" under `operator decisions:`. Read back one logged C2 row after the next run.
-PART D - after the normal deploy: d6_read again; report D6 per sport before / after with both result files.
-
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D6 per sport (d6_read) and C2 forward rows logging (yes / no, count).
-END OF BLOCK 127.1
-```
-
-### 127.2 - MLB ENGINE: LANDED, DRY-RUN, COUNTED · MODEL: Sonnet
+### 128.1 - NHL: OFFICIALS, PRE-GAME GOALIE, AVAILABILITY AS TESTED SPLITS · MODEL: Sonnet
 
 ```
-WAVE 127 - BLOCK 127.2 - DEPTH / MLB: LAND THE ENGINE, PASS THE OPENING-DAY DRY RUN, COUNT IT - MODEL: Sonnet
-PURPOSE: DEPTH D4 MLB (engine stage) and D5(a) MLB (3 of 8 -> n). W126.3 built the PA model, the joint game simulation and the one-draw
-board (12 known-answer tests); its PR #572 is open, and the dry run and the manifest row were not done. Backlog B-018.
+WAVE 128 - BLOCK 128.1 - DEPTH / NHL: THREE FACTOR CLASSES FROM "NONE" TO TESTED SPLITS - MODEL: Sonnet
+PURPOSE: DEPTH D5(b) NHL (SEATS/nhl.toml: NHL-9 officials, NHL-10 coaches / scratches, NHL-11 availability, NHL-12 qualitative are at
+stage none; NHL-2 goalie quality uses the starter known only after the game). Backlog B-122.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W127.md` and quote its first line. Those rules
-bind this block. Then read PR #572 (branch session/20261125T002628Z-w126-3-mlb-engine) and its handoff SESSION_HANDOFF_20261125T0225Z_W126_3.md,
-12_EXPLORATORY/mlb_engine/RESULT_W126_3.md, ARCHITECTURE_COMPONENTS.toml and the engine manifests for NBA / NHL / NFL (the pattern), the
-MLB opening-day dry-run script and its last result, SEATS/mlb.toml, and the 2026 MLB shadow ledgers (the look-back corpus).
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W127_2.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W128.md` and quote its first line. Those rules
+bind this block. Then read SEATS/nhl.toml, 02_ARCHITECTURE_DESIGN/NHL_ENGINE/FACTOR_TAXONOMY.md, nhl_engine/ (model_pit.py, filters.py,
+decision_tree.py, inputs.py), the Muse archive's NHL snapshot families (goalies, referee crews; read the archive by the GitHub API only,
+never clone it, and only at a pinned commit as archive_intake does), and quant/variance.py.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W128_1.md.
 
-PART 0 - land #572: rebase, CI green, merge. Do not change its PREREG (EXP-MLBSIM-001) or its result.
-PART A - opening-day dry run with the engine's prices on the MLB shadow rows (no orders, no cron, no registry status change); fix what
-breaks. PART B - the MLB engine row in ARCHITECTURE_COMPONENTS.toml and the MLB_ENGINE manifest, by the pattern the other sports use;
-D5(a) MLB before / after with what each counted component's test is.
-PART C - the engine price as a layer-1 input on the 2026 MLB look-back corpus: score the existing MLB leaves per leaf with and without it
-(net after costs per arm, partial pooling, quant/variance.py), DESCRIPTIVE (2026 was the engine's held-out year; no verdict), and name
-the pre-registration a 2027 forward test would need.
+PART A - pre-register (12_EXPLORATORY/nhl_depth/PREREG.md, committed before any outcome is joined): splits for (1) the pre-game
+confirmed starting goalie vs the expected one (Muse goalie snapshots, status as published, point-in-time), (2) the referee crew (Muse
+crew snapshots and the NHL free game pages), (3) availability (skaters out, from the NHL free API / injury notes); arms per leaf;
+judged on 2026-27 rows from 11-10 on, partial pooling, BH q 0.10. State what n each split needs (quant/inference.mde) and the modal
+outcome.
+PART B - build the three as point-in-time inputs and layer-2 filters the router can read behind the candidate-map mechanism (default
+off), with tests (a planted backup-goalie start moves the leaf; no Muse data -> the split abstains, never imputes).
+PART C - run what the data allows; RESULT.md per split x leaf x arm in routing words. Update SEATS/nhl.toml stages only for splits that
+reached a tested verdict.
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D4 MLB stage and D5(a) MLB (n of 8), with the manifest as source.
-END OF BLOCK 127.2
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D5(b) NHL factor classes by stage, before / after (seat file).
+END OF BLOCK 128.1
 ```
 
-### 127.3 - COMBOS THROUGH THE RFQ PATH THEY TRADE ON · MODEL: Sonnet
+### 128.2 - ONE NBA PROPS ENGINE ACROSS THE BOARD · MODEL: Sonnet
 
 ```
-WAVE 127 - BLOCK 127.3 - POT OF GOLD / EXECUTION: KALSHI COMBOS THROUGH RFQ IN DEMO - MODEL: Sonnet
-PURPOSE: EXECUTION E1 / E2 on the pot-of-gold arm and BREADTH B4. W126.4: combo books are RFQ-style (59,453 of 61,000 open combos with no
-quote; NBA same-game 7,203 open, 2 two-sided). Pricing a combo is half the arm; the other half is what a market maker quotes us. D-09:
-"beating buddy off his phone placing parlays, that's the first step." Backlog B-024.
+WAVE 128 - BLOCK 128.2 - DEPTH / NBA: C2 PRICES EVERY NBA PROPS CELL AND THE COMBO LEGS - MODEL: Sonnet
+PURPOSE: DEPTH D1 / D-07 (one engine prices the whole board consistently). C2 (stat-specific usage shift) is SUPPORTED (W126.2, 2023-24
+unread season) and logs forward for the props arm (W127.1). The other NBA props cells (rebounds, assists, threes registry entries) and
+the combo pricer's player legs still read other inputs. Backlog B-116.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W127.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/pot_of_gold/ (MECHANICS.md, COMBO_PREREG.md, RESULT_W125.md), the combo pricer and
-scripts/nba_combo_shadow.py, deploy/cron.nba_combo_shadow, quant/sgp.py, nba_engine/joint.py, the Kalshi client (c5_execution) and the
-demo credentials path (env only, NFR-05), and Kalshi's public RFQ documentation.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W127_3.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W128.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/nba_props_role/ (PREREG_C2.md, RESULT_C2.md), pregame_shadow/nba_props_role*_forecaster.py,
+nba_engine/ (props.py, joint.py, the shared usage-redistribution function), the combo pricer (12_EXPLORATORY/pot_of_gold/, scripts/
+nba_combo_shadow.py), and market_type_registry.py (nba_player_points / rebounds / assists / threes).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W128_2.md.
 
-PART A - RFQ in DEMO (plumbing; demo only, never production): for a sample of tonight's NBA same-game combos the pricer can fully price,
-request quotes; record quote / no quote, quoted price vs the engine P and vs the product of legs, time to quote, and whether a demo fill at
-the quote is possible. Small fixed demo size, Kelly 0, a hard cap on RFQs per night written in the code. If demo has no RFQ support,
-record NONE with the API response and stop Part A.
-PART B - write RESULT_W127_3.md: quote rate, quote vs engine price distribution, and what it says about the arm's cost (the round cost
-here is the maker's quote, not a spread). DESCRIPTIVE; the combo arm's frozen pre-registration (COMBO_PREREG.md) is not changed.
-PART C - build `nba_combo_shadow_install` / `_readback` / `_uninstall` (allowlisted, RUNTIME_REGISTRY entry already PAUSED) so the forward
-writer can be switched on; do NOT run it. Approval line under `operator decisions:` with the surface check.
+PART A - inventory: for each NBA props cell and the combo pricer, which player-mean input it reads today. Name every place a player
+mean is computed; the target is one function.
+PART B - route every NBA props cell's candidate and the combo pricer's player legs through C2's means (the frozen EXP-047 and C2 model
+hashes unchanged; new candidates get their own hashes and log beside, default-on only as shadow logging after the Hard Rule 14 check).
+Known-answer tests: the same player-game gives the same mean in props, combos and the joint draw.
+PART C - forward look schedule for the props candidates (n per stat to judge, date reached), and a DESCRIPTIVE comparison on the rows
+logged since 11-25. No verdicts.
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: E1 / E2 on combos (quotes received, demo fills) and B4 (0 until the
-install is approved).
-END OF BLOCK 127.3
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D1 on NBA props (cells reading C2: before / after) and D-07 (number
+of places a player mean is computed: before / after).
+END OF BLOCK 128.2
 ```
 
-### 127.4 - DENSE CAPTURE CUT TO FIT, GATE PASSED · MODEL: Sonnet
+### 128.3 - NFL: PLAY-LEVEL PERSONNEL AND COVERAGE AS INPUTS · MODEL: Sonnet
 
 ```
-WAVE 127 - BLOCK 127.4 - PROOF DATA: DENSE CAPTURE CUT TO PASS ITS OWN GATE - MODEL: Sonnet
-PURPOSE: PROOF P3 - the data H1 props, H3 news latency and H4 quoting need for a judgeable retest (each parked UNDERPOWERED or for lack
-of snapshots). The 124.4 capture projects 87.2% disk at 30 days vs the 80% ceiling (archive_dense_gate_read 20261125T0219Z: 159.2 MB/day
-new; 99.5 MB/day fits; scale 0.63 passes). Backlog B-114 / B-119.
+WAVE 128 - BLOCK 128.3 - DEPTH / NFL: PLAY-LEVEL PERSONNEL AND COVERAGE FACTOR CLASSES - MODEL: Sonnet
+PURPOSE: DEPTH D5(b) NFL. W126.5 tested 5 splits built from team-level factors: 0 earned. The operator's bar is play-level ("what teams
+run the most cover 6 against 3 wide out sets that's motioned to the boundary, matched with volume and success rate"). nflverse ships
+free FTN charting and participation data (personnel, coverage, motion) for recent seasons. The NFL season ends in January. Backlog B-120.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W127.md` and quote its first line. Those rules
-bind this block. Then read scripts/archive_dense_capture.py, scripts/archive_dense_install.py (gate subcommand), the two gate results,
-scripts/disk_retention*.py, and the Limits sections of 12_EXPLORATORY/edge_location/h1_attention, h3_news, h4_execution RESULT.md.
-Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W127_4.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W128.md` and quote its first line. Those rules
+bind this block. Then read SEATS/nfl.toml, 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md (NFL rows), nfl_engine/, 12_EXPLORATORY/nfl_splits/
+(PREREG, RESULT), and the nflverse data the engine already reads.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W128_3.md.
 
-PART A - measure which stream costs what (props-from-listing, last-3h 5-min game snapshots, trade prints) on a dry run.
-PART B - cut to the minimum that still serves the three retests, in this order of keeping: (1) props from listing (H1), (2) 5-min game
-snapshots in the last 3 h (H4), (3) trade prints only for markets within 3 h of start and only for the families H3 named. Compressed;
-covered by retention. Target under 99.5 MB/day at today's disk. Tests.
-PART C - archive_dense_gate_read after merge: report the verdict. PASS -> one approval line under `operator decisions:` ("approve
-archive_dense_install"). REFUSE -> say what else would have to go. Do not install. Do not raise the 80% ceiling.
+PART A - data: FTN charting and participation for every season nflverse serves, point-in-time (only plays before the game being
+priced), aggregated per team per week: personnel mix, coverage shell mix, motion rate, and success rate (EPA) by personnel x coverage.
+PART B - pre-register (12_EXPLORATORY/nfl_playlevel/PREREG.md) before any outcome is joined: the matchup crosses (offense personnel /
+motion tendency x defense coverage tendency) as splits on team totals, spreads and totals; arms per leaf; fit on the seasons before the
+judged one, judged on 2025 and on 2026 rows to date; partial pooling; BH q 0.10. Then build them as layer-2 filters behind the
+candidate-map mechanism, with tests.
+PART C - run; RESULT.md per split x leaf x arm in routing words; seat stages updated only for splits with a tested verdict.
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: none until installed; state MB/day before / after and the gate verdict.
-END OF BLOCK 127.4
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D5(b) NFL factor classes by stage (aggregated / interpreted /
+applied), before / after.
+END OF BLOCK 128.3
+```
+
+### 128.4 - RUN H-DEPTH-PAM-3 AS FROZEN · MODEL: Sonnet
+
+```
+WAVE 128 - BLOCK 128.4 - PROOF: RUN H-DEPTH-PAM-3 (FROZEN AT 16fcd204) - MODEL: Sonnet
+PURPOSE: PROOF P2 (a verdict on a frozen pre-registration) and DEPTH D5(b) (PAM class 3, trait stability, at NBA player level). The
+code and its known-answer test are on PR #555 (W124.5); the judged seasons were never read. Backlog B-115, gap GG-2004.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W128.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/pam_stability/PREREG.md (FROZEN - it is the spec; a deviation is a dated addendum written
+before the result it would change), PR #555 and its branch, 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md class 3, and the C2 results
+(12_EXPLORATORY/nba_props_role/RESULT_C2.md) - C2 is a different test; do not mix its inputs into this one.
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W128_4.md.
+
+PART 0 - land #555: rebase, CI green, merge (code + known-answer test only).
+PART A - run once on the judged seasons 2023, 2024, 2025 exactly per PREREG §3-§6. RESULT.md + results.json quoting the PREREG SHA:
+verdict by the PREREG rule, D per stat with BH, D by prior-games stratum, the reliability table (four stats plus blocks / steals / FT%
+beside the operator's 0.90 / 0.69 / 0.81, descriptive), the decomposition arm, modal outcome vs what happened.
+PART B - routing words per PREREG §7. If SUPPORTED, write the trait_reliability draft (12_EXPLORATORY/pam_stability/
+trait_reliability_draft.json) and note whether C2's inputs should take the shrunk rates (a later pre-registration, not this block).
+
+Land: PR, CI green, merge; the H-DEPTH-PAM-3 registry row updated in the same PR. Report: per COMMON RULES. MEASURE MOVED: PROOF P2
+(+1 verdict) and D5(b) PAM class 3 (absent -> interpreted, or unchanged).
+END OF BLOCK 128.4
 ```
 
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 127 — WRITTEN 2026-11-25 ~03:15 UTC · CLOSED 2026-11-25 ~07:00 UTC (operator 11-24 21:36 PT) · SW-9 · four blocks · verified on GitHub (#572–#581 merged; handoffs W127_1..4) · moved: **D4 MLB none → data layer + engine + test; D5(a) MLB 3 → 4 (dry run 12 / 12 cells); E1 combos 0 → 2 demo fills (3 of 12 RFQs quoted); C2 logging forward (shadow); dense capture 159.2 → 30.5 MB/day, gate PASS; D6 unchanged 18 of 117**
+
+| # | Block | Model | Status | Outcome |
+|---|---|---|---|---|
+| 127.1 | D6 breaks + C2 on | Sonnet | ✅ #573 | prop ticker parse fixed; GG-2007 closed; PM_PROPS_C2 shadow ON (+1 ledger dir); D6 18 → 18; leaf map v2 promotion open (GG-2010) |
+| 127.2 | MLB engine counted | Sonnet | ✅ #572 #579 | engine row + manifest; D4 MLB first stage; D5(a) 3 → 4; dry run 12 / 12; 2027 pre-reg + daily-board install before opening day |
+| 127.3 | combos via RFQ | Sonnet | ✅ #575–#578 #580 #581 | 3 of 12 RFQs quoted, 2 demo fills (unsettled); nba_combo_shadow_install built, not run |
+| 127.4 | dense capture fits | Sonnet | ✅ #574 | 159.2 → 30.5 MB/day; gate PASS; archive_dense_install awaits approval |
 
 ### ✅ WAVE 126 — WRITTEN 2026-11-24 ~07:10 UTC · CLOSED 2026-11-25 ~02:25 UTC (operator 11-24 18:27 PT) · SW-9 · five blocks · verified on GitHub (#565 #566 #567 #569 #570 #571 merged; #572 open = 126.3 MLB, lands in 127.2) · moved: **D3 +2 (EXP-047-C2 SUPPORTED on unread 2023-24, all four stats; combo arm pre-registered); D5(b) NFL seat N12 → applied, 5 of 5 splits to a verdict (0 earned); D6 18 of 117 (NHL 6 → 7); MLB engine built (12 known-answer tests), not yet counted; router ERROR rows were one bug fixed 11-17 (0 since 11-18)**
 
@@ -670,6 +671,10 @@ What should reorder this, and what should stop it:
 ---
 
 ## Needs your decision
+
+> **PENDING YOUR APPROVAL BY NAME (window recommends both):** `archive_dense_install` (gate PASS, 30.5 MB/day, one new cron, budget-gated)
+> and `nba_combo_shadow_install` (one hourly cron, PM_COMBO_SHADOW=on BOT_ENV=paper, logs to exp_output/COMBO_SHADOW, no orders,
+> budget-gated). Say "approve archive_dense_install" and / or "approve nba_combo_shadow_install".
 
 > **AUTHORIZATION - NFL NO_BET LEAVES STAY NO_BET (operator, 2026-11-24 18:33 PT: "Approved on rec for both", answering the window's
 > recommendation to keep the W117.1 A3 per-leaf rule).** NFL cells routed NO_BET place no demo orders; D6 NFL stays where the rule puts
