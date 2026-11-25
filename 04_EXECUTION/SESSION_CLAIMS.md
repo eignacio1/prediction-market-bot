@@ -1372,3 +1372,4 @@
 | 2026-11-24T06:42:23Z | W125.3 | MERGED: NO — branch `session/20261124T011322Z-w125-3-flb` awaiting merge — W125.3: H-EDGE-5 NOT SUPPORTED (closed, parked for R&D); pot of gold 0 of 18 judged leaves EARNED; combo markets registered. (commit `2d411f8`) |
 | 2026-11-25T00:25:37Z | GG-2003 | W126.2 EXP-047-C2 stat-specific usage redistribution NBA props. PURPOSE: D1 personnel on NBA props arm, D3 +1 challenger |
 | 2026-11-25T00:26:33Z | B-024 | W126.4 Kalshi combo markets priced+logged. PURPOSE: moves B4 (parlay families logging 0->1) and D3 (combo arm prereg) |
+| 2026-11-25T00:26:51Z | B-013 | W126.5 NFL factors as splits on team totals + alt ladders. PURPOSE: D5(b) NFL factor classes applied (tested split per leaf, net per arm) |
