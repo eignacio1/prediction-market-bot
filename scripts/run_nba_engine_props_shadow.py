@@ -121,6 +121,7 @@ def main(argv=None) -> int:
     ap.add_argument("--no-refresh", action="store_true", help="use the stores as they are (no ESPN calls)")
     ap.add_argument("--now", help="ISO UTC override (testing only)")
     ap.add_argument("--c1", action="store_true", help="W125.4: also log EXP-047-C1 (lineup-cross) beside EXP-047; env PM_PROPS_C1=on does the same")
+    ap.add_argument("--c2", action="store_true", help="W126.2: also log EXP-047-C2 (stat-specific absorption); env PM_PROPS_C2=on does the same")
     ap.add_argument("--dry-run", action="store_true", help="evaluate into a throwaway ledger dir")
     a = ap.parse_args(argv)
     now = datetime.fromisoformat(a.now) if a.now else datetime.now(timezone.utc)
@@ -162,6 +163,18 @@ def main(argv=None) -> int:
                       only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
                       props_for=_props_supply(games, pl))
         print(f"C1 ledger_dir={c1_dir} written:", dict(r1["written"]))
+    if a.c2 or os.environ.get("PM_PROPS_C2", "off").lower() == "on":      # default OFF; activation is a dated proposal (W126.2)
+        from prediction_market_bot.pregame_shadow import nba_engine_props_c2_forecaster as C2
+        fc2 = C2.NBAEnginePropsC2(games, pl, load_tips(tips_path), None, C2.parse_attempts(json.loads(store.read_text())))
+        fc2.out_lookup = _c1_out_lookup(fc2)
+        c2_dir = ledger_dir.parent / "PREGAME_SHADOW_EXP047_C2" if not a.dry_run else ledger_dir / "c2"
+        r2 = run_once(forecaster=fc2, cells=CELLS, list_markets=ad.list_series_markets_raw,
+                      kickoff_for=lambda ev: fc2.kickoff_for_event(ev), ledger_dir=c2_dir, run_id=run_id,
+                      now_utc=now, code_sha=code_sha(),
+                      raw_filter=lambda m: F.parse_market_ticker(m.get("ticker", "")) is not None,
+                      only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
+                      props_for=_props_supply(games, pl))
+        print(f"C2 ledger_dir={c2_dir} written:", dict(r2["written"]))
     return 0
 
 
