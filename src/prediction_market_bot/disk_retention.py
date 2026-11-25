@@ -68,6 +68,8 @@ POLICY = (
            "W119.4: depth_* readers converted with prices_* (same audit)"),
     Target("frozen_evidence_check_pre", "12_EXPLORATORY/frozen_evidence_check/_cache/pre/*/prices_????-??-??.jsonl", 7, True,
            "W119.4: repro.py / resume.py / ladder_ride.load read via io_jsonl; subset + shard symlinks are made under the .gz name"),
+    Target("data_offload_manifest", "exp_output/DATA_OFFLOAD/*/manifest_????-??.jsonl", 45, True,
+           "W128.5: only scripts/data_offload.py Manifest reads these, and it globs manifest_????-??.jsonl* and opens .gz; the data files themselves are written gzip already"),
     Target("kalshi_history_rebuilt", "exp_output/KALSHI_HISTORY/rebuilt_*/candles/*.jsonl", 14, False,
            "HELD: analytics/kalshi_history.py reads these by byte offset (seek)"),
     Target("pregame_shadow_ledgers", "exp_output/PREGAME_SHADOW*/*.jsonl", 30, False,

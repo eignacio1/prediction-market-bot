@@ -122,6 +122,12 @@ TASKS: dict[str, str] = {
     "archive_dense_readback": f"{PY} scripts/archive_dense_install.py readback",
     "archive_dense_uninstall": f"{PY} scripts/archive_dense_install.py uninstall",
     "archive_dense_dryrun": f"{PY} scripts/archive_dense_capture.py --mode games --dry-run",   # read-only: one games pass, writes nothing
+    # W128.5: Muse's file / API families as one polite server job. Gate read + probe are read-only; install is the operator's named approval.
+    "data_offload_gate_read": f"{PY} scripts/data_offload_install.py gate",   # read-only: budget gate verdict + MB/day as JSON
+    "data_offload_probe": "systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0 /bin/true; echo systemd_run_rc=$?; " + f"{PY} scripts/data_offload.py probe",   # read-only: reachability + one capped sample per family in a temp dir (deleted), peak RSS + runtime per scraper
+    "data_offload_install": f"{PY} scripts/data_offload_install.py install",       # budget-gated; operator approves by name
+    "data_offload_readback": f"{PY} scripts/data_offload_install.py readback",
+    "data_offload_uninstall": f"{PY} scripts/data_offload_install.py uninstall",
     "evidence_weekly_run": f"{PY} scripts/run_evidence_weekly.py",   # W121.1: writes only exp_output/EVIDENCE_WEEKLY/ (and nothing that places an order)
     "evidence_weekly_install": f"{PY} scripts/evidence_weekly_install.py install",
     "evidence_weekly_readback": f"{PY} scripts/evidence_weekly_install.py readback",
