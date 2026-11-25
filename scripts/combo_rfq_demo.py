@@ -226,7 +226,7 @@ def main(argv=None) -> int:
     stages = dict(fetched=len(fetched), same_game=len(combos), rows=len(rows), engine_p=sum(r.get("engine_p") is not None for r in rows),
                   resolved=sum(bool(r.get("resolved")) for r in rows), mc_se_ok=sum((r.get("mc_se") or 1) <= MIN_ENGINE_SE for r in rows),
                   flagged=sum(bool(r.get("flags")) for r in rows), unpriced=sum(bool(r.get("legs_unpriced")) for r in rows),
-                  window_min=list(WINDOW_MIN), games_seen=len(tips), games_no_tip=sorted(g for g, t in tips.items() if t is None)[:8],
+                  window_min=list(WINDOW_MIN), games_seen=len(tips), tips_loaded=len(fc.tips), tips_keys=[[k[0], sorted(k[1])] for k in list(fc.tips)[:6]], tips_file_bytes=(raw / "tips.json").stat().st_size if (raw / "tips.json").exists() else None, games_no_tip=sorted(g for g, t in tips.items() if t is None)[:8],
                   tips_sample=dict(sorted(tips.items())[:8]), min_to_tip=sorted(r["minutes_to_tip"] for r in rows if r.get("minutes_to_tip") is not None)[:5])
     summary = run(R.DemoRfqClient.from_env(), rows, combos, now, Path(a.out))
     summary["stages"] = stages
