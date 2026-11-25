@@ -12,3 +12,9 @@ We tested whether five things (who's at QB, rest days, the officiating crew, for
 
 ## W126.4 — Kalshi combo (parlay) markets
 Kalshi parlays turn out to have almost no standing price: 97% of open combos have no quote at all, and only 2 of 7,203 NBA same-game combos were two-sided. So this is a quote-hunting job first, not a P&L one. I built the pricer (it prices combos off the same game simulation, so correlation is carried) and a logger that is switched off. The test plan is written down before any data exists. Nothing is live and no money is at risk. Your call: whether to turn the logger on (it needs the install task approved by name).
+
+## W126.3 — MLB engine (STANDARD)
+- Built the MLB game simulator: it prices moneyline, run line, totals, team totals and batter hits from the same draws. 12 tests pass.
+- Scored on all 2,429 games of 2026. It does not beat Kalshi's prices on any of the four families (moneyline closest, -0.004 Brier). That is a report, not a verdict: it becomes one input to the tree.
+- It under-prices home/team runs and over-prices hits. Home-field and park are the missing pieces.
+- Not done: opening-day dry run, registry row (so D4/D5 MLB did not move), PR/merge. Nothing live changed; no orders.

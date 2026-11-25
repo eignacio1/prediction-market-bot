@@ -105,7 +105,12 @@ def main():
     inp = pm.game_inputs(g26, t["lineups"], hist, league)
     G = len(inp["game_pk"])
     print("games priced:", G, "of", len(g26))
-    b = price_parallel(inp)
+    cache = Path.home() / '.claude' / 'tmp' / f'w126_3_board_{NDRAW}.parquet'
+    if cache.exists():
+        b = pd.read_parquet(cache)
+    else:
+        b = price_parallel(inp)
+        b.to_parquet(cache)
     res = games.set_index("game_pk")[["home_runs", "away_runs", "home_team", "away_team"]]
     b = b.merge(res, left_on="game_pk", right_index=True)
     out = {"exp": "EXP-MLBSIM-001", "n_draws": NDRAW, "games_in_2026": int(len(g26)), "games_priced": int(G),
@@ -158,7 +163,7 @@ def main():
     g = g[~dup & (g.game_date >= SPLIT)]
     c = mk.last_pregame(ARCH, series=("KXMLBGAME", "KXMLBTOTAL", "KXMLBSPREAD", "KXMLBTEAMTOTAL"))
     out["archive_contracts"] = int(len(c))
-    bb = b.drop(columns=["home_team", "away_team"]).merge(g, on="game_pk")
+    bb = b.drop(columns=["home_team", "away_team", "game_date"]).merge(g, on="game_pk")
     if len(c):
         j = mk.moneyline(c).merge(bb, left_on=["game_date", "home", "away"], right_on=["game_date", "home_team", "away_team"])
         out["market"]["moneyline"] = w4._cmp(j.p_home_ml.to_numpy(), j.p_home_mkt.to_numpy(), bd.realized(j, "moneyline", "home", 0))

@@ -1385,3 +1385,4 @@
 | 2026-11-25T02:32:36Z | B-120..B-125 | SW-9 Wave 126 close + Wave 127 + backlog plan to the W130 handoff. PURPOSE: D6, D4/D5a MLB, E1/E2 combos, P3 |
 | 2026-11-25T02:34:46Z | B-018 | W127.2 MLB engine land + dry run + count. PURPOSE: moves D4 MLB stage, D5(a) MLB n of 8 |
 | 2026-11-25T02:38:27Z | B-024 | W127.3 combo RFQ in demo + nba_combo_shadow install tasks. PURPOSE: E1/E2 on combos (quotes, demo fills), B4 |
+| 2026-11-25T02:20:18Z | W126.3 | MERGED: NO — branch `session/20261125T002628Z-w126-3-mlb-engine` awaiting merge — W126.3: MLB PA model + game sim + one-draw joint board built with 12 known-answer tests; 2026 held-out report trails market on all four families; dry run and registry row NOT done. (commit `99f9e37`) |
