@@ -17,7 +17,7 @@ import numpy as np
 
 from prediction_market_bot.c1_signal_ingestion.nba_ingest import kalshi_code
 from prediction_market_bot.c1_signal_ingestion.nba_injury_reports import norm_name
-from prediction_market_bot.nba_engine.usage_redistribution import absorb, absorb_threes, redistribute
+from prediction_market_bot.nba_engine.player_means import c2_means
 from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as F
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
 
@@ -67,15 +67,15 @@ class NBAEnginePropsC2(F.NBAEngineProps):
         pp = [0.0 if norm_name(n) in self._out else 1.0 for _, n, _ in ros]
         if all(x == 1.0 for x in pp):
             return base
-        out = {"points": redistribute(base["points"], pp),
-               "rebounds": absorb(base["rebounds"], pp, self.lam["rebounds"]),
-               "assists": absorb(base["assists"], pp, self.lam["assists"])}
         att = [self._prior_att(p.get("team"), n, p.get("game_date", "9999")) for _, n, _ in ros]
-        if all(a is not None for a in att):
-            out["threes"] = absorb_threes(att, base["threes"], pp, self.lam["threes"])
-        else:                                   # attempts missing for someone: absorb on makes (stated fallback)
-            out["threes"] = absorb(base["threes"], pp, self.lam["threes"])
-        return out
+        return c2_means(base, pp, att, self.lam)
+
+    def team_means(self, team: str, game_date: str, parsed: dict, as_of_utc: datetime):
+        """W128.2: (rotation, means) for one team-game, the same numbers ``forecast`` prices from (props, combo legs, the joint draw).
+        ``parsed`` carries game_date / home / away (the ``out_lookup`` and tip lookups read them)."""
+        ros = self.roster(team, game_date)
+        self._out = frozenset(norm_name(x) for x in (self.out_lookup({**parsed, "team": team}, as_of_utc) or ()))
+        return ros, self._mu(ros, {"team": team, "game_date": game_date})
 
     def forecast(self, market_ticker: str, as_of_utc: datetime) -> Optional[PregameForecast]:
         p = F.parse_market_ticker(market_ticker)
