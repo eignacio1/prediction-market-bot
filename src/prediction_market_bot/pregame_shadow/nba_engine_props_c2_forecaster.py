@@ -22,7 +22,7 @@ from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as 
 from prediction_market_bot.pregame_shadow.contract import PregameForecast
 
 MODEL_ID = "nba_engine_v2_props_c2_w126_2"
-LAMBDA = {"rebounds": 1.0, "assists": 1.0, "threes": 1.0}      # replaced by the frozen fit (FIT_C2.json) before the judged season is scored
+LAMBDA = {"rebounds": 0.26, "assists": 0.31, "threes": 0.27}   # frozen from FIT_C2.json (fit season 2022-23 only) before 2023-24 was scored
 _C2 = dict(base=F._CONSTANTS, points_rest=F.POINTS_REST, rule="stat_specific_absorption", lam=LAMBDA, points="full", out_p=0.0, other_p=1.0)
 MODEL_SHA256 = hashlib.sha256(json.dumps(_C2, sort_keys=True).encode()).hexdigest()
 

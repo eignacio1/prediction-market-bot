@@ -53,7 +53,8 @@ def test_forecaster_nobody_out_equals_exp047_and_hash_differs():
 
 
 def test_points_equal_c1_and_lambda_zero_rebounds_below_c1():
-    c1, c2, c20 = (_mk(C1.NBAEnginePropsC1, {"DudA QueenA"}), _mk(C2.NBAEnginePropsC2, {"DudA QueenA"}),
+    c1, c2, c20 = (_mk(C1.NBAEnginePropsC1, {"DudA QueenA"}),
+                   _mk(C2.NBAEnginePropsC2, {"DudA QueenA"}, lam={"rebounds": 1.0, "assists": 1.0, "threes": 1.0}),
                    _mk(C2.NBAEnginePropsC2, {"DudA QueenA"}, lam={"rebounds": 0.0, "assists": 0.0, "threes": 0.0}))
     for n in (6, 10, 14):
         t = f"KXNBAPTS-26NOV09NOPGSW-NOPDQUEENB22-{n}"
@@ -61,8 +62,15 @@ def test_points_equal_c1_and_lambda_zero_rebounds_below_c1():
     ros, p = c20.roster("NOP", "2026-11-09"), {"team": "NOP", "game_date": "2026-11-09"}
     c1._out = c2._out = c20._out = frozenset(C2.norm_name(x) for x in ("DudA QueenA",))
     s0, s2, s1 = (sum(x._mu(ros, p)["rebounds"]) for x in (c20, c2, c1))
-    assert s0 < s1 + 1e-9 and abs(s2 - s1) < 1e-9                    # default lambda 1.0 == C1; lambda 0 absorbs nothing
+    assert s0 < s1 + 1e-9 and abs(s2 - s1) < 1e-9                    # lambda 1.0 == C1; lambda 0 absorbs nothing
     assert s0 < sum(r[2]["rebounds"] for r in ros)
+
+
+def test_frozen_lambdas_match_fit_file():
+    import json
+    from pathlib import Path
+    fit = json.loads((Path(__file__).resolve().parent.parent / "12_EXPLORATORY/nba_props_role/FIT_C2.json").read_text())["stats"]
+    assert C2.LAMBDA == {k: fit[k]["lam"] for k in ("rebounds", "assists", "threes")}
 
 
 def test_out_on_other_team_untouched():
