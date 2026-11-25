@@ -1,0 +1,7 @@
+# BEGIN W126.4 NBA COMBO SHADOW
+# W126.4 (B-024) -- NBA same-game combo (Kalshi MVE) shadow: engine joint P vs the quote showing. EVALUATE-AND-LOG ONLY. PAUSED in the
+# registry until the operator approves activation (COMBO_PREREG.md "Activation proposal"). The job is off unless PM_COMBO_SHADOW=on,
+# set on the line itself so installing the line is the one switch. Hourly at :41 (outside the :00/:30/:37/:39 shadow stagger, GG-477).
+# Public Kalshi list reads + public ESPN GETs; appends to exp_output/COMBO_SHADOW/ only. No order, position, fill, stake or kelly.
+41 * * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && BOT_ENV=paper PM_COMBO_SHADOW=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/nba_combo_shadow.py >> logs/nba_combo_shadow.log 2>&1 ) 9>/tmp/nba_combo_shadow.lock
+# END W126.4 NBA COMBO SHADOW
