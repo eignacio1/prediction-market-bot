@@ -69,3 +69,14 @@ reported as "arm earned on proxy prices", not as tradable: the 2026 archive look
 `decision_trees/filters/nfl_splits.py` returns the leaf name for each split from pre-game inputs only (PITViolation guard, `unknown` for
 unjoined inputs; template `filters/nba_props.py`). Registered as an `nfl_splits` entry in `shadow_route.CANDIDATES` behind `PM_CANDIDATE_ARMS`;
 shadow only, orders follow v1, kelly_fraction untouched. Seat-file stages move to `applied` only for splits with ≥ 1 judged leaf in RESULT.md.
+
+## 8. Operational definitions (added 2026-11-24, before any outcome is joined; no threshold above is changed)
+- **Price band** uses the YES price p: `mid` = 0.25 ≤ p ≤ 0.75, `wing` otherwise.
+- **Which leaf a market reads.** TT rows read the *team-level* leaf of the team whose total it is (`qb@team`, `rest@team`, matchup of that team's offence).
+  AS and AT rows read the *game-level* leaf (`qb@game`, `rest@game`, matchup = home minus away offence score for AS, home plus away for AT).
+  `officials@game` and `weather@game` are game-level for all three.
+- **Matchup score** for a team's offence = `Terms.pass_` + `Terms.rush` − `Terms.pressure` from `MatchupBook(nfl_team_games.csv).terms(season, week, off, dfn)`, built only from games before (season, week). Terciles fixed on 2022-2024.
+- **Weather** joins `nfl_weather_backfill.csv` on (stadium, kickoff) through `nfl_schedule.csv`; a game with no joined forecast is `unknown`.
+  The snapshot starts in 2024, so S4 has no fit-season leaves before 2024 and is expected "not judged".
+- **Price-quality screen:** the same ladder rung of the same game is one cluster; clusters are games; `p` is the board_v2 YES price rounded to 4 places.
+- **Fee series:** `KXNFLTEAMTOTAL`, `KXNFLSPREAD`, `KXNFLTOTAL` through `quant.costs.taker_entry_cost(series, side_price, half_spread)`.
