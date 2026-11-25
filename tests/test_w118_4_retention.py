@@ -87,7 +87,25 @@ def test_dry_run_changes_nothing(tmp_path, capsys):
 
 def test_every_policy_target_with_verified_readers_is_covered_by_a_reader_test():
     # adding a verified target requires adding its reader test here (this list is the checklist)
-    assert {t.name for t in dr.POLICY if t.readers_verified} == {"kalshi_history_raw", "kalshi_history_thin_raw", "json_bak", "price_archive", "price_archive_depth", "frozen_evidence_check_pre"}
+    assert {t.name for t in dr.POLICY if t.readers_verified} == {"kalshi_history_raw", "kalshi_history_thin_raw", "json_bak", "price_archive", "price_archive_depth", "frozen_evidence_check_pre", "data_offload_manifest"}
+
+
+def test_data_offload_manifest_still_reads_after_compression(tmp_path):
+    # W128.5: the done-set must survive retention compressing last month's manifest
+    import importlib.util
+    import sys
+    spec = importlib.util.spec_from_file_location("data_offload", Path(__file__).resolve().parents[1] / "scripts" / "data_offload.py")
+    do = importlib.util.module_from_spec(spec)
+    sys.modules["data_offload"] = do
+    spec.loader.exec_module(do)
+    fam = tmp_path / "moneypuck"
+    m = do.Manifest(fam)
+    m.add({"key": "k1", "base": "b1", "sha256": "abc", "ok": True})
+    p = next(fam.glob("manifest_*.jsonl"))
+    _age(p, 60)
+    assert dr.compress_verified(str(p))[0] and not p.exists()
+    m2 = do.Manifest(fam)
+    assert "k1" in m2.done and m2.last_sha["b1"] == "abc"
 
 
 # ---- each reader of the KALSHI_HISTORY raw stores still reads a compressed day -----------------------------------------------------

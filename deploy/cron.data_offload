@@ -1,0 +1,6 @@
+# BEGIN W128.5 DATA OFFLOAD
+# W128.5 -- Muse's file / API families as one polite server job ($0, no AI per chunk): MoneyPuck, NHL API (goalie logs, officials), Baseball Savant CSVs, MLB boxscores.
+# PAUSED in the registry until the operator approves the named install task `data_offload_install`. NEW line only; no existing line is edited.
+# Box capacity (1 GB RAM, GG-118): one run a day inside 09:00-15:00 UTC, systemd-run memory cap 150M with no swap, nice 10, flock (one at a time), per-night byte + request caps in the script.
+17 9 * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 $(command -v systemd-run >/dev/null 2>&1 && echo "systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0") /opt/prediction-market-bot/venv/bin/python scripts/data_offload.py run >> logs/data_offload.log 2>&1 ) 9>/tmp/data_offload.lock
+# END W128.5 DATA OFFLOAD
