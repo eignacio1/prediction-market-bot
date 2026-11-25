@@ -4,7 +4,7 @@ Every Wave 128 block tells the terminal to read this file first. Text below is t
 
 ```
 COMMON RULES - WAVE 128 (DEPTH WHERE THE ENGINES ARE THINNEST: NHL CLASSES, ONE NBA PROPS ENGINE, NFL PLAY-LEVEL; PAM-3 RUN) - SW-9 (read first; they bind this block)
-- THIS WAVE (four blocks, MODEL: Sonnet for all four). Operator 2026-11-24 21:36 PT: "127 is done". Wave 127: C2 logs forward (shadow);
+- THIS WAVE (five blocks, MODEL: Sonnet for all five; 128.5 added 2026-11-24 22:05 PT: Muse's file / API families to server crons). Operator 2026-11-24 21:36 PT: "127 is done". Wave 127: C2 logs forward (shadow);
   MLB engine merged and counted (D4 MLB first stage, D5(a) MLB 3 -> 4, dry run 12 / 12); combos through RFQ in demo (3 of 12 quoted,
   2 filled); dense capture 159.2 -> 30.5 MB/day, gate PASS; D6 18 of 117. Window handoff after Wave 130.
 - THE LANES: 128.1 NHL factor classes at stage none -> tested splits, 128.2 C2 across every NBA props cell and the combo legs (D-07),
@@ -274,7 +274,8 @@ COMMON RULES - WAVE 128 (DEPTH WHERE THE ENGINES ARE THINNEST: NHL CLASSES, ONE 
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Four blocks run in parallel; ownership is disjoint: 128.1 = nhl_engine/ (new PIT inputs and filters), SEATS/nhl.toml,
+- Five blocks run in parallel; ownership is disjoint: 128.5 = scripts/data_offload*.py, 12_EXPLORATORY/data_offload/, its tests and
+  RUNTIME_REGISTRY entries; 128.1 = nhl_engine/ (new PIT inputs and filters), SEATS/nhl.toml,
   12_EXPLORATORY/nhl_depth/; 128.2 = nba_engine/ (props.py, joint.py, the shared player-mean function), pregame_shadow/nba_props*_forecaster.py,
   scripts/nba_combo_shadow.py (inputs only); 128.3 = nfl_engine/ (play-level inputs and filters), SEATS/nfl.toml, 12_EXPLORATORY/nfl_playlevel/;
   128.4 = 12_EXPLORATORY/pam_stability/, PR #555. decision_trees/ candidate-map registration is add-only for 128.1 and 128.3 (rebase before

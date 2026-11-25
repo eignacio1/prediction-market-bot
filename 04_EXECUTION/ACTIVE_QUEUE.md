@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 128 READY TO PASTE - four blocks (Sonnet): 128.1 NHL officials / pre-game goalie / availability as splits, 128.2 one NBA props engine (C2 everywhere), 128.3 NFL play-level personnel x coverage, 128.4 run the frozen PAM-3 test. Wave 127 closed. Two installs await approval. Window handoff after Wave 130.**
+> **▶ WAVE 128 READY TO PASTE - five blocks (Sonnet): 128.1 NHL officials / pre-game goalie / availability as splits, 128.2 one NBA props engine (C2 everywhere), 128.3 NFL play-level personnel x coverage, 128.4 run the frozen PAM-3 test, 128.5 Muse's mechanical families moved to free server crons. Wave 127 closed. Two installs await approval. Window handoff after Wave 130.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,7 +95,7 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 128 · WRITTEN 2026-11-25 ~05:55 UTC (11-24 21:55 PT) · SW-9 · four build blocks · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 128 · WRITTEN 2026-11-25 ~05:55 UTC (11-24 21:55 PT), 128.5 added 22:05 PT · SW-9 · five blocks · MODEL: Sonnet · paste each into its own terminal
 
 **Depth where the engines are thinnest, and one frozen test finished.** Wave 127 landed everything:
 - **NBA props C2** logs forward beside the live props model, in shadow.
@@ -109,9 +109,10 @@ Two installs wait on your approval (below). This wave builds depth on the in-sea
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 128.1 | DEPTH / NHL | NHL factor classes at stage none → tested splits: officials (NHL-9, Muse crew snapshots since 11-10), pre-game starting-goalie confirmation (NHL-2 point-in-time), availability (NHL-11) | Sonnet | ⬜ | |
-| 128.2 | DEPTH / NBA | One NBA props engine: C2's stat-specific usage shift prices every NBA props cell (points, rebounds, assists, threes) and the combo legs, so props, combos and game lines read one engine (D-07) | Sonnet | ⬜ | |
-| 128.3 | DEPTH / NFL | NFL engine depth after 0 of 5 splits earned: play-level personnel / coverage factor classes from nflverse (FTN charting, participation) as point-in-time inputs, tested as splits on the 2026 rows | Sonnet | ⬜ | |
-| 128.4 | PROOF | Run H-DEPTH-PAM-3 as frozen (16fcd204; code on PR #555): shrinkage vs raw means, judged 2023-2025 | Sonnet | ⬜ | |
+| 128.2 | DEPTH / NBA | One NBA props engine: C2's stat-specific usage shift prices every NBA props cell (points, rebounds, assists, threes) and the combo legs, so props, combos and game lines read one engine (D-07) | Sonnet | ✅ (#582 merged 2026-11-25, 289bfef) | One mean function `c2_means`: live places 2 → 1; combo legs now read C2 (rows w128_2); props cells on C2 4 → 4 (already). Forward look: games to judge points 30, assists 50, threes 90, rebounds 902; first read 1 day, 0 prices differ. Handoff `SESSION_HANDOFF_*_W128_2.md`. |
+| 128.3 | DEPTH / NFL | NFL engine depth after 0 of 5 splits earned: play-level personnel / coverage factor classes from nflverse (FTN charting, participation) as point-in-time inputs, tested as splits on the 2026 rows | Sonnet | ✅ 11-25: 74 judged, 0 earned, ride / no bet; N24-N26 applied (PR open) | 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0700Z_W128_3.md |
+| 128.4 | PROOF | Run H-DEPTH-PAM-3 as frozen (16fcd204; code on PR #555): shrinkage vs raw means, judged 2023-2025 | Sonnet | ✅ | SUPPORTED (run in W124.5, not re-read): pooled D +0.00201 [+0.00184, +0.00219], 4 of 4 stats; PR #555 landed with code + result; D5(b) PAM class 3 NBA absent -> interpreted. Next: pre-register EXP-047 shrunk-mu challenger. |
+| 128.5 | DATA / Muse offload | Muse's file / API families become free server cron jobs (MoneyPuck, NHL API, Savant CSVs, ...); Muse keeps browser-only and judgment work; install built, not run | Sonnet | ⬜ | |
 
 - **Pushback:** 128.4 runs a test you called a side project (11-23). It is here because the code and the frozen pre-registration
   already exist (one cheap session closes it), and its answer feeds 128.2's inputs. If you would rather keep it parked, swap it for the
@@ -227,6 +228,49 @@ trait_reliability_draft.json) and note whether C2's inputs should take the shrun
 Land: PR, CI green, merge; the H-DEPTH-PAM-3 registry row updated in the same PR. Report: per COMMON RULES. MEASURE MOVED: PROOF P2
 (+1 verdict) and D5(b) PAM class 3 (absent -> interpreted, or unchanged).
 END OF BLOCK 128.4
+```
+
+### 128.5 - MOVE MUSE'S MECHANICAL FAMILIES TO SERVER CRONS · MODEL: Sonnet
+
+```
+WAVE 128 - BLOCK 128.5 - DATA: MUSE'S FILE / API FAMILIES BECOME SERVER CRON JOBS ($0, NO AI PER CHUNK) - MODEL: Sonnet
+PURPOSE: DEPTH D4 (point-in-time data layers per sport) and PLUMBING for Muse. Operator 2026-11-24 21:59 PT: "let's set up crons for
+what we can and have Muse do work that's substantive and valuable that we CAN'T do here." Muse spent its whole weekly allowance in
+~24 h running an AI agent in a browser on every chunk; much of its queue is a clean file or API that a script can fetch for free.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W128.md` and quote its first line. Those rules
+bind this block. Then read scripts/archive_market_prices.py and scripts/archive_dense_install.py (the install / gate / readback pattern
+to copy), scripts/box_tasks.py, 02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml, scripts/disk_retention*.py, and Muse's QUEUE.md family list
+(read via the GitHub API only: `gh api repos/eignacio1/sports-intel-archive/contents/QUEUE.md?ref=master -H 'Accept: application/vnd.github.raw'`;
+never clone the archive, never write to it).
+Handoff file: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W128_5.md.
+
+PART A - triage table (12_EXPLORATORY/data_offload/TRIAGE.md): every Muse family (R1-R11, B1-B3, the season-back families, the daily
+snapshots) classified as SCRIPT (a free file or JSON API a server can fetch politely), MUSE (browser-only, blocks data-center traffic,
+judgment needed, or the site's terms limit automated access), or ALREADY (the bot already has it: nflverse, the NBA event store, Kalshi).
+For each SCRIPT family: the URL pattern, rate limit / robots.txt / terms note, size per season, and one sample fetch from the box
+(read-only box task) proving it is reachable from the server. Never get past a bot check or sign in; a site that refuses the server is MUSE.
+PART B - build scrapers for the SCRIPT families, highest value first, as far as one session allows. Expected first wave (verify each in
+Part A): MoneyPuck season files (lines / pairings, goalies, team games), the NHL's own API (officials per game, goalie game logs),
+Baseball Savant CSV leaderboards, and any other family Part A proves scriptable. Each scraper: point-in-time (fetch time recorded, past
+seasons backfilled once, current season daily), compressed output under exp_output/DATA_OFFLOAD/<family>/, covered by disk retention,
+polite (documented rate, retries capped), idempotent, with a known-answer test on a saved sample. THE BOX IS SMALL (box_memory_read
+20261125T0605Z: 1 GB RAM, ~430 MB available, load 0.4-0.8; disk 24 GB at 67%; pregame shadow runs peak ~350 MB, the dashboard has
+OOM history GG-118): every scraper streams to disk (never loads a season file into memory whole), runs under a memory cap
+(systemd-run -p MemoryMax=150M or equivalent), one scraper at a time (a lock file), only in an off-peak window outside the pre-game
+and live-game hours (e.g. 09:00-15:00 UTC), and the one-time backfill is spread over several nights with a per-night byte cap. Measure
+peak RSS and runtime per scraper on the box (read-only task) and put both in the handoff. One combined install:
+scripts/data_offload_install.py with gate / install / readback / uninstall (budget-gated like archive_dense_install: refuse unless the
+surface budget is GREEN and projected disk after 30 days < 80%), allowlisted tasks data_offload_gate_read / _install / _readback /
+_uninstall, and RUNTIME_REGISTRY entries. Run the gate read; DO NOT run the install - put "approve data_offload_install" under
+`operator decisions:` with the gate verdict and MB/day.
+PART C - the Muse side, as a list for the window's Monday message (do NOT contact Muse): which QUEUE chunk ranges to retire as
+"moved to bot cron", and the MUSE-only families ranked by value to the bot (lineup / referee history, browser-only NBA tables,
+snapshots, judgment work).
+
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D4 data layers per sport (families now fetched by the server, before /
+after) and Muse queue chunks retired (from TRIAGE.md). surface_delta: +1 install built, not run.
+END OF BLOCK 128.5
 ```
 
 

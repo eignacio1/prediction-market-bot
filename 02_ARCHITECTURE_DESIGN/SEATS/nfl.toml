@@ -225,6 +225,36 @@ stage = "applied"
 evidence = "12_EXPLORATORY/20261111_w110_1_nfl_weather_matchup/RESULTS.md"
 result = "W110.1: per-leaf net after costs, 0/82 leaves earn an arm; engine Brier arm X vs market dBrier +0.00008 [-0.00011,+0.00028] n=1615 (MATCHES, null). Pass cross moved mean price ~0.24 pts per game. Null, stays a null."
 
+[[factor]]
+id = "N24"
+factor_class = "F2"
+name = "Offence 11-personnel share x defence two-high shell share (point-in-time, trailing 17)"
+source = "nflverse pbp + participation (2016+), FTN charting coverage (2018+)"
+engine_slot = "nfl_playlevel.playlevel_leaves (x1_personnel_shell); candidate nfl_playlevel, PM_NFL_PLAYLEVEL default off, tag only"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_playlevel/RESULT.md"
+result = "W128.3 (EXP-NFLPLAYLEVEL-001): X1 personnel x shell; split on team totals, alternate spreads and totals, 2x2 leaves at fit-season medians, judged on 2025 REG; 118 rows, 74 judged, 44 not judged (n below 40), 0 fit-routed, BH family 0, 0 earned, routed to ride / no bet in every judged leaf (proxy prices; 2026 personnel and coverage carried): hypothesis closed (parked for R&D)"
+
+[[factor]]
+id = "N25"
+factor_class = "F2"
+name = "Offence motion rate x defence man share (point-in-time, trailing 17)"
+source = "nflverse FTN charting is_motion + coverage man/zone (2022+; fit 2023-2024)"
+engine_slot = "nfl_playlevel.playlevel_leaves (x2_motion_man); candidate nfl_playlevel, PM_NFL_PLAYLEVEL default off, tag only"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_playlevel/RESULT.md"
+result = "W128.3 (EXP-NFLPLAYLEVEL-001): X2 motion x man; split on team totals, alternate spreads and totals, 2x2 leaves at fit-season medians, judged on 2025 REG; 118 rows, 74 judged, 44 not judged (n below 40), 0 fit-routed, BH family 0, 0 earned, routed to ride / no bet in every judged leaf (proxy prices; 2026 personnel and coverage carried): hypothesis closed (parked for R&D)"
+
+[[factor]]
+id = "N26"
+factor_class = "F2"
+name = "Offence EPA vs two-high (shrunk) x defence two-high shell share (point-in-time, trailing 17)"
+source = "nflverse pbp epa + participation coverage (2018+)"
+engine_slot = "nfl_playlevel.playlevel_leaves (x3_success_shell); candidate nfl_playlevel, PM_NFL_PLAYLEVEL default off, tag only"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_playlevel/RESULT.md"
+result = "W128.3 (EXP-NFLPLAYLEVEL-001): X3 success x shell; split on team totals, alternate spreads and totals, 2x2 leaves at fit-season medians, judged on 2025 REG; 118 rows, 74 judged, 44 not judged (n below 40), 0 fit-routed, BH family 0, 0 earned, routed to ride / no bet in every judged leaf (proxy prices; 2026 personnel and coverage carried): hypothesis closed (parked for R&D)"
+
 [[cell]]
 market = "nfl_moneyline"
 band = "T1"

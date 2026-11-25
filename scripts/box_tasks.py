@@ -53,6 +53,7 @@ TASKS: dict[str, str] = {
     "placement_fill_read": f"{PY} scripts/placement_fill_read.py",  # W125.1 B-095/B-113, read-only: fill model per arm x family x hours + skip-reason counts, compact (<60KB)
     "capacity_read": f"{PY} scripts/capacity_read.py",  # W121.3 B-097, read-only: fillable size per cell and arm from logged depth
     "router_error_read": f"{PY} scripts/router_error_read.py",  # W125.2 GG-2007, read-only: ERROR / UNROUTED arm skips by exception, cell, date
+    "props_c2_read": f"{PY} scripts/props_c2_read.py",  # W128.2 B-116, read-only: NBA props C2 vs EXP-047 rows since 11-25 (descriptive, no outcome) + forward look schedule
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
     "candidate_arms_read": f"{PY} scripts/candidate_arms_read.py",  # W120.2, read-only: shadow rows carrying candidate-map arms, per sport
     "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers
@@ -122,6 +123,12 @@ TASKS: dict[str, str] = {
     "archive_dense_readback": f"{PY} scripts/archive_dense_install.py readback",
     "archive_dense_uninstall": f"{PY} scripts/archive_dense_install.py uninstall",
     "archive_dense_dryrun": f"{PY} scripts/archive_dense_capture.py --mode games --dry-run",   # read-only: one games pass, writes nothing
+    # W128.5: Muse's file / API families as one polite server job. Gate read + probe are read-only; install is the operator's named approval.
+    "data_offload_gate_read": f"{PY} scripts/data_offload_install.py gate",   # read-only: budget gate verdict + MB/day as JSON
+    "data_offload_probe": "systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0 /bin/true; echo systemd_run_rc=$?; " + f"{PY} scripts/data_offload.py probe",   # read-only: reachability + one capped sample per family in a temp dir (deleted), peak RSS + runtime per scraper
+    "data_offload_install": f"{PY} scripts/data_offload_install.py install",       # budget-gated; operator approves by name
+    "data_offload_readback": f"{PY} scripts/data_offload_install.py readback",
+    "data_offload_uninstall": f"{PY} scripts/data_offload_install.py uninstall",
     "evidence_weekly_run": f"{PY} scripts/run_evidence_weekly.py",   # W121.1: writes only exp_output/EVIDENCE_WEEKLY/ (and nothing that places an order)
     "evidence_weekly_install": f"{PY} scripts/evidence_weekly_install.py install",
     "evidence_weekly_readback": f"{PY} scripts/evidence_weekly_install.py readback",
