@@ -1384,3 +1384,4 @@
 | 2026-11-25T02:19:13Z | B-024 | CLOSED — W126.4 Kalshi combo pricer + shadow writer (off by default) + EXP-COMBO-001 prereg merged; no quotes mostly, B4 awaits activation. (commit `1e88481`) |
 | 2026-11-25T02:32:36Z | B-120..B-125 | SW-9 Wave 126 close + Wave 127 + backlog plan to the W130 handoff. PURPOSE: D6, D4/D5a MLB, E1/E2 combos, P3 |
 | 2026-11-25T02:34:46Z | B-018 | W127.2 MLB engine land + dry run + count. PURPOSE: moves D4 MLB stage, D5(a) MLB n of 8 |
+| 2026-11-25T02:38:27Z | B-024 | W127.3 combo RFQ in demo + nba_combo_shadow install tasks. PURPOSE: E1/E2 on combos (quotes, demo fills), B4 |
