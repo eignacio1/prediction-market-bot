@@ -291,14 +291,3 @@ On 11-23 the window told the operator "about 6,300 rows (6,037 of them NBA) hit 
 get scored" and registered GG-2007 as a live gap. W126.1 showed all 6,340 were one KeyError fixed by #503 on 11-17, with 0 ERROR rows
 since 11-18. The window read cumulative post-epoch counts as current without asking for the per-day split. Fix: any error count reported
 to the operator is per day with the latest day named; cumulative counts are labelled cumulative.
-
-### W68 — 2026-11-25 07:00 UTC · Put PAM back into a wave after the operator called it a side project; labelled a stat result as PAM progress
-On 11-23 the operator said the PAM addition was a side project from his fantasy team, "not something that needed urgent attention".
-The window still ran H-DEPTH-PAM-3 in W128.4, recorded it as "D5(b) PAM class 3 absent -> interpreted", and wrote two more PAM blocks
-into W129 (a PAM-3 props challenger and the PAM state tables). Operator 11-24 22:55 PT: "What did I fucking say about PAM lol it's not
-even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds". A
-per-minute shrinkage of raw stats says nothing about what a stat means by role or archetype, which is what PAM is. The same send also
-left the queue's top banner on Wave 128. Fix: both PAM blocks replaced (129.2 NFL in-play feed, 129.4 NHL in-play feed); B-127 PARKED,
-B-117 LATER with his words; PAM-3 relabelled a stat-shrinkage finding everywhere it was called PAM progress; COMMON_RULES_W129 carries
-"no PAM work". Rule: a directive the operator scopes as a side project stays out of waves until he says otherwise, and a result is
-named by what it measures, never by the program it was meant to feed.

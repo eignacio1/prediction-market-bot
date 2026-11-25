@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 129 READY TO PASTE - five blocks (Sonnet): 129.1 NHL depth on in shadow, 129.2 NFL in-play live feed, 129.3 MLB 2027 frozen before its first row, 129.4 NHL in-play live feed, 129.5 one D6 number + hypothesis registry. Wave 128 closed. No PAM work until PAM proper is built (operator 11-24 22:55 PT). Three installs await approval. Window handoff after Wave 130.**
+> **▶ WAVE 128 READY TO PASTE - five blocks (Sonnet): 128.1 NHL officials / pre-game goalie / availability as splits, 128.2 one NBA props engine (C2 everywhere), 128.3 NFL play-level personnel x coverage, 128.4 run the frozen PAM-3 test, 128.5 Muse's mechanical families moved to free server crons. Wave 127 closed. Two installs await approval. Window handoff after Wave 130.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -106,29 +106,30 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 This wave does five things:
 - puts NHL depth into the shadow rows with real inputs;
-- gives the NFL and NHL in-play cells a live feed (none of them can log today);
+- turns PAM-3 into a props challenger;
+- builds the PAM state tables;
 - freezes MLB 2027 before its first row;
 - makes D6 one number.
-
-**PAM is not in this wave** (operator 11-24 22:55 PT): "it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds". The PAM-3 result is a stat-shrinkage finding, not PAM. PAM work waits for PAM proper: what a stat means by role and archetype.
 
 The window hands off to SW-10 after Wave 130.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 129.1 | DEPTH / NHL | NHL depth switched on in shadow: Muse snapshots fetched at a pinned SHA, expected starters from the NHL event store, `PM_NHL_DEPTH` on after the surface check, leaves recounted | Sonnet | ⬜ | |
-| 129.2 | BREADTH / NFL | NFL in-play: a free live game-state feed for the T4NFL cells (16 registered, none can log), replayed on recorded games, shadow behind PM_NFL_INPLAY, install built | Sonnet | ⬜ | |
+| 129.2 | DEPTH / NBA | EXP-047 shrunk-mean challenger (PAM-3 shrinkage × C2 usage shift): pre-registered on a population neither test read, built, logging in shadow beside C2 | Sonnet | ⬜ | |
 | 129.3 | PROOF / MLB | MLB 2027 forward pre-registration for the 12 game cells (frozen before the first row); daily-board install built with an arm-date alarm (GG-1957); a full 2026 slate dry-run through all seven layers | Sonnet | ⬜ | |
-| 129.4 | BREADTH / NHL | NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built | Sonnet | ⬜ | |
+| 129.4 | DEPTH / PAM | PAM point-in-time state tables: `player_state`, `availability_profile`, `trait_reliability` (NBA backfill from the event store); H-DEPTH-PAM-4 (role security) pre-registered, not run | Sonnet | ⬜ | |
 | 129.5 | PROOF / measurement | One D6 number (box 18 / 117 vs repo 0 / 129, reconciled); the distance table recomputed for the handoff; the hypothesis registry backfilled (B-110) with a check that flags unregistered pre-registrations | Sonnet | ⬜ | |
 
 - **Pushback:**
-  - No block issues a verdict this wave. 129.2 and 129.4 widen the board (in-play cells logging) instead of proving anything.
-  - The horizon doctrine says pre-game first. Pre-game game families already log in all three sports, so carrying inward is next.
-  - Alternative: the combo per-leaf look, which needs `nba_combo_shadow_install` approved first.
+  - Only 129.2 can issue a verdict this wave, and only if an unread historical population exists for it.
+  - 129.4 and half of 129.5 build no verdict.
+  - Why run them anyway: SW-10 inherits a D6 that two sources disagree on, and a PAM that holds no state. Fixing both is cheaper now than after the handoff.
+  - Alternative: drop 129.4 for the combo per-leaf look, which needs `nba_combo_shadow_install` approved first.
 - **Surface:**
   - 129.1 switches on one shadow field path, and only on green health.
-  - 129.2, 129.3 and 129.4 each build an install but do not run it.
+  - 129.2 adds a shadow log field beside C2.
+  - 129.3 builds an install but does not run it.
   - No new live component.
   - Three installs wait on you (below).
 - **Dependencies:**
@@ -171,31 +172,34 @@ unknown-starter share (53 / 99 -> x), first judged look date.
 END OF BLOCK 129.1
 ```
 
-### 129.2 - NFL IN-PLAY: A FREE LIVE GAME-STATE FEED FOR THE T4NFL CELLS · MODEL: Sonnet
+### 129.2 - EXP-047 SHRUNK-MEAN CHALLENGER (PAM-3 × C2) · MODEL: Sonnet
 
 ```
-WAVE 129 - BLOCK 129.2 - BREADTH: NFL IN-PLAY CELLS GET A LIVE GAME-STATE FEED AND LOG IN SHADOW - MODEL: Sonnet
-PURPOSE: BREADTH B1 / B3 (NFL in-play cells logging; T4NFL-ARITH / T4NFL-FLOW bands with a logging cell, 0 -> n). Wave 122.3: 16
-registered NFL cells are in-play and none can log, because the bot has no NFL live feed. Horizon doctrine (ADR-0068): in-play trees are
-shallow and must be paid for in measured speed, so the feed's latency is measured, not assumed.
+WAVE 129 - BLOCK 129.2 - DEPTH: THE PROPS CHALLENGER PAM-3 LICENSED - SHRUNK PER-MINUTE RATES x SHRUNK MINUTES, WITH C2'S USAGE SHIFT
+- MODEL: Sonnet
+PURPOSE: DEPTH D3 (+1 pre-registered challenger for the NBA props arm) and D5(b) PAM class 3 at NBA player level (interpreted -> a
+challenger on the path to applied). Backlog B-127. H-DEPTH-PAM-3 SUPPORTED (W128.4: D +0.00201 [+0.00184, +0.00219], 4 of 4 stats);
+its PREREG section 7 names this challenger. C2 (stat-specific usage shift) SUPPORTED on unread 2023-24 and logs forward in shadow.
 
 FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read the W122.3 handoff, execution_bands.py (T4NFL-ARITH / T4NFL-FLOW), the NFL in-play cells in
-c5_execution/market_type_registry.py, the MLB T4 live loop (run_t4_mlb_live.py and its staleness / contamination checks, GG-085, GG-163:
-ESPN once 403'd the box for 43 h and nothing alarmed) and the NHL / NBA shadow runners as the logging pattern.
-Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_2.md.
+bind this block. Then read 12_EXPLORATORY/pam_stability/ (PREREG.md, PREREG_ADDENDUM_1.md, RESULT.md, trait_reliability_draft.json),
+12_EXPLORATORY/nba_props_role/ (C2's PREREG and RESULT_C2.md), nba_engine/props.py (c2_means, W128.2), and
+pregame_shadow/nba_engine_props*_forecaster.py. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_2.md.
 
-PART A - the feed: a free, server-reachable NFL live source (prove it from the box with a read-only task; never get past a bot check),
-point-in-time game state per play (score, quarter, clock, down / distance / yard line, possession, timeouts) with fetch time recorded, a
-staleness check, and a write-recency alarm (no rows while a game is live = FAIL in health.log). Known-answer test on a saved game.
-PART B - the in-play pricer for the T4NFL cells from the NFL engine's pre-game price updated by game state (the arithmetic band first),
-replayed over recorded 2026 games (no waiting for a Sunday): per cell, rows logged, Brier vs the Kalshi in-play price at the same
-timestamp where the price archive has it, and feed latency vs the market's move.
-PART C - shadow logging behind PM_NFL_INPLAY (no orders) with a RUNTIME_REGISTRY entry and an install task built, NOT run: its approval
-line under `operator decisions:` with the budget gate result.
+PART A - PRE-REGISTER FIRST (12_EXPLORATORY/nba_props_shrunk/PREREG.md, committed and pushed before any judged row is read):
+control = C2 as logged; challenger = C2's usage shift applied to PAM-3's shrunk rate x shrunk minutes (k values from
+trait_reliability_draft.json, fitted on training seasons only, fixed). Judged population: a season or slice NEITHER C2 nor PAM-3 judged -
+check both RESULT files and the H-DEPTH rows in HYPOTHESIS_DOCTRINE.md and name it with the check. 2025-26 was excluded by PAM-3 because
+the operator's fantasy test used it (design motivation, not evidence): if it is the only unread season, use it and state that in the
+PREREG. If no unread historical population exists, the judged set is forward 2026-27 rows and the PREREG states the judged n from
+quant/inference.mde_paired. Metric, interval and rule in PAM-3's form; pre-stated modal outcome.
+PART B - build the challenger with a known-answer test (planted reliability recovered; zero-noise case does not beat the raw mean), run it
+once on the judged historical population if Part A named one: RESULT.md + results.json quoting the PREREG SHA, per-stat D with BH.
+PART C - log it forward in shadow beside C2 behind PM_PROPS_SHRUNK (C2 and v1 byte-identical; no orders); switch on after the Hard Rule
+14 check, or put the install line under `operator decisions:` if one is needed. Update the H-DEPTH-PAM-3 row and add this test's row in
+HYPOTHESIS_DOCTRINE.md in the same PR.
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B1 (NFL in-play cells able to log, 0 -> n), B3 (T4NFL bands), feed
-latency measured.
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D3 NBA props (+1), P2 (+1 if Part B ran), D5(b) PAM class 3 stage.
 END OF BLOCK 129.2
 ```
 
@@ -227,31 +231,33 @@ Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: P3 (MLB look
 END OF BLOCK 129.3
 ```
 
-### 129.4 - NHL IN-PLAY: A FREE LIVE GAME-STATE FEED FOR THE T4NHL CELLS · MODEL: Sonnet
+### 129.4 - PAM POINT-IN-TIME STATE TABLES (NBA FIRST) · MODEL: Sonnet
 
 ```
-WAVE 129 - BLOCK 129.4 - BREADTH: NHL IN-PLAY CELLS GET A LIVE GAME-STATE FEED AND LOG IN SHADOW - MODEL: Sonnet
-PURPOSE: BREADTH B1 / B3 (NHL in-play cells logging; T4NHL-ARITH / T4NHL-FLOW bands with a logging cell, 0 -> n). The NHL engine prices
-the pre-game board; no NHL in-play cell logs. Horizon doctrine (ADR-0068): in-play trees are shallow and must be paid for in measured
-speed, so the feed's latency is measured, not assumed.
+WAVE 129 - BLOCK 129.4 - DEPTH: PAM HOLDS STATE, NOT ONLY CLASSIFICATIONS - player_state, availability_profile, trait_reliability -
+MODEL: Sonnet
+PURPOSE: DEPTH D5(b) NBA PAM classes 1, 2 and 4 (absent -> aggregated, point-in-time) and D3 (+1 pre-registered test, H-DEPTH-PAM-4).
+Backlog B-117, gaps GG-2005 (no point-in-time state table) and GG-2003. Design: 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md §3 A-C
+(the field lists are the spec; a change is a dated note in that file).
 
 FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read execution_bands.py (T4NHL-ARITH / T4NHL-FLOW), the NHL in-play cells in c5_execution/market_type_registry.py,
-the NHL event store (it already reads the NHL's own API), the MLB T4 live loop (run_t4_mlb_live.py and its staleness / contamination
-checks, GG-085, GG-163) and the NHL shadow runner as the logging pattern. NHL domains carry Content-Signal ai-train=no: we fetch data,
-we do not train AI on it. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_4.md.
+bind this block. Then read the design note, src/prediction_market_bot/pam/schema.py and store.py (the as_of(..., known_at=) contract to
+copy), the NBA event store reader, player_availability.fit_play_rates, and 12_EXPLORATORY/pam_stability/trait_reliability_draft.json.
+Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_4.md.
 
-PART A - the feed: the NHL's free live endpoints (play-by-play / boxscore), proven from the box with a read-only task, point-in-time game
-state per event (score, period, clock, strength / power play, empty net, shots) with fetch time recorded, a staleness check, and a
-write-recency alarm (no rows while a game is live = FAIL in health.log). Known-answer test on a saved game.
-PART B - the in-play pricer for the T4NHL cells from the NHL engine's pre-game price updated by game state (the arithmetic band first:
-score, time left, strength, empty net), replayed over recorded 2026-27 games so far (no waiting for tonight): per cell, rows logged,
-Brier vs the Kalshi in-play price at the same timestamp where the price archive has it, and feed latency vs the market's move.
-PART C - shadow logging behind PM_NHL_INPLAY (no orders) with a RUNTIME_REGISTRY entry and an install task built, NOT run: its approval
-line under `operator decisions:` with the budget gate result.
+PART A - the three tables as code in pam/ (new modules; schema.py / store.py add-only): every row carries as_of_ts, known_at, source,
+version; one read path as_of(..., known_at=). Look-ahead tests: a row known after the decision time is never returned; a trade changes
+team from its date.
+PART B - the NBA backfill from the event store (2016-2026 box scores, injury reports 2023-26 where present): player_state rows per
+player-game at the pre-tip decision time (usage_rate_shrunk with PAM-3's k, usage_rank_available, teammates_out, vacated_usage_share,
+minutes_expected, minutes_share_full_roster; role_security and return_window left null and named), availability_profile per player-date
+(gp_by_season, missed_by_body_part where reports exist, recurrence_flags), trait_reliability from the draft. Streamed, compressed,
+run in the session (not on the box). Row counts and a spot-check of 10 rows against box scores.
+PART C - PRE-REGISTER H-DEPTH-PAM-4 (12_EXPLORATORY/pam_state/PREREG_PAM4.md): role security (class 4, minutes lost when a displacing
+teammate returns), fitted on training seasons, judged on seasons no earlier test judged, metric / rule / modal outcome stated. Do NOT
+run it. Add its HYPOTHESIS_DOCTRINE row.
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B1 (NHL in-play cells able to log, 0 -> n), B3 (T4NHL bands), feed
-latency measured.
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA PAM classes 1 / 2 / 4 stage, D3 (+1), GG-2005 status.
 END OF BLOCK 129.4
 ```
 
@@ -288,14 +294,14 @@ END OF BLOCK 129.5
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
 
-### ✅ WAVE 128 — WRITTEN 2026-11-25 ~05:55 UTC · CLOSED 2026-11-25 ~07:30 UTC (operator 11-24 22:47 PT) · SW-9 · five blocks · verified on GitHub (#555 #582–#588 merged; handoffs W128_1..5; main Docs Guard green d8b31eaf) · moved: **P2 +1 (H-DEPTH-PAM-3 SUPPORTED, D +0.00201 [+0.00184, +0.00219], 4 of 4 stats); stat shrinkage beats raw means for NBA props inputs (not PAM - operator 11-24 22:55 PT); NFL play-level 74 judged, 0 earned (ride / no bet), N24–N26 applied; NBA props on one mean function, combo legs on C2; NHL depth splits built (off, ~370 games to judge); 4 Muse families moved to server scrapers (install pending); D6 unchanged 18 of 117**
+### ✅ WAVE 128 — WRITTEN 2026-11-25 ~05:55 UTC · CLOSED 2026-11-25 ~07:30 UTC (operator 11-24 22:47 PT) · SW-9 · five blocks · verified on GitHub (#555 #582–#588 merged; handoffs W128_1..5; main Docs Guard green d8b31eaf) · moved: **P2 +1 (H-DEPTH-PAM-3 SUPPORTED, D +0.00201 [+0.00184, +0.00219], 4 of 4 stats); D5(b) PAM class 3 NBA absent → interpreted; NFL play-level 74 judged, 0 earned (ride / no bet), N24–N26 applied; NBA props on one mean function, combo legs on C2; NHL depth splits built (off, ~370 games to judge); 4 Muse families moved to server scrapers (install pending); D6 unchanged 18 of 117**
 
 | # | Block | Model | Status | Outcome |
 |---|---|---|---|---|
 | 128.1 | NHL officials / goalie / availability | Sonnet | ✅ #585 | splits + PIT inputs built behind PM_NHL_DEPTH (off); D5(b) NHL unchanged; 39 of 99 "any_backup" is a sparse-history artefact → 129.1 |
 | 128.2 | one NBA props engine | Sonnet | ✅ #582 #586 | c2_means is the one mean function; combo legs on C2; 0 prices differ on day 1 |
 | 128.3 | NFL play-level | Sonnet | ✅ #583 #588 | EXP-NFLPLAYLEVEL-001: 74 judged, 0 earned (ride / no bet); N24–N26 applied |
-| 128.4 | H-DEPTH-PAM-3 | Sonnet | ✅ #555 | SUPPORTED, 4 of 4 stats: a stat-shrinkage finding, not PAM (operator 11-24 22:55 PT); parked until PAM proper is built |
+| 128.4 | H-DEPTH-PAM-3 | Sonnet | ✅ #555 | SUPPORTED, 4 of 4 stats; trait_reliability draft written → 129.2, 129.4 |
 | 128.5 | Muse offload | Sonnet | ✅ #584 #587 | 4 scrapers (MoneyPuck, NHL officials, NHL goalie logs, Savant), gate PASS 12 MB/day, peak RSS ~26 MB; mlb_boxscore 406 from the box → stays Muse; data_offload_install awaits approval |
 
 ### ✅ WAVE 127 — WRITTEN 2026-11-25 ~03:15 UTC · CLOSED 2026-11-25 ~07:00 UTC (operator 11-24 21:36 PT) · SW-9 · four blocks · verified on GitHub (#572–#581 merged; handoffs W127_1..4) · moved: **D4 MLB none → data layer + engine + test; D5(a) MLB 3 → 4 (dry run 12 / 12 cells); E1 combos 0 → 2 demo fills (3 of 12 RFQs quoted); C2 logging forward (shadow); dense capture 159.2 → 30.5 MB/day, gate PASS; D6 unchanged 18 of 117**

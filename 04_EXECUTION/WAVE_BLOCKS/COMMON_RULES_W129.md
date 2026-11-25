@@ -3,19 +3,17 @@
 Every Wave 129 block tells the terminal to read this file first. Text below is the rules verbatim.
 
 ```
-COMMON RULES - WAVE 129 (NHL DEPTH ON; NFL AND NHL IN-PLAY FEEDS; MLB 2027 FROZEN; MEASUREMENT TRUTH BEFORE THE HANDOFF) - SW-9 (read first; they bind this block)
+COMMON RULES - WAVE 129 (DEPTH INTO THE LIVE PATH: NHL DEPTH ON, A SHRUNK-MEAN PROPS CHALLENGER, PAM STATE TABLES; MLB 2027 FROZEN; MEASUREMENT TRUTH BEFORE THE HANDOFF) - SW-9 (read first; they bind this block)
 - THIS WAVE (five blocks, MODEL: Sonnet for all five). Operator 2026-11-24 22:47 PT: "128 is finished - confirm receipt then give me 5
   to send for tomorrow." Wave 128: NHL goalie / referee / availability splits built behind PM_NHL_DEPTH (off; judging needs ~370 games);
   one NBA player-mean function, combo legs on C2; NFL play-level 74 judged, 0 earned (ride / no bet), N24-N26 applied; H-DEPTH-PAM-3
   SUPPORTED (D +0.00201 [+0.00184, +0.00219], 4 of 4 stats); 4 server scrapers built for Muse's file families (install awaits approval).
   D6 18 of 117 on the box. The window hands off to SW-10 after Wave 130: every block leaves its lane in a state a new window can pick up
   from the handoff alone.
-- THE LANES: 129.1 NHL depth switched on in shadow with real inputs, 129.2 an NFL in-play live feed for the T4NFL cells, 129.3 the MLB
-  2027 forward pre-registration and daily-board install built, 129.4 an NHL in-play live feed for the T4NHL cells, 129.5 one D6 number
-  (box vs repo reconciled) and the hypothesis registry backfilled. A null is a routing result: a hypothesis closed and parked for R&D,
-  never a verdict on a market, a sport or the project.
-- NO PAM WORK (operator 2026-11-24 22:55 PT): "it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10
-  rebounds aren't the same as Wembys 10 rebounds". H-DEPTH-PAM-3 is a stat-shrinkage finding, not PAM. No block builds on it or on PAM.
+- THE LANES: 129.1 NHL depth switched on in shadow with real inputs, 129.2 the EXP-047 shrunk-mean challenger (PAM-3 x C2) pre-registered
+  and logging, 129.3 the MLB 2027 forward pre-registration and daily-board install built, 129.4 PAM point-in-time state tables (NBA first),
+  129.5 one D6 number (box vs repo reconciled) and the hypothesis registry backfilled. A null is a routing result: a hypothesis closed and
+  parked for R&D, never a verdict on a market, a sport or the project.
 - GG-2010 / GG-2011 (read before touching D6 or a leaf map): v2 covers the unseen NBA / NFL moneyline leaves but routes every one NO_BET,
   so promoting it changes the reason, not the arm; the leaf-map version is the operator's (PM_LEAF_MAP_VERSION). No block changes it.
 - MUSE'S ARCHIVE (eignacio1/sports-intel-archive) is read only through the GitHub API or archive_intake at a pinned commit. Never clone
@@ -281,15 +279,16 @@ COMMON RULES - WAVE 129 (NHL DEPTH ON; NFL AND NHL IN-PLAY FEEDS; MLB 2027 FROZE
 - Before ANY push to main: git diff --name-only origin/main..HEAD lists only the paths you intend.
 - CI runs on every PR. Never add a paid service. CI fails on any running component missing from
   02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml - register first (scripts/runtime_registry.py add), then install.
-- Five blocks run in parallel; ownership is disjoint: 129.1 = nhl_engine/ (depth inputs), decision_trees/filters/nhl_depth.py, the
-  nhl_depth candidate in decision_trees/shadow_route.py, SEATS/nhl.toml, 12_EXPLORATORY/nhl_depth/; 129.2 = the NFL live feed and
-  in-play pricer (new modules under c1_signal_ingestion/ and nfl_engine/, add-only), its runner, install and RUNTIME_REGISTRY entry,
-  12_EXPLORATORY/nfl_inplay/; 129.3 = mlb_engine/, scripts/mlb_*board*.py and its install script, the MLB PREREG; 129.4 = the NHL live
-  feed and in-play pricer (new modules under c1_signal_ingestion/ and nhl_engine/, add-only, never 129.1's files), its runner, install
-  and RUNTIME_REGISTRY entry, 12_EXPLORATORY/nhl_inplay/; 129.5 = scripts/distance_to_optimum.py, decision_trees/coverage.py (read path
-  only), scripts/hypothesis_registry*.py, 02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md registry body. Every other block touches
-  HYPOTHESIS_DOCTRINE.md only to update its own row (rebase before pushing; 129.5 merges last if both are open). RUNTIME_REGISTRY.toml
-  and scripts/box_tasks.py are add-only for everyone (rebase before pushing). A new allowlisted READ-ONLY box task is allowed.
+- Five blocks run in parallel; ownership is disjoint: 129.1 = nhl_engine/, decision_trees/filters/nhl_depth.py, the nhl_depth candidate in
+  decision_trees/shadow_route.py, SEATS/nhl.toml, 12_EXPLORATORY/nhl_depth/; 129.2 = pregame_shadow/nba_engine_props*_forecaster.py (a new
+  challenger beside C2; C2 and v1 byte-identical), nba_engine/props.py (add-only), 12_EXPLORATORY/nba_props_shrunk/; 129.3 =
+  mlb_engine/, scripts/mlb_*board*.py and its install script, 05_RESEARCH_EXPERIMENTS/ or 12_EXPLORATORY/mlb_engine/ PREREG;
+  129.4 = src/prediction_market_bot/pam/ (new state modules; schema.py / store.py add-only), 12_EXPLORATORY/pam_state/; 129.5 =
+  scripts/distance_to_optimum.py, decision_trees/coverage.py (read path only), scripts/hypothesis_registry*.py,
+  02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md registry body. Every other block touches HYPOTHESIS_DOCTRINE.md only to update its own
+  row (rebase before pushing; 129.5 merges last if both are open). decision_trees/shadow_route.py is 129.1's; 129.2 registers its
+  candidate through its own module or rebases onto 129.1. scripts/box_tasks.py is add-only for everyone. A new allowlisted READ-ONLY
+  box task is allowed.
 - ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
   pushed docs-only.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and
