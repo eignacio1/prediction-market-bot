@@ -117,8 +117,9 @@ factor_class = "F10"
 name = "Penalties / officials crew"
 source = "nflverse pbp penalty fields; officials"
 engine_slot = "ctx.officials"
-stage = "aggregated"
-evidence = "02_ARCHITECTURE_DESIGN/NFL_ENGINE/DATA_LAYER.md"
+stage = "applied"
+evidence = "12_EXPLORATORY/nfl_splits/RESULT.md"
+result = "W126.5 (EXP-NFLSPLITS-001): referee-prior terciles as splits on team totals and alternate ladders; 26 leaf x arm rows judged on 2025, 0 fit-routed, 0 earned, routed to ride / no bet (proxy prices): hypothesis closed (parked for R&D)"
 
 [[factor]]
 id = "N13"
