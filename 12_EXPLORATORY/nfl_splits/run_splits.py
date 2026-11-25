@@ -1,5 +1,8 @@
 """EXP-NFLSPLITS-001 retrospective runner (PREREG.md sections 1-3, 8). Usage: run_splits.py <games.csv> [out_dir]
 Fit 2019-2024, judge 2025 REG, proxy prices from board_v2 (earlier seasons only). Writes results.json."""
+from pathlib import Path
+import sys; sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out
 from __future__ import annotations
 
 import json
@@ -239,7 +242,7 @@ def main(path, out_dir="."):
             r["verdict"] = "routed to ride / no bet in this leaf"
     meta = dict(fit_seasons="2019-2024", judge="2025 REG", MIN_N=MIN_N, hs_median=HS, hs_mean=HS_MEAN, bh_family=len(fam),
                 ref_cuts=ref_cuts, mu_cuts=mu_cuts, bets=int(len(df)), games=int(df.game.nunique()))
-    Path(out_dir, "results.json").write_text(json.dumps({"meta": meta, "rows": final}, indent=1, default=float))
+    safe_out(Path(out_dir, "results.json")).write_text(json.dumps({"meta": meta, "rows": final}, indent=1, default=float))
     print(json.dumps(meta, default=float)); print(len(final), "rows;", sum(1 for r in final if "net" in r), "judged;", len(fam), "in BH family;",
           sum(1 for r in final if r["verdict"] == "arm earned in this leaf"), "earned")
 

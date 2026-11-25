@@ -1,6 +1,8 @@
 """Builds RESULT.md from results.json (and archive_look.json if present). No numbers are typed by hand."""
-import json
+import json, sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _fence import safe_out
 
 here = Path(__file__).parent
 R = json.loads((here / "results.json").read_text())
@@ -39,7 +41,8 @@ L += ["", "## What this does and does not say", "",
       "- Prices are consensus-anchored proxies. A null here says the consensus line already carries these factors at the rungs tested; it does not say real Kalshi ladders cannot differ.",
       "- Cuts (fit seasons): referee prior " + str(meta["ref_cuts"]) + "; matchup terciles " + str(meta["mu_cuts"]) + ".",
       "- Weather forecasts exist only from 2024, so S4 has one fit season and no leaf could be fit-routed. Rare leaves (`qb_new`, `short` rest) fall under MIN_N and are listed as not judged.",
+      "- 2026 archive look: not produced. The archive scan returned no usable settled 2026 ladder rows, so no 2026 number is claimed; it stays open for the forward look.",
       "- No 2026 shadow rows from this commit forward exist yet; the forward look in PREREG s3 is not read.",
       "- Overlap: W110.1 already returned 0 arms on weather / matchup for sides and totals. This result agrees on the new markets."]
-(here / "RESULT.md").write_text("\n".join(L) + "\n")
+safe_out(here / "RESULT.md").write_text("\n".join(L) + "\n")
 print("\n".join(L[:14]))

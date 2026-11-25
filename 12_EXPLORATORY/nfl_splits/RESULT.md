@@ -190,5 +190,6 @@ Rule from PREREG s7: a split moves to `applied` iff at least one leaf was judged
 - Prices are consensus-anchored proxies. A null here says the consensus line already carries these factors at the rungs tested; it does not say real Kalshi ladders cannot differ.
 - Cuts (fit seasons): referee prior [-0.4339448772723464, 0.6679777236338323]; matchup terciles {'TT': [-2.00119029266228, 1.9046143529777941], 'AS': [-3.1179676050625016, 3.123256380524386], 'AT': [-2.147271818800374, 2.5297882178176145]}.
 - Weather forecasts exist only from 2024, so S4 has one fit season and no leaf could be fit-routed. Rare leaves (`qb_new`, `short` rest) fall under MIN_N and are listed as not judged.
+- 2026 archive look: not produced. The archive scan returned no usable settled 2026 ladder rows, so no 2026 number is claimed; it stays open for the forward look.
 - No 2026 shadow rows from this commit forward exist yet; the forward look in PREREG s3 is not read.
 - Overlap: W110.1 already returned 0 arms on weather / matchup for sides and totals. This result agrees on the new markets.
