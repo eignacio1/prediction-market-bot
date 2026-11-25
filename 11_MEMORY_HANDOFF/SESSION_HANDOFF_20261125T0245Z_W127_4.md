@@ -17,8 +17,9 @@ Rules read: COMMON_RULES_W127 first line "# Wave 127 common rules".
 (68%, 24.9 GB): PASS, projected 71.7% at 30 days; burst 7.9 req/s vs 10 allowed; scale 1.0.
 
 ## Open
-- Real gate verdict comes from the box after merge + deploy: re-run `archive_dense_gate_read`. Not run by me (needs the merged code on the box).
+- PART C DONE: box `archive_dense_gate_read` 2026-11-25T04:05Z (box HEAD = origin/main, deploy_truth OK): **PASS**, 30.5 MB/day, 71.7% at 30 d, burst 7.92 req/s. Results: BOX_TASKS/results/20261125T0401Z_archive_dense_gate_read.md.
 - Headroom of ~69 MB/day under the ceiling is NOT spent. Candidates if wanted: NFL prop prints, NHL prints, spread/total prints.
 - Known miss: a market first listed after the last 20-min relist and starting inside 4.5 h waits for the next relist (small).
 - directive_conflicts: none found. surface_delta: 0 (no new cron / service). pattern_sweep: only archive_dense_* touch these constants.
-- operator decisions: pending the box gate read; if PASS -> "approve archive_dense_install".
+- operator decisions:
+  - approve archive_dense_install   (not installed; gate PASS)
