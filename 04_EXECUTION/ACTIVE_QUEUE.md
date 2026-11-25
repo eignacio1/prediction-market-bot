@@ -254,7 +254,12 @@ PART B - build scrapers for the SCRIPT families, highest value first, as far as 
 Part A): MoneyPuck season files (lines / pairings, goalies, team games), the NHL's own API (officials per game, goalie game logs),
 Baseball Savant CSV leaderboards, and any other family Part A proves scriptable. Each scraper: point-in-time (fetch time recorded, past
 seasons backfilled once, current season daily), compressed output under exp_output/DATA_OFFLOAD/<family>/, covered by disk retention,
-polite (documented rate, retries capped), idempotent, with a known-answer test on a saved sample. One combined install:
+polite (documented rate, retries capped), idempotent, with a known-answer test on a saved sample. THE BOX IS SMALL (box_memory_read
+20261125T0605Z: 1 GB RAM, ~430 MB available, load 0.4-0.8; disk 24 GB at 67%; pregame shadow runs peak ~350 MB, the dashboard has
+OOM history GG-118): every scraper streams to disk (never loads a season file into memory whole), runs under a memory cap
+(systemd-run -p MemoryMax=150M or equivalent), one scraper at a time (a lock file), only in an off-peak window outside the pre-game
+and live-game hours (e.g. 09:00-15:00 UTC), and the one-time backfill is spread over several nights with a per-night byte cap. Measure
+peak RSS and runtime per scraper on the box (read-only task) and put both in the handoff. One combined install:
 scripts/data_offload_install.py with gate / install / readback / uninstall (budget-gated like archive_dense_install: refuse unless the
 surface budget is GREEN and projected disk after 30 days < 80%), allowlisted tasks data_offload_gate_read / _install / _readback /
 _uninstall, and RUNTIME_REGISTRY entries. Run the gate read; DO NOT run the install - put "approve data_offload_install" under
