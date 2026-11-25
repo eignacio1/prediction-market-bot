@@ -18,3 +18,4 @@ Kalshi parlays turn out to have almost no standing price: 97% of open combos hav
 - Scored on all 2,429 games of 2026. It does not beat Kalshi's prices on any of the four families (moneyline closest, -0.004 Brier). That is a report, not a verdict: it becomes one input to the tree.
 - It under-prices home/team runs and over-prices hits. Home-field and park are the missing pieces.
 - Not done: opening-day dry run, registry row (so D4/D5 MLB did not move), PR/merge. Nothing live changed; no orders.
+- W127.4 (auto): W127.4 dense capture cut 159.2 to 30.5 MB/day; box gate now PASS; install awaits operator approval

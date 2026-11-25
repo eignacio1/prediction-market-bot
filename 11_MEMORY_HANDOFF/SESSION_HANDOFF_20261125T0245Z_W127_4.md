@@ -1,4 +1,20 @@
 # Session handoff - W127.4 dense capture cut to pass its gate (2026-11-25 02:45Z)
+<!-- session-meta
+task_id: W127.4
+tier: MICRO
+timestamp: 2026-11-25T04:25:00Z
+commit: b8eae18
+one_line_summary: W127.4 dense capture cut 159.2 to 30.5 MB/day; box gate now PASS; install awaits operator approval
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: P3
+gap_delta: none until installed; capture 159.2 -> 30.5 MB/day, gate REFUSE -> PASS (box read 2026-11-25T04:05Z)
+pattern_sweep: only archive_dense_* scripts use the MEASURED/print constants; nothing else found
+surface_delta: 0
+-->
+
 Rules read: COMMON_RULES_W127 first line "# Wave 127 common rules".
 
 ## What changed (PR on branch w127-4-dense-cut; code only: scripts/archive_dense_capture.py, scripts/archive_dense_install.py, tests)
@@ -23,3 +39,6 @@ Rules read: COMMON_RULES_W127 first line "# Wave 127 common rules".
 - directive_conflicts: none found. surface_delta: 0 (no new cron / service). pattern_sweep: only archive_dense_* touch these constants.
 - operator decisions:
   - approve archive_dense_install   (not installed; gate PASS)
+
+Strategic decisions: None - implementation-only session.
+Resume: operator decides archive_dense_install; then verify rows land after install.
