@@ -1392,3 +1392,4 @@
 | 2026-11-25T05:11:13Z | W127.2 | CLOSED — merge confirmed, HEAD (ba18d3a) is ancestor of origin/main — MLB engine landed, D4/D5a moved, look-back data-blocked |
 | 2026-11-25T05:11:05Z | W127.1 | CLOSED — W127.1: prop ticker parse fixed, GG-2007 closed, PM_PROPS_C2 default ON (shadow); D6 unchanged 18/129 (commit `4fa2fce`) |
 | 2026-11-25T05:12:52Z | W127.1 | CLOSED — merge confirmed, HEAD (4ad32e6) is ancestor of origin/main — prop ticker parse, GG-2007 closed, PM_PROPS_C2 default ON; D6 unchanged 18/129; C2 readback open (GG-2012) |
+| 2026-11-25T05:32:26Z | W127.3 | CLOSED — merge confirmed, HEAD (7569992) is ancestor of origin/main — demo combo RFQ run + client merged; install awaits approval |
