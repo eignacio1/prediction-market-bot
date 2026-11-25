@@ -25,7 +25,7 @@ None. Implementation-only.
 | nhl_officials | 25 | 5,185 | 23.7 | 26.9 MB | ok |
 | moneypuck | 16 | 5,594,685 | 30.8 | 26.0 MB | ok (byte cap) |
 | savant | 25 | 369,353 | 72.4 | 26.0 MB | ok |
-| mlb_boxscore | 3 | 0 | 14.5 | 26.0 MB | HTTP 406 BEFORE PR #587; re-probe request 20261125T063734Z pushed, result NOT read |
+| mlb_boxscore | 3 | 0 | 14.5 | 25.9 MB | HTTP 406 on the box, before AND after the Accept fix (re-probe 20261125T063734Z). Stays MUSE |
 
 Cap 150 MB, one at a time (flock), window 09-15 UTC, 12 MB/night cap.
 
@@ -43,11 +43,11 @@ PASS. disk 68.0%, +12.0 MB/day upper bound (backfill nights), projected 30d 69.4
 
 ## Part C (for the window's Monday message; not Muse-contacted)
 Retire as "moved to bot cron" only after install approved AND first nightly run succeeds:
-MoneyPuck C-922..C-1101, C-1378..C-1751, C-2138, C-3516..C-4347; NHL officials C-3399..C-3515; NHL goalie logs C-4348..C-4763; Savant boards per TRIAGE row. HOLD C-5128..C-5487 (mlb_boxscore) until the re-probe passes.
+MoneyPuck C-922..C-1101, C-1378..C-1751, C-2138, C-3516..C-4347; NHL officials C-3399..C-3515; NHL goalie logs C-4348..C-4763; Savant boards per TRIAGE row. C-5128..C-5487 (mlb_boxscore) are NOT retired: 406 persists on the box.
 MUSE-only, by value: (1) NFL personnel/tendencies C-4764..C-5019 (check nflverse overlap first), (2) browser-only NBA tables, (3) umpscorecards/kofsports (reachable, unbuilt), (4) snapshots/judgment work. R/B/snapshot labels were not in the QUEUE table I read; map them in the Monday message.
 
 ## One thing pending
-Read results/20261125T0637*_data_offload_probe.md; update mlb_boxscore row here and in TRIAGE. If still 406, mlb_boxscore stays with Muse.
+mlb_boxscore re-probe read: still 406 from the box. C-5128..C-5487 stay with Muse (do not retire). Optional: ask whether statsapi blocks the box IP; no bypass.
 
 ## Resume
 git fetch origin; read the result file above. ACTIVE_QUEUE row not updated. Session claim not closed; run scripts/close_session_claim.sh "W128.5" "<summary>" and generate_session_artifacts.py on this file.

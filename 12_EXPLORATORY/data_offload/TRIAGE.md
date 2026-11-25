@@ -13,7 +13,7 @@ Rule held throughout: a site that refuses the server (401/403/429, challenge pag
 | NHL officials | `api-web.nhle.com/v1/gamecenter/<id>/right-rail` + schedule | Public API; domain Content-Signal ai-train=no (we do not train AI); 0.5-1 s pauses | ~4.4 KB per game | OK, 24 games, 5 KB, RSS 27 MB | C-3399..C-3515 |
 | NHL goalie game logs | `api.nhle.com/stats/rest/en/...` (goalie game rows) | same | ~45 KB per 100 rows | OK, 25 req, 23 KB, RSS 26 MB | C-4348..C-4763 |
 | Baseball Savant CSV boards (12) | `baseballsavant.mlb.com/leaderboard/...&csv=true` | Public CSV export; 1 req per 3 s | <1 MB per board-year | OK, 25 req, 369 KB, 72 s, RSS 26 MB | exit velo/barrels C-5020..C-5031, C-5608..C-5619; expected C-5620..C-5643; percentile C-5644..C-5667; pitch tempo C-5668..C-5691; run value C-5692..C-5715; pitch arsenals C-5752..C-5763; pop time C-5764..C-5775; sprint speed C-5776..C-5787; 90ft running C-5788..C-5799 |
-| MLB boxscore (batting orders) | `statsapi.mlb.com/api/v1/schedule` + `/game/<pk>/boxscore` | Public API | ~2 MB cap per night | **FAILED on the box: HTTP 406** (Mac fine). `Accept: */*` added in PR #587; re-probe queued | C-5128..C-5487 (hold until re-probe passes) |
+| MLB boxscore (batting orders) | `statsapi.mlb.com/api/v1/schedule` + `/game/<pk>/boxscore` | Public API | ~2 MB cap per night | **FAILED on the box: HTTP 406**, still 406 after the Accept fix (Mac fine). Classified MUSE | C-5128..C-5487 (stay with Muse) |
 
 ## MUSE (the server cannot, or should not)
 
