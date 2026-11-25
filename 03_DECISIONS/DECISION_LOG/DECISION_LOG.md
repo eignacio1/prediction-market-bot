@@ -3695,3 +3695,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 ### 2026-11-24 18:33 PT — Operator: "Approved on rec for both"
 - NFL NO_BET leaves stay NO_BET (W117.1 A3 rule unchanged; no demo orders in those leaves).
 - Dense capture shrinks to fit its gate (W127.4); the 80% disk ceiling is not raised. archive_dense_install still needs approval by name.
+
+| 2026-11-25 | W126.3 | MLB joint game simulation built (PA log5 model, 9-inning sim, one-draw board) with known-answer tests; 2026 held-out report trails the Kalshi mid on moneyline, total, spread, team total; hypothesis "raw sim beats naive on every family" closed (EXP-MLBSIM-001, parked for R&D); engine price becomes one tree input. Dry run and registry row deferred. |
