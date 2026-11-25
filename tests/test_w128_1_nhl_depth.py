@@ -69,3 +69,9 @@ def test_loader_planted_backup_moves_leaf_and_no_data_abstains(tmp_path):
 def test_snapshot_after_row_is_not_read(tmp_path):
     _w(tmp_path, "2026-11-12", [_g("TOR-COL-2026-11-12", "B", "C", at="2026-11-13T00:00:00Z")])
     assert nd.leaves_for_row({"event_ticker": "KXNHLGAME-26NOV12COLTOR", "ts_utc": TS}, str(tmp_path)) is None
+
+
+def test_marker_rows_without_game_id_are_skipped(tmp_path):
+    import json
+    (tmp_path / "goalies-2026-11-12.jsonl").write_text(json.dumps({"status": "NO_GAMES", "snapshot_at_utc": "2026-11-12T15:00:00Z"}) + "\n")
+    assert nd.leaves_for_row({"event_ticker": "KXNHLGAME-26NOV12COLTOR", "ts_utc": TS}, str(tmp_path)) is None

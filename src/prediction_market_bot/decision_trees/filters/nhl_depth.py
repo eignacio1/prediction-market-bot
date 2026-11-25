@@ -91,7 +91,8 @@ def _read(path: str) -> list:
     import json
     try:
         with open(path) as fh:
-            return [json.loads(l) for l in fh if l.strip()]
+            rows = [json.loads(l) for l in fh if l.strip()]
+        return [r for r in rows if r.get("game_id")]  # fetch-failure and NO_GAMES marker rows carry no game: skipped, never imputed
     except OSError:
         return []
 
