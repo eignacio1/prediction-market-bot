@@ -40,16 +40,16 @@
       "order": 1
     },
     {
-      "id": "B-127",
+      "id": "B-129",
+      "order": 2,
       "status": "NOW",
-      "lane": "DEPTH",
-      "rank": "depth",
-      "title": "EXP-047 shrunk-mu challenger: C2 usage shift x PAM-3 stability shrinkage, pre-registered on data neither test read, logged in shadow beside C2",
-      "measure": "D3 / D5(b) NBA PAM class 3",
-      "why": "H-DEPTH-PAM-3 SUPPORTED (W128.4); PREREG section 7 names this challenger as the path to applied",
+      "lane": "BREADTH",
+      "rank": "breadth",
+      "title": "NFL in-play: a free live game-state feed for the T4NFL cells (16 registered, none can log), replayed on recorded games, shadow behind PM_NFL_INPLAY, install built",
+      "measure": "B1 / B3",
+      "why": "Wave 122.3: 16 NFL cells are in-play with no NFL live feed; horizon doctrine: pre-game first, then carry inward",
       "source": "SW-9 plan 2026-11-25",
-      "wave": "129.2",
-      "order": 2
+      "wave": "129.2"
     },
     {
       "id": "B-123",
@@ -64,16 +64,16 @@
       "order": 3
     },
     {
-      "id": "B-117",
+      "id": "B-130",
+      "order": 4,
       "status": "NOW",
-      "lane": "D5",
-      "rank": "PAM schema",
-      "title": "PAM point-in-time state tables: player_state, availability_profile, trait_reliability (schema + store, no ingestion) (GG-2005)",
-      "measure": "D5(a) cluster designs / PAM core; classes 2 and 4 get a home",
-      "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
-      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
-      "wave": "129.4",
-      "order": 4
+      "lane": "BREADTH",
+      "rank": "breadth",
+      "title": "NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built",
+      "measure": "B1 / B3",
+      "why": "No NHL in-play cell logs; horizon doctrine: pre-game first, then carry inward",
+      "source": "SW-9 plan 2026-11-25",
+      "wave": "129.4"
     },
     {
       "id": "B-110",
@@ -196,6 +196,18 @@
       "order": 14
     },
     {
+      "id": "B-117",
+      "status": "LATER",
+      "lane": "D5",
+      "rank": "PAM schema",
+      "title": "PAM point-in-time state tables: player_state, availability_profile, trait_reliability (schema + store, no ingestion) (GG-2005)",
+      "measure": "D5(a) cluster designs / PAM core; classes 2 and 4 get a home",
+      "why": "Operator 2026-11-24 22:55 PT: \"What did I fucking say about PAM lol it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds\"; earlier 11-21 12:34 PT design note (side project, not urgent)",
+      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
+      "wave": "after PAM proper (archetype / role meaning of a stat) is built",
+      "order": 15
+    },
+    {
       "id": "B-063",
       "status": "LATER",
       "lane": "quant",
@@ -205,7 +217,7 @@
       "why": "107.2 could not see under 20 minutes; H3 parked 11-20; needs forward trade prints (B-114 install) first",
       "source": "SW-9 W107 close",
       "wave": "123.3 (H3)",
-      "order": 15
+      "order": 16
     },
     {
       "id": "B-073",
@@ -217,11 +229,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 16
+      "order": 17
     },
     {
       "id": "B-014",
-      "order": 17,
+      "order": 18,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -233,7 +245,7 @@
     },
     {
       "id": "B-015",
-      "order": 18,
+      "order": 19,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -245,7 +257,7 @@
     },
     {
       "id": "B-016",
-      "order": 19,
+      "order": 20,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -257,7 +269,7 @@
     },
     {
       "id": "B-021",
-      "order": 20,
+      "order": 21,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -268,8 +280,20 @@
       "wave": "after a pass"
     },
     {
+      "id": "B-127",
+      "status": "PARKED",
+      "lane": "DEPTH",
+      "rank": "depth",
+      "title": "EXP-047 shrunk-mu challenger: C2 usage shift x PAM-3 stability shrinkage, pre-registered on data neither test read, logged in shadow beside C2",
+      "measure": "D3 / D5(b) NBA PAM class 3",
+      "why": "Operator 2026-11-24 22:55 PT: \"What did I fucking say about PAM lol it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds\"",
+      "source": "SW-9 plan 2026-11-25",
+      "wave": "parked until PAM proper is built",
+      "order": 22
+    },
+    {
       "id": "B-001",
-      "order": 21,
+      "order": 23,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -281,7 +305,7 @@
     },
     {
       "id": "B-008",
-      "order": 22,
+      "order": 24,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -293,7 +317,7 @@
     },
     {
       "id": "B-022",
-      "order": 23,
+      "order": 25,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -305,7 +329,7 @@
     },
     {
       "id": "B-023",
-      "order": 24,
+      "order": 26,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -317,7 +341,7 @@
     },
     {
       "id": "B-025",
-      "order": 25,
+      "order": 27,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -337,7 +361,7 @@
       "why": "D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "128.2",
-      "order": 26,
+      "order": 28,
       "outcome": "one mean function c2_means; combo legs read C2; 0 prices differ on day 1 (#582)"
     },
     {
@@ -350,7 +374,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "128.3",
-      "order": 27,
+      "order": 29,
       "outcome": "EXP-NFLPLAYLEVEL-001: 74 judged, 0 earned (ride / no bet); N24-N26 applied (#583)"
     },
     {
@@ -363,7 +387,7 @@
       "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "128.4",
-      "order": 28,
+      "order": 30,
       "outcome": "H-DEPTH-PAM-3 SUPPORTED: D +0.00201 [+0.00184, +0.00219], 4 of 4 stats; class 3 NBA absent -> interpreted (#555)"
     },
     {
@@ -376,7 +400,7 @@
       "measure": "D4 data layers; Muse chunks retired",
       "why": "Operator 11-24 21:59 PT: \"let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here.\"",
       "source": "operator 2026-11-24 21:59 PT",
-      "order": 29,
+      "order": 31,
       "outcome": "4 server scrapers built (MoneyPuck, NHL officials, NHL goalie logs, Savant); gate PASS 12 MB/day; mlb_boxscore 406 stays Muse; install awaits approval (#584 #587)"
     },
     {
@@ -389,12 +413,12 @@
       "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
       "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
       "wave": "127.1",
-      "order": 30,
+      "order": 32,
       "outcome": "W127.1 #573: prop ticker parse fixed, GG-2007 closed (fixed 11-17), D6 18 of 117 (box); leaf map v2 promotion open (GG-2010)"
     },
     {
       "id": "B-018",
-      "order": 31,
+      "order": 33,
       "status": "DONE",
       "lane": "engine",
       "rank": "2",

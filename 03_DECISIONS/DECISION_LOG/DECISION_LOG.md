@@ -3720,3 +3720,10 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   backfill (B-110). Leaf map v2 promotion (GG-2010) left out: v2 routes every unseen leaf NO_BET, so it would not move D6.
 - Backlog: B-115 / B-116 / B-120 / B-126 DONE; B-024 and B-124 wait on nba_combo_shadow_install; B-128 (data_offload_install approval +
   Muse retire list) added; DONE tickets older than W127 dropped (kept one wave per the backlog rule). Handoff to SW-10 after W130 (B-125).
+
+### 2026-11-24 23:05 PT — SW-9: no PAM work until PAM proper is built; Wave 129 blocks 2 and 4 replaced
+- Operator 22:55 PT, verbatim: "What did I fucking say about PAM lol it's not even 1/4 built out yet - it's almost common sense like
+  obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds".
+- H-DEPTH-PAM-3 is a stat-shrinkage finding, not PAM progress; the "PAM class 3 absent -> interpreted" label is withdrawn (queue, CLAUDE.md,
+  HYPOTHESIS_DOCTRINE row). B-127 (PAM-3 props challenger) PARKED; B-117 (PAM state tables) LATER.
+- W129.2 -> NFL in-play live feed (B-129); W129.4 -> NHL in-play live feed (B-130). Window error W68 logged.

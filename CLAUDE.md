@@ -35,13 +35,13 @@ Generated 2026-11-25 by `scripts/claude_md_now.py --write` from the code at that
 - **In season:** NFL, NBA, NHL — game families as SHADOW arms logging every forecast, plus the ADR-0072 demo forward test with arm
   orders from the router (flat demo stakes, real fills, `kelly_fraction` 0). NBA player props log as 9 shadow cells. **MLB is idle**
   until the 2027 season; its 2026 rows are the look-back corpus.
-- **Last wave closed:** 128 (2026-11-25); **Wave 129 queued** (129.1 NHL depth on in shadow, 129.2 PAM-3 x C2 props challenger, 129.3
-  MLB 2027 frozen before its first row, 129.4 PAM point-in-time state tables, 129.5 one D6 number + hypothesis registry backfill); the
+- **Last wave closed:** 128 (2026-11-25); **Wave 129 queued** (129.1 NHL depth on in shadow, 129.2 NFL in-play live feed, 129.3
+  MLB 2027 frozen before its first row, 129.4 NHL in-play live feed, 129.5 one D6 number + hypothesis registry backfill); the
   window hands off to SW-10 after Wave 130. **D6 on the box: 18 of 117** (NBA 7, NHL 7, NFL 4; d6_read 2026-11-25; the repo-static
   `distance_to_optimum.py` count disagrees - 129.5 reconciles). The edge-location program (12_EXPLORATORY/edge_location/,
   HYPOTHESIS_DOCTRINE.md): H1-H4 and H-EDGE-5 NOT SUPPORTED or UNDERPOWERED — gross effects fall below one round cost on the most-watched
-  lines; H-MEAS-1 licensed closing-line value in 1 of 50 families. H-DEPTH-PAM-3 SUPPORTED (stability shrinkage beats raw means on NBA
-  props inputs, 4 of 4 stats). No arm clears zero after real costs yet. Installs awaiting the operator: archive_dense_install,
+  lines; H-MEAS-1 licensed closing-line value in 1 of 50 families. H-DEPTH-PAM-3 SUPPORTED (stat shrinkage beats raw means on NBA props
+  inputs, 4 of 4 stats) - a stat finding, not PAM; PAM work waits for PAM proper (operator 11-24 22:55 PT). No arm clears zero after real costs yet. Installs awaiting the operator: archive_dense_install,
   nba_combo_shadow_install, data_offload_install.
 - **Muse** (outside archive agent): reachable by Earl's message on Mondays only; the window watches it with `scripts/muse_check.py`
   (nightly in the window session) and `04_EXECUTION/MUSE_MONDAY_CHECKLIST.md` before every Monday message (W65, W66).
