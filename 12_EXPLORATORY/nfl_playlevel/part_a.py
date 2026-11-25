@@ -71,7 +71,7 @@ def main():
                                                 def_epa_allowed=("epa", "sum"), def_plays=("epa", "size")).reset_index().rename(columns={"defteam": "team"})
     out = off.merge(dd, on=["game_id", "team"], how="left")
     out = out.sort_values(["season", "week", "game_id", "team"]).reset_index(drop=True)
-    safe_out(Path(__file__).parent / "team_game_playlevel.csv").write_text(out.to_csv(index=False))
+    out.to_csv(safe_out(Path(__file__).parent / "team_game_playlevel.csv"), index=False)
     cov_rate = out.groupby("season").apply(lambda x: pd.Series({"team_games": len(x), "part_cov": x.off_part.sum() / x.off_plays.sum(),
                                                                "cov_plays": x.off_cov.sum(), "ftn_cov": x.off_ftn.sum() / x.off_plays.sum()}))
     print(cov_rate.round(3).to_string())
