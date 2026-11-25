@@ -1383,3 +1383,4 @@
 | 2026-11-25T02:21:18Z | W126.1 | CLOSED — merge confirmed, HEAD (41fae5a) is ancestor of origin/main — W126.1 partial: #562/#565 merged; box reads landed (ERROR 0 since 11-19, D6 18/129); gate rerun queued |
 | 2026-11-25T02:19:13Z | B-024 | CLOSED — W126.4 Kalshi combo pricer + shadow writer (off by default) + EXP-COMBO-001 prereg merged; no quotes mostly, B4 awaits activation. (commit `1e88481`) |
 | 2026-11-25T02:32:36Z | B-120..B-125 | SW-9 Wave 126 close + Wave 127 + backlog plan to the W130 handoff. PURPOSE: D6, D4/D5a MLB, E1/E2 combos, P3 |
+| 2026-11-25T02:34:46Z | B-018 | W127.2 MLB engine land + dry run + count. PURPOSE: moves D4 MLB stage, D5(a) MLB n of 8 |
