@@ -114,7 +114,7 @@ The pattern across 123-125 is that gross effects keep appearing and keep dying a
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 126.1 | D6 / router | Finish 125.2: router ERROR skips broken down and fixed (GG-2007), the D6 trace read and NFL layer 7 surfaced, the dense-capture budget gate read at today's disk | Sonnet | ⬜ | |
-| 126.2 | DEPTH / NBA | EXP-047-C2: stat-specific usage redistribution (points from points share, rebounds and assists from their own shares), pre-registered, judged forward as a candidate map | Sonnet | ✅ retro SUPPORTED on 2023-24 (all four stats; PR pending); `PM_PROPS_C2` OFF, activation proposed 11-24 | |
+| 126.2 | DEPTH / NBA | EXP-047-C2: stat-specific usage redistribution (points from points share, rebounds and assists from their own shares), pre-registered, judged forward as a candidate map | Sonnet | ✅ retro SUPPORTED on 2023-24 (all four stats; PR #566 merged); `PM_PROPS_C2` OFF, activation proposed 11-24 | |
 | 126.3 | DEPTH / MLB | MLB engine: pitch-level store to a priced board (moneyline, run line, total, team totals, hits props), held out on the 2026 Kalshi archive, opening-day ready | Sonnet | ⬜ | |
 | 126.4 | BREADTH / pot of gold | Kalshi combo (parlay) markets: ticker grammar, price NBA same-game combos from the engine's joint draws, log shadow rows (B4 logging 0 → n), pre-register the combo arm | Sonnet | ⬜ | |
 | 126.5 | DEPTH / NFL | NFL factors as tree splits on team totals and alternate lines (B-013), scored per leaf on net per arm, 2026 shadow rows + nflverse history | Sonnet | ⬜ | |
