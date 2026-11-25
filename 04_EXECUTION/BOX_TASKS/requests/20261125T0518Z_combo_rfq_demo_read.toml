@@ -1,0 +1,2 @@
+task = "combo_rfq_demo_read"
+note = "W127.3: read the ledger of the run that crashed on the accept cap"
