@@ -9,3 +9,6 @@ We tested whether five things (who's at QB, rest days, the officiating crew, for
 # Operator Digest — 2026-11-25
 
 - W126.1 (auto): W126.1 partial: #562 and #565 merged (router per-day skip totals, archive_dense gate read); box reads pending.
+
+## W126.4 — Kalshi combo (parlay) markets
+Kalshi parlays turn out to have almost no standing price: 97% of open combos have no quote at all, and only 2 of 7,203 NBA same-game combos were two-sided. So this is a quote-hunting job first, not a P&L one. I built the pricer (it prices combos off the same game simulation, so correlation is carried) and a logger that is switched off. The test plan is written down before any data exists. Nothing is live and no money is at risk. Your call: whether to turn the logger on (it needs the install task approved by name).

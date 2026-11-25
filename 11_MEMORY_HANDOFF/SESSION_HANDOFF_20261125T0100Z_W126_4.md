@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: B-024
+tier: STANDARD
+timestamp: 2026-11-25T02:20:00Z
+commit: 1e88481
+one_line_summary: W126.4 Kalshi combo pricer + shadow writer (off by default) + EXP-COMBO-001 prereg merged; no quotes mostly, B4 awaits activation.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: BREADTH, DEPTH
+gap_measure: B4, D3
+gap_delta: D3 +1 combo arm pre-registered (COMBO_PREREG.md @ c9c9a63); B4 0 -> 0 until PM_COMBO_SHADOW activated
+pattern_sweep: n/a (no defect fixed); grep of combo pricing in src/ scripts/ tests/ found only sgp_price.py, extended not edited
+surface_delta: 0 live (+1 cron registered status=paused in RUNTIME_REGISTRY.toml)
+-->
+
 # Session handoff — W126.4 Kalshi combo markets priced and logged
 **Last reviewed:** 2026-11-25. Branch `session/20261125T002536Z-w126-4-combo-markets`. Common rules read: "# Wave 126 common rules".
 

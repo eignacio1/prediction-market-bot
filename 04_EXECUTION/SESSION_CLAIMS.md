@@ -1381,3 +1381,4 @@
 | 2026-11-25T02:18:57Z | W126.1 | CLOSED — W126.1 partial: #562 and #565 merged (router per-day skip totals, archive_dense gate read); box reads pending. (commit `8668534`) |
 | 2026-11-25T02:19:16Z | W126.1 | CLOSED — merge confirmed, HEAD (a4f5478) is ancestor of origin/main — W126.1 partial: #562/#565 merged; box reads landed (ERROR 0 since 11-19, D6 18/129); gate rerun queued |
 | 2026-11-25T02:21:18Z | W126.1 | CLOSED — merge confirmed, HEAD (41fae5a) is ancestor of origin/main — W126.1 partial: #562/#565 merged; box reads landed (ERROR 0 since 11-19, D6 18/129); gate rerun queued |
+| 2026-11-25T02:19:13Z | B-024 | CLOSED — W126.4 Kalshi combo pricer + shadow writer (off by default) + EXP-COMBO-001 prereg merged; no quotes mostly, B4 awaits activation. (commit `1e88481`) |
