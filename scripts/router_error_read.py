@@ -43,13 +43,17 @@ def summarise(rows: List[dict], epoch: Optional[datetime] = EPOCH) -> dict:
     by_date: Dict[str, Counter] = defaultdict(Counter)
     examples: Dict[str, dict] = {}
     n_rows = 0
+    per_day_all: Dict[str, Counter] = defaultdict(Counter)
     for r in rows:
         if r.get("event") != "arm_skip":
             continue
         n_rows += 1
+        ts = parse_ts(r.get("ts"))
+        if ts is not None and (epoch is None or ts >= epoch):
+            # W126.1: every skip row per sport and day, so a day with zero ERROR rows is a real zero, not a day with no rows.
+            per_day_all[ts.strftime("%Y-%m-%d")][str(r.get("sport") or "?").upper()] += 1
         if r.get("arm") not in BAD_ARMS:
             continue
-        ts = parse_ts(r.get("ts"))
         if epoch is not None and (ts is None or ts < epoch):
             continue
         sp = r.get("split_path") or {}
@@ -66,7 +70,8 @@ def summarise(rows: List[dict], epoch: Optional[datetime] = EPOCH) -> dict:
     return {"skip_rows_seen": n_rows, "total_by_arm": dict(total),
             "causes": {k: {"n": sum(v.values()), "by_sport": dict(v), "by_cell": dict(by_cause_cell[k].most_common(12)),
                            "example": examples[k]} for k, v in sorted(by_cause.items(), key=lambda kv: -sum(kv[1].values()))},
-            "per_day": {d: dict(c) for d, c in sorted(by_date.items())}}
+            "per_day": {d: dict(c) for d, c in sorted(by_date.items())},
+            "skip_rows_per_day_by_sport": {d: dict(c) for d, c in sorted(per_day_all.items())}}
 
 
 def load(path: Path) -> List[dict]:

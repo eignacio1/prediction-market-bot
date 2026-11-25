@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-24T06:10:00Z (W125.4 — W125.4 EXP-047-C1 lineup-cross usage shift on NBA props built (default off); retro INDETERMINATE, points improves, parked.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0610Z_W125_4.md` for full session detail.
+**Last reviewed:** 2026-11-24T06:25:00Z (W125.2 — W125.2 PARTIAL: #556 merged (install not run, gate REFUSE 86.2%); #559 healthcheck counts both order paths + router_error_read; A/C open.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0625Z_W125_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

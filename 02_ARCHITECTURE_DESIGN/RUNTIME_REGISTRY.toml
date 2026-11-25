@@ -1543,3 +1543,17 @@ max_age_h = "200"
 schedule = "0 10 * * 2"
 mirrors = ["deploy/cron.evidence_weekly"]
 command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 15"
+[[component]]
+key = "cron|41 * * * *|scripts/nba_combo_shadow.py"
+kind = "cron"
+source = "deploy/cron.nba_combo_shadow"
+status = "paused"
+reviewed = true
+purpose = "W126.4 (B-024) pot-of-gold combo arm: prices every open Kalshi NBA same-game combo from the engine's joint draws and logs engine P, product-of-legs P, legs priced/unpriced and the quote showing (or none) with the default-fee cost. Evaluate-and-log only: no order, position, fill, stake or kelly. Off unless PM_COMBO_SHADOW=on; PAUSED until the operator approves activation (COMBO_PREREG.md)."
+pillar = "BREADTH"
+writes = ["logs/nba_combo_shadow.log", "exp_output/COMBO_SHADOW/", "data/raw/nba_props/box.json", "data/raw/nba_props/tips.json"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/nba_combo_shadow.log is older than 3h while NBA has games in window; zero rows with games and open combos is a silent-arm concern"
+max_age_h = "3"
+schedule = "41 * * * *"
+mirrors = ["deploy/cron.nba_combo_shadow"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && BOT_ENV=paper PM_COMBO_SHADOW=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
