@@ -1,0 +1,2 @@
+task = "box_memory_read"
+note = "SW-9: headroom check before 128.5 data offload crons (operator asked: will it overload the box?)"

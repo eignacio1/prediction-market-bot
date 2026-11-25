@@ -32,10 +32,18 @@ from prediction_market_bot.nba_engine import joint as J  # noqa: E402
 from prediction_market_bot.nba_engine.sgp_price import GameDraws  # noqa: E402
 
 KALSHI = "https://api.elections.kalshi.com/trade-api/v2"
-MODEL_ID = "nba_combo_shadow_w126_4"
+MODEL_ID = "nba_combo_shadow_w128_2"    # W128.2: player legs priced from the C2 means (w126_4 rows used raw trailing means); rows carry player_means_sha256
 WINDOW_MIN = (0.0, 180.0)            # log combos whose game tips within 0-3 h (T-2h and T-30m both inside)
 UNQUOTED_SAMPLE = 0.05               # share of no-quote, no-volume combos logged anyway (coverage of how often a price exists)
 DEFAULT_FEE_MULT = 0.07              # taker; combo multiplier unverified (MECHANICS.md)
+
+
+def _c2_sha() -> str:
+    from prediction_market_bot.pregame_shadow import nba_engine_props_c2_forecaster as C2
+    return C2.MODEL_SHA256
+
+
+PLAYER_MEANS_SHA256 = _c2_sha()
 
 
 def enabled() -> bool:
@@ -80,8 +88,20 @@ def same_game(m: dict):
     return suf.pop() if len(suf) == 1 else None
 
 
-def game_draws(fc, suffix: str, n_draws: int):
-    """GameDraws for one game from the props engine (team draws) + joint.py (player stats), or None if the roster data is missing."""
+def make_forecaster(raw: Path, now: datetime):
+    """W128.2: the C2 props forecaster (stat-specific usage shift, Out lists from the injury store): ONE source of player means for props and combo legs."""
+    from run_nba_engine_props_shadow import _c1_out_lookup, load_tips
+    from prediction_market_bot.pregame_shadow import nba_engine_props_c2_forecaster as C2
+    from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as F
+    box = json.loads((raw / "box.json").read_text())
+    games, pl = F.parse_box(box)
+    fc = C2.NBAEnginePropsC2(games, pl, load_tips(raw / "tips.json"), None, C2.parse_attempts(box))
+    fc.out_lookup = _c1_out_lookup(fc)
+    return fc
+
+
+def game_draws(fc, suffix: str, n_draws: int, as_of=None):
+    """GameDraws for one game from the props engine (team draws) + joint.py (player stats; means from ``fc.team_means``, the same C2 means the props price from), or None if the roster data is missing."""
     from prediction_market_bot.pregame_shadow.nba_player_points_forecaster import _initial, _norm_surname
     mon = {m: i for i, m in enumerate(["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"], 1)}
     date = f"20{suffix[:2]}-{mon[suffix[2:5]]:02d}-{suffix[5:7]}"
@@ -96,10 +116,10 @@ def game_draws(fc, suffix: str, n_draws: int):
     marg = np.abs(np.asarray(h, float) - np.asarray(a, float))
     players = {}
     for side, team, pts, opp, opp_t in (("home", home, h, a, away), ("away", away, a, h, home)):
-        ros = fc.roster(team, date)
+        ros, mu = fc.team_means(team, date, p, as_of or datetime.now(timezone.utc))
         if not ros:
             continue
-        jr = J.JointRoster(tuple(n for _, n, _ in ros), [m for m, _, _ in ros], {s: [r[2][s] for r in ros] for s in J.STATS}, float(np.mean(pts)))
+        jr = J.JointRoster(tuple(n for _, n, _ in ros), [m for m, _, _ in ros], {s: list(mu[s]) for s in J.STATS}, float(np.mean(pts)))
         d = J.simulate_team(pts, marg, jr, rng, opp_pts=opp, opp_mean_pts=float(np.mean(opp)))
         for i, (_, name, _) in enumerate(ros):
             for stat in J.STATS:
@@ -140,7 +160,7 @@ def build_rows(combos: list, draws_for, tip_for, now: datetime, run_id: str) -> 
             n_legs=len(legs), legs_priced=[], legs_unpriced=[{"ticker": t, "side": s, "reason": "no_game_draws"} for t, s in legs],
             flags=[], n_draws=0, p_all=None, p_priced_subset=None, p_naive=None, lift=None, mc_se=None, resolved=False)
         rows.append(dict(
-            run_id=run_id, ts_utc=now.isoformat(), model_id=MODEL_ID, market_ticker=m["ticker"], game=suf, minutes_to_tip=round(mins, 1),
+            run_id=run_id, ts_utc=now.isoformat(), model_id=MODEL_ID, player_means_sha256=PLAYER_MEANS_SHA256, market_ticker=m["ticker"], game=suf, minutes_to_tip=round(mins, 1),
             yes_bid=bid if has_bid else None, yes_ask=ask if has_ask else None, yes_ask_size=_f(m, "yes_ask_size_fp") if has_ask else None,
             last_price=_f(m, "last_price_dollars") or None, volume=_f(m, "volume_fp"), quote_state=("bid" if has_bid else "-") + ("ask" if has_ask else "-"),
             fee_at_ask_default=(fee_default(ask) if has_ask else None), fee_multiplier_verified=False,
@@ -161,20 +181,18 @@ def main(argv=None) -> int:
     if not enabled():
         print(json.dumps({"event": "COMBO_SHADOW_OFF", "reason": "PM_COMBO_SHADOW is not on"}))
         return 0
-    from run_nba_engine_props_shadow import load_tips, refresh
-    from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as F
+    from run_nba_engine_props_shadow import refresh
     now = datetime.fromisoformat(a.now) if a.now else datetime.now(timezone.utc)
     now = now if now.tzinfo else now.replace(tzinfo=timezone.utc)
     raw = Path(a.raw)
     if not a.no_refresh:
         refresh(raw / "box.json", raw / "tips.json", now)
-    games, pl = F.parse_box(json.loads((raw / "box.json").read_text()))
-    fc = F.NBAEngineProps(games, pl, load_tips(raw / "tips.json"))
+    fc = make_forecaster(raw, now)
     cache: dict = {}
 
     def draws_for(suf):
         if suf not in cache:
-            cache[suf] = game_draws(fc, suf, a.draws)[0]
+            cache[suf] = game_draws(fc, suf, a.draws, now)[0]
         return cache[suf]
 
     def tip_for(suf):

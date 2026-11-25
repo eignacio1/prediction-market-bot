@@ -195,20 +195,18 @@ def main(argv=None) -> int:
         print(json.dumps({"event": "COMBO_RFQ_DEMO_OFF", "reason": "PM_COMBO_RFQ_DEMO is not on"}))
         return 0
     import nba_combo_shadow as S
-    from run_nba_engine_props_shadow import load_tips, refresh
-    from prediction_market_bot.pregame_shadow import nba_engine_props_forecaster as F
+    from run_nba_engine_props_shadow import refresh
     now = datetime.fromisoformat(a.now) if a.now else datetime.now(timezone.utc)
     now = now if now.tzinfo else now.replace(tzinfo=timezone.utc)
     raw = Path(a.raw)
     if not a.no_refresh:
         refresh(raw / "box.json", raw / "tips.json", now)
-    games, pl = F.parse_box(json.loads((raw / "box.json").read_text()))
-    fc = F.NBAEngineProps(games, pl, load_tips(raw / "tips.json"))
+    fc = S.make_forecaster(raw, now)
     cache: dict = {}
 
     def draws_for(suf):
         if suf not in cache:
-            cache[suf] = S.game_draws(fc, suf, a.draws)[0]
+            cache[suf] = S.game_draws(fc, suf, a.draws, now)[0]
         return cache[suf]
 
     tips: dict = {}
