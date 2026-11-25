@@ -1394,3 +1394,4 @@
 | 2026-11-25T05:12:52Z | W127.1 | CLOSED — merge confirmed, HEAD (4ad32e6) is ancestor of origin/main — prop ticker parse, GG-2007 closed, PM_PROPS_C2 default ON; D6 unchanged 18/129; C2 readback open (GG-2012) |
 | 2026-11-25T05:32:26Z | W127.3 | CLOSED — merge confirmed, HEAD (7569992) is ancestor of origin/main — demo combo RFQ run + client merged; install awaits approval |
 | 2026-11-25T05:56:41Z | TBD | W128.3 NFL play-level personnel/coverage classes; PURPOSE: moves D5(b) NFL stages |
+| 2026-11-25T06:04:06Z | W128.5 | W128.5 data offload: Muse file/API families to server crons; PURPOSE: moves D4 data layers per sport + Muse queue chunks retired |
