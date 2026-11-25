@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-25T06:35:00Z (W128.4 — Landed PR #555 (rebased, CI-gated); H-DEPTH-PAM-3 SUPPORTED (judged run was W124.5's, not re-read); Part B routing words written) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T2200Z_W128_4.md` for full session detail.
+**Last reviewed:** 2026-11-25T07:00:00Z (B-120 (W128.3) — W128.3 NFL play-level personnel x coverage crosses: 74 judged rows, 0 arms earned, routed to ride / no bet (proxy prices).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0700Z_W128_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

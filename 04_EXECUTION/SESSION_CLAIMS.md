@@ -1399,3 +1399,4 @@
 | 2026-11-25T06:30:45Z | W128.4 | CLOSED — Landed PR #555 (rebased, CI-gated); H-DEPTH-PAM-3 SUPPORTED (judged run was W124.5's, not re-read); Part B routing words written (commit `82499fd`) |
 | 2026-11-25T06:30:46Z | W128.2 | CLOSED — W128.2: one player-mean function (c2_means); C2 and combo legs read it; combo rows w128_2; forward look schedule (commit `289bfef`) |
 | 2026-11-25T06:30:56Z | W128.2 | CLOSED — merge confirmed, HEAD (301e931) is ancestor of origin/main — one player-mean function; combo legs on C2 means |
+| 2026-11-25T06:41:23Z | B-120 (W128.3) | CLOSED — W128.3 NFL play-level personnel x coverage crosses: 74 judged rows, 0 arms earned, routed to ride / no bet (proxy prices). (commit `8dbcab7`) |
