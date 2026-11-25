@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W127.1
+tier: STANDARD
+timestamp: 2026-11-25T05:15:00Z
+commit: 4fa2fce
+one_line_summary: W127.1: prop ticker parse fixed, GG-2007 closed, PM_PROPS_C2 default ON (shadow); D6 unchanged 18/129
+gg_touched: GG-2007, GG-2009, GG-2010, GG-2011, GG-2012
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D6
+gap_delta: none - D6 18/129 before and after (d6_read 20261125T0039Z vs 20261125T0500Z_w1271)
+pattern_sweep: grep parse_event_ticker decision_trees/ -> only the two NBA adapters (nba_adapter, nba_depth_adapter), both fixed via nba_game_teams
+surface_delta: 0 components (+1 ledger dir PREGAME_SHADOW_EXP047_C2)
+-->
+
 # Session handoff W127.1 (Sonnet 5.5) - D6 / router layer breaks, GG-2007 closed, PM_PROPS_C2 ON
 
 session-meta: block 127.1; PR #573 merged on green CI (test + guard); deploy confirmed (box HEAD c9859b5e = origin/main, deploy_truth_read 20261125T0401Z_a).

@@ -1390,3 +1390,4 @@
 | 2026-11-25T04:22:39Z | W127.4 | CLOSED — merge confirmed, HEAD (724141a) is ancestor of origin/main — dense capture cut to 30.5 MB/day, gate PASS, install awaits approval |
 | 2026-11-25T05:11:03Z | W127.2 | CLOSED — W127.2 MLB engine landed: 12/12 game cells engine-priced offline, D4 MLB none->data+engine+test, D5a 3->4/8, look-back data-blocked (commit `3d16b3e`) |
 | 2026-11-25T05:11:13Z | W127.2 | CLOSED — merge confirmed, HEAD (ba18d3a) is ancestor of origin/main — MLB engine landed, D4/D5a moved, look-back data-blocked |
+| 2026-11-25T05:11:05Z | W127.1 | CLOSED — W127.1: prop ticker parse fixed, GG-2007 closed, PM_PROPS_C2 default ON (shadow); D6 unchanged 18/129 (commit `4fa2fce`) |

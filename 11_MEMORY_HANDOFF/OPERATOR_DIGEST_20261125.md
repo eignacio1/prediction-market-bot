@@ -21,3 +21,10 @@ Kalshi parlays turn out to have almost no standing price: 97% of open combos hav
 - W127.4 (auto): W127.4 dense capture cut 159.2 to 30.5 MB/day; box gate now PASS; install awaits operator approval
 
 **W127.2 (MLB engine):** The MLB engine now prices all 12 game markets in a practice run (no orders placed), and MLB's depth score went from 3 to 4 of 8. I could not test the engine on the 2026 playoff games: the pitch data for October does not exist anywhere free, so 0 of 22 games could be priced. Nothing needed from you today; before opening day I'll need your OK on the 2027 test plan and a daily data job. Still zero real money at risk.
+## W127.1 — plain English
+- Fixed a bug that stopped NBA player-prop bets from getting their matchup context. Props now get it. No orders change; this is logging only.
+- Closed one old error that had already stopped on its own (no errors since 11-18).
+- Switched on a second forward log for NBA props. It records only; it places nothing. No real money, no new job on the box.
+- Two items are written down, not fixed (they need your call later): moneyline bets still don't land on a known decision leaf, and NBA points has no leaves at all.
+- Score for "bets wired end to end" did not move: still 18 of 129. That was expected for this block.
+- Not yet confirmed: that the new forward log is actually writing rows. No tool on the box can read it yet; that is registered.
