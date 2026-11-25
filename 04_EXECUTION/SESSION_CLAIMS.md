@@ -1378,3 +1378,5 @@
 | 2026-11-25T02:18:55Z | B-013 (W126.5) | CLOSED — W126.5 NFL splits on team totals and alt ladders: 94 judged rows, 0 arms earned, routed to ride / no bet (PR 570). (commit `8668534`) |
 | 2026-11-25T02:19:12Z | B-013 (W126.5) | CLOSED — merge confirmed, HEAD (1e88481) is ancestor of origin/main — W126.5 NFL splits: 0 arms earned, ride / no bet, PR 570 |
 | 2026-11-25T02:20:04Z | W126.2 | CLOSED — merge confirmed, HEAD (add3d09) is ancestor of origin/main — EXP-047-C2 props per-stat absorption SUPPORTED on unread 2023-24; PR #566/#569/add3d09 on main; PM_PROPS_C2 default off |
+| 2026-11-25T02:18:57Z | W126.1 | CLOSED — W126.1 partial: #562 and #565 merged (router per-day skip totals, archive_dense gate read); box reads pending. (commit `8668534`) |
+| 2026-11-25T02:19:16Z | W126.1 | CLOSED — merge confirmed, HEAD (a4f5478) is ancestor of origin/main — W126.1 partial: #562/#565 merged; box reads landed (ERROR 0 since 11-19, D6 18/129); gate rerun queued |

@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: W126.1
+tier: MICRO
+timestamp: 2026-11-25T02:20:00Z
+commit: 8668534
+one_line_summary: W126.1 partial: #562 and #565 merged (router per-day skip totals, archive_dense gate read); box reads pending.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PLUMBING
+gap_measure: D6 per sport, E1 router ERROR rows per day
+gap_delta: none (box d6_read / router_error_read results not yet landed)
+pattern_sweep: grep market_ticker KeyError form across src/ scripts/ tests/ -> no other leaf-row builder without ticker
+surface_delta: +1 read-only box task (archive_dense_gate_read), no cron/service/workflow
+-->
+
 # Session handoff W126.1 — D6 / router: finish 125.2 (PARTIAL: box reads pending)
 Common rules quoted: "# Wave 126 common rules". Worktree PM-worktrees/w126-1. PURPOSE: DEPTH D6 + EXECUTION E1.
 
@@ -36,3 +52,15 @@ measure moved: none yet measured (D6 and ERROR/day pending the box reads); diagn
 surface_delta: +1 read-only box task (archive_dense_gate_read), +1 reader field; no cron, service or workflow.
 pattern_sweep: grep of src/ scripts/ tests/ for the market_ticker KeyError form found no other leaf-row builder without ticker.
 directive_conflicts: none found in OPERATOR_DIRECTIVES.md. No frozen PREREG, hash, leaf map, cron or kelly change.
+
+## Strategic Decisions This Session
+None — implementation-only session. Two operator questions are listed above under operator decisions.
+
+One-thing-pending: read the four 20261125T0039Z box results.
+Resume: git fetch origin && ls 04_EXECUTION/BOX_TASKS/results | grep 20261125T0039Z
+
+## Box results (landed after the first write; results/20261125T0039Z_*)
+- router_error_read: ERROR rows per day 11-12..11-18 = 478, 1047, 1134, 1611, 961, 949, 160; zero on 11-19..11-25 (day totals of all
+  skip rows now shown per sport per day). Cause fixed by #503. E1 gap_delta: ERROR/day 478-1611 -> 0 (router_error_read, 20261125T0039Z).
+- d6_read (00:52Z): wired 18 of 129 (was 17 of 117): NBA 7, NFL 4, NHL 7 (was 6), MLB 0. Delta is the NHL +1 and 12 new registered cells, not from a fix in this block.
+- archive_dense_gate_read at 00:40Z ran pre-deploy code (printed usage, exit 2). Rerun queued (…T0219Z request). Last known gate: 86.2% REFUSE.
