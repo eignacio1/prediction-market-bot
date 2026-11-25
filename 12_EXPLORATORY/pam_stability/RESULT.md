@@ -61,3 +61,15 @@ it enters the tree only when the router scores it per leaf on net after costs, h
 Per-game sd of the mean difference 0.0062, 3,519 games; MDE at 80% power 0.00026. Scored on thresholds from a
 negative-binomial layer with dispersion fitted on training; prior games are the player's games with the same team in the same season. Effect is a prior-quality
 effect, strongest early in a season, so its routing value is early-season and for players with few games.
+
+## Block 128.4 verification and Part B (2026-11-24)
+No judged season was re-read: the one judged run is W124.5's (2026-11-23, `--final` once). Block 128.4 re-checked `results.json` against this file (pooled D, per-stat D and
+intervals, BH flags, strata and decomposition all match) and the PREREG §6 rule (interval wholly above 0, 4 of 4 stats positive), and rebased PR #555 onto main with PREREG.md
+untouched (last commit 16fcd20). Known-answer test and exploratory-isolation test pass locally (237 passed).
+
+**Part B, PREREG §7 (SUPPORTED).** Class 3 at NBA player level moves absent -> interpreted. `trait_reliability_draft.json` is the first set of rows (training seasons 2016-2022;
+a draft, not read by any live path). Next: an EXP-047 challenger using the shrunk mu, with its own pre-registration, logged beside the live map and scored per leaf on net
+after costs. It is not applied.
+**C2 inputs.** C2 (`nba_props_role/RESULT_C2.md`) redistributes an Out player's usage on top of EXP-047's trailing average. Whether C2 should start from the shrunk rates and
+shrunk minutes is a different test (shrinkage x absorption on a population no earlier test judged), so it needs its own pre-registration in a later wave. The gain here is mostly
+4-10 prior games (0.0103), so the question matters most early in a season and for players with few games.
