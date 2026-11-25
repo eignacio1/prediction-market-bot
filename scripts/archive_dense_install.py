@@ -49,8 +49,13 @@ LOG = ROOT / "logs" / "archive_dense.log"
 MEASURED = {  # mode: (gz bytes per run, requests per run, seconds per run)
     "props": (118_859, 38, 14.6),
     "games": (34_167, 20, 6.5),
-    "prints": (505_150, 104, 42.6),
+    "prints": (58_000, 109, 48.6),   # W127.4 cut, see below
 }
+# W127.4: prints were (505_150, 104, 42.6) = 145.5 of the 159.2 MB/day. After the family + 3 h-window cut, dry runs at
+# 2026-11-25 02:36Z and 02:37Z (same evening slate as the 292 KB uncut run at 02:34Z) gave 33,221 and 33,618 bytes (11.4% of
+# uncut). Scaled to the 00:25Z peak: 505,150 x 33,420 / 292,151 = 57.8 KB, rounded up to 58,000. Requests/seconds are the
+# measured dry run including the start-map relist (a real run relists only every 20 min, so this is the upper bound).
+# props and games keep their 11-24 peak constants: not cut, and still the upper bound.
 DOC_LIMIT_RPS = 20.0            # derived: 200 tokens/s / 10 tokens per default request (see module docstring)
 RATE_FRACTION = 0.5
 DISK_CEILING_PCT = 80.0
