@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-24T06:25:00Z (W125.2 — W125.2 PARTIAL: #556 merged (install not run, gate REFUSE 86.2%); #559 healthcheck counts both order paths + router_error_read; A/C open.) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0625Z_W125_2.md` for full session detail.
+**Last reviewed:** 2026-11-25T00:53:00Z (B-013 (W126.5) — W126.5 NFL splits on team totals and alt ladders: 94 judged rows, 0 arms earned, routed to ride / no bet (PR 570).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0053Z_W126_5.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

@@ -1,3 +1,19 @@
+<!-- session-meta
+task_id: B-013 (W126.5)
+tier: STANDARD
+timestamp: 2026-11-25T00:53:00Z
+commit: 8668534
+one_line_summary: W126.5 NFL splits on team totals and alt ladders: 94 judged rows, 0 arms earned, routed to ride / no bet (PR 570).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NFL
+gap_delta: 5 of 5 splits tested to a verdict, 0 earned; seat N12 aggregated -> applied (12_EXPLORATORY/nfl_splits/RESULT.md @ 8668534)
+pattern_sweep: exploratory writes not via safe_out -> caught by test_exploratory_isolation in 2 new files, fixed; generated NFL_SEAT.md out of sync after toml edit -> regenerated via scripts/render_seat.py
+surface_delta: 0 (one default-off candidate key, no cron or service)
+-->
+
 # Session handoff W126.5 — NFL factors as tree splits on team totals and alternate lines (B-013)
 **Last reviewed:** 2026-11-24 · branch session/20261125T002552Z-w126-5-nfl-splits
 
