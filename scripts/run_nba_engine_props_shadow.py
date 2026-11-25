@@ -163,7 +163,7 @@ def main(argv=None) -> int:
                       only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
                       props_for=_props_supply(games, pl))
         print(f"C1 ledger_dir={c1_dir} written:", dict(r1["written"]))
-    if a.c2 or os.environ.get("PM_PROPS_C2", "off").lower() == "on":      # default OFF; activation is a dated proposal (W126.2)
+    if a.c2 or os.environ.get("PM_PROPS_C2", "on").lower() != "off":      # default ON (W127.1, shadow logging only); PM_PROPS_C2=off is the off-switch
         from prediction_market_bot.pregame_shadow import nba_engine_props_c2_forecaster as C2
         fc2 = C2.NBAEnginePropsC2(games, pl, load_tips(tips_path), None, C2.parse_attempts(json.loads(store.read_text())))
         fc2.out_lookup = _c1_out_lookup(fc2)

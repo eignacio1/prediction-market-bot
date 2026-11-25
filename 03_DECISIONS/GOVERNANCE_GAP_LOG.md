@@ -5123,7 +5123,7 @@ SW-9, 2026-11-21. `PamRecord` (`src/prediction_market_bot/pam/schema.py`) holds 
 SW-9, 2026-11-24 00:50 UTC. healthcheck 11 (`pregame_shadow/demo_fill_stall.py`) counts only `shadow_order` events in `logs/demo_fill_policy.jsonl`. Since ARM_ORDERS=on (W112.3, 11-12), routed rows are placed by `decision_trees/arm_orders.py` and logged to `logs/arm_orders/orders.jsonl`; `shadow_flat_stake.place` returns early for them. As routing covers more rows the old path falls to zero, so the box WARNs "DEMO ORDERS = 0 in the last 24h" (health_read 20261124T0025Z) while arm orders keep placing (arm_orders_read 20261124T0040Z: 3,202 post-epoch orders vs ~1,340 on 11-19). Two defects: a false alarm now, and no alarm at all if the arm path stops. Fix: count arm-order `order` events too (and per path), WARN only when both are zero. Not fixed here (Hard Rule 11).
 
 ### GG-2007 — Router ERROR skips on 6,340 post-epoch rows (NBA 6,037)
-**Status:** OPEN · **Severity:** MEDIUM
+**Status:** RESOLVED (W127.1, 2026-11-25) · **Severity:** MEDIUM
 
 SW-9, 2026-11-24. arm_orders_read 20261124T0040Z, post-epoch: arm ERROR skips NBA 6,037, NFL 206, NHL 97. Rows the router could not route are placed nothing and never reach a leaf, so they are missing from every per-leaf score. Cause not read (the result is truncated at 30 kB and has no reason breakdown). Task: break ERROR skips down by reason and cell, fix or register each.
 
@@ -5132,3 +5132,24 @@ SW-9, 2026-11-24. arm_orders_read 20261124T0040Z, post-epoch: arm ERROR skips NB
 **Status:** OPEN · **Severity:** LOW
 
 SW-9, W125.1 Part C, 2026-11-24. `decision_trees/ride_orders.py:40-41` hard-codes `DEMO_BOOK_EVENT_CAP_USD = 500.00` and `DEMO_BOOK_DAY_CAP_USD = 150.00`; the comments say they were `risk._HARD_LIMITS` and notional x `MAX_DAILY_LOSS_PCT` "same value", and `tests/test_ride_orders.py:103` pins them. That is the GG-1935 pattern (a demo cap borrowing a real-money constant). Today it starves nothing: `RIDE_BOARD_ORDERS` is OFF by default and absent from `deploy/`. The arm-order book already has its own derivation (`c4_risk_engine/arm_sizing.py`, BASE 5/50/25 and RAISED 25/2500/1500). Fix when the ride board's orders are proposed on: derive the caps from orders per day at the flat stake, as W116.2 did, and re-pin the test. No number changed in this block.
+
+**Resolution (W127.1, 2026-11-25):** one cause. All 6,340 post-epoch ERROR rows were `KeyError('market_ticker')` on MODEL_FADE leaf rows (`LeafMap.row_for` built the row without the ticker and book that `retro_route.side_net` needs). Fixed by #503 (W116.3, merged 2026-11-17), regression test `tests/test_leaf_map_router.py`. Evidence it stopped: `router_error_read` 20261125T0039Z per_day, ERROR rows 11-12..11-18 = 478, 1,047, 1,134, 1,611, 961, 949, 160; zero on 11-19..11-25 (day totals of all skip rows now printed beside them, W126.1). NHL UNROUTED (5,573 rows) ended when the NHL router was wired (W118).
+
+
+### GG-2009 — NBA player-prop rows carried no factor filters: the prop event ticker was not parsed
+**Status:** RESOLVED (W127.1, 2026-11-25) · **Severity:** LOW
+
+SW-9, W127.1, 2026-11-25. `d6_trace_read` 20261125T0039Z: all 417 NBA_PLAYER_POINTS rows (T1 102, T2 157, T3 158) logged `nba_event_ticker_unparsed` and `L3_filters_n` 0, because `filter_supply.nba_adapter` / `nba_depth_adapter` called `pregame_shadow.nba_forecaster.parse_event_ticker`, which knows only KXNBAGAME / SPREAD / TOTAL / TEAMTOTAL. Prop series (KXNBAPTS / REB / AST / 3PT) never matched. Fixed: `filter_supply.nba_game_teams` accepts game and prop event tickers; `tests/test_w127_1_prop_ticker.py`. Effect: prop rows now carry the same team-percentile filters as the game rows. No arm or order changes (v1 has no prop leaves, so prop rows stay `leaf_not_in_map` -> NO_BET; see GG-2011). Pattern sweep: the only two callers of `parse_event_ticker` in `decision_trees/` were the two adapters, both fixed.
+
+
+### GG-2010 — NBA / NFL moneyline rows land on leaves the frozen v1 leaf map has never seen (`leaf_not_in_map`), so layer 4 stays empty
+**Status:** OPEN · **Severity:** MEDIUM
+
+SW-9, W127.1, 2026-11-25. `d6_trace_read` 20261125T0039Z: NBA_MONEYLINE T1 10 rows, all `leaf_not_in_map` (live leaves `NBA|NBA_MONEYLINE|T1|2|down / flat / up`). The frozen v1 `leaf_map.json` holds only 3 NBA ML T1 leaves, 10 at T2, 11 at T3 (NFL 3 / 9 / 10); the fit window did not see the rest. `leaf_map_v2.json` has all 20 per band and every one is NO_BET (`leaf_no_arm_earned_v2`), so v2 would change the reason, not the arm. D6 reads v1 for layers 2 and 4, so these six cells (NBA ML T1-T3, NFL ML T1-T3) cannot reach layer 4 until a map that covers their leaves is the one the router and D6 read. Not fixed here: v1 is frozen, and switching the router or D6 to v2 is a pre-registration / default change (PM_LEAF_MAP_VERSION), which is the operator's. Even then the cells stop at layer 4 as stumps (no earned arm), so D6 would not move without an arm order and a measured fill. Question for the window: promote v2 as the router default, or leave moneylines as NO_BET until 2027 power allows an earned arm.
+
+
+### GG-2011 — NBA_PLAYER_POINTS has no leaves in the frozen v1 map; its candidate leaves cannot reach D6 layers 6 and 7
+**Status:** OPEN · **Severity:** LOW
+
+SW-9, W127.1, 2026-11-25. `d6_read` 20261125T0039Z: NBA_PLAYER_POINTS T1-T3 miss layer 2 (market state), with model p present (`nba_player_points_v1`, 102 / 157 / 158 rows). The `nba_props` candidate map (`leaf_maps/nba_props_v2.json`, W121.2) does carry 12 points leaves per band, all thin NO_BET. D6 was not pointed at it: layer 6 reads arm-path rows with a `size_for` for a non-NO_BET arm and layer 7 reads arm orders with measured fills, and a candidate map logs beside v1 and never places an order ("orders follow v1"). Counting layer 2 from the candidate would raise a per-layer number for cells that cannot be wired, and changes the D6 definition. Registered, not routed. Revisit when a points leaf earns an arm in `nba_props` and a decision is made to let that candidate place flat demo orders.
+

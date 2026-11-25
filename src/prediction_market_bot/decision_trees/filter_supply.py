@@ -39,6 +39,23 @@ def assert_pit(data_ts, row_ts, what: str = "filter input") -> None:
         raise PITViolation(f"{what} dated {parse_ts(data_ts).isoformat()} is after the row at {parse_ts(row_ts).isoformat()}")
 
 
+def nba_game_teams(event_ticker: str) -> Optional[Tuple[str, str]]:
+    """(away, home) for an NBA event ticker of a GAME series (parse_event_ticker) or a PLAYER-PROP series
+    (KXNBAPTS / REB / AST / 3PT, W127.1 GG-2009: the game parser only knows the four game series, so every prop row logged
+    nba_event_ticker_unparsed and carried no factor filters). None when neither form matches or a team code is unknown."""
+    import re
+    from prediction_market_bot.pregame_shadow.nba_forecaster import KALSHI_CODES, parse_event_ticker
+
+    ev = parse_event_ticker(event_ticker or "")
+    if ev is not None:
+        return ev[2], ev[3]
+    m = re.match(r"^KXNBA(?:PTS|REB|AST|3PT)-\d{2}[A-Z]{3}\d{2}([A-Z]{6})$", event_ticker or "")
+    if not m:
+        return None
+    away, home = m.group(1)[:3], m.group(1)[3:]
+    return (away, home) if away in KALSHI_CODES and home in KALSHI_CODES else None
+
+
 _NBA: dict = {}
 
 
@@ -54,14 +71,13 @@ def nba_adapter(row: dict, table: Optional[dict] = None) -> Tuple[Optional[dict]
     """The 111.4 granularity-index leaves for the row's game: prior-season league percentiles of both teams."""
     from prediction_market_bot.archive_intake.nba_distance_filters import HIGHER_IS_BETTER, distance_filters  # lazy: package imports pandas
     from prediction_market_bot.nba_engine.filters import nba_filters
-    from prediction_market_bot.pregame_shadow.nba_forecaster import parse_event_ticker
 
     t = table if table is not None else nba_table()
     assert_pit(t["data_through_utc"], row["ts_utc"], "NBA team percentile table")
-    ev = parse_event_ticker(row.get("event_ticker", ""))
-    if ev is None:
+    ah = nba_game_teams(row.get("event_ticker", ""))
+    if ah is None:
         return None, "nba_event_ticker_unparsed"
-    _, _, away, home = ev
+    away, home = ah
     teams = t["teams"]
     if home not in teams or away not in teams:
         return None, "nba_team_not_in_percentile_table"
@@ -98,13 +114,12 @@ def nba_depth_adapter(row: dict, prof: Optional[dict] = None, lineup_snap=None, 
     passed in (no runtime source on the box yet: they are 'unknown') and are never split on. Raises PITViolation (wrapped by
     the supply) when the profile is not strictly before the row's season or a snapshot is after the row."""
     from prediction_market_bot.decision_trees.filters import nba_depth as nd
-    from prediction_market_bot.pregame_shadow.nba_forecaster import parse_event_ticker
 
     prof = prof if prof is not None else nba_depth_profiles()
-    ev = parse_event_ticker(row.get("event_ticker", ""))
-    if ev is None:
+    ah = nba_game_teams(row.get("event_ticker", ""))
+    if ah is None:
         return None, "nba_event_ticker_unparsed"
-    _, _, away, home = ev
+    away, home = ah
     try:
         leaves = nd.depth_filters(home, away, prof, row_season=nba_season_of(row["ts_utc"]), lineup_snap=lineup_snap,
                                   rotation=rotation, crew=crew, refs_snap_at=refs_snap_at, ts_utc=row["ts_utc"])
