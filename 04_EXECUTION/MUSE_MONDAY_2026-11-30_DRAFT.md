@@ -11,3 +11,9 @@ Known items so far (window, 2026-11-25):
 3. **Collisions** (4 records filed 11-24): check the team / subject matches the QUEUE row before writing; record ids unique per chunk.
 4. **Lineups + refs (C-2042..C-2131)**: claims stopped 11-24; resume only with a cap on concurrent runs (browser load, checklist item 11).
 5. Late snapshot slots (19:00 / 19:30 PT) — confirm they ran 11-24.
+6. **Families moved to bot crons (W128.5; only if `data_offload_install` is approved AND its first nightly run succeeded before the
+   message goes out — check the box readback first; otherwise leave this item out):** retire as "moved to bot cron": MoneyPuck
+   C-922..C-1101, C-1378..C-1751, C-2138, C-3516..C-4347; NHL officials C-3399..C-3515; NHL goalie logs C-4348..C-4763; Savant boards per
+   12_EXPLORATORY/data_offload/TRIAGE.md. KEEP mlb_boxscore C-5128..C-5487 (statsapi returns 406 to the box). Point Muse's freed capacity,
+   by value: NFL personnel / tendencies C-4764..C-5019 (check nflverse overlap first), browser-only NBA tables, umpscorecards / kofsports,
+   snapshots and judgment work. Re-check the 500-chunk floor after the retire (muse_check.py).

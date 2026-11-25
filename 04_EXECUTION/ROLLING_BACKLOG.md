@@ -10,116 +10,102 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ## NOW — in the current wave
 
-### B-122 · NHL engine depth: goalie confirmation snapshots (Muse, since 11-10) and MoneyPuck lines / goalie logs (Muse R6) as point-in-time factor classes, tested as splits
+### B-122 · NHL engine depth: goalie / referee / availability splits built behind PM_NHL_DEPTH (W128.1); next: pinned-SHA Muse snapshot fetch, prior starters from the NHL event store, switch on in shadow, leaves recounted
 
-- order 1 · lane: DEPTH · rank: depth · wave: 128.1
+- order 1 · lane: DEPTH · rank: depth · wave: 129.1
 - **measure:** D4 / D5(b) NHL
 - **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
 - **source:** SW-9 plan 2026-11-24
 
-### B-116 · NBA props engine stat by stat: EXP-047-C2 stat-specific usage redistribution (C1 improved points, hurt rebounds / assists / threes) (GG-2003)
+### B-127 · EXP-047 shrunk-mu challenger: C2 usage shift x PAM-3 stability shrinkage, pre-registered on data neither test read, logged in shadow beside C2
 
-- order 2 · lane: D5 · rank: PAM class 1 · wave: 128.2
-- **measure:** D1 personnel / availability on the props arm; D5(b) class 1 in props
-- **why:** D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.
-- **source:** operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md
-
-### B-120 · NFL engine depth after the 126.5 splits (0 of 5 earned): next factor classes at play level (personnel / coverage from nflverse + Muse R7 tendencies) as splits
-
-- order 3 · lane: DEPTH · rank: depth · wave: 128.3
-- **measure:** D5(b) NFL
-- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
-- **source:** SW-9 plan 2026-11-24
-
-### B-115 · Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004) - code + known-answer test on PR #555; run pending (operator side project, not urgent, 11-23 16:22 PT)
-
-- order 4 · lane: D5 · rank: PAM class 3 · wave: 128.4
-- **measure:** D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047
-- **why:** Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: "each must reach APPLIED, not stop at interpreted" (design motivation, not evidence)
-- **source:** operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md
-
-### B-024 · Pot of gold as an ARM of the tree, now: Kalshi combo (parlay) markets priced from the engine joint draws and logged (KXMVENBASINGLEGAME etc.); longshot leaves scored per leaf (0 of 18 earned, W125.3)
-
-- order 5 · lane: engine · rank: 8 · wave: 129 (combo per leaf; install pending)
-- **measure:** -
-- **why:** Operator 11-05: "we should have the pot of gold decision trees routed in too" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08); D-09 "beating buddy off his phone placing parlays, that's the first step".
-- **source:** CLAUDE.md north star
-
-### B-126 · Muse offload: file / API families become free server cron jobs (MoneyPuck, NHL API, Savant CSVs, ...); Muse keeps browser-only and judgment work; data_offload_install on approval
-
-- order 6 · lane: DEPTH · rank: data · wave: 128.5
-- **measure:** D4 data layers; Muse chunks retired
-- **why:** Operator 11-24 21:59 PT: "let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here."
-- **source:** operator 2026-11-24 21:59 PT
-
-## NEXT — drawn into the next wave or two
-
-### B-119 · archive_dense_install: gate PASS at 30.5 MB/day (W127.4 #574); operator approval by name
-
-- order 7 · lane: execution · rank: install · wave: install on approval
-- **measure:** PROOF P3: props / 5-min / trade-print data for H1, H3, H4
-- **why:** 124.4 gate refused at 74% disk (projected 93.9%)
-- **source:** PR #556
-
-### B-121 · H-EXEC-4 first look 2026-12-01 (O'Brien-Fleming; frozen at #554) + the weekly evidence look reading C2 and combo candidates
-
-- order 8 · lane: PROOF · rank: proof · wave: 129
-- **measure:** P2 / E2
-- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
-- **source:** SW-9 plan 2026-11-24
+- order 2 · lane: DEPTH · rank: depth · wave: 129.2
+- **measure:** D3 / D5(b) NBA PAM class 3
+- **why:** H-DEPTH-PAM-3 SUPPORTED (W128.4); PREREG section 7 names this challenger as the path to applied
+- **source:** SW-9 plan 2026-11-25
 
 ### B-123 · MLB engine price as a layer-1 input: the 2027 forward pre-registration and the spring dry runs
 
-- order 9 · lane: DEPTH · rank: depth · wave: 129
+- order 3 · lane: DEPTH · rank: depth · wave: 129.3
 - **measure:** D6 MLB (opening day)
-- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
-- **source:** SW-9 plan 2026-11-24
-
-### B-124 · Combo arm per leaf after a week of forward rows / RFQ quotes (COMBO_PREREG frozen at c9c9a63)
-
-- order 10 · lane: ARMS · rank: arms · wave: 129
-- **measure:** B4 / P2
-- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
-- **source:** SW-9 plan 2026-11-24
-
-### B-110 · Hypothesis Doctrine registry backfilled: every hypothesis since EXP-001 / HYP-010, live or parked, in full detail; a generator flags unregistered pre-registrations
-
-- order 11 · lane: PROOF · rank: registry · wave: 129
-- **measure:** hypotheses registered by status; unregistered pre-registrations 0
-- **why:** Operator 11-20 10:10 PT: "a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D) listed in comprehensive detail"
-- **source:** operator 2026-11-20 10:10 PT
-
-### B-125 · Window handoff SW-9 -> SW-10 after Wave 130: doctrine stack review, distance table recomputed, backlog groomed, WINDOW_ERROR_LOG lessons, Muse checklist handed over
-
-- order 12 · lane: PLUMBING · rank: plumbing · wave: 130
-- **measure:** handoff
 - **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
 - **source:** SW-9 plan 2026-11-24
 
 ### B-117 · PAM point-in-time state tables: player_state, availability_profile, trait_reliability (schema + store, no ingestion) (GG-2005)
 
-- order 13 · lane: D5 · rank: PAM schema
+- order 4 · lane: D5 · rank: PAM schema · wave: 129.4
 - **measure:** D5(a) cluster designs / PAM core; classes 2 and 4 get a home
 - **why:** Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: "each must reach APPLIED, not stop at interpreted" (design motivation, not evidence)
 - **source:** operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md
 
+### B-110 · Hypothesis Doctrine registry backfilled: every hypothesis since EXP-001 / HYP-010, live or parked, in full detail; a generator flags unregistered pre-registrations
+
+- order 5 · lane: PROOF · rank: registry · wave: 129.5 (with D6 source reconciled)
+- **measure:** hypotheses registered by status; unregistered pre-registrations 0
+- **why:** Operator 11-20 10:10 PT: "a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D) listed in comprehensive detail"
+- **source:** operator 2026-11-20 10:10 PT
+
+## NEXT — drawn into the next wave or two
+
+### B-121 · H-EXEC-4 first look 2026-12-01 (O'Brien-Fleming; frozen at #554) + the weekly evidence look reading C2 and combo candidates
+
+- order 6 · lane: PROOF · rank: proof · wave: 129
+- **measure:** P2 / E2
+- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
+- **source:** SW-9 plan 2026-11-24
+
+### B-125 · Window handoff SW-9 -> SW-10 after Wave 130: doctrine stack review, distance table recomputed, backlog groomed, WINDOW_ERROR_LOG lessons, Muse checklist handed over
+
+- order 7 · lane: PLUMBING · rank: plumbing · wave: 130
+- **measure:** handoff
+- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
+- **source:** SW-9 plan 2026-11-24
+
+### B-119 · archive_dense_install: gate PASS at 30.5 MB/day (W127.4 #574); operator approval by name
+
+- order 8 · lane: execution · rank: install · wave: install on approval
+- **measure:** PROOF P3: props / 5-min / trade-print data for H1, H3, H4
+- **why:** 124.4 gate refused at 74% disk (projected 93.9%)
+- **source:** PR #556
+
+### B-128 · data_offload_install: operator approval by name (gate PASS 12 MB/day; MoneyPuck terms: free non-commercial, credit MoneyPuck.com); then Muse retire list in the Monday message after the first nightly run
+
+- order 9 · lane: DATA · rank: plumbing · wave: approval pending
+- **measure:** D4 families fetched by the server 0 -> 4
+- **why:** Operator 11-24 21:59 PT: "let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here."
+- **source:** W128.5 handoff
+
+### B-024 · Pot of gold as an ARM of the tree, now: Kalshi combo (parlay) markets priced from the engine joint draws and logged (KXMVENBASINGLEGAME etc.); longshot leaves scored per leaf (0 of 18 earned, W125.3)
+
+- order 10 · lane: engine · rank: 8 · wave: after nba_combo_shadow_install approval
+- **measure:** -
+- **why:** Operator 11-05: "we should have the pot of gold decision trees routed in too" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08); D-09 "beating buddy off his phone placing parlays, that's the first step".
+- **source:** CLAUDE.md north star
+
+### B-124 · Combo arm per leaf after a week of forward rows / RFQ quotes (COMBO_PREREG frozen at c9c9a63)
+
+- order 11 · lane: ARMS · rank: arms · wave: 129
+- **measure:** B4 / P2
+- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
+- **source:** SW-9 plan 2026-11-24
+
 ### B-096 · Muse watchdog repair: the nightly sweep has failed to start since 11-13 (environment error); recreate it if 11-16 fails; move its fixes into the Monday message only (TO_MUSE fetch is safety-flagged on Muse's side)
 
-- order 14 · lane: window · rank: plumbing · wave: 116 (window)
+- order 12 · lane: window · rank: plumbing · wave: 116 (window)
 - **measure:** sweep runs / week
 - **why:** no mid-week correction reached Muse since 11-12
 - **source:** SW-9 Fable review 2026-11-16
 
 ### B-017 · NBA store refresh lag: the last game date trails by about two days
 
-- order 15 · lane: flex · rank: plumbing · wave: 116 (Haiku): NBA store refresh lag
+- order 13 · lane: flex · rank: plumbing · wave: 116 (Haiku): NBA store refresh lag
 - **measure:** store lag <= 1 day
 - **why:** 15:46Z refresh line live; confirm the store reaches yesterday after its first run (next window).
 - **source:** 95.1 handoff (observed)
 
 ### B-074 · Governance: gap burn-down (250 OPEN) folded into blocks touching the same files
 
-- order 16 · lane: window · rank: plumbing · wave: folded into B-098
+- order 14 · lane: window · rank: plumbing · wave: folded into B-098
 - **measure:** OPEN gaps
 - **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
 - **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
@@ -128,42 +114,42 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ### B-063 · News lag at trade-print resolution (Kalshi public trades) - is there a minutes-long window the 20-min archive missed
 
-- order 17 · lane: quant · rank: 4 · wave: 123.3 (H3)
+- order 15 · lane: quant · rank: 4 · wave: 123.3 (H3)
 - **measure:** lag to half / full adjustment and net per news type
 - **why:** 107.2 could not see under 20 minutes; H3 parked 11-20; needs forward trade prints (B-114 install) first
 - **source:** SW-9 W107 close
 
 ### B-073 · Architecture / scaffolding: engine-to-registry wiring so a new market family is a config row, not a build (ADR-0073 "one engine prices the whole board")
 
-- order 18 · lane: flex · rank: plumbing · wave: after D6 > 20 cells
+- order 16 · lane: flex · rank: plumbing · wave: after D6 > 20 cells
 - **measure:** families added by config
 - **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
 - **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
 
 ### B-014 · PAM into the engines (NBA first): archetypes as engine inputs, tested held-out
 
-- order 19 · lane: engine · rank: 6
+- order 17 · lane: engine · rank: 6
 - **measure:** PAM factors applied in an engine
 - **why:** PAM pays only through an engine; its standalone tests were null (89.5).
 - **source:** operator 10-14 (PAM piped into the engines)
 
 ### B-015 · Ladder ride on NBA / NHL ladders (EXP-043's pooled hypothesis accrues from 10-28)
 
-- order 20 · lane: proof · rank: 1
+- order 18 · lane: proof · rank: 1
 - **measure:** EXP-043 rows by sport
 - **why:** The only ride mechanism we can see; NBA / NHL ladders started archiving 10-28.
 - **source:** EXP-043
 
 ### B-016 · NBA officials known before the price: a capture route for crew assignments (GG-1390)
 
-- order 21 · lane: flex · rank: plumbing
+- order 19 · lane: flex · rank: plumbing
 - **measure:** officials factor usable pre-game
 - **why:** Crews have no pre-game timestamp, so the officials factor is an upper bound.
 - **source:** 93.2, GG-1390, Muse R-040
 
 ### B-021 · Wire the accepted gate (position_gate.py) only after a cell passes a look
 
-- order 22 · lane: proof · rank: 1 · wave: after a pass
+- order 20 · lane: proof · rank: 1 · wave: after a pass
 - **measure:** a gate with a non-zero skill weight
 - **why:** No model earns a weight today (94.Q); wiring an empty gate changes nothing.
 - **source:** 85.2, 94.Q
@@ -172,415 +158,79 @@ The rolling backlog: every piece of work in scope, in one ordered list (operator
 
 ### B-001 · NBA engine v3 (EXP-044c): installed 11-04 03:30Z; log every game (5 of 11 missed on 11-04, OOM) and read its first week
 
-- order 23 · lane: engine · rank: 2 · wave: superseded: NBA engine judged per leaf through the tree (B-094)
+- order 21 · lane: engine · rank: 2 · wave: superseded: NBA engine judged per leaf through the tree (B-094)
 - **measure:** D4 NBA engine pricing live boards; arms logging 0 -> 2 with rows; engine input classes 4 -> up to 7
 - **why:** v3 logging since 11-04 03:30Z (412 rows) but silent for 5 games (OOM).
 - **source:** 95.1 handoff, GG-1450
 
 ### B-008 · NBA and NHL calibration scan (89.2's method) on the new archive rows, as discovery; freeze survivors for a forward test
 
-- order 24 · lane: proof · rank: 1 · wave: superseded by B-094 (calibration scan becomes the long-history prior)
+- order 22 · lane: proof · rank: 1 · wave: superseded by B-094 (calibration scan becomes the long-history prior)
 - **measure:** in-season ride candidates (IN_SAMPLE) 0 -> n; frozen 0 -> n
 - **why:** Every ride cell so far is MLB; NBA / NHL prices have been archived since 10-28 and need about two weeks of rows.
 - **source:** 91.3 / 92.1 not-done part; GG-1250
 
 ### B-022 · Parlay / combo families into the archive and a cell (GG-1250 remainder)
 
-- order 25 · lane: flex · rank: 8
+- order 23 · lane: flex · rank: 8
 - **measure:** B4 parlays 0 -> 1
 - **why:** Parlays come after the standard board is built (operator's market-class roadmap).
 - **source:** GG-1250
 
 ### B-023 · Polymarket: any build work
 
-- order 26 · lane: flex · rank: -
+- order 24 · lane: flex · rank: -
 - **measure:** -
 - **why:** Operator 10-27 17:31 PT: "we're not building shit for polymarket yet".
 - **source:** operator
 
 ### B-025 · New sports, and the T5 band
 
-- order 27 · lane: flex · rank: 8
+- order 25 · lane: flex · rank: 8
 - **measure:** B3 5 of 5
 - **why:** Breadth outran proof; expansion ranks last.
 - **source:** ranking 10-27
 
 ## DONE — closed at a wave close (kept for one wave, then dropped)
 
+### B-116 · ~~NBA props engine stat by stat: EXP-047-C2 stat-specific usage redistribution (C1 improved points, hurt rebounds / assists / threes) (GG-2003)~~
+
+- order 26 · lane: D5 · rank: PAM class 1 · wave: 128.2
+- **measure:** D1 personnel / availability on the props arm; D5(b) class 1 in props
+- **why:** D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.
+- **source:** operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md
+
+### B-120 · ~~NFL engine depth after the 126.5 splits (0 of 5 earned): next factor classes at play level (personnel / coverage from nflverse + Muse R7 tendencies) as splits~~
+
+- order 27 · lane: DEPTH · rank: depth · wave: 128.3
+- **measure:** D5(b) NFL
+- **why:** Operator 11-24 18:27 PT: "set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly"
+- **source:** SW-9 plan 2026-11-24
+
+### B-115 · ~~Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004) - code + known-answer test on PR #555; run pending (operator side project, not urgent, 11-23 16:22 PT)~~
+
+- order 28 · lane: D5 · rank: PAM class 3 · wave: 128.4
+- **measure:** D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047
+- **why:** Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: "each must reach APPLIED, not stop at interpreted" (design motivation, not evidence)
+- **source:** operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md
+
+### B-126 · ~~Muse offload: file / API families become free server cron jobs (MoneyPuck, NHL API, Savant CSVs, ...); Muse keeps browser-only and judgment work; data_offload_install on approval~~
+
+- order 29 · lane: DEPTH · rank: data · wave: 128.5
+- **measure:** D4 data layers; Muse chunks retired
+- **why:** Operator 11-24 21:59 PT: "let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here."
+- **source:** operator 2026-11-24 21:59 PT
+
 ### B-104 · ~~NFL wired on box rows: split fields and verdicts on every NFL shadow row; the four one-layer-away NFL cells~~
 
-- order 28 · lane: D6 · rank: layer 3 · wave: 127.1
+- order 30 · lane: D6 · rank: layer 3 · wave: 127.1
 - **measure:** D6 NFL 0 -> N on the box
 - **why:** NFL per layer 12,12,0,9,9,9,4; season ends in January
 - **source:** SW-9 2026-11-19 (d6_read 01:25Z)
 
 ### B-018 · ~~MLB engine (pitch-level store) before spring~~
 
-- order 29 · lane: engine · rank: 2 · wave: 127.2
+- order 31 · lane: engine · rank: 2 · wave: 127.2
 - **measure:** D4 MLB none -> data layer
 - **why:** MLB has no engine; spring training starts in February; next depth lane after 125.4.
 - **source:** ADR-0073; Muse R-082 / R-083
-
-### B-013 · ~~NFL engine: factors applied to team totals and alternate lines from the line (market-anchored adjustments)~~
-
-- order 30 · lane: engine · rank: 3 · wave: 126.5
-- **measure:** NFL factors applied with a measured skill weight
-- **why:** Board v2 matches Kalshi's ladders; the factors have so far added nothing from the line (85.1, 94.2).
-- **source:** 93.4, 94.2
-
-### B-095 · ~~Placement as a decision: fill + adverse-selection model per arm, placement policy, breaker / day-cap diagnosis, settled P&L per arm; ADR-0072 addendum proposed~~
-
-- order 31 · lane: execution · rank: execution · wave: 125.1
-- **measure:** E1-E3 per arm; expected net per placement option
-- **why:** fills win less than non-fills on MOMENTUM / FADE; day cap zeroes ~7,500 orders
-- **source:** SW-9 Fable review 2026-11-16
-
-### B-113 · ~~H-EXEC-4: do filled orders beat the close net of the fee actually charged? Paired by arm, pooled, forward-judged - pre-registered on PR #554 (first look 12-01); lands in 125.1 Part 0~~
-
-- order 32 · lane: EXECUTION · rank: fills · wave: 125.1
-- **measure:** E2: net per filled bet with interval, per arm
-- **why:** Operator 11-20 13:43 PT: "intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing."
-- **source:** operator 2026-11-20 13:43 PT
-
-### B-114 · ~~Dense capture: props from listing, 5-min snapshots in the last 3 h, Kalshi trade prints forward (install needs operator approval by name) - built on PR #556; lands in 125.2 Part 0; its gate refused the install at 74% disk~~
-
-- order 33 · lane: PROOF · rank: data · wave: 125.2
-- **measure:** props games / week into H1; snapshot spacing for H4; prints for H3
-- **why:** Operator 11-20 13:43 PT: "intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing."
-- **source:** operator 2026-11-20 13:43 PT
-
-### B-118 · ~~H-EDGE-5 favourite-longshot at the close: pre-registered on the 2025-26 Kalshi history (never judged), net of fee + half spread, per family x price bucket; routes RIDE-favourite / NO-longshot leaves if supported~~
-
-- order 34 · lane: PROOF · rank: arms / edge · wave: 125.3
-- **measure:** PROOF P2: first verdict on a priced inefficiency; arms routed by it
-- **why:** Operator 11-23 17:01 PT: "give me 4 for the next wave. Align your backlog to ensure we're taking care of the right tickets"; H-MEAS-1 (#558) slopes NHL ML 1.71 [1.21, 2.21], NBA ML 1.26, NHL TT 1.10
-- **source:** 12_EXPLORATORY/edge_location/meas_close/RESULT.md
-
-### B-111 · ~~Variance tools in quant/ (control variates, within-game pairing, partial pooling, clustered MDE) + a power ledger dating when every open hypothesis becomes judgeable~~
-
-- order 35 · lane: PROOF · rank: measurement core · wave: 124.1
-- **measure:** PROOF P3: hypotheses with a dated judgeable look
-- **why:** Operator 11-20 13:43 PT: "intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing."
-- **source:** operator 2026-11-20 13:43 PT
-
-### B-112 · ~~H-MEAS-1: is the closing price calibrated per family? If so, closing-line value is licensed as a low-variance outcome~~
-
-- order 36 · lane: PROOF · rank: measurement core · wave: 124.2
-- **measure:** families licensed for CLV; effective-sample multiplier
-- **why:** Operator 11-20 13:43 PT: "intervals are still too wide. Now that we have the foundation set - let's tighten the focused calculations, apply quant mechanics accordingly to your testing."
-- **source:** operator 2026-11-20 13:43 PT
-
-### B-109 · ~~Where does the edge live? Four pre-registered tests: H1 attention, H2 timing, H3 news latency, H4 execution / liquidity (12_EXPLORATORY/edge_location/HYPOTHESIS.md)~~
-
-- order 37 · lane: PROOF · rank: edge location · wave: 123.1-123.4
-- **measure:** a verdict per hypothesis; the next build budget follows HYPOTHESIS.md section 5
-- **why:** Operator 11-20 10:03 PT: "put that hypothesis in a thorough diaphragm - let's put it to work"
-- **source:** operator 2026-11-20 10:03 PT
-
-### B-107 · ~~NBA points priced by the engine so the one earned prop split (points) can fire; props D6 on the box~~
-
-- order 38 · lane: D6 · rank: layer 1 · wave: 122.1 (points live; props layer 2 next)
-- **measure:** D6 props; points calibration
-- **why:** 121.2: the only earned prop split is points, and points has no engine price
-- **source:** SW-9 2026-11-20
-
-### B-108 · ~~MLB 2027 board priced from the pitch store; every registered MLB cell logging from opening day (GG-1957)~~
-
-- order 39 · lane: D6 · rank: layer 1 · wave: 122.4 (dry run; live in 2027)
-- **measure:** MLB layer-1 cells 3 -> N; back-test calibration
-- **why:** 2026 regular season never logged for MLB game cells (GG-1957); 3 of 42 MLB cells priced
-- **source:** SW-9 2026-11-20
-
-### B-103 · ~~Evidence off the box, $0: weekly verified copy of PRICE_ARCHIVE, KALSHI_HISTORY and settled ledgers to the operator's Mac (desktop bridge); then a rolling hot window on the box~~
-
-- order 40 · lane: INFRA · rank: capacity · $0 · wave: 119.4 + 120.3 + 121.4 (Mac copy weekly)
-- **measure:** off-box copies of irreplaceable evidence 0 -> 1 (verified by checksum); box disk trend
-- **why:** Operator 11-17 22:29 PT: "not paying for more". The 24 GB box holds the only full copy of evidence that cannot be re-captured (GG-158), and growth returns it to 90% within months
-- **source:** operator 2026-11-17 22:29 PT
-
-### B-106 · ~~The weekly evidence look runs itself on box rows: v1 + router v2 + nba_depth + nhl_v2 per leaf, e-process carried forward; install proposed~~
-
-- order 41 · lane: PROOF · rank: weekly look · wave: 121.1 (closed 11-20)
-- **measure:** P1 / P3: leaves with an arm per map per look; next look date
-- **why:** Router v2's guarantee needs every weekly look taken on schedule; none runs today
-- **source:** SW-9 2026-11-19
-
-### B-093 · ~~NBA prop cells through the tree: market state from the prop archive, player splits as filters, arms per leaf, leaf_maps/nba_props.json~~
-
-- order 42 · lane: props · rank: retail flow · wave: 121.2 (closed 11-20)
-- **measure:** B4 props routed; prop cells layers
-- **why:** D-09 retail flow first; props logging since 11-12
-- **source:** SW-9 2026-11-13
-
-### B-097 · ~~Capacity and dollar ceiling: fillable size x net per arm per sport from the order log and depth archive - what the wired cells are worth at $1k / $10k / $100k~~
-
-- order 43 · lane: proof · rank: capacity · wave: 121.3 (closed 11-20)
-- **measure:** $ per day per sport at each bankroll
-- **why:** nobody has sized the prize; guides which cells to wire first
-- **source:** SW-9 Fable review 2026-11-16
-
-### B-105 · ~~Candidate maps (router v2, +nba_depth, nhl_v2) log their arm beside v1 on every box row, shadow only; NHL T1 layer 3~~
-
-- order 44 · lane: DEPTH · rank: evidence · wave: 120.2
-- **measure:** box rows with candidate arms per map; D6 NHL
-- **why:** Every map since W116 sits behind a switch that is off, so none earns forward evidence
-- **source:** SW-9 2026-11-19
-
-### B-075 · ~~Rewrite the bodies of STRATEGY_OVERVIEW.md and ARCHITECTURE_OVERVIEW.md to DOCTRINE.md (multi-arm routing, ADR-0077); today they carry a banner only~~
-
-- order 45 · lane: window · rank: plumbing · wave: 120.4
-- **measure:** doctrine stack bodies current
-- **why:** Operator 11-10 21:45 PT: "This CANNOT keep fucking happening" - stale doctrine read by every window
-- **source:** SW-9 2026-11-11
-
-### B-012 · ~~NHL engine: factor classes point-in-time from the shot-level store, then the whole board~~
-
-- order 46 · lane: engine · rank: 2 · wave: 118.3 + 119.1 (D6 NHL 6 / 21)
-- **measure:** D4 NHL data layer -> factors -> board
-- **why:** 97.4 built the NHL board engine; it trails Kalshi at n 33 and EXP-046 was not earned. Revisit with B-029 and ~200 games of this season.
-- **source:** ADR-0073
-
-### B-101 · ~~NBA depth as tree splits: Muse archive tables (L3-split/nba shot dashboards, player tracking, league matchups; L3-snapshots/nba lineups) as point-in-time factor classes, pre-registered, scored per leaf per arm; kept splits behind the version switch~~
-
-- order 47 · lane: DEPTH · rank: layer 3 · wave: 118.2 + 119.2 (behind the switch)
-- **measure:** D5(b) NBA factor classes by stage; splits kept / tested per cell and arm
-- **why:** Operator 11-17 21:17 PT (devil's advocate #6): depth is where the edge enters the router (ADR-0075); no lane carried it
-- **source:** operator 2026-11-17 21:17 PT
-
-### B-100 · ~~NBA layer 1 across the board: moneyline and team totals priced from the same engine simulation as spread / total; fix the named NBA layer causes (TEAM_TOTAL T1-3 layer 3, SPREAD T1 layer 4, GAME_TOTAL T1 layer 6); GG-1951 layer 3 counted from box rows~~
-
-- order 48 · lane: D6 · rank: layer 1 · wave: 117.3 + 119.2 (D6 NBA 7 / 25)
-- **measure:** D6 NBA on the box 3 -> N, cells named
-- **why:** 116.3: NBA moneylines, props and T4/T5 stop at layer 1 (no model p); a game sim prices the whole board (ADR-0073), so ML and team totals are the cheapest wiring left
-- **source:** SW-9 2026-11-18 (W116.3 d6_read 01:05Z)
-
-### B-088 · ~~MLB cells routed on the 2026 look-back corpus (0 of 18 routed): leaf map and per-leaf arms from settled 2026 rows, ready for spring~~
-
-- order 49 · lane: proof · rank: routing · wave: 118.1 (postseason-only corpus; GG-1957)
-- **measure:** MLB routed cells; D6 MLB
-- **why:** Plan W114
-- **source:** SW-9 2026-11-12
-
-### B-102 · ~~Box room to grow: disk_read, retention as code (compress, rotate, journald cap; evidence never deleted), dry run on the box, days-to-90% WARN; disk_retention_install proposed~~
-
-- order 50 · lane: INFRA · rank: capacity · wave: 118.4 + window install
-- **measure:** disk % now; bytes freed by the dry run; days to 90%
-- **why:** Disk 87% before the NHL store; healthcheck FAIL at 90% blocks every install (Hard Rule 14). Operator 11-17 21:17 PT (devil's advocate #7)
-- **source:** operator 2026-11-17 21:17 PT
-
-### B-099 · ~~NHL 2025-26 sportsbook consensus (open+close, ML / puck line / total, 1,394 games, vig-removed, free) -> NHL leaf prior + historical MOMENTUM backtest + Kalshi-vs-consensus gap~~
-
-- order 51 · lane: proof · rank: evidence clock · wave: 117.2 (closed 11-18)
-- **measure:** PROOF: NHL first-arm dates in the power calendar, with vs without the prior; MOMENTUM open->close backtest net per contract
-- **why:** Shortens the evidence clock (116.1: first arm at +2c is 2027-07). Archive L3-closing-lines/nhl/minmaxxxer-2025-26 (Muse 2026-11-17, 335 KB, 3/3 spot checks vs MoneyPuck). Operator: no paid sources ever.
-- **source:** operator 2026-11-17 16:07 PT; Muse pull 16:18 PT
-
-### B-092 · ~~Box data stores for layer 3: NFL snapshot provider on the box (GG-1933); NHL event store job (GG-1898) as an install task for operator approval~~
-
-- order 52 · lane: box data · rank: plumbing · wave: 117.3 + window install 05:04Z (closed 11-18)
-- **measure:** layer 3 on the box NFL / NHL
-- **why:** W114.2: layer 3 works on the box for NBA only
-- **source:** SW-9 2026-11-13
-
-### B-098 · ~~Repo mass: 784 handoff files, 263 open gaps, 3 dead PRs (#149 #458 #477), unsent wave drafts - archive, close, burn down by file (Haiku)~~
-
-- order 53 · lane: window · rank: hygiene · wave: 117.0 + 117.4 (closed 11-18)
-- **measure:** open gaps; handoff files in the live folder
-- **why:** every session pays to scan it
-- **source:** SW-9 Fable review 2026-11-16
-
-### B-094 · ~~Evidence design: hierarchical pooling + sequential test so thin leaves earn arms; long-history priors; power calendar; router v2 pre-registered~~
-
-- order 54 · lane: quant · rank: evidence · wave: 116.1 (closed 11-17; #506 landed by the W117 cleanup block)
-- **measure:** leaves with an arm; held-out net per row by router
-- **why:** 0 survivors in every per-leaf test; family effects exist
-- **source:** SW-9 Fable review 2026-11-16
-
-### B-091 · ~~The first wired cells on the box: NBA spread layer 6, NHL rows routed (1,415 unrouted), the daily breaker vs demo arm orders (GG-1935), GG-1934; D6 recounted on the box~~
-
-- order 55 · lane: D6 · rank: D6 · wave: 116.3 (closed 11-17; #503 merged)
-- **measure:** D6 wired on the box
-- **why:** W114.2: 0 / 117, four cells one layer short
-- **source:** SW-9 2026-11-13
-
-### B-090 · ~~D6 counted on the box: allowlisted read tasks arm_orders_read (orders / fills / P&L per arm, epoch-split) and d6_read (coverage.d6_summary on box logs); NHL_EVENTS box job proposed for Monday if needed (GG-1898)~~
-
-- order 56 · lane: proof · rank: D6 · wave: 114.2 (closed 11-13)
-- **measure:** D6 measured on the box; E1-E3 per arm
-- **why:** 113.1: D6 cannot be counted - the arm-order log lives on the box and no task reads it
-- **source:** SW-9 2026-11-13
-
-### B-089 · ~~NFL wired for Sunday: pre-kickoff weather forecast store, MatchupBook provider, and the NFL granularity index (box count, personnel, coverage, situational splits) as tree splits scored per leaf per arm~~
-
-- order 57 · lane: engine · rank: granularity · wave: 113.2 (closed 11-13)
-- **measure:** D6 layer 3 NFL; NFL index entries; D5(b) NFL
-- **why:** Operator 2026-11-12 15:00 PT: "4 highly substantive blocks"; 10-16 loaded / light box example
-- **source:** SW-9 2026-11-12
-
-### B-085 · ~~Doctrine leftovers in code: the orchestrator defers to the router (execution_bands_orchestrator.py:108,180); score_vs_market.py and run_w84_3.py score per leaf per arm; edge-map rows E01/E09/E10/E14~~
-
-- order 58 · lane: window · rank: doctrine · wave: 114.3 (closed 11-13; E09 / E14 arm tables open)
-- **measure:** D-04 CONTRADICTED -> BUILT
-- **why:** 111.2 audit left them open
-- **source:** SW-9 2026-11-12
-
-### B-086 · ~~NBA joint with shared minutes / usage / pace latents so same-player and teammate legs price right; same-game combos priced for the pot-of-gold branch~~
-
-- order 59 · lane: engine · rank: pot of gold · wave: 113.3 / 114.4 (same-player closed; teammate-pool hypothesis closed, parked for R&D)
-- **measure:** same-game joint error; D4 NBA
-- **why:** W110.4: same-player cross-stat and teammate covariance wrong
-- **source:** SW-9 2026-11-12
-
-### B-087 · ~~The bot reads Muse's archive read-only at a pinned commit, grades tables VERIFIED by recompute, turns VERIFIED NBA tables into index entries; NHL goalie snapshot timing~~
-
-- order 60 · lane: data · rank: granularity · wave: 114.1 (closed 11-13)
-- **measure:** tables graded; index entries
-- **why:** ~25k records/day, no code reads them
-- **source:** SW-9 2026-11-12
-
-### B-081 · ~~D6 layer 3: every shadow runner hands its factor filters (NFL weather / matchup, NBA usage / index, NHL classes) to the router per row, point-in-time; the router splits only on filters tested per leaf~~
-
-- order 61 · lane: trees · rank: architecture · wave: 112.1 (closed 11-12)
-- **measure:** D6 layer 3 cells; D6 wired
-- **why:** Scope re-cut around D6 (operator 11-11 16:51 PT); layer 3 zero in every sport
-- **source:** SW-9 2026-11-12
-
-### B-082 · ~~D6 layer 6: size_for(arm, cell, context) - Kelly 0, flat demo stake, per-event / day / arm caps and a same-game correlation cap (110.4); Kelly-shaped stake logged, never placed. Plus closed HYPOTHESES replace closed arms (operator 16:51 PT)~~
-
-- order 62 · lane: quant · rank: quant · wave: 112.2 (closed 11-12)
-- **measure:** D6 layer 6 cells; D-03
-- **why:** Operator 16:51 PT: "it's closing THAT SPECIFIC HYPOTHESIS"
-- **source:** SW-9 2026-11-12
-
-### B-083 · ~~D6 layer 7: the router's arm drives the ADR-0072 demo forward test's orders (operator-AUTHORIZED 11-11 16:51 PT; superseding addendum), fills and P&L per arm~~
-
-- order 63 · lane: execution · rank: architecture · wave: 112.3 (closed 11-12)
-- **measure:** D6 layer 7 cells; E1-E3 per arm
-- **why:** Wired execution - operator 16:51 PT
-- **source:** SW-9 2026-11-12
-
-### B-084 · ~~The first cells wired end to end: size_for in the arm order path, NHL / NFL filters supplied (NFL weather forecast + MatchupBook), layers 6 / 7 counted, D6 recounted~~
-
-- order 64 · lane: window · rank: plumbing · wave: 113.1 (closed 11-13; D6 count moved to B-090)
-- **measure:** D6 wired
-- **why:** Dependency split out of Wave 112
-- **source:** SW-9 2026-11-12
-
-### B-079 · ~~D6: cells wired end to end - the router reads W110.5's per-leaf arm map (thin leaves -> no bet), pot of gold and momentum scored as arms, the D6 scorecard per cell, and a frozen forward test of the leaf map (shadow rows, no orders)~~
-
-- order 65 · lane: trees · rank: architecture · wave: 111.3 (closed 11-12)
-- **measure:** D6 cells wired end to end; arms scored per leaf
-- **why:** OPERATOR_DIRECTIVES D-01 / D-08: the router logs arms on 27 of 117 cells but never reads the leaf map; replay all NO_BET
-- **source:** SW-9 2026-11-11
-
-### B-080 · ~~The granularity index as tree splits, NBA first: split, rank vs history at the same point of the season (with stability), matchup cross, market map, application per leaf per arm - the machinery once, ~20 entries mapped to game lines and props~~
-
-- order 66 · lane: engine · rank: granularity · wave: 111.4 (closed 11-12)
-- **measure:** D5(b) NBA applied; index entries with all five parts
-- **why:** OPERATOR_DIRECTIVES D-06, raised five times since 09-25 ("AND FUCKING BLEED EM OUT"; 11-10 PG mid-range example)
-- **source:** SW-9 2026-11-11
-
-### B-078 · ~~Build 04_EXECUTION/OPERATOR_DIRECTIVES.md: every directive the operator has given more than once (DECISION_LOG + project memory), with its DOCTRINE.md home, implementing code and status (built / partial / not built / contradicted). The window does this first in its next session, before writing W111~~
-
-- order 67 · lane: window · rank: plumbing · wave: built 11-11 (04_EXECUTION/OPERATOR_DIRECTIVES.md)
-- **measure:** repeated directives tracked; not-built / contradicted count
-- **why:** Operator 11-10 22:16 PT: the big decisions have all been his; most of what he raised had been talked about numerous times
-- **source:** SW-9 2026-11-11
-
-### B-076 · ~~W111.1 FIRST: calibration engine + registry - a losing look closes only the fade arm (verdict kept as pre-registered); cells stay SHADOW and are scored per arm; reopen NFL total T1 / T2. Must land before any NBA first-look verdict is applied (looks 11-13 .. 11-25)~~
-
-- order 68 · lane: proof · rank: 1 · wave: 111.1 (closed 11-12)
-- **measure:** cells closed for losing to the market 2 -> 0; D6
-- **why:** Operator 11-10 22:05 / 22:10 PT: no cell should be closed; the engine encodes the beat-the-market rule (W53)
-- **source:** SW-9 2026-11-11
-
-### B-077 · ~~Doctrine-conformance audit: every decision point in code (verdict rules, cell statuses, order gates, router gating, pre-registration templates, edge-map statuses) mapped to DOCTRINE.md - conforms / contradicts; contradictions become reds~~
-
-- order 69 · lane: window · rank: plumbing · wave: 111.2 (closed 11-12)
-- **measure:** decision points audited; contradictions found -> fixed
-- **why:** Operator 11-10 22:10 PT: "I NEED better help from you and every other strategy window" - checks audited work against the premise, never code against doctrine (W53)
-- **source:** SW-9 2026-11-11
-
-### B-069 · ~~The missing factor classes in live models: matchup, weather, qualitative (no live model uses them, D1)~~
-
-- order 70 · lane: engine · rank: 3 · wave: 110.1 (closed 11-11)
-- **measure:** D1 classes per model
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-068 · ~~Factors APPLIED per sport (aggregated -> interpreted -> applied): NFL 10 -> 21, NBA 5 -> 17, NHL 3 -> 12, each a tested path from fact to price vs the market~~
-
-- order 71 · lane: engine · rank: 3 · wave: 110.2 (closed 11-11)
-- **measure:** D5(b) applied per sport
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-071 · ~~Multi-arm decision trees: every registered cell routed (ride / fade / momentum / pot of gold / no-bet) with its own tree depth by horizon (ADR-0068); in-play branches where speed is measured~~
-
-- order 72 · lane: engine · rank: 5 · wave: 110.3 (closed 11-11)
-- **measure:** D5(a) decision trees per sport; cells routed
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-072 · ~~Quant core for the suite: cross-cell correlation (same-game exposure), sequential looks per cell, portfolio-level sizing math (kelly 0 until G6)~~
-
-- order 73 · lane: quant · rank: 4 · wave: 110.4 (closed 11-11)
-- **measure:** quant functions tested
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-066 · ~~NBA architecture 4/8 -> 8/8: build and test the missing D5(a) components (filtering, clusters, momentum looping, temporal evolution, structural tensions, seat interface) on the NBA engine~~
-
-- order 74 · lane: engine · rank: 2 · wave: 109.1
-- **measure:** D5(a) NBA 4 -> 8
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-067 · ~~NHL engine: factor classes point-in-time from the shot-level store, then D5(a) 2/8 -> 8/8~~
-
-- order 75 · lane: engine · rank: 2 · wave: 109.2
-- **measure:** D4 / D5(a) NHL
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-070 · ~~Full bet suite from one engine per sport: player props priced from each engine joint distribution (NBA, NFL, NHL), team totals and alt lines, as shadow cells pre-registered before their first row~~
-
-- order 76 · lane: engine · rank: 2 · wave: 109.3
-- **measure:** B4 props families; B1
-- **why:** Build continues whatever the edge evidence says; tests judge cells, not whether we build
-- **source:** Operator 11-09 21:29 PT ("it'll stay fkn negative for a while"); ADR-0073 / ADR-0075
-
-### B-064 · ~~NBA / NFL / NHL props net of costs from Kalshi public history~~
-
-- order 77 · lane: quant · rank: 4 · wave: 109.4
-- **measure:** prop families measured net; net-positive held-out cells
-- **why:** MLB props 0 of 50; the in-season sports untested
-- **source:** SW-9 W107 close
-
-### B-041 · ~~Fix Muse's split queue: prune unservable chunks, take ~560-row player tables off single runs unless a full-table source exists, redo C-052 (wrong season)~~
-
-- order 78 · lane: muse · rank: 7 · wave: sent 11-09; week of 11-16 message prepared
-- **measure:** hard tickets as single-run chunks
-- **why:** Day 1 on 100 runs: 20 NONEs from conditions the pages do not serve; player tables overrun runs and C-105 failed a spot-check; C-052 mislabeled.
-- **source:** window, stress test 11-03
-
-### B-042 · ~~Muse to 200 daily runs: a pre-checked queue of thousands of chunks across all four sports, ~25 runs a day on perishable snapshots (injury reports, lineups / starting goalies, referee assignments, Kalshi lines), one setup paste for the operator on 2026-11-09~~
-
-- order 79 · lane: muse · rank: 7 · wave: sent 11-09; week of 11-16 message prepared
-- **measure:** daily runs 100 -> 200; perishable snapshots captured daily 0 -> 4 kinds
-- **why:** Operator 11-04 16:29 PT: "I'm thinking we stretch it to 200 ... I want to stretch it to its absolute limits until they inevitably pull the curtains back"; 16:31 PT: "Sit on it for now - the next window upon handoff will need to operate on it". Operator's Muse chat is out of usage until 11-09 20:50 PT.
-- **source:** operator 2026-11-04
-
-### B-019 · ~~Muse watchdog at every wave close: STATUS / CLAIMS read, quality spot-checks, R-ticket backlog >= 30 open (100 daily runs since 11-04)~~
-
-- order 80 · lane: window · rank: 7 · wave: merged into the nightly Muse sweep (Haiku) + B-096
-- **measure:** Muse open tickets >= 30
-- **why:** Ten scheduled runs a day empty a short backlog in two days.
-- **source:** operator 10-27
-
-### B-020 · ~~Governance gap burn-down (250 OPEN at 11-05)~~
-
-- order 81 · lane: window · rank: plumbing · wave: merged into B-074
-- **measure:** OPEN gaps down
-- **why:** The gap agent runs beside every wave; the count keeps rising.
-- **source:** gap agent

@@ -3708,3 +3708,15 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - 2026-11-24 22:05 PT: W128.5 added (operator 21:59 PT: "let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here."); B-126.
 
 | 2026-11-24 | W128.4 | Operator chose "Land as-is, no rerun" when block 128.4's premise (judged seasons never read) conflicted with PR #555 already holding W124.5's judged H-DEPTH-PAM-3 run. PREREG run-once rule kept; #555 merged with its result (SUPPORTED, pooled D +0.00201 [+0.00184, +0.00219]); 128.4 treated as verification plus Part B routing words. |
+
+### 2026-11-24 23:30 PT — SW-9: Wave 128 closed; Wave 129 written (five Sonnet blocks)
+- Operator 22:47 PT: "128 is finished - confirm receipt then give me 5 to send for tomorrow."
+- W128 verified on GitHub: #555 #582-#588 merged; handoffs W128_1..5; main Docs Guard green (d8b31eaf). Outcomes: H-DEPTH-PAM-3
+  SUPPORTED (P2 +1; D5(b) PAM class 3 NBA absent -> interpreted); NFL play-level 0 of 74 earned (ride / no bet; N24-N26 applied); NBA
+  props on one mean function, combo legs on C2; NHL depth splits built behind PM_NHL_DEPTH (off); 4 Muse file families as server scrapers,
+  data_offload_install awaits approval; mlb_boxscore still HTTP 406 from the box (re-probe 20261125T063734Z) -> stays with Muse.
+- W129: 129.1 NHL depth on in shadow (B-122), 129.2 PAM-3 x C2 props challenger (B-127, new), 129.3 MLB 2027 forward PREREG + board
+  install built (B-123), 129.4 PAM state tables + H-DEPTH-PAM-4 pre-registered (B-117), 129.5 one D6 source + distance table + registry
+  backfill (B-110). Leaf map v2 promotion (GG-2010) left out: v2 routes every unseen leaf NO_BET, so it would not move D6.
+- Backlog: B-115 / B-116 / B-120 / B-126 DONE; B-024 and B-124 wait on nba_combo_shadow_install; B-128 (data_offload_install approval +
+  Muse retire list) added; DONE tickets older than W127 dropped (kept one wave per the backlog rule). Handoff to SW-10 after W130 (B-125).
