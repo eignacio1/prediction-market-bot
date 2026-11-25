@@ -285,3 +285,9 @@ snapshot had run by 15:07 PT. Queue throughput fell to ~15 chunks in 8 h. The ch
 load a family puts on the browser, and the window did not ask. Operator had said the night before: "I'm gonna be so mad if something
 broke that could have been prevented last night". Fix: emergency message (stop B2 claims, snapshots preempt above a backlog of 32);
 checklist item 11 below; muse_check alarms on a snapshot type with no file after its first slot and on snapshot lag.
+
+### W67 — 2026-11-25 03:20 UTC · Reported a fixed router bug as live
+On 11-23 the window told the operator "about 6,300 rows (6,037 of them NBA) hit a router error ... those rows place nothing and never
+get scored" and registered GG-2007 as a live gap. W126.1 showed all 6,340 were one KeyError fixed by #503 on 11-17, with 0 ERROR rows
+since 11-18. The window read cumulative post-epoch counts as current without asking for the per-day split. Fix: any error count reported
+to the operator is per day with the latest day named; cumulative counts are labelled cumulative.
