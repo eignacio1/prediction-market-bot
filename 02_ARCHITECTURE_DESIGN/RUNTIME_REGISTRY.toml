@@ -1557,3 +1557,17 @@ max_age_h = "3"
 schedule = "41 * * * *"
 mirrors = ["deploy/cron.nba_combo_shadow"]
 command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && BOT_ENV=paper PM_COMBO_SHADOW=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+[[component]]
+key = "cron|17 9 * * *|scripts/data_offload.py --scope"
+kind = "cron"
+source = "deploy/cron.data_offload"
+status = "paused"
+reviewed = true
+purpose = "W128.5 data offload: MoneyPuck, NHL API (goalie logs, officials), Baseball Savant CSVs and MLB boxscores fetched by the server instead of Muse chunks. DEPTH D4 (point-in-time data layers per sport). Public endpoints only, honest user agent, one run a day 09:00-15:00 UTC, systemd-run MemoryMax=150M, flock, per-night byte and request caps. PAUSED until the operator approves the named install task data_offload_install (budget-gated: disk after 30 days under 80%)."
+pillar = "DEPTH"
+writes = ["logs/data_offload.log", "exp_output/DATA_OFFLOAD/"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/data_offload.log is older than 30h once installed; a run line with REFUSED or an error field is the per-family signal"
+max_age_h = "30"
+schedule = "17 9 * * *"
+mirrors = ["deploy/cron.data_offload"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
