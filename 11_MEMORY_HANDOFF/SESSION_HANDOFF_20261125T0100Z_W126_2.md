@@ -4,7 +4,7 @@
 task_id: W126.2
 tier: STANDARD
 timestamp: 2026-11-25T01:00:00Z
-commit: see PR
+commit: 7d10d3d (PR #566, merged, CI green)
 one_line_summary: W126.2 EXP-047-C2 per-stat absorption on NBA props built (default off); retro on unread 2023-24 SUPPORTED, all four stats improve.
 gg_touched: GG-2003
 adr_touched: none
