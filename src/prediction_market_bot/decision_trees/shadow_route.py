@@ -106,6 +106,12 @@ def _nfl_splits_on() -> bool:
     return nfl_splits_on()
 
 
+def _nhl_depth_on() -> bool:
+    from prediction_market_bot.decision_trees.filters.nhl_depth import nhl_depth_on
+
+    return nhl_depth_on()
+
+
 def _nfl_playlevel_on() -> bool:
     from prediction_market_bot.decision_trees.filters.nfl_playlevel import nfl_playlevel_on
 
@@ -128,7 +134,9 @@ CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("
               # W126.5: NFL factor splits (EXP-NFLSPLITS-001) log their leaves beside the router-v2 arm; off unless PM_NFL_SPLITS=on
               "nfl_splits": ("v2", ("NFL",), False),
               # W128.3: NFL play-level personnel / coverage / motion crosses (EXP-NFLPLAYLEVEL-001); off unless PM_NFL_PLAYLEVEL=on
-              "nfl_playlevel": ("v2", ("NFL",), False)}
+              "nfl_playlevel": ("v2", ("NFL",), False),
+              # W128.1: NHL goalie / referee / availability splits (EXP-NHLDEPTH-001) log their leaves beside nhl_v2's arm; off unless PM_NHL_DEPTH=on
+              "nhl_depth": ("nhl_v2", ("NHL",), False)}
 
 
 @lru_cache(maxsize=None)
@@ -156,6 +164,8 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
             continue
         if name == "nfl_splits" and not _nfl_splits_on():  # W126.5: default off
             continue
+        if name == "nhl_depth" and not _nhl_depth_on():  # W128.1: default off
+            continue
         if name == "nfl_playlevel" and not _nfl_playlevel_on():  # W128.3: default off
             continue
         rec = {"map_version": version}
@@ -174,6 +184,9 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
                        reason=";".join(map(str, r.reasons))[:160])
             if name == "nfl_splits":  # W126.5: tag only; the arm is router v2's, the split leaves are logged, never acted on
                 rec.update(split_leaves=props or None, split_applied=False)
+            if name == "nhl_depth":  # W128.1: tag only; the arm is nhl_v2's, the leaves are logged (None = no Muse data: abstain), never acted on
+                from prediction_market_bot.decision_trees.filters.nhl_depth import leaves_for_row
+                rec.update(split_leaves=leaves_for_row(row), split_applied=False)
             if name == "nfl_playlevel":  # W128.3: tag only; the arm is router v2's, the cross leaves are logged, never acted on
                 rec.update(playlevel_leaves=props or None, playlevel_applied=False)
             if name == "nba_props":  # W121.2: which splits fired and whether they are BH-earned, and the leaves that were logged only
