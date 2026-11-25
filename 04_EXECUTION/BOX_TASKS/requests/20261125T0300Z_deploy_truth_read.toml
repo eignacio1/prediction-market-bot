@@ -1,2 +1,0 @@
-task = "deploy_truth_read"
-note = "W127.1 after-merge deploy check (#573)"

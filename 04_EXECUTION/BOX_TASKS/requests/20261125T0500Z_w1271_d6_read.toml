@@ -1,0 +1,2 @@
+task = "d6_read"
+note = "W127.1 after-merge D6 read (#573); resubmitted, 0300Z name sorted before the box watermark"
