@@ -1,0 +1,47 @@
+{
+ "built_utc": "2026-11-25T04:50:20Z",
+ "source": "baseballsavant.mlb.com statcast csv (public, unauthenticated GETs) via mlb_engine/fetch.py",
+ "contract": "src/prediction_market_bot/mlb_engine/pit.py",
+ "failures": [],
+ "seasons": {
+  "2024": {
+   "games": 2429,
+   "pitches": 711899,
+   "plate_appearances": 182765,
+   "first_date": "2024-03-20",
+   "last_date": "2024-09-30",
+   "dup_pitches": 0,
+   "dup_pa": 0,
+   "pitch_count_vs_games_n_pitches": 1.0,
+   "games_with_both_starters": 1.0,
+   "games_with_full_lineups": 1.0,
+   "games_with_pitches": 1.0
+  },
+  "2025": {
+   "games": 2430,
+   "pitches": 712528,
+   "plate_appearances": 183245,
+   "first_date": "2025-03-18",
+   "last_date": "2025-09-28",
+   "dup_pitches": 0,
+   "dup_pa": 0,
+   "pitch_count_vs_games_n_pitches": 1.0,
+   "games_with_both_starters": 1.0,
+   "games_with_full_lineups": 1.0,
+   "games_with_pitches": 1.0
+  },
+  "2026": {
+   "games": 2429,
+   "pitches": 716792,
+   "plate_appearances": 184178,
+   "first_date": "2026-03-25",
+   "last_date": "2026-09-27",
+   "dup_pitches": 0,
+   "dup_pa": 0,
+   "pitch_count_vs_games_n_pitches": 1.0,
+   "games_with_both_starters": 1.0,
+   "games_with_full_lineups": 1.0,
+   "games_with_pitches": 1.0
+  }
+ }
+}

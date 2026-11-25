@@ -138,9 +138,9 @@ note = ""
 [[component]]
 sport = "mlb"
 component = "cross_reference_compatibility"
-scaffold = "none"
-test = "none"
-note = ""
+scaffold = "src/prediction_market_bot/mlb_engine/joint_board.py"
+test = "tests/test_mlb_engine_sim.py"
+note = "W126.3/W127.2: one 9-inning sim draw set prices moneyline, run-line, total, team-total and batter-hit rungs, and same-game legs (joint_leg via sgp.joint) come from the SAME draws. Tests: ladders monotone, hits>=2 below hits>=1, single-leg joint equals marginal, same-game legs correlate in the right sign. Stage: interpreted (board consistency built; MLB engine price is logged shadow-only via mlb_engine/forecaster.py, applied to no arm)"
 
 [[component]]
 sport = "mlb"
@@ -248,6 +248,6 @@ engine_test = "tests/test_nhl_engine_model.py"
 
 [[engine]]
 sport = "mlb"
-data_layer = "none"
-engine = "none"
-engine_test = "none"
+data_layer = "02_ARCHITECTURE_DESIGN/MLB_ENGINE/event_store_manifest.json"
+engine = "src/prediction_market_bot/mlb_engine/joint_board.py"
+engine_test = "tests/test_mlb_engine_sim.py"
