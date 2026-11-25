@@ -60,9 +60,11 @@ def test_quote_metrics_and_side():
 
 
 class Fake:
-    def __init__(self, listed=True, rfq_status=201, quote=True):
+    def __init__(self, listed=True, rfq_status=201, quote=True, accept_ok=True):
+        self.accept_ok = accept_ok
         self.listed, self.rfq_status, self.quote = listed, rfq_status, quote
         self.cancelled, self.n = [], 0
+        self.sent = {"create": 0, "accept": 0}
 
     def market(self, t): return {"ok": self.listed, "status": 200 if self.listed else 404, "body": {}}
     def create_combo(self, c, legs): return {"ok": False, "status": 400, "body": {"error": "x"}}
@@ -72,7 +74,11 @@ class Fake:
         return {"ok": ok, "status": self.rfq_status, "body": {"id": f"r{self.n}"} if ok else {"error": "unsupported"}}
     def quotes(self, rid):
         return {"ok": True, "status": 200, "body": {"quotes": [{"id": "q" + rid, "yes_bid_dollars": "0.10", "no_bid_dollars": "0.80", "status": "executed"}] if self.quote else []}}
-    def accept(self, *a): return {"ok": True, "status": 204, "body": {}}
+    def accept(self, *a):
+        if self.sent["accept"] >= R.MAX_ACCEPTS_PER_RUN:
+            raise R.RfqRefused("per-run accept cap reached")
+        self.sent["accept"] += 1
+        return {"ok": self.accept_ok, "status": 204 if self.accept_ok else 409, "body": {}}
     def cancel_rfq(self, rid): self.cancelled.append(rid); return {"ok": True, "status": 204, "body": {}}
 
 
@@ -119,3 +125,9 @@ def test_tip_lookup_resolves_with_the_series_the_forecaster_accepts():
     assert fc.kickoff_for_event("KXNBAPTS-26NOV25MIAPHI")[0] == t
     for f in ("scripts/nba_combo_shadow.py", "scripts/combo_rfq_demo.py"):
         assert 'kickoff_for_event("KXNBAGAME' not in (ROOT / f).read_text()
+
+
+def test_failed_accepts_count_against_cap_and_do_not_crash(tmp_path):
+    f = Fake(accept_ok=False)
+    s = _run(tmp_path, f, [_row(f"T{i}") for i in range(6)])
+    assert s["quoted"] == 6 and s["accepted"] == 0 and f.sent["accept"] == R.MAX_ACCEPTS_PER_RUN
