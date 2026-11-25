@@ -7,8 +7,8 @@ Three modes, each a NEW cron line (no existing archive line is edited):
           existing lines do not cover, so a prop is seen from its first listing (W123 H1 had no fit window).
   games   ML / spread / total / team total, only markets whose estimated start is within the next 3 h (5-min cadence;
           W123 H4 saw 19-30 min spacing).
-  prints  Kalshi public trade prints (global /markets/trades feed), filtered to NBA/NFL/NHL tickers dated today (ET),
-          written forward (W123 H3 had prints only from 11-10).
+  prints  Kalshi public trade prints (global /markets/trades feed), written forward (W123 H3 had prints only from 11-10).
+          W127.4 cut: only the families H3 named (PRINT_SERIES) and only prints inside a market's 3 h pre-start window.
 
 Output: exp_output/PRICE_ARCHIVE_DENSE/<mode>/<UTC date>.jsonl.gz and exp_output/TRADE_PRINTS/<UTC date>.jsonl.gz.
 Rows are appended as gzip members (readable by gzip.open / io_jsonl.open_jsonl). Every row carries event timestamps
@@ -58,7 +58,14 @@ GAME_SERIES = {
 NOMINAL_DURATION_H = {"NBA": 2.5, "NHL": 2.5, "NFL": 3.25}
 GAME_WINDOW_BEFORE_H = 3.0
 GAME_WINDOW_AFTER_H = 0.25
-PRINT_PREFIXES = ("KXNBA", "KXNFL", "KXNHL")
+# W127.4: prints were 91% of the W126.1 gate's 159.2 MB/day. Kept: the families the H3 RESULT names -- NBA player props and
+# team totals (its "next test the data can support now"), NBA and NFL game moneylines (the news-latency base and NFL inactives).
+# Dropped: NFL props, NHL everything, spreads, totals. H3 NHL goalie closed in W118.3.
+PRINT_SERIES = frozenset(PROP_SERIES["NBA"] + ["KXNBAGAME", "KXNBATEAMTOTAL", "KXNFLGAME"])
+PRINT_WINDOW_BEFORE_H = GAME_WINDOW_BEFORE_H            # same 3 h pre-start window as the 5-min game snapshots
+PRINT_WINDOW_AFTER_H = GAME_WINDOW_AFTER_H
+START_MAP_HORIZON_H = 4.5       # the start map holds markets starting within this many hours (window opens 3 h before start)
+START_MAP_STALE_S = 1200        # relist at most every 20 min; a market listed after that and starting inside 4.5 h waits for the next relist
 
 FIELDS = ("ticker", "event_ticker", "status", "yes_bid_dollars", "yes_ask_dollars", "no_bid_dollars", "no_ask_dollars",
           "last_price_dollars", "previous_price_dollars", "volume_fp", "volume_24h_fp", "open_interest_fp",
@@ -201,13 +208,38 @@ def _load_state(path: Path) -> dict:
         return {}
 
 
+def series_of(ticker: str) -> str:
+    return (ticker or "").split("-", 1)[0]
+
+
+def build_start_map(fetch: Fetch, now: datetime) -> dict:
+    """ticker -> estimated start (epoch s) for open markets in PRINT_SERIES that start within START_MAP_HORIZON_H."""
+    lo = now - timedelta(hours=PRINT_WINDOW_AFTER_H + 0.25)
+    hi = now + timedelta(hours=START_MAP_HORIZON_H)
+    out: dict = {}
+    for series in sorted(PRINT_SERIES):
+        sport = sport_of(series)
+        for m in fetch_series(fetch, series):
+            st = est_start(m, sport)
+            if st and lo <= st <= hi and m.get("ticker"):
+                out[m["ticker"]] = int(st.timestamp())
+    return out
+
+
+def print_in_window(start_epoch: int | None, created_epoch: int) -> bool:
+    return start_epoch is not None and (start_epoch - PRINT_WINDOW_BEFORE_H * 3600 <= created_epoch
+                                        <= start_epoch + PRINT_WINDOW_AFTER_H * 3600)
+
+
 def run_prints(fetch: Fetch, now: datetime, out: Path, dry_run: bool) -> dict:
     state_path = out / "TRADE_PRINTS" / "_state.json"
     state = _load_state(state_path)
-    today = now.astimezone(ET).date()
     last_ts = int(state.get("last_ts") or (now.timestamp() - 300))
     min_ts = last_ts - PRINT_OVERLAP_S
     seen_ids = set(state.get("ids") or [])
+    starts, starts_ts = state.get("starts"), float(state.get("starts_ts") or 0)
+    if not isinstance(starts, dict) or now.timestamp() - starts_ts > START_MAP_STALE_S:
+        starts, starts_ts = build_start_map(fetch, now), now.timestamp()
     sink, cursor, pages, scanned, kept, max_ts = Sink(out / "TRADE_PRINTS", now, dry_run), None, 0, 0, [], last_ts
     while pages < MAX_PRINT_PAGES:
         params = {"min_ts": min_ts, "max_ts": int(now.timestamp()), "limit": 1000}
@@ -218,22 +250,24 @@ def run_prints(fetch: Fetch, now: datetime, out: Path, dry_run: bool) -> dict:
         trades = [t for t in d.get("trades") or [] if isinstance(t, dict)]
         scanned += len(trades)
         for t in trades:
-            tk = t.get("ticker", "")
-            if tk.startswith(PRINT_PREFIXES) and ticker_date(tk) == today and t.get("trade_id") not in seen_ids:
-                seen_ids.add(t.get("trade_id"))
-                kept.append({"captured_ts": now.strftime("%Y-%m-%dT%H:%M:%SZ"), **t})
             ct = parse_ts(t.get("created_time"))
             if ct:
                 max_ts = max(max_ts, int(ct.timestamp()))
+            tk = t.get("ticker", "")
+            if (ct and series_of(tk) in PRINT_SERIES and print_in_window(starts.get(tk), int(ct.timestamp()))
+                    and t.get("trade_id") not in seen_ids):
+                seen_ids.add(t.get("trade_id"))
+                kept.append({"captured_ts": now.strftime("%Y-%m-%dT%H:%M:%SZ"), **t})
         cursor = d.get("cursor") or None
         if not cursor or not trades:
             break
     sink.write(kept)
     if not dry_run:
         state_path.parent.mkdir(parents=True, exist_ok=True)
-        state_path.write_text(json.dumps({"last_ts": max_ts, "ids": sorted(i for i in seen_ids if i)[-DEDUPE_KEEP:]}))
+        state_path.write_text(json.dumps({"last_ts": max_ts, "ids": sorted(i for i in seen_ids if i)[-DEDUPE_KEEP:],
+                                          "starts": starts, "starts_ts": starts_ts}))
     return {"mode": "prints", "pages": pages, "trades_scanned": scanned, "rows": sink.rows, "gz_bytes": sink.bytes,
-            "truncated": bool(pages >= MAX_PRINT_PAGES and cursor)}
+            "start_map": len(starts), "truncated": bool(pages >= MAX_PRINT_PAGES and cursor)}
 
 
 MODES = {"props": run_props, "games": run_games, "prints": run_prints}
