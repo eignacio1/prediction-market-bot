@@ -154,6 +154,9 @@ TASKS: dict[str, str] = {
     "nhl_inplay_install": f"{PY} scripts/nhl_inplay_install.py install",
     "nhl_inplay_readback": f"{PY} scripts/nhl_inplay_install.py readback",
     "nhl_inplay_uninstall": f"{PY} scripts/nhl_inplay_install.py uninstall",
+    "nfl_inplay_install": f"{PY} scripts/nfl_inplay_install.py install",   # W130.1: approved by name only; paused registry entry
+    "nfl_inplay_readback": f"{PY} scripts/nfl_inplay_install.py readback",
+    "nfl_inplay_uninstall": f"{PY} scripts/nfl_inplay_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",

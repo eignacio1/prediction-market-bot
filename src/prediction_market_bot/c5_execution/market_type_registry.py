@@ -1085,6 +1085,17 @@ for _mt in (MarketType.NHL_MONEYLINE, MarketType.NHL_PUCK_LINE, MarketType.NHL_G
     promote_cell_status(_mt, ExecutionBand.T4NHL_ARITH, CellStatus.SHADOW, superseding_reference="EXP-NHLINPLAY-001")
 
 
+# --- EXP-NFLINPLAY-001 / W130.1: NFL in-play SHADOW cells (T4NFL-ARITH, T4NFL-FLOW), 4 families x 2 sub-bands ---
+# Code-ready, not yet logging: rows start only when the operator approves the named install task nfl_inplay_install
+# (RUNTIME_REGISTRY entry paused until then); gated by PM_NFL_INPLAY (scripts/run_nfl_inplay_shadow.py). SHADOW is evaluate-and-log:
+# no order, position, fill, stake or kelly_fraction. FLOW logs the same price with mode="flow_identity" (flow_adjustment is the
+# identity until its own pre-registered split exists). The team-total price is an unvalidated extension (W130.1 addendum).
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP048_NFL_INPLAY_ARITH_PREREGISTRATION_2026-11-25.md (EXP-NFLINPLAY-001).
+for _mt in _NFL_FAMILIES:
+    for _bd in _NFL_GAME_MARKET_T4_SUBBANDS:
+        promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-NFLINPLAY-001")
+
+
 # --- EXP-037 / T-608 / W63.1 (T-763): MLB pre-game game-market SHADOW cells ---
 # Records reality, not a promotion: cron (run_mlb_pregame_shadow.py, T1 7 */6, T2 12 *, T3 3,13,..)
 # already evaluates these twelve cells at kelly_fraction 0 and banks rows in
