@@ -129,6 +129,7 @@ TASKS: dict[str, str] = {
     "data_offload_install": f"{PY} scripts/data_offload_install.py install",       # budget-gated; operator approves by name
     "data_offload_readback": f"{PY} scripts/data_offload_install.py readback",
     "data_offload_uninstall": f"{PY} scripts/data_offload_install.py uninstall",
+    "nfl_live_feed_probe": f"{PY} scripts/nfl_live_feed_probe.py",   # W129.6 read-only: ESPN NFL live feed reachability from the box (3 GETs, writes nothing)
     "evidence_weekly_run": f"{PY} scripts/run_evidence_weekly.py",   # W121.1: writes only exp_output/EVIDENCE_WEEKLY/ (and nothing that places an order)
     "evidence_weekly_install": f"{PY} scripts/evidence_weekly_install.py install",
     "evidence_weekly_readback": f"{PY} scripts/evidence_weekly_install.py readback",
