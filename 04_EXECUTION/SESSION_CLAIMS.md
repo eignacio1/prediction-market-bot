@@ -1418,3 +1418,4 @@
 | 2026-11-26T02:03:54Z | TBD | W130.4 PAM point-in-time NBA archetypes from event store + H-DEPTH-PAM-5 prereg. PURPOSE: D5(b) NBA PAM classification; players with PIT archetype 0->n; D3 +1 |
 | 2026-11-26T02:06:12Z | W130.1 | W130.1 NFL in-play shadow runner. PURPOSE: B1 +8 shadow, B3, live feed lag |
 | 2026-11-26T02:32:33Z | W130.4 | CLOSED — merge confirmed, HEAD (5b7429f) is ancestor of origin/main — PIT NBA archetypes (469 players), H-DEPTH-PAM-5 pre-registered, PAM5 shadow arm; PR #603 merged |
+| 2026-11-26T02:37:04Z | W130.4 | CLOSED — W130.4: point-in-time NBA archetypes for 469 players, H-DEPTH-PAM-5 pre-registered, PAM5 shadow arm logging (PR #603). (commit `5b7429f`) |

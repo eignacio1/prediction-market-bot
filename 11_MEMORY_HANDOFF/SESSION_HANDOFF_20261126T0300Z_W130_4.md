@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: W130.4
+tier: STANDARD
+timestamp: 2026-11-26T02:40:00Z
+commit: 5b7429f
+one_line_summary: W130.4: point-in-time NBA archetypes for 469 players, H-DEPTH-PAM-5 pre-registered, PAM5 shadow arm logging (PR #603).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NBA PAM classification, D3
+gap_delta: players with a PIT archetype 0 -> 469 (qualitative_data/pam_pit/nba/records.jsonl @ 5b7429f); D3 +1 (H-DEPTH-PAM-5)
+pattern_sweep: exploratory-isolation CI failure (raw to_parquet in 12_EXPLORATORY) -> grep 'to_parquet|write_text' 12_EXPLORATORY/pam_archetype, one dead line removed
+surface_delta: +1 shadow arm inside the existing props runner (PREGAME_SHADOW_EXP047_PAM5, registered), +0 crons
+-->
 # Handoff W130.4 — PIT NBA archetypes from the event store (SW-9 last wave)
 **Branch:** session/20261126T020341Z-w130-4-pam-pit-archetypes · **Model:** Sonnet 5.5
 

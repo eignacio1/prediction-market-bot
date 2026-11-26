@@ -3750,3 +3750,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   for SW-10 (130.5). Found while verifying: silent_arms has no probe for the EXP-047 props cron or its challengers; the 11-26 d6_read
   printed nothing; W129.2's note that the props cron is paused is stale (approved 11-12, RUNTIME_REGISTRY status live).
 - Muse files on the box (W129.1): window recommends vendoring at the pinned SHA over a box token. Backlog B-131..B-134 added.
+
+| 2026-11-26 | W130.4 | Pre-registered H-DEPTH-PAM-5 (PIT NBA archetype cells as a tested split, judged on forward 2026-27 only, shadow, Kelly 0; modal outcome NOT SUPPORTED/UNDERPOWERED ~65%). Factor table must be frozen with its sha256 (factors_frozen.json) before 2026-27 scoring or the hypothesis is not judged. PRF-10/PRF-13 unbuilt (data cannot derive them). |

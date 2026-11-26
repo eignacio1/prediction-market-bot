@@ -20,3 +20,6 @@ The bot can now price NHL games while they are being played, using the live scor
 On 231 replayed games the in-play prices scored far better than pre-game-only prices. That checks the pricer uses game state correctly. It is not a comparison with Kalshi.
 Nothing is logging yet. The install step is built but not run. Say "approve nhl_inplay_install" and it goes in before the next NHL slate. The budget check was green.
 Pillar moved: BREADTH.
+
+## W130.4 — NBA player archetypes, point-in-time (merged, PR #603)
+Built a player-type label for 469 NBA players that only uses games played before the date asked, so it can be used live without leaking the future. It matches the old hindsight labels on the top pick 35% of the time, and the hindsight label shows up somewhere in the mix 72% of the time. Zubac reads rebounder/rim big; Wembanyama reads rim protector. Two types (PRF-10, PRF-13) can't be built from our data. It now logs as a shadow arm (no orders). Test is pre-registered; likely outcome is "not supported" or "underpowered" (~65%). One deadline: the factor table must be frozen before 2026-27 scoring or the test isn't judged. Handed to the next window. Note: CLAUDE.md window-maintained lines are dated 11-18 (RED).
