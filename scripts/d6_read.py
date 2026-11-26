@@ -107,17 +107,67 @@ def build(orders: list, fills_for, note: str, source: str, now: Optional[datetim
             "cells_by_n_layers": {str(n): sum(1 for c in cells if c["n_layers"] == n) for n in range(8)}}
 
 
+ORDER_KEYS = ("event", "ts", "market_type", "band", "order_id", "side", "ticker", "ok")
+FILLS_BUDGET_S = 420  # W130.5: the 00:30Z read hit the bridge's 900 s timeout and printed nothing (exit 124)
+
+
+def load_rows_slim(path: Path) -> list:
+    """W130.5: the order log is 155 MB; the full rows (1 GB box) were the timeout. Keep only what d6 reads."""
+    out: list = []
+    try:
+        with aor.io_jsonl.open_jsonl(path) as fh:
+            for line in fh:
+                try:
+                    r = json.loads(line)
+                except ValueError:
+                    continue
+                if not isinstance(r, dict):
+                    continue
+                o = {k: r.get(k) for k in ORDER_KEYS if k in r}
+                sf = r.get("size_for")
+                if isinstance(sf, dict):
+                    o["size_for"] = {"arm": sf.get("arm")}
+                out.append(o)
+    except (OSError, EOFError):
+        pass
+    return out
+
+
+def budgeted(fills_for, budget_s: float = FILLS_BUDGET_S, clock=None):
+    """Wrap fills_for with a wall-clock budget. Past it, answers None (no evidence), so the read still prints. Returns (fn, state)."""
+    import time as _t
+    clock = clock or _t.monotonic
+    t0 = clock()
+    state = {"exhausted": False, "calls": 0}
+
+    def fn(oid, tk):
+        if clock() - t0 > budget_s:
+            state["exhausted"] = True
+            return None
+        state["calls"] += 1
+        return fills_for(oid, tk)
+    return fn, state
+
+
 def main(argv: Optional[list] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--log", default=str(aor.LOG))
     ap.add_argument("--no-fills", action="store_true")
     a = ap.parse_args(argv)
-    rows = aor.load_rows(Path(a.log))
+    rows = load_rows_slim(Path(a.log))
     fills_for, note = (None, "fills skipped: --no-fills") if a.no_fills else aor.make_fills_for(rows)
+    state = None
+    if fills_for is not None:
+        fills_for, state = budgeted(fills_for)
     now = datetime.now(timezone.utc)
     from prediction_market_bot.decision_trees import coverage
     ledger = coverage.ledger_evidence(itertools.chain(ledger_rows(now - timedelta(days=LEDGER_DAYS)), passyds_t1_rows(now - timedelta(days=LEDGER_DAYS))))  # streamed: counters only
-    print(json.dumps(build(rows, fills_for, note, a.log, now, ledger), indent=1, sort_keys=True, default=str))
+    out = build(rows, fills_for, note, a.log, now, ledger)
+    if state is not None:
+        out["fills_calls"] = state["calls"]
+        if state["exhausted"]:
+            out["fills_note"] = "fills budget exhausted after %d GETs (%ds): layer 7 may be understated" % (state["calls"], FILLS_BUDGET_S)
+    print(json.dumps(out, indent=1, sort_keys=True, default=str))
     return 0
 
 

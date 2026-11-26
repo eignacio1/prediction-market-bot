@@ -148,7 +148,7 @@ def order_evidence(orders, fills_for=None, epoch_iso: str = GG1771_EPOCH_ISO) ->
         if r.get("event") != "arm_order" or not r.get("ok") or not r.get("order_id") or fills_for is None:
             continue
         post = str(r.get("ts", "")) >= epoch_iso
-        if not post:
+        if not post or key in l7:  # W130.5: a cell already proven needs no further GETs (one per order timed the box out)
             continue
         f = fills_for(r["order_id"], r.get("ticker"))
         if isinstance(f, dict) and f.get("fills") is not None:
