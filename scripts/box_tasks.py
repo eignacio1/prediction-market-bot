@@ -57,6 +57,7 @@ TASKS: dict[str, str] = {
     # W129.1: Muse NHL goalie/referee snapshots at the PINNED archive SHA via the GitHub API into NHL_MUSE_DIR only (idempotent, byte-capped, 150M memory cap). Never a clone, never a write to the archive.
     "nhl_muse_fetch": f"systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0 env {PY} scripts/nhl_muse_fetch.py",
     "nhl_depth_recount": f"{PY} scripts/nhl_depth_recount.py",  # W129.1, read-only: NHL game join (goalie leaf) muse-only vs store+muse
+    "state_of_the_bot_read": f"{PY} scripts/state_of_the_bot.py",  # W130.5 Part C, read-only: the one-page state of what runs (arms, demo orders, fills, D6, installs pending, red signals)
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
     "candidate_arms_read": f"{PY} scripts/candidate_arms_read.py",  # W120.2, read-only: shadow rows carrying candidate-map arms, per sport
     "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers

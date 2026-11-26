@@ -1,0 +1,2 @@
+task = "combo_rfq_demo_read"
+note = "W130.3 Part A: read the full combo RFQ ledger to join fills and quotes to outcomes"
