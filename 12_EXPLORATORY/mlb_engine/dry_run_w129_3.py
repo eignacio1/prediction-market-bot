@@ -25,7 +25,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(HERE.parent))
 
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.decision_trees import row_sizing  # noqa: E402
 from prediction_market_bot.decision_trees.shadow_route import route_row  # noqa: E402
 from prediction_market_bot.mlb_engine.forecaster import MLBEngineForecaster  # noqa: E402
@@ -151,7 +153,7 @@ def main() -> int:
            "engine_input_note": "lineups are the as-played store lineups, not posted lineups; the posted-lineup feed does not exist",
            "outcomes_read": False, "cells": cells,
            "archive_run_hours_utc_note": "price archive logs 22:00-05:59Z only on this day, so T2 and T3 rows exist only for late games"}
-    OUT.write_text(json.dumps(res, indent=1, default=str))
+    safe_out(OUT).write_text(json.dumps(res, indent=1, default=str))
     print("%-22s %-3s %5s %5s  %s" % ("cell", "", "rows", "games", "layers present"))
     for k, c in cells.items():
         print("%-22s %5d %5d  %s" % (k, c["rows"], c["games"], ",".join(x.split("_")[0] for x in c["layers_present"]) or "-"))
