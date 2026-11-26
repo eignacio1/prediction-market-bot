@@ -1,0 +1,2 @@
+task = "props_arm_orders_dry"
+note = "W130.2: dry run on the live slate, orders OFF (mode dry, no order placed); counted skip reasons"
