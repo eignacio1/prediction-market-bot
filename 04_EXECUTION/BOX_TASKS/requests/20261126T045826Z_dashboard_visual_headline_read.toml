@@ -1,0 +1,2 @@
+task = "dashboard_visual_headline_read"
+note = "SW-9 last task: second read; the first after a new HEAD serves the cached page and triggers the rebuild"
