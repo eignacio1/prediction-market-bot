@@ -252,7 +252,9 @@ def test_nfl_pregame_cells_shadow_and_inplay_untouched():
                 assert c.status is CellStatus.SHADOW and c.closed_hypothesis_ids == ("EXP-037",) and not c.closed_arm_names and c.measured_date and c.reason, (mt, b)
                 continue
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
-        assert get_cell(mt, ExecutionBand.T4NFL_ARITH).status is CellStatus.NOT_IMPLEMENTED
+        # W130.1: T4NFL-ARITH / T4NFL-FLOW promoted to SHADOW (EXP-NFLINPLAY-001), no orders
+        for tb in (ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW):
+            assert get_cell(mt, tb).status is CellStatus.SHADOW and get_cell(mt, tb).citing_decision == "EXP-NFLINPLAY-001"
 
 
 def test_mlb_game_market_cells_shadow_and_inplay_untouched():
@@ -266,9 +268,9 @@ def test_mlb_game_market_cells_shadow_and_inplay_untouched():
             assert c.status is CellStatus.SHADOW and c.citing_decision == "EXP-037", (mt, b)
 
 
-def test_registry_shadow_total_is_63_with_two_fade_arms_closed():
+def test_registry_shadow_total_is_71_with_two_fade_arms_closed():
     """3 MLB player-hits + 10 NFL + 9 NHL (W54.1) + 12 MLB game markets (W63.1) + 3 NBA player-points (W65.1) + 9 NBA engine props (W109.3)
-    = 46 SHADOW, plus the 2 NFL game-total cells whose FADE arm closed at the EXP-037 first look = 48 (W111.1: SHADOW, not RULED_OUT), plus 12 NBA game cells (W119.2: SHADOW in code, as on the box since W69.2) = 60, plus 3 NHL T4NHL-ARITH in-play cells (W129.7, EXP-NHLINPLAY-001) = 63."""
+    = 46 SHADOW, plus the 2 NFL game-total cells whose FADE arm closed at the EXP-037 first look = 48 (W111.1: SHADOW, not RULED_OUT), plus 12 NBA game cells (W119.2: SHADOW in code, as on the box since W69.2) = 60, plus 3 NHL T4NHL-ARITH in-play cells (W129.7, EXP-NHLINPLAY-001) = 63, plus 8 NFL T4NFL-ARITH/FLOW in-play cells (W130.1, EXP-NFLINPLAY-001) = 71."""
     from prediction_market_bot.c5_execution.market_type_registry import CellStatus, cells_by_status
-    assert len(cells_by_status(CellStatus.SHADOW)) == 63  # W129.7: +3 NHL T4NHL-ARITH in-play cells
+    assert len(cells_by_status(CellStatus.SHADOW)) == 71  # W130.1: +8 NFL T4NFL-ARITH/FLOW in-play cells (W129.7: +3 NHL)
     assert len(cells_by_status(CellStatus.RULED_OUT)) == 0

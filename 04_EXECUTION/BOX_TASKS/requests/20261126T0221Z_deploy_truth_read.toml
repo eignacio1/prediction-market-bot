@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W130.5: confirm box HEAD has #602 before the fresh D6 / silent-arms / state reads"

@@ -219,6 +219,18 @@ if [ -f "$PROJ/data/shadow/nhl_inplay/pass_log.jsonl" ]; then
     fi
 fi
 
+# 14. NFL in-play write recency (W130.1): a live NFL game with no row written = FAIL (a 200 from the feed proves nothing, GG-163)
+if [ -f "$PROJ/data/shadow/nfl_inplay/pass_log.jsonl" ]; then
+    if NF="$(cd "$PROJ" && PYTHONPATH="$PROJ/src:$PROJ" "$PYTHON" scripts/run_nfl_inplay_shadow.py --health 2>&1)"; then
+        case "$NF" in
+            FAIL*) fail "nfl in-play: ${NF#FAIL: }" ;;
+            *) pass "nfl in-play: ${NF#*: }" ;;
+        esac
+    else
+        warn "nfl in-play health check errored: $(echo "$NF" | tail -1)"
+    fi
+fi
+
 echo ""
 if [ "$ERRORS" -eq 0 ]; then
     echo "=== HEALTHY: 0 faults, $WARNS warning(s) ==="

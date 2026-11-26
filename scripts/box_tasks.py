@@ -57,6 +57,7 @@ TASKS: dict[str, str] = {
     # W129.1: Muse NHL goalie/referee snapshots at the PINNED archive SHA via the GitHub API into NHL_MUSE_DIR only (idempotent, byte-capped, 150M memory cap). Never a clone, never a write to the archive.
     "nhl_muse_fetch": f"systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0 env {PY} scripts/nhl_muse_fetch.py",
     "nhl_depth_recount": f"{PY} scripts/nhl_depth_recount.py",  # W129.1, read-only: NHL game join (goalie leaf) muse-only vs store+muse
+    "state_of_the_bot_read": f"{PY} scripts/state_of_the_bot.py",  # W130.5 Part C, read-only: the one-page state of what runs (arms, demo orders, fills, D6, installs pending, red signals)
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
     "candidate_arms_read": f"{PY} scripts/candidate_arms_read.py",  # W120.2, read-only: shadow rows carrying candidate-map arms, per sport
     "d6_trace_read": f"{PY} scripts/d6_trace_read.py",  # W115.3 B-091, read-only: one game per sport through the seven layers
@@ -157,6 +158,9 @@ TASKS: dict[str, str] = {
     "nhl_inplay_install": f"{PY} scripts/nhl_inplay_install.py install",
     "nhl_inplay_readback": f"{PY} scripts/nhl_inplay_install.py readback",
     "nhl_inplay_uninstall": f"{PY} scripts/nhl_inplay_install.py uninstall",
+    "nfl_inplay_install": f"{PY} scripts/nfl_inplay_install.py install",   # W130.1: approved by name only; paused registry entry
+    "nfl_inplay_readback": f"{PY} scripts/nfl_inplay_install.py readback",
+    "nfl_inplay_uninstall": f"{PY} scripts/nfl_inplay_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",

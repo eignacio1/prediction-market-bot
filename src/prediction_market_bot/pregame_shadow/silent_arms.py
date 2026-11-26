@@ -99,6 +99,29 @@ SPECS = {
                       "that started 3h ago with no row is a dead process (GG-163 ran 43h unnoticed). GG-1440: first "
                       "row trails the scheduled start by 8-16 min, so a game is only expected once 0.5h in",
                       start_grace_h=0.5),
+    # ---- W130.5: every live writer of forecast or order rows has a probe (GG-163 class: an arm that goes dark with no alarm) ----
+    "nba_props_exp047": ArmSpec("nba_props_exp047", "NBA player props EXP-047", 12, 1,
+                                "W130.5: hourly :39 cron (run_nba_engine_props_shadow.py) logs T1/T2/T3 rows for every listed player-prop "
+                                "market; a game that tipped in 12h with no NBAENG_* row in exp_output/PREGAME_SHADOW_EXP047 means the "
+                                "runner, its box/tips inputs or the Kalshi listing read is dead (live since 11-12 with no probe before this)"),
+    "nba_props_exp047_c1": ArmSpec("nba_props_exp047_c1", "NBA player props EXP-047-C1 (lineup-cross)", 12, 1,
+                                   "W130.5: default OFF (PM_PROPS_C1); judged only once its ledger dir exists, then it must write whenever EXP-047 does"),
+    "nba_props_exp047_c2": ArmSpec("nba_props_exp047_c2", "NBA player props EXP-047-C2", 12, 1,
+                                   "W130.5: same cron pass as EXP-047, own ledger dir; silent while EXP-047 writes means the challenger itself failed"),
+    "nba_props_exp047_s": ArmSpec("nba_props_exp047_s", "NBA player props EXP-047-S (shrunk means)", 12, 1,
+                                  "W130.5: default ON since W129.2 (PM_PROPS_SHRUNK); same cron pass, own ledger dir PREGAME_SHADOW_EXP047_S"),
+    "ride_board": ArmSpec("ride_board", "Ride/fade board (decisions)", 12, 1,
+                          "W130.5: cron every 5 min through the NBA/NHL/NFL windows logs a decision row per routed market; a game that "
+                          "started in 12h with no decisions row (logs/ride_board/decisions.jsonl) means the board is dead"),
+    "arm_orders": ArmSpec("arm_orders", "Arm orders (demo forward test)", 12, 1,
+                          "W130.5: the router writes an arm_order / arm_would_order / arm_skip row for each routed forecast "
+                          "(logs/arm_orders/orders.jsonl); a game that started in 12h with no row of any kind means the order path is dead"),
+    "nba_combo_shadow": ArmSpec("nba_combo_shadow", "NBA combo pot-of-gold shadow (W126.4)", 12, 1,
+                                "W130.5: paused and not installed on the box today; judged once exp_output/COMBO_SHADOW exists, so the probe "
+                                "is armed the moment the cron goes live"),
+    "nhl_inplay_shadow": ArmSpec("nhl_inplay_shadow", "NHL in-play shadow pricer (W129.7)", 3, 0,
+                                 "W130.5: paused and not installed; polls every 2 min while a game is live, so a game started 3h ago with no "
+                                 "row is dead. Judged once data/shadow/nhl_inplay exists"),
 }
 
 
@@ -325,6 +348,20 @@ def _nba_engine_starts(repo: Path) -> list[datetime]:
     return [t.to_pydatetime() for t in tips]
 
 
+def _all_sport_starts(repo: Path, now: datetime) -> list[datetime]:
+    """NBA + NFL + NHL starts (the sports the board and the arm orders run in). Unreadable sports are skipped; all unreadable raises."""
+    out: list = []
+    errs = 0
+    for fn in (lambda: _nba_engine_starts(repo), lambda: _nfl_starts(repo), lambda: _nhl_starts(repo, now)):
+        try:
+            out += fn()
+        except Exception:
+            errs += 1
+    if errs == 3:
+        raise RuntimeError("no sport schedule readable")
+    return out
+
+
 def _t1_last(logs: Path, until: datetime) -> Optional[datetime]:
     p = logs / "audit_mlb.jsonl"
     if not p.exists():
@@ -389,6 +426,19 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             raise RuntimeError(mlb_err)
         return mlb_starts
 
+    def dir_files(d: Path, pat: str):
+        return sorted(Path(d).glob(pat))
+
+    def when_installed(d: Path, starts_fn):
+        # a paused / not-yet-installed writer has no directory: nothing is expected (idle), never a false alarm
+        return starts_fn if Path(d).exists() else (lambda: [])
+
+    ex = repo / "exp_output"
+    props = {k: ex / v for k, v in (("nba_props_exp047", "PREGAME_SHADOW_EXP047"), ("nba_props_exp047_c1", "PREGAME_SHADOW_EXP047_C1"),
+                                    ("nba_props_exp047_c2", "PREGAME_SHADOW_EXP047_C2"), ("nba_props_exp047_s", "PREGAME_SHADOW_EXP047_S"))}
+    combo = ex / "COMBO_SHADOW"
+    inplay = repo / "data" / "shadow" / "nhl_inplay"
+
     return [
         arm("mlb_shadow", mlb_starts_fn, lambda: last_ts_in_files(cell_files(led, "MLB", "MLB_"), until=now)),
         arm("nfl_shadow", lambda: _nfl_starts(repo), lambda: last_ts_in_files(cell_files(led, "NFL", "NFL_"), until=now)),
@@ -413,7 +463,94 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             lambda: last_ts_in_files(sorted((repo / "exp_output" / "PREGAME_SHADOW_EXP040").glob("NBAMIN_*.jsonl")), until=now)),
         arm("t1_mlb", mlb_starts_fn, lambda: _t1_last(logs, now)),
         arm("t4_mlb", mlb_starts_fn, lambda: last_ts_in_files([logs / "t4_mlb_cycle_log.jsonl"], nbytes=262144, until=now)),
+        *[arm(k, when_installed(d, lambda: _nba_engine_starts(repo)) if k.endswith("_c1") else (lambda: _nba_engine_starts(repo)),
+              (lambda d=d: last_ts_in_files(dir_files(d, "NBAENG_*.jsonl"), until=now)))
+          for k, d in props.items()],
+        arm("ride_board", lambda: _all_sport_starts(repo, now),
+            lambda: last_ts_in_files([logs / "ride_board" / "decisions.jsonl"], until=now)),
+        arm("arm_orders", lambda: _all_sport_starts(repo, now),
+            lambda: last_ts_in_files([logs / "arm_orders" / "orders.jsonl"], until=now)),
+        arm("nba_combo_shadow", when_installed(combo, lambda: _nba_engine_starts(repo)),
+            lambda: last_ts_in_files(dir_files(combo, "*.jsonl"), until=now)),
+        arm("nhl_inplay_shadow", when_installed(inplay, lambda: _nhl_starts(repo, now)),
+            lambda: last_ts_in_files(dir_files(inplay, "*.jsonl"), until=now)),
     ]
+
+
+# ── W130.5: writer coverage. EVERY live RUNTIME_REGISTRY component is classified here; tests/test_silent_arms_coverage.py fails
+# when a live component matches no token (a new writer must be classified) or a token names a probe that does not exist.
+# A token is matched as a substring of the component's key + its `writes` paths. ("probe", keys) = the silent-arms probes that watch what it
+# writes. ("exempt", reason) = it writes no forecast or order rows. Approximations are stated in the reason, not hidden.
+WRITER_COVERAGE: dict = {
+    # forecast / order row writers -> probes
+    "run_mlb_pregame_shadow.py": ("probe", ("mlb_shadow",)),
+    "run_pregame_shadow.py": ("probe", ("nfl_shadow",)),
+    "run_nfl_qb_challenger_shadow.py": ("probe", ("nfl_qb_challenger",)),
+    "passyds_prekickoff_snapshot.py": ("probe", ("nfl_passyds_snap",)),
+    "run_nhl_shadow_staked.py": ("probe", ("nhl_shadow",)),
+    "run_nba_pregame_shadow.py": ("probe", ("nba_shadow", "nba_preseason_shadow")),
+    "run_nba_player_points_shadow.py": ("probe", ("nba_player_points_shadow", "nba_player_points_minutes_shadow")),
+    "NBA_ENGINE_LIVE/rows.jsonl": ("probe", ("nba_engine_v1", "nba_engine_v2")),
+    "NBA_ENGINE_LIVE_V3/rows.jsonl": ("probe", ("nba_engine_v3",)),
+    "NBA_ENGINE_LIVE/attempts.jsonl": ("probe", ("nba_engine_v1", "nba_engine_v2", "nba_engine_v3")),
+    "run_nba_engine_props_shadow.py": ("probe", ("nba_props_exp047", "nba_props_exp047_c1", "nba_props_exp047_c2", "nba_props_exp047_s")),
+    "run_ride_board.py": ("probe", ("ride_board", "arm_orders")),
+    "nba_combo_shadow.py": ("probe", ("nba_combo_shadow",)),
+    "nhl_inplay_shadow.py": ("probe", ("nhl_inplay_shadow",)),
+    "run_t4_live.py": ("probe", ("t4_mlb",)),
+    "t4-mlb.service": ("probe", ("t4_mlb",)),
+    # legacy MLB paper pipeline: one probe (the T1 audit sessions) stands for the pipeline. T2/T3 passes are an approximation.
+    "run_mlb_paper_trade.py": ("probe", ("t1_mlb",)),
+    "run_mlb_pregame.py": ("probe", ("t1_mlb",)),
+    "run_t3_mlb_pretip.py": ("probe", ("t1_mlb",)),
+    "run_t2_mlb_sameday.py": ("probe", ("t1_mlb",)),
+    # legacy NBA paper book: FROZEN (ADR-0035/0037, GG-630; run_paper_trade.NBA_BOOK_FROZEN): opens no positions, writes no forecast rows
+    "run_paper_trade.py": ("exempt", "legacy NBA paper book frozen (NBA_BOOK_FROZEN, GG-630): no rows"),
+    "run_pregame.py": ("exempt", "legacy NBA pre-game run, same frozen book (GG-630): no rows"),
+    "run_t3_pretip.py": ("exempt", "legacy NBA T3 pass on the frozen book; writes t3_skips / reports, no forecast or order rows"),
+    # everything below writes no forecast or order rows
+    "deploy/check_model_freshness.py": ("exempt", "health check"),
+    "deploy/healthcheck.sh": ("exempt", "health check"),
+    "vps_deploy.sh": ("exempt", "deploy"),
+    "demo_cancel_sweeper.py": ("exempt", "cancels stale demo orders; writes none"),
+    "demo_fill_forward_report.py": ("exempt", "report over existing orders"),
+    "demo_fill_markout_collector.py": ("exempt", "markouts of existing fills"),
+    "archive_market_prices.py": ("exempt", "price archive, not a forecast"),
+    "archive_dense_capture.py": ("exempt", "price archive, not a forecast"),
+    "build_picks_sheet.py": ("exempt", "report"),
+    "build_t4_resolved_ledger.py": ("exempt", "settles existing T4 rows"),
+    "calibration_engine.py": ("exempt", "calibration read"),
+    "nba_backfill.py": ("exempt", "history backfill"),
+    "nba_cell_autoflip.py": ("exempt", "cell status toggle"),
+    "nba_lineup_window_capture.py": ("exempt", "input capture"),
+    "nba_player_box_backfill.py": ("exempt", "history backfill"),
+    "nfl_injury_snapshot.py": ("exempt", "input capture"),
+    "nhl_backfill.py": ("exempt", "history backfill"),
+    "nhl_shadow_settle.py": ("exempt", "settles existing rows"),
+    "run_mlb_calib_monitor.py": ("exempt", "monitor"),
+    "run_nba_player_points_shadow_settle.py": ("exempt", "settles existing rows"),
+    "run_nba_pregame_shadow_settle.py": ("exempt", "settles existing rows"),
+    "run_pregame_shadow_settle.py": ("exempt", "settles existing rows"),
+    "run_t140_check.py": ("exempt", "check"),
+    "run_band_monitor.py": ("exempt", "band monitor read"),
+    "source_capture_nfl.py": ("exempt", "input capture"),
+    "thin_market_depth_capture.py": ("exempt", "input capture"),
+    "run_resolve.py": ("exempt", "settles existing rows"),
+    "run_resolve_mlb.py": ("exempt", "settles existing rows"),
+    "run_schedule_validator_mlb.py": ("exempt", "validator"),
+    "run_evidence_weekly.py": ("exempt", "weekly read"),
+    "mlb_board_daily.py": ("exempt", "board pricing to exp_output/MLB_BOARD (no orders); paused today"),
+    "team_game_2027.parquet": ("exempt", "NBA event store refresh"),
+    "pmbot-web-dashboard.service": ("exempt", "dashboard"),
+    "workflow|": ("exempt", "CI / relay workflow"),
+    "cmd:": ("exempt", "ad hoc command line; its writes paths are the classification"),
+}
+
+
+def classify_component(key: str, writes) -> list:
+    """Every WRITER_COVERAGE token found in the component's key + writes paths ([] = unclassified)."""
+    hay = key + " " + " ".join(writes or [])
+    return [t for t in WRITER_COVERAGE if t in hay]
 
 
 # GG-621 / W71.2: static inputs an arm silently starves without. A missing file writes no error anywhere - the arm

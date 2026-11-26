@@ -542,13 +542,15 @@ class TestGameMarketT4SubbandIntegration:
             seeded_bands = {cell.band for cell in cells_for_market_type(market_type)}
             assert seeded_bands.isdisjoint(foreign_subbands), (market_type, seeded_bands)
 
-    def test_t4nfl_arith_and_flow_seeded_not_implemented_for_every_nfl_family(self):
-        # T-524/GG-251 (ADR-0062): every NFL family gets both sub-bands built
-        # this session -- ARITH and FLOW only, both NOT_IMPLEMENTED.
+    def test_t4nfl_arith_and_flow_shadow_for_every_nfl_family(self):
+        # T-524/GG-251 (ADR-0062) seeded both sub-bands NOT_IMPLEMENTED. W130.1
+        # (EXP-NFLINPLAY-001) promoted all 8 (4 families x ARITH/FLOW) to SHADOW:
+        # evaluate-and-log, no orders; FLOW logs the same price (flow_identity).
         for market_type in self._NFL_FAMILIES:
             for band in (ExecutionBand.T4NFL_ARITH, ExecutionBand.T4NFL_FLOW):
                 cell = get_cell(market_type, band)
-                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+                assert cell.status is CellStatus.SHADOW, cell
+                assert cell.citing_decision == "EXP-NFLINPLAY-001", cell
 
     def test_t4nhl_arith_shadow_and_flow_not_implemented_for_every_nhl_family(self):
         # T-524/GG-251 (ADR-0062) seeded both sub-bands NOT_IMPLEMENTED. W129.7
