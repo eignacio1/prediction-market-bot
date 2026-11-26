@@ -1421,3 +1421,4 @@
 | 2026-11-26T02:37:04Z | W130.4 | CLOSED — W130.4: point-in-time NBA archetypes for 469 players, H-DEPTH-PAM-5 pre-registered, PAM5 shadow arm logging (PR #603). (commit `5b7429f`) |
 | 2026-11-26T02:55:02Z | W130.1 | CLOSED — merge confirmed, HEAD (b479eed) is ancestor of origin/main — NFL in-play shadow installed (PR #604, #605); Part B awaits live game |
 | 2026-11-26T03:09:49Z | W130.2 | CLOSED — W130.2: 14 kept NBA props leaves get flat demo orders (EXP-NBAPROPS-002), merged PR #601, paused until install approved (commit `b29e1e0`) |
+| 2026-11-26T03:11:14Z | W130.2 | CLOSED — merge confirmed, HEAD (51191c9) is ancestor of origin/main — NBA props demo orders merged (PR #601), paused until install approved |
