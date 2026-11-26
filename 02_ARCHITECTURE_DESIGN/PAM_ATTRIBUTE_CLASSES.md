@@ -114,3 +114,15 @@ A better-calibrated input is a stronger *interpreted* factor; it is not applied 
 - GG-2004: no player-level shrinkage anywhere in the NBA props path (`MIN_PRIOR_GAMES = 4`, raw mean).
 - GG-2005: PAM has no point-in-time state table; four of five classes are state, not classification.
 - Backlog B-115 (class 3 test), B-116 (class 1 into props), B-117 (player_state + availability_profile + trait_reliability schema).
+
+## 6. Dated changes to the §3 field lists (W129.4, 2026-11-25)
+Code: `src/prediction_market_bot/pam/state.py`, `nba_state_backfill.py`; tests `tests/test_pam_state*.py`. Changes from the §3 spec, all deliberate:
+- **Every row** carries `as_of_ts`, `known_at`, `source`, `version`; one read path `StateStore.as_of(..., known_at=)`. Timestamps must carry a zone.
+  `trait_reliability` rows are visible only after their fit window closed (`known_at` 2022-07-01), so they are valid for decisions judged 2023+.
+- `availability_profile.gp_by_season` is `[games played, listed games]` (roster rows incl. DNP), not out of 82: traded players have no clean
+  team-games denominator. `missed_by_body_part`, `recurrence_flags`, `expected_games_dist` are **null**: the cached reports have no body part.
+- `player_state.teammates_out` and `vacated_usage_share` are **null** (unknown, not 0) where no report exists (before 2022-23, or no slot
+  ≤ tip − 4h). Reports are name-based; about 71% of Out names match a box-score player, so counts are a lower bound.
+- `usage_rate_shrunk` uses PAM-3's points k (60.1 pseudo-minutes) as a **named stand-in**; usage is not a PAM-3 stat and k was not fitted for it.
+- `minutes_expected` is an **unfitted, unscored** baseline plus proportional redistribution; do not read it as a model.
+- `role_security` and `return_window` are **null**; class 4 is the pre-registered test `12_EXPLORATORY/pam_state/PREREG_PAM4.md` (H-DEPTH-PAM-4).

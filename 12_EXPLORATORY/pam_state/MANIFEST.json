@@ -1,0 +1,98 @@
+{
+ "files": {
+  "availability_profile_2016": {
+   "rows": 33659,
+   "sha256": "0c35b1d233a1a1f580b64eff6dae07b6919ef4b4209e73cf7fee6901895c1e44"
+  },
+  "availability_profile_2017": {
+   "rows": 33610,
+   "sha256": "0d36c4b6b1654551d8b67903eb189749c0e8f0d5aef01096c884afbc4391c54c"
+  },
+  "availability_profile_2018": {
+   "rows": 33090,
+   "sha256": "254b84f95e07aba637abada1cf983783ff06256e4da7e4a1b0178457a39c73eb"
+  },
+  "availability_profile_2019": {
+   "rows": 32928,
+   "sha256": "79e6bdb84270df6629f911775bef7a43a67b7dd8ef4c75b598e62a229b8d9539"
+  },
+  "availability_profile_2020": {
+   "rows": 28612,
+   "sha256": "514323dec2343252a14c749447b04320c872840db0f99c6c3cd5db4e66a561c9"
+  },
+  "availability_profile_2021": {
+   "rows": 31546,
+   "sha256": "634ccf10efe697d765a2bbc2be259047247c3c80bc24ecc507c65606dc044ad2"
+  },
+  "availability_profile_2022": {
+   "rows": 33848,
+   "sha256": "bf192c70c3156dd71e248c5b2eccfcb6db8d9174101f6bd9191f25e6b7a5d31b"
+  },
+  "availability_profile_2023": {
+   "rows": 34024,
+   "sha256": "1b0aaf32af4e0c39448142de4cc05b74755336280d51aab56c86a95aa3d4c6f2"
+  },
+  "availability_profile_2024": {
+   "rows": 34815,
+   "sha256": "a2f3512180a26caa78e79c031a96e9cbda5e29f9e4522beb73e4b944580a1acb"
+  },
+  "availability_profile_2025": {
+   "rows": 35087,
+   "sha256": "e05e93b46ded41d4f7e7de13c4203739b3db8863251f15747bbf8101d680472e"
+  },
+  "availability_profile_2026": {
+   "rows": 34756,
+   "sha256": "1ce85a22ea85af81f26f5be64138f966ccf9b5069a0eb46214154b960c6aaa33"
+  },
+  "player_state_2016": {
+   "rows": 33659,
+   "sha256": "6ac4830ed2e0a804054884296d0fa6c66b1d7a4fe31492685bdcaa7d86083034"
+  },
+  "player_state_2017": {
+   "rows": 33610,
+   "sha256": "82403d0de433104e08ce625d0ed29932f63b441cc6e560f40a0b7e6f743a66d8"
+  },
+  "player_state_2018": {
+   "rows": 33090,
+   "sha256": "09ef494edbfe9b05f22d8f99e3e87690b7dfd5986c50fb238124859fb5ea8e5b"
+  },
+  "player_state_2019": {
+   "rows": 32928,
+   "sha256": "c24bf987bd02d998d16ead24f926b5d611023568ef9d83c2b85de1858d3da82d"
+  },
+  "player_state_2020": {
+   "rows": 28612,
+   "sha256": "b256633b81a048cbfd48b64033be27668d73f7b817082373d337f460d202f982"
+  },
+  "player_state_2021": {
+   "rows": 31546,
+   "sha256": "917455d454947d0e8ba3544095aa47eb8ab96d04a09f63f79d54731edf46d544"
+  },
+  "player_state_2022": {
+   "rows": 33848,
+   "sha256": "025fd810316d48c9eefedaab10efa70ef5d0b0ea97324ced81eeb9efeeded3da"
+  },
+  "player_state_2023": {
+   "rows": 34024,
+   "sha256": "207cb998af3386c62c8d1dbdf0a3aeb9399bbb8546c83c6bd52f18c4929ffe9a"
+  },
+  "player_state_2024": {
+   "rows": 34815,
+   "sha256": "5b02c1eb718e5c5561a829b66aa0cec95e3ec457f03d473280283ebc4dbec9d5"
+  },
+  "player_state_2025": {
+   "rows": 35087,
+   "sha256": "49188ec8b7b54368688327dc0dcbce409a8da9be9135eb028a3a73ea77ccbaa5"
+  },
+  "player_state_2026": {
+   "rows": 34756,
+   "sha256": "959ba554092e6bbd823a6da669f18560bbca687956a940d3af072a6b23dad448"
+  },
+  "trait_reliability": {
+   "rows": 8,
+   "sha256": "9b9df953952ac81f3105f7880d1f0c12f8a46d5b7d22e1b4c5104f9d9fd90ef7"
+  }
+ },
+ "version": "backfill-w129.4-v1",
+ "written_at": "2026-11-26T00:16:57Z"
+}
