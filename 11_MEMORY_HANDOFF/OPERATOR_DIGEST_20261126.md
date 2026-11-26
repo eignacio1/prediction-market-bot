@@ -7,3 +7,11 @@ We can now read live NFL game state for free, and the server can reach it. A pri
 
 ## W129.2 — NBA props challenger (shrunk rates)
 Plain English: the new way of estimating each player's scoring, rebounds, assists and threes — leaning on a player's past seasons until the current season has enough games — beat the current method on last season's games, in all four stats. The gain is biggest early in a season and gone once a player has 30+ games. It now runs quietly beside the current method, with no orders and no money. Last season is not fully fresh to us, so this season's live rows are the real test. One thing for you: the NBA props logger is still switched off on the box until you approve its install (`nba_engine_props_shadow_install`). Zero real money at risk.
+
+## W129.1 — NHL goalie / ref depth (2026-11-26)
+- The NHL depth filter is now running in shadow on every NHL game. It logs only; it places no orders and moves no money.
+- The "we don't know the starter" problem is gone on paper: 0 of 351 games, down from 53 of 99.
+- Catch: every one of those 351 games falls back to the goalie's usual-start history, so none of it is real signal yet. Confirmed starters need Muse's files on the box.
+- I need one decision from you: put a read-only GitHub token on the box, or approve copying the small Muse files into the repo. Until then the first real look is blocked.
+- Not finished: I did not read one slate's rows back from the box after the deploy. Do that first next window.
+- Real money at risk: zero.

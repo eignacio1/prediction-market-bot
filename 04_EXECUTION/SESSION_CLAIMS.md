@@ -1411,3 +1411,4 @@
 | 2026-11-26T00:49:16Z | W129.6 | CLOSED — merge confirmed, HEAD (af436e8) is ancestor of origin/main — Parts A+B merged; Part C not built |
 | 2026-11-26T00:56:45Z | W129.2 | CLOSED — W129.2 EXP-047-S shrunk-mean props challenger SUPPORTED (pooled D +0.00172, 4/4 stats); shadow beside C2, merged #595 (commit `202373c`) |
 | 2026-11-26T00:57:14Z | W129.2 | CLOSED — merge confirmed, HEAD (4bbdd16) is ancestor of origin/main — EXP-047-S SUPPORTED, shadow beside C2, merged #595 |
+| 2026-11-26T01:27:01Z | W129.1 | CLOSED — W129.1: NHL depth filter on in shadow (#589 #597 #599); unknown starters 53/99 -> 0/351; Muse files not on box (no token). (commit `12f7f43`) |

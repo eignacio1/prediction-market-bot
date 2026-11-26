@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-26T00:58:00Z (W129.2 — W129.2 EXP-047-S shrunk-mean props challenger SUPPORTED (pooled D +0.00172, 4/4 stats); shadow beside C2, merged #595) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0040Z_W129_2.md` for full session detail.
+**Last reviewed:** 2026-11-26T01:35:00Z (W129.1 — W129.1: NHL depth filter on in shadow (#589 #597 #599); unknown starters 53/99 -> 0/351; Muse files not on box (no token).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0135Z_W129_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.

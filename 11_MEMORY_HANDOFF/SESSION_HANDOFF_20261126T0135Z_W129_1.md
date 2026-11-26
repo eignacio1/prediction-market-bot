@@ -1,4 +1,26 @@
 # Session handoff W129.1 — NHL depth logging (2026-11-26 ~01:35Z)
+
+<!-- session-meta
+task_id: W129.1
+tier: STANDARD
+timestamp: 2026-11-26T01:35:00Z
+commit: 12f7f43
+one_line_summary: W129.1: NHL depth filter on in shadow (#589 #597 #599); unknown starters 53/99 -> 0/351; Muse files not on box (no token).
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NHL
+gap_delta: NHL unknown-starter share 53/99 -> 0/351 (nhl_depth_recount on box, store prior only, 2026-11-26); confirmed-starter leaves 0
+pattern_sweep: grep 'PM_NHL_DEPTH=on' src/ scripts/ tests/ -> 2 stale comments in nhl_depth.py and shadow_route.py fixed in #599; test_w120_2 candidate-set pin updated
+surface_delta: 0
+-->
+
+## Strategic Decisions This Session
+| Decision | Rationale | Ref | Owner |
+|---|---|---|---|
+| PM_NHL_DEPTH default ON in code (off-switch), not via an *_install task | W120.2 pattern; shadow only, surface GREEN; no cron or service added | #599 | window |
+
 Block: DEPTH D5(b) NHL — goalie / referee / availability splits on every NHL shadow row. Model: Sonnet 5.5.
 
 ## Landed
