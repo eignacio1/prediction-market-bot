@@ -412,17 +412,78 @@ def proof(repo: Path) -> list[dict]:
 
 
 # --------------------------------------------------------------------------- DEPTH D6 (ADR-0077)
+BOX_D6_DIR = "04_EXECUTION/BOX_TASKS/results"
+_RAN_RE = re.compile(r"^- ran: (\S+)", re.M)
+_EXIT_RE = re.compile(r"^- exit code: (\d+)", re.M)
+
+
+def parse_box_d6(text: str) -> Optional[dict]:
+    """Parse one box task result file (results/<stem>_d6_read.md). Returns {ran, summary} or None when the file is not a
+    complete, successful d6_read (exit code != 0, no ran line, output cut off by the 60 KB cap, or no 'd6' block)."""
+    ran, ex = _RAN_RE.search(text), _EXIT_RE.search(text)
+    if not ran or not ex or ex.group(1) != "0":
+        return None
+    fence = re.search(r"```[a-z]*\n(\{.*\})\s*\n```", text, re.S)
+    if not fence:
+        return None
+    try:
+        doc = json.loads(fence.group(1))
+        d6doc = doc["d6"]
+        int(d6doc["wired"]), int(d6doc["registered"])
+        datetime.strptime(ran.group(1), "%Y-%m-%dT%H:%M:%SZ")
+    except (ValueError, KeyError, TypeError):
+        return None
+    return {"ran": ran.group(1), "read_utc": doc.get("read_utc"), "summary": d6doc, "ledger_rows": doc.get("ledger_rows"),
+            "arm_order_rows": doc.get("arm_order_rows")}
+
+
+def newest_box_d6(repo: Path) -> Optional[tuple[str, dict]]:
+    """Newest successful box d6_read by the box's own 'ran' time (not the file name: stems are not monotonic)."""
+    best: Optional[tuple[str, dict]] = None
+    for f in glob.glob(str(repo / BOX_D6_DIR / "*_d6_read.md")):   # never matches *_d6_trace_read.md
+        try:
+            r = parse_box_d6(Path(f).read_text(encoding="utf-8", errors="ignore"))
+        except OSError:
+            continue
+        if r and (best is None or r["ran"] > best[1]["ran"]):
+            best = (str(Path(f).relative_to(repo)), r)
+    return best
+
+
+def _d6_parts(sm: dict) -> str:
+    return " · ".join(f"{s} {d['wired']}/{d['registered']} (layers 1-7: {'/'.join(map(str, d['per_layer']))})"
+                      for s, d in sorted(sm["by_sport"].items()))
+
+
 def d6(repo: Path) -> list[dict]:
-    """Registered cells wired end to end (all seven layers present and evidenced), per sport, from decision_trees.coverage."""
-    src = "src/prediction_market_bot/decision_trees/coverage.py d6_layers + leaf_map.json"
+    """D6, ONE number (W129.5): the newest box d6_read (real arm orders, fills and shadow-ledger rows), dated. The repo-static count
+    (coverage.d6_layers on leaf_map.json with no orders / fills / box rows, so layers 6-7 are 0 by construction) is printed beside it,
+    labelled static, and is never the headline when a box read exists."""
+    static_src = "src/prediction_market_bot/decision_trees/coverage.py d6_layers + leaf_map.json (static)"
+    static, static_err = None, None
     sys.path.insert(0, str(repo / "src"))
     try:
         from prediction_market_bot.decision_trees import coverage
-        sm = coverage.d6_summary(coverage.d6_layers())
+        static = coverage.d6_summary(coverage.d6_layers())
     except Exception as e:
-        return [m_na("D6", f"cannot compute ({type(e).__name__}: {e})", src)]
-    parts = [f"{s} {d['wired']}/{d['registered']} (layers 1-7: {'/'.join(map(str, d['per_layer']))})" for s, d in sorted(sm["by_sport"].items())]
-    return [m_ok("D6", f"{sm['wired']} / {sm['registered']} cells wired · " + " · ".join(parts), src, _mtime(repo / "src/prediction_market_bot/decision_trees/leaf_map.json"))]
+        static_err = f"{type(e).__name__}: {e}"
+    box = newest_box_d6(repo)
+    if box is None:
+        if static is None:
+            return [m_na("D6", f"no box d6_read result and static count failed ({static_err})", static_src)]
+        return [m_ok("D6", f"NO BOX READ - repo-static only (layers 6-7 read 0 by construction): {static['wired']} / {static['registered']} "
+                           f"cells wired · " + _d6_parts(static), static_src, _mtime(lm) if (lm := repo / "src/prediction_market_bot/decision_trees/leaf_map.json").exists() else _iso())]
+    rel, r = box
+    sm = r["summary"]
+    age = (datetime.now(timezone.utc) - datetime.strptime(r["ran"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)).days
+    note = f"box d6_read ran {r['ran']} ({age} d old), {r.get('arm_order_rows')} arm-order rows, {r.get('ledger_rows')} ledger rows"
+    if static is not None:
+        side = f"repo-static {static['wired']} / {static['registered']} (no orders / fills / box rows; layers 6-7 = 0 by construction, NOT the D6 number)"
+        if static["registered"] != sm["registered"]:
+            side += f"; REGISTRY MISMATCH box {sm['registered']} vs repo {static['registered']} (box checkout is behind or ahead of this commit)"
+    else:
+        side = f"repo-static UNAVAILABLE ({static_err})"
+    return [m_ok("D6", f"{sm['wired']} / {sm['registered']} cells wired ({note}) · " + _d6_parts(sm) + f" | {side}", rel, r["ran"])]
 
 
 # --------------------------------------------------------------------------- assemble/render

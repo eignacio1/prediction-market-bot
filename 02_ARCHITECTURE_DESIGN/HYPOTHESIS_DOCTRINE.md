@@ -1,6 +1,6 @@
 # Hypothesis Doctrine — how this project asks questions, and every question it has asked
 
-**Last reviewed:** 2026-11-23 (W124.1: Part II Consequence cells carry judgeable dates from the power ledger). **Binding with:** DOCTRINE.md (wins any disagreement), ADR-0077 (multi-arm routing).
+**Last reviewed:** 2026-11-26 (W129.5: §II.8 historical backfill, registry check; earlier W124.1: Part II Consequence cells carry judgeable dates from the power ledger). **Binding with:** DOCTRINE.md (wins any disagreement), ADR-0077 (multi-arm routing).
 **Operator, 2026-11-20 10:10 PT:** "a scaffolding matrix or a dissertation eliciting the protocols and procedures / operations / testing /
 parameters etc etc that you'd like to have FOUNDATIONALLY (we can't bottleneck it by being too specific yet - needs to have enough
 dynamism to conceptually grow) ... let's get a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D)
@@ -109,8 +109,10 @@ a season change).
 
 Columns: **ID · Program / branch · Claim (mechanism) · Locus · Arm · Test (where) · Status (date) · Evidence · Consequence / reopen trigger.**
 IDs: an existing EXP / HYP id is kept; new ones take `H-<PROGRAM>-<n>`. Compiled by SW-9 from this window's verified results (W104-W122).
-**The historical backfill (EXP-001 .. EXP-035, HYP-010 .. HYP-012, the pre-W104 12_EXPLORATORY studies) is being compiled into this
-section by a terminal block (B-110); until it lands, this registry is complete only for W104 onward.**
+**The historical backfill (B-110, W129.5) is §II.8: every pre-registration file under `05_RESEARCH_EXPERIMENTS/` and `12_EXPLORATORY/`
+now has a row here, and `scripts/hypothesis_registry_check.py` (alarm-only, in Docs Guard) flags any PREREG that does not. Verdict cells
+quote the results file; where this block did not re-read a result, the cell says so rather than guess.** Experiments before EXP-025 left
+no PREREG file (their records are in `RESULTS_SUMMARIES/` and DECISION_LOG); they are listed in §II.8 only where a file exists.
 
 ### II.1 Program EDGE — where does the edge live? (12_EXPLORATORY/edge_location/, frozen 3cead0f; research program in RESEARCH_PROGRAM.md)
 | ID | Claim (mechanism) | Locus | Arm | Test | Status | Evidence | Consequence / reopen |
@@ -186,6 +188,41 @@ section by a terminal block (B-110); until it lands, this registry is complete o
 - **T4 latency thesis (T-569)** — NOT SUPPORTED with the current feature set; in-play arms wait for a measured speed advantage (ADR-0068).
 - **Weather as a factor (W108-W109)** — PARKED (R&D): Kalshi already beats a free forecast; no build.
 - **The old NBA book (GG-034 / GG-037)** — PARKED (historical): anti-predictive at the NBA Finals; frozen.
+
+### II.8 Historical backfill (B-110, W129.5)
+| ID | Claim | Population | Rule | Verdict / look date | File | Status |
+|---|---|---|---|---|---|---|
+| EXP-025 / HYP-010 NB | NB1 negative-binomial refit of the HYP-010 Phase-2 count model | MLB (HYP-010 population) | verdict states as EXP-022: INCONCLUSIVE-EXTEND ARCHIVE is not FALSIFIED | INCONCLUSIVE at n (predecessor EXP-022 / T-487); result not re-read here | 05_RESEARCH_EXPERIMENTS/EXP025_HYP010_NB_PREREGISTRATION_2026-08-28.md | PARKED (R&D) |
+| EXP-028 | Pre-game MLB hit-prop model beats the base rate on the frozen 2024-26 matrix | MLB hit props | game-clustered paired dBrier, 5,000 bootstraps, seed 17 | RESULTS 2026-09-30 (`EXP028_..._RESULTS`); model vs market is the ROUTER question | 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/EXP028_pregame_mlb_hits_PREREGISTRATION_2026-09-30.md | PARKED (R&D) |
+| EXP-030 | Deeper structure than the three-scalar binomial improves T4M-PROJ calibration on a sealed holdout | MLB T4M-PROJ, sealed holdout | paired Brier gain, harness verdict unmodified | NO DETECTABLE DIFFERENCE (harness INCONCLUSIVE), 2026-09-30 | 05_RESEARCH_EXPERIMENTS/EXP030_T4_STRUCTURE_PREREGISTRATION_2026-09-30.md | PARKED (R&D) |
+| EXP-031 | Families rank on market efficiency; some are calibration-biased at first-seen | 14 families (10 MLB, 4 NFL) | frozen n / days rule, label per family | Zero CANDIDATES; 4 NFL families INCONCLUSIVE (2026-09-30) | 05_RESEARCH_EXPERIMENTS/EXP031_MARKET_EFFICIENCY_PREREGISTRATION_2026-09-30.md | PARKED (R&D) |
+| EXP-032 | The execution toll is structural, not an artefact of when we looked | pre-game buckets per family | coverage rule per family bucket | RESULTS 2026-10-01 (not re-read here); feeds H-EXEC-* | 05_RESEARCH_EXPERIMENTS/EXP032_EXECUTION_COST_SURFACE_PREREGISTRATION_2026-10-01.md | SUPERSEDED by H-EXEC-1..4 |
+| EXP-033 | Kalshi multi-leg books are incoherent enough to Dutch-book after cost | sports books, all legs | margin after asks + ADR-0016 fee | Nothing survived (2026-10-01); 44.1 cost surface had not landed | 05_RESEARCH_EXPERIMENTS/EXP033_MULTILEG_COHERENCE_PREREGISTRATION_2026-10-01.md | PARKED (R&D) |
+| EXP-038 (+W111.1 addendum) | NBA pre-game shadow cells; a losing look closes the FADE arm, not the cell | NBA game families, 12 cells | shadow log; addendum routes per leaf | COLLECTING; addendum 2026-11-12 | 05_RESEARCH_EXPERIMENTS/EXP038_NBA_PREGAME_SHADOW_PREREGISTRATION_2026-10-06.md (+ _ADDENDUM_W111_1_ROUTING_2026-11-12.md) | COLLECTING |
+| EXP-040 | Projected-minutes + injury challenger beats the points >= 15 model | NBA player points >= 15 | paired Brier vs frozen EXP-039 | COLLECTING (ACCEPTED) | 05_RESEARCH_EXPERIMENTS/EXP040_NBA_PLAYER_POINTS_MINUTES_PREREGISTRATION_2026-10-12.md | COLLECTING |
+| EXP-043 | A ladder (>= 4 strikes, LOO normal fit) prices a strike better than the quote by more than cost | all sports, ladder families | take the side when gap > spread + exact fee | COLLECTING; judged n not reachable before the season's later weeks (file) | 05_RESEARCH_EXPERIMENTS/EXP043_LADDER_RIDE_FORWARD_PREREGISTRATION_2026-10-28.md | COLLECTING |
+| EXP-044b | NBA engine v2 beats the market and v1 | NBA board | PASS at n >= 1,200 games; w >= 0.01 | Descriptive checkpoint 2027-01-31; verdict look 2027-04-20 | 05_RESEARCH_EXPERIMENTS/EXP044B_NBA_ENGINE_V2_CHALLENGER_PREREGISTRATION_2026-10-28.md | COLLECTING |
+| EXP-044c | NBA engine v3 (availability + rotation lineups) beats v2 | NBA board | PASS at n >= 1,200 games per claimed family | Descriptive checkpoint 2027-01-31; verdict look 2027-04-20 | 05_RESEARCH_EXPERIMENTS/EXP044C_NBA_ENGINE_V3_CHALLENGER_PREREGISTRATION_2026-10-30.md | COLLECTING |
+| HYP-011 | Moneyline-first LR track beats the base (Phase 2 reroute) | moneyline cells | clean_n < n* => INCONCLUSIVE, not FALSIFIED | PRE-REGISTERED, never run (no model fit) | 05_RESEARCH_EXPERIMENTS/HYP011_moneyline_lr_preregistration_2026-09-03.md | PARKED (R&D) |
+| T-565 | T4M-PROJ model-vs-market calibration reproduces | MLB T4M-PROJ | ADR-0046 comparability checklist | RESULTS file `T565_RESULTS_...` (not re-read here) | 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T565_PREREGISTRATION_calibration_model_vs_market.md | PARKED (R&D) |
+| T-567 | Market efficiency gradient ranks families | all families | pre-registered ranking | RESULTS 2026-09-23 (not re-read here) | 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T567_EFFICIENCY_GRADIENT_PREREGISTRATION_2026-09-23.md | SUPERSEDED by EXP-031 |
+| T-572 | Closing-line value is a usable instrument | all families | CLV harness thresholds | RESULTS file `T572_clv_harness_RESULTS.md`; CLV now used by H-MEAS-1 | 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T572_clv_harness_PREREGISTRATION.md | SUPERSEDED by H-MEAS-1 |
+| T-577 | T4M-PROJ epoch-12 cohort: salvage or declare | 905 clean rows (35 FILLED, 139 CANCELED, 731 NOT_RETRIEVABLE) | per-row verdict classes | RESULTS file `T577_RESULTS_cohort_salvage.md` | 05_RESEARCH_EXPERIMENTS/RESULTS_SUMMARIES/T577_PREREGISTRATION_cohort_salvage.md | PARKED (R&D) |
+| W83.2 lineup window | NBA lineup news moves the price inside a window | NBA game prices | exhaustive verdict order; else INCONCLUSIVE at n | Superseded in effect by H-EDGE-3 (NOT SUPPORTED 11-20) | 12_EXPLORATORY/20261020_nba_lineup_cross/PREREG_lineup_window.md | SUPERSEDED by H-EDGE-3 |
+| NFL-QB-SHRUNK | A shrunk-QB challenger beats the NFL pre-game model | NFL games | ~984 games needed (~3.6 seasons); looks before are keep accruing | COLLECTING (ACCEPTED 2026-10-10) | 12_EXPLORATORY/NFL_QB_SHRUNK_CHALLENGER_PREREGISTRATION_2026-10-09.md | UNDERPOWERED |
+| THIN-MARKET | NFL passing-yards model beats the book mid after fill | KXNFLPASSYDS pre-game | 400 strikes over >= 60 games, paired Brier, one-sided 95% | FROZEN 2026-10-20; modal outcome no fill-adjusted edge (P 0.7) | 12_EXPLORATORY/THIN_MARKET_PREREGISTRATION_2026-10-20.md | COLLECTING |
+| BLEND-TEST | Blend weights between engine and market (B-051) | engines EXP-041/044/045 | descriptive, no verdict edits | FROZEN 2026-11-06; NBA window 12-29 .. 02-15 | 12_EXPLORATORY/blend_test/BLEND_TEST_PREREGISTRATION_20261106.md | COLLECTING |
+| H-ROUTER-2 prereg | Router v2 (pooled + sequential leaf map) | all sports | e-process rule | LOOKING (see H-ROUTER-2) | 12_EXPLORATORY/evidence_design/ROUTER_V2_PREREGISTRATION_2026-11-17.md | LOOKING |
+| EXP-MLBSIM-001 | PA-level joint simulation, held-out 2026 report | MLB | a report, not a verdict (ADR-0077) | held-out 2026 report (W126.3) | 12_EXPLORATORY/mlb_engine/PREREG_W126_3.md | COLLECTING |
+| MLB-2027 | 2026 look-back routing holds in 2027 | MLB 42 cells | frozen before the first 2027 row | PRE-REGISTERED (see II.6) | 12_EXPLORATORY/mlb_lookback/PREREG_2027.md | PRE-REGISTERED |
+| W107.3 threshold | NBA v3 availability threshold, written before any outcome | NBA | descriptive; EXP-044c looks untouched | DESCRIPTIVE below judged n | 12_EXPLORATORY/nba_engine_v3/PREREG_W107_3.md | COLLECTING |
+| NHL-TOTALS | NHL totals challenger beats the incumbent (B-029) | NHL totals | pre-registered (W101.1 Part C) | result not re-read here | 12_EXPLORATORY/nhl_engine/NHL_TOTALS_CHALLENGER_PREREGISTRATION_2026-11-05.md | COLLECTING |
+| EXP-W119.1-NHL-GOALIE-ST | Goalie and special-teams splits (4 layer-3 splits) change NHL arms | NHL game families | routing test, not a gate | see H-DEPTH-NHL-1: 8 positive of 42 held out, 0 BH | 12_EXPLORATORY/nhl_factors_w112/PREREG_W119_1_GOALIE_ST.md | COLLECTING |
+| LEAF-MAP-FWD | The 113 routed leaves' arms hold on forward shadow rows | 113 leaves + 3 family leads | routing result, not a verdict on a market | forward test (W111.3 / B-079) | 12_EXPLORATORY/retro_route/LEAF_MAP_FORWARD_PREREGISTRATION_2026-11-12.md | COLLECTING |
+| RIDE-BOARD | Ride / fade board: held-out trade P&L per cell (B-053) | MLB totals etc. | Part 1 frozen; Part 2 cells appended | 0 cells HELD_OUT; KXMLBTOTAL FADE only lead; MLB opens ~2027-03-25 | 12_EXPLORATORY/ride_board/RIDE_BOARD_PREREGISTRATION_2026-11-06.md | UNDERPOWERED |
+| EXP-035 (Part 1 + board survey) | The sports board survey finds candidate families on candle history | sports boards | frozen e28166a | Part 1 FAILED at 0972862 (GG-333); standing verdict unrescued | 05_RESEARCH_EXPERIMENTS/EXP035_BOARD_SURVEY_SPORTS_PREREGISTRATION_2026-10-02.md | PARKED (R&D) |
+| EXP-035 Gate 2 | KXMLBTOTAL candle history agrees with the archive | MLB totals | 7 agreement checks | PASSED 7/7 (2026-10-02) | 05_RESEARCH_EXPERIMENTS/EXP035_GATE2_PREREGISTRATION_2026-10-02.md | SUPPORTED |
+| HYP-012 | NFL moneyline LR track beats the base | NFL moneyline | as HYP-011 | PRE-REGISTERED 2026-09-09; result not re-read here | 05_RESEARCH_EXPERIMENTS/HYP012_nfl_moneyline_lr_preregistration_2026-09-09.md | PARKED (R&D) |
 
 ---
 

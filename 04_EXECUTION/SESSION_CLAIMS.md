@@ -1404,3 +1404,4 @@
 | 2026-11-26T00:08:40Z | GG-2005,GG-2003,B-117 | W129.4 PAM state tables (class 1/2/4) + NBA backfill + H-DEPTH-PAM-4 prereg; PURPOSE: moves D5(b) NBA PAM classes 1/2/4, D3 +1, GG-2005 |
 | 2026-11-26T00:12:24Z | B-127 | W129.2 props shrunk challenger PAM-3 licensed; PURPOSE: D3 NBA props +1, P2 +1, D5(b) PAM class 3 |
 | 2026-11-26T00:12:43Z | W129.7 | W129.7 NHL in-play live feed + shadow logging. PURPOSE: B1/B3 NHL in-play cells able to log 0->n, feed latency measured |
+| 2026-11-26T00:16:25Z | TBD | W129.6 NFL in-play live feed + shadow cells. PURPOSE: B1 NFL in-play cells able to log 0->n, B3 T4NFL-ARITH/FLOW bands have a logging cell, feed latency measured |

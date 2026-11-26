@@ -115,8 +115,8 @@ The window hands off to SW-10 after Wave 130.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 129.1 | DEPTH / NHL | NHL depth switched on in shadow: Muse snapshots fetched at a pinned SHA, expected starters from the NHL event store, `PM_NHL_DEPTH` on after the surface check, leaves recounted | Sonnet | ⬜ | |
-| 129.2 | DEPTH / NBA | EXP-047 shrunk-mean challenger (PAM-3 shrinkage × C2 usage shift): pre-registered on a population neither test read, built, logging in shadow beside C2 | Sonnet | ⬜| 🟨 PR open | EXP-047-S SUPPORTED 11-25: pooled D +0.00172 [+0.00140, +0.00204], 4 of 4 stats, 2025-26 (not fresh, disclosed); PREREG 8d6b97e6; shadow beside C2 behind PM_PROPS_SHRUNK |
+| 129.1 | DEPTH / NHL | NHL depth switched on in shadow: Muse snapshots fetched at a pinned SHA, expected starters from the NHL event store, `PM_NHL_DEPTH` on after the surface check, leaves recounted | Sonnet | 🟡 PR open (W129.5): D6 from one source, DISTANCE_TABLE_W129.md, 73 registry rows (42 before), 0 unregistered PREREG | |
+| 129.2 | DEPTH / NBA | EXP-047 shrunk-mean challenger (PAM-3 shrinkage × C2 usage shift): pre-registered on a population neither test read, built, logging in shadow beside C2 | Sonnet | 🟡 PR open (#595) | EXP-047-S SUPPORTED 11-25: pooled D +0.00172 [+0.00140, +0.00204], 4 of 4 stats, 2025-26 (not fresh, disclosed); PREREG 8d6b97e6; shadow beside C2 behind PM_PROPS_SHRUNK |
 | 129.3 | PROOF / MLB | MLB 2027 forward pre-registration for the 12 game cells (frozen before the first row); daily-board install built with an arm-date alarm (GG-1957); a full 2026 slate dry-run through all seven layers | Sonnet | ⬜ | |
 | 129.4 | DEPTH / PAM | PAM point-in-time state tables: `player_state`, `availability_profile`, `trait_reliability` (NBA backfill from the event store); H-DEPTH-PAM-4 (role security) pre-registered, not run | Sonnet | ⬜ | |
 | 129.5 | PROOF / measurement | One D6 number (box 18 / 117 vs repo 0 / 129, reconciled); the distance table recomputed for the handoff; the hypothesis registry backfilled (B-110) with a check that flags unregistered pre-registrations | Sonnet | ⬜ | |
