@@ -3770,3 +3770,14 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   added. Stale-rule sweep: the queue's "three blocks per wave" directive marked superseded by the per-wave ask. Doctrine changes this
   window: ADR-0077 / 0078, DOCTRINE.md (Last reviewed 2026-11-24), HYPOTHESIS_DOCTRINE registry, PAM origin in GRANULARITY_INDEX.md.
 - Error tally SW-9: 25 (UNVERIFIED 9, PROCESS 7, DOCTRINE 4, REPEAT 2, PRESET 1, SCOPE 1, misread 1).
+
+## 2026-11-25 — W131.1: operator approval of five box installs (verbatim)
+
+Operator, 2026-11-25 20:42 PT, in the strategic window: "I approve all installs required from the operator: props_arm_orders_install,
+nhl_inplay_install, data_offload_install (this also accepts MoneyPuck's terms), archive_dense_install, mlb_board_install (must run by
+2027-03-18)".
+
+- Scope: these five task names and no others. Each is filed one at a time with note "operator approved by name 2026-11-25 20:42 PT".
+- MoneyPuck terms accepted via data_offload_install: data is free for non-commercial use; credit MoneyPuck.com wherever it is used.
+- No real capital, Kelly unchanged (Hard Rule 2). props_arm_orders_install places flat demo stakes only (ADR-0072 demo forward test).
+- mlb_board_install must run by 2027-03-18 (MLB season start).
