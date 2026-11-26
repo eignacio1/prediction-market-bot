@@ -1425,3 +1425,4 @@
 | 2026-11-26T03:21:20Z | W130.3 | CLOSED — W130.3: demo combo fills settled (n=2), EXP-COMBOORD-001 pre-registered, accept rule gets an edge threshold, daily demo RFQ line added paused to the existing install approval (commit `see PR`) |
 | 2026-11-26T03:21:37Z | W130.3 | CLOSED — merge confirmed, HEAD (e7cd105) is ancestor of origin/main — combos installed (shadow + demo RFQ), PRs #600/#607 merged; readback 0330Z pending |
 | 2026-11-26T03:30:03Z | W130.5 | CLOSED — W130.5: every live writer probed or exempt (tested), d6_read fixed and read fresh 18/129, STATE_OF_THE_BOT.md generated from box reads (commit `3a7d00d`) |
+| 2026-11-26T03:30:19Z | W130.5 | CLOSED — merge confirmed, HEAD (04fa06c) is ancestor of origin/main — CLOSED - probes complete, D6 fresh 18/129, state page generated |
