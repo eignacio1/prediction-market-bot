@@ -237,7 +237,7 @@ evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 [[cell]]
 market = "nhl_moneyline"
 band = "T4NHL-ARITH"
-status = "not_implemented"
+status = "shadow"
 serving_model = "none"
 factors = []
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
@@ -253,7 +253,7 @@ evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 [[cell]]
 market = "nhl_puck_line"
 band = "T4NHL-ARITH"
-status = "not_implemented"
+status = "shadow"
 serving_model = "none"
 factors = []
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
@@ -269,7 +269,7 @@ evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"
 [[cell]]
 market = "nhl_game_total"
 band = "T4NHL-ARITH"
-status = "not_implemented"
+status = "shadow"
 serving_model = "none"
 factors = []
 evidence = "src/prediction_market_bot/c5_execution/market_type_registry.py"

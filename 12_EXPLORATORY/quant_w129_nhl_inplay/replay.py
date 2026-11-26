@@ -19,6 +19,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT / "12_EXPLORATORY"))
+from _fence import safe_out  # noqa: E402
 from prediction_market_bot.c3_forecasting import nhl_inplay as ip  # noqa: E402
 from prediction_market_bot.quant.inplay_nhl import classify_state  # noqa: E402
 
@@ -109,6 +111,7 @@ for cell, d in R.groupby("cell"):
         c[ck] = dict(rows=len(e), games=len(gids), brier_inplay=round(bm, 4), brier_pregame_only=round(b0, 4),
                      delta=round(bm - b0, 4), delta_ci95=[round(float(np.percentile(diffs, 2.5)), 4), round(float(np.percentile(diffs, 97.5)), 4)])
     res["cells"][cell] = c
+out = safe_out(out)
 out.write_text(json.dumps(res, indent=1))
 for cell, c in res["cells"].items():
     a = c["ALL"]
