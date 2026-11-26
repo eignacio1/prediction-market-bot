@@ -1,0 +1,2 @@
+task = "nfl_live_feed_probe"
+note = "W129.6 Part A: prove ESPN NFL plays feed reachable from the box (read-only)"
