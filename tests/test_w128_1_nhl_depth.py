@@ -6,11 +6,11 @@ SNAP = {"home_goalie": "B", "away_goalie": "C", "home_confirmed": True, "away_co
 PRIOR = {"home": ["A"] * 6 + ["B"] * 2, "away": ["C"] * 5}
 
 
-def test_flag_default_off(monkeypatch):
+def test_flag_default_on_off_switch(monkeypatch):
     monkeypatch.delenv("PM_NHL_DEPTH", raising=False)
-    assert not nd.nhl_depth_on()
-    monkeypatch.setenv("PM_NHL_DEPTH", "on")
     assert nd.nhl_depth_on()
+    monkeypatch.setenv("PM_NHL_DEPTH", "off")
+    assert not nd.nhl_depth_on()
 
 
 def test_planted_backup_start_moves_leaf():

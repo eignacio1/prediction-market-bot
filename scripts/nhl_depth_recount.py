@@ -60,6 +60,17 @@ def main() -> int:
         eta = date.fromisoformat(days[-1]).toordinal() + (int(need / per_day) + 1 if per_day else 0)
         print(f"JUDGED_N {JUDGED_N}: {n} games over {span} days = {per_day:.2f}/day; reached about {date.fromordinal(eta)} at the current schedule "
               f"(NHL regular season runs to mid-April 2027; the date is only an extrapolation of the observed rate)")
+    # readback: the latest NHL rows carrying the nhl_depth candidate with its split_leaves / expected_starters
+    seen = 0
+    for r in sorted((x for x in car.rows(SINCE) if str(x.get("sport") or "").upper() == "NHL"), key=lambda x: x["ts_utc"], reverse=True):
+        c = (r.get("router_candidates") or {}).get("nhl_depth")
+        if c:
+            print("ROW", json.dumps({"ts_utc": r["ts_utc"], "event_ticker": r.get("event_ticker"), "split_leaves": c.get("split_leaves"),
+                                     "expected_starters": c.get("expected_starters"), "split_applied": c.get("split_applied")}, sort_keys=True))
+            seen += 1
+            if seen >= 3:
+                break
+    print(f"ROWS_WITH_NHL_DEPTH {seen} (shown, max 3)")
     return 0
 
 

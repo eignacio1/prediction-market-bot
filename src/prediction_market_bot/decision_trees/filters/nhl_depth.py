@@ -6,7 +6,7 @@ Layer-2 splits that tag an NHL game with a categorical leaf before routing:
   A ``availability@game`` -- ABSTAINS: the Muse archive has no point-in-time availability family. Always ``unknown``; never imputed.
 Point-in-time: a snapshot is usable only if ``snapshot_at_utc <= row ts_utc``; a later one raises ``PITViolation`` when passed explicitly.
 No Muse data -> ``unknown``, which is never scored as a leaf. Applies when: tagging an NHL row before routing; shadow only.
-Default off: ``nhl_depth_on()`` needs PM_NHL_DEPTH=on. Interface: ``split_leaves(...)`` -> {split_name: leaf}.
+Default ON in shadow (W129.1); PM_NHL_DEPTH=off turns it off. Interface: ``split_leaves(...)`` -> {split_name: leaf}.
 """
 from __future__ import annotations
 
@@ -25,7 +25,9 @@ class PITViolation(ValueError):
 
 
 def nhl_depth_on() -> bool:
-    return os.environ.get("PM_NHL_DEPTH", "off").strip().lower() == "on"
+    """W129.1: ON by default (shadow only: logs split_leaves + expected_starters beside nhl_v2, split_applied False, orders follow v1).
+    PM_NHL_DEPTH=off is the off-switch."""
+    return os.environ.get("PM_NHL_DEPTH", "on").strip().lower() != "off"
 
 
 def assert_pit(snapshot_at_utc: Optional[str], row_ts_utc: str) -> None:
@@ -144,7 +146,7 @@ def starts_from_tables(games, box, rosters) -> list:
     for (gid, tid), grp in gl.groupby(["game_id", "team_id"]):
         if gid not in g:
             continue
-        grp = grp.assign(_s=grp["starter"].fillna(False).astype(bool).astype(int), _t=grp["toi_s"].fillna(0))
+        grp = grp.assign(_s=(grp["starter"] == True).astype(int), _t=pd.to_numeric(grp["toi_s"], errors="coerce").fillna(0))  # noqa: E712
         top = grp.sort_values(["_s", "_t"], ascending=False).iloc[0]
         nm = names.get((gid, top["player_id"]))
         gm = g[gid]
