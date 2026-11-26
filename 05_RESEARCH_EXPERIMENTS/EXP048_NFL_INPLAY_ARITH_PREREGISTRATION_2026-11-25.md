@@ -33,3 +33,9 @@ Model beats the held-constant pregame baseline on Brier (it has the score). Whet
 ## Closing rule
 A look that loses closes only this hypothesis ("hypothesis closed (EXP-NFLINPLAY-001, parked for R&D)"). No cell, market or arm closes.
 Replay uses the same code path as the live logger; the pricer, EP table and split above are frozen once this file is committed.
+
+## Addendum 2026-11-25 (after the first scored look; disclosed, not hidden)
+The first look fitted `s2` as mean(r^2/tau). Its fit-set value (5.97/min) was ~2.5x the line's own implied value (~2.3/min), because
+near-zero-tau states dominate that mean. The estimator was changed to sum(r^2)/sum(tau) (v2) AFTER seeing scored-set Brier. Both
+estimators are reported side by side in the result; v2 is the reported one only because v1 is a defect, and the scored set is therefore
+no longer untouched for this estimator choice. A fresh, untouched look (weeks 12+) is the clean test. Everything else above is unchanged.
