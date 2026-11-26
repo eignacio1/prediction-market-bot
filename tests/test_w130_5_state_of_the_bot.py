@@ -82,3 +82,9 @@ def test_ingest_takes_newest_successful_result(tmp_path):
 def test_ingest_without_result_fails_loudly(tmp_path):
     (tmp_path / sob.RES_DIR).mkdir(parents=True)
     assert sob.ingest(tmp_path) == 2
+
+
+def test_d6_sport_key_is_lowercase_in_page():
+    import inspect
+    import scripts.state_of_the_bot as s
+    assert "d6s.get(sp.lower())" in inspect.getsource(s.build)

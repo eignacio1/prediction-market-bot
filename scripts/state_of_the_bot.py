@@ -287,7 +287,7 @@ def build(repo: Path = REPO, now: Optional[datetime] = None) -> str:
         if f:
             L.append(f"- fills: {f['filled']} filled of {f['looked_up']} looked up ({f['orders']} placed YES-side); settled {f['settled']}; "
                      f"P&L per filled contract before fees {fmt(f['pnl_per_filled_before_fees'])} on {f['n_pnl']} settled")
-        d = d6s.get(sp)
+        d = d6s.get(sp.lower())  # d6_read keys sports lowercase
         L.append(f"- **D6** {d['wired']}/{d['registered']} cells wired through 7 layers (cells per layer {'/'.join(map(str, d['per_layer']))})"
                  if d else f"- D6: not computed ({d6_err or 'sport not in read'})")
         L.append("")
