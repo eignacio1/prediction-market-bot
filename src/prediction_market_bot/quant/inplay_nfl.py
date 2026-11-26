@@ -82,10 +82,15 @@ def p_total_gt(total_so_far: float, secs_left: float, pregame_total: float, sigm
     return 1.0 - _phi((line - mu) / math.sqrt(var))
 
 
-def estimate_sigma2(final_minus_expected: Sequence[float], minutes_left: Sequence[float]) -> float:
-    """Pooled variance per minute: mean of (residual^2 / minutes_left) over training states (minutes_left > 0)."""
-    vals = [r * r / m for r, m in zip(final_minus_expected, minutes_left) if m > 0]
-    return sum(vals) / len(vals) if vals else float("nan")
+def estimate_sigma2(final_minus_expected: Sequence[float], minutes_left: Sequence[float], weighted: bool = True) -> float:
+    """Pooled variance per minute. weighted=True (v2): sum(r^2) / sum(tau). weighted=False (v1, first look): mean(r^2 / tau),
+    which the near-zero-tau states dominate (their residual is drive-outcome noise, not Brownian), inflating s2 ~2.5x."""
+    pairs = [(r, m) for r, m in zip(final_minus_expected, minutes_left) if m > 0]
+    if not pairs:
+        return float("nan")
+    if weighted:
+        return sum(r * r for r, _ in pairs) / sum(m for _, m in pairs)
+    return sum(r * r / m for r, m in pairs) / len(pairs)
 
 
 def flow_adjustment(p: float, mode: str = "flow_identity") -> float:
