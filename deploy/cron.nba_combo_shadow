@@ -4,4 +4,9 @@
 # set on the line itself so installing the line is the one switch. Hourly at :41 (outside the :00/:30/:37/:39 shadow stagger, GG-477).
 # Public Kalshi list reads + public ESPN GETs; appends to exp_output/COMBO_SHADOW/ only. No order, position, fill, stake or kelly.
 41 * * * * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && BOT_ENV=paper PM_COMBO_SHADOW=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/nba_combo_shadow.py >> logs/nba_combo_shadow.log 2>&1 ) 9>/tmp/nba_combo_shadow.lock
+# W130.3 (EXP-COMBOORD-001) -- daily combo RFQ in the Kalshi DEMO on kept combos (config in scripts/combo_rfq_demo.py, caps in kalshi_rfq.py).
+# PAUSED in the registry; the same nba_combo_shadow_install approval installs it. Off unless PM_COMBO_RFQ_DEMO=on (set on the line);
+# the client refuses any host but the demo host and any BOT_ENV but paper. 1 contract per fill, kelly 0, at most 6 accepts and 12 RFQs a run.
+# 18:17Z = before the evening NBA slate (the 30 min - 30 h to-tip window); credentials from .env, env only.
+17 18 * * * ( flock -n 8 || exit 0; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && BOT_ENV=paper PM_COMBO_RFQ_DEMO=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/combo_rfq_demo.py >> logs/combo_rfq_demo.log 2>&1 ) 8>/tmp/combo_rfq_demo.lock
 # END W126.4 NBA COMBO SHADOW

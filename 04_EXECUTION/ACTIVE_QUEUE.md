@@ -118,7 +118,7 @@ This wave is the window's last. It aims at the weakest pillar, **EXECUTION**: no
 |---|---|---|---|---|---|
 | 130.1 | BREADTH / NFL | NFL in-play live for Thanksgiving: W129.6 Part C (shadow runner, 8 T4NFL cells SHADOW, write-recency alarm, install built), then live readback + first measured feed lag once approved | Sonnet | ⬜ | |
 | 130.2 | EXECUTION / NBA props | The 14 kept props leaves (EXP-NBAPROPS-001 candidate map) place flat demo orders under their own forward PREREG: fills, P&L per filled bet, fills vs non-fills | Sonnet | 🟡 | PR #601 (code + paused install, default OFF); PREREG EXP-NBAPROPS-002 committed first; nothing runs until `props_arm_orders_install` is approved |
-| 130.3 | EXECUTION / parlays | Parlays through RFQ: combo shadow per leaf, the 2 open demo fills settled, scheduled RFQ demo orders on the combos the router keeps (pot-of-gold arm) | Sonnet | ⬜ | |
+| 130.3 | EXECUTION / parlays | Parlays through RFQ: combo shadow per leaf, the 2 open demo fills settled, scheduled RFQ demo orders on the combos the router keeps (pot-of-gold arm) | Sonnet | 🟡 PR open: 2 fills settled (+0.45, -0.45, n=2), EXP-COMBOORD-001 pre-registered, daily demo RFQ line paused inside `nba_combo_shadow_install` (needs your approval by name) | |
 | 130.4 | DEPTH / PAM | PAM classifies from data: point-in-time NBA archetypes from the event store (how a stat is produced, not only how big it is), checked against the 100 deep-tier records; H-DEPTH-PAM-5 (archetype × opponent archetype on props) pre-registered on forward rows | Sonnet | ⬜ | |
 | 130.5 | PROOF / handoff truth | Every live arm has a liveness probe (EXP-047 props, C2, S, combos, in-play are not in silent_arms today); fresh `d6_read` returned empty output — fixed; `STATE_OF_THE_BOT.md` generated from box reads for SW-10 | Sonnet | ⬜ | |
 
@@ -751,7 +751,7 @@ What should reorder this, and what should stop it:
 
 > **PENDING YOUR APPROVAL BY NAME (window recommends all):**
 > - `archive_dense_install`: gate PASS, 30.5 MB/day, one new cron, budget-gated.
-> - `nba_combo_shadow_install`: one hourly cron, PM_COMBO_SHADOW=on, BOT_ENV=paper. It logs to exp_output/COMBO_SHADOW, places no orders, and is budget-gated. 130.3 may extend it.
+> - `nba_combo_shadow_install` (130.3: now also installs the daily demo RFQ line, 1 contract, kelly 0, max demo loss $6 a day): one hourly cron, PM_COMBO_SHADOW=on, BOT_ENV=paper. It logs to exp_output/COMBO_SHADOW, places no orders, and is budget-gated. 130.3 may extend it.
 > - `data_offload_install` (W128.5): gate PASS, 12 MB/day, peak RSS ~26 MB, budget-gated. Approving it accepts MoneyPuck's terms: free for non-commercial use, credit MoneyPuck.com.
 > - `nhl_inplay_install` (W129.7): one paused cron for 3 T4NHL-ARITH shadow cells, no orders. SURFACE BUDGET GREEN at 00:18Z.
 > - `mlb_board_install` (W129.3): paused MLB daily board with the GG-1957 arm-date and silent-exit alarms. Not needed until 2027; run by 2027-03-18.

@@ -14,13 +14,13 @@ from prediction_market_bot.c5_execution import kalshi_rfq as R  # noqa: E402
 import combo_rfq_demo as D  # noqa: E402
 
 
-def _row(t, n=3, p=0.2, **kw):
+def _row(t, n=3, p=0.3, **kw):
     return dict(market_ticker=t, n_legs=n, engine_p=p, p_product_of_legs=0.15, resolved=True, mc_se=0.004, flags=[], legs_unpriced=[],
                 minutes_to_tip=300, quote_state="--", **kw)
 
 
 def test_caps_are_written_in_code():
-    assert R.MAX_RFQS_PER_NIGHT <= 12 and R.MAX_ACCEPTS_PER_RUN <= 3 and R.CONTRACTS_FP == "1.00"
+    assert R.MAX_RFQS_PER_NIGHT <= 12 and R.MAX_ACCEPTS_PER_RUN <= 6 and R.CONTRACTS_FP == "1.00"
 
 
 def test_client_refuses_non_demo_and_non_paper(monkeypatch):
@@ -89,8 +89,9 @@ def _run(tmp_path, fake, rows):
 
 def test_run_quotes_accepts_and_cancels(tmp_path):
     f = Fake()
-    s = _run(tmp_path, f, [_row(f"T{i}") for i in range(5)])
-    assert s["created"] == 5 and s["quoted"] == 5 and s["accepted"] == R.MAX_ACCEPTS_PER_RUN and len(f.cancelled) == 5
+    s = _run(tmp_path, f, [_row(f"T{i}") for i in range(8)])
+    assert s["created"] == 8 and s["quoted"] == 8 and s["accepted"] == R.MAX_ACCEPTS_PER_RUN and len(f.cancelled) == 8
+    assert s["skips"] == {"cap": 2}
     assert (tmp_path / "COMBO_RFQ_DEMO.jsonl").exists()
 
 
@@ -131,3 +132,20 @@ def test_failed_accepts_count_against_cap_and_do_not_crash(tmp_path):
     f = Fake(accept_ok=False)
     s = _run(tmp_path, f, [_row(f"T{i}") for i in range(6)])
     assert s["quoted"] == 6 and s["accepted"] == 0 and f.sent["accept"] == R.MAX_ACCEPTS_PER_RUN
+
+
+def test_accept_requires_edge_after_fee_and_counts_skip_reasons(tmp_path):
+    m = D.quote_metrics({"yes_bid_dollars": "0.10", "no_bid_dollars": "0.80"}, 0.2, 0.15)   # buy yes 0.20, buy no 0.90
+    assert D.accept_decision(m, 0.2) == (None, "edge_below_threshold")
+    one = D.quote_metrics({"yes_bid_dollars": "0.0", "no_bid_dollars": "0.40"}, 0.2, 0.15)  # only buy yes at 0.60, engine 0.2
+    assert D.accept_decision(one, 0.2) == (None, "one_sided_negative")
+    s = _run(tmp_path, Fake(), [_row("A", p=0.2), _row("B", p=0.2)])
+    assert s["quoted"] == 2 and s["accepted"] == 0 and s["skips"] == {"edge_below_threshold": 2}
+
+
+def test_teammate_points_and_flagged_legs_are_never_ordered():
+    L = lambda *t: [{"ticker": x, "side": "yes"} for x in t]
+    mate = dict(_row("M"), legs=L("KXNBAPTS-26NOV25MIAPHI-MIAJBUTLER22-20", "KXNBAPTS-26NOV25MIAPHI-MIABADEBAYO13-15"))
+    opp = dict(_row("O"), legs=L("KXNBAPTS-26NOV25MIAPHI-MIAJBUTLER22-20", "KXNBAPTS-26NOV25MIAPHI-PHITMAXEY0-20"))
+    assert D.teammate_points(mate) and not D.eligible(mate)
+    assert not D.teammate_points(opp) and D.eligible(opp)

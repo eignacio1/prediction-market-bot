@@ -1572,6 +1572,21 @@ schedule = "41 * * * *"
 mirrors = ["deploy/cron.nba_combo_shadow"]
 command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && BOT_ENV=paper PM_COMBO_SHADOW=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
 [[component]]
+key = "cron|17 18 * * *|scripts/combo_rfq_demo.py"
+kind = "cron"
+source = "deploy/cron.nba_combo_shadow"
+status = "paused"
+reviewed = true
+purpose = "W130.3 (EXP-COMBOORD-001) pot-of-gold combo arm, execution leg: once a day sends RFQs in the Kalshi DEMO on kept NBA same-game combos (no flags, no teammate-points pair), accepts a quote only when the engine edge after fee clears 0.03, 1 contract, kelly 0, at most 6 accepts and 12 RFQs a run. Demo host and BOT_ENV=paper only (client refuses otherwise). Off unless PM_COMBO_RFQ_DEMO=on; PAUSED until the operator approves nba_combo_shadow_install, which installs this line with the shadow line."
+pillar = "EXECUTION"
+writes = ["logs/combo_rfq_demo.log", "exp_output/COMBO_RFQ_DEMO/", "data/raw/nba_props/box.json", "data/raw/nba_props/tips.json"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/combo_rfq_demo.log is older than 30h while NBA has games in window; a run with zero RFQs created is reported as a skip-reason count, never silently"
+max_age_h = "30"
+schedule = "17 18 * * *"
+mirrors = ["deploy/cron.nba_combo_shadow"]
+command = "( flock -n 8 || exit 0; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && BOT_ENV=paper PM_COMBO_RFQ_DEMO=on PYTHONPATH=/opt/prediction-market-bot/"
+
+[[component]]
 key = "cron|17 9 * * *|scripts/data_offload.py --scope"
 kind = "cron"
 source = "deploy/cron.data_offload"
