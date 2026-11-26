@@ -3755,3 +3755,18 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 | 2026-11-25 | W130.1 | Operator approved box task `nfl_inplay_install` by name (NFL in-play shadow cron, no orders, Kelly 0); installed 2026-11-26T02:52Z. NFL in-play forward look set for ~2026-12-15 under the n rule (>= 40 games, >= 300 rows per cell); team-total pricing stays unvalidated until its own replay. 8 T4NFL cells promoted NOT_IMPLEMENTED -> SHADOW under EXP-NFLINPLAY-001. |
 
 | 2026-11-26 | W130.5 | Implementation-only. On the operator's "just run it manually ... wrap it back around", the final probe and state-page commits went straight to main without a PR or CI (14 tests passed locally). Found EXP-047-S silent (7 games, zero rows); left unfixed, owner needed. |
+
+### 2026-11-25 20:30 PT — SW-9 handoff to SW-10 (Waves 101-130 closed)
+- Operator 20:04 PT: "130 is finished - confirm receipt then let's do the session handoff to the next cowork window. Have the session
+  handoff file + chat paste-in ready for me. Give me a full comprehensive review of your work from start to finish as well."
+- W130 verified: #600-#607 merged, handoffs W130_1..5, main Test Suite / Docs Guard / Box Tasks green. nfl_inplay_install (02:52Z) and
+  nba_combo_shadow_install (02:53Z) were approved by name by the operator in terminals and run (result notes). props_arm_orders_install,
+  nhl_inplay_install, data_offload_install, archive_dense_install, mlb_board_install pending.
+- Handoff products: STRATEGIC_WINDOW_CARRY_FORWARD.md (rewritten; prior version archived as _2026-11-04), NEW_WINDOW_PASTE_IN.md
+  (rewritten; prior archived), SW9_WINDOW_REVIEW.md, WINDOW_REGISTER (SW-9 101-130, SW-10 current), the RUNNING SITREP + distance
+  table recomputed from box sources (stale since W110 - window error W69), W123-W130 prompts archived verbatim from git history.
+- Found at handoff: GG-2013 (RUNTIME_REGISTRY "paused" on installed jobs: evidence_weekly, nfl_inplay); fill lookups budget-capped
+  (B-136); two terminal handoffs wrongly said the EXP-047 props cron is paused (it is live, 79k rows / 7 d). Tension NBA-T10 (PAM)
+  added. Stale-rule sweep: the queue's "three blocks per wave" directive marked superseded by the per-wave ask. Doctrine changes this
+  window: ADR-0077 / 0078, DOCTRINE.md (Last reviewed 2026-11-24), HYPOTHESIS_DOCTRINE registry, PAM origin in GRANULARITY_INDEX.md.
+- Error tally SW-9: 25 (UNVERIFIED 9, PROCESS 7, DOCTRINE 4, REPEAT 2, PRESET 1, SCOPE 1, misread 1).

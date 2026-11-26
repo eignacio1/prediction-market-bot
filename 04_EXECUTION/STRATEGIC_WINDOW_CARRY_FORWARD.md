@@ -1,200 +1,249 @@
-# Strategic Window — Carry Forward
+# Strategic Window — Carry Forward (SW-9 → SW-10)
 
-**Written:** 2026-11-04 (evening PT, handoff ~02:30 UTC 11-05), at the close of the window that ran **Waves 81 → 100**
-(2026-10-19 → 11-04) — the longest window the operator has run in months. Verified against `origin/main` at the handoff commit
-(GitHub REST, tracked files, and the box read through the box bridge at 2026-11-05 02:00Z, `04_EXECUTION/BOX_TASKS/results/20261105T020020Z_*`).
-Every figure in §4 was derived by running a command at write time; treat each as a claim to re-verify.
-**Previous version** (Waves 61 → 80): `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-10-19.md`.
+**Written:** 2026-11-26 ~04:30 UTC (11-25 ~20:30 PT), at the close of **SW-9, Waves 101 → 130 (2026-11-04 → 11-26)**. Verified against
+`origin/main` at the handoff commit: GitHub REST, tracked files, and the box read through the box bridge (`04_EXECUTION/STATE_OF_THE_BOT.md`,
+box read 2026-11-26T03:15Z). Every figure in §4 was derived by running a command at write time. Treat each one as a claim to re-verify.
+**Previous version** (SW-8, Waves 81 → 100): `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-11-04.md`.
 **Handoff procedure:** `.claude/commands/strategic-handoff.md` (`/strategic-handoff`). Run it at your own handoff.
-**This window was compacted several times;** everything below is rebuilt from the repo (DECISION_LOG, handoffs, the error log,
-box-bridge results, Muse's archive), not from memory.
+**This window was compacted many times.** Everything below is rebuilt from the repo (DECISION_LOG, handoffs, the error log, box-bridge
+results, Muse's archive), not from memory. SW-9's own review of its work: `04_EXECUTION/SW9_WINDOW_REVIEW.md`.
 
-> The operating context for the strategic window: how the operator works, the traps, state at handoff, open decisions, and
-> what this window got wrong. Read `04_EXECUTION/WINDOW_ERROR_LOG.md` BEFORE this file (ADR-0074), then this file, then the
-> rolling backlog (`04_EXECUTION/ROLLING_BACKLOG.md`), then `04_EXECUTION/ACTIVE_QUEUE.md` top to bottom.
+> Read `04_EXECUTION/WINDOW_ERROR_LOG.md` BEFORE this file (ADR-0074), then this file, then `02_ARCHITECTURE_DESIGN/DOCTRINE.md`, then
+> the rolling backlog (`04_EXECUTION/ROLLING_BACKLOG.md`), then `04_EXECUTION/STATE_OF_THE_BOT.md`, then `ACTIVE_QUEUE.md` top to bottom.
 
 ---
 
 ## 0. North star
 
 **CLAUDE.md § "What winning looks like — the operator's north star (four pillars)"** — never restated here. The distance table at
-handoff (box, 2026-11-05 02:00Z) is the first table of the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md`. One line each:
-- **BREADTH** B1 52 / 108 cells logging · B2 17 / 19 families · B3 4 of 5 bands (no T5) · B4 2 props · 0 parlays.
-- **DEPTH** D2 18 features (MLB T1, 0 qualitative) · D3 5 challengers · D4: NFL data layer + whole-board engine + frozen forward
-  test (EXP-045); NBA data layer + board engine, three versions logging (EXP-044 / 044b / 044c); NHL data layer + board engine
-  (Poisson, not earned); MLB none · D5(a) NFL 8/8, NBA 4/8, NHL 2/8+, MLB 3/8 (router).
-- **EXECUTION** T4 MLB 177 fills / 4,316 (−$0.21/fill); fills win 25% vs non-fills 48% (resting orders get picked off); entry
-  cost measured — keep the frozen rule.
-- **PROOF** P1 12 / 49 · P2 12 verdicts (NFL first look 11-02: GAME_TOTAL T1 + T2 RULED_OUT, 10 KEEP ACCRUING, 0 CANDIDATE) ·
-  P3 2026-11-13 (NFL QB moneyline).
+handoff is the first table of the RUNNING SITREP in `04_EXECUTION/ACTIVE_QUEUE.md` (recomputed 2026-11-26 from box sources). One line each:
+- **BREADTH:**
+  - B1 72 / 129 cells logging.
+  - B2 20 / 26 families.
+  - B3 4 of 5 bands (no T5); T4NFL in-play installed 11-26.
+  - B4 5 props families; parlays 0 → 1 (the combo shadow was installed 11-26 02:53Z).
+- **DEPTH:**
+  - D1: no pre-game model conditions on matchup, weather or qualitative factors.
+  - D5(b) applied: NFL 18 / 26, NBA 11 / 17, NHL 8 / 12.
+  - D6: **18 / 129** wired end to end (NBA 7, NHL 7, NFL 4, MLB 0).
+  - PAM: 469 NBA players with a point-in-time archetype.
+- **EXECUTION:** the ADR-0072 demo forward test places orders in all three winter sports, but the fill lookups ran out of budget, so
+  fills are understated.
+  - NBA: 41 of 41 looked-up orders filled, +0.010 per contract before fees.
+  - NFL: 3 settled, +0.497.
+  - Combos: 2 demo fills, +0.45 / −0.45.
+  - **The weakest pillar.**
+- **PROOF:**
+  - P1 25 / 49 cells at a scored look; P2 25 verdicts routed (engine JSON 11-25). Since then: PAM-3 and EXP-047-S SUPPORTED,
+    EXP-NFLINPLAY-001 closed, NFL play-level 0 of 74 leaves earned.
+  - P3: **H-EXEC-4 first look 2026-12-01**.
 
-The doctrines in force, in the operator's words (read them in full where they live; never compress them — W16, W29):
-- **The scale (ADR-0073, 10-13):** one deep engine per sport at Syndicate32-level granularity pricing the whole board. `/vision`.
-- **Edge = the betting architecture (ADR-0075, 10-14):** aggregation > interpretation > application, eight components, D5.
-- **The granularity index (10-16):** `02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md`; examples are illustrations, never specs.
-- **Market-anchored pricing (10-21) — rank 1.** Price from the market's own line; the model moves it ("conviction"). Project
-  memory: `areas/market-anchored-pricing.md`. EXP-041 (NFL) froze it; it added nothing on NFL, so the engines carry the weight.
-- **Green means the cell WINS (10-19 22:06 PT)** — at its judged n, against the market. Not "logging".
-- **G6 per (book, sport) (ADR-0076, ACCEPTED 10-27 17:30 PT):** blank limits stay blank until a positive Kelly is proposed.
-- **The conceptual layer (11-02 21:40 PT):** "the raw table stats are a starting place that we'll be able to build on once we
-  start hitting conceptual data aggregation, ie mid range jumper shooting archetypes during 2-4 minute close games on the road
-  with your primary point guard hurt against a team that plays zone ... The interpretative data should be able to feed each
-  other as each branch gets built - exponentially making each branch easier to build." Drawn on the aggregation web as each
-  sport's "Compound splits" spoke.
+**The doctrine in force** lives in `02_ARCHITECTURE_DESIGN/DOCTRINE.md` (Last reviewed 2026-11-24; **review it at your first wave close —
+it goes RED on 12-08**). This window wrote most of it:
+- **ADR-0077, multi-arm routing (11-10 / 11-11):** the bot is layered trees choosing ride / fade / momentum / pot of gold / no bet per
+  leaf. "Does not beat the market" is a routing result, never a stop. A factor is applied only as a tested split scored per leaf on net
+  after costs.
+- **ADR-0078:** per-arm cell state, closed arms.
+- **The words (11-11 16:51 PT):** a losing look closes "THAT SPECIFIC HYPOTHESIS"; text says "hypothesis closed (EXP-id, parked for
+  R&D)". Never "no edge".
+- **HYPOTHESIS_DOCTRINE.md:** the scaffold, plus a registry of every hypothesis (73 rows, W129.5). It is updated in the same PR as any
+  PREREG or result.
+- **PAM's origin, in GRANULARITY_INDEX.md (11-24 23:00 PT):** "it's so valuable like unbelievably valuable that's the literal
+  inception of my "granularity index" idea and it was made on like day 2". And: "it's not even 1/4 built out yet - it's almost common
+  sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds".
+
+**Doctrine check (read this aloud in your first message):**
+- **The project's biggest running premise:** depth (finer factors, deeper engines, more leaves) will produce leaves whose held-out net
+  after costs is positive, and accumulation across arms will add up.
+- **The strongest evidence against it:** across Waves 101–130, **no arm clears zero after real costs.**
+  - The edge-location program (H1–H4, H-EDGE-5) found gross effects that fall below one round cost on the most-watched lines.
+  - NFL play-level: 0 of 74 leaves earned.
+  - The NFL in-play model only ties Kalshi's mid.
+  - The props and combo results so far are calibration gains (Brier, log-loss), not money.
+  - NBA demo fills: +0.010 per contract **before** fees.
+
+  The bet the project is making now is retail flow (props, parlays via RFQ) and execution quality. 130.2 / 130.3 built those order
+  paths; the first real numbers arrive in SW-10.
+- **What the operator has said he wants that no wave is building:**
+  - Matchup, weather and qualitative factor classes inside a pre-game model (D1 is empty for all three).
+  - The T5 band.
+  - PAM piped into every engine. It is NBA props only so far; NFL has a WR mass tier, and MLB / NHL have no records.
+  - Parlays beyond NBA same-game combos (NFL / NHL combos, big-hitter longshots).
+  - Muse's qualitative archive applied as a split. Only officials were tested, and the result was null.
 
 ---
 
 ## 1. The role
 
-The strategic window **directs; terminals execute.** It derives state from `origin/main`, GitHub and the box (never from a
-terminal's prose or from recollection), writes paste-in blocks into `04_EXECUTION/ACTIVE_QUEUE.md`, verifies each finished block
-against GitHub when the operator says it is done, keeps the RUNNING SITREP and its distance table current, maintains the
-**rolling backlog**, watches Muse, and routes findings, verdicts and decisions to him. **Never hand him commands to run.** Sandbox
-/ paper / demo actions are plumbing — handle them. **Only real capital is his.** Short, blunt, plain English ("Plain fucking
-english bro", 10-30) — he reads on his phone; lead with the answer.
+The strategic window **directs; terminals execute.**
+- **Where state comes from:** derive it from `origin/main`, GitHub and the box, never from a terminal's prose or from recollection.
+- **Writing waves:** write paste-in blocks into `04_EXECUTION/ACTIVE_QUEUE.md` and **send the file as a file card every time it changes**.
+- **Closing waves:** verify every block against GitHub when the operator says it is done. Keep the RUNNING SITREP and its distance
+  table current **at every close** (W69).
+- **Keeping the books:** own the rolling backlog, watch Muse, and route findings, verdicts and decisions to the operator.
+- **Never hand him commands.** Sandbox / paper / demo actions are plumbing — handle them. **Only real capital is his.**
+- **How to talk to him:** short, blunt, plain English; he reads on his phone. Lead with the answer.
+- **Reporting:** report what was verified AND what was not (W65). Never a bare "all set".
 
-**Executors.** Local Claude Code terminals on his Mac: **three blocks per wave by default** ("get back to 3", 11-02); more only when
-he asks (Wave 89 had six, Wave 94 four + addenda, Wave 97 four). **Muse** (Meta's model, his account) is the data aggregator on
-scheduled runs (§2, §4). **This window** runs in a cloud container with its own clone (`/home/claude/prediction-market-bot`),
-pushes docs-only commits to main, opens / merges small PRs by REST (#412 was the window's), and reads / acts on the box through
-the box bridge. It can also reach his Mac through the device bridge when the desktop app is linked (used only for the folder
-refresh at handoffs).
+**Executors:**
+- **Terminals:** local Claude Code terminals on his Mac. SW-9's waves ran **five Sonnet blocks** at the operator's ask (W129 grew to
+  seven). Wave size follows his message: "give me 5", "back to 4".
+- **Models: Sonnet by default.** Never Opus or Fable in terminals unless he orders it (W56: Fable cost several times Sonnet).
+- **This window:** runs in a cloud container (worktree `/home/claude/pmb-main`, push `git push origin HEAD:main` in a rebase-retry
+  loop), opens and merges small PRs by REST, and acts on the box through the box bridge.
 
-**The box bridge:** push `04_EXECUTION/BOX_TASKS/requests/<UTC>_<x>_<task>.toml` with `task = "<name>"` and `note = "..."`; the
-`box_tasks.yml` workflow runs ONLY allowlisted commands (`scripts/box_tasks.py`) and commits `.../results/<same>.md`. Requests run
-in filename order. Read tasks the window uses every close: `distance_read`, `budget_read`, `silent_arms_read`, `deploy_truth_read`,
-`box_memory_read`, `nba_engine_cron_readback`, `picks_sheet_read`. **Install tasks (`*_install`) are refused by the auto-mode
-classifier for terminals AND the window — they run only after the operator approves the exact task by name in chat** (§2).
-Output is capped at ~60 KB per result (GG-1720 family) — design read tasks to aggregate.
+**The box bridge:**
+- **How:** push `04_EXECUTION/BOX_TASKS/requests/<UTC>_<task>.toml` with `task=` and `note=`. The workflow runs only allowlisted commands
+  (`scripts/box_tasks.py`) and commits `results/<same>.md`.
+- **Read tasks used at every close:** `state_of_the_bot_read` (new, W130.5 — read this first), `d6_read`, `distance_read`, `budget_read`,
+  `silent_arms_read`, `deploy_truth_read`, `box_memory_read`.
+- **Install tasks (`*_install`) run only after the operator approves that exact task by name.** On 11-25 he approved two by name in
+  terminals and the terminals ran them; the result notes record it. A general "go ahead" does not count.
+- **Output caps at ~60 KB per result.**
+- **A newer push cancels an in-flight box task run** (W130.1: the first install requests were cancelled and had to be re-filed).
 
 ---
 
 ## 2. Protocols (operator — follow exactly)
 
-Carried from earlier windows (still in force): RUNNING SITREP + DISTANCE table recomputed at EVERY wave close from `distance_read`
-(W23) · waves are sequential, never preset (W21) · every wave carries **Pushback / Surface / Dependencies**, every block a
-**PURPOSE** line (Hard Rules 12, 15) · END OF BLOCK line, ASCII in fences · authorizations exist only as **blockquotes** in the
-queue's "Needs your decision" · $0 on GitHub and paid services · expansion directive guardrails (pre-registration before a cell's
-first row, no score below judged n, no real capital, kelly 0) · don't restate "the models don't beat the market" — report what
-moved · retail flow first · Muse is watched every wave close · handoff only after the last wave is verified.
+**Carried from earlier windows (still in force):**
+- Distance table recomputed at EVERY close.
+- Waves are sequential, never preset.
+- Every wave carries **Pushback / Surface / Dependencies** lines; every block carries a **PURPOSE** line and an END OF BLOCK line.
+- Authorizations exist only as blockquotes in "Needs your decision".
+- $0 spend; no Polymarket build work.
+- Pre-registration before a cell's first row; no score below judged n; kelly 0; no real capital.
+- His examples are illustrations, not specs; quote his words into canonical docs, never compress them.
+- Log your own mistakes the moment you learn of them; search memory, project docs and the repo before asking him anything.
+- Delivery: blocks go inside ACTIVE_QUEUE.md and never into chat unless he asks. One `COMMON_RULES_W<n>.md` per wave; each block's
+  FIRST line makes the terminal read it from origin/main and quote its first line. **W130 is the latest template.**
 
-Added or changed by this window (date, his words where short):
-- **Delivery (10-27 22:33-22:37 PT, W35):** "UPDATE IT HERE IN THE ACTIVE QUEUE THAT I CAN CLICK AND OPEN AND COPY AND PASTE IN
-  THIS DESKTOP APP." Every wave's blocks go INSIDE `ACTIVE_QUEUE.md` (NOW section, one fenced paste per block), and the file is
-  sent with `SendUserFile` every time it changes. **Never paste blocks into the chat** ("don't waste my tokens") — EXCEPT when he
-  asks (11-03 19:44 PT: "the file got too big so just give me the paste in this chat and remove it from the active queue").
-- **Common rules file per wave:** `04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W<n>.md`; each block's first line tells the terminal
-  to read it with `git show origin/main:...` and quote its first line. W100 is the latest template.
-- **His Mac folder refreshes only at window-to-window handoffs** (10-27 21:46 PT), never per wave. Delete only exact items, never
-  untracked files you haven't checked byte-for-byte; never leave `.git/*.lock` files ("just don't fucking break anything").
-- **The ranking (10-27, agreed) — compose every wave by it:** 1 market-anchored pricing · 2 one engine per sport · 3 granularity
-  index · 4 quant · 5 betting architecture · 6 PAM · 7 Muse · 8 expansion.
-- **The lane rule (10-27):** every wave = one **engine** block + a **proof** block + a **flex** block; quant runs in tandem; a new
-  directive takes a lane, not a whole wave. Each wave header names each block's lane and the rank it serves (W36).
-- **Block size (10-30 08:38 PT, "Yes"):** three parts, ~130 minutes; Part C is something a terminal can switch to while waiting
-  on the box (W37: never shrink blocks because parts stalled on waiting).
-- **The rolling backlog (10-30 08:26 PT):** "a rolling backlog of tickets ... a birds eye view of what needs to be addressed and
-  we can move tickets up or back accordingly dependent on my mandates or what the project needs ... it puts all blocks in scope at
-  once. Ensure it gets placed in the visual dashboard." `04_EXECUTION/ROLLING_BACKLOG.json` (window-only), render with
-  `python3 scripts/rolling_backlog.py` then `--check`; shown on /visual. Waves draw from its top by lane.
-- **No Polymarket build work (10-27 17:31 PT):** "we're not building shit for polymarket yet". A curiosity question is not a
-  directive (W31).
-- **RIDE needs out-of-sample evidence (10-27 17:26 PT).** The router (`decision_trees/router.py`, `ride.py`, `ride_cells.toml`)
-  fires RIDE only for HELD_OUT or FORWARD_PASSED cells; it is not wired to orders.
-- **Installs (11-03):** the classifier refuses `*_install` for everyone. The window runs one only after the operator approves the
-  exact task by name, e.g. "I approve the box-task request that runs t3_lock_stagger_install, which edits the crontab on the paper
-  box." A general "go ahead" does not pass (11-02 22:40 PT failed). Never work around it. Hard Rule 14 still binds.
-- **Frozen artifacts are his:** retiring a frozen cell is his call (11-03 19:16 PT "Yes" → EXP-042 cell 10, by addendum).
-- **Muse (charter v3, `02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/PARTNERSHIP_CHARTER.md`; project copy `claude/MUSE_PARTNERSHIP_CHARTER_v3.md`):**
-  - Role (11-02 21:33 PT): "we're still gonna run it as a data aggregator bc it's far from getting to the type of stats/pulls I'm
-    envisioning". Every card names the engine and factor it feeds and whether the bot can capture the source itself.
-  - Runs (charter §1b rule 3, 11-03): "as many daily runs as Earl schedules". Scheduled runs are on a separate ledger from his chat
-    usage (11-03 18:17 PT, from his contact on the Muse team). Stretch target 200 (11-04 16:29 PT: "I want to stretch it to its
-    absolute limits until they inevitably pull the curtains back"; 16:31 PT: "Sit on it for now - the next window upon handoff
-    will need to operate on it") → backlog B-042.
-  - **Anything Muse must ACT on goes in his message, never in a fetched file** (W42: Muse's safety check refused fetched
-    instructions). TO_MUSE.md is backlog and record. Muse may read its own archive (QUEUE.md, CLAIMS.md) safely.
-  - The window is Muse's watchdog every wave close; R-ticket backlog ≥ 30 open (43 at 11-02 + R-112 split queue).
-- **Write plain-English summaries for him** of any result he will act on (11-02: "a whole bunch of nothing" — say the answer).
+**Added by SW-9 (date, his words where short):**
+- **The routing doctrine (11-10 21:35 / 21:41 PT, ADR-0077):** "Does a quant - that finds through rigorous testing and scaffolding that a
+  certain betting pattern doesn't beat the "market" keep going? no he fucking routes it to the correct path so that loss still WINS."
+  Every block that scores a factor or cell names the arm and the leaf, and scores it on net after costs per arm. A block that scores
+  only "model vs market" is rewritten before it is sent (W48–W53).
+- **Doctrine is one dated file (11-10 21:45 PT: "This CANNOT keep fucking happening"):** DOCTRINE.md is reviewed at every close, and
+  anything he states as doctrine is written into it the same turn. At every close also run `python3 scripts/claude_md_now.py --write`
+  and rewrite CLAUDE.md's window-maintained lines.
+- **Build, don't administer (DOCTRINE §7):** "Let's build out the bot". No admin-only blocks unless a red alert forces one.
+- **Side projects go to the backlog, not into a wave.**
+- **The gap burner:** a standing block that stays at the top of ACTIVE_QUEUE (target OPEN 150; 185 at handoff).
+- **Backlog hygiene:** after any edit to `ROLLING_BACKLOG.json`, run `python3 scripts/rolling_backlog.py && ... --check` (W58). Orders
+  are globally unique, so renumber all tickets.
+- **Docs Guard after any gap-log edit:** run `scripts/generate_gap_arm_index.py` and `scripts/lib/gg_id_uniqueness_check.py`, or Docs
+  Guard goes red on main (W64).
+- **Hypotheses:** every PREREG or result updates its HYPOTHESIS_DOCTRINE.md row in the same PR.
+- **Muse:**
+  - Muse is reachable only by his message on Mondays after his usage reset (~20:50 PT). An emergency message works even when it
+    shows "Out of usage".
+  - Everything Muse must act on goes in his message, never in a file it fetches.
+  - Before every Monday message, run `scripts/muse_check.py` and the whole `04_EXECUTION/MUSE_MONDAY_CHECKLIST.md` (11 items,
+    including browser load per family — W66).
+  - Find everything up front, not one push at a time (W65). He cannot see that back-end exchange: "you HAVE to get it right".
+- **Server crons do the mechanical scraping; Muse does what the server can't** (11-24: "let's set up crons for what we can and have
+  Muse do work that's substantive and valuable that we CAN'T do here"). `data_offload` (W128.5) is built for 4 families.
+- **PAM is high value** (above); never treat it as a side project again (W68). The 11-23 "side project" remark was about one design
+  note, not PAM.
+- **When a message could mean "stop" or "this matters more", ask in one line before tearing work out** (W68).
 
 ---
 
 ## 3. Traps
 
-Carried: deploy rule (GG-432: a push restarts t4-mlb only on a changed import AND no live MLB game) · statsapi 406s the VPS ·
-SESSION_CLAIMS / `.last_session_checkpoint` make PRs dirty · GG-number collisions · shadow-cron authorization covers NEW lines
-only · "logged" ≠ "flagged" · "submitted" ≠ "filled" · a handoff's prose is a claim · GitHub GraphQL is blocked (use REST) ·
-Kalshi keeps no historical order book · Python 3.9 on the box.
+**Carried from earlier windows:**
+- statsapi returns 406 to the box, so MLB boxscores stay with Muse.
+- The box pulls main every 5 minutes; read `deploy_truth_read`'s HEAD before trusting a just-merged change.
+- "submitted" ≠ "filled"; a handoff's prose is a claim; GitHub GraphQL is blocked (use REST); Kalshi keeps no historical order book;
+  Python 3.9 on the box.
+- Box memory: 1 GB RAM, ~430 MB free; load is fine.
 
-New this window:
-- **Box memory is the binding constraint (961 MB, 1 core).** 142 OOM kills / 24 h on 11-03; lock + stagger on the T3 lines
-  (installed 11-04 01:55Z) cut it, but 45 kills / 24 h and 223 MB free at handoff; NBA v2 / v3 missed 5 of 11 games on 11-04.
-  The T1/T2 lock (#416) was installed 11-05 02:11Z on his named approval (17 of 17 lines locked); the next full night's `box_memory_read` is the test. Every new arm costs memory — Hard Rule 14 in spirit even when the budget reads GREEN.
-- **The silent-arm spec alarms on zero rows, not partial coverage** — read `coverage.jsonl` (NBA engine) for missed games.
-- **The box pulls main every 5 minutes** (`vps_deploy.sh` at :03/:08/...). A request pushed right after a merge can run old code;
-  read `deploy_truth_read`'s box HEAD first (the window's #412 retry).
-- **The install gate:** each install exempts only its own first-run reds; batches exempt only the batch's reds, each step reading
-  its own conf (#405, #412). A "STALE ... no write found" red right after an install is its first-run state.
-- **Box task output caps at ~60 KB** — aggregate on the box (GG-1720: the proof calendar could not be regenerated on the box).
-- **A terminal's sweep can list branches that do not exist** (11-04: w89-* .. w91-*). `git ls-remote --heads origin` is the source.
-- **Muse's scheduler:** recurring jobs carry `catchup=latest` — creating them fires a burst of catch-up runs (11-03: chunks claimed
-  four times). Muse now creates them disabled with a one-time enabler. Removing a job does not stop a run already in flight.
-- **Muse at volume:** single-table jobs never strained; multi-source / ~560-row player tables overrun one run, get reclaimed after
-  6 h and redone; C-105's held pages failed a live spot-check. Conditions must be checked against the source before queueing (W40).
-- **Merge only on a read CI result** — #400 merged red (fixed by #402); disclose it.
-- **His Mac folder:** git there may leave `.index.lock` / `ORIG_HEAD.lock`; delete permission is per session and only for exact items.
+**New this window:**
+- **GG-2013:** RUNTIME_REGISTRY `status = "paused"` does NOT mean a job is not installed. `evidence_weekly` (installed 11-20) and
+  `nfl_inplay` (installed 11-26) still read "paused", so STATE_OF_THE_BOT's "Installs pending" list and the 97-live count are wrong.
+  Confirm an install from its result file. Backlog B-135.
+- **Fill lookups are budget-capped** (2,053 GETs). E1 / E2 are understated, and NHL's 316 demo orders have 0 fills looked up (B-136).
+- **Terminals assert stale facts in handoffs.** Two W129–130 handoffs said the EXP-047 props cron "is paused pending install". It was
+  approved 11-12, it is live, and it wrote 79k rows in 7 days. Check STATE_OF_THE_BOT before repeating any handoff claim.
+- **Every NBA season through 2025-26 has now been read** by C2, PAM-3 or EXP-047-S. New NBA props tests judge on forward 2026-27 rows
+  or on another sport.
+- **Muse's archive** (`eignacio1/sports-intel-archive`, master):
+  - On 11-24 Muse pushed a commit that deleted the archive. The window restored it to `ab9951c3` (29,196 entries) with a two-parent
+    commit, because GitHub API writes return 403 through the proxy and a single-parent push failed as too large.
+  - Muse must drop its own commit `804e69e3` and add a mass-delete guard; this is in the 11-30 draft.
+  - Read the archive only through the gh API; never clone it whole.
+- **Muse's weekly allowance went in ~24 h** at full parallelism. The 11-30 draft cuts parallel jobs to ~15–25 and logs usage % in every
+  HEARTBEAT line.
+- **The old "Muse daily sweep" scheduled task is disabled** (`trig_01JAiX7XERTuC9CJgs3DaqTW`). The archive was attached to it and cloned
+  at setup, so it failed nightly. The check now runs in-session (`scripts/muse_check.py`).
+- **A pending check-in fires into SW-9's chat (not yours) on Mon 11-30 22:00 PT** (`trig_017F41iPy2qhDQEL9BAAtJ5Z`). Ask the operator
+  whether to cancel it once you own Monday.
+- **Overwriting the NOW section loses the prompts** unless they are moved to ACTIVE_QUEUE_ARCHIVE.md first (W69; W123–130 were recovered
+  from git at this handoff).
 
 ---
 
-## 4. State at handoff (derived 2026-11-05 ~02:30Z)
+## 4. State at handoff (derived 2026-11-26 ~04:30Z)
 
 | Fact | Value |
 |---|---|
-| origin/main | the handoff commit (window, 2026-11-05); last block commit `07924a28` (W100.3 session close) |
-| Highest GG / T / ADR / EXP | **GG-1720** · **T-1712** · **ADR-0076** · **EXP-045** (+ EXP-044b / 044c; EXP-046 NOT frozen) |
-| Gap log | **250 OPEN** · parity 298 headers = 298 status lines · no duplicate ids (live + archive) |
-| Box (02:00Z) | HEAD `07924a28` = main · **88 live**, 0 unreviewed, 9 no-alarm with reasons · budget **GREEN** · healthcheck HEALTHY · no silent arm · **45 OOM kills / 24 h, 223 MB free** · 30 lock skips logged |
-| Capital | **$0 real.** kelly 0.0 everywhere. Kill switch ENFORCING (W89) |
-| Books | T4M-PROJ (ACTIVE, flat demo): 177 fills / 4,316, −$0.21/fill · T1 MLB: 85 / 485, −$1.50/fill. MLB arms IDLE for the winter |
-| Forward test (ADR-0072) | running; NFL read INCONCLUSIVE (W82), keep running; entry style: keep the frozen rule (98.2: taking at the quote costs ~0.10/contract) |
-| Frozen tests | EXP-037 (NFL first look done 11-02: 2 RULED_OUT, 10 accruing) · EXP-041 (NFL market-anchored) · EXP-042 (11 ride cells, **cell 10 RETIRED** 11-04; looks ~12-21) · EXP-043 (ladder ride) · EXP-044 / 044b / 044c (NBA engine v1 / v2 / v3, logging) · EXP-045 (NFL engine vs Kalshi ladders, look **2027-01-12**) |
-| Engines | NFL: 27-season play store, board engine, priced from the line, 8/8 components. NBA: event store (refresh 12:33Z + 15:46Z), board engine v1 / v2 / v3 (v3 = availability + lineups known before tip). NHL: shot store, Poisson board engine v2 + `model_pit.py` (bias −0.080 → −0.059), trails Kalshi at n 33. MLB: none (spring) |
-| Picks sheet | live since 11-04 03:30Z (`scripts/build_picks_sheet.py`, 05:37Z + 22:37Z); night 1: 134 games, 2,614 picks, reasons on 90%; panel "Tonight's picks" on /visual; GG-1690 (duplicate presentation) |
-| Rolling backlog | 29 tickets (as of 02:30Z): NOW B-027 (T1/T2 lock install), B-030, B-001, B-039, B-026 · NEXT B-041, B-042, B-029, B-043, B-008, B-010 |
-| Muse | archive `eignacio1/sports-intel-archive` (private, read-only to us). 100 daily runs since 11-04 00:01 PT: 90 split runs on `QUEUE.md` (359 chunks, C-001..C-399 minus 40 retired) + 10 ticket runs on TO_MUSE's R-order. Day 1: 43 chunks DONE (~180k records, gate clean), 20 NONE, 12 open. 50-run stress test 11-03: 46 / 50 done, 1 gate fail. **His Muse chat is out of usage until 2026-11-09 20:50 PT**; scheduled runs keep going |
-| Aggregation web | `02_ARCHITECTURE_DESIGN/QUAL_ARCHIVE/MUSE_WEB.json` current to archive 4bf92d1 (11-02); 39 spokes incl. "Compound splits" per sport |
-| Open PRs / branches | #149 only (stale). 35 branches besides main: 27 merged leftovers, 5 unmerged to check, 2 data branches to keep (B-043) |
-| In flight | **Nothing.** Wave 100 closed. Wave 101 is yours to write |
+| origin/main | the handoff commit (window); last block commit `675a2366` (W130.5 session close) |
+| Highest GG / T / ADR | **GG-2013** · **T-1752** · **ADR-0078** |
+| Gap log | **185 OPEN** · 349 headers = 349 status lines · no duplicate ids (live + archive) |
+| Registry | **129 cells: 71 shadow · 1 active (T4M-PROJ, MLB, idle) · 2 blocked · 1 dark · 54 not built** |
+| Box (03:15Z) | budget **GREEN** · every live writer probed or exempt · NBA and NHL arms writing · NFL in-play cron installed (rows from the 11-26 slate) · combo shadow + daily demo RFQ installed (first rows after handoff) |
+| Capital | **$0 real.** kelly 0.0 on every live band. Kill switch ENFORCING |
+| Forward test (ADR-0072, epoch 2026-11-06T01:03Z) | NBA 1,686 YES-side demo orders · NFL 18 · NHL 316. Fills understated (lookup budget) |
+| New order paths | **EXP-NBAPROPS-002** (14 kept props leaves, flat $1 demo; `props_arm_orders_install` pending) · **EXP-COMBOORD-001** (combo RFQ, demo, installed) |
+| Shadow challengers logging | EXP-047 props v1, C2, S (SUPPORTED), PAM5 · NBA engine v1 / v2 / v3 · NHL depth (PM_NHL_DEPTH on) |
+| Frozen / fixed looks | **H-EXEC-4 first look 12-01** (frozen at #554) · weekly evidence look Tuesdays 10:00 UTC (installed 11-20; whether the 11-24 run produced output is **unverified**) · EXP-045 2027-01-12 · MLB 2027 forward PREREG (12 cells; `mlb_board_install` must run by **2027-03-18**) |
+| Rolling backlog | 33 tickets. NOW: B-121 (H-EXEC-4 look), B-136 (fill lookups), B-135 (GG-2013). NEXT: B-134 (Muse files), B-119 / B-128 (installs) … |
+| Muse | Out of usage until **Mon 11-30 20:50 PT**. Archive restored, master `ab9951c3`+. Queue ~3,900 chunks, floor 500. One-message draft for 11-30: `04_EXECUTION/MUSE_MONDAY_2026-11-30_DRAFT.md` (finish it with the checklist; item 6, the retire list, goes in only if `data_offload_install` is approved and its first nightly run succeeds) |
+| Open PRs | #149 only (stale, Wave 34) |
+| In flight | **Nothing.** Wave 130 closed. Wave 131 is yours |
 
 ---
 
-## 5. Where the arc is, and what Wave 101 should be
+## 5. Where the arc is, and what Wave 131 should be
 
-**Arc of Waves 81–100.** 81–84: NBA opening night, the registry flips, the forward test's first NFL read (inconclusive), NHL
-data layer, PAM for NBA, the aggregation web, the live /visual dashboard. 85–88: market-anchored price (EXP-041 — nothing on NFL),
-the quant core (one money / scoring path, models scored vs market 5 of 6 — none beats it), DRAFT G6. 89–91: kill switch enforcing,
-Kalshi calibration, ride-the-market (router, ride tree, EXP-042 11 cells), ADR-0076 accepted, Polymarket stopped. 92–94: four
-sports in the price archive, surface truthful, exact fees, EXP-043, both engines on frozen forward tests (EXP-044 / 045). 95–97:
-NBA engine arms installed, the rolling backlog, v3, the NHL board engine, the picks sheet built; the NFL first look ran (11-02).
-98–100: **the first verdicts in the project's history read and applied**, entry cost measured, frozen ride evidence re-run (13/13:
-every sign held, every net smaller), Muse's archive in an engine for the first time (officials: null), the install deadlock
-fixed, every held install live, cell 10 retired, box memory fought down.
+**Arc of Waves 101–130:**
+- **101–110:** memory fights, the forward test restarted (GG-1771 epoch), the routing doctrine (ADR-0077, DOCTRINE.md), D6 defined,
+  same-game correlation priced (W110).
+- **111–122:** the router wired to demo arm orders, ride and longshot cells, the weekly evidence look, NBA props splits (14 kept
+  leaves), NFL / NHL depth seats, the Muse queue scaled.
+- **123–126:** the edge-location program (H1–H5, H-MEAS-1): gross effects die at the round cost on the most-watched lines, so the build
+  turns to retail flow, depth and MLB.
+- **127–128:**
+  - MLB engine counted.
+  - H-EXEC-4 frozen.
+  - Combos through RFQ: 2 demo fills.
+  - PAM-3 SUPPORTED.
+  - Muse's mechanical families moved to server scrapers.
+  - Muse's archive deleted by Muse and restored by the window.
+- **129–130:**
+  - EXP-047-S SUPPORTED.
+  - MLB 2027 frozen.
+  - PAM state tables, then 469 point-in-time archetypes.
+  - NFL and NHL in-play feeds.
+  - Props and combo demo order paths.
+  - Every live writer probed.
+  - D6 one number (18 / 129).
+  - STATE_OF_THE_BOT.md.
 
-**Fixed dates:** NFL QB moneyline look **11-13** · EXP-042 ride looks ~**12-21** · EXP-045 look **2027-01-12** · GG-529 EXP-038
-second look must be defined before January · his Muse chat resets **11-09 20:50 PT** (the 200-run setup paste goes then) · MLB
-engine before spring (B-018).
-
-**Wave 101 candidates (judgment, by lane — let 101's results set 102):**
-1. **First, before writing it:** read `box_memory_read` after a full NBA + NHL night (the T1/T2 lock went in 11-05 02:11Z). Memory
-   decides whether the NBA tests are worth reading.
-2. **Engine lane:** NBA coverage per arm after the lock (B-030 / B-001; then a v3 `coverage.jsonl` PR) — or NHL totals challenger
-   (B-029: over-spread predictions, slope 0.4-0.5). PAM into the NBA engine (B-014) is the larger rank-6 move when memory allows.
-3. **Proof lane:** regenerate the proof calendar off-box or with an aggregate task (GG-1720 / B-039); prepare the 11-13 NFL QB look;
-   B-008 NBA / NHL calibration scan once enough rows exist (~11-11).
-4. **Flex lane:** the picks sheet's second night + a plain-English summary for him (B-026 / GG-1690); B-043 branch cleanup list.
-5. **Window work (no terminal):** Muse — B-041 (prune unservable chunks, move player tables, redo C-052) and B-042 (200 runs: a
-   pre-checked queue of thousands of chunks across four sports, ~25 runs a day on perishable snapshots — injury reports, lineups /
-   starting goalies, referee assignments, Kalshi lines), with the setup paste ready for 11-09.
+**Wave 131 candidates (judgment — let the first read decide):**
+1. **Execution first (the weakest pillar):**
+   - B-136, a complete fill join so E1 / E2 / E3 are real per book.
+   - `props_arm_orders_install` readback once he approves it.
+   - The first combo RFQ day read (EXP-COMBOORD-001).
+   - The NFL in-play live feed lag from the 11-26 slate (130.1 Part B — the window can run its readback).
+2. **H-EXEC-4 first look on 12-01** (B-121). Frozen; read it at its date, and route the result per leaf.
+3. **Depth, using what the operator flagged:**
+   - PAM archetypes into the props tree as splits, scored per leaf on net. H-DEPTH-PAM-5 is forward only, so build the split now and
+     judge it at n.
+   - PAM into NFL (WR mass tier exists).
+   - A pre-game model that conditions on matchup / weather / qualitative factors (D1 is empty).
+4. **Surface truth:** GG-2013 (B-135) as a small block; and verify the 11-24 weekly evidence run actually wrote output.
+5. **Muse on 11-30:** run the checklist and send one message (draft ready).
 
 ---
 
@@ -202,55 +251,59 @@ engine before spring (B-018).
 
 | Item | State |
 |---|---|
-| `t3_lock_stagger_install` for the T1/T2 lines (#416) | **DONE** - approved by name 11-04 18:10 PT, installed 11-05 02:11Z (17 of 17 lines locked, backup taken, budget GREEN). Re-read `box_memory_read` after a full NBA + NHL night. |
-| **Muse to 200 runs (B-042)** | He wants it; held for the next window (11-04 16:31 PT). Setup paste on 11-09 when his chat resets. |
-| **C-052 redo** | Muse asked "Redo C-052 or leave the gap" (wrong season under the label). Window recommends redo; goes in the 11-09 paste. |
-| **Branch deletion (B-043)** | Give him one exact list after checking the 5 unmerged branches; delete only what he approves. |
-| KXNFLPASSYDS thin-market cell | SETTLED: blockquote authorization in the queue (operator 2026-10-19 21:40 PT); logging since W82.1 (#306). |
-| GG-529 EXP-038 second look | Define before January. |
-| Long-carried | GG-320 · GG-285 · GG-289 · GG-347 · Polymarket KYC (parked) · odds feed · APR-0035 · ADR-0063..0068 |
+| `props_arm_orders_install` (W130.2) | pending — window recommends approve (flat $1 demo, kelly 0, own caps) |
+| `nhl_inplay_install` (W129.7) | pending — recommend approve |
+| `data_offload_install` (W128.5) | pending — recommend approve; accepts MoneyPuck's terms (free non-commercial, credit MoneyPuck.com) |
+| `archive_dense_install` (W127.4) | pending — gate PASS 30.5 MB/day |
+| `mlb_board_install` (W129.3) | not needed until 2027; **must run by 2027-03-18** |
+| Muse goalie / referee files on the box (W129.1) | (a) read-only token in box .env, or (b) vendor small files at the pinned SHA — **window recommends (b)**; pin past 11-24 after Muse resumes |
+| The SW-9 Monday check-in (`trig_017F41iPy2qhDQEL9BAAtJ5Z`) | fires into SW-9's chat 11-30 22:00 PT — ask him whether to cancel it once SW-10 owns Monday |
+| Long-carried | GG-529 (EXP-038 second look before January) · leaf map v2 promotion (GG-2010: routes every unseen leaf NO_BET, so it would not move D6) · PM_LEAF_MAP_VERSION is his |
 
 ---
 
 ## 7. What this window got wrong
 
-`04_EXECUTION/WINDOW_ERROR_LOG.md` is authoritative: **W25–W43** are this window's (tally updated at this handoff). Patterns:
-**UNVERIFIED 7 of 19** (W32, W37, W38, W39, W40, W41, W43 — asserting from a plan or an assumption: installs the window "would run"
-that the classifier refused, a 399-chunk queue with conditions no source serves, "almost certainly dead" runs that were still
-working, a claim that Muse's records fed the NBA engine) · **PROCESS 5** (W33, W34, W35, W42: a cron block with no install route,
-a queue edit that cut a table, a file committed but not sent, Muse told to act on a fetched file) · LITERAL (W25 Bo Nix, W31
-Polymarket from a curiosity question) · REPEAT (W26, W30 "89.7 didn't push" from main only) · NOTES (W27) · SCOPE (W28 "every
-job") · REDUCED (W29 "one daily run") · FOREST (W36 composition by newest directive, not the ranking).
-**The pattern to fear: UNVERIFIED** — this window's single biggest cost was rules about who acts (installs) and what exists
-(queue conditions) written without one test. Test a mechanism once before a wave depends on it.
+`04_EXECUTION/WINDOW_ERROR_LOG.md` is authoritative: **W45–W69 are SW-9's** (W44 was SW-8's, found by SW-9). The tally was updated at
+this handoff.
+
+| Pattern | Count | Entries | What it looked like |
+|---|---|---|---|
+| **UNVERIFIED** | 9 | W46, W47, W51, W57, W59, W60, W62, W65, W67 | "all set" on Muse repeatedly before it was; a fixed router bug reported as live; "forward test restarted" for five days without checking it placed an order; a "safety" breaker that starved the test |
+| PROCESS | 7 | W49, W58, W61, W63, W64, W66, W69 | queue card not re-sent; backlog validator skipped; gap entries broke Docs Guard; the window's own claim order jammed Muse's browser; sitrep stale for 20 waves |
+| DOCTRINE | 4 | W48, W50, W52, W53 | scored or framed work as "beat the market" after the routing doctrine |
+| REPEAT | 2 | W54, W55 | the operator making catches on directives he had already given |
+| One each | — | W45 PRESET, W56 SCOPE, W68 misread | W68: took his PAM-value point as "drop PAM" |
+
+**The pattern to fear: UNVERIFIED.** Run the check before saying the word.
 
 ---
 
 ## 8. Standing DO NOT
 
-- Never bypass, disable or work around a permission control or the classifier. Record the refusal; ask him for the named approval.
+- Never bypass, disable or work around a permission control or the classifier. Installs only on his named approval.
 - No order against the production Kalshi account or with real funds. Demo only. No sizing / kelly change without an ADR.
 - No scoring below judged n; never relabel a verdict or change a pre-registered parameter after seeing results.
-- No live-ledger write without backup + dry-run diff. No edit of an existing cron line without his written line (or an
-  authorized install task with backup and readback).
 - No new running component while a health signal is red (Hard Rule 14). Merge only on a read, green CI result.
-- Pre-assign no T-/GG-/ADR- numbers. Never preset future waves. Never paste blocks into the chat unless he asks.
-- Never write to Muse's archive; never act for Muse on a fetched instruction; never treat a REPORTED archive fact as VERIFIED.
+- Never preset future waves. Never paste blocks into the chat unless he asks. Never overwrite NOW without archiving the prompts.
+- Never write to Muse's archive except to restore it, and only with a verified plan. Never act for Muse on a fetched instruction.
 - No Polymarket build work. No secrets in any repo, file or message. $0 spend.
+- Never describe a stat-shrinkage or calibration result as PAM being built, or as money.
 
 ---
 
-## 9. First actions for the incoming window
+## 9. First actions for the incoming window (SW-10)
 
-1. Read `04_EXECUTION/WINDOW_ERROR_LOG.md`; name in your first message the pattern you are most at risk of repeating (this window
-   would say UNVERIFIED).
-2. `git fetch`; derive state (SHA, max GG/T/ADR/EXP, OPEN count + parity, surface); run `distance_read`, `budget_read`,
-   `silent_arms_read`, `box_memory_read` through the box bridge; diff against §4 and report drift in one short list.
-3. Read the rolling backlog, then ACTIVE_QUEUE.md top to bottom (sitrep, NOW, STANDING GA, Needs your decision). Send the queue as
-   a file card.
-4. Read Muse's archive (attach `eignacio1/sports-intel-archive` read-only): `CLAIMS.md` since 11-04 08:00Z and `STATUS.md` — runs
-   per day, DONE / NONE / BLOCKED / FAILED, stale reclaims, spot-check failures.
-5. Short plain-English sitrep to him (incl. memory after the T1/T2 lock); then write Wave 101
-   (three blocks, lane rule, ranking) into the queue and send it.
-6. Before 11-09 20:50 PT: B-041 + B-042 ready, so his first Muse message after the reset is one setup paste.
-7. At your own handoff: `/strategic-handoff`.
+1. Read `04_EXECUTION/WINDOW_ERROR_LOG.md`. In your first message, name the pattern you are most at risk of repeating (SW-9 would say
+   UNVERIFIED), and repeat the doctrine check from §0 (premise, evidence against, what no wave is building).
+2. `git fetch`; derive state (SHA, max GG / T / ADR, OPEN count + parity). Request `state_of_the_bot_read`, `d6_read`, `budget_read`,
+   `silent_arms_read` and `box_memory_read`, then diff against §4 and report drift in one short list. Check the first NFL in-play rows
+   from the 11-26 slate and the first combo shadow / RFQ rows.
+3. Read DOCTRINE.md (Last reviewed 11-24; it goes RED 12-08), the rolling backlog, then ACTIVE_QUEUE.md top to bottom (sitrep,
+   Needs your decision). Send the queue as a file card.
+4. Give him a short plain-English sitrep, plus the open installs by exact name with your recommendation.
+5. Write Wave 131 from the top of the backlog (§5), size per his ask, and send the queue.
+6. **Mon 11-30 after 20:50 PT:** run `scripts/muse_check.py` and confirm Muse synced to `ab9951c3`+ (its `804e69e3` dropped, no
+   mass-delete since). Run the whole checklist, finish `MUSE_MONDAY_2026-11-30_DRAFT.md` as ONE message, and give it to him with what
+   was verified and what was not.
+7. **12-01:** the H-EXEC-4 first look. Read it at its date, route per leaf, and record it in HYPOTHESIS_DOCTRINE.md.

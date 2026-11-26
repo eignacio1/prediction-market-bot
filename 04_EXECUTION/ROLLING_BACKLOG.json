@@ -28,92 +28,8 @@
   },
   "tickets": [
     {
-      "id": "B-129",
-      "order": 1,
-      "status": "NOW",
-      "lane": "BREADTH",
-      "rank": "breadth",
-      "title": "NFL in-play: a free live game-state feed for the T4NFL cells, replayed on recorded games, shadow behind PM_NFL_INPLAY, install built",
-      "measure": "B1 / B3",
-      "why": "16 NFL cells are in-play with no NFL live feed (W122.3); operator 11-25 16:09 PT: \"Give me two more blocks to send\"",
-      "source": "SW-9 2026-11-25",
-      "wave": "130.1 (W129.6 Parts A+B done #590 #594; Part C open)"
-    },
-    {
-      "id": "B-131",
-      "order": 2,
-      "status": "NOW",
-      "lane": "EXECUTION",
-      "rank": "execution",
-      "title": "NBA props kept leaves (14 of 143, EXP-NBAPROPS-001) place flat demo orders under their own forward PREREG; E1 / E2 / E3 on props",
-      "measure": "E1 / E2 / E3 props; D6 props layers 6-7",
-      "why": "EXECUTION is the weakest pillar; paper rows are not execution evidence (GG-527)",
-      "source": "SW-9 plan 2026-11-26",
-      "wave": "130.2"
-    },
-    {
-      "id": "B-024",
-      "order": 3,
-      "status": "NOW",
-      "lane": "engine",
-      "rank": "8",
-      "title": "Pot of gold as an ARM of the tree, now: Kalshi combo (parlay) markets priced from the engine joint draws and logged (KXMVENBASINGLEGAME etc.); longshot leaves scored per leaf (0 of 18 earned, W125.3)",
-      "measure": "-",
-      "why": "Operator 11-05: \"we should have the pot of gold decision trees routed in too\" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08); D-09 \"beating buddy off his phone placing parlays, that's the first step\".",
-      "source": "CLAUDE.md north star",
-      "wave": "130.3"
-    },
-    {
-      "id": "B-124",
-      "status": "NOW",
-      "lane": "ARMS",
-      "rank": "arms",
-      "title": "Combo arm per leaf after a week of forward rows / RFQ quotes (COMBO_PREREG frozen at c9c9a63)",
-      "measure": "B4 / P2",
-      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
-      "source": "SW-9 plan 2026-11-24",
-      "wave": "130.3",
-      "order": 4
-    },
-    {
-      "id": "B-132",
-      "order": 5,
-      "status": "NOW",
-      "lane": "DEPTH",
-      "rank": "depth",
-      "title": "PAM classifies from data: point-in-time NBA archetypes from production profiles (how a stat is produced), H-DEPTH-PAM-5 (archetype x opponent archetype) pre-registered on forward rows",
-      "measure": "D5(b) NBA PAM classification; D3",
-      "why": "Operator 2026-11-24 22:55 / 23:00 PT: \"it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds\"; \"it's so valuable like unbelievably valuable that's the literal inception of my \\\"granularity index\\\" idea\"",
-      "source": "SW-9 plan 2026-11-26",
-      "wave": "130.4"
-    },
-    {
-      "id": "B-133",
-      "order": 6,
-      "status": "NOW",
-      "lane": "PROOF",
-      "rank": "proof",
-      "title": "Every live writer has a liveness probe (EXP-047 props, C2, S, combos, in-play missing from silent_arms); d6_read empty output fixed; STATE_OF_THE_BOT.md generated from box reads for SW-10",
-      "measure": "live writers probed x/y -> y/y; D6 fresh",
-      "why": "Silent-arms read 2026-11-26T00:21Z lists no EXP-047 props line; d6_read 00:30Z printed nothing",
-      "source": "SW-9 2026-11-26",
-      "wave": "130.5"
-    },
-    {
-      "id": "B-125",
-      "status": "NEXT",
-      "lane": "PLUMBING",
-      "rank": "plumbing",
-      "title": "Window handoff SW-9 -> SW-10 after Wave 130: doctrine stack review, distance table recomputed, backlog groomed, WINDOW_ERROR_LOG lessons, Muse checklist handed over",
-      "measure": "handoff",
-      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
-      "source": "SW-9 plan 2026-11-24",
-      "wave": "after 130 (window /strategic-handoff)",
-      "order": 7
-    },
-    {
       "id": "B-121",
-      "status": "NEXT",
+      "status": "NOW",
       "lane": "PROOF",
       "rank": "proof",
       "title": "H-EXEC-4 first look 2026-12-01 (O'Brien-Fleming; frozen at #554) + the weekly evidence look reading C2 and combo candidates",
@@ -121,11 +37,35 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "SW-10 first wave (look 12-01)",
-      "order": 8
+      "order": 1
+    },
+    {
+      "id": "B-136",
+      "order": 2,
+      "status": "NOW",
+      "lane": "EXECUTION",
+      "rank": "execution",
+      "title": "Fill lookups: the state page's fill lookup ran out of budget (2,053 GETs) - NBA 41 of 1,686 placed looked up, NHL 0 of 316; get E1 / E2 / E3 per book from a complete fill join",
+      "measure": "E1 / E2 / E3 per book",
+      "why": "EXECUTION is the weakest pillar and its numbers are understated",
+      "source": "STATE_OF_THE_BOT 2026-11-26",
+      "wave": "SW-10"
+    },
+    {
+      "id": "B-135",
+      "order": 3,
+      "status": "NOW",
+      "lane": "PLUMBING",
+      "rank": "plumbing",
+      "title": "GG-2013: RUNTIME_REGISTRY status flips to live in the same PR as every install, plus a box check of installed crontab blocks vs registry status",
+      "measure": "PLUMBING (surface truth)",
+      "why": "evidence_weekly (11-20) and nfl_inplay (11-26) installed but still 'paused'; the state page lists them as pending",
+      "source": "SW-9 handoff 2026-11-26",
+      "wave": "SW-10"
     },
     {
       "id": "B-134",
-      "order": 9,
+      "order": 4,
       "status": "NEXT",
       "lane": "DATA",
       "rank": "plumbing",
@@ -145,7 +85,7 @@
       "measure": "PROOF P3: props / 5-min / trade-print data for H1, H3, H4",
       "why": "124.4 gate refused at 74% disk (projected 93.9%)",
       "source": "PR #556",
-      "order": 10
+      "order": 5
     },
     {
       "id": "B-128",
@@ -157,7 +97,7 @@
       "why": "Operator 11-24 21:59 PT: \"let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here.\"",
       "source": "W128.5 handoff",
       "wave": "approval pending",
-      "order": 11
+      "order": 6
     },
     {
       "id": "B-096",
@@ -169,11 +109,11 @@
       "why": "no mid-week correction reached Muse since 11-12",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (window)",
-      "order": 12
+      "order": 7
     },
     {
       "id": "B-017",
-      "order": 13,
+      "order": 8,
       "status": "NEXT",
       "lane": "flex",
       "rank": "plumbing",
@@ -193,7 +133,7 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "folded into B-098",
-      "order": 14
+      "order": 9
     },
     {
       "id": "B-063",
@@ -205,7 +145,7 @@
       "why": "107.2 could not see under 20 minutes; H3 parked 11-20; needs forward trade prints (B-114 install) first",
       "source": "SW-9 W107 close",
       "wave": "123.3 (H3)",
-      "order": 15
+      "order": 10
     },
     {
       "id": "B-073",
@@ -217,11 +157,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 16
+      "order": 11
     },
     {
       "id": "B-014",
-      "order": 17,
+      "order": 12,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -233,7 +173,7 @@
     },
     {
       "id": "B-015",
-      "order": 18,
+      "order": 13,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -245,7 +185,7 @@
     },
     {
       "id": "B-016",
-      "order": 19,
+      "order": 14,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -257,7 +197,7 @@
     },
     {
       "id": "B-021",
-      "order": 20,
+      "order": 15,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -269,7 +209,7 @@
     },
     {
       "id": "B-001",
-      "order": 21,
+      "order": 16,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -281,7 +221,7 @@
     },
     {
       "id": "B-008",
-      "order": 22,
+      "order": 17,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -293,7 +233,7 @@
     },
     {
       "id": "B-022",
-      "order": 23,
+      "order": 18,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -305,7 +245,7 @@
     },
     {
       "id": "B-023",
-      "order": 24,
+      "order": 19,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -317,7 +257,7 @@
     },
     {
       "id": "B-025",
-      "order": 25,
+      "order": 20,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -326,6 +266,97 @@
       "why": "Breadth outran proof; expansion ranks last.",
       "source": "ranking 10-27",
       "wave": ""
+    },
+    {
+      "id": "B-129",
+      "order": 21,
+      "status": "DONE",
+      "lane": "BREADTH",
+      "rank": "breadth",
+      "title": "NFL in-play: a free live game-state feed for the T4NFL cells, replayed on recorded games, shadow behind PM_NFL_INPLAY, install built",
+      "measure": "B1 / B3",
+      "why": "16 NFL cells are in-play with no NFL live feed (W122.3); operator 11-25 16:09 PT: \"Give me two more blocks to send\"",
+      "source": "SW-9 2026-11-25",
+      "wave": "130.1",
+      "outcome": "NFL in-play runner + 8 T4NFL cells SHADOW; installed 11-26 02:52Z on named approval (#590 #594 #604 #605)"
+    },
+    {
+      "id": "B-131",
+      "order": 22,
+      "status": "DONE",
+      "lane": "EXECUTION",
+      "rank": "execution",
+      "title": "NBA props kept leaves (14 of 143, EXP-NBAPROPS-001) place flat demo orders under their own forward PREREG; E1 / E2 / E3 on props",
+      "measure": "E1 / E2 / E3 props; D6 props layers 6-7",
+      "why": "EXECUTION is the weakest pillar; paper rows are not execution evidence (GG-527)",
+      "source": "SW-9 plan 2026-11-26",
+      "wave": "130.2",
+      "outcome": "EXP-NBAPROPS-002 pre-registered; props demo-order path built; props_arm_orders_install awaits approval (#601)"
+    },
+    {
+      "id": "B-024",
+      "order": 23,
+      "status": "DONE",
+      "lane": "engine",
+      "rank": "8",
+      "title": "Pot of gold as an ARM of the tree, now: Kalshi combo (parlay) markets priced from the engine joint draws and logged (KXMVENBASINGLEGAME etc.); longshot leaves scored per leaf (0 of 18 earned, W125.3)",
+      "measure": "-",
+      "why": "Operator 11-05: \"we should have the pot of gold decision trees routed in too\" - an arm of the same tree now, not a later phase (DOCTRINE §6, D-08); D-09 \"beating buddy off his phone placing parlays, that's the first step\".",
+      "source": "CLAUDE.md north star",
+      "wave": "130.3",
+      "outcome": "combo shadow per leaf + daily demo RFQ; installed 11-26 02:53Z (#600 #607)"
+    },
+    {
+      "id": "B-124",
+      "status": "DONE",
+      "lane": "ARMS",
+      "rank": "arms",
+      "title": "Combo arm per leaf after a week of forward rows / RFQ quotes (COMBO_PREREG frozen at c9c9a63)",
+      "measure": "B4 / P2",
+      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
+      "source": "SW-9 plan 2026-11-24",
+      "wave": "130.3",
+      "order": 24,
+      "outcome": "2 combo demo fills settled (+0.45, -0.45, n 2); EXP-COMBOORD-001 pre-registered (#600)"
+    },
+    {
+      "id": "B-132",
+      "order": 25,
+      "status": "DONE",
+      "lane": "DEPTH",
+      "rank": "depth",
+      "title": "PAM classifies from data: point-in-time NBA archetypes from production profiles (how a stat is produced), H-DEPTH-PAM-5 (archetype x opponent archetype) pre-registered on forward rows",
+      "measure": "D5(b) NBA PAM classification; D3",
+      "why": "Operator 2026-11-24 22:55 / 23:00 PT: \"it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds\"; \"it's so valuable like unbelievably valuable that's the literal inception of my \\\"granularity index\\\" idea\"",
+      "source": "SW-9 plan 2026-11-26",
+      "wave": "130.4",
+      "outcome": "469 NBA players with a point-in-time archetype; H-DEPTH-PAM-5 pre-registered and logging (#603)"
+    },
+    {
+      "id": "B-133",
+      "order": 26,
+      "status": "DONE",
+      "lane": "PROOF",
+      "rank": "proof",
+      "title": "Every live writer has a liveness probe (EXP-047 props, C2, S, combos, in-play missing from silent_arms); d6_read empty output fixed; STATE_OF_THE_BOT.md generated from box reads for SW-10",
+      "measure": "live writers probed x/y -> y/y; D6 fresh",
+      "why": "Silent-arms read 2026-11-26T00:21Z lists no EXP-047 props line; d6_read 00:30Z printed nothing",
+      "source": "SW-9 2026-11-26",
+      "wave": "130.5",
+      "outcome": "every live writer probed or exempt; d6_read fixed (18/129, 03:15Z); STATE_OF_THE_BOT.md (#602 #606)"
+    },
+    {
+      "id": "B-125",
+      "status": "DONE",
+      "lane": "PLUMBING",
+      "rank": "plumbing",
+      "title": "Window handoff SW-9 -> SW-10 after Wave 130: doctrine stack review, distance table recomputed, backlog groomed, WINDOW_ERROR_LOG lessons, Muse checklist handed over",
+      "measure": "handoff",
+      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
+      "source": "SW-9 plan 2026-11-24",
+      "wave": "handoff",
+      "order": 27,
+      "outcome": "SW-9 handoff to SW-10: carry-forward, paste-in, queue, sitrep recomputed (2026-11-26)"
     },
     {
       "id": "B-122",
@@ -337,7 +368,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "129.1",
-      "order": 26,
+      "order": 28,
       "outcome": "PM_NHL_DEPTH on in shadow; unknown starters 53/99 -> 0/351 (event-store prior); Muse files decision pending (#589 #597 #599)"
     },
     {
@@ -350,7 +381,7 @@
       "why": "H-DEPTH-PAM-3 SUPPORTED (W128.4); PREREG section 7 names this challenger as the path to applied",
       "source": "SW-9 plan 2026-11-25",
       "wave": "129.2",
-      "order": 27,
+      "order": 29,
       "outcome": "EXP-047-S SUPPORTED on 2025-26: D +0.00172 [+0.00140, +0.00204], 4 of 4 stats; logging beside C2 (#595)"
     },
     {
@@ -363,7 +394,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "129.3",
-      "order": 28,
+      "order": 30,
       "outcome": "12-cell 2027 forward PREREG frozen; mlb_board_install built (run by 2027-03-18); dry run 8 of 12 cells at 4 of 7 layers (#591)"
     },
     {
@@ -376,7 +407,7 @@
       "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "129.4",
-      "order": 29,
+      "order": 31,
       "outcome": "player_state / availability_profile / trait_reliability + NBA backfill; H-DEPTH-PAM-4 pre-registered (#593)"
     },
     {
@@ -389,12 +420,12 @@
       "why": "Operator 11-20 10:10 PT: \"a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D) listed in comprehensive detail\"",
       "source": "operator 2026-11-20 10:10 PT",
       "wave": "129.5",
-      "order": 30,
+      "order": 32,
       "outcome": "D6 from one box source (18 of 129); registry 42 -> 73 rows, 0 unregistered (#592 #598)"
     },
     {
       "id": "B-130",
-      "order": 31,
+      "order": 33,
       "status": "DONE",
       "lane": "BREADTH",
       "rank": "breadth",
@@ -404,58 +435,6 @@
       "source": "SW-9 2026-11-25",
       "wave": "129.7",
       "outcome": "NHL live feed + 3 T4NHL-ARITH cells SHADOW; nhl_inplay_install built (#596)"
-    },
-    {
-      "id": "B-116",
-      "status": "DONE",
-      "lane": "D5",
-      "rank": "PAM class 1",
-      "title": "NBA props engine stat by stat: EXP-047-C2 stat-specific usage redistribution (C1 improved points, hurt rebounds / assists / threes) (GG-2003)",
-      "measure": "D1 personnel / availability on the props arm; D5(b) class 1 in props",
-      "why": "D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.",
-      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
-      "wave": "128.2",
-      "order": 32,
-      "outcome": "one mean function c2_means; combo legs read C2; 0 prices differ on day 1 (#582)"
-    },
-    {
-      "id": "B-120",
-      "status": "DONE",
-      "lane": "DEPTH",
-      "rank": "depth",
-      "title": "NFL engine depth after the 126.5 splits (0 of 5 earned): next factor classes at play level (personnel / coverage from nflverse + Muse R7 tendencies) as splits",
-      "measure": "D5(b) NFL",
-      "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
-      "source": "SW-9 plan 2026-11-24",
-      "wave": "128.3",
-      "order": 33,
-      "outcome": "EXP-NFLPLAYLEVEL-001: 74 judged, 0 earned (ride / no bet); N24-N26 applied (#583)"
-    },
-    {
-      "id": "B-115",
-      "status": "DONE",
-      "lane": "D5",
-      "rank": "PAM class 3",
-      "title": "Run H-DEPTH-PAM-3: stability-weighted shrinkage vs EXP-047 raw means on NBA props, judged 2023-2025 (PREREG 16fcd204, GG-2004) - code + known-answer test on PR #555; run pending (operator side project, not urgent, 11-23 16:22 PT)",
-      "measure": "D5(b) class 3 NBA player level absent -> interpreted; D3 +1 challenger for EXP-047",
-      "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
-      "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
-      "wave": "128.4",
-      "order": 34,
-      "outcome": "H-DEPTH-PAM-3 SUPPORTED: D +0.00201 [+0.00184, +0.00219], 4 of 4 stats; class 3 NBA absent -> interpreted (#555)"
-    },
-    {
-      "id": "B-126",
-      "status": "DONE",
-      "lane": "DEPTH",
-      "rank": "data",
-      "wave": "128.5",
-      "title": "Muse offload: file / API families become free server cron jobs (MoneyPuck, NHL API, Savant CSVs, ...); Muse keeps browser-only and judgment work; data_offload_install on approval",
-      "measure": "D4 data layers; Muse chunks retired",
-      "why": "Operator 11-24 21:59 PT: \"let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here.\"",
-      "source": "operator 2026-11-24 21:59 PT",
-      "order": 35,
-      "outcome": "4 server scrapers built (MoneyPuck, NHL officials, NHL goalie logs, Savant); gate PASS 12 MB/day; mlb_boxscore 406 stays Muse; install awaits approval (#584 #587)"
     }
   ]
 }

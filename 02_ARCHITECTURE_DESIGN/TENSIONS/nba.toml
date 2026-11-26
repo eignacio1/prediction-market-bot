@@ -87,3 +87,13 @@ evidence = "W99.1 12_EXPLORATORY/archive_officials/results_W99_1.md: NBA referee
 pillar = "DEPTH (D5b NBA officials: interpreted, not applied)"
 relief = "a crew known before the price (R-097 / B-016) crossed with pace or foul-drawing teams that tests REAL-NOT-PRICED"
 added = "2026-11-04 (strategic window handoff sweep, Waves 81-100)"
+
+[[tension]]
+id = "NBA-T10"
+title = "PAM's archetypes are hindsight in the deep tier and only days old point-in-time; props calibration gains so far are stat shrinkage, not what a stat means"
+status = "OPEN"
+where = "PAM (qualitative_data/pam/nba/records.jsonl deep tier, all recorded_at 2026-05-28; qualitative_data/pam_pit/nba/ mass tier from W130.4); EXP-047 props arms"
+evidence = "H-DEPTH-PAM-3 SUPPORTED (W128.4) and EXP-047-S SUPPORTED (W129.2) are per-minute shrinkage results; W130.4 built the first point-in-time archetypes (469 players) and pre-registered H-DEPTH-PAM-5 on forward rows only, because every NBA season through 2025-26 has been read by C2, PAM-3 or EXP-047-S. Operator 2026-11-24 22:55 PT: 'it's not even 1/4 built out yet - it's almost common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds'"
+pillar = "DEPTH (D5b NBA PAM classification) and PROOF (no unread historical season left for NBA props tests)"
+relief = "H-DEPTH-PAM-5 judged at its n on forward 2026-27 rows; a held-out sport (NFL WR mass tier) for archetype x matchup crosses; PAM archetypes as tested splits in the props tree, scored per leaf on net"
+added = "2026-11-26 (SW-9 handoff sweep, Waves 101-130)"

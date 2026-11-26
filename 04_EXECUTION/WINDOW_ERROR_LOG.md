@@ -61,19 +61,20 @@ is most at risk of repeating. `/strategic-handoff` step 1 tallies the patterns.
 
 | Pattern | Count | Last |
 |---|---|---|
-| UNVERIFIED | 15 | W43 (11-02) / W41 (11-03) |
+| UNVERIFIED | 24 | W67 (11-25) |
 | NOTES | 4 | W27 (10-20) |
 | NO-PUSHBACK | 2 | W12 (10-13) |
 | SLICE | 2 | H2 (history) |
 | ESCALATED | 1 | W9 |
 | COLLISION | 2 | W13 (10-14) |
-| SCOPE | 2 | W28 (10-20) |
+| SCOPE | 3 | W56 (11-16) |
 | REDUCED | 2 | W29 (10-21) |
-| PROCESS | 6 | W42 (11-03) |
-| LITERAL | 3 | W31 (10-27) |
-| PRESET | 1 | W21 (10-15) |
-| REPEAT | 3 | W30 (10-26) |
+| PROCESS | 13 | W69 (11-26) |
+| LITERAL | 4 | W68 (11-25, a misread, not a literal read) |
+| PRESET | 2 | W45 (11-05) |
+| REPEAT | 5 | W55 (11-12) |
 | FOREST | 2 | W36 (10-27) |
+| DOCTRINE | 4 | W53 (11-11) - scored or framed work against "beat the market" after the operator's routing doctrine |
 
 ## W31 · 2026-10-27 17:31 PT · built on a curiosity question
 The operator asked how Polymarket differs from Kalshi out of curiosity; the window wrote a Polymarket block (91.3) and a Muse ticket (R-071) from it. Operator: "I simply asked as curiosity we're not building shit for polymarket yet". Rule: a question is not a direction; a new venue, sport or data source enters a wave only when the operator says to build it.
@@ -300,3 +301,20 @@ unbelievably valuable that's the literal inception of my "granularity index" ide
 Reverted (809de928); his words now head GRANULARITY_INDEX.md. Also: the first W129 send left the queue's top banner on Wave 128.
 Fix: when an operator message could mean "stop" or "this matters more than you're treating it", ask in one line before tearing work
 out; and the top banner is rewritten in the same edit as the NOW section.
+
+## Pattern tags, W44-W68 (added at the SW-9 handoff, 2026-11-26)
+W44 is SW-8's error, found by SW-9 (UNVERIFIED, not counted for SW-9). SW-9's 25: W45 PRESET · W46 UNVERIFIED · W47 UNVERIFIED ·
+W48 DOCTRINE · W49 PROCESS · W50 DOCTRINE · W51 UNVERIFIED · W52 DOCTRINE · W53 DOCTRINE · W54 REPEAT · W55 REPEAT · W56 SCOPE ·
+W57 UNVERIFIED · W58 PROCESS · W59 UNVERIFIED · W60 UNVERIFIED · W61 PROCESS · W62 UNVERIFIED · W63 PROCESS · W64 PROCESS ·
+W65 UNVERIFIED · W66 PROCESS · W67 UNVERIFIED · W68 LITERAL (misread) · W69 PROCESS (found at the handoff). **SW-9's pattern to fear: UNVERIFIED (9 of 25)** - mostly
+"all set" or "live" said about Muse and the box from a plan or an old read, without a fresh check. PROCESS is second (7): queue
+edits not re-sent, validators skipped, the window's own setup jamming Muse.
+
+
+### W69 — 2026-11-26 04:00 UTC (found at the SW-9 handoff) · The RUNNING SITREP's distance table went unrecomputed from Wave 110 to 130, and closed prompts for Waves 123-129 were never archived
+Two standing protocols fell away mid-window. First, the distance table at the top of the queue was refreshed every wave close (W23
+rule) until Wave 110. From Wave 111 onward the window updated CLAUDE.md, the backlog and the closed-wave rows, but not the table: the
+handoff found it still reading 11-06 figures (D6 0, B1 52 / 108). Second, the NOW section was overwritten each wave without moving
+the prompts to ACTIVE_QUEUE_ARCHIVE.md. Fixed at the handoff: the table was recomputed from box sources, and the Waves 123-130 prompts
+were recovered verbatim from git history into the archive. Pattern: PROCESS. Rule: the wave-close checklist is the skill's step 1
+(results table + archive + sitrep + distance table), run in full at every close, not only at handoff.

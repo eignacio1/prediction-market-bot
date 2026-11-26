@@ -1,10 +1,10 @@
 # Gaps by Arm — GENERATED (do not hand-edit)
 
-Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 325 of 348 are auto and unreviewed.
+Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in the archive). Regenerate: `python3 scripts/generate_gap_arm_index.py`. Arm = T-374 manual classification where one exists, else title-keyword **(auto)** — 326 of 349 are auto and unreviewed.
 
-**Counts:** Core=236 (138 OPEN), MLB=53 (19 OPEN), NBA=39 (18 OPEN), NHL=20 (9 OPEN) — 348 live gaps.
+**Counts:** Core=237 (139 OPEN), MLB=53 (19 OPEN), NBA=39 (18 OPEN), NHL=20 (9 OPEN) — 349 live gaps.
 
-## Core (236)
+## Core (237)
 
 - GG-014 — PARTIALLY RESOLVED · UNSPECIFIED: Kalshi API HTTP 429: ~50% of Order Placements Rate-Limited in Paper Mode
 - GG-020 — ACCEPTED UNCERTAINTY · UNSPECIFIED: Kalshi Taker Fee Rate (0.07) Never Verified Against Actual Transaction Receipts
@@ -74,6 +74,7 @@ Source: `GOVERNANCE_GAP_LOG.md` live entries only (resolved-class gaps live in t
 - GG-1000 — OPEN · LOW _(auto)_: PFR advanced passing is not capturable by a plain GET (Cloudflare 403); the source card says CAPTURABLE
 - GG-1001 — OPEN · LOW _(auto)_: A newly registered cron is RED against the surface budget until its first write, so its own installer refuses 
 - GG-1261 — ACCEPTED UNCERTAINTY · LOW _(auto)_: NFL venue (N13) and weather (N14) have no out-of-sample per-game points term, so their share priced cannot be 
+- GG-2013 — OPEN · MEDIUM _(auto)_: RUNTIME_REGISTRY status stays "paused" after a component is installed, so the state page and the surface count
 - GG-232 — IN PROGRESS · MEDIUM _(auto)_: ADR-0054(a) staffing gap: three named-not-staffed follow-ons (replay-harness `market_type=`, cell-unaware ledg
 - GG-243 — OPEN · LOW _(auto)_: T-number collision: "T-518" independently claimed by two unrelated tasks (TODO_NEXT.md's EXP-026 entry vs. thi
 - GG-254 — PARTIALLY RESOLVED · HIGH _(auto)_: No moneyline/categorical-outcome settlement logic exists anywhere in `src/`, for any sport; `paper_trader.py::

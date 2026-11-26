@@ -28,20 +28,19 @@ Generated 2026-11-26 by `scripts/claude_md_now.py --write` from the code at that
   - NHL: 12 shadow · 9 not built
 - Not shadow, not unbuilt: mlb_player_prop_hits / T4M-ARITH - blocked; mlb_player_prop_hits / T4M-FLOW - blocked; mlb_player_prop_hits / T4M-PROJ - active; nba_player_points / T4 - dark.
 - Kelly (execution_bands.py): 0.0 on T1, T2, T3, T4-CORR, T4-EXIT, T4M-PROJ, T4NFL-ARITH, T4NFL-FLOW, T4NHL-ARITH, T4NHL-FLOW. Non-zero on a band with an ACTIVE cell: none. Provisional non-zero values on 12 bands with no ACTIVE cell; no real capital anywhere (Hard Rule 2).
-- Open governance gaps: 184 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
+- Open governance gaps: 185 (03_DECISIONS/GOVERNANCE_GAP_LOG.md).
 <!-- NOW:END -->
 
 **Window-maintained (as of 2026-11-26, SW-9; RED in the session scan after 7 days):**
 - **In season:** NFL, NBA, NHL — game families as SHADOW arms logging every forecast, plus the ADR-0072 demo forward test with arm
   orders from the router (flat demo stakes, real fills, `kelly_fraction` 0). NBA player props log as 9 shadow cells. **MLB is idle**
   until the 2027 season; its 2026 rows are the look-back corpus.
-- **Last wave closed:** 129 (2026-11-26); **Wave 130 queued, SW-9's last** (130.1 NFL in-play live, 130.2 NBA props kept leaves place
-  demo orders, 130.3 parlays through Kalshi RFQ in demo, 130.4 PAM point-in-time archetypes from data, 130.5 every live arm probed +
-  STATE_OF_THE_BOT.md for SW-10). **D6: 18 of 129** (box d6_read 2026-11-25; the 11-26 re-read printed nothing - 130.5). Verdicts this
-  week: EXP-047-S and H-DEPTH-PAM-3 SUPPORTED (stat shrinkage on NBA props inputs - one small piece of PAM, which the operator calls "not
-  even 1/4 built out yet"); NFL in-play model vs Kalshi mid closed (CI spans 0). Edge-location program: gross effects fall below one round
-  cost on the most-watched lines; no arm clears zero after real costs yet; EXECUTION has 2 unsettled combo demo fills and no props fills.
-  Installs awaiting the operator: archive_dense, nba_combo_shadow, data_offload, nhl_inplay, mlb_board (by 2027-03-18).
+- **Last wave closed:** 130 (2026-11-26). **SW-9 handed off to SW-10**; no wave in flight, SW-10 writes Wave 131
+  (`04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md`). **D6: 18 of 129** (NBA 7, NHL 7, NFL 4, MLB 0; box d6_read 2026-11-26 03:15Z).
+  What runs, per sport, from the box: `04_EXECUTION/STATE_OF_THE_BOT.md`. New on 11-26: NFL in-play shadow (installed 02:52Z) and the
+  combo shadow + daily demo RFQ (02:53Z); props demo orders built (EXP-NBAPROPS-002, install pending). PAM: 469 NBA players with a
+  point-in-time archetype - PAM is "not even 1/4 built out yet" (operator). No arm clears zero after real costs yet; EXECUTION is the
+  weakest pillar. Installs awaiting the operator: props_arm_orders, nhl_inplay, data_offload, archive_dense, mlb_board (by 2027-03-18).
 - **Muse** (outside archive agent): reachable by Earl's message on Mondays only; the window watches it with `scripts/muse_check.py`
   (nightly in the window session) and `04_EXECUTION/MUSE_MONDAY_CHECKLIST.md` before every Monday message (W65, W66).
 

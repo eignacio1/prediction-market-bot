@@ -2344,6 +2344,18 @@ Registered by W111.4 (B-080). Limits that cap how deep the NBA index entries and
 - The two lineup-on-floor entries are excluded from router filters because tonight's lineup is not known at pricing time.
 Not a verdict on any cell; these are inputs missing for deeper splits.
 
+### GG-2013 — RUNTIME_REGISTRY status stays "paused" after a component is installed, so the state page and the surface count misreport what runs
+**Status:** OPEN · **Severity:** MEDIUM
+
+SW-9, handoff verification, 2026-11-26. `evidence_weekly_install` ran 2026-11-20 15:47Z (result: "INSTALLED: 1 evidence-weekly line(s)
+appended"; readback shows the BEGIN W121.1 block), but its RUNTIME_REGISTRY entry still reads `status = "paused"`. `nfl_inplay_install`
+ran 2026-11-26 02:52Z (exit 0) and its entry (`run_nfl_inplay_shadow.py`) is also still "paused". Only the combo install was followed by
+a registry flip (#607). STATE_OF_THE_BOT.md's "Installs pending" section and `runtime_registry.py surface` (97 live) read the registry,
+so they list installed jobs as pending and undercount live ones; `budget_read`'s "0 installed-but-unmirrored" did not catch it.
+Fix: every `*_install` task (or the window right after it) flips the entry to live in the same PR, and a box-side check compares
+installed crontab BEGIN blocks with registry status. Until then, confirm an install from its result file, not from the registry.
+Owner: SW-10 (backlog B-135).
+
 ## Gap Registration Template
 
 When a new governance process failure is discovered:

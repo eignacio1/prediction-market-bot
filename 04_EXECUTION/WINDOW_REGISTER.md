@@ -15,4 +15,5 @@ header, in every queue commit it makes and in its handoff. The incoming window t
 | SW-6 | 52 → 60 | → 2026-10-08 | `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-10-08.md` | |
 | SW-7 | 61 → 80 | 2026-10-08 → 10-19 | `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-10-19.md` | |
 | SW-8 | 81 → 100 | 2026-10-19 → 11-04 | `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md` (11-04) | error log W25-W43 |
-| **SW-9** | **101 →** | 2026-11-04 → | (at its handoff) | current; error log W44 → |
+| SW-9 | 101 → 130 | 2026-11-04 → 11-26 | `11_MEMORY_HANDOFF/STRATEGIC_WINDOW_CARRY_FORWARD_2026-11-26.md` (and `04_EXECUTION/STRATEGIC_WINDOW_CARRY_FORWARD.md` until SW-10 hands off) | error log W45-W69; review `04_EXECUTION/SW9_WINDOW_REVIEW.md` |
+| **SW-10** | **131 →** | 2026-11-26 → | (at its handoff) | current; error log W70 → |
