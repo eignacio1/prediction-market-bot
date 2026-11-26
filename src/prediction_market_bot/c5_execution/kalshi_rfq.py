@@ -25,7 +25,7 @@ DEMO_BASE = KC._KALSHI_DEMO_BASE_URL
 # Hard caps. Not configurable by env or argument: raising one is a code change reviewed in a PR.
 MAX_RFQS_PER_NIGHT = 12          # RFQs created per UTC day, counted across runs in the ledger file
 MAX_RFQS_PER_RUN = 12
-MAX_ACCEPTS_PER_RUN = 3          # demo accepts (a fill needs the maker to confirm)
+MAX_ACCEPTS_PER_RUN = 6          # demo accepts; EXP-COMBOORD-001 PREREG: judged n 400 fills / 6 a day = 67 runs, inside the season. Max demo loss 6 x $1 a day
 CONTRACTS_FP = "1.00"            # fixed demo size: one contract
 REQUEST_TIMEOUT_S = 15
 

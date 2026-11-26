@@ -30,16 +30,27 @@ POLL_S = 3.0
 POLL_TOTAL_S = 90.0
 ACCEPT_WAIT_S = 45.0
 MIN_ENGINE_SE = 0.01
+EDGE_MARGIN = 0.03            # EXP-COMBOORD-001 PREREG: accept only if engine edge on the side - fee >= this (pre-registered, not tuned)
 
 
 def enabled() -> bool:
     return os.environ.get("PM_COMBO_RFQ_DEMO", "off").strip().lower() in ("on", "1", "true")
 
 
+def teammate_points(row: dict) -> bool:
+    """Two player-points legs from one team: joint.py has the wrong sign for teammate PTS x PTS (W110.4/W113.3), so no order."""
+    teams = []
+    for l in row.get("legs") or []:
+        parts = str(l.get("ticker") or l.get("market_ticker") or "").split("-")
+        if parts and parts[0] == "KXNBAPTS" and len(parts) >= 3:
+            teams.append(parts[2][:3])
+    return len(teams) != len(set(teams))
+
+
 def eligible(row: dict) -> bool:
-    """Fully priced, resolved, tight MC error, no flags (same filter the combo pre-registration scores on)."""
+    """Fully priced, resolved, tight MC error, no flags (same filter the combo pre-registration scores on), and not a known-wrong joint."""
     return (row.get("engine_p") is not None and row.get("resolved") and (row.get("mc_se") or 1) <= MIN_ENGINE_SE
-            and not row.get("flags") and not row.get("legs_unpriced"))
+            and not row.get("flags") and not row.get("legs_unpriced") and not teammate_points(row))
 
 
 def pick_sample(rows: list, k: int) -> list:
@@ -83,14 +94,28 @@ def quote_metrics(q: dict, engine_p: float, p_naive) -> dict:
     return out
 
 
-def accept_side(m: dict, engine_p: float):
-    """The side whose quoted price is furthest below the engine's fair price (descriptive pick; demo size, Kelly 0)."""
+def _fee(p: float) -> float:
+    import math
+    return math.ceil(0.07 * p * (1 - p) * 1e4) / 1e4
+
+
+def accept_decision(m: dict, engine_p: float):
+    """(side, reason). The larger net edge (engine fair - price - fee) side, only if it clears EDGE_MARGIN (EXP-COMBOORD-001)."""
     cands = []
     if m.get("buy_yes_price") is not None:
-        cands.append((engine_p - m["buy_yes_price"], "yes"))
+        cands.append((engine_p - m["buy_yes_price"] - _fee(m["buy_yes_price"]), "yes"))
     if m.get("buy_no_price") is not None:
-        cands.append(((1 - engine_p) - m["buy_no_price"], "no"))
-    return max(cands)[1] if cands else None
+        cands.append(((1 - engine_p) - m["buy_no_price"] - _fee(m["buy_no_price"]), "no"))
+    if not cands:
+        return None, "no_price"
+    edge, side = max(cands)
+    if edge >= EDGE_MARGIN:
+        return side, "ok"
+    return None, "one_sided_negative" if edge < 0 and len(cands) == 1 else "edge_below_threshold"
+
+
+def accept_side(m: dict, engine_p: float):
+    return accept_decision(m, engine_p)[0]
 
 
 def run(client, rows: list, combos: dict, now: datetime, out_dir: Path, sleep=time.sleep, clock=time.monotonic) -> dict:
@@ -106,7 +131,7 @@ def run(client, rows: list, combos: dict, now: datetime, out_dir: Path, sleep=ti
     budget = min(nightly_remaining(ledger, day), R.MAX_RFQS_PER_RUN)
     sample = pick_sample(rows, budget)
     summary = dict(day=day, candidates=sum(eligible(r) for r in rows), sampled=len(sample), nightly_budget=budget,
-                   created=0, quoted=0, no_quote=0, accepted=0, executed=0, not_listed_on_demo=0, none_reason=None)
+                   created=0, quoted=0, no_quote=0, accepted=0, executed=0, not_listed_on_demo=0, none_reason=None, skips={})
     live: dict = {}
     for r in sample:
         t = r["market_ticker"]
@@ -157,11 +182,18 @@ def run(client, rows: list, combos: dict, now: datetime, out_dir: Path, sleep=ti
         m = quote_metrics(v["quote"], r["engine_p"], r["p_product_of_legs"])
         rec = dict(event="quote", rfq_id=rid, market_ticker=r["market_ticker"], quote_id=v["quote"].get("id"), time_to_quote_s=round(v["tq"], 1),
                    engine_p=r["engine_p"], p_product_of_legs=r["p_product_of_legs"], n_legs=r["n_legs"], **m)
-        side = accept_side(m, r["engine_p"])
+        side, why = accept_decision(m, r["engine_p"])
         rec["accept_possible"] = side is not None
-        if side and client.sent["accept"] < R.MAX_ACCEPTS_PER_RUN and v["quote"].get("id"):
+        if side and client.sent["accept"] >= R.MAX_ACCEPTS_PER_RUN:
+            side, why = None, "cap"
+        if not side:
+            summary["skips"][why] = summary["skips"].get(why, 0) + 1
+            rec["skip_reason"] = why
+        if side and v["quote"].get("id"):
             ac = client.accept(rid, v["quote"]["id"], side)
             rec.update(accepted_side=side, accept_resp=ac)
+            if not ac["ok"]:
+                summary["skips"]["accept_failed"] = summary["skips"].get("accept_failed", 0) + 1
             if ac["ok"]:
                 summary["accepted"] += 1
                 end = clock() + ACCEPT_WAIT_S
