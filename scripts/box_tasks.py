@@ -110,6 +110,10 @@ TASKS: dict[str, str] = {
     "nba_engine_props_shadow_install": f"{PY} scripts/nba_engine_props_shadow_install.py install",
     "nba_engine_props_shadow_readback": f"{PY} scripts/nba_engine_props_shadow_install.py readback",
     "nba_engine_props_shadow_uninstall": f"{PY} scripts/nba_engine_props_shadow_install.py uninstall",
+    "props_arm_orders_install": f"{PY} scripts/props_arm_orders_install.py install",
+    "props_arm_orders_readback": f"{PY} scripts/props_arm_orders_install.py readback",
+    "props_arm_orders_uninstall": f"{PY} scripts/props_arm_orders_install.py uninstall",
+    "props_arm_orders_dry": "export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && PROPS_ARM_ORDERS=dry " + f"{PY} scripts/run_props_arm_orders.py",
     # W127.3 Part C (B-024): NBA same-game combo shadow cron. NOT RUN until the operator approves nba_combo_shadow_install by name.
     "nba_combo_shadow_install": f"{PY} scripts/nba_combo_shadow_install.py install",
     "nba_combo_shadow_readback": f"{PY} scripts/nba_combo_shadow_install.py readback",

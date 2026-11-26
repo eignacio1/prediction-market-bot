@@ -1446,6 +1446,20 @@ schedule = "39 * * * *"
 mirrors = ["deploy/cron.nba_engine_props_shadow"]
 command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nba_engine_props_shadow\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nba_engine_props_shadow.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
 [[component]]
+key = "cron|47 * * * *|scripts/run_props_arm_orders.py"
+kind = "cron"
+source = "deploy/cron.props_arm_orders"
+status = "paused"
+reviewed = true
+purpose = "EXP-NBAPROPS-002 / W130.2: flat $1 DEMO orders for the 14 kept NBA props leaves (ADR-0072 placement, kelly 0, demo host only, own caps $51 per event / $408 per day, every skip counted). PAUSED until the operator approves the named install task props_arm_orders_install; the approval is the activation."
+pillar = "EXECUTION"
+writes = ["logs/props_arm_orders.log", "logs/props_arm_orders/orders.jsonl"]
+alarm = "staleness: SURFACE BUDGET goes RED if logs/props_arm_orders.log is older than 3h while NBA has games in window; every skip reason is a counted number in scripts/props_arm_orders_read.py"
+max_age_h = "3"
+schedule = "47 * * * *"
+mirrors = ["deploy/cron.props_arm_orders"]
+command = "( flock -n 9 || { exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PROPS_ARM_ORDERS=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_props_arm_orders.py >> logs/props_arm_orders.log 2>&1 ) 9>/tmp/props_arm_orders.lock"
+[[component]]
 key = "cron|29 13 * * *|scripts/run_nhl_event_store_refresh.py"
 kind = "cron"
 source = "deploy/cron.nhl_event_store"

@@ -1,0 +1,7 @@
+# BEGIN W130.2 PROPS ARM ORDERS
+# EXP-NBAPROPS-002 / W130.2 -- flat DEMO orders for the 14 kept NBA props leaves (pre-registered 12_EXPLORATORY/nba_props_orders/PREREG.md).
+# PAUSED in the registry until the operator approves the named install task `props_arm_orders_install`. DEMO host only (the code refuses
+# any other), flat $1.00 stake, kelly 0, ADR-0072 placement (book anchor, 60 s cancel). Hourly at :47, after the :39 props shadow run has
+# logged its rows. PROPS_ARM_ORDERS=on is set on THIS line only; deploy/demo_fill.env is untouched. TURN OFF = props_arm_orders_uninstall.
+47 * * * * ( flock -n 9 || { printf '{"ts":"\%s","runner":"props_arm_orders","event":"SKIP_LOCKED","reason":"previous run still holding /tmp/props_arm_orders.lock"}\n' "$(date -u +\%FT\%TZ)" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && export $(grep -v '^#' .env | xargs) && export $(grep -sv '^#' deploy/demo_fill.env | xargs) && BOT_ENV=paper PROPS_ARM_ORDERS=on PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_props_arm_orders.py >> logs/props_arm_orders.log 2>&1 ) 9>/tmp/props_arm_orders.lock
+# END W130.2 PROPS ARM ORDERS
