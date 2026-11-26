@@ -4,7 +4,8 @@ Every Wave 129 block tells the terminal to read this file first. Text below is t
 
 ```
 COMMON RULES - WAVE 129 (DEPTH INTO THE LIVE PATH: NHL DEPTH ON, A SHRUNK-MEAN PROPS CHALLENGER, PAM STATE TABLES; MLB 2027 FROZEN; MEASUREMENT TRUTH BEFORE THE HANDOFF) - SW-9 (read first; they bind this block)
-- THIS WAVE (five blocks, MODEL: Sonnet for all five). Operator 2026-11-24 22:47 PT: "128 is finished - confirm receipt then give me 5
+- THIS WAVE (seven blocks, MODEL: Sonnet for all; 129.6 NFL in-play feed and 129.7 NHL in-play feed added 2026-11-25 16:09 PT
+  after 129.1-129.5 started: "Give me two more blocks to send"). Operator 2026-11-24 22:47 PT: "128 is finished - confirm receipt then give me 5
   to send for tomorrow." Wave 128: NHL goalie / referee / availability splits built behind PM_NHL_DEPTH (off; judging needs ~370 games);
   one NBA player-mean function, combo legs on C2; NFL play-level 74 judged, 0 earned (ride / no bet), N24-N26 applied; H-DEPTH-PAM-3
   SUPPORTED (D +0.00201 [+0.00184, +0.00219], 4 of 4 stats); 4 server scrapers built for Muse's file families (install awaits approval).
@@ -289,6 +290,10 @@ COMMON RULES - WAVE 129 (DEPTH INTO THE LIVE PATH: NHL DEPTH ON, A SHRUNK-MEAN P
   row (rebase before pushing; 129.5 merges last if both are open). decision_trees/shadow_route.py is 129.1's; 129.2 registers its
   candidate through its own module or rebases onto 129.1. scripts/box_tasks.py is add-only for everyone. A new allowlisted READ-ONLY
   box task is allowed.
+  129.6 = the NFL live feed and in-play pricer (new modules under c1_signal_ingestion/ and nfl_engine/, add-only), its runner, install
+  and RUNTIME_REGISTRY entry, 12_EXPLORATORY/nfl_inplay/; 129.7 = the NHL live feed and in-play pricer (new modules under
+  c1_signal_ingestion/ and nhl_engine/, add-only, never 129.1's depth files), its runner, install and RUNTIME_REGISTRY entry,
+  12_EXPLORATORY/nhl_inplay/. RUNTIME_REGISTRY.toml is add-only for everyone (rebase before pushing).
 - ALL CODE lands through a PR with CI green - src/, scripts/, tests/ AND 12_EXPLORATORY/*.py. Only results (.md/.json/.csv) may be
   pushed docs-only.
 - PERMISSIONS (revised 2026-10-13): do NOT edit .claude/settings*.json. If a command is refused: record the exact command and

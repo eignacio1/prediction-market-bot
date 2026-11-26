@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 129 READY TO PASTE - five blocks (Sonnet): 129.1 NHL depth on in shadow, 129.2 the PAM-3 x C2 props challenger, 129.3 MLB 2027 frozen before its first row, 129.4 PAM point-in-time state tables, 129.5 one D6 number + hypothesis registry. Wave 128 closed. Three installs await approval. Window handoff after Wave 130.**
+> **▶ WAVE 129 READY TO PASTE - seven blocks (Sonnet): 129.1 NHL depth on in shadow, 129.2 the PAM-3 x C2 props challenger, 129.3 MLB 2027 frozen before its first row, 129.4 PAM point-in-time state tables, 129.5 one D6 number + hypothesis registry, 129.6 NFL in-play feed, 129.7 NHL in-play feed (6-7 added 11-25 16:09 PT). Wave 128 closed. Three installs await approval. Window handoff after Wave 130.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,7 +95,7 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 129 · WRITTEN 2026-11-25 ~07:30 UTC (11-24 23:30 PT) · SW-9 · five blocks · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 129 · WRITTEN 2026-11-25 ~07:30 UTC (11-24 23:30 PT) · SW-9 · seven blocks (129.6 / 129.7 added 11-25 16:09 PT) · MODEL: Sonnet · paste each into its own terminal
 
 **Depth into the live path, and one D6 number before the handoff.** Wave 128 landed all five blocks:
 - **NHL:** goalie, referee and availability splits are built behind `PM_NHL_DEPTH`, which is off. Judging needs about 370 games.
@@ -115,11 +115,13 @@ The window hands off to SW-10 after Wave 130.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 129.1 | DEPTH / NHL | NHL depth switched on in shadow: Muse snapshots fetched at a pinned SHA, expected starters from the NHL event store, `PM_NHL_DEPTH` on after the surface check, leaves recounted | Sonnet | ⬜ | |
+| 129.1 | DEPTH / NHL | NHL depth switched on in shadow: Muse snapshots fetched at a pinned SHA, expected starters from the NHL event store, `PM_NHL_DEPTH` on after the surface check, leaves recounted | Sonnet | 🟡 PR open (W129.5): D6 from one source, DISTANCE_TABLE_W129.md, 73 registry rows (42 before), 0 unregistered PREREG | |
 | 129.2 | DEPTH / NBA | EXP-047 shrunk-mean challenger (PAM-3 shrinkage × C2 usage shift): pre-registered on a population neither test read, built, logging in shadow beside C2 | Sonnet | ⬜ | |
 | 129.3 | PROOF / MLB | MLB 2027 forward pre-registration for the 12 game cells (frozen before the first row); daily-board install built with an arm-date alarm (GG-1957); a full 2026 slate dry-run through all seven layers | Sonnet | ⬜ | |
 | 129.4 | DEPTH / PAM | PAM point-in-time state tables: `player_state`, `availability_profile`, `trait_reliability` (NBA backfill from the event store); H-DEPTH-PAM-4 (role security) pre-registered, not run | Sonnet | ⬜ | |
 | 129.5 | PROOF / measurement | One D6 number (box 18 / 117 vs repo 0 / 129, reconciled); the distance table recomputed for the handoff; the hypothesis registry backfilled (B-110) with a check that flags unregistered pre-registrations | Sonnet | ⬜ | |
+| 129.6 | BREADTH / NFL | NFL in-play: a free live game-state feed for the T4NFL cells (16 registered, none can log), replayed on recorded games, shadow behind PM_NFL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ⬜ | |
+| 129.7 | BREADTH / NHL | NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ⬜ | |
 
 - **Pushback:**
   - Only 129.2 can issue a verdict this wave, and only if an unread historical population exists for it.
@@ -288,6 +290,64 @@ that edits HYPOTHESIS_DOCTRINE.md, rebasing onto it.
 Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D6 sources 2 -> 1; registry rows before -> after; unregistered
 pre-registrations found.
 END OF BLOCK 129.5
+```
+
+### 129.6 - NFL IN-PLAY: A FREE LIVE GAME-STATE FEED FOR THE T4NFL CELLS · MODEL: Sonnet
+
+```
+WAVE 129 - BLOCK 129.6 - BREADTH: NFL IN-PLAY CELLS GET A LIVE GAME-STATE FEED AND LOG IN SHADOW - MODEL: Sonnet
+PURPOSE: BREADTH B1 / B3 (NFL in-play cells logging; T4NFL-ARITH / T4NFL-FLOW bands with a logging cell, 0 -> n). Wave 122.3: 16
+registered NFL cells are in-play and none can log, because the bot has no NFL live feed. Horizon doctrine (ADR-0068): in-play trees are
+shallow and must be paid for in measured speed, so the feed's latency is measured, not assumed.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
+bind this block. Then read the W122.3 handoff, execution_bands.py (T4NFL-ARITH / T4NFL-FLOW), the NFL in-play cells in
+c5_execution/market_type_registry.py, the MLB T4 live loop (run_t4_mlb_live.py and its staleness / contamination checks, GG-085, GG-163:
+ESPN once 403'd the box for 43 h and nothing alarmed) and the NHL / NBA shadow runners as the logging pattern.
+Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_6.md. Added to Wave 129 after it started (operator 11-25 16:09 PT); 129.1-129.5
+are running: stay inside your ownership line in COMMON_RULES_W129 and rebase before every push.
+
+PART A - the feed: a free, server-reachable NFL live source (prove it from the box with a read-only task; never get past a bot check),
+point-in-time game state per play (score, quarter, clock, down / distance / yard line, possession, timeouts) with fetch time recorded, a
+staleness check, and a write-recency alarm (no rows while a game is live = FAIL in health.log). Known-answer test on a saved game.
+PART B - the in-play pricer for the T4NFL cells from the NFL engine's pre-game price updated by game state (the arithmetic band first),
+replayed over recorded 2026 games (no waiting for a Sunday): per cell, rows logged, Brier vs the Kalshi in-play price at the same
+timestamp where the price archive has it, and feed latency vs the market's move.
+PART C - shadow logging behind PM_NFL_INPLAY (no orders) with a RUNTIME_REGISTRY entry and an install task built, NOT run: its approval
+line under `operator decisions:` with the budget gate result.
+
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B1 (NFL in-play cells able to log, 0 -> n), B3 (T4NFL bands), feed
+latency measured.
+END OF BLOCK 129.6
+```
+
+### 129.7 - NHL IN-PLAY: A FREE LIVE GAME-STATE FEED FOR THE T4NHL CELLS · MODEL: Sonnet
+
+```
+WAVE 129 - BLOCK 129.7 - BREADTH: NHL IN-PLAY CELLS GET A LIVE GAME-STATE FEED AND LOG IN SHADOW - MODEL: Sonnet
+PURPOSE: BREADTH B1 / B3 (NHL in-play cells logging; T4NHL-ARITH / T4NHL-FLOW bands with a logging cell, 0 -> n). The NHL engine prices
+the pre-game board; no NHL in-play cell logs. Horizon doctrine (ADR-0068): in-play trees are shallow and must be paid for in measured
+speed, so the feed's latency is measured, not assumed.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
+bind this block. Then read execution_bands.py (T4NHL-ARITH / T4NHL-FLOW), the NHL in-play cells in c5_execution/market_type_registry.py,
+the NHL event store (it already reads the NHL's own API), the MLB T4 live loop (run_t4_mlb_live.py and its staleness / contamination
+checks, GG-085, GG-163) and the NHL shadow runner as the logging pattern. NHL domains carry Content-Signal ai-train=no: we fetch data,
+we do not train AI on it. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_7.md. Added to Wave 129 after it started (operator 11-25 16:09 PT); 129.1-129.5
+are running (129.1 owns the NHL depth files in nhl_engine/): stay inside your ownership line in COMMON_RULES_W129 and rebase before every push.
+
+PART A - the feed: the NHL's free live endpoints (play-by-play / boxscore), proven from the box with a read-only task, point-in-time game
+state per event (score, period, clock, strength / power play, empty net, shots) with fetch time recorded, a staleness check, and a
+write-recency alarm (no rows while a game is live = FAIL in health.log). Known-answer test on a saved game.
+PART B - the in-play pricer for the T4NHL cells from the NHL engine's pre-game price updated by game state (the arithmetic band first:
+score, time left, strength, empty net), replayed over recorded 2026-27 games so far (no waiting for tonight): per cell, rows logged,
+Brier vs the Kalshi in-play price at the same timestamp where the price archive has it, and feed latency vs the market's move.
+PART C - shadow logging behind PM_NHL_INPLAY (no orders) with a RUNTIME_REGISTRY entry and an install task built, NOT run: its approval
+line under `operator decisions:` with the budget gate result.
+
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B1 (NHL in-play cells able to log, 0 -> n), B3 (T4NHL bands), feed
+latency measured.
+END OF BLOCK 129.7
 ```
 
 ## Sequencing track

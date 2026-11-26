@@ -3728,3 +3728,8 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
   common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds".
 - The 23:05 PT entry above (no PAM work) is withdrawn: d5f4736f reverted by 809de928. W129 stands as written (129.2 PAM-3 x C2 challenger,
   129.4 PAM state tables). Quote added to GRANULARITY_INDEX.md as its origin. Window error W68.
+
+### 2026-11-25 16:15 PT — SW-9: Wave 129 grows to seven blocks (129.6 NFL in-play feed, 129.7 NHL in-play feed)
+- Operator 16:09 PT: "Give me two more blocks to send - reset hits in less than 2 hours so I want to have a full session done before then".
+- 129.6 / 129.7: free live game-state feeds for the NFL and NHL in-play cells (none can log today), replayed on recorded games, shadow only
+  behind PM_NFL_INPLAY / PM_NHL_INPLAY, installs built not run. Ownership added to COMMON_RULES_W129 (add-only, disjoint from 129.1-129.5).

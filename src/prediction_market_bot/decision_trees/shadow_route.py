@@ -185,8 +185,9 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
             if name == "nfl_splits":  # W126.5: tag only; the arm is router v2's, the split leaves are logged, never acted on
                 rec.update(split_leaves=props or None, split_applied=False)
             if name == "nhl_depth":  # W128.1: tag only; the arm is nhl_v2's, the leaves are logged (None = no Muse data: abstain), never acted on
-                from prediction_market_bot.decision_trees.filters.nhl_depth import leaves_for_row
-                rec.update(split_leaves=leaves_for_row(row), split_applied=False)
+                from prediction_market_bot.decision_trees.filters.nhl_depth import depth_for_row
+                _d = depth_for_row(row)  # W129.1: (leaves, expected_starters) from the event store prior + Muse; None = nothing knows the game
+                rec.update(split_leaves=_d[0] if _d else None, expected_starters=_d[1] if _d else None, split_applied=False)
             if name == "nfl_playlevel":  # W128.3: tag only; the arm is router v2's, the cross leaves are logged, never acted on
                 rec.update(playlevel_leaves=props or None, playlevel_applied=False)
             if name == "nba_props":  # W121.2: which splits fired and whether they are BH-earned, and the leaves that were logged only

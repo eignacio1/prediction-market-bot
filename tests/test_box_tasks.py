@@ -225,3 +225,10 @@ def test_health_rerun_runs_the_cron_line_and_prints_the_run(tmp_path):
     out = subprocess.run(cmd, shell=True, cwd=tmp_path, capture_output=True, text=True).stdout
     assert "[WARN] disk 85% used" in out and "HEALTHY: 0 faults" in out and "old" not in out and "[OK]" not in out
     assert (tmp_path / "logs" / "health.log").read_text().count("=== VPS Health Check") == 2  # appended, like the cron line
+
+
+def test_nfl_live_feed_probe_is_allowlisted_read_only():
+    c = bt.TASKS["nfl_live_feed_probe"]
+    assert c.endswith("scripts/nfl_live_feed_probe.py") and ">" not in c
+    src = open("scripts/nfl_live_feed_probe.py").read()
+    assert "open(" not in src and "write_text" not in src   # the probe writes nothing
