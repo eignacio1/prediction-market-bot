@@ -1,0 +1,7 @@
+# BEGIN W129.7 NHL INPLAY SHADOW
+# W129.7 -- NHL in-play shadow pricer (T4NHL-ARITH): live game state from the NHL public API priced against Kalshi's open NHL game / spread / total markets.
+# PAUSED in the registry until the operator approves the named install task `nhl_inplay_install`.
+# Every 2 minutes in the NHL game window (17:00-06:59 UTC); a pass with no live game exits in one request. Gated by PM_NHL_INPLAY=1.
+# Writes data/shadow/nhl_inplay/ and logs/nhl_inplay.log only. No order, position, fill, stake or kelly.
+*/2 17-23,0-6 * * * ( flock -n 9 || { printf '{"ts":"\%s","runner":"nhl_inplay_shadow","event":"SKIP_LOCKED","reason":"previous run still holding /tmp/nhl_inplay_shadow.lock"}\n' "$(date -u +\%FT\%TZ)" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && PM_NHL_INPLAY=1 BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/nhl_inplay_shadow.py >> logs/nhl_inplay.log 2>&1 ) 9>/tmp/nhl_inplay_shadow.lock
+# END W129.7 NHL INPLAY SHADOW

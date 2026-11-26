@@ -19,6 +19,7 @@
 #   8  deploy truth (scripts/ops/deploy_truth.py): failed deploy / stale pending restart / stale service code
 #   9  Kalshi DEMO API reachable (read-only GET, 2 tries)
 #  10  logs/ writable, disk < 90%
+#  13  NHL in-play write recency (W129.7): FAIL when a live game has no row written
 #  10b disk growth (W118.4): WARN when the 7-day growth reaches 90% within 14 days
 #  11  demo-fill stall (W109.6): WARN when 0 demo orders in 24h while shadow arms logged rows
 #
@@ -204,6 +205,18 @@ if MB="$(cd "$PROJ" && PYTHONPATH="$PROJ/src:$PROJ/scripts" "$PYTHON" scripts/ml
 else
     while IFS= read -r l; do case "$l" in
         FAIL*) fail "${l#FAIL }" ;; WARN*) warn "${l#WARN }" ;; *) pass "${l#PASS }" ;; esac; done <<< "$MB"
+fi
+
+# 13. NHL in-play write recency (W129.7): a live NHL game with no row written = FAIL (a 200 from the feed proves nothing, GG-163)
+if [ -f "$PROJ/data/shadow/nhl_inplay/pass_log.jsonl" ]; then
+    if NH="$(cd "$PROJ" && PYTHONPATH="$PROJ/src:$PROJ" "$PYTHON" scripts/nhl_inplay_shadow.py --health 2>&1)"; then
+        case "$NH" in
+            FAIL*) fail "nhl in-play: ${NH#FAIL: }" ;;
+            *) pass "nhl in-play: ${NH#*: }" ;;
+        esac
+    else
+        warn "nhl in-play health check errored: $(echo "$NH" | tail -1)"
+    fi
 fi
 
 echo ""

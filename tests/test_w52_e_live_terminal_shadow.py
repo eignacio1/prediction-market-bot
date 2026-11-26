@@ -75,7 +75,7 @@ def test_real_registry_shadow_cells_all_appear(tmp_path, monkeypatch):
     got = {(c["market_type"], c["band"]) for c in wd._shadow(NOW)["cells"]}
     assert want and want <= got
     nhl = {k for k in want if k[0].startswith("NHL_")}
-    assert len(nhl) == 9                                      # 52.A flip
+    assert len(nhl) == 12                                     # 52.A flip (9) + W129.7 T4NHL-ARITH in-play (3)
 
 
 def test_frozen_label_shows_true_age():

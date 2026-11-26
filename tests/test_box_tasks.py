@@ -43,7 +43,7 @@ def test_only_capture_install_can_change_the_box():
                        "nba_engine_cron_install", "nba_engine_cron_uninstall",
                        "nba_engine_v3_cron_install", "nba_engine_v3_cron_uninstall", "nba_engine_catchup_install", "nba_engine_catchup_uninstall", "picks_sheet_cron_install", "picks_sheet_cron_uninstall",
                        "news_burst_capture_install", "news_burst_capture_uninstall", "t3_lock_stagger_install", "t3_lock_stagger_uninstall", "ride_board_install",
-                       "nba_engine_props_shadow_install", "nba_engine_props_shadow_uninstall", "nba_combo_shadow_install", "nba_combo_shadow_uninstall", "nhl_event_store_install", "nhl_event_store_uninstall", "disk_retention_install", "disk_retention_uninstall", "archive_dense_install", "archive_dense_uninstall", "mlb_board_install", "mlb_board_uninstall", "data_offload_install", "data_offload_uninstall", "evidence_weekly_install", "evidence_weekly_uninstall",
+                       "nba_engine_props_shadow_install", "nba_engine_props_shadow_uninstall", "nba_combo_shadow_install", "nba_combo_shadow_uninstall", "nhl_event_store_install", "nhl_event_store_uninstall", "nhl_inplay_install", "nhl_inplay_uninstall", "disk_retention_install", "disk_retention_uninstall", "archive_dense_install", "archive_dense_uninstall", "mlb_board_install", "mlb_board_uninstall", "data_offload_install", "data_offload_uninstall", "evidence_weekly_install", "evidence_weekly_uninstall",
                        "install_batch_w99_install", "install_batch_w99_uninstall", "dashboard_memmax_install"}
     import re
     for name, c in bt.TASKS.items():      # the only redirections allowed are stderr ones; nothing writes a file

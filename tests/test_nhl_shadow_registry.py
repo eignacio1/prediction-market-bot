@@ -20,7 +20,7 @@ def test_nhl_pregame_cells_shadow_cite_exp036():
 def test_nhl_non_pregame_bands_untouched():
     for mt in _NHL:
         for b in ExecutionBand:
-            if b in _PREGAME:
+            if b in _PREGAME or b is ExecutionBand.T4NHL_ARITH:  # W129.7: in-play ARITH is SHADOW (EXP-NHLINPLAY-001)
                 continue
             try:
                 c = get_cell(mt, b)

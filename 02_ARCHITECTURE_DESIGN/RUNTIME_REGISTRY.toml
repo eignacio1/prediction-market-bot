@@ -1586,3 +1586,18 @@ max_age_h = "7"
 schedule = "10 14,17,20,23 * 3-10 *"
 mirrors = ["deploy/cron.mlb_board"]
 command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+
+[[component]]
+key = "cron|*/2 17-23,0-6 * * *|scripts/nhl_inplay_shadow.py"
+kind = "cron"
+source = "deploy/cron.nhl_inplay"
+status = "paused"
+reviewed = true
+purpose = "W129.7: NHL in-play shadow pricer (T4NHL-ARITH). Polls the NHL public live feed every 2 minutes in the game window, prices the open Kalshi NHL game / spread / total markets from the pre-game engine updated by game state, and logs shadow rows with feed latency and state-to-quote age. Gated by PM_NHL_INPLAY. No order, position, fill, stake or kelly. PAUSED until the operator approves the named install task nhl_inplay_install."
+pillar = "BREADTH"
+writes = ["logs/nhl_inplay.log", "data/shadow/nhl_inplay/"]
+alarm = "write recency: deploy/healthcheck.sh item 13 FAILs when a live NHL game has no row written for 10 minutes (scripts/nhl_inplay_shadow.py --health); SURFACE BUDGET goes RED if logs/nhl_inplay.log is older than 30h once installed"
+max_age_h = "30"
+schedule = "*/2 17-23,0-6 * * *"
+mirrors = ["deploy/cron.nhl_inplay"]
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_inplay_shadow\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_inplay_shadow.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && PM_NHL_INPLAY=1 BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"

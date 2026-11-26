@@ -1,0 +1,276 @@
+{
+ "n_games": 231,
+ "n_rows": 4851,
+ "cells": {
+  "NHL_GAME_TOTAL": {
+   "P1_10m_in": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.2246,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.0152,
+    "delta_ci95": [
+     -0.0324,
+     0.0007
+    ]
+   },
+   "P1_end": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.185,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.0549,
+    "delta_ci95": [
+     -0.0738,
+     -0.0342
+    ]
+   },
+   "P2_10m_in": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1479,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.092,
+    "delta_ci95": [
+     -0.1116,
+     -0.0685
+    ]
+   },
+   "P2_end": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1186,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.1213,
+    "delta_ci95": [
+     -0.1452,
+     -0.0951
+    ]
+   },
+   "P3_10m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0951,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.1447,
+    "delta_ci95": [
+     -0.1696,
+     -0.1175
+    ]
+   },
+   "P3_2m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.061,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.1789,
+    "delta_ci95": [
+     -0.2037,
+     -0.1524
+    ]
+   },
+   "P3_5m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0795,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.1604,
+    "delta_ci95": [
+     -0.1882,
+     -0.1302
+    ]
+   },
+   "ALL": {
+    "rows": 1617,
+    "games": 231,
+    "brier_inplay": 0.1302,
+    "brier_pregame_only": 0.2399,
+    "delta": -0.1096,
+    "delta_ci95": [
+     -0.1279,
+     -0.0906
+    ]
+   }
+  },
+  "NHL_MONEYLINE": {
+   "P1_10m_in": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.2227,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.0135,
+    "delta_ci95": [
+     -0.0294,
+     0.0026
+    ]
+   },
+   "P1_end": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1986,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.0376,
+    "delta_ci95": [
+     -0.0599,
+     -0.0147
+    ]
+   },
+   "P2_10m_in": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1473,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.0889,
+    "delta_ci95": [
+     -0.111,
+     -0.0672
+    ]
+   },
+   "P2_end": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1203,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.1159,
+    "delta_ci95": [
+     -0.141,
+     -0.0889
+    ]
+   },
+   "P3_10m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0985,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.1377,
+    "delta_ci95": [
+     -0.1644,
+     -0.1105
+    ]
+   },
+   "P3_2m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0703,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.1659,
+    "delta_ci95": [
+     -0.1894,
+     -0.1424
+    ]
+   },
+   "P3_5m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0791,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.1571,
+    "delta_ci95": [
+     -0.1834,
+     -0.1301
+    ]
+   },
+   "ALL": {
+    "rows": 1617,
+    "games": 231,
+    "brier_inplay": 0.1338,
+    "brier_pregame_only": 0.2362,
+    "delta": -0.1024,
+    "delta_ci95": [
+     -0.1208,
+     -0.0833
+    ]
+   }
+  },
+  "NHL_PUCK_LINE": {
+   "P1_10m_in": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1874,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.0222,
+    "delta_ci95": [
+     -0.0358,
+     -0.0091
+    ]
+   },
+   "P1_end": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1721,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.0374,
+    "delta_ci95": [
+     -0.0566,
+     -0.018
+    ]
+   },
+   "P2_10m_in": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.145,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.0645,
+    "delta_ci95": [
+     -0.0902,
+     -0.0399
+    ]
+   },
+   "P2_end": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.14,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.0695,
+    "delta_ci95": [
+     -0.0988,
+     -0.037
+    ]
+   },
+   "P3_10m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.1193,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.0902,
+    "delta_ci95": [
+     -0.1209,
+     -0.0601
+    ]
+   },
+   "P3_2m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0814,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.1281,
+    "delta_ci95": [
+     -0.1573,
+     -0.0974
+    ]
+   },
+   "P3_5m_left": {
+    "rows": 231,
+    "games": 231,
+    "brier_inplay": 0.0977,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.1119,
+    "delta_ci95": [
+     -0.1412,
+     -0.079
+    ]
+   },
+   "ALL": {
+    "rows": 1617,
+    "games": 231,
+    "brier_inplay": 0.1347,
+    "brier_pregame_only": 0.2095,
+    "delta": -0.0748,
+    "delta_ci95": [
+     -0.0955,
+     -0.0548
+    ]
+   }
+  }
+ }
+}

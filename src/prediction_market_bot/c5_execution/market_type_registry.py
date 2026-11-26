@@ -1076,6 +1076,15 @@ for _mt, _bd in _EXP036_NHL_SHADOW_CELLS:
     promote_cell_status(_mt, _bd, CellStatus.SHADOW, superseding_reference="EXP-036")
 
 
+# --- EXP-NHLINPLAY-001 / W129.7: NHL in-play arithmetic SHADOW cells (T4NHL-ARITH) ---
+# Code-ready, not yet logging: rows start only when the operator approves the named install task nhl_inplay_install
+# (RUNTIME_REGISTRY entry paused until then); gated by PM_NHL_INPLAY. SHADOW is evaluate-and-log: no order, position, fill,
+# stake or kelly_fraction (tests/test_nhl_shadow_safety.py covers scripts/nhl_inplay_shadow.py). T4NHL-FLOW is not built.
+# Pre-registration: 05_RESEARCH_EXPERIMENTS/EXP-NHLINPLAY-001_PREREGISTRATION_2026-11-25.md.
+for _mt in (MarketType.NHL_MONEYLINE, MarketType.NHL_PUCK_LINE, MarketType.NHL_GAME_TOTAL):
+    promote_cell_status(_mt, ExecutionBand.T4NHL_ARITH, CellStatus.SHADOW, superseding_reference="EXP-NHLINPLAY-001")
+
+
 # --- EXP-037 / T-608 / W63.1 (T-763): MLB pre-game game-market SHADOW cells ---
 # Records reality, not a promotion: cron (run_mlb_pregame_shadow.py, T1 7 */6, T2 12 *, T3 3,13,..)
 # already evaluates these twelve cells at kelly_fraction 0 and banks rows in
