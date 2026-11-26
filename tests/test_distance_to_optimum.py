@@ -286,3 +286,51 @@ def test_b1_counts_the_two_nfl_game_total_cells_as_logging():
     nfl = [c for c in cells if c[0] == "NFL_GAME_TOTAL" and c[1] in ("T1", "T2")]
     assert nfl and all(c[2] == "shadow" for c in nfl)
     assert d.registry_closed_cells(d.REPO) == 0
+
+
+# ---- W129.5: D6 from ONE source (the newest box d6_read), the repo-static count beside it, labelled ----
+def _box_d6_md(ran: str, wired: int, registered: int, exit_code: int = 0, trailing: str = "\n") -> str:
+    doc = {"arm_order_rows": 10, "ledger_rows": 20, "read_utc": ran,
+           "d6": {"wired": wired, "registered": registered,
+                  "by_sport": {"nba": {"wired": wired, "registered": registered, "per_layer": [1, 2, 3, 4, 5, 6, 7]}}}}
+    return (f"# Box task `d6_read` - x\n\n- ran: {ran} on root@box:/opt/x\n- exit code: {exit_code}\n- command: `d6_read.py`\n\n```\n"
+            + json.dumps(doc, indent=1) + trailing + "\n```\n")
+
+
+def test_parse_box_d6_reads_wired_registered_and_ran():
+    r = d.parse_box_d6(_box_d6_md("2026-11-25T04:34:57Z", 18, 129))
+    assert (r["ran"], r["summary"]["wired"], r["summary"]["registered"]) == ("2026-11-25T04:34:57Z", 18, 129)
+
+
+def test_parse_box_d6_rejects_failed_truncated_or_foreign_files():
+    assert d.parse_box_d6(_box_d6_md("2026-11-25T04:34:57Z", 18, 129, exit_code=1)) is None
+    cut = _box_d6_md("2026-11-25T04:34:57Z", 18, 129)
+    assert d.parse_box_d6(cut[: len(cut) // 2]) is None            # output cap cut the JSON
+    assert d.parse_box_d6("# Box task `d6_trace_read`\n- ran: 2026-11-25T04:34:57Z\n- exit code: 0\n```\n{}\n```\n") is None
+
+
+def test_newest_box_d6_goes_by_ran_time_not_file_name(tmp_path):
+    res = tmp_path / d.BOX_D6_DIR
+    res.mkdir(parents=True)
+    (res / "20261124T0025Z_c_d6_read.md").write_text(_box_d6_md("2026-11-24T00:26:50Z", 17, 117))
+    (res / "20261125T0500Z_w1271_d6_read.md").write_text(_box_d6_md("2026-11-25T04:34:57Z", 18, 129))
+    (res / "20261125T0300Z_zzz_d6_read.md").write_text(_box_d6_md("2026-11-20T00:00:00Z", 13, 117))   # name sorts late, ran early
+    (res / "20261126T0000Z_d6_read.md").write_text(_box_d6_md("2026-11-26T00:00:00Z", 99, 129, exit_code=2))  # failed: skipped
+    (res / "20261126T0100Z_d6_trace_read.md").write_text(_box_d6_md("2026-11-26T01:00:00Z", 77, 129))        # other task: skipped
+    rel, r = d.newest_box_d6(tmp_path)
+    assert rel.endswith("20261125T0500Z_w1271_d6_read.md") and r["summary"]["wired"] == 18
+
+
+def test_d6_headline_is_box_number_with_static_labelled(tmp_path):
+    res = tmp_path / d.BOX_D6_DIR
+    res.mkdir(parents=True)
+    (res / "20261125T0500Z_d6_read.md").write_text(_box_d6_md("2026-11-25T04:34:57Z", 18, 129))
+    (m,) = d.d6(tmp_path)
+    assert m["id"] == "D6" and m["value"].startswith("18 / 129 cells wired (box d6_read ran 2026-11-25T04:34:57Z")
+    assert "repo-static" in m["value"] and "NOT the D6 number" in m["value"]
+    assert m["source"].endswith("d6_read.md") and m["as_of"] == "2026-11-25T04:34:57Z"
+
+
+def test_d6_without_box_read_says_static_only(tmp_path):
+    (m,) = d.d6(tmp_path)
+    assert m["value"].startswith("NO BOX READ - repo-static only")

@@ -35,5 +35,8 @@ jobs:
       - name: Gaps-by-arm index is current
         run: python3 scripts/generate_gap_arm_index.py --check
 
+      - name: Every pre-registration has a hypothesis registry row (alarm-only)
+        run: python3 scripts/hypothesis_registry_check.py
+
       - name: Runtime registry covers every mirrored component
         run: python3 scripts/runtime_registry.py check
