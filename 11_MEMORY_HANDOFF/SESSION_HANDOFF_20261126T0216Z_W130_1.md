@@ -23,7 +23,9 @@ pattern_sweep: swept src/ scripts/ tests/ deploy/ for NHL in-play analogues (ins
 - A game first seen in play has `line_pre_kickoff: false` and is excluded from judging.
 
 ## operator decisions:
-> APPROVE nfl_inplay_install (run box task `nfl_inplay_install` by name). Must be approved before the first Thanksgiving kickoff, CHI @ DET 2026-11-26 18:00Z (1 pm ET); the cron starts 17:00Z and caches pregame lines in the hour before kickoff.
+> DONE 2026-11-25 (PT): operator approved `nfl_inplay_install` by name. Ran 2026-11-26T02:52Z, exit 0, surface budget GREEN (result 20261126T0246Z). Readback 02:52Z: cron `*/2 17-23,0-6` present, no rows yet (idle until 17:00Z). First kickoff CHI @ DET 18:00Z.
 
 ## Next
-Part B (window, after approval): readback during first live game; rows/cell/min, staleness halts, feed lag vs replay 120 s. Part C: forward-look date. Estimate ~Mon 2026-12-14/15 (>= 40 games, >= 300 rows per cell; ~46 games by week 15), the rule wins over the date. Update H-INPLAY-NFL-1 forward-look column.
+- Part B (open, needs live rows): file `nfl_inplay_readback` during/after CHI @ DET 11-26; report rows/cell/min, staleness halts, feed lag median+IQR vs replay 120 s.
+- Part C (done, PR #605): forward look Tue 2026-12-15 (est.; n rule >= 40 games, >= 300 rows/cell governs). Team-total cells need their own replay.
+- Note: the first install request was cancelled by a newer push (box_tasks workflow cancels superseded runs); re-filed. Concurrent windows can do this to any install.
