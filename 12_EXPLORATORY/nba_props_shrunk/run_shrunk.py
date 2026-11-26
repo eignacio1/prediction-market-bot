@@ -3,7 +3,6 @@ Judged: 2025-26 regular season. Control NBAEnginePropsC2 as logged; challenger N
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 
@@ -27,6 +26,7 @@ from prediction_market_bot.quant.inference import mde_paired  # noqa: E402
 W = R.W
 JUDGE = ("2025-08-01", "2026-07-31")
 PREV = ("2024-08-01", "2025-07-31")
+PREREG_SHA = "8d6b97e6223cac434ad150d8897c52d56821609e"   # PREREG.md as pushed before the judged read (was read via git log; subprocess is forbidden here)
 B, SEED, Q = 2000, 20261121, 0.10
 COL = RC.COL
 STRATA = ((4, 10, "4-10"), (11, 30, "11-30"), (31, 10 ** 6, "31+"))
@@ -56,7 +56,7 @@ def boot(df, col, rng):
 
 
 def main(root: Path) -> None:
-    sha = subprocess.run(["git", "log", "-1", "--format=%H", "--", str(HERE / "PREREG.md")], capture_output=True, text=True, cwd=HERE).stdout.strip()
+    sha = PREREG_SHA
     reg, tips, pb = R.load(root)
     inj = W.load_inj()
     prev = prev_table(pb[pb.game_id.isin([g for g in reg.index if PREV[0] <= str(reg.loc[g, "game_date"])[:10] <= PREV[1]])])

@@ -175,6 +175,23 @@ def main(argv=None) -> int:
                       only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
                       props_for=_props_supply(games, pl))
         print(f"C2 ledger_dir={c2_dir} written:", dict(r2["written"]))
+    if os.environ.get("PM_PROPS_SHRUNK", "on").lower() != "off":      # default ON (W129.2, shadow logging only); PM_PROPS_SHRUNK=off is the off-switch
+        from prediction_market_bot.nba_engine import shrunk_means as SM
+        from prediction_market_bot.pregame_shadow import nba_engine_props_c2_forecaster as C2
+        from prediction_market_bot.pregame_shadow import nba_engine_props_shrunk_forecaster as SH
+        prev_path = ROOT / "data" / "reference" / "nba_prev_season_2025_26.json"       # frozen 2025-26 totals by norm_name
+        prev = json.loads(prev_path.read_text())["players"]
+        fcs = SH.NBAEnginePropsShrunk(games, pl, load_tips(tips_path), None, C2.parse_attempts(json.loads(store.read_text())),
+                                      prev=prev, league=SM.league_band_rates(prev))
+        fcs.out_lookup = _c1_out_lookup(fcs)
+        s_dir = ledger_dir.parent / "PREGAME_SHADOW_EXP047_S" if not a.dry_run else ledger_dir / "shrunk"
+        rs = run_once(forecaster=fcs, cells=CELLS, list_markets=ad.list_series_markets_raw,
+                      kickoff_for=lambda ev: fcs.kickoff_for_event(ev), ledger_dir=s_dir, run_id=run_id,
+                      now_utc=now, code_sha=code_sha(),
+                      raw_filter=lambda m: F.parse_market_ticker(m.get("ticker", "")) is not None,
+                      only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
+                      props_for=_props_supply(games, pl))
+        print(f"S ledger_dir={s_dir} written:", dict(rs["written"]))
     return 0
 
 
