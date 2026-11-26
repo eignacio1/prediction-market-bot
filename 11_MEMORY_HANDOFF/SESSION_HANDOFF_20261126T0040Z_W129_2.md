@@ -1,38 +1,38 @@
 # Session handoff — W129.2 (EXP-047-S, the shrunk-mean props challenger) — 2026-11-26T00:40Z
 
-**Deliverable:** pre-register, build, judge once, and log forward the PAM-3-licensed challenger against C2. **Branch:** `w129-2-props-shrunk`.
+<!-- session-meta
+task_id: W129.2
+tier: STANDARD
+timestamp: 2026-11-26T00:58:00Z
+commit: 202373c
+one_line_summary: W129.2 EXP-047-S shrunk-mean props challenger SUPPORTED (pooled D +0.00172, 4/4 stats); shadow beside C2, merged #595
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH, PROOF
+gap_measure: D3 NBA props, P2, D5(b) PAM class 3
+gap_delta: D3 NBA props +1, P2 +1, D5(b) PAM class 3 interpreted -> logged challenger, not applied (12_EXPLORATORY/nba_props_shrunk/results.json @ 202373c)
+pattern_sweep: ledger-dir refs swept in scripts/ src/ deploy/ tests/ .claude/; registry writes list lacked C2 ledger, now lists C2 and S; subprocess/unfenced-write isolation defects fixed in run_shrunk.py and build_prev_table.py
+surface_delta: 0 (existing cron run_nba_engine_props_shadow.py gains one ledger, registered)
+-->
 
-## What happened
-- **Part A:** `12_EXPLORATORY/nba_props_shrunk/PREREG.md` pushed at `8d6b97e6223cac434ad150d8897c52d56821609e` before any judged row was read.
-- **Part B:** judged once on NBA 2025-26 (1,131 usable games, 315,191 rows; 43 games had no usable report). **SUPPORTED.** Pooled D = +0.00172
-  log-loss, 90% [+0.00140, +0.00204]; 4 of 4 stats positive and BH-passing (points +0.00149, rebounds +0.00090, assists +0.00115, threes
-  +0.00372). Gain +0.0088 at 4-10 prior games, ~0 at 31+. Holds with and without an Out player (+0.00147 / +0.00209). Nearly all of it is the
-  rate shrinkage (rate-only +0.00166, minutes-only +0.00019). MDE 0.00053, so the effect is about 3.2× the MDE. `RESULT.md`, `results.json`.
-- **Modal outcome (P3):** stated SUPPORTED, +0.0010 to +0.0020, 4-10 concentration, threes largest: all matched. "Assists second" did not (points was).
-- **Disclosure carried:** 2025-26 is unread by C2 and PAM-3 but not fresh to the program (PREREG §2). The 2026-27 forward rows are the real out-of-sample check.
-- **Part C:** `NBAEnginePropsShrunk` (MODEL_ID `nba_engine_v2_props_shrunk_w129_2`) logs beside C2 via `PM_PROPS_SHRUNK` (default on, `off` disables)
-  to `exp_output/PREGAME_SHADOW_EXP047_S/`. Reads a frozen 2025-26 per-player table, `data/reference/nba_prev_season_2025_26.json` (582 players,
-  1,230 games, data through 2026-07-31). No orders, Kelly 0. C2 and v1 take no shrunk input (signature test).
-- Docs: H-DEPTH-PAM-3 row now points to its use; new EXP-047-S row in `HYPOTHESIS_DOCTRINE.md`; queue row updated.
+**Branch** `w129-2-props-shrunk`, squash-merged as #595 (`202373c`), CI green on 508380d.
 
-## Known flaws (not hidden)
-- `players_without_prev` in `results.json` is never incremented, so the share of rookies/new players in the judged rows is unreported.
-- Threes use C2's raw 3PA weights, not shrunk. Scores are log-loss against outcomes, not net after costs: nothing here is "applied".
-- `run_shrunk.py` read the PREREG SHA via `subprocess` at run time; the isolation test forbids that, so it is now the constant
-  `PREREG_SHA` (same value as `results.json`). Outputs unchanged.
+## Strategic Decisions This Session
+| Decision | Where |
+|---|---|
+| `PM_PROPS_SHRUNK` default on, shadow only, own ledger, no orders, Kelly 0; PREREG SHA a constant; prior table frozen | DECISION_LOG 2026-11-25 W129.2 |
 
-## Measures moved
-`vision_pillar:` DEPTH D3 (NBA props +1 pre-registered challenger ready), PROOF P2 (+1 verdict), D5(b) NBA PAM class 3 interpreted → logged challenger (not applied).
-`gap_measure:` none. `gap_delta:` 0.
-`pattern_sweep:` ledger-dir references swept (`scripts/ src/ deploy/ tests/ .claude/`): `props_c2_read.py` reads C2 only; registry `writes` list lacked C2 and now lists C2 and S.
-`surface_delta:` 0 components. The existing cron `nba_engine_props_shadow.py` gains one logged ledger, `exp_output/PREGAME_SHADOW_EXP047_S/`, added to its `writes`.
-Registry check: 111 entries, 0 unreviewed. Health signals not made worse by this block (shadow only, no new job).
-`directive_conflicts:` none found in OPERATOR_DIRECTIVES.md.
+## What changed
+- PREREG pushed at `8d6b97e6` before any judged row; judged once on 2025-26 (1,131 games, 315,191 rows). **SUPPORTED:** pooled D +0.00172 [+0.00140, +0.00204], 4/4 stats BH-pass. Gain sits at 4-10 prior games, ~0 at 31+; nearly all from rate shrinkage. `12_EXPLORATORY/nba_props_shrunk/RESULT.md`.
+- Challenger `NBAEnginePropsShrunk` logs beside C2 to `exp_output/PREGAME_SHADOW_EXP047_S/`; frozen table `data/reference/nba_prev_season_2025_26.json`. C2/v1 untouched.
+- Known flaws: `players_without_prev` never incremented (rookie share unreported); threes use raw 3PA weights; log-loss, not net after costs; 2025-26 not fresh to the program.
 
 ## operator decisions:
-- The cron `scripts/run_nba_engine_props_shadow.py` is still **paused** pending your approval of `nba_engine_props_shadow_install`. Until then neither C2 nor
-  the shrunk arm logs on the box. No new install line is added by this block.
+- Cron `run_nba_engine_props_shadow.py` is paused pending `nba_engine_props_shadow_install`; nothing logs on the box until approved.
 
-## Next
-Router scoring of the S arm per leaf on net after costs, once forward rows exist; a 2026-27 forward read needs a new n from `mde_paired`.
-Refresh the frozen prev-season table each autumn from the event store.
+## One thing pending
+Router scores the S arm per leaf on net after costs once forward rows exist; refresh the prior table each autumn.
+
+## Resume
+`cd pm-w129-2 && git fetch && python3 scripts/d6_read.py`
