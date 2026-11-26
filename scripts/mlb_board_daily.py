@@ -85,6 +85,12 @@ def price_slate(games, lineups, pa, n_draws: int = 4000) -> dict:
     return out
 
 
+def load_board(path) -> dict:
+    """The board file as `MLBEngineForecaster` takes it: {(home, away, ET date): {column: p}} (the file keys are 'HOME|AWAY|DATE')."""
+    raw = json.loads(Path(path).read_text())
+    return {tuple(k.split("|")): v for k, v in raw.items()}
+
+
 def run(root: Path = ROOT, now: datetime | None = None, price_fn=price_slate, dry_run: bool = False) -> dict:
     now = now or datetime.now(timezone.utc)
     n_sched, why = games_scheduled(root, now)

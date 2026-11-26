@@ -1,0 +1,332 @@
+{
+ "slate_date": "2026-08-15",
+ "games_in_store": 15,
+ "games_priced": 15,
+ "engine_input_note": "lineups are the as-played store lineups, not posted lineups; the posted-lineup feed does not exist",
+ "outcomes_read": false,
+ "cells": {
+  "MLB_MONEYLINE|T1": {
+   "rows": 1236,
+   "games": 15,
+   "skips": {},
+   "L1_model_p": 1236,
+   "L2_market_state": 1236,
+   "L2_with_prev_mid": 1210,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 1236,
+   "arms": {
+    "NO_BET": 1236
+   },
+   "L4_thin": 26,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 1236,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "prev mid absent on 26 rows (first sighting; move filter has no input)",
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_MONEYLINE|T2": {
+   "rows": 0,
+   "games": 0,
+   "skips": {},
+   "L1_model_p": 0,
+   "L2_market_state": 0,
+   "L2_with_prev_mid": 0,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 0,
+   "arms": {},
+   "L4_thin": 0,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 0,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "no archive rows in this band on this slate day (runs only 22-05Z; see note)"
+   ],
+   "layers_present": []
+  },
+  "MLB_MONEYLINE|T3": {
+   "rows": 28,
+   "games": 7,
+   "skips": {},
+   "L1_model_p": 28,
+   "L2_market_state": 28,
+   "L2_with_prev_mid": 28,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 28,
+   "arms": {
+    "NO_BET": 28
+   },
+   "L4_thin": 28,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 28,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_RUN_LINE|T1": {
+   "rows": 1728,
+   "games": 14,
+   "skips": {},
+   "L1_model_p": 1728,
+   "L2_market_state": 1728,
+   "L2_with_prev_mid": 1644,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 1728,
+   "arms": {
+    "RIDE": 50,
+    "NO_BET": 1678
+   },
+   "L4_thin": 34,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 1728,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "prev mid absent on 84 rows (first sighting; move filter has no input)",
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_RUN_LINE|T2": {
+   "rows": 0,
+   "games": 0,
+   "skips": {},
+   "L1_model_p": 0,
+   "L2_market_state": 0,
+   "L2_with_prev_mid": 0,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 0,
+   "arms": {},
+   "L4_thin": 0,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 0,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "no archive rows in this band on this slate day (runs only 22-05Z; see note)"
+   ],
+   "layers_present": []
+  },
+  "MLB_RUN_LINE|T3": {
+   "rows": 84,
+   "games": 7,
+   "skips": {},
+   "L1_model_p": 84,
+   "L2_market_state": 84,
+   "L2_with_prev_mid": 84,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 84,
+   "arms": {
+    "NO_BET": 84
+   },
+   "L4_thin": 84,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 84,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_GAME_TOTAL|T1": {
+   "rows": 3168,
+   "games": 14,
+   "skips": {},
+   "L1_model_p": 3139,
+   "L2_market_state": 3168,
+   "L2_with_prev_mid": 3014,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 3168,
+   "arms": {
+    "FADE": 57,
+    "RIDE": 97,
+    "NO_BET": 3014
+   },
+   "L4_thin": 0,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 3168,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "L1 on 3139 of 3168 rows (rung off the priced ladder or no board for the game)",
+    "prev mid absent on 154 rows (first sighting; move filter has no input)",
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_GAME_TOTAL|T2": {
+   "rows": 0,
+   "games": 0,
+   "skips": {},
+   "L1_model_p": 0,
+   "L2_market_state": 0,
+   "L2_with_prev_mid": 0,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 0,
+   "arms": {},
+   "L4_thin": 0,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 0,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "no archive rows in this band on this slate day (runs only 22-05Z; see note)"
+   ],
+   "layers_present": []
+  },
+  "MLB_GAME_TOTAL|T3": {
+   "rows": 154,
+   "games": 7,
+   "skips": {},
+   "L1_model_p": 152,
+   "L2_market_state": 154,
+   "L2_with_prev_mid": 154,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 154,
+   "arms": {
+    "NO_BET": 154
+   },
+   "L4_thin": 154,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 154,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "L1 on 152 of 154 rows (rung off the priced ladder or no board for the game)",
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_TEAM_TOTAL|T1": {
+   "rows": 4032,
+   "games": 14,
+   "skips": {},
+   "L1_model_p": 4032,
+   "L2_market_state": 4032,
+   "L2_with_prev_mid": 3836,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 4032,
+   "arms": {
+    "RIDE": 181,
+    "NO_BET": 3851
+   },
+   "L4_thin": 0,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 4032,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "prev mid absent on 196 rows (first sighting; move filter has no input)",
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  },
+  "MLB_TEAM_TOTAL|T2": {
+   "rows": 0,
+   "games": 0,
+   "skips": {},
+   "L1_model_p": 0,
+   "L2_market_state": 0,
+   "L2_with_prev_mid": 0,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 0,
+   "arms": {},
+   "L4_thin": 0,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 0,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "no archive rows in this band on this slate day (runs only 22-05Z; see note)"
+   ],
+   "layers_present": []
+  },
+  "MLB_TEAM_TOTAL|T3": {
+   "rows": 196,
+   "games": 7,
+   "skips": {},
+   "L1_model_p": 196,
+   "L2_market_state": 196,
+   "L2_with_prev_mid": 196,
+   "L3_factor_filters": 0,
+   "L4_tree_arm": 196,
+   "arms": {
+    "NO_BET": 196
+   },
+   "L4_thin": 196,
+   "L5_heldout_net_forward": 0,
+   "L6_sizing": 196,
+   "L7_fills": 0,
+   "route_errors": {},
+   "missing": [
+    "L3: no MLB per-row factor-filter supply exists (filters None; not imputed)",
+    "L5: v1 leaf nets are 2026 look-back only; no forward held-out net per arm exists before 2027",
+    "L7: no MLB order or fill exists (MLB idle; no arm-order demo book for MLB)"
+   ],
+   "layers_present": [
+    "L1_model_p",
+    "L2_market_state",
+    "L4_tree_arm",
+    "L6_sizing"
+   ]
+  }
+ },
+ "archive_run_hours_utc_note": "price archive logs 22:00-05:59Z only on this day, so T2 and T3 rows exist only for late games"
+}

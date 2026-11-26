@@ -116,3 +116,16 @@ def test_box_tasks_rows():
     bt = _load("box_tasks_t", "scripts/box_tasks.py")
     assert bt.TASKS["mlb_board_install"].endswith("mlb_board_install.py install")
     assert bt.TASKS["mlb_board_dryrun"].endswith("--dry-run")
+
+
+def test_board_file_loads_into_the_forecaster_shape(tmp_path):
+    """Part C found the file keys ('HOME|AWAY|DATE') did not match the forecaster's tuple keys: no engine price ever reached a row."""
+    import json
+    from datetime import datetime, timezone
+    import mlb_board_daily as bd
+    from prediction_market_bot.mlb_engine.forecaster import MLBEngineForecaster
+    f = tmp_path / "board.json"
+    f.write_text(json.dumps({"LAD|ATL|2026-07-15": {"p_home_ml": 0.6}}))
+    fc = MLBEngineForecaster(bd.load_board(f))
+    out = fc.forecast("KXMLBGAME-26JUL151910ATLLAD-LAD", datetime(2026, 7, 15, 12, tzinfo=timezone.utc))
+    assert out is not None and abs(out.p_yes - 0.6) < 1e-9
