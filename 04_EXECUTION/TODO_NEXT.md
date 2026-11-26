@@ -11,7 +11,7 @@
 
 **Purpose:** The immediate action list for the current work session. Only contains tasks executable in the next 1–3 sessions. Longer-horizon tasks belong in PLAN.md.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-26T03:00:00Z (W130.3 — W130.3: demo combo fills settled (n=2), EXP-COMBOORD-001 pre-registered, accept rule gets an edge threshold, daily demo RFQ line added paused to the existing install approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0300Z_W130_3.md` for full session detail.
+**Last reviewed:** 2026-11-26T03:35:00Z (W130.5 — W130.5: every live writer probed or exempt (tested), d6_read fixed and read fresh 18/129, STATE_OF_THE_BOT.md generated from box reads) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0321Z_W130_5.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/TODO_NEXT_ARCHIVE.md` § Last Reviewed Chain Archive.

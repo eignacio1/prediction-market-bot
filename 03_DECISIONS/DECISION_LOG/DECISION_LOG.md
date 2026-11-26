@@ -3753,3 +3753,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 
 | 2026-11-26 | W130.4 | Pre-registered H-DEPTH-PAM-5 (PIT NBA archetype cells as a tested split, judged on forward 2026-27 only, shadow, Kelly 0; modal outcome NOT SUPPORTED/UNDERPOWERED ~65%). Factor table must be frozen with its sha256 (factors_frozen.json) before 2026-27 scoring or the hypothesis is not judged. PRF-10/PRF-13 unbuilt (data cannot derive them). |
 | 2026-11-25 | W130.1 | Operator approved box task `nfl_inplay_install` by name (NFL in-play shadow cron, no orders, Kelly 0); installed 2026-11-26T02:52Z. NFL in-play forward look set for ~2026-12-15 under the n rule (>= 40 games, >= 300 rows per cell); team-total pricing stays unvalidated until its own replay. 8 T4NFL cells promoted NOT_IMPLEMENTED -> SHADOW under EXP-NFLINPLAY-001. |
+
+| 2026-11-26 | W130.5 | Implementation-only. On the operator's "just run it manually ... wrap it back around", the final probe and state-page commits went straight to main without a PR or CI (14 tests passed locally). Found EXP-047-S silent (7 games, zero rows); left unfixed, owner needed. |
