@@ -138,7 +138,8 @@ END OF BLOCK W131.1
 
 ## Needs your decision
 
-> **APPROVED BY NAME 2026-11-25 20:42 PT, being filed by W131.1:** `props_arm_orders_install` · `nhl_inplay_install` · `data_offload_install` (accepts MoneyPuck's terms) · `archive_dense_install` · `mlb_board_install` (must run by 2027-03-18).
+> **APPROVED BY NAME 2026-11-25 20:42 PT (approval stands, 0 of 5 installed):** `props_arm_orders_install` · `nhl_inplay_install` · `data_offload_install` (accepts MoneyPuck's terms) · `archive_dense_install` · `mlb_board_install` (must run by 2027-03-18).
+> **W131.1 STOPPED at the pre-check, 2026-11-26 04:52Z (GG-2014):** box free memory 39 MB (< 250 MB floor), 20 OOM kills / 24 h, SURFACE BUDGET RED (two silent NBA combo arms). Result stems `20261126T0452Z_box_memory_read`, `20261126T0452Z_budget_read`, `20261126T0501Z_silent_arms_read`. Next: a box memory/overlap fix wave, then re-run the pre-check and the five installs. Nothing to decide from the operator.
 >
 > **OPEN:**
 > - ~~SW-9's Monday check-in~~ DONE 2026-11-25 20:49 PT: cancelled (operator); re-scheduled into SW-10's chat for Mon 11-30 21:00 PT (`trig_01F9qqN998ufNNN7w9Vo1WXU`).
