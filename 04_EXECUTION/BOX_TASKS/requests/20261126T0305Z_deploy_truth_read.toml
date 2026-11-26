@@ -1,0 +1,2 @@
+task = "deploy_truth_read"
+note = "W130.5: recheck for #606 deploy"
