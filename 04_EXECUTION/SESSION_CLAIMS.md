@@ -1403,3 +1403,4 @@
 | 2026-11-25T06:43:33Z | W128.1 | CLOSED — merge confirmed, HEAD (289bb6e) is ancestor of origin/main — NHL depth: goalie/referee/availability splits pre-registered and built behind PM_NHL_DEPTH (default off); nothing judged, D5(b) NHL unchanged at none; PR #585 squash-merged |
 | 2026-11-26T00:08:40Z | GG-2005,GG-2003,B-117 | W129.4 PAM state tables (class 1/2/4) + NBA backfill + H-DEPTH-PAM-4 prereg; PURPOSE: moves D5(b) NBA PAM classes 1/2/4, D3 +1, GG-2005 |
 | 2026-11-26T00:12:24Z | B-127 | W129.2 props shrunk challenger PAM-3 licensed; PURPOSE: D3 NBA props +1, P2 +1, D5(b) PAM class 3 |
+| 2026-11-26T00:12:43Z | W129.7 | W129.7 NHL in-play live feed + shadow logging. PURPOSE: B1/B3 NHL in-play cells able to log 0->n, feed latency measured |
