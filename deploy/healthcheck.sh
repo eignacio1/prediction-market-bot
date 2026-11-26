@@ -197,6 +197,15 @@ else
     warn "demo-fill stall check errored: $(echo "$ST" | tail -1)"
 fi
 
+# 12. MLB board alarms (W129.3 / GG-1957): not armed 7 days before opening day, or a 0-row run on a scheduled game day
+if MB="$(cd "$PROJ" && PYTHONPATH="$PROJ/src:$PROJ/scripts" "$PYTHON" scripts/mlb_board_install.py healthcheck 2>&1)"; then
+    while IFS= read -r l; do case "$l" in
+        FAIL*) fail "${l#FAIL }" ;; WARN*) warn "${l#WARN }" ;; *) pass "${l#PASS }" ;; esac; done <<< "$MB"
+else
+    while IFS= read -r l; do case "$l" in
+        FAIL*) fail "${l#FAIL }" ;; WARN*) warn "${l#WARN }" ;; *) pass "${l#PASS }" ;; esac; done <<< "$MB"
+fi
+
 echo ""
 if [ "$ERRORS" -eq 0 ]; then
     echo "=== HEALTHY: 0 faults, $WARNS warning(s) ==="

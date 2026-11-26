@@ -125,6 +125,12 @@ TASKS: dict[str, str] = {
     "archive_dense_gate_read": f"{PY} scripts/archive_dense_install.py gate",   # W126.1 Part C, read-only: budget gate verdict + numbers as JSON
     "archive_dense_readback": f"{PY} scripts/archive_dense_install.py readback",
     "archive_dense_uninstall": f"{PY} scripts/archive_dense_install.py uninstall",
+    "mlb_board_install": f"{PY} scripts/mlb_board_install.py install",              # W129.3: budget-gated; operator approves by name
+    "mlb_board_gate_read": f"{PY} scripts/mlb_board_install.py gate",              # read-only: gate verdict + numbers as JSON
+    "mlb_board_readback": f"{PY} scripts/mlb_board_install.py readback",
+    "mlb_board_uninstall": f"{PY} scripts/mlb_board_install.py uninstall",
+    "mlb_board_dryrun": f"{PY} scripts/mlb_board_daily.py --dry-run",              # read-only: one board pass, writes nothing
+    "mlb_board_healthcheck": f"{PY} scripts/mlb_board_install.py healthcheck",     # read-only: the two GG-1957 alarms
     "archive_dense_dryrun": f"{PY} scripts/archive_dense_capture.py --mode games --dry-run",   # read-only: one games pass, writes nothing
     # W128.5: Muse's file / API families as one polite server job. Gate read + probe are read-only; install is the operator's named approval.
     "data_offload_gate_read": f"{PY} scripts/data_offload_install.py gate",   # read-only: budget gate verdict + MB/day as JSON
