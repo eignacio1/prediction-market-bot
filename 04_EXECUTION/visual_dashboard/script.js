@@ -1,21 +1,21 @@
 /* ============================================================ DATA (edited by the strategic window at each wave close) */
 const DIST = [
-  ["Breadth","B1","Cells logging / registered","61 / 117 (box: 49 in the code + 12 NBA game cells autoflipped)","the whole board","+9 NBA props (W109)"],
-  ["Breadth","B2","Families with a logging cell","20 / 22 (box)","22 / 22 + parlays","+4 NBA prop families"],
-  ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5)","5 of 5, T4 sub-bands","0"],
-  ["Breadth","B4","Props · parlay families logging","5 · 0 (MLB hits; NBA points, rebounds, assists, threes)","the board's props and parlays","2 → 5"],
-  ["Depth","D1","Factor classes per pre-game model","Engines: NFL team + QB personnel · NBA personnel, team, venue · NHL personnel, team, venue · MLB personnel, team. Layer-3 splits: NBA 9 kept + 12 stumps, NFL 13 cells. NBA archive classes (lineups, shot profile vs defence, pace / usage) in build","every class at every arm","NBA depth splits (118.2)"],
-  ["Depth","D2","Largest pre-game feature set","18 (MLB hits, 0 qualitative)","coverage of classes, not a count","0"],
-  ["Depth","D3","Pre-registered challengers ready","6 (NFL QB · EXP-041 · EXP-044b · EXP-044c · one by script · router v2)","≥ 1 per arm","+1 router v2 (W116)"],
-  ["Depth","D4","Engine stage per sport","NFL board engine + frozen forward test (EXP-045) · NBA engine v1/v2/v3 nightly · NHL engine v2 + event store on the box (11-18) · MLB pitch store, routed to ride","each sport: data → factors → whole board","NHL store on the box"],
-  ["Depth","D5","Architecture (8 parts) · factors applied","NFL 8/8 · 14 of 23 · NBA 8/8 · 11 · NHL 7/8 · 8 of 12 · MLB 3/8 · none","8 of 8 per sport; factors applied","NBA 4 → 8, NHL 2 → 7 (W109)"],
-  ["Depth","D6","Cells wired end to end (7 layers)","4 / 117 on the box: NBA 4/25 · NFL 0/29 · NHL 0/21 · MLB 0/42","every registered cell","0 → 4 (W114–117)"],
-  ["Execution","E1","Arm orders filled (since 11-06)","RIDE 39 / 279 · MOMENTUM 20 / 96 · FADE 6 / 111","fills ≈ intended orders","arm orders on (11-12)"],
-  ["Execution","E2","P&L per filled contract, after fees","RIDE −0.8¢ · MOMENTUM +7.5¢ · FADE +10.6¢ (6 fills); crossing, by game: no arm clears zero","positive, net of fees","measured with real spread (W117)"],
-  ["Execution","E3","Win rate, fills vs non-fills","RIDE 69% vs 81% · MOMENTUM 50% vs 50% · FADE 33% vs 38% — resting orders picked off","fills at least as good","full join (W116)"],
-  ["Proof","P1","Cells at a scored look","12 / 61 (NFL first look 11-02) + router held-out reads (W116–117, exploratory)","every cell judged at its n","0"],
-  ["Proof","P2","Verdicts issued","12 NFL + hypotheses closed: NFL v1 per-leaf, NHL momentum, ride every favourite","a verdict per cell (a NO counts)","+3 closed hypotheses"],
-  ["Proof","P3","Next look / first earned arm","Power calendar: first arm 2027-07 at +2¢ (2027-01 at +5¢); MLB 2026 look-back in 118.1","—","dated (W116)"],
+  ["Breadth","B1","Cells logging / registered","72 / 129 (registry 11-26: 71 shadow + 1 active)","the whole board","52 / 108 → 72 / 129 over SW-9; +8 NFL in-play (W130)"],
+  ["Breadth","B2","Families with a logging cell","20 / 26 (registry 11-24)","26 / 26 + parlays","combos and in-play families registered"],
+  ["Breadth","B3","Bands with a logging cell","4 of 5 (no T5); T4NFL in-play installed 11-26, T4NHL built (install pending)","5 of 5, T4 sub-bands","+T4NFL (W130)"],
+  ["Breadth","B4","Props · parlay families logging","5 · 0 → 1 (combo shadow + daily demo RFQ installed 11-26 02:53Z)","the board's props and parlays","parlays 0 → 1"],
+  ["Depth","D1","Factor classes per pre-game model","personnel, team, venue; no pre-game model yet conditions on matchup, weather or qualitative (DISTANCE_TABLE_W129)","every class at the granularity bar","splits moved D5(b), not D1"],
+  ["Depth","D2","Largest pre-game feature set","17 (NBA points + minutes), 0 qualitative","coverage of classes, not a count","—"],
+  ["Depth","D3","Pre-registered challengers ready","EXP-047-S (SUPPORTED, logging) · H-DEPTH-PAM-4 · H-DEPTH-PAM-5 (logging) · EXP-NBAPROPS-002 · EXP-COMBOORD-001 (script counts 5)","≥ 1 per arm","+5 in W128-130"],
+  ["Depth","D4","Engine stage per sport","NFL / NHL / MLB data + engine + test · NBA data + test; MLB 2027 forward PREREG frozen (12 cells)","each sport: data → factors point-in-time → whole board","MLB none → engine (W127)"],
+  ["Depth","D5","Architecture (8 parts) · factors applied","NFL 8/8 · 18 of 26 · NBA 8/8 · 11 of 17 · NHL 7/8 · 8 of 12 · MLB 4/8","8 of 8 per sport; factors applied","NFL 14 → 18, MLB 3 → 4"],
+  ["Depth","D6","Cells wired end to end (7 layers)","18 / 129 on the box (11-26 03:15Z): NBA 7/28 · NHL 7/21 · NFL 4/32 · MLB 0/42 · multi 0/6","every registered cell","4 → 18 (W119-130)"],
+  ["Execution","E1","Demo orders placed / filled (since 11-06)","NBA 1,686 placed, 41 of 41 looked up filled · NFL 18, 3 settled · NHL 316, 0 looked up · combos 2 fills. Fill lookups ran out of budget: understated","fills ≈ intended orders","props and combo order paths built (W130)"],
+  ["Execution","E2","P&L per filled contract","NBA +1.0¢ before fees (n 41) · NFL +49.7¢ (n 3) · combos +45¢ / −45¢ (n 2) — far below any judged n","positive, net of fees","first winter-book numbers"],
+  ["Execution","E3","Win rate, fills vs non-fills","not measured for the winter books yet (MLB: 25% vs 48%)","fills at least as good","complete fill join is SW-10's B-136"],
+  ["Proof","P1","Cells at a scored look","25 / 49 (engine 11-25)","every cell judged at its n","12 → 25"],
+  ["Proof","P2","Verdicts issued","25 routed + H-DEPTH-PAM-3 and EXP-047-S SUPPORTED, EXP-NFLINPLAY-001 closed, NFL play-level 0 of 74 earned, edge-location H1-H5","a verdict per cell (a NO counts)","12 → 25+"],
+  ["Proof","P3","Next look","H-EXEC-4 first look 2026-12-01 · weekly evidence look Tuesdays · EXP-045 2027-01-12 · MLB 2027 per its PREREG","—","dated"],
 ];
 
 const F = [
@@ -78,26 +78,27 @@ const MXNOTE = {
 };
 
 const ARMS = [
-  ["Router arm orders (ADR-0072)","—","Demo orders, real fills","good","ADR-0072 + 11-12 addendum","placement re-fit as spreads accumulate","RIDE 279 / 39, MOMENTUM 96 / 20, FADE 111 / 6 since 11-06; none clears zero after costs yet"],
-  ["Router v2 (pooled + sequential)","—","Frozen, logging switch waits on you","warn","W116.1 pre-registration","weekly looks, Tue 10:00 UTC","Arms no leaf held out; first earned arm 2027 at realistic edges"],
-  ["NFL game markets",12,"Logging","good","EXP-037","second looks 12-14 .. 01-09","Per-leaf orders routed to NO BET (11-17); total T1 + T2 hypothesis closed (EXP-037, parked for R&D)"],
-  ["NFL engine (board)","—","Frozen forward test","good","EXP-045","01-12","Prices moneyline / spread / total from one simulation"],
-  ["NBA game markets",12,"Logging · 4 wired (D6)","good","EXP-038","second look: definition due before January","Draft definition waiting on you (GG-529); depth splits in build (118.2)"],
-  ["NBA engine v1 / v2 / v3",3,"Logging","good","EXP-044 / 044b / 044c","blend test 12-29 .. 02-15","Moneyline and team totals now priced from the same simulation (117.3)"],
-  ["NBA player props",12,"Logging","good","EXP-039 / 040 / 047","n = 300 player-games","Points, rebounds, assists, threes; layers 1–2"],
-  ["NHL game markets",9,"Logging · store on the box","good","EXP-036","2026-27","Store builds 11-18 13:29Z; wiring, goalie timing and router v2 in 118.3"],
-  ["MLB (all arms)","42","Idle · look-back","warn","EXP-037 MLB","2027 season","2026 season through router v2 (118.1); a frozen 2027 leaf map"],
+  ["Router arm orders (ADR-0072)","—","Demo orders, real fills","good","ADR-0072 + 11-12 addendum","H-EXEC-4 first look 12-01","NBA 1,686 · NFL 18 · NHL 316 YES-side orders since 11-06; fills understated until a full join"],
+  ["NBA props demo orders","14 leaves","Built, install waits on you","warn","EXP-NBAPROPS-002","after props_arm_orders_install","Flat $1 demo orders on the 14 kept props leaves, kelly 0, own caps"],
+  ["Parlays via Kalshi RFQ","combos","Shadow + daily demo RFQ live (11-26)","good","EXP-COMBOORD-001","after n settled combos","2 demo fills settled (+45¢, −45¢); pot-of-gold arm"],
+  ["NFL in-play","8","Logging from the 11-26 slate","good","EXP-NFLINPLAY-001","forward look dated in 130.1","Live feed from the box (rtt 0.2 s); model ties the Kalshi mid; lag measured live"],
+  ["NHL in-play","3","Built, install waits on you","warn","W129.7","after nhl_inplay_install","T4NHL-ARITH from the NHL's own live feed"],
+  ["NBA player props","9","Logging · v1, C2, S, PAM5","good","EXP-047 / C2 / S / H-DEPTH-PAM-5","forward n","EXP-047-S SUPPORTED (4 of 4 stats); PAM5 archetype x opponent logging"],
+  ["NBA engine v1 / v2 / v3",3,"Logging","good","EXP-044 / 044b / 044c","blend test 12-29 .. 02-15","~918 rows a day each"],
+  ["NFL game markets",12,"Logging","good","EXP-037 / EXP-045","01-12 (engine)","Play-level splits: 0 of 74 earned → ride / no bet"],
+  ["NHL game markets",9,"Logging · depth on","good","EXP-036 / nhl_v2","~370 games for depth","PM_NHL_DEPTH on; starter prior from the event store"],
+  ["MLB (all arms)","42","Idle · frozen for 2027","warn","MLB 2027 PREREG","opening day 2027","mlb_board_install must run by 2027-03-18"],
 ];
 const CAL = [
-  ["Now","Wave 118: MLB 2026 through router v2 · NBA depth splits · NHL wired from its store · box disk room · gap burner (272 → 150)"],
-  ["Wed 11-18 13:29Z","NHL event store's first build on the box"],
-  ["Mon 11-23","Muse weekly message — 2026-27 free consensus lines on the list (puck line, total)"],
+  ["Now","SW-9 handed off to SW-10 (11-26). No wave in flight; Wave 131 is SW-10's: execution first"],
+  ["Thu 11-26","NFL in-play shadow logs the Thanksgiving slate; first combo shadow + demo RFQ rows"],
+  ["Mon 11-30 20:50 PT","Muse's usage resets: one message (archive sync check, usage budget, retire list)"],
+  ["Tue 12-01","H-EXEC-4 first look (frozen) · weekly evidence look Tuesdays 10:00 UTC"],
   ["12-14 .. 01-09","NFL second looks"],
-  ["before 2027-01","Define what EXP-038's NBA second look scores (GG-529, draft ready)"],
-  ["01-12","NFL engine forward test (EXP-045) reads"],
+  ["before 2027-01","Define what EXP-038's NBA second look scores (GG-529)"],
+  ["2027-01-12","NFL engine forward test (EXP-045) reads"],
   ["12-29 .. 02-15","NBA blend test (frozen) reads"],
-  ["2027-01 .. 07","Router v2's first earned arm, by the power calendar (+5¢ .. +2¢ edges)"],
-  ["2027 season","MLB opens with its frozen 2026 look-back leaf map"],
+  ["by 2027-03-18","mlb_board_install (MLB 2027 daily board, frozen PREREG)"],
 ];
 
 const WAVES = [
@@ -165,17 +166,31 @@ const WAVES = [
    d:"<b>Router v2</b> (pooled + always-valid sequential test) built and frozen: arms no leaf held out; v1's NFL per-leaf loses 2.0¢ a row. Power calendar: first earned arm in 2027. Order join fixed (lookup failures 244 → 0). <b>D6 0 → 3</b>."},
   {w:"117", k:"", t:"Real costs, history as a prior.",
    d:"Measured with the real spread and counted by game, <b>no arm clears zero yet</b> (FADE crossing +16.6¢ on 20 games, interval spans 0). Kalshi tracks the books at the NHL close. NHL store installed; <b>D6 3 → 4</b>; live handoffs 644 → 42."},
-  {w:"118", k:"now", t:"Build where the evidence is.",
-   d:"MLB's logged season through router v2 · NBA depth from Muse's archive as tree splits · NHL wired from its store · room on the box · gap burner to 150."},
+  {w:"118", k:"", t:"Build where the evidence is.",
+   d:"MLB 12 cells routed NO BET (the 2026 ledger is postseason only, GG-1957); 5 NBA depth classes from the archive; NHL goalie lag closed (0.2¢); disk retention as code; gap burner 264 → 174."},
+  {w:"119–120", k:"hit", t:"D6 jumps; candidate maps on box rows.",
+   d:"<b>D6 4 → 13 on the box</b> (NBA 7, NHL 6); NHL store built (1,737 games); candidate maps (router v2, nba_depth, nhl_v2) logged beside v1; evidence copied to the Mac (7.2 GB, sha-verified)."},
+  {w:"121–122", k:"", t:"The weekly look, props, the pot of gold.",
+   d:"Weekly evidence look built (first look: 0 arms on every map); NBA props scored, 1 earned split; pot of gold scored, 0 earned; NFL in-play needs a live feed; MLB 2027 board priced."},
+  {w:"123–125", k:"neg", t:"Where edge is not.",
+   d:"<b>Edge location H1–H4 and H-EDGE-5 NOT SUPPORTED</b>: gross effects appear and fall below one round cost on the most-watched lines; closing-line value licensed in 1 of 50 families. The build turns to retail flow, depth and MLB."},
+  {w:"126–127", k:"hit", t:"Retail flow and a fourth engine.",
+   d:"<b>C2 SUPPORTED</b> on an unread season (usage shift, NBA props); Kalshi combos through RFQ in demo (2 fills); MLB engine built and counted; H-EXEC-4 frozen."},
+  {w:"128", k:"hit", t:"PAM's first test; Muse's archive saved.",
+   d:"<b>H-DEPTH-PAM-3 SUPPORTED</b> (stability shrinkage, 4 of 4 stats — one small piece of PAM); NFL play-level 0 of 74 earned → ride / no bet; four Muse families moved to free server scrapers; Muse's deleted archive restored the same night."},
+  {w:"129", k:"hit", t:"Depth into the live path.",
+   d:"<b>EXP-047-S SUPPORTED</b> (4 of 4 stats); NHL depth on in shadow; PAM state tables; MLB 2027 frozen before its first row; NFL and NHL in-play feeds; D6 one number, 18 / 129."},
+  {w:"130", k:"now", t:"Orders where the doctrine says to look first.",
+   d:"NFL in-play logging for Thanksgiving; <b>parlays through RFQ installed</b>; props demo orders built (install pending); <b>469 NBA players with a point-in-time PAM archetype</b>; every live arm probed; STATE_OF_THE_BOT for SW-10."},
 ];
 
 const DESK = [
-  {a:"var(--warn)", t:"Router v2 on for logging", c:"Proposed 11-17",
-   d:"Logs v2's arm beside v1 in shadow only; no order changes and v1 stays the frozen test. One line in Needs your decision."},
+  {a:"var(--warn)", t:"Installs waiting on you", c:"Named approval",
+   d:"props_arm_orders_install (props demo orders) · nhl_inplay_install · data_offload_install (accepts MoneyPuck's terms) · archive_dense_install · mlb_board_install (by 2027-03-18)."},
+  {a:"var(--warn)", t:"Muse goalie / referee files on the box", c:"Open",
+   d:"Copy the small files into the repo at the pinned version (window's pick, nothing for you to do) or put a read-only token on the box."},
   {a:"var(--warn)", t:"NBA second look (GG-529)", c:"Before January",
    d:"EXP-038's date-triggered second look needs a definition. Draft ready: accept or change."},
-  {a:"var(--s1)", t:"Disk retention install", c:"Coming from 118.4",
-   d:"Compresses old logs (evidence never deleted) so the box stays under 90% disk, where the healthcheck fails and blocks installs."},
   {a:"var(--ink-3)", t:"Cross-venue (Kalshi vs Polymarket)", c:"Parked by you",
    d:"The other structural option for edge. Nothing built; reopening it is your call."},
 ];
@@ -196,9 +211,9 @@ const HYP = __HYP__;
 const EDGEMAP = __EDGEMAP__;
 const PICKS = __PICKS__;
 const CALAGE = __CALAGE__;
-const FUNNEL = [["RIDE · orders",279,"var(--seq-250)"],["RIDE · filled",39,"var(--crit)"],
-                ["MOMENTUM · orders",96,"var(--seq-250)"],["MOMENTUM · filled",20,"var(--crit)"],
-                ["FADE · orders",111,"var(--seq-250)"],["FADE · filled",6,"var(--crit)"]];
+const FUNNEL = [["RIDE · orders",1051,"var(--seq-250)"],["MODEL_FADE · orders",1007,"var(--seq-250)"],
+                ["MOMENTUM · orders",775,"var(--seq-250)"],["FADE · orders",700,"var(--seq-250)"],
+                ["Fills looked up (budget-capped)",44,"var(--crit)"]];
 
 /* ============================================================ RENDER */
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
