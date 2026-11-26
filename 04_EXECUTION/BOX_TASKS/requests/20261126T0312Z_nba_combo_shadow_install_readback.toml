@@ -1,0 +1,2 @@
+task = "nba_combo_shadow_install_readback"
+note = "W130.3: confirm both combo lines are in the crontab after the approved install"

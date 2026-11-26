@@ -1561,7 +1561,7 @@ command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/
 key = "cron|41 * * * *|scripts/nba_combo_shadow.py"
 kind = "cron"
 source = "deploy/cron.nba_combo_shadow"
-status = "paused"
+status = "live"
 reviewed = true
 purpose = "W126.4 (B-024) pot-of-gold combo arm: prices every open Kalshi NBA same-game combo from the engine's joint draws and logs engine P, product-of-legs P, legs priced/unpriced and the quote showing (or none) with the default-fee cost. Evaluate-and-log only: no order, position, fill, stake or kelly. Off unless PM_COMBO_SHADOW=on; PAUSED until the operator approves activation (COMBO_PREREG.md)."
 pillar = "BREADTH"
@@ -1575,7 +1575,7 @@ command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && BOT_ENV=pape
 key = "cron|17 18 * * *|scripts/combo_rfq_demo.py"
 kind = "cron"
 source = "deploy/cron.nba_combo_shadow"
-status = "paused"
+status = "live"
 reviewed = true
 purpose = "W130.3 (EXP-COMBOORD-001) pot-of-gold combo arm, execution leg: once a day sends RFQs in the Kalshi DEMO on kept NBA same-game combos (no flags, no teammate-points pair), accepts a quote only when the engine edge after fee clears 0.03, 1 contract, kelly 0, at most 6 accepts and 12 RFQs a run. Demo host and BOT_ENV=paper only (client refuses otherwise). Off unless PM_COMBO_RFQ_DEMO=on; PAUSED until the operator approves nba_combo_shadow_install, which installs this line with the shadow line."
 pillar = "EXECUTION"
