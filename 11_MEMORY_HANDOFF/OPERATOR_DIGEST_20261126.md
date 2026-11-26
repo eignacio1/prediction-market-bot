@@ -1,3 +1,4 @@
 
 ## W129.4 — the player-state tables (plain English)
 The system now remembers how each NBA player's role looked just before every game since 2016: how much the team leaned on them, who was out, how many minutes to expect, and how often they miss games. Each fact is stamped with the moment it could first be known, so nothing from the future can leak into a test. About 366,000 player-games were filled in and 30 were checked by hand against box scores (28 matched exactly; the other 2 differ only because the NBA Cup final is left out on purpose). The next test (does a backup keep his extra minutes when the starter returns?) is written down in advance and has NOT been run. No money, no betting rules changed.
+- W129.5 (auto): W129.5 merged (PR #592): D6 from one box source (18/129, static 0 beside it), distance table, hypothesis registry 42->73 rows, 0 unregistered.
