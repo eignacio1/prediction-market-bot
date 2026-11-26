@@ -55,7 +55,7 @@ TASKS: dict[str, str] = {
     "router_error_read": f"{PY} scripts/router_error_read.py",  # W125.2 GG-2007, read-only: ERROR / UNROUTED arm skips by exception, cell, date
     "props_c2_read": f"{PY} scripts/props_c2_read.py",  # W128.2 B-116, read-only: NBA props C2 vs EXP-047 rows since 11-25 (descriptive, no outcome) + forward look schedule
     # W129.1: Muse NHL goalie/referee snapshots at the PINNED archive SHA via the GitHub API into NHL_MUSE_DIR only (idempotent, byte-capped, 150M memory cap). Never a clone, never a write to the archive.
-    "nhl_muse_fetch": f"systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0 {PY} scripts/nhl_muse_fetch.py",
+    "nhl_muse_fetch": f"systemd-run --scope -q -p MemoryMax=150M -p MemorySwapMax=0 env {PY} scripts/nhl_muse_fetch.py",
     "nhl_depth_recount": f"{PY} scripts/nhl_depth_recount.py",  # W129.1, read-only: NHL game join (goalie leaf) muse-only vs store+muse
     "d6_read": f"{PY} scripts/d6_read.py",  # W114.2 B-090, read-only: D6 counted against the box's real logs
     "candidate_arms_read": f"{PY} scripts/candidate_arms_read.py",  # W120.2, read-only: shadow rows carrying candidate-map arms, per sport
