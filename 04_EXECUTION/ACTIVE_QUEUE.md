@@ -121,7 +121,7 @@ The window hands off to SW-10 after Wave 130.
 | 129.4 | DEPTH / PAM | PAM point-in-time state tables: `player_state`, `availability_profile`, `trait_reliability` (NBA backfill from the event store); H-DEPTH-PAM-4 (role security) pre-registered, not run | Sonnet | ✅ | W129.4 merged (PR #593): state tables, NBA backfill 365,975 + 365,975 + 8 rows, PREREG_PAM4 (not run) |
 | 129.5 | PROOF / measurement | One D6 number (box 18 / 117 vs repo 0 / 129, reconciled); the distance table recomputed for the handoff; the hypothesis registry backfilled (B-110) with a check that flags unregistered pre-registrations | Sonnet | ⬜ | |
 | 129.6 | BREADTH / NFL | NFL in-play: a free live game-state feed for the T4NFL cells (16 registered, none can log), replayed on recorded games, shadow behind PM_NFL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ⬜ | |
-| 129.7 | BREADTH / NHL | NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ⬜ | |
+| 129.7 | BREADTH / NHL | NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ✅ | PR #596 merged 2026-11-26 (64bdd40), CI green at head. Feed p50 118 ms; replay in-play Brier 0.130-0.135 vs pregame-only 0.210-0.240 (not a market comparison). 3 T4NHL-ARITH cells SHADOW; install built, NOT run: awaits "approve nhl_inplay_install". Handoff SESSION_HANDOFF_20261126T0039Z_W129_7.md |
 
 - **Pushback:**
   - Only 129.2 can issue a verdict this wave, and only if an unread historical population exists for it.
