@@ -15,3 +15,8 @@ Plain English: the new way of estimating each player's scoring, rebounds, assist
 - I need one decision from you: put a read-only GitHub token on the box, or approve copying the small Muse files into the repo. Until then the first real look is blocked.
 - Not finished: I did not read one slate's rows back from the box after the deploy. Do that first next window.
 - Real money at risk: zero.
+## W129.7 — NHL in-play (breadth)
+The bot can now price NHL games while they are being played, using the live score, clock and power-play state. Three NHL in-play markets (moneyline, puck line, total) are registered in shadow mode. They place no orders, and real money at risk is still zero.
+On 231 replayed games the in-play prices scored far better than pre-game-only prices. That checks the pricer uses game state correctly. It is not a comparison with Kalshi.
+Nothing is logging yet. The install step is built but not run. Say "approve nhl_inplay_install" and it goes in before the next NHL slate. The budget check was green.
+Pillar moved: BREADTH.

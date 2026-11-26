@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: W129.7
+tier: STANDARD
+timestamp: 2026-11-26T01:30:00Z
+commit: 711d658
+one_line_summary: W129.7 NHL in-play feed + pricer + 3 T4NHL-ARITH shadow cells merged (#596); install built, awaiting approval
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: yes
+vision_pillar: BREADTH
+gap_measure: B1, B3
+gap_delta: B1 +3 NHL in-play cells registered SHADOW (60 -> 63 shadow, market_type_registry @ 64bdd40); rows log only after install
+pattern_sweep: grep NHL cell-count assertions in src/ scripts/ tests/ deploy/ .claude/ -> updated 5 tests + seat toml/md; replay write bypassed safe_out -> fixed
+surface_delta: +1 paused cron (registered, not installed), +4 box tasks; 0 live until approved
+-->
 # SESSION HANDOFF — W129.7 NHL in-play feed + shadow cells (Sonnet)
 **Last reviewed:** 2026-11-25. Branch `w129-7-nhl-inplay` (worktree). Shadow only, no orders, `kelly_fraction` 0.
 
@@ -6,7 +21,7 @@
 - C3 pricer `c3_forecasting/nhl_inplay.py` (Skellam + state multipliers; ML / puck line / total; OT/SO abstain).
 - Runner `scripts/nhl_inplay_shadow.py` behind `PM_NHL_INPLAY`; read-only `scripts/nhl_live_probe.py` (box task `nhl_live_probe`).
 - 3 cells NHL_MONEYLINE / PUCK_LINE / GAME_TOTAL x T4NHL-ARITH promoted SHADOW (EXP-NHLINPLAY-001). T4NHL-FLOW stays NOT_IMPLEMENTED.
-- Health: check 12 in `deploy/healthcheck.sh` (live game, no row 10 min = FAIL). Known-answer test on saved game 2026020386.
+- Health: check 13 in `deploy/healthcheck.sh` (live game, no row 10 min = FAIL). Known-answer test on saved game 2026020386.
 - Install `scripts/nhl_inplay_install.py` + `deploy/cron.nhl_inplay` + 3 box tasks (install / readback / uninstall): BUILT, NOT RUN.
 
 ## Results (05_RESEARCH_EXPERIMENTS/EXP-NHLINPLAY-001_RESULT_2026-11-25.md)
