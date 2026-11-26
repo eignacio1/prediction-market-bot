@@ -1,6 +1,6 @@
 # Hypothesis Doctrine — how this project asks questions, and every question it has asked
 
-**Last reviewed:** 2026-11-26 (W129.5: §II.8 historical backfill, registry check; earlier W124.1: Part II Consequence cells carry judgeable dates from the power ledger). **Binding with:** DOCTRINE.md (wins any disagreement), ADR-0077 (multi-arm routing).
+**Last reviewed:** 2026-11-26 (W129.5: §II.8 historical backfill, registry check; W129.3: EXP-MLBENGINE-SPLIT-2027 registry row; earlier W124.1: Part II Consequence cells carry judgeable dates from the power ledger). **Binding with:** DOCTRINE.md (wins any disagreement), ADR-0077 (multi-arm routing).
 **Operator, 2026-11-20 10:10 PT:** "a scaffolding matrix or a dissertation eliciting the protocols and procedures / operations / testing /
 parameters etc etc that you'd like to have FOUNDATIONALLY (we can't bottleneck it by being too specific yet - needs to have enough
 dynamism to conceptually grow) ... let's get a Hypothesis Doctrine doc where we have all hypotheses (including ones parked for R&D)
@@ -180,6 +180,7 @@ no PREREG file (their records are in `RESULTS_SUMMARIES/` and DECISION_LOG); the
 | EXP-045 | NFL engine forward (frozen, sha256) | NFL board | COLLECTING; reads 01-12 | — |
 | EXP-047 | NBA engine props shadow | NBA props | COLLECTING | — |
 | MLB-2027 | 2026 look-back routing holds in 2027 | MLB 42 cells | PRE-REGISTERED (PREREG_2027) | opening-day dry run passes (W122.4) |
+| EXP-MLBENGINE-SPLIT-2027 | MLB engine gap (terciles) as a layer-1 split lets router v2 earn an arm net of exact fee | MLB 12 game cells | PRE-REGISTERED 2026-11-25, frozen 2027-03-01 (sha256 file) | scored looks 04-13 .. 05-25 (totals, run line); moneyline 06-15 and season end 2027-10-05 (UNDERPOWERED); modal NOT DISTINGUISHABLE |
 
 ### II.7 Parked elsewhere (W104-W122, short form; the backfill expands each)
 - **The 39-row edge map as standalone bets** — PARKED (R&D): no single pattern beats cost alone; each is a routing input (W110-W111).
