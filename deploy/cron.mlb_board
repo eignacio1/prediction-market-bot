@@ -1,0 +1,5 @@
+# BEGIN W129.3 MLB BOARD
+# W129.3 -- the MLB daily board (engine price as a layer-1 router input; EXP-MLBENGINE-SPLIT-2027). Reads SYNCED off-box inputs, no network, no orders.
+# PAUSED in the registry until the operator approves the named install task `mlb_board_install`. Must be armed >= 7 days before opening day (GG-1957).
+10 14,17,20,23 * 3-10 * ( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/mlb_board_daily.py >> logs/mlb_board.out 2>&1 ) 9>/tmp/mlb_board_daily.lock
+# END W129.3 MLB BOARD

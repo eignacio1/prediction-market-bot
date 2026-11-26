@@ -1571,3 +1571,18 @@ max_age_h = "30"
 schedule = "17 9 * * *"
 mirrors = ["deploy/cron.data_offload"]
 command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+
+[[component]]
+key = "cron|10 14,17,20,23 * 3-10 *|scripts/mlb_board_daily.py"
+kind = "cron"
+source = "deploy/cron.mlb_board"
+status = "paused"
+reviewed = true
+purpose = "W129.3 MLB daily board: prices the day's slate with the MLB engine from SYNCED off-box inputs (no network) so shadow rows carry engine_p / engine_gap (EXP-MLBENGINE-SPLIT-2027, PROOF P3, DEPTH D6 MLB). No order, stake or kelly. PAUSED until the operator approves the named install task mlb_board_install (budget-gated; must be armed 7 days before opening day, GG-1957). A 0-row run on a scheduled game day is a FAIL in health.log."
+pillar = "PROOF"
+writes = ["logs/mlb_board.log", "exp_output/MLB_BOARD/"]
+alarm = "healthcheck: mlb_board_silent_exit FAIL when a run has games_scheduled > 0 and rows_written == 0; mlb_board_arm_date FAIL when not armed 7 days before opening day"
+max_age_h = "7"
+schedule = "10 14,17,20,23 * 3-10 *"
+mirrors = ["deploy/cron.mlb_board"]
+command = "( flock -n 9 || exit 0; cd /opt/prediction-market-bot && PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
