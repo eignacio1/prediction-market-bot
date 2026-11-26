@@ -1,5 +1,28 @@
 # Session handoff — W129.4 PAM holds state (PR #593)
 
+<!-- session-meta
+task_id: W129.4
+tier: STANDARD
+timestamp: 2026-11-26T00:33:00Z
+commit: ef45880
+one_line_summary: W129.4 merged (PR #593): PAM state tables + NBA backfill 365,975 rows per table; PAM-4 pre-registered, not run.
+gg_touched: GG-2005, GG-2003
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: DEPTH
+gap_measure: D5(b) NBA PAM classes 1/2/4, D3
+gap_delta: D5(b) NBA PAM classes 1/2/4 absent -> aggregated, point-in-time; D3 +1 (H-DEPTH-PAM-4) (MANIFEST.json @ ef45880)
+pattern_sweep: n/a (no defect fixed); new code only, naive-timestamp and own-row-in-prior patterns tested in tests/test_pam_state*.py
+surface_delta: 0
+-->
+
+**Strategic decisions this session**
+
+| Decision | Rationale | Reference | Owner |
+|---|---|---|---|
+| PAM-4 judged on 2026-27 games after freeze only | 2023-26 were read by earlier tests; only 2026-27 is never-judged | PREREG_PAM4.md | window |
+
+
 COMMON_RULES_W129 first line (read from origin/main): `# Wave 129 common rules`
 
 ## Built

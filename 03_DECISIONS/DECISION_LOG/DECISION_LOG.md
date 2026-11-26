@@ -3733,3 +3733,5 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 - Operator 16:09 PT: "Give me two more blocks to send - reset hits in less than 2 hours so I want to have a full session done before then".
 - 129.6 / 129.7: free live game-state feeds for the NFL and NHL in-play cells (none can log today), replayed on recorded games, shadow only
   behind PM_NFL_INPLAY / PM_NHL_INPLAY, installs built not run. Ownership added to COMMON_RULES_W129 (add-only, disjoint from 129.1-129.5).
+
+| 2026-11-25 | W129.4 | PAM-4 (role security) is judged only on 2026-27 regular-season games after the prereg commit, fitted on 2016-2022; seasons 2023-2026 were read by earlier tests and stay unread. n* (δ=1.0 min², 80% power) is frozen before the first judged read; modal outcome UNDERPOWERED until then. Test not run. State tables backfilled for NBA 2016-2026 with named nulls (role_security, return_window, body-part fields). |
