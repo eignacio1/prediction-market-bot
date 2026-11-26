@@ -1,6 +1,6 @@
 # Active queue — the only prompt file to read
 
-> **▶ WAVE 129 READY TO PASTE - seven blocks (Sonnet): 129.1 NHL depth on in shadow, 129.2 the PAM-3 x C2 props challenger, 129.3 MLB 2027 frozen before its first row, 129.4 PAM point-in-time state tables, 129.5 one D6 number + hypothesis registry, 129.6 NFL in-play feed, 129.7 NHL in-play feed (6-7 added 11-25 16:09 PT). Wave 128 closed. Three installs await approval. Window handoff after Wave 130.**
+> **▶ WAVE 130 READY TO PASTE (SW-9's last) - five blocks (Sonnet): 130.1 NFL in-play live for Thanksgiving, 130.2 NBA props kept leaves place demo orders, 130.3 parlays through RFQ, 130.4 PAM classifies from data, 130.5 every arm probed + STATE_OF_THE_BOT for SW-10. Wave 129 closed. Installs await approval (Needs your decision). Window hands off after Wave 130.**
 
 ## 🔥 GAP BURNER — standing block, always here (paste into its own terminal any time, alongside any wave)
 
@@ -95,264 +95,211 @@ reproduce - Monday fix noted in 04_EXECUTION/MUSE_MONDAY_2026-11-16_NOTES.md), 2
 
 ---
 
-## ▶ NOW — WAVE 129 · WRITTEN 2026-11-25 ~07:30 UTC (11-24 23:30 PT) · SW-9 · seven blocks (129.6 / 129.7 added 11-25 16:09 PT) · MODEL: Sonnet · paste each into its own terminal
+## ▶ NOW — WAVE 130 · WRITTEN 2026-11-26 ~02:30 UTC (11-25 18:30 PT) · SW-9's LAST WAVE · five blocks · MODEL: Sonnet · paste each into its own terminal
 
-**Depth into the live path, and one D6 number before the handoff.** Wave 128 landed all five blocks:
-- **NHL:** goalie, referee and availability splits are built behind `PM_NHL_DEPTH`, which is off. Judging needs about 370 games.
-- **NBA:** props now use one player-mean function, and the combo legs read C2.
-- **NFL:** the play-level test judged 74 leaves and earned 0, so those leaves route to ride or no bet. N24–N26 are applied.
-- **H-DEPTH-PAM-3 SUPPORTED:** D +0.00201 [+0.00184, +0.00219], positive on 4 of 4 stats.
-- **Muse offload:** 4 server scrapers are built, but the install waits for your approval. MLB boxscores still return 406, so they stay with Muse.
+**Orders that fill, in-play cells that log, PAM that classifies from data, and a true picture for SW-10.**
 
-This wave does five things:
-- puts NHL depth into the shadow rows with real inputs;
-- turns PAM-3 into a props challenger;
-- builds the PAM state tables;
-- freezes MLB 2027 before its first row;
-- makes D6 one number.
+Wave 129 landed:
+- **NBA props challenger:** EXP-047-S SUPPORTED on 2025-26. Pooled D +0.00172 [+0.00140, +0.00204], positive on 4 of 4 stats, now logging beside C2.
+- **NHL depth:** on in shadow.
+- **PAM:** state tables built, with classes 1, 2 and 4 now point-in-time.
+- **MLB 2027:** frozen before its first row, 12 cells.
+- **D6:** one source (18 of 129).
+- **Hypothesis registry:** 42 → 73 rows.
+- **NHL in-play:** feed and 3 cells built.
+- **NFL in-play:** feed proven from the box and pricer replayed. "Model beats the Kalshi mid" is closed (Brier 0.1638 vs 0.1642, CI spans 0). A scoring play takes a median 120 s to move the price 3c. Part C was not built.
 
-The window hands off to SW-10 after Wave 130.
+This wave is the window's last. It aims at the weakest pillar, **EXECUTION**: no props or parlay arm places demo orders today. It also:
+- gets the NFL in-play cells logging in time for the Thanksgiving slate;
+- builds PAM's first data-derived classification (the operator's "Zubac's 10 rebounds aren't the same as Wembys 10 rebounds");
+- leaves SW-10 one generated page of what actually runs.
 
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
-| 129.1 | DEPTH / NHL | NHL depth switched on in shadow: Muse snapshots fetched at a pinned SHA, expected starters from the NHL event store, `PM_NHL_DEPTH` on after the surface check, leaves recounted | Sonnet | 🟡 PR open (W129.5): D6 from one source, DISTANCE_TABLE_W129.md, 73 registry rows (42 before), 0 unregistered PREREG | |
-| 129.2 | DEPTH / NBA | EXP-047 shrunk-mean challenger (PAM-3 shrinkage × C2 usage shift): pre-registered on a population neither test read, built, logging in shadow beside C2 | Sonnet | ✅ #595 | EXP-047-S SUPPORTED 11-25: pooled D +0.00172 [+0.00140, +0.00204], 4 of 4 stats, 2025-26 (not fresh, disclosed); PREREG 8d6b97e6; shadow beside C2 behind PM_PROPS_SHRUNK |
-| 129.3 | PROOF / MLB | MLB 2027 forward pre-registration for the 12 game cells (frozen before the first row); daily-board install built with an arm-date alarm (GG-1957); a full 2026 slate dry-run through all seven layers | Sonnet | ⬜ | |
-| 129.4 | DEPTH / PAM | PAM point-in-time state tables: `player_state`, `availability_profile`, `trait_reliability` (NBA backfill from the event store); H-DEPTH-PAM-4 (role security) pre-registered, not run | Sonnet | ✅ | W129.4 merged (PR #593): state tables, NBA backfill 365,975 + 365,975 + 8 rows, PREREG_PAM4 (not run) |
-| 129.5 | PROOF / measurement | One D6 number (box 18 / 117 vs repo 0 / 129, reconciled); the distance table recomputed for the handoff; the hypothesis registry backfilled (B-110) with a check that flags unregistered pre-registrations | Sonnet | ⬜ | |
-| 129.6 | BREADTH / NFL | NFL in-play: a free live game-state feed for the T4NFL cells (16 registered, none can log), replayed on recorded games, shadow behind PM_NFL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ⬜ | |
-| 129.7 | BREADTH / NHL | NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built (added 11-25 16:09 PT) | Sonnet | ✅ | PR #596 merged 2026-11-26 (64bdd40), CI green at head. Feed p50 118 ms; replay in-play Brier 0.130-0.135 vs pregame-only 0.210-0.240 (not a market comparison). 3 T4NHL-ARITH cells SHADOW; install built, NOT run: awaits "approve nhl_inplay_install". Handoff SESSION_HANDOFF_20261126T0039Z_W129_7.md |
+| 130.1 | BREADTH / NFL | NFL in-play live for Thanksgiving: W129.6 Part C (shadow runner, 8 T4NFL cells SHADOW, write-recency alarm, install built), then live readback + first measured feed lag once approved | Sonnet | ⬜ | |
+| 130.2 | EXECUTION / NBA props | The 14 kept props leaves (EXP-NBAPROPS-001 candidate map) place flat demo orders under their own forward PREREG: fills, P&L per filled bet, fills vs non-fills | Sonnet | ⬜ | |
+| 130.3 | EXECUTION / parlays | Parlays through RFQ: combo shadow per leaf, the 2 open demo fills settled, scheduled RFQ demo orders on the combos the router keeps (pot-of-gold arm) | Sonnet | ⬜ | |
+| 130.4 | DEPTH / PAM | PAM classifies from data: point-in-time NBA archetypes from the event store (how a stat is produced, not only how big it is), checked against the 100 deep-tier records; H-DEPTH-PAM-5 (archetype × opponent archetype on props) pre-registered on forward rows | Sonnet | ⬜ | |
+| 130.5 | PROOF / handoff truth | Every live arm has a liveness probe (EXP-047 props, C2, S, combos, in-play are not in silent_arms today); fresh `d6_read` returned empty output — fixed; `STATE_OF_THE_BOT.md` generated from box reads for SW-10 | Sonnet | ⬜ | |
 
 - **Pushback:**
-  - Only 129.2 can issue a verdict this wave, and only if an unread historical population exists for it.
-  - 129.4 and half of 129.5 build no verdict.
-  - Why run them anyway: SW-10 inherits a D6 that two sources disagree on, and a PAM that holds no state. Fixing both is cheaper now than after the handoff.
-  - Alternative: drop 129.4 for the combo per-leaf look, which needs `nba_combo_shadow_install` approved first.
+  - 130.2 and 130.3 add order paths four days before the first H-EXEC-4 look, in a window that is ending.
+  - A demo-ops failure then lands on SW-10's first day.
+  - Mitigation: each is install-gated, budget-gated and flat-stake with Kelly 0, and each has an uninstall task.
+  - The alternative is to wait for SW-10. That leaves EXECUTION at zero props and parlay fills for another week, on the arm doctrine names first ("beating buddy off his phone placing parlays, that's the first step").
 - **Surface:**
-  - 129.1 switches on one shadow field path, and only on green health.
-  - 129.2 adds a shadow log field beside C2.
-  - 129.3 builds an install but does not run it.
-  - No new live component.
-  - Three installs wait on you (below).
+  - New crons only through `*_install` tasks the operator approves by name: `nfl_inplay_install`, a props demo-orders install and a combo install.
+  - Nothing new runs until approved.
+  - Box health at 00:21Z: SURFACE BUDGET GREEN; silent arms OK for NHL and NBA, other sports idle.
 - **Dependencies:**
   - None at merge.
-  - `shadow_route.py` is owned by 129.1.
-  - 129.5 merges last if a HYPOTHESIS_DOCTRINE edit is open elsewhere.
-  - Full ownership is in COMMON_RULES_W129.
-- **Plan after this wave:**
-  - W130 is the handoff wave (B-125): doctrine stack review, distance table from 129.5, backlog groomed, error-log lessons, and combo per-leaf if its install is approved.
-  - The H-EXEC-4 first look (12-01) and the weekly evidence look open SW-10's first wave.
+  - `market_type_registry.py` is owned by 130.1; 130.3 rebases if it touches combo cells.
+  - `silent_arms.py` and `d6_read.py` are owned by 130.5, which covers every live component at its merge.
+  - Full ownership is in COMMON_RULES_W130.
+- **After this wave:** the window runs `/strategic-handoff` to SW-10. SW-10's first wave holds the H-EXEC-4 first look (12-01), the weekly evidence look, and any installs still waiting.
 
-### 129.1 - NHL DEPTH SWITCHED ON IN SHADOW WITH REAL INPUTS · MODEL: Sonnet
+### 130.1 - NFL IN-PLAY LIVE FOR THANKSGIVING · MODEL: Sonnet
 
 ```
-WAVE 129 - BLOCK 129.1 - DEPTH: NHL GOALIE / REFEREE / AVAILABILITY SPLITS LOGGING ON EVERY NHL SHADOW ROW - MODEL: Sonnet
-PURPOSE: DEPTH D5(b) NHL (goalie@game, officials, availability: built -> logging on box rows with real inputs) and D6 NHL layer 3
-(tested splits on box rows). Backlog B-122, Wave 128.1 handoff: inputs and filter built (filters/nhl_depth.py, nhl_depth candidate in
-shadow_route.py, split_applied=False), PM_NHL_DEPTH off because NHL_MUSE_DIR is empty on the box and the expected starter came from
-Muse-confirmed starts only (39 of 99 games "any_backup" = a sparse-history artefact, 53 unknown).
+WAVE 130 - BLOCK 130.1 - BREADTH: THE NFL IN-PLAY CELLS LOG LIVE ON THE THANKSGIVING SLATE - MODEL: Sonnet
+PURPOSE: BREADTH B1 (8 T4NFL cells NOT_IMPLEMENTED -> SHADOW, logging), B3 (T4NFL bands with a logging cell 0 -> 1-2), and the first
+MEASURED live feed lag (ADR-0068: a shallow in-play tree must be paid for in speed). Finishes W129.6: the feed is proven from the box
+(rtt ~0.2 s, no bot check), the pricer replayed (EXP-NFLINPLAY-001), Part C not built.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0617Z_W128_1.md, 12_EXPLORATORY/nhl_depth/ (its PREREG is frozen),
-decision_trees/filters/nhl_depth.py, the nhl_depth candidate in decision_trees/shadow_route.py, c1_signal_ingestion's NHL event store reader, and
-src/prediction_market_bot/archive_intake/fetch.py (how the bot reads Muse's archive at a pinned commit). Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_1.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W130.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0050Z_W129_6.md (its "NOT done (Part C)" list is your spec),
+c1_signal_ingestion/nfl_live_feed.py, quant/inplay_nfl.py, 12_EXPLORATORY/nfl_inplay/ (PREREG + addendum), and the W129.7 NHL in-play
+runner / install as the pattern to copy. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W130_1.md.
 
-PART A - inputs on the box. An allowlisted READ-ONLY-to-the-repo box task (nhl_muse_fetch, writes only under NHL_MUSE_DIR) that pulls
-Muse's NHL goalie and referee snapshot files at the pinned archive SHA through the GitHub API (never a clone; never a write to the archive),
-idempotent, byte-capped, run under a memory cap. Run it; read back the file count per type and the date range.
-PART B - expected starters from the NHL event store: starts per goalie per team strictly before the game (last-N and season share),
-Muse's same-day confirmation layered on top when present. Known-answer test (planted backup start moves the leaf; no Muse file -> the
-event-store prior alone, never "unknown" when the store has starts). Re-count the 2026-11-10..today join: both_expected / any_backup /
-unknown, before and after.
-PART C - Hard Rule 14 surface check (health_read, silent arms, deploy truth); if green, switch PM_NHL_DEPTH on in shadow through the
-existing path (split_applied stays False; v1 and nhl_v2 byte-identical) and read back one slate's rows with split_leaves populated. If the
-switch needs an *_install task, build it and put the approval line under `operator decisions:`. Write the date the frozen PREREG's judged
-n (~370 games) is reached at the current NHL schedule.
+PART A (land within 90 minutes - the slate does not wait): scripts/run_nfl_inplay_shadow.py behind PM_NFL_INPLAY (evaluate and log, no
+orders), RUNTIME_REGISTRY entry (paused), write-recency alarm in healthcheck (no rows while an NFL game is live = FAIL), install /
+readback / uninstall tasks (writers set in test_box_tasks.py), the 8 T4NFL cells promoted to SHADOW with tests updated. Budget gate
+result. Put the approval line under `operator decisions:` AND tell the operator in your report, in one line, the kickoff it must be
+approved before.
+PART B (after approval, run by the window): readback during the first live game - rows per cell per minute, staleness halts, and the
+feed lag (play wallclock -> our row -> Kalshi's 3c move), median and IQR, beside the replay's 120 s.
+PART C: EXP-NFLINPLAY-001's forward look scheduled (date when its judged n is reached) and its HYPOTHESIS_DOCTRINE row updated.
 
-Land: PR, CI green, merge; read the deploy back. Report: per COMMON RULES. MEASURE MOVED: D5(b) NHL classes logging on box rows (0 -> n),
-unknown-starter share (53 / 99 -> x), first judged look date.
-END OF BLOCK 129.1
+Land: PR, CI green, merge; read the deploy back. Report: per COMMON RULES. MEASURE MOVED: B1 (+8 shadow), B3, live feed lag measured.
+END OF BLOCK 130.1
 ```
 
-### 129.2 - EXP-047 SHRUNK-MEAN CHALLENGER (PAM-3 × C2) · MODEL: Sonnet
+### 130.2 - NBA PROPS TO THE ORDER: THE KEPT LEAVES PLACE DEMO ORDERS · MODEL: Sonnet
 
 ```
-WAVE 129 - BLOCK 129.2 - DEPTH: THE PROPS CHALLENGER PAM-3 LICENSED - SHRUNK PER-MINUTE RATES x SHRUNK MINUTES, WITH C2'S USAGE SHIFT
+WAVE 130 - BLOCK 130.2 - EXECUTION: THE 14 KEPT NBA PROPS LEAVES PLACE FLAT DEMO ORDERS AND WE MEASURE THE FILLS - MODEL: Sonnet
+PURPOSE: EXECUTION E1 / E2 / E3 on NBA props (demo fills 0 -> n, P&L per filled bet, win rate on fills vs non-fills) and D6 layers 6-7
+for the props cells those leaves sit in. EXP-NBAPROPS-001 (W126.2) kept 14 of 143 leaves (not thin, arm != NO_BET, >= 10 held-out games,
+held-out mean net > 0) into the shadow candidate map nba_props_v2 under PM_CANDIDATE_ARMS. Paper rows are not execution evidence
+(GG-527); only demo fills are.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W130.md` and quote its first line. Those rules
+bind this block. Then read 12_EXPLORATORY/nba_props_splits/ (PREREG, RESULT, nba_props_v2.candidate.json), decision_trees/arm_orders.py
+and ride_orders.py (the ADR-0072 demo forward test for game families: flat stakes, caps with their own derivations, GG-1935), ADR-0072,
+and the C2 / S shadow forecasters. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W130_2.md.
+
+PART A - PRE-REGISTER FIRST (12_EXPLORATORY/nba_props_orders/PREREG.md, committed before any order): a demo forward test of the 14 kept
+leaves - flat demo stake, kelly 0, entry rule per leaf from the candidate map's arm, limit price and time-to-tip rule, per-day and
+per-event demo caps each with its own derivation (never a real-money constant, GG-1935), every skip reason counted. Metrics: E1 fill
+rate, E2 P&L per filled bet after fees, E3 win rate fills vs non-fills; judged n from quant/variance.mde_clustered; look date; modal
+outcome. ADR-0072 itself is not changed.
+PART B - the order path: a new module (decision_trees/props_arm_orders.py; arm_orders.py add-only) placing demo orders through the
+existing Kalshi demo client, idempotent per (leaf, market, day), every order and skip in an append-only JSONL, settlement join to
+outcomes. Known-answer tests with a fake venue (fill, partial, reject, void when the player sits). Dry run on today's slate against the
+demo API with orders OFF, printing what it would place.
+PART C - RUNTIME_REGISTRY entry (paused), install / readback / uninstall tasks, budget gate; approval line under `operator decisions:`.
+
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: E1 / E2 / E3 props (0 -> live once approved), D6 props layers.
+END OF BLOCK 130.2
+```
+
+### 130.3 - PARLAYS THROUGH RFQ: THE POT-OF-GOLD ARM PLACES DEMO ORDERS · MODEL: Sonnet
+
+```
+WAVE 130 - BLOCK 130.3 - EXECUTION / BREADTH: COMBOS PRICED PER LEAF AND QUOTED THROUGH KALSHI RFQ IN DEMO, ON A SCHEDULE - MODEL: Sonnet
+PURPOSE: BREADTH B4 (parlay families logging 0 -> 1) and EXECUTION E1 / E2 on combos (2 unsettled demo fills -> settled, then n).
+Doctrine section 6: the pot of gold is an arm of the same tree now, and the hunt starts in retail-priced flow - "beating buddy off his
+phone placing parlays, that's the first step" (operator 10-16). The edge-location program found gross effects die at the round cost on
+the most-watched single lines; retail parlay books are the next place to look. W126.4 built combo pricing (same-game correlation, W110),
+W127.3 the demo RFQ client (3 quotes of 12 RFQs, 2 fills; crash fixed in #581); nba_combo_shadow_install awaits approval.
+
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W130.md` and quote its first line. Those rules
+bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0521Z_W127_3.md and the W126.4 handoff, nba_combo_shadow.py,
+combo_rfq_demo.py, kalshi_rfq.py, quant/sgp.py, nba_engine/joint.py (wrong for same-player cross-stat, W110), and decision_trees/longshot.py.
+Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W130_3.md.
+
+PART A - settle and read: join the 2 demo fills and every recorded quote to outcomes; report quote rate, our price vs the quote vs the
+settled result per combo. Mark the same-player cross-stat legs the pricer is known wrong on and keep them out of orders.
+PART B - PRE-REGISTER (12_EXPLORATORY/combo_orders/PREREG.md, before any scheduled order) the combo demo forward test: which combos get an
+RFQ (leaf rule from the combo shadow: our joint price vs the quote, after fees), flat demo stake, kelly 0, caps with their own derivations,
+metrics E1 / E2 / E3, judged n, look date, modal outcome.
+PART C - one scheduled job (combo shadow logging + RFQs on kept combos, demo only) with RUNTIME_REGISTRY entry (paused), install /
+readback / uninstall, budget gate; if it folds into nba_combo_shadow_install, update that task and say so. Approval line under
+`operator decisions:`.
+
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B4 (0 -> 1 once approved), E1 / E2 combos (2 settled, then n).
+END OF BLOCK 130.3
+```
+
+### 130.4 - PAM CLASSIFIES FROM DATA (NBA) · MODEL: Sonnet
+
+```
+WAVE 130 - BLOCK 130.4 - DEPTH: POINT-IN-TIME NBA ARCHETYPES BUILT FROM THE EVENT STORE - WHAT A STAT LINE MEANS, NOT ONLY HOW BIG IT IS
 - MODEL: Sonnet
-PURPOSE: DEPTH D3 (+1 pre-registered challenger for the NBA props arm) and D5(b) PAM class 3 at NBA player level (interpreted -> a
-challenger on the path to applied). Backlog B-127. H-DEPTH-PAM-3 SUPPORTED (W128.4: D +0.00201 [+0.00184, +0.00219], 4 of 4 stats);
-its PREREG section 7 names this challenger. C2 (stat-specific usage shift) SUPPORTED on unread 2023-24 and logs forward in shadow.
+PURPOSE: DEPTH D5(b) NBA PAM classification (archetypes: hindsight-only deep tier -> point-in-time, data-derived for every player) and D3
+(+1 pre-registered test, H-DEPTH-PAM-5). Operator 2026-11-24 22:55 / 23:00 PT, verbatim: "it's not even 1/4 built out yet - it's almost
+common sense like obviously Zubac's 10 rebounds aren't the same as Wembys 10 rebounds" and "it's so valuable like unbelievably valuable
+that's the literal inception of my "granularity index" idea and it was made on like day 2". PAM today: 15 NBA archetypes (PRF-1..15),
+32 modifiers, 100 deep-tier records all recorded_at 2026-05-28 (hindsight for 2025-26); W129.4 added player_state / availability_profile /
+trait_reliability (state). No data-derived, point-in-time archetype exists for any player.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read 12_EXPLORATORY/pam_stability/ (PREREG.md, PREREG_ADDENDUM_1.md, RESULT.md, trait_reliability_draft.json),
-12_EXPLORATORY/nba_props_role/ (C2's PREREG and RESULT_C2.md), nba_engine/props.py (c2_means, W128.2), and
-pregame_shadow/nba_engine_props*_forecaster.py. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_2.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W130.md` and quote its first line. Those rules
+bind this block. Then read 02_ARCHITECTURE_DESIGN/GRANULARITY_INDEX.md (its PAM origin note), PAM_ATTRIBUTE_CLASSES.md,
+qualitative_data/pam/nba/taxonomy.json and records.jsonl, pam/schema.py / store.py and W129.4's state modules, and the NBA event store
+(box, lineups, possessions / play-by-play). Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W130_4.md.
 
-PART A - PRE-REGISTER FIRST (12_EXPLORATORY/nba_props_shrunk/PREREG.md, committed and pushed before any judged row is read):
-control = C2 as logged; challenger = C2's usage shift applied to PAM-3's shrunk rate x shrunk minutes (k values from
-trait_reliability_draft.json, fitted on training seasons only, fixed). Judged population: a season or slice NEITHER C2 nor PAM-3 judged -
-check both RESULT files and the H-DEPTH rows in HYPOTHESIS_DOCTRINE.md and name it with the check. 2025-26 was excluded by PAM-3 because
-the operator's fantasy test used it (design motivation, not evidence): if it is the only unread season, use it and state that in the
-PREREG. If no unread historical population exists, the judged set is forward 2026-27 rows and the PREREG states the judged n from
-quant/inference.mde_paired. Metric, interval and rule in PAM-3's form; pre-stated modal outcome.
-PART B - build the challenger with a known-answer test (planted reliability recovered; zero-noise case does not beat the raw mean), run it
-once on the judged historical population if Part A named one: RESULT.md + results.json quoting the PREREG SHA, per-stat D with BH.
-PART C - log it forward in shadow beside C2 behind PM_PROPS_SHRUNK (C2 and v1 byte-identical; no orders); switch on after the Hard Rule
-14 check, or put the install line under `operator decisions:` if one is needed. Update the H-DEPTH-PAM-3 row and add this test's row in
-HYPOTHESIS_DOCTRINE.md in the same PR.
+PART A - production profiles as of a date, per player-season, from games strictly before it: how each stat is produced, not only its
+size. Rebounds: offensive vs defensive share, contested vs uncontested where play-by-play allows, rebound chances vs conversion, share of
+team rebounds when on the floor, opponent-size context. Usage / creation, shooting zones, defensive events (blocks, steals, rim
+deterrence proxies), all per 100 possessions on the floor. Write them to the PAM store with known_at.
+PART B - point-in-time archetype assignment onto the existing PRF-1..15 taxonomy (mixture weights, PamRecord with classifier = "mass",
+confidence filled), fitted on training seasons only; agreement table against the 100 deep-tier records (hindsight, descriptive only);
+the Zubac / Wembanyama pair shown as a worked example: same raw rebounds, different profiles and archetype weights, with their numbers.
+Look-ahead tests.
+PART C - PRE-REGISTER H-DEPTH-PAM-5 (12_EXPLORATORY/pam_archetype/PREREG.md): props calibrated by player archetype x opponent archetype
+(the matchup cross) beat EXP-047-S, judged on forward 2026-27 rows (every NBA season through 2025-26 has been read by C2, PAM-3 or
+EXP-047-S - verify and say so), judged n from quant/inference.mde_paired, rule, modal outcome. Build the forward logging behind a switch
+in shadow beside S (no orders). Registry row.
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D3 NBA props (+1), P2 (+1 if Part B ran), D5(b) PAM class 3 stage.
-END OF BLOCK 129.2
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA PAM classification stage, players with a PIT archetype
+(0 -> n), D3 (+1).
+END OF BLOCK 130.4
 ```
 
-### 129.3 - MLB 2027 FROZEN BEFORE ITS FIRST ROW · MODEL: Sonnet
+### 130.5 - THE TRUE PICTURE FOR SW-10 · MODEL: Sonnet
 
 ```
-WAVE 129 - BLOCK 129.3 - PROOF: THE MLB 2027 FORWARD PRE-REGISTRATION, THE DAILY-BOARD INSTALL, AND A FULL-SLATE DRY RUN - MODEL: Sonnet
-PURPOSE: PROOF P3 (the next MLB look and its modal outcome, written before the first 2027 row) and D6 MLB (layers each of the 12 game
-cells reaches in a dry run). Backlog B-123. Wave 127.2: MLB engine counted (D4 first stage, D5(a) 3 -> 4), opening-day dry run 12 / 12
-cells priced. GG-1957: the 2026 ledger is postseason only because the crons were armed late and a job exited silently.
+WAVE 130 - BLOCK 130.5 - PROOF / HANDOFF: EVERY LIVE ARM PROBED, D6 READ FRESH, AND ONE GENERATED PAGE OF WHAT ACTUALLY RUNS - MODEL: Sonnet
+PURPOSE: PROOF (P1 counted from rows that exist) and the handoff input for SW-10 (B-125). Two defects the window found: the silent-arms
+probe (pregame_shadow/silent_arms.py, 20261126T0021Z_silent_arms_read.md) covers NHL, NBA engine v1-v3, NBA points and EXP-040 but NOT
+the EXP-047 props cron (live since 11-12), its C2 / S challengers, the combo shadow or the in-play runners - an arm can go dark with no
+alarm (GG-163 class). And the fresh d6_read W129.5 ran (20261126T0030Z_w1295_d6_read.md) returned an empty output block, so today's D6
+still quotes 11-25 04:34Z.
 
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read 11_MEMORY_HANDOFF/SESSION_HANDOFF_20261125T0700Z_W127_2.md, 12_EXPLORATORY/mlb_engine/, mlb_engine/, the
-GG-1957 entry, 02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md Part I, and the NHL / NBA forward PREREGs as the form to copy.
-Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_3.md.
+FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W130.md` and quote its first line. Those rules
+bind this block. Then read pregame_shadow/silent_arms.py, scripts/d6_read.py, scripts/distance_to_optimum.py,
+04_EXECUTION/DISTANCE_TABLE_W129.md, 02_ARCHITECTURE_DESIGN/RUNTIME_REGISTRY.toml, and the newest health / budget / deploy_truth results.
+Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W130_5.md.
 
-PART A - the forward PREREG for the 12 MLB game cells (moneyline, run line, total, team total x bands): the engine price enters as a
-layer-1 input to the router, never the bet; arms per leaf; judged n per cell from quant/variance.mde_clustered at the 2026 variance; look
-dates in calendar 2027; gross, round cost and net side by side; the pre-stated modal outcome per family. Committed and pushed now - before
-any 2027 row exists. Add the registry rows.
-PART B - the daily-board install (scripts/mlb_board_install.py: gate / install / readback / uninstall, budget-gated like
-archive_dense_install) with the two GG-1957 fixes as code: an arm-date check that alarms if the cron is not armed 7 days before opening
-day, and a silent-exit alarm (a run that writes 0 rows on a scheduled game day is a FAIL in health.log). RUNTIME_REGISTRY entry, paused.
-Tests. Do NOT run the install: its approval line goes under `operator decisions:` with the date it must be run by.
-PART C - a full 2026 regular-season slate day (pick one with every family listed) replayed through all seven D6 layers in dry mode: per
-cell, which layers are present. List what is missing per cell.
+PART A - liveness for every live writer: silent_arms.py gets a probe for every RUNTIME_REGISTRY component with status live that writes
+forecast or order rows (sport calendar aware), plus a test that fails when a live writer has no probe. Run it on the box and quote it.
+PART B - d6_read: find why the 00:30Z run printed nothing (exit code, stderr, input paths), fix, test, run fresh on the box and quote D6
+per cell and per sport with its date; distance_to_optimum reads it.
+PART C - scripts/state_of_the_bot.py -> 04_EXECUTION/STATE_OF_THE_BOT.md, generated from box reads only (no prose from memory): per sport,
+which arms log (rows last 24 h / 7 d), which place demo orders (orders, fills, settled, P&L per filled bet), installs pending, last wave's
+verdicts, D6 per sport, and every red signal. Allowlisted read-only box task to regenerate it. It is SW-10's first read; the window links
+it from the handoff. Merge after 130.1-130.3 if they are open so it covers their components (rebase).
 
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: P3 (MLB looks dated, 0 -> 12 cells), D6 MLB dry-run layers per cell.
-END OF BLOCK 129.3
-```
-
-### 129.4 - PAM POINT-IN-TIME STATE TABLES (NBA FIRST) · MODEL: Sonnet
-
-```
-WAVE 129 - BLOCK 129.4 - DEPTH: PAM HOLDS STATE, NOT ONLY CLASSIFICATIONS - player_state, availability_profile, trait_reliability -
-MODEL: Sonnet
-PURPOSE: DEPTH D5(b) NBA PAM classes 1, 2 and 4 (absent -> aggregated, point-in-time) and D3 (+1 pre-registered test, H-DEPTH-PAM-4).
-Backlog B-117, gaps GG-2005 (no point-in-time state table) and GG-2003. Design: 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md §3 A-C
-(the field lists are the spec; a change is a dated note in that file).
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read the design note, src/prediction_market_bot/pam/schema.py and store.py (the as_of(..., known_at=) contract to
-copy), the NBA event store reader, player_availability.fit_play_rates, and 12_EXPLORATORY/pam_stability/trait_reliability_draft.json.
-Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_4.md.
-
-PART A - the three tables as code in pam/ (new modules; schema.py / store.py add-only): every row carries as_of_ts, known_at, source,
-version; one read path as_of(..., known_at=). Look-ahead tests: a row known after the decision time is never returned; a trade changes
-team from its date.
-PART B - the NBA backfill from the event store (2016-2026 box scores, injury reports 2023-26 where present): player_state rows per
-player-game at the pre-tip decision time (usage_rate_shrunk with PAM-3's k, usage_rank_available, teammates_out, vacated_usage_share,
-minutes_expected, minutes_share_full_roster; role_security and return_window left null and named), availability_profile per player-date
-(gp_by_season, missed_by_body_part where reports exist, recurrence_flags), trait_reliability from the draft. Streamed, compressed,
-run in the session (not on the box). Row counts and a spot-check of 10 rows against box scores.
-PART C - PRE-REGISTER H-DEPTH-PAM-4 (12_EXPLORATORY/pam_state/PREREG_PAM4.md): role security (class 4, minutes lost when a displacing
-teammate returns), fitted on training seasons, judged on seasons no earlier test judged, metric / rule / modal outcome stated. Do NOT
-run it. Add its HYPOTHESIS_DOCTRINE row.
-
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D5(b) NBA PAM classes 1 / 2 / 4 stage, D3 (+1), GG-2005 status.
-END OF BLOCK 129.4
-```
-
-### 129.5 - ONE D6 NUMBER, THE DISTANCE TABLE, THE HYPOTHESIS REGISTRY · MODEL: Sonnet
-
-```
-WAVE 129 - BLOCK 129.5 - PROOF / MEASUREMENT: D6 FROM ONE SOURCE, THE DISTANCE TABLE FOR THE HANDOFF, EVERY HYPOTHESIS REGISTERED -
-MODEL: Sonnet
-PURPOSE: PROOF P1 / P2 counted right and D6 reported once. Backlog B-110 and the handoff input for B-125. The box's d6_read says 18 of
-117 (NBA 7, NHL 7, NFL 4; 20261125T0500Z_w1271_d6_read.md); scripts/distance_to_optimum.py says 0 of 129 from the repo's static
-leaf_map.json. The window hands off to SW-10 after Wave 130 and a new window must not inherit two D6 numbers.
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read scripts/distance_to_optimum.py (D6 section), decision_trees/coverage.py (d6_layers), the newest d6_read and
-d6_trace_read results under 04_EXECUTION/BOX_TASKS/results/, GG-2010 / GG-2011, and 02_ARCHITECTURE_DESIGN/HYPOTHESIS_DOCTRINE.md.
-Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_5.md.
-
-PART A - D6 reconciled: why 117 vs 129 registered cells, and why 18 vs 0 wired (box rows vs static repo map; which layers each reads).
-distance_to_optimum.py reports D6 from the newest box d6_read result with its date as the number, and the repo-static count beside it
-labelled as such; a test for the parsing. Run a fresh d6_read on the box and quote it.
-PART B - the distance table recomputed (every B / D / E / P measure with source and date) into 04_EXECUTION/DISTANCE_TABLE_W129.md for
-the window's handoff. Do not edit the RUNNING SITREP (the window's).
-PART C - the registry backfill (B-110): every hypothesis since EXP-001 / HYP-010, live or parked for R&D, in HYPOTHESIS_DOCTRINE.md's
-registry form (id, claim, population, rule, verdict or look date, file, status); scripts/hypothesis_registry_check.py flags any PREREG in
-05_RESEARCH_EXPERIMENTS/ or 12_EXPLORATORY/ without a registry row (alarm-only, run in Docs Guard). Merge after any other open W129 PR
-that edits HYPOTHESIS_DOCTRINE.md, rebasing onto it.
-
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: D6 sources 2 -> 1; registry rows before -> after; unregistered
-pre-registrations found.
-END OF BLOCK 129.5
-```
-
-### 129.6 - NFL IN-PLAY: A FREE LIVE GAME-STATE FEED FOR THE T4NFL CELLS · MODEL: Sonnet
-
-```
-WAVE 129 - BLOCK 129.6 - BREADTH: NFL IN-PLAY CELLS GET A LIVE GAME-STATE FEED AND LOG IN SHADOW - MODEL: Sonnet
-PURPOSE: BREADTH B1 / B3 (NFL in-play cells logging; T4NFL-ARITH / T4NFL-FLOW bands with a logging cell, 0 -> n). Wave 122.3: 16
-registered NFL cells are in-play and none can log, because the bot has no NFL live feed. Horizon doctrine (ADR-0068): in-play trees are
-shallow and must be paid for in measured speed, so the feed's latency is measured, not assumed.
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read the W122.3 handoff, execution_bands.py (T4NFL-ARITH / T4NFL-FLOW), the NFL in-play cells in
-c5_execution/market_type_registry.py, the MLB T4 live loop (run_t4_mlb_live.py and its staleness / contamination checks, GG-085, GG-163:
-ESPN once 403'd the box for 43 h and nothing alarmed) and the NHL / NBA shadow runners as the logging pattern.
-Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_6.md. Added to Wave 129 after it started (operator 11-25 16:09 PT); 129.1-129.5
-are running: stay inside your ownership line in COMMON_RULES_W129 and rebase before every push.
-
-PART A - the feed: a free, server-reachable NFL live source (prove it from the box with a read-only task; never get past a bot check),
-point-in-time game state per play (score, quarter, clock, down / distance / yard line, possession, timeouts) with fetch time recorded, a
-staleness check, and a write-recency alarm (no rows while a game is live = FAIL in health.log). Known-answer test on a saved game.
-PART B - the in-play pricer for the T4NFL cells from the NFL engine's pre-game price updated by game state (the arithmetic band first),
-replayed over recorded 2026 games (no waiting for a Sunday): per cell, rows logged, Brier vs the Kalshi in-play price at the same
-timestamp where the price archive has it, and feed latency vs the market's move.
-PART C - shadow logging behind PM_NFL_INPLAY (no orders) with a RUNTIME_REGISTRY entry and an install task built, NOT run: its approval
-line under `operator decisions:` with the budget gate result.
-
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B1 (NFL in-play cells able to log, 0 -> n), B3 (T4NFL bands), feed
-latency measured.
-END OF BLOCK 129.6
-```
-
-### 129.7 - NHL IN-PLAY: A FREE LIVE GAME-STATE FEED FOR THE T4NHL CELLS · MODEL: Sonnet
-
-```
-WAVE 129 - BLOCK 129.7 - BREADTH: NHL IN-PLAY CELLS GET A LIVE GAME-STATE FEED AND LOG IN SHADOW - MODEL: Sonnet
-PURPOSE: BREADTH B1 / B3 (NHL in-play cells logging; T4NHL-ARITH / T4NHL-FLOW bands with a logging cell, 0 -> n). The NHL engine prices
-the pre-game board; no NHL in-play cell logs. Horizon doctrine (ADR-0068): in-play trees are shallow and must be paid for in measured
-speed, so the feed's latency is measured, not assumed.
-
-FIRST: run `git fetch origin && git show origin/main:04_EXECUTION/WAVE_BLOCKS/COMMON_RULES_W129.md` and quote its first line. Those rules
-bind this block. Then read execution_bands.py (T4NHL-ARITH / T4NHL-FLOW), the NHL in-play cells in c5_execution/market_type_registry.py,
-the NHL event store (it already reads the NHL's own API), the MLB T4 live loop (run_t4_mlb_live.py and its staleness / contamination
-checks, GG-085, GG-163) and the NHL shadow runner as the logging pattern. NHL domains carry Content-Signal ai-train=no: we fetch data,
-we do not train AI on it. Handoff: 11_MEMORY_HANDOFF/SESSION_HANDOFF_<UTC>_W129_7.md. Added to Wave 129 after it started (operator 11-25 16:09 PT); 129.1-129.5
-are running (129.1 owns the NHL depth files in nhl_engine/): stay inside your ownership line in COMMON_RULES_W129 and rebase before every push.
-
-PART A - the feed: the NHL's free live endpoints (play-by-play / boxscore), proven from the box with a read-only task, point-in-time game
-state per event (score, period, clock, strength / power play, empty net, shots) with fetch time recorded, a staleness check, and a
-write-recency alarm (no rows while a game is live = FAIL in health.log). Known-answer test on a saved game.
-PART B - the in-play pricer for the T4NHL cells from the NHL engine's pre-game price updated by game state (the arithmetic band first:
-score, time left, strength, empty net), replayed over recorded 2026-27 games so far (no waiting for tonight): per cell, rows logged,
-Brier vs the Kalshi in-play price at the same timestamp where the price archive has it, and feed latency vs the market's move.
-PART C - shadow logging behind PM_NHL_INPLAY (no orders) with a RUNTIME_REGISTRY entry and an install task built, NOT run: its approval
-line under `operator decisions:` with the budget gate result.
-
-Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: B1 (NHL in-play cells able to log, 0 -> n), B3 (T4NHL bands), feed
-latency measured.
-END OF BLOCK 129.7
+Land: PR, CI green, merge. Report: per COMMON RULES. MEASURE MOVED: live writers with a probe (x of y -> y of y), D6 fresh date,
+STATE_OF_THE_BOT generated.
+END OF BLOCK 130.5
 ```
 
 ## Sequencing track
 
 Legend: ✅ landed on main · ⚠️ done but NOT on main (branch / PR) · ✂️ cut short by operator · ❌ never ran · ⏳ in flight · ⬜ not started
+
+### ✅ WAVE 129 — WRITTEN 2026-11-25 ~07:30 UTC · CLOSED 2026-11-26 ~02:30 UTC (operator 11-25 17:56 PT) · SW-9 · seven blocks (129.6 / 129.7 added 11-25 16:09 PT) · verified on GitHub (#589–#599 merged; handoffs W129_1..7; main Test Suite green 12f7f434) · moved: **P2 +2 (EXP-047-S SUPPORTED; EXP-NFLINPLAY-001 model-vs-Kalshi-mid closed, parked); D3 +2 (EXP-047-S, H-DEPTH-PAM-4); P3 MLB 2027 looks dated for 12 cells; D5(b) NBA PAM classes 1 / 2 / 4 absent → aggregated (state tables); NHL depth on in shadow; B1 +3 NHL in-play cells SHADOW (log after install); D6 one source, 18 of 129; hypothesis registry 42 → 73**
+
+| # | Block | Model | Status | Outcome |
+|---|---|---|---|---|
+| 129.1 | NHL depth on | Sonnet | ✅ #589 #597 #599 | PM_NHL_DEPTH on in shadow; unknown starters 53/99 → 0/351 (event-store prior); Muse goalie files need a token or vendoring (decision below) |
+| 129.2 | EXP-047-S challenger | Sonnet | ✅ #595 | SUPPORTED on 2025-26 (1,131 games): D +0.00172 [+0.00140, +0.00204], 4 of 4 stats; logging beside C2 |
+| 129.3 | MLB 2027 frozen | Sonnet | ✅ #591 | 12-cell forward PREREG; mlb_board_install built (run by 2027-03-18); dry run: 8 of 12 cells reach 4 of 7 layers, 0 reach 7 |
+| 129.4 | PAM state tables | Sonnet | ✅ #593 | player_state / availability_profile / trait_reliability + NBA backfill; H-DEPTH-PAM-4 pre-registered |
+| 129.5 | one D6 number | Sonnet | ✅ #592 #598 | D6 from the box read (18 of 129, 11-25); registry 73 rows, 0 unregistered; fresh d6_read printed nothing → 130.5 |
+| 129.6 | NFL in-play | Sonnet | 🟡 #590 #594 | feed proven from the box (rtt 0.2 s); model vs Kalshi mid closed (CI spans 0); scoring play → 3c move median 120 s; Part C not built → 130.1 |
+| 129.7 | NHL in-play | Sonnet | ✅ #596 | live feed + 3 T4NHL-ARITH cells SHADOW; nhl_inplay_install built, awaits approval |
 
 ### ✅ WAVE 128 — WRITTEN 2026-11-25 ~05:55 UTC · CLOSED 2026-11-25 ~07:30 UTC (operator 11-24 22:47 PT) · SW-9 · five blocks · verified on GitHub (#555 #582–#588 merged; handoffs W128_1..5; main Docs Guard green d8b31eaf) · moved: **P2 +1 (H-DEPTH-PAM-3 SUPPORTED, D +0.00201 [+0.00184, +0.00219], 4 of 4 stats); D5(b) PAM class 3 NBA absent → interpreted; NFL play-level 74 judged, 0 earned (ride / no bet), N24–N26 applied; NBA props on one mean function, combo legs on C2; NHL depth splits built (off, ~370 games to judge); 4 Muse families moved to server scrapers (install pending); D6 unchanged 18 of 117**
 
@@ -802,13 +749,20 @@ What should reorder this, and what should stop it:
 
 ## Needs your decision
 
-> **PENDING YOUR APPROVAL BY NAME (window recommends all three):**
+> **PENDING YOUR APPROVAL BY NAME (window recommends all):**
 > - `archive_dense_install`: gate PASS, 30.5 MB/day, one new cron, budget-gated.
-> - `nba_combo_shadow_install`: one hourly cron, PM_COMBO_SHADOW=on, BOT_ENV=paper. It logs to exp_output/COMBO_SHADOW, places no orders, and is budget-gated.
-> - `data_offload_install` (W128.5): gate PASS, 12 MB/day upper bound, peak RSS ~26 MB, one scraper at a time, off-peak, budget-gated. It fetches MoneyPuck, NHL officials, NHL goalie logs and Savant boards to the box.
+> - `nba_combo_shadow_install`: one hourly cron, PM_COMBO_SHADOW=on, BOT_ENV=paper. It logs to exp_output/COMBO_SHADOW, places no orders, and is budget-gated. 130.3 may extend it.
+> - `data_offload_install` (W128.5): gate PASS, 12 MB/day, peak RSS ~26 MB, budget-gated. Approving it accepts MoneyPuck's terms: free for non-commercial use, credit MoneyPuck.com.
+> - `nhl_inplay_install` (W129.7): one paused cron for 3 T4NHL-ARITH shadow cells, no orders. SURFACE BUDGET GREEN at 00:18Z.
+> - `mlb_board_install` (W129.3): paused MLB daily board with the GG-1957 arm-date and silent-exit alarms. Not needed until 2027; run by 2027-03-18.
+> - Coming from Wave 130: `nfl_inplay_install` (130.1, approve before the first Thanksgiving kickoff), the props demo-orders install (130.2) and the combo orders install (130.3).
 >
-> MoneyPuck's terms are free for non-commercial use, with credit to MoneyPuck.com. The bot is paper and demo only, and the credit goes in the data README. Approving `data_offload_install` accepts those terms.
+> **DECISION - Muse goalie / referee files on the box (W129.1):**
+> - (a) A read-only GitHub token in the box .env.
+> - (b) Vendor the small Muse snapshot files at the pinned SHA into the bot repo.
 >
+> Window recommends **(b)**. The window fetches them with its own access at each pin bump. No secret goes on the box and you do nothing beyond approving. Moving the pin past 2026-11-24 is a separate window decision, made after Muse resumes on 11-30.
+
 > To approve, say "approve <task name>" for each one you want.
 
 > **AUTHORIZATION - NFL NO_BET LEAVES STAY NO_BET (operator, 2026-11-24 18:33 PT: "Approved on rec for both", answering the window's

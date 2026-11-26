@@ -3739,3 +3739,14 @@ fitted on spread-logged orders (30+ resolved per side), judged at 100 per arm an
 | 2026-11-25 | W129.2 | EXP-047-S SUPPORTED (PREREG 8d6b97e6, pooled D +0.00172, 4/4 stats BH-pass) on 2025-26, disclosed as not fresh to the program. Judgment calls: PM_PROPS_SHRUNK default ON as shadow beside C2, own ledger, no orders, Kelly 0; PREREG SHA held as a constant in run_shrunk.py (isolation test forbids subprocess); prior table frozen at data/reference/nba_prev_season_2025_26.json. Not applied: router must score per leaf on net after costs. Cron stays paused pending operator approval of nba_engine_props_shadow_install. |
 
 | 2026-11-26 | W129.1 | PM_NHL_DEPTH switched on in shadow as a code default with PM_NHL_DEPTH=off off-switch (W120.2 pattern) instead of an *_install box task, because surface check was GREEN and no cron/service is added; split_applied stays False, orders follow v1, Kelly 0. Muse snapshots are NOT on the box (nhl_muse_fetch NO_TOKEN); the 351 store-only games all read prior_only and carry no published-vs-expected signal. Operator decision pending: read-only GH_TOKEN on box, or vendor the Muse files. |
+
+### 2026-11-25 18:30 PT — SW-9: Wave 129 closed; Wave 130 (the window's last) written
+- Operator 17:56 PT: "That was a massive wave - 129 is finished. Send 130 - give me 5 to send. Remember that 130 is the last block in your
+  window - make it worth it."
+- W129 verified: #589-#599 merged, handoffs W129_1..7, main Test Suite green (12f7f434). EXP-047-S SUPPORTED; NFL in-play model vs Kalshi
+  mid closed (parked); MLB 2027 PREREG frozen; PAM state tables; D6 one source (18 of 129); 129.6 Part C open -> 130.1.
+- W130 aims at EXECUTION (weakest pillar): props kept leaves and parlays place flat demo orders under their own PREREGs (130.2, 130.3), NFL
+  in-play live for Thanksgiving (130.1), PAM point-in-time archetypes from data (130.4), every live writer probed + STATE_OF_THE_BOT.md
+  for SW-10 (130.5). Found while verifying: silent_arms has no probe for the EXP-047 props cron or its challengers; the 11-26 d6_read
+  printed nothing; W129.2's note that the props cron is paused is stale (approved 11-12, RUNTIME_REGISTRY status live).
+- Muse files on the box (W129.1): window recommends vendoring at the pinned SHA over a box token. Backlog B-131..B-134 added.
