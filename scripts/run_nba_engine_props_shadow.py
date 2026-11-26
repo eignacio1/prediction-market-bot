@@ -192,6 +192,34 @@ def main(argv=None) -> int:
                       only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
                       props_for=_props_supply(games, pl))
         print(f"S ledger_dir={s_dir} written:", dict(rs["written"]))
+    if os.environ.get("PM_PROPS_PAM5", "on").lower() != "off":      # W130.4 H-DEPTH-PAM-5 forward arm: S's p_yes + archetype cell in reasons; PM_PROPS_PAM5=off is the off-switch
+        from prediction_market_bot.nba_engine import shrunk_means as SM
+        from prediction_market_bot.pam.store import PamStore
+        from prediction_market_bot.c1_signal_ingestion.nba_injury_reports import norm_name
+        from prediction_market_bot.pregame_shadow import nba_engine_props_c2_forecaster as C2
+        from prediction_market_bot.pregame_shadow import nba_engine_props_archetype_forecaster as AR
+        prev = json.loads((ROOT / "data" / "reference" / "nba_prev_season_2025_26.json").read_text())["players"]
+        pit_root = ROOT / "qualitative_data" / "pam_pit"
+        pit_store, pit_recs = PamStore(pit_root), PamStore(pit_root).load("nba")
+        name_map = json.loads((pit_root / "nba" / "name_map.json").read_text()) if (pit_root / "nba" / "name_map.json").exists() else {}
+        def pit_lookup(name, team, date):
+            pid = name_map.get(norm_name(name))
+            r = pit_store.as_of("nba", pid, date, known_at=date, records=pit_recs) if pid else None
+            if r is None:
+                return None, 0.0
+            top = max(r.archetypes, key=lambda x: x.weight)
+            return top.id, top.weight
+        fca = AR.NBAEnginePropsArchetype(games, pl, load_tips(tips_path), None, C2.parse_attempts(json.loads(store.read_text())),
+                                         prev=prev, league=SM.league_band_rates(prev), lookup=pit_lookup)
+        fca.out_lookup = _c1_out_lookup(fca)
+        a_dir = ledger_dir.parent / "PREGAME_SHADOW_EXP047_PAM5" if not a.dry_run else ledger_dir / "pam5"
+        ra = run_once(forecaster=fca, cells=CELLS, list_markets=ad.list_series_markets_raw,
+                      kickoff_for=lambda ev: fca.kickoff_for_event(ev), ledger_dir=a_dir, run_id=run_id,
+                      now_utc=now, code_sha=code_sha(),
+                      raw_filter=lambda m: F.parse_market_ticker(m.get("ticker", "")) is not None,
+                      only_bands=({b.strip() for b in a.bands.split(",") if b.strip()} or None), on_row=None,
+                      props_for=_props_supply(games, pl))
+        print(f"PAM5 ledger_dir={a_dir} written:", dict(ra["written"]))
     return 0
 
 
