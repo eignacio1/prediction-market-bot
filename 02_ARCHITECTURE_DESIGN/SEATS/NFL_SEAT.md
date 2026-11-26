@@ -59,14 +59,14 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nfl.toml`. This file is generated
 | nfl_team_total | T3 | shadow | src/prediction_market_bot/pregame_shadow/nfl_model.py | N1, N2, N3 |
 | nfl_team_total | T4 | not_implemented | none | — |
 | nfl_team_total | T5 | not_implemented | none | — |
-| nfl_moneyline | T4NFL-ARITH | not_implemented | none | — |
-| nfl_moneyline | T4NFL-FLOW | not_implemented | none | — |
-| nfl_spread | T4NFL-ARITH | not_implemented | none | — |
-| nfl_spread | T4NFL-FLOW | not_implemented | none | — |
-| nfl_game_total | T4NFL-ARITH | not_implemented | none | — |
-| nfl_game_total | T4NFL-FLOW | not_implemented | none | — |
-| nfl_team_total | T4NFL-ARITH | not_implemented | none | — |
-| nfl_team_total | T4NFL-FLOW | not_implemented | none | — |
+| nfl_moneyline | T4NFL-ARITH | shadow | none | — |
+| nfl_moneyline | T4NFL-FLOW | shadow | none | — |
+| nfl_spread | T4NFL-ARITH | shadow | none | — |
+| nfl_spread | T4NFL-FLOW | shadow | none | — |
+| nfl_game_total | T4NFL-ARITH | shadow | none | — |
+| nfl_game_total | T4NFL-FLOW | shadow | none | — |
+| nfl_team_total | T4NFL-ARITH | shadow | none | — |
+| nfl_team_total | T4NFL-FLOW | shadow | none | — |
 | nfl_player_pass_yds | T1 | not_implemented | passyds_strike_v1 (frozen, sha256 1053c843...; not yet serving) | N18, N19 |
 | nfl_same_game_combo | T1 | not_implemented | none | — |
 | nfl_same_game_combo | T2 | not_implemented | none | — |

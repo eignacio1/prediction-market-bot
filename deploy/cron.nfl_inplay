@@ -1,0 +1,7 @@
+# BEGIN W130.1 NFL INPLAY SHADOW
+# W130.1 -- NFL in-play shadow pricer (T4NFL-ARITH+FLOW): live game state from ESPN priced against Kalshi's open NFL game / spread / total markets.
+# PAUSED in the registry until the operator approves the named install task `nfl_inplay_install`.
+# Every 2 minutes in the NFL game window (17:00-06:59 UTC, every day (NFL Thu/Sat/Sun/Mon windows fall inside it)); a pass with no live game exits in one request. Gated by PM_NFL_INPLAY=1.
+# Writes data/shadow/nfl_inplay/ and logs/nfl_inplay.log only. No order, position, fill, stake or kelly.
+*/2 17-23,0-6 * * * ( flock -n 9 || { printf '{"ts":"\%s","runner":"nfl_inplay_shadow","event":"SKIP_LOCKED","reason":"previous run still holding /tmp/nfl_inplay_shadow.lock"}\n' "$(date -u +\%FT\%TZ)" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && PM_NFL_INPLAY=1 BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10 /opt/prediction-market-bot/venv/bin/python scripts/run_nfl_inplay_shadow.py >> logs/nfl_inplay.log 2>&1 ) 9>/tmp/nfl_inplay_shadow.lock
+# END W130.1 NFL INPLAY SHADOW

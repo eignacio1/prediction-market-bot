@@ -1601,3 +1601,19 @@ max_age_h = "30"
 schedule = "*/2 17-23,0-6 * * *"
 mirrors = ["deploy/cron.nhl_inplay"]
 command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nhl_inplay_shadow\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nhl_inplay_shadow.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && PM_NHL_INPLAY=1 BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+
+[[component]]
+key = "cron|*/2 17-23,0-6 * * *|scripts/run_nfl_inplay_shadow.py"
+kind = "cron"
+source = "deploy/cron.nfl_inplay"
+status = "paused"
+reviewed = true
+purpose = "W130.1: NFL in-play shadow pricer (T4NFL-ARITH and T4NFL-FLOW). Polls the ESPN live plays feed every 2 minutes in the game window, prices the open Kalshi NFL game / spread / total / team-total markets from the pre-game line updated by game state (EXP-NFLINPLAY-001), and logs shadow rows with feed latency and state-to-quote age. Gated by PM_NFL_INPLAY. No order, position, fill, stake or kelly. PAUSED until the operator approves the named install task nfl_inplay_install."
+pillar = "BREADTH"
+writes = ["logs/nfl_inplay.log", "data/shadow/nfl_inplay/"]
+alarm = "write recency: deploy/healthcheck.sh item 14 FAILs when a live NFL game has no row written for 10 minutes (scripts/run_nfl_inplay_shadow.py --health); SURFACE BUDGET goes RED if logs/nfl_inplay.log is older than 30h once installed"
+max_age_h = "30"
+schedule = "*/2 17-23,0-6 * * *"
+mirrors = ["deploy/cron.nfl_inplay"]
+command = "( flock -n 9 || { printf '{\"ts\":\"\\%s\",\"runner\":\"nfl_inplay_shadow\",\"event\":\"SKIP_LOCKED\",\"reason\":\"previous run still holding /tmp/nfl_inplay_shadow.lock\"}\\n' \"$(date -u +\\%FT\\%TZ)\" | tee -a /opt/prediction-market-bot/logs/t3_skips.jsonl > /dev/null; exit 0; }; cd /opt/prediction-market-bot && PM_NFL_INPLAY=1 BOT_ENV=paper PYTHONPATH=/opt/prediction-market-bot/src:/opt/prediction-market-bot nice -n 10"
+
