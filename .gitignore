@@ -201,3 +201,6 @@ exp_output/KALSHI_HISTORY/w89_7/
 # W95.2 frozen-evidence check: box-local derived caches
 12_EXPLORATORY/frozen_evidence_check/_cache/
 12_EXPLORATORY/frozen_evidence_check/_subset/
+
+# W129.4 PAM state backfill output (streamed gz; manifest is committed)
+exp_output/PAM_STATE/
