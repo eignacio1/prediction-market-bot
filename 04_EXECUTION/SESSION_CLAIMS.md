@@ -1414,3 +1414,4 @@
 | 2026-11-26T01:27:01Z | W129.1 | CLOSED — W129.1: NHL depth filter on in shadow (#589 #597 #599); unknown starters 53/99 -> 0/351; Muse files not on box (no token). (commit `12f7f43`) |
 | 2026-11-26T01:27:16Z | W129.1 | CLOSED — merge confirmed, HEAD (497c438) is ancestor of origin/main — NHL depth filter on in shadow; Muse files not on box |
 | 2026-11-26T01:27:01Z | W129.7 | CLOSED — W129.7 NHL in-play feed + pricer + 3 T4NHL-ARITH shadow cells merged (#596); install built, awaiting approval (commit `711d658`) |
+| 2026-11-26T01:28:52Z | W129.7 | CLOSED — merge confirmed, HEAD (45429d9) is ancestor of origin/main — NHL in-play feed + 3 T4NHL-ARITH shadow cells merged (#596); install awaiting approval |
