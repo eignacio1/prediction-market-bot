@@ -1,0 +1,2 @@
+task = "nhl_live_probe"
+note = "129.7 read-only: NHL live feed latency, staleness, clock advance and goal-vs-Kalshi-mid-move timing on the box"

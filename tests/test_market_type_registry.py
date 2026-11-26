@@ -550,13 +550,16 @@ class TestGameMarketT4SubbandIntegration:
                 cell = get_cell(market_type, band)
                 assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
 
-    def test_t4nhl_arith_and_flow_seeded_not_implemented_for_every_nhl_family(self):
-        # T-524/GG-251 (ADR-0062): every NHL family gets both sub-bands built
-        # this session -- ARITH and FLOW only, both NOT_IMPLEMENTED.
+    def test_t4nhl_arith_shadow_and_flow_not_implemented_for_every_nhl_family(self):
+        # T-524/GG-251 (ADR-0062) seeded both sub-bands NOT_IMPLEMENTED. W129.7
+        # (EXP-NHLINPLAY-001) promoted ARITH to SHADOW (in-play pricer, no orders);
+        # FLOW has no feed and stays NOT_IMPLEMENTED.
         for market_type in self._NHL_FAMILIES:
-            for band in (ExecutionBand.T4NHL_ARITH, ExecutionBand.T4NHL_FLOW):
-                cell = get_cell(market_type, band)
-                assert cell.status is CellStatus.NOT_IMPLEMENTED, cell
+            arith = get_cell(market_type, ExecutionBand.T4NHL_ARITH)
+            assert arith.status is CellStatus.SHADOW, arith
+            assert arith.citing_decision == "EXP-NHLINPLAY-001", arith
+            flow = get_cell(market_type, ExecutionBand.T4NHL_FLOW)
+            assert flow.status is CellStatus.NOT_IMPLEMENTED, flow
 
     def test_no_nfl_family_has_boundary_or_event_cell(self):
         # ADR-0062 §4's conservative reading: BOUNDARY and EVENT are scoped

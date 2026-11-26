@@ -40,9 +40,9 @@ Source of truth: `02_ARCHITECTURE_DESIGN/SEATS/nhl.toml`. This file is generated
 | nhl_game_total | T3 | shadow | none | — |
 | nhl_game_total | T4 | not_implemented | none | — |
 | nhl_game_total | T5 | not_implemented | none | — |
-| nhl_moneyline | T4NHL-ARITH | not_implemented | none | — |
+| nhl_moneyline | T4NHL-ARITH | shadow | none | — |
 | nhl_moneyline | T4NHL-FLOW | not_implemented | none | — |
-| nhl_puck_line | T4NHL-ARITH | not_implemented | none | — |
+| nhl_puck_line | T4NHL-ARITH | shadow | none | — |
 | nhl_puck_line | T4NHL-FLOW | not_implemented | none | — |
-| nhl_game_total | T4NHL-ARITH | not_implemented | none | — |
+| nhl_game_total | T4NHL-ARITH | shadow | none | — |
 | nhl_game_total | T4NHL-FLOW | not_implemented | none | — |

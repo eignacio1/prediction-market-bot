@@ -148,6 +148,11 @@ TASKS: dict[str, str] = {
     "nhl_event_store_uninstall": f"{PY} scripts/nhl_event_store_install.py uninstall",
     # W118.3: ONE run of the already-approved refresh job now (same script, same flock as the cron line, appends the same log) so the store exists before 13:29Z. Writes exp_output/NHL_EVENTS/ only; no order, stake or kelly.
     "nhl_event_store_refresh_once": f"( flock -n 9 || {{ echo LOCKED; exit 0; }}; BOT_ENV=paper PYTHONPATH=src:. nice -n 10 venv/bin/python scripts/run_nhl_event_store_refresh.py >> logs/nhl_event_store_refresh.log 2>&1; tail -n 3 logs/nhl_event_store_refresh.log ) 9>/tmp/nhl_event_store_refresh.lock",
+    # W129.7: NHL live game-state feed. Probe is read-only (public GETs + one Kalshi read, writes nothing); install is budget-gated and runs only after the operator approves it by name.
+    "nhl_live_probe": f"{PY} scripts/nhl_live_probe.py --games 8 --samples 30 --interval 10 --market-move --jump 2",
+    "nhl_inplay_install": f"{PY} scripts/nhl_inplay_install.py install",
+    "nhl_inplay_readback": f"{PY} scripts/nhl_inplay_install.py readback",
+    "nhl_inplay_uninstall": f"{PY} scripts/nhl_inplay_install.py uninstall",
     # W98.3 / GG-1581: T3 runners get a per-runner flock + skip row (install backs up the crontab first); read-only memory probe
     "t3_lock_stagger_install": f"{PY} scripts/t3_lock_stagger.py install",
     "t3_lock_stagger_readback": f"{PY} scripts/t3_lock_stagger.py readback",

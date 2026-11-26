@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 PKG = "prediction_market_bot"
-ENTRY = [ROOT / "scripts" / n for n in ("nhl_shadow_eval.py", "nhl_shadow_settle.py", "nhl_backfill.py")] + \
+ENTRY = [ROOT / "scripts" / n for n in ("nhl_shadow_eval.py", "nhl_shadow_settle.py", "nhl_backfill.py", "nhl_inplay_shadow.py", "nhl_live_probe.py")] + \
         sorted((SRC / PKG).glob("*/nhl_*.py"))
 FORBIDDEN_MODULES = ("kalshi_client", "paper_trader", "c4_risk_engine", "execution_bands", "venue_adapter",
                      "market_type_registry", "c5_execution", "pregame_shadow.runner")
