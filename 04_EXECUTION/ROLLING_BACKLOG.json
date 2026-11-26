@@ -88,6 +88,30 @@
       "order": 5
     },
     {
+      "id": "B-129",
+      "order": 6,
+      "status": "NOW",
+      "lane": "BREADTH",
+      "rank": "breadth",
+      "title": "NFL in-play: a free live game-state feed for the T4NFL cells, replayed on recorded games, shadow behind PM_NFL_INPLAY, install built",
+      "measure": "B1 / B3",
+      "why": "16 NFL cells are in-play with no NFL live feed (W122.3); operator 11-25 16:09 PT: \"Give me two more blocks to send\"",
+      "source": "SW-9 2026-11-25",
+      "wave": "129.6"
+    },
+    {
+      "id": "B-130",
+      "order": 7,
+      "status": "NOW",
+      "lane": "BREADTH",
+      "rank": "breadth",
+      "title": "NHL in-play: a free live game-state feed (NHL API) for the T4NHL cells, replayed on recorded games, shadow behind PM_NHL_INPLAY, install built",
+      "measure": "B1 / B3",
+      "why": "No NHL in-play cell logs; operator 11-25 16:09 PT: \"Give me two more blocks to send\"",
+      "source": "SW-9 2026-11-25",
+      "wave": "129.7"
+    },
+    {
       "id": "B-121",
       "status": "NEXT",
       "lane": "PROOF",
@@ -97,7 +121,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "129",
-      "order": 6
+      "order": 8
     },
     {
       "id": "B-125",
@@ -109,7 +133,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "130",
-      "order": 7
+      "order": 9
     },
     {
       "id": "B-119",
@@ -121,7 +145,7 @@
       "measure": "PROOF P3: props / 5-min / trade-print data for H1, H3, H4",
       "why": "124.4 gate refused at 74% disk (projected 93.9%)",
       "source": "PR #556",
-      "order": 8
+      "order": 10
     },
     {
       "id": "B-128",
@@ -133,11 +157,11 @@
       "why": "Operator 11-24 21:59 PT: \"let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here.\"",
       "source": "W128.5 handoff",
       "wave": "approval pending",
-      "order": 9
+      "order": 11
     },
     {
       "id": "B-024",
-      "order": 10,
+      "order": 12,
       "status": "NEXT",
       "lane": "engine",
       "rank": "8",
@@ -157,7 +181,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "129",
-      "order": 11
+      "order": 13
     },
     {
       "id": "B-096",
@@ -169,11 +193,11 @@
       "why": "no mid-week correction reached Muse since 11-12",
       "source": "SW-9 Fable review 2026-11-16",
       "wave": "116 (window)",
-      "order": 12
+      "order": 14
     },
     {
       "id": "B-017",
-      "order": 13,
+      "order": 15,
       "status": "NEXT",
       "lane": "flex",
       "rank": "plumbing",
@@ -193,7 +217,7 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "folded into B-098",
-      "order": 14
+      "order": 16
     },
     {
       "id": "B-063",
@@ -205,7 +229,7 @@
       "why": "107.2 could not see under 20 minutes; H3 parked 11-20; needs forward trade prints (B-114 install) first",
       "source": "SW-9 W107 close",
       "wave": "123.3 (H3)",
-      "order": 15
+      "order": 17
     },
     {
       "id": "B-073",
@@ -217,11 +241,11 @@
       "why": "Build continues whatever the edge evidence says; tests judge cells, not whether we build",
       "source": "Operator 11-09 21:29 PT (\"it'll stay fkn negative for a while\"); ADR-0073 / ADR-0075",
       "wave": "after D6 > 20 cells",
-      "order": 16
+      "order": 18
     },
     {
       "id": "B-014",
-      "order": 17,
+      "order": 19,
       "status": "LATER",
       "lane": "engine",
       "rank": "6",
@@ -233,7 +257,7 @@
     },
     {
       "id": "B-015",
-      "order": 18,
+      "order": 20,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -245,7 +269,7 @@
     },
     {
       "id": "B-016",
-      "order": 19,
+      "order": 21,
       "status": "LATER",
       "lane": "flex",
       "rank": "plumbing",
@@ -257,7 +281,7 @@
     },
     {
       "id": "B-021",
-      "order": 20,
+      "order": 22,
       "status": "LATER",
       "lane": "proof",
       "rank": "1",
@@ -269,7 +293,7 @@
     },
     {
       "id": "B-001",
-      "order": 21,
+      "order": 23,
       "status": "PARKED",
       "lane": "engine",
       "rank": "2",
@@ -281,7 +305,7 @@
     },
     {
       "id": "B-008",
-      "order": 22,
+      "order": 24,
       "status": "PARKED",
       "lane": "proof",
       "rank": "1",
@@ -293,7 +317,7 @@
     },
     {
       "id": "B-022",
-      "order": 23,
+      "order": 25,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -305,7 +329,7 @@
     },
     {
       "id": "B-023",
-      "order": 24,
+      "order": 26,
       "status": "PARKED",
       "lane": "flex",
       "rank": "-",
@@ -317,7 +341,7 @@
     },
     {
       "id": "B-025",
-      "order": 25,
+      "order": 27,
       "status": "PARKED",
       "lane": "flex",
       "rank": "8",
@@ -337,7 +361,7 @@
       "why": "D-07 one engine prices the whole board consistently; game lines shift usage when a rotation player is out, props do not.",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "128.2",
-      "order": 26,
+      "order": 28,
       "outcome": "one mean function c2_means; combo legs read C2; 0 prices differ on day 1 (#582)"
     },
     {
@@ -350,7 +374,7 @@
       "why": "Operator 11-24 18:27 PT: \"set up the next wave - back to 4 ... we'll handoff after 130 finishes so you better set your backlog accordingly\"",
       "source": "SW-9 plan 2026-11-24",
       "wave": "128.3",
-      "order": 27,
+      "order": 29,
       "outcome": "EXP-NFLPLAYLEVEL-001: 74 judged, 0 earned (ride / no bet); N24-N26 applied (#583)"
     },
     {
@@ -363,7 +387,7 @@
       "why": "Operator 11-21 12:34 PT, PAM design note from the fantasy hotline test: \"each must reach APPLIED, not stop at interpreted\" (design motivation, not evidence)",
       "source": "operator 2026-11-21 12:34 PT; 02_ARCHITECTURE_DESIGN/PAM_ATTRIBUTE_CLASSES.md",
       "wave": "128.4",
-      "order": 28,
+      "order": 30,
       "outcome": "H-DEPTH-PAM-3 SUPPORTED: D +0.00201 [+0.00184, +0.00219], 4 of 4 stats; class 3 NBA absent -> interpreted (#555)"
     },
     {
@@ -376,7 +400,7 @@
       "measure": "D4 data layers; Muse chunks retired",
       "why": "Operator 11-24 21:59 PT: \"let's set up crons for what we can and have Muse do work that's substantive and valuable that we CAN'T do here.\"",
       "source": "operator 2026-11-24 21:59 PT",
-      "order": 29,
+      "order": 31,
       "outcome": "4 server scrapers built (MoneyPuck, NHL officials, NHL goalie logs, Savant); gate PASS 12 MB/day; mlb_boxscore 406 stays Muse; install awaits approval (#584 #587)"
     },
     {
@@ -389,12 +413,12 @@
       "why": "NFL per layer 12,12,0,9,9,9,4; season ends in January",
       "source": "SW-9 2026-11-19 (d6_read 01:25Z)",
       "wave": "127.1",
-      "order": 30,
+      "order": 32,
       "outcome": "W127.1 #573: prop ticker parse fixed, GG-2007 closed (fixed 11-17), D6 18 of 117 (box); leaf map v2 promotion open (GG-2010)"
     },
     {
       "id": "B-018",
-      "order": 31,
+      "order": 33,
       "status": "DONE",
       "lane": "engine",
       "rank": "2",
