@@ -1422,3 +1422,4 @@
 | 2026-11-26T02:55:02Z | W130.1 | CLOSED — merge confirmed, HEAD (b479eed) is ancestor of origin/main — NFL in-play shadow installed (PR #604, #605); Part B awaits live game |
 | 2026-11-26T03:09:49Z | W130.2 | CLOSED — W130.2: 14 kept NBA props leaves get flat demo orders (EXP-NBAPROPS-002), merged PR #601, paused until install approved (commit `b29e1e0`) |
 | 2026-11-26T03:11:14Z | W130.2 | CLOSED — merge confirmed, HEAD (51191c9) is ancestor of origin/main — NBA props demo orders merged (PR #601), paused until install approved |
+| 2026-11-26T03:21:20Z | W130.3 | CLOSED — W130.3: demo combo fills settled (n=2), EXP-COMBOORD-001 pre-registered, accept rule gets an edge threshold, daily demo RFQ line added paused to the existing install approval (commit `see PR`) |

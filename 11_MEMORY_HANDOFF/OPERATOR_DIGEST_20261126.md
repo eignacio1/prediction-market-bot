@@ -26,3 +26,5 @@ Built a player-type label for 469 NBA players that only uses games played before
 
 ## W130.2 — NBA props demo orders (EXECUTION)
 Built and merged the code that lets the 14 kept NBA player-prop leaves place $1 demo orders, with every fill measured. It is OFF. Nothing is installed, no real money, Kelly 0. One thing needs you: approve `props_arm_orders_install` (queue item 10) to turn it on. I have not yet read the box dry run (the box hadn't run it); it is listed as pending. Nothing can be scored until NBA games pass after install.
+
+**W130.3 — combos on a schedule (demo only).** The daily combo quote-and-order job is now installed on the box, with the same approval you gave. It trades one demo contract at a time, at most $6 of demo loss a day, and only when our price beats the quote by a clear margin. Two earlier combo fills settled: one won, one lost, too few to say anything. I also fixed a bug where it would accept a bad quote. First scheduled run is 18:17Z today; I'll read it and report. No real money touched.

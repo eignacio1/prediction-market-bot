@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-26T03:10:00Z (W130.2 — W130.2: 14 kept NBA props leaves get flat demo orders (EXP-NBAPROPS-002), merged PR #601, paused until install approved) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0300Z_W130_2.md` for full session detail.
+**Last reviewed:** 2026-11-26T03:00:00Z (W130.3 — W130.3: demo combo fills settled (n=2), EXP-COMBOORD-001 pre-registered, accept rule gets an edge threshold, daily demo RFQ line added paused to the existing install approval) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0300Z_W130_3.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
