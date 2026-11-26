@@ -16,7 +16,7 @@
 
 **Purpose:** The canonical navigation index for this project. The definitive source of truth for what exists, where it lives, and what its current status is. Designed to be the first file read in any new context window to restore full situational awareness.  
 **Owner (role):** Director/Sponsor (DS) — the operator is responsible for keeping this current  
-**Last reviewed:** 2026-11-26T03:35:00Z (W130.5 — W130.5: every live writer probed or exempt (tested), d6_read fixed and read fresh 18/129, STATE_OF_THE_BOT.md generated from box reads) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0321Z_W130_5.md` for full session detail.
+**Last reviewed:** 2026-11-26T05:10:00Z (W131.1 — W131.1: queue reset + approval logged; installs NOT filed - pre-check failed (39 MB free, budget RED), GG-2014) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0510Z_W131_1.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `11_MEMORY_HANDOFF/MEMORY_BANK_ARCHIVE.md` § Last Reviewed Chain Archive.
