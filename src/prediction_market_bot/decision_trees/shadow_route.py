@@ -135,7 +135,7 @@ CANDIDATES = {"router_v2": ("v2", None, False), "nba_depth": ("v1+nba_depth", ("
               "nfl_splits": ("v2", ("NFL",), False),
               # W128.3: NFL play-level personnel / coverage / motion crosses (EXP-NFLPLAYLEVEL-001); off unless PM_NFL_PLAYLEVEL=on
               "nfl_playlevel": ("v2", ("NFL",), False),
-              # W128.1: NHL goalie / referee / availability splits (EXP-NHLDEPTH-001) log their leaves beside nhl_v2's arm; off unless PM_NHL_DEPTH=on
+              # W128.1: NHL goalie / referee / availability splits (EXP-NHLDEPTH-001) log their leaves beside nhl_v2's arm; ON by default (W129.1), PM_NHL_DEPTH=off is the off-switch
               "nhl_depth": ("nhl_v2", ("NHL",), False)}
 
 
@@ -164,7 +164,7 @@ def candidate_fields(row: dict, series: str, prev_mid: Optional[float], filters:
             continue
         if name == "nfl_splits" and not _nfl_splits_on():  # W126.5: default off
             continue
-        if name == "nhl_depth" and not _nhl_depth_on():  # W128.1: default off
+        if name == "nhl_depth" and not _nhl_depth_on():  # W129.1: default on; PM_NHL_DEPTH=off turns it off
             continue
         if name == "nfl_playlevel" and not _nfl_playlevel_on():  # W128.3: default off
             continue
