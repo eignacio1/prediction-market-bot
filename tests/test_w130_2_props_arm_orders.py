@@ -174,3 +174,30 @@ def test_join_fill_partial_and_void_known_answer(env):
     assert pa["E1_orders"] == 4 and pa["E1_fills"] == 3 and pa["n_settled_fills"] == 2 and pa["n_nonfills_resolved"] == 1
     assert pa["E3_win_rate_fills"] == 0.5 and pa["E3_win_rate_nonfills_counterfactual"] == 1.0
     assert pj.join_health(list(recs.values()))["void"] == 1
+
+
+def test_read_wrapper_counts_skips_and_splits_leaves(env):
+    import importlib.util, sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(pao.__file__).resolve().parents[3] / "scripts"))
+    spec = importlib.util.spec_from_file_location("par", Path(pao.__file__).resolve().parents[3] / "scripts" / "props_arm_orders_read.py")
+    par = importlib.util.module_from_spec(spec); spec.loader.exec_module(par)
+    go(env, row()); go(env, row(applied=False)); go(env, row(applied=False)); go(env, row(side="no"))
+    rows = lines(env)
+    assert par.skip_counts(rows) == {"total": 3, "by_reason": {"no_split_applied": 2, "side_disagrees": 1}}
+    orders = [e for e in rows if e["event"] == pao.ORDER_EVENT]
+    recs = pj.records(orders, [_fill("oid-1", 1.0)], {row()["market_ticker"]: {"result": "yes"}}.get, None, datetime(2026, 12, 3, tzinfo=timezone.utc))
+    s = par.summarise(rows, recs)
+    assert s["orders_rejected"] == 0 and s["events"][pao.ORDER_EVENT] == 1
+    assert list(s["per_leaf"]) == ["%s|RIDE|post_epoch_all_sides" % LEAF]
+
+
+def test_install_script_is_wired_and_default_off():
+    from pathlib import Path
+    root = Path(pao.__file__).resolve().parents[3]
+    conf = (root / "deploy" / "cron.props_arm_orders").read_text()
+    assert "PROPS_ARM_ORDERS=on" in conf and "scripts/run_props_arm_orders.py" in conf
+    bt = (root / "scripts" / "box_tasks.py").read_text()
+    for t in ("install", "readback", "uninstall"):
+        assert '"props_arm_orders_%s"' % t in bt
+    assert "PROPS_ARM_ORDERS" not in (root / "deploy" / "demo_fill.env").read_text()
