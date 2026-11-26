@@ -23,8 +23,7 @@ Every NBA season through 2025-26 has been read: **C2** 2023-24; **PAM-3** 2022-2
 - Logged per row in `reasons`: ("player_arch", id, weight), ("opp_anchor", flag). p_yes in the ledger = S's, unchanged.
 
 ## 4. Factor table (frozen before the first 2026-27 row)
-Per stat s and cell c: `f = (Σ actual + k0·1·Σ S_mu... )` — specifically `f_sc = (A + K) / (M + K)` with A = Σ actual stat, M = Σ S expected stat over
-training rows in the cell and K = 40 pseudo-games × the cell's mean S expected stat (shrinks to 1). Fit on training seasons only
+Per stat s and cell c: `f_sc = (A + K) / (M + K)`, A = Σ actual stat and M = Σ S expected stat over training rows in the cell, K = 40 × the cell's mean S expected stat (a 40-game pseudo-prior at ratio 1, so thin cells shrink to S). Fit on training seasons only
 (2022-23 .. 2025-26), by `scripts/pam_pit_factor_table.py` (SW-10 builds it; committed as `12_EXPLORATORY/pam_archetype/factors_frozen.json`
 with its sha256 **before** the first PAM5 row of 2026-27 is scored). Challenger mean = f_sc × S mean; same engine draws and strike code.
 **If the table is not committed before 2026-27 game 1 of the season's scoring, H-DEPTH-PAM-5 is not judged for 2026-27 (stated, not waived).**
