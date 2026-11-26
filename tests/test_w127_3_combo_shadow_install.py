@@ -17,8 +17,8 @@ def _reg(status, key=None):
 
 
 def test_paused_own_key_is_wanted_and_other_paused_key_is_not():
-    assert len(I.wanted_lines(CONF, _reg("paused"))) == 1
-    assert len(I.wanted_lines(CONF, _reg("live"))) == 1
+    both = [{"key": k, "kind": "cron", "status": "paused"} for k in I.OWN_KEYS]
+    assert len(I.wanted_lines(CONF, both)) == 2 and len(I.wanted_lines(CONF, _reg("paused"))) == 1
     assert I.wanted_lines(CONF, _reg("paused", key="cron|1 * * * *|scripts/other.py")) == []
 
 
@@ -67,3 +67,23 @@ def test_install_writes_one_block_when_budget_green_and_is_idempotent():
     n = state["c"].count("nba_combo_shadow.py")
     I.install(live_fn=green, read=lambda: state["c"], write=w, backup=lambda c: "b", conf_text=CONF, reg=_reg("paused"))
     assert state["c"].count("nba_combo_shadow.py") == n
+
+
+def test_rfq_line_is_demo_paper_only_capped_and_registered_paused():
+    (k, line), = I.wanted_lines(CONF, _reg("paused", key=I.RFQ_KEY))
+    assert k == I.RFQ_KEY and "PM_COMBO_RFQ_DEMO=on" in line and "BOT_ENV=paper" in line and "flock -n 8" in line
+    assert "LIVE" not in line.upper() and "kelly" not in line.lower()
+    import runtime_registry as rr
+    e = [c for c in rr.load() if c["key"] == I.RFQ_KEY]
+    assert len(e) == 1 and e[0]["status"] in ("paused", "live") and e[0]["reviewed"] is True
+    cur = "0 1 * * * echo a\n"
+    added = I.merged_crontab(cur, I.wanted_lines(CONF, [{"key": x, "kind": "cron", "status": "paused"} for x in I.OWN_KEYS]))
+    back, changed = I.without_block(added)
+    assert changed and back == cur and added.count("combo_rfq_demo.py") == 1
+
+
+def test_install_refused_when_budget_red_for_the_rfq_line_too():
+    wrote = []
+    regs = [{"key": k, "kind": "cron", "status": "paused"} for k in I.OWN_KEYS]
+    I.install(live_fn=lambda: {"error": "boom"}, read=lambda: "", write=wrote.append, backup=lambda c: "b", conf_text=CONF, reg=regs)
+    assert wrote == []
