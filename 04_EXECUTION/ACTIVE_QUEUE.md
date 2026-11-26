@@ -117,7 +117,7 @@ This wave is the window's last. It aims at the weakest pillar, **EXECUTION**: no
 | # | Lane | Block | Model | Status | Outcome |
 |---|---|---|---|---|---|
 | 130.1 | BREADTH / NFL | NFL in-play live for Thanksgiving: W129.6 Part C (shadow runner, 8 T4NFL cells SHADOW, write-recency alarm, install built), then live readback + first measured feed lag once approved | Sonnet | ⬜ | |
-| 130.2 | EXECUTION / NBA props | The 14 kept props leaves (EXP-NBAPROPS-001 candidate map) place flat demo orders under their own forward PREREG: fills, P&L per filled bet, fills vs non-fills | Sonnet | ⬜ | |
+| 130.2 | EXECUTION / NBA props | The 14 kept props leaves (EXP-NBAPROPS-001 candidate map) place flat demo orders under their own forward PREREG: fills, P&L per filled bet, fills vs non-fills | Sonnet | 🟡 | PR #601 (code + paused install, default OFF); PREREG EXP-NBAPROPS-002 committed first; nothing runs until `props_arm_orders_install` is approved |
 | 130.3 | EXECUTION / parlays | Parlays through RFQ: combo shadow per leaf, the 2 open demo fills settled, scheduled RFQ demo orders on the combos the router keeps (pot-of-gold arm) | Sonnet | ⬜ | |
 | 130.4 | DEPTH / PAM | PAM classifies from data: point-in-time NBA archetypes from the event store (how a stat is produced, not only how big it is), checked against the 100 deep-tier records; H-DEPTH-PAM-5 (archetype × opponent archetype on props) pre-registered on forward rows | Sonnet | ⬜ | |
 | 130.5 | PROOF / handoff truth | Every live arm has a liveness probe (EXP-047 props, C2, S, combos, in-play are not in silent_arms today); fresh `d6_read` returned empty output — fixed; `STATE_OF_THE_BOT.md` generated from box reads for SW-10 | Sonnet | ⬜ | |
@@ -863,6 +863,10 @@ What should reorder this, and what should stop it:
 9. ~~**`evidence_weekly_install` (W121.1)**~~ APPROVED 11-20 07:46 PT, run by the window. One cron line, Tuesdays 10:00 UTC: the weekly evidence look on box rows for v1 and every
    candidate map, carried forward. Its guarantee needs every look taken on schedule; the first look (11-17 cut) ran by hand. Approve
    with: "I approve evidence_weekly_install."
+10. **`props_arm_orders_install` (W130.2, EXP-NBAPROPS-002)** - one cron line, hourly at :47: flat $1 DEMO orders (demo host only, kelly 0, ADR-0072
+   placement) for the 14 kept NBA props leaves, own caps $51 per event / $408 per day, every skip counted. Registry entry paused; your approval is the
+   activation. Approve with: "I approve the box-task request that runs props_arm_orders_install, which adds a crontab line on the paper box."
+   (Turn off: `props_arm_orders_uninstall`. Readback: `props_arm_orders_readback`.)
 (Closed by your 11-09 21:29 PT answer: the window's strategy recommendation to stop new builds on liquid sports lines - WITHDRAWN. Operator: "We have quant, engine, scaffolding, governance, architecture, full bet suite, multi arm decision tree building - I can keep going and going ... it'll stay fkn negative for a while". The build continues on every lane; the frozen tests judge cells, they do not gate building.)
 (Closed by your 11-05 answer "Restart": the NFL ADOPT addendum and the look-day question - the ADR-0072 clock now runs from the GG-1771 epoch.)
 
