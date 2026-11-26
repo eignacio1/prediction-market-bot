@@ -7,7 +7,6 @@ def load(s):
     r = lambda t: pd.read_parquet(f"{D}{t}/{t}_{s}.parquet")
     return P.game_table(r("pbp"), r("possessions"), r("player_box"), r("schedule"))
 games = pd.concat([load(s) for s in TRAIN + [EVAL]], ignore_index=True)
-games.to_parquet("/tmp/w130_games.parquet") if False else None
 tr = pd.concat([P.profile_as_of(games, s, f"{s}-07-01", min_poss=1500).assign(season=s) for s in TRAIN])
 params = A.fit(tr)
 ev = P.profile_as_of(games, EVAL, "2026-07-01", min_poss=1500)
