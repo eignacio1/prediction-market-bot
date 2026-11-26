@@ -45,7 +45,7 @@ ARM_SPORT = {
     "nhl_shadow": "NHL", "nhl_inplay_shadow": "NHL",
     "nba_engine_v1": "NBA", "nba_engine_v2": "NBA", "nba_engine_v3": "NBA", "nba_preseason_shadow": "NBA", "nba_shadow": "NBA",
     "nba_player_points_shadow": "NBA", "nba_player_points_minutes_shadow": "NBA", "nba_props_exp047": "NBA",
-    "nba_props_exp047_c1": "NBA", "nba_props_exp047_c2": "NBA", "nba_props_exp047_s": "NBA", "nba_combo_shadow": "NBA",
+    "nba_props_exp047_c1": "NBA", "nba_props_exp047_c2": "NBA", "nba_props_exp047_s": "NBA", "nba_combo_shadow": "NBA", "combo_rfq_demo": "NBA",
     "ride_board": "ALL", "arm_orders": "ALL",
 }
 ARM_GLOBS = {
@@ -66,6 +66,7 @@ ARM_GLOBS = {
     "nba_props_exp047_c2": ["exp_output/PREGAME_SHADOW_EXP047_C2/NBAENG_*.jsonl"],
     "nba_props_exp047_s": ["exp_output/PREGAME_SHADOW_EXP047_S/NBAENG_*.jsonl"],
     "nba_combo_shadow": ["exp_output/COMBO_SHADOW/*.jsonl"],
+    "combo_rfq_demo": ["exp_output/COMBO_RFQ_DEMO/*.jsonl"],
     "nhl_inplay_shadow": ["data/shadow/nhl_inplay/*.jsonl"],
     "ride_board": ["logs/ride_board/decisions.jsonl"],
 }

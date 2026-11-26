@@ -119,6 +119,9 @@ SPECS = {
     "nba_combo_shadow": ArmSpec("nba_combo_shadow", "NBA combo pot-of-gold shadow (W126.4)", 12, 1,
                                 "W130.5: paused and not installed on the box today; judged once exp_output/COMBO_SHADOW exists, so the probe "
                                 "is armed the moment the cron goes live"),
+    "combo_rfq_demo": ArmSpec("combo_rfq_demo", "NBA combo RFQ demo execution (W130.3)", 12, 1,
+                              "W130.5: paused and not installed; once-a-day demo RFQ run. Judged once exp_output/COMBO_RFQ_DEMO exists; "
+                              "a day with games and no ledger row is a dead run. Same cadence caveat as the combo shadow"),
     "nhl_inplay_shadow": ArmSpec("nhl_inplay_shadow", "NHL in-play shadow pricer (W129.7)", 3, 0,
                                  "W130.5: paused and not installed; polls every 2 min while a game is live, so a game started 3h ago with no "
                                  "row is dead. Judged once data/shadow/nhl_inplay exists"),
@@ -472,6 +475,8 @@ def load_inputs(repo: Path, logs: Optional[Path] = None, now: Optional[datetime]
             lambda: last_ts_in_files([logs / "arm_orders" / "orders.jsonl"], until=now)),
         arm("nba_combo_shadow", when_installed(combo, lambda: _nba_engine_starts(repo)),
             lambda: last_ts_in_files(dir_files(combo, "*.jsonl"), until=now)),
+        arm("combo_rfq_demo", when_installed(repo / "exp_output" / "COMBO_RFQ_DEMO", lambda: _nba_engine_starts(repo)),
+            lambda: last_ts_in_files(dir_files(repo / "exp_output" / "COMBO_RFQ_DEMO", "*.jsonl"), until=now)),
         arm("nhl_inplay_shadow", when_installed(inplay, lambda: _nhl_starts(repo, now)),
             lambda: last_ts_in_files(dir_files(inplay, "*.jsonl"), until=now)),
     ]
@@ -496,6 +501,7 @@ WRITER_COVERAGE: dict = {
     "run_nba_engine_props_shadow.py": ("probe", ("nba_props_exp047", "nba_props_exp047_c1", "nba_props_exp047_c2", "nba_props_exp047_s")),
     "run_ride_board.py": ("probe", ("ride_board", "arm_orders")),
     "nba_combo_shadow.py": ("probe", ("nba_combo_shadow",)),
+    "combo_rfq_demo.py": ("probe", ("combo_rfq_demo",)),
     "nhl_inplay_shadow.py": ("probe", ("nhl_inplay_shadow",)),
     "run_t4_live.py": ("probe", ("t4_mlb",)),
     "t4-mlb.service": ("probe", ("t4_mlb",)),
