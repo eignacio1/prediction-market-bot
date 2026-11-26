@@ -1407,3 +1407,4 @@
 | 2026-11-26T00:16:25Z | TBD | W129.6 NFL in-play live feed + shadow cells. PURPOSE: B1 NFL in-play cells able to log 0->n, B3 T4NFL-ARITH/FLOW bands have a logging cell, feed latency measured |
 | 2026-11-26T00:46:39Z | W129.4 | CLOSED — W129.4 merged (PR #593): PAM state tables + NBA backfill 365,975 rows per table; PAM-4 pre-registered, not run. (commit `ef45880`) |
 | 2026-11-26T00:47:39Z | W129.5 | CLOSED — W129.5 merged (PR #592): D6 from one box source (18/129, static 0 beside it), distance table, hypothesis registry 42->73 rows, 0 unregistered. (commit `36e16f9`) |
+| 2026-11-26T00:47:13Z | W129.6 | CLOSED — W129.6 Parts A+B merged: NFL live feed proven from box, in-play pricer replayed; Part C (shadow runner, cells) not built. (commit `188eddf`) |
