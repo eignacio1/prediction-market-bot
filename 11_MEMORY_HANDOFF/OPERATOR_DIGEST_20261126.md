@@ -23,3 +23,6 @@ Pillar moved: BREADTH.
 
 ## W130.4 — NBA player archetypes, point-in-time (merged, PR #603)
 Built a player-type label for 469 NBA players that only uses games played before the date asked, so it can be used live without leaking the future. It matches the old hindsight labels on the top pick 35% of the time, and the hindsight label shows up somewhere in the mix 72% of the time. Zubac reads rebounder/rim big; Wembanyama reads rim protector. Two types (PRF-10, PRF-13) can't be built from our data. It now logs as a shadow arm (no orders). Test is pre-registered; likely outcome is "not supported" or "underpowered" (~65%). One deadline: the factor table must be frozen before 2026-27 scoring or the test isn't judged. Handed to the next window. Note: CLAUDE.md window-maintained lines are dated 11-18 (RED).
+
+## W130.2 — NBA props demo orders (EXECUTION)
+Built and merged the code that lets the 14 kept NBA player-prop leaves place $1 demo orders, with every fill measured. It is OFF. Nothing is installed, no real money, Kelly 0. One thing needs you: approve `props_arm_orders_install` (queue item 10) to turn it on. I have not yet read the box dry run (the box hadn't run it); it is listed as pending. Nothing can be scored until NBA games pass after install.

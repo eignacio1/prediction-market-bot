@@ -1,3 +1,18 @@
+<!-- session-meta
+task_id: W130.2
+tier: STANDARD
+timestamp: 2026-11-26T03:10:00Z
+commit: b29e1e0
+one_line_summary: W130.2: 14 kept NBA props leaves get flat demo orders (EXP-NBAPROPS-002), merged PR #601, paused until install approved
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: EXECUTION, DEPTH
+gap_measure: E1/E2/E3 NBA props; D6 layers 6-7
+gap_delta: none yet (built, not live; E1 props fills 0, moves after props_arm_orders_install approval)
+pattern_sweep: grep arm_orders pattern in src/ scripts/ tests/ deploy/: module reuses ao.side_for/submit_context; test_box_tasks writer set updated
+surface_delta: +1 paused cron (props_arm_orders, registered), +4 box tasks; 0 live until approved
+-->
 # Handoff W130.2 - NBA props kept leaves place flat DEMO orders (EXP-NBAPROPS-002)
 COMMON_RULES_W130.md first line quoted: "# Wave 130 common rules". Branch session/20261126T020332Z-w130-2-props-orders, PR #601.
 
@@ -23,7 +38,6 @@ COMMON_RULES_W130.md first line quoted: "# Wave 130 common rules". Branch sessio
   0 rows). Next step SW-10: after merge run box task `props_arm_orders_dry` (orders stay off) and read the counted skip reasons.
 - POINTS rows: RESULT.md said points was dark before W122.1; confirm points ledgers have rows on the box before counting on the 8 POINTS leaves.
 - MERGED: PR #601 (e4c0b12), CI green on head 70df7fd. Box deploy read 2026-11-26T02:58Z (another window's request, box HEAD e3a53a35 includes #601): deploy docs_only, box HEAD = origin/main, t4-mlb and dashboard on box HEAD. t4-mlb decision: NOT NEEDED (the change adds a paused cron line and a runner; no code t4-mlb loads). My own deploy_truth_read and props_arm_orders_dry requests (fdd06d0) had not run by 02:58Z; the dry-run skip counts are NOT yet read.
-- t4-mlb box deploy read + decision not done (needs post-merge box read). Session claim refused by claim_session.sh from this branch
   (GG-419, 4 commits not on main); claim from a clean origin/main worktree.
 - Future-data dependence: every metric needs NBA games after install. Nothing here can be scored today.
 - CLAUDE.md "Right now" window-maintained lines are RED (stale). Not mine to fix.

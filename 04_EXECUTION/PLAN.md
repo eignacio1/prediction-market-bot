@@ -10,7 +10,7 @@
 
 **Purpose:** The authoritative, actionable delivery plan. Maps work to phases, owners, and milestones. Updated at each gate and weekly during active phases.  
 **Owner (role):** Execution Lead (EL)  
-**Last reviewed:** 2026-11-26T02:40:00Z (W130.4 — W130.4: point-in-time NBA archetypes for 469 players, H-DEPTH-PAM-5 pre-registered, PAM5 shadow arm logging (PR #603).) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0300Z_W130_4.md` for full session detail.
+**Last reviewed:** 2026-11-26T03:10:00Z (W130.2 — W130.2: 14 kept NBA props leaves get flat demo orders (EXP-NBAPROPS-002), merged PR #601, paused until install approved) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261126T0300Z_W130_2.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
 **Also reviewed (concurrent session):** 2026-11-24T00:29:00Z (W124.4 — W124.4 dense capture built and tested (props, 5-min games, trade prints); budget gate refuses on box disk; install not run, PR #556 unmerged) — See `11_MEMORY_HANDOFF/SESSION_HANDOFF_20261124T0029Z_W124_4.md` for full session detail.
 **Earlier history:** entries prior to this review are archived verbatim in `04_EXECUTION/PLAN_ARCHIVE.md` § Last Reviewed Chain Archive.
