@@ -1,4 +1,23 @@
 # Session handoff — W129.5 PROOF / measurement (Sonnet)
+
+<!-- session-meta
+task_id: W129.5
+tier: MICRO
+timestamp: 2026-11-26T00:55:00Z
+commit: 36e16f9
+one_line_summary: W129.5 merged (PR #592): D6 from one box source (18/129, static 0 beside it), distance table, hypothesis registry 42->73 rows, 0 unregistered.
+gg_touched: none
+adr_touched: none
+plan_deliverable_moved: no
+vision_pillar: PROOF
+gap_measure: D6 sources; hypothesis registry rows
+gap_delta: D6 sources 2 -> 1; registry rows 42 -> 73 (DISTANCE_TABLE_W129.md, hypothesis_registry_check.py)
+pattern_sweep: grep D6 readers in scripts/ src/ .claude/ - only distance_to_optimum.py computed a repo-static D6; box d6_read unchanged.
+surface_delta: +1 Docs Guard step (alarm-only), +2 one-shot box requests, 0 crons/services.
+-->
+
+**Strategic decisions this session:** None - implementation-only.
+
 **Branch:** session/20261126T001200Z-w129-5-d6-one-source · **Deliverable:** D6 from one source, distance table, hypothesis registry (B-110)
 
 ## What changed
@@ -13,8 +32,8 @@
 - Box requests in the PR: `20261126T0030Z_w1295_d6_read`, `20261126T0031Z_w1295_distance_read`.
 
 ## For the SW-10 window (read first)
-- A fresh `d6_read` and `distance_read` could not be run before the PR: a direct push of the request TOML to main was refused. They
-  run on merge; re-quote D6 and E/P into the table then (open item, not done).
+- Box results landed 11-26 and are quoted in the table (follow-up PR): `distance_read` gave P1-P3 = 25/49, 25 verdicts, P3 unavailable.
+  `d6_read` TIMED OUT (exit 124, empty), so D6 stays 18 / 129 from the 11-25 read; the timeout is undiagnosed. E1-E3 still MLB-only, ledgers 10-29.
 - Backfill covers every PREREG file (no EXP-001..024 PREREG files exist). Verdict cells marked "not re-read here" quote the file head only.
 
 ## Measures
