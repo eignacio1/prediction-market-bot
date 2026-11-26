@@ -22,7 +22,7 @@ COMMON_RULES_W130.md first line quoted: "# Wave 130 common rules". Branch sessio
 - Dry run on today's slate NOT done: the Mac has no demo creds and no PREGAME_SHADOW_EXP047 ledgers (runner printed `fills skipped: OSError`,
   0 rows). Next step SW-10: after merge run box task `props_arm_orders_dry` (orders stay off) and read the counted skip reasons.
 - POINTS rows: RESULT.md said points was dark before W122.1; confirm points ledgers have rows on the box before counting on the 8 POINTS leaves.
-- Not merged yet if CI is still pending when you read this; merge only PR #601 and only on green for its current head.
+- MERGED: PR #601 (e4c0b12), CI green on head 70df7fd. Box deploy read 2026-11-26T02:58Z (another window's request, box HEAD e3a53a35 includes #601): deploy docs_only, box HEAD = origin/main, t4-mlb and dashboard on box HEAD. t4-mlb decision: NOT NEEDED (the change adds a paused cron line and a runner; no code t4-mlb loads). My own deploy_truth_read and props_arm_orders_dry requests (fdd06d0) had not run by 02:58Z; the dry-run skip counts are NOT yet read.
 - t4-mlb box deploy read + decision not done (needs post-merge box read). Session claim refused by claim_session.sh from this branch
   (GG-419, 4 commits not on main); claim from a clean origin/main worktree.
 - Future-data dependence: every metric needs NBA games after install. Nothing here can be scored today.
