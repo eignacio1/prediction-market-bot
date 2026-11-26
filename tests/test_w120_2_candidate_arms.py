@@ -30,7 +30,7 @@ def test_on_adds_columns_and_leaves_v1_block_identical(monkeypatch):
 def test_nhl_row_gets_router_v2_and_nhl_v2(monkeypatch):
     monkeypatch.setenv("PM_CANDIDATE_ARMS", "on")
     r = _row("NHL", "NHL_MONEYLINE", "T2", "KXNHLGAME-26NOV12AAABBB-AAA")
-    assert set(sr.router_fields(r, "KXNHLGAME", prev_mid=0.7)["router_candidates"]) == {"router_v2", "nhl_v2"}
+    assert set(sr.router_fields(r, "KXNHLGAME", prev_mid=0.7)["router_candidates"]) == {"router_v2", "nhl_v2", "nhl_depth"}  # W129.1: nhl_depth on by default
 
 
 def test_erroring_map_logs_error_and_never_blocks_the_row(monkeypatch):
